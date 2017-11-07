@@ -2,6 +2,7 @@ package cs.controller.sys;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.sys.FileLibraryDto;
 import cs.repository.odata.ODataObj;
@@ -72,10 +73,9 @@ public class FileLibraryController {
     //@RequiresPermissions("fileLibrary#addFileFolder#post")
     @RequiresAuthentication
     @RequestMapping(name="新建文件夹-质量管理文件库",path ="addFileFolder",method=RequestMethod.POST)
-    @ResponseStatus(value= HttpStatus.CREATED)
-    public void addFileFolder(@RequestBody  FileLibraryDto fileLibraryDto){
-        fileLibraryService.addFolder(fileLibraryDto,Constant.folderType.FILE_LIBRARY.getValue());
-
+    @ResponseBody
+    public ResultMsg addFileFolder(@RequestBody  FileLibraryDto fileLibraryDto){
+        return fileLibraryService.addFolder(fileLibraryDto,Constant.folderType.FILE_LIBRARY.getValue());
     }
 
     //@RequiresPermissions("fileLibrary#addPolicyFolder#post")

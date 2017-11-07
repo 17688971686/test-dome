@@ -10,6 +10,11 @@
         vm.title = '协审单位';
         vm.resource = {};
 
+        activate();
+        function activate() {
+            assistUnitSvc.grid(vm);
+        }
+
         vm.del = function (id) {
             vm.id = id;
             common.confirm({
@@ -53,9 +58,6 @@
             assistUnitSvc.queryAssistUnit(vm);
         }
 
-        activate();
-        function activate() {
-            assistUnitSvc.grid(vm);
-        }
+
     }
 })();

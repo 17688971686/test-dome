@@ -16,7 +16,6 @@
         activate();
         function activate() {
             expertSvc.grid(vm);
-            expertSvc.reviewProjectGrid(vm);
         }
 
         vm.search = function () {
@@ -66,31 +65,6 @@
          */
         vm.exportToExcel = function () {
             expertSvc.exportToExcel(vm);
-        }
-
-        /**
-         * 查看专家评审过的项目列表
-         * @param expertId
-         */
-        vm.selReviewProject = function (expertId) {
-            vm.expertId = expertId;
-            vm.reviewProjectOptions.dataSource.read({"expertId" : expertId});
-            $("#reviewProject").kendoWindow({
-                width: "70%",
-                height: "60%",
-                title: "评审项目列表",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
-
-        }
-
-        vm.queryDetail = function(signId , processInstanceId){
-            $("#reviewProject").data("kendoWindow").close();
-            $state.go('signDetails' ,{signid : signId , processInstanceId :  processInstanceId} );
-
         }
     }
 })();

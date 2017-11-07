@@ -193,10 +193,6 @@
                 serverFiltering: true,
                 pageSize: 10,
                 sort: [
-               /* {
-                	 field: "isUse",
-	                    dir: "desc"
-                },*/
                  {
 	                    field: "unitSort",
 	                    dir: "asc"
@@ -204,7 +200,6 @@
                 ]
 	               
             });
-
             // End:dataSource
 
             // Begin:column
@@ -227,72 +222,56 @@
                 {
                     field: "unitName",
                     title: "单位名称",
-                    width: 100,
-                    filterable: true
+                    width: "20%",
+                    filterable: false
                 },
                 {
                     field: "unitShortName",
-                    title: "单位简称",
-                    width: 100,
-                    filterable: true
-                },
-               /* {
-                    field: "phoneNum",
-                    title: "电话号码",
-                    width: 100,
+                    title: "简称",
+                    width: "8%",
                     filterable: false
-                },*/
-               
+                },
                 {
                     field: "principalName",
-                    title: "负责人名称",
-                    width: 100,
+                    title: "负责人",
+                    width: "8%",
                     filterable: false
                 },
                 {
                     field: "principalPhone",
                     title: "负责人电话",
-                    width: 100,
+                    width: "10%",
                     filterable: false
                 },
-                {
-                    field: "fax",
-                    title: "负责人传真",
-                    width: 100,
-                    filterable: false
-                },
-               
                 {
                     field: "contactName",
-                    title: "联系人名称",
-                    width: 100,
+                    title: "联系人",
+                    width: "8%",
                     filterable: false
                 },
                 {
                     field: "contactTell",
-                    title: "联系人手机号",
-                    width: 100,
+                    title: "联系人电话",
+                    width: "10%",
                     filterable: false
                 },
                 {
                     field: "address",
                     title: "企业地址",
-                    width: 100,
+                    width: "20%",
                     filterable: true
                 },
                 {
                     field: "isUse",
                     title: "状态",
-                    width: 100,
+                    width: "5%",
                     filterable: false,
                     template:function(item){
                     	if(item.isUse){
                     		if(item.isUse=="0"){
-                    		
                     			return "已停用";
                     		}
                     		if(item.isUse=="1"){
-                    		
                     			return "在用";
                     		}
                     	}else{
@@ -303,10 +282,9 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 140,
+                    width: "8%",
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id,item.isUse);
+                        return common.format($('#columnBtns').html(),"vm.del('" + item.id + "')", item.id,item.isUse);
                     }
                 }
             ];

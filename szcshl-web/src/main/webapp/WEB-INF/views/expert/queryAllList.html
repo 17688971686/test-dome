@@ -2,7 +2,6 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/expert/reviewProjectList.html'"></div>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -17,36 +16,39 @@
 		<button class="btn btn-sm btn-success" ng-click="vm.exportToExcel()" ng-disabled="vm.isSubmit" >导出execl</button>
         <a class="btn btn-sm btn-primary" href="#/headerEdit/{{vm.headerType}}"> 表字段设置</a>
 	</div>
-	<ol class="breadcrumb"> 
-	<form id="searchform" name="searchform">
+
+	<form class="breadcrumb" id="searchform" name="searchform">
+        <input name="state" type="hidden"  operator="ne"  value="5"/><!--排除已删除的专家-->
 		<table style="width:100%">
 			<tr>
-				<td class="formAlignRight" style="width:150px;">专家范围</td>
-				<td>
-					<select name="state" operator="eq"  ng-model="vm.expert.state">
-						<option value="">请选择</option>
-						<option ng-repeat="x in DICT.STATE.dicts" value="{{x.dictCode}}">{{x.dictName}}</option>
+				<td class="text-right" style="width:80px;">专家范围</td>
+				<td style="min-width: 220px;">
+					<select name="state" operator="eq">
+						<option value="">所有专家（已删的除外）</option>
+						<option value="2">正式专家</option>
+						<option value="3">备选专家</option>
+                        <option value="1">审核中专家</option>
 					</select>
 				</td>
 
-				<td class="formAlignRight" style="width:150px;">姓名</td>
+				<td class="text-right" style="width:80px;">姓名</td>
 				<td>
-					<input name="name" type="text"  operator="like"  ng-model="vm.expert.name"/>
+					<input name="name" type="text"  operator="like" />
 				</td>
-				<td class="formAlignRight" style="width:150px;">工作单位</td>
+				<td class="text-right" style="width:80px;">工作单位</td>
 				<td>
-					<input name="comPany"  type="text" operator="like"  ng-model="vm.expert.comPany"/>
+					<input name="comPany"  type="text" operator="like" />
 				</td>
-				<td class="formAlignRight" style="width:150px;">专家区域</td>
+				<td class="text-right" style="width:80px;">专家区域</td>
 				<td>
-                    <select name="expertField" operator="eq" ng-model="vm.expert.expertField" >
+                    <select name="expertField" operator="eq">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.EXPERT_FIELD.dicts"  value="{{x.dictKey}}">{{x.dictName}}</option>
                     </select>
 				</td>
 			</tr>
 			<tr>
-				<td class="formAlignRight" style="width:150px;">专业大类</td>
+				<td class="text-right" >专业大类</td>
 				<td>
                     <select name="maJorBigParam" ng-model="vm.expert.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.expert.maJorBig,DICT.MAJOR.dicts)">
                         <option value="">请选择</option>
@@ -54,31 +56,27 @@
                     </select>
 				</td>
 
-				<td class="formAlignRight" style="width:150px;">专业小类</td>
+				<td class="text-right" >小类</td>
 				<td>
                     <select name="maJorSamllParam" ng-model="vm.expert.maJorSmall">
                         <option value="">请选择</option>
                         <option ng-repeat="ds in vm.majobSmallDicts" value="{{ds.dictName}}">{{ds.dictName}}</option>
                     </select>
 				</td>
-				<td class="formAlignRight" style="width:150px;">职称</td>
-				<td>
-					<select operator="eq" name="title" ng-model="vm.expert.title">
-						<option value="">请选择</option>
-						<option ng-repeat="x in DICT.POST.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-					</select>
-				</td>
-				<td class="formAlignRight" style="width:150px;">专家类别</td>
-				<td>
+                <td class="text-right" >专家类别</td>
+                <td>
                     <select name="expertTypeParam" operator="eq" ng-model="vm.expert.expertTypeParam">
                         <option value="">请选择</option>
                         <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts" value="{{dt.dictName}}">{{dt.dictName}}</option>
                     </select>
-				</td>
+                </td>
+                <td class="text-right" >申请日期</td>
+                <td>
+                    <input name="applyDate" operator="ge" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.expert.applyDate" value="" />
+                </td>
 			</tr>			
 		</table>
-  	</form>      	 
-	</ol> 
+  	</form>
 	
 	<div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>  
 </div>
@@ -89,9 +87,6 @@
 	<@shiro.hasPermission name="expert##put"> 
 	       <a class="btn btn-xs btn-primary" href="#/expertEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
  	</@shiro.hasPermission>
-	<@shiro.hasPermission name="expert##post">
-    <button class="btn btn-xs btn-success" ng-click="{2}"><span class="glyphicon glyphicon-search"></span>评审项目</button>
-	</@shiro.hasPermission>
 </script>
 
 

@@ -206,8 +206,7 @@
 					title : "操作",
 					width : "8%",
 					template : function(item) {
-						return common.format($('#columnBtns').html(), "vm.del('" + item.expertID + "')", item.expertID ,
-						"vm.selReviewProject('" + item.expertID + "')");
+						return common.format($('#columnBtns').html(), "vm.del('" + item.expertID + "')", item.expertID );
 					}
 				}
 			];			

@@ -2,9 +2,9 @@
     'use strict';
     angular.module('app').controller('fileLibraryCtrl',fileLibrary);
 
-    fileLibrary.$inject=['$scope','$state','$location','fileLibrarySvc'];
+    fileLibrary.$inject=['bsWin','$state','$location','fileLibrarySvc'];
 
-    function fileLibrary($scope,$state,$location,fileLibrarySvc){
+    function fileLibrary(bsWin,$state,$location,fileLibrarySvc){
         var vm = this;
         // vm.title="";
         vm.parentId = $state.params.parentId;
@@ -53,9 +53,9 @@
          * */
         vm.addFolderWindow=function(){
             $("#addRootFolder").kendoWindow({
-                width: "500px",
+                width: "600px",
                 height: "300px",
-                title: "新建文件夹",
+                title: "创建文件夹",
                 visible: false,
                 modal: true,
                 closable: true,
@@ -67,7 +67,20 @@
          * 保存新建文件夹
          */
         vm.saveRootFolder = function(){
-            fileLibrarySvc.saveRootFolder(vm);
+            if (vm.fileLibrary.fileName != undefined) {
+                fileLibrarySvc.saveRootFolder(vm.fileLibrary,function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        bsWin.alert("保存成功！",function(){
+                            window.parent.$("#addRootFolder").data("kendoWindow").close();
+                            $state.go('fileLibrary',{},{reload:true});
+                        });
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                });
+            }else{
+                bsWin.alert("文件名不能为空!");
+            }
         }
 
 

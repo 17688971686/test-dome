@@ -1226,8 +1226,9 @@ public class SignServiceImpl implements SignService {
                 if (!Validate.isString(dp.getFileNum())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，该项目还没有发文编号，不能进行下一步操作！");
                 }
-                //判断是否有评审费，如果有，则给财务部办理，没有，则直接到归档环节
-                if (expertReviewRepo.isHaveEPReviewCost(signid)) {
+                sign = signRepo.findById(Sign_.signid.getName(), signid);
+                //如果有评审费或者是协审流程，则给财务部办理，没有，则直接到归档环节
+                if (expertReviewRepo.isHaveEPReviewCost(signid) || EnumState.YES.getValue().equals(sign.getIsassistflow()) ) {
                     userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.FINANCIAL.getValue());
                     if (!Validate.isList(userList)) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.FINANCIAL.getValue() + "】角色用户！");
@@ -1242,7 +1243,6 @@ public class SignServiceImpl implements SignService {
                     assigneeValue = SessionUtil.getUserId();
                     variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
                     //更改已发送存档字段值
-                    sign = signRepo.findById(Sign_.signid.getName(), signid);
                     sign.setIsSendFileRecord(EnumState.YES.getValue());
                     signRepo.save(sign);
                 }
@@ -1251,13 +1251,13 @@ public class SignServiceImpl implements SignService {
             //财务办理
             case FlowConstant.FLOW_SIGN_CWBL:
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
-                if (sign.getReviewstage().equals("项目概算")) {
-                    ////协审费录入状态 9 表示已办理
+                /*if (EnumState.YES.getValue().equals(sign.getIsassistflow())) {
+                    //协审费录入状态 9 表示已办理
                     sign.setAssistStatus(EnumState.YES.getValue());
                 } else {
                     //评审费录入状态 9 表示已办理
                     sign.setFinanciaStatus(EnumState.YES.getValue());
-                }
+                }*/
                 sign.setIsSendFileRecord(EnumState.YES.getValue());
                 signRepo.save(sign);
                 variables = buildMainPriUser(variables, signid, assigneeValue);

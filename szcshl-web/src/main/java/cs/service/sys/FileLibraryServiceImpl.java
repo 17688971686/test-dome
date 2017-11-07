@@ -2,6 +2,7 @@ package cs.service.sys;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.sys.FileLibrary;
 import cs.domain.sys.FileLibrary_;
@@ -83,7 +84,7 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
      * @param fileLibraryDto
      */
     @Override
-    public void addFolder(FileLibraryDto fileLibraryDto,String libraryType) {
+    public ResultMsg addFolder(FileLibraryDto fileLibraryDto, String libraryType) {
         FileLibrary findFile=new FileLibrary();
         if(Constant.folderType.POLICY_LIBRARY.getValue().equals(libraryType)){
           findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.POLICY_LIBRARY.getValue());
@@ -91,10 +92,8 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
         if(Constant.folderType.FILE_LIBRARY.getValue().equals(libraryType)){
             findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.FILE_LIBRARY.getValue());
         }
-
         if(findFile ==null) {
             FileLibrary fileLibrary = new FileLibrary();
-
             //创建文件目录格式 ：根目录/质量管理文件库/文件夹名
             String fileLibraryPath = SysFileUtil.getUploadPath();//获取根目录
             String url = "";
@@ -127,10 +126,11 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
                 fileLibrary.setFileType(Constant.folderType.FILE_LIBRARY.getValue());
             }
             fileLibraryRepo.save(fileLibrary);
-        }else{
-            throw new IllegalArgumentException(String.format("文件夹：%s 已经存在，请重新输入",fileLibraryDto.getFileName()));
-        }
 
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"创建成功！");
+        }else{
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("文件夹：%s 已经存在，请重新输入",fileLibraryDto.getFileName()));
+        }
     }
 
     /**

@@ -32,6 +32,7 @@
                     initUpload(vm);
                     $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.model.expertID + "&t=" + Math.random());
                 });
+                expertSvc.reviewProjectGrid(vm);
             }
         }
 
@@ -536,6 +537,31 @@
             }
         }
 
+        /**
+         * 查看专家评审过的项目列表
+         * @param expertId
+         */
+        vm.selReviewProject = function () {
+            if(vm.model.expertID){
+                vm.reviewProjectOptions.dataSource.read({"expertId" : vm.model.expertID});
+                $("#reviewProject").kendoWindow({
+                    width: "70%",
+                    height: "560px",
+                    title: "评审项目列表",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "close"]
+                }).data("kendoWindow").center().open();
+            }else{
+                bsWin.alert("请先保存专家信息");
+            }
+        }
 
+        vm.queryDetail = function(signId , processInstanceId){
+            $("#reviewProject").data("kendoWindow").close();
+            $state.go('signDetails' ,{signid : signId , processInstanceId :  processInstanceId} );
+
+        }
     }
 })();

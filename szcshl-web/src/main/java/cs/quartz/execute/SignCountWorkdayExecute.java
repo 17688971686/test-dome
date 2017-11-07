@@ -104,15 +104,13 @@ public class SignCountWorkdayExecute implements Job {
     public void updateLightUpState(Sign sign, float usedWorkDay, int totalWorkDay) {
         /*NOLIGHT("0"),                 //不显示
         PROCESS("1"),                   //在办
-        DISPA("2"),                     //已发文
-        ARCHIVE("3"),                   //已发送存档
         PAUSE("4"),                     //暂停
         UNDER3WORKDAY("5"),             //少于三个工作日
         DISPAOVER("6"),                 //发文超期
         OVER25WORKDAYARCHIVE("7"),      //超过25个工作日未存档
         ARCHIVEOVER("8");               //存档超期*/
 
-        // 已发文状态
+        /*// 已发文状态,这个是流程状态，不是亮灯状态
         if (sign.getProcessState() == Constant.SignProcessState.END_DIS.getValue()) {
             sign.setIsLightUp(Constant.signEnumState.DISPA.getValue());
         }
@@ -121,7 +119,7 @@ public class SignCountWorkdayExecute implements Job {
         if ((sign.getIsSendFileRecord() == Constant.EnumState.YES.getValue()) ||
                 (sign.getProcessState() == Constant.SignProcessState.DO_FILE.getValue())) {
             sign.setIsLightUp(Constant.signEnumState.ARCHIVE.getValue());
-        }
+        }*/
 
         //少于3个工作日
         if ((totalWorkDay - usedWorkDay) <  Constant.WORK_DAY_3) {

@@ -9,8 +9,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-
 public class SignDto extends BaseDto{
 
     /**
@@ -61,11 +59,11 @@ public class SignDto extends BaseDto{
 
     private String ispresign;
     
-    //评审费录入状态 :9表示已办理,0表示未办理
+   /* //评审费录入状态 :9表示已办理,0表示未办理
     private String financiaStatus; 
     
     //协审费录入状态 :9表示已办理,0表示未办理
-    private String assistStatus;
+    private String assistStatus;*/
     
     //是否有登记补充资料:9表示是,0表示否
     private String isSupplementary;
@@ -2033,13 +2031,13 @@ public class SignDto extends BaseDto{
     }
 
     
-    public String getFinanciaStatus() {
+   /* public String getFinanciaStatus() {
 		return financiaStatus;
 	}
 
 	public void setFinanciaStatus(String financiaStatus) {
 		this.financiaStatus = financiaStatus;
-	}
+	}*/
 
 	public String getLeaderhandlesug() {
         return leaderhandlesug;
@@ -2225,13 +2223,13 @@ public class SignDto extends BaseDto{
         this.isSupplementary = isSupplementary;
     }
 
-    public String getAssistStatus() {
+    /*public String getAssistStatus() {
 		return assistStatus;
 	}
 
 	public void setAssistStatus(String assistStatus) {
 		this.assistStatus = assistStatus;
-	}
+	}*/
 
 	public BigDecimal getAuthorizeValue() {
 		return authorizeValue;
