@@ -492,7 +492,7 @@
         //end 保存项目关联
 
         // S_财务办理
-        vm.addFinancialApply = function(){
+        vm.addFinancialApply = function(id){
             if("9"==vm.model.isassistflow || 9==vm.model.isassistflow){
                 vm.costType = "ASSIST";
             }else{
@@ -501,9 +501,8 @@
             /**
              * 初始化费用录入
              */
-            addCostSvc.initAddCost(vm,vm.costType , vm.model);
+            addCostSvc.initAddCost(vm,vm.costType,vm.model,id);
         }
-
         //E_财务办理
 
         vm.addDoFile = function () {
