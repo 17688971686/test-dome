@@ -10,6 +10,7 @@
         vm.title = "通知公告编辑";
         vm.annountment = {};        //通知公告对象
         vm.annountment.anId = $state.params.id;
+        vm.editor=undefined;
         vm.businessFlag ={
             isInitFileOption : false,   //是否已经初始化附件上传控件
         }
@@ -42,23 +43,22 @@
         }
         active();
         function active() {
-           $('#froalaEditor') .froalaEditor({
-                language: 'zh_cn',
-                inlineMode: false,
-                placeholderText:'请输入内容' ,
-                imageUploadURL: rootPath +"/froala/uploadImg",
-                imageUploadParams:{rootPath:rootPath},//接口其他传参,默认为空对象{},
-                height: '260px', //高度
-                enter: $.FroalaEditor.ENTER_BR,
-                toolbarButtons: [
-                    'bold', 'italic', 'underline','strikeThrough','fontFamily', 'paragraphFormat', 'align','color','fontSize','outdent',
-                    'indent','insertImage','insertTable','undo', 'redo','insertLink','fullscreen'
-                ]
-            });
-
+          /*  UE.delEditor("editor");//可能是缓存问题导致的，因此先删除缓存中已有的富文本，
+            vm.editor= UE.getEditor("editor");//再重新渲染*/
+            //渲染百度Ueditor的编辑器
+            vm.editor = new UE.ui.Editor();
+             vm.editor.render('editor');
             if (vm.annountment.anId) {
             	vm.isUpdate=true;
-                annountmentSvc.findAnnountmentById(vm);
+                annountmentSvc.findAnnountmentById(vm,function (data) {
+                    vm.annountment = data;
+                    vm.initFileUpload();
+                    vm.editor.ready(function(){//在初始化后，填充编辑器的值
+                      if(vm.annountment.anContent!=undefined){
+                          vm.editor.setContent(vm.annountment.anContent);
+                      }
+                    })
+                });
                 sysfileSvc.findByBusinessId(vm.annountment.anId,function(data){
                     vm.sysFilelists = data;
                 });

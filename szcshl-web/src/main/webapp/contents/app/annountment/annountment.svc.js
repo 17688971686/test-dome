@@ -48,7 +48,7 @@
         //end initAnOrg
 
         //begin findAnnountmentById
-        function findAnnountmentById(vm) {
+        function findAnnountmentById(vm,callBack) {
             var httpOptions = {
                 method: "post",
                 url: url_annountment + "/findAnnountmentById",
@@ -58,9 +58,9 @@
             }
 
             var httpSuccess = function success(response) {
-                vm.annountment = response.data;
-                $("#froalaEditor").froalaEditor('html.set', vm.annountment.anContent);
-                vm.initFileUpload();
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
                 $http: $http,
@@ -71,7 +71,7 @@
 
         //begin createAnnountment
         function createAnnountment(vm) {
-        	vm.annountment.anContent=$("#froalaEditor").val();
+        	vm.annountment.anContent=vm.editor.getContentTxt();
             common.initJqValidation();
             var isValid = $('#form').valid();
             if (isValid) {
