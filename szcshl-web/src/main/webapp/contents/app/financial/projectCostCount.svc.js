@@ -11,7 +11,8 @@
             grid: grid,
             projectCostTotal:projectCostTotal,                         //项目评审费用统计
             projectCostClassifyCout:projectCostClassifyCout,            //项目费用分类统计
-            excelExport:excelExport                                 //专家汇总统计导出
+            excelExport:excelExport,                                //专家汇总统计导出
+            exportExcel:exportExcel                                    //导出excel表
         };
 
         return service;
@@ -366,6 +367,13 @@
                 resizable: true
             };
         }//E_初始化grid
+
+        //begin reportExcel
+        function exportExcel(vm , businessId , fileName) {
+            var fileName = escape(encodeURIComponent(fileName));
+            window.open(rootPath + '/financialManager/costExportExcel?fileName=' + fileName + '&businessId=' + businessId)
+        }
+        //end reportExcel
 
     }
 })();

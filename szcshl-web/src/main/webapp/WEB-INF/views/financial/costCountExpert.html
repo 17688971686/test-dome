@@ -1,0 +1,52 @@
+<div id="expertCostWindow" class="well well-sm" style="background:white;display: none;">
+        <div  style="background:white;" id="financeList">
+            <div  ng-show="vm.showReviewCost">
+                <a  data-toggle="collapse" data-target="#expertConst" >
+                    【{{vm.titleName}}】总计:{{vm.expertReview.totalCost}}
+                </a>
+                &nbsp;
+                <button  class="btn btn-xs btn-success" ng-click="vm.costExportExcel()">
+                    导出EXCEL
+                </button>
+
+
+                <div id="expertConst" class="collapse in" ng-show="vm.showReviewCost">
+                    <table class="table table-bordered">
+                        <caption class="text-center h3"><strong>{{vm.reviewTitle}}</strong></caption>
+                        <tr>
+                            <td>序号</td>
+                            <td>姓名</td>
+                            <td>是否外地</td>
+                            <td>开户行/银行账号</td>
+                            <td>评审费</td>
+                            <td>应纳税额</td>
+                            <td>合计（元）</td>
+                        </tr>
+                        <tr ng-repeat="x in vm.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
+                            <td>{{$index+1}}</td>
+                            <td>{{x.expertDto.name}}</td>
+                            <td ng-if="x.expertDto.expertField==2">是</td>
+                            <td ng-if="x.expertDto.expertField==1||x.expertDto.expertField==0">否</td>
+                            <td>{{x.expertDto.openingBank}}/{{x.expertDto.bankAccount}}</td>
+                            <td>{{x.reviewCost}}</td>
+                            <td> {{x.reviewTaxes}}</td>
+                            <td> {{x.totalCost}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" >合计</td>
+                            <td>{{vm.expertReview.reviewCost}}</td>
+                            <td>{{vm.expertReview.reviewTaxes}}</td>
+                            <td>{{vm.expertReview.totalCost}}</td>
+
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+
