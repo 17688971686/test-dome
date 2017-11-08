@@ -8,6 +8,7 @@
     function expert(bsWin, projectExpeSvc, workExpeSvc, expertSvc, expertOfferSvc, expertTypeSvc, $state,rootScope) {
         var vm = this;
         vm.model = {};
+        vm.data = {};
         vm.title = '专家信息编辑';
         vm.isuserExist = false;
         vm.expertID = $state.params.expertID;
@@ -34,6 +35,32 @@
                 });
                 expertSvc.reviewProjectGrid(vm);
             }
+            expertSvc.reviewProjectGrid(vm);
+        }
+
+        /**
+         * 查看专家评审过的项目列表
+         * @param expertId
+         */
+        vm.selReviewProject = function (expertId) {
+            vm.expertId = expertId;
+            vm.reviewProjectOptions.dataSource.read({"expertId" : expertId});
+            $("#reviewProject").kendoWindow({
+                width: "70%",
+                height: "60%",
+                title: "评审项目列表",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"]
+            }).data("kendoWindow").center().open();
+            expertSvc.reviewProjectGrid(vm)
+        }
+        //查看流程详细
+        vm.queryDetail = function(signId , processInstanceId){
+            $("#reviewProject").data("kendoWindow").close();
+            $state.go('signDetails' ,{signid : signId , processInstanceId :  processInstanceId} );
+
         }
 
         //S_initUpload

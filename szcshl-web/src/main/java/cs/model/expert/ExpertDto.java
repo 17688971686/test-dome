@@ -3,6 +3,9 @@ package cs.model.expert;
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
 
+import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +53,9 @@ public class ExpertDto extends BaseDto {
     private Date applyDate;    //申请日期
     private String unable;                              //是否作废（1为作废，0 为正常）
 
+    private String inputPerson;//录入人
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date inputTime;//录入时间
     /**
      * 综合评分
      */
@@ -389,5 +395,21 @@ public class ExpertDto extends BaseDto {
 
     public void setProjectDtoList(List<ProjectExpeDto> projectDtoList) {
         this.projectDtoList = projectDtoList;
+    }
+
+    public String getInputPerson() {
+        return inputPerson;
+    }
+
+    public void setInputPerson(String inputPerson) {
+        this.inputPerson = inputPerson;
+    }
+
+    public Date getInputTime() {
+        return inputTime;
+    }
+
+    public void setInputTime(Date inputTime) {
+        this.inputTime = inputTime;
     }
 }

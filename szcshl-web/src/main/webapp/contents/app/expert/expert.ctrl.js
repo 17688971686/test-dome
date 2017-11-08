@@ -13,6 +13,31 @@
         vm.headerType = "专家类型";
         vm.fileName = "专家信息";
         vm.expert = {};
+
+        //S 查看专家详细
+        vm.findExportDetail = function(id){
+              $("#exportDetail").kendoWindow({
+             width: "80%",
+             height: "800px",
+             title: "专家详细信息",
+             visible: false,
+             modal: true,
+             closable: true,
+             actions: ["Pin", "Minimize", "Maximize", "Close"]
+             }).data("kendoWindow").center().open();
+             if (id) {
+             expertSvc.getExpertById(id, function (data) {
+             vm.model = data;
+             vm.showSS = false;
+             vm.showSC = true;
+             vm.showWS = false;
+             vm.showWC = true;
+             // initUpload(vm);
+             $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.model.expertID + "&t=" + Math.random());
+             });
+             }
+        }
+        //S 查看专家详细
         activate();
         function activate() {
             expertSvc.grid(vm);

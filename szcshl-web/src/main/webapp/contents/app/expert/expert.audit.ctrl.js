@@ -11,7 +11,31 @@
     	vm.searchAudit = function(){
     		expertSvc.searchAudit(vm);
     	}
-    	
+        //S 查看专家详细
+        vm.findExportDetail = function(id){
+            $("#exportDetail").kendoWindow({
+                width: "80%",
+                height: "800px",
+                title: "专家详细信息",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+            if (id) {
+                expertSvc.getExpertById(id, function (data) {
+                    vm.model = data;
+                    vm.showSS = false;
+                    vm.showSC = true;
+                    vm.showWS = false;
+                    vm.showWC = true;
+                    // initUpload(vm);
+                    $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.model.expertID + "&t=" + Math.random());
+                });
+            }
+        }
+        //E 查看专家详细
+
     	//审核状态去到各状态
         vm.auditToOfficial = function() {
      	  expertSvc.auditTo(vm,2);

@@ -88,6 +88,8 @@ public class ExpertServiceImpl implements ExpertService {
                 expert.setExpertID(UUID.randomUUID().toString());
                 //专家编码，系统自动生成
                 expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber())+1));
+                expert.setInputPerson(SessionUtil.getDisplayName());
+                expert.setInputTime(new Date());
                 expert.setCreatedDate(new Date());
                 expert.setCreatedBy(SessionUtil.getDisplayName());
             }
@@ -97,7 +99,8 @@ public class ExpertServiceImpl implements ExpertService {
             //设置返回值
             expertDto.setExpertID(expert.getExpertID());
             expertDto.setExpertNo(expert.getExpertNo());
-
+            expertDto.setInputPerson(expert.getInputPerson());
+            expertDto.setInputTime(expert.getInputTime());
             return  new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",expertDto);
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("身份证号为%s 的专家已存在,请重新输入", expertDto.getIdCard()));
