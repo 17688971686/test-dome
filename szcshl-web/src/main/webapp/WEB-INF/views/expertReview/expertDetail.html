@@ -1,332 +1,227 @@
-<#assign path=request.contextPath />
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div class="well well-sm" style="background:white;display: none;" id="exportDetail" >
-<div class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
-    <ol class="breadcrumb">
-        <li>专家详细信息</li>
-        <li class="active">{{vm.title}}</li>
-    </ol>
-    <form id="form" name="form">
-        <table class="">
-            <caption class="text-center"> <h3><strong>深圳市政府投资项目咨询专家申请表</strong></h3></caption>
-            <tr>
-                <td  class="text-center" width="10%">姓名 <span class="required">*</span></td>
-                <td width="15%">
-                    {{vm.model.name}}
-                </td>
+<div class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;">
+    <table class="">
+        <caption class="text-center"><h3><strong>深圳市政府投资项目咨询专家申请表</strong></h3></caption>
+        <tr>
+            <td class="text-center" width="10%">姓名</td>
+            <td width="15%">
+                {{vm.model.name}}
+            </td>
 
-                <td  class="text-center" width="10%">性别<span class="required">*</span></td>
-                <td width="15%">
-                    {{vm.model.sex}}
-                </td>
-                <td align="center"  class="text-center" width="10%">出生年月<span class="required">*</span></td>
-                <td width="15%">
-                    {{vm.model.birthDay}}
-                </td>
-                <td width="121" colspan="2" rowspan="4" style="text-align: center;">
-                    <div style="width: 100%">
-                        <img ng-show="vm.model.expertID" id="expertPhotoSrc" src="" width="121" height="148" alt=""/>
-                    </div>
-                    <button class="btn btn-xs btn-primary" ng-click="vm.showUploadWin()">选择图片</button>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">身份证号<span class="required">*</span></td>
-                <td>
-                    {{vm.model.idCard}}
-                </td>
-                <td  class="text-center">最高学历<span class="required">*</span></td>
-                <td>
-                    {{vm.model.qualifiCations}}
-                </td>
-                <td  class="text-center">最高学位<span class="required">*</span></td>
-                <td>
-                    {{vm.model.degRee}}
-                </td>
-            </tr>
-            <tr>
-                <td  class="text-center">毕业院校<span class="required">*</span></td>
-                <td colspan="3">
-                    {{vm.model.acaDemy}}
-                </td>
-                <td  class="text-center">毕业时间<span class="required">*</span></td>
-                <td>
-                    {{vm.model.graduateDate}}
-                </td>
-            </tr>
-            <tr>
-                <td  class="text-center">工作单位<span class="required">*</span></td>
-                <td colspan="3">
-                    {{vm.model.comPany}}
-                </td>
-                <td  class="text-center">现任职务<span class="required">*</span></td>
-                <td>
-                    {{vm.model.job}}
-                </td>
-            </tr>
-            <tr>
-                <td  class="text-center">手机号码<span class="required">*</span></td>
-                <td>
-                    {{vm.model.userPhone}}
-                </td>
-                <td  class="text-center">职称<span class="required">*</span></td>
-                <td>
-                    {{vm.model.post}}
-                </td>
-                <td  class="text-center">电子邮箱</td>
-                <td>
-                    {{vm.model.email}}
-                </td>
-                <td  class="text-center">办公电话</td>
-                <td>
-                    {{vm.model.phone}}
-                </td>
-            </tr>
-            <tr>
-                <td  class="text-center">通讯地址</td>
-                <td colspan="3">
-                    {{vm.model.addRess}}
-                </td>
-                <td  class="text-center" width="60">传真</td>
-                <td>
-                    {{vm.model.fax}}
-                </td>
-                <td  class="text-center">邮编</td>
-                <td>
-                    {{vm.model.zipCode}}
-                </td>
-            </tr>
-            <tr>
-                <td  class="text-center">所学专业<span class="required">*</span></td>
-                <td  class="text-center" colspan="7" style="text-align:left;">
-                    <div style="float: left;" ng-show="vm.showSS">
-                        <span>专业门类：</span>
-                        <select name="zyml" ng-model="vm.model.majorSSort" style="width: 100px;"
-                                ng-change="majorbigSSort = topSelectChange(vm.model.majorSSort,DICT.MAJOR_SORT.dicts)">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.MAJOR_SORT.dicts" ng-value="x.dictName">{{x.dictName}}</option>
-                        </select>
-                        <span style="margin-left:10px;">专业大类：</span>
-                        <select name="zyml" ng-model="vm.model.majorbigSSort" style="width: 200px;"
-                                ng-change="selectValue = topSelectChange(vm.model.majorbigSSort,majorbigSSort)">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in majorbigSSort" ng-value="x.dictName"
-                                    ng-selected="vm.model.majorbigSSort == x.dictName">{{x.dictName}}
-                            </option>
-                        </select>
-                        <span style="margin-left:10px;">专业：</span>
-                        <select name="zyml" ng-model="vm.majorStudy" style="width: 200px;" name="majorStudy">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in selectValue" ng-value="x.dictName"
-                                    ng-selected="vm.model.majorStudy == x.dictName">{{x.dictName}}
-                            </option>
-                        </select>
-                        <button ng-click="vm.sureMS()" class="btn btn-xs btn-success">确定</button>
-                        <button ng-click="vm.cancelMS()" ng-show="vm.MS" class="btn btn-xs btn-primary">取消</button>
-                    </div>
-                    <div style="float: left;" ng-show="vm.showSC">
-                        <input type="text" name="majorStudy" id="majorStudy" ng-model="vm.model.majorStudy"
-                               data-val="true" ng-disabled="true" style="width: 600px;">
-                    </div>
-                </td>
-                </td>
-            </tr>
-            <tr>
-                <td  class="text-center">从事专业<span class="required">*</span></td>
-                <td  class="text-center" colspan="7" style="text-align:left;">
-                    <div style="float: left;" ng-show="vm.showWS">
-                        <span>专业门类：</span>
-                        <select name="zyml" ng-model="vm.model.majorWSort" style="width: 100px;"
-                                ng-change="majorbigWSort = topSelectChange(vm.model.majorWSort,DICT.MAJOR_SORT.dicts)">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.MAJOR_SORT.dicts" ng-value="x.dictName">{{x.dictName}}</option>
-                        </select>
-                        <span style="margin-left:10px;">专业大类：</span>
-                        <select name="zyml" ng-model="vm.model.majorbigWSort" style="width: 200px;"
-                                ng-change="selectWValue = topSelectChange(vm.model.majorbigWSort,majorbigWSort)">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in majorbigWSort" ng-value="x.dictName">{{x.dictName}}</option>
-                        </select>
-                        <span style="margin-left:10px;">专业：</span>
-                        <select name="zyml" ng-model="vm.majorWork" style="width: 200px;">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in selectWValue" ng-value="x.dictName"
-                                    ng-selected="x.dictName == vm.model.majorWork">{{x.dictName}}
-                            </option>
-                        </select>
-                        <button ng-click="vm.sureMW()" class="btn btn-xs btn-success">确定</button>
-                        <button ng-click="vm.cancelMW()" ng-show="vm.MW" class="btn btn-xs btn-primary">取消</button>
-                    </div>
-                    <div style="float: left;" ng-show="vm.showWC">
-                        <input type="text" name="majorWork" id="majorWork" ng-model="vm.model.majorWork" data-val="true"
-                               ng-disabled="true" style="width: 600px;">
-                    </div>
-                </td>
-            </tr>
+            <td class="text-center" width="10%">性别</td>
+            <td width="15%">
+                {{vm.model.sex}}
+            </td>
+            <td align="center" class="text-center" width="10%">出生年月</td>
+            <td width="15%">
+                {{vm.model.birthDay}}
+            </td>
+            <td width="121" colspan="2" rowspan="4" style="text-align: center;">
+                <div style="width: 100%">
+                    <img ng-show="vm.model.expertID" id="expertPhotoSrc" src="" width="121" height="148" alt=""/>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">身份证号</td>
+            <td>
+                {{vm.model.idCard}}
+            </td>
+            <td class="text-center">最高学历</td>
+            <td>
+                {{vm.model.qualifiCations}}
+            </td>
+            <td class="text-center">最高学位</td>
+            <td>
+                {{vm.model.degRee}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">毕业院校</td>
+            <td colspan="3">
+                {{vm.model.acaDemy}}
+            </td>
+            <td class="text-center">毕业时间</td>
+            <td>
+                {{vm.model.graduateDate}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">工作单位</td>
+            <td colspan="3">
+                {{vm.model.comPany}}
+            </td>
+            <td class="text-center">现任职务</td>
+            <td>
+                {{vm.model.job}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">手机号码</td>
+            <td>
+                {{vm.model.userPhone}}
+            </td>
+            <td class="text-center">职称</td>
+            <td>
+                {{vm.model.post}}
+            </td>
+            <td class="text-center">电子邮箱</td>
+            <td>
+                {{vm.model.email}}
+            </td>
+            <td class="text-center">办公电话</td>
+            <td>
+                {{vm.model.phone}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">通讯地址</td>
+            <td colspan="3">
+                {{vm.model.addRess}}
+            </td>
+            <td class="text-center" width="60">传真</td>
+            <td>
+                {{vm.model.fax}}
+            </td>
+            <td class="text-center">邮编</td>
+            <td>
+                {{vm.model.zipCode}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">所学专业</td>
+            <td class="text-center" colspan="7" style="text-align:left;">
+                {{vm.model.majorStudy}}
+            </td>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">从事专业</td>
+            <td class="text-center" colspan="7" style="text-align:left;">
+                {{vm.model.majorWork}}
+            </td>
+        </tr>
 
-            <tr>
-                <td  class="text-center">专家类别<span class="required">*</span></td>
-                <td colspan="3">
-                    {{vm.model.expertSort}}
-                </td>
+        <tr>
+            <td class="text-center">专家类别</td>
+            <td colspan="3">
+                {{vm.model.expertSort}}
+            </td>
 
-                <td  class="text-center">区域类别<span class="required">*</span></td>
-                <td colspan="3">
-                    {{vm.model.expertField}}
-                </td>
-            </tr>
+            <td class="text-center">区域类别</td>
+            <td colspan="3">
+                {{vm.model.expertField}}
+            </td>
+        </tr>
 
-            <tr>
-                <td  class="text-center">开户行<span class="required">*</span></td>
-                <td colspan="3">
-                    {{vm.model.openingBank}}
-                </td>
+        <tr>
+            <td class="text-center">开户行</td>
+            <td colspan="3">
+                {{vm.model.openingBank}}
+            </td>
 
-                <td  class="text-center">银行账号<span class="required">*</span></td>
-                <td colspan="3">
-                    {{vm.model.bankAccount}}
-                </td>
-            </tr>
+            <td class="text-center">银行账号</td>
+            <td colspan="3">
+                {{vm.model.bankAccount}}
+            </td>
+        </tr>
 
-            <tr>
-                <td height="97"  class="text-center">备注</td>
-                <td colspan="7">
-                    {{vm.model.remark}}
-                </td>
-            </tr>
-            <tr >
-                <td  class="text-center">专家代码</span></td>
-                <td colspan="3">
-                    {{vm.model.expertNo}}
-                </td>
+        <tr>
+            <td height="97" class="text-center">备注</td>
+            <td colspan="7">
+                {{vm.model.remark}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">专家代码</span></td>
+            <td colspan="3">
+                {{vm.model.expertNo}}
+            </td>
 
-                <td  class="text-center">录入人</td>
-                <td colspan="3">
-                    {{vm.model.inputPerson}}&nbsp;&nbsp;&nbsp;&nbsp;{{vm.model.inputTime}}
-                </td>
-            </tr>
-            <tr >
-                <td rowspan="{{vm.model.expertTypeDtoList.length +2}}" class="text-center">
-                    专业类别
-                </td>
-                <td colspan="7">
-                    <button class="btn btn-xs btn-primary" >专业类别</button>
-                </td>
-            <tr>
-                <td class="text-center"  >序号</td>
-                <td class="text-center" colspan="2"   >突出专业(大类)</td>
-                <td class="text-center" colspan="2"  >突出专业(小类)</td>
-                <td class="text-center"  colspan="2"  >专家类型</td>
-            </tr>
-            <tr ng-if="vm.model.expertTypeDtoList" ng-repeat="t in vm.model.expertTypeDtoList">
-                <td class="text-center">{{$index+1}}</td>
-                <td class="text-center" colspan="2">{{t.maJorBig}}</td>
-                <td class="text-center" colspan="2">{{t.maJorSmall}}</td>
-                <td class="text-center" colspan="2" >{{t.expertType}}</td>
-            </tr>
-            </tr>
-            <tr >
-                <td rowspan="{{vm.model.workDtoList.length +2}}" class="text-center">
-                    工作简历
-                </td>
-                <td colspan="7">
-                    <button class="btn btn-xs btn-primary" >工作简历</button>
+            <td class="text-center">录入人/时间</td>
+            <td colspan="3">
+                {{vm.model.inputPerson}} {{vm.model.applyDate}}
+            </td>
+        </tr>
+        <tr ng-if="vm.model.expertTypeDtoList">
+            <td rowspan="{{vm.model.expertTypeDtoList.length +1}}" class="text-center">
+                专业类别
+            </td>
+            <td class="text-center">序号</td>
+            <td class="text-center" colspan="2">突出专业(大类)</td>
+            <td class="text-center" colspan="2">突出专业(小类)</td>
+            <td class="text-center" colspan="2">专家类型</td>
+        </tr>
 
-                </td>
-            </tr>
-            <tr >
-                <td  class="text-center"  >
-                   序号
-                </td>
-                <td class="text-center"  >开始时间</td>
-                <td class="text-center"  >结束时间</td>
-                <td class="text-center"   colspan="2">工作单位</td>
-                <td class="text-center"   colspan="2">职务</td>
-            </tr>
-            <tr ng-if="vm.model.workDtoList" ng-repeat="w in vm.model.workDtoList">
-                <td class="text-center">
-                    {{$index+1}}
-                </td>
-                <td class="text-center">{{ w.beginTime }}</td>
-                <td class="text-center">{{ w.endTime }}</td>
-                <td class="text-center" colspan="2">{{ w.companyName }}</td>
-                <td class="text-center" colspan="2">{{ w.workJob }}</td>
-            </tr>
+        <tr ng-if="vm.model.expertTypeDtoList" ng-repeat="t in vm.model.expertTypeDtoList">
+            <td class="text-center">{{$index+1}}</td>
+            <td class="text-center" colspan="2">{{t.maJorBig}}</td>
+            <td class="text-center" colspan="2">{{t.maJorSmall}}</td>
+            <td class="text-center" colspan="2">{{t.expertType}}</td>
+        </tr>
+        <tr ng-if="vm.model.workDtoList">
+            <td rowspan="{{vm.model.workDtoList.length +1}}" class="text-center">
+                工作简历
+            </td>
+            <td class="text-center">
+                序号
+            </td>
+            <td class="text-center">开始时间</td>
+            <td class="text-center">结束时间</td>
+            <td class="text-center" colspan="2">工作单位</td>
+            <td class="text-center" colspan="2">职务</td>
+        </tr>
+        <tr ng-if="vm.model.workDtoList" ng-repeat="w in vm.model.workDtoList">
+            <td class="text-center">
+                {{$index+1}}
+            </td>
+            <td class="text-center">{{ w.beginTime }}</td>
+            <td class="text-center">{{ w.endTime }}</td>
+            <td class="text-center" colspan="2">{{ w.companyName }}</td>
+            <td class="text-center" colspan="2">{{ w.workJob }}</td>
+        </tr>
 
-            <tr >
-                <td rowspan="{{vm.model.projectDtoList.length +2}}" class="text-center">
-                    项目经历
-                </td>
-                <td colspan="7">
-                    <button class="btn btn-xs btn-primary" >项目经历</button>
+        <tr ng-if="vm.model.projectDtoList">
+            <td rowspan="{{vm.model.projectDtoList.length +1}}" class="text-center">
+                项目经历
+            </td>
+            <td class="text-center">
+                序号
+            </td>
+            <td class="text-center" colspan="3">项目名称</td>
+            <td class="text-center" colspan="3">项目类别</td>
+        </tr>
 
-                </td>
-            </tr>
-            <tr >
-                <td class="text-center"  >
-                    序号
-                </td>
-                <td class="text-center" colspan="3"  >项目名称</td>
-                <td class="text-center" colspan="3"  >项目类别</td>
-            </tr>
-            <tr ng-if="vm.model.projectDtoList" ng-repeat="x in vm.model.projectDtoList">
-                <td align="center">
-                    {{$index+1}}
-                </td>
-                <td class="text-center" colspan="3">{{x.projectName}}</td>
-                <td class="text-center" colspan="3">{{x.projectType}}</td>
-            </tr>
+        <tr ng-if="vm.model.projectDtoList" ng-repeat="x in vm.model.projectDtoList">
+            <td align="center">
+                {{$index+1}}
+            </td>
+            <td class="text-center" colspan="3">{{x.projectName}}</td>
+            <td class="text-center" colspan="3">{{x.projectType}}</td>
+        </tr>
 
-            <tr >
-                <td rowspan="{{vm.model.expertOfferDtoList.length +2}}" class="text-center">
-                    专家聘书
-                </td>
-                <td colspan="7">
-                    <button class="btn btn-xs btn-primary" >专家聘书</button>
-
-                </td>
-            </tr>
-            <tr >
-                <td class="text-center"  >序号</td>
-                <td class="text-center"  >是否发证</td>
-                <td class="text-center"  >发证日期</td>
-                <td class="text-center"  >有效期</td>
-                <td class="text-center"  >有效期至</td>
-                <td class="text-center"  >是否作废</td>
-                <td class="text-center"  >备注</td>
-                <!--<td class="text-center"  >操作</td>-->
-            </tr>
-            <tr ng-if="vm.model.expertOfferDtoList" ng-repeat="o in vm.model.expertOfferDtoList">
-                <td align="center">
-                    {{$index+1}}
-                </td>
-                <td class="text-center">{{ o.isSendCcie == 9?'是':'否'}}</td>
-                <td class="text-center">{{ o.sendCcieDate }}</td>
-                <td class="text-center">{{ o.period }}</td>
-                <td class="text-center">{{ o.periodDate }}</td>
-                <td class="text-center">{{ o.isInvalid == 9?'是':'否'}}</td>
-                <td class="text-center">{{ o.descInfo }}</td>
-                <!--
-                <td class="text-center">
-                    <button class="btn btn-xs btn-default" ng-click="vm.showOffer(o.id)" ng-disabled="vm.isSubmit">查看</button>
-                </td>
-                -->
-            </tr>
-        </table>
-    </form>
-
-
-
-    <!-- S 专家头像上传  -->
-    <div id="uploadWin" class="well well-sm" style="background:white;display:none;">
-        <input type="file" id="expertphotofile" name="file" id="file"/>
-    </div>
-    <!-- E 专家头像上传  -->
-
-
-</div>
-</div>
-
-
+        <tr ng-if="vm.model.expertOfferDtoList">
+            <td rowspan="{{vm.model.expertOfferDtoList.length +1}}" class="text-center">
+                专家聘书
+            </td>
+            <td class="text-center">序号</td>
+            <td class="text-center">是否发证</td>
+            <td class="text-center">发证日期</td>
+            <td class="text-center">有效期</td>
+            <td class="text-center">有效期至</td>
+            <td class="text-center">是否作废</td>
+            <td class="text-center">备注</td>
+        </tr>
+        <tr ng-if="vm.model.expertOfferDtoList" ng-repeat="o in vm.model.expertOfferDtoList">
+            <td align="center">
+                {{$index+1}}
+            </td>
+            <td class="text-center">{{ o.isSendCcie == 9?'是':'否'}}</td>
+            <td class="text-center">{{ o.sendCcieDate }}</td>
+            <td class="text-center">{{ o.period }}</td>
+            <td class="text-center">{{ o.periodDate }}</td>
+            <td class="text-center">{{ o.isInvalid == 9?'是':'否'}}</td>
+            <td class="text-center">{{ o.descInfo }}</td>
+        </tr>
+    </table>
 </div>

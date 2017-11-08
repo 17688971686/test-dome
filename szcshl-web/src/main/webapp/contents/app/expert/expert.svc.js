@@ -229,7 +229,7 @@
 				{
 					field : "name",
 					title : "姓名",
-					width : 100,
+					width : 60,
 					filterable : false,
                     template: function (item) {
                         return '<a  ng-click="vm.findExportDetail(\''+item.expertID+'\')">'+item.name+'</a>'
@@ -238,49 +238,22 @@
 				{
 					field : "degRee",
 					title : "学位",
-					width : 100,
+					width : 50,
 					filterable : false
 				},
-				{
-					field : "sex",
-					title : "性别",
-					width : 50,
-					filterable : true
-				},
+                {
+                    field : "post",
+                    title : "职称",
+                    width : 70,
+                    filterable : false
+                },
 				{
 					field : "comPany",
 					title : "工作单位",
-					width : 100,
+					width : 120,
 					filterable : false
-				},
-				{
-					field : "degRee",
-					title : "职务",
-					width : 100,
-					filterable : false
-				},{
-					field : "",
-					title : "专家类别",
-					width : 100,
-					filterable : false,
-					template:function(item){
-						if(item.expertTypeDtoList){
-							var resultStr='';
-							for(var i=0;i<item.expertTypeDtoList.length;i++){
-								if(i==0){
-									resultStr += item.expertTypeDtoList[i].expertType;
-								}else{
-									resultStr += "、"+item.expertTypeDtoList[i].expertType;
-								}
-							}
-							return resultStr;
-						}else{
-						 return "";
-						}
-					}
 				}
 			];
-			
 			return columns;
 		}
 				

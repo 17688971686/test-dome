@@ -129,12 +129,8 @@ public class Expert extends DomainBase {
     @Column
     private Date applyDate;     //申请日期
 
-
     @Column(columnDefinition = "varchar(16) ")
     private String inputPerson;//录入人
-
-    @Column(columnDefinition = "date ")
-    private Date inputTime;//录入时间
 
     @Column(columnDefinition = "varchar(2) ")
     private String unable;                              //是否作废（1为作废，0 为正常）
@@ -490,11 +486,4 @@ public class Expert extends DomainBase {
         this.inputPerson = inputPerson;
     }
 
-    public Date getInputTime() {
-        return inputTime;
-    }
-
-    public void setInputTime(Date inputTime) {
-        this.inputTime = inputTime;
-    }
 }

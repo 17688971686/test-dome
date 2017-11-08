@@ -3,132 +3,126 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
+<div style="background:white;display: none;" id="auditExportDetail">
+    <#include "/expertReview/expertDetail.html"/>
+</div>
 <div class="well well-sm" style="background:white;margin: auto;overflow: auto">
     <ol class="breadcrumb">
-       	<li><a href="#/expert">专家审核</a></li>
-        <!-- <li class="active">{{vm.titles}}</li> -->
-   	</ol>
+        <li><a>专家库管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
 
-	<div class="toolbar"> 
-	    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>查询</button>
-	</div>
-	<ol class="breadcrumb"> 
-	<form id="auditform" name="auditform">
-		<table style="width:100%;" class="table table-bordered breadcrumb">
-			<tr>
-				<td class="formAlignRight" style="width:150px;">专家范围</td>
-				<td>
-					<select name="state" operator="eq" id="queryState" >
-						<option value="">请选择</option>
-						<option ng-repeat="x in DICT.STATE.dicts" value="{{x.dictCode}}">{{x.dictName}}</option>
-					</select>
-				</td>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span
+                class="glyphicon glyphicon-search"></span>查询
+        </button>
+    </div>
 
-				<td class="formAlignRight" style="width:150px;">姓名</td>
-				<td>
-					<input name="name" type="text"  operator="like" />
-				</td>
-				<td class="formAlignRight" style="width:150px;">性别</td>
-				<td>
-					<select operator="eq" name="sex" >
-						<option value="">请选择</option>
-						<option ng-repeat="x in DICT.SEX.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-					</select>
-				</td>
-				<td class="formAlignRight" style="width:150px;">工作单位</td>
-				<td>
-					<input name="comPany"  type="text" operator="like" />
-				</td>
-				<td class="formAlignRight" style="width:150px;">录入时间</td>
-				<td>
-					<input name="inputTime"  kendo-date-picker k-format="'yyyy-MM-dd'" type="text" operator="like" />
-				</td>
-			</tr>
-			<tr>
-				<td class="formAlignRight" style="width:150px;">学位</td>
-				<td>
-					<select operator="eq" name="degRee" >
-						<option value="">请选择</option>
-						<option ng-repeat="x in DICT.DEGREE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-					</select>
-				</td>
+    <form id="auditform" name="auditform">
+        <table class="breadcrumb">
+            <tr>
+                <td class="text-right" style="width:80px;">专家范围</td>
+                <td>
+                    <select name="state" operator="eq" id="queryState">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in DICT.STATE.dicts" value="{{x.dictCode}}">{{x.dictName}}</option>
+                    </select>
+                </td>
+                <td class="text-right" style="width:50px;">姓名</td>
+                <td>
+                    <input name="name" type="text" operator="like"/>
+                </td>
+                <td class="text-right" style="width:80px;">工作单位</td>
+                <td>
+                    <input name="comPany" type="text" operator="like"/>
+                </td>
+                <td class="text-right" style="width:80px;">录入时间</td>
+                <td>
+                    <input name="applyDate" kendo-date-picker k-format="'yyyy-MM-dd'" type="text" operator="ge"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">学位</td>
+                <td>
+                    <select operator="eq" name="degRee">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in DICT.DEGREE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                    </select>
+                </td>
 
-				<td class="formAlignRight" style="width:150px;">职务</td>
-				<td>
-					<input name="job"  type="text" operator="like" />
-				</td>
-				<td class="formAlignRight" style="width:150px;">职称</td>
-				<td>
-					<select operator="eq" name="title">
-						<option value="">请选择</option>
-						<option ng-repeat="x in DICT.POST.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-					</select>
-				</td>
-				<td class="formAlignRight" style="width:150px;">毕业院校</td>
-				<td>
-					<input name="acaDemy"  type="text" operator="like" />
-				</td>
-				<td class="formAlignRight" style="width:150px;">专家星级</td>
-				<td>
-					<select name="compositeScore" operator="like" ng-model="vm.selectHis.score">
-						<option value="">请选择</option>
-						<option value="1">1星</option>
-						<option value="2">2星</option>
-						<option value="3">3星</option>
-						<option value="4">4星</option>
-						<option value="5">5星</option>
-					</select>
-				</td>
-			</tr>			
-		</table>
-  	</form>      	 
-	</ol> 
-	<table style="width:100%;">
-		<tr>
-			<td rowspan="4" valign="top"  class="breadcrumb">
-				<p class="label bg-yellow disabled color-palette">审核中</p>
-				<div id="grid1" class="grid1" kendo-grid="grid1" k-options="vm.gridOptions1"></div>
-			</td>
-			<td class="text-center" style="height:200px;width:100px;">
-				<p ><input class="btn_add" ng-click="vm.auditToOfficial()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
-		        <p ><input class="btn_remove" ng-click="vm.officialToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
-			</td>
-			<td valign="top" class="breadcrumb1">
-				<p class="label label-success">正式专家</p>
-				<div id="grid2" class="grid2" kendo-grid="grid2" k-options="vm.gridOptions2"></div>
-			</td>
-		</tr>
-		<tr>			
-			<td class="text-center" style="height:200px;">
-				<p ><input class="btn_add" ng-click="vm.auditToAlternative()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
-		        <p ><input class="btn_remove"ng-click="vm.alternativeToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
-			</td>
-			<td valign="top" class="breadcrumb2">
-				<p class="label bg-teal disabled color-palette">备选专家</p>
-				<div id="grid3" class="grid3" kendo-grid="grid3" k-options="vm.gridOptions3"></div>
-			</td>
-		</tr>
-		<tr>			
-			<td class="text-center" style="height:200px;">
-				<p ><input class="btn_add" ng-click="vm.auditToStop()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
-		        <p ><input class="btn_remove" ng-click="vm.stopToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
-			</td>
-			<td valign="top" class="breadcrumb2">
-				<p class="label bg-red color-palette">已停用</p>
-				<div id="grid4" class="grid4" kendo-grid="grid4" k-options="vm.gridOptions4"></div>
-			</td>
-		</tr>
-		<tr>			
-			<td class="text-center" style="height:200px;">
-				<p ><input class="btn_add" ng-click="vm.auditToRemove()" ng-disabled="vm.isSubmit" type="button"  value="-&gt;"  /></p>
-		        <p ><input class="btn_remove" ng-click="vm.temoveToAudit()" ng-disabled="vm.isSubmit"  type="button" value="&lt;-" /></p>
-			</td>
-			<td valign="top" class="breadcrumb3">
-				<p class="label bg-gray color-palette">已删除</p>
-				<div id="grid5" class="grid4" kendo-grid="grid5" k-options="vm.gridOptions5"></div>
-			</td>
-		</tr>
-	</table>	
+                <td class="text-right">职务</td>
+                <td>
+                    <input name="job" type="text" operator="like"/>
+                </td>
+                <td class="text-right">职称</td>
+                <td>
+                    <select operator="eq" name="title">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in DICT.POST.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                    </select>
+                </td>
+                <td class="text-right">毕业院校</td>
+                <td>
+                    <input name="acaDemy" type="text" operator="like"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <table style="width:100%;">
+        <tr>
+            <td rowspan="4" valign="top" >
+                <p class="label bg-yellow disabled color-palette">审核中</p>
+                <div id="grid1" class="grid1" kendo-grid="grid1" k-options="vm.gridOptions1"></div>
+            </td>
+            <td class="text-center" style="height:200px;width:60px;">
+                <p><input class="btn_add" ng-click="vm.auditToOfficial()" ng-disabled="vm.isSubmit" type="button"
+                          value="-&gt;"/></p>
+                <p><input class="btn_remove" ng-click="vm.officialToAudit()" ng-disabled="vm.isSubmit" type="button"
+                          value="&lt;-"/></p>
+            </td>
+            <td valign="top" >
+                <p class="label label-success">正式专家</p>
+                <div id="grid2" class="grid2" kendo-grid="grid2" k-options="vm.gridOptions2" ></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center" style="height:200px;">
+                <p><input class="btn_add" ng-click="vm.auditToAlternative()" ng-disabled="vm.isSubmit" type="button"
+                          value="-&gt;"/></p>
+                <p><input class="btn_remove" ng-click="vm.alternativeToAudit()" ng-disabled="vm.isSubmit" type="button"
+                          value="&lt;-"/></p>
+            </td>
+            <td valign="top" >
+                <p class="label bg-teal disabled color-palette">备选专家</p>
+                <div id="grid3" class="grid3" kendo-grid="grid3" k-options="vm.gridOptions3"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center" >
+                <p><input class="btn_add" ng-click="vm.auditToStop()" ng-disabled="vm.isSubmit" type="button"
+                          value="-&gt;"/></p>
+                <p><input class="btn_remove" ng-click="vm.stopToAudit()" ng-disabled="vm.isSubmit" type="button"
+                          value="&lt;-"/></p>
+            </td>
+            <td valign="top" >
+                <p class="label bg-red color-palette">已停用</p>
+                <div id="grid4" class="grid4" kendo-grid="grid4" k-options="vm.gridOptions4"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center" style="height:200px;">
+                <p><input class="btn_add" ng-click="vm.auditToRemove()" ng-disabled="vm.isSubmit" type="button"
+                          value="-&gt;"/></p>
+                <p><input class="btn_remove" ng-click="vm.temoveToAudit()" ng-disabled="vm.isSubmit" type="button"
+                          value="&lt;-"/></p>
+            </td>
+            <td valign="top">
+                <p class="label bg-gray color-palette">已删除</p>
+                <div id="grid5" class="grid4" kendo-grid="grid5" k-options="vm.gridOptions5"></div>
+            </td>
+        </tr>
+    </table>
 </div>
 
 
