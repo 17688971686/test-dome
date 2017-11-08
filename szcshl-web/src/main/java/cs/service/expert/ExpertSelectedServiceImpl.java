@@ -28,7 +28,6 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -717,6 +716,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		sqlBuilder.append("on s.signid = d.signid  ");
 		sqlBuilder.append("where 1 = 1 ");
 		sqlBuilder.append("and s.signstate = '9'  ");
+		sqlBuilder.append("and s.processstate = 6  ");//已发文
 
 		//todo:添加查询条件
 		if(null != projectReviewConditionDto){

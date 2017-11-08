@@ -114,7 +114,7 @@ public interface ExpertSelectedService {
 	Integer proReviewMeetingCount(ProReviewConditionDto projectReviewConditionDto);
 
 	/**
-	 * 项目评审次数
+	 * 项目签收次数
 	 * @param projectReviewConditionDto
 	 * @return
 	 */

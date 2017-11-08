@@ -247,8 +247,10 @@ public class NumUtils {
     }
 
     public static void main(String[] args) {
-      System.out.println(NumberToChn(9));
-      System.out.println(NumberToChn(129));
+       String temp = NumberToChn(11);
+       temp = temp.substring(1,temp.length());
+       System.out.println(temp);
+
 
     }
 }
