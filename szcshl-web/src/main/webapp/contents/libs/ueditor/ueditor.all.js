@@ -23798,8 +23798,7 @@ UE.plugin.register('autoupload', function (){
 
         /* 判断后端配置是否没有加载成功 */
         if (!me.getOpt(filetype + 'ActionName')) {
-        	alert(134);
-//            errorHandler(me.getLang('autoupload.errorLoadConfig'));
+            errorHandler(me.getLang('autoupload.errorLoadConfig'));
             return;
         }
         /* 判断文件大小是否超出限制 */

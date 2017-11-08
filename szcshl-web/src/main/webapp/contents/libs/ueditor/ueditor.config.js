@@ -11,25 +11,6 @@
 
 (function () {
 
-	var getRootPath = function (){
-        //获取当前网址
-        var curWwwPath=window.document.location.href;
-        //获取主机地址之后的目录
-        var pathName=window.document.location.pathname;
-        
-        var pos=curWwwPath.indexOf(pathName);
-        //获取主机地址
-        var localhostPaht=curWwwPath.substring(0,pos);
-        //获取带"/"的项目名，如：/uimcardprj
-        var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
-        
-        return(localhostPaht+projectName);
-    }
-    //获取路径     
-    var applicationPath = getRootPath();
-    var URL = window.UEDITOR_HOME_URL || getUEBasePath();
-    var serverURL = applicationPath;
-    
     /**
      * 编辑器资源文件根路径。它所表示的含义是：以编辑器实例化页面为当前路径，指向编辑器资源文件（即dialog等文件夹）的路径。
      * 鉴于很多同学在使用编辑器的时候出现的种种路径问题，此处强烈建议大家使用"相对于网站根目录的相对路径"进行配置。
@@ -39,6 +20,7 @@
      * window.UEDITOR_HOME_URL = "/xxxx/xxxx/";
      */
     var URL = window.UEDITOR_HOME_URL || getUEBasePath();
+
     /**
      * 配置项主体。注意，此处所有涉及到路径的配置别遗漏URL变量。
      */
@@ -48,7 +30,7 @@
         UEDITOR_HOME_URL: URL
 
         // 服务器统一请求接口路径
-        , serverUrl: URL + "/jsp/controller.jsp"
+        , serverUrl: URL + "jsp/controller.jsp"
 
         //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的重新定义
         , toolbars: [[
@@ -265,7 +247,7 @@
 
         //elementPathEnabled
         //是否启用元素路径，默认是显示
-        //,elementPathEnabled : true
+        ,elementPathEnabled : false
 
         //wordCount
         //,wordCount:true          //是否开启字数统计
