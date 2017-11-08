@@ -26,7 +26,7 @@
 			reviewProjectGrid : reviewProjectGrid,  //专家评审项目列表
 		};
 		return service;	
-		
+
 		//begin formReset
 		function formReset(vm){
 			$("#searchform")[0].reset();
@@ -163,7 +163,10 @@
 					field : "name",
 					title : "姓名",
 					width : "7%",
-					filterable : false
+					filterable : false,
+                    template: function (item) {
+                        return '<a  ng-click="vm.findExportDetail(\''+item.expertID+'\')">'+item.name+'</a>'
+                    }
 				},
                 {
                     field : "comPany",
@@ -228,7 +231,10 @@
 					field : "name",
 					title : "姓名",
 					width : 100,
-					filterable : false
+					filterable : false,
+                    template: function (item) {
+                        return '<a  ng-click="vm.findExportDetail(\''+item.expertID+'\')">'+item.name+'</a>'
+                    }
 				},
 				{
 					field : "degRee",

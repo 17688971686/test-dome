@@ -156,18 +156,14 @@ desired effect
                     </a>
                     <ul class="treeview-menu">
                         <li><a href="javascript:void(0)" ui-sref="welcome"><i class="fa fa-home" aria-hidden="true"></i>主页</a></li>
-                        <@shiro.hasPermission name="admin#personDtasks#get">
-                        <li><a href="javascript:void(0)" ui-sref="personDtasks">个人主办项目</a></li>
-                        </@shiro.hasPermission>
+
                         <@shiro.hasPermission name="admin#gtasks#get">
                         <li><a href="javascript:void(0)" ui-sref="gtasks"><i class="fa fa-flag-o"></i>待办项目<span class="label label-danger" id="DO_SIGN_COUNT">0</span></a></li>
                         </@shiro.hasPermission>
                         <@shiro.hasPermission name="admin#dtasks#get">
                         <li><a href="javascript:void(0)" ui-sref="dtasks"> <i class="glyphicon glyphicon-tasks"></i>在办项目</a></li>
                         </@shiro.hasPermission>
-                        <@shiro.hasPermission name="admin#etasks#get">
-                        <li><a href="javascript:void(0)" ui-sref="etasks"><i class="glyphicon glyphicon-thumbs-up"></i>办结项目</a></li>
-                        </@shiro.hasPermission>
+
                         <@shiro.hasPermission name="admin#agendaTasks#get">
                         <li><a href="javascript:void(0)" ui-sref="agendaTasks"><i class="fa fa-flag-o"></i>待办任务<span class="label label-danger" id="DO_TASK_COUNT">0</span></a></li>
                         </@shiro.hasPermission>
@@ -192,6 +188,14 @@ desired effect
 
                         <@shiro.hasPermission name="signView#html/signList#get">
                         <li><a href="javascript:void(0)" ui-sref="signList">项目查询统计 </a></li>
+                        </@shiro.hasPermission>
+
+                        <@shiro.hasPermission name="admin#personDtasks#get">
+                        <li><a href="javascript:void(0)" ui-sref="personDtasks">个人在审项目</a></li>
+                        </@shiro.hasPermission>
+
+                        <@shiro.hasPermission name="admin#etasks#get">
+                        <li><a href="javascript:void(0)" ui-sref="etasks"><i class="glyphicon glyphicon-thumbs-up"></i>办结项目</a></li>
                         </@shiro.hasPermission>
 
                         <@shiro.hasPermission name="assistPlan#html/manager#get">
@@ -225,10 +229,10 @@ desired effect
                         <li><a href="javascript:void(0)" ui-sref="monthlyNewsletterList">月报简报管理</a></li>
                         </@shiro.hasPermission>
 
-                        <@shiro.hasPermission name="monthlyNewsletter/html/monthlyHistoryList#get">
+                       <!-- <@shiro.hasPermission name="monthlyNewsletter/html/monthlyHistoryList#get">
                         <li><a href="javascript:void(0)" ui-sref="monthlyHistoryList">月报简报历史数据</a></li>
                         </@shiro.hasPermission>
-
+                    -->
                         <@shiro.hasPermission name="monthlyNewsletter#html/theMonthsList#get">
                         <li><a href="javascript:void(0)" ui-sref="theMonthsList">年度月报简报</a></li>
                         </@shiro.hasPermission>
