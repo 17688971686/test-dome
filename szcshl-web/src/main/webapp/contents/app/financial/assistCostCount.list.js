@@ -8,15 +8,22 @@
     function assistCostCountList(assistCostCountSvc,$state,addCostSvc) {
         var vm = this;
         vm.signAssistCost = {};                 //搜索对象
-        vm.signAssistCost.beginTime = "2017-11-08";
-        vm.signAssistCost.endTime = new Date().toISOString().slice(0,10);
-        console.log(vm.signAssistCost.endTime);
+        vm.signAssistCost.beginTime = (new Date()).halfYearAgo();
+        vm.signAssistCost.endTime = (new Date()).Format("yyyy-MM-dd");
         vm.costType = $state.params.costType;
 
         activate();
         function activate() {
+            vm.isSubmit = true;
+            vm.nodata = false;
             assistCostCountSvc.findSingAssistCostCount(vm.signAssistCost,function (data) {
+                vm.isSubmit = false;
                 vm.signAssistCostList = data;
+                console.log(vm.signAssistCostList);
+                if(!vm.signAssistCostList || vm.signAssistCostList.length == 0){
+                    vm.nodata = true;
+                }
+
             });
         }
 
