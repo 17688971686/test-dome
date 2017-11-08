@@ -398,7 +398,7 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 }
             }
             signCount = expertSelectedService.proReviewCount(proReviewConditionDto);
-            reviewCount = expertSelectedService.proReviewMeetingCount(proReviewConditionDto);//本月专家评审会次数
+            reviewCount = expertSelectedService.proReviewMeetingCount(proReviewConditionDto);//本月完成項目评审次数
             //至当前月月报
             resultMsg = null;
             resultMap.clear();
