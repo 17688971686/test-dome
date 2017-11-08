@@ -12,7 +12,7 @@
     function financialManager($location, financialManagerSvc, $state , signSvc , bsWin , expertReviewSvc , adminSvc , addCostSvc) {
         /* jshint validthis:true */
         var vm = this;
-        vm.title = '评审费统计管理';
+        vm.title = '评审费录入';
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
         vm.model = {};
@@ -30,20 +30,32 @@
        		 expertReviews : [],   	
        }
 
+        activate();
+        function activate() {
+            //统计评审费信息
+            financialManagerSvc.initfinancial(vm.model , function(data){
+                vm.stageCountList = data;
+            });
+            //查询评审部门
+            adminSvc.initSignList(function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    vm.orgDeptList = data.reObj;
+                }
+            });
+        }
+
         /**
          * 评审费录入
          * @param object
          */
-        vm.addCostWindow = function(object){
-            addCostSvc.initAddCost(vm,vm.costType , object);
-
+        vm.showCostWindow = function(object,id){
+            addCostSvc.initAddCost(vm,vm.costType,object,id);
         }
 
         /**
          * 查询
          */
-        vm.queryUser = function (){
-
+        vm.queryFinancl = function (){
             activate();
         }
 
@@ -52,20 +64,6 @@
          */
         vm.resetQuery = function(){
             vm.model = {};
-        }
-
-        activate();
-        function activate() {
-            adminSvc.initSignList(function(data){
-                if(data.flag || data.reCode == 'ok'){
-                    vm.orgDeptList = data.reObj;
-                }
-            });
-
-            financialManagerSvc.initfinancial(vm , function(data){
-                vm.stageCountList = data;
-            });
-
         }
     }
 })();

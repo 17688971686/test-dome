@@ -2,8 +2,11 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<!-- 财务办理模块 -->
+<div id="reviewCostWindow" style="background:white;display: none;">
+    <#include "/financial/costAdd.html"/>
+</div>
 
-<#include "/financial/costAdd.html"/>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -11,21 +14,22 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <div class="toolbar">
-        <button class="btn btn-sm btn-success" ng-click="vm.queryUser()" ng-disabled="vm.isSubmit">
+        <button class="btn btn-sm btn-success" ng-click="vm.queryFinancl()" ng-disabled="vm.isSubmit">
             <span class="glyphicon glyphicon-search"></span>查询
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.resetQuery()">重置</button>
         <button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
     </div>
-    <table class="table table-bordered breadcrumb">
+
+    <table class="table breadcrumb">
         <tr>
             <td style="width:80px;" class="formAlignRight">项目名称：</td>
             <td style="width: 40%;">
-                <input type="text" style="width:70%;" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName" placeholder="请输入">
+                <input type="text" style="width:70%;" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectname" placeholder="请输入">
             </td>
             <td style="width:80px;" class="formAlignRight">建设单位：</td>
             <td style="width: 40%;">
-                <input type="text" style="width:70%;" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName" placeholder="请输入">
+                <input type="text" style="width:70%;" ng-model="vm.model.builtcompanyname" operator="like" name="builtcompanyname" id="builtcompanyname" placeholder="请输入">
             </td>
         </tr>
         <tr>
@@ -42,20 +46,14 @@
                 至
                 <input name="endTime" style="width:30%;" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" operator="and" /></td>
         </tr>
-
     </table>
 
-    <ol class="breadcrumb">
-        <li class="active">
-            项目列表（颜色说明：
-            <span id="span1"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>在办项目
-            <span id="span2"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>已发文项目
-            <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>已发送存档
-            <span id="span4"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>项目暂停
-            <span id="span5"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>已结办项目）
-        </li>
-    </ol>
-
+    <div class="label-default" style="width: 100%;padding:5px 10px;">
+        （颜色说明：
+        <img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;">已发文项目
+        <img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;">已发送存档
+        <img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;">项目暂停）
+    </div>
 
     <div class="table-responsive" style="max-height: 800px; overflow-y: scroll;">
         <table class="table table-bordered">
@@ -71,15 +69,18 @@
             </tr>
             <tr ng-repeat="s in vm.stageCountList">
                 <td class="text-center">
-                    <span ng-if="s.isLightUp == 3"><img src="${path}/contents/images/green.png"
-                                                        style="width: 16px; height: 16px;"></span>
-                    <span ng-if="s.isLightUp == 4"><img src="${path}/contents/images/red.png"
-                                                        style="width: 16px; height: 16px;"></span>
-                    <span ng-if="s.isLightUp == 2"><img src="${path}/contents/images/blue.png"
-                                                        style="width: 16px; height: 16px;"></span>
+                    <span ng-if="s.isLightUp == 3">
+                        <img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;">
+                    </span>
+                    <span ng-if="s.isLightUp == 4">
+                        <img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;">
+                    </span>
+                    <span ng-if="s.isLightUp == 2">
+                        <img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;">
+                    </span>
                 </td>
                 <td class="text-center">{{$index + 1}}</td>
-                <td class="text-center"><a ng-click="vm.addCostWindow(s)">{{s.projectname}}</a></td>
+                <td class="text-center"><a ng-click="vm.showCostWindow(s,'reviewCostWindow')">{{s.projectname}}</a></td>
                 <td class="text-center">{{s.builtcompanyname}}</td>
                 <td class="text-center">{{s.reviewstage}}</td>
                 <td class="text-center">{{s.principal}}</td>
@@ -89,74 +90,5 @@
         </table>
     </div>
 
-<#-- <script type="text/template" id="columnBtns">
-     <@shiro.hasPermission name="#financialManager#put">
-     <a class="btn btn-xs btn-primary" href="#/financialManager/{0}"><span class="glyphicon glyphicon-pencil"></span>财务办理</a>
-     </@shiro.hasPermission>
- </script>-->
-
-    <!--       <table border="1px">
-               <tbody>
-                   <tr >
-                       <td >序号</td>
-                       <td >项目名称</td>
-                       <td>建设单位</td>
-                       <td>评审阶段 </td>
-                       <td>项目负责人</td>
-                       <td>项目评审费（元）</td>
-                       <td>付款日期</td>
-                       <td>申报投资 </td>
-                       <td>审定投资</td>
-                       <td>签收日期</td>
-                   </tr>
-
-                   <tr ng-repeat="stageCount in vm.stageCountList">
-                       <td >{{$index+1}}</td>
-                       <td >{{stageCount.projectname}}</td>
-                       <td >{{stageCount.designcompanyName}}</td>
-                       <td>{{stageCount.reviewstage}}
-                        </td>
-                       <td>{{stageCount.aUserName}}</td>
-                       <td>{{stageCount.projectcode}}</td>
-                       <td>{{stageCount.signdate}}</td>
-                       <td>{{stageCount.appalyInvestment}} </td>
-                       <td>{{stageCount.authorizeValue}}</td>
-                       <td>{{stageCount.signdate}}</td>
-                   </tr>
-                   <tr>
-                       <td rowspan="4">1rowspan={{index+4}}</td>
-                       <td rowspan="4">深圳市政府投资项目评审中心</td>
-                       <td rowspan="4">深圳公安局单位</td>
-                       <td>可行性研究报告 </td>
-                       <td>但龙</td>
-                       <td>6000</td>
-                       <td>2017/09/04</td>
-                       <td>500万元 </td>
-                       <td>400万元</td>
-                       <td>2017/09/03</td>
-                   </tr>
-                   <tr>
-                       <td>1 </td>
-                       <td>评审费用</td>
-                       <td >3500</td>
-                       <td colspan="4"></td>
-                   </tr>
-                   <tr>
-                       <td>2 </td>
-                       <td>路费</td>
-                       <td>500</td>
-                       <td colspan="4"></td>
-                   </tr>
-                   <tr>
-                       <td>3 </td>
-                       <td>餐费</td>
-                       <td>2000</td>
-                       <td colspan="4"></td>
-                   </tr>
-               </tbody>
-           </table> -->
-
-    <!--<div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>-->
-    </form>
 </div>
 

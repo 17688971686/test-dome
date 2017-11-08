@@ -8,74 +8,25 @@
         }
         return service;
 
-        function initAddCost(vm , costType , object){
+        function initAddCost(vm , costType , object,id){
             vm.financial = {};
             //该判断用于项目签收流程中的财务办理
-            if(object.businessId == undefined){
-                object.businessId = object.signid;
+            if (!object.businessId) {
+                object.businessId = object.signId;
+                object.projectname = object.projectName;
             }
+
             vm.financial.businessId = object.businessId;
             vm.financial.projectName = object.projectname;
-            vm.signAssistCost = {};
-            vm.businessId = "";
-            $('#myTab li').click(function (e) {
-                var aObj = $("a", this);
-                e.preventDefault();
-                aObj.tab('show');
-                var showDiv = aObj.attr("for-div");
-                $(".tab-pane").removeClass("active").removeClass("in");
-                $("#" + showDiv).addClass("active").addClass("in").show(500);
-            })
 
-            if(costType == "REVIEW"){
-                //vm.title = '评审费统计管理';
-                //vm.titleName = "专家评审费";
-                vm.windowName = "专家评审费录入";
+            if (costType == "REVIEW") {
+                vm.windowName = "项目评审费录入";
                 vm.financial.businessType = "SIGN";
-                //financialManagerSvc.sumFinancial(vm, object.businessId);
-            }else if(costType == "ASSIST"){
-                //vm.title = '协审费统计管理';
-                //vm.titleName = "专家协审费";
-                vm.windowName = "专家协审费录入";
+
+            } else if (costType == "ASSIST") {
+                vm.windowName = "项目协审费录入";
                 vm.financial.businessType = "SIGN";
-                //vm.businessId = object.signId;
-                //vm.projectName =  object.projectName;
             }
-
-            financialManagerSvc.initFinancialProject(vm.financial, function(data){
-                vm.financial.paymentData = data.financialDto.paymentData;
-                expertReviewSvc.initReview(vm.financial.businessId, "", function (data) {
-                    vm.expertReview = data;
-                    vm.reviewTitle = data.reviewTitle;
-                    vm.payDate = data.payDate;
-                    vm.expertSelectedDtoList = data.expertSelectedDtoList;
-                    if( vm.expertSelectedDtoList && vm.expertSelectedDtoList.length >0){
-                        vm.showReviewCost = true;
-                    }
-                });
-
-                vm.signAssistCost.signId =  vm.businessId;
-                assistCostCountSvc.findSingAssistCostCount(vm.signAssistCost,function (data) {
-                    vm.signAssistCostCounList = data;
-                    if(vm.signAssistCostCounList && vm.signAssistCostCounList.length >0){
-                        vm.showAssistCost = true;
-                    }
-                });
-
-                vm.financials = data.financiallist;
-                vm.countCost();
-                $("#addCostWindow").kendoWindow({
-                    width: "70%",
-                    height: "450",
-                    title: vm.windowName ,
-                    visible: false,
-                    modal: true,
-                    closable: true,
-                    actions: ["Pin", "Minimize", "Maximize", "close"]
-                }).data("kendoWindow").center().open();
-            });
-
-
             /**
              * 导出excel
              */
@@ -112,7 +63,6 @@
                                 vm.financials[index] = {};
                             }
                         }
-
                     }
                 }
             }
@@ -127,7 +77,6 @@
                 if(!vm.financials){
                     vm.financials = [];
                 }
-                console.log(financial);
                 vm.financials.push(financial);
             }// end
 
@@ -150,14 +99,12 @@
                 }
                 // financialManagerSvc.savefinancial(vm);
             }
+
             //删除报销记录
             vm.deleteFinancial = function(){
                 var isChecked = $("#financialsTable input[name='financialsCheck']:checked");
                 if(isChecked.length < 1){
-                    common.alert({
-                        vm:vm,
-                        msg:"请选择要删除的记录！"
-                    })
+                    bsWin.alert("请选择要删除的记录！");
                 }else{
                     var ids = [];
                     for(var i = 0; i <isChecked.length ;i++){
@@ -175,7 +122,52 @@
                 }
             }
 
+            $("#"+id).kendoWindow({
+                width: "70%",
+                height: "560",
+                title: vm.windowName,
+                visible: false,
+                modal: true,
+                closable: true,
+                open: function () {
+                    //初始化报销费用列表
+                    financialManagerSvc.initFinancialProject(vm.financial, function(data){
+                        //1、获取已经添加的费用列表
+                        vm.financials = data.financiallist;
+                        //如果已经有项目费用，则计算总额
+                        if(vm.financials && vm.financials.length > 0){
+                            vm.countCost();
+                            vm.financial.paymentData = vm.financials[0].paymentData;
+                        }
+                        //2、查找专家评审费
+                        expertReviewSvc.initReview(vm.financial.businessId, "", function (data) {
+                            vm.expertReview = data;
+                        });
 
+                        //项目才有协审费，不是项目，没有协审费
+                        if( costType == "ASSIST"){
+                            vm.searchCost = {};
+                            vm.searchCost.signId =  vm.financial.businessId;
+                            assistCostCountSvc.findSingAssistCostCount(vm.searchCost,function(data) {
+                                vm.signAssistCostCounList = data;
+                            });
+                        }
+                    });
+                },
+                close: function () {
+                    vm.financial = {};
+                    vm.expertReview = {};
+                    vm.financials = {};
+                    vm.signAssistCostCounList = {};
+                },
+                refresh:function(){
+                    alert(2);
+                },
+                actions: ["Pin", "Minimize", "Maximize", "close"]
+            }).data("kendoWindow").center().open();
         }
+
+
     }
+
 })();

@@ -100,22 +100,28 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
     }
 
     /**
-     * 初始化财务报销页面
+     * 初始化财务报销页面（是否协审通过业务数据判断）
      *
      * @param businessId   业务ID
      * @param businessType 类型
-     * @param isAssist     是否协审
      * @return
      */
     @Override
-    public Map<String, Object> initfinancialData(String businessId, String businessType,boolean isAssist) {
+    public Map<String, Object> initfinancialData(String businessId, String businessType) {
         Map<String, Object> map = new HashMap<String, Object>();
         List<FinancialManager> financiallist = financialManagerRepo.findByIds(FinancialManager_.businessId.getName(), businessId, null);
         map.put("financiallist", financiallist);
-        if (Validate.isString(businessType)) {
+        /*if (Validate.isString(businessType)) {
             FinancialManagerDto dto = new FinancialManagerDto();
             if(Constant.BusinessType.SIGN.getValue().equals(businessType)){
-                if(isAssist){
+                Sign sign = signRepo.findById(Sign_.signid.getName(),businessId);
+                dto.setProjectName(sign.getProjectname());
+                dto.setBusinessId(businessId);
+                if(Validate.isList(financiallist)){
+                    dto.setPaymentData(financiallist.get(0).getPaymentData());
+                }
+               *//* //如果是协审项目，则查询协审费
+                if(Constant.EnumState.YES.getValue().equals(sign.getIsassistflow())){
                     SignAssistCostDto signAssistCost = new SignAssistCostDto();
                     signAssistCost.setSignId(businessId);
                     List<SignAssistCostDto> signAssistCostList = signAssistCostList(signAssistCost,false);
@@ -128,16 +134,15 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
                         dto.setAssissCost(signAssistCost.getPlanCost());
                     }
                 }else{
-                    Sign sign = signRepo.findById(Sign_.signid.getName(),businessId);
                     dto.setProjectName(sign.getProjectname());
                     dto.setBusinessId(businessId);
                     if(Validate.isList(financiallist)){
                         dto.setPaymentData(financiallist.get(0).getPaymentData());
                     }
-                }
+                }*//*
             }
             map.put("financialDto", dto);
-        }
+        }*/
         return map;
     }
 

@@ -7,7 +7,7 @@
 
     function assistCostCountList(assistCostCountSvc,$state,addCostSvc) {
         var vm = this;
-        vm.signAssistCost = {};
+        vm.signAssistCost = {};                 //搜索对象
         vm.costType = $state.params.costType;
 
         activate();
@@ -21,8 +21,8 @@
          * 协审费录入
          * @param object
          */
-        vm.addCostWindow = function(object){
-            addCostSvc.initAddCost(vm,vm.costType,object);
+        vm.addCostWindow = function(object,id){
+            addCostSvc.initAddCost(vm,vm.costType,object,id);
         }
 
         //查询

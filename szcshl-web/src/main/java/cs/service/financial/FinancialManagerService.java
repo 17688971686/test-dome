@@ -34,10 +34,9 @@ public interface FinancialManagerService {
 	 * 初始化财务办理页面
 	 * @param businessId   业务ID
 	 * @param businessType 业务类型
-	 * @param isAssist     是否协审
 	 * @return
 	 */
-	Map<String, Object> initfinancialData(String businessId,String businessType,boolean isAssist);
+	Map<String, Object> initfinancialData(String businessId,String businessType);
 
     /**
      * 协审费统计列表

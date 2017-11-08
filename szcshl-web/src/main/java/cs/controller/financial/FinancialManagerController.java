@@ -72,7 +72,7 @@ public class FinancialManagerController {
     @RequestMapping(name = "初始化财务费用录入", path = "initfinancial", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> initfinancial(@RequestParam String businessId,String businessType) throws Exception {
-        return financialManagerService.initfinancialData(businessId,businessType,false);
+        return financialManagerService.initfinancialData(businessId,businessType);
     }
 
     @RequiresAuthentication
@@ -80,7 +80,7 @@ public class FinancialManagerController {
     @RequestMapping(name = "协审费录入", path = "assistFinancial", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> assistFinancial(@RequestParam String businessId,String businessType) throws Exception {
-        Map<String, Object> map = financialManagerService.initfinancialData(businessId,businessType,true);
+        Map<String, Object> map = financialManagerService.initfinancialData(businessId,businessType);
         return map;
     }
 
