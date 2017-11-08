@@ -12,11 +12,11 @@
 
 //打印功能
 function printpage(act){
-$(".main-sidebar,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
+$(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
 $(act).addClass("print-hide");
 $(".content-wrapper").addClass("print-content");
 print();
-$(".main-sidebar,.header,.breadcrumb,.toolbar,#myTab").removeClass("print-hide");
+$(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").removeClass("print-hide");
 $(act).removeClass("print-hide");
 $(".content-wrapper").removeClass("print-content");
 
