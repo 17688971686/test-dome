@@ -18,39 +18,46 @@
             <span class="glyphicon glyphicon-search"></span>查询
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.assistCostReset()">重置</button>
-        <button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
+        <!--<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>-->
     </div>
-    <table class="table breadcrumb">
-        <tr>
-            <td style="width:80px;" class="text-right">项目名称</td>
-            <td style="width: 40%;" >
-                <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.projectName" placeholder="请输入">
-            </td>
-            <td style="width:80px;" class="text-right">协审单位</td>
-            <td style="width: 40%;">
-                <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistUnit" placeholder="请输入">
-            </td>
-        </tr>
-        <tr>
-            <td class="text-right">协议登记号</td>
-            <td>
-                <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistPlanNo" placeholder="请输入">
-            </td>
-            <td class="text-right">签收日期</td>
-            <td >
-                <input name="beginTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
-                       ng-model="vm.signAssistCost.beginTime"/>
-                至
-                <input name="endTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
-                       ng-model="vm.signAssistCost.endTime"/>
-            </td>
-        </tr>
-    </table>
+    <div class="breadcrumb">
+        <table  style="width: 100%;">
+            <tr>
+                <td class="text-right" style="width:80px;">项目名称</td>
+                <td >
+                    <input ng-model="vm.signAssistCost.projectName" />
+                </td>
+                <td class="text-right" style="width:80px;">协审单位</td>
+                <td >
+                    <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistUnit" >
+                </td>
+                <td class="text-right" style="width:80px;">协议登记号</td>
+                <td>
+                    <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistPlanNo" >
+                </td>
+                <td class="text-right" style="width:80px;">签收日期</td>
+                <td style="min-width: 280px;">
+                    <input name="beginTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
+                           ng-model="vm.signAssistCost.beginTime"/>
+                    至
+                    <input name="endTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
+                           ng-model="vm.signAssistCost.endTime"/>
+                </td>
+            </tr>
+        </table>
+    </div>
     <div class="label-default" style="width: 100%;padding:5px 10px;">
-        （颜色说明：
-        <img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;">已发文项目
-        <img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;">已发送存档
-        <img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;">项目暂停）
+        【
+        <span class="label-primary" style="padding:0px 13px;"></span> 已发文
+        <span class="label-success" style="padding:0px 13px;"></span> 已存档
+        】
+        【
+        <span id="span1"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>暂停
+        <span id="span2"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>少于3个工作日
+        <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
+        <span id="span4"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
+        <span id="span5"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>存档超期
+        】
     </div>
 
     <div class="table-responsive" style="max-height: 800px; overflow-y: scroll;">
@@ -69,17 +76,32 @@
             </tr>
             <tr ng-repeat="s in vm.signAssistCostList">
                 <td class="text-center">
-                    <span ng-if="s.isLightUp == 3">
+                    <!--4 表示暂停-->
+                    <span ng-if="s.isLightUp == 4">
+                        <img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;">
+                    </span>
+                    <!--5 少于3个工作日-->
+                    <span ng-if="s.isLightUp == 4">
                         <img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;">
                     </span>
+                    <!--6 发文超期-->
                     <span ng-if="s.isLightUp == 4">
                         <img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;">
                     </span>
-                    <span ng-if="s.isLightUp == 2">
+                    <!--7 超过25个工作日未存档-->
+                    <span ng-if="s.isLightUp == 4">
                         <img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;">
                     </span>
+                    <!--8 存档超期-->
+                    <span ng-if="s.isLightUp == 4">
+                        <img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;">
+                    </span>
                 </td>
-                <td class="text-center">{{$index + 1}}</td>
+                <td class="text-center">
+                    <span ng-class="{'label label-primary':(s.processState && s.processState >=5 && s.processState< 7), 'label label-success': (s.processState && s.processState ==8 )}">
+                    {{$index + 1}}
+                    </span>
+                </td>
                 <td class="text-center"><a ng-click="vm.addCostWindow(s,'assistCostWindow')">{{s.projectName}}</a></td>
                 <td class="text-center">{{s.assistUnit}}</td>
                 <td class="text-center">{{s.changeUserName}}</td>
@@ -88,6 +110,11 @@
                 <td class="text-center">{{s.factCost}}</td>
                 <td class="text-center">{{s.payDate}}</td>
                 <td class="text-center">{{s.applyCost}}</td>
+            </tr>
+            <tr ng-show="vm.nodata">
+                <td colspan="10" class="text-center">
+                    没有数据！
+                </td>
             </tr>
         </table>
     </div>

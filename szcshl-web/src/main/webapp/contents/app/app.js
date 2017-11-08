@@ -6,7 +6,6 @@
         "kendo.directives",
         'angular-loading-bar',
         'ngAnimate',
-        'froala',
         'ngFileSaver'
         ]).filter('trust2Html', ['$sce',function($sce) {
             return function(val) {
@@ -632,7 +631,7 @@
             .state('assistCostlist', {
                 url: '/assistCostlist/:costType',
                 templateUrl: rootPath + '/financialManager/html/assistCostList.html',
-                controller: 'assistCostCountListCtrl',
+                controller: 'assistCostCountEditCtrl',
                 controllerAs: 'vm'
             })
             //协审费统计列表

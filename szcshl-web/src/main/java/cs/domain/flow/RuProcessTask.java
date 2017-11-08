@@ -103,6 +103,7 @@ public class RuProcessTask {
      */
     @Column
     private String isConcurrent;
+
     /**
      * 流程状态（1：正在进行，2：停止）
      */
@@ -115,6 +116,9 @@ public class RuProcessTask {
 
     @Column
     private String reviewStage;
+
+    @Column
+    private Integer signprocessState;
 
     @Column
     private String lightState;
@@ -151,7 +155,7 @@ public class RuProcessTask {
     /**
      * 合并评审项目
      */
-    //这是此注解后该属性不会数据持久化也是本例要说明的注解
+    //这是此注解后该属性不会数据持久化
     @Transient
     private List<SignDto> reviewSignDtoList;
 
@@ -362,4 +366,14 @@ public class RuProcessTask {
     public void setNodeDefineKey(String nodeDefineKey) {
         this.nodeDefineKey = nodeDefineKey;
     }
+
+    public Integer getSignprocessState() {
+        return signprocessState;
+    }
+
+    public void setSignprocessState(Integer signprocessState) {
+        this.signprocessState = signprocessState;
+    }
+
+
 }

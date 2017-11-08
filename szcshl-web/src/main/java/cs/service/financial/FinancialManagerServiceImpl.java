@@ -170,6 +170,7 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
                 Date payDate = DateUtils.converToDate(obj[6] == null ? "" : obj[6].toString(), null);
                 BigDecimal applyCost = obj[7] == null ? null : ObjectUtils.getBigDecimal(obj[7]);
                 String lightState = obj[8] == null ? "" : obj[8].toString();
+                Integer processState = obj[9] == null ? null : Integer.parseInt(obj[9].toString());
 
                 String changeUserName = "";
                 List<User> priUserList = signPrincipalService.getSignPriUser(signId, null);
@@ -192,6 +193,7 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
                 saDto.setPayDate(payDate);
                 saDto.setApplyCost(applyCost);
                 saDto.setIsLightUp(lightState);
+                saDto.setProcessState(processState);
 
                 if (isShowDetail) {
                     List<FinancialManager> fmList = financialManagerRepo.findByIds(FinancialManager_.businessId.getName(), signId, null);

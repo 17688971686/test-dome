@@ -14,35 +14,34 @@
                 class="glyphicon glyphicon-search"></span>查询
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.assistCostReset()">重置</button>
-        <button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
     </div>
 
-    <table class="table table-bordered breadcrumb">
-        <tr>
-            <td style="width:75px;" class="formAlignRight">项目名称</td>
-            <td style="width: 40%;">
-                <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.projectName" placeholder="请输入">
-            </td>
-            <td style="width:75px;" class="formAlignRight">协审单位</td>
-            <td style="width: 40%;">
-                <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistUnit" placeholder="请输入">
-            </td>
-        </tr>
-        <tr>
-            <td class="formAlignRight">协议登记号</td>
-            <td>
-                <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistPlanNo" placeholder="请输入">
-            </td>
-            <td class="formAlignRight">签收日期</td>
-            <td >
-                <input name="beginTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
-                       ng-model="vm.signAssistCost.beginTime"/>
-                至
-                <input name="endTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
-                       ng-model="vm.signAssistCost.endTime"/>
-            </td>
-        </tr>
-    </table>
+    <div class="breadcrumb">
+        <table  style="width: 100%;">
+            <tr>
+                <td class="text-right" style="width:80px;">项目名称</td>
+                <td >
+                    <input ng-model="vm.signAssistCost.projectName" />
+                </td>
+                <td class="text-right" style="width:80px;">协审单位</td>
+                <td >
+                    <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistUnit" >
+                </td>
+                <td class="text-right" style="width:80px;">协议登记号</td>
+                <td>
+                    <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistPlanNo" >
+                </td>
+                <td class="text-right" style="width:80px;">签收日期</td>
+                <td style="min-width: 280px;">
+                    <input name="beginTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
+                           ng-model="vm.signAssistCost.beginTime"/>
+                    至
+                    <input name="endTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
+                           ng-model="vm.signAssistCost.endTime"/>
+                </td>
+            </tr>
+        </table>
+    </div>
 
     <div class="table-responsive" style="margin-top:10px;max-height: 800px; overflow-y: scroll;">
         <table class="table table-bordered">
@@ -79,8 +78,12 @@
                 <td class="text-center">{{f.charge}}</td>
                 <td class="text-center" colspan="3"></td>
             </tr>
-            </tr>
             </tbody>
+            <tr ng-show="vm.nodata">
+                <td colspan="10" class="text-center">
+                    没有数据！
+                </td>
+            </tr>
         </table>
     </div>
 </div>

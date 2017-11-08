@@ -1326,12 +1326,17 @@ public class SignServiceImpl implements SignService {
                 fileRecord.setSignUserName(SessionUtil.getDisplayName());
                 //纸质文件接受日期 ：为归档员陈春燕确认的归档日期
                 fileRecord.setPageDate(new Date());
-
                 fileRecordRepo.save(fileRecord);
 
                 //更改项目状态
-                signRepo.updateSignState(signid, EnumState.YES.getValue());
-                signRepo.updateSignProcessState(signid, Constant.SignProcessState.FINISH.getValue());
+                sign = signRepo.findById(Sign_.signid.getName(), signid);
+                sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
+                sign.setSignState(EnumState.YES.getValue());
+                sign.setProcessState(Constant.SignProcessState.FINISH.getValue());
+                signRepo.save(sign);
+               /* signRepo.updateSignState(signid, EnumState.YES.getValue());
+                signRepo.updateSignProcessState(signid, Constant.SignProcessState.FINISH.getValue());*/
+
                 break;
             default:
                 ;
@@ -1597,7 +1602,6 @@ public class SignServiceImpl implements SignService {
     @Override
     public ResultMsg initSignList() {
         List<OrgDept> orgDeptList = orgDeptRepo.findAll();
-
         return new ResultMsg(true, MsgCode.OK.getValue(), "添加成功", orgDeptList);
     }
 

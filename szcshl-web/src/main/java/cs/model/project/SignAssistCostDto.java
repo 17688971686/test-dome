@@ -64,6 +64,10 @@ public class SignAssistCostDto {
     private String isLightUp;
 
     /**
+     * 项目流程状态
+     */
+    private Integer processState;
+    /**
      * 费用详情
      */
     private List<FinancialManagerDto> costList;
@@ -176,5 +180,13 @@ public class SignAssistCostDto {
 
     public void setIsLightUp(String isLightUp) {
         this.isLightUp = isLightUp;
+    }
+
+    public Integer getProcessState() {
+        return processState;
+    }
+
+    public void setProcessState(Integer processState) {
+        this.processState = processState;
     }
 }
