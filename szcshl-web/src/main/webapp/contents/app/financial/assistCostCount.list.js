@@ -3,11 +3,10 @@
 
     angular.module('app').controller('assistCostCountListCtrl', assistCostCountList);
 
-    assistCostCountList.$inject = ['$location', 'assistCostCountSvc', '$state','$http' , 'addCostSvc'];
+    assistCostCountList.$inject = ['assistCostCountSvc','$state','addCostSvc'];
 
-    function assistCostCountList($location, assistCostCountSvc, $state,$http , addCostSvc) {
+    function assistCostCountList(assistCostCountSvc,$state,addCostSvc) {
         var vm = this;
-        vm.title = '协审费统计';
         vm.signAssistCost = {};
         vm.costType = $state.params.costType;
 
@@ -23,7 +22,7 @@
          * @param object
          */
         vm.addCostWindow = function(object){
-            addCostSvc.initAddCost(vm,vm.costType , object);
+            addCostSvc.initAddCost(vm,vm.costType,object);
         }
 
         //查询

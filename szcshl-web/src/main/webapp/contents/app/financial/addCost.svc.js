@@ -4,15 +4,18 @@
     addCost.$inject = ['bsWin' , 'financialManagerSvc' , 'expertReviewSvc' , 'assistCostCountSvc'];
     function addCost(bsWin , financialManagerSvc , expertReviewSvc , assistCostCountSvc){
         var service = {
-            initAddCost : initAddCost , //初始化财务录入
+            initAddCost : initAddCost ,     //初始化财务录入
         }
         return service;
 
         function initAddCost(vm , costType , object){
+            vm.financial = {};
             //该判断用于项目签收流程中的财务办理
             if(object.businessId == undefined){
                 object.businessId = object.signid;
             }
+            vm.financial.businessId = object.businessId;
+            vm.financial.projectName = object.projectname;
             vm.signAssistCost = {};
             vm.businessId = "";
             $('#myTab li').click(function (e) {
@@ -25,26 +28,21 @@
             })
 
             if(costType == "REVIEW"){
-                vm.title = '评审费统计管理';
-                vm.titleName = "专家评审费";
+                //vm.title = '评审费统计管理';
+                //vm.titleName = "专家评审费";
                 vm.windowName = "专家评审费录入";
-                financialManagerSvc.sumFinancial(vm , object.businessId);
-                vm.businessId = object.businessId;
-                vm.projectName =  object.projectname;
-            }
-            if(costType == "ASSIST"){
-                vm.title = '协审费统计管理';
-                vm.titleName = "专家协审费";
+                vm.financial.businessType = "SIGN";
+                //financialManagerSvc.sumFinancial(vm, object.businessId);
+            }else if(costType == "ASSIST"){
+                //vm.title = '协审费统计管理';
+                //vm.titleName = "专家协审费";
                 vm.windowName = "专家协审费录入";
-                vm.businessId = object.signId;
-                vm.projectName =  object.projectName;
+                vm.financial.businessType = "SIGN";
+                //vm.businessId = object.signId;
+                //vm.projectName =  object.projectName;
             }
 
-            financialManagerSvc.initFinancialProject(vm.businessId ,  function(data){
-                vm.financial = {};
-                vm.financial.businessId = vm.businessId;
-                vm.financial.projectName = vm.projectName;
-                // vm.model.assissCost = object.totalCost;
+            financialManagerSvc.initFinancialProject(vm.financial, function(data){
                 vm.financial.paymentData = data.financialDto.paymentData;
                 expertReviewSvc.initReview(vm.financial.businessId, "", function (data) {
                     vm.expertReview = data;
@@ -68,7 +66,7 @@
                 vm.countCost();
                 $("#addCostWindow").kendoWindow({
                     width: "70%",
-                    height: "600px;",
+                    height: "450",
                     title: vm.windowName ,
                     visible: false,
                     modal: true,
