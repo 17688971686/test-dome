@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertCtrl', expert);
 
-    expert.$inject = ['$location', 'expertSvc' , '$state'];
+    expert.$inject = ['$location', 'expertSvc', '$state'];
 
-    function expert($location, expertSvc , $state) {
+    function expert($location, expertSvc, $state) {
         var vm = this;
         vm.data = {};
         vm.title = '专家列表';
@@ -13,6 +13,7 @@
         vm.headerType = "专家类型";
         vm.fileName = "专家信息";
         vm.expert = {};
+
         activate();
         function activate() {
             expertSvc.grid(vm);
@@ -59,6 +60,27 @@
                 vm.del(idStr);
             }
         };
+
+        //S 查看专家详细
+        vm.findExportDetail = function (id) {
+            expertSvc.getExpertById(id, function (data) {
+                vm.model = data;
+                $("#queryExportDetail").kendoWindow({
+                    width: "80%",
+                    height: "auto",
+                    title: "专家详细信息",
+                    visible: false,
+                    modal: true,
+                    open:function(){
+                        $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.model.expertID + "&t=" + Math.random());
+                    },
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            });
+        }
+        //S 查看专家详细
+
 
         /**
          * 导出execl功能

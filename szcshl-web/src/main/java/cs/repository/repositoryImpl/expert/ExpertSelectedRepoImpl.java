@@ -427,6 +427,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = p.signid  ");
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate = '9'  ");
+        sqlBuilder.append("and s.processstate = 6  ");//已发文
 
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
@@ -495,6 +496,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid   ");
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate = '9'  ");
+        sqlBuilder.append("and s.processstate = 6  ");//已发文
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
@@ -557,7 +559,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     }
 
     /**
-     *专家评审会次数
+     *完成项目评审次数
      * @param projectReviewConditionDto
      * @return
      */
@@ -565,16 +567,17 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         Integer proCount = 0;
         Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select count(t.reviewdate) from cs_expert_review t   ");
+        sqlBuilder.append("select count(s.projectcode) from cs_sign s ");
         sqlBuilder.append("where 1 = 1 ");
+        sqlBuilder.append("and s.signstate='9'  ");
         if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
                 String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and t.reviewdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and t.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }
         }
         List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
@@ -587,7 +590,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     }
 
     /**
-     * 项目评审次数
+     * 项目签收次数
      * @param projectReviewConditionDto
      * @return
      */
@@ -599,6 +602,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
        sqlBuilder.append("left join cs_dispatch_doc d ");
        sqlBuilder.append("on s.signid = d.signid ");
        sqlBuilder.append("where 1 = 1 ");
+       sqlBuilder.append("and s.signstate = '1'  ");
+       sqlBuilder.append("and s.processstate = 6  ");//已发文
        if(null != projectReviewConditionDto){
            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
@@ -632,6 +637,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate = '9' ");
+        sqlBuilder.append("and s.processstate = 6  ");//已发文
         List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
@@ -698,6 +704,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate = '9'  ");
+        sqlBuilder.append("and s.processstate = 6  ");//已发文
         //todo:添加查询条件
 //        if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(endTime)){
@@ -717,6 +724,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate = '9'  ");
+        sqlBuilder.append("and s.processstate = 6  ");//已发文
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 3000  and d.declarevalue < 10000   ");
@@ -726,6 +734,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate = '9'  ");
+        sqlBuilder.append("and s.processstate = 6  ");//已发文
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 10000  and d.declarevalue < 100000   ");
@@ -735,6 +744,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
         sqlBuilder.append("and s.signstate = '9'  ");
+        sqlBuilder.append("and s.processstate = 6  ");//已发文
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 100000   ");

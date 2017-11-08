@@ -20,28 +20,26 @@
         vm.businessType = $state.params.businessType;   //专家业务类型
         var expertID = $state.params.expertID;   //专家ID
 
-        vm.findExportDetail = function(id){
-            $("#exportDetail").kendoWindow({
-                width: "80%",
-                height: "800px",
-                title: "专家详细信息",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-            if (id) {
-                expertSvc.getExpertById(id, function (data) {
-                    vm.model = data;
-                    vm.showSS = false;
-                    vm.showSC = true;
-                    vm.showWS = false;
-                    vm.showWC = true;
-                   // initUpload(vm);
-                    $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.model.expertID + "&t=" + Math.random());
-                });
-            }
+        //S 查看专家详细
+        vm.findExportDetail = function (id) {
+            expertSvc.getExpertById(id, function (data) {
+                vm.model = data;
+                $("#selectExportDetail").kendoWindow({
+                    width: "80%",
+                    height: "auto",
+                    title: "专家详细信息",
+                    visible: false,
+                    modal: true,
+                    open:function(){
+                        $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.model.expertID + "&t=" + Math.random());
+                    },
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            });
         }
+        //S 查看专家详细
+
         //刷新已经选择的专家信息
         vm.reFleshSelEPInfo = function(explist) {
             $.each(explist,function(i, obj){

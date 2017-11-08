@@ -4,7 +4,10 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <!--确认参加会议专家的弹窗公共页面-->
 <#include "/expertReview/expert_confirm.html"/>
-<#include "/expertReview/expertDetail.html"/>
+<!--专家详情信息-->
+<div style="background:white;display: none;" id="selectExportDetail">
+    <#include "/expertReview/expertDetail.html"/>
+</div>
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li class="active">专家抽取</li>

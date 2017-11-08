@@ -18,7 +18,10 @@ import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertReviewService;
 import cs.service.financial.FinancialManagerService;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -150,7 +154,7 @@ public class FinancialManagerController {
                 dataMap.put("REVIEWCOST" , expertSelected.getReviewCost());
                 dataMap.put("REVIEWTAXES" , expertSelected.getReviewTaxes());
                 dataMap.put("TOTALCOST" , expertSelected.getTotalCost() );
-                dataMap.put("ISLETTERRW" , "9".equals(expertSelected.getIsLetterRw()) ? "是" : "否");
+                dataMap.put("ISLETTERRW" , (Constant.EnumState.YES.getValue()).equals(expertSelected.getIsLetterRw()) ? "是" : "否");
                 exportMap.add(dataMap);
             }
         }
@@ -180,6 +184,147 @@ public class FinancialManagerController {
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @RequiresAuthentication
+    //@RequiresPermissions("financialManager#exportExcel#post")
+    @RequestMapping(name="专家评审费用统计表导出" , path="costExportExcel" , method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void costExportExcel(HttpServletResponse response , @RequestParam String fileName , @RequestParam String businessId){
+        ExpertReviewDto expertReviewDto = expertReviewService.initBybusinessId(businessId,"");
+        try
+        {
+         String title = java.net.URLDecoder.decode(fileName,"UTF-8");
+        // 第一步，创建一个webbook，对应一个Excel文件
+        HSSFWorkbook wb = new HSSFWorkbook();
+        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+        HSSFSheet sheet = wb.createSheet(title);
+        //设置列的宽度
+            sheet.setColumnWidth(0, 3766);
+            sheet.setColumnWidth(1, 3766);
+            sheet.setColumnWidth(2, 6766);
+            sheet.setColumnWidth(3, 3766);
+            sheet.setColumnWidth(4, 3766);
+            sheet.setColumnWidth(5, 3766);
+        // 第三步，在sheet中添加表头第2行,注意老版本poi对Excel的行数列数有限制short
+        HSSFRow row = sheet.createRow((int) 3);
+        // 设置值表头 设置表头居中
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+        //设置红字字体
+        HSSFCellStyle styless = wb.createCellStyle();
+        Font font = wb.createFont();
+        font.setColor(HSSFColor.RED.index);    //红字
+        styless.setFont(font);
+        styless.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+        //合并单元格
+        CellRangeAddress region1 = new CellRangeAddress(0, 2, (short) 0, (short) 5); //参数1：起始行 参数2：终止行 参数3：起始列 参数4：终止列
+        sheet.addMergedRegion(region1);
+        //设置标题
+         HSSFRow titleRow = sheet.createRow((int) 0);
+         HSSFCell titleCell = titleRow.createCell((short) 0);
+         titleCell.setCellValue(title);
+            HSSFCellStyle titleStyle = wb.createCellStyle();
+            HSSFFont font2 = wb.createFont();
+            font2.setFontName("仿宋_GB2312");
+            font2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示
+            font2.setFontHeightInPoints((short) 12);  //字体大小
+            titleStyle.setFont(font2);
+            titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);//垂直
+            titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+         titleCell.setCellStyle(titleStyle);
+        //设置第一行
+        HSSFCell cell = row.createCell((short) 0);
+        cell.setCellValue("姓名");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 1);
+        cell.setCellValue("是否外境");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 2);
+        cell.setCellValue("开户行/银行账号");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 3);
+        cell.setCellValue("评审费");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 4);
+        cell.setCellValue("应纳税额");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 5);
+        cell.setCellValue("合计（元）");
+        cell.setCellStyle(style);
+
+
+        for (int i = 0; i < expertReviewDto.getExpertSelectedDtoList().size(); i++)
+        {
+            row = sheet.createRow((int) i + 4);//用来控制数据在第几行开始
+            //定义实体类
+            ExpertDto expertDto =expertReviewDto.getExpertSelectedDtoList().get(i).getExpertDto();
+            Expert expert = new Expert();
+            ExpertSelected expertSelected = new ExpertSelected();
+            BeanCopierUtils.copyProperties(expertDto , expert);
+            BeanCopierUtils.copyProperties(expertReviewDto.getExpertSelectedDtoList().get(i) , expertSelected);
+            // 第四步，创建单元格，并设置值
+            //先定义单元格。方便写入样式
+            HSSFCell NameCells = row.createCell((short) 0);//名字
+            HSSFCell cells = row.createCell((short) 1);//是否外境
+            HSSFCell OpeningCells = row.createCell((short) 2);//定义开户银行
+            HSSFCell costCells = row.createCell((short) 3);//定义评审费
+            HSSFCell ReviewCells = row.createCell((short) 4);//应纳税额
+            HSSFCell TotalCells = row.createCell((short) 5);//合计
+           //写入数据和样式
+            //名字
+            NameCells.setCellValue( expert.getName());
+            NameCells.setCellStyle(style);
+
+            //是否外境
+            if((Constant.EnumState.STOP.getValue()).equals(expert.getExpertField())){//判断是否是外境。就是红字字体
+                cells.setCellValue("是");
+                cells.setCellStyle(styless);//加样式
+            }else{
+                cells.setCellValue("否");
+                cells.setCellStyle(style);//加样式
+
+            }
+            //定义开户银行
+            OpeningCells.setCellValue( (expert.getOpeningBank() == null ? "" : expert.getOpeningBank()) + "/" + (expert.getBankAccount() == null ? "" : expert.getBankAccount()));
+            OpeningCells.setCellStyle(style);//居中
+            //定义评审费
+            BigDecimal b = new BigDecimal("2000");//定义评审费的额度
+            if(expertSelected.getReviewCost().compareTo(b)>=0){//判断，当评审费的额度大于或等于2000时，字体红色
+                costCells.setCellValue(expertSelected.getReviewCost().toString());
+                costCells.setCellStyle(styless);
+            }else{
+                costCells.setCellValue(expertSelected.getReviewCost().toString());
+                costCells.setCellStyle(style);
+            }
+
+            //应纳税额
+            ReviewCells.setCellValue(expertSelected.getReviewTaxes().toString());
+            ReviewCells.setCellStyle(style);
+            //合计
+            TotalCells.setCellValue(expertSelected.getTotalCost().toString());
+            TotalCells.setCellStyle(style);
+        }
+        // 第六步，将文件保存
+            ServletOutputStream sos = response.getOutputStream();
+            //FileOutputStream fout = new FileOutputStream("E:/students.xls");
+            response.setContentType("application/vnd.ms-excel;charset=GBK");
+            response.setHeader("Content-type", "application/x-msexcel");
+            response.setHeader("Content_Length", String.valueOf(wb.getBytes().length));
+            String fileName2 = new String((title + ".xls").getBytes("GB2312"), "ISO-8859-1");
+            response.setHeader("Content-Disposition", "attachment;filename=" + fileName2);
+            wb.write(sos);
+            sos.flush();
+            sos.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+
+
     }
 
 

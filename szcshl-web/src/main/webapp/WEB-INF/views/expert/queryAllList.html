@@ -3,6 +3,9 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
+<div style="background:white;display: none;" id="queryExportDetail">
+    <#include "/expertReview/expertDetail.html"/>
+</div>
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/expertList">专家综合查询</a></li>
@@ -31,7 +34,7 @@
 					</select>
 				</td>
 
-				<td class="text-right" style="width:80px;">姓名</td>
+				<td class="text-right" style="width:80px;">专家姓名</td>
 				<td>
 					<input name="name" type="text"  operator="like" />
 				</td>
@@ -39,13 +42,7 @@
 				<td>
 					<input name="comPany"  type="text" operator="like" />
 				</td>
-				<td class="text-right" style="width:80px;">专家区域</td>
-				<td>
-                    <select name="expertField" operator="eq">
-                        <option value="">请选择</option>
-                        <option ng-repeat="x in DICT.EXPERT_FIELD.dicts"  value="{{x.dictKey}}">{{x.dictName}}</option>
-                    </select>
-				</td>
+
 			</tr>
 			<tr>
 				<td class="text-right" >专业大类</td>
@@ -56,7 +53,7 @@
                     </select>
 				</td>
 
-				<td class="text-right" >小类</td>
+				<td class="text-right" >专业小类</td>
 				<td>
                     <select name="maJorSamllParam" ng-model="vm.expert.maJorSmall">
                         <option value="">请选择</option>
@@ -70,11 +67,33 @@
                         <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts" value="{{dt.dictName}}">{{dt.dictName}}</option>
                     </select>
                 </td>
-                <td class="text-right" >申请日期</td>
-                <td>
-                    <input name="applyDate" operator="ge" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.expert.applyDate" value="" />
-                </td>
-			</tr>			
+
+			</tr>
+			<tr>
+				<td class="text-right" >专家区域</td>
+				<td>
+					<select name="expertField" operator="eq">
+						<option value="">请选择</option>
+						<option ng-repeat="x in DICT.EXPERT_FIELD.dicts"  value="{{x.dictKey}}">{{x.dictName}}</option>
+					</select>
+				</td>
+				<td class="text-right" >申请日期</td>
+				<td>
+					<input name="applyDate" operator="ge" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.expert.applyDate" value="" />
+				</td>
+				<td class="text-right" >综合评分</td>
+				<td>
+                    <select name="compositeScore" operator="ge">
+                        <option value="">请选择</option>
+                        <option value="1">1星</option>
+                        <option value="2">2星</option>
+                        <option value="3">3星</option>
+                        <option value="4">4星</option>
+                        <option value="5">5星</option>
+                    </select>
+
+				</td>
+			</tr>
 		</table>
   	</form>
 	

@@ -873,6 +873,13 @@ public class CreateTemplateUtils {
         dataMap.put("reportMultiyear", monthlyNewsletterDto.getReportMultiyear());
         //报告月份
         dataMap.put("theMonths", monthlyNewsletterDto.getTheMonths());
+        if(Integer.parseInt(monthlyNewsletterDto.getTheMonths())<10){
+            dataMap.put("theNthMonths",NumUtils.NumberToChn(Integer.parseInt(monthlyNewsletterDto.getTheMonths())));
+        }else{
+          String temp = NumUtils.NumberToChn(Integer.parseInt(monthlyNewsletterDto.getTheMonths()));
+          temp = temp.substring(1,temp.length());
+            dataMap.put("theNthMonths",temp);
+        }
         //todo:初始化参数
         dataMap.put("signTotal", signCount!=null?signCount:0);
         dataMap.put("proTotal", proReviewConditionCur.getProCount()!=null?proReviewConditionCur.getProCount():0);

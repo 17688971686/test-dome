@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-
+<#include "/financial/costCountExpert.html"/><!--点击项目名称，窗口弹出的页面，查看专家评审信息-->
 <div class="well well-sm" style="background:white;">
 	<ol class="breadcrumb">
 		<li><a href="#/sharingPlatlform">项目评审费统计</a></li>
@@ -78,7 +78,7 @@
 				<tbody ng-if="vm.projectReviewCostDtoList" ng-repeat="x in vm.projectReviewCostDtoList">
 				<tr >
 					<td rowspan="{{x.financialManagerDtoList.length+1}}">{{$index+1}}</td>
-					<td rowspan={{x.financialManagerDtoList.length+1}}>{{x.projectname}}</td>
+					<td rowspan={{x.financialManagerDtoList.length+1}}><a ng-click="vm.queyCostWindow(x)">{{x.projectname}}</a></td>
 					<td rowspan={{x.financialManagerDtoList.length+1}}>{{x.builtcompanyname}}</td>
 					<td class="text-center">{{x.reviewstage}}</td>
 					<td class="text-center">{{x.principal}}</td>

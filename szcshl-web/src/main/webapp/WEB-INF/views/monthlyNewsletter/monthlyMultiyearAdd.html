@@ -40,9 +40,9 @@
     <!-- s form -->
     <form id="suppletter_form" name="suppletter_form">
         公文分类：
-        <select ng-model="vm.suppletter.missiveType" name="missiveType" id="missiveType" style="width: 120px;" ng-disabled="true">
+       <!-- <select ng-model="vm.suppletter.missiveType" name="missiveType" id="missiveType" style="width: 120px;" ng-disabled="true">
             <option value="公文分类" ng-selected="true" >公文分类</option>
-        </select>
+        </select>-->
         <select ng-model="vm.suppletter.missiveMonthlyType" name="missiveMonthlyType" id="missiveMonthlyType" style="width: 120px;">
             <option ng-repeat="x in DICT.MONTHLY.dicts"
                     ng-selected="x.dictName == vm.suppletter.missiveMonthlyType"
