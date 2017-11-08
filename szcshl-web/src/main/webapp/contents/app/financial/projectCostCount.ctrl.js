@@ -3,9 +3,9 @@
 
     angular.module('app').controller('projectCostCountCtrl', projectCostCount);
 
-    projectCostCount.$inject = ['$location', 'projectCostCountSvc','adminSvc','$state','$http'];
+    projectCostCount.$inject = ['$location', 'projectCostCountSvc','adminSvc','$state','$http','expertReviewSvc'];
 
-    function projectCostCount($location, projectCostCountSvc,adminSvc,$state,$http) {
+    function projectCostCount($location, projectCostCountSvc,adminSvc,$state,$http,expertReviewSvc) {
         var vm = this;
         vm.title = '项目评审费统计';
         vm.model={};
@@ -20,12 +20,42 @@
                 vm.projectReviewCostDtoList = data.reObj.projectReviewCostDtoList;
             });
         }
+        //查看项目的专家详细信息
+        vm.queyCostWindow=function (data) {
+            expertReviewSvc.initReview(data.businessId, "", function (data) {
+                vm.titleName = "专家评审费";
+                vm.expertReview = data;
+                vm.reviewTitle = data.reviewTitle;
+                vm.payDate = data.payDate;
+                vm.businessId=vm.expertReview.businessId;
+                vm.expertSelectedDtoList = data.expertSelectedDtoList;
+                if( vm.expertSelectedDtoList && vm.expertSelectedDtoList.length >0){
+                    vm.showReviewCost = true;
+                }
+            });
+            $("#expertCostWindow").kendoWindow({
+                width: "70%",
+                height: "600px;",
+                title: vm.windowName ,
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"]
+            }).data("kendoWindow").center().open();
+        }
 
         // vm.initFinancial = function (businessId) {
         //     var url = $state.href('financialManager',{businessId:businessId});
         //     window.open(url,'_blank');
         // }
 
+        /**
+         * 导出excel
+         */
+        vm.costExportExcel = function (){
+            var fileName = vm.reviewTitle + "(" + vm.payDate + ")";
+            projectCostCountSvc.exportExcel(vm , vm.businessId ,fileName );
+        }
         //重置查询表单
         vm.formReset = function(){
             vm.model = {};
