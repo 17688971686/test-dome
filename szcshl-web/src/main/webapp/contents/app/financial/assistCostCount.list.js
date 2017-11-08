@@ -8,6 +8,9 @@
     function assistCostCountList(assistCostCountSvc,$state,addCostSvc) {
         var vm = this;
         vm.signAssistCost = {};                 //搜索对象
+        vm.signAssistCost.beginTime = "2017-11-08";
+        vm.signAssistCost.endTime = new Date().toISOString().slice(0,10);
+        console.log(vm.signAssistCost.endTime);
         vm.costType = $state.params.costType;
 
         activate();
