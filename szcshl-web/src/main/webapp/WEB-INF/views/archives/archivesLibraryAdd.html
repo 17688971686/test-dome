@@ -26,14 +26,14 @@
     <form id="form" name="form">
         <p style="width: 100%;">
             <span style="width:30%;float:left; ">借阅人员：
-                <select ng-model="vm.model.isSZECUser">
-                    <option value="9" ng-selected="!vm.model.archivesType || vm.model.archivesType == 9">本单位人员</option>
+                <select ng-model="vm.model.isSZECUser" ng-init="vm.model.isSZECUser = 9">
+                    <option value="9" ng-selected="!vm.model.isSZECUser || vm.model.isSZECUser == 9">本单位人员</option>
                     <option value="0" ng-selected="vm.model.isSZECUser == 0" >非本单位人员</option>
                 </select>
             </span>
             <span style="width:30%;float:left;  ">资料存放地：
-                <select ng-model="vm.model.archivesType">
-                    <option value="9" ng-selected="!vm.model.archivesType || vm.model.archivesType == 9">市档案局存档资料</option>
+                <select ng-model="vm.model.archivesType" ng-init="vm.model.archivesType = 0">
+                    <option value="9" ng-selected="!vm.model.archivesType || vm.model.archivesType == 9">市档案局存当资料</option>
                     <option value="0" ng-selected="vm.model.archivesType == 0">评审中心存档资料</option>
                 </select>
             </span>
