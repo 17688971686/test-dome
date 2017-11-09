@@ -259,6 +259,12 @@
                             case "1":          //在办
                                 return "";
                                 break;
+                            case "2":           //已发文
+                                return "";
+                                break;
+                            case "3":           //已发送存档
+                                return "";
+                                break;
                             default:
                                 return "";
                                 ;
@@ -341,6 +347,13 @@
                             return "";
                         }
                     }
+                },
+                {
+                    field: "preSignDate",
+                    title: "预签收时间",
+                    width: "10%",
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "signDate",
@@ -462,50 +475,64 @@
                     width: 40
                 },
                 {
-                    field: "projectname",
-                    title: "项目名称",
+                    field: "businessName",
+                    title: "任务名称",
                     filterable: false,
                     width: 180
                 },
                 {
-                    field: "builtcompanyname",
-                    title: "建设单位",
+                    field: "createDate",
+                    title: "开始时间",
                     width: 150,
                     filterable: false,
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
                 {
-                    field: "reviewstage",
-                    title: "评审阶段",
-                    width: 80,
-                    filterable: false,
-
-                },
-                {
-                    field: "signdate",
-                    title: "签收日期",
-                    width: 100,
-                    filterable: false,
-                    format: "{0: yyyy-MM-dd}"
-                },
-                {
-                    field: "reviewdays",
-                    title: "评审天数",
+                    field: "endDate",
+                    title: "结束时间",
                     width: 150,
-                    filterable: false
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd HH:mm:ss}"
+                },
+                {
+                    field: "",
+                    title: "用时",
+                    width: 180,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.durationTime) {
+                            return item.durationTime;
+                        } else {
+                            return '<span style="color:orangered;">已办结</span>';
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "流程状态",
+                    width: 120,
+                    filterable: false,
+                    template: function (item) {
+                        return '<span style="color:orangered;">已办结</span>';
+                    }
                 },
                 {
                     field: "",
                     title: "操作",
-                    width: 100,
+                    width: 80,
                     template: function (item) {
-                 /*       if (item.flowKey == flowcommon.getFlowDefinedKey().FINAL_SIGN_FLOW) {
-                            return common.format($('#columnBtns').html(), "endSignDetail", item.businessKey, item.processInstanceId);
+                        var isShowReview = false;
+                        if(item.mUser == '9'){
+                            isShowReview = true ;
+                        }
+                        if (item.flowKey == flowcommon.getFlowDefinedKey().FINAL_SIGN_FLOW) {
+                            return common.format($('#columnBtns').html(), "endSignDetail", item.businessKey, item.processInstanceId , isShowReview);
                         } else if (item.flowKey) {
-                            return common.format($('#columnBtns').html(), "flowEnd/" + item.businessKey, item.flowKey, item.processInstanceId);
+                            return common.format($('#columnBtns').html(), "flowEnd/" + item.businessKey, item.flowKey, item.processInstanceId , isShowReview);
                         } else {
                             return "";
-                        }*/
-                        return common.format($('#columnBtns').html(),item.isAppraising,item.signid,"endSignDetail",item.signid,item.processInstanceId,item.mUserName);
+                        }
+
                     }
                 }
             ];

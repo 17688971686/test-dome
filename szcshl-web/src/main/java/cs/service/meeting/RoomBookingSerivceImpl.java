@@ -6,6 +6,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.ExpertReview;
 import cs.domain.meeting.MeetingRoom;
+import cs.domain.meeting.MeetingRoom_;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.WorkProgram;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.transform.Result;
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -46,8 +48,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	private MeetingRoomRepo meetingRoomRepo;
 	@Autowired
 	private WorkProgramRepo workProgramRepo;
-    @Autowired
-    private WorkPlanRepo workPlanRepo;
+	@Autowired
+	private WorkPlanRepo workPlanRepo;
 	@Autowired
 	private SysFileRepo sysFileRepo;
 	@Autowired
@@ -206,8 +208,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		dataMap.put("roomlist",room);
 
 		showName = Constant.Template.NEXT_STAGE_MEETING.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
-        relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
-        docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.NEXT_STAGE_MEETING.getKey(), path+File.separator +relativeFileUrl);
+		relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
+		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.NEXT_STAGE_MEETING.getKey(), path+File.separator +relativeFileUrl);
 
 		if(docFile !=null){
 			sysfile.add(new SysFile(UUID.randomUUID().toString(),roomId,relativeFileUrl,showName,
@@ -275,8 +277,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 				RoomBookingDto roomDto = new RoomBookingDto();
 				BeanCopierUtils.copyProperties(x, roomDto);
 				roomDtoList.add(roomDto);
-			});						
-		}		
+			});
+		}
 		pageModelDto.setCount(odataObj.getCount());
 		pageModelDto.setValue(roomDtoList);
 		return pageModelDto;
@@ -326,8 +328,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			}else{
 				BeanCopierUtils.copyProperties(roomDto, rb);
 				rb.setId(UUID.randomUUID().toString());
-                rb.setCreatedBy(SessionUtil.getDisplayName());
-                rb.setCreatedDate(now);
+				rb.setCreatedBy(SessionUtil.getDisplayName());
+				rb.setCreatedDate(now);
 			}
 			MeetingRoom meeting= meetingRoomRepo.findById(roomDto.getMrID());
 			rb.setAddressName(meeting.getAddr());
@@ -335,15 +337,15 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
 			rb.setRbDate(strdate+"("+stageday+")");//星期几
 			rb.setStageProject(Validate.isString(roomDto.getStageProject())?roomDto.getStageProject():""+"("+strdate+"("+stageday+")"+")");
-            rb.setModifiedDate(now);
-            rb.setModifiedBy(SessionUtil.getDisplayName());
+			rb.setModifiedDate(now);
+			rb.setModifiedBy(SessionUtil.getDisplayName());
 			roomBookingRepo.save(rb);
 
 			//根据业务类型，更新专家评审会事件
-            if(Validate.isString(rb.getBusinessId()) && Validate.isString(rb.getBusinessType())){
-                expertReviewRepo.updateReviewDate(rb.getBusinessId(),rb.getBusinessType(),rb.getRbDay());
-            }
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",rb);
+			if(Validate.isString(rb.getBusinessId()) && Validate.isString(rb.getBusinessType())){
+				expertReviewRepo.updateReviewDate(rb.getBusinessId(),rb.getBusinessType(),rb.getRbDay());
+			}
+			return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",rb);
 		}
 	}
 
@@ -359,6 +361,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		String [] dates=date.split("-");
 		String start=dates[0].replace("/", "-");
 		String end=dates[1].replaceAll("/", "-");
+		//获取一周的会议预定信息
 		List<Object[]> roomBookMap = findWeekRoom(start,rbType,mrId);
 		if("0".equals(rbType)){
 			rbType="评审会";
@@ -367,20 +370,18 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			rbType="全部会";
 		}
 		List<List<String>> rbNameList=new ArrayList<>();
-		//		int j=0;
-		for(int i=0;i<13;i++){
-			List<String> rbNames=new ArrayList<>();
+		//定义行数
+		int rows=13;
+		for(int i=0;i<rows;i++){
+			List<String> rbNames=new ArrayList<>(7);
+			//遍历每一天的会议预定情况
 			for(int j=0;j<roomBookMap.size();j++){
-				Object obj=roomBookMap.get(j);
-				Object[] objArr= (Object[]) obj;
-				if((String) objArr[1]!=null){
-					String[] str=((String) objArr[1]).split(",");
-					if(i<=str.length-1){
-						rbNames.add(str[i]);
-					}else{
-						rbNames.add("");
-//						i=0;
-					}
+
+				Object[] objArr = roomBookMap.get(j);
+				//判断该数组是否有值，并判断行数是否小于该数组的长度
+				//通过行数作为下标来获取对应的值
+				if(objArr!=null && objArr.length>0 && i<objArr.length){
+					rbNames.add((String)objArr[i]);
 				}else{
 					rbNames.add("");
 				}
@@ -398,23 +399,21 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		timeList.add("星期日");
 
 		String path =SysFileUtil.getUploadPath();//文件路劲
-		List<SysFile> sysfile = new ArrayList<>();
 		String showName = "";
 		String relativeFileUrl = "";
-		String stageProject  = "";
 		String roomId = "";
 		File docFile = null;
-		List<RoomBooking> rb= roomBookingRepo.findWeekBook();
-		List<RoomBookingDto> roomDtos = new ArrayList<>();
-		if(rb !=null && rb.size() >0){
-			rb.forEach(x->{
-				RoomBookingDto roomDto = new RoomBookingDto();
-				BeanCopierUtils.copyProperties(x, roomDto);
-				roomDto.setCreatedDate(x.getCreatedDate());
-				roomDto.setModifiedDate(x.getModifiedDate());
-				roomDtos.add(roomDto);
-			});
-		}
+//		List<RoomBooking> rb= roomBookingRepo.findWeekBook();
+//		List<RoomBookingDto> roomDtos = new ArrayList<>();
+//		if(rb !=null && rb.size() >0){
+//			rb.forEach(x->{
+//				RoomBookingDto roomDto = new RoomBookingDto();
+//				BeanCopierUtils.copyProperties(x, roomDto);
+//				roomDto.setCreatedDate(x.getCreatedDate());
+//				roomDto.setModifiedDate(x.getModifiedDate());
+//				roomDtos.add(roomDto);
+//			});
+//		}
 		Map<String,Object> dataMap = new HashMap<>();
 		dataMap.put("timeList", timeList);
 		dataMap.put("TITLE",rbType);
@@ -422,90 +421,157 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		dataMap.put("END",end);
 		dataMap.put("contentList",rbNameList);
 		showName = Constant.Template.EXPORTROOM.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
-        relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
-        String pathFile = path + File.separator + relativeFileUrl;
+		relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
+		String pathFile = path + File.separator + relativeFileUrl;
 		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.EXPORTROOM.getKey(),pathFile);
-		/*if(docFile != null){
-			sysfile.add(new SysFile(UUID.randomUUID().toString(),UUID.randomUUID().toString(),relativeFileUrl,showName,
-					Integer.valueOf(String.valueOf(docFile.length())),Constant.Template.OUTPUT_SUFFIX.getKey(),
-					null,roomId,Constant.SysFileType.STAGEMEETING.getValue(), Constant.SysFileType.MEETING.getValue()));
-		}
-		if(sysfile.size() > 0){
-
-			Date now = new Date();
-			sysfile.forEach(sf->{
-				sf.setCreatedDate(now);
-				sf.setModifiedDate(now);
-				sf.setCreatedBy(SessionUtil.getLoginName());
-				sf.setModifiedBy(SessionUtil.getLoginName());
-			});
-			sysFileRepo.bathUpdate(sysfile);
-		}*/
-return docFile;
+		return docFile;
 	}
 
-	/* 
+	/**
 	 * 获取一周每天的会议安排信息
+	 * 集合格式：{[周一会议预定数据1，周一会议预定数据2],...,[周日会议预定数据1 ， 周日会议预定数据1]}
+	 * @param date
+	 * @param rbType
+	 * @param mrId
+	 * @return
 	 */
 	@Override
 	public List<Object[]> findWeekRoom(String date,String rbType,String mrId) {
+		Date beginDate = DateUtils.converToDate(date , "yyyy-MM-dd");
 		HqlBuilder sqlBuilder=HqlBuilder.create();
-		sqlBuilder.append("select dd.wDate,rbdd.rbName from (select trunc(to_date('"+date+"','yyyy-mm-dd'),'iw') as wdate from dual union ");
-		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +1 as wDate from dual union ");
-		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +2 as wDate from dual union ");
-		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +3 as wDate from dual union ");
-		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +4 as wDate from dual union ");
-		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +5 as wDate from dual union ");
-		sqlBuilder.append(" select trunc (to_date(:dates,'yyyy-mm-dd'),'iw') +6 as wDate from dual ) dd  ");
-		sqlBuilder.append(" left join ( select rbd.rbday,wm_concat(rbd.rbName) rbName from (");
-		sqlBuilder.append("select rb."+RoomBooking_.rbName.getName()+",rb."+ RoomBooking_.rbDay.getName()+" from CS_ROOM_BOOKING rb");
-		sqlBuilder.append(" where "+RoomBooking_.rbDay.getName()+" > (trunc(to_date(:dates,'yyyy-mm-dd'),'iw')-1)");
-		sqlBuilder.append(" and "+RoomBooking_.rbDay.getName()+" < (trunc (to_date(:dates,'yyyy-mm-dd'),'iw')+7) ");
-		if(mrId !=null && !"".equals(mrId)){
-			sqlBuilder.append(" and "+RoomBooking_.mrID.getName()+"=:mrId ");
-			sqlBuilder.setParam("mrId", mrId);
-		}
+		sqlBuilder.append("select rb.rbName,rb.rbDay,rb.beginTime,rb.endTime , mr.mrname ");
+		sqlBuilder.append(" from CS_ROOM_BOOKING  rb ");
+		sqlBuilder.append(" left join (select "+ MeetingRoom_.id.getName()+", "+MeetingRoom_.mrName.getName()+" mrname from cs_meeting_room )mr");
+		sqlBuilder.append(" on mr."+RoomBooking_.id.getName()+"=rb." + RoomBooking_.mrID.getName());
+		sqlBuilder.append(" where "+RoomBooking_.rbDay.getName()+" > (trunc(to_date(:rbDay,'yyyy-mm-dd'),'iw')-1)  ");
+		sqlBuilder.append(" and "+RoomBooking_.rbDay.getName()+" < (trunc (to_date(:rbDay,'yyyy-mm-dd'),'iw')+7)");
+
+		//判断是全部的会议，还是评审会，0：表示评审会
 		if("0".equals(rbType)){
 			sqlBuilder.append(" and " + RoomBooking_.businessType.getName() + "=:businessType").setParam("businessType" , Constant.BusinessType.SIGN_WP.getValue());
 		}
-		/*if("1".equals(rbType)){
-			sqlBuilder.append(" and workProgramId is null");
-		}*/
-		sqlBuilder.append(") rbd ");
-		sqlBuilder.append("group by rbd."+RoomBooking_.rbDay.getName()+") rbdd on rbdd.rbday = dd.wDate order by dd.wDate");
-		sqlBuilder.setParam("dates", date);
-		return roomBookingRepo.getObjectArray(sqlBuilder);
+
+		sqlBuilder.append(" order by rb."+RoomBooking_.rbDay.getName()+" asc");
+		sqlBuilder.setParam("rbDay" , date);
+
+		List<Object[]> objectList = roomBookingRepo.getObjectArray(sqlBuilder);
+
+		List<Object[]> resultList = new ArrayList<>();
+
+		if(objectList != null && objectList.size()>0){
+			// 1、单独定义存储周一至周日 会议预定的每一条记录
+			Object[] obj1 = new Object[objectList.size()];
+			Object[] obj2 = new Object[objectList.size()];
+			Object[] obj3 = new Object[objectList.size()];
+			Object[] obj4 = new Object[objectList.size()];
+			Object[] obj5 = new Object[objectList.size()];
+			Object[] obj6 = new Object[objectList.size()];
+			Object[] obj7 = new Object[objectList.size()];
+
+			for(int i = 0 , j=0; i < objectList.size() && j < objectList.size() ; i++ , j++){
+				Object[] objs = objectList.get(i);
+				Date rbDay = (Date) objs[1];
+				// 2、计算会议预定时间与周一时间差几天
+				long day = DateUtils.daysBetween(beginDate , rbDay);
+				//3、通过判断时间之差，来确认是星期几，并判断存储该星期的数组是否已经有值，如果没有则从下标0开始存
+				if(day == 0){
+					if(obj1[0] == null){
+						j=0;
+					}
+					obj1[j] = jointContent(objs);
+				}else if(day == 1){
+					if(obj2[0] == null){
+						j=0;
+					}
+					obj2[j] = jointContent(objs);
+				}else if(day == 2){
+					if(obj3[0] == null){
+						j=0;
+					}
+					obj3[j] = jointContent(objs);
+				}else if(day == 3){
+					if(obj4[0] == null){
+						j=0;
+					}
+					obj4[j] = jointContent(objs);
+				}else if(day == 4){
+					if(obj5[0] == null){
+						j=0;
+					}
+					obj5[j] = jointContent(objs);
+				}else if(day == 5){
+					if(obj6[0] == null){
+						j=0;
+					}
+					obj6[j] = jointContent(objs);
+				}else if(day == 6){
+					if(obj7[0] == null){
+						j=0;
+					}
+					obj7[j] = jointContent(objs);
+				}
+
+			}
+			//4、将数组添加到集合
+			resultList.add(obj1);
+			resultList.add(obj2);
+			resultList.add(obj3);
+			resultList.add(obj4);
+			resultList.add(obj5);
+			resultList.add(obj6);
+			resultList.add(obj7);
+		}
+
+		return resultList;
 	}
 
-    /**
-     * 根据业务ID和业务类型初始化会议室预定的值
-     * @param businessId
-     * @param businessType
-     * @return
-     */
-    @Override
-    public RoomBookingDto initDefaultValue(String businessId, String businessType) {
-        RoomBookingDto roomBookingDto = new RoomBookingDto();
-        if(Constant.BusinessType.SIGN_WP.getValue().equals(businessType)){
-            WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),businessId);
-            roomBookingDto.setStageOrgName(wp.getReviewOrgName());
-            roomBookingDto.setRbName(wp.getProjectName());
-        }else if(Constant.BusinessType.TOPIC_WP.getValue().equals(businessType)){
-            WorkPlan wp = workPlanRepo.findById(WorkPlan_.id.getName(),businessId);
-            roomBookingDto.setRbName(wp.getTopicName());
-        }
-        roomBookingDto.setHost(SessionUtil.getDisplayName());
-        roomBookingDto.setDueToPeople(SessionUtil.getDisplayName());
-        if(Validate.isString(businessId)){
-            roomBookingDto.setBusinessId(businessId);
-        }
-        if(Validate.isString(businessType)){
-            roomBookingDto.setBusinessType(businessType);
-        }
-        roomBookingDto.setBeginTime(null);
-        roomBookingDto.setEndTime(null);
-        roomBookingDto.setRbDate(null);
-        return roomBookingDto;
-    }
+	/**
+	 * 根据业务ID和业务类型初始化会议室预定的值
+	 * @param businessId
+	 * @param businessType
+	 * @return
+	 */
+	@Override
+	public RoomBookingDto initDefaultValue(String businessId, String businessType) {
+		RoomBookingDto roomBookingDto = new RoomBookingDto();
+		if(Constant.BusinessType.SIGN_WP.getValue().equals(businessType)){
+			WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),businessId);
+			roomBookingDto.setStageOrgName(wp.getReviewOrgName());
+			roomBookingDto.setRbName(wp.getProjectName());
+		}else if(Constant.BusinessType.TOPIC_WP.getValue().equals(businessType)){
+			WorkPlan wp = workPlanRepo.findById(WorkPlan_.id.getName(),businessId);
+			roomBookingDto.setRbName(wp.getTopicName());
+		}
+		roomBookingDto.setHost(SessionUtil.getDisplayName());
+		roomBookingDto.setDueToPeople(SessionUtil.getDisplayName());
+		if(Validate.isString(businessId)){
+			roomBookingDto.setBusinessId(businessId);
+		}
+		if(Validate.isString(businessType)){
+			roomBookingDto.setBusinessType(businessType);
+		}
+		roomBookingDto.setBeginTime(null);
+		roomBookingDto.setEndTime(null);
+		roomBookingDto.setRbDate(null);
+		return roomBookingDto;
+	}
+
+	/**
+	 * 内容的拼接
+	 * 格式：XXX会议 换行 (时间) 换行 XXX会议室
+	 * @param objects
+	 * @return
+	 */
+	public String jointContent (Object[] objects){
+		String result ="";
+		String rbName =  objects[0] == null ? "" : objects[0] + "会议";
+		//时间格式：yyyy-MM-dd HH:mm:ss 获取  HH:mm
+		String begin = DateUtils.getTimeIgnoreSecond((Date) objects[2]) == null ? "" : DateUtils.getTimeIgnoreSecond((Date) objects[2]);
+		String end = DateUtils.getTimeIgnoreSecond((Date) objects[3]) == null ? "" : DateUtils.getTimeIgnoreSecond((Date) objects[3]);
+		String rbDate = "<w:br />" +"("+ begin + "-" + end + ")";
+		String ress = objects[4] == null ? "" : "<w:br />" +  objects[4];
+		result = rbName + rbDate + ress;
+		return result;
+	}
 
 }

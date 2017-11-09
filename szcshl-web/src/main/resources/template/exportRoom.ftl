@@ -71,7 +71,7 @@ ${contents_index+1}
 </w:t></w:r></w:p></w:tc>
 
 
-<#list contents as rbName>
+<#list contents as content>
 <w:tc>
 <w:tcPr><w:tcW w:w="9535" w:type="dxa"/><w:gridSpan w:val="7"/>
 <w:vAlign w:val="center"/></w:tcPr>
@@ -79,7 +79,7 @@ ${contents_index+1}
 <w:rPr><w:rFonts w:asciiTheme="minorEastAsia" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorEastAsia"/></w:rPr></w:pPr>
 <w:r><w:rPr><w:rFonts w:asciiTheme="minorEastAsia" w:eastAsiaTheme="minorEastAsia" w:hAnsiTheme="minorEastAsia" w:hint="eastAsia"/></w:rPr>
 <w:t>
-${ rbName}
+   ${content}
 </w:t></w:r></w:p>
 
 <w:p w:rsidR="008E32B7" w:rsidRPr="0018775D" w:rsidRDefault="008E32B7" w:rsidP="004F7273">
