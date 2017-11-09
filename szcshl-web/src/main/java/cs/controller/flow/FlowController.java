@@ -9,6 +9,7 @@ import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
 import cs.domain.monthly.MonthlyNewsletter;
+import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
@@ -161,9 +162,9 @@ public class FlowController {
     @RequiresAuthentication
     @RequestMapping(name = "办结项目", path = "html/endTasks", method = RequestMethod.POST)
     public @ResponseBody
-    PageModelDto<TaskDto> endTasks(HttpServletRequest request) throws ParseException {
+    PageModelDto<SignDispaWork> endTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<TaskDto> pageModelDto = flowService.queryETasks(odataObj);
+        PageModelDto<SignDispaWork> pageModelDto = flowService.queryETasks(odataObj);
         return pageModelDto;
     }
 

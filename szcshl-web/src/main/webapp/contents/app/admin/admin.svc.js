@@ -466,59 +466,50 @@
                     width: 40
                 },
                 {
-                    field: "businessName",
-                    title: "任务名称",
+                    field: "projectname",
+                    title: "项目名称",
                     filterable: false,
                     width: 180
                 },
                 {
-                    field: "createDate",
-                    title: "开始时间",
+                    field: "builtcompanyname",
+                    title: "建设单位",
                     width: 150,
                     filterable: false,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
                 },
                 {
-                    field: "endDate",
-                    title: "结束时间",
+                    field: "reviewstage",
+                    title: "评审阶段",
+                    width: 80,
+                    filterable: false,
+
+                },
+                {
+                    field: "signdate",
+                    title: "签收日期",
+                    width: 100,
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "reviewdays",
+                    title: "评审天数",
                     width: 150,
-                    filterable: false,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
-                },
-                {
-                    field: "",
-                    title: "用时",
-                    width: 180,
-                    filterable: false,
-                    template: function (item) {
-                        if (item.durationTime) {
-                            return item.durationTime;
-                        } else {
-                            return '<span style="color:orangered;">已办结</span>';
-                        }
-                    }
-                },
-                {
-                    field: "",
-                    title: "流程状态",
-                    width: 120,
-                    filterable: false,
-                    template: function (item) {
-                        return '<span style="color:orangered;">已办结</span>';
-                    }
+                    filterable: false
                 },
                 {
                     field: "",
                     title: "操作",
-                    width: 80,
+                    width: 100,
                     template: function (item) {
-                        if (item.flowKey == flowcommon.getFlowDefinedKey().FINAL_SIGN_FLOW) {
+                 /*       if (item.flowKey == flowcommon.getFlowDefinedKey().FINAL_SIGN_FLOW) {
                             return common.format($('#columnBtns').html(), "endSignDetail", item.businessKey, item.processInstanceId);
                         } else if (item.flowKey) {
                             return common.format($('#columnBtns').html(), "flowEnd/" + item.businessKey, item.flowKey, item.processInstanceId);
                         } else {
                             return "";
-                        }
+                        }*/
+                        return common.format($('#columnBtns').html(),item.isAppraising,item.signid,"endSignDetail",item.signid,item.processInstanceId,item.mUserName);
                     }
                 }
             ];
