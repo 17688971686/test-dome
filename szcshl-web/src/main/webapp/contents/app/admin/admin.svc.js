@@ -512,13 +512,18 @@
                     title: "操作",
                     width: 80,
                     template: function (item) {
+                        var isShowReview = false;
+                        if(item.mUser == '9'){
+                            isShowReview = true ;
+                        }
                         if (item.flowKey == flowcommon.getFlowDefinedKey().FINAL_SIGN_FLOW) {
-                            return common.format($('#columnBtns').html(), "endSignDetail", item.businessKey, item.processInstanceId);
+                            return common.format($('#columnBtns').html(), "endSignDetail", item.businessKey, item.processInstanceId , isShowReview);
                         } else if (item.flowKey) {
-                            return common.format($('#columnBtns').html(), "flowEnd/" + item.businessKey, item.flowKey, item.processInstanceId);
+                            return common.format($('#columnBtns').html(), "flowEnd/" + item.businessKey, item.flowKey, item.processInstanceId , isShowReview);
                         } else {
                             return "";
                         }
+
                     }
                 }
             ];
