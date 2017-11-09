@@ -4,6 +4,7 @@ import cs.common.ResultMsg;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
+import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.FlowHistoryDto;
@@ -30,7 +31,7 @@ public interface FlowService {
 
     ProcessInstance findProcessInstanceByBusinessKey(String businessKey);
 
-    PageModelDto<TaskDto> queryETasks(ODataObj odataObj);
+    PageModelDto<SignDispaWork> queryETasks(ODataObj odataObj);
 
     /**
      * 20170706 项目签收流程接口

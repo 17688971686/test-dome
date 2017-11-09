@@ -7,9 +7,7 @@ import cs.common.utils.ActivitiUtil;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.*;
-import cs.domain.project.SignMerge;
-import cs.domain.project.SignMerge_;
-import cs.domain.project.WorkProgram;
+import cs.domain.project.*;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
@@ -18,6 +16,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
+import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.service.project.SignService;
@@ -39,10 +38,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -81,6 +77,9 @@ public class FlowServiceImpl implements FlowService {
     private WorkProgramRepo workProgramRepo;
     @Autowired
     private SignMergeRepo signMergeRepo;
+    @Autowired
+    private SignDispaWorkRepo signDispaWorkRepo;
+
 
     @Autowired
     @Qualifier("signFlowBackImpl")
@@ -304,35 +303,36 @@ public class FlowServiceImpl implements FlowService {
     }
 
     @Override
-    public PageModelDto<TaskDto> queryETasks(ODataObj odataObj) {
-        PageModelDto<TaskDto> pageModelDto = new PageModelDto<TaskDto>();
+    public PageModelDto<SignDispaWork> queryETasks(ODataObj odataObj) {
+        PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
+        Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
+        criteria = odataObj.buildFilterToCriteria(criteria);
+        criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(), Constant.EnumState.YES.getValue()));
+        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){ //是部门负责人
+            criteria.add(Restrictions.eq(SignDispaWork_.ministerName.getName(), SessionUtil.getDisplayName()));
+        }
+        else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){//是副主任
+            criteria.add(Restrictions.eq(SignDispaWork_.leaderName.getName(), SessionUtil.getDisplayName()));
+        }
+        else if(!SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){//不是主任
+            criteria.add(Restrictions.or(Restrictions.like(SignDispaWork_.aUserID.getName(), SessionUtil.getUserId()) , Restrictions.like(SignDispaWork_.mUserId.getName(), SessionUtil.getUserId())));
 
-        HistoryService historyService = processEngine.getHistoryService();
-        HistoricProcessInstanceQuery hq = historyService.createHistoricProcessInstanceQuery().finished();
-
-        int total = Integer.valueOf(String.valueOf(hq.count()));
-        pageModelDto.setCount(total);
-
-        List<HistoricProcessInstance> historicList = hq.orderByProcessInstanceEndTime().desc().listPage(odataObj.getSkip(), odataObj.getTop());
-        if (historicList != null && historicList.size() > 0) {
-            List<TaskDto> list = new ArrayList<TaskDto>(historicList.size());
-            historicList.forEach(h -> {
-                TaskDto taskDto = new TaskDto();
-                taskDto.setBusinessKey(h.getBusinessKey());
-                taskDto.setBusinessName(h.getName());
-                taskDto.setProcessInstanceId(h.getId());
-                taskDto.setProcessVariables(h.getProcessVariables());
-                taskDto.setProcessDefinitionId(h.getProcessDefinitionId());
-                taskDto.setCreateDate(h.getStartTime());
-                taskDto.setEndDate(h.getEndTime());
-                taskDto.setDurationInMillis(h.getDurationInMillis());
-                taskDto.setDurationTime(ActivitiUtil.formatTime(h.getDurationInMillis()));
-                taskDto.setFlowKey(h.getProcessDefinitionId().substring(0, h.getProcessDefinitionId().indexOf(":")));
-                list.add(taskDto);
-            });
-            pageModelDto.setValue(list);
         }
 
+        //统计总数
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        pageModelDto.setCount(totalResult);
+        //处理分页
+        criteria.setProjection(null);
+        if (odataObj.getSkip() > 0) {
+            criteria.setFirstResult(odataObj.getSkip());
+        }
+        if (odataObj.getTop() > 0) {
+            criteria.setMaxResults(odataObj.getTop());
+        }
+
+        List<SignDispaWork> signDispaWorkList = criteria.list();
+        pageModelDto.setValue(signDispaWorkList);
         return pageModelDto;
     }
 
