@@ -18,35 +18,36 @@
             <span class="glyphicon glyphicon-search"></span>查询
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.resetQuery()">重置</button>
-        <button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
+        <!--<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>-->
     </div>
 
-    <table class="table breadcrumb">
-        <tr>
-            <td style="width:80px;" class="formAlignRight">项目名称：</td>
-            <td style="width: 40%;">
-                <input type="text" style="width:70%;" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectname" placeholder="请输入">
-            </td>
-            <td style="width:80px;" class="formAlignRight">建设单位：</td>
-            <td style="width: 40%;">
-                <input type="text" style="width:70%;" ng-model="vm.model.builtcompanyname" operator="like" name="builtcompanyname" id="builtcompanyname" placeholder="请输入">
-            </td>
-        </tr>
-        <tr>
-            <td style="width:80px;" class="formAlignRight">评审部门：</td>
-            <td style="width: 40%;">
-                <select ng-model="vm.model.deptName"  style="height:30px;">
-                    <option value="">请选择</option>
-                    <option ng-repeat="x in vm.orgDeptList" value="{{x.name}}">{{x.name}}</option>
-                </select>
-            </td>
-            <td style="width:80px;" class="formAlignRight">签收日期：</td>
-            <td style="width: 40%;">
-                <input name="beginTime" style="width:30%;" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
-                至
-                <input name="endTime" style="width:30%;" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" operator="and" /></td>
-        </tr>
-    </table>
+    <div class="breadcrumb">
+        <table style="width: 100%;">
+            <tr>
+                <td style="width:80px;" class="text-right">项目名称：</td>
+                <td>
+                    <input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectname" placeholder="请输入">
+                </td>
+                <td style="width:80px;" class="text-right">建设单位：</td>
+                <td >
+                    <input type="text" ng-model="vm.model.builtcompanyname" operator="like" name="builtcompanyname" id="builtcompanyname" placeholder="请输入">
+                </td>
+                <td style="width:80px;" class="text-right">评审部门：</td>
+                <td >
+                    <select ng-model="vm.model.deptName"  operator="eq">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in vm.orgDeptList" value="{{x.name}}">{{x.name}}</option>
+                    </select>
+                </td>
+                <td class="text-right">签收日期：</td>
+                <td style="min-width: 260px;">
+                    <input name="beginTime" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="ge"/>
+                    至
+                    <input name="endTime" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" operator="le" />
+                </td>
+            </tr>
+        </table>
+    </div>
 
     <div class="label-default" style="width: 100%;padding:5px 10px;">
         【

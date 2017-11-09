@@ -9,15 +9,15 @@
         <li class="active">{{vm.title}}</li>
     </ol>
 
-    <div class="well">
-       <form id="formSharingPub" name="formSharingPub">
-		<span class="help-inline" style="margin-left:10px;">发布人：</span>
+    <form id="formSharingPub" name="formSharingPub" class="breadcrumb">
+        <span class="help-inline">发布人：</span>
         <input  ng-model="vm.model.publishUsername"  name="publishUsername" id="publishUsername" operator="like" />
 
-        <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.findSharing()">查询</a>
-        <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.resetShared()">重置</a>
-        </form>
-    </div>
+        <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.findSharing()">
+            <span class="glyphicon glyphicon-search"></span>查询</a>
+        <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.resetShared()">
+            <span class="glyphicon glyphicon-repeat"></span>重置</a>
+    </form>
         
 
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>

@@ -1,51 +1,53 @@
+<meta charset="UTF-8">
 
-<div>
-    <go-back></go-back>
-    <button class="btn btn-sm btn-success" ng-click="vm.resetChart()">开始统计</button>
-</div>
-<div class="row" style="background:white;width: 100%; height: 100%;">
-
-    <div style="width: 15%; float: left;margin-left: 50px ; margin-top: 20px; margin-right: 50px;" >
+<div class="well well-sm" style="float: left;background:white;width: 100%; height: 100%;">
+    <div style="width: 15%; float: left;margin:20px;margin-right:30px;">
+        <div class="toolbar">
+            <go-back></go-back>
+            <button class="btn btn-sm btn-success" ng-click="vm.resetChart()">开始统计</button>
+        </div>
         <form name="chartForm" id="chartForm">
-
-            <div style="margin-bottom:80px;">
+            <div style="margin-bottom:50px;">
                 <h4><strong> 图表类型 </strong></h4>
-                <ul >
-                    <li style="float: left;margin-right: 5px;">
+                <ul>
+                    <li style="height: 30px;">
                         <input type="radio" name="chart" value="histogram"
                                ng-model="vm.chartType"
-                               ng-checked="vm.chartType == 'histogram'" /> 柱状图
+                               ng-checked="vm.chartType == 'histogram'"/> 柱状图
+                        <span style="font-size: 12px;">【申报金额统计】</span>
                     </li>
-                    <li style="float: left;margin-right: 5px;">
+                    <li style="height: 30px;">
                         <input type="radio" name="chart" value="lineChart"
                                ng-model="vm.chartType"
-                               ng-checked="vm.chartType == 'lineChart'" /> 折线图
+                               ng-checked="vm.chartType == 'lineChart'"/> 折线图
+                        <span style="font-size: 12px;">【项目类别统计】</span>
                     </li>
-                    <li style="float: none;">
+                    <li style="height: 30px;">
                         <input type="radio" name="chart" value="pie"
                                ng-model="vm.chartType"
-                               ng-checked="vm.chartType == 'pie'" /> 饼图
+                               ng-checked="vm.chartType == 'pie'"/> 饼&nbsp;&nbsp;&nbsp;图
+                        <span style="font-size: 12px;">【项目金额统计】</span>
                     </li>
                 </ul>
             </div>
-            <div style="margin-bottom:80px;">
+            <div style="margin-bottom:50px;">
                 <h4><strong> 时间范围 </strong></h4>
                 <ul>
                     <li style="margin-bottom: 10px;">
                      <span>
-                            开始日期：<input  kendo-date-picker k-format="'yyyy-MM-dd'"
-                                         ng-model="vm.startTime" name="studyBeginTime"
-                                         id="studyBeginTime"
-                                         min="vm.startDateTime" max="vm.endDateTime"
-                                         data-bind="value:start,invisible:isAllDay" />
+                            开始日期：<input kendo-date-picker k-format="'yyyy-MM-dd'"
+                                        ng-model="vm.startTime" name="studyBeginTime"
+                                        id="studyBeginTime"
+                                        min="vm.startDateTime" max="vm.endDateTime"
+                                        data-bind="value:start,invisible:isAllDay"/>
                         </span>
                     </li>
                     <li>
                      <span>
-                            结束日期：<input  kendo-date-picker k-format="'yyyy-MM-dd'" name="studyEndTime" id="studyEndTime"
-                                         ng-model="vm.endTime"
-                                         min="vm.startDateTime" max="vm.endDateTime"
-                                         data-bind="value:end,invisible:isAllDay" data-datecompare-msg="结束日期必须大于开始日期"/>
+                            结束日期：<input kendo-date-picker k-format="'yyyy-MM-dd'" name="studyEndTime" id="studyEndTime"
+                                        ng-model="vm.endTime"
+                                        min="vm.startDateTime" max="vm.endDateTime"
+                                        data-bind="value:end,invisible:isAllDay" data-datecompare-msg="结束日期必须大于开始日期"/>
                         </span>
                     </li>
                 </ul>
@@ -53,11 +55,10 @@
         </form>
 
     </div>
-    <div style="width: 75%; height: 100%; float: left; border-left: solid 1px gray; ">
-        <div id="histogram" ng-show="vm.showHistogram" style="width: 1100px; height: 700px; ; margin: auto auto;"></div>
-        <div id="pie" ng-show="vm.showPie" style="width: 100%; height: 1100px ; margin: auto auto;"></div>
-        <div id="lineChart" ng-show="vm.showLineChart" style="width: 1100px; height: 700px; margin: auto auto;"></div>
-
+    <div style="width: 75%; height: 100%; float: left; border-left: solid 1px gray; margin-top:20px;">
+        <div id="histogram" ng-show="vm.showHistogram" style="width: 860px; height: 660px; ; margin: auto auto;"></div>
+        <div id="pie" ng-show="vm.showPie" style="width: 860px; height: 660px ; margin: auto auto;"></div>
+        <div id="lineChart" ng-show="vm.showLineChart" style="width: 860px; height: 660px; margin: auto auto;"></div>
     </div>
 
 

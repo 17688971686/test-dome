@@ -47,29 +47,28 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <div class="toolbar">
-        <a class="btn btn-sm btn-primary" ng-click="back();" ng-disabled="vm.iscommit">
-            <span class="glyphicon glyphicon-chevron-left"></span>返回</a>
-        <button type="button" class="k-button k-primary" ng-click="vm.exportThisWeekStage()" value="">导出本周评审会会议安排
+        <button type="button" class="btn btn-sm btn-primary" ng-click="vm.exportThisWeekStage()" value="">
+            导出本周评审会会议安排
         </button>
-
-        <button type="button" class="k-button k-primary" ng-click="vm.exportThisWeek()" value="">导出本周全部会议安排</button>
-
-        <button type="button" class="k-button k-primary" ng-click="vm.exportNextWeekStage()" value="">导出下周评审会议安排
+        <button type="button" class="btn btn-sm btn-primary" ng-click="vm.exportThisWeek()" value="">
+            导出本周全部会议安排
         </button>
-
-        <button type="button" class="k-button k-primary" ng-click="vm.exportNextWeek()" value="">导出下周全部会议安排</button>
+        <button type="button" class="btn btn-sm btn-primary" ng-click="vm.exportNextWeekStage()" value="">
+            导出下周评审会议安排
+        </button>
+        <button type="button" class="btn btn-sm btn-primary" ng-click="vm.exportNextWeek()" value="">
+            导出下周全部会议安排
+        </button>
     </div>
-    <div class="well well-sm" style="margin-bottom: 5px;">
+    <div class="breadcrumb">
         会议室查询：
         <select ng-model="vm.mrID" name="mrID" ng-change="vm.findMeeting()">
             <option ng-repeat="x in vm.meetings" value="{{x.id}}" ng-selected="vm.mrID == x.id">{{x.addr}}</option>
         </select>
     </div>
-    <!--操作说明提示框-->
-    <ol class="breadcrumb" style="font-size: 12px;">
-        <li class="active">温馨提示：双击时间段进行会议室预定或者修改！</li>
-    </ol>
-    <!--  <button type="button"  class="k-button" ng-click="vm.getPDF('#scheduler')" >导出PDF</button> -->
+    <div class="label-default" style="width: 100%;padding:3px 10px;font-size: 12px;">
+        双击时间段进行会议室预定或者修改！
+    </div>
     <div kendo-scheduler k-options="vm.schedulerOptions" id="scheduler"></div>
 
 </div>

@@ -8,39 +8,30 @@
         <li><a href="#/org">部门管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <form id="orgForm" name="orgForm">
-       <div class="well">
-       		<span class="help-inline"
-				style="margin-left: 10px;">部门标识：</span> <input type="text"
-				ng-model="vm.model.orgIdentity" operator="eq" name="orgIdentity"
+    <form id="orgForm" name="orgForm" class="well well-sm">
+       	<span class="help-inline" style="margin-left: 10px;">部门标识：</span>
+		<input type="text" ng-model="vm.model.orgIdentity" operator="eq" name="orgIdentity"
 				id="orgIdentity" placeholder="请输入">
-			<span class="help-inline">部门名称：</span> <input type="text"
-				ng-model="vm.model.name" operator="like" name="name" id="name"
-				placeholder="请输入">  <a
-				class="btn btn-sm btn-primary" style="margin-left: 10px;"
-				ng-click="vm.queryOrg()">查询</a>
-				
-        <@shiro.hasPermission name="org##post"> 
-            <a class="btn btn-sm btn-primary" href="#/orgEdit/"><span class="glyphicon glyphicon-plus"></span>新增部门</a>    
-           </@shiro.hasPermission> 
-           
-            <@shiro.hasPermission name="org##delete">    
-            <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-       </@shiro.hasPermission> 
-        </div>
+		<span class="help-inline">部门名称：</span>
+		<input type="text" ng-model="vm.model.name" operator="like" name="name" id="name"
+				placeholder="请输入">
+		<button class="btn btn-sm btn-primary" style="margin-left: 10px;" ng-click="vm.queryOrg()">
+			<span class="glyphicon glyphicon-search"></span>查询
+		</button>
+        <a class="btn btn-sm btn-primary" href="#/orgEdit/"><span class="glyphicon glyphicon-plus"></span>新增部门</a>
+        <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
       </form>
-        <script type="text/template" id="columnBtns">
- 		<@shiro.hasPermission name="org##delete"> 
-			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
- 		</@shiro.hasPermission> 
-		<@shiro.hasPermission name="org##put"> 
-	        <a class="btn btn-xs btn-primary" href="#/orgEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
- 		</@shiro.hasPermission> 
-		<@shiro.hasPermission name="org#orgId/users#get"> 
-			<a class="btn btn-xs btn-primary" href="#/orgUser/{1}"><span class="glyphicon glyphicon-pencil"></span>成员</a>
- 		</@shiro.hasPermission> 
-		</script>
-        
-         <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
-    
+
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
+<script type="text/template" id="columnBtns">
+	<@shiro.hasPermission name="org##delete">
+	<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+	</@shiro.hasPermission>
+	<@shiro.hasPermission name="org##put">
+	<a class="btn btn-xs btn-primary" href="#/orgEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+	</@shiro.hasPermission>
+	<@shiro.hasPermission name="org#orgId/users#get">
+	<a class="btn btn-xs btn-primary" href="#/orgUser/{1}"><span class="glyphicon glyphicon-pencil"></span>成员</a>
+	</@shiro.hasPermission>
+</script>

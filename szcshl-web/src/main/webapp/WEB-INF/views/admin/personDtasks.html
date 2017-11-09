@@ -7,42 +7,44 @@
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li>项目管理</li>
-        <li class="active">{{vm.title}}</li>
+        <li class="active">在审项目</li>
     </ol>
-    <div class="well">
-        <form id="searchform" name="searchform">
-            <span class="help-inline">项目名称：</span>
-            <input type="text" operator="like" name="projectname" id="projectnam" placeholder="请输入">
 
-            <span class="help-inline" style="margin-left:10px;">项目状态：</span>
-            <select operator="eq" name="signState" id="signState" placeholder="请选择">
-                <option value="">请选择</option>
-                <option value="1">进行中</option>
-                <option value="2">已暂停</option>
-                <option value="8">强制结束</option>
-                <option value="9">已完成</option>
-                <option value="5">未发起</option>
-            </select>
-
-            <span class="help-inline" style="margin-left:10px;">签收日期：</span>
-            <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'" name="signdate"  operator="gt">
-            -
-            <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'"  name="signdate"  operator="lt"/>
-
-            <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySign()">查询</a>
-        </form>
+    <div class="toolbar">
+        <a class="btn btn-sm btn-primary" ng-click="vm.querySign()"><span class="glyphicon glyphicon-ok"></span>查询</a>
     </div>
-    <!--操作说明提示框-->
-    <ol class="breadcrumb">
-        <li class="active">
-            个人待办项目列表（
-            <span id="span1"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>暂停
-            <span id="span2"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>少于3个工作日
-            <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
-            <span id="span4"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
-            <span id="span5"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>存档超期）
-        </li>
-    </ol>
+
+    <form id="searchform" name="searchform" class="breadcrumb">
+        <table  style="width: 100%;">
+            <td class="text-right" style="width: 80px;">项目名称：</td>
+            <td>
+                <input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">
+            </td>
+            <td class="text-right" style="width: 80px;">项目编号：</td>
+            <td>
+                <input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">
+            </td>
+            <td class="text-right" style="width: 80px;">签收日期：</td>
+            <td style="min-width: 260px;">
+                <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'" name="signdate"  operator="gt">
+                -
+                <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'"  name="signdate"  operator="lt"/>
+            </td>
+        </table>
+    </form>
+    <div class="label-default" style="width: 100%;padding:5px 10px;">
+        【
+        <span class="label-primary" style="padding:0px 13px;"></span> 已发文
+        <span class="label-success" style="padding:0px 13px;"></span> 已存档
+        】
+        【
+        <span id="span1"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>暂停
+        <span id="span2"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>少于3个工作日
+        <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
+        <span id="span4"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
+        <span id="span5"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>存档超期
+        】
+    </div>
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 

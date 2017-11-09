@@ -10,7 +10,7 @@
 
         var service = {
             initRoom: initRoom,                     //初始化会议室预定列表
-            showMeeting: showMeeting,
+            showMeeting: showMeeting,               //查询所有系统会议
             findMeeting: findMeeting,
             exportThisWeekStage: exportThisWeekStage,//导出本周评审会会议安排
             exportNextWeekStage: exportNextWeekStage,//下周评审会议安排
@@ -226,7 +226,6 @@
                 }
             };
         }
-
         //end 初始化会议预定页面
 
         //start#会议室地点查询

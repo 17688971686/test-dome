@@ -127,7 +127,7 @@ public class HeaderController {
 
     //@RequiresPermissions("header#html/selectHeader#get")
     @RequiresAuthentication
-    @RequestMapping(name="表头设置" , path="html/selectHeader" , method = RequestMethod.GET)
+    @RequestMapping(name="表字段设置" , path="html/selectHeader" , method = RequestMethod.GET)
     public String selectHeader(){
         return ctrlName + "/selectHeader";
     }

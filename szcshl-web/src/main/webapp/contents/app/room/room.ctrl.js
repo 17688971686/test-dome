@@ -25,17 +25,23 @@
             roomSvc.showMeeting(vm,function(data){
                 vm.meetings = {};
                 vm.meetings = data;
-                roomSvc.initDefaultValue(vm.model.businessId,vm.model.businessType,function(data){
-                    vm.model = data;
+                if(vm.model.businessId && vm.model.businessType){
+                    roomSvc.initDefaultValue(vm.model.businessId,vm.model.businessType,function(data){
+                        vm.model = data;
+                        if(vm.meetings && vm.meetings.length > 0){
+                            vm.mrID = vm.meetings[0].id;
+                            vm.model.mrID = vm.mrID;
+                        }
+                        roomSvc.updateDataSource(vm);
+                    })
+                }else{
                     if(vm.meetings && vm.meetings.length > 0){
                         vm.mrID = vm.meetings[0].id;
                         vm.model.mrID = vm.mrID;
                     }
                     roomSvc.updateDataSource(vm);
-                })
+                }
             });
-
-
         }
 
         //预定会议编辑

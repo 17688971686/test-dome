@@ -7,7 +7,7 @@
         <li class="active">{{vm.title}}</li>
     </ol>
 
-    <form id="agendaTaskForm" name="agendaTaskForm">
+    <form id="agendaTaskForm" name="agendaTaskForm" class="breadcrumb">
         <span class="help-inline">流程类别：</span>
         <select name="processKey" operator="eq">
             <option value="">请选择</option>
@@ -20,7 +20,7 @@
             <option value="ASSERT_STORAGE_FLOW">资产申报流程</option>
             <option value="BOOKS_BUY_FLOW">图书购买流程</option>
         </select>
-        <button class="btn btn-xs btn-primary" style="margin-left:10px;" ng-click="vm.query()">查询</button>
+        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.query()"><span class="glyphicon glyphicon-ok"></span>查询</button>
     </form>
 
 

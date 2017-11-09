@@ -19,7 +19,6 @@
             assistCostCountSvc.findSingAssistCostCount(vm.signAssistCost,function (data) {
                 vm.isSubmit = false;
                 vm.signAssistCostList = data;
-                console.log(vm.signAssistCostList);
                 if(!vm.signAssistCostList || vm.signAssistCostList.length == 0){
                     vm.nodata = true;
                 }

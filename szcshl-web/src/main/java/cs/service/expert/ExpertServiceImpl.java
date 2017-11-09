@@ -67,6 +67,7 @@ public class ExpertServiceImpl implements ExpertService {
 
     /**
      * 保存专家信息
+     *
      * @param expertDto
      * @return
      */
@@ -74,32 +75,34 @@ public class ExpertServiceImpl implements ExpertService {
     @Transactional
     public ResultMsg saveExpert(ExpertDto expertDto) {
         //重复专家判断
-        boolean isFill = expertRepo.checkIsHaveIdCard(expertDto.getIdCard(),expertDto.getExpertID());
+        boolean isFill = expertRepo.checkIsHaveIdCard(expertDto.getIdCard(), expertDto.getExpertID());
         if (isFill == false) {
             Expert expert = null;
-            if(Validate.isString(expertDto.getExpertID())){
-                expert = expertRepo.findById(Expert_.expertID.getName(),expertDto.getExpertID());
+            if (Validate.isString(expertDto.getExpertID())) {
+                expert = expertRepo.findById(Expert_.expertID.getName(), expertDto.getExpertID());
                 BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
-            }else{
+            } else {
                 expert = new Expert();
                 BeanCopierUtils.copyProperties(expertDto, expert);
                 //设置默认属性
                 expert.setState(EnumExpertState.AUDITTING.getValue());
+                //是否作废（1为作废，0 为正常）,默认不作废
+                expert.setUnable(Constant.EnumState.NO.getValue());
                 expert.setExpertID(UUID.randomUUID().toString());
                 //专家编码，系统自动生成
-                expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber())+1));
+                expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber()) + 1));
                 expert.setInputPerson(SessionUtil.getDisplayName());
                 expert.setCreatedDate(new Date());
-                expert.setCreatedBy(SessionUtil.getDisplayName());
+                expert.setCreatedBy(SessionUtil.getUserId());
             }
             expert.setModifiedDate(new Date());
             expert.setModifiedBy(SessionUtil.getDisplayName());
             expertRepo.save(expert);
             //设置返回值
-            BeanCopierUtils.copyProperties(expert,expertDto);
-            return  new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",expertDto);
+            BeanCopierUtils.copyProperties(expert, expertDto);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", expertDto);
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("身份证号为%s 的专家已存在,请重新输入", expertDto.getIdCard()));
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), String.format("身份证号为%s 的专家已存在,请重新输入", expertDto.getIdCard()));
         }
     }
 
@@ -128,6 +131,7 @@ public class ExpertServiceImpl implements ExpertService {
 
     /**
      * 专家审核
+     *
      * @param ids
      * @param state
      */
@@ -138,7 +142,7 @@ public class ExpertServiceImpl implements ExpertService {
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append(" update " + Expert.class.getSimpleName() + " set " + Expert_.state.getName() + " = :state ");
             hqlBuilder.setParam("state", state);
-            hqlBuilder.bulidPropotyString("where",Expert_.expertID.getName(),ids);
+            hqlBuilder.bulidPropotyString("where", Expert_.expertID.getName(), ids);
 
             expertRepo.executeHql(hqlBuilder);
         }
@@ -238,7 +242,7 @@ public class ExpertServiceImpl implements ExpertService {
         hqlBuilder.append(" ON fep.EXPERTID = EP.EXPERTID ");
         //2、排除跟工作方案单位的专家
         hqlBuilder.append(" LEFT JOIN (SELECT WP.ID ID, WP.BUILDCOMPANY bcp, WP.DESIGNCOMPANY dcp ");
-        hqlBuilder.append(" FROM CS_WORK_PROGRAM wp WHERE WP.ID = :wpid ) lwp ").setParam("wpid",minBusinessId);
+        hqlBuilder.append(" FROM CS_WORK_PROGRAM wp WHERE WP.ID = :wpid ) lwp ").setParam("wpid", minBusinessId);
         hqlBuilder.append(" ON (lwp.bcp = ep.COMPANY OR lwp.dcp = ep.COMPANY) ");
         //3、排除本次已经选择的专家
         hqlBuilder.append(" LEFT JOIN CS_EXPERT_SELECTED cursel ON CURSEL.EXPERTID = EP.EXPERTID AND CURSEL.EXPERTREVIEWID =:reviewId ");
@@ -302,12 +306,12 @@ public class ExpertServiceImpl implements ExpertService {
         hqlBuilder.append(" SELECT EP_SEL.EXPERTID, EP_REV.ID, EP_REV.REVIEWDATE FROM CS_EXPERT_SELECTED ep_sel , CS_EXPERT_REVIEW ep_rev ");
         hqlBuilder.append(" WHERE EP_SEL.EXPERTREVIEWID = EP_REV.ID AND TO_CHAR (ep_rev.REVIEWDATE, 'q') = TO_CHAR (SYSDATE, 'q') ");
         hqlBuilder.append(" AND EP_SEL.ISCONFRIM =:isConfrim AND EP_SEL.ISJOIN =:isJoin ) er GROUP BY er.EXPERTID ");
-        hqlBuilder.setParam("isConfrim",Constant.EnumState.YES.getValue()).setParam("isJoin", Constant.EnumState.YES.getValue());
+        hqlBuilder.setParam("isConfrim", Constant.EnumState.YES.getValue()).setParam("isJoin", Constant.EnumState.YES.getValue());
         hqlBuilder.append(" HAVING COUNT (TO_CHAR (er.REVIEWDATE, 'q')) > 12 OR COUNT (TO_CHAR (er.REVIEWDATE, 'yyyy-iw')) > 2) fep ");
         hqlBuilder.append(" ON fep.EXPERTID = EP.EXPERTID ");
         //2、排除跟工作方案单位的专家(保留，不影响)
         hqlBuilder.append(" LEFT JOIN (SELECT WP.ID ID, WP.BUILDCOMPANY bcp, WP.DESIGNCOMPANY dcp ");
-        hqlBuilder.append(" FROM CS_WORK_PROGRAM wp WHERE WP.ID = :wpid ) lwp ").setParam("wpid",minBusinessId);
+        hqlBuilder.append(" FROM CS_WORK_PROGRAM wp WHERE WP.ID = :wpid ) lwp ").setParam("wpid", minBusinessId);
         hqlBuilder.append(" ON (lwp.bcp = ep.COMPANY OR lwp.dcp = ep.COMPANY) ");
         //3、排除本次已经选择的专家
         hqlBuilder.append(" LEFT JOIN CS_EXPERT_SELECTED cursel ON CURSEL.EXPERTID = EP.EXPERTID AND CURSEL.EXPERTREVIEWID =:reviewId ");
@@ -321,23 +325,23 @@ public class ExpertServiceImpl implements ExpertService {
 
 
         //加上选择的条件
-        if (Validate.isString(epSelCondition.getMaJorBig()) || Validate.isString(epSelCondition.getMaJorSmall()) || Validate.isString(epSelCondition.getExpeRttype()) || epSelCondition.getCompositeScore() != null ) {
+        if (Validate.isString(epSelCondition.getMaJorBig()) || Validate.isString(epSelCondition.getMaJorSmall()) || Validate.isString(epSelCondition.getExpeRttype()) || epSelCondition.getCompositeScore() != null) {
             hqlBuilder.append(" AND (select count(ept.ID) from CS_EXPERT_TYPE ept where ept.expertid = ep.expertid ");
             buildCondition(hqlBuilder, "ept", epSelCondition);
             hqlBuilder.append(" ) > 0");
-            if(epSelCondition.getCompositeScore() != null &&  epSelCondition.getCompositeScore() > 0){
+            if (epSelCondition.getCompositeScore() != null && epSelCondition.getCompositeScore() > 0) {
                 hqlBuilder.append(" and  ep.compositeScore>=:compositeScore");
                 hqlBuilder.setParam("compositeScore", epSelCondition.getCompositeScore());
-            }else {
+            } else {
                 hqlBuilder.append(" and  ep.compositeScore is null or ep.compositeScore >=:compositeScore");
-                hqlBuilder.setParam("compositeScore" , epSelCondition.getCompositeScore() == null ? 0 : epSelCondition.getCompositeScore());
+                hqlBuilder.setParam("compositeScore", epSelCondition.getCompositeScore() == null ? 0 : epSelCondition.getCompositeScore());
             }
         }
 
         List<Expert> listExpert = expertRepo.findBySql(hqlBuilder);
         List<ExpertDto> listExpertDto = new ArrayList<>();
         if (Validate.isList(listExpert)) {
-            listExpert.forEach(el ->{
+            listExpert.forEach(el -> {
                 //把图片设置为空
                 el.setPhoto(null);
                 ExpertDto epDto = new ExpertDto();
@@ -387,6 +391,7 @@ public class ExpertServiceImpl implements ExpertService {
 
     /**
      * 获取最大的专家序号
+     *
      * @return
      */
     @Override
@@ -398,7 +403,8 @@ public class ExpertServiceImpl implements ExpertService {
 
     /**
      * 专家方案抽取
-     * @param minBusinessId  专家抽取的业务ID
+     *
+     * @param minBusinessId 专家抽取的业务ID
      * @param reviewId
      * @param paramArrary
      * @return
@@ -409,22 +415,22 @@ public class ExpertServiceImpl implements ExpertService {
         boolean notFirstTime = false;
         boolean isLetterRw = false;     //是否专家函评，默认是否
         int selectedEPCount = -1;       //符合条件的专家
-        List<ExpertDto> officialEPList = new ArrayList<>(),alternativeEPList = new ArrayList<>(),allEPList = new ArrayList<>();
-        ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.id.getName(),reviewId);
+        List<ExpertDto> officialEPList = new ArrayList<>(), alternativeEPList = new ArrayList<>(), allEPList = new ArrayList<>();
+        ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.id.getName(), reviewId);
         //如果是项目，则判断是否是专家函评
-        if(Constant.BusinessType.SIGN.getValue().equals(expertReview.getBusinessType())){
-            WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),minBusinessId);
-            if("专家函评".equals(wp.getReviewType())){
+        if (Constant.BusinessType.SIGN.getValue().equals(expertReview.getBusinessType())) {
+            WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(), minBusinessId);
+            if ("专家函评".equals(wp.getReviewType())) {
                 isLetterRw = true;
             }
         }
 
         //如果是再次抽取(再次抽取是单个条件抽取)，要判断选定的专家是否已经满足条件，如已经满足，则不允许再次抽取
-        if(paramArrary.length == 1 && Validate.isString(paramArrary[0].getId())){
-            ExpertSelCondition  expertSelCondition = expertSelConditionRepo.findById(ExpertSelCondition_.id.getName(),paramArrary[0].getId());
-            if(expertSelCondition != null && expertSelCondition.getSelectIndex() > 0){
-                if(expertSelCondition.getSelectIndex() == 3){
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"您已经进行3次专家抽取，不能再进行抽取操作！");
+        if (paramArrary.length == 1 && Validate.isString(paramArrary[0].getId())) {
+            ExpertSelCondition expertSelCondition = expertSelConditionRepo.findById(ExpertSelCondition_.id.getName(), paramArrary[0].getId());
+            if (expertSelCondition != null && expertSelCondition.getSelectIndex() > 0) {
+                if (expertSelCondition.getSelectIndex() == 3) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您已经进行3次专家抽取，不能再进行抽取操作！");
                 }
                 notFirstTime = true;
             }
@@ -433,79 +439,79 @@ public class ExpertServiceImpl implements ExpertService {
 
         //2、遍历所有抽取条件，每个条件单独抽取
         ResultMsg resultMsg = null;
-        for(int k=0,l=paramArrary.length;k<l;k++){
+        for (int k = 0, l = paramArrary.length; k < l; k++) {
             ExpertSelConditionDto epConditon = paramArrary[k];
-            if(!Validate.isString(epConditon.getId())){
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"请先保存专家抽取条件再进行专家抽取！");
+            if (!Validate.isString(epConditon.getId())) {
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先保存专家抽取条件再进行专家抽取！");
                 break;
             }
-            conditionIds += Validate.isString(conditionIds)?","+epConditon.getId():epConditon.getId();
-            if(resultMsg != null && resultMsg.isFlag() == false){
+            conditionIds += Validate.isString(conditionIds) ? "," + epConditon.getId() : epConditon.getId();
+            if (resultMsg != null && resultMsg.isFlag() == false) {
                 return resultMsg;
             }
             int chooseCount = epConditon.getOfficialNum();
             //如果是再次抽取，则要计算已经确认的专家数
-            if(notFirstTime){
-                selectedEPCount = expertSelectedRepo.findConfirmSeletedEP(reviewId,epConditon.getMaJorBig(),epConditon.getMaJorSmall(),epConditon.getExpeRttype() , epConditon.getCompositeScore());
-                chooseCount = (selectedEPCount > -1)?(chooseCount-selectedEPCount):chooseCount;
-                if(chooseCount < 1){
+            if (notFirstTime) {
+                selectedEPCount = expertSelectedRepo.findConfirmSeletedEP(reviewId, epConditon.getMaJorBig(), epConditon.getMaJorSmall(), epConditon.getExpeRttype(), epConditon.getCompositeScore());
+                chooseCount = (selectedEPCount > -1) ? (chooseCount - selectedEPCount) : chooseCount;
+                if (chooseCount < 1) {
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),
-                            "专业大类【"+epConditon.getMaJorBig()+"】,专业小类【"+epConditon.getMaJorSmall()+"】，专家类型【"+epConditon.getExpeRttype() + "】,综合评分【" +epConditon.getCompositeScore()+"】抽取并确认的专家数已经满足，不用再次抽取！");
+                            "专业大类【" + epConditon.getMaJorBig() + "】,专业小类【" + epConditon.getMaJorSmall() + "】，专家类型【" + epConditon.getExpeRttype() + "】,综合评分【" + epConditon.getCompositeScore() + "】抽取并确认的专家数已经满足，不用再次抽取！");
                     return resultMsg;
                 }
             }
 
             //2、获取所有符合条件的专家
-            List<ExpertDto> matchEPList = countExpert(minBusinessId,reviewId, epConditon);
-            if(!Validate.isList(matchEPList)){
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！");
+            List<ExpertDto> matchEPList = countExpert(minBusinessId, reviewId, epConditon);
+            if (!Validate.isList(matchEPList)) {
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的专家人数不满足抽取条件，抽取无效！请重新设置抽取条件！");
                 break;
             }
             allEPList.addAll(matchEPList);
             int totalCount = matchEPList.size();
 
-            if(epConditon.getOfficialNum() > totalCount){
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
+            if (epConditon.getOfficialNum() > totalCount) {
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                 break;
             }
-            if(epConditon.getAlternativeNum() > (totalCount*2)){
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
+            if (epConditon.getAlternativeNum() > (totalCount * 2)) {
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
             }
 
             //3、开始抽取
-            for(int i = 0;i<chooseCount;i++){
-                if(!addAutoExpert(officialEPList,matchEPList,saveList,epConditon,expertReview,minBusinessId,isLetterRw)){
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
+            for (int i = 0; i < chooseCount; i++) {
+                if (!addAutoExpert(officialEPList, matchEPList, saveList, epConditon, expertReview, minBusinessId, isLetterRw)) {
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
-                if(!addAutoExpert(alternativeEPList,matchEPList,saveList,epConditon,expertReview,minBusinessId,isLetterRw)){
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"条件号【"+(k+1)+"】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
+                if (!addAutoExpert(alternativeEPList, matchEPList, saveList, epConditon, expertReview, minBusinessId, isLetterRw)) {
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
             }
         }
-        if(resultMsg == null){
-            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        if (resultMsg == null) {
+            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
         }
         //4、抽取成功，添加相应的抽取记录
-        if(resultMsg.isFlag()){
-            Map<String,Object> resultMap = new HashMap<>();
+        if (resultMsg.isFlag()) {
+            Map<String, Object> resultMap = new HashMap<>();
             expertSelectedRepo.bathUpdate(saveList);
             List<ExpertSelectedDto> resultList = new ArrayList<>();
-            saveList.forEach(ep ->{
+            saveList.forEach(ep -> {
                 ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
-                BeanCopierUtils.copyProperties(ep,expertSelectedDto);
+                BeanCopierUtils.copyProperties(ep, expertSelectedDto);
                 Expert reEP = ep.getExpert();
                 reEP.setPhoto(null);
                 ExpertDto reEPDto = new ExpertDto();
-                BeanCopierUtils.copyProperties(reEP,reEPDto);
+                BeanCopierUtils.copyProperties(reEP, reEPDto);
                 expertSelectedDto.setExpertDto(reEPDto);
                 resultList.add(expertSelectedDto);
             });
-            resultMap.put("autoEPList",resultList);
-            resultMap.put("allEPList",allEPList);
-            resultMap.put("officialEPList",officialEPList);
-            resultMap.put("alternativeEPList",alternativeEPList);
+            resultMap.put("autoEPList", resultList);
+            resultMap.put("allEPList", allEPList);
+            resultMap.put("officialEPList", officialEPList);
+            resultMap.put("alternativeEPList", alternativeEPList);
             //更新专家抽取条件的抽取次数
             expertSelConditionRepo.updateSelectIndexById(conditionIds);
             resultMsg.setReObj(resultMap);
@@ -515,13 +521,14 @@ public class ExpertServiceImpl implements ExpertService {
 
     /**
      * 获取抽取的专家，排除同名
+     *
      * @param saveEPList
      * @param randomEPList
      * @return
      */
-    private boolean addAutoExpert(List<ExpertDto> saveEPList,List<ExpertDto> randomEPList,List<ExpertSelected> saveList,
-                    ExpertSelConditionDto epConditon,ExpertReview expertReview,String minBusinessId,boolean isLetterRw){
-        if(randomEPList.size() == 0){
+    private boolean addAutoExpert(List<ExpertDto> saveEPList, List<ExpertDto> randomEPList, List<ExpertSelected> saveList,
+                                  ExpertSelConditionDto epConditon, ExpertReview expertReview, String minBusinessId, boolean isLetterRw) {
+        if (randomEPList.size() == 0) {
             return false;
         }
         Random random = new Random();
@@ -530,16 +537,16 @@ public class ExpertServiceImpl implements ExpertService {
         ExpertDto randomEP = randomEPList.get(randomNum);
         randomEPList.remove(randomNum);
         //排除同名
-        for(ExpertDto ep:saveEPList){
-            if(ep.getExpertID().equals(randomEP.getExpertID())){
+        for (ExpertDto ep : saveEPList) {
+            if (ep.getExpertID().equals(randomEP.getExpertID())) {
                 success = false;
                 break;
             }
         }
         //如果不满足，则继续抽
-        if(success == false){
-            return addAutoExpert(saveEPList,randomEPList,saveList,epConditon,expertReview,minBusinessId,isLetterRw);
-        }else{
+        if (success == false) {
+            return addAutoExpert(saveEPList, randomEPList, saveList, epConditon, expertReview, minBusinessId, isLetterRw);
+        } else {
             saveEPList.add(randomEP);
             //保存抽取记录
             ExpertSelected aExpertSelected = new ExpertSelected();
@@ -548,18 +555,18 @@ public class ExpertServiceImpl implements ExpertService {
             aExpertSelected.setSelectType(Constant.EnumExpertSelectType.AUTO.getValue());
             aExpertSelected.setMaJorBig(epConditon.getMaJorBig());
             aExpertSelected.setMaJorSmall(epConditon.getMaJorSmall());
-            aExpertSelected.setSelectIndex(epConditon.getSelectIndex()==null?1:(epConditon.getSelectIndex()+1));
+            aExpertSelected.setSelectIndex(epConditon.getSelectIndex() == null ? 1 : (epConditon.getSelectIndex() + 1));
             aExpertSelected.setExpeRttype(epConditon.getExpeRttype());
             //默认专家费用，每个专家1000元
             aExpertSelected.setReviewCost(new BigDecimal(1000));
             Expert aEP = new Expert();
-            BeanCopierUtils.copyProperties(saveEPList.get(saveEPList.size()-1),aEP);
+            BeanCopierUtils.copyProperties(saveEPList.get(saveEPList.size() - 1), aEP);
             aExpertSelected.setExpert(aEP);                 //保存专家映射
             aExpertSelected.setExpertReview(expertReview);  //保存抽取条件映射
             aExpertSelected.setBusinessId(minBusinessId);   //专家抽取业务ID
-            if(isLetterRw){                                 //是否专家函评
+            if (isLetterRw) {                                 //是否专家函评
                 aExpertSelected.setIsLetterRw(Constant.EnumState.YES.getValue());
-            }else{
+            } else {
                 aExpertSelected.setIsLetterRw(Constant.EnumState.NO.getValue());
             }
             saveList.add(aExpertSelected);
@@ -569,40 +576,40 @@ public class ExpertServiceImpl implements ExpertService {
 
     /**
      * 专家抽取统计
+     *
      * @param expertSelectHis
      * @return
      */
     @Override
-    public List<ExpertSelectHis> expertSelectHis(ExpertSelectHis expertSelectHis,boolean isScore) {
-        List<Object[]> epList = expertSelectedRepo.getSelectHis(expertSelectHis,isScore);
+    public List<ExpertSelectHis> expertSelectHis(ExpertSelectHis expertSelectHis, boolean isScore) {
+        List<Object[]> epList = expertSelectedRepo.getSelectHis(expertSelectHis, isScore);
         List<ExpertSelectHis> resultList = null;
-        String expertID="";     //初始专家ID
+        String expertID = "";     //初始专家ID
         ExpertSelectHis expertSelectHisObj = null;
         List<ExpertSelectHis> childList = null;
-        if(Validate.isList(epList)){
+        if (Validate.isList(epList)) {
             resultList = new ArrayList<>();
-
-            for(int i=0,l=epList.size();i<l;i++){
+            for (int i = 0, l = epList.size(); i < l; i++) {
                 Object[] expMap = epList.get(i);
                 String expId = expMap[0].toString();
                 String expName = expMap[1].toString();
-                String expCompany = expMap[2]==null?"":expMap[2].toString();
-                String expField = expMap[3]==null?"":expMap[3].toString();
-                String projectName = expMap[4]==null?"":expMap[4].toString();
-                String majorBig = expMap[5]==null?"":expMap[5].toString();
-                String marjorSmall = expMap[6]==null?"":expMap[6].toString();
-                String expertType = expMap[7]==null?"":expMap[7].toString();
-                String selectType = expMap[8]==null?"":expMap[8].toString();
-                String isConfirm = expMap[9]==null?"":expMap[9].toString();
-                String reviewType = expMap[10]==null?"":expMap[10].toString();
-                Date reviewDate = DateUtils.converToDate(expMap[11]==null?"":expMap[11].toString(),null);
-                String mainChargeUserName = expMap[12]==null?"":expMap[12].toString();
-                Double score = expMap[13]==null?null:Double.valueOf(expMap[13].toString());
-                String describes = expMap[14]==null?"":expMap[14].toString();
-                String reviewStage = expMap[15]==null?"":expMap[15].toString();
+                String expCompany = expMap[2] == null ? "" : expMap[2].toString();
+                String expField = expMap[3] == null ? "" : expMap[3].toString();
+                String projectName = expMap[4] == null ? "" : expMap[4].toString();
+                String majorBig = expMap[5] == null ? "" : expMap[5].toString();
+                String marjorSmall = expMap[6] == null ? "" : expMap[6].toString();
+                String expertType = expMap[7] == null ? "" : expMap[7].toString();
+                String selectType = expMap[8] == null ? "" : expMap[8].toString();
+                String isConfirm = expMap[9] == null ? "" : expMap[9].toString();
+                String reviewType = expMap[10] == null ? "" : expMap[10].toString();
+                Date reviewDate = DateUtils.converToDate(expMap[11] == null ? "" : expMap[11].toString(), null);
+                String mainChargeUserName = expMap[12] == null ? "" : expMap[12].toString();
+                Double score = expMap[13] == null ? null : Double.valueOf(expMap[13].toString());
+                String describes = expMap[14] == null ? "" : expMap[14].toString();
+                String reviewStage = expMap[15] == null ? "" : expMap[15].toString();
 
-                if(!Validate.isString(expertID) || !expertID.equals(expId)){
-                    if(expertSelectHisObj != null){
+                if (!Validate.isString(expertID) || !expertID.equals(expId)) {
+                    if (expertSelectHisObj != null) {
                         expertSelectHisObj.setChildList(childList);
                         resultList.add(expertSelectHisObj);
                     }
@@ -622,7 +629,7 @@ public class ExpertServiceImpl implements ExpertService {
                 childObj.setMajorBig(majorBig);
                 childObj.setMarjorSmall(marjorSmall);
                 childObj.setSelectType(Constant.EnumExpertSelectType.getName(selectType));
-                childObj.setIsConfirm(Constant.EnumState.YES.getValue().equals(isConfirm)?"已选定":"否");
+                childObj.setIsConfirm(Constant.EnumState.YES.getValue().equals(isConfirm) ? "已选定" : "否");
                 childObj.setReviewType(reviewType);
                 childObj.setExpertType(expertType);
                 childObj.setReviewDate(reviewDate);
@@ -632,7 +639,11 @@ public class ExpertServiceImpl implements ExpertService {
                 childObj.setReviewStage(reviewStage);
                 childList.add(childObj);
                 //最后一个
-                if(i == (l-1)){
+                if (i == (l - 1)) {
+                    //如果只有一个专家的情况
+                    if(!Validate.isList(expertSelectHisObj.getChildList())){
+                        expertSelectHisObj.setChildList(childList);
+                    }
                     resultList.add(expertSelectHisObj);
                 }
             }
@@ -644,9 +655,9 @@ public class ExpertServiceImpl implements ExpertService {
     public List<ExpertDto> exportData(String filters) {
         List<Expert> expertList = expertRepo.exportData(filters);
         List<ExpertDto> expertDtoList = new ArrayList<>();
-        for(Expert expert : expertList){
+        for (Expert expert : expertList) {
             ExpertDto expertDto = new ExpertDto();
-            BeanCopierUtils.copyProperties(expert , expertDto);
+            BeanCopierUtils.copyProperties(expert, expertDto);
             expertDto.setUnable(Constant.EnumState.NO.getValue().equals(expertDto.getUnable()) ? "否" : "是");
             expertDtoList.add(expertDto);
         }

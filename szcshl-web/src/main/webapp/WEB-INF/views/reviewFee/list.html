@@ -9,14 +9,15 @@
         <li class="active">{{vm.title}}</li>
     </ol>
 
-    <form id="reviewFeeForm" name="reviewFeeForm">
+    <form id="reviewFeeForm" name="reviewFeeForm" class="well well-sm">
         <span class="help-inline">业务类型：</span>
         <select  operator="eq" name="businessType" id="businessType" ng-model="vm.reviewFee.businessType">
             <option value="">请选择</option>
             <option value="TOPIC">课题研究</option>
             <option value="SIGN">项目签收</option>
         </select>
-        <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.query()">查询</a>
+        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.query()">
+            <span class="glyphicon glyphicon-search"></span>查询</button>
     </form>
 
     <script type="text/template" id="columnBtns">

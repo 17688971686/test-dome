@@ -10,42 +10,38 @@
     </ol>
 
      <div class="toolbar">
-        <@shiro.hasPermission name="sharingPlatlform##post">
-            <a class="btn btn-sm btn-primary" href="#/sharingPlatlformEdit/"><span class="glyphicon glyphicon-plus"></span>新增记录</a>
-        </@shiro.hasPermission>
-        <@shiro.hasPermission name="sharingPlatlform##delete">
-            <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
-        </@shiro.hasPermission>
+        <a class="btn btn-sm btn-primary" href="#/sharingPlatlformEdit/{sharId:null}">
+            <span class="glyphicon glyphicon-plus"></span>新增记录</a>
+         <a class="btn btn-sm btn-primary" ng-click="vm.querySharing()">
+             <span class="glyphicon glyphicon-search"></span>查询</a>
+         <a class="btn btn-sm btn-primary" ng-click="vm.resetSharing()">
+             <span class="glyphicon glyphicon-repeat"></span>重置</a>
         <button class="btn btn-sm btn-success" ng-click="vm.bathPublish()" ng-disabled="vm.isSubmit">
             <span class="glyphicon glyphicon-cloud-upload"></span>批量发布
         </button>
         <button class="btn btn-sm btn-warning" ng-click="vm.bathDown()" ng-disabled="vm.isSubmit">
             <span class="glyphicon glyphicon-cloud-download"></span>取消发布
         </button>
+         <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit">
+             <span class="glyphicon glyphicon-remove"></span>批量删除</button>
      </div>
 
-    <div class="well well-sm" >
-       <form id="formSharing" name="formSharing">
-           <span class="help-inline">主题：</span>
-           <input type="text"  operator="like" name="theme" id="theme" placeholder="请输入名称">
+    <form id="formSharing" name="formSharing" class="breadcrumb">
+        <span class="help-inline">主题：</span>
+        <input type="text"  operator="like" name="theme" id="theme" placeholder="请输入名称">
 
-           <span class="help-inline" style="margin-left:10px;">共享主题：</span>
-           <select style="width:10%;" ng-model="vm.model.pubDept"   name="pubDept" id="pubDept" operator="eq" >
-	    	   	 	<option value="">无</option>
-					<option ng-repeat="org in vm.orglist" value="{{org.name}}">{{org.name}}</option>
-			</select>
-			
-           <span class="help-inline" style="margin-left:10px;">共享部门：</span>
-          		 <select style="width:10%;" ng-model="vm.model.postResume"  name="postResume" id="postResume" operator="eq" >
-	    	   	 	<option value="">无</option>
-					<option ng-repeat="r in vm.userlist" value="{{r.loginName}}">{{r.loginName}}</option>
-				</select>
+        <span class="help-inline" style="margin-left:10px;">共享主题：</span>
+        <select style="width:10%;" ng-model="vm.model.pubDept"   name="pubDept" id="pubDept" operator="eq" >
+            <option value="">无</option>
+            <option ng-repeat="org in vm.orglist" value="{{org.name}}">{{org.name}}</option>
+        </select>
 
-          <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySharing()">查询</a>
-          <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.resetSharing()">重置</a>
-        </form>
-    </div>
-
+        <span class="help-inline" style="margin-left:10px;">共享部门：</span>
+        <select style="width:10%;" ng-model="vm.model.postResume"  name="postResume" id="postResume" operator="eq" >
+            <option value="">无</option>
+            <option ng-repeat="r in vm.userlist" value="{{r.loginName}}">{{r.loginName}}</option>
+        </select>
+    </form>
 
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
