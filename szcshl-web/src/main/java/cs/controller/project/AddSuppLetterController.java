@@ -75,14 +75,6 @@ public class AddSuppLetterController {
         return addSuppLetterDtos;
     }
 
-   /* @RequiresAuthentication
-    //@RequiresPermissions("addSuppLetter#updateApprove#post")
-    @RequestMapping(name = "领导审批处理", path = "updateApprove", method = RequestMethod.POST)
-    @ResponseBody
-    public void updateApprove(@RequestBody AddSuppLetterDto addSuppLetterDto){
-        addSuppLetterService.updateApprove(addSuppLetterDto);
-    }*/
-
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#initSuppLetter#post")
     @RequestMapping(name = "初始化补充资料函", path = "initSuppLetter", method = RequestMethod.POST)

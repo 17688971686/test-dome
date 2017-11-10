@@ -72,16 +72,6 @@ public class MonthlyNewsletterController {
 
 
     @RequiresAuthentication
-    //@RequiresPermissions("monthlyNewsletter#monthlyAppoveList#post")
-    @RequestMapping(name = "获取（中心）文件审批列表数据", path = "monthlyAppoveList", method = RequestMethod.POST)
-    @ResponseBody
-    public PageModelDto<AddSuppLetterDto> monthlyAppoveList(HttpServletRequest request) throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.monthlyAppoveListData(odataObj);	
-        return addSuppLetterDtos;
-    }
-
-    @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#deleteMutiyear#delete")
  	@RequestMapping(name = "删除年度（中心）月报简报记录", path = "deleteMutiyear", method = RequestMethod.DELETE)
      @ResponseStatus(value = HttpStatus.NO_CONTENT)
