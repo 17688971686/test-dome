@@ -48,13 +48,6 @@
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
                     vm.dispatchDoc = vm.model.dispatchDocDto;
-                    //如果是合并发文次项目，则不用生成发文编号
-                    if((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
-                        || vm.dispatchDoc.fileNum){
-                        vm.businessFlag.isCreateDisFileNum = true;
-                    }else{
-                        vm.showFlag.buttDisFileNum = true;
-                    }
                 }
                 //归档
                 if (vm.model.fileRecordDto) {
@@ -79,7 +72,6 @@
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
                     sysfileSvc.initZtreeClient(vm,$scope);//树形图
-
                 }
             });
         }

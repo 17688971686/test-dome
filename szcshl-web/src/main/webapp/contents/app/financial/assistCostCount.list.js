@@ -10,7 +10,6 @@
         vm.signAssistCost = {};                 //搜索对象
         vm.signAssistCost.beginTime = (new Date()).halfYearAgo();
         vm.signAssistCost.endTime = (new Date()).Format("yyyy-MM-dd");
-        vm.costType = $state.params.costType;
 
         activate();
         function activate() {
@@ -18,20 +17,12 @@
             vm.nodata = false;
             assistCostCountSvc.findSingAssistCostCount(vm.signAssistCost,function (data) {
                 vm.isSubmit = false;
-                vm.signAssistCostList = data;
-                if(!vm.signAssistCostList || vm.signAssistCostList.length == 0){
+                vm.signAssistCostCounList = data;
+                if(!vm.signAssistCostCounList || vm.signAssistCostCounList.length == 0){
                     vm.nodata = true;
                 }
 
             });
-        }
-
-        /**
-         * 协审费录入
-         * @param object
-         */
-        vm.addCostWindow = function(object,id){
-            addCostSvc.initAddCost(vm,vm.costType,object,id);
         }
 
         //查询
