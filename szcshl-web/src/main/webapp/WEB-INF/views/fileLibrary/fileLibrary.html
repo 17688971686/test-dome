@@ -3,11 +3,17 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <style type="text/css">
-    .ztree li span.button.ico_docu {
-        background-position: -110px 0;
-        margin-right: 2px;
-        vertical-align: top;
-    }
+    /*.ztree li span.button.ico_docu {*/
+    /*background-position: -110px 0;*/
+    /*margin-right: 2px;*/
+    /*vertical-align: top;*/
+    /*}*/
+    .ztree li span.button.add {
+        margin-left:2px;
+        margin-right: -1px;
+        background-position:-144px 0;
+        vertical-align:top;
+        }
 </style>
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -18,6 +24,9 @@
         <div class="toolbar">
             <button class="btn btn-sm btn-primary" ng-click="vm.addFolderWindow()">
                 <span class="glyphicon glyphicon-plus"></span>新建文件夹
+            </button>
+            <button class="btn btn-sm btn-danger" ng-click=" vm.deleteFolder()">
+                <span class="glyphicon glyphicon-remove"></span>删除文件夹
             </button>
         </div>
         <ul id="zTree" class="ztree"></ul>

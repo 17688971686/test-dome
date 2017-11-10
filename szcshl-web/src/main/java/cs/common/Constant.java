@@ -516,6 +516,28 @@ public class Constant {
     }
 
     /**
+     * 文件库-文件类型
+     */
+    public static enum libraryType {
+        FOLDER_TYPE("FOLDER"),//文件夹
+
+        FILE_TYPE("FILE"),//文件
+
+        QUALITY_LIBRARY("QUALITY"),//质量管理文件库
+
+        POLICY_LIBRARY("POLICY");//政策标准文件库
+        private String value;
+
+        libraryType(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
      * 文件夹类型
      */
     public static enum folderType{
@@ -556,7 +578,6 @@ public class Constant {
         }
 
     }
-
 
     /**
      * 表头类型
