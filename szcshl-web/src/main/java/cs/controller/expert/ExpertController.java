@@ -5,6 +5,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.ExcelTools;
+import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.project.SignDispaWork;
 import cs.domain.sys.Header;
@@ -224,14 +225,12 @@ public class ExpertController {
     @RequiresAuthentication
     @RequestMapping(name="查询专家评审的项目信息" , path = "reviewProject" , method =  RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<SignDispaWork> reviewProject(@RequestParam String expertId){
-
-        PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
-        if(!"" .equals(expertId)){
-
-            pageModelDto = signDispaWorkService.reviewProject(expertId.substring( 1, expertId.length()));
+    public List<SignDispaWork> reviewProject(@RequestParam String expertId){
+        List<SignDispaWork> resultList = new ArrayList<>();
+        if(Validate.isString(expertId)){
+            resultList = signDispaWorkService.reviewProject(expertId);
         }
-        return pageModelDto;
+        return resultList;
     }
 
     // begin#html

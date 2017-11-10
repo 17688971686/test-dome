@@ -93,10 +93,11 @@ public class ExpertServiceImpl implements ExpertService {
                 expert.setExpertNo(String.format("%06d", Integer.valueOf(findMaxNumber()) + 1));
                 expert.setInputPerson(SessionUtil.getDisplayName());
                 expert.setCreatedDate(new Date());
-                expert.setCreatedBy(SessionUtil.getUserId());
+                //统一用用户编号，跟旧系统一致
+                expert.setCreatedBy(SessionUtil.getUserInfo().getUserNo());
             }
             expert.setModifiedDate(new Date());
-            expert.setModifiedBy(SessionUtil.getDisplayName());
+            expert.setModifiedBy(SessionUtil.getUserInfo().getUserNo());
             expertRepo.save(expert);
             //设置返回值
             BeanCopierUtils.copyProperties(expert, expertDto);

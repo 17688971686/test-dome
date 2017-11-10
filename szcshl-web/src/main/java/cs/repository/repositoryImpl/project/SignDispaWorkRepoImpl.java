@@ -25,7 +25,7 @@ import java.util.*;
 @Repository
 public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, String> implements SignDispaWorkRepo {
     @Override
-    public PageModelDto<SignDispaWork> reviewProject(String expertId) {
+    public List<SignDispaWork> reviewProject(String expertId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where " + SignDispaWork_.signid.getName() + " in (");
         hqlBuilder.append(" select " + ExpertReview_.businessId.getName() + " from " + ExpertReview.class.getSimpleName() + " where " + ExpertReview_.id.getName() + " in (");
@@ -37,11 +37,11 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         hqlBuilder.setParam("isJoin" , Constant.EnumState.YES.getValue());
         hqlBuilder.setParam("expertId" , expertId);
 
-        List<SignDispaWork> signDispaWorkList =this.findByHql(hqlBuilder);
-        PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
+        List<SignDispaWork> signDispaWorkList = this.findByHql(hqlBuilder);
+      /*  PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
         pageModelDto.setValue(signDispaWorkList);
-        pageModelDto.setCount(signDispaWorkList.size());
-        return pageModelDto;
+        pageModelDto.setCount(signDispaWorkList.size());*/
+        return signDispaWorkList;
     }
 
     /**

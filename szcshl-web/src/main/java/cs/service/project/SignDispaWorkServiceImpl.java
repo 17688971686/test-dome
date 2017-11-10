@@ -416,7 +416,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     }
 
     @Override
-    public PageModelDto<SignDispaWork> reviewProject(String expertId) {
+    public  List<SignDispaWork> reviewProject(String expertId) {
         return signDispaWorkRepo.reviewProject(expertId);
     }
 

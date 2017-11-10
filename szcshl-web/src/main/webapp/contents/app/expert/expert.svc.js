@@ -605,11 +605,28 @@
         }//E_expertScoreHis
 
 		//begin reviewProjectGrid
-		function reviewProjectGrid(vm){
-            // Begin:dataSource
+		function reviewProjectGrid(expertId,callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/expert/reviewProject",
+                params : {
+                    expertId :expertId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess,
+            });
+            /*// Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/expert/reviewProject?expertId=" ,+ vm.expertId),
+                transport: common.kendoGridConfig().transport(rootPath + "/expert/reviewProject?expertId=" + vm.expertId),
                 schema: common.kendoGridConfig().schema({
                     id: "signid",
                     fields: {
@@ -679,8 +696,7 @@
 					width : 100 ,
                     filterable: false,
 					template : function(item){
-                        return common.format($('#columnBtns2').html(),
-                            "vm.queryDetail('" + item.signid + "','"+ item.processInstanceId+"')");
+                        return common.format($('#columnBtns2').html(),"vm.queryDetail('" + item.signid + "','"+ item.processInstanceId+"')");
 					}
 				}
             ];
@@ -694,7 +710,7 @@
                 columns: columns,
                 dataBound:dataBound,
                 resizable: true
-            };
+            };*/
 		}
 		//end reviewProjectGrid
 	}

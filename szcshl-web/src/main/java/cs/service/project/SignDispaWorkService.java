@@ -44,7 +44,7 @@ public interface SignDispaWorkService {
      * @param expertId
      * @return
      */
-    PageModelDto<SignDispaWork> reviewProject(String expertId);
+    List<SignDispaWork> reviewProject(String expertId);
 
     /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
