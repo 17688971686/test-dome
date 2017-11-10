@@ -43,8 +43,8 @@
                         simpleData: {
                             enable: true,
                             idKey: "id",
-                            pIdKey: "pId"
-                        }
+                            pIdKey: "pId",
+                        },
                     }
                 };
                 function zTreeOnClick(event, treeId, treeNode) {
@@ -81,20 +81,27 @@
 
                 var zNodes = $linq(data).select(
                     function(x){
-                        var pId =null;
-                        var isParent = false;
-                        if(x.fileNature){
-                            pId = x.parentFileId;
+                        var pId = null;
+                        var returnObj = {
+                            id : x.fileId,
+                            name : x.fileName,
+                            pId : x.parentFileId,
+                            fileNature : x.fileNature,
+
                         }
-                        // if(x.fileNature = "FOLDER"){
-                        //     isParent = true;
-                        // }
-                        return {
+
+                        if(x.fileNature == 'FOLDER'){
+                            returnObj.icon = rootPath+"/contents/libs/zTree/css/zTreeStyle/img/diy/7.png";
+                        }
+
+                        /*return {
                             id : x.fileId,
                             name : x.fileName,
                             pId : pId,
-                            fileNature : x.fileNature
-                        };
+                            fileNature : x.fileNature,
+                            icon : rootPath+"/contents/libs/zTree/css/zTreeStyle/img/diy/7.png"
+                        };*/
+                        return returnObj;
                     }).toArray();
                 zTreeObj = $.fn.zTree.init($("#zTree"),setting,  zNodes );
                 // vm.folderTree = zTreeObj;

@@ -30,25 +30,25 @@ public class FileLibrary extends DomainBase{
     /**
      * 文件名称
      */
-    @Column(columnDefinition = "VARCHAR(200)")
+    @Column(columnDefinition = "VARCHAR(128)")
     private String fileName;
 
     /**
      * 文件性质  ： FOLDER : 文件夹      FILE : 文件
      */
-    @Column(columnDefinition = "VARCHAR(200)")
+    @Column(columnDefinition = "VARCHAR(16)")
     private String fileNature;
 
     /**
      * 文件库类型  POLICY:政策标准文件库    QUALITY:质量管理文件库
      */
-    @Column(columnDefinition = "VARCHAR(200)")
+    @Column(columnDefinition = "VARCHAR(16)")
     private String fileType;
 
     /**
      * 父id
      */
-    @Column(columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(64)")
     private String parentFileId;
 
     /**
