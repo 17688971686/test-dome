@@ -851,38 +851,38 @@
             .state('fileLibrary',{
                 url : '/fileLibrary',
                 templateUrl : rootPath + '/fileLibrary/html/fileLibrary.html',
-                controller : 'fileLibraryCtrl',
+                controller : 'qualityCtrl',
                 controllerAs : 'vm'
             })
             .state('fileLibrary.fileList',{ //文件列表
-                url : '/fileList/:parentId/:fileId',
+                url : '/fileList/:parentId',
                 templateUrl : rootPath + '/fileLibrary/html/fileList.html',
-                controller : 'fileLibraryEditCtrl',
+                controller : 'qualityListCtrl',
                 controllerAs : 'vm'
             })
             .state('fileLibrary.fileEdit',{//新建文件
                 url : '/fileEdit/:parentId/:fileId',
                 templateUrl : rootPath + '/fileLibrary/html/fileEdit.html',
-                controller : 'fileLibraryEditCtrl',
+                controller : 'qualityEditCtrl',
                 controllerAs : 'vm'
             })
             //政策标准库
             .state('policyLibrary',{
                 url : '/policyLibrary',
                 templateUrl : rootPath + '/fileLibrary/html/policyLibrary.html',
-                controller : 'policyLibraryCtrl',
+                controller : 'policyCtrl',
                 controllerAs : 'vm'
             })
             .state('policyLibrary.policyList',{ //文件列表
-                url : '/policyList/:parentId/:fileId',
+                url : '/policyList/:parentId',
                 templateUrl : rootPath + '/fileLibrary/html/policyList.html',
-                controller : 'policyLibraryEditCtrl',
+                controller : 'policyListCtrl',
                 controllerAs : 'vm'
             })
             .state('policyLibrary.policyEdit',{//新建文件
                 url : '/policyEdit/:parentId/:fileId',
                 templateUrl : rootPath + '/fileLibrary/html/policyEdit.html',
-                controller : 'policyLibraryEditCtrl',
+                controller : 'policyEditCtrl',
                 controllerAs : 'vm'
             })
             //图书采购流程
