@@ -529,25 +529,6 @@
                             <w:t>${sbqdjk}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="007E72D5" w:rsidRDefault="007E72D5" w:rsidP="007E72D5">
-                        <w:pPr>
-                            <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
-                            <w:rPr>
-                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                        </w:pPr>
-                        <w:r w:rsidRPr="006E4C96">
-                            <w:rPr>
-                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:t>${tqjr}</w:t>
-                        </w:r>
-                    </w:p>
                     <w:p w:rsidR="00FB6CC4" w:rsidRPr="001F4E25" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
                         <w:pPr>
                             <w:spacing w:before="100" w:beforeAutospacing="1" w:after="100" w:afterAutospacing="1"
@@ -1329,8 +1310,7 @@
                                 <w:sz w:val="32"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>${proCountCent4}
-                                。
+                            <w:t>${proCountCent4}。
                             </w:t>
                         </w:r>
                     </w:p>
