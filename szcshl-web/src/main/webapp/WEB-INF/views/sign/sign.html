@@ -53,7 +53,7 @@
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram" >
 
         <!-- （包含：主、次项目）项目建议书/可行性研究报告/资金申请报告/其它  -->
-        <div ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'"
+        <div id="sign_workprogram_xmjys" ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'"
              ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
        
        <!--S  资金申请报告  包含：主项目、次项目 -->
@@ -70,6 +70,9 @@
       
         <!-- 设备清单（进口）包含： 主项目 、次项目-->
        <!--  <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainImportDetail.html'"></div> -->
+
+        <!-- 引入工作方 项目建议书/可行性研究报告/项目概算/其它 模板-->
+        <div id="sign_workprogram_xmjys_templ" style="display: none;"> <#include "/templatePrint/workProgramXmjys.html"/></div>
     </div><!-- 工作方案 -->
 
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_basewp" >
@@ -81,7 +84,7 @@
         <!-- <div ng-include src="'${path}/contents/app/dispatch/detail.html'"/> -->
        	 
        	 <!-- S 项目建议书 -->
-         <div ng-show="vm.model.reviewstage =='项目建议书'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/projectDetail.html'"/>
+         <div id="sign_dispatch_xmjys" ng-show="vm.model.reviewstage =='项目建议书'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/projectDetail.html'"/>
          <!-- E 项目建议书 -->
          
           <!-- S 可行性研究报告 -->
@@ -103,6 +106,9 @@
          <!-- S 设备清单（进口）/设备清单（国产） -->
          <div ng-show="vm.model.reviewstage =='设备清单（国产）' || vm.model.reviewstage =='设备清单（进口）' "ng-include src="'${path}/contents/app/dispatch/dispatchDetail/domesticDetail.html'"/>
          <!-- E 设备清单（进口）/设备清单（国产） -->
+
+        <!-- 项目建议书 发文模板-->
+        <div id="sign_dispatch_xmjys_templ" style="display: none;"> <#include "/templatePrint/projectDetailXmjys.html"/></div>
     </div>
     <!--E 发文 -->
 
@@ -164,7 +170,7 @@
     <!-- end tab3 -->
 
 </div>
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="vm.printpage($event)">打印</button>
 <script>
 
 </script>

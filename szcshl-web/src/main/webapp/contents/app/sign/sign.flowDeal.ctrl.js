@@ -4,10 +4,10 @@
     angular.module('app').controller('signFlowDealCtrl', sign);
 
     sign.$inject = ['sysfileSvc', 'signSvc','workprogramSvc', '$state', 'flowSvc', 'signFlowSvc','ideaSvc',
-      'addRegisterFileSvc','expertReviewSvc', '$scope','bsWin' , 'financialManagerSvc' , 'assistCostCountSvc' , 'addCostSvc'];
+      'addRegisterFileSvc','expertReviewSvc', '$scope','bsWin' , 'financialManagerSvc' , 'assistCostCountSvc' , 'addCostSvc','templatePrintSvc'];
 
     function sign(sysfileSvc, signSvc,workprogramSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc,
-                  expertReviewSvc, $scope,bsWin , financialManagerSvc , assistCostCountSvc , addCostSvc) {
+                  expertReviewSvc, $scope,bsWin , financialManagerSvc , assistCostCountSvc , addCostSvc,templatePrintSvc) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -86,6 +86,7 @@
                 var showDiv = aObj.attr("for-div");
                 $(".tab-pane").removeClass("active").removeClass("in");
                 $("#" + showDiv).addClass("active").addClass("in").show(500);
+                vm.model.showDiv = showDiv;
             })
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
@@ -889,6 +890,13 @@
                     }
                 })
             })
+        }
+
+        //签收模板打印
+        vm.printpage = function ($event) {
+                console.log($event.target);
+                console.log(vm.model);
+            templatePrintSvc.templatePrint($event.target,vm.model);
         }
 
     }
