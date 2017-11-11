@@ -7,14 +7,12 @@
         var vm = this;
         vm.suppletter = {}; //补充资料对象$state
         vm.id = $state.params.id;//主键ID
-        vm.title = '登记补充资料';
+        vm.title = '拟补充资料函查询';
         // vm.suppletter.fileType = "1";
         vm.isQuery = true;
 
         activate();
         function activate() {
-        	//补充资料函审批列表
-        	// addSuppLetterQuerySvc.approveGrid(vm);
         	//补充资料函查询列表
         	addSuppLetterQuerySvc.addQueryGrid(vm);
         	

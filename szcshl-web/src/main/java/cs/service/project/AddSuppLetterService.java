@@ -58,6 +58,11 @@ public interface AddSuppLetterService {
 
 	void deletes(String[] ids);
 
+	/**
+	 * 拟补充资料函查询
+	 * @param odataObj
+	 * @return
+	 */
 	PageModelDto<AddSuppLetterDto> addsuppListData(ODataObj odataObj);
 
 	PageModelDto<AddSuppLetterDto> addSuppApproveList(ODataObj odataObj);

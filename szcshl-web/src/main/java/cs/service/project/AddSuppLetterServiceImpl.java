@@ -345,45 +345,12 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Override
     public PageModelDto<AddSuppLetterDto> addsuppListData(ODataObj odataObj) {
         PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
-        Date beginTime = null;
-        Date endTime = null;
-        String title = null;
-        String orgName = null;
-        //判断odata的过滤条件
-        if(odataObj.getFilter() != null && odataObj.getFilter().size()>0){
-           List<ODataFilterItem> odf  = odataObj.getFilter();
-           if(odf != null && odf.size()>0){
-               for(int i=0 ; i<odf.size() ; i++){
-                   if("beginTime".equals(odf.get(i).getField())){
-                       String begin = DateUtils.getDateTime("yyyy-MM-dd HH:mm:ss" , (Date)odf.get(i).getValue());
-                       beginTime = DateUtils.converToDate(begin , "yyyy-MM-dd HH:mm:ss" ) ;
-                   }
-                   if("endTime".equals(odf.get(i).getField())){
-                       String end = DateUtils.getDateTime("yyyy-MM-dd HH:mm:ss" , (Date)odf.get(i).getValue());
-                       endTime = DateUtils.converToDate(end , "yyyy-MM-dd HH:mm:ss" ) ;
-                   }
-                   if("title".equals(odf.get(i).getField())){
-                       title = "%" +  odf.get(i).getValue().toString() + "%";
-                   }
-                   if("orgName".equals(odf.get(i).getField())){
-                       orgName = "%" + odf.get(i).getValue().toString() + "%";
-                   }
-               }
-           }
-        }
+
         Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
-//        criteria = odataObj.buildFilterToCriteria(criteria);
+        criteria = odataObj.buildFilterToCriteria(criteria);
+        //文件类型，1表示拟补充资料函
+        criteria.add(Restrictions.eq(AddSuppLetter_.fileType.getName(), EnumState.PROCESS.getValue()));
         criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), EnumState.YES.getValue()));
-        //添加模糊查询条件
-        if(beginTime != null && endTime != null){
-            criteria.add(Restrictions.between(AddSuppLetter_.suppLetterTime.getName() , beginTime , endTime));
-        }
-        if(title != null){
-            criteria.add(Restrictions.like(AddSuppLetter_.title.getName() , title));
-        }
-        if(orgName != null){
-            criteria.add(Restrictions.like(AddSuppLetter_.orgName.getName() , orgName));
-        }
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         pageModelDto.setCount(totalResult);
