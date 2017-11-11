@@ -894,8 +894,6 @@
 
         //签收模板打印
         vm.printpage = function ($event) {
-                console.log($event.target);
-                console.log(vm.model);
             templatePrintSvc.templatePrint($event.target,vm.model);
         }
 

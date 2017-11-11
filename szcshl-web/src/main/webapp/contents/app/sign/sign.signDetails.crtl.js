@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signDetailsCtrl', sign);
 
-    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','$scope'];
+    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','$scope','templatePrintSvc'];
 
-    function sign(sysfileSvc, signSvc,$state,flowSvc,$scope) {
+    function sign(sysfileSvc, signSvc,$state,flowSvc,$scope,templatePrintSvc) {
         var vm = this;
     	vm.model = {};							    //创建一个form对象
         vm.flow = {};                               //收文对象
@@ -35,6 +35,7 @@
                 var showDiv = aObj.attr("for-div");
                 $(".tab-pane").removeClass("active").removeClass("in");
                 $("#"+showDiv).addClass("active").addClass("in").show(500);
+                vm.model.showDiv = showDiv;
             })
 
             //流程图和流程处理记录信息
@@ -76,6 +77,10 @@
                 }
             });
 
+        }
+        //签收模板打印
+        vm.printpage = function ($event) {
+            templatePrintSvc.templatePrint($event.target,vm.model);
         }
     }
 })();

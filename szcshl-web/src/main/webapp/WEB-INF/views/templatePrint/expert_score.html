@@ -1,0 +1,63 @@
+<meta charset="UTF-8">
+<table class="print-table">
+    <caption class="title">专家评分</caption><!--第一负责人才能评分-->
+    <tr>
+        <th width="5%">序号</th>
+        <th width="10%">姓名</th>
+        <th width="20%">工作单位</th>
+        <th width="20%">职位/职称</th>
+        <th width="10%">专业</th>
+        <th width="22%">专家评分</th>
+        <th width="13%">评分描述</th>
+        <th width="10%" ng-if="vm.showFlag.isMainPrinUser">操作</th>
+    </tr>
+    <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
+        <td>{{$index+1}}</td>
+        <td>{{x.expertDto.name}}</td>
+        <td>{{x.expertDto.comPany}}</td>
+        <td>{{x.expertDto.job}}/{{x.expertDto.post}}</td>
+        <td>{{x.expertDto.majorStudy}}</td>
+        <td>
+            <span style='color:gold;font-size:20px;' ng-repeat="c in range(x.score) track by $index ">
+                <i class='fa fa-star' aria-hidden='true'></i>
+            </span>
+        </td>
+        <td>{{x.describes}}</td>
+        <td ng-if="vm.showFlag.isMainPrinUser">
+            <button class="btn btn-xs btn-primary" ng-click="vm.editSelectExpert(x.id)">
+                <span class="glyphicon glyphicon-pencil"></span>评分
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<!-- end 专家评分 -->
+
+<!-- start 专家评分弹窗-->
+<div id="score_win" style="display: none;">
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.saveMark()" ng-disabled="vm.isCommit" >
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <button class="btn btn-sm btn-success" ng-click="vm.closeEditMark()" ng-disabled="vm.isCommit" >
+            <span class="glyphicon glyphicon-ok"></span>返回
+        </button>
+    </div>
+    <div>
+        <form id="expert_score_form" name="expert_score_form">
+            <table class="table table-bordered">
+                <tr>
+                    <td style="width:90px;">专家星级:</td>
+                    <td>
+                        <div id="star" data-num=""></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:90px;">评级描述:</td>
+                    <td><textarea rows="7" style="width: 96%;" ng-model="vm.scoreExpert.describes" ></textarea></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<!-- end 专家评分弹窗-->

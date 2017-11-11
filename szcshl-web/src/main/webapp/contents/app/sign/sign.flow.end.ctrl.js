@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signEndCtrl', sign);
 
-    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','$scope'];
+    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','$scope','templatePrintSvc'];
 
-    function sign(sysfileSvc,signSvc,$state,flowSvc,$scope) {
+    function sign(sysfileSvc,signSvc,$state,flowSvc,$scope,templatePrintSvc) {
         var vm = this;
         vm.title = "已办结项目详情";
         vm.model = {};
@@ -38,6 +38,7 @@
                 var showDiv = aObj.attr("for-div");
                 $(".tab-pane").removeClass("active").removeClass("in");
                 $("#"+showDiv).addClass("active").addClass("in").show(500);
+                vm.model.showDiv = showDiv;
             })
 
             flowSvc.initFlowData(vm);
@@ -87,6 +88,10 @@
                 title: "在线编辑",
                 content: rootPath + "/file/editFile?sysFileId="+sysFileId,
             });
+        }
+        //签收模板打印
+        vm.printpage = function ($event) {
+            templatePrintSvc.templatePrint($event.target,vm.model);
         }
     }
 })();
