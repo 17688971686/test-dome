@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -328,6 +329,21 @@ public class SignController {
     public @ResponseBody List<SignDto> findAssistSign() {
 
         return signService.findAssistSign();
+    }
+
+
+    @RequiresPermissions("sign#personDtasks#get")
+    @RequestMapping(name = "个人在审项目", path = "personDtasks")
+    public String personDtasks(Model model) {
+
+        return "admin/personDtasks";
+    }
+
+    @RequiresPermissions("sign#etasks#get")
+    @RequestMapping(name = "办结项目", path = "etasks")
+    public String etasks(Model model) {
+
+        return "admin/etasks";
     }
 
 }

@@ -24,7 +24,7 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "用户资产明细", path = "userAssertDetail")
-@MudoleAnnotation(name = "用户资产明细",value = "permission#userAssertDetail")
+@MudoleAnnotation(name = "用户资产明细",value = "permission#assert")
 public class UserAssertDetailController {
 
 	String ctrlName = "asserts/userAssertDetail";

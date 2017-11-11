@@ -140,19 +140,6 @@ public class AdminController {
         return ctrlName + "/dtasks";
     }
 
-    @RequiresPermissions("admin#personDtasks#get")
-    @RequestMapping(name = "个人主办项目", path = "personDtasks")
-    public String personDtasks(Model model) {
-
-        return ctrlName + "/personDtasks";
-    }
-
-    @RequiresPermissions("admin#etasks#get")
-    @RequestMapping(name = "办结项目", path = "etasks")
-    public String etasks(Model model) {
-
-        return ctrlName + "/etasks";
-    }
 
     @RequiresPermissions("admin#agendaTasks#get")
     @RequestMapping(name = "待办任务", path = "agendaTasks")

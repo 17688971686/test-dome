@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(name="文件库",path="fileLibrary")
-@MudoleAnnotation(name = "文件库",value = "permission#fileMng")
+@MudoleAnnotation(name = "文件库",value = "permission#annountment")
 public class FileLibraryController {
 
     private String ctrlName = "fileLibrary";

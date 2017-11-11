@@ -34,7 +34,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(name = "月报简报", path = "monthlyNewsletter")
-@MudoleAnnotation(name = "项目管理",value = "permission#sign")
+@MudoleAnnotation(name = "月报简报管理",value = "permission#monthlyNewsletter")
 public class MonthlyNewsletterController {
 
 	String ctrlName = "monthlyNewsletter";
