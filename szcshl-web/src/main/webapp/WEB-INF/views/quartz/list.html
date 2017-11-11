@@ -12,28 +12,17 @@
     <div class="toolbar">
         <button class="btn btn-sm btn-primary" ng-click="vm.addQuartz()"><span class="glyphicon glyphicon-plus"></span>新增定时器</button>
     </div>
-
-    <script type="text/template" id="columnBtns">
-        <@shiro.hasPermission name="quartz##delete">
-        <button class="btn btn-xs btn-danger"  ng-click="{0}" ng-if="{2}=='9'"><span class="glyphicon glyphicon-remove"></span>停用</button>
-        </@shiro.hasPermission>
-        <@shiro.hasPermission name="quartz##put">
-        <button class="btn btn-xs btn-primary" ng-click="{1}" ng-if="{2}=='9'"><span class="glyphicon glyphicon-pencil"></span>编辑</button>
-        </@shiro.hasPermission>
-		<@shiro.hasPermission name="quartz##put">
-        <button class="btn btn-xs btn-primary" ng-click="{3}" ng-if="{2}=='9' && {4}=='0'" ><span class="glyphicon glyphicon-pencil"></span>执行</button>
-        </@shiro.hasPermission>
-		<@shiro.hasPermission name="quartz##put">
-        <button class="btn btn-xs btn-danger" ng-click="{5}" ng-if="{4}=='9'")><span class="glyphicon glyphicon-remove"></span>停止</button>
-        </@shiro.hasPermission>
-		<@shiro.hasPermission name="quartz##put">
-        <button class="btn btn-xs btn-danger" ng-if="{2}=='0'"><span class="glyphicon glyphicon-remove"></span>已停用</button>
-        </@shiro.hasPermission>
-    </script>
-
+    
+    <div class="label-info" style="padding:5px 10px;">
+        提示：定时器的设定关系到系统的正常运行，不能随意更改！
+    </div>
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
-
+<script type="text/template" id="columnBtns">
+    <button class="btn btn-xs btn-primary" ng-click="{0}" ><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+    <button class="btn btn-xs btn-primary" ng-click="{1}" ng-if="{2}" ><span class="glyphicon glyphicon-pencil"></span>执行</button>
+    <button class="btn btn-xs btn-warning" ng-click="{3}" ng-if="{4}")><span class="glyphicon glyphicon-warning-sign"></span>停止</button>
+</script>
 
 <!-- S_新增定时器弹窗DIV -->
 <div class="well well-sm" style="background:white;display: none;" id="quartz_edit_div">
@@ -48,21 +37,21 @@
     <form id="quartz_form" name="form">
         <table class="table table-bordered">
             <tr>
-                <td class="formAlignRight" width="20%">定时器名称：<span class="required">*</span></td>
+                <td class="text-right" width="20%">定时器名称：<span class="required">*</span></td>
                 <td>
                     <input class="form-control input-sm " ng-model="vm.quartz.quartzName" id="quartzName" name="quartzName" style="width:80%;"/>
                     <span data-valmsg-for="quartzName" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight" >类名：<span class="required">*</span></td>
+                <td class="text-right" >类名：<span class="required">*</span></td>
                 <td>
                     <input class="form-control input-sm " ng-model="vm.quartz.className" id="className" name="className"  style="width:80%;"/>
                     <span data-valmsg-for="className" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight">表达式：<span class="required">*</span></td>
+                <td class="text-right">表达式：<span class="required">*</span></td>
                 <td>
                     <input class="form-control input-sm " ng-model="vm.quartz.cronExpression" id="cronExpression" name="cronExpression"  style="width:80%;"/>
                     <span data-valmsg-for="cronExpression" data-valmsg-replace="true" class="errors"></span>
@@ -70,7 +59,7 @@
             </tr>
             
             <tr>
-                <td class="formAlignRight">执行方式：</td>
+                <td class="text-right">执行方式：</td>
                 <td>
                 <select class="form-control input-sm " ng-model="vm.quartz.runWay" 
                            id="runWay" name="runWay"  style="width:80%;" >
@@ -81,7 +70,7 @@
                <span data-valmsg-for="isEnable" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">描述：</td>
+                <td class="text-right">描述：</td>
                 <td>
                     <input class="form-control input-sm " ng-model="vm.quartz.descInfo" id="descInfo" name="descInfo"  style="width:80%;"/>
                     <span data-valmsg-for="descInfo" data-valmsg-replace="true" class="errors"></span>

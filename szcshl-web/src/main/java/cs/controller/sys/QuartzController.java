@@ -5,6 +5,9 @@ import java.text.ParseException;
 import javax.servlet.http.HttpServletRequest;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.Constant;
+import cs.common.ResultMsg;
+import cs.common.utils.SessionUtil;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.quartz.Job;
@@ -36,13 +39,13 @@ import cs.service.sys.QuartzService;
  */
 @Controller
 @RequestMapping(name = "定时器配置", path = "quartz")
-@MudoleAnnotation(name = "系统管理",value = "permission#system")
+@MudoleAnnotation(name = "系统管理", value = "permission#system")
 public class QuartzController {
 
-	String ctrlName = "quartz";
+    String ctrlName = "quartz";
     @Autowired
     private QuartzService quartzService;
-    
+
     @Autowired
     private QuartzRepo quartzRepo;
 
@@ -52,92 +55,77 @@ public class QuartzController {
     @ResponseBody
     public PageModelDto<QuartzDto> get(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<QuartzDto> quartzDtos = quartzService.get(odataObj);	
+        PageModelDto<QuartzDto> quartzDtos = quartzService.get(odataObj);
         return quartzDtos;
     }
 
     //@RequiresPermissions("quartz##post")
     @RequiresAuthentication
     @RequestMapping(name = "创建记录", path = "", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody QuartzDto record) {
-        quartzService.save(record);
+    @ResponseBody
+    public ResultMsg post(@RequestBody QuartzDto record) {
+        if (!Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "你不是系统管理员，不能进行此操作！");
+        }
+
+        return quartzService.save(record);
     }
 
     @RequiresAuthentication
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
-	public @ResponseBody QuartzDto findById(@RequestParam(required = true)String id){		
-		return quartzService.findById(id);
-	}
-	
+    @RequestMapping(name = "主键查询", path = "html/findById", method = RequestMethod.POST)
+    public @ResponseBody
+    QuartzDto findById(@RequestParam(required = true) String id) {
+        return quartzService.findById(id);
+    }
+
     //@RequiresPermissions("quartz##delete")
     @RequiresAuthentication
-    @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String id) {
-    	quartzService.delete(id);      
+    @RequestMapping(name = "删除记录（设置为停用）", path = "", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResultMsg delete(@RequestParam String id) {
+        if (!Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "你不是系统管理员，不能进行此操作！");
+        }
+        return quartzService.delete(id);
     }
 
-    //@RequiresPermissions("quartz#updateQuartz#put")
-    @RequiresAuthentication
-    @RequestMapping(name = "更新记录", path = "updateQuartz", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void put(@RequestBody QuartzDto record) {
-        quartzService.update(record);
-    }
-    
+
     //@RequiresPermissions("quartz#quartzExecute#put")
     @RequiresAuthentication
     @RequestMapping(name = "执行定时器", path = "quartzExecute", method = RequestMethod.PUT)
     @ResponseBody
-    public String quartzExecute(@RequestParam String quartzId) throws Exception{
-    	Quartz quartz=quartzRepo.findById(quartzId);
-    	SchedulerFactory schedulderFactory=new StdSchedulerFactory();
-		Scheduler sched=schedulderFactory.getScheduler();
-		String cls=quartz.getClassName();
-		String jobName=quartz.getQuartzName();
-		String time=quartz.getCronExpression();
-		if(Job.class .isAssignableFrom(Class.forName(cls))){
-			QuartzManager.addJob(sched, jobName, Class.forName(cls), time);
-			quartzService.changeCurState(quartzId,"9");
-			return "success";
-		}else{
-			return "defeated";
-		}
-		
-    	
+    public ResultMsg quartzExecute(@RequestParam String quartzId) {
+        if (!Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "你不是系统管理员，不能进行此操作！");
+        }
+        return quartzService.quartzExecute(quartzId);
     }
-    
+
     //@RequiresPermissions("quartz#quartzStop#put")
     @RequiresAuthentication
-    @RequestMapping(name = "停止定时器", path = "quartzStop", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void quartzStop(@RequestParam String quartzId) throws Exception{
-    	Quartz quartz=quartzRepo.findById(quartzId);
-    	SchedulerFactory schedulderFactory=new StdSchedulerFactory();
-		Scheduler sched=schedulderFactory.getScheduler();
-//		String cls=quartz.getClassName();
-		String jobName=quartz.getQuartzName();
-//		String time=quartz.getCronExpression();
-		QuartzManager.removeJob(sched, jobName);
-		quartzService.changeCurState(quartzId,"0");
-    	
+    @RequestMapping(name = "停止定时器", path = "quartzStop", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg quartzStop(@RequestParam String quartzId) {
+        if (!Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "你不是系统管理员，不能进行此操作！");
+        }
+        return quartzService.quartzStop(quartzId);
     }
-    
+
 
     // begin#html
     @RequiresPermissions("quartz#html/list#get")
     @RequestMapping(name = "定时器管理", path = "html/list", method = RequestMethod.GET)
     public String list() {
-        return ctrlName+"/list"; 
+        return ctrlName + "/list";
     }
 
     //@RequiresPermissions("quartz#html/edit#get")
     @RequiresAuthentication
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
-        return ctrlName+"/edit";
+        return ctrlName + "/edit";
     }
     // end#html
-    
+
 }
