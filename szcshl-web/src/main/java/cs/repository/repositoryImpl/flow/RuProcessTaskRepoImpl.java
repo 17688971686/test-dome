@@ -10,6 +10,8 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Description:正在办理的任务
  * author: ldm
@@ -29,5 +31,16 @@ public class RuProcessTaskRepoImpl extends AbstractRepository<RuProcessTask, Str
         dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
         criteria.add(dis);
         return ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+    }
+    /**
+     * 根据processInstanceId实例ID查询在办项目数据
+     * @param  processInstanceId
+     */
+    @Override
+
+    public List<RuProcessTask> findRuProcessList(String processInstanceId){
+        Criteria criteria= this.getSession().createCriteria(RuProcessTask.class);
+        criteria.add(Restrictions.eq(RuProcessTask_.processInstanceId.getName() , processInstanceId));
+        return criteria.list();
     }
 }

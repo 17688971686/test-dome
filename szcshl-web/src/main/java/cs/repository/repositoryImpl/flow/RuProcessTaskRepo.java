@@ -3,6 +3,8 @@ package cs.repository.repositoryImpl.flow;
 import cs.domain.flow.RuProcessTask;
 import cs.repository.IRepository;
 
+import java.util.List;
+
 /**
  * Description: 正在办理的项目
  * author: ldm
@@ -11,4 +13,6 @@ import cs.repository.IRepository;
 public interface RuProcessTaskRepo extends IRepository<RuProcessTask, String> {
 
     int findMyDoingTask();
+
+    List<RuProcessTask> findRuProcessList(String processInstanceId);
 }

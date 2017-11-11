@@ -1,0 +1,47 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li>项目管理</li>
+        <li class="active">项目取回</li>
+    </ol>
+
+<!--    <div class="toolbar">
+        <a class="btn btn-sm btn-primary" ng-click="vm.querySign()"><span class="glyphicon glyphicon-search"></span>查询</a>
+        <a class="btn btn-sm btn-primary" href="#/addSign"><span class="glyphicon glyphicon-plus"></span>项目签收</a>
+        <a class="btn btn-sm btn-primary" href="#/reserveAdd"><span class="glyphicon glyphicon-plus"></span>项目预签收</a>
+    </div>-->
+
+<!--  <form id="searchform" name="searchform" class="breadcrumb">
+      <table  style="width: 100%;">
+          <tr>
+              <td class="text-right" style="width: 80px;">项目名称：</td>
+              <td>
+                  <input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">
+              </td>
+              <td class="text-right" style="width: 80px;">项目编号：</td>
+              <td>
+                  <input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">
+              </td>
+              <td class="text-right" style="width: 80px;">签收日期：</td>
+              <td>
+                  <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" operator="ge" name="signdate" id="signdate" >
+              </td>
+          </tr>
+      </table>
+    </form>-->
+
+    <div class="grid" kendo-grid="grid" k-options="vm.signGetBackGrid"></div>
+</div>
+
+<script type="text/template" id="columnBtns">
+  <@shiro.hasPermission name="sign##put">
+  <a class="btn btn-xs btn-primary" ng-click="vm.getBack({2},'{1}')" ><span class="glyphicon glyphicon-pencil"></span>取回</a>
+  </@shiro.hasPermission>
+
+  <a class="btn btn-xs btn-info" href="#/{0}/{1}/{2}/{3}" ><span class="glyphicon glyphicon-comment"></span>查看详情</a>
+
+</script>

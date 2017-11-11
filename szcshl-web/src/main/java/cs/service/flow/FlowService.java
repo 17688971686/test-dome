@@ -81,9 +81,10 @@ public interface FlowService {
      * 取回流程
      * @param taskId    当前任务ID
      * @param activityId 取回节点ID
+     * @param businessKey 删除工作方案的singId
      * @return ResultMsg
      */
-    ResultMsg callBackProcess(String taskId, String activityId)throws Exception;
+    ResultMsg callBackProcess(String taskId, String activityId,String businessKey)throws Exception;
 
     /**
      * 根据流程实例ID和任务key值查询所有同级任务集合
@@ -107,4 +108,11 @@ public interface FlowService {
      * @return
      */
     ResultMsg restartFlow(String businessKey);
+
+    /**
+     * 删除流程任务实例
+     * @param taskId 任务节点ID
+     * @param executionId 流程实例节点ID
+     * */
+    void deleteTask(String taskId, String executionId);
 }

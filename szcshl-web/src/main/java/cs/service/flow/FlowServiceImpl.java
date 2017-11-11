@@ -20,6 +20,7 @@ import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.service.project.SignService;
+import cs.service.project.WorkProgramService;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -38,7 +39,10 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.*;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -79,6 +83,10 @@ public class FlowServiceImpl implements FlowService {
     private SignMergeRepo signMergeRepo;
     @Autowired
     private SignDispaWorkRepo signDispaWorkRepo;
+    @Autowired
+    private SessionFactory sessionFactory;
+    @Autowired
+    private WorkProgramService workProgramService;
 
 
     @Autowired
@@ -97,6 +105,8 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     @Qualifier("suppLetterFlowBackImpl")
     private IFlowBack suppLetterFlowBackImpl;
+
+
 
     /**
      * 回退到上一环节或者指定环节
@@ -567,19 +577,24 @@ public class FlowServiceImpl implements FlowService {
      *
      * @param taskId     当前任务ID
      * @param activityId 取回节点ID
+     * @param businessKey 删除工作方案的singId
      * @return ResultMsg
      */
     @Override
-    public ResultMsg callBackProcess(String taskId, String activityId) throws Exception{
+    public ResultMsg callBackProcess(String taskId, String activityId,String businessKey) throws Exception{
         if (!Validate.isString(activityId)) {
             throw new Exception("目标节点ID为空！");
         }
-
         // 查找所有并行任务节点，同时取回
         List<Task> taskList = findTaskListByKey(findProcessInstanceByTaskId(
                 taskId).getId(), findTaskById(taskId).getTaskDefinitionKey());
-        for (Task task : taskList) {
-            commitProcess(task.getId(), null, activityId);
+        for(Task task:taskList ){
+            if(task.getId().equals(taskId)){
+                commitProcess(task.getId(), null, activityId);//取回项目流程
+            }else{
+                deleteTask(task.getId(),task.getExecutionId());//删除流程实例
+            }
+            workProgramService.deleteBySignId(businessKey);//删除工作方案
         }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
@@ -611,7 +626,8 @@ public class FlowServiceImpl implements FlowService {
     @Override
     public List<Task> findTaskListByKey(String processInstanceId, String key) {
         return taskService.createTaskQuery().processInstanceId(
-                processInstanceId).taskDefinitionKey(key).list();
+                processInstanceId).list();
+        //.taskDefinitionKey(key)
     }
 
     /**
@@ -808,5 +824,38 @@ public class FlowServiceImpl implements FlowService {
         for (PvmTransition pvmTransition : oriPvmTransitionList) {
             pvmTransitionList.add(pvmTransition);
         }
+    }
+
+    /**
+     * 删除流程任务实例
+     * @param taskId 任务节点ID
+     * @param executionId 流程实例节点ID
+     * */
+    @Override
+    public void deleteTask(String taskId, String executionId) {
+        //直接执行SQL
+        //DELETE FROM act_ru_identitylink WHERE TASK_ID_='135068'(act_ru_task主键)
+        //流程实例,通过EXECUTION_ID_字段和act_ru_execution关联
+        //DELETE FROM act_ru_task WHERE ID_='135068'
+        //任务节点表
+        //DELETE FROM act_ru_execution WHERE ID_='135065'
+        Session session = sessionFactory.getCurrentSession();
+        StringBuffer stringBuffer = new StringBuffer();
+        NativeQuery nativeQuery = null;
+
+        stringBuffer.append("DELETE FROM act_ru_identitylink WHERE TASK_ID_=:taskId");
+        nativeQuery = session.createNativeQuery(stringBuffer.toString());
+        nativeQuery.setParameter("taskId",taskId).executeUpdate();
+
+        stringBuffer.setLength(0);
+        stringBuffer.append("DELETE FROM act_ru_task WHERE ID_=:taskId");
+        nativeQuery = session.createNativeQuery(stringBuffer.toString());
+        nativeQuery.setParameter("taskId",taskId).executeUpdate();
+
+        stringBuffer.setLength(0);
+        stringBuffer.append("DELETE FROM act_ru_execution WHERE ID_=:executionId");
+        nativeQuery = session.createNativeQuery(stringBuffer.toString());
+        nativeQuery.setParameter("executionId",executionId).executeUpdate();
+
     }
 }

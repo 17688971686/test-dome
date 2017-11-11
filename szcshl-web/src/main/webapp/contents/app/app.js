@@ -421,6 +421,12 @@
                 controllerAs : 'vm'
 
             })
+            .state('signGetBack', {//项目取回
+                url: '/signGetBack',
+                templateUrl: rootPath + '/sign/html/signGetBack.html',
+                controller: 'signGetBackCtrl',
+                controllerAs: 'vm'
+            })
             .state('pauseProject', { //项目暂停审批
                 url: '/pauseProject',
                 templateUrl: rootPath + '/projectStop/html/pauseProjectList.html',

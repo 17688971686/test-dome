@@ -200,6 +200,9 @@ desired effect
                         <@shiro.hasPermission name="assistUnit#html/assistUnitList#get">
                         <li><a href="javascript:void(0)" ui-sref="assistUnit">协审单位管理</a></li>
                         </@shiro.hasPermission>
+                        <@shiro.hasPermission name="sign#html/getBack#get">
+                            <li><a href="javascript:void(0)" ui-sref="signGetBack">项目取回</a></li>
+                        </@shiro.hasPermission>
 
                        <@shiro.hasPermission name="addSuppLetter#html/suppLetterList#get">
                             <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补资料函查询</a></li>

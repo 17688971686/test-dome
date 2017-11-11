@@ -8,6 +8,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.domain.flow.RuProcessTask;
+import cs.service.flow.FlowService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,8 @@ public class SignController {
     String ctrlName = "sign";
     @Autowired
     private SignService signService;
+    @Autowired
+    private FlowService flowService;
 
     //@RequiresPermissions("sign#fingByOData#post")
     @RequiresAuthentication
@@ -47,6 +51,28 @@ public class SignController {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDto> signDtos = signService.get(odataObj);
         return signDtos;
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "获取项目取回数据", path = "fingByGetBack", method = RequestMethod.POST)
+    public @ResponseBody
+    PageModelDto<RuProcessTask> getBackList(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<RuProcessTask> signDispaWork = signService.getBackList(odataObj,false);
+        return signDispaWork;
+    }
+
+    @RequiresAuthentication
+    //@RequiresPermissions("sign#startNewFlow#post")
+    @RequestMapping(name = "项目取回", path = "getBack", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg getBack(@RequestParam(required = true) String taskId,String activityId,String businessKey)  {
+        try {
+            return flowService.callBackProcess(taskId,activityId,businessKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  null;
     }
 
     //@RequiresPermissions("sign#findBySignUser#post")
@@ -284,6 +310,14 @@ public class SignController {
     	
     	return ctrlName + "/hiProcessTask";
     }
+
+    @RequiresPermissions("sign#html/getBack#get")
+    @RequestMapping(name = "项目取回", path = "html/signGetBack", method = RequestMethod.GET)
+    public String getBack() {
+
+        return ctrlName + "/signGetBack";
+    }
+
 
 
     /***************************************  E 新流程处理的方法     *******************************************/
