@@ -263,9 +263,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     }
 
     /**
-     * 根据项目ID删除工作方案
-     *
+     * 根据当前负责人，删除对应的工作方案信息
      * @param signId
+     * @return
      */
     @Override
     @Transactional

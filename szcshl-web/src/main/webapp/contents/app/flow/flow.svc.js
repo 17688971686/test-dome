@@ -42,7 +42,7 @@
                 field: "",
                 title: "序号",
                 template: "<span class='row-number'></span>",
-                width: 40
+                width: 50
             }, {
                 field: "nodeName",
                 title: "环节名称",

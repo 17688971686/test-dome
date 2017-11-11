@@ -13,6 +13,11 @@ public interface WorkProgramService {
 
     Map<String,Object> initWorkProgram(String signId);
 
+    /**
+     * 根据当前负责人，删除工作方案信息
+     * @param signId
+     * @return
+     */
     ResultMsg deleteBySignId(String signId);
 
     void delete(String id);

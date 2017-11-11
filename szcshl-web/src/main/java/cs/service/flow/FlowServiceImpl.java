@@ -85,9 +85,6 @@ public class FlowServiceImpl implements FlowService {
     private SignDispaWorkRepo signDispaWorkRepo;
     @Autowired
     private SessionFactory sessionFactory;
-    @Autowired
-    private WorkProgramService workProgramService;
-
 
     @Autowired
     @Qualifier("signFlowBackImpl")
@@ -581,20 +578,30 @@ public class FlowServiceImpl implements FlowService {
      * @return ResultMsg
      */
     @Override
-    public ResultMsg callBackProcess(String taskId, String activityId,String businessKey) throws Exception{
+    public ResultMsg callBackProcess(String taskId, String activityId,String businessKey,boolean allBranch) throws Exception{
         if (!Validate.isString(activityId)) {
             throw new Exception("目标节点ID为空！");
         }
-        // 查找所有并行任务节点，同时取回
-        List<Task> taskList = findTaskListByKey(findProcessInstanceByTaskId(
-                taskId).getId(), findTaskById(taskId).getTaskDefinitionKey());
-        for(Task task:taskList ){
-            if(task.getId().equals(taskId)){
-                commitProcess(task.getId(), null, activityId);//取回项目流程
-            }else{
-                deleteTask(task.getId(),task.getExecutionId());//删除流程实例
+        if(allBranch){
+            // 如果是删除所有分支，查找所有并行任务节点，同时取回
+            List<Task> taskList = findTaskListByKey(findProcessInstanceByTaskId(taskId).getId());
+            for(Task task:taskList ){
+                if(task.getId().equals(taskId)){
+                    //取回项目流程
+                    commitProcess(task.getId(), null, activityId);
+                }else{
+                    //删除流程实例
+                    deleteTask(task.getId(),task.getExecutionId());
+                }
             }
-            workProgramService.deleteBySignId(businessKey);//删除工作方案
+        }else{
+            //如果只是取回当前任务
+            Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
+            if (task != null) {
+                commitProcess(task.getId(), null, activityId);
+            }else{
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，该任务已提交！请重新刷新再试!");
+            }
         }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
@@ -617,17 +624,14 @@ public class FlowServiceImpl implements FlowService {
         return processInstance;
     }
     /**
-     * 根据流程实例ID和任务key值查询所有同级任务集合
+     * 根据流程实例ID查询所有任务集合
      *
      * @param processInstanceId
-     * @param key
      * @return
      */
     @Override
-    public List<Task> findTaskListByKey(String processInstanceId, String key) {
-        return taskService.createTaskQuery().processInstanceId(
-                processInstanceId).list();
-        //.taskDefinitionKey(key)
+    public List<Task> findTaskListByKey(String processInstanceId) {
+        return taskService.createTaskQuery().processInstanceId(processInstanceId).list();
     }
 
     /**
@@ -670,8 +674,7 @@ public class FlowServiceImpl implements FlowService {
      *                   此参数为空，默认为提交操作
      * @throws Exception
      */
-    private void commitProcess(String taskId, Map<String, Object> variables,
-                               String activityId) throws Exception {
+    private void commitProcess(String taskId, Map<String, Object> variables,String activityId) throws Exception {
         if (variables == null) {
             variables = new HashMap<String, Object>();
         }

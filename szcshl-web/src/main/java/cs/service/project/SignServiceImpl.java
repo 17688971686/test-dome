@@ -247,7 +247,7 @@ public class SignServiceImpl implements SignService {
                         configKey = "";
                 }
 
-                if(Validate.isString(configKey)){
+                if (Validate.isString(configKey)) {
                     SysConfigDto sysConfigDto = sysConfigService.findByKey(configKey);
                     if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
                         sign.setReviewdays(Float.parseFloat(sysConfigDto.getConfigValue()));
@@ -1212,7 +1212,7 @@ public class SignServiceImpl implements SignService {
                 }
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 //如果有评审费或者是协审流程，则给财务部办理，没有，则直接到归档环节
-                if (expertReviewRepo.isHaveEPReviewCost(signid) || EnumState.YES.getValue().equals(sign.getIsassistflow()) ) {
+                if (expertReviewRepo.isHaveEPReviewCost(signid) || EnumState.YES.getValue().equals(sign.getIsassistflow())) {
                     userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.FINANCIAL.getValue());
                     if (!Validate.isList(userList)) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.FINANCIAL.getValue() + "】角色用户！");
@@ -1901,7 +1901,7 @@ public class SignServiceImpl implements SignService {
             sign.setReceivedate(now);
         }
 
-        if(!Validate.isString(sign.getIssign()) || EnumState.NO.getValue().equals(sign.getIssign())) {
+        if (!Validate.isString(sign.getIssign()) || EnumState.NO.getValue().equals(sign.getIssign())) {
             //正式签收
             sign.setIssign(EnumState.YES.getValue());
             sign.setSigndate(now);
@@ -1992,30 +1992,52 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 项目取回列表
+     * 项目取回列表（分管领导和部门领导）
+     * 根据不同的角色，获取不同的列表数据
      *
+     * @param odataObj
+     * @param isOrgLeader 是否部长
      */
     @Override
-    public PageModelDto<RuProcessTask> getBackList(ODataObj odataObj, boolean isUserDeal) {
+    public PageModelDto<RuProcessTask> getBackList(ODataObj odataObj, boolean isOrgLeader) {
+        /**
+         * 项目流程信息状态
+         * (1:已发起，2:正在做工作方案，3:已完成工作方案，4:正在做发文 5:已完成发文 6:已完成发文编号 7:正在归档，8:已完成归档，9:已确认归档)
+         */
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
-        Criteria criteria = ruProcessTaskRepo.getExecutableCriteria() ;
+        Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
-   /*     if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){ //是部门负责人
+        //查询正在执行的项目，已经暂停的不能取回，合并评审次项目也不能取回
+        criteria.add(Restrictions.eq(RuProcessTask_.taskState.getName(), EnumState.PROCESS.getValue()));
+        criteria.add(Restrictions.isNull(RuProcessTask_.reviewType.getName()));
+        /*criteria.add(Restrictions.or(
+                Restrictions.isNull(RuProcessTask_.reviewType.getName()),
+                Restrictions.eq(RuProcessTask_.reviewType.getName(), EnumState.YES.getValue()))
+        );*/
 
-        }*/
-        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){//是副主任
-            criteria.add(Restrictions.le(RuProcessTask_.signprocessState.getName(), 3));
-            criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.nodeName.getName(), "部门分办"),Restrictions.eq(RuProcessTask_.nodeName.getName(), "项目负责人办理"),
-                    Restrictions.eq(RuProcessTask_.nodeName.getName(), "部长审批"), Restrictions.eq(RuProcessTask_.nodeName.getName(), "分管领导审批"))
+        StringBuffer sBuffer = new StringBuffer();
+        //部长回退( 只能在项目负责人办理和部长审批环节取回 )
+        if (isOrgLeader) {
+            criteria.add(Restrictions.or(
+                    Restrictions.eq(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.DO_WP.getValue()),
+                    Restrictions.eq(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.END_WP.getValue()))
             );
-
-        }else{
-            criteria.add(Restrictions.le(RuProcessTask_.signprocessState.getName(), 2));
-            criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.nodeName.getName(), "部长审批"),Restrictions.eq(RuProcessTask_.nodeName.getName(), "项目负责人办理")));
-           // criteria.add(Restrictions.sqlRestriction(" left outer join cs_sign_branch s on t.businessKey=s.signid where s.orgid='7fbb8185-b7d3-4557-b260-0c1b2351d613' "));
-            //criteria.add(Restrictions.eq("orgId", SessionUtil.getUserInfo().getOrg().getId()));
-           // criteria.createAlias("signBranch","sb").add(Restrictions.eq("sb.orgId",SessionUtil.getUserInfo().getOrg().getId()));
-
+            sBuffer.append(" (ASSIGNEE = '" + SessionUtil.getUserId() + "' OR SUBSTR (NODEDEFINEKEY, -1) = ");
+            sBuffer.append(" (SELECT BRANCHID FROM CS_SIGN_BRANCH WHERE signid = BUSINESSKEY AND orgid = ");
+            sBuffer.append(" (SELECT ID FROM V_ORG_DEPT WHERE DIRECTORID = '" + SessionUtil.getUserId() + "'))) ");
+            criteria.add(Restrictions.sqlRestriction(sBuffer.toString()));
+            //除去部门分办环节
+            criteria.add(Restrictions.not(Restrictions.like(RuProcessTask_.nodeDefineKey.getName(),"%"+FlowConstant.FLOW_SIGN_BMFB1.substring(0,FlowConstant.FLOW_SIGN_BMFB1.length()-1)+"%")));
+            //是副主任，只要没发文，均可取回
+        } else {
+            sBuffer.append(" ( ( SUBSTR (NODEDEFINEKEY, -1) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue() + "' ");
+            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue() + "' ");
+            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue() + "' ");
+            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue() + "' ) ");
+            //合并评审的工作方案，部长没审批时可以回退
+            criteria.add(Restrictions.ge(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.IS_START.getValue()));
+            criteria.add(Restrictions.le(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.END_WP.getValue()));
+            criteria.add(Restrictions.sqlRestriction(sBuffer.toString()));
         }
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
@@ -2028,17 +2050,56 @@ public class SignServiceImpl implements SignService {
             criteria.setMaxResults(odataObj.getTop());
         }
         List<RuProcessTask> runProcessList = criteria.list();
-        //合并评审项目处理
+        /*//合并评审项目处理
         runProcessList.forEach(rl -> {
             if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
                 rl.setReviewSignDtoList(findReviewSign(rl.getBusinessKey()));
             }
-        });
+        });*/
 
         pageModelDto.setCount(totalResult);
         pageModelDto.setValue(runProcessList);
         return pageModelDto;
     }
 
-
+    /**
+     * 删除相应的分支信息（没有分支ID，则删除全部分支）
+     *
+     * @param signId
+     * @param branchId
+     */
+    @Override
+    public void deleteBranchInfo(String signId, String branchId) {
+        boolean deleteBranchId = false;
+        if (Validate.isString(branchId)) {
+            deleteBranchId = true;
+        }
+        //1、删除分支
+        HqlBuilder sqlBuilder1 = HqlBuilder.create();
+        sqlBuilder1.append("delete from CS_SIGN_BRANCH where " + SignBranch_.signId.getName() + " =:signId ");
+        sqlBuilder1.setParam("signId", signId);
+        if (deleteBranchId) {
+            sqlBuilder1.append(" and " + SignBranch_.branchId.getName() + " =:branchId ");
+            sqlBuilder1.setParam("branchId", branchId);
+        }
+        signBranchRepo.executeSql(sqlBuilder1);
+        //2、删除分支负责人
+        HqlBuilder sqlBuilder2 = HqlBuilder.create();
+        sqlBuilder2.append("delete from CS_SIGN_PRINCIPAL2 where " + SignPrincipal_.signId.getName() + " =:signId ");
+        sqlBuilder2.setParam("signId", signId);
+        if (deleteBranchId) {
+            sqlBuilder2.append(" and " + SignPrincipal_.flowBranch.getName() + " =:branchId ");
+            sqlBuilder2.setParam("branchId", branchId);
+        }
+        signBranchRepo.executeSql(sqlBuilder2);
+        //3、删除工作方案
+        HqlBuilder sqlBuilder3 = HqlBuilder.create();
+        sqlBuilder3.append(" delete from CS_WORK_PROGRAM where signid =:signid ");
+        sqlBuilder3.setParam("signid", signId);
+        if (deleteBranchId) {
+            sqlBuilder3.append(" and " + WorkProgram_.branchId.getName() + " =:branchId ");
+            sqlBuilder3.setParam("branchId", branchId);
+        }
+        workProgramRepo.executeSql(sqlBuilder3);
+    }
 }

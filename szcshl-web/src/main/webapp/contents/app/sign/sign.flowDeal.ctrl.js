@@ -749,7 +749,7 @@
                 if(vm.businessFlag.isFinishWP){
                     bsWin.confirm({
                         title: "询问提示",
-                        message: "取消工作方案操作将会对您之前的做的工作方案进行清除，数据清除不可恢复，确定不做工作么？",
+                        message: "不做工作方案系统将会删除工作方案数据，确认不做工作方案么？",
                         onOk: function () {
                             $('.confirmDialog').modal('hide');
                             vm.businessFlag.isNeedWP = 0;

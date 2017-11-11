@@ -624,9 +624,9 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByGetBack", $("#searchAssociateform")/*,{filter: "isAssociate eq 0"}*/),
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByGetBack", $("#signBackform")),
                 schema: common.kendoGridConfig().schema({
-                    id: "id",
+                    id: "signid",
                     fields: {
                         createdDate: {
                             type: "date"
@@ -647,41 +647,63 @@
             // Begin:column
             var columns = [
                 {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number'></span>",
+                    width: 50
+                },
+                {
                     field: "projectName",
                     title: "项目名称",
-                    width: 160,
+                    width: "25%",
                     filterable: false
                 },
                 {
                     field: "nodeName",
                     title: "当前环节",
-                    width: 140,
+                    width: "10",
                     filterable: false,
                 },
                 {
                     field: "displayName",
                     title: "处理人",
-                    width: 200,
+                    width: "10",
                     filterable: false,
+                },
+                {
+                    field: "",
+                    title: "合并评审",
+                    width: "15%",
+                    filterable: false,
+                    template: function (item) {
+                        if (item.reviewType) {
+                            if (item.reviewType == 9 || item.reviewType == '9') {
+                                return "合并评审[主项目]";
+                            } else {
+                                return "合并评审[次项目]";
+                            }
+                        } else {
+                            return "否";
+                        }
+                    }
                 },
                 {
                     field: "reviewStage",
                     title: "项目阶段",
-                    width: 160,
+                    width: "15%",
                     filterable: false,
                 },
                 {
                     field: "signDate",
                     title: "签收时间",
-                    width: 140,
+                    width: "10%",
                     filterable: false,
                 },
                 {
                     field: "",
                     title: "操作",
-                    width: 180,
+                    width: "10%",
                     template: function (item) {
-
                         return common.format($('#columnBtns').html(),"signFlowDetail", item.businessKey, item.taskId, item.processInstanceId,"vm.getBack");
                     }
                 }
@@ -694,31 +716,37 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                },
                 resizable: true
             };
         }//E_初始化signGetBackGrid
 
         //S_项目取回
-        function getBack(vm,taskId,businessKey){
-            var activityId= "SIGN_FGLD_FB";
+        function getBack(taskId,businessKey,callBack){
+            //var activityId= "SIGN_FGLD_FB";根据角色判断回退到哪个环节
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/sign/getBack",
                 params:{
                     taskId : taskId,
-                    activityId:activityId,
                     businessKey:businessKey
                 }
             }
             var httpSuccess = function success(response) {
-                bsWin.alert("取回项目成功");
-                vm.signGetBackGrid.dataSource.read();
-          /*      if (callBack != undefined && typeof callBack == 'function') {
+                if (callBack != undefined && typeof callBack == 'function') {
                     callBack(response.data);
-                }*/
+                }
             };
             common.http({
-                vm:vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess,

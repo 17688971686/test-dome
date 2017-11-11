@@ -82,18 +82,18 @@ public interface FlowService {
      * @param taskId    当前任务ID
      * @param activityId 取回节点ID
      * @param businessKey 删除工作方案的singId
+     * @param allBranch  是否删除所有分支
      * @return ResultMsg
      */
-    ResultMsg callBackProcess(String taskId, String activityId,String businessKey)throws Exception;
+    ResultMsg callBackProcess(String taskId, String activityId,String businessKey,boolean allBranch)throws Exception;
 
     /**
-     * 根据流程实例ID和任务key值查询所有同级任务集合
+     * 根据流程实例ID查询所有任务集合
      *
      * @param processInstanceId
-     * @param key
      * @return
      */
-    List<Task> findTaskListByKey(String processInstanceId, String key);
+    List<Task> findTaskListByKey(String processInstanceId);
 
     /**
      * 根据业务ID，暂停流程
