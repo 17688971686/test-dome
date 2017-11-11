@@ -91,11 +91,7 @@ public class ReviewProjectAppraiseController {
         return  appraiseService.getAppraiseById(id);
     }
 
-    @RequiresPermissions("reviewProjectAppraise#html/list#get")
-    @RequestMapping(name="优秀评审报告查询" , path="html/list" , method = RequestMethod.GET)
-    public String list(){
-        return ctrlName + "/list";
-    }
+
 
     @RequiresPermissions("reviewProjectAppraise#html/edit#get")
     @RequestMapping(name="评审项目评优" , path="html/edit" , method = RequestMethod.GET)

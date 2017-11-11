@@ -142,13 +142,13 @@
             })
             .state('personDtasks', {
                 url: '/personDtasks',
-                templateUrl: rootPath + '/admin/personDtasks.html',
+                templateUrl: rootPath + '/sign/personDtasks.html',
                 controller: 'adminPersonDoingCtrl',
                 controllerAs: 'vm'
             })
             .state('etasks', {
                 url: '/etasks',
-                templateUrl: rootPath + '/admin/etasks.html',
+                templateUrl: rootPath + '/sign/etasks.html',
                 controller: 'adminEndCtrl',
                 controllerAs: 'vm'
             })
@@ -673,7 +673,7 @@
              //专家评审情况统计列表
             .state('expertRevCondCountList', {
                 url: '/expertRevCondCountList',
-                templateUrl: rootPath + '/financialManager/html/expertReviewCondCount.html',
+                templateUrl: rootPath + '/signView/html/expertReviewCondCount.html',
                 controller: 'expertRevConCountCtrl',
                 controllerAs: 'vm'
             })
@@ -694,7 +694,7 @@
             //项目评审情况统计
             .state('proReviewConCountList', {
                 url: '/proReviewConCountList',
-                templateUrl: rootPath + '/financialManager/html/proReviewConCount.html',
+                templateUrl: rootPath + '/signView/html/proReviewConCount.html',
                 controller: 'proReviewConditionCtrl',
                 controllerAs: 'vm'
             })
@@ -788,7 +788,7 @@
             //优秀评审报告列表
             .state('reviewProjectAppraiseList', {
                 url: '/reviewProjectAppraiseList/:id',
-                templateUrl: rootPath + '/reviewProjectAppraise/html/list.html',
+                templateUrl: rootPath + '/signView/html/list.html',
                 controller: 'reviewProjectAppraiseCtrl',
                 controllerAs: 'vm'
             })

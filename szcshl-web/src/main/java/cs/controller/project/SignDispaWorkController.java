@@ -37,7 +37,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping(name = "收文", path = "signView")
-@MudoleAnnotation(name = "项目管理",value = "permission#sign")
+@MudoleAnnotation(name = "项目管理",value = "permission#queryStatistics")
 public class SignDispaWorkController {
 
     @Autowired
@@ -256,5 +256,23 @@ public class SignDispaWorkController {
     @RequestMapping(name="项目查询统计分析图" , path = "html/signChart" , method = RequestMethod.GET)
     public String signChart(){
         return "sign/signChart";
+    }
+
+    @RequiresPermissions("signView#html/list#get")
+    @RequestMapping(name="优秀评审报告查询" , path="html/list" , method = RequestMethod.GET)
+    public String list(){
+        return "reviewProjectAppraise/list";
+    }
+
+    @RequiresPermissions("signView#html/expertReviewCondCount#get")
+    @RequestMapping(name = "专家评审情况统计", path = "html/expertReviewCondCount", method = RequestMethod.GET)
+    public String expertReviewCondCount() {
+        return "financial/expertReviewCondCount";
+    }
+
+    @RequiresPermissions("signView#html/proReviewConCount#get")
+    @RequestMapping(name = "项目评审情况统计", path = "html/proReviewConCount", method = RequestMethod.GET)
+    public String proReviewConditionCount() {
+        return  "financial/proReviewConCount";
     }
 }
