@@ -247,6 +247,19 @@
                     width : 70,
                     filterable : false
                 },
+                {
+                    field : "applyDate",
+                    title : "录入时间",
+                    width : 70,
+                    filterable : false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field : "compositeScore",
+                    title : "专家星级",
+                    width : 70,
+                    filterable : false
+                },
 				{
 					field : "comPany",
 					title : "工作单位",
