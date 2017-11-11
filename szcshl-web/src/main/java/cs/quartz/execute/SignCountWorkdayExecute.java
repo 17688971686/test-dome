@@ -4,7 +4,9 @@ import java.util.List;
 
 import cs.common.utils.Validate;
 import cs.domain.sys.Workday;
+import cs.service.sys.UserServiceImpl;
 import cs.service.sys.WorkdayService;
+import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -27,7 +29,7 @@ import cs.service.project.SignService;
  */
 @Controller
 public class SignCountWorkdayExecute implements Job {
-
+    private static Logger logger = Logger.getLogger(SignCountWorkdayExecute.class);
     @Autowired
     private SignService signService;
 
@@ -49,6 +51,7 @@ public class SignCountWorkdayExecute implements Job {
      */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        logger.info("正在执行工作日计算...");
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
         List<Workday> workdayList = null;
         QuartzUnit unit = new QuartzUnit();
