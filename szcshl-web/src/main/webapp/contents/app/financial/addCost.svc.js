@@ -10,23 +10,36 @@
 
         function initAddCost(vm , costType , object,id){
             vm.financial = {};
+
             //该判断用于项目签收流程中的财务办理
-            if (!object.businessId) {
-                object.businessId = object.signId;
+            if (object.businessId == undefined) {
+                object.businessId = object.signid;
                 object.projectname = object.projectName;
             }
-
-            vm.financial.businessId = object.businessId;
-            vm.financial.projectName = object.projectname;
 
             if (costType == "REVIEW") {
                 vm.windowName = "项目评审费录入";
                 vm.financial.businessType = "SIGN";
+                if(object.businessId == undefined){
+                    object.businessId = object.signid;
+                    object.projectname = object.projectname;
+                }
+
 
             } else if (costType == "ASSIST") {
                 vm.windowName = "项目协审费录入";
                 vm.financial.businessType = "SIGN";
+                if(object.businessId == undefined){
+                    object.businessId = object.signId;
+                    object.projectname = object.projectName;
+                }
+
             }
+
+
+            vm.financial.businessId = object.businessId;
+            vm.financial.projectName = object.projectname;
+
             /**
              * 导出excel
              */
