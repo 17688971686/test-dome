@@ -1,6 +1,7 @@
 package cs.service.project;
 
 import cs.common.ResultMsg;
+import cs.domain.flow.RuProcessTask;
 import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
@@ -102,6 +103,9 @@ public interface SignService {
 
     void updateSignTemplate(String signId);
 
-
-
+    /**
+     * 项目取回列表
+     * @return
+     */
+    PageModelDto<RuProcessTask> getBackList(ODataObj odataObj, boolean isUserDeal);
 }

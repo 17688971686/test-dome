@@ -24,6 +24,8 @@
             createDispatchFileNum:createDispatchFileNum,    //生成发文字号
             realSign : realSign ,               //正式签收
             createDispatchTemplate : createDispatchTemplate ,//生成发文模板
+            signGetBackGrid :signGetBackGrid,                //项目取回列表
+            getBack:getBack                            //项目取回
 
         };
         return service;
@@ -615,6 +617,113 @@
                 success: httpSuccess,
             });
         }//E_realSign
+
+
+        //signGetBackGrid
+        function signGetBackGrid(vm) {
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByGetBack", $("#searchAssociateform")/*,{filter: "isAssociate eq 0"}*/),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+                {
+                    field: "projectName",
+                    title: "项目名称",
+                    width: 160,
+                    filterable: false
+                },
+                {
+                    field: "nodeName",
+                    title: "当前环节",
+                    width: 140,
+                    filterable: false,
+                },
+                {
+                    field: "displayName",
+                    title: "处理人",
+                    width: 200,
+                    filterable: false,
+                },
+                {
+                    field: "reviewStage",
+                    title: "项目阶段",
+                    width: 160,
+                    filterable: false,
+                },
+                {
+                    field: "signDate",
+                    title: "签收时间",
+                    width: 140,
+                    filterable: false,
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 180,
+                    template: function (item) {
+
+                        return common.format($('#columnBtns').html(),"signFlowDetail", item.businessKey, item.taskId, item.processInstanceId,"vm.getBack");
+                    }
+                }
+
+            ];
+            // End:column
+            vm.signGetBackGrid = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true
+            };
+        }//E_初始化signGetBackGrid
+
+        //S_项目取回
+        function getBack(vm,taskId,businessKey){
+            var activityId= "SIGN_FGLD_FB";
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/sign/getBack",
+                params:{
+                    taskId : taskId,
+                    activityId:activityId,
+                    businessKey:businessKey
+                }
+            }
+            var httpSuccess = function success(response) {
+                bsWin.alert("取回项目成功");
+                vm.signGetBackGrid.dataSource.read();
+          /*      if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }*/
+            };
+            common.http({
+                vm:vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+            });
+        }//getBack
 
 
     }

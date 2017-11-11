@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.domain.flow.RuProcessTask;
+import cs.domain.flow.RuProcessTask_;
+import cs.domain.project.*;
 import cs.domain.sys.*;
 import cs.model.sys.SysConfigDto;
+import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.sys.*;
 import cs.service.sys.SysConfigService;
@@ -19,9 +23,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,26 +45,6 @@ import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.ExpertReview;
 import cs.domain.external.Dept;
-import cs.domain.project.AddRegisterFile;
-import cs.domain.project.AddRegisterFile_;
-import cs.domain.project.AddSuppLetter;
-import cs.domain.project.AddSuppLetter_;
-import cs.domain.project.AssistPlanSign;
-import cs.domain.project.AssistPlanSign_;
-import cs.domain.project.DispatchDoc;
-import cs.domain.project.DispatchDoc_;
-import cs.domain.project.FileRecord;
-import cs.domain.project.FileRecord_;
-import cs.domain.project.ProjectStop;
-import cs.domain.project.Sign;
-import cs.domain.project.SignBranch;
-import cs.domain.project.SignDispaWork;
-import cs.domain.project.SignDispaWork_;
-import cs.domain.project.SignMerge;
-import cs.domain.project.SignMerge_;
-import cs.domain.project.SignPrincipal;
-import cs.domain.project.Sign_;
-import cs.domain.project.WorkProgram;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.model.external.DeptDto;
@@ -154,6 +136,8 @@ public class SignServiceImpl implements SignService {
     private RoomBookingRepo roomBookingRepo;
     @Autowired
     private SysConfigService sysConfigService;
+    @Autowired
+    private RuProcessTaskRepo ruProcessTaskRepo;
 
     /**
      * 项目签收保存操作（这里的方法是正式签收）
@@ -1947,5 +1931,55 @@ public class SignServiceImpl implements SignService {
         hqlBuilder.setParam("signId", signId);
         signRepo.executeSql(hqlBuilder);
     }
+
+    /**
+     * 项目取回列表
+     *
+     */
+    @Override
+    public PageModelDto<RuProcessTask> getBackList(ODataObj odataObj, boolean isUserDeal) {
+        PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
+        Criteria criteria = ruProcessTaskRepo.getExecutableCriteria() ;
+        criteria = odataObj.buildFilterToCriteria(criteria);
+   /*     if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){ //是部门负责人
+
+        }*/
+        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){//是副主任
+            criteria.add(Restrictions.le(RuProcessTask_.signprocessState.getName(), 3));
+            criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.nodeName.getName(), "部门分办"),Restrictions.eq(RuProcessTask_.nodeName.getName(), "项目负责人办理"),
+                    Restrictions.eq(RuProcessTask_.nodeName.getName(), "部长审批"), Restrictions.eq(RuProcessTask_.nodeName.getName(), "分管领导审批"))
+            );
+
+        }else{
+            criteria.add(Restrictions.le(RuProcessTask_.signprocessState.getName(), 2));
+            criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.nodeName.getName(), "部长审批"),Restrictions.eq(RuProcessTask_.nodeName.getName(), "项目负责人办理")));
+           // criteria.add(Restrictions.sqlRestriction(" left outer join cs_sign_branch s on t.businessKey=s.signid where s.orgid='7fbb8185-b7d3-4557-b260-0c1b2351d613' "));
+            //criteria.add(Restrictions.eq("orgId", SessionUtil.getUserInfo().getOrg().getId()));
+           // criteria.createAlias("signBranch","sb").add(Restrictions.eq("sb.orgId",SessionUtil.getUserInfo().getOrg().getId()));
+
+        }
+
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        criteria.setProjection(null);
+        // 处理分页
+        if (odataObj.getSkip() > 0) {
+            criteria.setFirstResult(odataObj.getSkip());
+        }
+        if (odataObj.getTop() > 0) {
+            criteria.setMaxResults(odataObj.getTop());
+        }
+        List<RuProcessTask> runProcessList = criteria.list();
+        //合并评审项目处理
+        runProcessList.forEach(rl -> {
+            if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
+                rl.setReviewSignDtoList(findReviewSign(rl.getBusinessKey()));
+            }
+        });
+
+        pageModelDto.setCount(totalResult);
+        pageModelDto.setValue(runProcessList);
+        return pageModelDto;
+    }
+
 
 }
