@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signFlowDetailCtrl', sign);
 
-    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','signFlowSvc','$scope'];
+    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','signFlowSvc','$scope','templatePrintSvc'];
 
-    function sign(sysfileSvc,signSvc,$state,flowSvc,signFlowSvc,$scope) {
+    function sign(sysfileSvc,signSvc,$state,flowSvc,signFlowSvc,$scope,templatePrintSvc) {
         var vm = this;
         vm.title = "项目流程信息";
         vm.model = {};
@@ -43,6 +43,7 @@
         		var showDiv = aObj.attr("for-div");   		
         		$(".tab-pane").removeClass("active").removeClass("in");
         		$("#"+showDiv).addClass("active").addClass("in").show(500);
+                vm.model.showDiv = showDiv;
         	})
 
             //初始化流程信息
@@ -91,6 +92,11 @@
         //附件下载
         vm.commonDownloadSysFile = function(sysFileId){
             sysfileSvc.downloadFile(sysFileId);
+        }
+
+        //签收模板打印
+        vm.printpage = function ($event) {
+            templatePrintSvc.templatePrint($event.target,vm.model);
         }
 
     }

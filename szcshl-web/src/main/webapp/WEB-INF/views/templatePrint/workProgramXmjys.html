@@ -1,30 +1,12 @@
 <meta charset="UTF-8">
-<style>
-    #workgrogram-table td{
-        border:1px solid #000;
-        vertical-align: middle;
-    }
-    #workgrogram-table td:first-child{
-        text-align: center;
-    }
-    #workgrogram-table h3{
-        margin-top:0
-    }
-    #workgrogram-table .tr-hidden td{
-        border:none;
-        height:0;
-        padding:0;
-        margin:0;
-    }
-</style>
 <!-- start 主项目 -->
 <div ng-repeat="w in vm.model.workProgramDtoList"  ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告')&&(w.branchId == '1' || w.branchId == 1)">
     <a  data-toggle="collapse" data-target="#wp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [{{w.titleName}}]
     </a>
     <div id="wp_{{$index}}" class="collapse in">
-        <table id="workgrogram-table"  class="table" style="margin-bottom: 0px;" >
-            <caption class="text-center h3"><strong><p>{{w.titleName}}</p></strong></caption>
+        <table class="print-table">
+            <caption class="title">{{w.titleName}}</caption>
             <caption>
                 <span ng-show="w.workreviveStage=='项目建议书'">QR-4.3-02-A3</span>
                 <span ng-show="w.workreviveStage=='可行性研究报告'">QR-4.4-01-A3</span>
@@ -51,7 +33,7 @@
                 <td></td>
             </tr>
             <tr>
-                <td colspan="2" class="text-center">项目名称886</td>
+                <td colspan="2" class="text-center">项目名称</td>
                 <td colspan="6">{{w.projectName}}</td>
             </tr>
             <tr>

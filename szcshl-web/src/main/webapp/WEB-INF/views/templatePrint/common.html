@@ -1,0 +1,75 @@
+<meta charset="UTF-8">
+<div class="toolbar text-center" ng-show="vm.model.suppLetterDtoList.length > 1">
+    当前项目有{{vm.model.suppLetterDtoList.length}}条补充资料函，当前第{{vm.showSupperIndex+1}}条
+    <button class="btn btn-xs btn-primary" ng-show="vm.showSupperIndex > 0" ng-click="vm.showSupperIndex = vm.showSupperIndex-1">上一篇</button>
+    <button class="btn btn-xs btn-primary" ng-show="vm.showSupperIndex < (vm.model.suppLetterDtoList.length-1)" ng-click="vm.showSupperIndex = vm.showSupperIndex+1">下一篇</button>
+</div>
+<div ng-repeat="x in vm.model.suppLetterDtoList" style="color:red;" ng-show="vm.showSupperIndex == $index">
+    <table class="print-table">
+        <caption class="title text-red" >深圳市政府投资项目评审中心文件（稿纸）<br>拟补充资料函</caption>
+        <tbody>
+        <tr>
+            <td>拟稿部门<br>拟稿人</td>
+            <td>{{x.orgName}}<br>{{x.userName}}</td>
+            <td class="text-center">拟稿时间</td>
+            <td >{{x.suppLetterTime}}</td>
+        </tr>
+        <tr>
+            <td  class="text-center">秘密等级</td>
+            <td>{{x.secretLevel}}</td>
+            <td class="text-center">缓急程度</td>
+            <td>
+                {{x.mergencyLevel}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">发文日期</td>
+            <td>
+                {{x.disapDate}}
+            </td>
+
+            <td class="text-center">文件字号</td>
+            <td> {{x.filenum}} </td>
+        </tr>
+
+        <tr>
+            <td class="text-center">文件标题 <span class="required">*</span></td>
+            <td colspan="3">
+                {{x.title}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">发行范围<span class="required">*</span></td>
+            <td colspan="3">
+                {{x.dispaRange}}
+                <span style="float: right;">(印{{x.printnum}}份)</span>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td class="text-center">核稿意见</td>
+            <td colspan="3">
+                <p> {{x.deptMinisterIdeaContent}}</p>
+                <p class="text-right" ng-if="x.deptMinisterName">签名：{{x.deptMinisterName}}</p>
+                <p class="text-right" ng-if="x.deptMinisterDate">日期：{{x.deptMinisterDate}}</p>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="text-center">会签意见</td>
+            <td colspan="3">
+                <div class="text-right" style="min-height: 50px;" ng-bind-html="x.leaderSignIdeaContent | trust2Html"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">领导意见</td>
+            <td colspan="3">
+                <p> {{x.deptSLeaderIdeaContent}}</p>
+                <p class="text-right" ng-if="x.deptSLeaderName">签名：{{x.deptSLeaderName}}</p>
+                <p class="text-right" ng-if="x.deptSleaderDate">日期：{{x.deptSleaderDate}}</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>    <!-- end table -->
+</div>

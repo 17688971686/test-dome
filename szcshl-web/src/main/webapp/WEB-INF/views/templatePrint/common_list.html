@@ -1,0 +1,25 @@
+<meta charset="UTF-8">
+<table class="print-table" >
+    <tr>
+        <td>序号</td>
+        <td>资料名称</td>
+        <td>份数</td>
+        <td>原件</td>
+        <td>复印件</td>
+        <td>补充说明</td>
+        <td>补充日期</td>
+    </tr>
+    <tr ng-repeat="x in vm.model.registerFileDtoDtoList">
+        <td>{{$index+1}}</td>
+        <td>{{x.fileName}}</td>
+        <td>{{x.totalNum}}</td>
+        <td>
+            <input type="checkbox" ng-disabled="true" ng-checked="x.isHasOriginfile == 9" ng-true-value="9" ng-false-value="0">
+        </td>
+        <td>
+            <input type="checkbox" ng-disabled="true" ng-checked="x.isHasCopyfile == 9" ng-true-value="9" ng-false-value="0">
+        </td>
+        <td>{{x.suppleDeclare}}</td>
+        <td>{{x.suppleDate}}</td>
+    </tr>
+</table>

@@ -4,13 +4,13 @@
 /****************基础样式开始**************/
 body{
     font-family:'微软雅黑';
-        font-style: normal;
-        font-variant: normal;
-        font-weight: normal;
-        font-stretch: normal;
-        font-size: 14px;
-        line-height: 150%;
-        font-family: 'Hiragino Sans GB', 'Microsoft Yahei', arial, 宋体, 'Helvetica Neue', Helvetica, STHeiTi, sans-serif;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    font-stretch: normal;
+    font-size: 14px;
+    line-height: 150%;
+    font-family: 'Hiragino Sans GB', 'Microsoft Yahei', arial, 宋体, 'Helvetica Neue', Helvetica, STHeiTi, sans-serif;
 
 }
 
@@ -21,11 +21,11 @@ table{
     font-size:14px;
 }
 table div{
-   /* width:100%;*/
+    /* width:100%;*/
     font-size:14px;
 }
 a{
- font-family:'微软雅黑';
+    font-family:'微软雅黑';
 }
 *{ padding:0; margin:0;}
 ul,li{list-style-type:none;}
@@ -52,7 +52,7 @@ input,textarea{ outline:none;}
 .skin-green .main-header .logo {
     background-color:  #00A65A;
     color: #000;
-    overflow: visible; 
+    overflow: visible;
     height:55px;
 }
 .skin-green .main-header .logo:hover {
@@ -60,7 +60,7 @@ input,textarea{ outline:none;}
 }
 .skin-green .main-header .navbar {
     background: none;
-   /*  border-bottom: 1px solid #ccc; */
+    /*  border-bottom: 1px solid #ccc; */
 }
 .skin-green .main-header .navbar {
     background: none;
@@ -84,7 +84,7 @@ input,textarea{ outline:none;}
     position: relative;
     max-height: 100px;
     z-index: 1030;
-  /*  background-image:url("../images/black-linen.png");*/
+    /*  background-image:url("../images/black-linen.png");*/
 }
 .header{
     background-image:url("../images/headerbg.png");
@@ -164,7 +164,7 @@ input,textarea{ outline:none;}
 /* 表格 */
 
 /* kendo表格样式自定义初始化 */
-    /* kendo按钮样式自定义初始化 */
+/* kendo按钮样式自定义初始化 */
 .k-header, .k-grid-header, .k-toolbar, .k-dropdown-wrap, .k-picker-wrap, .k-numeric-wrap, .k-grouping-header, .k-pager-wrap, .k-textbox, .k-button, .k-progressbar, .k-draghandle, .k-autocomplete, .k-state-highlight, .k-tabstrip-items .k-item, .k-panelbar .k-tabstrip-items .k-item, .km-pane-wrapper>.km-pane>.km-view>.km-content {
     /*background-image: url('textures/highlight.png'); */
     background-image: none,-webkit-linear-gradient(top,rgba(255,255,255,0) 0,rgba(255,255,255,0) 100%);
@@ -177,10 +177,10 @@ input,textarea{ outline:none;}
 
 .k-autocomplete.k-state-default, .k-picker-wrap.k-state-default, .k-numeric-wrap.k-state-default, .k-dropdown-wrap.k-state-default {
     /*background-image: url('textures/highlight.png');*/
-    background-image: none,-webkit-linear-gradient(top,rgba(255,255,255,0) 0,rgba(255,255,255,0) 100%); 
+    background-image: none,-webkit-linear-gradient(top,rgba(255,255,255,0) 0,rgba(255,255,255,0) 100%);
     background-image: none,-moz-linear-gradient(top,rgba(255,255,255,0) 0,rgba(255,255,255,0) 100%);
     background-image: none,-o-linear-gradient(top,rgba(255,255,255,0) 0,rgba(255,255,255,0) 100%);
-    background-image: none,linear-gradient(to bottom,rgba(255,255,255,0) 0,rgba(255,255,255,0) 100%); 
+    background-image: none,linear-gradient(to bottom,rgba(255,255,255,0) 0,rgba(255,255,255,0) 100%);
     background-position: 50% 50%;
     background-color: #00A0E9;
     color:#fff;.
@@ -211,7 +211,7 @@ input,textarea{ outline:none;}
 
 }
 .grid{
-  /*  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);*/
+    /*  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);*/
 }
 
 
@@ -223,7 +223,7 @@ input,textarea{ outline:none;}
 }
 div.k-grid-footer, div.k-grid-header {
     background: #d9ecf5;
-   text-shadow: #ffffff 0 1px 0;
+    text-shadow: #ffffff 0 1px 0;
 }
 .k-filter-row th, .k-grid-header th.k-header {
     font-size: 15px;
@@ -260,18 +260,18 @@ div.k-grid-footer, div.k-grid-header {
     color: #000;
 }
 
-.k-icon{	
-	/*background-image: url('../libs/kendoui/BlueOpal/sprite2.png');*/
+.k-icon{
+    /*background-image: url('../libs/kendoui/BlueOpal/sprite2.png');*/
 }
 
 .k-i-close,.k-i-arrow-e,.k-i-seek-e,.k-i-arrow-w,.k-i-seek-w{
-	background-image: url('../libs/kendoui/BlueOpal/sprite.png');
+    background-image: url('../libs/kendoui/BlueOpal/sprite.png');
 }
 .k-header{
-	background: none;
+    background: none;
 }
 .k-button {
-	background:none;
+    background:none;
     color: #fff;
     border-color: #00A0E9;
     background-color: #00A0E9;
@@ -289,62 +289,62 @@ div.k-grid-footer, div.k-grid-header {
 .newpaper .col-xs-2{  text-align: right;}
 .newpaper .box-body{margin:auto;}
 .pro_title {
-	font-size: 14px;
-	font-family: "微软雅黑";
+    font-size: 14px;
+    font-family: "微软雅黑";
 }
 .pro_title_1 {
-	font-size: 12px;
-	font-weight: bold;
+    font-size: 12px;
+    font-weight: bold;
 }
 .list_text {
-	font-size: 12px;
+    font-size: 12px;
 }
 .conttent_list table{border-right:1px solid #000;border-bottom:1px solid #000; background:#fff;}
 .conttent_list table td{
-	border-left: 1px solid #000;
-	border-top: 1px solid #000;
-	padding: 5px;
-	word-break:break-all; 
-	word-wrap:break-word;
+    border-left: 1px solid #000;
+    border-top: 1px solid #000;
+    padding: 5px;
+    word-break:break-all;
+    word-wrap:break-word;
 }
 
 .text_input {
-	border: 1px solid #0CF;
+    border: 1px solid #0CF;
 }
 .conttent_list table tr .list_text .waring {
-	color: #F30;
+    color: #F30;
 }
 .waring {
-	color: #F30;
+    color: #F30;
 }
 .textarea_list {
-	margin: 10px;
-	height: 120px;
-	width: 400px;
+    margin: 10px;
+    height: 120px;
+    width: 400px;
 }
 .conttent_list table{
-	margin:10px;
-	margin:auto;
-	border:1px solid #000;
-	}
+    margin:10px;
+    margin:auto;
+    border:1px solid #000;
+}
 .filerbox{
-	width:595px;
-	padding:3px;
-	margin:10px auto;
-	border:1px solid #ccc;
-	overflow:hidden;
-}	
+    width:595px;
+    padding:3px;
+    margin:10px auto;
+    border:1px solid #ccc;
+    overflow:hidden;
+}
 
 .filerbox a{font-weight: bold;}
 
 .bton {
-	margin: auto;
+    margin: auto;
 }
 .conttent_list table tr .list_text .pro_title_1 .list_text {
-	font-weight: normal;
+    font-weight: normal;
 }
 .bottom_btn {
-	text-align: center;
+    text-align: center;
 }
 .m-c{ margin:10px auto;}
 
@@ -387,7 +387,7 @@ div.k-grid-footer, div.k-grid-header {
 }
 /* audit */
 .btn_add{
-	background: #00A0E9;
+    background: #00A0E9;
     border: 0px;
     font-weight: bold;
     padding: 5px 6px;
@@ -395,7 +395,7 @@ div.k-grid-footer, div.k-grid-header {
     border-radius: 80px;
 }
 .btn_remove{
-	background: #F39C12;
+    background: #F39C12;
     border: 0px;
     font-weight: bold;
     padding: 5px 6px;
@@ -431,10 +431,10 @@ div.k-grid-footer, div.k-grid-header {
     border-radius: 0px;
     box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
 }
- .cared .bg-green{
+.cared .bg-green{
     background-color: #80c269 !important;
- }
- .cs-icon-r{
+}
+.cs-icon-r{
     border-radius: 40px;
     color:#ffae00;
     border: 1px solid #ffae00;
@@ -495,7 +495,7 @@ div.k-grid-footer, div.k-grid-header {
     display: none;
 }
 .print-content .well {
-     border:0px;
+    border:0px;
     -webkit-box-shadow: none;
     box-shadow:none;
 }
@@ -529,4 +529,102 @@ div.k-window{
 }
 .k-window-titlebar .k-window-actions {
     padding-top: .2em;
+}
+
+/*调整打印样式*/
+.print-table{
+    width: 100%;
+}
+.print-table .title{
+    font-family: simun;
+    text-align: center;
+    font-size:24px;
+    font-weight: 500;
+    line-height:40px;
+}
+.print-table th{
+    text-align: center;
+}
+.print-table th,
+.print-table td{
+    border:1px solid #000;
+    border-collapse:collapse;
+    vertical-align: middle;
+    padding:4px 10px;
+}
+.print-table td:first-child{
+    text-align: center;
+    padding:5px 0;
+}
+.print-table .tr-hidden td{
+    border:none;
+    height:0;
+    paddign:0;
+    margin: 0;
+}
+.print-table .child-table td{
+    padding:5px 0;
+}
+.num{
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border:1px solid #000;
+    outline: none;
+    text-align: center;
+}
+.child-table{
+    width: 100%;
+}
+.child-table td{
+    border:none;
+    text-align: center;
+}
+.print-table  input[type="checkbox"] {
+    position: relative;
+    -webkit-appearance: none;  /*清除复选框默认样式*/
+    border:1px solid #000;
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    text-align: center;
+    margin:0;
+}
+.print-table input[type="checkbox"]:checked:before{
+    content:'√';
+    position: absolute;
+    left: 2px;
+    top: -4px;
+    font-size:20px;
+}
+@media print {
+    .print-table{
+        margin-top:-20px;
+    }
+    .well{
+        margin:0 !important;
+    }
+    .print-table .child-table .printing-td {
+        text-align: left;
+    }
+}
+#sign_history .k-grid-content{
+    overflow: hidden;
+    overflow-x:auto;
+}
+#sign_history .k-grid-header{
+    padding-right:0!important;
+}
+#sign_history table{
+    border-collapse: collapse;
+}
+#sign_history table th{
+    line-height: 30px;
+}
+#sign_history table th,
+#sign_history table td{
+    border:1px solid #000;
+    border-collapse:collapse!important;
+    vertical-align: middle;
+    padding:4px 10px;
 }
