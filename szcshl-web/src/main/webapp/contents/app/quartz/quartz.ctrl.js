@@ -3,9 +3,9 @@
 
     angular.module('app').controller('quartzCtrl', quartz);
 
-    quartz.$inject = ['$location', 'quartzSvc'];
+    quartz.$inject = ['bsWin', 'quartzSvc'];
 
-    function quartz($location, quartzSvc) {
+    function quartz(bsWin, quartzSvc) {
         var vm = this;
         vm.title = '定时器配置';
 
@@ -14,81 +14,114 @@
             quartzSvc.grid(vm);
         }
 
-        vm.del = function (id) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    quartzSvc.deleteQuartz(vm, id);
-                }
-            });
-        }
-        vm.dels = function () {
-            var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.del(idStr);
-            }
-        };
-
         //新增定时器
         vm.addQuartz = function () {
-        	vm.quartz={};
+            vm.quartz = {};
             $("#quartz_edit_div").kendoWindow({
-                width : "600px",
-                height : "400px",
-                title : "定时器编辑",
-                visible : false,
-                modal : true,
-                closable : true,
-                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+                width: "680px",
+                height: "400px",
+                title: "定时器编辑",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
             }).data("kendoWindow").center().open();
         }
 
-          //修改定时器
+        //修改定时器
         vm.edit = function (id) {
-        	vm.id=id;
             $("#quartz_edit_div").kendoWindow({
-                width : "600px",
-                height : "400px",
-                title : "定时器修改",
-                visible : false,
-                modal : true,
-                closable : true,
-                actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+                width: "600px",
+                height: "400px",
+                title: "定时器修改",
+                visible: false,
+                modal: true,
+                open :function(){
+                    quartzSvc.getQuartzById(id,function(data){
+                        vm.quartz = data;
+                    });
+                },
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
             }).data("kendoWindow").center().open();
-            quartzSvc.getQuartzById(vm);
-            
         }
-        
-        
+
+
         //关闭弹窗
-        vm.colseQuartz = function(){
+        vm.colseQuartz = function () {
             window.parent.$("#quartz_edit_div").data("kendoWindow").close();
         }
 
-        //保存定时器
-        vm.saveQuartz = function(){
-            quartzSvc.saveQuartz(vm);
+        /**
+         * 保存定时器
+         */
+        vm.saveQuartz = function () {
+            common.initJqValidation($("#quartz_form"));
+            var isValid = $("#quartz_form").valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                quartzSvc.saveQuartz(vm.quartz, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        bsWin.alert("操作成功！", function () {
+                            vm.colseQuartz();
+                            vm.gridOptions.dataSource.read();
+                        });
+                    } else {
+                        bsWin.alert(data.reMsg);
+                    }
+                });
+            }
         }
-        
-        vm.execute=function (id){
-        	quartzSvc.quartzExecute(vm,id);
+
+        /**
+         * 执行定时器
+         * @param id
+         */
+        vm.execute = function (id) {
+            quartzSvc.quartzExecute(id, function (data) {
+                if (data.flag || data.reCode == 'ok') {
+                    bsWin.alert("操作成功！", function () {
+                        vm.gridOptions.dataSource.read();
+                    });
+                } else {
+                    bsWin.alert(data.reMsg);
+                }
+            });
         }
-        
-        vm.stop=function (id){
-        	quartzSvc.quartzStop(vm,id);
+
+
+        /**
+         * 停止执行定时器
+         * @param id
+         */
+        vm.stop = function (id) {
+            quartzSvc.quartzStop(id, function (data) {
+                if (data.flag || data.reCode == 'ok') {
+                    bsWin.alert("操作成功！", function () {
+                        vm.gridOptions.dataSource.read();
+                    });
+                } else {
+                    bsWin.alert(data.reMsg);
+                }
+            });
+        }
+
+        /**
+         * 设置定时器为不可用
+         * @param id
+         */
+        vm.del = function (id) {
+            bsWin.confirm("确认删除？删除数据无法恢复，请谨慎操作！", function () {
+                quartzSvc.deleteQuartz(id,function(data){
+                    if (data.flag || data.reCode == 'ok') {
+                        bsWin.alert("操作成功！", function () {
+                            vm.gridOptions.dataSource.read();
+                        });
+                    } else {
+                        bsWin.alert(data.reMsg);
+                    }
+                });
+            });
         }
 
     }

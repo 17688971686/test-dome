@@ -17,25 +17,26 @@
         <button class="btn btn-sm btn-success" ng-click="vm.queryAssistCost()" ng-disabled="vm.isSubmit">
             <span class="glyphicon glyphicon-search"></span>查询
         </button>
-        <button class="btn btn-sm btn-primary" ng-click="vm.assistCostReset()">重置</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.assistCostReset()">
+            <span class="glyphicon glyphicon-repeat"></span>重置</button>
         <!--<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>-->
     </div>
     <div class="breadcrumb">
         <table  style="width: 100%;">
             <tr>
-                <td class="text-right" style="width:80px;">项目名称</td>
+                <td class="text-right" style="width:80px;">项目名称：</td>
                 <td >
                     <input ng-model="vm.signAssistCost.projectName" />
                 </td>
-                <td class="text-right" style="width:80px;">协审单位</td>
+                <td class="text-right" style="width:80px;">协审单位：</td>
                 <td >
                     <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistUnit" >
                 </td>
-                <td class="text-right" style="width:80px;">协议登记号</td>
+                <td class="text-right" style="width:90px;">协议登记号：</td>
                 <td>
                     <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistPlanNo" >
                 </td>
-                <td class="text-right" style="width:80px;">签收日期</td>
+                <td class="text-right" style="width:80px;">签收日期：</td>
                 <td style="min-width: 280px;">
                     <input name="beginTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
                            ng-model="vm.signAssistCost.beginTime"/>

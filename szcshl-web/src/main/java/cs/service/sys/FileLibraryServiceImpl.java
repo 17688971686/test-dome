@@ -14,6 +14,7 @@ import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.FileLibraryRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import org.apache.lucene.util.RamUsageEstimator;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
@@ -52,20 +53,13 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
 
     /**
      * 初始化文件夹
-     * @param oDataObj
      * @return
      */
     @Override
-    public List<FileLibraryDto> initFolder(ODataObj oDataObj,String libraryType) {
+    public List<FileLibraryDto> initFolder(String libraryType) {
         Criteria criteria = fileLibraryRepo.getExecutableCriteria();
-        criteria = oDataObj.buildFilterToCriteria(criteria);
-        if((Constant.folderType.POLICY_LIBRARY.getValue()).equals(libraryType)){//政策标准库
-            criteria.add(Restrictions.eq(FileLibrary_.fileType.getName(),Constant.folderType.POLICY_LIBRARY.getValue()));
-        }
-        if((Constant.folderType.FILE_LIBRARY.getValue()).equals(libraryType)){//质量管理文件库
-            criteria.add(Restrictions.eq(FileLibrary_.fileType.getName(),Constant.folderType.FILE_LIBRARY.getValue()));
-        }
-        criteria.add(Restrictions.eq(FileLibrary_.fileNature.getName(),Constant.fileNatrue.FOLDER_TYPE.getValue()));
+        criteria.add(Restrictions.eq(FileLibrary_.fileType.getName(), libraryType));
+//        criteria.add(Restrictions.eq(FileLibrary_.fileNature.getName(),Constant.libraryType.FOLDER_TYPE.getValue()));
 
         List<FileLibrary> fileLibraryList = criteria.list();
         List<FileLibraryDto> fileLibraryDtoList = new ArrayList<>();
@@ -84,26 +78,26 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
      * @param fileLibraryDto
      */
     @Override
-    public ResultMsg addFolder(FileLibraryDto fileLibraryDto, String libraryType) {
+    public ResultMsg addFolder(FileLibraryDto fileLibraryDto) {
         FileLibrary findFile=new FileLibrary();
-        if(Constant.folderType.POLICY_LIBRARY.getValue().equals(libraryType)){
-          findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.POLICY_LIBRARY.getValue());
-        }
-        if(Constant.folderType.FILE_LIBRARY.getValue().equals(libraryType)){
-            findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.FILE_LIBRARY.getValue());
-        }
-        if(findFile ==null) {
+        //通过父id，文件名 ，文件性质，文件类型， 判断该文件是否存在
+        Boolean exitFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),
+                Constant.libraryType.FOLDER_TYPE.getValue() , fileLibraryDto.getFileType());
+        if(!exitFile) {
             FileLibrary fileLibrary = new FileLibrary();
             //创建文件目录格式 ：根目录/质量管理文件库/文件夹名
-            String fileLibraryPath = SysFileUtil.getUploadPath();//获取根目录
+            //获取根目录
+            String fileLibraryPath = SysFileUtil.getUploadPath();
             String url = "";
             if (fileLibraryDto.getParentFileId() != null) {
                 url = File.separator + findFileUrlById(fileLibraryDto.getParentFileId()) + File.separator + fileLibraryDto.getFileName();
             } else {
-                if(Constant.folderType.POLICY_LIBRARY.getValue().equals(libraryType)){
+                //政策标准文件库
+                if((Constant.libraryType.POLICY_LIBRARY.getValue()).equals(fileLibraryDto.getFileType())){
                     url = File.separator + Constant.SysFileType.POLICYLIBRARY.getValue()+ File.separator + fileLibraryDto.getFileName();
                 }
-                if(Constant.folderType.FILE_LIBRARY.getValue().equals(libraryType)){
+                //质量管理文件库
+                if((Constant.libraryType.QUALITY_LIBRARY.getValue()).equals(fileLibraryDto.getFileType())){
                     url = File.separator + Constant.SysFileType.FILELIBRARY.getValue()+ File.separator + fileLibraryDto.getFileName();
                 }
             }
@@ -112,19 +106,14 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
 
             BeanCopierUtils.copyPropertiesIgnoreNull(fileLibraryDto, fileLibrary);
             fileLibrary.setFileId(UUID.randomUUID().toString());
-            fileLibrary.setCreatedBy(SessionUtil.getLoginName());
+            fileLibrary.setCreatedBy(SessionUtil.getDisplayName());
             fileLibrary.setCreatedDate(new Date());
-            fileLibrary.setModifiedBy(SessionUtil.getLoginName());
+            fileLibrary.setModifiedBy(SessionUtil.getDisplayName());
             fileLibrary.setModifiedDate(new Date());
             fileLibrary.setFileUrl( url);
-            fileLibrary.setFileNature(Constant.fileNatrue.FOLDER_TYPE.getValue());
+            //设置为文件夹类型
+            fileLibrary.setFileNature(Constant.libraryType.FOLDER_TYPE.getValue());
 
-            if(Constant.folderType.POLICY_LIBRARY.getValue().equals(libraryType)){
-                fileLibrary.setFileType(Constant.folderType.POLICY_LIBRARY.getValue());
-            }
-            if(Constant.folderType.FILE_LIBRARY.getValue().equals(libraryType)){
-                fileLibrary.setFileType(Constant.folderType.FILE_LIBRARY.getValue());
-            }
             fileLibraryRepo.save(fileLibrary);
 
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"创建成功！");
@@ -138,43 +127,29 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
      * @param fileLibraryDto
      */
     @Override
-    public FileLibraryDto saveFile(FileLibraryDto fileLibraryDto,String libraryType) {
+    public ResultMsg saveFile(FileLibraryDto fileLibraryDto) {
         FileLibrary findFile=new FileLibrary();
-        if(Constant.folderType.POLICY_LIBRARY.getValue().equals(libraryType)){
-            findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.POLICY_LIBRARY.getValue());
-        }
-        if(Constant.folderType.FILE_LIBRARY.getValue().equals(libraryType)){
-            findFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId(),fileLibraryDto.getFileName(),Constant.fileNatrue.FOLDER_TYPE.getValue(),Constant.folderType.FILE_LIBRARY.getValue());
-        }
-        if(findFile ==null) {
-        FileLibrary fileLibrary = new FileLibrary();
-        String fileUrl="";
-        if(fileLibraryDto.getFileId()!=null){
-            fileLibrary.setParentFileId(fileLibraryDto.getParentFileId());
-        }else{
-            fileUrl=File.separator + fileLibraryDto.getFileName();
-        }
+        Boolean exitFile = fileLibraryRepo.findByFileNameAndParentId(fileLibraryDto.getParentFileId()
+                ,fileLibraryDto.getFileName(),Constant.libraryType.FILE_TYPE.getValue(),fileLibraryDto.getFileType());
+        if(!exitFile) {
+            FileLibrary fileLibrary = new FileLibrary();
+            String fileUrl=File.separator + findFileUrlById(fileLibraryDto.getParentFileId()) + File.separator + fileLibraryDto.getFileName();;
 
-        BeanCopierUtils.copyPropertiesIgnoreNull(fileLibraryDto,fileLibrary);
-        fileLibrary.setFileId(UUID.randomUUID().toString());
-        fileLibrary.setCreatedBy(SessionUtil.getLoginName());
-        fileLibrary.setCreatedDate(new Date());
-        fileLibrary.setModifiedBy(SessionUtil.getLoginName());
-        fileLibrary.setModifiedDate(new Date());
-        if(Constant.folderType.FILE_LIBRARY.getValue().equals(libraryType)){
-            fileLibrary.setFileType(Constant.folderType.FILE_LIBRARY.getValue());
-        }
-        if(Constant.folderType.POLICY_LIBRARY.getValue().equals(libraryType)){
-            fileLibrary.setFileType(Constant.folderType.POLICY_LIBRARY.getValue());
-        }
-        fileLibrary.setFileUrl(findFileUrlById(fileLibraryDto.getParentFileId()) + fileUrl);
-        fileLibrary.setFileNature(Constant.fileNatrue.FILE_TYPE.getValue());
-        fileLibraryRepo.save(fileLibrary);
-        FileLibraryDto fld = new FileLibraryDto();
-        fld.setFileId(fileLibrary.getFileId());
-        return fld;
+            BeanCopierUtils.copyPropertiesIgnoreNull(fileLibraryDto,fileLibrary);
+            fileLibrary.setFileId(UUID.randomUUID().toString());
+            fileLibrary.setCreatedBy(SessionUtil.getDisplayName());
+            fileLibrary.setCreatedDate(new Date());
+            fileLibrary.setModifiedBy(SessionUtil.getDisplayName());
+            fileLibrary.setModifiedDate(new Date());
+            fileLibrary.setFileUrl( fileUrl);
+            //设置为 文件类型
+            fileLibrary.setFileNature(Constant.libraryType.FILE_TYPE.getValue());
+            fileLibraryRepo.save(fileLibrary);
+            FileLibraryDto fld = new FileLibraryDto();
+            fld.setFileId(fileLibrary.getFileId());
+            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功！" , fld);
         }else{
-            throw new IllegalArgumentException(String.format("文件：%s 已经存在，请重新输入",fileLibraryDto.getFileName()));
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue()  , String.format("文件：%s 已经存在，请重新输入",fileLibraryDto.getFileName()) , null);
         }
 
     }
@@ -206,12 +181,13 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
     }
 
     @Override
-    public void updateFile(FileLibraryDto fileLibraryDto) {
+    public ResultMsg updateFile(FileLibraryDto fileLibraryDto) {
         FileLibrary fileLibrary = fileLibraryRepo.getById(fileLibraryDto.getFileId());
         BeanCopierUtils.copyProperties(fileLibraryDto,fileLibrary);
         fileLibrary.setModifiedDate(new Date());
         fileLibrary.setModifiedBy(SessionUtil.getLoginName());
         fileLibraryRepo.save(fileLibrary);
+        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , null);
     }
 
     @Override
@@ -219,7 +195,7 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
         FileLibrary fileLibrary = fileLibraryRepo.getById(fileId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("from "+ SysFile.class.getSimpleName()+ " where "+ SysFile_.businessId.getName()+"=:businessId");
-hqlBuilder.setParam("businessId",fileId);
+        hqlBuilder.setParam("businessId",fileId);
         List<SysFile> sysFileList = sysFileRepo.findByHql(hqlBuilder);
         String path = SysFileUtil.getUploadPath();
         if(sysFileList !=null && sysFileList.size()>0){
@@ -231,33 +207,43 @@ hqlBuilder.setParam("businessId",fileId);
         fileLibraryRepo.delete(fileLibrary);
     }
 
-    @Override
-    public void deleteRootDirectory(String parentFileId) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("delete from " + FileLibrary.class.getSimpleName() + " f1 where not exists (");
-        hqlBuilder.append("select 1 from "+ FileLibrary.class.getSimpleName() + " f2 where f2." + FileLibrary_.parentFileId.getName() + "=:parentFileId )");
-        hqlBuilder.append(" and f1."+ FileLibrary_.fileId.getName() + "=:fileId");
-        hqlBuilder.setParam("parentFileId",parentFileId);
-        hqlBuilder.setParam("fileId",parentFileId);
-        int count = fileLibraryRepo.executeHql(hqlBuilder);
-        if(count <=0){
-            throw new IllegalArgumentException(String.format("该根目录包含子目录，不能将其删除！"));
-        }
-    }
-
     /**
-     * 初始化文件列表
-     * @param oDataObj
-     * @param fileId
+     * 删除文件夹
+     * @param parentFileId
      * @return
      */
     @Override
-    public PageModelDto<FileLibraryDto> initFileList(ODataObj oDataObj, String fileId) {
+    public ResultMsg deleteRootDirectory(String parentFileId) {
+//        String[] ids = parentFileId.split(",");
+//        for(String fileId : ids){
+            HqlBuilder hqlBuilder = HqlBuilder.create();
+            hqlBuilder.append("delete from " + FileLibrary.class.getSimpleName() + " f1 where not exists (");
+            hqlBuilder.append("select 1 from "+ FileLibrary.class.getSimpleName() + " f2 where f2." + FileLibrary_.parentFileId.getName() + "=:parentFileId )");
+            hqlBuilder.append(" and f1."+ FileLibrary_.fileId.getName() + "=:fileId");
+            hqlBuilder.setParam("parentFileId",parentFileId);
+            hqlBuilder.setParam("fileId",parentFileId);
+            int count = fileLibraryRepo.executeHql(hqlBuilder);
+            if(count <=0){
+                return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该根目录包含子目录，不能将其删除！" , null );
+            }
+//        }
+
+        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "删除成功！" , null);
+    }
+
+    /**
+     * 初始化文件夹下的所有文件
+     * @param oDataObj
+     * @param  fileId
+     * @return
+     */
+    @Override
+    public PageModelDto<FileLibraryDto> initFileList(ODataObj oDataObj , String fileId) {
         PageModelDto<FileLibraryDto> pageModelDto = new PageModelDto<>();
         Criteria criteria = fileLibraryRepo.getExecutableCriteria();
         criteria = oDataObj.buildFilterToCriteria(criteria);
-        criteria.add(Restrictions.eq(FileLibrary_.parentFileId.getName(),fileId));
-        criteria.add(Restrictions.eq(FileLibrary_.fileNature.getName(),Constant.fileNatrue.FILE_TYPE.getValue()));
+        criteria.add(Restrictions.eq(FileLibrary_.parentFileId.getName() , fileId));
+        criteria.add(Restrictions.eq(FileLibrary_.fileNature.getName(),Constant.libraryType.FILE_TYPE.getValue()));
         List<FileLibrary> fileLibraryList = criteria.list();
         //统计总数
         Integer totalResult=((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();

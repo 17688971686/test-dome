@@ -3,41 +3,46 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-idea.html'"></div>
-<div style="background:white;">
+<div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/sign">项目签收管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <div class="toolbar" >
+    <div class="label-default" style="width: 100%;padding:5px 10px;margin-bottom: 3px;">
         1、编制协审项目计划
     </div>
-    <div class="well well-sm" style="background:white;">
-        修改已有的项目计划审批包：
-        <select ng-model="vm.selectPlanId" ng-change = "vm.initSelPlan()" id="planName">
-            <option value="">请选择</option>
-            <option ng-repeat="s in vm.planList"  value="{{s.id}}" ng-selected="s.id == vm.selectPlanId">{{s.planName}}</option>
-        </select>
-        <button class="btn btn-xs btn-danger"  ng-click="vm.doDelete()"><i class="fa fa-times" aria-hidden="true"></i>删除计划审批包</button>
-        <table class="table table-bordered" style="margin-top:10px;">
+    <div style="background:white;">
+        <table class="table table-bordered" style="margin-bottom:0px;">
             <tr>
-                <td class="formAlignRight">收文编号</td>
-                <td><input ng-model="vm.filterModel.filterFilecode"></td>
-                <td class="formAlignRight">项目代码</td>
-                <td><input ng-model="vm.filterModel.filterProjectCode"></td>
+                <td colspan="8">
+                    修改已有的项目计划审批包：
+                    <select ng-model="vm.selectPlanId" ng-change = "vm.initSelPlan()" id="planName">
+                        <option value="">请选择</option>
+                        <option ng-repeat="s in vm.planList"  value="{{s.id}}" ng-selected="s.id == vm.selectPlanId">{{s.planName}}</option>
+                    </select>
+                    <button class="btn btn-xs btn-danger"  ng-click="vm.doDelete()"><i class="fa fa-times" aria-hidden="true"></i>删除计划审批包</button>
+                </td>
             </tr>
             <tr>
-                <td class="formAlignRight">项目名称</td>
+                <td class="text-right">收文编号</td>
+                <td><input ng-model="vm.filterModel.filterFilecode"></td>
+                <td class="text-right">项目代码</td>
+                <td><input ng-model="vm.filterModel.filterProjectCode"></td>
+                <td class="text-right">项目名称</td>
                 <td><input ng-model="vm.filterModel.filterProjectName" ></td>
-                <td class="formAlignRight">建设单位</td>
+                <td class="text-right">建设单位</td>
                 <td><input ng-model="vm.filterModel.filterBuiltName" ></td>
             </tr>
         </table>
 
-        <table class="table table-bordered" style="margin-top:10px;max-height: 320px;" >
+        <table class="table table-bordered" style="margint-top:0px;max-height: 320px;" >
             <tr >
                 <td style="width: 45%">
-                    <table class="table table-bordered">
-                        <caption>中心在办核算项目</caption>
+                    <div style="max-height: 500px;">
+                    <div class="label-info" style="width: 100%;padding:2px 5px; font-size: 12px;">
+                        中心在办核算项目
+                    </div>
+                    <table class="table table-bordered" style="border-top:1px solid #989898">
                         <thead >
                         <tr >
                             <th >选择</th>
@@ -57,6 +62,7 @@
                         </tr>
                         </tbody>
                     </table>
+                    </div>
                 </td>
                 <td width="10%;" style="text-align:center;vertical-align:middle;">
                     <p>
@@ -74,8 +80,11 @@
                     <p ><button class="btn btn-xs btn-default"  ng-click="vm.cancelSign()" ng-disabled="vm.isCommit"><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> 取消挑选</button></p>
                 </td>
                 <td style="width: 45%">
-                    <table class="table table-bordered">
-                        <caption>计划已挑选的项目情况</caption>
+                    <div style="max-height: 500px;">
+                    <div class="label-info" style="width: 100%;padding:2px 5px; font-size: 12px;">
+                        计划已挑选的项目情况
+                    </div>
+                    <table class="table table-bordered" style="border-top:1px solid #989898">
                         <thead >
                         <tr >
                             <th >选择</th>
@@ -100,16 +109,17 @@
                         </tr>
                         </tbody>
                     </table>
+                    </div>
                 </td>
             </tr>
         </table>
     </div>
 
-    <div class="toolbar" >
+    <div class="label-default" style="width: 100%;padding:5px 10px;margin-bottom: 3px;">
         2、编制协审计划审批表
     </div>
     <div style="background:white;">
-        <form id="searchform" name="searchform">
+        <form id="searchform" name="searchform" class="well well-sm" style="margin-bottom: 10px;">
             <span class="help-inline">协审计划名称：</span>
             <input type="text" operator="like" name="planName" id="projectnam" placeholder="请输入">
 
@@ -126,15 +136,15 @@
 <div id="lowerSignWin" style="display: none;">
     <table class="table table-bordered" style="margin-top:10px;">
         <tr>
-            <td class="formAlignRight">收文编号</td>
+            <td class="text-right">收文编号</td>
             <td><input ng-model="vm.filterLow.filterFilecode"></td>
-            <td class="formAlignRight">项目代码</td>
+            <td class="text-right">项目代码</td>
             <td><input ng-model="vm.filterLow.filterProjectCode"></td>
         </tr>
         <tr>
-            <td class="formAlignRight">项目名称</td>
+            <td class="text-right">项目名称</td>
             <td><input ng-model="vm.filterLow.filterProjectName" ></td>
-            <td class="formAlignRight">建设单位</td>
+            <td class="text-right">建设单位</td>
             <td><input ng-model="vm.filterLow.filterBuiltName" ></td>
         </tr>
     </table>

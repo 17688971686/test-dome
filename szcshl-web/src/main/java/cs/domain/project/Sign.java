@@ -855,7 +855,7 @@ public class Sign extends DomainBase {
     private Integer isAssociate;
 
     //是否调概
-    @Column(columnDefinition = "VARCHAR(5)")
+    @Column(columnDefinition = "VARCHAR(2)")
     private String ischangeEstimate;
 
     //是否提前介入

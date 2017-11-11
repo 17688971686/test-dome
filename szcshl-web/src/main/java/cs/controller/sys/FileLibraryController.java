@@ -5,6 +5,7 @@ import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.sys.FileLibraryDto;
+import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.service.sys.FileLibraryService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -28,27 +29,18 @@ import java.util.List;
 @MudoleAnnotation(name = "文件库",value = "permission#fileMng")
 public class FileLibraryController {
 
-    private String ctrlName = "library";
+    private String ctrlName = "fileLibrary";
 
     @Autowired
     private FileLibraryService fileLibraryService;
 
     //@RequiresPermissions("fileLibrary#initFileFolder#get")
     @RequiresAuthentication
-    @RequestMapping(name="初始化质量管理文件库-文件夹",path="initFileFolder",method = RequestMethod.GET)
+    @RequestMapping(name="初始化-文件夹",path="initFileFolder",method = RequestMethod.GET)
     @ResponseBody
-    public List<FileLibraryDto> initFileFolder(HttpServletRequest request) throws ParseException {
-        ODataObj oDataObj = new ODataObj(request);
-        return fileLibraryService.initFolder(oDataObj,Constant.folderType.FILE_LIBRARY.getValue());
-    }
+    public List<FileLibraryDto> initFileFolder(@RequestParam String fileType) throws ParseException {
 
-    //@RequiresPermissions("fileLibrary#initPolicyFolder#get")
-    @RequiresAuthentication
-    @RequestMapping(name="初始化政策标准库-文件夹",path="initPolicyFolder",method = RequestMethod.GET)
-    @ResponseBody
-    public List<FileLibraryDto> initPolicyFolder(HttpServletRequest request) throws ParseException {
-        ODataObj oDataObj = new ODataObj(request);
-        return fileLibraryService.initFolder(oDataObj,Constant.folderType.POLICY_LIBRARY.getValue());
+        return fileLibraryService.initFolder(fileType);
     }
 
     //@RequiresPermissions("fileLibrary#initFileList#post")
@@ -58,7 +50,7 @@ public class FileLibraryController {
     public PageModelDto<FileLibraryDto> initFileList(HttpServletRequest request) throws ParseException {
         String fileId = request.getParameter("fileId");
         ODataObj oDataObj = new ODataObj(request);
-        return fileLibraryService.initFileList(oDataObj,fileId);
+        return fileLibraryService.initFileList(oDataObj , fileId);
     }
 
     //@RequiresPermissions("fileLibrary#findFileById#get")
@@ -72,43 +64,27 @@ public class FileLibraryController {
 
     //@RequiresPermissions("fileLibrary#addFileFolder#post")
     @RequiresAuthentication
-    @RequestMapping(name="新建文件夹-质量管理文件库",path ="addFileFolder",method=RequestMethod.POST)
+    @RequestMapping(name="新建文件夹",path ="addFileFolder",method=RequestMethod.POST)
     @ResponseBody
     public ResultMsg addFileFolder(@RequestBody  FileLibraryDto fileLibraryDto){
-        return fileLibraryService.addFolder(fileLibraryDto,Constant.folderType.FILE_LIBRARY.getValue());
-    }
-
-    //@RequiresPermissions("fileLibrary#addPolicyFolder#post")
-    @RequiresAuthentication
-    @RequestMapping(name="新建文件夹-政策标准库",path ="addPolicyFolder",method=RequestMethod.POST)
-    @ResponseStatus(value= HttpStatus.CREATED)
-    public void addPolicyFolder(@RequestBody  FileLibraryDto fileLibraryDto){
-        fileLibraryService.addFolder(fileLibraryDto,Constant.folderType.POLICY_LIBRARY.getValue());
-
+        return fileLibraryService.addFolder(fileLibraryDto);
     }
 
     //@RequiresPermissions("fileLibrary#saveFile#post")
     @RequiresAuthentication
-    @RequestMapping(name="新建文件-质量管理文件库",path ="saveFile",method=RequestMethod.POST)
+    @RequestMapping(name="新建文件",path ="saveFile",method=RequestMethod.POST)
     @ResponseBody
-    public FileLibraryDto saveFile(@RequestBody  FileLibraryDto fileLibraryDto){
-       return  fileLibraryService.saveFile(fileLibraryDto,Constant.folderType.FILE_LIBRARY.getValue());
+    public ResultMsg saveFile(@RequestBody  FileLibraryDto fileLibraryDto){
+       return  fileLibraryService.saveFile(fileLibraryDto);
     }
 
-    //@RequiresPermissions("fileLibrary#savePolicyFile#post")
-    @RequiresAuthentication
-    @RequestMapping(name="新建文件-政策标准库",path ="savePolicyFile",method=RequestMethod.POST)
-    @ResponseBody
-    public FileLibraryDto savePolicyFile(@RequestBody  FileLibraryDto fileLibraryDto){
-        return  fileLibraryService.saveFile(fileLibraryDto,Constant.folderType.POLICY_LIBRARY.getValue());
-    }
 
     //@RequiresPermissions("fileLibrary#updateFile#put")
     @RequiresAuthentication
     @RequestMapping(name="修改文件",path ="updateFile",method = RequestMethod.PUT)
-    @ResponseStatus(value=HttpStatus.NO_CONTENT)
-    public void updateFile(@RequestBody  FileLibraryDto fileLibraryDto){
-        fileLibraryService.updateFile(fileLibraryDto);
+    @ResponseBody
+    public ResultMsg updateFile(@RequestBody  FileLibraryDto fileLibraryDto){
+        return fileLibraryService.updateFile(fileLibraryDto);
     }
 
     //@RequiresPermissions("fileLibrary#deleteFile#delete")
@@ -123,9 +99,9 @@ public class FileLibraryController {
     //@RequiresPermissions("fileLibrary#deleteRootDirectory#delete")
     @RequiresAuthentication
     @RequestMapping(name="删除根目录",path ="deleteRootDirectory",method = RequestMethod.DELETE)
-    @ResponseStatus(value=HttpStatus.NO_CONTENT)
-    public void deleteRootDirectory(@RequestParam String parentFileId){
-        fileLibraryService.deleteRootDirectory(parentFileId);
+    @ResponseBody
+    public ResultMsg deleteRootDirectory(@RequestParam String parentFileId){
+        return fileLibraryService.deleteRootDirectory(parentFileId);
     }
 
     //@RequiresPermissions("fileLibrary#getFileUrlById#get")
@@ -174,13 +150,13 @@ public class FileLibraryController {
     @RequiresAuthentication
     @RequestMapping(name="政策标准库-文件列表",path ="html/policyList",method=RequestMethod.GET)
     public String policyList(){
-        return ctrlName + "/fileList";
+        return ctrlName + "/policyList";
     }
 
     //@RequiresPermissions("fileLibrary#html/policyEdit#get")
     @RequiresAuthentication
     @RequestMapping(name="政策标准库-新建文件",path="html/policyEdit",method=RequestMethod.GET)
     public String policyEdit(){
-        return ctrlName + "/fileEdit";
+        return ctrlName + "/policyEdit";
     }
 }

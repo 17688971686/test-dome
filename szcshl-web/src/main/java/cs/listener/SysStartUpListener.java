@@ -1,14 +1,13 @@
 package cs.listener;
 
 import cs.common.utils.QuartzManager;
+import cs.common.utils.Validate;
 import cs.domain.sys.Quartz;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.sys.OrgDeptService;
 import cs.service.sys.QuartzService;
 import cs.service.sys.UserService;
 import cs.service.sys.UserServiceImpl;
 import org.apache.log4j.Logger;
-import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ import java.util.List;
  */
 @Component
 public class SysStartUpListener implements ApplicationListener {
-    private static Logger logger = Logger.getLogger(UserServiceImpl.class);
+    private static Logger logger = Logger.getLogger(SysStartUpListener.class);
 
     @Autowired
     private QuartzService quartzService;
@@ -48,14 +47,14 @@ public class SysStartUpListener implements ApplicationListener {
                     orgDeptService.fleshOrgDeptCache();
                     //3、启动默认启动的定时器
                     List<Quartz> quartzList = quartzService.findDefaultQuartz();
-                    for (Quartz quartz : quartzList) {
-                        SchedulerFactory schedulderFactory = new StdSchedulerFactory();
-                        String cls = quartz.getClassName();
-                        QuartzManager.addJob(schedulderFactory.getScheduler(), quartz.getQuartzName(),
-                                Class.forName(cls), quartz.getCronExpression());
-                        quartzService.changeCurState(quartz.getId(), "9");
+                    if(Validate.isList(quartzList)){
+                        for (Quartz quartz : quartzList) {
+                            quartzService.quartzExecute(quartz.getId());
+                        }
+                        logger.info("\n==                 启动定时器成功！             ==");
                     }
                 } catch (Exception e) {
+                    logger.info("\n==启动定执行方法异常："+e.getMessage());
                     e.printStackTrace();
                 }
                 logger.info("\n" +

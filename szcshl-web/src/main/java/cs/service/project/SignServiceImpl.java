@@ -1330,7 +1330,6 @@ public class SignServiceImpl implements SignService {
 
                 //更改项目状态
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
-                sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
                 sign.setSignState(EnumState.YES.getValue());
                 sign.setProcessState(Constant.SignProcessState.FINISH.getValue());
                 signRepo.save(sign);
@@ -1783,7 +1782,8 @@ public class SignServiceImpl implements SignService {
         sign.setModifiedDate(now);
         sign.setCreatedBy(SessionUtil.getLoginName());
         sign.setModifiedBy(SessionUtil.getLoginName());
-        sign.setIsLightUp("0");//默认为不亮灯
+        //默认为不亮灯
+        sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
         signRepo.save(sign);
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);
     }
@@ -1911,10 +1911,69 @@ public class SignServiceImpl implements SignService {
         } else {
             BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
         }
+
         //送来时间
         if (sign.getReceivedate() == null) {
             sign.setReceivedate(now);
         }
+
+        if(!Validate.isString(sign.getIssign()) || EnumState.NO.getValue().equals(sign.getIssign())) {
+            //正式签收
+            sign.setIssign(EnumState.YES.getValue());
+            sign.setSigndate(now);
+
+            if (Validate.isString(sign.getReviewstage())) {
+                //先查找系统配置对否有评审阶段的评审天数，如有则用系统的，如果没有则用默认值
+                String configKey = "";
+                switch (sign.getReviewstage()) {
+                    case Constant.STAGE_SUG:
+                        configKey = Constant.RevireStageKey.KEY_SUG.getValue();
+                        break;
+                    case Constant.STAGE_STUDY:
+                        configKey = Constant.RevireStageKey.KEY_STUDY.getValue();
+                        break;
+                    case Constant.STAGE_BUDGET:
+                        configKey = Constant.RevireStageKey.KEY_BUDGET.getValue();
+                        break;
+                    case Constant.APPLY_REPORT:
+                        configKey = Constant.RevireStageKey.KEY_REPORT.getValue();
+                        break;
+                    case Constant.OTHERS:
+                        configKey = Constant.RevireStageKey.KEY_OTHER.getValue();
+                        break;
+                    case Constant.DEVICE_BILL_HOMELAND:
+                        configKey = Constant.RevireStageKey.KEY_HOMELAND.getValue();
+                        break;
+                    case Constant.DEVICE_BILL_IMPORT:
+                        configKey = Constant.RevireStageKey.KEY_IMPORT.getValue();
+                        break;
+                    case Constant.IMPORT_DEVICE:
+                        configKey = Constant.RevireStageKey.KEY_DEVICE.getValue();
+                        break;
+                    default:
+                        configKey = "";
+                }
+
+                if (Validate.isString(configKey)) {
+                    SysConfigDto sysConfigDto = sysConfigService.findByKey(configKey);
+                    if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
+                        sign.setReviewdays(Float.parseFloat(sysConfigDto.getConfigValue()));
+                        sign.setSurplusdays(Float.parseFloat(sysConfigDto.getConfigValue()));
+                    } else {
+                        //设定默认值，项目建议书和资金申请报告是12天，其他是15天
+                        if ((Constant.STAGE_SUG).equals(sign.getReviewstage())
+                                || (Constant.APPLY_REPORT).equals(sign.getReviewstage())) {
+                            sign.setSurplusdays(Constant.WORK_DAY_12);  //剩余评审天数
+                            sign.setReviewdays(Constant.WORK_DAY_12);   //评审天数，完成的时候再结算
+                        } else {
+                            sign.setSurplusdays(Constant.WORK_DAY_15);
+                            sign.setReviewdays(Constant.WORK_DAY_15);
+                        }
+                    }
+                }
+            }
+        }
+
         //保存
         try {
             signRepo.save(sign);

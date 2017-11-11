@@ -33,6 +33,10 @@ public class ProReviewConditionDto {
 
     private String projectName;//项目名称
 
+    private String isadvanced;//是否提前介入
+
+
+
     /**
      * 签收日期
      */
@@ -176,5 +180,13 @@ public class ProReviewConditionDto {
 
     public void setHjlStr(String hjlStr) {
         this.hjlStr = hjlStr;
+    }
+
+    public String getIsadvanced() {
+        return isadvanced;
+    }
+
+    public void setIsadvanced(String isadvanced) {
+        this.isadvanced = isadvanced;
     }
 }

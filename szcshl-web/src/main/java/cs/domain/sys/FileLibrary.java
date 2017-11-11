@@ -21,26 +21,47 @@ public class FileLibrary extends DomainBase{
     private String fileId ;//Id
 
 
+    /**
+     * 文件路径
+     */
     @Column(columnDefinition = "VARCHAR(255)")
     private String fileUrl;
 
-    @Column(columnDefinition = "VARCHAR(200)")
-    private String fileName;//文件名称
+    /**
+     * 文件名称
+     */
+    @Column(columnDefinition = "VARCHAR(128)")
+    private String fileName;
 
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String fileNature;//文件性质  1：文件夹   2：文件
+    /**
+     * 文件性质  ： FOLDER : 文件夹      FILE : 文件
+     */
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String fileNature;
 
-    @Column(columnDefinition = "VARCHAR(2)")
-    private String fileType;//文件库类型   1:文件库   2：政策库
+    /**
+     * 文件库类型  POLICY:政策标准文件库    QUALITY:质量管理文件库
+     */
+    @Column(columnDefinition = "VARCHAR(16)")
+    private String fileType;
 
-    @Column(columnDefinition = "VARCHAR(100)")
-    private String parentFileId;//父文件id
+    /**
+     * 父id
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String parentFileId;
 
+    /**
+     * 文件内容
+     */
     @Column(columnDefinition = "CLOB")
-    private String fileContent;//文件内容
+    private String fileContent;
 
+    /**
+     * 排序
+     */
     @Column(columnDefinition = "INTEGER")
-    private Integer fileSort;//排序
+    private Integer fileSort;
 
     public String getFileId() {
         return fileId;

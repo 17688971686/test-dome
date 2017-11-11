@@ -8,7 +8,7 @@
         var service = {
             saveRootFolder: saveRootFolder,//新建根目录文件夹
             saveChildFolder: saveChildFolder,//新建子目录
-            initFileFolder: initFileFolder,//初始化质量管理文件库-文件夹
+            initFileFolder: initFileFolder,//初始化文件夹
             initFileList: initFileList,//初始化文件夹下所有文件
             saveFile: saveFile,//保存文件
             findFileById: findFileById,//通过id查询文件
@@ -50,37 +50,20 @@
         }
 
         //begin deleteRootDirectory
-        function deleteRootDirectory(vm) {
+        function deleteRootDirectory(treeId , callBack) {
             var httpOptions = {
                 method: "delete",
                 url: rootPath + "/fileLibrary/deleteRootDirectory",
-                params: {parentFileId: vm.parentId}
+                params: {parentFileId: treeId}
             }
 
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
 
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            fn: function () {
-                                vm.isSubmit = false;
-                                $('.alertDialog').modal('hide');
-                                $('.modal-backdrop').remove();
-                                // initFolder(vm);
-                                $state.go('fileLibrary', {}, {reload: true});
-                                // location.href = rootPath + "/admin/index#/fileLibrary";
-                            }
-                        })
-                    }
-
-                });
+                }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -112,7 +95,7 @@
         //end deleteFile
 
         //begin updateFile
-        function updateFile(vm) {
+        function updateFile(vm , callBack) {
             var httpOptions = {
                 method: "put",
                 url: rootPath + "/fileLibrary/updateFile",
@@ -120,16 +103,9 @@
             }
 
             var httpSuccess = function success(response) {
-                common.alert({
-                    vm: vm,
-                    msg: "修改成功",
-                    fn: function () {
-                        vm.isSubmit = false;
-                        $('.alertDialog').modal('hide');
-                        $('.modal-backdrop').remove();
-                        $state.go('fileLibrary.fileList', {parentId: vm.parentId, fileId: vm.fileLibrary.fileId});
-                    }
-                })
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
             }
 
             common.http({
@@ -191,7 +167,7 @@
         //end findFileById
 
         //begin saveFile
-        function saveFile(vm) {
+        function saveFile(vm , callBack) {
             common.initJqValidation();
             var isValid = $('form').valid();
             if (isValid) {
@@ -201,26 +177,9 @@
                     data: vm.fileLibrary
                 }
                 var httpSuccess = function success(response) {
-                    vm.fileId = response.data.fileId;
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                    $('.modal-backdrop').remove();
-                                    // $state.go('fileLibrary.fileList', {parentId: vm.parentId, fileId: ''});
-                                }
-                            })
-                        }
-
-                    });
-
+                    if(callBack != undefined && typeof  callBack=="function"){
+                        callBack(response.data);
+                    }
                 }
 
                 common.http({
@@ -235,10 +194,11 @@
         //end saveFile
 
         //begin initFolder
-        function initFileFolder(callBack) {
+        function initFileFolder(vm,callBack) {
             var httpOptions = {
                 method: "get",
-                url: rootPath + "/fileLibrary/initFileFolder"
+                url: rootPath + "/fileLibrary/initFileFolder",
+                params : {fileType : vm.fileLibrary.fileType}
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -309,7 +269,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/fileLibrary/initFileList?fileId=" + vm.parentId, $("#fileLibraryForm")),
+                transport: common.kendoGridConfig().transport(rootPath + "/fileLibrary/initFileList?fileId=" + vm.parentId, $("#" + vm.formId)),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -388,6 +348,8 @@
                 resizable: true
             };
         }//end initFileList
+
+
 
 
     }

@@ -2,6 +2,7 @@ package cs.service.sys;
 
 import java.util.List;
 
+import cs.common.ResultMsg;
 import cs.domain.sys.Quartz;
 import cs.model.PageModelDto;
 import cs.model.sys.QuartzDto;
@@ -16,16 +17,42 @@ public interface QuartzService {
 
     PageModelDto<QuartzDto> get(ODataObj odataObj);
 
-	void save(QuartzDto record);
+	/**
+	 * 保存定时器
+	 * @param record
+	 * @return
+	 */
+	ResultMsg save(QuartzDto record);
 
-	void update(QuartzDto record);
-
+    /**
+     * 根据ID查询
+     * @param deptId
+     * @return
+     */
 	QuartzDto findById(String deptId);
 
-	void delete(String id);
-	
-	void changeCurState(String id,String state);
+    /**
+     * 停用定时器
+     * @param id
+     * @return
+     */
+    ResultMsg delete(String id);
+
 	
 	List<Quartz> findDefaultQuartz();
+
+    /**
+     * 执行定时器
+     * @param quartzId
+     * @return
+     */
+    ResultMsg quartzExecute(String quartzId);
+
+    /**
+     * 暂停定时器
+     * @param quartzId
+     * @return
+     */
+    ResultMsg quartzStop(String quartzId);
 
 }

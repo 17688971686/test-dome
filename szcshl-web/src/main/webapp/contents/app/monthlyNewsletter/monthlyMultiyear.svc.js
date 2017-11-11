@@ -361,7 +361,7 @@
                 {
                     field: "title",
                     title: "文件标题",
-                    width: 180,
+                    width: "30%",
                     filterable: false,
                     template: function (item) {
                         return '<a href="#/monthlyMultiyearEdit/' + item.id + '" >' + item.title + '</a>';
@@ -370,33 +370,33 @@
                 {
                     field: "orgName",
                     title: "拟办部门",
-                    width: 100,
+                    width: "10%",
                     filterable: false,
                 },
                 {
                     field: "userName",
                     title: "拟稿人",
-                    width: 120,
+                    width: "10%",
                     filterable: false
                 },
 
                 {
                     field: "suppLetterTime",
                     title: "拟稿时间",
-                    width: 100,
+                    width: "10%",
                     filterable: false
                 },
                 {
                     field: "secretLevel",
                     title: "秘密等级",
-                    width: 100,
+                    width: "10%",
                     filterable: false
                 },
 
                 {
                     field: "",
                     title: "操作",
-                    width: 140,
+                    width: 80,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),item.id, item.appoveStatus);
                     }

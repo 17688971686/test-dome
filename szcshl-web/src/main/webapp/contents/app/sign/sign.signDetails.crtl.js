@@ -9,7 +9,6 @@
         var vm = this;
     	vm.model = {};							    //创建一个form对象
         vm.flow = {};                               //收文对象
-        vm.title = '项目综合查询';        			//标题
         vm.model.signid = $state.params.signid;	    //收文ID
         vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
         //按钮显示控制，全部归为这个对象控制
@@ -43,20 +42,13 @@
                 flowSvc.initFlowData(vm);
             }
 
-            // 初始化业务信息
+            //初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
                 vm.model = data;
                 //发文
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
                     vm.dispatchDoc = vm.model.dispatchDocDto;
-                    //如果是合并发文次项目，则不用生成发文编号
-                    if((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
-                        || vm.dispatchDoc.fileNum){
-                        vm.businessFlag.isCreateDisFileNum = true;
-                    }else{
-                        vm.showFlag.buttDisFileNum = true;
-                    }
                 }
                 //归档
                 if (vm.model.fileRecordDto) {
@@ -74,6 +66,7 @@
                     vm.showSupperIndex = 0;
                 }
             });
+
             // 初始化上传附件
             sysfileSvc.findByMianId(vm.model.signid,function(data){
                 if(data && data.length > 0){
@@ -82,6 +75,7 @@
                     sysfileSvc.initZtreeClient(vm,$scope);//树形图
                 }
             });
+
         }
     }
 })();

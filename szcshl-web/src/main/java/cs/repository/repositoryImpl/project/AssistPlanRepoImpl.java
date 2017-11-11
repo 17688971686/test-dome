@@ -48,10 +48,10 @@ public class AssistPlanRepoImpl extends AbstractRepository<AssistPlan, String> i
                 sqlBuilder.append(" AND AU.UNITNAME like :assistUnit ").setParam("assistUnit","%"+signAssistCostDto.getAssistUnit()+"%");
             }
             if(Validate.isString(signAssistCostDto.getBeginTime())){
-                sqlBuilder.append(" AND FM.PAYMENTDATA > to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",signAssistCostDto.getBeginTime().trim() + " 00:00:00");
+                sqlBuilder.append(" AND CS.SIGNDATE > to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",signAssistCostDto.getBeginTime().trim() + " 00:00:00");
             }
             if(Validate.isString(signAssistCostDto.getEndTime())){
-                sqlBuilder.append(" AND FM.PAYMENTDATA > to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",signAssistCostDto.getEndTime() + " 23:59:59");
+                sqlBuilder.append(" AND CS.SIGNDATE < to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",signAssistCostDto.getEndTime() + " 23:59:59");
             }
 
             if(Validate.isString(signAssistCostDto.getSignId())){
@@ -59,7 +59,7 @@ public class AssistPlanRepoImpl extends AbstractRepository<AssistPlan, String> i
             }
         }
 
-        sqlBuilder.append(" ORDER BY CP.PLANNAME, CPS.SPLITNUM ");
+        sqlBuilder.append(" ORDER BY CP.PLANNAME,CPS.MAINSIGNID, CPS.SPLITNUM ");
 
         return getObjectArray(sqlBuilder);
     }

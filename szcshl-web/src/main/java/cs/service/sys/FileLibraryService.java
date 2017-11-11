@@ -14,24 +14,53 @@ import java.util.List;
  */
 public interface FileLibraryService {
 
-    List<FileLibraryDto> initFolder(ODataObj oDataObj,String libraryType);
-
     /**
-     * 质量管理文件库
-     * @param fileLibraryDto
+     * 初始化文件夹 树
      * @param libraryType
      * @return
      */
-    ResultMsg addFolder(FileLibraryDto fileLibraryDto, String libraryType);
+    List<FileLibraryDto> initFolder(String libraryType);
 
-    PageModelDto<FileLibraryDto> initFileList(ODataObj oDataObj ,String fileId);
-    FileLibraryDto saveFile(FileLibraryDto fileLibraryDto,String libraryType);
+    /**
+     * 新增文件夹
+     * @param fileLibraryDto
+     * @return
+     */
+    ResultMsg addFolder(FileLibraryDto fileLibraryDto);
+
+    /**
+     * 初始化文件夹下的所有文件
+     * @param oDataObj
+     * @param fileId
+     * @return
+     */
+    PageModelDto<FileLibraryDto> initFileList(ODataObj oDataObj , String fileId);
+
+    /**
+     * 新增文件
+     * @param fileLibraryDto
+     * @return
+     */
+    ResultMsg saveFile(FileLibraryDto fileLibraryDto);
 
     String findFileUrlById(String fileId);
 
     FileLibraryDto findFileById(String fileId);
-    void updateFile(FileLibraryDto fileLibraryDto);
+
+    /**
+     * 更新文件
+     * @param fileLibraryDto
+     * @return
+     */
+    ResultMsg updateFile(FileLibraryDto fileLibraryDto);
+
+
     void deleteFile(String fileId);
 
-    void deleteRootDirectory(String parentFileId);
+    /**
+     * 删除文件夹
+     * @param parentFileId
+     * @return
+     */
+    ResultMsg deleteRootDirectory(String parentFileId);
 }

@@ -8,17 +8,37 @@
         vm.suppletter = {}; //补充资料对象$state
         vm.id = $state.params.id;//主键ID
         vm.title = '登记补充资料';
+        // vm.suppletter.fileType = "1";
+        vm.isQuery = true;
 
         activate();
         function activate() {
         	//补充资料函审批列表
-        	addSuppLetterQuerySvc.approveGrid(vm);
+        	// addSuppLetterQuerySvc.approveGrid(vm);
         	//补充资料函查询列表
         	addSuppLetterQuerySvc.addQueryGrid(vm);
         	
         }
 
-        vm.del = function (id) {
+        /**
+         * 查询
+         */
+        vm.quarySuppContent = function(){
+            vm.queryGridOptions.dataSource.read();
+        }
+
+        /**
+         * 重置
+         */
+        vm.resetSuppContent = function(){
+            var tab = $("#supQueryForm").find('input,select');
+            $.each(tab, function (i, obj) {
+                obj.attr("selected",false);
+                obj.value = "";
+            });
+        }
+
+      /*  vm.del = function (id) {
             common.confirm({
                 vm: vm,
                 title: "",
@@ -44,7 +64,7 @@
                 var idStr = ids.join(',');
                 vm.del(idStr);
             }
-        };
+        };*/
 
     }
 })();

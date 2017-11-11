@@ -16,8 +16,16 @@ import java.util.List;
  */
 @Repository
 public class FileLibraryRepoImpl extends AbstractRepository<FileLibrary,String> implements FileLibraryRepo{
+    /**
+     * 通过父Id、文件名、文件类型、文件性质 判断该文件是否已经存在
+     * @param parentFileId
+     * @param fileName
+     * @param fileNature
+     * @param fileType
+     * @return
+     */
     @Override
-    public FileLibrary findByFileNameAndParentId(String parentFileId, String fileName ,String fileNatrue ,String fileType) {
+    public Boolean findByFileNameAndParentId(String parentFileId, String fileName ,String fileNature ,String fileType) {
 
         Criteria criteria = getExecutableCriteria();
         criteria.add(Restrictions.eq(FileLibrary_.fileType.getName(),fileType));
@@ -26,14 +34,10 @@ public class FileLibraryRepoImpl extends AbstractRepository<FileLibrary,String> 
         }else{
             criteria.add(Restrictions.eq(FileLibrary_.parentFileId.getName(),parentFileId));
         }
-        criteria.add(Restrictions.eq(FileLibrary_.fileNature.getName(),fileNatrue));
+        criteria.add(Restrictions.eq(FileLibrary_.fileNature.getName(),fileNature));
         criteria.add(Restrictions.eq(FileLibrary_.fileName.getName(),fileName));
         List<FileLibrary> fileLibraryList = criteria.list();
-        if(fileLibraryList !=null  && fileLibraryList.size()>0){
-            return fileLibraryList.get(0);
-        }else{
 
-            return null;
-        }
+        return !fileLibraryList.isEmpty();
     }
 }

@@ -57,7 +57,7 @@ public class AddSuppLetter extends DomainBase {
 	private String title;
 	
 	//发行范围
-	@Column(columnDefinition = "VARCHAR(256)")
+	@Column(columnDefinition = "VARCHAR(512)")
 	private String dispaRange;
 
 	//打印份数

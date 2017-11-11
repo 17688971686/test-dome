@@ -711,7 +711,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	public ResultMsg proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HqlBuilder sqlBuilder = HqlBuilder.create();
-		sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/10000/(sum(d.declarevalue)/10000),5)*100  hjl  from cs_sign s   ");
+		sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/10000/(sum(d.declarevalue)/10000),5)*100  hjl,s.isadvanced   from cs_sign s   ");
 		sqlBuilder.append("left join cs_dispatch_doc d  ");
 		sqlBuilder.append("on s.signid = d.signid  ");
 		sqlBuilder.append("where 1 = 1 ");
@@ -743,7 +743,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
 			}
 		}
-		sqlBuilder.append("group by s.reviewstage");
+		sqlBuilder.append("group by s.reviewstage,s.isadvanced");
 		List<Object[]> projectReviewConList = expertCostCountRepo.getObjectArray(sqlBuilder);
 		List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
 
@@ -787,6 +787,14 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 				}else{
 					proReviewConditionDto.setLjhj(null);
 					proReviewConditionDto.setHjlStr("0");
+				}
+				if (null != projectReviewCon[6]) {
+					proReviewConditionDto.setIsadvanced((String) projectReviewCon[6]);
+					if(proReviewConditionDto.getIsadvanced().equals("9")){
+						proReviewConditionDto.setReviewStage(proReviewConditionDto.getReviewStage()+"（提前介入）");
+					}
+				}else{
+					proReviewConditionDto.setIsadvanced(null);
 				}
 				projectReviewConDtoList.add(proReviewConditionDto);
 			}

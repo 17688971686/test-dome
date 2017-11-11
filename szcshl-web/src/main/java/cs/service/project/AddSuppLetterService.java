@@ -1,17 +1,14 @@
 package cs.service.project;
 
-import java.util.List;
-import java.util.Map;
-
 import cs.common.ResultMsg;
-import cs.domain.project.AddSuppLetter;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
-import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+
+import java.util.List;
 
 /**
  * Description: 项目资料补充函 业务操作接口
@@ -50,6 +47,11 @@ public interface AddSuppLetterService {
 
 	ResultMsg saveMonthlyMultiyear(AddSuppLetterDto record);
 
+	/**
+	 * 月报简报查询
+	 * @param odataObj
+	 * @return
+	 */
 	PageModelDto<AddSuppLetterDto> monthlyMultiyearListData(ODataObj odataObj);
 
 	AddSuppLetterDto initMonthlyMutilyear();
@@ -60,9 +62,7 @@ public interface AddSuppLetterService {
 
 	PageModelDto<AddSuppLetterDto> addSuppApproveList(ODataObj odataObj);
 
-	void updateApprove(AddSuppLetterDto addSuppLetterDto);
 
-	PageModelDto<AddSuppLetterDto> monthlyAppoveListData(ODataObj odataObj);
 
     /**
      * 发起项目拟补充资料函流程

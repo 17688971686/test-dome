@@ -56,8 +56,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Autowired
     private SignRepo signRepo;
     @Autowired
-    private SignService signService;
-    @Autowired
     private WorkProgramRepo workProgramRepo;
     @Autowired
     private RuntimeService runtimeService;
@@ -292,6 +290,10 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
             criteria.setProjection(null);
             odataObj.setCount(totalResult);
+            if (odataObj.getTop() != 0) {
+                criteria.setFirstResult(odataObj.getSkip());
+                criteria.setMaxResults(odataObj.getTop());
+            }
         }
         List<AddSuppLetter> suppLetterList = criteria.list();
         List<AddSuppLetterDto> suppLetterDtoList = new ArrayList<AddSuppLetterDto>();
@@ -307,65 +309,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         pageModelDto.setValue(suppLetterDtoList);
         pageModelDto.setCount(odataObj.getCount());
 
-        return pageModelDto;
-    }
-
-    /**
-     * 中心文件审批列表数据
-     */
-    @Override
-    public PageModelDto<AddSuppLetterDto> monthlyAppoveListData(ODataObj oDataObj) {
-        PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<>();
-        Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
-        criteria = oDataObj.buildFilterToCriteria(criteria);
-        Boolean falg = false;
-        //部长审批
-        if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {
-            falg = true;
-            criteria.add(Restrictions.eq(AddSuppLetter_.deptMinisterName.getName(), SessionUtil.getDisplayName()));
-            criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.NO.getValue()));
-        }
-        //分管领导
-        else if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {
-            criteria.add(Restrictions.eq(AddSuppLetter_.deptSLeaderName.getName(), SessionUtil.getDisplayName()));
-            criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.PROCESS.getValue()));
-            falg = true;
-        }
-        //主任
-        else if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())) {
-            criteria.add(Restrictions.eq(AddSuppLetter_.deptDirectorName.getName(), SessionUtil.getDisplayName()));
-            criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), Constant.EnumState.STOP.getValue()));
-            falg = true;
-        }
-        if (falg) {
-            Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-            pageModelDto.setCount(totalResult);
-
-            criteria.setProjection(null);
-            if (oDataObj.getSkip() > 0) {
-                criteria.setFirstResult(oDataObj.getSkip());
-            }
-            if (oDataObj.getTop() > 0) {
-                criteria.setMaxResults(oDataObj.getTop());
-            }
-
-            if (Validate.isString(oDataObj.getOrderby())) {
-                if (oDataObj.isOrderbyDesc()) {
-                    criteria.addOrder(Property.forName(oDataObj.getOrderby()).desc());
-                } else {
-                    criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
-                }
-            }
-            List<AddSuppLetter> addSuppList = criteria.list();
-            List<AddSuppLetterDto> addSuppDtoList = new ArrayList<>();
-            for (AddSuppLetter archivesLibrary : addSuppList) {
-                AddSuppLetterDto addDto = new AddSuppLetterDto();
-                BeanCopierUtils.copyProperties(archivesLibrary, addDto);
-                addSuppDtoList.add(addDto);
-            }
-
-            pageModelDto.setValue(addSuppDtoList);
-        }
         return pageModelDto;
     }
 
@@ -402,9 +345,46 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Override
     public PageModelDto<AddSuppLetterDto> addsuppListData(ODataObj odataObj) {
         PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
+        Date beginTime = null;
+        Date endTime = null;
+        String title = null;
+        String orgName = null;
+        //判断odata的过滤条件
+        if(odataObj.getFilter() != null && odataObj.getFilter().size()>0){
+           List<ODataFilterItem> odf  = odataObj.getFilter();
+           if(odf != null && odf.size()>0){
+               for(int i=0 ; i<odf.size() ; i++){
+                   if("beginTime".equals(odf.get(i).getField())){
+                       String begin = DateUtils.getDateTime("yyyy-MM-dd HH:mm:ss" , (Date)odf.get(i).getValue());
+                       beginTime = DateUtils.converToDate(begin , "yyyy-MM-dd HH:mm:ss" ) ;
+                   }
+                   if("endTime".equals(odf.get(i).getField())){
+                       String end = DateUtils.getDateTime("yyyy-MM-dd HH:mm:ss" , (Date)odf.get(i).getValue());
+                       endTime = DateUtils.converToDate(end , "yyyy-MM-dd HH:mm:ss" ) ;
+                   }
+                   if("title".equals(odf.get(i).getField())){
+                       title = "%" +  odf.get(i).getValue().toString() + "%";
+                   }
+                   if("orgName".equals(odf.get(i).getField())){
+                       orgName = "%" + odf.get(i).getValue().toString() + "%";
+                   }
+               }
+           }
+        }
         Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
-        criteria = odataObj.buildFilterToCriteria(criteria);
-        criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), EnumState.NO.getValue()));
+//        criteria = odataObj.buildFilterToCriteria(criteria);
+        criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), EnumState.YES.getValue()));
+        //添加模糊查询条件
+        if(beginTime != null && endTime != null){
+            criteria.add(Restrictions.between(AddSuppLetter_.suppLetterTime.getName() , beginTime , endTime));
+        }
+        if(title != null){
+            criteria.add(Restrictions.like(AddSuppLetter_.title.getName() , title));
+        }
+        if(orgName != null){
+            criteria.add(Restrictions.like(AddSuppLetter_.orgName.getName() , orgName));
+        }
+
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         pageModelDto.setCount(totalResult);
         criteria.setProjection(null);
@@ -486,57 +466,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             pageModelDto.setValue(addSuppDtoList);
         }
         return pageModelDto;
-    }
-
-    /**
-     * 领导审批资料函处理
-     *
-     * @return
-     */
-    @Override
-    public void updateApprove(AddSuppLetterDto addSuppLetterDto) {
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("update " + AddSuppLetter.class.getSimpleName() + " set ");
-        //部长审批
-        if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
-                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.COMM_DEPT_DIRECTOR.getValue())) {
-            sqlBuilder.append(AddSuppLetter_.deptMinisterIdeaContent.getName() + "=:deptMinisterIdeaContent , "
-                    + AddSuppLetter_.appoveStatus.getName() + "=:appoveStatus , "
-                    + AddSuppLetter_.deptMinisterDate.getName() + "=:deptMinisterDate");
-            sqlBuilder.setParam("deptMinisterIdeaContent", addSuppLetterDto.getDeptMinisterIdeaContent());
-            sqlBuilder.setParam("appoveStatus", Constant.EnumState.PROCESS.getValue());
-            sqlBuilder.setParam("deptMinisterDate", new Date());
-        }
-        //分管领导审批
-        else if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {
-            sqlBuilder.append(AddSuppLetter_.deptSLeaderIdeaContent.getName() + "=:deptSLeaderIdeaContent , "
-                    + AddSuppLetter_.appoveStatus.getName() + " =:appoveStatus , "
-                    + AddSuppLetter_.deptSleaderDate.getName() + "=:deptSleaderDate");
-            sqlBuilder.setParam("deptSLeaderIdeaContent", addSuppLetterDto.getDeptSLeaderIdeaContent());
-            sqlBuilder.setParam("appoveStatus", Constant.EnumState.STOP.getValue());
-            sqlBuilder.setParam("deptSleaderDate", new Date());
-        }
-        //主任审批
-        else if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())) {
-
-            sqlBuilder.append(AddSuppLetter_.deptDirectorIdeaContent.getName() + "=:deptDirectorIdeaContent , "
-                    + AddSuppLetter_.appoveStatus.getName() + "=:appoveStatus ,"
-                    + AddSuppLetter_.deptDirectorDate.getName() + "=:deptDirectorDate");
-
-            sqlBuilder.setParam("deptDirectorIdeaContent", addSuppLetterDto.getDeptDirectorIdeaContent());
-            sqlBuilder.setParam("appoveStatus", Constant.EnumState.YES.getValue());
-            sqlBuilder.setParam("deptDirectorDate", new Date());
-            //生成拟稿最大编号
-            AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), addSuppLetterDto.getId());
-            int curYearMaxSeq = findCurMaxSeq(addSuppLetterDto.getDisapDate());
-            String filenum = Constant.DISPATCH_PREFIX + "[" + DateUtils.converToString(addSuppLetterDto.getDisapDate(), "yyyy") + "]" + (curYearMaxSeq + 1);
-            addSuppLetter.setFilenum(filenum);
-            addSuppLetter.setFileSeq((curYearMaxSeq + 1));
-            addSuppLetterRepo.save(addSuppLetter);
-        }
-        sqlBuilder.append(" where " + AddSuppLetter_.id.getName() + "=:id");
-        sqlBuilder.setParam("id", addSuppLetterDto.getId());
-        addSuppLetterRepo.executeHql(sqlBuilder);
     }
 
     /**

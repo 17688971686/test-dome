@@ -1,0 +1,31 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div style="background:white;padding: 5px 10px;">
+    <form id="fileForm" , name="fileForm" class="breadcrumb">
+        <span>文件名：</span>
+        <input type="text" name="fileName" ng-model="vm.fileLibrary.fileName" operator="like" placeholder="请输入"/>
+        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">
+            <span class="glyphicon glyphicon-search"></span>查询
+        </button>
+
+        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.resetUser()">重置</button>
+
+        <button class="btn btn-sm btn-primary" ng-click="vm.addFile()">
+            <span class="glyphicon glyphicon-plus"></span>新建文件
+        </button>
+        <input type="hidden"  name="fileType" id="fileType" operator="eq" value="QUALITY"/>
+    </form>
+
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+</div>
+<script type="text/template" id="columnBtns">
+    <@shiro.hasPermission name="fileLibrary##delete">
+    <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+    </@shiro.hasPermission>
+    <@shiro.hasPermission name="fileLibrary##put">
+    <button class="btn btn-xs btn-primary"  ng-click="{1}" ><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+    </@shiro.hasPermission>
+</script>
