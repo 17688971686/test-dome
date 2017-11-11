@@ -70,6 +70,7 @@ public class AddSuppLetterController {
     @RequestMapping(name = "获取拟补充资料函审批处理列表", path = "addSuppApproveList", method = RequestMethod.POST)
     @ResponseBody
     public  PageModelDto<AddSuppLetterDto> getAddSuppApprove(HttpServletRequest request) throws ParseException {
+
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.addSuppApproveList(odataObj);
         return addSuppLetterDtos;

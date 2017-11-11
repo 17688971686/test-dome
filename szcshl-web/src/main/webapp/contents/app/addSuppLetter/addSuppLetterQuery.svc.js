@@ -195,9 +195,9 @@
         }
 
         // begin#getaddSuppLetterQueryById
-        function getaddSuppLetterQueryById(vm, id) {
+        function getaddSuppLetterQueryById(vm) {
             var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/addSuppLetter/findById",
                 params: {id: vm.id}
             };
@@ -218,7 +218,7 @@
         	// Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_addSuppLetterQuery+"/addsuppListData"),
+                transport: common.kendoGridConfig().transport(url_addSuppLetterQuery+"/addsuppListData" , $('#supQueryForm')),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -239,18 +239,28 @@
 
             // End:dataSource
 
+            //S_序号
+            var dataBound = function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
+
             // Begin:column
             var columns = [
                 {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.id)
-                    },
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
                     filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                    template: "<span class='row-number'></span>"
                 },
-               
                 {
                     field: "title",
                     title: "文件标题",
@@ -274,7 +284,7 @@
                     title: "拟稿时间",
                     width: 100,
                     filterable: false,
-                    format: "{0: yyyy-MM-dd HH:mm:ss}"
+                    format: "{0: yyyy-MM-dd}"
                 },
               
                 {
@@ -302,6 +312,7 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
+                dataBound: dataBound,
                 resizable: true
             };
 
