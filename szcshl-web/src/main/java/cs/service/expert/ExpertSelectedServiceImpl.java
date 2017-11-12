@@ -122,7 +122,6 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	@Override
 	public PageModelDto<ExpertSelectedDto> get(ODataObj odataObj) {
 		PageModelDto<ExpertSelectedDto> pageModelDto = new PageModelDto<ExpertSelectedDto>();
-		List<ExpertSelectedDto> expertSelectedDtoList = new ArrayList<>();
 		String beginTime = "" ,endTime = "" , expertName = "";
 		Date bTime = null, eTime = null;
 		//Criteria 查询
@@ -185,14 +184,18 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 		}
 		List<ExpertSelected> resultList = criteria.list();
 		List<ExpertSelectedDto> resultDtoList = new ArrayList<ExpertSelectedDto>(resultList.size());
-		if (resultList != null && resultList.size() > 0) {
+		if (Validate.isList(resultList)) {
 			resultList.forEach(x -> {
 				ExpertSelectedDto modelDto = new ExpertSelectedDto();
 				BeanCopierUtils.copyProperties(x, modelDto);
 				modelDto.setExpertDto(new ExpertDto());
 				modelDto.setExpertReviewDto(new ExpertReviewDto());
-				BeanCopierUtils.copyProperties(x.getExpert(), modelDto.getExpertDto());
-				BeanCopierUtils.copyProperties(x.getExpertReview(), modelDto.getExpertReviewDto());
+				if(null != x.getExpert()){
+					BeanCopierUtils.copyProperties(x.getExpert(), modelDto.getExpertDto());
+				}
+				if(null != x.getExpertReview()){
+					BeanCopierUtils.copyProperties(x.getExpertReview(), modelDto.getExpertReviewDto());
+				}
 				User u = signPrincipalService.getMainPriUser(x.getExpertReview().getBusinessId());
 				if(null != u){
 					modelDto.setPrincipal(u.getDisplayName());

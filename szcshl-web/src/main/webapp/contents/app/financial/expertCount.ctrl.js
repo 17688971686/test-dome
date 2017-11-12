@@ -10,6 +10,8 @@
         vm.title = '专家费统计管理';
         vm.financials = new Array;
         vm.searchModel = {};
+        vm.searchModel.beginTime = (new Date()).halfYearAgo();
+        vm.searchModel.endTime = (new Date()).Format("yyyy-MM-dd");
         vm.model={};
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象

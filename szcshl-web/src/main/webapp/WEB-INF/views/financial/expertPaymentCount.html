@@ -19,42 +19,35 @@
 			<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.excelExport()">导出EXCLE</button>
 			<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
 		</div>
-		<div>
-			<table border="1px" style="width: 100%;">
-				<caption class="text-center h3">
-					<strong>深圳市政府投资项目评审中心<br>
-						{{vm.year}}年{{vm.month}}月交税统计汇总表
-					</strong>
-				</caption>
-				<tr >
-					<td rowspan="2" style="width:5%"  class="text-center">序号</td>
-					<td rowspan="2" style="width:10%"  class="text-center">姓名</td>
-					<td rowspan="2" style="width:25%"  class="text-center">身份证号码</td>
-					<td rowspan="2" style="width:15%"  class="text-center">手机号码</td>
-					<td colspan="2" style="width:25%"  class="text-center">本月合计</td>
-					<td colspan="2" style="width:25%"  class="text-center">本年累计</td>
-
-				</tr>
-
-				<tr>
-					<td class="text-center">应缴所得税额</td>
-					<td class="text-center">应缴税额</td>
-					<td class="text-center">应缴所得税额</td>
-					<td class="text-center">应缴税额 </td>
-
-				</tr>
-				<tr  ng-repeat="x in vm.expertCostTotalInfo">
-					<td align="center">{{$index+1}}</td>
-					<td class="text-center">{{x.name}}</td>
-					<td class="text-center">{{x.idCard}}</td>
-					<td class="text-center">{{x.userPhone}}</td>
-					<td class="text-center">{{x.reviewcost}}</td>
-					<td class="text-center">{{x.reviewtaxes}}</td>
-					<td class="text-center">{{x.yreviewcost}}</td>
-					<td class="text-center">{{x.yreviewtaxes}}</td>
-				</tr>
-			</table>
-		</div>
 	</form>
+	<table class="table table-bordered">
+		<caption class="text-center h4">
+			<strong>深圳市政府投资项目评审中心 {{vm.year}}年{{vm.month}}月交税统计汇总表 </strong>
+		</caption>
+		<tr class="active">
+			<td rowspan="2" style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
+			<td rowspan="2" style="width:10%;vertical-align: middle;"  class="text-center">姓名</td>
+			<td rowspan="2" style="width:20%;vertical-align: middle;"  class="text-center">身份证号码</td>
+			<td rowspan="2" style="width:14%;vertical-align: middle;"  class="text-center">手机号码</td>
+			<td colspan="2" style="width:28%"  class="text-center">本月合计</td>
+			<td colspan="2" style="width:28%"  class="text-center">本年累计</td>
+		</tr>
+		<tr class="active">
+			<td class="text-center" style="width:14%">应缴所得税额</td>
+			<td class="text-center" style="width:14%">应缴税额</td>
+			<td class="text-center" style="width:14%">应缴所得税额</td>
+			<td class="text-center" style="width:14%">应缴税额 </td>
+		</tr>
+		<tr  ng-repeat="x in vm.expertCostTotalInfo">
+			<td align="center">{{$index+1}}</td>
+			<td class="text-center">{{x.name}}</td>
+			<td class="text-center">{{x.idCard}}</td>
+			<td class="text-center">{{x.userPhone}}</td>
+			<td class="text-center">{{x.reviewcost}}</td>
+			<td class="text-center">{{x.reviewtaxes}}</td>
+			<td class="text-center">{{x.yreviewcost}}</td>
+			<td class="text-center">{{x.yreviewtaxes}}</td>
+		</tr>
+	</table>
 </div>
 

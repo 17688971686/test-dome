@@ -23,8 +23,8 @@
                     <option value="1">第一负责人</option>
                     <option value="2">第二负责人</option>
                 </select>
-          <input ng-if="vm.model.preside=='1'" type="hidden" value="${CURRENT_USER.id}" operator="eq" name="mUserId" id="mUserId" placeholder="请输入">
-          <input ng-if="vm.model.preside=='2'" type="hidden" value="${CURRENT_USER.id}" operator="like" name="aUserID" id="mUserId" placeholder="请输入">
+                <input ng-if="vm.model.preside=='1'" type="hidden" value="${CURRENT_USER.id}" operator="eq" name="mUserId" id="mUserId" placeholder="请输入">
+                <input ng-if="vm.model.preside=='2'" type="hidden" value="${CURRENT_USER.id}" operator="like" name="aUserID" id="aUserID" placeholder="请输入">
             </td>
             <td class="text-right" style="width: 80px;">项目名称：</td>
             <td>
@@ -32,11 +32,9 @@
             </td>
             <td class="text-right" style="width: 80px;">评审阶段：</td>
             <td>
-                <select  name="reviewstage">
+                <select name="reviewstage" operator="eq">
                     <option value="">请选择</option>
-                    <option ng-repeat="x in DICT.PRO_STAGE.dicts"
-                            value="{{x.dictName}}">{{x.dictName}}
-                    </option>
+                    <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
                 </select>
             </td>
             <td class="text-right" style="width: 80px;">建设单位：</td>

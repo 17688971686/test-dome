@@ -15,7 +15,11 @@
         vm.title = '评审费录入';
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
+        //初始化查询时间范围
         vm.model = {};
+        vm.model.beginTime = (new Date()).halfYearAgo();
+        vm.model.endTime = (new Date()).Format("yyyy-MM-dd");
+
         vm.isuserExist = false;
         vm.id = $state.params.id;
         vm.financial.businessId = $state.params.businessId;

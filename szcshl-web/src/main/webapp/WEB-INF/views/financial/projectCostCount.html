@@ -4,98 +4,106 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <#include "/financial/costCountExpert.html"/><!--点击项目名称，窗口弹出的页面，查看专家评审信息-->
 <div class="well well-sm" style="background:white;">
-	<ol class="breadcrumb">
-		<li><a href="#/sharingPlatlform">项目评审费统计</a></li>
-		<li class="active">{{vm.title}}</li>
-	</ol>
-	<form id="form" name="form">
-		<div class="well well-print">
-			<table width="100%" border="1px">
-				<tbody>
-				<tr>
+    <ol class="breadcrumb">
+        <li>项目评审费统计</li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <button ng-click="vm.proCostClassifyCountList()" class="btn btn-sm btn-primary" value="saveCommonIdea">
+            <span class="glyphicon glyphicon-search"></span>查看分类统计
+        </button>
+        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.proCostCount()">
+            <span class="glyphicon glyphicon-search"></span>统计
+        </button>
+        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">
+            <span class="glyphicon glyphicon-repeat"></span>重置
+        </button>
+        <!--<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>-->
+    </div>
 
-					<td height="50"><span class="help-inline" style="margin-left:10px;">项目名称：</span></td>
-					<td>
-						<input type="text" style="width:200px" ng-model="vm.model.projectname" operator="like">
-					</td>
-					<td>
-						<span class="help-inline" style="margin-left:10px;">建设单位：</span>
-					</td>
-					<td>
-						<input type="text" style="width:100px" ng-model="vm.model.builtcompanyname" operator="like">
-					</td>
-					<td colspan="3" align="center">
-						<button ng-click="vm.proCostClassifyCountList()" class="btn btn-sm btn-primary"   value="saveCommonIdea">查看分类统计</button>
-						<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.proCostCount()">统计</button>
-						<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">重置</button>
-						<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
-					</td>
-				</tr>
-				<tr>
-					<td><span class="help-inline" style="margin-left:10px;">评审阶段：</span></td>
-					<td>
-						<select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage" style="height:26px;">
-							<option value="">请选择</option>
-							<option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
-						</select>
-
-					</td>
-					<td><span class="help-inline" style="margin-left:10px;">评审部门：</span></td>
-					<td>
-						<select ng-model="vm.model.deptName"  style="height:26px;">
-							<option value="">请选择</option>
-							<option ng-repeat="x in vm.orgDeptList" value="{{x.name}}">{{x.name}}</option>
-						</select>
-					</td>
-					<td><span class="help-inline" style="margin-left:10px;">付款日期：</span></td>
-					<td> <input name="beginTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
-						至
-						<input name="endTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" operator="and" /></td>
-					<td></td>
-				</tr>
-				</tbody>
-			</table>
-		</div>
-		<div>
-			<table border="1px" style="width: 100%;">
-				<caption class="text-center h3">
-					<strong>深圳市政府投资项目评审中心<br>
-						项目评审费统计表
-					</strong>
-				</caption>
-				<tr >
-					<td style="width:5%"  class="text-center">序号</td>
-					<td style="width:15%"  class="text-center">项目名称</td>
-					<td style="width:15%"  class="text-center">建设单位</td>
-					<td style="width:10%"  class="text-center">评审阶段</td>
-					<td style="width:5%"  class="text-center">项目负责人</td>
-					<td style="width:10%"  class="text-center">项目评审费（元）</td>
-					<td style="width:10%"  class="text-center">付款日期</td>
-					<td style="width:10%"  class="text-center">申报投资（元）</td>
-					<td style="width:10%"  class="text-center">审定投资（元）</td>
-					<td style="width:10%"  class="text-center">签收日期</td>
-				</tr>
-				<tbody ng-if="vm.projectReviewCostDtoList" ng-repeat="x in vm.projectReviewCostDtoList">
-				<tr >
-					<td rowspan="{{x.financialManagerDtoList.length+1}}">{{$index+1}}</td>
-					<td rowspan={{x.financialManagerDtoList.length+1}}><a ng-click="vm.queyCostWindow(x)">{{x.projectname}}</a></td>
-					<td rowspan={{x.financialManagerDtoList.length+1}}>{{x.builtcompanyname}}</td>
-					<td class="text-center">{{x.reviewstage}}</td>
-					<td class="text-center">{{x.principal}}</td>
-					<td class="text-center"><strong>{{x.totalCost}}</strong></td>
-					<td class="text-center">{{x.payDate}}</td>
-					<td class="text-center">{{x.declareValue}}</td>
-					<td class="text-center">{{x.authorizeValue}}</td>
-					<td class="text-center">{{x.signdate}}</td>
-				</tr>
-				<tr ng-repeat="f in x.financialManagerDtoList track by $index">
-					<td class="text-center">{{$index+1}}</td>
-					<td class="text-center">{{f.chargeName}}</td>
-					<td class="text-center">{{f.charge}}</td>
-				</tr>
-				</tbody>
-			</table>
-		</div>
-	</form>
+    <form id="form" name="form"  class="breadcrumb">
+        <table width="100%" >
+            <tr>
+                <td class="text-right" style="width: 85px;">项目名称：</td>
+                <td>
+                    <input type="text" style="width:200px" ng-model="vm.model.projectname" operator="like">
+                </td>
+                <td class="text-right" style="width: 85px;">
+                   建设单位：
+                </td>
+                <td>
+                    <input type="text" style="width:100px" ng-model="vm.model.builtcompanyname" operator="like">
+                </td>
+                <td class="text-right" style="width: 85px;">
+                    付款日期：
+                </td>
+                <td>
+                    <input name="beginTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
+                           ng-model="vm.model.beginTime" value="" type="text" operator="ge"/>
+                    至
+                    <input name="endTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
+                           ng-model="vm.model.endTime" value="" type="text" operator="le"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right" >评审阶段：</td>
+                <td>
+                    <select ng-model="vm.model.reviewstage" name="reviewstage" id="reviewstage" style="height:26px;">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">
+                            {{x.dictName}}
+                        </option>
+                    </select>
+                </td>
+                <td class="text-right" >评审部门：</td>
+                <td>
+                    <select ng-model="vm.model.deptName" style="height:26px;" operator="eq">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in vm.orgDeptList" value="{{x.name}}">{{x.name}}</option>
+                    </select>
+                </td>
+                <td></td>
+            </tr>
+        </table>
+    </form>
+    <div class="toolbar"></div>
+    <table class="table table-bordered">
+        <caption class="text-center h4">
+            <strong>深圳市政府投资项目评审中心 项目评审费统计表</strong>
+        </caption>
+        <tr class="active">
+            <td style="width:5%" class="text-center">序号</td>
+            <td style="width:15%" class="text-center">项目名称</td>
+            <td style="width:15%" class="text-center">建设单位</td>
+            <td style="width:10%" class="text-center">评审阶段</td>
+            <td style="width:5%" class="text-center">项目负责人</td>
+            <td style="width:10%" class="text-center">项目评审费（元）</td>
+            <td style="width:10%" class="text-center">付款日期</td>
+            <td style="width:10%" class="text-center">申报投资（元）</td>
+            <td style="width:10%" class="text-center">审定投资（元）</td>
+            <td style="width:10%" class="text-center">签收日期</td>
+        </tr>
+        <tbody ng-if="vm.projectReviewCostDtoList" ng-repeat="x in vm.projectReviewCostDtoList">
+        <tr>
+            <td rowspan="{{x.financialManagerDtoList.length+1}}">{{$index+1}}</td>
+            <td rowspan={{x.financialManagerDtoList.length+1}}><a ng-click="vm.queyCostWindow(x)">{{x.projectname}}</a>
+            </td>
+            <td rowspan={{x.financialManagerDtoList.length+1}}>{{x.builtcompanyname}}</td>
+            <td class="text-center">{{x.reviewstage}}</td>
+            <td class="text-center">{{x.principal}}</td>
+            <td class="text-center"><strong>{{x.totalCost}}</strong></td>
+            <td class="text-center">{{x.payDate}}</td>
+            <td class="text-center">{{x.declareValue}}</td>
+            <td class="text-center">{{x.authorizeValue}}</td>
+            <td class="text-center">{{x.signdate}}</td>
+        </tr>
+        <tr ng-repeat="f in x.financialManagerDtoList track by $index">
+            <td class="text-center">{{$index+1}}</td>
+            <td class="text-center">{{f.chargeName}}</td>
+            <td class="text-center">{{f.charge}}</td>
+            <td class="text-center" colspan="4"></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 

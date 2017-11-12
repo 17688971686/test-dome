@@ -9,6 +9,8 @@
         var vm = this;
         vm.title = '项目评审费统计';
         vm.model={};
+        vm.model.beginTime = (new Date()).halfYearAgo();
+        vm.model.endTime = (new Date()).Format("yyyy-MM-dd");
 
         //项目评审费分类统计
         vm.proCostClassifyCountList = function(){

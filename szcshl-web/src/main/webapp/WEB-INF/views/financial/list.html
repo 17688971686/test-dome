@@ -10,14 +10,15 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/sharingPlatlform">评审费统计管理</a></li>
+        <li>评审费统计管理</li>
         <li class="active">{{vm.title}}</li>
     </ol>
     <div class="toolbar">
         <button class="btn btn-sm btn-success" ng-click="vm.queryFinancl()" ng-disabled="vm.isSubmit">
             <span class="glyphicon glyphicon-search"></span>查询
         </button>
-        <button class="btn btn-sm btn-primary" ng-click="vm.resetQuery()">重置</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.resetQuery()">
+            <span class="glyphicon glyphicon-repeat"></span>重置</button>
         <!--<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>-->
     </div>
 

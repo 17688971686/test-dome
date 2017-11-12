@@ -8,6 +8,7 @@
         <li><a href="#/sign">项目签收</a></li>
         <!--  <li class="active">{{vm.title}}</li> -->
     </ol>
+    <!--
     <div class="toolbar">
         <p>从委内下载项目资料</p>
     </div>
@@ -17,7 +18,7 @@
         <a class="btn btn-sm btn-primary" style="margin-left:10px;" >直接根据委内收文编号从委内下载数据</a>
         </form>
     </div>
-    <!--
+
     <div class="toolbar">
           <p>项目预签收</p>
     </div>
@@ -33,12 +34,7 @@
         </div>
         <table style="width:100%">
             <tr>
-                <td class="formAlignRight" style="width:150px;"></td>
-                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td class="formAlignRight">委内收文编号： <span class="required">*</span></td>
+                <td class="text-right" style="width: 150px;">委内收文编号： <span class="required">*</span></td>
                 <td>
                     <input  type="text" maxlength="9" class="form-control input-sm "  ng-model="vm.model.filecode" id="filecode" name="filecode" data-val="true"  data-val-required="必填"
                             data-val-regex-pattern="^(a|b|c|d|A|B|C|D)+20[1-4]+[0-9]{5}" data-val-regex="收文编号格式不正确" data-val-length-max="9">
@@ -46,7 +42,7 @@
                 <td><span data-valmsg-for="filecode" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">项目代码： <span class="required">*</span></td>
+                <td class="text-right">项目代码： <span class="required">*</span></td>
                 <td>
                     <input  type="text" maxlength="12" class="form-control input-sm "  ng-model="vm.model.projectcode" id="projectcode" name="projectcode"
                             data-val="true" data-val-required="必填" data-val-length-max="12">
@@ -55,26 +51,25 @@
             </tr>
 
             <tr>
-                <td class="formAlignRight">评审阶段： <span class="required">*</span></td>
+                <td class="text-right">评审阶段： <span class="required">*</span></td>
                 <td colspan="3">
                     <select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage" data-val="true" data-val-required="请选择项目阶段" >
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
                     </select>
-                    <span ng-show="vm.model.reviewstage=='项目建议书'||vm.model.reviewstage=='可行性研究报告'||vm.model.reviewstage=='项目概算'" >
-                    	<input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.isAdvanced" name="isAdvanced"  ng-true-value="9" ng-false-value="0" > 提前介入
-                    
+                    <span ng-show="vm.model.reviewstage=='项目建议书'||vm.model.reviewstage=='可行性研究报告'||vm.model.reviewstage=='项目概算'||vm.model.reviewstage=='资金申请报告'" >
+                    	<input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.model.isAdvanced" name="isAdvanced"  ng-true-value="9" ng-false-value="0" > 提前介入
                     </span>
                     
                     <span ng-show="vm.model.reviewstage=='项目概算'" style="margin-left: 20px;">
-                        <input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.ischangeEstimate" name="ischangeEstimate"  ng-true-value="9" ng-false-value="0" > 是否调概
+                        <input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.model.ischangeEstimate" name="ischangeEstimate"  ng-true-value="9" ng-false-value="0" > 是否调概
                     </span>
                 </td>
                 <td><span data-valmsg-for="reviewstage" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
 
             <tr>
-                <td class="formAlignRight">项目名称： <span class="required">*</span></td>
+                <td class="text-right">项目名称： <span class="required">*</span></td>
                 <td colspan="3">
                     <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.projectname" id="projectname" name="projectname" data-val="true" data-val-required="必填">
                 </td>
@@ -82,7 +77,7 @@
             </tr>
         </table>
     </form>
-    <div class="toolbar">
+    <div class="label-default" style="background-color: #ffffff;padding:2px 30px;margin-top:10px;">
         <p>使用帮助：</p>
         <p style="color:#000">1、签收项目时选择好项目的评审阶段。</p>
         <p style="color:#000">2、如果是直接根据收文编号内下载数据，只要填写收文编号就可以直接下载。</p>

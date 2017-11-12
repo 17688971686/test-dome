@@ -231,62 +231,62 @@
                 {
                     field: "expertDto.name",
                     title: "姓名",
-                    width: 80,
+                    width: "8%",
                     filterable: false
                 },
                
                 {
                     field: "expertDto.idCard",
                     title: "身份证号",
-                    width: 180,
+                    width: "15%",
                     filterable: false,
                 },
                 {
                     field: "expertDto.openingBank",
                     title: "开户行",
-                    width: 80,
+                    width: "10%",
                     filterable: false,
                 },
                 {
                     field: "expertDto.bankAccount",
                     title: "银行账号",
-                    width: 180,
+                    width: "10%",
                     filterable: false,
                 },
                 {
                     field: "reviewCost",
                     title: "评审费",
-                    width: 80,
+                    width: "8%",
                     filterable: false,
                 },
                 {
                     field: "reviewTaxes",
                     title: "应缴税",
-                    width: 80,
+                    width: "8%",
                     filterable: false,
                 },
                 {
                     field: "expertReviewDto.reviewTitle",
                     title: "项目名称",
-                    width: 225,
+                    width: "20%",
                     filterable: false,
                 },
                 {
                     field: "expertReviewDto.reviewDate",
                     title: "评审时间",
-                    width: 80,
+                    width: "8%",
                     filterable: false,
                 },
                 {
                     field: "expertReviewDto.reviewDate",
                     title: "函评时间",
-                    width: 80,
+                    width: "8%",
                     filterable: false,
                 },
                 {
                     field: "principal",
                     title: "负责人",
-                    width: 75,
+                    width: "5%",
                     filterable: false,
                 }
             ];
