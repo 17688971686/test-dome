@@ -25,7 +25,7 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "固定资产申购流程", path = "assertStorageBusiness")
-@MudoleAnnotation(name = "固定资产申购业务管理",value = "permission#assert")
+@MudoleAnnotation(name = "资产管理",value = "permission#assert")
 public class AssertStorageBusinessController {
 
 	String ctrlName = "asserts/assertStorageBusiness";

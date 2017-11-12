@@ -37,7 +37,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping(name = "收文", path = "signView")
-@MudoleAnnotation(name = "项目管理",value = "permission#queryStatistics")
+@MudoleAnnotation(name = "查询统计",value = "permission#queryStatistics")
 public class SignDispaWorkController {
 
     @Autowired
@@ -253,7 +253,7 @@ public class SignDispaWorkController {
 
     }
     @RequiresPermissions("signView#html/signChart#get")
-    @RequestMapping(name="项目查询统计分析图" , path = "html/signChart" , method = RequestMethod.GET)
+    @RequestMapping(name="项目统计分析" , path = "html/signChart" , method = RequestMethod.GET)
     public String signChart(){
         return "sign/signChart";
     }

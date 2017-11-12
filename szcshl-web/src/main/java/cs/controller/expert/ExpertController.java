@@ -274,7 +274,7 @@ public class ExpertController {
     }
 
     @RequiresPermissions("expert#html/scoreList#get")
-    @RequestMapping(name = "专家评分一览表", path = "html/scoreList", method = RequestMethod.GET)
+    @RequestMapping(name = "专家评分统计", path = "html/scoreList", method = RequestMethod.GET)
     public String reviewList() {
 
         return ctrlName + "/scoreList";

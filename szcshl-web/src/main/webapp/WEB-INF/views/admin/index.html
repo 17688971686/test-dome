@@ -204,9 +204,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <li><a href="javascript:void(0)" ui-sref="assistUnit">协审单位管理</a></li>
                             </@shiro.hasPermission>
 
-                            <!-- <@shiro.hasPermission name="addSuppLetter#html/suppLetterList#get">
+                            <@shiro.hasPermission name="addSuppLetter#html/suppLetterList#get">
                             <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补资料函查询</a></li>
-                        </@shiro.hasPermission> -->
+                        </@shiro.hasPermission>
                         </ul>
                     </li>
                 </@shiro.hasPermission>
@@ -500,6 +500,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="dict#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="dict">字典管理</a></li>
+                            </@shiro.hasPermission>
+                                <@shiro.hasPermission name="dict#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="config">配置管理</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="company#html/list#get">

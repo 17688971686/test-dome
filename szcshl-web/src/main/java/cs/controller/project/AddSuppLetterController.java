@@ -132,6 +132,7 @@ public class AddSuppLetterController {
         return ctrlName+"/suppLetterList";
     }
 
+    @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#html/suppLetterList#get")
     @RequestMapping(name = "拟补充资料函查看", path = "view", method = RequestMethod.GET)
     public String view() {

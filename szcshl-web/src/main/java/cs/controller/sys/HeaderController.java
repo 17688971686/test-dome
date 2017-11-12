@@ -133,12 +133,5 @@ public class HeaderController {
     }
 
 
-    //@RequiresPermissions("header#html/statisticalList#get")
-    @RequiresAuthentication
-    @RequestMapping(name="统计列表页" , path="html/statisticalList" , method = RequestMethod.GET)
-    public String statisticalList(){
-        return ctrlName + "/statisticalList";
-    }
-
 
 }

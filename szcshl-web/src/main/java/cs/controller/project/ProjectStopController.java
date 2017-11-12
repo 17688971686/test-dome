@@ -101,19 +101,24 @@ public class ProjectStopController {
 		return projectStopService.getStopList(signId);
 	}
 
-	@RequiresPermissions("projectStop#html/projectStopInfo#get")
+
+	@RequiresAuthentication
+//	@RequiresPermissions("projectStop#html/projectStopInfo#get")
 	@RequestMapping(name="项目暂停信息表单（多个）" , path = "html/projectStopInfo" , method = RequestMethod.GET)
 	public String stopInfoList(){
 		return ctrlName + "/projectStopInfo";
 	}
-	@RequiresPermissions("projectStop#html/projectStopForm#get")
+
+	@RequiresAuthentication
+//	@RequiresPermissions("projectStop#html/projectStopForm#get")
 	@RequestMapping(name="项目暂停表单" , path="html/projectStopForm" , method =  RequestMethod.GET)
 	public String projectForm(){
 		return ctrlName + "/projectStopForm";
 	}
 
 
-	@RequiresPermissions("projectStop#html/pauseProjectList#get")
+	@RequiresAuthentication
+//	@RequiresPermissions("projectStop#html/pauseProjectList#get")
 	@RequestMapping(name="项目暂停审批"  , path="html/pauseProjectList")
 	public String stopApprove(){
 		return ctrlName +"/pauseProjectList";

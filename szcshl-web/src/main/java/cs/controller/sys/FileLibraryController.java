@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(name="文件库",path="fileLibrary")
-@MudoleAnnotation(name = "文件库",value = "permission#annountment")
+@MudoleAnnotation(name = "公告资料管理",value = "permission#annountment")
 public class FileLibraryController {
 
     private String ctrlName = "fileLibrary";
@@ -119,7 +119,7 @@ public class FileLibraryController {
      * begin html
      */
     @RequiresPermissions("fileLibrary#html/fileLibrary#get")
-    @RequestMapping(name="质量文件库", path ="html/fileLibrary",method= RequestMethod.GET)
+    @RequestMapping(name="质量管理文件库", path ="html/fileLibrary",method= RequestMethod.GET)
     public String list(){
         return ctrlName + "/fileLibrary";
     }

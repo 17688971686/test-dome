@@ -105,7 +105,7 @@ public class DictController {
     }
 
     @RequiresPermissions("dict#html/list#get")
-    @RequestMapping(name = "数据字典管理", path = "html/list", method = RequestMethod.GET)
+    @RequestMapping(name = "字典管理", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/list";
     }

@@ -38,7 +38,8 @@ public class LogController {
     }
 
     // begin#html
-    @RequiresPermissions("log#html/list#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("log#html/list#get")
     @RequestMapping(name = "日志管理", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/list";
