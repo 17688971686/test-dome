@@ -51,6 +51,9 @@
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
                 vm.model = data;
+                var deActive = $("#myTab .active");
+                var deObj = $("a", deActive);
+                vm.model.showDiv = deObj.attr("for-div");
                 //发文
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
