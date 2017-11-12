@@ -183,7 +183,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </a>
                         <ul class="treeview-menu">
                             <@shiro.hasPermission name="sign#html/getBack#get">
-                            <li><a href="javascript:void(0)" ui-sref="signGetBack">项目取回</a></li>
+                            <li><a href="javascript:void(0)" ui-sref="signGetBack">项目重新分办</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="sign#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="listSign">项目签收列表</a></li>
@@ -192,11 +192,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="sign#personDtasks#get">
                                 <li><a href="javascript:void(0)" ui-sref="personDtasks">个人在审项目</a></li>
                             </@shiro.hasPermission>
-
+                            <!--
                             <@shiro.hasPermission name="sign#etasks#get">
                                 <li><a href="javascript:void(0)" ui-sref="etasks">办结项目</a></li>
                             </@shiro.hasPermission>
-
+                            -->
                             <@shiro.hasPermission name="assistPlan#html/manager#get">
                                 <li><a href="javascript:void(0)" ui-sref="assistPlan">协审计划管理</a></li>
                             </@shiro.hasPermission>
@@ -250,12 +250,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </a>
                         <ul class="treeview-menu">
                             <!-- start 项目费用管理 -->
-                            <@shiro.hasPermission name="financialManager#html/assistCostlist#get">
-                                <li><a href="javascript:void(0)" ui-sref="assistCostlist({costType : 'ASSIST'})">协审费录入</a></li>
-                            </@shiro.hasPermission>
-                            <@shiro.hasPermission name="financialManager#html/assistCostCount#get">
-                                <li><a href="javascript:void(0)" ui-sref="assistCostCountList">协审费用统计</a></li>
-                            </@shiro.hasPermission>
                             <@shiro.hasPermission name="financialManager#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="financialManagerList({costType : 'REVIEW'})">评审费录入</a></li>
                             </@shiro.hasPermission>
@@ -267,6 +261,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="financialManager#html/expertCount#get">
                                 <li><a href="javascript:void(0)" ui-sref="exportCountList">专家费用统计</a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="financialManager#html/assistCostlist#get">
+                                <li><a href="javascript:void(0)" ui-sref="assistCostlist({costType : 'ASSIST'})">协审费录入</a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="financialManager#html/assistCostCount#get">
+                                <li><a href="javascript:void(0)" ui-sref="assistCostCountList">协审费用统计</a></li>
                             </@shiro.hasPermission>
                         </ul>
                     </li>
@@ -541,6 +541,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <ul class="treeview-menu">
                             <@shiro.hasPermission name="header#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="header">表字段管理</a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="header#html/list#get">
+                                <li><a href="javascript:void(0)" ui-sref="header">个人代办设置</a></li>
                             </@shiro.hasPermission>
                         </ul>
                     </li>

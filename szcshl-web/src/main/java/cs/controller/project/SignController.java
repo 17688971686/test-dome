@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -178,10 +179,6 @@ public class SignController {
         return signService.reserveAddSign(signDto);
     }
 
-    @RequiresPermissions("sign#html/reserveAdd#get")
-    @RequestMapping(name = "项目预签收", path = "html/reserveAdd", method = RequestMethod.GET)
-    public String reserveAdd() {
-        return ctrlName + "/reserveAdd";
     @RequiresAuthentication
 //    @RequiresPermissions("sign#html/reserveAdd#get")
     @RequestMapping(name = "项目预签收" ,path = "html/reserveAdd",method = RequestMethod.GET)
@@ -390,7 +387,7 @@ public class SignController {
     }
 
     @RequiresPermissions("sign#html/getBack#get")
-    @RequestMapping(name = "项目取回", path = "html/signGetBack", method = RequestMethod.GET)
+    @RequestMapping(name = "项目重新分办", path = "html/signGetBack", method = RequestMethod.GET)
     public String getBack() {
 
         return ctrlName + "/signGetBack";
