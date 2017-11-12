@@ -91,4 +91,12 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
     User findMainSLeader(String signId);
 
     List<OrgDept> getOrgDeptBySignId(String signId);
+
+    /**
+     * 根据部门ID和项目ID，查询所在分支信息
+     * @param signId
+     * @param orgId
+     * @return
+     */
+    SignBranch findByOrgDirector(String signId,String orgId);
 }

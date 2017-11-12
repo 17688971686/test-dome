@@ -104,8 +104,17 @@ public interface SignService {
     void updateSignTemplate(String signId);
 
     /**
-     * 项目取回列表
+     * 可取回项目列表
+     * @param odataObj
+     * @param isOrgLeader 是否部长
      * @return
      */
-    PageModelDto<RuProcessTask> getBackList(ODataObj odataObj, boolean isUserDeal);
+    PageModelDto<RuProcessTask> getBackList(ODataObj odataObj, boolean isOrgLeader);
+
+    /**
+     * 删除相应的分支信息（没有分支ID，则删除全部分支）
+     * @param signId
+     * @param branchIndex
+     */
+    void deleteBranchInfo(String signId,String branchIndex);
 }

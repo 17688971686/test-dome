@@ -495,12 +495,6 @@
             if(response.data.DO_TASK_COUNT){
                 $('#DO_TASK_COUNT').html(response.data.DO_TASK_COUNT);
             }
-            if(response.data.MONTHLY_COUNT){
-                $('#MONTHLY_COUNT').html(response.data.MONTHLY_COUNT);
-            }
-            if(response.data.SUPPLETTER_COUNT){
-                $('#SUPPLETTER_COUNT').html(response.data.SUPPLETTER_COUNT);
-            }
         });
     }// E_获取待办总数
 
