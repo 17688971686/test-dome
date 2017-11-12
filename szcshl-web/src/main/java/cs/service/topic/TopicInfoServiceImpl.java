@@ -468,6 +468,17 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 if(filing == null || !Validate.isString(filing.getId())){
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没完成课题归档，不能进行下一步操作！");
                 }
+                //如果没有完成专家评分，则不可以提交到下一步
+                if (!expertReviewRepo.isFinishEPGrade(businessId)) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
+                }
+                //如果有专家评审费，则要先办理专家评审费
+                if (expertReviewRepo.isHaveEPReviewCost(businessId)) {
+                    ExpertReview expertReview = expertReviewRepo.findByBusinessId(businessId);
+                    if (expertReview.getPayDate() == null || expertReview.getTotalCost() == null) {
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
+                    }
+                }
                 variables = findOrgLeader(businessId,false,assigneeValue);
                 break;
             //部长审核归档
