@@ -1,4 +1,4 @@
-(function () {
+    (function () {
     'use strict';
 
     angular.module('app').factory('adminSvc', admin);
@@ -954,7 +954,7 @@
         function personMainTasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks"),
+                transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks" , $("#searchform")),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -1013,8 +1013,17 @@
                 {
                     field: "",
                     title: "序号",
-                    template: "<span class='row-number'></span>",
-                    width: 50
+                    width: 50,
+                    template:function(item){
+                        if(item.processState && item.processState >=5 && item.processState< 7){
+                            return "<span class='row-number label label-primary'></span>";
+                        }else if(item.processState && item.processState>=8 ){
+                            return "<span class='row-number label label-success'></span>";
+                        }else{
+                            return "<span class='row-number'></span>";
+                        }
+                    }
+
                 },
                 {
                     field: "",
@@ -1039,13 +1048,13 @@
                 {
                     field: "signdate",
                     title: "收文日期",
-                    width: 100,
+                    width: 150,
                     filterable: false
                 },
                 {
                     field: "",
                     title: "项目状态",
-                    width: 100,
+                    width: 80,
                     filterable: false,
                     template: function (item) {
                         var returnStr = "";
@@ -1069,57 +1078,33 @@
                     }
                 },
                 {
-                    field: "dispatchtype",
+                    field: "dispatchDate",
                     title: "发文日期",
                     width: 100,
                     filterable: false
                 },
                 {
-                    field: "aUserName",
-                    title: "项目负责人",
-                    width: 140,
+                    field: "signdate",
+                    title: "项目签收时间",
+                    width: 150,
                     filterable: false
                 },
                 {
-                    field: "ffilenum",
-                    title: "归档编号",
-                    width: 130,
-                    filterable: false
-                },
-                {
-                    field: "dfilenum",
-                    title: "文件字号",
-                    width: 80,
-                    filterable: false
-                },
-                {
-                    field: "appalyinvestment",
-                    title: "申报投资",
+                    field: "surplusdays",
+                    title: "剩余工作日",
                     width: 100,
                     filterable: false
                 },
                 {
-                    field: "authorizevalue",
-                    title: "审定投资",
+                    field: "receivedate",
+                    title: "送来时间",
                     width: 100,
                     filterable: false
                 },
                 {
-                    field: "extravalue",
-                    title: "核减[增]投资",
-                    width: 110,
-                    filterable: false
-                },
-                {
-                    field: "extrarate",
-                    title: "核减率",
-                    width: 80,
-                    filterable: false
-                },
-                {
-                    field: "approvevalue",
-                    title: "批复金额",
-                    width: 80,
+                    field: "builtcompanyname",
+                    title: "建设单位",
+                    width: 150,
                     filterable: false
                 },
                 {

@@ -16,19 +16,32 @@
 
     <form id="searchform" name="searchform" class="breadcrumb">
         <table  style="width: 100%;">
+            <td class="text-right" style="width: 80px;">负责人：</td>
+            <td>
+                <select ng-model="vm.model.preside">
+                    <option value="">请选择</option>
+                    <option value="1">第一负责人</option>
+                    <option value="2">第二负责人</option>
+                </select>
+          <input ng-if="vm.model.preside=='1'" type="hidden" value="${CURRENT_USER.id}" operator="eq" name="mUserId" id="mUserId" placeholder="请输入">
+          <input ng-if="vm.model.preside=='2'" type="hidden" value="${CURRENT_USER.id}" operator="like" name="aUserID" id="mUserId" placeholder="请输入">
+            </td>
             <td class="text-right" style="width: 80px;">项目名称：</td>
             <td>
                 <input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">
             </td>
-            <td class="text-right" style="width: 80px;">项目编号：</td>
+            <td class="text-right" style="width: 80px;">评审阶段：</td>
             <td>
-                <input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">
+                <select  name="reviewstage">
+                    <option value="">请选择</option>
+                    <option ng-repeat="x in DICT.PRO_STAGE.dicts"
+                            value="{{x.dictName}}">{{x.dictName}}
+                    </option>
+                </select>
             </td>
-            <td class="text-right" style="width: 80px;">签收日期：</td>
+            <td class="text-right" style="width: 80px;">建设单位：</td>
             <td style="min-width: 260px;">
-                <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'" name="signdate"  operator="gt">
-                -
-                <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'"  name="signdate"  operator="lt"/>
+                <input type="text" ng-model="vm.model.projectcode" operator="like" name="builtcompanyname" id="builtcompanyname" placeholder="请输入">
             </td>
         </table>
     </form>
