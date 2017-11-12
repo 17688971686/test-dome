@@ -277,6 +277,9 @@ public class SignDispaWork {
     @Column
     private String isassistproc;
 
+    @Column
+    private String lightState;
+
 
     public String getLeaderName() {
         return leaderName;
@@ -636,5 +639,13 @@ public class SignDispaWork {
 
     public void setaUserName(String aUserName) {
         this.aUserName = aUserName;
+    }
+
+    public String getLightState() {
+        return lightState;
+    }
+
+    public void setLightState(String lightState) {
+        this.lightState = lightState;
     }
 }
