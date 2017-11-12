@@ -151,6 +151,8 @@
             signChartSvc.pieData(vm , function(data){
                 if(data.flag || data.reCode == 'ok') {
                     var resultData = data.reObj;
+                    console.log(235);
+                    console.log(resultData);
                     if(resultData !=undefined && resultData != null){
                         if (resultData[1] != undefined && resultData[1].length > 0) {
                             for (var i = 0; i < resultData[1].length; i++) {
@@ -237,8 +239,8 @@
                 //设置坐标
                 grid :{
                     // 这些是设置坐标边距
-                    left : '10%',
-                    right : '15%',
+                    left : '13%',
+                    right : '10%',
                     bottom : '10%',
                     containLabel : true,
                     //设置xy轴宽度
@@ -297,7 +299,7 @@
                 },
                 //设置坐标
                 grid :{
-                    left : '10%',
+                    left : '13%',
                     right : '10%',
                     bottom : '10%',
                     containLabel : true,

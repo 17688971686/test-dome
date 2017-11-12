@@ -123,7 +123,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	public PageModelDto<ExpertSelectedDto> get(ODataObj odataObj) {
 		PageModelDto<ExpertSelectedDto> pageModelDto = new PageModelDto<ExpertSelectedDto>();
 		List<ExpertSelectedDto> expertSelectedDtoList = new ArrayList<>();
-		String beginTime = "" ,endTime = "";
+		String beginTime = "" ,endTime = "" , expertName = "";
 		Date bTime = null, eTime = null;
 		//Criteria 查询
 		Criteria criteria = expertSelectedRepo.getExecutableCriteria();
@@ -132,6 +132,10 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 			for (ODataFilterItem item : odataObj.getFilter()) {
 				value = item.getValue();
 				if (null == value) {
+					continue;
+				}
+				if("name".equals(item.getField())){
+					expertName = item.getValue().toString();
 					continue;
 				}
 				if("beginTime".equals(item.getField())){
@@ -151,7 +155,7 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 
 		}
 		//根据评审费发放时间查询
-		if(beginTime != null || endTime != null){
+		if(beginTime != null || endTime != null || expertName != null){
 			StringBuffer sqlSB = new StringBuffer();
 			sqlSB.append(" (select count(t.id) from cs_expert_review t  where t.id = "+criteria.getAlias()+"_.EXPERTREVIEWID ");
 			if (Validate.isString(beginTime)) {
@@ -160,9 +164,14 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 			if (Validate.isString(endTime)) {
 				sqlSB.append(" and t.paydate <= to_date('"+endTime+"', 'yyyy-mm-dd')");
 			}
+
 			sqlSB.append(" and "+criteria.getAlias()+"_.ISCONFRIM='9'");
 			sqlSB.append(" and "+criteria.getAlias()+"_.ISJOIN='9'");
+
 			sqlSB.append(" ) > 0 ");
+			if(Validate.isString(expertName)){
+				sqlSB.append(" and (select count(e.expertID) from cs_expert e where e.expertID = "+ criteria.getAlias()+ "_.expertId and e.name  like '%"+expertName+ "%' )>0");
+			}
 			criteria.add(Restrictions.sqlRestriction(sqlSB.toString()));
 		}
 		Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();

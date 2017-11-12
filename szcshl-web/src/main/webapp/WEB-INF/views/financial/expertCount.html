@@ -8,18 +8,21 @@
         <li><a href="#/sharingPlatlform">专家费用统计</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <form id="searchform" name="searchform">
-       <div class="well">
-			 <input id="beginTime" name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.searchModel.beginTime" value="" type="text" operator="ge"/>
-			至
-			<input id="endTime" name="endTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.searchModel.endTime" value="" type="text" operator="le" />
-	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.searchForm()">查询</a>
-	    	<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">重置</a>
-<!--	     <button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
-		<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>-->
-		<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.excelExport()">导出EXCLE</button>
-        </div>
-        <div id="statisticalGrid" class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+    <form id="searchform" name="searchform" class="well well-sm">
+        <span class="help-inline" style="margin-left:10px;">专家名称：</span>
+        <input type="text" name="name" operator="like" ng-model="vm.searchModel.name" placeholder="请输入"/>
+        <span class="help-inline" style="margin-left:10px;">评审会日期：</span>
+       <input id="beginTime" name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"
+              ng-model="vm.searchModel.beginTime" value="" type="text" operator="ge"/>
+        至
+        <input id="endTime" name="endTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM-dd'"
+               ng-model="vm.searchModel.endTime" value="" type="text" operator="le" />
+        <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.searchForm()">查询</a>
+        <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">重置</a>
+        <!--	     <button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
+                <button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>-->
+        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.excelExport()">导出EXCLE</button>
     </form>
+    <div id="statisticalGrid" class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 

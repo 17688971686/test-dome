@@ -102,7 +102,7 @@
                         if(data.flag || data.reCode == 'ok'){
                             vm.financials = data.reObj;
                             bsWin.success(data.reMsg);
-                            $("#addCostWindow").data("kendoWindow").close();
+                            $("#"+id).data("kendoWindow").close();
                         }else{
                             bsWin.error(data.reMsg);
                         }

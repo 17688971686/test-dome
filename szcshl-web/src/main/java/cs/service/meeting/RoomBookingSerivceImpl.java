@@ -319,6 +319,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	public ResultMsg saveRoom(RoomBookingDto roomDto) {
 		if(checkRootBook(roomDto) > 0){
 			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"预定的会议室时间跟其他会议有冲突！");
+		}else if(((roomDto.getEndTime().getTime()) - (roomDto.getBeginTime().getTime())) < 0) {
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue() , "开始时间不能大于结束时间!");
 		}else{
 			Date now = new Date();
 			RoomBooking rb = new RoomBooking();
