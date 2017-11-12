@@ -47,6 +47,7 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <div class="toolbar">
+        <span ng-show="vm.model.businessType && vm.model.businessId "><go-back></go-back></span>
         <button type="button" class="btn btn-sm btn-primary" ng-click="vm.exportThisWeekStage()" value="">
             导出本周评审会会议安排
         </button>

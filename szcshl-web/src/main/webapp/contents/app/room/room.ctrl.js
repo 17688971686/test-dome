@@ -28,6 +28,7 @@
                 if(vm.model.businessId && vm.model.businessType){
                     roomSvc.initDefaultValue(vm.model.businessId,vm.model.businessType,function(data){
                         vm.model = data;
+                        console.log(vm.model);
                         if(vm.meetings && vm.meetings.length > 0){
                             vm.mrID = vm.meetings[0].id;
                             vm.model.mrID = vm.mrID;

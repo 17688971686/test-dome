@@ -170,10 +170,10 @@
                 model.businessId = vm.model.businessId;
                 model.businessType = vm.model.businessType;
 
-                if (new Date(model.endTime) < new Date(model.beginTime)) {
-                    bsWin.alert("开始时间不能大于结束时间!");
-                    return;
-                }
+                // if (new Date(model.endTime) < new Date(model.beginTime)) {
+                //     bsWin.alert("开始时间不能大于结束时间!");
+                //     return;
+                // }
                 var httpOptions = {
                     method: 'post',
                     url: rootPath + "/room/addRoom",
