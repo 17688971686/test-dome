@@ -330,11 +330,8 @@ public class FinancialManagerController {
     }
 
 
-
-
-
     @RequiresPermissions("financialManager#html/projectCostCount#get")
-    @RequestMapping(name = "评审费统计", path = "html/projectCostCount", method = RequestMethod.GET)
+    @RequestMapping(name = "评审费用统计", path = "html/projectCostCount", method = RequestMethod.GET)
     public String proCostCount() {
         return ctrlName + "/projectCostCount";
     }
@@ -346,14 +343,16 @@ public class FinancialManagerController {
         return ctrlName + "/proCostClassifyCount";
     }
 
-    @RequiresPermissions("financialManager#html/add#get")
-    @RequestMapping(name = "评审费用录入", path = "html/add", method = RequestMethod.GET)
+    @RequiresAuthentication
+//    @RequiresPermissions("financialManager#html/add#get")
+    @RequestMapping(name = "评审费录入", path = "html/add", method = RequestMethod.GET)
     public String edit() {
         return ctrlName + "/add";
     }
 
-    @RequiresPermissions("financialManager#html/assistCostAdd#get")
-    @RequestMapping(name = "协审费用录入", path = "html/assistCostAdd", method = RequestMethod.GET)
+    @RequiresAuthentication
+//    @RequiresPermissions("financialManager#html/assistCostAdd#get")
+    @RequestMapping(name = "协审费录入", path = "html/assistCostAdd", method = RequestMethod.GET)
     public String assistCostAdd() {
         return ctrlName + "/assistCostAdd";
     }
@@ -365,7 +364,7 @@ public class FinancialManagerController {
     }
 
     @RequiresPermissions("financialManager#html/expertCount#get")
-    @RequestMapping(name = "专家费统计", path = "html/expertCount", method = RequestMethod.GET)
+    @RequestMapping(name = "专家费用统计", path = "html/expertCount", method = RequestMethod.GET)
     public String expertCount() {
         return ctrlName + "/expertCount";
     }
@@ -376,7 +375,8 @@ public class FinancialManagerController {
         return ctrlName + "/expertPaymentCount";
     }
 
-    @RequiresPermissions("financialManager#html/expertPaymentDetailCount#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("financialManager#html/expertPaymentDetailCount#get")
     @RequestMapping(name = "专家缴税统计明细", path = "html/expertPaymentDetailCount", method = RequestMethod.GET)
     public String expertPaymentDetailCount() {
         return ctrlName + "/expertPaymentDetailCount";
@@ -388,7 +388,8 @@ public class FinancialManagerController {
         return ctrlName + "/assistCostCount";
     }
 
-    @RequiresPermissions("financialManager#html/stageCostTable#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("financialManager#html/stageCostTable#get")
     @RequestMapping(name = "评审费发放表", path = "html/stageCostTable", method = RequestMethod.GET)
     public String stageCostTable() {
         return ctrlName + "/stageCostTable";

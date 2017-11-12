@@ -115,27 +115,29 @@ public class SignController {
         return  signService.reserveAddSign(signDto);
     }
 
-    @RequiresPermissions("sign#html/reserveAdd#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("sign#html/reserveAdd#get")
     @RequestMapping(name = "项目预签收" ,path = "html/reserveAdd",method = RequestMethod.GET)
     public String reserveAdd(){
     	return ctrlName + "/reserveAdd";
     }
 
     @RequiresPermissions("sign#html/list#get")
-    @RequestMapping(name = "项目列表", path = "html/list", method = RequestMethod.GET)
+    @RequestMapping(name = "项目签收列表", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/list";
     }
 
-    @RequiresPermissions("sign#html/add#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("sign#html/add#get")
     @RequestMapping(name = "项目签收", path = "html/add", method = RequestMethod.GET)
     public String add() {
         return ctrlName + "/add";
     }
 
 
-    
-    @RequiresPermissions("sign#html/reserveList#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("sign#html/reserveList#get")
     @RequestMapping(name = "项目预签收列表" ,path = "html/reserveList",method = RequestMethod.GET)
     public String reserveList(){
     	
@@ -298,14 +300,16 @@ public class SignController {
         return ctrlName + "/signEndDetails";
     }
 
-    @RequiresPermissions("sign#html/ruProcessTask#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("sign#html/ruProcessTask#get")
     @RequestMapping(name = "在办项目", path = "html/ruProcessTask", method = RequestMethod.GET)
     public String ruProcessTask() {
     	
     	return ctrlName + "/ruProcessTask";
     }
 
-    @RequiresPermissions("sign#html/hiProcessTask#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("sign#html/hiProcessTask#get")
     @RequestMapping(name = "已办项目", path = "html/hiProcessTask", method = RequestMethod.GET)
     public String hiProcessTask() {
     	

@@ -59,7 +59,7 @@ public class ReviewFeeController {
 
 
     @RequiresPermissions("reviewFee#html/list#get")
-    @RequestMapping(name="项目信息列表" , path="html/list" , method = RequestMethod.GET)
+    @RequestMapping(name="评审费发放" , path="html/list" , method = RequestMethod.GET)
     public String list(){
         return ctrlName + "/list";
     }

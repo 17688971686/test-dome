@@ -73,8 +73,9 @@ public class SysConfigController {
     }
 
     // begin#html
+//    @RequiresAuthentication
     @RequiresPermissions("sysConfig#html/list#get")
-    @RequestMapping(name = "系统配置", path = "html/list", method = RequestMethod.GET)
+    @RequestMapping(name = "配置管理", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/list";
     }

@@ -148,6 +148,7 @@ public class AdminController {
         return ctrlName + "/agendaTasks";
     }
 
+//    @RequiresAuthentication
     @RequiresPermissions("admin#doingTasks#get")
     @RequestMapping(name = "在办任务", path = "doingTasks")
     public String doingTasks(Model model) {

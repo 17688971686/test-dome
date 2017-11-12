@@ -243,44 +243,47 @@ public class MonthlyNewsletterController {
 
     // begin#html
     @RequiresPermissions("monthlyNewsletter#html/monthlyNewsletterList#get")
-    @RequestMapping(name = "月报简报列表", path = "html/monthlyNewsletterList", method = RequestMethod.GET)
+    @RequestMapping(name = "月报简报管理", path = "html/monthlyNewsletterList", method = RequestMethod.GET)
     public String monthlyNewsletterList() {
         return ctrlName+"/monthlyNewsletterList"; 
     }
 
     @RequiresPermissions("monthlyNewsletter#html/theMonthsList#get")
-    @RequestMapping(name = "月报列表", path = "html/theMonthsList", method = RequestMethod.GET)
+    @RequestMapping(name = "年度月报简报", path = "html/theMonthsList", method = RequestMethod.GET)
     public String theMonthsList() {
         return ctrlName+"/theMonthsList"; 
     } 
-    
-    @RequiresPermissions("monthlyNewsletter#html/monthlyHistoryList#get")
+
+    @RequiresAuthentication
+//    @RequiresPermissions("monthlyNewsletter#html/monthlyHistoryList#get")
     @RequestMapping(name = "月报简报历史数据列表", path = "html/monthlyHistoryList", method = RequestMethod.GET)
     public String monthsHistoryList() {
         return ctrlName+"/monthlyHistoryList"; 
     }
 
     @RequiresAuthentication
-    @RequiresPermissions("monthlyNewsletter#html/monthlyHistoryAdd#get")
+//    @RequiresPermissions("monthlyNewsletter#html/monthlyHistoryAdd#get")
     @RequestMapping(name = "月报简报历史数据新建", path = "html/monthlyHistoryAdd", method = RequestMethod.GET)
     public String monthsHistoryAdd() {
         return ctrlName+"/monthlyHistoryAdd"; 
     } 
-    
-    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearList#get")
+
+    @RequiresAuthentication
+//    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearList#get")
     @RequestMapping(name = "年度月报简报列表", path = "html/monthlyMultiyearList", method = RequestMethod.GET)
     public String monthlyMultiyear() {
         return ctrlName+"/monthlyMultiyearList"; 
     } 
-    
-    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiAppoveEdit#get")
+
+    @RequiresAuthentication
+//    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiAppoveEdit#get")
     @RequestMapping(name = "月报简报审批处理", path = "html/monthlyMultiAppoveEdit", method = RequestMethod.GET)
     public String monthlyMultiAppoveEdit() {
         return ctrlName+"/monthlyMultiAppoveEdit"; 
     } 
     
     @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyFileList#get")
-    @RequestMapping(name = "月报简报查询列表", path = "html/monthlyMultiyFileList", method = RequestMethod.GET)
+    @RequestMapping(name = "月报简报查询", path = "html/monthlyMultiyFileList", method = RequestMethod.GET)
     public String monthlyMultiyFileList() {
         return ctrlName+"/monthlyMultiyFileList"; 
     } 
@@ -298,13 +301,15 @@ public class MonthlyNewsletterController {
     }
 */
 
-    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearAdd#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearAdd#get")
     @RequestMapping(name = "编辑月报简报年度", path = "html/monthlyMultiyearAdd", method = RequestMethod.GET)
     public String monthlyMultiyearAdd() {
         return ctrlName+"/monthlyMultiyearAdd"; 
     }
-    
-    @RequiresPermissions("monthlyNewsletter#html/monthlyYearAdd#get")
+
+    @RequiresAuthentication
+//    @RequiresPermissions("monthlyNewsletter#html/monthlyYearAdd#get")
     @RequestMapping(name = "新建月报简报年度", path = "html/monthlyYearAdd", method = RequestMethod.GET)
     public String monthlyYearAdd() {
         return ctrlName+"/monthlyYearAdd"; 
@@ -323,8 +328,9 @@ public class MonthlyNewsletterController {
     public String edit() {
         return ctrlName+"/monthlyNewsletterEdit";
     }
-    
-    @RequiresPermissions("monthlyNewsletter#html/monthlyExcellentList#get")
+
+    @RequiresAuthentication
+//    @RequiresPermissions("monthlyNewsletter#html/monthlyExcellentList#get")
     @RequestMapping(name = "优秀评审报告", path = "html/monthlyExcellentList", method = RequestMethod.GET)
     public String monthlyExcellentList() {
         return ctrlName+"/monthlyExcellentList";

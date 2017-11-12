@@ -25,7 +25,7 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "图书采购申请业务信息", path = "bookBuyBusiness")
-@MudoleAnnotation(name = "图书采购申请业务管理",value = "permission#bookBuyBusiness")
+@MudoleAnnotation(name = "图书管理",value = "permission#bookBuyBusiness")
 public class BookBuyBusinessController {
 
 	String ctrlName = "bookBuyBusiness";

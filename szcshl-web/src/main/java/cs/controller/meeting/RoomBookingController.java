@@ -98,7 +98,8 @@ public class RoomBookingController {
     }
 
     @SuppressWarnings("unused")
-    @RequiresPermissions("room#exportThisWeekStage#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("room#exportThisWeekStage#get")
     @RequestMapping(name = "导出本周评审会议安排", path = "exportThisWeekStage", method = RequestMethod.GET)
     public void exportThisWeekStage(HttpServletRequest request , HttpServletRequest req, HttpServletResponse resp, @RequestParam String currentDate, @RequestParam String rbType, @RequestParam String mrId , String fileName) {
 //		roomBookingSerivce.exportThisWeekStage();
@@ -216,7 +217,7 @@ public class RoomBookingController {
     //end#html
 
     @RequiresPermissions("room#html/countlist#get")
-    @RequestMapping(name = "预定会议统计情况", path = "html/countlist", method = RequestMethod.GET)
+    @RequestMapping(name = "会议预定统计情况", path = "html/countlist", method = RequestMethod.GET)
     public String countList() {
         return ctrlName + "/countlist";
     }

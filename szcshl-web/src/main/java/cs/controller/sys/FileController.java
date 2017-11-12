@@ -348,11 +348,12 @@ public class FileController {
 
     @RequiresPermissions("file#html/pluginfile#get")
     //@RequiresAuthentication
-    @RequestMapping(name = "插件管理", path = "html/pluginfile")
+    @RequestMapping(name = "系统安装文件", path = "html/pluginfile")
     public String pluginfile(Model model) {
         return ctrlName + "/pluginfile";
     }
 
+    @RequiresAuthentication
     @RequestMapping(name = "附件管理", path = "html/rightList")
     public String rightList(Model model) {
         return ctrlName + "/rightList";

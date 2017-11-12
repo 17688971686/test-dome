@@ -93,20 +93,23 @@ public class ReviewProjectAppraiseController {
 
 
 
-    @RequiresPermissions("reviewProjectAppraise#html/edit#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("reviewProjectAppraise#html/edit#get")
     @RequestMapping(name="评审项目评优" , path="html/edit" , method = RequestMethod.GET)
     public String edit(){
         return ctrlName + "/edit";
     }
 
-    @RequiresPermissions("reviewProjectAppraise#html/approveList#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("reviewProjectAppraise#html/approveList#get")
     @RequestMapping(name="优秀评审报告审批" , path="html/approveList" , method = RequestMethod.GET)
     public String approveList(){
         return ctrlName + "/approveList";
     }
 
 
-    @RequiresPermissions("reviewProjectAppraise#html/approveWindow#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("reviewProjectAppraise#html/approveWindow#get")
     @RequestMapping(name="处理弹出框" , path = "html/approveWindow" , method = RequestMethod.GET)
     public String approveWindow(){
         return ctrlName + "/approveWindow";

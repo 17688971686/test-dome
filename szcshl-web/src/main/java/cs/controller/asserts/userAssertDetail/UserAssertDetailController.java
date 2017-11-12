@@ -24,7 +24,7 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "用户资产明细", path = "userAssertDetail")
-@MudoleAnnotation(name = "用户资产明细",value = "permission#assert")
+@MudoleAnnotation(name = "资产管理",value = "permission#assert")
 public class UserAssertDetailController {
 
 	String ctrlName = "asserts/userAssertDetail";
@@ -82,14 +82,15 @@ public class UserAssertDetailController {
     }
 
     // begin#html
-    @RequiresPermissions("userAssertDetail#html/list#get")
+    @RequiresAuthentication
+//    @RequiresPermissions("userAssertDetail#html/list#get")
     @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName+"/list"; 
     }
 
     @RequiresPermissions("userAssertDetail#html/userAssertDetailAdd#get")
-    @RequestMapping(name = "编辑页面", path = "html/userAssertDetailAdd", method = RequestMethod.GET)
+    @RequestMapping(name = "固定资产申请使用流程", path = "html/userAssertDetailAdd", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/userAssertDetailAdd";
     }
