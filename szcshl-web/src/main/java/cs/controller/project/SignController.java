@@ -46,7 +46,7 @@ import cs.service.project.SignService;
 
 @Controller
 @RequestMapping(name = "收文", path = "sign")
-@MudoleAnnotation(name = "项目管理",value = "permission#sign")
+@MudoleAnnotation(name = "项目管理", value = "permission#sign")
 public class SignController {
     private static Logger logger = Logger.getLogger(SignController.class);
     String ctrlName = "sign";
@@ -91,8 +91,9 @@ public class SignController {
 
     @RequiresAuthentication
     //@RequiresPermissions("sign#getBack#post")
-    @RequestMapping(name = "项目取回", path = "getBack", method = RequestMethod.POST)
+    @RequestMapping(name = "项目重新分办", path = "getBack", method = RequestMethod.POST)
     @ResponseBody
+    @Transactional
     public ResultMsg getBack(@RequestParam(required = true) String taskId, String businessKey) {
         String backActivityId = "", branch = "";
         if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {
@@ -102,7 +103,7 @@ public class SignController {
             if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())
                     || null != orgDept) {
                 //根据当前用户所在部门ID，查询是哪个分支的取回
-                SignBranch signBranch = signBranchService.findByOrgDirector(businessKey,orgDept.getId());
+                SignBranch signBranch = signBranchService.findByOrgDirector(businessKey, orgDept.getId());
                 if (signBranch != null) {
                     branch = signBranch.getBranchId();
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branch)) {
@@ -181,9 +182,9 @@ public class SignController {
 
     @RequiresAuthentication
 //    @RequiresPermissions("sign#html/reserveAdd#get")
-    @RequestMapping(name = "项目预签收" ,path = "html/reserveAdd",method = RequestMethod.GET)
-    public String reserveAdd(){
-    	return ctrlName + "/reserveAdd";
+    @RequestMapping(name = "项目预签收", path = "html/reserveAdd", method = RequestMethod.GET)
+    public String reserveAdd() {
+        return ctrlName + "/reserveAdd";
     }
 
     @RequiresPermissions("sign#html/list#get")
@@ -202,10 +203,10 @@ public class SignController {
 
     @RequiresAuthentication
 //    @RequiresPermissions("sign#html/reserveList#get")
-    @RequestMapping(name = "项目预签收列表" ,path = "html/reserveList",method = RequestMethod.GET)
-    public String reserveList(){
-    	
-    	return ctrlName + "/reserveList";
+    @RequestMapping(name = "项目预签收列表", path = "html/reserveList", method = RequestMethod.GET)
+    public String reserveList() {
+
+        return ctrlName + "/reserveList";
     }
 
     @RequiresAuthentication
@@ -321,8 +322,6 @@ public class SignController {
         return signService.initSignList();
     }
 
-    /***************************************  S 新流程处理的方法     *******************************************/
-
     @RequiresAuthentication
     @RequestMapping(name = "初始化流程处理页面", path = "initFlowPageData", method = RequestMethod.GET)
     @Transactional
@@ -374,16 +373,16 @@ public class SignController {
 //    @RequiresPermissions("sign#html/ruProcessTask#get")
     @RequestMapping(name = "在办项目", path = "html/ruProcessTask", method = RequestMethod.GET)
     public String ruProcessTask() {
-    	
-    	return ctrlName + "/ruProcessTask";
+
+        return ctrlName + "/ruProcessTask";
     }
 
     @RequiresAuthentication
 //    @RequiresPermissions("sign#html/hiProcessTask#get")
     @RequestMapping(name = "已办项目", path = "html/hiProcessTask", method = RequestMethod.GET)
     public String hiProcessTask() {
-    	
-    	return ctrlName + "/hiProcessTask";
+
+        return ctrlName + "/hiProcessTask";
     }
 
     @RequiresPermissions("sign#html/getBack#get")
@@ -393,10 +392,6 @@ public class SignController {
         return ctrlName + "/signGetBack";
     }
 
-
-    /***************************************  E 新流程处理的方法     *******************************************/
-
-
     @RequiresAuthentication
     @RequestMapping(name = "查找项目概算", path = "findAssistSign", method = RequestMethod.GET)
     public @ResponseBody
@@ -404,7 +399,6 @@ public class SignController {
 
         return signService.findAssistSign();
     }
-
 
     @RequiresPermissions("sign#personDtasks#get")
     @RequestMapping(name = "个人在审项目", path = "personDtasks")

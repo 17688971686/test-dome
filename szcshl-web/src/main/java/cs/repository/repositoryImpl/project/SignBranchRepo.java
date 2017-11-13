@@ -99,4 +99,11 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
      * @return
      */
     SignBranch findByOrgDirector(String signId,String orgId);
+
+    /**
+     * 重置分支状态
+     * @param signId
+     * @param branchId
+     */
+    void resetBranchState(String signId,String branchId);
 }

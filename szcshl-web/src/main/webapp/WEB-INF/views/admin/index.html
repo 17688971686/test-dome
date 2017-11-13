@@ -182,15 +182,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                         </a>
                         <ul class="treeview-menu">
-                            <@shiro.hasPermission name="sign#html/getBack#get">
-                            <li><a href="javascript:void(0)" ui-sref="signGetBack">项目重新分办</a></li>
-                            </@shiro.hasPermission>
                             <@shiro.hasPermission name="sign#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="listSign">项目签收列表</a></li>
                             </@shiro.hasPermission>
-
+                            <@shiro.hasPermission name="sign#html/getBack#get">
+                                <li><a href="javascript:void(0)" ui-sref="signGetBack">项目重新分办</a></li>
+                            </@shiro.hasPermission>
                             <@shiro.hasPermission name="sign#personDtasks#get">
-                                <li><a href="javascript:void(0)" ui-sref="personDtasks">个人在审项目</a></li>
+                                <li><a href="javascript:void(0)" ui-sref="personDtasks">个人经办项目</a></li>
                             </@shiro.hasPermission>
                             <!--
                             <@shiro.hasPermission name="sign#etasks#get">
@@ -543,7 +542,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <li><a href="javascript:void(0)" ui-sref="header">表字段管理</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="header#html/list#get">
-                                <li><a href="javascript:void(0)" ui-sref="header">个人代办设置</a></li>
+                                <li><a href="javascript:void(0)" ui-sref="takeUser">个人代办设置</a></li>
                             </@shiro.hasPermission>
                         </ul>
                     </li>

@@ -77,7 +77,7 @@ public class AssistPlan extends DomainBase {
     /**
      * 计划状态
      */
-    @Column(columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(2)")
     private String planState;
 
     /**

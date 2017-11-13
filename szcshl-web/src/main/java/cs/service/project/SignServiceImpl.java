@@ -7,11 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.domain.expert.ExpertReview_;
+import cs.domain.expert.ExpertSelCondition;
+import cs.domain.expert.ExpertSelected;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
+import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.*;
 import cs.model.sys.SysConfigDto;
+import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
+import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.sys.*;
@@ -138,7 +144,10 @@ public class SignServiceImpl implements SignService {
     private SysConfigService sysConfigService;
     @Autowired
     private RuProcessTaskRepo ruProcessTaskRepo;
-
+    @Autowired
+    private ExpertSelConditionRepo expertSelConditionRepo;
+    @Autowired
+    private ExpertSelectedRepo expertSelectedRepo;
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -2069,20 +2078,22 @@ public class SignServiceImpl implements SignService {
      * @param branchId
      */
     @Override
+    @Transactional
     public void deleteBranchInfo(String signId, String branchId) {
         boolean deleteBranchId = false;
         if (Validate.isString(branchId)) {
             deleteBranchId = true;
         }
-        //1、删除分支
-        HqlBuilder sqlBuilder1 = HqlBuilder.create();
-        sqlBuilder1.append("delete from CS_SIGN_BRANCH where " + SignBranch_.signId.getName() + " =:signId ");
-        sqlBuilder1.setParam("signId", signId);
+        //1、删除分支，如果是分管领导分办，则删除分支；如果是部长，则改变相应的状态即可
         if (deleteBranchId) {
-            sqlBuilder1.append(" and " + SignBranch_.branchId.getName() + " =:branchId ");
-            sqlBuilder1.setParam("branchId", branchId);
+            signBranchRepo.resetBranchState(signId,branchId);
+        }else{
+            HqlBuilder sqlBuilder1 = HqlBuilder.create();
+            sqlBuilder1.append("delete from CS_SIGN_BRANCH where " + SignBranch_.signId.getName() + " =:signId ");
+            sqlBuilder1.setParam("signId", signId);
+            signBranchRepo.executeSql(sqlBuilder1);
         }
-        signBranchRepo.executeSql(sqlBuilder1);
+
         //2、删除分支负责人
         HqlBuilder sqlBuilder2 = HqlBuilder.create();
         sqlBuilder2.append("delete from CS_SIGN_PRINCIPAL2 where " + SignPrincipal_.signId.getName() + " =:signId ");
@@ -2092,14 +2103,66 @@ public class SignServiceImpl implements SignService {
             sqlBuilder2.setParam("branchId", branchId);
         }
         signBranchRepo.executeSql(sqlBuilder2);
-        //3、删除工作方案
-        HqlBuilder sqlBuilder3 = HqlBuilder.create();
-        sqlBuilder3.append(" delete from CS_WORK_PROGRAM where signid =:signid ");
-        sqlBuilder3.setParam("signid", signId);
-        if (deleteBranchId) {
-            sqlBuilder3.append(" and " + WorkProgram_.branchId.getName() + " =:branchId ");
-            sqlBuilder3.setParam("branchId", branchId);
+        //3、删除工作方案、会议室、专家评审方案
+        Sign sign = signRepo.findById(signId);
+        List<WorkProgram> workProgramList = sign.getWorkProgramList();
+        if(Validate.isList(workProgramList)){
+            String deleteWPId = null;             //删除工作方案ID
+            for(int i=0,l=workProgramList.size();i<l;i++){
+                WorkProgram wp = workProgramList.get(i);
+                if(deleteBranchId && branchId.equals(wp.getBranchId())){
+                    deleteWPId = wp.getId();
+                    break;
+                }else{
+                    if(i > 0){
+                        deleteWPId += ",";
+                    }
+                    deleteWPId += wp.getId();
+                }
+            }
+            //删除会议室信息
+            roomBookingRepo.deleteById(RoomBooking_.businessId.getName(),deleteWPId);
+
+            //如果是分管领导回退，则删除整个专家评审方案信息；部长回退，则删除对应的分支信息，并修改评审方案状态
+            Criteria criteria = expertReviewRepo.getExecutableCriteria();
+            criteria.add(Restrictions.eq(ExpertReview_.businessId.getName(),signId));
+            List<ExpertReview> reviewList = criteria.list();
+            if(Validate.isList(reviewList)){
+                ExpertReview review = reviewList.get(0);
+                if(deleteBranchId){
+                    if(Validate.isList(review.getExpertSelConditionList())){
+                        for(int n=0,m=review.getExpertSelConditionList().size();n<m;n++){
+                            ExpertSelCondition ec = review.getExpertSelConditionList().get(n);
+                            if(deleteWPId.equals(ec.getBusinessId())){
+                                expertSelConditionRepo.delete(ec);
+                            }
+                        }
+                    }
+                    if(Validate.isList(review.getExpertSelectedList())){
+                        for(int n=0,m=review.getExpertSelectedList().size();n<m;n++){
+                            ExpertSelected el = review.getExpertSelectedList().get(n);
+                            if(deleteWPId.equals(el.getBusinessId())){
+                                expertSelectedRepo.delete(el);
+                            }
+                        }
+                    }
+                    review.setState(EnumState.NO.getValue());
+                    expertReviewRepo.save(review);
+                }else{
+                    expertReviewRepo.delete(review);        //删除评审方案，顺便删除抽取专家信息(级联删除)
+                }
+            }
+            //最后删除工作方案信息
+            for(int i=0,l=workProgramList.size();i<l;i++){
+                WorkProgram wp = workProgramList.get(i);
+                if(deleteBranchId && deleteWPId.equals(wp.getId())){
+                    workProgramRepo.delete(wp);
+                    break;
+                }else{
+                    workProgramRepo.delete(wp);
+                }
+            }
         }
-        workProgramRepo.executeSql(sqlBuilder3);
+
     }
 }

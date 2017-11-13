@@ -336,5 +336,24 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
         return null;
     }
 
+    /**
+     * 重置分支状态
+     * @param signId
+     * @param branchId
+     */
+    @Override
+    public void resetBranchState(String signId, String branchId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" update "+SignBranch.class.getSimpleName()+" set "+ SignBranch_.isFinished.getName()+" =:isFinished ");
+        hqlBuilder.setParam("isFinished", Constant.EnumState.NO.getValue());
+        hqlBuilder.append(" , "+ SignBranch_.isNeedWP.getName()+" =:isNeedWP ");
+        hqlBuilder.setParam("isNeedWP", Constant.EnumState.YES.getValue());
+        hqlBuilder.append(" , "+ SignBranch_.isEndWP.getName()+" =:isEndWP ");
+        hqlBuilder.setParam("isEndWP", Constant.EnumState.NO.getValue());
+        hqlBuilder.append(" where "+SignBranch_.signId.getName()+" =:signId and "+SignBranch_.branchId.getName()+" =:branchId ");
+        hqlBuilder.setParam("signId",signId).setParam("branchId",branchId);
+        executeHql(hqlBuilder);
+    }
+
 
 }

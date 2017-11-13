@@ -112,7 +112,7 @@ public interface SignService {
     PageModelDto<RuProcessTask> getBackList(ODataObj odataObj, boolean isOrgLeader);
 
     /**
-     * 删除相应的分支信息（没有分支ID，则删除全部分支）
+     * 删除相应的分支信息（没有分支ID，则删除全部分支，包括工作方案，会议室预定，专家抽取等）
      * @param signId
      * @param branchIndex
      */

@@ -7,21 +7,23 @@
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li>项目管理</li>
-        <li class="active">在审项目</li>
+        <li class="active">个人在审项目</li>
     </ol>
 
     <div class="toolbar">
         <a class="btn btn-sm btn-primary" ng-click="vm.querySign()"><span class="glyphicon glyphicon-ok"></span>查询</a>
+        <a class="btn btn-sm btn-primary" ng-click="vm.resetForm()"><span class="glyphicon glyphicon-repeat"></span>重置</a>
     </div>
 
     <form id="searchform" name="searchform" class="breadcrumb">
         <table  style="width: 100%;">
-            <td class="text-right" style="width: 80px;">负责人：</td>
+            <tr>
+            <td class="text-right" style="width: 70px;">负责人：</td>
             <td>
                 <select ng-model="vm.model.preside">
                     <option value="">请选择</option>
-                    <option value="1">第一负责人</option>
-                    <option value="2">第二负责人</option>
+                    <option value="1">主负责人</option>
+                    <option value="2">负责人</option>
                 </select>
                 <input ng-if="vm.model.preside=='1'" type="hidden" value="${CURRENT_USER.id}" operator="eq" name="mUserId" id="mUserId" placeholder="请输入">
                 <input ng-if="vm.model.preside=='2'" type="hidden" value="${CURRENT_USER.id}" operator="like" name="aUserID" id="aUserID" placeholder="请输入">
@@ -38,9 +40,20 @@
                 </select>
             </td>
             <td class="text-right" style="width: 80px;">建设单位：</td>
-            <td style="min-width: 260px;">
+            <td >
                 <input type="text" ng-model="vm.model.projectcode" operator="like" name="builtcompanyname" id="builtcompanyname" placeholder="请输入">
             </td>
+
+            <td class="text-right" style="width: 80px;">项目状态：</td>
+            <td>
+                <select name="signState" ng-model="vm.model.signState">
+                    <option value="">所有</option>
+                    <option value="1">进行中</option>
+                    <option value="2">已暂停</option>
+                    <option value="9">已完成</option>
+                </select>
+             </td>
+            </tr>
         </table>
     </form>
     <div class="label-default" style="width: 100%;padding:5px 10px;">

@@ -481,39 +481,40 @@ public class FileRecordDto extends BaseDto {
 
     //7.建筑
     private String architecture;
-
+    private Integer architectureCount;
     //8.结构
     private String construction;
-
+    private Integer constructionCount;
     //9.给排水
     private String drainAwayWater;
-
+    private Integer drainAwayWaterCount;
     //10.空调
     private String conditioner;
-
+    private Integer conditionerCount;
     //11.强电
     private String highVoltage;
-
+    private Integer highVoltageCount;
     //12.弱电
     private String lightCurrent;
-
+    private Integer lightCurrentCount;
     //13.道路
     private String roadway;
-
+    private Integer roadwayCount;
     //14.桥梁
     private String bridge;
-
+    private Integer bridgeCount;
     //15.园林
     private String gardens;
-
+    private Integer gardensCount;
     //16.消防
     private String fireFighting;
-
+    private Integer fireFightingCount;
     //17.燃气
     private String combustiblegas;
-
+    private Integer combustiblegasCount;
     //18.其他
     private String fieOther;
+    private Integer fieOtherCount;
     //E 项目概算
 
     //项目第二负责人
@@ -2063,5 +2064,101 @@ public class FileRecordDto extends BaseDto {
 
     public void setPageDate(Date pageDate) {
         this.pageDate = pageDate;
+    }
+
+    public Integer getArchitectureCount() {
+        return architectureCount;
+    }
+
+    public void setArchitectureCount(Integer architectureCount) {
+        this.architectureCount = architectureCount;
+    }
+
+    public Integer getConstructionCount() {
+        return constructionCount;
+    }
+
+    public void setConstructionCount(Integer constructionCount) {
+        this.constructionCount = constructionCount;
+    }
+
+    public Integer getDrainAwayWaterCount() {
+        return drainAwayWaterCount;
+    }
+
+    public void setDrainAwayWaterCount(Integer drainAwayWaterCount) {
+        this.drainAwayWaterCount = drainAwayWaterCount;
+    }
+
+    public Integer getConditionerCount() {
+        return conditionerCount;
+    }
+
+    public void setConditionerCount(Integer conditionerCount) {
+        this.conditionerCount = conditionerCount;
+    }
+
+    public Integer getHighVoltageCount() {
+        return highVoltageCount;
+    }
+
+    public void setHighVoltageCount(Integer highVoltageCount) {
+        this.highVoltageCount = highVoltageCount;
+    }
+
+    public Integer getLightCurrentCount() {
+        return lightCurrentCount;
+    }
+
+    public void setLightCurrentCount(Integer lightCurrentCount) {
+        this.lightCurrentCount = lightCurrentCount;
+    }
+
+    public Integer getRoadwayCount() {
+        return roadwayCount;
+    }
+
+    public void setRoadwayCount(Integer roadwayCount) {
+        this.roadwayCount = roadwayCount;
+    }
+
+    public Integer getBridgeCount() {
+        return bridgeCount;
+    }
+
+    public void setBridgeCount(Integer bridgeCount) {
+        this.bridgeCount = bridgeCount;
+    }
+
+    public Integer getGardensCount() {
+        return gardensCount;
+    }
+
+    public void setGardensCount(Integer gardensCount) {
+        this.gardensCount = gardensCount;
+    }
+
+    public Integer getFireFightingCount() {
+        return fireFightingCount;
+    }
+
+    public void setFireFightingCount(Integer fireFightingCount) {
+        this.fireFightingCount = fireFightingCount;
+    }
+
+    public Integer getCombustiblegasCount() {
+        return combustiblegasCount;
+    }
+
+    public void setCombustiblegasCount(Integer combustiblegasCount) {
+        this.combustiblegasCount = combustiblegasCount;
+    }
+
+    public Integer getFieOtherCount() {
+        return fieOtherCount;
+    }
+
+    public void setFieOtherCount(Integer fieOtherCount) {
+        this.fieOtherCount = fieOtherCount;
     }
 }

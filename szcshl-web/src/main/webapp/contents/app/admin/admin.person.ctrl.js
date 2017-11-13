@@ -20,6 +20,14 @@
         vm.querySign = function(){
             vm.gridOptions.dataSource.read();
         }
+
+        /**
+         * 重置
+         */
+        vm.resetForm = function(){
+            vm.model = {};
+        }
+
         /**
          * 项目暂停
          * @param signid

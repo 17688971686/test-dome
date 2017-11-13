@@ -767,52 +767,109 @@ public class FileRecord extends DomainBase{
 	private Integer electronicCount;
 
 	//7.建筑
-	@Column(columnDefinition="VARCHAR(16)")
+	@Column(columnDefinition="VARCHAR(2)")
 	private String architecture;
-	
+
+    /**
+     * 建筑份数
+     */
+	@Column(columnDefinition="INTEGER")
+	private Integer architectureCount;
+
 	//8.结构
 	@Column(columnDefinition="VARCHAR(2)")
 	private String construction;
-	
+    /**
+     * 结构份数
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer constructionCount;
+
 	//9.给排水
 	@Column(columnDefinition="VARCHAR(2)")
 	private String drainAwayWater;
+    /**
+     * 给排水份数
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer drainAwayWaterCount;
 
 	//10.空调
 	@Column(columnDefinition="VARCHAR(2)")
 	private String conditioner;
-	
+    /**
+     * 空调份数
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer conditionerCount;
+
 	//11.强电
 	@Column(columnDefinition="VARCHAR(2)")
 	private String highVoltage;
-	
+    /**
+     * 强电份数
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer highVoltageCount;
+
 	//12.弱电
 	@Column(columnDefinition="VARCHAR(2)")
 	private String lightCurrent;
-	
-	//13.道路
+    /**
+     * 弱电份数
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer lightCurrentCount;
+
+    //13.道路
 	@Column(columnDefinition="VARCHAR(2)")
 	private String roadway;
-	
+    /**
+     * 道路份数
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer roadwayCount;
+
 	//14.桥梁
 	@Column(columnDefinition="VARCHAR(2)")
 	private String bridge;
-	
+    /**
+     * 桥梁份数
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer bridgeCount;
 	//15.园林
 	@Column(columnDefinition="VARCHAR(2)")
 	private String gardens;
-	
+    /**
+     * 园林份数
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer gardensCount;
 	//16.消防
 	@Column(columnDefinition="VARCHAR(2)")
 	private String fireFighting;
-	
+    /**
+     * 消防份数
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer fireFightingCount;
 	//17.燃气
 	@Column(columnDefinition="VARCHAR(2)")
 	private String combustiblegas;
-
+    /**
+     * 燃气份数
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer combustiblegasCount;
 	//18.其他
 	@Column(columnDefinition="VARCHAR(2)")
 	private String fieOther;
+    /**
+     * 其他份数
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer fieOtherCount;
 	//E 项目概算
 
 	
@@ -2372,4 +2429,100 @@ public class FileRecord extends DomainBase{
 	public void setPageDate(Date pageDate) {
 		this.pageDate = pageDate;
 	}
+
+    public Integer getArchitectureCount() {
+        return architectureCount;
+    }
+
+    public void setArchitectureCount(Integer architectureCount) {
+        this.architectureCount = architectureCount;
+    }
+
+    public Integer getConstructionCount() {
+        return constructionCount;
+    }
+
+    public void setConstructionCount(Integer constructionCount) {
+        this.constructionCount = constructionCount;
+    }
+
+    public Integer getDrainAwayWaterCount() {
+        return drainAwayWaterCount;
+    }
+
+    public void setDrainAwayWaterCount(Integer drainAwayWaterCount) {
+        this.drainAwayWaterCount = drainAwayWaterCount;
+    }
+
+    public Integer getConditionerCount() {
+        return conditionerCount;
+    }
+
+    public void setConditionerCount(Integer conditionerCount) {
+        this.conditionerCount = conditionerCount;
+    }
+
+    public Integer getHighVoltageCount() {
+        return highVoltageCount;
+    }
+
+    public void setHighVoltageCount(Integer highVoltageCount) {
+        this.highVoltageCount = highVoltageCount;
+    }
+
+    public Integer getLightCurrentCount() {
+        return lightCurrentCount;
+    }
+
+    public void setLightCurrentCount(Integer lightCurrentCount) {
+        this.lightCurrentCount = lightCurrentCount;
+    }
+
+    public Integer getRoadwayCount() {
+        return roadwayCount;
+    }
+
+    public void setRoadwayCount(Integer roadwayCount) {
+        this.roadwayCount = roadwayCount;
+    }
+
+    public Integer getBridgeCount() {
+        return bridgeCount;
+    }
+
+    public void setBridgeCount(Integer bridgeCount) {
+        this.bridgeCount = bridgeCount;
+    }
+
+    public Integer getGardensCount() {
+        return gardensCount;
+    }
+
+    public void setGardensCount(Integer gardensCount) {
+        this.gardensCount = gardensCount;
+    }
+
+    public Integer getFireFightingCount() {
+        return fireFightingCount;
+    }
+
+    public void setFireFightingCount(Integer fireFightingCount) {
+        this.fireFightingCount = fireFightingCount;
+    }
+
+    public Integer getCombustiblegasCount() {
+        return combustiblegasCount;
+    }
+
+    public void setCombustiblegasCount(Integer combustiblegasCount) {
+        this.combustiblegasCount = combustiblegasCount;
+    }
+
+    public Integer getFieOtherCount() {
+        return fieOtherCount;
+    }
+
+    public void setFieOtherCount(Integer fieOtherCount) {
+        this.fieOtherCount = fieOtherCount;
+    }
 }
