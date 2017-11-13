@@ -48,6 +48,13 @@
         }
 
         /**
+         * 查询
+         */
+        vm.querySign = function(){
+            vm.gridOptions.dataSource.read();
+        }
+
+        /**
          * 流程激活
          * @param signid
          */

@@ -9,6 +9,37 @@
         <li>我的工作台</li>
         <li class="active">{{vm.title}}</li>
     </ol>
+
+    <div class="toolbar">
+        <a class="btn btn-sm btn-primary" ng-click="vm.querySign()"><span class="glyphicon glyphicon-ok"></span>查询</a>
+    </div>
+
+    <form id="searchform" name="searchform" class="breadcrumb">
+        <table  style="width: 100%;">
+            <td class="text-right" style="width: 80px;">项目名称：</td>
+            <td>
+                <input type="text" ng-model="vm.model.projectname" operator="like" name="projectName" id="projectnam" placeholder="请输入">
+            </td>
+            <td class="text-right" style="width: 80px;">项目阶段：</td>
+            <td>
+                <select name="reviewStage" operator="eq">
+                    <option value="">请选择</option>
+                    <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
+                </select>
+            </td>
+            <td class="text-right" style="width: 80px;">处理人：</td>
+            <td style="min-width: 260px;">
+                <input type="text" ng-model="vm.model.displayName" operator="like" name="displayName" id="displayName" placeholder="请输入">
+            </td>
+            <td class="text-right" style="width: 80px;">签收日期：</td>
+            <td>
+                <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" operator="ge" name="signDate" id="signDate" >
+                至
+                <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" operator="le" name="signDate" id="signDate" >
+            </td>
+        </table>
+    </form>
+
     <!--操作说明提示框-->
     <div class="label-default" style="width: 100%;padding:5px 10px;">
             个人待办项目列表（
