@@ -21,15 +21,20 @@
               pkg:contentType="application/vnd.openxmlformats-package.relationships+xml" pkg:padding="256">
         <pkg:xmlData>
             <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-                <Relationship Id="rId8"
-                              Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer"
-                              Target="footer1.xml"/>
+                <Relationship Id="rId8" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"
+                              Target="charts/chart1.xml"/>
+                <Relationship Id="rId13"
+                              Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
+                              Target="theme/theme1.xml"/>
                 <Relationship Id="rId3"
                               Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"
                               Target="styles.xml"/>
                 <Relationship Id="rId7"
                               Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/endnotes"
                               Target="endnotes.xml"/>
+                <Relationship Id="rId12"
+                              Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable"
+                              Target="fontTable.xml"/>
                 <Relationship Id="rId2"
                               Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering"
                               Target="numbering.xml"/>
@@ -39,18 +44,20 @@
                 <Relationship Id="rId6"
                               Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes"
                               Target="footnotes.xml"/>
+                <Relationship Id="rId11"
+                              Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer"
+                              Target="footer1.xml"/>
                 <Relationship Id="rId5"
                               Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/webSettings"
                               Target="webSettings.xml"/>
                 <Relationship Id="rId10"
-                              Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
-                              Target="theme/theme1.xml"/>
+                              Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"
+                              Target="charts/chart3.xml"/>
                 <Relationship Id="rId4"
                               Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings"
                               Target="settings.xml"/>
-                <Relationship Id="rId9"
-                              Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable"
-                              Target="fontTable.xml"/>
+                <Relationship Id="rId9" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"
+                              Target="charts/chart2.xml"/>
             </Relationships>
         </pkg:xmlData>
     </pkg:part>
@@ -230,12 +237,12 @@
                             <w:t>月项目评审情况</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRPr="004D11A1" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRPr="004D11A1" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:pStyle w:val="2"/>
                             <w:snapToGrid w:val="0"/>
                             <w:spacing w:line="600" w:lineRule="exact"/>
-                            <w:ind w:firstLine="640"/>
+                            <w:ind w:firstLine="672"/>
                             <w:rPr>
                                 <w:bCs/>
                             </w:rPr>
@@ -373,10 +380,10 @@
                             <w:t>。具体评审情况如下：</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -396,10 +403,10 @@
                             <w:t>${xmjys}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -415,10 +422,10 @@
                             <w:t>${kxxyj}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -434,10 +441,10 @@
                             <w:t>${xmgs}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -453,10 +460,10 @@
                             <w:t>${zjsq}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -472,10 +479,10 @@
                             <w:t>${qt}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -491,10 +498,10 @@
                             <w:t>${jksb}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -510,10 +517,10 @@
                             <w:t>${sbqdgc}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -529,6 +536,40 @@
                             <w:t>${sbqdjk}</w:t>
                         </w:r>
                     </w:p>
+                    <w:p w:rsidR="007E72D5" w:rsidRDefault="007E72D5" w:rsidP="00BC33A2">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r w:rsidRPr="006E4C96">
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${tqjr}</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p w:rsidR="007E72D5" w:rsidRDefault="007E72D5" w:rsidP="00BC33A2">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:bookmarkEnd w:id="4"/>
+                    <w:bookmarkEnd w:id="5"/>
+                    <w:bookmarkEnd w:id="6"/>
+                    <w:bookmarkEnd w:id="7"/>
                     <w:p w:rsidR="00FB6CC4" w:rsidRPr="001F4E25" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
                         <w:pPr>
                             <w:spacing w:before="100" w:beforeAutospacing="1" w:after="100" w:afterAutospacing="1"
@@ -723,10 +764,10 @@
                             <w:t>。具体评审情况如下：</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -742,10 +783,10 @@
                             <w:t>${xmjysTotal}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -761,10 +802,10 @@
                             <w:t>${kxxyjTotal}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -780,10 +821,10 @@
                             <w:t>${xmgsTotal}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -799,10 +840,10 @@
                             <w:t>${zjsqTotal}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -818,10 +859,10 @@
                             <w:t>${qtTotal}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -837,10 +878,10 @@
                             <w:t>${jksbTotal}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -856,10 +897,10 @@
                             <w:t>${sbqdgcTotal}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -875,10 +916,288 @@
                             <w:t>${sbqdjkTotal}</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="007E72D5" w:rsidRDefault="007E72D5" w:rsidP="007E72D5">
+                    <w:p w:rsidR="00BC33A2" w:rsidRDefault="00BC33A2" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312" w:hint="eastAsia"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>以上各阶段项目分布情况见图1（注：上述评审项目不含提前介入项目）。</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p w:rsidR="00BC33A2" w:rsidRDefault="00BC33A2" w:rsidP="00BC33A2">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r w:rsidRPr="00E265F4">
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:noProof/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:drawing>
+                                <wp:anchor distT="0" distB="0" distL="114300" distR="114300" simplePos="0"
+                                           relativeHeight="251659264" behindDoc="0" locked="0" layoutInCell="1"
+                                           allowOverlap="1">
+                                    <wp:simplePos x="0" y="0"/>
+                                    <wp:positionH relativeFrom="column">
+                                        <wp:posOffset>925830</wp:posOffset>
+                                    </wp:positionH>
+                                    <wp:positionV relativeFrom="paragraph">
+                                        <wp:posOffset>19050</wp:posOffset>
+                                    </wp:positionV>
+                                    <wp:extent cx="3638550" cy="2085975"/>
+                                    <wp:effectExtent l="19050" t="0" r="19050" b="0"/>
+                                    <wp:wrapNone/>
+                                    <wp:docPr id="4" name="图表 2"/>
+                                    <wp:cNvGraphicFramePr/>
+                                    <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                                        <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
+                                            <c:chart r:id="rId8"
+                                                     xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
+                                                     xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+                                        </a:graphicData>
+                                    </a:graphic>
+                                </wp:anchor>
+                            </w:drawing>
+                        </w:r>
+                    </w:p>
+                    <w:p w:rsidR="00BC33A2" w:rsidRPr="006F1EC8" w:rsidRDefault="00BC33A2" w:rsidP="00BC33A2">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00BC33A2" w:rsidRDefault="00BC33A2" w:rsidP="00BC33A2">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00BC33A2" w:rsidRDefault="00BC33A2" w:rsidP="00BC33A2">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00BC33A2" w:rsidRDefault="00BC33A2" w:rsidP="00BC33A2">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00BC33A2" w:rsidRDefault="00BC33A2" w:rsidP="00BC33A2">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00E77F5D" w:rsidRDefault="00E77F5D" w:rsidP="00BC33A2">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00CF72E7" w:rsidRPr="00CF72E7" w:rsidRDefault="00CF72E7" w:rsidP="00CF72E7">
+                        <w:pPr>
+                            <w:pStyle w:val="aa"/>
+                            <w:ind w:left="2100" w:firstLine="420"/>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:color w:val="FF0000"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r w:rsidRPr="00CF72E7">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:color w:val="FF0000"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:lastRenderedPageBreak/>
+                            <w:t>（备注：图表数据需要手动录入）</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p w:rsidR="008B3C1E" w:rsidRDefault="008B3C1E" w:rsidP="00C87438">
+                        <w:pPr>
+                            <w:pStyle w:val="aa"/>
+                            <w:ind w:firstLineChars="1100" w:firstLine="2640"/>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:t>图</w:t>
+                        </w:r>
+                        <w:r w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:t xml:space="preserve"> </w:t>
+                        </w:r>
+                        <w:r w:rsidR="00866783" w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:fldChar w:fldCharType="begin"/>
+                        </w:r>
+                        <w:r w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:instrText xml:space="preserve"> </w:instrText>
+                        </w:r>
+                        <w:r w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:instrText xml:space="preserve">SEQ </w:instrText>
+                        </w:r>
+                        <w:r w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:instrText>图表</w:instrText>
+                        </w:r>
+                        <w:r w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:instrText xml:space="preserve"> \* ARABIC</w:instrText>
+                        </w:r>
+                        <w:r w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:instrText xml:space="preserve"> </w:instrText>
+                        </w:r>
+                        <w:r w:rsidR="00866783" w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:fldChar w:fldCharType="separate"/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:noProof/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:t>1</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00866783" w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:fldChar w:fldCharType="end"/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:t>评审</w:t>
+                        </w:r>
+                        <w:r w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:t>项目</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:t>各</w:t>
+                        </w:r>
+                        <w:r w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:t>阶段分布情况</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p w:rsidR="00C24D8B" w:rsidRPr="00C24D8B" w:rsidRDefault="00C24D8B" w:rsidP="00C24D8B"/>
+                    <w:p w:rsidR="00E77F5D" w:rsidRDefault="00E77F5D" w:rsidP="00E77F5D">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -893,6 +1212,18 @@
                             </w:rPr>
                             <w:t>${tqjrTotal}</w:t>
                         </w:r>
+                    </w:p>
+                    <w:p w:rsidR="00E77F5D" w:rsidRPr="00E77F5D" w:rsidRDefault="00E77F5D" w:rsidP="00E77F5D"/>
+                    <w:p w:rsidR="00BC33A2" w:rsidRDefault="00BC33A2" w:rsidP="00BC33A2">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
                     </w:p>
                     <w:p w:rsidR="00FB6CC4" w:rsidRPr="001F4E25" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
                         <w:pPr>
@@ -979,10 +1310,10 @@
                             <w:t>月项目评审特点</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00FB6CC4">
+                    <w:p w:rsidR="00FB6CC4" w:rsidRDefault="00FB6CC4" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -1014,11 +1345,19 @@
                             <w:t>
                                 月评审的项目中，${projectTypeItem}</w:t>
                         </w:r>
+                        <w:r w:rsidR="00B238B4">
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312" w:hint="eastAsia"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>（见图2）</w:t>
+                        </w:r>
                     </w:p>
-                    <w:p w:rsidR="00BE1586" w:rsidRPr="00C21E74" w:rsidRDefault="003530C0" w:rsidP="006C7668">
+                    <w:p w:rsidR="00BE1586" w:rsidRDefault="003530C0" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -1149,16 +1488,7 @@
                                 <w:sz w:val="32"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:t>项，</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312" w:hint="eastAsia"/>
-                                <w:sz w:val="32"/>
-                                <w:szCs w:val="32"/>
-                            </w:rPr>
-                            <w:lastRenderedPageBreak/>
-                            <w:t>占</w:t>
+                            <w:t>项，占</w:t>
                         </w:r>
                         <w:r w:rsidR="0071112B">
                             <w:rPr>
@@ -1313,8 +1643,396 @@
                             <w:t>${proCountCent4}。
                             </w:t>
                         </w:r>
+                        <w:r w:rsidR="00B238B4">
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312" w:hint="eastAsia"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>（见图3）</w:t>
+                        </w:r>
                     </w:p>
-                    <w:p w:rsidR="00D966CD" w:rsidRPr="00AB35BE" w:rsidRDefault="003D034B" w:rsidP="0071112B">
+                    <w:p w:rsidR="00B238B4" w:rsidRDefault="00B238B4" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:noProof/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:drawing>
+                                <wp:anchor distT="0" distB="0" distL="114300" distR="114300" simplePos="0"
+                                           relativeHeight="251662336" behindDoc="0" locked="0" layoutInCell="1"
+                                           allowOverlap="1">
+                                    <wp:simplePos x="0" y="0"/>
+                                    <wp:positionH relativeFrom="column">
+                                        <wp:posOffset>1002030</wp:posOffset>
+                                    </wp:positionH>
+                                    <wp:positionV relativeFrom="paragraph">
+                                        <wp:posOffset>85725</wp:posOffset>
+                                    </wp:positionV>
+                                    <wp:extent cx="3381375" cy="2047875"/>
+                                    <wp:effectExtent l="19050" t="0" r="9525" b="0"/>
+                                    <wp:wrapNone/>
+                                    <wp:docPr id="6" name="图表 4"/>
+                                    <wp:cNvGraphicFramePr/>
+                                    <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                                        <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
+                                            <c:chart r:id="rId9"
+                                                     xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
+                                                     xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+                                        </a:graphicData>
+                                    </a:graphic>
+                                </wp:anchor>
+                            </w:drawing>
+                        </w:r>
+                    </w:p>
+                    <w:p w:rsidR="00B238B4" w:rsidRDefault="00B238B4" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00B238B4" w:rsidRDefault="00B238B4" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00B238B4" w:rsidRDefault="00B238B4" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00B238B4" w:rsidRDefault="00B238B4" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00B238B4" w:rsidRDefault="00B238B4" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00B238B4" w:rsidRDefault="00866783" w:rsidP="00CF72E7">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="420"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r w:rsidRPr="00866783">
+                            <w:rPr>
+                                <w:noProof/>
+                            </w:rPr>
+                            <w:pict>
+                                <v:shapetype id="_x0000_t202" coordsize="21600,21600" o:spt="202"
+                                             path="m,l,21600r21600,l21600,xe">
+                                    <v:stroke joinstyle="miter"/>
+                                    <v:path gradientshapeok="t" o:connecttype="rect"/>
+                                </v:shapetype>
+                                <v:shape id="_x0000_s1026" type="#_x0000_t202"
+                                         style="position:absolute;left:0;text-align:left;margin-left:123.9pt;margin-top:10.8pt;width:199.5pt;height:15.6pt;z-index:251663360"
+                                         stroked="f">
+                                    <v:textbox style="mso-fit-shape-to-text:t" inset="0,0,0,0">
+                                        <w:txbxContent>
+                                            <w:p w:rsidR="00CF72E7" w:rsidRPr="00CF72E7" w:rsidRDefault="00CF72E7"
+                                                 w:rsidP="00CF72E7">
+                                                <w:pPr>
+                                                    <w:pStyle w:val="aa"/>
+                                                    <w:ind w:firstLineChars="150" w:firstLine="360"/>
+                                                    <w:rPr>
+                                                        <w:rFonts w:hint="eastAsia"/>
+                                                        <w:color w:val="FF0000"/>
+                                                        <w:sz w:val="24"/>
+                                                        <w:szCs w:val="24"/>
+                                                    </w:rPr>
+                                                </w:pPr>
+                                                <w:r w:rsidRPr="00CF72E7">
+                                                    <w:rPr>
+                                                        <w:rFonts w:hint="eastAsia"/>
+                                                        <w:color w:val="FF0000"/>
+                                                        <w:sz w:val="24"/>
+                                                        <w:szCs w:val="24"/>
+                                                    </w:rPr>
+                                                    <w:t>（备注：图表数据需要手动录入）</w:t>
+                                                </w:r>
+                                            </w:p>
+                                            <w:p w:rsidR="00B238B4" w:rsidRPr="00D966CD" w:rsidRDefault="00B238B4"
+                                                 w:rsidP="00CF72E7">
+                                                <w:pPr>
+                                                    <w:pStyle w:val="aa"/>
+                                                    <w:ind w:firstLineChars="250" w:firstLine="600"/>
+                                                    <w:rPr>
+                                                        <w:rFonts w:ascii="黑体" w:hAnsi="Times New Roman"
+                                                                  w:cs="Times New Roman"/>
+                                                        <w:noProof/>
+                                                        <w:sz w:val="24"/>
+                                                        <w:szCs w:val="24"/>
+                                                    </w:rPr>
+                                                </w:pPr>
+                                                <w:r w:rsidRPr="00D966CD">
+                                                    <w:rPr>
+                                                        <w:rFonts w:ascii="黑体" w:hint="eastAsia"/>
+                                                        <w:sz w:val="24"/>
+                                                        <w:szCs w:val="24"/>
+                                                    </w:rPr>
+                                                    <w:t>图2 项目类别分布情况</w:t>
+                                                </w:r>
+                                            </w:p>
+                                        </w:txbxContent>
+                                    </v:textbox>
+                                </v:shape>
+                            </w:pict>
+                        </w:r>
+                    </w:p>
+                    <w:p w:rsidR="00CF72E7" w:rsidRDefault="00CF72E7" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312" w:hint="eastAsia"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00545887" w:rsidRDefault="00545887" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00CF72E7" w:rsidRDefault="00CF72E7" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00CF72E7" w:rsidRDefault="00CF72E7" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00B238B4" w:rsidRDefault="00B238B4" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312" w:hint="eastAsia"/>
+                                <w:noProof/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:lastRenderedPageBreak/>
+                            <w:drawing>
+                                <wp:anchor distT="0" distB="0" distL="114300" distR="114300" simplePos="0"
+                                           relativeHeight="251661312" behindDoc="0" locked="0" layoutInCell="1"
+                                           allowOverlap="1">
+                                    <wp:simplePos x="0" y="0"/>
+                                    <wp:positionH relativeFrom="column">
+                                        <wp:posOffset>1002030</wp:posOffset>
+                                    </wp:positionH>
+                                    <wp:positionV relativeFrom="paragraph">
+                                        <wp:posOffset>142875</wp:posOffset>
+                                    </wp:positionV>
+                                    <wp:extent cx="3381375" cy="2057400"/>
+                                    <wp:effectExtent l="19050" t="0" r="9525" b="0"/>
+                                    <wp:wrapNone/>
+                                    <wp:docPr id="5" name="图表 5"/>
+                                    <wp:cNvGraphicFramePr/>
+                                    <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                                        <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">
+                                            <c:chart r:id="rId10"
+                                                     xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
+                                                     xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+                                        </a:graphicData>
+                                    </a:graphic>
+                                </wp:anchor>
+                            </w:drawing>
+                        </w:r>
+                    </w:p>
+                    <w:p w:rsidR="00B238B4" w:rsidRDefault="00B238B4" w:rsidP="00101C78">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00101C78" w:rsidRDefault="00101C78" w:rsidP="00101C78">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00B238B4" w:rsidRDefault="00B238B4" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00CF72E7" w:rsidRDefault="00CF72E7" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00CF72E7" w:rsidRDefault="00CF72E7" w:rsidP="00B238B4">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00545887" w:rsidRDefault="00545887" w:rsidP="00E43037">
+                        <w:pPr>
+                            <w:pStyle w:val="aa"/>
+                            <w:ind w:left="1260" w:firstLineChars="625" w:firstLine="1500"/>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:color w:val="FF0000"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
+                    <w:p w:rsidR="00545887" w:rsidRPr="00545887" w:rsidRDefault="00CF72E7" w:rsidP="00545887">
+                        <w:pPr>
+                            <w:pStyle w:val="aa"/>
+                            <w:ind w:left="1260" w:firstLineChars="625" w:firstLine="1500"/>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:color w:val="FF0000"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r w:rsidRPr="00CF72E7">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:color w:val="FF0000"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:t>（备注：图表数据需要手动录入）</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p w:rsidR="00CF72E7" w:rsidRPr="00D966CD" w:rsidRDefault="00CF72E7" w:rsidP="00CF72E7">
+                        <w:pPr>
+                            <w:pStyle w:val="aa"/>
+                            <w:ind w:left="2340" w:firstLineChars="250" w:firstLine="600"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="黑体" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+                                <w:noProof/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:rFonts w:ascii="黑体" w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:t>图</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="黑体" w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:t>3</w:t>
+                        </w:r>
+                        <w:r w:rsidRPr="00D966CD">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                                <w:szCs w:val="24"/>
+                            </w:rPr>
+                            <w:t>项目申报投资金额分布情况</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p w:rsidR="00D966CD" w:rsidRPr="00AB35BE" w:rsidRDefault="00D966CD" w:rsidP="0071112B">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
                             <w:rPr>
@@ -1323,19 +2041,21 @@
                                 <w:szCs w:val="28"/>
                             </w:rPr>
                         </w:pPr>
-                        <w:r w:rsidRPr="003D034B">
+                    </w:p>
+                    <w:p w:rsidR="00D966CD" w:rsidRPr="00AB35BE" w:rsidRDefault="00D966CD" w:rsidP="0071112B">
+                        <w:pPr>
+                            <w:spacing w:line="540" w:lineRule="exact"/>
                             <w:rPr>
-                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312" w:hint="eastAsia"/>
+                                <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="28"/>
                                 <w:szCs w:val="28"/>
                             </w:rPr>
-                            <w:t xml:space="preserve">            </w:t>
-                        </w:r>
+                        </w:pPr>
                     </w:p>
-                    <w:p w:rsidR="00E97290" w:rsidRDefault="00E97290" w:rsidP="00A119DC">
+                    <w:p w:rsidR="00E97290" w:rsidRDefault="00E97290" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:leftChars="304" w:left="1598" w:hangingChars="300" w:hanging="960"/>
+                            <w:ind w:leftChars="304" w:left="1646" w:hangingChars="300" w:hanging="1008"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -1433,10 +2153,10 @@
                             <w:t>项目评审情况统计表</w:t>
                         </w:r>
                     </w:p>
-                    <w:p w:rsidR="002C46CA" w:rsidRDefault="002C46CA" w:rsidP="00A119DC">
+                    <w:p w:rsidR="002C46CA" w:rsidRDefault="002C46CA" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:leftChars="304" w:left="1598" w:hangingChars="300" w:hanging="960"/>
+                            <w:ind w:leftChars="304" w:left="1646" w:hangingChars="300" w:hanging="1008"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -1592,10 +2312,10 @@
                             </w:rPr>
                         </w:pPr>
                     </w:p>
-                    <w:p w:rsidR="001F4E25" w:rsidRDefault="001F4E25" w:rsidP="00A119DC">
+                    <w:p w:rsidR="001F4E25" w:rsidRDefault="001F4E25" w:rsidP="00BC33A2">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:leftChars="761" w:left="1598" w:firstLineChars="1200" w:firstLine="3840"/>
+                            <w:ind w:leftChars="761" w:left="1598" w:firstLineChars="1200" w:firstLine="4031"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
@@ -1621,7 +2341,7 @@
                                 <w:szCs w:val="32"/>
                             </w:rPr>
                             <w:sectPr w:rsidR="006B1D01" w:rsidRPr="00B45159" w:rsidSect="003A47FB">
-                                <w:footerReference w:type="default" r:id="rId8"/>
+                                <w:footerReference w:type="default" r:id="rId11"/>
                                 <w:pgSz w:w="11906" w:h="16838"/>
                                 <w:pgMar w:top="1440" w:right="1646" w:bottom="1985" w:left="1797" w:header="851"
                                          w:footer="992" w:gutter="0"/>
@@ -2855,6 +3575,34 @@
                                         </w:rPr>
                                     </w:pPr>
                                 </w:p>
+                                <w:p w:rsidR="008537CD" w:rsidRDefault="008537CD" w:rsidP="001E160A">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="left"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="黑体" w:eastAsia="黑体" w:hAnsi="宋体" w:cs="宋体"
+                                                      w:hint="eastAsia"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="32"/>
+                                            <w:szCs w:val="32"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
+                                <w:p w:rsidR="008537CD" w:rsidRDefault="008537CD" w:rsidP="001E160A">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="left"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="黑体" w:eastAsia="黑体" w:hAnsi="宋体" w:cs="宋体"
+                                                      w:hint="eastAsia"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="32"/>
+                                            <w:szCs w:val="32"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
                                 <w:p w:rsidR="00831659" w:rsidRDefault="00831659" w:rsidP="001E160A">
                                     <w:pPr>
                                         <w:widowControl/>
@@ -3983,7 +4731,7 @@
                             <w:spacing w:line="540" w:lineRule="exact"/>
                             <w:jc w:val="center"/>
                             <w:rPr>
-                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                             </w:rPr>
                         </w:pPr>
                         <w:r w:rsidRPr="004B5EF7">
@@ -4058,8 +4806,8 @@
                         </w:p>
                     </#list>
                 </#list>
-                    <w:p w:rsidR="008E7CFC" w:rsidRPr="008E7CFC" w:rsidRDefault="008E7CFC" w:rsidP="008E7CFC"/>
-                    <w:sectPr w:rsidR="008E7CFC" w:rsidRPr="008E7CFC" w:rsidSect="0047263C">
+                    <w:p w:rsidR="00581D74" w:rsidRPr="00581D74" w:rsidRDefault="00581D74" w:rsidP="00581D74"/>
+                    <w:sectPr w:rsidR="00581D74" w:rsidRPr="00581D74" w:rsidSect="0047263C">
                         <w:pgSz w:w="11906" w:h="16838"/>
                         <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="851" w:footer="992"
                                  w:gutter="0"/>
@@ -4070,33 +4818,39 @@
             </w:document>
         </pkg:xmlData>
     </pkg:part>
-    <pkg:part pkg:name="/word/endnotes.xml"
-              pkg:contentType="application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml">
+    <pkg:part pkg:name="/word/footer1.xml"
+              pkg:contentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml">
         <pkg:xmlData>
-            <w:endnotes xmlns:ve="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                        xmlns:o="urn:schemas-microsoft-com:office:office"
-                        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-                        xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
-                        xmlns:v="urn:schemas-microsoft-com:vml"
-                        xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
-                        xmlns:w10="urn:schemas-microsoft-com:office:word"
-                        xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-                        xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml">
-                <w:endnote w:type="separator" w:id="-1">
-                    <w:p w:rsidR="005848CD" w:rsidRDefault="005848CD">
-                        <w:r>
-                            <w:separator/>
+            <w:ftr xmlns:ve="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:o="urn:schemas-microsoft-com:office:office"
+                   xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+                   xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
+                   xmlns:v="urn:schemas-microsoft-com:vml"
+                   xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+                   xmlns:w10="urn:schemas-microsoft-com:office:word"
+                   xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                   xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml">
+                <w:p w:rsidR="001E160A" w:rsidRDefault="00866783">
+                    <w:pPr>
+                        <w:pStyle w:val="a7"/>
+                        <w:jc w:val="center"/>
+                    </w:pPr>
+                    <w:fldSimple w:instr=" PAGE   \* MERGEFORMAT ">
+                        <w:r w:rsidR="00ED44EC" w:rsidRPr="00ED44EC">
+                            <w:rPr>
+                                <w:noProof/>
+                                <w:lang w:val="zh-CN"/>
+                            </w:rPr>
+                            <w:t>7</w:t>
                         </w:r>
-                    </w:p>
-                </w:endnote>
-                <w:endnote w:type="continuationSeparator" w:id="0">
-                    <w:p w:rsidR="005848CD" w:rsidRDefault="005848CD">
-                        <w:r>
-                            <w:continuationSeparator/>
-                        </w:r>
-                    </w:p>
-                </w:endnote>
-            </w:endnotes>
+                    </w:fldSimple>
+                </w:p>
+                <w:p w:rsidR="001E160A" w:rsidRDefault="001E160A">
+                    <w:pPr>
+                        <w:pStyle w:val="a7"/>
+                    </w:pPr>
+                </w:p>
+            </w:ftr>
         </pkg:xmlData>
     </pkg:part>
     <pkg:part pkg:name="/word/footnotes.xml"
@@ -4112,14 +4866,14 @@
                          xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
                          xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml">
                 <w:footnote w:type="separator" w:id="-1">
-                    <w:p w:rsidR="005848CD" w:rsidRDefault="005848CD">
+                    <w:p w:rsidR="00D91944" w:rsidRDefault="00D91944">
                         <w:r>
                             <w:separator/>
                         </w:r>
                     </w:p>
                 </w:footnote>
                 <w:footnote w:type="continuationSeparator" w:id="0">
-                    <w:p w:rsidR="005848CD" w:rsidRDefault="005848CD">
+                    <w:p w:rsidR="00D91944" w:rsidRDefault="00D91944">
                         <w:r>
                             <w:continuationSeparator/>
                         </w:r>
@@ -4128,39 +4882,33 @@
             </w:footnotes>
         </pkg:xmlData>
     </pkg:part>
-    <pkg:part pkg:name="/word/footer1.xml"
-              pkg:contentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml">
+    <pkg:part pkg:name="/word/endnotes.xml"
+              pkg:contentType="application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml">
         <pkg:xmlData>
-            <w:ftr xmlns:ve="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                   xmlns:o="urn:schemas-microsoft-com:office:office"
-                   xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-                   xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
-                   xmlns:v="urn:schemas-microsoft-com:vml"
-                   xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
-                   xmlns:w10="urn:schemas-microsoft-com:office:word"
-                   xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-                   xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml">
-                <w:p w:rsidR="001E160A" w:rsidRDefault="00126AD7">
-                    <w:pPr>
-                        <w:pStyle w:val="a7"/>
-                        <w:jc w:val="center"/>
-                    </w:pPr>
-                    <w:fldSimple w:instr=" PAGE   \* MERGEFORMAT ">
-                        <w:r w:rsidR="00581D74" w:rsidRPr="00581D74">
-                            <w:rPr>
-                                <w:noProof/>
-                                <w:lang w:val="zh-CN"/>
-                            </w:rPr>
-                            <w:t>6</w:t>
+            <w:endnotes xmlns:ve="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:o="urn:schemas-microsoft-com:office:office"
+                        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+                        xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
+                        xmlns:v="urn:schemas-microsoft-com:vml"
+                        xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+                        xmlns:w10="urn:schemas-microsoft-com:office:word"
+                        xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                        xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml">
+                <w:endnote w:type="separator" w:id="-1">
+                    <w:p w:rsidR="00D91944" w:rsidRDefault="00D91944">
+                        <w:r>
+                            <w:separator/>
                         </w:r>
-                    </w:fldSimple>
-                </w:p>
-                <w:p w:rsidR="001E160A" w:rsidRDefault="001E160A">
-                    <w:pPr>
-                        <w:pStyle w:val="a7"/>
-                    </w:pPr>
-                </w:p>
-            </w:ftr>
+                    </w:p>
+                </w:endnote>
+                <w:endnote w:type="continuationSeparator" w:id="0">
+                    <w:p w:rsidR="00D91944" w:rsidRDefault="00D91944">
+                        <w:r>
+                            <w:continuationSeparator/>
+                        </w:r>
+                    </w:p>
+                </w:endnote>
+            </w:endnotes>
         </pkg:xmlData>
     </pkg:part>
     <pkg:part pkg:name="/word/theme/theme1.xml"
@@ -4448,6 +5196,1173 @@
             </a:theme>
         </pkg:xmlData>
     </pkg:part>
+    <pkg:part pkg:name="/word/charts/chart3.xml"
+              pkg:contentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml">
+        <pkg:xmlData>
+            <c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
+                          xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+                          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                <c:date1904 val="1"/>
+                <c:lang val="zh-CN"/>
+                <c:style val="1"/>
+                <c:chart>
+                    <c:autoTitleDeleted val="1"/>
+                    <c:plotArea>
+                        <c:layout/>
+                        <c:pieChart>
+                            <c:varyColors val="1"/>
+                            <c:ser>
+                                <c:idx val="0"/>
+                                <c:order val="0"/>
+                                <c:tx>
+                                    <c:strRef>
+                                        <c:f>Sheet1!$B$1</c:f>
+                                        <c:strCache>
+                                            <c:ptCount val="1"/>
+                                            <c:pt idx="0">
+                                                <c:v>图3</c:v>
+                                            </c:pt>
+                                        </c:strCache>
+                                    </c:strRef>
+                                </c:tx>
+                                <c:dLbls>
+                                    <c:dLbl>
+                                        <c:idx val="0"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="2.0767174745358667E-2"/>
+                                                <c:y val="0.11672032146424256"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:tx>
+                                            <c:rich>
+                                                <a:bodyPr/>
+                                                <a:lstStyle/>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>3000</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>万以下</a:t>
+                                                    </a:r>
+                                                    <a:endParaRPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                </a:p>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>38%</a:t>
+                                                    </a:r>
+                                                </a:p>
+                                            </c:rich>
+                                        </c:tx>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                    </c:dLbl>
+                                    <c:dLbl>
+                                        <c:idx val="1"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="2.6714871908617058E-2"/>
+                                                <c:y val="-9.1236383062736725E-4"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:tx>
+                                            <c:rich>
+                                                <a:bodyPr/>
+                                                <a:lstStyle/>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>3000</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>万</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>-</a:t>
+                                                    </a:r>
+                                                </a:p>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>1</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>亿元</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900" b="0" i="0"
+                                                               u="none" strike="noStrike" baseline="0"/>
+                                                        <a:t></a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>
+                                                        </a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>16%</a:t>
+                                                    </a:r>
+                                                </a:p>
+                                            </c:rich>
+                                        </c:tx>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                    </c:dLbl>
+                                    <c:dLbl>
+                                        <c:idx val="2"/>
+                                        <c:tx>
+                                            <c:rich>
+                                                <a:bodyPr/>
+                                                <a:lstStyle/>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>1</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>亿</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>-10</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>亿元</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900" b="0" i="0"
+                                                               u="none" strike="noStrike" baseline="0"/>
+                                                        <a:t></a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>30%</a:t>
+                                                    </a:r>
+                                                </a:p>
+                                            </c:rich>
+                                        </c:tx>
+                                        <c:dLblPos val="outEnd"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                    </c:dLbl>
+                                    <c:dLbl>
+                                        <c:idx val="3"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="1.8411551767038535E-2"/>
+                                                <c:y val="5.7563983541359033E-2"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:tx>
+                                            <c:rich>
+                                                <a:bodyPr/>
+                                                <a:lstStyle/>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>10</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>亿元以上</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900" b="0" i="0"
+                                                               u="none" strike="noStrike" baseline="0"/>
+                                                        <a:t></a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>16%</a:t>
+                                                    </a:r>
+                                                </a:p>
+                                            </c:rich>
+                                        </c:tx>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showVal val="1"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                    </c:dLbl>
+                                    <c:dLblPos val="outEnd"/>
+                                    <c:showCatName val="1"/>
+                                    <c:showPercent val="1"/>
+                                </c:dLbls>
+                                <c:cat>
+                                    <c:strRef>
+                                        <c:f>Sheet1!$A$2:$A$5</c:f>
+                                        <c:strCache>
+                                            <c:ptCount val="4"/>
+                                            <c:pt idx="0">
+                                                <c:v>3000万以下</c:v>
+                                            </c:pt>
+                                            <c:pt idx="1">
+                                                <c:v>3000万-1亿元</c:v>
+                                            </c:pt>
+                                            <c:pt idx="2">
+                                                <c:v>1亿-10亿元</c:v>
+                                            </c:pt>
+                                            <c:pt idx="3">
+                                                <c:v>10亿元以上</c:v>
+                                            </c:pt>
+                                        </c:strCache>
+                                    </c:strRef>
+                                </c:cat>
+                                <c:val>
+                                    <c:numRef>
+                                        <c:f>Sheet1!$B$2:$B$5</c:f>
+                                        <c:numCache>
+                                            <c:formatCode>General</c:formatCode>
+                                            <c:ptCount val="4"/>
+                                            <c:pt idx="0">
+                                                <c:v>68</c:v>
+                                            </c:pt>
+                                            <c:pt idx="1">
+                                                <c:v>29</c:v>
+                                            </c:pt>
+                                            <c:pt idx="2">
+                                                <c:v>53</c:v>
+                                            </c:pt>
+                                            <c:pt idx="3">
+                                                <c:v>29</c:v>
+                                            </c:pt>
+                                        </c:numCache>
+                                    </c:numRef>
+                                </c:val>
+                            </c:ser>
+                            <c:dLbls>
+                                <c:showCatName val="1"/>
+                                <c:showPercent val="1"/>
+                            </c:dLbls>
+                            <c:firstSliceAng val="0"/>
+                        </c:pieChart>
+                    </c:plotArea>
+                    <c:plotVisOnly val="1"/>
+                </c:chart>
+                <c:externalData r:id="rId1"/>
+            </c:chartSpace>
+        </pkg:xmlData>
+    </pkg:part>
+    <pkg:part pkg:name="/word/embeddings/Microsoft_Office_Excel____2111212.xlsx"
+              pkg:contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        <pkg:binaryData>UEsDBBQABgAIAAAAIQDwEnwHbwEAABAFAAATANwBW0NvbnRlbnRfVHlwZXNdLnhtbCCi2AEooAAC
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAArFTLTsMwELwj8Q+RryhxywEh1LQHHkeoRPkAY28bq45tebel/Xs2Ca0AlaCq
+            vcSKrJ0Zz4w9mmxql60hoQ2+FMNiIDLwOhjrF6V4mz3ltyJDUt4oFzyUYgsoJuPLi9FsGwEznvZY
+            iooo3kmJuoJaYREieN6Zh1Qr4t+0kFHppVqAvB4MbqQOnsBTTg2GGI9eWECyBrKpSvSsauaRGyeJ
+            0aD7DgvGE9l9N9hwl0LF6KxWxMrl2ptfrHmYz60GE/SqZq6iBbtqUOSfhEhbB3gyFcYEymAFQLUr
+            OtB/mEm9M7Nsl9PP+lNAC7rjf4C5WjnKHjecQBd6AofHWfsVZsGTrf1Y2Yg9DP3Z9WfyEdLyPYTl
+            uVNp0ilqZf1O96EScnumKUSU3LWTBUBjuQGTR4aERBb2nh3i5gvQnL2tEcp2OXcz9vh9HrAOrFQC
+            80qJX4WzX4/v2H069lnokOD4MHadbaYPJCDb92z8CQAA//8DAFBLAwQUAAYACAAAACEAtVUwI/UA
+            AABMAgAACwDOAV9yZWxzLy5yZWxzIKLKASigAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjJLPTsMwDMbvSLxD5PvqbkgIoaW7TEi7IVQewCTu
+            H7WNoyRA9/aEA4JKY9vR9ufPP1ve7uZpVB8cYi9Ow7ooQbEzYnvXanitn1YPoGIiZ2kUxxqOHGFX
+            3d5sX3iklJti1/uosouLGrqU/CNiNB1PFAvx7HKlkTBRymFo0ZMZqGXclOU9hr8eUC081cFqCAd7
+            B6o++jz5src0TW94L+Z9YpdOjECeEzvLduVDZgupz9uomkLLSYMV85zTEcn7ImMDnibaXE/0/7Y4
+            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
+            cC54bWxQSwUGAAAAAAwADAATAwAAyh4AAAAA
+        </pkg:binaryData>
+    </pkg:part>
+    <pkg:part pkg:name="/word/charts/_rels/chart2.xml.rels"
+              pkg:contentType="application/vnd.openxmlformats-package.relationships+xml">
+        <pkg:xmlData>
+            <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                <Relationship Id="rId1"
+                              Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package"
+                              Target="../embeddings/Microsoft_Office_Excel____2111212.xlsx"/>
+            </Relationships>
+        </pkg:xmlData>
+    </pkg:part>
+    <pkg:part pkg:name="/word/embeddings/Microsoft_Office_Excel____3111313.xlsx"
+              pkg:contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        <pkg:binaryData>UEsDBBQABgAIAAAAIQDwEnwHbwEAABAFAAATANwBW0NvbnRlbnRfVHlwZXNdLnhtbCCi2AEooAAC
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAArFTLTsMwELwj8Q+RryhxywEh1LQHHkeoRPkAY28bq45tebel/Xs2Ca0AlaCq
+            vcSKrJ0Zz4w9mmxql60hoQ2+FMNiIDLwOhjrF6V4mz3ltyJDUt4oFzyUYgsoJuPLi9FsGwEznvZY
+            iooo3kmJuoJaYREieN6Zh1Qr4t+0kFHppVqAvB4MbqQOnsBTTg2GGI9eWECyBrKpSvSsauaRGyeJ
+            0aD7DgvGE9l9N9hwl0LF6KxWxMrl2ptfrHmYz60GE/SqZq6iBbtqUOSfhEhbB3gyFcYEymAFQLUr
+            OtB/mEm9M7Nsl9PP+lNAC7rjf4C5WjnKHjecQBd6AofHWfsVZsGTrf1Y2Yg9DP3Z9WfyEdLyPYTl
+            uVNp0ilqZf1O96EScnumKUSU3LWTBUBjuQGTR4aERBb2nh3i5gvQnL2tEcp2OXcz9vh9HrAOrFQC
+            80qJX4WzX4/v2H069lnokOD4MHadbaYPJCDb92z8CQAA//8DAFBLAwQUAAYACAAAACEAtVUwI/UA
+            AABMAgAACwDOAV9yZWxzLy5yZWxzIKLKASigAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjJLPTsMwDMbvSLxD5PvqbkgIoaW7TEi7IVQewCTu
+            H7WNoyRA9/aEA4JKY9vR9ufPP1ve7uZpVB8cYi9Ow7ooQbEzYnvXanitn1YPoGIiZ2kUxxqOHGFX
+            3d5sX3iklJti1/uosouLGrqU/CNiNB1PFAvx7HKlkTBRymFo0ZMZqGXclOU9hr8eUC081cFqCAd7
+            B6o++jz5src0TW94L+Z9YpdOjECeEzvLduVDZgupz9uomkLLSYMV85zTEcn7ImMDnibaXE/0/7Y4
+            cSJLidBI4PM834pzQOvrgS6faKn4vc484qeE4U1k+GHBxQ9UXwAAAP//AwBQSwMEFAAGAAgAAAAh
+            AIE+lJf0AAAAugIAABoACAF4bC9fcmVscy93b3JrYm9vay54bWwucmVscyCiBAEooAABAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAKySz0rEMBDG74LvEOZu064iIpvuRYS9an2AkEybsm0SMuOf
+            vr2hotuFZb30EvhmyPf9Mpnt7mscxAcm6oNXUBUlCPQm2N53Ct6a55sHEMTaWz0EjwomJNjV11fb
+            Fxw050vk+kgiu3hS4Jjjo5RkHI6aihDR504b0qg5y9TJqM1Bdyg3ZXkv09ID6hNPsbcK0t7egmim
+            mJP/9w5t2xt8CuZ9RM9nIiTxNOQHiEanDlnBjy4yI8jz8Zs14zmPBY/ps5TzWV1iqNZk+AzpQA6R
+            jxx/JZJz5yLM3Zow5HRC+8opr9vyW5bl38nIk42rvwEAAP//AwBQSwMEFAAGAAgAAAAhAKYSewpQ
+            AQAAKAIAAA8AAAB4bC93b3JrYm9vay54bWyMUctOwzAQvCPxD5bvNA81LVRNKhAgekFIfZ1NvGms
+            OnZkO6Tl61k7Co8bp93x7s56ZpercyPJBxgrtMppMokpAVVqLtQxp7vt880tJdYxxZnUCnJ6AUtX
+            xfXVstfm9K71iSCBsjmtnWsXUWTLGhpmJ7oFhZVKm4Y5hOYY2dYA47YGcI2M0jieRQ0Tig4MC/Mf
+            Dl1VooRHXXYNKDeQGJDM4fdtLVpLi2UlJOwHRYS17Str8N9nSYlk1j1x4YDndIpQ9/DnwXTtQyek
+            r2bxnEbFt8g3QzhUrJNui/JGdvQrnabpzHd6K/YCevsz5CE5H4TiuvetaO1lRHcI+lA5CO5qLM+T
+            JBvfXkAcaxdmpplnj37RBwNxTYhEBXUbb2qCl/JxjQIwNwuBiVnzJDCMYyWTJcrxITSm2TwNO7SE
+            jfgEYqDK6f0wNB65+AIAAP//AwBQSwMEFAAGAAgAAAAhADoNWaZUAQAAsQIAABQAAAB4bC9zaGFy
+            ZWRTdHJpbmdzLnhtbKySz0rDQBCH74LvsOy93a0FlbLZHgqCNw/6ACHZNoFmN2a3xd7UKoKpFIR6
+            0EMRrPWkBQVL/fcwJjE3X8FtqOjZehxm5vt9A0PKO14dNFkgXcENWMhjCBi3hO3ymgG3NtdyqxBI
+            ZXLbrAvODNhiEpbp4gKRUgG9y6UBHaX8EkLScphnyrzwGdedqgg8U+kyqCHpB8y0pcOY8upoCeNl
+            5Jkuh8ASDa4MuAJBg7vbDVb5rimRLiVZREn6pqWjNUOyoMkgBQQpSnxHGynX2ghAVXC1bmt/CFTL
+            17NcVASfnQURJWhKy4g0DQfp9V46aie9h/jiNb28SXqj5OQ27kzifv/j/CC+Gsaj7udzJ717TMKz
+            JHz5aXXvo3GYDk/fd/czh19czSrO41XEGEfjo+hpoCP+AZQrRJO3+LA9D2qKyBXwP4BmjOy6478p
+            If1y9AsAAP//AwBQSwMEFAAGAAgAAAAhAKic9QC8AAAAJQEAACMAAAB4bC93b3Jrc2hlZXRzL19y
+            ZWxzL3NoZWV0MS54bWwucmVsc4SPwQrCMBBE74L/EPZu0noQkaa9iNCr6Aes6bYNtknIRtG/N+BF
+            QfA07A77ZqdqHvMk7hTZeqehlAUIcsZ31g0azqfDaguCE7oOJ+9Iw5MYmnq5qI40YcpHPNrAIlMc
+            axhTCjul2Iw0I0sfyGWn93HGlMc4qIDmigOpdVFsVPxkQP3FFG2nIbZdCeL0DDn5P9v3vTW09+Y2
+            k0s/IlTCy0QZiHGgpEHK94bfUsr8LKi6Ul/l6hcAAAD//wMAUEsDBBQABgAIAAAAIQCIJ/oxiAYA
+            AFQbAAATAAAAeGwvdGhlbWUvdGhlbWUxLnhtbOxZTW8bRRi+I/EfRntvbSd2Gkd1qtixG2jTRrFb
+            1ON4Pd6denZnNTNO6htqj0hIiIJ6QUJcOCCgUiuBRPk1KUWlSP0LvDOzu96J1yQpEQioD4l39nm/
+            P+ad8eUr9yKGDoiQlMctr3ax6iES+3xE46Dl3Rr0Lqx7SCocjzDjMWl5MyK9K5vvvnMZb6iQRAQB
+            fSw3cMsLlUo2KhXpwzKWF3lCYng35iLCCh5FUBkJfAh8I1ZZqVbXKhGmsYdiHAHbm+Mx9Ql6/uNP
+            L7965G1m3LsMRMRK6gWfib7mTRwSgx1NahohZ7LDBDrArOWBoBE/HJB7ykMMSwUvWl7VfLzK5uUK
+            3kiJmFpCW6DrmU9KlxKMJitGpgiGudBar968tJ3zNwCmFnHdbrfTreX8DAD7PlhqdSnyrPfWa+2M
+            ZwFkvy7y7lQb1bqLL/BfXdC52W63G81UF8vUgOzX+gJ+vbpW31px8AZk8Y0FfL291emsOXgDsvi1
+            BXzvUnOt7uINKGQ0niygdUB7vZR7DhlztlMKXwf4ejWFz1GQDXl2aRFjHqtluRbhu1z0AKCBDCsa
+            IzVLyBj7kMYdHA0FxVoA3iC48MYu+XJhSctC0hc0US3v/QRDScz5vX727etnT9DrZ4+P7j89uv/D
+            0YMHR/e/t7wcwh0cB0XCV19/8vsXH6Lfnnz56uFn5XhZxP/y3UfPf/60HAgVNNfoxeePf336+MWj
+            j19+87AEviXwsAgf0IhIdIMcon0egW3GMa7mZCjORjEIMXUocAi8S1h3VegAb8wwK8O1ieu82wKa
+            Rxnw6vSuo2s/FFNFSyRfCyMHuMs5a3NR6oBrWlbBw4NpHJQLF9Mibh/jgzLZHRw7oe1OE+iaWVI6
+            vu+ExFFzj+FY4YDERCH9jk8IKbHuDqWOX3epL7jkY4XuUNTGtNQlAzp0EmlOtEMjiMuszGYIteOb
+            3duozVmZ1dvkwEVCQWBWovyAMMeNV/FU4aiM5QBHrOjw61iFZUr2Z8Iv4rpSQaQDwjjqjoiUZTQ3
+            BdhbCPo1DP2qNOy7bBa5SKHopIzndcx5EbnNJ50QR0kZtk/jsIh9T04gRTHa46oMvsvdCtHPEAcc
+            Lw33bUqccJ/cCG7RwFFpniD6zVToWEKjdvpvROM/a8aMQje2OfC2Gbe8Ldiaykpi51gLXob7Fzbe
+            bTyN9wjk+uLG87bvvu273n++7y6r5dN223mDhd6rhwc7F5spOVo6JI8pY301Y+S6NHOyhM1i1INF
+            TWdOiCQ/NCUhfE2bu4MLBDY0SHD1AVVhP8QJzNg1TzMJZMo6kCjhEs52ZrmUt8bDnK7sybChzwy2
+            H0isdvnILq/q5exokLMxW05gzp+ZoFXN4LTCVi+lTMHsNxFW00qdWlrNqGZanSMtNxliuGgaLObe
+            hCkEwewCXl6DM7oWDWcTzMhI+91uwFlYTBTOM0QyxCOSxkjbvRijmglSlivmMgBypyRG+px3gtcK
+            0pqa7V+QdpogFcXVl4jLovdXopRl8DxKum6PlSOLi8XJYnTY8pqNlYaHfJy0vDEca+FrlEDUpR78
+            MAvgcshXwqb9icVsqnwezWZmmFsENbipsH5fMNjpA4mQahvL0KaGeZWmAIu1JKv/SgPcel4G2Ex/
+            Ay1W1yEZ/jEtwI9uaMl4THxVDHZhRfvOPqatlE8VEf1wdIiGbCr2MYRfpyrYM6ISbidMR9APcJWm
+            vW1euc05LbriBZbB2XXMkhCn7VaXaFbJFm7qONfBPBXUA9tKdTfGnd0UU/LnZEoxjf9npuj9BK4L
+            Vkc6Aj5c5QqMdL22PC5UyKELJSH1ewIGB9M7IFvgOhZeQ1LBhbL5L8iB/m9rzvIwZQ2nPrVPAyQo
+            7EcqFITsQVsy2XcCs1q6d1mWLGVkMqqgrkys2kNyQNhA98A1vbd7KIRUN90kbQMGdzz/3Oe0goaB
+            HnKK9eb0kHzvtTXwd08+tpjBKLcPm4Em83+uYsmuaukNebb3Fg3RL+ZjVj2rChBW2Aqaadm/oQpn
+            3Gptx1qweKWRKQdRXLQYFvOBKIFLH6T/wP5Hhc+ISWO9oQ74PvRWBL81aGaQNpDVF+zggXSDtItD
+            GJzsok0mzcq6Nh2dtNeyzfqcJ91c7jFna81OE+8zOjsfzlxxTi2ep7NTDzu+tmtLXQ2RPV6isDTO
+            DjImMOZnreIPT3x4FwK9DVf8U6akSSb4WUlgGD37pg6g+K1EQ7r5BwAAAP//AwBQSwMEFAAGAAgA
+            AAAhAGtEuJ4/AgAAlQUAAA0AAAB4bC9zdHlsZXMueG1stFRPi9QwFL8LfoeQu5vpqIsrTRdEBgQF
+            YWfBa6ZN20D+lCQztp69efRDePO8F7+NC/sxfEnaTucis4iX9r2X9+/33i/Jr3sl0YFbJ4ymOLtY
+            YcR1aSqhG4pvt5tnrzBynumKSaM5xQN3+Lp4+iR3fpD8puXcI0ihHcWt991rQlzZcsXchem4hpPa
+            WMU8qLYhrrOcVS4EKUnWq9UlUUxoXOS10d6h0uy1p3g9GorcfUEHJqGvDJMiL400FnlID41Ei2aK
+            J4/7n99+//oevGqmhBySdR3DWmYdtJkyPX8RbLHJMVQJbWwwktBF6uVY+iqc/Jc6sZyDekLKU+xg
+            KPKOec+t3oCCRnk7dIBcwyJSu9EvhP/Fu7FsyNYvFwEkFizynbEVLH6aegZTT6Yil7z2ANuKpg1/
+            bzr47oz3RoFQCdYYzSSIZIoYBYBTcilvAjk+1Se5+xrpvdoo/66iGGgWhj2JAGEUU76kFDmTotGK
+            a1get16UgQslqDztq6+hg2W9VH1ROFDp8YVRXz+ig3/Ij1jXyeFNXESg9PmIAeNi1CeDngeCAm0p
+            vr+7e/jxFc+g0G4vpBc6QQxLnCMgZ9Wfrg30iRdoWvxtFzc4qW/NZ3g7VtB94A08F7B8in0bb3a6
+            tEJXvOew+CxeSRIcR36d5R+ZGIl4ljsQduLrWf6J2ks6R9gkDAOqsh08dQHVPGfgb8Vrtpd+Ox9S
+            fJQ/8Ers1dXs9VEcjI8pKD7K78P9yi7j3YxTi+9p8QcAAP//AwBQSwMEFAAGAAgAAAAhALHLRTkG
+            AgAAfAQAABgAAAB4bC93b3Jrc2hlZXRzL3NoZWV0MS54bWyMlE1v2zAMhu8D9h8E3RfbSdNlge2i
+            aVCshwFF93FXbDoWaouexCTrvx9l11q9BMNuEkk9L0mTTm9+tY04gnUaTSaTWSwFmAJLbfaZ/P7t
+            /sNKCkfKlKpBA5l8ASdv8vfv0hPaZ1cDkGCCcZmsibp1FLmihla5GXZg2FOhbRXx1e4j11lQZf+o
+            baJ5HF9HrdJGDoS1/R8GVpUuYIvFoQVDA8RCo4jzd7XunMzTUrPPFyQsVJm8TdablYzytFf+oeHk
+            3pwFqd1XaKAgKLkBUvjCdojPPvCBTTETXR/giaogfYQ7aJpMbpM5N+dnL+LPLBEFjbfnUe++b8aj
+            FSVU6tDQE54+g97XxMKL2TLkuFWk8tTiSXBPOCXXKd/hZD3nXApvvPXW3sdvfc3HPE6jI4sWrxGb
+            84h5iIiYHQR8EecC3joVWITnfQqbMcKLX6+Cc8JeXGR765R9FZ4P7DHCs+efgnPCvrrI9tYpexme
+            D+wxwrOXf4qasJcX2d46ZV//xR4j/pW336izfvOEivApk0AdkhqmapiKruY9JF3wFFVoyE8of2l6
+            6Xg5Dd6heV1mP0yd2sMXZffaONFAxfx49lEKO4xcfybseisnvkMibMdbzasKPGnxjL9FhUjjhbm8
+            Mg08KktOFHgwzE14BINV2LXmtOxDmfQ7ERy8B1H4b+S/AQAA//8DAFBLAwQUAAYACAAAACEADLCK
+            PRcBAACrAQAAFAAAAHhsL3RhYmxlcy90YWJsZTEueG1sZJBNTsMwEIX3SNzBmj11GgRCVZ2KgipV
+            QiwoHMDEk8aSfyKPS9uzsGLHKbgNEsfASUohYme/eTPvm5nOdtawFwykvRMwHmXA0JVeabcW8PS4
+            OLsCRlE6JY13KGCPBLPi9GQa5bNBlrodCahjbCacU1mjlTTyDbpUqXywMqZvWHNqAkpFNWK0hudZ
+            dsmt1A6YVikWmJM2Tf96e09vpakxcn//RwpYCbgeT+YXwKKP0tCD365qv03QCbmDmfugMNzuqmUa
+            mUHRI954s7GOWOk3LgrIh/owngEfdHXV/Afu8/XjvDXwLu0w9+Bfxb3Bpas8owS10IFib+jwWu1O
+            /pPaFWLQDaYLprVbV990VLPfvOIbAAD//wMAUEsDBBQABgAIAAAAIQDd3XmyVQEAAGMCAAARAAgB
+            ZG9jUHJvcHMvY29yZS54bWwgogQBKKAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACEkt9K
+            wzAYxe8F36Hkvk2y+meGtgOVXTkQrCjeheTbVmzTkkS7PYG+gKAP4KspvoVpu9XKBC/znZNfzvlI
+            NFkVufcI2mSlihENCPJAiVJmahGj63Tqj5FnLFeS56WCGK3BoEmyvxeJiolSw6UuK9A2A+M5kjJM
+            VDFaWlsxjI1YQsFN4BzKifNSF9y6o17giot7vgA8IuQIF2C55JbjBuhXPRFtkFL0yOpB5y1ACgw5
+            FKCswTSg+MdrQRfmzwutMnAWmV1XrtMm7pAtRSf27pXJemNd10EdtjFcfopvZxdXbVU/U82uBKAk
+            koIJDdyWOvl6e/54ff98eonwYNpsMOfGztyy5xnI0/XQuCs6Ylugw4L0XCTWFdgqN+HZeTpFyYjQ
+            Y58c+pSkZMTCMSPhXfP2r/tNxG5QbBL8Sxz7hKbkhNEjRg8GxC0gifDOt0i+AQAA//8DAFBLAwQU
+            AAYACAAAACEAZoNkCZ0BAAAVAwAAEAAIAWRvY1Byb3BzL2FwcC54bWwgogQBKKAAAQAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAACcksFq3DAQhu+BvoPRPSvvEkJZZIWyacihIQu7yX0qj9eisiSk
+            idnNs/TSQ6Fv0FPfpoE8RmUbd71tT9VpZv7h16fRiKt9Y7IWQ9TOFmw+y1mGVrlS213BHrY3529Z
+            FglsCcZZLNgBI7uSb87EOjiPgTTGLFnYWLCayC85j6rGBuIsyTYplQsNUErDjruq0gqvnXpq0BJf
+            5Pklxz2hLbE8978N2eC4bOl/TUunOr74uD34BCzFO++NVkDplfJOq+Ciqyh7v1doBJ+KItFtUD0F
+            TQeZCz5NxUaBwVUylhWYiIIfC+IWoRvaGnSIUrS0bFGRC1nUz2lsC5Z9hIgdTsFaCBosJayubUj6
+            2PhIQb58//rzx+fXL98ET/pQ68Np6zTWF3LeN6TgtLEzGDiScEq41WQw3ldrCPQP4PkUuGcYcAec
+            TY1Iw51Tvv7F6aY/vFeu8WAPUtXaguBjKj5o+yk++K27BsJxpKdFsakhYJl+YdSPBXGbphlMZ7Kq
+            we6wHHv+FroFeBy2XM4Xszyd/t/HmuDHfZa/AAAA//8DAFBLAQItABQABgAIAAAAIQDwEnwHbwEA
+            ABAFAAATAAAAAAAAAAAAAAAAAAAAAABbQ29udGVudF9UeXBlc10ueG1sUEsBAi0AFAAGAAgAAAAh
+            ALVVMCP1AAAATAIAAAsAAAAAAAAAAAAAAAAAfAMAAF9yZWxzLy5yZWxzUEsBAi0AFAAGAAgAAAAh
+            AIE+lJf0AAAAugIAABoAAAAAAAAAAAAAAAAAaAYAAHhsL19yZWxzL3dvcmtib29rLnhtbC5yZWxz
+            UEsBAi0AFAAGAAgAAAAhAKYSewpQAQAAKAIAAA8AAAAAAAAAAAAAAAAAnAgAAHhsL3dvcmtib29r
+            LnhtbFBLAQItABQABgAIAAAAIQA6DVmmVAEAALECAAAUAAAAAAAAAAAAAAAAABkKAAB4bC9zaGFy
+            ZWRTdHJpbmdzLnhtbFBLAQItABQABgAIAAAAIQConPUAvAAAACUBAAAjAAAAAAAAAAAAAAAAAJ8L
+            AAB4bC93b3Jrc2hlZXRzL19yZWxzL3NoZWV0MS54bWwucmVsc1BLAQItABQABgAIAAAAIQCIJ/ox
+            iAYAAFQbAAATAAAAAAAAAAAAAAAAAJwMAAB4bC90aGVtZS90aGVtZTEueG1sUEsBAi0AFAAGAAgA
+            AAAhAGtEuJ4/AgAAlQUAAA0AAAAAAAAAAAAAAAAAVRMAAHhsL3N0eWxlcy54bWxQSwECLQAUAAYA
+            CAAAACEAsctFOQYCAAB8BAAAGAAAAAAAAAAAAAAAAAC/FQAAeGwvd29ya3NoZWV0cy9zaGVldDEu
+            eG1sUEsBAi0AFAAGAAgAAAAhAAywij0XAQAAqwEAABQAAAAAAAAAAAAAAAAA+xcAAHhsL3RhYmxl
+            cy90YWJsZTEueG1sUEsBAi0AFAAGAAgAAAAhAN3debJVAQAAYwIAABEAAAAAAAAAAAAAAAAARBkA
+            AGRvY1Byb3BzL2NvcmUueG1sUEsBAi0AFAAGAAgAAAAhAGaDZAmdAQAAFQMAABAAAAAAAAAAAAAA
+            AAAA0BsAAGRvY1Byb3BzL2FwcC54bWxQSwUGAAAAAAwADAATAwAAox4AAAAA
+        </pkg:binaryData>
+    </pkg:part>
+    <pkg:part pkg:name="/word/charts/chart2.xml"
+              pkg:contentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml">
+        <pkg:xmlData>
+            <c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
+                          xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+                          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                <c:date1904 val="1"/>
+                <c:lang val="zh-CN"/>
+                <c:style val="1"/>
+                <c:chart>
+                    <c:autoTitleDeleted val="1"/>
+                    <c:plotArea>
+                        <c:layout/>
+                        <c:pieChart>
+                            <c:varyColors val="1"/>
+                            <c:ser>
+                                <c:idx val="0"/>
+                                <c:order val="0"/>
+                                <c:tx>
+                                    <c:strRef>
+                                        <c:f>Sheet1!$B$1</c:f>
+                                        <c:strCache>
+                                            <c:ptCount val="1"/>
+                                            <c:pt idx="0">
+                                                <c:v>图2</c:v>
+                                            </c:pt>
+                                        </c:strCache>
+                                    </c:strRef>
+                                </c:tx>
+                                <c:dLbls>
+                                    <c:dLbl>
+                                        <c:idx val="0"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="1.7414603750070812E-2"/>
+                                                <c:y val="0.12116381186948789"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:tx>
+                                            <c:rich>
+                                                <a:bodyPr/>
+                                                <a:lstStyle/>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>市政工程类</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>
+                                                            25%
+                                                        </a:t>
+                                                    </a:r>
+                                                    <a:endParaRPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                </a:p>
+                                            </c:rich>
+                                        </c:tx>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                    </c:dLbl>
+                                    <c:dLbl>
+                                        <c:idx val="1"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="9.5090919390473275E-2"/>
+                                                <c:y val="-8.6851513229093028E-2"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:tx>
+                                            <c:rich>
+                                                <a:bodyPr/>
+                                                <a:lstStyle/>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>房建工程类</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>33%</a:t>
+                                                    </a:r>
+                                                    <a:endParaRPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                </a:p>
+                                            </c:rich>
+                                        </c:tx>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                    </c:dLbl>
+                                    <c:dLbl>
+                                        <c:idx val="2"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="1.3968164051436128E-2"/>
+                                                <c:y val="-3.4012762622681651E-2"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:tx>
+                                            <c:rich>
+                                                <a:bodyPr/>
+                                                <a:lstStyle/>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>信息工程类</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t> 18%</a:t>
+                                                    </a:r>
+                                                </a:p>
+                                            </c:rich>
+                                        </c:tx>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                    </c:dLbl>
+                                    <c:dLbl>
+                                        <c:idx val="3"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="1.0255858305481601E-2"/>
+                                                <c:y val="7.53069373437339E-3"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:tx>
+                                            <c:rich>
+                                                <a:bodyPr/>
+                                                <a:lstStyle/>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>设备采购类</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t> 15%</a:t>
+                                                    </a:r>
+                                                </a:p>
+                                            </c:rich>
+                                        </c:tx>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                    </c:dLbl>
+                                    <c:dLbl>
+                                        <c:idx val="4"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="5.2145718627276877E-2"/>
+                                                <c:y val="6.7136019762235833E-3"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:tx>
+                                            <c:rich>
+                                                <a:bodyPr/>
+                                                <a:lstStyle/>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US" sz="900"/>
+                                                        <a:t>其他类</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN" sz="900"/>
+                                                        <a:t>9%</a:t>
+                                                    </a:r>
+                                                </a:p>
+                                            </c:rich>
+                                        </c:tx>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                    </c:dLbl>
+                                    <c:dLblPos val="bestFit"/>
+                                    <c:showCatName val="1"/>
+                                    <c:showPercent val="1"/>
+                                </c:dLbls>
+                                <c:cat>
+                                    <c:strRef>
+                                        <c:f>Sheet1!$A$2:$A$6</c:f>
+                                        <c:strCache>
+                                            <c:ptCount val="5"/>
+                                            <c:pt idx="0">
+                                                <c:v>市政工程类25</c:v>
+                                            </c:pt>
+                                            <c:pt idx="1">
+                                                <c:v>房建工程类33</c:v>
+                                            </c:pt>
+                                            <c:pt idx="2">
+                                                <c:v>信息工程类</c:v>
+                                            </c:pt>
+                                            <c:pt idx="3">
+                                                <c:v>设备采购类</c:v>
+                                            </c:pt>
+                                            <c:pt idx="4">
+                                                <c:v>其他类</c:v>
+                                            </c:pt>
+                                        </c:strCache>
+                                    </c:strRef>
+                                </c:cat>
+                                <c:val>
+                                    <c:numRef>
+                                        <c:f>Sheet1!$B$2:$B$6</c:f>
+                                        <c:numCache>
+                                            <c:formatCode>General</c:formatCode>
+                                            <c:ptCount val="5"/>
+                                            <c:pt idx="0">
+                                                <c:v>45</c:v>
+                                            </c:pt>
+                                            <c:pt idx="1">
+                                                <c:v>60</c:v>
+                                            </c:pt>
+                                            <c:pt idx="2">
+                                                <c:v>32</c:v>
+                                            </c:pt>
+                                            <c:pt idx="3">
+                                                <c:v>26</c:v>
+                                            </c:pt>
+                                            <c:pt idx="4">
+                                                <c:v>16</c:v>
+                                            </c:pt>
+                                        </c:numCache>
+                                    </c:numRef>
+                                </c:val>
+                            </c:ser>
+                            <c:dLbls>
+                                <c:showCatName val="1"/>
+                                <c:showPercent val="1"/>
+                            </c:dLbls>
+                            <c:firstSliceAng val="0"/>
+                        </c:pieChart>
+                    </c:plotArea>
+                    <c:plotVisOnly val="1"/>
+                </c:chart>
+                <c:externalData r:id="rId1"/>
+            </c:chartSpace>
+        </pkg:xmlData>
+    </pkg:part>
+    <pkg:part pkg:name="/word/embeddings/Microsoft_Office_Excel____1111111.xlsx"
+              pkg:contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        <pkg:binaryData>UEsDBBQABgAIAAAAIQDwEnwHbwEAABAFAAATANwBW0NvbnRlbnRfVHlwZXNdLnhtbCCi2AEooAAC
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAArFTLTsMwELwj8Q+RryhxywEh1LQHHkeoRPkAY28bq45tebel/Xs2Ca0AlaCq
+            vcSKrJ0Zz4w9mmxql60hoQ2+FMNiIDLwOhjrF6V4mz3ltyJDUt4oFzyUYgsoJuPLi9FsGwEznvZY
+            iooo3kmJuoJaYREieN6Zh1Qr4t+0kFHppVqAvB4MbqQOnsBTTg2GGI9eWECyBrKpSvSsauaRGyeJ
+            0aD7DgvGE9l9N9hwl0LF6KxWxMrl2ptfrHmYz60GE/SqZq6iBbtqUOSfhEhbB3gyFcYEymAFQLUr
+            OtB/mEm9M7Nsl9PP+lNAC7rjf4C5WjnKHjecQBd6AofHWfsVZsGTrf1Y2Yg9DP3Z9WfyEdLyPYTl
+            uVNp0ilqZf1O96EScnumKUSU3LWTBUBjuQGTR4aERBb2nh3i5gvQnL2tEcp2OXcz9vh9HrAOrFQC
+            80qJX4WzX4/v2H069lnokOD4MHadbaYPJCDb92z8CQAA//8DAFBLAwQUAAYACAAAACEAtVUwI/UA
+            AABMAgAACwDOAV9yZWxzLy5yZWxzIKLKASigAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjJLPTsMwDMbvSLxD5PvqbkgIoaW7TEi7IVQewCTu
+            H7WNoyRA9/aEA4JKY9vR9ufPP1ve7uZpVB8cYi9Ow7ooQbEzYnvXanitn1YPoGIiZ2kUxxqOHGFX
+            3d5sX3iklJti1/uosouLGrqU/CNiNB1PFAvx7HKlkTBRymFo0ZMZqGXclOU9hr8eUC081cFqCAd7
+            B6o++jz5src0TW94L+Z9YpdOjECeEzvLduVDZgupz9uomkLLSYMV85zTEcn7ImMDnibaXE/0/7Y4
+            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
+            AA==
+        </pkg:binaryData>
+    </pkg:part>
+    <pkg:part pkg:name="/word/charts/_rels/chart1.xml.rels"
+              pkg:contentType="application/vnd.openxmlformats-package.relationships+xml">
+        <pkg:xmlData>
+            <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                <Relationship Id="rId1"
+                              Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package"
+                              Target="../embeddings/Microsoft_Office_Excel____1111111.xlsx"/>
+            </Relationships>
+        </pkg:xmlData>
+    </pkg:part>
+    <pkg:part pkg:name="/word/charts/_rels/chart3.xml.rels"
+              pkg:contentType="application/vnd.openxmlformats-package.relationships+xml">
+        <pkg:xmlData>
+            <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+                <Relationship Id="rId1"
+                              Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package"
+                              Target="../embeddings/Microsoft_Office_Excel____3111313.xlsx"/>
+            </Relationships>
+        </pkg:xmlData>
+    </pkg:part>
+    <pkg:part pkg:name="/word/charts/chart1.xml"
+              pkg:contentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml">
+        <pkg:xmlData>
+            <c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
+                          xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+                          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                <c:date1904 val="1"/>
+                <c:lang val="zh-CN"/>
+                <c:style val="1"/>
+                <c:chart>
+                    <c:autoTitleDeleted val="1"/>
+                    <c:plotArea>
+                        <c:layout/>
+                        <c:pieChart>
+                            <c:varyColors val="1"/>
+                            <c:ser>
+                                <c:idx val="0"/>
+                                <c:order val="0"/>
+                                <c:tx>
+                                    <c:strRef>
+                                        <c:f>Sheet1!$B$1</c:f>
+                                        <c:strCache>
+                                            <c:ptCount val="1"/>
+                                            <c:pt idx="0">
+                                                <c:v>列1</c:v>
+                                            </c:pt>
+                                        </c:strCache>
+                                    </c:strRef>
+                                </c:tx>
+                                <c:dLbls>
+                                    <c:dLbl>
+                                        <c:idx val="0"/>
+                                        <c:tx>
+                                            <c:rich>
+                                                <a:bodyPr/>
+                                                <a:lstStyle/>
+                                                <a:p>
+                                                    <a:r>
+                                                        <a:rPr lang="zh-CN" altLang="en-US"/>
+                                                        <a:t>项目建议书</a:t>
+                                                    </a:r>
+                                                    <a:r>
+                                                        <a:rPr lang="en-US" altLang="zh-CN"/>
+                                                        <a:t>15%</a:t>
+                                                    </a:r>
+                                                </a:p>
+                                            </c:rich>
+                                        </c:tx>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                        <c:separator></c:separator>
+                                    </c:dLbl>
+                                    <c:dLbl>
+                                        <c:idx val="1"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="1.0657808398950242E-2"/>
+                                                <c:y val="4.5543690600318924E-2"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                        <c:separator></c:separator>
+                                    </c:dLbl>
+                                    <c:dLbl>
+                                        <c:idx val="2"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="-0.10738893240439185"/>
+                                                <c:y val="-0.18377449394168194"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                        <c:separator></c:separator>
+                                    </c:dLbl>
+                                    <c:dLbl>
+                                        <c:idx val="3"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="-4.9601377952755932E-2"/>
+                                                <c:y val="9.1060055849183266E-2"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                        <c:separator></c:separator>
+                                    </c:dLbl>
+                                    <c:dLbl>
+                                        <c:idx val="4"/>
+                                        <c:layout>
+                                            <c:manualLayout>
+                                                <c:x val="5.2520778652668425E-3"/>
+                                                <c:y val="0"/>
+                                            </c:manualLayout>
+                                        </c:layout>
+                                        <c:dLblPos val="bestFit"/>
+                                        <c:showCatName val="1"/>
+                                        <c:showPercent val="1"/>
+                                        <c:separator></c:separator>
+                                    </c:dLbl>
+                                    <c:dLblPos val="bestFit"/>
+                                    <c:showCatName val="1"/>
+                                    <c:showPercent val="1"/>
+                                    <c:separator></c:separator>
+                                </c:dLbls>
+                                <c:cat>
+                                    <c:strRef>
+                                        <c:f>Sheet1!$A$2:$A$6</c:f>
+                                        <c:strCache>
+                                            <c:ptCount val="5"/>
+                                            <c:pt idx="0">
+                                                <c:v>项目建议书</c:v>
+                                            </c:pt>
+                                            <c:pt idx="1">
+                                                <c:v>可行性研究报告</c:v>
+                                            </c:pt>
+                                            <c:pt idx="2">
+                                                <c:v>初步设计概算审核</c:v>
+                                            </c:pt>
+                                            <c:pt idx="3">
+                                                <c:v>资金申请报告</c:v>
+                                            </c:pt>
+                                            <c:pt idx="4">
+                                                <c:v>其他项目</c:v>
+                                            </c:pt>
+                                        </c:strCache>
+                                    </c:strRef>
+                                </c:cat>
+                                <c:val>
+                                    <c:numRef>
+                                        <c:f>Sheet1!$B$2:$B$6</c:f>
+                                        <c:numCache>
+                                            <c:formatCode>General</c:formatCode>
+                                            <c:ptCount val="5"/>
+                                            <c:pt idx="0">
+                                                <c:v>24</c:v>
+                                            </c:pt>
+                                            <c:pt idx="1">
+                                                <c:v>30</c:v>
+                                            </c:pt>
+                                            <c:pt idx="2">
+                                                <c:v>73</c:v>
+                                            </c:pt>
+                                            <c:pt idx="3">
+                                                <c:v>29</c:v>
+                                            </c:pt>
+                                            <c:pt idx="4">
+                                                <c:v>4</c:v>
+                                            </c:pt>
+                                        </c:numCache>
+                                    </c:numRef>
+                                </c:val>
+                            </c:ser>
+                            <c:dLbls>
+                                <c:showVal val="1"/>
+                            </c:dLbls>
+                            <c:firstSliceAng val="0"/>
+                        </c:pieChart>
+                    </c:plotArea>
+                    <c:plotVisOnly val="1"/>
+                </c:chart>
+                <c:externalData r:id="rId1"/>
+            </c:chartSpace>
+        </pkg:xmlData>
+    </pkg:part>
     <pkg:part pkg:name="/word/settings.xml"
               pkg:contentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml">
         <pkg:xmlData>
@@ -4470,7 +6385,7 @@
                 <w:displayVerticalDrawingGridEvery w:val="2"/>
                 <w:characterSpacingControl w:val="compressPunctuation"/>
                 <w:hdrShapeDefaults>
-                    <o:shapedefaults v:ext="edit" spidmax="242690"/>
+                    <o:shapedefaults v:ext="edit" spidmax="248834"/>
                 </w:hdrShapeDefaults>
                 <w:footnotePr>
                     <w:footnote w:id="-1"/>
@@ -4517,6 +6432,7 @@
                     <w:rsid w:val="000156F2"/>
                     <w:rsid w:val="0001781D"/>
                     <w:rsid w:val="00020C00"/>
+                    <w:rsid w:val="00023C62"/>
                     <w:rsid w:val="0002474E"/>
                     <w:rsid w:val="00025E4B"/>
                     <w:rsid w:val="0003095E"/>
@@ -4611,6 +6527,7 @@
                     <w:rsid w:val="000F65C5"/>
                     <w:rsid w:val="000F6A0B"/>
                     <w:rsid w:val="001015B3"/>
+                    <w:rsid w:val="00101C78"/>
                     <w:rsid w:val="00103A4B"/>
                     <w:rsid w:val="00103FEF"/>
                     <w:rsid w:val="0010465A"/>
@@ -4822,6 +6739,7 @@
                     <w:rsid w:val="002C5FEA"/>
                     <w:rsid w:val="002C7D65"/>
                     <w:rsid w:val="002C7E1F"/>
+                    <w:rsid w:val="002D0AB3"/>
                     <w:rsid w:val="002D2B61"/>
                     <w:rsid w:val="002D4E41"/>
                     <w:rsid w:val="002D5187"/>
@@ -4971,6 +6889,7 @@
                     <w:rsid w:val="0041587A"/>
                     <w:rsid w:val="004164B0"/>
                     <w:rsid w:val="00416AC9"/>
+                    <w:rsid w:val="00417E63"/>
                     <w:rsid w:val="00420E22"/>
                     <w:rsid w:val="0042174A"/>
                     <w:rsid w:val="00424125"/>
@@ -4982,6 +6901,7 @@
                     <w:rsid w:val="00432F49"/>
                     <w:rsid w:val="0043371E"/>
                     <w:rsid w:val="004356B4"/>
+                    <w:rsid w:val="00436BCA"/>
                     <w:rsid w:val="00441E8F"/>
                     <w:rsid w:val="00443F7A"/>
                     <w:rsid w:val="004440FD"/>
@@ -5116,7 +7036,6 @@
                     <w:rsid w:val="00581926"/>
                     <w:rsid w:val="00581D74"/>
                     <w:rsid w:val="00584756"/>
-                    <w:rsid w:val="005848CD"/>
                     <w:rsid w:val="00586795"/>
                     <w:rsid w:val="005917EA"/>
                     <w:rsid w:val="00594A0E"/>
@@ -5151,6 +7070,7 @@
                     <w:rsid w:val="005E337C"/>
                     <w:rsid w:val="005E630D"/>
                     <w:rsid w:val="005E7316"/>
+                    <w:rsid w:val="005E79FF"/>
                     <w:rsid w:val="005E7E00"/>
                     <w:rsid w:val="005F00D5"/>
                     <w:rsid w:val="005F125A"/>
@@ -5340,6 +7260,7 @@
                     <w:rsid w:val="0076232C"/>
                     <w:rsid w:val="00762997"/>
                     <w:rsid w:val="00762CC7"/>
+                    <w:rsid w:val="00763734"/>
                     <w:rsid w:val="00765609"/>
                     <w:rsid w:val="00765749"/>
                     <w:rsid w:val="00765D0C"/>
@@ -5447,6 +7368,7 @@
                     <w:rsid w:val="0086321A"/>
                     <w:rsid w:val="00864F7F"/>
                     <w:rsid w:val="00865872"/>
+                    <w:rsid w:val="00866783"/>
                     <w:rsid w:val="00866854"/>
                     <w:rsid w:val="0087017B"/>
                     <w:rsid w:val="00870208"/>
@@ -5475,6 +7397,7 @@
                     <w:rsid w:val="008A5AAB"/>
                     <w:rsid w:val="008A7E9A"/>
                     <w:rsid w:val="008B0188"/>
+                    <w:rsid w:val="008B3C1E"/>
                     <w:rsid w:val="008B49E6"/>
                     <w:rsid w:val="008B60F6"/>
                     <w:rsid w:val="008B6BED"/>
@@ -5727,6 +7650,7 @@
                     <w:rsid w:val="00AF09F0"/>
                     <w:rsid w:val="00AF15CF"/>
                     <w:rsid w:val="00AF34CA"/>
+                    <w:rsid w:val="00AF3DB7"/>
                     <w:rsid w:val="00AF52AC"/>
                     <w:rsid w:val="00AF5856"/>
                     <w:rsid w:val="00AF66E3"/>
@@ -5749,6 +7673,7 @@
                     <w:rsid w:val="00B2113F"/>
                     <w:rsid w:val="00B21939"/>
                     <w:rsid w:val="00B23496"/>
+                    <w:rsid w:val="00B238B4"/>
                     <w:rsid w:val="00B23F81"/>
                     <w:rsid w:val="00B25CB7"/>
                     <w:rsid w:val="00B26AAA"/>
@@ -5782,6 +7707,7 @@
                     <w:rsid w:val="00B5793C"/>
                     <w:rsid w:val="00B61289"/>
                     <w:rsid w:val="00B62556"/>
+                    <w:rsid w:val="00B636A1"/>
                     <w:rsid w:val="00B6434E"/>
                     <w:rsid w:val="00B65A22"/>
                     <w:rsid w:val="00B66BA6"/>
@@ -5835,6 +7761,7 @@
                     <w:rsid w:val="00BC2544"/>
                     <w:rsid w:val="00BC2A27"/>
                     <w:rsid w:val="00BC2C0D"/>
+                    <w:rsid w:val="00BC33A2"/>
                     <w:rsid w:val="00BC481A"/>
                     <w:rsid w:val="00BC6525"/>
                     <w:rsid w:val="00BC7352"/>
@@ -5858,6 +7785,7 @@
                     <w:rsid w:val="00BF4CA8"/>
                     <w:rsid w:val="00BF6445"/>
                     <w:rsid w:val="00BF7745"/>
+                    <w:rsid w:val="00C01FEB"/>
                     <w:rsid w:val="00C02902"/>
                     <w:rsid w:val="00C03C7B"/>
                     <w:rsid w:val="00C0566A"/>
@@ -5871,6 +7799,7 @@
                     <w:rsid w:val="00C22031"/>
                     <w:rsid w:val="00C223EE"/>
                     <w:rsid w:val="00C24008"/>
+                    <w:rsid w:val="00C24D8B"/>
                     <w:rsid w:val="00C27362"/>
                     <w:rsid w:val="00C30315"/>
                     <w:rsid w:val="00C31B10"/>
@@ -5911,6 +7840,7 @@
                     <w:rsid w:val="00C822A0"/>
                     <w:rsid w:val="00C82D22"/>
                     <w:rsid w:val="00C84F87"/>
+                    <w:rsid w:val="00C87438"/>
                     <w:rsid w:val="00C87B58"/>
                     <w:rsid w:val="00C90FA2"/>
                     <w:rsid w:val="00C92C26"/>
@@ -5956,6 +7886,7 @@
                     <w:rsid w:val="00CF4C93"/>
                     <w:rsid w:val="00CF5691"/>
                     <w:rsid w:val="00CF7070"/>
+                    <w:rsid w:val="00CF72E7"/>
                     <w:rsid w:val="00D00100"/>
                     <w:rsid w:val="00D020E3"/>
                     <w:rsid w:val="00D030E2"/>
@@ -6033,6 +7964,7 @@
                     <w:rsid w:val="00D867CA"/>
                     <w:rsid w:val="00D871D9"/>
                     <w:rsid w:val="00D904A6"/>
+                    <w:rsid w:val="00D91944"/>
                     <w:rsid w:val="00D934BD"/>
                     <w:rsid w:val="00D94902"/>
                     <w:rsid w:val="00D95322"/>
@@ -6078,6 +8010,7 @@
                     <w:rsid w:val="00DE30AC"/>
                     <w:rsid w:val="00DE50F5"/>
                     <w:rsid w:val="00DE53A1"/>
+                    <w:rsid w:val="00DE60A7"/>
                     <w:rsid w:val="00DE6483"/>
                     <w:rsid w:val="00DF1336"/>
                     <w:rsid w:val="00DF17E3"/>
@@ -6126,11 +8059,12 @@
                     <w:rsid w:val="00E40322"/>
                     <w:rsid w:val="00E4182C"/>
                     <w:rsid w:val="00E422CA"/>
-                    <w:rsid w:val="00E42341"/>
                     <w:rsid w:val="00E4251D"/>
                     <w:rsid w:val="00E42F44"/>
+                    <w:rsid w:val="00E43037"/>
                     <w:rsid w:val="00E43ECB"/>
                     <w:rsid w:val="00E449CD"/>
+                    <w:rsid w:val="00E45C9E"/>
                     <w:rsid w:val="00E46821"/>
                     <w:rsid w:val="00E46AD4"/>
                     <w:rsid w:val="00E4752E"/>
@@ -6156,6 +8090,7 @@
                     <w:rsid w:val="00E76973"/>
                     <w:rsid w:val="00E76DA7"/>
                     <w:rsid w:val="00E77B90"/>
+                    <w:rsid w:val="00E77F5D"/>
                     <w:rsid w:val="00E80621"/>
                     <w:rsid w:val="00E81414"/>
                     <w:rsid w:val="00E84D6C"/>
@@ -6194,12 +8129,14 @@
                     <w:rsid w:val="00EC4198"/>
                     <w:rsid w:val="00EC51E3"/>
                     <w:rsid w:val="00EC5CC4"/>
+                    <w:rsid w:val="00EC6B45"/>
                     <w:rsid w:val="00EC7749"/>
                     <w:rsid w:val="00ED0713"/>
                     <w:rsid w:val="00ED0932"/>
                     <w:rsid w:val="00ED1934"/>
                     <w:rsid w:val="00ED2DE8"/>
                     <w:rsid w:val="00ED3A04"/>
+                    <w:rsid w:val="00ED44EC"/>
                     <w:rsid w:val="00EE019F"/>
                     <w:rsid w:val="00EE11DF"/>
                     <w:rsid w:val="00EE1708"/>
@@ -6362,7 +8299,7 @@
                                     w:followedHyperlink="followedHyperlink"/>
                 <w:doNotIncludeSubdocsInStats/>
                 <w:shapeDefaults>
-                    <o:shapedefaults v:ext="edit" spidmax="242690"/>
+                    <o:shapedefaults v:ext="edit" spidmax="248834"/>
                     <o:shapelayout v:ext="edit">
                         <o:idmap v:ext="edit" data="1"/>
                     </o:shapelayout>
@@ -6770,756 +8707,15 @@
             </w:styles>
         </pkg:xmlData>
     </pkg:part>
-    <pkg:part pkg:name="/word/numbering.xml"
-              pkg:contentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml">
-        <pkg:xmlData>
-            <w:numbering xmlns:ve="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                         xmlns:o="urn:schemas-microsoft-com:office:office"
-                         xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-                         xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
-                         xmlns:v="urn:schemas-microsoft-com:vml"
-                         xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
-                         xmlns:w10="urn:schemas-microsoft-com:office:word"
-                         xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
-                         xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml">
-                <w:abstractNum w:abstractNumId="0">
-                    <w:nsid w:val="063F5989"/>
-                    <w:multiLevelType w:val="hybridMultilevel"/>
-                    <w:tmpl w:val="23468C4A"/>
-                    <w:lvl w:ilvl="0" w:tplc="97A4E0AE">
-                        <w:start w:val="4"/>
-                        <w:numFmt w:val="japaneseCounting"/>
-                        <w:lvlText w:val="%1、"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="720" w:hanging="720"/>
-                        </w:pPr>
-                        <w:rPr>
-                            <w:rFonts w:hint="default"/>
-                        </w:rPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%2)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="840" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%3."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="1260" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%4."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1680" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%5)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2100" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%6."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="2520" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%7."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2940" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%8)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="3360" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%9."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="3780" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                </w:abstractNum>
-                <w:abstractNum w:abstractNumId="1">
-                    <w:nsid w:val="0CFA71E6"/>
-                    <w:multiLevelType w:val="hybridMultilevel"/>
-                    <w:tmpl w:val="1492AC52"/>
-                    <w:lvl w:ilvl="0" w:tplc="A2CAA16C">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%1."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1000" w:hanging="360"/>
-                        </w:pPr>
-                        <w:rPr>
-                            <w:rFonts w:hint="default"/>
-                        </w:rPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%2)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1480" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%3."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="1900" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%4."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2320" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%5)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2740" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%6."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="3160" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%7."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="3580" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%8)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="4000" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%9."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="4420" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                </w:abstractNum>
-                <w:abstractNum w:abstractNumId="2">
-                    <w:nsid w:val="19687223"/>
-                    <w:multiLevelType w:val="hybridMultilevel"/>
-                    <w:tmpl w:val="AB0EB35A"/>
-                    <w:lvl w:ilvl="0" w:tplc="EC40D41A">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%1."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1080" w:hanging="360"/>
-                        </w:pPr>
-                        <w:rPr>
-                            <w:rFonts w:hint="default"/>
-                        </w:rPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%2)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1560" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%3."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="1980" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%4."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2400" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%5)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2820" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%6."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="3240" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%7."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="3660" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%8)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="4080" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%9."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="4500" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                </w:abstractNum>
-                <w:abstractNum w:abstractNumId="3">
-                    <w:nsid w:val="1E6E281F"/>
-                    <w:multiLevelType w:val="hybridMultilevel"/>
-                    <w:tmpl w:val="80688E12"/>
-                    <w:lvl w:ilvl="0" w:tplc="ADFE966E">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%1."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1000" w:hanging="360"/>
-                        </w:pPr>
-                        <w:rPr>
-                            <w:rFonts w:hint="default"/>
-                        </w:rPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%2)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1480" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%3."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="1900" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%4."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2320" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%5)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2740" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%6."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="3160" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%7."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="3580" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%8)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="4000" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%9."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="4420" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                </w:abstractNum>
-                <w:abstractNum w:abstractNumId="4">
-                    <w:nsid w:val="4AD8137C"/>
-                    <w:multiLevelType w:val="hybridMultilevel"/>
-                    <w:tmpl w:val="F9AAAAD2"/>
-                    <w:lvl w:ilvl="0" w:tplc="B1CA0D70">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%1."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1105" w:hanging="465"/>
-                        </w:pPr>
-                        <w:rPr>
-                            <w:rFonts w:hint="default"/>
-                        </w:rPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%2)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1480" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%3."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="1900" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%4."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2320" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%5)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2740" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%6."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="3160" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%7."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="3580" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%8)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="4000" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%9."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="4420" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                </w:abstractNum>
-                <w:abstractNum w:abstractNumId="5">
-                    <w:nsid w:val="5B395163"/>
-                    <w:multiLevelType w:val="hybridMultilevel"/>
-                    <w:tmpl w:val="2788DB04"/>
-                    <w:lvl w:ilvl="0" w:tplc="BC049D0C">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="japaneseCounting"/>
-                        <w:lvlText w:val="%1、"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="720" w:hanging="720"/>
-                        </w:pPr>
-                        <w:rPr>
-                            <w:rFonts w:hint="default"/>
-                            <w:lang w:val="en-US"/>
-                        </w:rPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%2)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="840" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%3."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="1260" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%4."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1680" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%5)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2100" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%6."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="2520" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%7."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2940" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%8)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="3360" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%9."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="3780" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                </w:abstractNum>
-                <w:abstractNum w:abstractNumId="6">
-                    <w:nsid w:val="66A0667D"/>
-                    <w:multiLevelType w:val="hybridMultilevel"/>
-                    <w:tmpl w:val="A1B63E04"/>
-                    <w:lvl w:ilvl="0" w:tplc="9DBE300C">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%1."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1105" w:hanging="465"/>
-                        </w:pPr>
-                        <w:rPr>
-                            <w:rFonts w:hint="default"/>
-                        </w:rPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%2)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1480" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%3."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="1900" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%4."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2320" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%5)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2740" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%6."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="3160" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%7."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="3580" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%8)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="4000" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%9."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="4420" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                </w:abstractNum>
-                <w:abstractNum w:abstractNumId="7">
-                    <w:nsid w:val="7A9A33E2"/>
-                    <w:multiLevelType w:val="hybridMultilevel"/>
-                    <w:tmpl w:val="2FA2C492"/>
-                    <w:lvl w:ilvl="0" w:tplc="2CC4BB26">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%1."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1185" w:hanging="465"/>
-                        </w:pPr>
-                        <w:rPr>
-                            <w:rFonts w:hint="default"/>
-                        </w:rPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%2)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="1560" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%3."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="1980" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%4."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2400" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%5)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="2820" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%6."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="3240" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="decimal"/>
-                        <w:lvlText w:val="%7."/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="3660" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerLetter"/>
-                        <w:lvlText w:val="%8)"/>
-                        <w:lvlJc w:val="left"/>
-                        <w:pPr>
-                            <w:ind w:left="4080" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
-                        <w:start w:val="1"/>
-                        <w:numFmt w:val="lowerRoman"/>
-                        <w:lvlText w:val="%9."/>
-                        <w:lvlJc w:val="right"/>
-                        <w:pPr>
-                            <w:ind w:left="4500" w:hanging="420"/>
-                        </w:pPr>
-                    </w:lvl>
-                </w:abstractNum>
-                <w:num w:numId="1">
-                    <w:abstractNumId w:val="5"/>
-                </w:num>
-                <w:num w:numId="2">
-                    <w:abstractNumId w:val="2"/>
-                </w:num>
-                <w:num w:numId="3">
-                    <w:abstractNumId w:val="0"/>
-                </w:num>
-                <w:num w:numId="4">
-                    <w:abstractNumId w:val="4"/>
-                </w:num>
-                <w:num w:numId="5">
-                    <w:abstractNumId w:val="3"/>
-                </w:num>
-                <w:num w:numId="6">
-                    <w:abstractNumId w:val="1"/>
-                </w:num>
-                <w:num w:numId="7">
-                    <w:abstractNumId w:val="7"/>
-                </w:num>
-                <w:num w:numId="8">
-                    <w:abstractNumId w:val="6"/>
-                </w:num>
-            </w:numbering>
+    <pkg:part pkg:name="/customXml/itemProps1.xml"
+              pkg:contentType="application/vnd.openxmlformats-officedocument.customXmlProperties+xml" pkg:padding="32">
+        <pkg:xmlData pkg:originalXmlStandalone="no">
+            <ds:datastoreItem ds:itemID="{466A989E-C1AE-4353-B013-09C034875F24}"
+                              xmlns:ds="http://schemas.openxmlformats.org/officeDocument/2006/customXml">
+                <ds:schemaRefs>
+                    <ds:schemaRef ds:uri="http://schemas.openxmlformats.org/officeDocument/2006/bibliography"/>
+                </ds:schemaRefs>
+            </ds:datastoreItem>
         </pkg:xmlData>
     </pkg:part>
     <pkg:part pkg:name="/customXml/_rels/item1.xml.rels"
@@ -7532,15 +8728,52 @@
             </Relationships>
         </pkg:xmlData>
     </pkg:part>
-    <pkg:part pkg:name="/customXml/itemProps1.xml"
-              pkg:contentType="application/vnd.openxmlformats-officedocument.customXmlProperties+xml" pkg:padding="32">
-        <pkg:xmlData pkg:originalXmlStandalone="no">
-            <ds:datastoreItem ds:itemID="{A6A177A2-95A3-4C4F-A748-614A87693D64}"
-                              xmlns:ds="http://schemas.openxmlformats.org/officeDocument/2006/customXml">
-                <ds:schemaRefs>
-                    <ds:schemaRef ds:uri="http://schemas.openxmlformats.org/officeDocument/2006/bibliography"/>
-                </ds:schemaRefs>
-            </ds:datastoreItem>
+    <pkg:part pkg:name="/customXml/item1.xml" pkg:contentType="application/xml" pkg:padding="32">
+        <pkg:xmlData>
+            <b:Sources SelectedStyle="\APA.XSL" StyleName="APA"
+                       xmlns:b="http://schemas.openxmlformats.org/officeDocument/2006/bibliography"
+                       xmlns="http://schemas.openxmlformats.org/officeDocument/2006/bibliography"/>
+        </pkg:xmlData>
+    </pkg:part>
+    <pkg:part pkg:name="/docProps/app.xml"
+              pkg:contentType="application/vnd.openxmlformats-officedocument.extended-properties+xml" pkg:padding="256">
+        <pkg:xmlData>
+            <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"
+                        xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+                <Template>Normal.dotm</Template>
+                <TotalTime>1</TotalTime>
+                <Pages>7</Pages>
+                <Words>358</Words>
+                <Characters>2045</Characters>
+                <Application>Microsoft Office Word</Application>
+                <DocSecurity>0</DocSecurity>
+                <Lines>17</Lines>
+                <Paragraphs>4</Paragraphs>
+                <ScaleCrop>false</ScaleCrop>
+                <Company>sz</Company>
+                <LinksUpToDate>false</LinksUpToDate>
+                <CharactersWithSpaces>2399</CharactersWithSpaces>
+                <SharedDoc>false</SharedDoc>
+                <HyperlinksChanged>false</HyperlinksChanged>
+                <AppVersion>12.0000</AppVersion>
+            </Properties>
+        </pkg:xmlData>
+    </pkg:part>
+    <pkg:part pkg:name="/docProps/core.xml" pkg:contentType="application/vnd.openxmlformats-package.core-properties+xml"
+              pkg:padding="256">
+        <pkg:xmlData>
+            <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
+                               xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"
+                               xmlns:dcmitype="http://purl.org/dc/dcmitype/"
+                               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <dc:title>深圳市政府投资项目评审中心项目评审</dc:title>
+                <dc:creator>hww</dc:creator>
+                <cp:lastModifiedBy>Administrator</cp:lastModifiedBy>
+                <cp:revision>2</cp:revision>
+                <cp:lastPrinted>2017-08-01T08:35:00Z</cp:lastPrinted>
+                <dcterms:created xsi:type="dcterms:W3CDTF">2017-11-13T03:13:00Z</dcterms:created>
+                <dcterms:modified xsi:type="dcterms:W3CDTF">2017-11-13T03:13:00Z</dcterms:modified>
+            </cp:coreProperties>
         </pkg:xmlData>
     </pkg:part>
     <pkg:part pkg:name="/word/fontTable.xml"
@@ -7553,7 +8786,7 @@
                     <w:charset w:val="00"/>
                     <w:family w:val="roman"/>
                     <w:pitch w:val="variable"/>
-                    <w:sig w:usb0="E0002AFF" w:usb1="C0007841" w:usb2="00000009" w:usb3="00000000" w:csb0="000001FF"
+                    <w:sig w:usb0="E0002EFF" w:usb1="C000785B" w:usb2="00000009" w:usb3="00000000" w:csb0="000001FF"
                            w:csb1="00000000"/>
                 </w:font>
                 <w:font w:name="宋体">
@@ -7566,7 +8799,7 @@
                            w:csb1="00000000"/>
                 </w:font>
                 <w:font w:name="仿宋_GB2312">
-                    <w:altName w:val="微软雅黑"/>
+                    <w:altName w:val="Malgun Gothic Semilight"/>
                     <w:charset w:val="86"/>
                     <w:family w:val="modern"/>
                     <w:pitch w:val="fixed"/>
@@ -7578,7 +8811,7 @@
                     <w:charset w:val="00"/>
                     <w:family w:val="roman"/>
                     <w:pitch w:val="variable"/>
-                    <w:sig w:usb0="E00002FF" w:usb1="400004FF" w:usb2="00000000" w:usb3="00000000" w:csb0="0000019F"
+                    <w:sig w:usb0="E00006FF" w:usb1="400004FF" w:usb2="00000000" w:usb3="00000000" w:csb0="0000019F"
                            w:csb1="00000000"/>
                 </w:font>
                 <w:font w:name="黑体">
@@ -7603,34 +8836,10 @@
                     <w:charset w:val="00"/>
                     <w:family w:val="swiss"/>
                     <w:pitch w:val="variable"/>
-                    <w:sig w:usb0="E00002FF" w:usb1="4000ACFF" w:usb2="00000001" w:usb3="00000000" w:csb0="0000019F"
+                    <w:sig w:usb0="E0002AFF" w:usb1="C000247B" w:usb2="00000009" w:usb3="00000000" w:csb0="000001FF"
                            w:csb1="00000000"/>
                 </w:font>
             </w:fonts>
-        </pkg:xmlData>
-    </pkg:part>
-    <pkg:part pkg:name="/docProps/core.xml" pkg:contentType="application/vnd.openxmlformats-package.core-properties+xml"
-              pkg:padding="256">
-        <pkg:xmlData>
-            <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"
-                               xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"
-                               xmlns:dcmitype="http://purl.org/dc/dcmitype/"
-                               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                <dc:title>深圳市政府投资项目评审中心项目评审</dc:title>
-                <dc:creator>hww</dc:creator>
-                <cp:lastModifiedBy>Administrator</cp:lastModifiedBy>
-                <cp:revision>2</cp:revision>
-                <cp:lastPrinted>2017-08-01T08:35:00Z</cp:lastPrinted>
-                <dcterms:created xsi:type="dcterms:W3CDTF">2017-10-27T03:57:00Z</dcterms:created>
-                <dcterms:modified xsi:type="dcterms:W3CDTF">2017-10-27T03:57:00Z</dcterms:modified>
-            </cp:coreProperties>
-        </pkg:xmlData>
-    </pkg:part>
-    <pkg:part pkg:name="/customXml/item1.xml" pkg:contentType="application/xml" pkg:padding="32">
-        <pkg:xmlData>
-            <b:Sources SelectedStyle="\APA.XSL" StyleName="APA"
-                       xmlns:b="http://schemas.openxmlformats.org/officeDocument/2006/bibliography"
-                       xmlns="http://schemas.openxmlformats.org/officeDocument/2006/bibliography"/>
         </pkg:xmlData>
     </pkg:part>
     <pkg:part pkg:name="/word/webSettings.xml"
@@ -8543,28 +9752,756 @@
             </w:webSettings>
         </pkg:xmlData>
     </pkg:part>
-    <pkg:part pkg:name="/docProps/app.xml"
-              pkg:contentType="application/vnd.openxmlformats-officedocument.extended-properties+xml" pkg:padding="256">
+    <pkg:part pkg:name="/word/numbering.xml"
+              pkg:contentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml">
         <pkg:xmlData>
-            <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"
-                        xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
-                <Template>Normal.dotm</Template>
-                <TotalTime>0</TotalTime>
-                <Pages>6</Pages>
-                <Words>334</Words>
-                <Characters>1909</Characters>
-                <Application>Microsoft Office Word</Application>
-                <DocSecurity>0</DocSecurity>
-                <Lines>15</Lines>
-                <Paragraphs>4</Paragraphs>
-                <ScaleCrop>false</ScaleCrop>
-                <Company>sz</Company>
-                <LinksUpToDate>false</LinksUpToDate>
-                <CharactersWithSpaces>2239</CharactersWithSpaces>
-                <SharedDoc>false</SharedDoc>
-                <HyperlinksChanged>false</HyperlinksChanged>
-                <AppVersion>12.0000</AppVersion>
-            </Properties>
+            <w:numbering xmlns:ve="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                         xmlns:o="urn:schemas-microsoft-com:office:office"
+                         xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+                         xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
+                         xmlns:v="urn:schemas-microsoft-com:vml"
+                         xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+                         xmlns:w10="urn:schemas-microsoft-com:office:word"
+                         xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                         xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml">
+                <w:abstractNum w:abstractNumId="0">
+                    <w:nsid w:val="063F5989"/>
+                    <w:multiLevelType w:val="hybridMultilevel"/>
+                    <w:tmpl w:val="23468C4A"/>
+                    <w:lvl w:ilvl="0" w:tplc="97A4E0AE">
+                        <w:start w:val="4"/>
+                        <w:numFmt w:val="japaneseCounting"/>
+                        <w:lvlText w:val="%1、"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="720" w:hanging="720"/>
+                        </w:pPr>
+                        <w:rPr>
+                            <w:rFonts w:hint="default"/>
+                        </w:rPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%2)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="840" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%3."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="1260" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%4."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1680" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%5)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2100" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%6."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="2520" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%7."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2940" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%8)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="3360" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%9."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="3780" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                </w:abstractNum>
+                <w:abstractNum w:abstractNumId="1">
+                    <w:nsid w:val="0CFA71E6"/>
+                    <w:multiLevelType w:val="hybridMultilevel"/>
+                    <w:tmpl w:val="1492AC52"/>
+                    <w:lvl w:ilvl="0" w:tplc="A2CAA16C">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%1."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1000" w:hanging="360"/>
+                        </w:pPr>
+                        <w:rPr>
+                            <w:rFonts w:hint="default"/>
+                        </w:rPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%2)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1480" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%3."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="1900" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%4."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2320" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%5)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2740" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%6."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="3160" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%7."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="3580" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%8)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="4000" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%9."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="4420" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                </w:abstractNum>
+                <w:abstractNum w:abstractNumId="2">
+                    <w:nsid w:val="19687223"/>
+                    <w:multiLevelType w:val="hybridMultilevel"/>
+                    <w:tmpl w:val="AB0EB35A"/>
+                    <w:lvl w:ilvl="0" w:tplc="EC40D41A">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%1."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1080" w:hanging="360"/>
+                        </w:pPr>
+                        <w:rPr>
+                            <w:rFonts w:hint="default"/>
+                        </w:rPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%2)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1560" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%3."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="1980" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%4."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2400" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%5)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2820" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%6."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="3240" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%7."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="3660" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%8)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="4080" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%9."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="4500" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                </w:abstractNum>
+                <w:abstractNum w:abstractNumId="3">
+                    <w:nsid w:val="1E6E281F"/>
+                    <w:multiLevelType w:val="hybridMultilevel"/>
+                    <w:tmpl w:val="80688E12"/>
+                    <w:lvl w:ilvl="0" w:tplc="ADFE966E">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%1."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1000" w:hanging="360"/>
+                        </w:pPr>
+                        <w:rPr>
+                            <w:rFonts w:hint="default"/>
+                        </w:rPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%2)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1480" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%3."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="1900" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%4."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2320" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%5)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2740" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%6."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="3160" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%7."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="3580" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%8)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="4000" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%9."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="4420" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                </w:abstractNum>
+                <w:abstractNum w:abstractNumId="4">
+                    <w:nsid w:val="4AD8137C"/>
+                    <w:multiLevelType w:val="hybridMultilevel"/>
+                    <w:tmpl w:val="F9AAAAD2"/>
+                    <w:lvl w:ilvl="0" w:tplc="B1CA0D70">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%1."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1105" w:hanging="465"/>
+                        </w:pPr>
+                        <w:rPr>
+                            <w:rFonts w:hint="default"/>
+                        </w:rPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%2)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1480" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%3."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="1900" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%4."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2320" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%5)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2740" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%6."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="3160" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%7."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="3580" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%8)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="4000" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%9."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="4420" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                </w:abstractNum>
+                <w:abstractNum w:abstractNumId="5">
+                    <w:nsid w:val="5B395163"/>
+                    <w:multiLevelType w:val="hybridMultilevel"/>
+                    <w:tmpl w:val="2788DB04"/>
+                    <w:lvl w:ilvl="0" w:tplc="BC049D0C">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="japaneseCounting"/>
+                        <w:lvlText w:val="%1、"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="720" w:hanging="720"/>
+                        </w:pPr>
+                        <w:rPr>
+                            <w:rFonts w:hint="default"/>
+                            <w:lang w:val="en-US"/>
+                        </w:rPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%2)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="840" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%3."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="1260" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%4."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1680" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%5)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2100" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%6."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="2520" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%7."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2940" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%8)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="3360" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%9."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="3780" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                </w:abstractNum>
+                <w:abstractNum w:abstractNumId="6">
+                    <w:nsid w:val="66A0667D"/>
+                    <w:multiLevelType w:val="hybridMultilevel"/>
+                    <w:tmpl w:val="A1B63E04"/>
+                    <w:lvl w:ilvl="0" w:tplc="9DBE300C">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%1."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1105" w:hanging="465"/>
+                        </w:pPr>
+                        <w:rPr>
+                            <w:rFonts w:hint="default"/>
+                        </w:rPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%2)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1480" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%3."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="1900" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%4."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2320" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%5)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2740" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%6."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="3160" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%7."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="3580" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%8)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="4000" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%9."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="4420" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                </w:abstractNum>
+                <w:abstractNum w:abstractNumId="7">
+                    <w:nsid w:val="7A9A33E2"/>
+                    <w:multiLevelType w:val="hybridMultilevel"/>
+                    <w:tmpl w:val="2FA2C492"/>
+                    <w:lvl w:ilvl="0" w:tplc="2CC4BB26">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%1."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1185" w:hanging="465"/>
+                        </w:pPr>
+                        <w:rPr>
+                            <w:rFonts w:hint="default"/>
+                        </w:rPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="1" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%2)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="1560" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="2" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%3."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="1980" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="3" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%4."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2400" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="4" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%5)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="2820" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="5" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%6."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="3240" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="6" w:tplc="0409000F" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="decimal"/>
+                        <w:lvlText w:val="%7."/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="3660" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="7" w:tplc="04090019" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerLetter"/>
+                        <w:lvlText w:val="%8)"/>
+                        <w:lvlJc w:val="left"/>
+                        <w:pPr>
+                            <w:ind w:left="4080" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                    <w:lvl w:ilvl="8" w:tplc="0409001B" w:tentative="1">
+                        <w:start w:val="1"/>
+                        <w:numFmt w:val="lowerRoman"/>
+                        <w:lvlText w:val="%9."/>
+                        <w:lvlJc w:val="right"/>
+                        <w:pPr>
+                            <w:ind w:left="4500" w:hanging="420"/>
+                        </w:pPr>
+                    </w:lvl>
+                </w:abstractNum>
+                <w:num w:numId="1">
+                    <w:abstractNumId w:val="5"/>
+                </w:num>
+                <w:num w:numId="2">
+                    <w:abstractNumId w:val="2"/>
+                </w:num>
+                <w:num w:numId="3">
+                    <w:abstractNumId w:val="0"/>
+                </w:num>
+                <w:num w:numId="4">
+                    <w:abstractNumId w:val="4"/>
+                </w:num>
+                <w:num w:numId="5">
+                    <w:abstractNumId w:val="3"/>
+                </w:num>
+                <w:num w:numId="6">
+                    <w:abstractNumId w:val="1"/>
+                </w:num>
+                <w:num w:numId="7">
+                    <w:abstractNumId w:val="7"/>
+                </w:num>
+                <w:num w:numId="8">
+                    <w:abstractNumId w:val="6"/>
+                </w:num>
+            </w:numbering>
         </pkg:xmlData>
     </pkg:part>
 </pkg:package>
