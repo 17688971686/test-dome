@@ -1,591 +1,371 @@
 <!-- S 项目建议书 -->
 <meta charset="UTF-8">
-<table class="table table-bordered">
-    <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>
-        {{getTBHeadName(vm.fileRecord.fileReviewstage,vm.fileRecord.isAdvanced,'项目归档表')}}
-    </strong></caption>
-    <caption>
-        <span style="margin-left: 10px;">QR-4.3-11-A6</span>
-        <span style="float: right;margin-right: 10px;">档案编号:{{vm.fileRecord.fileNo}}</span>
-    </caption>
-    <tbody>
-
-    <tr>
-        <td width="15%" class="text-center">项目名称</td>
-        <td>
-            {{vm.fileRecord.projectName}}
-
-        </td>
-        <td width="15%" class="text-center"></td>
-        <td>
-            是否曾经暂停 :
-            <span>
-					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isStachProject"
-                             name="isStachProject" ng-checked="vm.fileRecord.isStachProject==9" ng-true-value="9">是
+		
+		<table class="table table-bordered"  >
+		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>
+		    {{getTBHeadName(vm.fileRecord.fileReviewstage,vm.fileRecord.isAdvanced,'项目归档审批表')}}
+		  </strong></caption>
+			<caption>
+				<span style="margin-left: 10px;">QR-4.3-11-A6</span>
+				<span style="float: right;margin-right: 10px;">档案编号:{{vm.fileRecord.fileNo}}</span>
+			</caption>
+		    <tbody>
+		   
+		    <tr>
+		      <td  width="15%" class="text-center">项目名称</td>
+		      <td>
+				 	{{vm.fileRecord.projectName}}
+				 	
+			  </td>
+		       <td width="15%" class="text-center"></td>
+				<td>
+					是否曾经暂停 :
+					<span>
+					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isStachProject" name="isStachProject" ng-checked="vm.fileRecord.isStachProject==9"  ng-true-value="9" >是
 				  </span>
-            <span style="margin-left: 10px;">
-					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isStachProject"
-                             name="isStachProject"
-                             ng-checked="!vm.fileRecord.isStachProject || vm.fileRecord.isStachProject==0"
-                             ng-true-value="0">否
+					<span style="margin-left: 10px;">
+					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isStachProject" name="isStachProject" ng-checked="!vm.fileRecord.isStachProject || vm.fileRecord.isStachProject==0" ng-true-value="0" >否
 				  </span>
-            </br>
-            是否有补充资料:
-            <span>
-					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isSupplementary"
-                             name="isSupplementary" ng-checked="vm.fileRecord.isSupplementary==9" ng-true-value="9">是
+					</br>
+					是否有补充资料:
+					<span>
+					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary" ng-checked="vm.fileRecord.isSupplementary==9" ng-true-value="9" >是
 				  </span>
-            <span style="margin-left: 10px;">
-					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isSupplementary"
-                             name="isSupplementary"
-                             ng-checked="!vm.fileRecord.isSupplementary || vm.fileRecord.isSupplementary==0"
-                             ng-true-value="0">否
+					<span style="margin-left: 10px;">
+					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary" ng-checked="!vm.fileRecord.isSupplementary || vm.fileRecord.isSupplementary==0"  ng-true-value="0">否
 				  </span>
-        </td>
-    </tr>
-
-    <tr>
-        <td width="15%" class="text-center">项目单位</td>
-        <td>
-            {{vm.fileRecord.projectCompany}}
-        </td>
-        <td width="15%" class="text-center">项目代码</td>
-        <td>
-            {{vm.fileRecord.projectCode}}
-        </td>
-    </tr>
-    <tr>
-        <td width="15%" class="text-center">文件标题</td>
-        <td>
-            {{vm.fileRecord.fileTitle}}
-        </td>
-        <td width="15%" class="text-center">文号</td>
-        <td>
-            {{vm.fileRecord.fileNumber}}
-        </td>
-    </tr>
-
-    <tr>
-        <td width="15%" class="text-center" rowspan="2">项目建议书申报资料</td>
-        <td colspan="3">
-            <table class="table" style="border: 0px solid transparent !important;">
-                <tbody>
-                <tr>
-                    <td style="border-top:none;width:40%;">
-                        <table class="table" style="border: 0px solid transparent !important;">
-                            <tbody>
-                            <tr>
-                                <td style="border-top:none;width:40%;">&nbsp;</td>
-                                <td style="border-top:none;">原件</td>
-                                <td style="border-top:none;">复印件</td>
-                                <td style="border-top:none;">扫描件</td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">报审登记表</td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.recordFormOriginal"
-                                                                    name="recordFormOriginal" ng-true-value="9"
-                                                                    ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.recordFormCopy"
-                                                                    name="recordFormCopy" ng-true-value="9"
-                                                                    ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.recordFormCopyScan"
-                                                                    name="recordFormCopyScan" ng-true-value="9"
-                                                                    ng-false-value="0"></td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">项目处理表</td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugproHandleFormOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugproHandleFormCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugproHandleFormScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">委文件处理表</td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugfileHandleFormOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugfileHandleFormCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugfileHandleFormScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">项目单位申报表</td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugproCompanyFormOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugproCompanyFormCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugproCompanyFormScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">项目单位申报函</td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugproComletterOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"
-                                ></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugproComletterCopy"
-                                                                    name="sugproComletterCopy" ng-true-value="9"
-                                                                    ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.sugproComletterScan"
-                                                                    name="sugproComletterScan" ng-true-value="9"
-                                                                    ng-false-value="0"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                    <td style="border-top:none;">
-                        <table class="table" style="border: 0px solid transparent !important;">
-                            <tbody>
-                            <tr>
-                                <td style="border-top:none;width:40%;">&nbsp;</td>
-                                <td style="border-top:none;">份数</td>
-                                <td style="border-top:none;">原件</td>
-                                <td style="border-top:none;">复印件</td>
-                                <td style="border-top:none;">扫描件</td>
-                            </tr>
-
-                            <tr>
-                                <td style="border-top:none;text-align:right;">暂停申请表</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字"
-                                           ng-model="vm.fileRecord.pauseFormCount" name="pauseFormCount"
-                                           id="pauseFormCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.pauseFormOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.pauseFormCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.pauseFormScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><span data-valmsg-for="pauseFormCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">补充资料函</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字"
-                                           ng-model="vm.fileRecord.supplyFileLetterCount" name="supplyFileLetterCount"
-                                           id="supplyFileLetterCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.supplyFileLetterOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.supplyFileLetterCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.supplyFileLetterScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><span data-valmsg-for="supplyFileLetterCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">暂缓审核函</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字"
-                                           ng-model="vm.fileRecord.slowReviewCount" name="slowReviewCount"
-                                           id="slowReviewCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.slowReviewOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.slowReviewCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.slowReviewScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><span data-valmsg-for="slowReviewCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td style="border-top:none;text-align:right;">补充资料清单</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字"
-                                           ng-model="vm.fileRecord.supplyFileListCount" name="supplyFileListCount"
-                                           id="supplyFileListCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.supplyFileListOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.supplyFileListCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.supplyFileListScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><span data-valmsg-for="supplyFileListCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">电子光盘份数</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字"
-                                           ng-model="vm.fileRecord.electronicDiskCount" name="electronicDiskCount"
-                                           id="electronicDiskCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><span data-valmsg-for="electronicDiskCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </td>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="3">
-            <table class="table">
-                <tbody>
-                <tr>
-                    <td style="border-top:none;width:40%;">
-                        <table class="table" style="border: 0px solid transparent !important;">
-                            <tbody>
-                            <tr>
-                                <td style="border-top:none;width:60%;">&nbsp;</td>
-                                <td style="border-top:none;">复印件</td>
-                                <td style="border-top:none;">扫描件</td>
-
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">相关会议要纪</td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.meetingSummaryOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.meetingSummaryScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">其他重要资料（备注）</td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.otherImportFileOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.otherImportFileCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </td>
-                    <td style="border-top:none;">
-                        <table class="table" style="border: 0px solid transparent !important;">
-                            <tbody>
-                            <tr>
-                                <td style="border-top:none;width:40%;">&nbsp;</td>
-                                <td style="border-top:none;">份数</td>
-                                <td style="border-top:none;">复印件</td>
-                                <td style="border-top:none;">电子版</td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">项目建议书</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字"
-                                           ng-model="vm.fileRecord.procsugFileCount" name="procsugFileCount"
-                                           id="procsugFileCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.procsugFileOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.procsugFileEl"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><span data-valmsg-for="procsugFileCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">补充资料</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字"
-                                           ng-model="vm.fileRecord.supplyFileCount" name="supplyFileCount"
-                                           id="supplyFileCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.supplyFileOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.supplyFileEl"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><span data-valmsg-for="supplyFileCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-
-            </table>
-        </td>
-    </tr>
-
-    <tr>
-        <td width="15%" class="text-center">专家评审资料</td>
-        <td colspan="3">
-            <table class="table" style="border: 0px solid transparent !important;">
-                <tbody>
-                <tr>
-                    <td style="border-top:none;width:50%;">
-                        <table class="table" style="border: 0px solid transparent !important;">
-                            <tbody>
-                            <tr>
-                                <td style="border-top:none;width:48%;">&nbsp;</td>
-                                <td style="border-top:none;">份数</td>
-                                <td style="border-top:none;">原件</td>
-                                <td style="border-top:none;">复印件</td>
-                                <td style="border-top:none;">扫描件</td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">评审工作方案</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.planCount"
-                                           name="planCount" id="planCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.planOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.planCopy" ng-true-value="9"
-                                                                    ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.planScan" ng-true-value="9"
-                                                                    ng-false-value="0"></td>
-                                <td style="border-top:none;"><span data-valmsg-for="planCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">专家评审会意见</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.expertCount"
-                                           name="expertCount" id="expertCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.expertOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.expertCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.expertScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><span data-valmsg-for="expertCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">专家个人意见书</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字"
-                                           ng-model="vm.fileRecord.expertAmanCount" name="expertAmanCount"
-                                           id="expertAmanCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.expertAmanOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.expertAmanCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.expertAmanScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><span data-valmsg-for="expertAmanCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </td>
-
-                    <td style="border-top:none;">
-                        <table class="table" style="border: 0px solid transparent !important;">
-                            <tbody>
-                            <tr>
-                                <td style="border-top:none;width:40%;">&nbsp;</td>
-                                <td style="border-top:none;">份数</td>
-                                <td style="border-top:none;">原件</td>
-                                <td style="border-top:none;">复印件</td>
-                                <td style="border-top:none;">扫描件</td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">会议签到表</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字"
-                                           ng-model="vm.fileRecord.meetingSignCount" name="meetingSignCount"
-                                           id="meetingSignCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.meetingSignOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.meetingSignCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.meetingScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><span data-valmsg-for="meetingSignCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">评审费发放表</td>
-                                <td style="border-top:none;">
-                                    <input type="text" style="width:50px;" class="form-control input-sm "
-                                           data-val="true" data-val-digits="只能输入数字"
-                                           ng-model="vm.fileRecord.stageCostCount" name="stageCostCount"
-                                           id="stageCostCount" ng-readonly="true">
-                                </td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.stageCostOriginal"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.stageCostCopy"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><input type="checkbox" ng-disabled="true"
-                                                                    style="width:50px;"
-                                                                    ng-model="vm.fileRecord.stageCostScan"
-                                                                    ng-true-value="9" ng-false-value="0"></td>
-                                <td style="border-top:none;"><span data-valmsg-for="stageCostCount"
-                                                                   data-valmsg-replace="true" class="errors"></span>
-                                </td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td width="15%" class="text-center">其他资料</td>
-        <td colspan="3">
-
-        </td>
-    </tr>
-    <tr>
-        <td width="15%" class="text-center">项目负责人（签名）</td>
-        <td>
-            {{vm.fileRecord.projectChargeUser}}
-        </td>
-        <td width="15%" rowspan='2' class="text-center">发送存档日期</td>
-        <td rowspan='2'>
-            {{vm.fileRecord.sendStoreDate}}
-        </td>
-
-    </tr>
-    <tr>
-        <td width="15%" class="text-center">项目第二负责人（签名）</td>
-        <td>
-            {{vm.fileRecord.projectTwoUser}}
-        </td>
-    </tr>
-
-    <tr>
-        <td width="15%" class="text-center">档案员签收</td>
-        <td>
-            {{vm.fileRecord.signUserName}}
-        </td>
-        <td width="15%" class="text-center">存档日期</td>
-        <td>
-            {{vm.fileRecord.fileDate}}
-        </td>
-    </tr>
-    </tbody>
-</table>    <!--  end table		-->
-
+				</td>
+		    </tr>
+		    
+		    <tr>
+		      <td width="15%" class="text-center">项目单位</td>
+		      <td>
+		      		{{vm.fileRecord.projectCompany}}
+			  </td>
+		      <td width="15%" class="text-center">项目代码</td>
+		      <td>
+					{{vm.fileRecord.projectCode}}
+			  </td>
+		    </tr>
+		    <tr>
+		      <td width="15%" class="text-center">文件标题</td>
+		      <td>
+		  			{{vm.fileRecord.fileTitle}}
+		      </td>
+		       <td width="15%" class="text-center">文号</td>
+		      <td>
+				  {{vm.fileRecord.fileNumber}}
+		      </td>
+		    </tr>	
+		       		   
+		    <tr>
+		    	<td width="15%" class="text-center" rowspan="2">项目建议书申报资料</td>
+		    	<td colspan="3">
+		    		<table class="table" style="border: 0px solid transparent !important;">
+					    <tbody>
+					      <tr>
+					        <td style="border-top:none;width:40%;">
+							<table class="table" style="border: 0px solid transparent !important;">							    				    
+							    <tbody>
+							      <tr>
+							        <td style="border-top:none;width:40%;">&nbsp;</td>
+							        <td style="border-top:none;">原件</td>
+							        <td style="border-top:none;">复印件</td>
+							        <td style="border-top:none;">扫描件</td>
+							      </tr>	
+							      <tr>
+							        <td style="border-top:none;text-align:right;">报审登记表</td>
+							        <td style="border-top:none;"><input type="checkbox"ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.recordFormOriginal" name="recordFormOriginal"  ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.recordFormCopy" name="recordFormCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.recordFormCopyScan" name="recordFormCopyScan" ng-true-value="9" ng-false-value="0"></td>
+							      </tr>	
+							      <tr>
+							        <td style="border-top:none;text-align:right;">项目处理表</td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.sugproHandleFormOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.sugproHandleFormCopy" ng-true-value="9" ng-false-value="0"></td>
+							         <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.sugproHandleFormScan" ng-true-value="9" ng-false-value="0"></td>
+							      </tr>	
+							      <tr>
+							        <td style="border-top:none;text-align:right;">委文件处理表</td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true"  style="width:50px;" ng-model="vm.fileRecord.sugfileHandleFormOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true"  style="width:50px;" ng-model="vm.fileRecord.sugfileHandleFormCopy" ng-true-value="9" ng-false-value="0"></td>
+							    	 <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.sugfileHandleFormScan" ng-true-value="9" ng-false-value="0"></td>
+							      </tr>	
+							      <tr>
+							        <td style="border-top:none;text-align:right;">项目单位申报表</td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true"  style="width:50px;" ng-model="vm.fileRecord.sugproCompanyFormOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true"  style="width:50px;" ng-model="vm.fileRecord.sugproCompanyFormCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.sugproCompanyFormScan" ng-true-value="9" ng-false-value="0"></td>
+							      </tr>
+							        <tr>
+							        <td style="border-top:none;text-align:right;">项目单位申报函</td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.sugproComletterOriginal" ng-true-value="9" ng-false-value="0"
+							          ></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.sugproComletterCopy" name="sugproComletterCopy"ng-true-value="9" ng-false-value="0"></td>
+							         <td style="border-top:none;"><input type="checkbox"  ng-disabled="true"  style="width:50px;" ng-model="vm.fileRecord.sugproComletterScan" name="sugproComletterScan"ng-true-value="9" ng-false-value="0"></td>
+							      </tr>						        					      
+							    </tbody>
+							  </table>
+							</td>
+					        <td style="border-top:none;">
+								<table class="table" style="border: 0px solid transparent !important;">							    				    
+							    <tbody>
+							      <tr>
+							        <td style="border-top:none;width:40%;">&nbsp;</td>
+							        <td style="border-top:none;">份数</td>
+							        <td style="border-top:none;">原件</td>
+							        <td style="border-top:none;">复印件</td>
+							        <td style="border-top:none;">扫描件</td>
+							      </tr>	
+							    
+							      <tr>
+							        <td style="border-top:none;text-align:right;">暂停申请表</td>
+							        <td style="border-top:none;">
+                                        <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.pauseFormCount" name="pauseFormCount" id="pauseFormCount" ng-readonly="true">
+                                    </td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.pauseFormOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.pauseFormCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.pauseFormScan" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"> <span data-valmsg-for="pauseFormCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>	
+							      <tr>
+							        <td style="border-top:none;text-align:right;">补充资料函</td>
+							        <td style="border-top:none;">
+                                        <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.supplyFileLetterCount" name="supplyFileLetterCount" id="supplyFileLetterCount" ng-readonly="true">
+                                    </td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true"  style="width:50px;" ng-model="vm.fileRecord.supplyFileLetterOriginal" ng-true-value="9" ng-false-value="0" ></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true"style="width:50px;" ng-model="vm.fileRecord.supplyFileLetterCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.supplyFileLetterScan" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"> <span data-valmsg-for="supplyFileLetterCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>	
+							      <tr>
+							        <td style="border-top:none;text-align:right;">暂缓审核函</td>
+							        <td style="border-top:none;">
+                                        <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.slowReviewCount" name="slowReviewCount" id="slowReviewCount" ng-readonly="true">
+                                    </td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.slowReviewOriginal" ng-true-value="9" ng-false-value="0" ></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.slowReviewCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.slowReviewScan" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"> <span data-valmsg-for="slowReviewCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>	
+							      
+							       <tr>
+							        <td style="border-top:none;text-align:right;">补充资料清单</td>
+							        <td style="border-top:none;">
+                                        <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.supplyFileListCount" name="supplyFileListCount" id="supplyFileListCount" ng-readonly="true">
+                                    </td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.supplyFileListOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true"style="width:50px;" ng-model="vm.fileRecord.supplyFileListCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.supplyFileListScan" ng-true-value="9" ng-false-value="0"></td>
+							      	<td style="border-top:none;"> <span data-valmsg-for="supplyFileListCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>	
+							     <tr>
+							        <td style="border-top:none;text-align:right;">电子光盘份数</td>
+							        <td style="border-top:none;">
+                                        <input type="text" style="width:50px;" class="form-control input-sm "  data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.electronicDiskCount" name="electronicDiskCount" id="electronicDiskCount" ng-readonly="true">
+                                    </td>
+							        <td style="border-top:none;"> <span data-valmsg-for="electronicDiskCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>	
+							      		        					      
+							    </tbody>
+							  </table>
+							</td>					        					      
+					    </tbody>
+					  </table>
+		    	</td>
+		    </tr>
+		    <tr>
+		    	<td colspan="3">
+		    		<table class="table">
+					    <tbody>
+					      <tr>
+					        <td style="border-top:none;width:40%;">
+							<table class="table" style="border: 0px solid transparent !important;">							    				    
+							    <tbody>
+							      <tr>
+							        <td style="border-top:none;width:60%;">&nbsp;</td>
+							        <td style="border-top:none;">复印件</td>
+							        <td style="border-top:none;">扫描件</td>
+							        
+							      </tr>	
+							      <tr>
+							        <td style="border-top:none;text-align:right;">相关会议要纪</td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true"style="width:50px;" ng-model="vm.fileRecord.meetingSummaryOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.meetingSummaryScan" ng-true-value="9" ng-false-value="0"></td>
+							      </tr>	
+							      <tr>
+							        <td style="border-top:none;text-align:right;">其他重要资料（备注）</td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.otherImportFileOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.otherImportFileCopy" ng-true-value="9" ng-false-value="0"></td>
+							      </tr>	
+							      			        					      
+							    </tbody>
+							  </table>
+							</td>
+					        <td style="border-top:none;">
+								<table class="table" style="border: 0px solid transparent !important;">							    				    
+							    <tbody>
+							      <tr>
+							        <td style="border-top:none;width:40%;">&nbsp;</td>
+							        <td style="border-top:none;">份数</td>
+							        <td style="border-top:none;">复印件</td>
+							        <td style="border-top:none;">电子版</td>
+							      </tr>
+							      <tr>
+							        <td style="border-top:none;text-align:right;">项目建议书</td>
+							        <td style="border-top:none;">
+                                        <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.procsugFileCount" name="procsugFileCount" id="procsugFileCount" ng-readonly="true">
+                                    </td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.procsugFileOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"   ng-disabled="true"style="width:50px;" ng-model="vm.fileRecord.procsugFileEl" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"> <span data-valmsg-for="procsugFileCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>	
+							      <tr>
+							        <td style="border-top:none;text-align:right;">补充资料</td>
+							        <td style="border-top:none;">
+                                        <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.supplyFileCount" name="supplyFileCount" id="supplyFileCount" ng-readonly="true">
+                                    </td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.supplyFileOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"ng-disabled="true"  style="width:50px;" ng-model="vm.fileRecord.supplyFileEl" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"> <span data-valmsg-for="supplyFileCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>			
+							    </tbody>
+							  </table>
+							</td>	
+							</tr>				        					      
+					    </tbody>
+					    
+					  </table>
+		    	</td>
+		    </tr>
+		    
+		     <tr>
+		      <td width="15%" class="text-center">专家评审资料</td>
+		      <td colspan="3">
+			  	<table class="table" style="border: 0px solid transparent !important;">
+					    <tbody>
+					      <tr>
+					        <td style="border-top:none;width:50%;">
+								<table class="table" style="border: 0px solid transparent !important;">							    				    
+							    <tbody>
+							      <tr>
+							        <td style="border-top:none;width:48%;">&nbsp;</td>
+							        <td style="border-top:none;">份数</td>
+							        <td style="border-top:none;">原件</td>
+							        <td style="border-top:none;">复印件</td>
+							        <td style="border-top:none;">扫描件</td>
+							      </tr>
+							      <tr>
+							        <td style="border-top:none;text-align:right;">评审工作方案</td>
+							        <td style="border-top:none;">
+                                        <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.planCount" name="planCount" id="planCount" ng-readonly="true">
+                                    </td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true"  style="width:50px;" ng-model="vm.fileRecord.planOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.planCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.planScan" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"> <span data-valmsg-for="planCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>	
+							      <tr>
+							        <td style="border-top:none;text-align:right;">专家评审会意见</td>
+							        <td style="border-top:none;">
+										<input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.expertCount" name="expertCount" id="expertCount" ng-readonly="true">
+									</td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true"style="width:50px;" ng-model="vm.fileRecord.expertOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.expertCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true"style="width:50px;" ng-model="vm.fileRecord.expertScan" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"> <span data-valmsg-for="expertCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>	
+							       <tr>
+							        <td style="border-top:none;text-align:right;">专家个人意见书</td>
+							        <td style="border-top:none;">
+										<input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.expertAmanCount" name="expertAmanCount" id="expertAmanCount" ng-readonly="true">
+									</td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.expertAmanOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"  ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.expertAmanCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox"   ng-disabled="true"style="width:50px;" ng-model="vm.fileRecord.expertAmanScan" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"> <span data-valmsg-for="expertAmanCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>				
+							    
+							    </tbody>
+							  </table>
+							</td>
+							
+					        <td style="border-top:none;">
+								<table class="table" style="border: 0px solid transparent !important;">							    				    
+							    <tbody>
+							      <tr>
+							        <td style="border-top:none;width:40%;">&nbsp;</td>
+							        <td style="border-top:none;">份数</td>
+							        <td style="border-top:none;">原件</td>
+							        <td style="border-top:none;">复印件</td>
+							        <td style="border-top:none;">扫描件</td>
+							      </tr>
+							      <tr>
+							        <td style="border-top:none;text-align:right;">会议签到表</td>
+							        <td style="border-top:none;">
+                                        <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.meetingSignCount" name="meetingSignCount" id="meetingSignCount" ng-readonly="true">
+                                    </td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.meetingSignOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true"style="width:50px;" ng-model="vm.fileRecord.meetingSignCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true"  style="width:50px;" ng-model="vm.fileRecord.meetingScan" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"> <span data-valmsg-for="meetingSignCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>	
+							      <tr>
+							        <td style="border-top:none;text-align:right;">评审费发放表</td>
+							        <td style="border-top:none;">
+										<input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.stageCostCount" name="stageCostCount" id="stageCostCount" ng-readonly="true">
+									</td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true"  style="width:50px;" ng-model="vm.fileRecord.stageCostOriginal" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true" style="width:50px;" ng-model="vm.fileRecord.stageCostCopy" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"><input type="checkbox" ng-disabled="true"style="width:50px;" ng-model="vm.fileRecord.stageCostScan" ng-true-value="9" ng-false-value="0"></td>
+							        <td style="border-top:none;"> <span data-valmsg-for="stageCostCount" data-valmsg-replace="true" class="errors"></span></td>
+							      </tr>			
+							    
+							    </tbody>
+							  </table>
+							</td>	
+						</tr>				        					      
+					    </tbody>
+					  </table>
+			  </td>		      
+		    </tr> 
+		    
+		    
+		    <tr>
+		      <td width="15%" class="text-center">其他资料</td>
+		      <td colspan="3">
+		      
+			  </td>		      
+		    </tr>		    
+		      <tr>
+		      <td width="15%" class="text-center">项目负责人（签名）</td>
+		      <td>	
+		      {{vm.fileRecord.projectChargeUser}}	   		 
+		      </td>
+		       <td width="15%" rowspan='2' class="text-center">发送存档日期</td>
+		      <td rowspan='2'>
+		      {{vm.fileRecord.sendStoreDate}}
+			  </td>
+			  
+		    </tr>	
+		      <tr>
+		      <td width="15%" class="text-center">项目第二负责人（签名）</td>
+		      <td>
+				  {{vm.fileRecord.projectTwoUser}}
+		      </td>
+		    </tr>	
+		    
+		    <tr>
+		      <td width="15%" class="text-center">档案员签收</td>
+		      <td>
+		     	{{vm.fileRecord.signUserName}}			
+		      </td>
+		      <td width="15%" class="text-center">存档日期</td>
+		      <td>
+		      {{vm.fileRecord.fileDate}}
+			  </td>
+		    </tr>	   
+		  </tbody>			  		  	  
+		</table>	<!--  end table		-->
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
 <!-- E 项目建议书-->

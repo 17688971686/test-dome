@@ -17,24 +17,24 @@
 	</tr>
 	<tr>
 		<td>项目名称</td>
-		<td>{{vm.fileRecord.projectName}}</td>
-		<td></td>
-		<td style="line-height: 20px;">
-			<p>
-				<span  style="width: 50%;display:inline-block;text-align: center" >是否曾经暂停 :</span>
-				<input style="margin: 0;" type="checkbox" disabled="true" ng-model="vm.fileRecord.isStachProject" name="isStachProject" ng-checked="vm.fileRecord.isStachProject==9"  ng-true-value="9" >
-				<span style="margin-right: 10px">是</span>
-				<input style="margin: 0;" type="checkbox" disabled="true" ng-model="vm.fileRecord.isStachProject" name="isStachProject" ng-checked="!vm.fileRecord.isStachProject || vm.fileRecord.isStachProject==0" ng-true-value="0" >
-				<span>否</span>
-			</p>
-			<p style="margin: 0;">
-				<span style="width: 50%;display:inline-block;text-align: center">是否有补充资料:</span>
-				<input type="checkbox" disabled="true" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary" ng-checked="vm.fileRecord.isSupplementary==9" ng-true-value="9" >
-				<span style="margin-right: 10px">是</span>
-				<input type="checkbox" disabled="true" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary" ng-checked="!vm.fileRecord.isSupplementary || vm.fileRecord.isSupplementary==0"  ng-true-value="0">
-				<span>否</span>
-			</p>
-		</td>
+		<td colspan="4">{{vm.fileRecord.projectName}}</td>
+        <!--<td></td>
+        <td style="line-height: 20px;">
+            <p>
+                <span  style="width: 50%;display:inline-block;text-align: center" >是否曾经暂停 :</span>
+                <input style="margin: 0;" type="checkbox" disabled="true" ng-model="vm.fileRecord.isStachProject" name="isStachProject" ng-checked="vm.fileRecord.isStachProject==9"  ng-true-value="9" >
+                <span style="margin-right: 10px">是</span>
+                <input style="margin: 0;" type="checkbox" disabled="true" ng-model="vm.fileRecord.isStachProject" name="isStachProject" ng-checked="!vm.fileRecord.isStachProject || vm.fileRecord.isStachProject==0" ng-true-value="0" >
+                <span>否</span>
+            </p>
+            <p style="margin: 0;">
+                <span style="width: 50%;display:inline-block;text-align: center">是否有补充资料:</span>
+                <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary" ng-checked="vm.fileRecord.isSupplementary==9" ng-true-value="9" >
+                <span style="margin-right: 10px">是</span>
+                <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary" ng-checked="!vm.fileRecord.isSupplementary || vm.fileRecord.isSupplementary==0"  ng-true-value="0">
+                <span>否</span>
+            </p>
+        </td>&ndash;&gt;-->
 	</tr>
 	<tr>
 		<td>项目单位</td>
