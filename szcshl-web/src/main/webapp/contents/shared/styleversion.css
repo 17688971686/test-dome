@@ -599,7 +599,7 @@ div.k-window{
 }
 @media print {
     .print-table{
-        margin-top:-20px;
+        margin-top:-40px;
     }
     .well{
         margin:0 !important;

@@ -1,0 +1,184 @@
+<meta charset="UTF-8">
+<!--S_ 项目建议书/可行性研究报告 -->
+<!-- s table -->
+<style>
+    #spdj-tabel{
+        width: 100%;
+    }
+    #spdj-tabel p{
+        margin:0 0 5px;
+    }
+    #spdj-tabel td{
+        text-align: center;
+        height:30px;
+        border:1px solid #666;
+        border-collapse:collapse;
+    }
+    #spdj-tabel .child-table{
+        width: 100%;
+        margin-left:10px;
+    }
+    #spdj-tabel .child-table td{
+        border:none;
+    }
+    #spdj-tabel .child-table th{
+        text-align: center;
+    }
+    #spdj-tabel .child-table input[type=checkbox]{
+        width: 20px;
+        height: 20px;
+    }
+    #spdj-tabel .tr-hidden td{
+        height: 0;
+        border:none;
+    }
+    #spdj-tabel .child-table .num {
+        width:28px;
+        height:28px;
+        text-align: center;
+        line-height:28px;
+    }
+    #spdj-tabel .child-table .item-name{
+        text-align: left;
+    }
+</style>
+
+<table class="print-table">
+    <caption class="text-center h3">
+        <strong>
+            <p>深圳市政府投资项目评审中心</p>
+            <p>{{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}</p>
+        </strong>
+    </caption>
+    <caption>
+        <span style="width: 200px;float: left;padding: 0 10px;">QR-4.9-02-A0</span>
+        <span style="width: 200px;float: right;padding: 0 10px;">收文日期：{{vm.model.signdate | date:'yyyy年MM月dd日'}}</span>
+    </caption>
+    <tr class="tr-hidden">
+        <td width="16%"></td>
+        <td width="17%"></td>
+        <td width="17%"></td>
+        <td width="16%"></td>
+        <td width="17%"></td>
+        <td width="17%"></td>
+    </tr>
+    <tr>
+        <td>项目名称</td>
+        <td colspan="2">{{vm.model.projectname}}</td>
+        <td>收文编号</td>
+        <td colspan="2"> {{vm.model.signNum}}</td>
+    </tr>
+    <tr>
+        <td>建设单位</td>
+        <td colspan="2">{{vm.model.builtcompanyName}}</td>
+        <td>编制单位</td>
+        <td colspan="2">{{vm.model.designcompanyName}}</td>
+    </tr>
+    <tr>
+        <td>主办处室</td>
+        <td colspan="2">{{vm.model.maindeptName}}</td>
+        <td >主办处室联系人</td>
+        <td colspan="2">{{vm.model.mainDeptUserName}}</td>
+    </tr>
+    <tr>
+        <td>协办处室</td>
+        <td colspan="2">{{vm.model.assistdeptName}}</td>
+        <td>协办处室联系人</td>
+        <td colspan="2">{{vm.model.assistDeptUserName}}</td>
+    </tr>
+    <tr>
+        <td>缓急程度</td>
+        <td>{{vm.model.urgencydegree}}</td>
+        <td>项目代码</td>
+        <td>{{vm.model.projectcode}}</td>
+        <td>秘密等级</td>
+        <td>{{vm.model.secrectlevel}}</td>
+    </tr>
+    <tr>
+        <td >备审资料</td>
+        <td colspan="5">
+            <table class="child-table">
+                <tr>
+                    <td width="30%" style="padding-bottom:10px;"></td>
+                    <td width="10%">数量</td>
+                    <td width="20%">原件/复印件</td>
+                    <td width="20%"></td>
+                    <td width="10%">数量</td>
+                    <td width="10%">原件</td>
+                </tr>
+                <tr>
+                    <td class="printing-td">委项目处理表</td>
+                    <td>
+                        <input class="num" type="text" ng-readonly="true" ng-model="vm.model.sugProDealCount" name="sugProDealCount"  id="sugProAdviseCount"data-val="true">
+                    </td>
+                    <td>
+                        <input type="checkbox" ng-disabled="true" ng-model="vm.model.sugProDealOriginal" name="sugProDealOriginal" id="sugProDealOriginal" ng-true-value="9" ng-false-value="0">
+                    </td>
+                    <td class="printing-td">资金申请报告</td>
+                    <td>
+                        <input class="num" type="text" ng-readonly="true" ng-model="vm.model.capitalAppReportCount" name="capitalAppReportCount" ng-readonly="true" id="capitalAppReportCount" data-val="true">
+                    </td>
+                    <td><input type="checkbox" ng-disabled="true" ng-model="vm.model.capitalAppReportOriginal"  id="capitalAppReportOriginal" ng-true-value="9" ng-false-value="0"></td>
+
+                </tr>
+                <tr>
+                    <td class="printing-td">委文件处理表</td>
+                    <td>
+                        <input type="text" class="num" ng-readonly="true"  ng-model="vm.model.sugFileDealCount" id="sugFileDealCount" name="sugFileDealCount" ng-readonly="true"
+                               data-val="true">
+                    </td>
+                    <td>
+                        <input type="checkbox" ng-disabled="true" ng-model="vm.model.sugFileDealOriginal" id="sugFileDealOriginal" ng-true-value="9" ng-false-value="0">
+                    </td>
+                    <td class="printing-td" >电子文档</td>
+                    <td>
+                        <input type="text" class="num" ng-readonly="true"  ng-model="vm.model.proSugEledocCount" name="proSugEledocCount"
+                               id="proSugEledocCount"data-val="true" data-val-digits="只能输入数字">
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="printing-td">项目单位申报表</td>
+                    <td><input type="text" class="num" ng-readonly="true"  ng-model="vm.model.sugOrgApplyCount" name="sugOrgApplyCount"  id="sugOrgApplyCount"data-val="true" 12></td>
+                    <td><input type="checkbox"  ng-disabled="true" ng-model="vm.model.sugOrgApplyOriginal"id="sugOrgApplyOriginal"  ng-true-value="9" ng-false-value="0"></td>
+
+                    <td class="printing-td">相关会议纪要</td>
+                    <td><input type="text" class="num"  ng-model="vm.model.sugMeetCount" name="sugMeetCount"   id="sugMeetCount"data-val="true"></td>
+                    <td><input type="checkbox" ng-disabled="true"  ng-model="vm.model.sugMeetOriginal" id="sugMeetOriginal"  ng-true-value="9" ng-false-value="0" ></td>
+                </tr>
+                <tr>
+                    <td class="printing-td">项目单位请示报告</td>
+                    <td><input type="text" class="num"  ng-readonly="true" ng-model="vm.model.sugOrgReqCount" name="sugOrgReqCount"  id="sugOrgReqCount"data-val="true"></td>
+                    <td><input type="checkbox" ng-model="vm.model.sugOrgReqOriginal" id="sugOrgReqOriginal" ng-true-value="9" ng-false-value="0"></td>
+
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>综合部分办</td>
+        <td colspan="5" style="padding:10px 10px 0">
+            <p class="text-left"> {{vm.model.comprehensivehandlesug}}</p>
+            <p class="text-right" ng-if="vm.model.comprehensiveName">签名：{{vm.model.comprehensiveName}}</p>
+            <p class="text-right" ng-if="vm.model.comprehensiveDate">日期：{{vm.model.comprehensiveDate}}</p>
+        </td>
+    </tr>
+    <tr>
+        <td>中心领导签批意见</td>
+        <td colspan="5" style="padding:10px 10px 0">
+            <p class="text-left"> {{vm.model.leaderhandlesug}}</p>
+            <p class="text-right" ng-if="vm.model.leaderName">签名：{{vm.model.leaderName}}</p>
+            <p class="text-right" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
+        </td>
+    </tr>
+    <tr>
+        <td>部长处理意见</td>
+        <td colspan="5" style="padding: 10px 10px 0">
+            <p class="text-left"> {{vm.model.ministerhandlesug}}</p>
+            <p class="text-right" ng-if="vm.model.ministerName">签名：{{vm.model.ministerName}}</p>
+            <p class="text-right" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
+        </td>
+    </tr>
+</table>
+<p>送件人签名：{{vm.model.sendusersign}}</p>
+<!-- end table -->

@@ -897,7 +897,12 @@
 
         //签收模板打印
         vm.printpage = function ($event) {
-            templatePrintSvc.templatePrint($event.target,vm.model);
+          var id =  $($event.target).parent().attr("id");
+          console.log(id);
+   /*       var obj = $event.target
+          console.log(aaa);
+*/
+            //templatePrintSvc.templatePrint($event.target,vm.model);
         }
 
     }
