@@ -10,7 +10,7 @@
     </ol>
     <div class="toolbar">
         <a class="btn btn-sm btn-primary" ng-click="vm.queryMeeting()"><span class="glyphicon glyphicon-search"></span>查询</a>
-        <a class="btn btn-sm btn-primary" href="#/meetingEdit/{id:null}"><span class="glyphicon glyphicon-plus"></span>新增会议室</a>
+        <a class="btn btn-sm btn-primary" ui-sref="meetingEdit({id:null})"><span class="glyphicon glyphicon-plus"></span>新增会议室</a>
         <!--
             <@shiro.hasPermission name="meeting##delete">
                 <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span

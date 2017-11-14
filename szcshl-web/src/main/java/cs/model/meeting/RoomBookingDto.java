@@ -11,28 +11,55 @@ import java.util.Date;
 public class RoomBookingDto extends BaseDto {
 
     private String id;
-    private String mrID;//会议室编号
-    private String rbName;//会议名称
-    private String addressName;//会议地点
-    private String dueToPeople;//预定人
-    private String host;//会议主持人
+    /**
+     * 会议室编号
+     */
+    private String mrID;
+    /**
+     * 会议名称
+     */
+    private String rbName;
+    /**
+     * 会议地点(停用)
+     */
+    private String addressName;
+    /**
+     * 预定人
+     */
+    private String dueToPeople;
+    /**
+     * 会议主持人(停用)
+     */
+    private String host;
+
     @JSONField(format = "yyyy-MM-dd")
     private Date rbDay;//会议日期
+
     private String rbDate;//会议日期显示星期
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+
     private Date beginTime;//会议开始时间
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;//结束时间
-    private String rbStatus;//会议预定状态，1,已预定，0未预定
+    /**
+     * 会议预定状态，1,已预定，0未预定(停用)
+     */
+    private String rbStatus;
+    /**
+     * 会议类型(停用)
+     */
     private String rbType;//会议类型
-    private String content;//主要内容
-    private String remark;//备注
+    /**
+     * 主要内容
+     */
+    private String content;
+    /**
+     * 备注
+     */
+    private String remark;
 
     private String stageOrgName;//评审部门
     private String stageProject;//评审项目
-    //开始结束时间段字符串
-    private String beginTimeStr;
-    private String endTimeStr;
 
     /**
      * 业务ID，如项目工作方案ID，课题研究工作方案ID等
@@ -42,6 +69,11 @@ public class RoomBookingDto extends BaseDto {
      * 业务类型（为了方便初始化【SIGN:表示项目，TOPIC:表示课题研究】）
      */
     private String businessType;
+
+    /*****  以下字段只是辅助作用，并不作为数据库存储字段 ***/
+    private String beginTimeStr;
+    private String endTimeStr;
+    private String bookId;
 
     public String getId() {
         return id;
@@ -172,7 +204,7 @@ public class RoomBookingDto extends BaseDto {
     }
 
     public String getBeginTimeStr() {
-        return DateUtils.converToString(this.beginTime, "HH:mm");
+        return beginTimeStr;
     }
 
     public void setBeginTimeStr(String beginTimeStr) {
@@ -180,7 +212,7 @@ public class RoomBookingDto extends BaseDto {
     }
 
     public String getEndTimeStr() {
-        return DateUtils.converToString(this.endTime, "HH:mm");
+        return endTimeStr;
     }
 
     public void setEndTimeStr(String endTimeStr) {
@@ -201,5 +233,13 @@ public class RoomBookingDto extends BaseDto {
 
     public void setBusinessType(String businessType) {
         this.businessType = businessType;
+    }
+
+    public String getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
     }
 }

@@ -27,6 +27,8 @@ import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.topic.WorkPlanRepo;
 import cs.service.sys.RoleServiceImpl;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -54,6 +56,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	private SysFileRepo sysFileRepo;
 	@Autowired
 	private ExpertReviewRepo expertReviewRepo;
+    @Autowired
+    private MeetingRoomService meetingRoomService;
 
 	@Override
 	public List<RoomBookingDto> getRoomList() {
@@ -248,20 +252,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	}
 
 	@Override
-	@Transactional
 	public List<MeetingRoomDto> findMeetingAll() {
-		List<MeetingRoom> meeting	= meetingRoomRepo.findAll();
-		List<MeetingRoomDto> meetingDtos = new ArrayList<>();
-		if(meeting !=null && meeting.size() >0){
-			meeting.forEach(x->{
-				MeetingRoomDto meetingDto = new MeetingRoomDto();
-				BeanCopierUtils.copyProperties(x, meetingDto);
-				meetingDto.setCreatedDate(x.getCreatedDate());
-				meetingDto.setModifiedDate(x.getModifiedDate());
-				meetingDtos.add(meetingDto);
-			});
-		}
-		return meetingDtos;
+		return meetingRoomService.findAll();
 	}
 
 	/* (non-Javadoc)
@@ -330,17 +322,17 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			}else{
 				BeanCopierUtils.copyProperties(roomDto, rb);
 				rb.setId(UUID.randomUUID().toString());
-				rb.setCreatedBy(SessionUtil.getDisplayName());
+				rb.setCreatedBy(SessionUtil.getUserId());
 				rb.setCreatedDate(now);
 			}
-			MeetingRoom meeting= meetingRoomRepo.findById(roomDto.getMrID());
-			rb.setAddressName(meeting.getAddr());
+			/*MeetingRoom meeting= meetingRoomRepo.findById(MeetingRoom_.id.getName(),roomDto.getMrID());
+			rb.setAddressName(meeting.getAddr());*/
 			String strdate = DateUtils.toStringDay(roomDto.getRbDay());
 			String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
 			rb.setRbDate(strdate+"("+stageday+")");//星期几
 			rb.setStageProject(Validate.isString(roomDto.getStageProject())?roomDto.getStageProject():""+"("+strdate+"("+stageday+")"+")");
 			rb.setModifiedDate(now);
-			rb.setModifiedBy(SessionUtil.getDisplayName());
+			rb.setModifiedBy(SessionUtil.getUserId());
 			roomBookingRepo.save(rb);
 
 			//根据业务类型，更新专家评审会事件
@@ -556,6 +548,40 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		roomBookingDto.setEndTime(null);
 		roomBookingDto.setRbDate(null);
 		return roomBookingDto;
+	}
+
+	/**
+	 * 查询日程数据（主要根据会议ID，开始日期和结束日期查询）
+	 * @param bookInfo
+	 * @return
+	 */
+	@Override
+	public List<RoomBookingDto> queryBookInfo(RoomBookingDto bookInfo) {
+        List<RoomBookingDto> returnList = new ArrayList<>();
+	    Criteria criteria = roomBookingRepo.getExecutableCriteria();
+	    if(Validate.isString(bookInfo.getMrID())){
+            criteria.add(Restrictions.eq(RoomBooking_.mrID.getName(),bookInfo.getMrID()));
+        }
+        if(Validate.isString(bookInfo.getBeginTimeStr())){
+            criteria.add(Restrictions.ge(RoomBooking_.rbDay.getName(),DateUtils.converToDate(bookInfo.getBeginTimeStr(),null)));
+        }
+        if(Validate.isString(bookInfo.getEndTimeStr())){
+            criteria.add(Restrictions.le(RoomBooking_.rbDay.getName(),DateUtils.converToDate(bookInfo.getEndTimeStr(),null)));
+        }
+        List<RoomBooking> resutList = criteria.list();
+        resutList.forEach(rl->{
+            RoomBookingDto rbDto = new RoomBookingDto();
+            BeanCopierUtils.copyProperties(rl,rbDto);
+            //迁移过来的数据有空值，这里要判断下
+            if(!Validate.isString(rbDto.getContent())){
+                rbDto.setContent("");
+            }
+            if(!Validate.isString(rbDto.getRemark())){
+                rbDto.setRemark("");
+            }
+            returnList.add(rbDto);
+        });
+		return returnList;
 	}
 
 	/**

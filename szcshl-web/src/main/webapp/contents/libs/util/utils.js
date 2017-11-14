@@ -25,6 +25,22 @@ Date.prototype.Format = function (fmt) { //author: meizz
 //调用： var time1 = new Date().Format("yyyy-MM-dd");var time2 = new Date().Format("yyyy-MM-dd HH:mm:ss");
 
 //根据传入的时间,获取半年前日期
+Date.prototype.Days = function(n){
+    // 先获取当前时间
+    var curDate = (this).getTime();
+    // 将半年的时间单位换算成毫秒
+    var weekDay = n * 24 * 3600 * 1000;
+    var pastResult = curDate + weekDay;  // 半年前的时间（毫秒单位）
+
+    // 日期函数，定义起点为半年前
+    var pastDate = new Date(pastResult),
+        pastYear = pastDate.getFullYear(),
+        pastMonth = pastDate.getMonth() + 1,
+        pastDay = pastDate.getDate();
+
+    return pastYear + '-' + pastMonth + '-' + pastDay;
+}
+//根据传入的时间,获取半年前日期
 Date.prototype.halfYearAgo = function(){
     // 先获取当前时间
     var curDate = (this).getTime();
@@ -52,4 +68,8 @@ Date.prototype.yearAgo = function(year){
         pastDay = pastDate.getDate();
 
     return pastYear + '-' + pastMonth + '-' + pastDay;
+}
+
+String.prototype.trim = function() {
+    return this.replace(/(^\s*)|(\s*$)/g, "");
 }

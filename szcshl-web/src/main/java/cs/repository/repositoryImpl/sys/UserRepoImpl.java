@@ -177,6 +177,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
      * 查询所有在职员工
      * @return
      */
+    @Override
     public List<User> findAllPostUser() {
         ICache cache = CacheManager.getCache();
         List<User> resultList = (List<User>)cache.get(CacheConstant.USER_CACHE);

@@ -3,6 +3,7 @@ package cs.controller.meeting;
 import javax.servlet.http.HttpServletRequest;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.ResultMsg;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,17 +78,17 @@ public class MeetingRoomController {
     @RequiresAuthentication
     //@RequiresPermissions("meeting##post")
     @RequestMapping(name = "创建会议室", path = "", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void post(@RequestBody MeetingRoomDto meetingDto) {
-        meetingRoomService.createMeeting(meetingDto);
+    @ResponseBody
+    public ResultMsg post(@RequestBody MeetingRoomDto meetingDto) {
+        return meetingRoomService.createMeeting(meetingDto);
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("meeting##post")
     @RequestMapping(name = "更新会议室", path = "", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void put(@RequestBody MeetingRoomDto meetingDto) {
-        meetingRoomService.updateMeeting(meetingDto);
+    @ResponseBody
+    public ResultMsg put(@RequestBody MeetingRoomDto meetingDto) {
+       return meetingRoomService.updateMeeting(meetingDto);
     }
 
     @RequiresAuthentication
@@ -101,9 +102,10 @@ public class MeetingRoomController {
     @RequiresAuthentication
     //@RequiresPermissions("meeting##delete")
     @RequestMapping(name = "删除会议室", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String id) {
-        meetingRoomService.deleteMeeting(id);
+    @ResponseBody
+    public ResultMsg delete(@RequestParam String id) {
+
+        return meetingRoomService.deleteMeeting(id);
     }
 
 }

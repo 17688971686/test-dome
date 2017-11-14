@@ -89,21 +89,21 @@ public class UserServiceImpl implements UserService {
             BeanCopierUtils.copyProperties(userDto, user);
 
             user.setId(UUID.randomUUID().toString());
-            if(!Validate.isString(user.getUserNo())){
-                user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo())+1));
+            if (!Validate.isString(user.getUserNo())) {
+                user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo()) + 1));
             }
             user.setCreatedBy(SessionUtil.getLoginName());
             user.setCreatedDate(new Date());
             user.setModifiedDate(new Date());
             user.setModifiedBy(SessionUtil.getLoginName());
-            user.setPassword(Constant.PASSWORD);		//设置系统默认登录密码
+            user.setPassword(Constant.PASSWORD);        //设置系统默认登录密码
 
             List<String> roleNames = new ArrayList<String>();
             // 加入角色
             for (RoleDto roleDto : userDto.getRoleDtoList()) {
-                Role role = roleRepo.findById(Role_.id.getName(),roleDto.getId());
+                Role role = roleRepo.findById(Role_.id.getName(), roleDto.getId());
                 if (role != null) {
-                    if(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())){
+                    if (EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())) {
                         isSLeader = true;
                     }
                     user.getRoles().add(role);
@@ -112,18 +112,19 @@ public class UserServiceImpl implements UserService {
             }
             //添加部门
             if (Validate.isString(userDto.getOrgId())) {
-                Org o = orgRepo.findById(Org_.id.getName(),userDto.getOrgId());
+                Org o = orgRepo.findById(Org_.id.getName(), userDto.getOrgId());
                 user.setOrg(o);
                 //如果是分管领导，则设置默认分管部门类型
-                if(isSLeader){
+                if (isSLeader) {
                     user.setMngOrgType(Constant.OrgType.getValue(o.getName()));
                 }
             }
             userRepo.save(user);
+            fleshPostUserCache();
             //createActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),user.getId(),"创建成功",null);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), user.getId(), "创建成功", null);
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), String.format("用户：%s 已经存在,请重新输入！", userDto.getLoginName()));
         }
 
     }
@@ -143,18 +144,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public void deleteUser(String id) {
         userRepo.deleteById(User_.id.getName(), id);
+        fleshPostUserCache();
     }
 
     @Override
     @Transactional
     public ResultMsg updateUser(UserDto userDto) {
         boolean isSLeader = false;
-
         User user = userRepo.findById(userDto.getId());
-        BeanCopierUtils.copyPropertiesIgnoreNull(userDto,user);
+        BeanCopierUtils.copyPropertiesIgnoreNull(userDto, user);
 
         // 清除已有role
         user.getRoles().clear();
@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
             roleNames.add(roleDto.getRoleName());
             if (role != null) {
                 user.getRoles().add(role);
-                if(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())){
+                if (EnumFlowNodeGroupName.VICE_DIRECTOR.getValue().equals(role.getRoleName())) {
                     isSLeader = true;
                 }
             }
@@ -175,14 +175,14 @@ public class UserServiceImpl implements UserService {
             Org o = orgRepo.findById(userDto.getOrgId());
             user.setOrg(o);
             //如果是分管领导，则设置默认分管部门类型
-            if(isSLeader){
+            if (isSLeader) {
                 user.setMngOrgType(Constant.OrgType.getValue(o.getName()));
             }
         }
-
         userRepo.save(user);
+        fleshPostUserCache();
         //this.updateActivitiUser(user.getId(), user.getLoginName(), user.getPassword(), roleNames);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"修改成功！");
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "修改成功！");
     }
 
     @Override
@@ -195,18 +195,18 @@ public class UserServiceImpl implements UserService {
         return userRepo.getUserRoles(userName);
     }
 
-    @Transactional
+    @Override
     public void changePwd(String password) {
-        String userName = SessionUtil.getLoginName();
-        User user = userRepo.findUserByName(userName);
+        User user = userRepo.getCacheUserById(SessionUtil.getUserId());
         if (user != null) {
             user.setPassword(password);
             userRepo.save(user);
-            logger.info(String.format("修改密码,用户名:%s", userName));
+            fleshPostUserCache();
+            logger.info(String.format("修改密码,用户名:%s", user.getDisplayName()));
         }
     }
 
-    @Transactional
+    @Override
     public UserDto findUserByName(String userName) {
         User user = userRepo.findUserByName(userName);
         UserDto userDto = new UserDto();
@@ -341,14 +341,15 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 根据ID查询用户
+     *
      * @param id
      * @param inclueOrg
      * @return
      */
     @Override
-    public UserDto findById(String id,boolean inclueOrg) {
+    public UserDto findById(String id, boolean inclueOrg) {
         UserDto userDto = new UserDto();
-        if(inclueOrg){
+        if (inclueOrg) {
             User user = userRepo.findById(id);
             BeanCopierUtils.copyProperties(user, userDto);
             if (user.getOrg() != null) {
@@ -356,17 +357,17 @@ public class UserServiceImpl implements UserService {
                 BeanCopierUtils.copyProperties(user.getOrg(), orgDto);
                 userDto.setOrgDto(orgDto);
             }
-            if(user.getRoles()!=null){
-            	List<RoleDto> roleDtoList=new ArrayList<>();
-            	for(Role role : user.getRoles()){
-            		RoleDto roleDto=new RoleDto();
-            		BeanCopierUtils.copyProperties(role, roleDto);
-            		roleDtoList.add(roleDto);
-            	}
-            	userDto.setRoleDtoList(roleDtoList);
+            if (user.getRoles() != null) {
+                List<RoleDto> roleDtoList = new ArrayList<>();
+                for (Role role : user.getRoles()) {
+                    RoleDto roleDto = new RoleDto();
+                    BeanCopierUtils.copyProperties(role, roleDto);
+                    roleDtoList.add(roleDto);
+                }
+                userDto.setRoleDtoList(roleDtoList);
             }
-        }else{
-            User user = userRepo.findById(User_.id.getName(),id);
+        } else {
+            User user = userRepo.findById(User_.id.getName(), id);
             BeanCopierUtils.copyProperties(user, userDto);
         }
 
@@ -379,11 +380,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getOrgDirector(String userId) {
         User user = userRepo.findOrgDirector(userId);
-        if(user == null){
-           return null;
+        if (user == null) {
+            return null;
         }
         UserDto userDto = new UserDto();
-        BeanCopierUtils.copyProperties(user,userDto);
+        BeanCopierUtils.copyProperties(user, userDto);
         return userDto;
     }
 
@@ -394,11 +395,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getOrgSLeader(String userId) {
         User user = userRepo.findOrgSLeader(userId);
-        if(user == null){
+        if (user == null) {
             return null;
         }
         UserDto userDto = new UserDto();
-        BeanCopierUtils.copyProperties(user,userDto);
+        BeanCopierUtils.copyProperties(user, userDto);
         return userDto;
     }
 
@@ -423,14 +424,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAllusers() {
-        List<User> users = userRepo.findAll();
+        List<User> users = findAllPostUser();
         List<UserDto> userDtos = new ArrayList<>();
-        if (users != null && users.size() > 0) {
+        if (Validate.isList(users)) {
             users.forEach(x -> {
                 UserDto userDto = new UserDto();
                 BeanCopierUtils.copyProperties(x, userDto);
-                userDto.setCreatedDate(x.getCreatedDate());
-                userDto.setModifiedDate(x.getModifiedDate());
                 userDtos.add(userDto);
             });
         }
@@ -438,23 +437,23 @@ public class UserServiceImpl implements UserService {
     }
 
 
-	@Override
-	public int findMaxUserNo() {
-		HqlBuilder sql=HqlBuilder.create();
-		sql.append("select max(to_number(userNo)) from cs_user");
-		return userRepo.returnIntBySql(sql);
-	}
+    @Override
+    public int findMaxUserNo() {
+        HqlBuilder sql = HqlBuilder.create();
+        sql.append("select max(to_number(userNo)) from cs_user");
+        return userRepo.returnIntBySql(sql);
+    }
 
 
-	@Override
-	public List<UserDto> findByOrgUserName(String orgId) {
-		
-	    HqlBuilder sqlBuilder = HqlBuilder.create();
+    @Override
+    public List<UserDto> findByOrgUserName(String orgId) {
+
+        HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" select loginName from cs_user where orgId = ");
         sqlBuilder.setParam("orgId", orgId);
-        List<User> users=  userRepo.findByHql(sqlBuilder);
+        List<User> users = userRepo.findByHql(sqlBuilder);
         List<UserDto> userDto = new ArrayList<UserDto>();
-        
+
         if (users != null && users.size() > 0) {
             users.forEach(x -> {
                 UserDto userDtos = new UserDto();
@@ -464,10 +463,10 @@ public class UserServiceImpl implements UserService {
                 userDto.add(userDtos);
             });
         }
-		return userDto;
-	}
+        return userDto;
+    }
 
-	/********************   以下方法主要是登录用  **********************/
+    /********************   以下方法主要是登录用  **********************/
     @Override
     public User findByName(String userName) {
         return userRepo.findUserByName(userName);
@@ -475,26 +474,26 @@ public class UserServiceImpl implements UserService {
 
 
     /**
-    * 查询所有用户显示名和id
-    */
+     * 查询所有用户显示名和id
+     */
     @Override
     public List<UserDto> getAllUserDisplayName() {
 //       User u =  userRepo.findById(SessionUtil.getUserId());
 
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select " +User_.id.getName() +"," + User_.displayName.getName()+" from cs_user where "+User_.loginName.getName()+"<>:loginName");
+        hqlBuilder.append("select " + User_.id.getName() + "," + User_.displayName.getName() + " from cs_user where " + User_.loginName.getName() + "<>:loginName");
 
-        hqlBuilder.setParam("loginName",SessionUtil.getLoginName());
+        hqlBuilder.setParam("loginName", SessionUtil.getLoginName());
 
         List<UserDto> userDtoList = new ArrayList<>();
 
-        if(SessionUtil.hashRole(EnumFlowNodeGroupName.DIRECTOR.getValue()) ||
+        if (SessionUtil.hashRole(EnumFlowNodeGroupName.DIRECTOR.getValue()) ||
                 SessionUtil.hashRole(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()) ||
                 SessionUtil.hashRole(EnumFlowNodeGroupName.DEPT_LEADER.getValue())
                 ) {//如果是领导，则根据所属角色选择代办代理人
             hqlBuilder.append(" and " + User_.id.getName() + " in(select users_id from CS_USER_CS_ROLE where roles_id =(");
-            hqlBuilder.append("select "+ Role_.id.getName()+ " from cs_role where ");
-            hqlBuilder.append(Role_.roleName.getName() +"=:roleName))");
+            hqlBuilder.append("select " + Role_.id.getName() + " from cs_role where ");
+            hqlBuilder.append(Role_.roleName.getName() + "=:roleName))");
             if (SessionUtil.hashRole(EnumFlowNodeGroupName.DIRECTOR.getValue())) {//主任
                 hqlBuilder.setParam("roleName", EnumFlowNodeGroupName.DIRECTOR.getValue());
             }
@@ -505,18 +504,18 @@ public class UserServiceImpl implements UserService {
             if (SessionUtil.hashRole(EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {//部门负责人
                 hqlBuilder.setParam("roleName", EnumFlowNodeGroupName.DEPT_LEADER.getValue());
             }
-        }else{//其他，则只能选择本部门工作人员作为代办代理
+        } else {//其他，则只能选择本部门工作人员作为代办代理
             hqlBuilder.append(" and orgId=(");
-            hqlBuilder.append("select orgId from cs_user where " + User_.id.getName()+"=:userId)" );
-            hqlBuilder.setParam("userId" , SessionUtil.getUserId());
+            hqlBuilder.append("select orgId from cs_user where " + User_.id.getName() + "=:userId)");
+            hqlBuilder.setParam("userId", SessionUtil.getUserId());
         }
         List<Object[]> list = userRepo.getObjectArray(hqlBuilder);
-        if(!list.isEmpty()){
-            for(int i=0 ; i<list.size();i++){
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
                 Object[] userNames = list.get(i);
                 UserDto userDto = new UserDto();
-                userDto.setId((String)userNames[0]);
-                userDto.setDisplayName((String)userNames[1]);
+                userDto.setId((String) userNames[0]);
+                userDto.setDisplayName((String) userNames[1]);
                 userDtoList.add(userDto);
             }
         }
@@ -526,27 +525,27 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 保存代办人
-     * */
+     */
     @Override
-    @Transactional
     public void saveTakeUser(String takeUserId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("update "+User.class.getSimpleName()+" set "+User_.takeUserId.getName()+"=:takeUserId where "+User_.loginName.getName()+"=:loginName");
-        hqlBuilder.setParam("takeUserId",takeUserId);
-        hqlBuilder.setParam("loginName",SessionUtil.getLoginName());
+        hqlBuilder.append("update " + User.class.getSimpleName() + " set " + User_.takeUserId.getName() + "=:takeUserId where " + User_.id.getName() + "=:userId ");
+        hqlBuilder.setParam("takeUserId", takeUserId);
+        hqlBuilder.setParam("userId", SessionUtil.getUserId());
         userRepo.executeHql(hqlBuilder);
+        fleshPostUserCache();
     }
 
     @Override
     public UserDto getTakeUserByLoginName() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select "+User_.displayName.getName()+" from cs_user where id=(");
-        hqlBuilder.append("select "+User_.takeUserId.getName()+" from cs_user where "+User_.loginName.getName()+"=:loginName)");
-        hqlBuilder.setParam("loginName",SessionUtil.getLoginName());
+        hqlBuilder.append("select " + User_.displayName.getName() + " from cs_user where id=(");
+        hqlBuilder.append("select " + User_.takeUserId.getName() + " from cs_user where " + User_.loginName.getName() + "=:loginName)");
+        hqlBuilder.setParam("loginName", SessionUtil.getLoginName());
         List<Object[]> list = userRepo.getObjectArray(hqlBuilder);
         UserDto userDto = new UserDto();
-        if(!list.isEmpty()){
-            Object[] obj= list.get(0);
+        if (!list.isEmpty()) {
+            Object[] obj = list.get(0);
             userDto.setDisplayName(obj[0].toString());
         }
         return userDto;
@@ -554,15 +553,16 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 取消代办人
-     * */
+     */
     @Override
     @Transactional
     public void cancelTakeUser() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("update "+User.class.getSimpleName()+" set "+User_.takeUserId.getName()+"=:takeUserId where "+User_.loginName.getName()+"=:loginName");
-        hqlBuilder.setParam("takeUserId","");
-        hqlBuilder.setParam("loginName",SessionUtil.getLoginName());
+        hqlBuilder.append("update " + User.class.getSimpleName() + " set " + User_.takeUserId.getName() + "=:takeUserId where " + User_.loginName.getName() + "=:loginName");
+        hqlBuilder.setParam("takeUserId", "");
+        hqlBuilder.setParam("loginName", SessionUtil.getLoginName());
         userRepo.executeHql(hqlBuilder);
+        fleshPostUserCache();
     }
 
     @Override
@@ -588,7 +588,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resetPwd(String ids) {
         List<User> userList = userRepo.getCacheUserListById(ids);
-        for(User u : userList){
+        for (User u : userList) {
             u.setPassword(Constant.PASSWORD);
             u.setModifiedBy(SessionUtil.getDisplayName());
             u.setModifiedDate(new Date());

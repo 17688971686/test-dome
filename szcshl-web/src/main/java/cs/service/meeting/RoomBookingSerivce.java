@@ -36,4 +36,11 @@ public interface RoomBookingSerivce {
     List<Object[]> findWeekRoom(String date, String rbType, String mrId);
 
     RoomBookingDto initDefaultValue(String businessId, String businessType);
+
+    /**
+     * 查询日程数据源
+     * @param bookInfo
+     * @return
+     */
+    List<RoomBookingDto> queryBookInfo(RoomBookingDto bookInfo);
 }

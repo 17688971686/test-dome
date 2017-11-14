@@ -5,11 +5,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.Constant;
+import cs.common.ResultMsg;
+import cs.common.cache.CacheConstant;
+import cs.common.cache.CacheManager;
+import cs.common.cache.ICache;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.meeting.MeetingRoom_;
 import cs.domain.meeting.RoomBooking_;
+import cs.domain.sys.User;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -58,8 +64,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
     }
 
     @Override
-    @Transactional
-    public void createMeeting(MeetingRoomDto meetingDto) {
+    public ResultMsg createMeeting(MeetingRoomDto meetingDto) {
         //判断会议室是否已经存在
         Criteria criteria = meetingRoomRepo.getExecutableCriteria();
         criteria.setProjection(Projections.rowCount());
@@ -83,15 +88,23 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
             mr.setCreatedBy(SessionUtil.getLoginName());
             mr.setModifiedBy(SessionUtil.getLoginName());
             meetingRoomRepo.save(mr);
+            fleshMeetingCache();
             logger.info(String.format("创建会议室，会议名:%s", meetingDto.getMrName()));
+
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"添加成功！");
         } else {
-            throw new IllegalArgumentException(String.format("会议室名称：%s 已经存在，请重新输入", meetingDto.getMrName()));
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),String.format("会议室名称：%s 已经存在，请重新输入", meetingDto.getMrName()));
+            //throw new IllegalArgumentException(String.format("会议室名称：%s 已经存在，请重新输入", meetingDto.getMrName()));
         }
     }
 
+    /**
+     * 删除会议室
+     * @param id
+     * @return
+     */
     @Override
-    @Transactional
-    public void deleteMeeting(String id) {
+    public ResultMsg deleteMeeting(String id) {
         List<String> ids = StringUtil.getSplit(id, ",");
         Criteria criteria = roomBookingRepo.getExecutableCriteria();
         criteria.setProjection(Projections.rowCount());
@@ -104,15 +117,22 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         //判断有没有预定的信息，有则不给删除
         if (count == 0) {
             meetingRoomRepo.deleteById(MeetingRoom_.id.getName(), id);
+            fleshMeetingCache();
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
         } else {
-            throw new IllegalArgumentException("会议室存在预定信息，请清除之后再执行删除操作！");
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"会议室存在预定信息，请清除之后再执行删除操作！");
+            //throw new IllegalArgumentException("会议室存在预定信息，请清除之后再执行删除操作！");
         }
 
     }
 
+    /**
+     * 更改会议室
+     * @param meetingDto
+     * @return
+     */
     @Override
-    @Transactional
-    public void updateMeeting(MeetingRoomDto meetingDto) {
+    public ResultMsg updateMeeting(MeetingRoomDto meetingDto) {
         MeetingRoom meeting = meetingRoomRepo.findById(meetingDto.getId());
         meeting.setAddr(meetingDto.getAddr());
         meeting.setCapacity(meetingDto.getCapacity());
@@ -125,12 +145,13 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         meeting.setRemark(meetingDto.getRemark());
         meeting.setModifiedBy(SessionUtil.getLoginName());
         meetingRoomRepo.save(meeting);
+        fleshMeetingCache();
         logger.info(String.format("更新会议室,会议室名:%s", meetingDto.getMrName()));
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
 
     //更新会议室使用状态
     @Override
-    @Transactional
     public void roomUseState(MeetingRoomDto meetingDto) {
         Date now = new Date();
         MeetingRoom meeting = meetingRoomRepo.findById(meetingDto.getId());
@@ -138,6 +159,7 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         meeting.setModifiedBy(SessionUtil.getLoginName());
         meeting.setModifiedDate(now);
         meetingRoomRepo.save(meeting);
+        fleshMeetingCache();
         logger.info(String.format("更新会议室使用状态,会议室名:%s", meetingDto.getMrName()));
     }
 
@@ -148,7 +170,8 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
      */
     @Override
     public List<MeetingRoomDto> findAll() {
-        List<MeetingRoom> allList = meetingRoomRepo.findAll();
+        ICache cache = CacheManager.getCache();
+        List<MeetingRoom> allList = (List<MeetingRoom>) cache.get(CacheConstant.MEETING_CACHE);
         if (Validate.isList(allList)) {
             List<MeetingRoomDto> resultList = new ArrayList<>(allList.size());
             allList.forEach(al -> {
@@ -161,11 +184,26 @@ public class MeetingRoomServiceImpl implements MeetingRoomService {
         return null;
     }
 
+    /**
+     * 刷新缓存
+     */
+    @Override
+    public void fleshMeetingCache() {
+        meetingRoomRepo.fleshMeetingCache();
+    }
+
+    /**
+     * 根据ID查询会议信息
+     * @param id
+     * @return
+     */
     @Override
     public MeetingRoomDto findByIdMeeting(String id) {
-        MeetingRoom meeting = meetingRoomRepo.findById(id);
         MeetingRoomDto meetingDto = new MeetingRoomDto();
-        BeanCopierUtils.copyProperties(meeting, meetingDto);
+        MeetingRoom meeting = meetingRoomRepo.findMeetingByCacheId(id);
+        if(meeting != null){
+            BeanCopierUtils.copyProperties(meeting, meetingDto);
+        }
         return meetingDto;
     }
 

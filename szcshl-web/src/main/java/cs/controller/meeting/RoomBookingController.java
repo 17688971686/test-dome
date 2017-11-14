@@ -34,7 +34,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(name = "会议室预定", path = "room")
-@MudoleAnnotation(name = "会议室管理",value = "permission#meeting")
+@MudoleAnnotation(name = "会议室管理", value = "permission#meeting")
 public class RoomBookingController {
 
     private String ctrlName = "room";
@@ -44,13 +44,10 @@ public class RoomBookingController {
     private UserService userService;
 
     @RequiresAuthentication
-    //@RequiresPermissions("room##get")
-    @RequestMapping(name = "获取会议预定数据", path = "", method = RequestMethod.GET)
-    public @ResponseBody
-    PageModelDto<RoomBookingDto> get(HttpServletRequest request) throws ParseException {
-        ODataObj oDataObj = new ODataObj(request);
-        PageModelDto<RoomBookingDto> roomDtos = roomBookingSerivce.get(oDataObj);
-        return roomDtos;
+    @RequestMapping(name = "获取会议预定数据", path = "queryBookInfo", method = RequestMethod.POST)
+    public @ResponseBody List<RoomBookingDto> queryBookInfo(@RequestBody RoomBookingDto bookInfo){
+        List<RoomBookingDto> roomDtoList = roomBookingSerivce.queryBookInfo(bookInfo);
+        return roomDtoList;
     }
 
     @RequiresAuthentication
@@ -84,8 +81,8 @@ public class RoomBookingController {
     @RequiresAuthentication
     @RequestMapping(name = "会议室预定初始化值", path = "initDefaultValue", method = RequestMethod.POST)
     @ResponseBody
-    public RoomBookingDto initDefaultValue(String businessId,String businessType) {
-        return roomBookingSerivce.initDefaultValue(businessId,businessType);
+    public RoomBookingDto initDefaultValue(String businessId, String businessType) {
+        return roomBookingSerivce.initDefaultValue(businessId, businessType);
     }
 
     @RequiresAuthentication
@@ -101,18 +98,18 @@ public class RoomBookingController {
     @RequiresAuthentication
 //    @RequiresPermissions("room#exportThisWeekStage#get")
     @RequestMapping(name = "导出本周评审会议安排", path = "exportThisWeekStage", method = RequestMethod.GET)
-    public void exportThisWeekStage(HttpServletRequest request , HttpServletRequest req, HttpServletResponse resp, @RequestParam String currentDate, @RequestParam String rbType, @RequestParam String mrId , String fileName) {
+    public void exportThisWeekStage(HttpServletRequest request, HttpServletRequest req, HttpServletResponse resp, @RequestParam String currentDate, @RequestParam String rbType, @RequestParam String mrId, String fileName) {
 //		roomBookingSerivce.exportThisWeekStage();
         String date = currentDate.replaceAll("/", "-");
         InputStream is = null;
         ServletOutputStream out = null;
-        if(!Validate.isString(fileName)){
+        if (!Validate.isString(fileName)) {
             fileName = "深圳市政府投资项目评审中心会议安排";
         }
         try {
 //            String title = new String(fileName.getBytes("ISO-8859-1"),"UTF-8");
-            String title = java.net.URLDecoder.decode(fileName,"UTF-8");//解码，需要抛异常
-            File file =  roomBookingSerivce.exportRoom(currentDate, rbType, mrId);
+            String title = java.net.URLDecoder.decode(fileName, "UTF-8");//解码，需要抛异常
+            File file = roomBookingSerivce.exportRoom(currentDate, rbType, mrId);
             is = new FileInputStream(file);
             resp.setCharacterEncoding("utf-8");
             resp.setContentType("application/msword");
@@ -123,14 +120,12 @@ public class RoomBookingController {
             byte[] buffer = new byte[512];  // 缓冲区
             int bytesToRead = -1;
             // 通过循环将读入的Word文件的内容输出到浏览器中
-            while((bytesToRead = is.read(buffer)) != -1) {
+            while ((bytesToRead = is.read(buffer)) != -1) {
                 out.write(buffer, 0, bytesToRead);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
 
@@ -179,6 +174,9 @@ public class RoomBookingController {
     @RequestMapping(name = "创建会议室预定", path = "addRoom", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg save(@RequestBody RoomBookingDto roomDto) {
+        if(Validate.isString(roomDto.getBookId()) && !Validate.isString(roomDto.getId())){
+            roomDto.setId(roomDto.getBookId());
+        }
         return roomBookingSerivce.saveRoom(roomDto);
     }
 
@@ -187,6 +185,9 @@ public class RoomBookingController {
     @RequestMapping(name = "保存会议室预定", path = "saveRoom", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg saveRoom(@RequestBody RoomBookingDto roomDto) {
+        if(Validate.isString(roomDto.getBookId()) && !Validate.isString(roomDto.getId())){
+            roomDto.setId(roomDto.getBookId());
+        }
         return roomBookingSerivce.saveRoom(roomDto);
     }
 

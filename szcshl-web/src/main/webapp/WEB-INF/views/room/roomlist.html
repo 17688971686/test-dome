@@ -63,26 +63,30 @@
     </div>
     <div class="breadcrumb">
         会议室查询：
-        <select ng-model="vm.mrID" name="mrID" ng-change="vm.findMeeting()">
-            <option ng-repeat="x in vm.meetings" value="{{x.id}}" ng-selected="vm.mrID == x.id">{{x.addr}}</option>
+        <select ng-model="vm.search.mrID" name="mrID" ng-change="vm.findMeeting()">
+            <option ng-repeat="x in vm.meetings" value="{{x.id}}" ng-selected="vm.search.mrID == x.id">{{x.addr}}</option>
         </select>
     </div>
+
     <div class="label-default" style="width: 100%;padding:3px 10px;font-size: 12px;">
         双击时间段进行会议室预定或者修改！
     </div>
-    <div kendo-scheduler k-options="vm.schedulerOptions" id="scheduler"></div>
+
+    <!-- 行程控件 -->
+    <div id="scheduler"></div>
 
 </div>
 
 <script id="event-template" type="text/x-kendo-template">
-<#--    <p style="padding:0;margin: 0;padding-left: 5px;">会议室名称：#: title #</p>-->
-    <p style="padding:0;margin: 0;padding-left: 5px;">会议名称：#: rbName #</p>
-    <p style="padding:0;margin: 0;padding-left: 5px;">会议预定人：#: dueToPeople #</p>
+    <p style="padding:0;margin: 0;padding-left: 5px;">
+        <div>#: rbName #</div>
+        <div>【#: dueToPeople #】</div>
+    </p>
    <!-- <p style="padding:0;margin: 0;padding-left: 5px;">会议内容：#: content #</p>-->
 
 </script>
 
-<script id="customEditorTemplate" type="text/x-kendo-template">
+<div id="customEditorTemplate" type="text/x-kendo-template"style="display: none;">
     <form id="formRoom" name="formRoom" style="margin:0px 10px;">
         <!-- 评审部门 -->
         <input type="hidden" class="form-control input-sm"  name="id" id="bookId" data-bind="value:bookId">
@@ -98,26 +102,6 @@
                 </td>
             </tr>
             <tr>
-                <td class="text-center">会议地点<span class="required">*</span></td>
-                <td>
-                    <select class="formInput" id="mrID" name="mrID" ng-model="vm.model.mrID" data-val="true"
-                            data-bind="value:mrID" data-val-required="必填">
-                        <option ng-repeat="x in vm.meetings" value="{{x.id}}" ng-selected="vm.model.mrID == x.id">
-                            {{x.addr}}
-                        </option>
-                    </select>
-                    <span data-valmsg-for="mrID" data-valmsg-replace="true" class="errors"></span>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">会议主持人<span class="required">*</span></td>
-                <td>
-                    <input type="text" class="formInput"  name="host" id="host"
-                           data-bind="value:host" data-val="true" data-val-required="必填" >
-                    <span data-valmsg-for="host" data-valmsg-replace="true" class="errors"></span>
-                </td>
-            </tr>
-            <tr>
                 <td class="text-center">会议预定人<span class="required">*</span></td>
                 <td>
                     <input type="text" class="formInput"  name="dueToPeople" id="dueToPeople"
@@ -128,8 +112,8 @@
             <tr>
                 <td class="text-center">会议日期<span class="required">*</span></td>
                 <td>
-                    <input kendo-date-picker k-format="'yyyy-MM-dd'" data-bind="value:start,invisible:isAllDay"
-                           id="rbDay" name="rbDay"  data-val="true"
+                    <input kendo-date-picker k-format="'yyyy-MM-dd'" data-bind="value:rbDay"
+                           id="rbDay" name="rbDay"  data-val="true" style="width: 100px;"
                            data-val-required="时间段不能为空"/>
                     <span data-valmsg-for="rbDay" data-valmsg-replace="true" class="errors"></span>
                 </td>
@@ -138,15 +122,15 @@
                 <td class="text-center">开始时间<span class="required">*</span></td>
                 <td>
                     <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime"
-                           data-bind="value:start,invisible:isAllDay" name="beginTime" id="beginTime"/>
+                           data-bind="value:start" name="beginTime" id="beginTime" style="width: 100px;"/>
                     <span data-valmsg-for="beginTime" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
                 <td class="text-center">结束时间<span class="required">*</span></td>
                 <td>
-                    <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime"
-                           data-bind="value:end,invisible:isAllDay" name="endTime" id="endTime" data-datecompare-msg="结束时间必须大于开始时间！"/>
+                    <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime" style="width: 100px;"
+                           data-bind="value:end" name="endTime" id="endTime" data-datecompare-msg="结束时间必须大于开始时间！"/>
                     <span data-valmsg-for="endTime" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
@@ -166,4 +150,4 @@
             </tr>
         </table>
     </form>
-</script>
+</div>

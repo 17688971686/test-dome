@@ -3,6 +3,7 @@ package cs.listener;
 import cs.common.utils.QuartzManager;
 import cs.common.utils.Validate;
 import cs.domain.sys.Quartz;
+import cs.service.meeting.MeetingRoomService;
 import cs.service.sys.OrgDeptService;
 import cs.service.sys.QuartzService;
 import cs.service.sys.UserService;
@@ -28,11 +29,12 @@ public class SysStartUpListener implements ApplicationListener {
 
     @Autowired
     private QuartzService quartzService;
-
     @Autowired
     private UserService userService;
     @Autowired
     private OrgDeptService orgDeptService;
+    @Autowired
+    private MeetingRoomService meetingRoomService;
 
     private boolean isInit = false;
     @Override
@@ -45,6 +47,8 @@ public class SysStartUpListener implements ApplicationListener {
                     userService.fleshPostUserCache();
                     //2、添加部门缓存
                     orgDeptService.fleshOrgDeptCache();
+                    //3、会议室放到缓存
+                    meetingRoomService.fleshMeetingCache();
                     //3、启动默认启动的定时器
                     List<Quartz> quartzList = quartzService.findDefaultQuartz();
                     if(Validate.isList(quartzList)){

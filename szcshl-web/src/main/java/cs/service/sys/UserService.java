@@ -45,6 +45,10 @@ public interface UserService {
 
     UserDto getOrgSLeader(String userId);
 
+    /**
+     * 查询所有在职用户
+     * @return
+     */
     List<UserDto> findAllusers();
 
 	int findMaxUserNo();

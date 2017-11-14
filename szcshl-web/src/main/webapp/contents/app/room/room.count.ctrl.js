@@ -1,58 +1,36 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('roomCountCtrl', roomCount);
+    angular.module('app').controller('roomCountCtrl', roomCount);
 
-    roomCount.$inject = ['$location','roomCountSvc']; 
+    roomCount.$inject = ['adminSvc', 'roomCountSvc'];
 
-    function roomCount($location, roomCountSvc) {
+    function roomCount(adminSvc, roomCountSvc) {
         /* jshint validthis:true */
         var vm = this;
         vm.title = '预定会议统计列表';
-        
-        vm.queryRoomCount = function(){
-        	roomCountSvc.queryRoomCount(vm);
+
+        vm.queryRoomCount = function () {
+            roomCountSvc.queryRoomCount(vm);
         }
-        vm.del = function (id) {        	
-             common.confirm({
-            	 vm:vm,
-            	 title:"",
-            	 msg:"确认删除数据吗？",
-            	 fn:function () {
-                  	$('.confirmDialog').modal('hide');             	
-                    roomCountSvc.deleteroomCount(vm,id);
-                 }
-             })
+
+        vm.ResetRoomCount = function () {
+            roomCountSvc.cleanValue();
         }
-        vm.ResetRoomCount=function(){
-        	roomCountSvc.cleanValue();
-        }
-        vm.dels = function () {     
-        	var selectIds = common.getKendoCheckId('.grid');
-        	//alert(selectIds.length);
-            if (selectIds.length == 0) {
-            	common.alert({
-                	vm:vm,
-                	msg:'请选择数据'
-                	
-                });
-            } else {
-            	var ids=[];
-                for (var i = 0; i < selectIds.length; i++) {
-                	ids.push(selectIds[i].value);
-				}  
-                var idStr=ids.join(',');
-                vm.del(idStr);
-            }   
-       }
+
         activate();
         function activate() {
             roomCountSvc.grid(vm);
+            //会议室
             roomCountSvc.roomList(vm);
-            roomCountSvc.findAllOrg(vm);
-            roomCountSvc.findAllRoom(vm);
+            //用户
+            roomCountSvc.findAllUsers(vm);
+            //部门
+            adminSvc.initSignList(function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    vm.orgDeptList = data.reObj;
+                }
+            });
         }
     }
 })();
