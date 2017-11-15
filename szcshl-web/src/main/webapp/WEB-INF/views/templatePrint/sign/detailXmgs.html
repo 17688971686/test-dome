@@ -1,54 +1,16 @@
 <meta charset="UTF-8">
 <!--S_ 项目概算 -->
 <!-- s table -->
-<style>
-    #spdj-tabel{
-        width: 100%;
-    }
-    #spdj-tabel p{
-        margin:0 0 5px;
-    }
-    #spdj-tabel td{
-        text-align: center;
-        height:30px;
-        border:1px solid #666;
-        border-collapse:collapse;
-    }
-    #spdj-tabel .child-table{
-        width: 100%;
-        margin-left:10px;
-    }
-    #spdj-tabel .child-table td{
-        border:none;
-    }
-    #spdj-tabel .child-table th{
-        text-align: center;
-    }
-    #spdj-tabel .child-table input[type=checkbox]{
-        width: 20px;
-        height: 20px;
-    }
-    #spdj-tabel .tr-hidden td{
-        height: 0;
-        border:none;
-    }
-    #spdj-tabel .child-table .num {
-        width:28px;
-        height:28px;
-        text-align: center;
-        line-height:28px;
-    }
-    #spdj-tabel .child-table .item-name{
-        text-align: left;
-    }
-</style>
+<!--<style>
+   p{
+      font-size: 12px;
+  }
+</style>-->
 
 <table  class="print-table">
-    <caption class="text-center h3">
-        <strong>
-            <p>深圳市政府投资项目评审中心 </p>
+    <caption class="title">
+            <p style="padding-top:13px;"> 深圳市政府投资项目评审中心 </p>
             <p>{{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}</p>
-        </strong>
     </caption>
     <caption>
         <span style="width: 200px;float: left;padding: 0 10px;">QR-4.7-01-A2</span>
@@ -311,12 +273,12 @@
     </tr>
     <tr>
         <td>部长处理意见</td>
-        <td colspan="5" style="padding: 10px 10px 0">
-            <p class="text-left"> {{vm.model.ministerhandlesug}}</p>
-            <p class="text-right" ng-if="vm.model.ministerName">签名：{{vm.model.ministerName}}</p>
-            <p class="text-right" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
+        <td  colspan="5" style="padding: 8px 10px 0">
+            <p class="text-left" style="height: 10px;"> {{vm.model.ministerhandlesug}}</p>
+            <p class="text-right" style="height: 10px;"  ng-if="vm.model.ministerName" >签名：{{vm.model.ministerName}}</p>
+            <p class="text-right" style="height: 10px;" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
         </td>
     </tr>
 </table>
-<p>送件人签名：{{vm.model.sendusersign}}</p>
+<p style="line-height:20px;">送件人签名：{{vm.model.sendusersign}}</p>
 <!--E 项目概算-->

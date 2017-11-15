@@ -534,13 +534,14 @@ div.k-window{
 /*调整打印样式*/
 .print-table{
     width: 100%;
+    font-size:12px;
 }
 .print-table .title{
     font-family: simun;
     text-align: center;
-    font-size:24px;
+    font-size:20px;
     font-weight: 500;
-    line-height:40px;
+    line-height:20px;
 }
 .print-table th{
     text-align: center;
@@ -575,6 +576,7 @@ div.k-window{
 }
 .child-table{
     width: 100%;
+    font-size: 13px;
 }
 .child-table td{
     border:none;
