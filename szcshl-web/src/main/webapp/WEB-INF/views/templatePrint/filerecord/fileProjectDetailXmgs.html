@@ -333,11 +333,11 @@
         </td>
     </tr>
     <tr>
-        <td rowspan="2" width="5%">图纸</td>
-        <td  width="10%" class="text-center">专业</td>
-        <td colspan="7" width="85%">
+        <td rowspan="4" width="5%">图纸</td>
+        <td colspan="8" width="95%">
             <table class="child-table">
                 <tr>
+                    <td  width="10%" class="text-center">专业</td>
                     <td width="16%" >
                         建筑<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.architecture" name="architecture"  ng-true-value="9" ng-false-value="0">
                     </td>
@@ -357,14 +357,23 @@
                         弱电<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.lightCurrent" name="lightCurrent"  ng-true-value="9" ng-false-value="0">
                     </td>
                 </tr>
+                <tr>
+                    <td>册/张数</td>
+                    <td>{{vm.fileRecord.architectureCount}}</td>
+                    <td>{{vm.fileRecord.constructionCount}}</td>
+                    <td>{{vm.fileRecord.drainAwayWaterCount}}</td>
+                    <td>{{vm.fileRecord.conditionerCount}}</td>
+                    <td>{{vm.fileRecord.highVoltageCount}}</td>
+                    <td>{{vm.fileRecord.lightCurrentCount}}</td>
+                </tr>
             </table>
         </td>
     </tr>
     <tr>
-        <td  width="10%"  class="text-center">专业</td>
-        <td colspan="7" width="85%">
+        <td colspan="8" width="85%">
             <table class="child-table">
                 <tr>
+                    <td  width="10%"  class="text-center">专业</td>
                     <td width="16%" >
                         道路<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.roadway" name="roadway"  ng-true-value="9" ng-false-value="0">
                     </td>
@@ -383,6 +392,15 @@
                     <td width="16%" >
                         其他<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.fieOther" name="lightCurrent"  ng-true-value="9" ng-false-value="0">
                     </td>
+                </tr>
+                <tr>
+                    <td>册/张数</td>
+                    <td>{{vm.fileRecord.roadwayCount}}</td>
+                    <td>{{vm.fileRecord.bridgeCount}}</td>
+                    <td>{{vm.fileRecord.gardensCount}}</td>
+                    <td>{{vm.fileRecord.fireFightingCount}}</td>
+                    <td>{{vm.fileRecord.combustiblegasCount}}</td>
+                    <td>{{vm.fileRecord.fieOtherCount}}</td>
                 </tr>
             </table>
         </td>

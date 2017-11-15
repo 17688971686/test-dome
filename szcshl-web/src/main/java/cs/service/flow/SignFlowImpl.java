@@ -186,6 +186,7 @@ public class SignFlowImpl implements IFlow {
                 }
                 break;
             default:
+                ;
         }
         return businessMap;
     }

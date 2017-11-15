@@ -53,7 +53,12 @@
         vm.querySign = function(){
             vm.gridOptions.dataSource.read();
         }
-
+        /**
+         * 重置查询条件
+         */
+        vm.formReset = function(){
+            vm.model = {};
+        }
         /**
          * 流程激活
          * @param signid

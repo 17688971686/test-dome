@@ -40,8 +40,8 @@ public interface ExpertReviewService {
 
 	/**
 	 * 查询专家评审费超期发放的信息
-	 * @param businessType
+	 * @param oDataObj
 	 * @return
 	 */
-	PageModelDto<ExpertReviewDto> findOverTimeReview(String businessType);
+	PageModelDto<ExpertReviewDto> findOverTimeReview(ODataObj oDataObj);
 }

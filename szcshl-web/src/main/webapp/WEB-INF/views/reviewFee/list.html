@@ -10,11 +10,14 @@
     </ol>
 
     <form id="reviewFeeForm" name="reviewFeeForm" class="well well-sm">
-        <span class="help-inline">业务类型：</span>
+        <span class="help-inline">评审费标题：</span>
+        <input type="text" ng-model="vm.reviewFee.reviewTitle" operator="like" name="reviewTitle" id="reviewTitle" placeholder="请输入">
+
+        <span class="help-inline">评审费类型：</span>
         <select  operator="eq" name="businessType" id="businessType" ng-model="vm.reviewFee.businessType">
             <option value="">请选择</option>
-            <option value="TOPIC">课题研究</option>
-            <option value="SIGN">项目签收</option>
+            <option value="SIGN">项目评审费</option>
+            <option value="TOPIC">课题评审费</option>
         </select>
         <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.query()">
             <span class="glyphicon glyphicon-search"></span>查询</button>

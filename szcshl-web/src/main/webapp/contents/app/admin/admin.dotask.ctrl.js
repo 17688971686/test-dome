@@ -13,6 +13,5 @@
         function activate() {
             adminSvc.doingTaskGrid(vm);
         }
-
     }
 })();

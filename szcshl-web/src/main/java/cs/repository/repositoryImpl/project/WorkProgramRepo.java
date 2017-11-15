@@ -15,6 +15,13 @@ public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
 
     void initExpertCost(String id);
 
+    /**
+     * 把所有被合并的项目改为合并评审次项目，同时评审方式也要跟主项目一致
+     * @param signId
+     * @param isSigle
+     * @param isMain
+     * @param mergeIds
+     */
     void updateWPReivewType(String signId,String isSigle, String isMain, String mergeIds);
 
     /**

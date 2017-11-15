@@ -12,16 +12,12 @@ import cs.domain.expert.ExpertSelected_;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
-import cs.domain.sys.Org;
-import cs.domain.sys.Org_;
-import cs.domain.sys.User_;
 import cs.model.expert.ExpertDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.AbstractRepository;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
-import cs.repository.repositoryImpl.sys.OrgRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +30,7 @@ import java.util.List;
 public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> implements WorkProgramRepo {
 
     @Autowired
-    private OrgRepo orgRepo;
+    private SignMergeRepo signMergeRepo;
     @Autowired
     private RoomBookingRepo roomBookingRepo;
     @Autowired
@@ -116,9 +112,15 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
             sqlBuilder.append(","+WorkProgram_.reviewType.getName()+" = (select wp.reviewType from cs_work_program wp where wp.signid =:signid and wp.branchId = :branchId ) ");
             sqlBuilder.setParam("signid",signId);
             sqlBuilder.setParam("branchId", FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+
+        //单个评审或者单个发文，还要删除合并表对应的记录
+        }else if(Constant.MergeType.REVIEW_SIGNLE.getValue().equals(isSigle) || Constant.MergeType.DIS_SINGLE.getValue().equals(isSigle)){
+            HqlBuilder sqlBuilder1 = HqlBuilder.create();
+            sqlBuilder1.append("delete from CS_SIGN_MERGE ");
+            sqlBuilder1.bulidPropotyString("where",SignMerge_.mergeId.getName(),mergeIds);
+            signMergeRepo.executeSql(sqlBuilder1);
         }
         sqlBuilder.bulidPropotyString("where","signid",mergeIds);
-
         executeSql(sqlBuilder);
     }
 

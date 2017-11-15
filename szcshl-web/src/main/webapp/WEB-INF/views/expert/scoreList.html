@@ -9,46 +9,37 @@
         <li class="active">{{vm.title}}</li>
     </ol>
 
-    <div class="toolbar">
-        <button class="btn btn-sm btn-success" ng-click="vm.search()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>查询</button>
-        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()" > <span class="glyphicon glyphicon-repeat"></span>重置</button>
+    <div class="well well-sm">
+        <form id="searchform" name="searchform">
+            <span class="help-inline">姓名：</span>
+            <input name="name" style="width: 100px;" type="text"  ng-model="vm.selectHis.epName" />
+
+            <span class="help-inline">会议日期：</span>
+            <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.selectHis.beginTime" />
+            至
+            <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.selectHis.endTime" />
+
+            <span class="help-inline">评审阶段：</span>
+            <select name="reviewStage" ng-model="vm.selectHis.reviewStage">
+                <option value="">请选择</option>
+                <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
+            </select>
+
+            <span class="help-inline">评分：</span>
+            <select name="score" ng-model="vm.selectHis.score">
+                <option value="">请选择</option>
+                <option value="1">1星</option>
+                <option value="2">2星</option>
+                <option value="3">3星</option>
+                <option value="4">4星</option>
+                <option value="5">5星</option>
+            </select>
+
+            <button class="btn btn-sm btn-success" ng-click="vm.search()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>查询</button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.formReset()" > <span class="glyphicon glyphicon-repeat"></span>重置</button>
+        </form>
     </div>
 
-    <form id="searchform" name="searchform" class="breadcrumb">
-        <table style="width:100%">
-            <tr>
-                <td class="text-right" style="width:60px;">姓名</td>
-                <td style="width: 5%;">
-                    <input name="name" type="text"  ng-model="vm.selectHis.epName" />
-                </td>
-                <td class="text-right" style="width:80px;">会议日期</td>
-                <td colspan="2">
-                    <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.selectHis.beginTime" />
-                    -
-                    <input style="width: 130px;" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.selectHis.endTime" />
-                </td>
-                <td class="text-right" style="width:80px;">评审阶段</td>
-                <td style="width: 10%">
-                    <select name="reviewStage" ng-model="vm.selectHis.reviewStage">
-                        <option value="">请选择</option>
-                        <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
-                    </select>
-                </td>
-
-                <td class="text-right" style="width:80px;">评分大于</td>
-                <td style="width: 10%">
-                    <select name="score" ng-model="vm.selectHis.score">
-                        <option value="">请选择</option>
-                        <option value="1">1星</option>
-                        <option value="2">2星</option>
-                        <option value="3">3星</option>
-                        <option value="4">4星</option>
-                        <option value="5">5星</option>
-                    </select>
-                </td>
-            </tr>
-        </table>
-    </form>
 
     <div class="table-responsive" style="max-height: 800px; overflow-y: scroll;">
         <table class="table table-bordered">

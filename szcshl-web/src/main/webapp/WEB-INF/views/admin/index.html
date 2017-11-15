@@ -202,10 +202,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="assistUnit#html/assistUnitList#get">
                                 <li><a href="javascript:void(0)" ui-sref="assistUnit">协审单位管理</a></li>
                             </@shiro.hasPermission>
-
-                            <@shiro.hasPermission name="addSuppLetter#html/suppLetterList#get">
-                            <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补资料函查询</a></li>
-                        </@shiro.hasPermission>
                         </ul>
                     </li>
                 </@shiro.hasPermission>
@@ -336,12 +332,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="signView#html/signList#get">
                                 <li><a href="javascript:void(0)" ui-sref="signList">项目查询统计 </a></li>
                             </@shiro.hasPermission>
-
                             <@shiro.hasPermission name="signView#html/signChart#get">
                                 <li><a href="javascript:void(0)" ui-sref="signChart">项目统计分析 </a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="signView#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraiseList">优秀评审报告查询</a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="addSuppLetter#html/suppLetterList#get">
+                                <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补资料函查询</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="signView#html/expertReviewCondCount#get">
                                 <li><a href="javascript:void(0)" ui-sref="expertRevCondCountList">专家评审情况统计</a></li>

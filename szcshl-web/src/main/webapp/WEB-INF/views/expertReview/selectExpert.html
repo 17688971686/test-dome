@@ -47,24 +47,22 @@
             <button ng-show="(vm.expertReview.selCount>=1)" class="btn btn-xs btn-primary" ng-click="vm.showAutoMatchResultWin()">
                 <span class="glyphicon glyphicon-check"></span>查看所有抽取结果
             </button>
-            <ol class="breadcrumb" style="font-size: 12px;">
-                <li class="active">* 整体方案只能进行一次抽取！</li>
-                <li class="active">* 为了保证结果的正确性，请在每个条件抽取前，先保存已抽取的专家信息！</li>
-                <li class="active">* 已经抽取专家的抽取信息不可删除！</li>
-            </ol>
+            <div class="label-default" style="font-size: 12px; padding: 5px 10px;margin: 3px 0px;">
+               * 整体方案只能进行一次抽取！* 为了保证结果的正确性，请在每个条件抽取前，先保存已抽取的专家信息！* 已经抽取专家的抽取信息不可删除！
+            </div>
         </div>
         <table class="table table-bordered" id="conditionTable">
             <tr>
-                <td style="width:5%;min-width:30px;" align="center"><input type='checkbox' ng-model="epCondtion"/></td>
-                <td style="width:7%;min-width:50px;" align="center">序号</td>
-                <td style="width:17%;min-width:180px;" align="center">突出专业<br>（大类）</td>
-                <td style="width:16%;min-width:180px;" align="center">突出专业<br>（小类）</td>
-                <td style="width:12%;min-width:120px;" align="center">专家类别</td>
-                <td style="width:12%;min-width:120px;" align="center">综合评分</td>
-                <td style="width:9%;min-width:100px;" align="center">正选专家<br>人数</td>
-                <td style="width:9%;min-width:100px;" align="center">备选专家<br>人数</td>
-                <td style="width:5%;min-width:50px;" align="center">人数</td>
-                <td style="width:20%;min-width:150px;" align="center">操作</td>
+                <td style="width:30px;" align="center"><input type='checkbox' ng-model="epCondtion"/></td>
+                <td style="width:40px;" align="center">序号</td>
+                <td style="width:24%;" align="center">突出专业<br>（大类）</td>
+                <td style="width:15%;" align="center">突出专业<br>（小类）</td>
+                <td style="width:10%;" align="center">专家类别</td>
+                <td style="width:8%;" align="center">综合评分</td>
+                <td style="width:8%;" align="center">正选专家<br>人数</td>
+                <td style="width:8%;" align="center">备选专家<br>人数</td>
+                <td style="width:5%;" align="center">人数</td>
+                <td style="width:15%;" align="center">操作</td>
             </tr>
             <tr ng-repeat="x in vm.expertReview.expertSelConditionDtoList">
                 <td align="center">
@@ -93,7 +91,7 @@
                 </td>
                 <td align="center">
                     <select ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="expeRttype{{x.id}}"
-                            ng-model="vm.expertReview.expertSelConditionDtoList[$index].expeRttype" class="form-control input-sm ">
+                            ng-model="vm.expertReview.expertSelConditionDtoList[$index].expeRttype">
                         <option value="">请选择</option>
                         <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts" ng-selected="x.expeRttype == dt.dictName"
                                 value="{{dt.dictName}}">{{dt.dictName}}
@@ -102,8 +100,7 @@
                 </td>
                 <td align="center">
                     <select ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="compositeScore{{x.id}}"
-                            ng-model="vm.expertReview.expertSelConditionDtoList[$index].compositeScore"
-                            class="form-control input-sm ">
+                            ng-model="vm.expertReview.expertSelConditionDtoList[$index].compositeScore">
                         <option value="" >请选择</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -113,16 +110,15 @@
                     </select>
                 </td>
                 <td align="center">
-                    <input ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'"
-                           id="officialNum{{x.id}}" class="form-control input-sm"
-                           ng-model="vm.expertReview.expertSelConditionDtoList[$index].officialNum"
+                    <input ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="officialNum{{x.id}}"
+                           ng-model="vm.expertReview.expertSelConditionDtoList[$index].officialNum" style="width: 50px;"
                            ng-keyup="vm.expertReview.expertSelConditionDtoList[$index].alternativeNum = vm.checkIntegerValue(vm.expertReview.expertSelConditionDtoList[$index].officialNum,'alternativeNum',x.id)">
                     <span id="errorsOfficialNum{{x.id}}" data-valmsg-for="procoSttype" data-valmsg-replace="true"
                           class="errors"></span>
                 </td>
                 <td align="center">
-                    <input ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="alternativeNum{{x.id}}" class="form-control input-sm"
-                           ng-model="vm.expertReview.expertSelConditionDtoList[$index].alternativeNum"
+                    <input ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="alternativeNum{{x.id}}"
+                           ng-model="vm.expertReview.expertSelConditionDtoList[$index].alternativeNum" style="width: 50px;"
                            ng-keyup="vm.expertReview.expertSelConditionDtoList[$index].officialNum = vm.checkIntegerValue(vm.expertReview.expertSelConditionDtoList[$index].alternativeNum,'officialNum',x.id)">
                     <span id="errorsAlternativeNum{{x.id}}" data-valmsg-for="procoSttype" data-valmsg-replace="true"
                           class="errors"></span>
@@ -334,42 +330,51 @@
                 </button>
             </div>
             <!-- S 隐藏表单 设置排除已选择的ID -->
-            <div class="well well-sm">
-            <form id="selfSelExpertForm">
+            <form id="selfSelExpertForm" class="breadcrumb">
                 <input name="expertID" ng-model="vm.excludeIds" type="text" ng-hide="true" operator="ni" value="">
                 <!--自选专家可以在正选和备选中选择-->
                 <input name="state" type="text" ng-hide="true" operator="in" value="2,3">
                 <!-- 专家规避-->
                 <input name="comPany" ng-model="vm.bulidComPany" type="text" ng-hide="true" operator="ne" value="">
                 <input name="comPany" ng-model="vm.designComPany" type="text" ng-hide="true" operator="ne" value="">
-                <!--以下是查询字段-->
-                <span>专家姓名</span>
-                <input name="name" type="text"  operator="like" value="">
-
-                <span>突出专业（大类）</span>
-                <select name="maJorBigParam" ng-model="vm.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.maJorBig,DICT.MAJOR.dicts)">
-                    <option value="">请选择</option>
-                    <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}"
-                            ng-selected="x.maJorBig == d.dictName">{{d.dictName}}
-                    </option>
-                </select>
-                <span style="margin-left: 10px;">突出专业（小类）</span>
-                <select name="maJorSamllParam" ng-model="vm.maJorSamll">
-                    <option value="">请选择</option>
-                    <option ng-repeat="ds in vm.majobSmallDicts" value="{{ds.dictName}}"
-                            ng-selected="x.maJorSmall == ds.dictName">{{ds.dictName}}
-                    </option>
-                </select>
-                <span style="margin-left: 10px;">专家类别</span>
-                <select name="expertTypeParam">
-                    <option value="">请选择</option>
-                    <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts"
-                            value="{{dt.dictName}}">{{dt.dictName}}
-                    </option>
-                </select>
+                <table>
+                    <tr>
+                        <td style="width: 80px;text-align: right;" >专家姓名:</td>
+                        <td><input name="name" type="text"  operator="like" value=""></td>
+                        <td style="width: 80px;text-align: right;">专家类别:</td>
+                        <td>
+                            <select name="expertTypeParam">
+                                <option value="">请选择</option>
+                                <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts"
+                                        value="{{dt.dictName}}">{{dt.dictName}}
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 180px;text-align: right;">突出专业（大类）:</td>
+                        <td>
+                            <select name="maJorBigParam" ng-model="vm.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.maJorBig,DICT.MAJOR.dicts)">
+                                <option value="">请选择</option>
+                                <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}"
+                                        ng-selected="x.maJorBig == d.dictName">{{d.dictName}}
+                                </option>
+                            </select>
+                        </td>
+                        <td style="width: 180px;text-align: right;" >突出专业（小类）:</td>
+                        <td>
+                            <select name="maJorSamllParam" ng-model="vm.maJorSamll">
+                                <option value="">请选择</option>
+                                <option ng-repeat="ds in vm.majobSmallDicts" value="{{ds.dictName}}"
+                                        ng-selected="x.maJorSmall == ds.dictName">{{ds.dictName}}
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
             </form>
-            </div>
             <!-- E 隐藏表单 设置排除已选择的ID -->
+
             <div id="selfExpertGrid" class="grid" kendo-grid="grid" k-options="vm.selfExpertOptions"></div>
         </div>
     </div>
@@ -426,8 +431,7 @@
             </div>
 
             <!-- S 隐藏表单 设置排除已选择的ID -->
-            <div class="well well-sm">
-            <form id="outSelExpertForm">
+            <form id="outSelExpertForm" class="breadcrumb">
                 <input name="expertID" ng-model="vm.excludeIds" type="text" ng-hide="true" operator="ni" value="">
                 <!--自选新专家只能在备选中选择-->
                 <input name="state" type="text" ng-hide="true" operator="eq" value="3">
@@ -437,31 +441,42 @@
                 <input name="comPany" ng-model="vm.bulidComPany" type="text" ng-hide="true" operator="ne" value="">
                 <input name="comPany" ng-model="vm.designComPany" type="text" ng-hide="true" operator="ne" value="">
                 <!--以下是查询字段-->
-                <span>专家姓名</span>
-                <input name="name" type="text"  operator="like" value="">
-                <span>突出专业（大类）</span>
-                <select name="maJorBigParam" ng-model="vm.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.maJorBig,DICT.MAJOR.dicts)">
-                    <option value="">请选择</option>
-                    <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}"
-                            ng-selected="x.maJorBig == d.dictName">{{d.dictName}}
-                    </option>
-                </select>
-                <span style="margin-left: 10px;">突出专业（小类）</span>
-                <select name="maJorSamllParam" ng-model="vm.maJorSamll">
-                    <option value="">请选择</option>
-                    <option ng-repeat="ds in vm.majobSmallDicts" value="{{ds.dictName}}"
-                            ng-selected="x.maJorSmall == ds.dictName">{{ds.dictName}}
-                    </option>
-                </select>
-                <span style="margin-left: 10px;">专家类别</span>
-                <select name="expertTypeParam">
-                    <option value="">请选择</option>
-                    <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts"
-                            value="{{dt.dictName}}">{{dt.dictName}}
-                    </option>
-                </select>
+                <table>
+                    <tr>
+                        <td style="width: 80px;text-align: right;" >专家姓名:</td>
+                        <td><input name="name" type="text"  operator="like" value=""></td>
+                        <td style="width: 80px;text-align: right;">专家类别:</td>
+                        <td>
+                            <select name="expertTypeParam">
+                                <option value="">请选择</option>
+                                <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts"
+                                        value="{{dt.dictName}}">{{dt.dictName}}
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 180px;text-align: right;">突出专业（大类）:</td>
+                        <td>
+                            <select name="maJorBigParam" ng-model="vm.maJorBig" ng-change="vm.majobSmallDicts = topSelectChange(vm.maJorBig,DICT.MAJOR.dicts)">
+                                <option value="">请选择</option>
+                                <option ng-repeat="d in DICT.MAJOR.dicts" value="{{d.dictName}}"
+                                        ng-selected="x.maJorBig == d.dictName">{{d.dictName}}
+                                </option>
+                            </select>
+                        </td>
+                        <td style="width: 180px;text-align: right;" >突出专业（小类）:</td>
+                        <td>
+                            <select name="maJorSamllParam" ng-model="vm.maJorSamll">
+                                <option value="">请选择</option>
+                                <option ng-repeat="ds in vm.majobSmallDicts" value="{{ds.dictName}}"
+                                        ng-selected="x.maJorSmall == ds.dictName">{{ds.dictName}}
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
             </form>
-            </div>
             <!-- E 隐藏表单 设置排除已选择的ID -->
             <div id="outExpertGrid" class="grid" kendo-grid="grid" k-options="vm.outExpertOptions"></div>
         </div>

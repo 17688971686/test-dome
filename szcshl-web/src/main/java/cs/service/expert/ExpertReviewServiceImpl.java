@@ -12,13 +12,18 @@ import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.model.expert.ExpertSelConditionDto;
 import cs.model.expert.ExpertSelectedDto;
+import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
+import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -407,23 +412,55 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     /**
      * 查询专家评审费超期发放的信息
-     * @param businessType
+     * @param odataObj
      * @return
      */
     @Override
-    public PageModelDto<ExpertReviewDto> findOverTimeReview(String businessType) {
-        List<ExpertReview> expertReviewList = expertReviewRepo.findReviewOverTime(businessType);
-        List<ExpertReviewDto> expertReviewDtoList = new ArrayList<>();
+    public PageModelDto<ExpertReviewDto> findOverTimeReview(ODataObj odataObj) {
         PageModelDto<ExpertReviewDto> pageModelDto = new PageModelDto<>();
-        if(expertReviewList != null && expertReviewList.size()>0){
+        Criteria criteria = expertReviewRepo.getExecutableCriteria();
+        if (Validate.isList(odataObj.getFilter())) {
+            Object value;
+            for (ODataFilterItem item : odataObj.getFilter()) {
+                value = item.getValue();
+                if (null == value) {
+                    continue;
+                }
+                criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value));
+            }
+        }
+        //未完成评审费发放
+        criteria.add(Restrictions.or(Restrictions.isNull(ExpertReview_.state.getName()),Restrictions.eq(ExpertReview_.state.getName(), Constant.EnumState.NO.getValue()),Restrictions.eq(ExpertReview_.state.getName(), "")));
+        String newDate = DateUtils.converToString(new Date(),"yyyy-MM-dd");
+        //超期
+        criteria.add(Restrictions.sqlRestriction( " ( (to_date('"+newDate+"','yyyy-mm-dd') - "+criteria.getAlias()+"_."+ExpertReview_.reviewDate.getName()+") > 0 and '"+newDate+"' != TO_CHAR("+criteria.getAlias()+"_."+ExpertReview_.reviewDate.getName()+", 'yyyy-mm-dd') )"));
+        if(odataObj.isCount()){
+            Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+            criteria.setProjection(null);
+            odataObj.setCount(totalResult);
+        }
+
+        // 处理分页
+        if (odataObj.getSkip() > 0) {
+            criteria.setFirstResult(odataObj.getSkip());
+        }
+        if (odataObj.getTop() > 0) {
+            criteria.setMaxResults(odataObj.getTop());
+        }
+        List<ExpertReview> expertReviewList = criteria.list();
+        List<ExpertReviewDto> expertReviewDtoList = new ArrayList<>();
+        if(Validate.isList(expertReviewList)){
             for(ExpertReview expertReview : expertReviewList){
                 ExpertReviewDto expertReviewDto = new ExpertReviewDto();
                 BeanCopierUtils.copyProperties(expertReview , expertReviewDto);
                 expertReviewDtoList.add(expertReviewDto);
             }
         }
+        /*List<ExpertReview> expertReviewList = expertReviewRepo.findReviewOverTime(businessType);
+       List<ExpertReviewDto> expertReviewDtoList = new ArrayList<>();
+        */
         pageModelDto.setValue(expertReviewDtoList);
-        pageModelDto.setCount(expertReviewDtoList.size());
+        pageModelDto.setCount(odataObj.getCount());
         return pageModelDto;
     }
 

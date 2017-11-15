@@ -47,14 +47,12 @@ public class ReviewFeeController {
     @ResponseBody
     public PageModelDto<ExpertReviewDto> findSignDispaWork(HttpServletRequest request) throws ParseException {
         ODataObj oDataObj = new ODataObj(request);
-        String businessType = null;
+       /* String businessType = null;
         if(oDataObj.getFilter() !=null && oDataObj.getFilter().size()>0){
            ODataFilterItem reviewFeeODataFilterItem = oDataObj.getFilter().get(0);
             businessType = reviewFeeODataFilterItem.getValue().toString();
-        }
-
-//        return reviewFeeService.findOverTimeReviewFee(businessType);
-        return expertReviewService.findOverTimeReview(businessType);
+        }*/
+        return expertReviewService.findOverTimeReview(oDataObj);
     }
 
 

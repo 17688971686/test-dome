@@ -8,15 +8,9 @@
         <li><a href="#/room">会议预定统计管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <div class="toolbar" >
-        <button class="btn btn-sm btn-primary" ng-click="vm.queryRoomCount()">
-            <span class="glyphicon glyphicon-search"></span>查询
-        </button>
-        <button class="btn btn-sm btn-primary" ng-click="vm.ResetRoomCount()">
-            <span class="glyphicon glyphicon-repeat"></span>重置
-        </button>
-    </div>
-    <form id="roomCountform" name="roomCountform" class="breadcrumb">
+
+    <div class="well well-sm">
+    <form id="roomCountform" name="roomCountform">
         <table style="width: 100%;">
             <tr>
                 <td class="text-right" style="width: 80px;">会议名称：</td>
@@ -24,12 +18,19 @@
                     <input type="text" ng-model="vm.model.rbName" operator="like" name="rbName" id="rbName" placeholder="请输入">
                 </td>
                 <td class="text-right" style="width: 80px;">会议日期：</td>
-                <td colspan="3">
+                <td >
                     <input name="beginTime" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.beginTime" value=""
                            type="text" operator="ge"/>
                     至
                     <input name="endTime" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.endTime" value="" type="text"
                            operator="le"/>
+                </td>
+                <td class="text-right" style="width: 80px;">预定人：</td>
+                <td>
+                    <select ng-model="vm.model.dueToPeople" name="dueToPeople" id="dueToPeople" operator="eq">
+                        <option value="">请选择</option>
+                        <option ng-repeat="r in vm.userlist" value="{{r.displayName}}">{{r.displayName}}</option>
+                    </select>
                 </td>
             </tr>
             <tr>
@@ -47,17 +48,18 @@
                         <option ng-repeat="o in vm.orgDeptList" value="{{o.name}}">{{o.name}}</option>
                     </select>
                 </td>
-                <td class="text-right" style="width: 80px;">预定人：</td>
-                <td>
-                    <select ng-model="vm.model.dueToPeople" name="dueToPeople" id="dueToPeople" operator="eq">
-                        <option value="">请选择</option>
-                        <option ng-repeat="r in vm.userlist" value="{{r.displayName}}">{{r.displayName}}</option>
-                    </select>
+                <td colspan="2">
+                    <button class="btn btn-sm btn-primary" ng-click="vm.queryRoomCount()">
+                        <span class="glyphicon glyphicon-search"></span>查询
+                    </button>
+                    <button class="btn btn-sm btn-primary" ng-click="vm.ResetRoomCount()">
+                        <span class="glyphicon glyphicon-repeat"></span>重置
+                    </button>
                 </td>
             </tr>
         </table>
     </form>
-
+    </div>
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 

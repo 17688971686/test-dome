@@ -200,7 +200,7 @@
                 visible: false,
                 modal: true,
                 closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
+                actions: ["Close"]
             }).data("kendoWindow").center().open();
         }
 
@@ -497,7 +497,7 @@
 
         // S_财务办理
         vm.addFinancialApply = function(id){
-            if("9"==vm.model.isassistflow || 9==vm.model.isassistflow){
+            if("9"==vm.model.isassistflow || 9 == vm.model.isassistflow){
                 vm.costType = "ASSIST";
             }else{
                 vm.costType = "REVIEW";

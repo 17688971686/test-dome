@@ -129,7 +129,7 @@
         vm.showSelfExpertGrid = function () {
             vm.selfExpertOptions.dataSource.read();
             $("#selfExpertDiv").kendoWindow({
-                width: "70%",
+                width: "80%",
                 height: "680px",
                 title: "自选评审专家",
                 visible: false,

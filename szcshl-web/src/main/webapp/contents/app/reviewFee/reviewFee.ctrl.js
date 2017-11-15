@@ -31,7 +31,7 @@
                 vm.expertReview = data ;
                 $("#payFromWindow").kendoWindow({
                     width: "70%",
-                    height: "60%",
+                    height: "600px",
                     title: "专家评审费发放",
                     visible: false,
                     modal: true,
@@ -156,10 +156,10 @@
          * @param businessType
          */
         vm.detail = function(businessId , businessType){
-            if(businessType == "SIGN"){
+            if(businessType.trim() == "SIGN"){
                 $state.go("signDetails" , {signid : businessId});
             }
-            if(businessType == "TOPIC"){
+            if(businessType.trim() == "TOPIC"){
                 $state.go("flowDetail" , {businessKey : businessId });
             }
 

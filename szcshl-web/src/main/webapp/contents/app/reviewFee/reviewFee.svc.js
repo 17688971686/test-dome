@@ -4,7 +4,7 @@
     reviewFee.$inject = ['$http'];
     function reviewFee($http){
         var service = {
-            projectGrid : projectGrid ,//查询发文申请阶段，评审费发放超期的项目列表
+            projectGrid : projectGrid ,         //查询发文申请阶段，评审费发放超期的项目列表
             findExpertReview : findExpertReview,//通过业务ID获取专家评审方案信息
 
         }
@@ -78,26 +78,41 @@
                 {
                     field: "reviewTitle",
                     title: "评审费标题",
-                    width: 160,
+                    width: "40%",
                     filterable: false,
+                },
+                {
+                    field: "",
+                    title: "评审费类型",
+                    width: "20%",
+                    filterable: false,
+                    template: function (item) {
+                        if(item.businessType.trim() == "SIGN"){
+                            return "项目评审费";
+                        }else if(item.businessType.trim() == "TOPIC"){
+                            return "课题评审费";
+                        }else{
+                            return "";
+                        }
+                    }
                 },
                 {
                     field: "reviewDate",
                     title: "评审日期",
-                    width: 140,
+                    width: "15%",
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "",
                     title: "操作",
-                    width: "6%",
+                    width: "20%",
                     template: function (item) {
                       return common.format($('#columnBtns').html(), "vm.dealWindow('" +item.businessId+ "')"
                           , "vm.detail('" + item.businessId + "','" + item.businessType + "')");
                     }
                 }
-            ];// End:column
+            ];
             // End:column
 
             vm.gridOptions = {

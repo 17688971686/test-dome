@@ -1214,30 +1214,30 @@
                     field: "instanceName",
                     title: "流程名称",
                     filterable: false,
-                    width: "20%"
+                    width: "25%"
                 },
                 {
                     field: "nodeName",
                     title: "当前环节",
-                    width: "10%",
+                    width: "15%",
                     filterable: false
                 },
                 {
                     field: "displayName",
                     title: "处理人",
-                    width: "10%",
+                    width: "15%",
                     filterable: false,
                 },
                 {
                     field: "processName",
                     title: "流程类别",
-                    width: "20%",
+                    width: "15%",
                     filterable: false,
                 },
                 {
                     field: "",
                     title: "流程状态",
-                    width: "5%",
+                    width: "10%",
                     filterable: false,
                     template: function (item) {
                         if (item.processState && item.processState == 2) {

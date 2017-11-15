@@ -183,11 +183,12 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
 
 
     /**
-     * 查询专家评审费超期发放的信息
+     * 查询专家评审费超期发放的信息（停用）
      * @param businessType
      * @return
      */
     @Override
+    @Deprecated
     public List<ExpertReview> findReviewOverTime(String businessType) {
 
         HqlBuilder hqlBuilder = HqlBuilder.create();

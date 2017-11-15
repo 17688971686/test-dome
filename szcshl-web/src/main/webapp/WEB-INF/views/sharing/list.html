@@ -10,7 +10,7 @@
     </ol>
 
      <div class="toolbar">
-        <a class="btn btn-sm btn-primary" href="#/sharingPlatlformEdit/{sharId:null}">
+        <a class="btn btn-sm btn-primary" href="#/sharingPlatlformEdit/">
             <span class="glyphicon glyphicon-plus"></span>新增记录</a>
          <a class="btn btn-sm btn-primary" ng-click="vm.querySharing()">
              <span class="glyphicon glyphicon-search"></span>查询</a>
@@ -26,7 +26,8 @@
              <span class="glyphicon glyphicon-remove"></span>批量删除</button>
      </div>
 
-    <form id="formSharing" name="formSharing" class="breadcrumb">
+    <div class="well well-sm">
+    <form id="formSharing" name="formSharing">
         <span class="help-inline">主题：</span>
         <input type="text"  operator="like" name="theme" id="theme" placeholder="请输入名称">
 
@@ -42,7 +43,7 @@
             <option ng-repeat="r in vm.userlist" value="{{r.loginName}}">{{r.loginName}}</option>
         </select>
     </form>
-
+    </div>
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 

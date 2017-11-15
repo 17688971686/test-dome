@@ -8,16 +8,7 @@
         <li class="active">财务管理</li>
         <li>协审费用统计</li>
     </ol>
-
-    <div class="toolbar">
-        <button class="btn btn-sm btn-success" ng-click="vm.queryAssistCost()" ng-disabled="vm.isSubmit">
-            <span class="glyphicon glyphicon-search"></span>查询
-        </button>
-        <button class="btn btn-sm btn-primary" ng-click="vm.assistCostReset()">
-            <span class="glyphicon glyphicon-repeat"></span>重置</button>
-    </div>
-
-    <div class="breadcrumb">
+    <div class="well well-sm">
         <table  style="width: 100%;">
             <tr>
                 <td class="text-right" style="width:80px;">项目名称：</td>
@@ -26,11 +17,7 @@
                 </td>
                 <td class="text-right" style="width:80px;">协审单位：</td>
                 <td >
-                    <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistUnit" >
-                </td>
-                <td class="text-right" style="width:85px;">协议登记号：</td>
-                <td>
-                    <input type="text" style="width: 95%;" ng-model="vm.signAssistCost.assistPlanNo" >
+                    <input type="text"  ng-model="vm.signAssistCost.assistUnit" >
                 </td>
                 <td class="text-right" style="width:80px;">签收日期：</td>
                 <td style="min-width: 280px;">
@@ -39,6 +26,13 @@
                     至
                     <input name="endTime" style="width:126px" kendo-date-picker k-format="'yyyy-MM-dd'"
                            ng-model="vm.signAssistCost.endTime"/>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-success" ng-click="vm.queryAssistCost()" ng-disabled="vm.isSubmit">
+                        <span class="glyphicon glyphicon-search"></span>查询
+                    </button>
+                    <button class="btn btn-sm btn-primary" ng-click="vm.assistCostReset()">
+                        <span class="glyphicon glyphicon-repeat"></span>重置</button>
                 </td>
             </tr>
         </table>

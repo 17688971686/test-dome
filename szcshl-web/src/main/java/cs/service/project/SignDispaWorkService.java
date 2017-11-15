@@ -20,16 +20,40 @@ public interface SignDispaWorkService {
 
     PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj);
 
+    /**
+     * 查询待合并评审的项目
+     * @param signId
+     * @return
+     */
     List<SignDispaWork> unMergeWPSign(String signId);
 
+    /**
+     * 查询已经合并评审的项目
+     * @param signId
+     * @return
+     */
     List<SignDispaWork> getMergeWPSignBySignId(String signId);
 
     List<SignDispaWork> unMergeDISSign(String signId);
 
     List<SignDispaWork> getMergeDISSignBySignId(String signId);
 
+    /**
+     * 保存合并项目
+     * @param signId
+     * @param mergeIds
+     * @param mergeType 1代表合并评审，2代表合并发文
+     * @return
+     */
     ResultMsg mergeSign(String signId, String mergeIds, String mergeType);
 
+    /**
+     * 解除合并
+     * @param signId
+     * @param cancelIds
+     * @param mergeType
+     * @return
+     */
     ResultMsg cancelMergeSign(String signId, String cancelIds, String mergeType);
 
     ResultMsg deleteAllMerge(String signId,String mergeType);

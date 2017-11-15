@@ -8,7 +8,8 @@
 		<li><a href="#/sharingPlatlform">项目评审情况统计</a></li>
 		<li class="active">{{vm.title}}</li>
 	</ol>
-	<form id="form" name="form" class="breadcrumb">
+	<div class="well well-sm">
+	<form id="form" name="form" >
 		<span>统计月份：</span>
 		<input id="beginTime" name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM'"  ng-model="vm.model.beginTime" value="" type="text" operator="ge"/>
 		至
@@ -16,7 +17,7 @@
 		<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.proReviewConCount()"><span class="glyphicon glyphicon-search"></span>统计</a>
 		<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
 	</form>
-
+	</div>
 	<table class="table-bordered table">
 		<caption class="text-center h3">
 			<strong ng-if="vm.model.beginTime && vm.model.endTime==''">{{vm.year}}年{{vm.begMonth}}月项目评审情况统计表<br>

@@ -46,7 +46,11 @@
         <li><a href="#/room">会议室预定管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <div class="toolbar">
+    <div class="well well-sm">
+        会议室查询：
+        <select ng-model="vm.search.mrID" name="mrID" ng-change="vm.findMeeting()">
+            <option ng-repeat="x in vm.meetings" value="{{x.id}}" ng-selected="vm.search.mrID == x.id">{{x.addr}}</option>
+        </select>
         <span ng-show="vm.model.businessType && vm.model.businessId "><go-back></go-back></span>
         <button type="button" class="btn btn-sm btn-primary" ng-click="vm.exportThisWeekStage()" value="">
             导出本周评审会会议安排
@@ -60,12 +64,6 @@
         <button type="button" class="btn btn-sm btn-primary" ng-click="vm.exportNextWeek()" value="">
             导出下周全部会议安排
         </button>
-    </div>
-    <div class="breadcrumb">
-        会议室查询：
-        <select ng-model="vm.search.mrID" name="mrID" ng-change="vm.findMeeting()">
-            <option ng-repeat="x in vm.meetings" value="{{x.id}}" ng-selected="vm.search.mrID == x.id">{{x.addr}}</option>
-        </select>
     </div>
 
     <div class="label-default" style="width: 100%;padding:3px 10px;font-size: 12px;">

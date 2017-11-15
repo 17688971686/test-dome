@@ -8,33 +8,21 @@
         <li>项目评审费统计</li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <div class="toolbar">
-        <button ng-click="vm.proCostClassifyCountList()" class="btn btn-sm btn-primary" value="saveCommonIdea">
-            <span class="glyphicon glyphicon-search"></span>查看分类统计
-        </button>
-        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.proCostCount()">
-            <span class="glyphicon glyphicon-search"></span>统计
-        </button>
-        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">
-            <span class="glyphicon glyphicon-repeat"></span>重置
-        </button>
-        <!--<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>-->
-    </div>
-
-    <form id="form" name="form"  class="breadcrumb">
+    <div class="well well-sm">
+    <form id="form" name="form" >
         <table width="100%" >
             <tr>
-                <td class="text-right" style="width: 85px;">项目名称：</td>
+                <td class="text-right" style="width: 82px;">项目名称：</td>
                 <td>
-                    <input type="text" style="width:200px" ng-model="vm.model.projectname" operator="like">
+                    <input type="text"  ng-model="vm.model.projectname" operator="like">
                 </td>
-                <td class="text-right" style="width: 85px;">
+                <td class="text-right" style="width: 82px;">
                    建设单位：
                 </td>
                 <td>
-                    <input type="text" style="width:100px" ng-model="vm.model.builtcompanyname" operator="like">
+                    <input type="text" ng-model="vm.model.builtcompanyname" operator="like">
                 </td>
-                <td class="text-right" style="width: 85px;">
+                <td class="text-right" style="width: 82px;">
                     付款日期：
                 </td>
                 <td>
@@ -62,21 +50,33 @@
                         <option ng-repeat="x in vm.orgDeptList" value="{{x.name}}">{{x.name}}</option>
                     </select>
                 </td>
-                <td></td>
+                <td colspan="2">
+                    <button ng-click="vm.proCostClassifyCountList()" class="btn btn-sm btn-primary" value="saveCommonIdea">
+                        <span class="glyphicon glyphicon-search"></span>查看分类统计
+                    </button>
+                    <button class="btn btn-sm btn-primary"  ng-click="vm.proCostCount()">
+                        <span class="glyphicon glyphicon-search"></span>统计
+                    </button>
+                    <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
+                        <span class="glyphicon glyphicon-repeat"></span>重置
+                    </button>
+                    <!--<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>-->
+                </td>
             </tr>
         </table>
     </form>
-    <div class="toolbar"></div>
+    </div>
+
     <table class="table table-bordered">
-        <caption class="text-center h4">
+        <caption class="text-center h3">
             <strong>深圳市政府投资项目评审中心 项目评审费统计表</strong>
         </caption>
         <tr class="active">
-            <td style="width:5%" class="text-center">序号</td>
+            <td style="width:50px;" class="text-center">序号</td>
             <td style="width:15%" class="text-center">项目名称</td>
             <td style="width:15%" class="text-center">建设单位</td>
             <td style="width:10%" class="text-center">评审阶段</td>
-            <td style="width:5%" class="text-center">项目负责人</td>
+            <td style="width:8%" class="text-center">负责人</td>
             <td style="width:10%" class="text-center">项目评审费（元）</td>
             <td style="width:10%" class="text-center">付款日期</td>
             <td style="width:10%" class="text-center">申报投资（元）</td>
@@ -85,8 +85,9 @@
         </tr>
         <tbody ng-if="vm.projectReviewCostDtoList" ng-repeat="x in vm.projectReviewCostDtoList">
         <tr>
-            <td rowspan="{{x.financialManagerDtoList.length+1}}">{{$index+1}}</td>
-            <td rowspan={{x.financialManagerDtoList.length+1}}><a ng-click="vm.queyCostWindow(x)">{{x.projectname}}</a>
+            <td rowspan="{{x.financialManagerDtoList.length+1}}" class="text-center">{{$index+1}}</td>
+            <td rowspan="{{x.financialManagerDtoList.length+1}}" class="text-center">
+                <a ng-click="vm.queyCostWindow(x)">{{x.projectname}}</a>
             </td>
             <td rowspan={{x.financialManagerDtoList.length+1}}>{{x.builtcompanyname}}</td>
             <td class="text-center">{{x.reviewstage}}</td>

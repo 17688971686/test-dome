@@ -50,9 +50,10 @@ public interface ExpertReviewRepo extends IRepository<ExpertReview, String> {
     void initReviewTitle(ExpertReview expertReview, String businessId, String businessType);
 
     /**
-     * 查询专家评审费超期发放的信息
+     * 查询专家评审费超期发放的信息(停用)
      * @param  businessType
      * @return
      */
+    @Deprecated
     List<ExpertReview> findReviewOverTime(String businessType);
 }

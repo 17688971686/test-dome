@@ -3,20 +3,14 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
-
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/annountmentList">通知公告列表</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <div class="toolbar">
-        <button class="btn btn-sm btn-primary" ng-click="vm.findAnnountment()">
-            <span class="glyphicon glyphicon-search"></span>查询</button>
-        <a class="btn btn-sm btn-primary" ng-click="vm.resetAnnountment()">
-            <span class="glyphicon glyphicon-repeat"></span>重置</a>
-    </div>
 
-    <form id="annountmentYetform" name="annountmentYetform" class="breadcrumb">
+    <div class="well well-sm" >
+    <form id="annountmentYetform" name="annountmentYetform" >
         <table style="width: 100%;">
             <tr>
                 <td class="text-right" style="width: 50px;">标题：</td>
@@ -33,10 +27,16 @@
                     至
                     <input name="issueDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="le" />
                 </td>
+                <td>
+                    <button class="btn btn-sm btn-primary" ng-click="vm.findAnnountment()">
+                        <span class="glyphicon glyphicon-search"></span>查询</button>
+                    <button class="btn btn-sm btn-primary" ng-click="vm.resetAnnountment()">
+                        <span class="glyphicon glyphicon-repeat"></span>重置</button>
+                </td>
             </tr>
         </table>
     </form>
-
+    </div>
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 

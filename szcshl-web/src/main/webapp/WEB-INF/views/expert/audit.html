@@ -12,14 +12,9 @@
         <li class="active">{{vm.title}}</li>
     </ol>
 
-    <div class="toolbar">
-        <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span
-                class="glyphicon glyphicon-search"></span>查询
-        </button>
-    </div>
-
+    <div class="well well-sm">
     <form id="auditform" name="auditform">
-        <table class="breadcrumb">
+        <table style="width:100%; ">
             <tr>
                 <td class="text-right" style="width:80px;">专家范围</td>
                 <td>
@@ -61,13 +56,21 @@
                         <option ng-repeat="x in DICT.POST.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                     </select>
                 </td>
+                <td colspan="2">
+                    <button class="btn btn-sm btn-success" ng-click="vm.searchAudit()" ng-disabled="vm.isSubmit"><span
+                            class="glyphicon glyphicon-search"></span>查询
+                    </button>
+                </td>
+                <!--
                 <td class="text-right">毕业院校</td>
                 <td>
                     <input name="acaDemy" type="text" operator="like"/>
                 </td>
+                -->
             </tr>
         </table>
     </form>
+    </div>
 
     <table style="width:100%;">
         <tr>

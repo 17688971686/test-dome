@@ -456,8 +456,7 @@ public class ExpertServiceImpl implements ExpertService {
                 selectedEPCount = expertSelectedRepo.findConfirmSeletedEP(reviewId, epConditon.getMaJorBig(), epConditon.getMaJorSmall(), epConditon.getExpeRttype(), epConditon.getCompositeScore());
                 chooseCount = (selectedEPCount > -1) ? (chooseCount - selectedEPCount) : chooseCount;
                 if (chooseCount < 1) {
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),
-                            "专业大类【" + epConditon.getMaJorBig() + "】,专业小类【" + epConditon.getMaJorSmall() + "】，专家类型【" + epConditon.getExpeRttype() + "】,综合评分【" + epConditon.getCompositeScore() + "】抽取并确认的专家数已经满足，不用再次抽取！");
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"该条件抽取的专家已经达到设定数，不能再次抽取！");
                     return resultMsg;
                 }
             }

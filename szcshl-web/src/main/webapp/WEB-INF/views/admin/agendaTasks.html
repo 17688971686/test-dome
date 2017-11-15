@@ -7,9 +7,10 @@
         <li class="active">{{vm.title}}</li>
     </ol>
 
-    <form id="agendaTaskForm" name="agendaTaskForm" class="breadcrumb">
+    <div class="well well-sm">
+    <form id="agendaTaskForm" name="agendaTaskForm">
         <span class="help-inline">流程类别：</span>
-        <select name="processKey" operator="eq">
+        <select name="processKey" operator="eq" >
             <option value="">请选择</option>
             <option value="TOPIC_FLOW">课题研究流程</option>
             <option value="PROJECT_STOP_FLOW">项目暂停审批流程</option>
@@ -22,7 +23,7 @@
         </select>
         <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.query()"><span class="glyphicon glyphicon-ok"></span>查询</button>
     </form>
-
+    </div>
 
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions" id="grid"></div>
 </div>
