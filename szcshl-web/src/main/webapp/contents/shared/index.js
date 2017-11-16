@@ -18,7 +18,11 @@ function printpage(act){
     $(act).addClass("print-hide");
     $(".content-wrapper").addClass("print-content");
     print();
+    var showId = $(act).parent().attr("id")
     $(act).parent().show();
+    if(showId == "expert_score" || showId == "expert_payment" || showId == "suppLetter_list" || showId == "registerFile_list"){
+        $(act).parent().removeAttr("style");
+    }
     $("#"+$(act).parent().attr("id")+"_templ").hide();
     $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").removeClass("print-hide");
     $(act).removeClass("print-hide");

@@ -568,7 +568,7 @@ div.k-window{
 }
 .num{
     width: 20px;
-    height: 20px;
+    height: 16px;
     background: #fff;
     border:1px solid #000;
     outline: none;
@@ -586,7 +586,7 @@ div.k-window{
     position: relative;
     -webkit-appearance: none;  /*清除复选框默认样式*/
     border:1px solid #000;
-    height: 20px;
+    height: 16px;
     width: 20px;
     vertical-align: middle;
     text-align: center;
@@ -597,7 +597,7 @@ div.k-window{
     position: absolute;
     left: 2px;
     top: -4px;
-    font-size:20px;
+    font-size:16px;
 }
 @media print {
     .print-table{
