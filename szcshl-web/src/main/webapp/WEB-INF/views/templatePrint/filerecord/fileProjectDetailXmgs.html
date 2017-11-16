@@ -106,14 +106,14 @@
             <table class="child-table">
                 <tr>
                     <td width="20%" style="padding-bottom:10px;"></td>
-                    <td width="7%">复印件</td>
-                    <td width="10%"></td>
+                    <td width="10%">复印件</td>
+                    <td width="5%"></td>
                     <td width="10%">扫描件</td>
-                    <td width="20%"></td>
-                    <td width="7%" ></td>
-                    <td width="7%" >复印件</td>
+                    <td width="25%"></td>
+                    <td width="5%" ></td>
+                    <td width="10%" >复印件</td>
                     <td width="10%" ></td>
-                    <td width="1%" ><td>
+                    <td width="5%" ><td>
                 </tr>
                 <tr>
                     <td class="printing-td">可研报告批复</td>
@@ -141,8 +141,8 @@
                     <td width="10%">原件</td>
                     <td width="5%"></td>
                     <td width="10%">扫描件</td>
-                    <td width="20%"></td>
-                    <td width="5%" ></td>
+                    <td width="22%"></td>
+                    <td width="3%" ></td>
                     <td width="10%" >原件</td>
                     <td width="5%" ></td>
                     <td width="20%" >电子版/扫描<td>
@@ -334,50 +334,57 @@
     </tr>
     <tr>
         <td rowspan="4" width="5%">图纸</td>
-        <td colspan="8" width="95%">
-            <table class="child-table">
+        <td  width="5%" class="text-center">专业</td>
+        <td colspan="7" width="90%">
+            <table class="child-table" >
                 <tr>
-                    <td  width="10%" class="text-center">专业</td>
                     <td width="16%" >
                         建筑<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.architecture" name="architecture"  ng-true-value="9" ng-false-value="0">
                     </td>
-                    <td width="16%">
+                    <td width="16%"  >
                         结构<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.construction" name="construction"  ng-true-value="9" ng-false-value="0">
                     </td>
-                    <td width="20%">
+                    <td width="20%"  >
                         给排水<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.drainAwayWater" name="drainAwayWater"  ng-true-value="9" ng-false-value="0">
                     </td>
-                    <td width="16%">
+                    <td width="16%"  >
                         空调<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.conditioner" name="conditioner"  ng-true-value="9" ng-false-value="0">
                     </td>
-                    <td width="16%">
+                    <td width="16%" >
                         强电<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.highVoltage" name="highVoltage"  ng-true-value="9" ng-false-value="0">
                     </td>
                     <td width="16%" >
                         弱电<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.lightCurrent" name="lightCurrent"  ng-true-value="9" ng-false-value="0">
                     </td>
                 </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td  width="5%" class="text-center"></td>
+        <td colspan="7" width="90%">
+            <table class="child-table">
                 <tr>
-                    <td>册/张数</td>
-                    <td>{{vm.fileRecord.architectureCount}}</td>
-                    <td>{{vm.fileRecord.constructionCount}}</td>
-                    <td>{{vm.fileRecord.drainAwayWaterCount}}</td>
-                    <td>{{vm.fileRecord.conditionerCount}}</td>
-                    <td>{{vm.fileRecord.highVoltageCount}}</td>
+                    <td ">{{vm.fileRecord.architectureCount}}</td>
+                    <td >{{vm.fileRecord.constructionCount}}</td>
+                    <td >{{vm.fileRecord.drainAwayWaterCount}}</td>
+                    <td >{{vm.fileRecord.conditionerCount}}</td>
+                    <td >{{vm.fileRecord.highVoltageCount}}</td>
                     <td>{{vm.fileRecord.lightCurrentCount}}</td>
                 </tr>
             </table>
         </td>
     </tr>
+
     <tr>
-        <td colspan="8" width="85%">
+        <td  width="5%" class="text-center">专业</td>
+        <td colspan="7" width="90%">
             <table class="child-table">
                 <tr>
-                    <td  width="10%"  class="text-center">专业</td>
-                    <td width="16%" >
+                    <td width="16%">
                         道路<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.roadway" name="roadway"  ng-true-value="9" ng-false-value="0">
                     </td>
-                    <td width="16%">
+                    <td width="16%" >
                         桥梁<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.bridge" name="bridge"  ng-true-value="9" ng-false-value="0">
                     </td>
                     <td width="20%">
@@ -393,8 +400,14 @@
                         其他<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.fieOther" name="lightCurrent"  ng-true-value="9" ng-false-value="0">
                     </td>
                 </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td  width="10%" class="text-center"></td>
+        <td colspan="7" width="85%">
+            <table class="child-table">
                 <tr>
-                    <td>册/张数</td>
                     <td>{{vm.fileRecord.roadwayCount}}</td>
                     <td>{{vm.fileRecord.bridgeCount}}</td>
                     <td>{{vm.fileRecord.gardensCount}}</td>
@@ -405,6 +418,7 @@
             </table>
         </td>
     </tr>
+
 
     <tr>
         <td>项目负责人签名</td>

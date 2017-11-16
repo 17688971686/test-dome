@@ -1,15 +1,15 @@
 <meta charset="UTF-8">
-<table class="print-table">
-    <caption class="title">专家评分</caption><!--第一负责人才能评分-->
+<table class="print-table" style="margin-top: 20px;">
+    <caption class="title" style="margin-bottom: 10px;">专家评分</caption><!--第一负责人才能评分-->
     <tr>
-        <th width="5%">序号</th>
-        <th width="10%">姓名</th>
-        <th width="20%">工作单位</th>
-        <th width="20%">职位/职称</th>
-        <th width="10%">专业</th>
-        <th width="22%">专家评分</th>
-        <th width="13%">评分描述</th>
-        <th width="10%" ng-if="vm.showFlag.isMainPrinUser">操作</th>
+        <td width="8%">序号</td>
+        <td width="10%">姓名</td>
+        <td width="17%">工作单位</td>
+        <td width="20%">职位/职称</td>
+        <td width="10%">专业</td>
+        <td width="22%">专家评分</td>
+        <td width="13%">评分描述</td>
+        <td width="10%" ng-if="vm.showFlag.isMainPrinUser">操作</td>
     </tr>
     <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
         <td>{{$index+1}}</td>

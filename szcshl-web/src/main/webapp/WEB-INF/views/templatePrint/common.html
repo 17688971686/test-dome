@@ -1,12 +1,12 @@
 <meta charset="UTF-8">
-<div class="toolbar text-center" ng-show="vm.model.suppLetterDtoList.length > 1">
+<!--<div class="toolbar text-center" ng-show="vm.model.suppLetterDtoList.length > 1">
     当前项目有{{vm.model.suppLetterDtoList.length}}条补充资料函，当前第{{vm.showSupperIndex+1}}条
     <button class="btn btn-xs btn-primary" ng-show="vm.showSupperIndex > 0" ng-click="vm.showSupperIndex = vm.showSupperIndex-1">上一篇</button>
     <button class="btn btn-xs btn-primary" ng-show="vm.showSupperIndex < (vm.model.suppLetterDtoList.length-1)" ng-click="vm.showSupperIndex = vm.showSupperIndex+1">下一篇</button>
-</div>
-<div ng-repeat="x in vm.model.suppLetterDtoList" style="color:red;" ng-show="vm.showSupperIndex == $index">
+</div>-->
+<div ng-repeat="x in vm.model.suppLetterDtoList" style="color:red; margin-top: 20px;" ng-show="vm.showSupperIndex == $index">
     <table class="print-table">
-        <caption class="title text-red" style="padding-top: 6px;" >深圳市政府投资项目评审中心文件（稿纸）<br>拟补充资料函</caption>
+        <caption class="title" style="padding-top: 12px; padding-bottom: 20px;" >深圳市政府投资项目评审中心文件（稿纸）<br>拟补充资料函</caption>
         <tbody>
         <tr>
             <td>拟稿部门<br>拟稿人</td>
@@ -33,15 +33,15 @@
         </tr>
 
         <tr>
-            <td class="text-center">文件标题 <span class="required">*</span></td>
+            <td class="text-center">文件标题 </td>
             <td colspan="3">
                 {{x.title}}
             </td>
         </tr>
         <tr>
-            <td class="text-center">发行范围<span class="required">*</span></td>
+            <td class="text-center">发行范围</td>
             <td colspan="3">
-                {{x.dispaRange}}
+                {{x.dispaRange}}<br/>
                 <span style="float: right;">(印{{x.printnum}}份)</span>
             </td>
         </tr>

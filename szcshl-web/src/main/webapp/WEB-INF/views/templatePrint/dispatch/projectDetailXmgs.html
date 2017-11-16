@@ -46,7 +46,7 @@
             <td colspan="2" rowspan="2">{{vm.dispatchDoc.draftDate}}</td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align: left;">{{vm.dispatchDoc.userName}}</td>
+            <td colspan="2" style="text-align: left; padding-left: 10px;">{{vm.dispatchDoc.userName}}</td>
         </tr>
         <tr>
             <td>秘密等级</td>
@@ -92,15 +92,15 @@
         </tr>
 
         <tr>
-            <td>相关说明</td>
+            <td height="100px">相关说明</td>
             <td colspan="7" >{{vm.dispatchDoc.description}}</td>
         </tr>
         <tr>
-            <td>评审意见摘要</td>
+            <td height="100px">评审意见摘要</td>
             <td colspan="7">{{vm.dispatchDoc.reviewAbstract}}</td>
         </tr>
         <tr>
-            <td height="140">部长审核意见</td>
+            <td height="100">部长审核意见</td>
             <td colspan="7" style="min-height: 30px;">
                 <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
                 <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
@@ -108,7 +108,7 @@
             </td>
         </tr>
         <tr>
-            <td height="140">分管副主任意见</td>
+            <td height="100">分管副主任意见</td>
             <td colspan="7">
                 {{vm.dispatchDoc.viceDirectorSuggesttion}}
                 <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">签名：{{vm.dispatchDoc.viceDirectorName}}</p>
@@ -117,7 +117,7 @@
         </tr>
 
         <tr>
-            <td height="140">主任签发</td>
+            <td height="100">主任签发</td>
             <td colspan="7">
                 {{vm.dispatchDoc.directorSuggesttion}}
                 <p class="text-right" ng-if="vm.dispatchDoc.directorName">签名：{{vm.dispatchDoc.directorName}}</p>
@@ -148,27 +148,27 @@
                         <td>{{s.dispatchDocDto.remark}}</td>
                     </tr>
                     <tr>
-                        <td style="border-left-width: 0px;">项目建设必要性</td>
+                        <td style="border-left-width: 0px;height: 100px;">项目建设必要性</td>
                         <td colspan="6" class="text-left">
                             {{s.dispatchDocDto.projectBuildNecess}}
                         </td>
                     </tr>
                     <tr>
-                        <td style="border-left-width: 0px;">审定建设规模及内容</td>
+                        <td style="border-left-width: 0px;height: 100px;">审定建设规模及内容</td>
                         <td colspan="6" class="text-left">
                             {{s.dispatchDocDto.buildSizeContent}}
                         </td>
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">投资匡算及资金来源</td>
+                        <td style="border-left-width: 0px;height: 100px;">投资匡算及资金来源</td>
                         <td colspan="6" class="text-left">
                             {{s.dispatchDocDto.fundTotalOrigin}}
                         </td>
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">下一阶段工作要求</td>
+                        <td style="border-left-width: 0px;height: 100px;">下一阶段工作要求</td>
                         <td colspan="6" class="text-left">
                             {{s.dispatchDocDto.nextWorkPlan}}
                         </td>
@@ -197,29 +197,29 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">项目建设必要性</td>
-                        <td colspan="6">
+                        <td style="border-left-width: 0px;height: 100px;">项目建设必要性</td>
+                        <td colspan="6" class="text-left">
                             {{vm.dispatchDoc.projectBuildNecess}}
                         </td>
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">审定建设规模及内容</td>
-                        <td colspan="6">
+                        <td style="border-left-width: 0px;height: 100px;">审定建设规模及内容</td>
+                        <td colspan="6" class="text-left">
                             {{vm.dispatchDoc.buildSizeContent}}
                         </td>
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">投资匡算及资金来源</td>
-                        <td colspan="6">
+                        <td style="border-left-width: 0px; height: 100px;">投资匡算及资金来源</td>
+                        <td colspan="6" class="text-left">
                             {{vm.dispatchDoc.fundTotalOrigin}}
                         </td>
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;border-bottom-width: 0px;">下一阶段工作要求</td>
-                        <td style="border-bottom-width: 0px;" colspan="6">
+                        <td style="border-left-width: 0px;border-bottom-width: 0px; height: 100px;">下一阶段工作要求</td>
+                        <td style="border-bottom-width: 0px;" colspan="6" class="text-left">
                             {{vm.dispatchDoc.nextWorkPlan}}
                         </td>
                     </tr>
