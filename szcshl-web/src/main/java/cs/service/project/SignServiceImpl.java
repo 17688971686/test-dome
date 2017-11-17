@@ -845,11 +845,18 @@ public class SignServiceImpl implements SignService {
                                 && (Constant.MergeType.REVIEW_SIGNLE.equals(wk.getIsSigle()) || (Constant.MergeType.REVIEW_MERGE.equals(wk.getIsSigle()) && !EnumState.YES.getValue().equals(wk.getIsMainProject())))) {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【专家评审会】，但是还没有选择会议室，请先预定会议室！");
                         }
-                        //如果是合并评审，要合并评审次项目提交才能进行下一步
+                        //如果是合并评审主项目，
                         if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle())
-                                && EnumState.YES.getValue().equals(wk.getIsMainProject())
-                                && !signRepo.isMergeSignEndWP(signid)) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还没有完成工作方案，不能进行下一步操作！");
+                                && EnumState.YES.getValue().equals(wk.getIsMainProject())) {
+                            //如果没有合并其他项目，则不准提交
+                            if(!signMergeRepo.isHaveMerge(signid,Constant.MergeType.WORK_PROGRAM.getValue())){
+                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "工作方案您选择的是合并评审主项目，您还没有设置关联项目，不能提交到下一步！");
+                            }
+                            //如果合并评审次项目没提交，不能进行下一步操作
+                            if(!signRepo.isMergeSignEndWP(signid)){
+                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还没有完成工作方案，不能进行下一步操作！");
+                            }
+
                         }
                     }
                     //如果做工作方案，则要判断该分支工作方案是否完成

@@ -83,7 +83,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram = workProgramRepo.findById(workProgramDto.getId());
                 BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
                 //如果是专家函评，则要更新函评日期
-                if("专家函评".equals(workProgram.getReviewType())){
+                if(Constant.MergeType.REVIEW_LEETER.getValue().equals(workProgram.getReviewType())){
                     expertReviewRepo.updateReviewDate(workProgram.getId(),Constant.BusinessType.SIGN_WP.getValue(),workProgram.getLetterDate());
                 }
             } else {

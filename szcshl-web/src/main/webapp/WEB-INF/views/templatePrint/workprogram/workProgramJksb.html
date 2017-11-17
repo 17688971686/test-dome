@@ -12,7 +12,7 @@
             <span>评审方式: {{vm.model.workProgramDtoList[0].reviewType}}</span>
             <span style="margin:0px 10px;">{{vm.model.workProgramDtoList[0].isSigle}}</span>
             <span ng-if="vm.model.workProgramDtoList[0].isSigle=='合并评审' && vm.model.workProgramDtoList[0].isMainProject == 9" > 主项目 </span>
-            <span ng-if="wvm.model.workProgramDtoList[0]isSigle=='合并评审' && vm.model.workProgramDtoList[0].isMainProject == 0" > 次项目 </span>
+            <span ng-if="wvm.model.workProgramDtoList[0].isSigle=='合并评审' && vm.model.workProgramDtoList[0].isMainProject == 0" > 次项目 </span>
         </span>
         <span style="float: right;padding: 0px 20px;">{{vm.model.workProgramDtoList[0].titleDate | date:'yyyy年MM月dd日'}}</span>
     </div>

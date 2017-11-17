@@ -121,7 +121,7 @@
                 <td colspan="2">{{vm.model.workProgramDtoList[0].addressName}}</td>
             </tr>
             <tr></tr>
-            <tr ng-if="vm.model.workProgramDtoList[0].isSigle=='单个评审' || (vm.model.workProgramDtoList[0]isSigle=='合并评审' && vm.model.workProgramDtoList[0].isMainProject == 9)">
+            <tr ng-if="vm.model.workProgramDtoList[0].isSigle=='单个评审' || (vm.model.workProgramDtoList[0].isSigle=='合并评审' && vm.model.workProgramDtoList[0].isMainProject == 9)">
                 <td colspan="2">调研时间</td>
                 <td colspan="3">{{vm.model.workProgramDtoList[0].studyAllDay}}<span ng-if="vm.model.workProgramDtoList[0].studyQuantum">,</span>{{vm.model.workProgramDtoList[0].studyQuantum}}<span ng-if="vm.model.workProgramDtoList[0].studyBeginTimeStr">,</span>{{vm.model.workProgramDtoList[0].studyBeginTimeStr}}<span ng-if="vm.model.workProgramDtoList[0].studyEndTimeStr">至</span>{{vm.model.workProgramDtoList[0].studyEndTimeStr}}</td>
                 <td class="text-center">专家费用</td>
