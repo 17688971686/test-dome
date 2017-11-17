@@ -1,110 +1,144 @@
-<div align="center">
-	<h3>深圳市政府投资项目评审中心概算协审项目计划审批表</h3>
-</div>
+<style>
+    .k-animation-container ul {
+        max-height: 200px;
+    }
+</style>
 <div align="center" style="width:100%;">
+    <form id="form" name="form">
+        <table class="table table-bordered">
+            <caption class="text-center">
+                <h3><strong>深圳市政府投资项目评审中心概算协审项目计划审批表</strong></h3>
+            </caption>
+            <tr class="active">
+                <td style="width: 50px;">序号</td>
+                <td style="width: 300px;">项目名称</td>
+                <td style="width: 300px;">报审概算（万元）</td>
+                <td style="width: 300px;">报审建安费（万元）</td>
+                <td style="width: 100px;">协审费用（元）</td>
+                <td style="width: 100px;">协审天数（天）</td>
+            </tr>
+            <tr ng-repeat="x in vm.assistPlanSign">
+                <td>{{$index+1}}</td>
+                <td>
+                    <span>{{x.projectName}}</span>
+                    <span ng-if="x.splitNum!=1">({{x.splitNum}})</span>
+                </td>
+                <td>{{x.estimateCost}}</td>
+                <td>
+                    <input type="number" ng-model="vm.assistPlanSign[$index].jiananCost" name="jiananCost"
+                           id="jiananCost"/>
+                </td>
+                <td>
+                    <input type="number" ng-model="vm.assistPlanSign[$index].assistCost" name="assistCost"
+                           id="assistCost"/>
+                </td>
+                <td>
+                    <input type="number" ng-model="vm.assistPlanSign[$index].assistDays" name="assistDays"
+                           id="assistDays"/>
+                </td>
+            </tr>
+        </table>
 
-	<div >
-	<form id="form" name="form">
-		<table class="table table-bordered"  style="width:100%;height:100%; text-align: center; font-size: 4px;">
-				<tr style="height: 5px;">
-					<td  style="width: 80px;">序号</td>
-					<td  style="width: 300px;">项目名称</td>
-					<td style="width: 300px;">报审概算（万元）</td>
-					<td style="width: 300px;">报审建安费（万元）</td>
-					<td style="width: 100px;">协审费用（元）</td>
-					<td  style="width: 100px;" >协审天数（天）</td>
-				</tr>
-				<tr ng-repeat="x in vm.assistPlanSign" style="height: 5px;">
-					<td style="width: 80px;">{{$index+1}}</td>
-					<td  style="width: 300px;"><span>{{x.projectName}}</span><span ng-if="x.splitNum!=1">({{x.splitNum}})</span></td>
-					<td style="width: 300px;">{{x.estimateCost}}</td>
-					<td style="width: 300px; "> 
-						<input type="number" ng-model="vm.assistPlanSign[$index].jiananCost" name="jiananCost" id="jiananCost"  />
-					</td>
-					<td  style="width: 100px;">
-						<input type="number" ng-model="vm.assistPlanSign[$index].assistCost" name="assistCost" id="assistCost"  />
-					</td>
-					<td  style="width: 100px;">
-						<input type="number" ng-model="vm.assistPlanSign[$index].assistDays" name="assistDays" id="assistDays"  />
-					</td>
-				</tr>
-			
-		</table>
-	</div>
-	
-		<div >
-		
-			<table class="table table-bordered" style="width:100%; ">
-				<tr>
-					<td style="width: 90px; text-align: center;">抽签时间</td>
-					<td style="text-align: right;">
-						<input type="text" name="drawTime" id="drawTime" style="width: 100%;" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
-									ng-model="vm.assistPlan.drawTime">
-					</td>
-					<td style="width: 90px; text-align: center;">报批时间</td>
-					<td style="text-align: right;">
-					<input type="text" name="approvalTime" id="approvalTime" style="width: 100%;" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
-									ng-model="vm.assistPlan.approvalTime">
-						</td>
-				</tr>
-				<tr>
-					<td style="width: 90px; text-align: center;">参加抽签单位</td>
-					<td colspan="3" style="text-align: right;">
-					<span style="float: left;" ng-repeat="x in vm.unitList">{{x.unitName}}<span ng-if="($index+1)<(vm.unitList).length">、</span></span>
-					<span><button class="btn btn-sm btn-success" ng-click="vm.againChooleAssistUnit()">选择</button></span>
-					</td>
-				</tr>
-				<tr>
-					<td style="width: 90px; text-align: center;">部长意见</td>
-					<td colspan="3" style="text-align: right;">
-						<textarea rows="3" ng-model="vm.assistPlan.ministerOpinion"  name="ministerOpinion" id="ministerOpinion" style="width:100%" data-val="true" data-val-required="不能为空！" data-val-length-max="2000" ></textarea> 
-			  			<span data-valmsg-for="ministerOpinion" data-valmsg-replace="true" class="errors"></span> 
-			  			<button class="btn btn-sm btn-primary" ng-click="vm.ministerOpinionEdit({targetId:'ministerOpinion'})" >编辑</button>
-					</td>
-				</tr>
-				<tr>
-					<td style="width: 90px; text-align: center;">副主任意见</td>
-					<td colspan="3" style="text-align: right;">
-						<textarea rows="3" ng-model="vm.assistPlan.viceDirectorOpinion"  name="viceDirectorOpinion" id="viceDirectorOpinion" style="width:100%" data-val="true" data-val-required="处理意见不能为空！" data-val-length-max="2000" ></textarea> 
-			  			<span data-valmsg-for="viceDirectorOpinion" data-valmsg-replace="true" class="errors"></span> 
-			  			<button class="btn btn-sm btn-primary" ng-click="vm.viceDirectorOpinionEdit({targetId:'viceDirectorOpinion'})" >编辑</button>
-					</td>
-				</tr>
-				<tr>
-					<td style="width: 90px; text-align: center;">主任意见</td>
-					<td colspan="3" style="text-align: right;">
-						<textarea rows="3" ng-model="vm.assistPlan.directorOpinion"  name="directorOpinion" id="directorOpinion" style="width:100%" data-val="true" data-val-required="处理意见不能为空！" data-val-length-max="2000" ></textarea> 
-			  			<span data-valmsg-for="directorOpinion" data-valmsg-replace="true" class="errors"></span> 
-			  			<button class="btn btn-sm btn-primary" ng-click="vm.directorOpinionEdit({targetId:'directorOpinion'})" >编辑</button>
-					</td>
-				</tr>
-			</table>
-			</form>
-			</div>
-			
-			<button class="btn btn-sm btn-success" ng-click="vm.savePlanSign()">保存</button>
+        <table class="table table-bordered">
+            <tr>
+                <td style="width: 90px; text-align: center;">抽签时间</td>
+                <td style="width: 40%">
+                    <p class="toolbar">
+                        <input style="width: 120px;" ng-model="vm.drawTimeDay"  kendo-date-picker k-format="'yyyy-MM-dd'" ng-change="vm.buildDrawTime();"/>
+                        <input style="width: 80px;" ng-model="vm.drawTimeStart" kendo-time-picker k-format="'HH:mm'" ng-change="vm.buildDrawTime();"/>
+                        至
+                        <input style="width: 80px;" ng-model="vm.drawTimeEnd" kendo-time-picker k-format="'HH:mm'" ng-change="vm.buildDrawTime();"/>
+                    </p>
+                    <p>{{vm.assistPlan.drawTime}}</p>
+                </td>
+                <td style="width: 90px; text-align: center;">报批时间</td>
+                <td>
+                    <p class="toolbar">
+                        <input style="width: 120px;" ng-model="vm.approvalTimeDay"  kendo-date-picker k-format="'yyyy-MM-dd'" ng-change="vm.buildApprovalTime();"/>
+                        <input style="width: 80px;" ng-model="vm.approvalStart" kendo-time-picker k-format="'HH:mm'" ng-change="vm.buildApprovalTime();"/>
+                        至
+                        <input style="width: 80px;" ng-model="vm.approvalTimeEnd" kendo-time-picker k-format="'HH:mm'" ng-change="vm.buildApprovalTime();"/>
+                    </p>
+                    <p>{{vm.assistPlan.approvalTime}}</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">参加抽签单位</td>
+                <td colspan="3">
+                    <div style="width: 85%;float: left;">
+                    <li style="float: left;" ng-repeat="x in vm.unitList">
+                        {{x.unitName}}<span ng-if="($index+1)<(vm.unitList).length">、</span>
+                    </li>
+                    </div>
+                    <div style="width: 13%;float: right;text-align: right;">
+                        <button class="btn btn-sm btn-success" ng-click="vm.againChooleAssistUnit()">选择</button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">部长意见</td>
+                <td colspan="3">
+                    <textarea rows="3" ng-model="vm.assistPlan.ministerOpinion" name="ministerOpinion"
+                              id="ministerOpinion" style="width:100%" data-val="true" data-val-required="不能为空！"
+                              data-val-length-max="2000"></textarea>
+                    <span data-valmsg-for="ministerOpinion" data-valmsg-replace="true" class="errors"></span>
+                    <button class="btn btn-sm btn-primary"
+                            ng-click="vm.ministerOpinionEdit({targetId:'ministerOpinion'})">编辑
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td style=" text-align: center;">副主任意见</td>
+                <td colspan="3">
+                    <textarea rows="3" ng-model="vm.assistPlan.viceDirectorOpinion" name="viceDirectorOpinion"
+                              id="viceDirectorOpinion" style="width:100%" data-val="true" data-val-required="处理意见不能为空！"
+                              data-val-length-max="2000"></textarea>
+                    <span data-valmsg-for="viceDirectorOpinion" data-valmsg-replace="true" class="errors"></span>
+                    <button class="btn btn-sm btn-primary"
+                            ng-click="vm.viceDirectorOpinionEdit({targetId:'viceDirectorOpinion'})">编辑
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">主任意见</td>
+                <td colspan="3">
+                    <textarea rows="3" ng-model="vm.assistPlan.directorOpinion" name="directorOpinion"
+                              id="directorOpinion" style="width:100%" data-val="true" data-val-required="处理意见不能为空！"
+                              data-val-length-max="2000"></textarea>
+                    <span data-valmsg-for="directorOpinion" data-valmsg-replace="true" class="errors"></span>
+                    <button class="btn btn-sm btn-primary"
+                            ng-click="vm.directorOpinionEdit({targetId:'directorOpinion'})">编辑
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <button class="btn btn-sm btn-success" ng-click="vm.savePlanSign()">保存</button>
 
 </div>
 
-<div id="againChooleAssistUnit" style="background:white;display: none;">
-	<div style="height: 300px; width: 100%; overflow: auto; border: 1px solid black; ">
-		<table class="table table-bordered" style="width:100%; text-align: center; ">
-			<tr>
-				<td style="width: 80px;">序号</td>
-				<td>单位名称</td>
-				<td style="width: 100px;">操作</td>
-			</tr>
-			<tr ng-repeat="x in vm.allUnitList |filter:{isUse:'1'}">
-				<td>{{$index+1}}</td>
-				<td>{{x.unitName}}</td>
-				<td><span ><button class="btn btn-sm btn-success" ng-click="vm.saveAddChooleUnit(x)">添加</button></span></td>
-			</tr>
-		</table>
-	</div>
-<br/><br/>
-<h4>已选协审单位如下：</h5>
-	<div style="width: 100%;height: 80px; border: 1px solid black;">
-		<span style="float: left;" ng-repeat="x in vm.unitList">{{x.unitName}}<span ng-if="($index+1) < (vm.unitList).length">、</span>
-	</div>
+<div id="againChooleAssistUnit" style="display: none;">
+    <span class="label label-success">协审单位列表</span>
+    <div style="height: 360px; width: 100%; overflow-y: scroll;background:white; " >
+        <table class="table table-bordered">
+            <tr>
+                <td style="width: 50px;">序号</td>
+                <td>单位名称</td>
+                <td style="width: 80px;">操作</td>
+            </tr>
+            <tr ng-repeat="x in vm.allUnitList |filter:{isUse:'1'}">
+                <td>{{$index+1}}</td>
+                <td>{{x.unitName}}</td>
+                <td><span><button class="btn btn-sm btn-primary" ng-click="vm.saveAddChooleUnit(x)">添加</button></span>
+                </td>
+            </tr>
+        </table>
+    </div>
 
+    <span class="label label-success" style="margin:10px 0px 5px 0px;">已选协审单位如下</span>
+    <div style="width: 100%;height: 80px; border: 1px solid #989898;">
+        <li style="float:left;padding:5px;" ng-repeat="x in vm.unitList">{{x.unitName}}<span
+                ng-if="($index+1) < (vm.unitList).length">、</span>
+        </li>
+    </div>
 </div>

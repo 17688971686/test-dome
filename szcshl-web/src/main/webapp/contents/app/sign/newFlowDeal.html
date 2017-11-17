@@ -49,7 +49,7 @@
             </td>
             <td>
                 <div class="label-default" style="font-size: 12px;padding:5px 10px;"
-                    ng-show="vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4'">
+                     ng-show="vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4'">
                     如果做工作方案，则下一环节是部长审批；否则，下一环节为发文申请
                 </div>
                 <div ng-repeat="x in vm.flow.nextNode">
@@ -92,37 +92,39 @@
                 </div>
 
                 <!-- 选择负责人 -->
-                <p ng-if="vm.showFlag.nodeSelPrincipal && vm.model.isassistflow != 9" style="margin: 0px;padding:0px;">
-                <div class="label-default" style="font-size: 12px;padding:5px 10px;">
-                    （温馨提示：主办部门才能选第一负责人，并且只能选一个，项目负责人可以选多个）
-                </div>
-                <p ng-if="vm.businessFlag.isMainBranch" style="padding:0px;margin:0px;">
-                <table style="width: 100%;">
-                    <tr>
-                        <td style="width: 100px; text-align: right">
-                            第一负责人：
-                        </td>
-                        <td>
-                            <select ng-model="vm.mainPriUser" id="selPrincipalMainUser"
-                                    ng-change="vm.checkPrincipal();">
-                                <option value="">请选择</option>
-                                <option ng-repeat="x in vm.users" value="{{x.id}}">{{x.displayName}}</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="width: 100px; text-align: right;vertical-align: top;">
-                            其他负责人：
-                        </td>
-                        <td>
-                            <li ng-repeat="u in vm.users" id="principalAssistUser" style="float: left;width: 80px;">
-                                <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}"
-                                       ng-click="vm.initUserOption()"/> {{u.displayName}}
-                            </li>
-                        </td>
-                    </tr>
-                </table>
-                </p>
+                <div ng-if="vm.showFlag.nodeSelPrincipal && vm.model.isassistflow != 9 && vm.model.isassistflow != '9'"
+                     style="margin: 0px;padding:0px;">
+                    <div class="label-default" style="font-size: 12px;padding:5px 10px;">
+                        （温馨提示：主办部门才能选第一负责人，并且只能选一个，项目负责人可以选多个）
+                    </div>
+                    <table style="width: 100%;">
+                        <tr ng-if="vm.businessFlag.isMainBranch">
+                            <td style="width: 100px; text-align: right">
+                                第一负责人：
+                            </td>
+                            <td>
+                                <select ng-model="vm.mainPriUser" id="selPrincipalMainUser"
+                                        ng-change="vm.checkPrincipal();">
+                                    <option value="">请选择</option>
+                                    <option ng-repeat="x in vm.users" value="{{x.id}}">{{x.displayName}}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 100px; text-align: right;vertical-align: top;">
+                                其他负责人：
+                            </td>
+                            <td>
+                                <div id="principalAssistUser">
+                                <li ng-repeat="u in vm.users" style="float: left;width: 80px;">
+                                    <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}"
+                                           value="{{u.id}}"
+                                           ng-click="vm.initUserOption()"/> {{u.displayName}}
+                                </li>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <!--第二负责人-->
                 <div ng-if="vm.flow.businessMap.checkFileUser">
@@ -141,13 +143,13 @@
                     <div class="label-default" style="font-size: 12px;padding:5px 10px;">
                         *必须要选择1个总负责人，最多只能选3个负责人
                     </div>
-                    <table class="table table-bordered" style="max-width: 800px;">
+                    <table class="table table-bordered" >
                         <tr>
-                            <td class="text-center">
+                            <td >
                                 <ul>
                                     <li ng-repeat="u in vm.users | filter:{isSelected:false}"
                                         style="float: left;width: 80px;">
-                                        <span><input type="checkbox" name="unSelPriUser" value="{{u.id}}"/>{{u.displayName}}</span>
+                                        <input type="checkbox" name="unSelPriUser" value="{{u.id}}"/>{{u.displayName}}
                                     </li>
                                 </ul>
                             </td>

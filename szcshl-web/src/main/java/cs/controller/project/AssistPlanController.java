@@ -59,7 +59,7 @@ public class AssistPlanController {
     }
 
     @RequiresAuthentication
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
+	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.POST)
 	public @ResponseBody AssistPlanDto findById(@RequestParam(required = true)String id){		
 		return assistPlanService.findById(id);
 	}
@@ -115,18 +115,18 @@ public class AssistPlanController {
      * @param unSelectedIds 轮空的单位
      * */
     @RequiresAuthentication
-    //@RequiresPermissions("assistPlan#saveDrawAssistUnit#put")
-    @RequestMapping(name = "保存协审项目抽签结果", path = "saveDrawAssistUnit", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void saveDrawAssistUnit(@RequestParam(required = true)String planId,@RequestParam(required = true) String drawAssitUnitIds,String unSelectedIds) {
-        assistPlanService.saveDrawAssistUnit(planId,drawAssitUnitIds,unSelectedIds);
-//        System.out.println(drawAssitUnitIds);
-       // assistPlanService.update(record);
+    //@RequiresPermissions("assistPlan#saveDrawAssistUnit#post")
+    @RequestMapping(name = "保存协审项目抽签结果", path = "saveDrawAssistUnit", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveDrawAssistUnit(@RequestParam(required = true)String planId,
+                                        @RequestParam(required = true) String drawAssitUnitIds,
+                                        String unSelectedIds) {
+       return assistPlanService.saveDrawAssistUnit(planId,drawAssitUnitIds,unSelectedIds);
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("assistPlan#initAssistUnit#get")
-    @RequestMapping(name="初始化项目的协审单位",path="initAssistUnit",method=RequestMethod.GET)
+    @RequestMapping(name="初始化项目的协审单位",path="initAssistUnit",method=RequestMethod.POST)
     @ResponseBody
     public List<AssistUnitDto> initAssistUnit(@RequestParam String planId){
     	
@@ -144,10 +144,10 @@ public class AssistPlanController {
 
     @RequiresAuthentication
     //@RequiresPermissions("assistPlan##put")
-    @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void put(@RequestBody AssistPlanDto record) {
-        assistPlanService.update(record);
+    @RequestMapping(name = "保存计划和协审信息", path = "savePlanAndSign", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg savePlanAndSign(@RequestBody AssistPlanDto record) {
+        return assistPlanService.savePlanAndSign(record);
     }
 
     // begin#html

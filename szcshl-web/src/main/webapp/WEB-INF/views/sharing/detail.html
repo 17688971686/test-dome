@@ -100,7 +100,7 @@
 
 </style>
 <div class="toolbar">
-    <button class="btn btn-sm btn-default back" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回列表</button>
+    <a class="btn btn-sm btn-default back" href="#/sharingPlatlform"  ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回列表</a>
 
     <!--弹出工具显示-->
     <span class="fa fa-times scre-closed" ng-click="vm.closeWindow()"></span>
@@ -123,7 +123,9 @@
             <tr>
                 <td class="text-right">备注内容</td>
                 <td colspan="3">
-                    {{vm.model.content}}
+                    <div style="min-height: 100px;">
+                        {{vm.model.content}}
+                    </div>
                 </td>
             </tr>
             <tr>

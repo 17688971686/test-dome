@@ -737,7 +737,7 @@
                 {
                     field: "",
                     title: "序号",
-                    template: "<span class='row-number'></span>",
+                    template: "<span class='row-number text-center'></span>",
                     width: 50
                 },
                 {
@@ -757,31 +757,31 @@
                 {
                     field: "reviewstage",
                     title: "评审阶段",
-                    width: 140,
-                    filterable: false
+                    width: 110,
+                    filterable: false,
                 },
                 {
                     field: "signdate",
                     title: "收文日期",
-                    width: 200,
+                    width: 100,
                     filterable: false
                 },
                 {
                     field: "dispatchDate",
                     title: "发文日期",
-                    width: 160,
+                    width: 100,
                     filterable: false
                 },
                 {
                     field: "reviewdays",
                     title: "评审天数",
-                    width: 140,
+                    width: 90,
                     filterable: false
                 },
                 {
                     field: "",
                     title: "剩余工作日",
-                    width: 140,
+                    width: 100,
                     filterable: false,
                     template: function (item) {
                         if (item.surplusdays != undefined) {
@@ -805,43 +805,43 @@
                 {
                     field: "aUserName",
                     title: "项目负责人",
-                    width: 140,
+                    width: 110,
                     filterable: false
                 },
                 {
                     field: "ffilenum",
                     title: "归档编号",
-                    width: 140,
+                    width: 125,
                     filterable: false
                 },
                 {
                     field: "dfilenum",
                     title: "文件字号",
-                    width: 140,
+                    width: 125,
                     filterable: false
                 },
                 {
                     field: "appalyinvestment",
                     title: "申报投资",
-                    width: 140,
+                    width: 100,
                     filterable: false
                 },
                 {
                     field: "authorizeValue",
                     title: "审定投资",
-                    width: 140,
+                    width: 100,
                     filterable: false
                 },
                 {
                     field: "extraValue",
-                    title: "核减（增）投资",
-                    width: 140,
+                    title: "核减（增）",
+                    width: 100,
                     filterable: false
                 },
                 {
                     field: "extraRate",
                     title: "核减率",
-                    width: 140,
+                    width: 60,
                     filterable: false
                 },
                 {
@@ -853,19 +853,19 @@
                 {
                     field: "receivedate",
                     title: "批复来文时间",
-                    width: 140,
+                    width: 110,
                     filterable: false
                 },
                 {
                     field: "dispatchType",
                     title: "发文类型",
-                    width: 140,
+                    width: 100,
                     filterable: false
                 },
                 {
                     field: "fileDate",
                     title: "归档日期",
-                    width: 140,
+                    width: 100,
                     filterable: false
                 },
                 {
@@ -877,7 +877,7 @@
                 {
                     field: "isassistproc",
                     title: "是否协审",
-                    width: 140,
+                    width: 80,
                     filterable: false,
                     template: function (item) {
                         if (item.isassistproc == 9) {
@@ -890,13 +890,13 @@
                 {
                     field: "daysafterdispatch",
                     title: "发文后工作日",
-                    width: 140,
+                    width: 100,
                     filterable: false
                 },
                 {
                     field: "",
                     title: "操作",
-                    width: 140,
+                    width: 90,
                     filterable: false,
                     template: function (item) {
                         if (item.signState == '2') {
@@ -1402,9 +1402,7 @@
                     dir: "desc"
                 }
             });
-
         }
-
 
     }
 })();

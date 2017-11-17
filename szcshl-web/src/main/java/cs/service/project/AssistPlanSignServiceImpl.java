@@ -3,6 +3,8 @@ package cs.service.project;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs.common.Constant;
+import cs.common.ResultMsg;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,20 +62,31 @@ public class AssistPlanSignServiceImpl  implements AssistPlanSignService {
 		}
 		return dtoList;
 	}
-	
-	
+
+	/**
+	 * 保存协审计划信息
+	 * @param planSigns
+	 * @return
+	 */
 	@Override
 	@Transactional
-	public void savePlanSign(AssistPlanSignDto[] planSigns) {
+	public ResultMsg savePlanSign(AssistPlanSignDto[] planSigns) {
+	    try{
+            for(AssistPlanSignDto planSignDto:planSigns){
+                /*AssistPlan assistPlan = assistPlanRepo.findById(planSignDto.getPlanId());
+                AssistPlanSign planSign = new AssistPlanSign();
+                BeanCopierUtils.copyProperties(planSignDto, planSign);
+                planSign.setAssistPlan(assistPlan);
+                assistPlanSignRepo.save(planSign);*/
 
-		for(AssistPlanSignDto planSignDto:planSigns){
-			AssistPlan assistPlan=assistPlanRepo.findById(planSignDto.getPlanId());
-			AssistPlanSign planSign=new AssistPlanSign();
-			BeanCopierUtils.copyProperties(planSignDto, planSign);
-			planSign.setAssistPlan(assistPlan);
-			assistPlanSignRepo.save(planSign);
-		}
-
+                AssistPlanSign planSign = assistPlanSignRepo.findById(AssistPlanSign_.id.getName(),planSignDto.getId());
+                BeanCopierUtils.copyProperties(planSignDto, planSign);
+                assistPlanSignRepo.save(planSign);
+            }
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        }catch(Exception e){
+	        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败:"+e.getMessage());
+        }
 	}
 	@Override
 	public List<AssistPlanSignDto> findBySignId(String signId) {

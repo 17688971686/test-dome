@@ -22,32 +22,32 @@
 
         <table class="table table-bordered">
             <tr>
-                <td class="formAlignRight" style="width:120px;">主题： <span class="required">*</span></td>
+                <td class="text-right" style="width:120px;">主题： <span class="required">*</span></td>
                 <td>
                     <input type="text" maxlength="32" class="form-control input-sm " ng-model="vm.model.theme"
                            id="theme" name="theme" data-val-required="必填" data-val-regex="必填" data-val-length-max="32"/>
+                    <span data-valmsg-for="theme" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td><span data-valmsg-for="theme" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">立即发布：</td>
+                <td class="text-right">立即发布：</td>
                 <td>
-                    <input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.isPublish"
+                    <input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.model.isPublish"
                            name="isPublish" ng-true-value="9" ng-false-value="0">是
+                    <span data-valmsg-for="pubDept" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td><span data-valmsg-for="pubDept" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">全员可看：</td>
+                <td class="text-right">全员可看：</td>
                 <td>
-                    <input class="formAlignRight" type="checkbox" style="width:20px;" ng-model="vm.model.isNoPermission"
+                    <input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.model.isNoPermission"
                            name="isNoPermission" ng-true-value="9" ng-false-value="0">是
+                    <span data-valmsg-for="pubDept" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td><span data-valmsg-for="pubDept" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
 
             <tr ng-hide="vm.model.isNoPermission == 9">
-                <td class="formAlignRight">共享部门：</td>
+                <td class="text-right">共享部门：</td>
                 <td>
                     <span ng-repeat="o in vm.shareOrgList">
                         <input type="checkbox" name="shareOrg" value="{{o.id}}" ng-click="vm.checkBox($event)" ng-checked="{{o.isChecked}}"/>{{o.name}}</span>
@@ -56,7 +56,7 @@
             </tr>
 
             <tr ng-hide="vm.model.isNoPermission == 9">
-                <td class="formAlignRight">共享用户：</td>
+                <td class="text-right">共享用户：</td>
                 <td>
                     <table class="table">
                         <tr>
@@ -64,17 +64,17 @@
                                 中心领导
                             </td>
                             <td>
-                                <span ng-repeat="u in vm.noOrgUsetList">
-                                    <input type="checkbox" name="shareUser" value="{{u.id}}" ng-checked="{{u.isChecked}}"/>{{u.displayName}}</span>
-                                </span>
+                                <li ng-repeat="u in vm.noOrgUsetList" style="width: 80px;float: left;">
+                                    <input type="checkbox" name="shareUser" value="{{u.id}}" ng-checked="{{u.isChecked}}"/>{{u.displayName}}</li>
+                                </li>
                             </td>
                         </tr>
                         <tr ng-repeat="o in vm.shareOrgList">
                             <td>{{o.name}}</td>
                             <td>
-                                <span ng-repeat="u in o.userDtos">
-                                    <input type="checkbox" tit="{{o.id}}" name="shareUser" value="{{u.id}}" ng-checked="{{u.isChecked}}" ng-disabled="{{u.isDisabled}}"/>{{u.displayName}}</span>
-                                </span>
+                                <li ng-repeat="u in o.userDtos" style="width: 80px;float: left;">
+                                    <input type="checkbox" tit="{{o.id}}" name="shareUser" value="{{u.id}}" ng-checked="{{u.isChecked}}" ng-disabled="{{u.isDisabled}}"/>{{u.displayName}}</li>
+                                </li>
                             </td>
                         </tr>
                     </table>
@@ -82,16 +82,16 @@
             </tr>
 
             <tr>
-                <td class="formAlignRight">说明：</td>
+                <td class="text-right">说明：</td>
                 <td>
                     <textarea id="content" name="content" rows="5" cols="30" maxlength="1000"
                               class="form-control input-sm " ng-model="vm.model.content" data-val-length-max="1000"></textarea>
+                    <span data-valmsg-for="content" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td><span data-valmsg-for="content" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
 
             <tr>
-                <td class="formAlignRight">附件：</td>
+                <td class="text-right">附件：</td>
                 <td colspan="2">
                     <p>
                         <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>

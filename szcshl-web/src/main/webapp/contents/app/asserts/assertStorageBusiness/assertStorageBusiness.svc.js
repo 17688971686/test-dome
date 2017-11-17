@@ -147,7 +147,7 @@
         }
 
         function saveGoodsDetailBusinessDetail(conditions,callBack){
-            console.log(conditions);
+            //console.log(conditions);
             var httpOptions = {
                 method : 'post',
                 url : rootPath + "/assertStorageBusiness/saveGoodsDetailList",

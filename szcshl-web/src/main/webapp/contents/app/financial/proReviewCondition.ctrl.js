@@ -12,7 +12,7 @@
         vm.total={};
          //项目评审情况统计
         vm.proReviewConCount = function () {
-            console.log(vm.model);
+            //console.log(vm.model);
             if(vm.model.beginTime != null && vm.model.beginTime!=""){
                 var timeArr =  vm.model.beginTime.split("-");
                 vm.year = timeArr[0];

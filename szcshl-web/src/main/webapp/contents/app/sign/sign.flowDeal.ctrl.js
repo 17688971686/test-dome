@@ -594,7 +594,7 @@
                 })
             }
             var selUser = []
-            $('#p_assistUser input[selectType="assistUser"]:checked').each(function () {
+            $('#principalAssistUser input[selectType="assistUser"]:checked').each(function () {
                 selUser.push($(this).attr("tit"));
             });
 

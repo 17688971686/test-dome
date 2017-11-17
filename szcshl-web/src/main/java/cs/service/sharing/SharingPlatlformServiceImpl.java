@@ -58,13 +58,10 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         List<SharingPlatlform> resultList = sharingPlatlformRepo.findByOdata(odataObj);
         List<SharingPlatlformDto> resultDtoList = new ArrayList<SharingPlatlformDto>(resultList.size());
 
-        if (resultList != null && resultList.size() > 0) {
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 SharingPlatlformDto modelDto = new SharingPlatlformDto();
                 BeanCopierUtils.copyProperties(x, modelDto);
-                modelDto.setCreatedDate(x.getCreatedDate());
-                modelDto.setModifiedDate(x.getModifiedDate());
-
                 resultDtoList.add(modelDto);
             });
         }
@@ -84,7 +81,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         Criteria criteria = sharingPlatlformRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
         //创建人为当前用户
-        criteria.add(Restrictions.eq(SharingPlatlform_.createdBy.getName(), SessionUtil.getLoginName()));
+        criteria.add(Restrictions.eq(SharingPlatlform_.createdBy.getName(), SessionUtil.getUserId()));
         //统计总数
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         pageModelDto.setCount(totalResult);
@@ -106,7 +103,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         }
         List<SharingPlatlform> resultList = criteria.list();
         List<SharingPlatlformDto> resultDtoList = new ArrayList<SharingPlatlformDto>(resultList==null?0:resultList.size());
-        if (resultList != null && resultList.size() > 0) {
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 SharingPlatlformDto modelDto = new SharingPlatlformDto();
                 BeanCopierUtils.copyProperties(x, modelDto);
@@ -160,7 +157,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         }
         List<SharingPlatlform> resultList = criteria.list();
         List<SharingPlatlformDto> resultDtoList = new ArrayList<SharingPlatlformDto>(resultList==null?0:resultList.size());
-        if (resultList != null && resultList.size() > 0) {
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 SharingPlatlformDto modelDto = new SharingPlatlformDto();
                 BeanCopierUtils.copyProperties(x, modelDto);
@@ -186,6 +183,8 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         //1、如果有ID，则要先删除之前的权限
         if(!Validate.isString(domain.getSharId())){
             domain.setSharId(UUID.randomUUID().toString());
+            domain.setCreatedBy(SessionUtil.getUserId());
+            domain.setCreatedDate(now);
         }else{
             sharingPrivilegeService.deleteByShareId(domain.getSharId());
         }
@@ -206,12 +205,11 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         //立即发布
         if(Validate.isString(domain.getIsPublish()) && EnumState.YES.getValue().equals(domain.getIsPublish())){
             domain.setPublishDate(now);
-            domain.setPublishUsername(SessionUtil.getLoginName());
+            domain.setPublishUsername(SessionUtil.getDisplayName());
         }
         domain.setIsPublish(record.getIsPublish());
-        domain.setCreatedBy(SessionUtil.getLoginName());
         domain.setModifiedBy(SessionUtil.getLoginName());
-        domain.setCreatedDate(now);
+
         domain.setModifiedDate(now);
 
         sharingPlatlformRepo.save(domain);

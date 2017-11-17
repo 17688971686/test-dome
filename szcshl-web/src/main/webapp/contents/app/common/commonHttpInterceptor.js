@@ -3,13 +3,10 @@
  */
 (function () {
     'use strict';
-
     var app = angular.module('app');
-
     app.factory("commonHttpInterceptor", ["$injector", "bsWin", commonHttpInterceptor]);
 
     function commonHttpInterceptor($q, bsWin) {  //  anguler $http全局请求拦截器
-
         return {
             request: function (config) {
                 config.headers["Token"] = common.getToken();
@@ -37,17 +34,18 @@
         // debugger;
         switch (status) {
             case 500:
-                bsWin.error("系统内部错误");
+                bsWin.error("系统内部错误!");
                 break;
             case 401:
-                // TODO 可改为用户登录弹出窗口，不需要跳转到登录界面
-                bsWin.warning("登录信息失效或您没有权限,请重新登录!");
+                bsWin.warning("登录信息失效或您没有权限,请重新登录!",function(){
+                    window.location.href = rootPath+"/";
+                });
                 break;
             case 403:
-                bsWin.warning("无权限执行此操作");
+                bsWin.warning("您无权限执行此操作！");
                 break;
             case 404:
-                bsWin.error("未找到相应的操作");
+                bsWin.error("未找到相应的操作！");
                 break;
             case 408:
                 bsWin.warning("请求超时");
