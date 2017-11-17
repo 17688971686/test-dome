@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import cs.common.ResultMsg;
 import cs.model.project.AssistPlanSignDto;
 
 import java.util.List;
@@ -12,6 +13,12 @@ import java.util.List;
 public interface AssistPlanSignService {
 	List<AssistPlanSignDto> getPlanSignByPlanId(String planId);
 
-	void savePlanSign(AssistPlanSignDto[] planSigns);
+	/**
+	 * 保存填写的协审计划信息
+	 * @param planSigns
+	 * @return
+	 */
+	ResultMsg savePlanSign(AssistPlanSignDto[] planSigns);
+
 	List<AssistPlanSignDto> findBySignId(String signId);
 }

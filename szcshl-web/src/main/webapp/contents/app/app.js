@@ -607,7 +607,7 @@
              //资料共享详情页
              .state('sharingDetil', {
                 url: '/sharingDetil/:sharId',
-                templateUrl: rootPath + '/sharingPlatlform/html/letterFlowDetail.html',
+                templateUrl: rootPath + '/sharingPlatlform/html/detail.html',
                 controller: 'sharingDetailCtrl',
                 controllerAs: 'vm'
             })

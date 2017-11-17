@@ -1,5 +1,6 @@
 package cs.model.project;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
 
 import java.math.BigDecimal;
@@ -16,11 +17,12 @@ public class AssistPlanDto extends BaseDto {
 
     private String id;
     private String planName;
+    @JSONField(format = "yyyy-MM-dd")
     private Date reportTime;
     private String approvalTime;
     private String drawTime;
     private String drawType;
-    private List assistUnitList;
+
     private String ministerOpinion;
     private String viceDirectorOpinion;
     private String directorOpinion;
@@ -30,7 +32,7 @@ public class AssistPlanDto extends BaseDto {
     private List<AssistUnitDto> assistUnitDtoList;
 
     private List<AssistPlanSignDto> assistPlanSignDtoList;
-
+    private List assistUnitList;
     //以下参数为传递参数用
     private String signId;          //收文ID
     private boolean single;       //是否单个项目

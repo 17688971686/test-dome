@@ -23,9 +23,14 @@ public interface AssistUnitService {
 	AssistUnitDto findById(String deptId);
 
 	void delete(String ids);
-	
 
-	List<AssistUnitDto> findDrawUnit(String planId,Integer number);
+	/**
+	 * 选择抽签单位
+	 * @param planId
+	 * @param number
+	 * @return
+	 */
+	List<AssistUnitDto> findDrawUnit(String planId,Integer number,String drawType);
 	
 	List<AssistUnitDto> getAssistUnitByPlanId(String planId);
 

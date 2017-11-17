@@ -26,7 +26,6 @@
             });
             adminSvc.getSignList(vm);
             adminSvc.statisticalGrid(vm);
-
         }
 
         //重置

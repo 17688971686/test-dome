@@ -34,11 +34,31 @@ public interface AssistPlanService {
 
     AssistPlanDto getAssistPlanBySignId(String signId);
 
-    void saveDrawAssistUnit(String planId,String drawAssitUnitIds, String unSelectedIds);
+
+    /**
+     * 保存抽签结果
+     * @param planId
+     * @param drawAssitUnitIds
+     * @param unSelectedIds
+     * @return
+     */
+    ResultMsg saveDrawAssistUnit(String planId,String drawAssitUnitIds, String unSelectedIds);
     
    void  updateDrawType(String id,String drawType);
-   
+
+    /**
+     * 保存手动添加协审单位信息
+     * @param planId
+     * @param unitId
+     */
    void addAssistUnit(String planId,String unitId);
    
    List<AssistUnitDto> getAssistUnit(String planId);
+
+    /**
+     * 保存计划信息和协审信息
+     * @param record
+     * @return
+     */
+    ResultMsg savePlanAndSign(AssistPlanDto record);
 }

@@ -35,7 +35,7 @@ public class AssistPlan extends DomainBase {
     /**
      * 报批时间
      */
-    @Column(columnDefinition="VARCHAR(20)")
+    @Column(columnDefinition="VARCHAR(128)")
     private String approvalTime;
     
     /**

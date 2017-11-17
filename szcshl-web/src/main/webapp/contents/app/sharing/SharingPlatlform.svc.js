@@ -260,38 +260,39 @@
                 {
                     field: "theme",
                     title: "主题",
-                    width: 180,
+                    width: "35%",
                     filterable: false
                 },
                 {
                     field: "publishUsername",
                     title: "发布人",
-                    width: 120,
+                    width: "10%",
                     filterable: false
                 },
                 {
                     field: "publishDate",
                     title: "发布时间",
                     format: "{0:yyyy-MM-dd hh24:mm:ss}",
-                    width: 180,
+                    width: "18%",
                     filterable: false
                 },
                 {
                     field: "isPublish",
                     title: "发布状态",
-                    width: 100,
+                    width: "12%",
                     template: function (item) {
                        if(item.isPublish && item.isPublish == 9){
                            return "已发布";
                        }else{
                            return "未发布";
                        }
-                    }
+                    },
+                    filterable: false
                 },
                 {
                     field: "",
                     title: "操作",
-                    width: 180,
+                    width: "20%",
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
                             item.sharId, item.sharId, "vm.del('" + item.sharId + "')");
