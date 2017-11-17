@@ -1,5 +1,52 @@
 <meta charset="UTF-8">
-    <table class="print-table" style="margin-top: 5px;">
+<table  class="print-table">
+    <caption style="margin-top: 10px;">
+        <span >QR-4.3-08-A2</span>
+    </caption>
+    <caption class="title" style="margin-top: 20px; margin-bottom: 10px;">
+        <strong>{{vm.model.expertReviewDto.reviewTitle}}发放表</strong>
+    </caption>
+    <tr class="tr-hidden">
+        <td width="5%"></td>
+        <td width="10%"></td>
+        <td width="20%"></td>
+        <td width="20%"></td>
+        <td width="10%"></td>
+        <td width="10%"></td>
+        <td width="10%"></td>
+        <td width="15%"></td>
+    </tr>
+    <tr class="text-center">
+        <td rowspan="2">序号</td>
+        <td rowspan="2">姓名</td>
+        <td rowspan="2">身份证号码</td>
+        <td >开户行</td>
+        <td rowspan="2">评审费</td>
+        <td rowspan="2">应纳税额</td>
+        <td rowspan="2">合计（元）</td>
+        <td rowspan="2">领款人签名</td>
+    </tr>
+    <tr>
+        <td>银行账号</td>
+    </tr>
+        <tr style="height:  30px;" ng-repeat-start="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
+            <td rowspan="2">{{$index+1}}</td>
+            <td rowspan="2">{{x.expertDto.name}}</td>
+            <td rowspan="2">{{x.expertDto.idCard}}</td>
+            <td>{{x.expertDto.bankAccount}}</td>
+            <td rowspan="2">{{x.reviewCost}}</td>
+            <td rowspan="2">{{x.reviewTaxes}}</td>
+            <td rowspan="2">{{x.totalCost}}</td>
+            <td rowspan="2"></td>
+        </tr>
+        <tr style="height: 30px;"  ng-repeat-end="">
+            <td>{{x.expertDto.openingBank}}</td>
+        </tr>
+</table>
+   <!-- <table class="print-table" style="margin-top: 5px;">
+        <caption class="title" style="margin-top: 20px;">
+            <strong>专家评审费发放表</strong>
+        </caption>
         <tbody>
             <tr class="tr-hidden">
                 <td width="5%"></td>
@@ -41,18 +88,18 @@
                     <div ng-if = "vm.model.expertReviewDto.state == 9">{{vm.model.expertReviewDto.reviewTitle}}</div>
                 </td>
             </tr>
-            <tr>
-                <td colspan="8" class="title">{{vm.model.expertReviewDto.reviewTitle}}</td>
+            <tr style="height: 100px;">
+                <td colspan="8" class="title" >{{vm.model.expertReviewDto.reviewTitle}}</td>
             </tr>
-            <tr>
-                <th>序号</th>
-                <th>姓名</th>
-                <th>身份证号码</th>
-                <th>开户行/银行账号</th>
-                <th>评审费</th>
-                <th>应纳税额</th>
-                <th>合计（元）</th>
-                <th>是否函评</th>
+            <tr class="text-center">
+                <td>序号</td>
+                <td>姓名</td>
+                <td>身份证号码</td>
+                <td>开户行/银行账号</td>
+                <td>评审费</td>
+                <td>应纳税额</td>
+                <td>合计（元）</td>
+                <td>是否函评</td>
             </tr>
             <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
                 <td>{{$index+1}}</td>
@@ -76,11 +123,11 @@
                 <td> <input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="vm.model.expertReviewDto.expertSelectedDtoList[$index].isLetterRw" ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
             </tr>
             <tr>
-                <td colspan="4"></td>
+                <td colspan="4" class="text-center">总计</td>
                 <td>{{vm.model.expertReviewDto.reviewCost}}</td>
                 <td>{{vm.model.expertReviewDto.reviewTaxes}}</td>
                 <td>{{vm.model.expertReviewDto.totalCost}}</td>
                 <td></td>
             </tr>
         </tbody>
-    </table>
+    </table>-->

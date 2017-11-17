@@ -1,9 +1,6 @@
 <meta charset="UTF-8">
 <!-- start 主项目 -->
 <div   ng-if="(vm.model.workProgramDtoList[0].workreviveStage=='项目建议书' || vm.model.workProgramDtoList[0].workreviveStage=='可行性研究报告' || vm.model.workProgramDtoList[0].workreviveStage=='项目概算' || vm.model.workProgramDtoList[0].workreviveStage=='其它' || vm.model.workProgramDtoList[0].workreviveStage=='资金申请报告')&&(vm.model.workProgramDtoList[0].branchId == '1' || vm.model.workProgramDtoList[0].branchId == 1)">
-    <!--<a  data-toggle="collapse" data-target="#wp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">-->
-        <!--[{{vm.model.workProgramDtoList[0].titleName}}]-->
-    <!--</a>-->
     <div id="wp_{{$index}}" class="collapse in">
         <table class="print-table">
             <caption class="title" style="padding-top: 12px;">{{vm.model.workProgramDtoList[0].titleName}}</caption>
@@ -81,11 +78,14 @@
                 <td colspan="2">{{vm.model.workProgramDtoList[0].contactPersonFax}}</td>
             </tr>
             <tr>
-                <td rowspan="3">项目概况</td>
+                <td rowspan="4">项目概况</td>
+                <td>申报投资</td>
+                <td colspan="6" height="120">{{vm.model.workProgramDtoList[0].appalyInvestment}} 万元</td>
+
+            </tr>
+            <tr>
                 <td>申报建设规模</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].buildSize}}</td>
-                <td class="text-center">申报投资</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].appalyInvestment}} 万元</td>
+                <td colspan="6" height="120">{{vm.model.workProgramDtoList[0].buildSize}}</td>
             </tr>
             <tr>
                 <td>申报建设内容</td>
@@ -179,11 +179,8 @@
 <!-- end 主项目 -->
 
 <!-- start 协审项目（项目建议书/可行性研究报告） -->
-<div ng-repeat="w in vm.model.workProgramDtoList | orderBy:w.branchId"  style="margin-top:10px;"
+<div ng-repeat="w in vm.model.workProgramDtoList | orderBy:w.branchId"  style="margin-top:30px;"
      ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告'  || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告') && (w.branchId != '1' && w.branchId != 1)">
-    <a  data-toggle="collapse" data-target="#aswp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
-        [协办分支_{{w.branchId}}_工作方案]
-    </a>
     <div id="aswp_{{$index}}" class="collapse in" >
         <table  class="print-table" style="margin-top: 10px;">
             <tr>
