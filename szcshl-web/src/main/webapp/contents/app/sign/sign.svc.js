@@ -25,7 +25,8 @@
             realSign : realSign ,               //正式签收
             createDispatchTemplate : createDispatchTemplate ,//生成发文模板
             signGetBackGrid :signGetBackGrid,                //项目取回列表
-            getBack:getBack                            //项目取回
+            getBack:getBack,                            //项目取回
+            editTemplatePrint:editTemplatePrint      //编辑模板打印
 
         };
         return service;
@@ -752,6 +753,53 @@
                 success: httpSuccess,
             });
         }//getBack
+
+        //编辑模板打印
+        function editTemplatePrint(vm){
+            if(vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'){
+                $("#sign_fill_xmjys").hide();
+                $("#sign_fill_xmjys_templ").show();
+                $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
+                $(".content-wrapper").addClass("print-content");
+                print();
+                $("#sign_fill_xmjys").show();
+                $("#sign_fill_xmjys_templ").hide();
+            }else if(vm.model.reviewstage=='资金申请报告'){
+                $("#sign_fill_zjsq").hide();
+                $("#sign_fill_zjsq_templ").show();
+                $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
+                $(".content-wrapper").addClass("print-content");
+                print();
+                $("#sign_fill_zjsq").show();
+                $("#sign_fill_zjsq_templ").hide();
+
+            }else if(vm.model.reviewstage=='进口设备'){
+                $("#sign_fill_jksb").hide();
+                $("#sign_fill_jksb_templ").show();
+                $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
+                $(".content-wrapper").addClass("print-content");
+                print();
+                $("#sign_fill_jksb").show();
+                $("#sign_fill_jksb_templ").hide();
+
+            }else if(vm.model.reviewstage=='设备清单（国产）' || vm.model.reviewstage=='设备清单（进口）'){
+                $("#sign_fill_sbqd").hide();
+                $("#sign_fill_sbqd_templ").show();
+                $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
+                $(".content-wrapper").addClass("print-content");
+                print();
+                $("#sign_fill_sbqd").show();
+                $("#sign_fill_sbqd_templ").hide();
+            }else if(vm.model.reviewstage=='项目概算'){
+                $("#sign_fill_xmgs").hide();
+                $("#sign_fill_xmgs_templ").show();
+                $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
+                $(".content-wrapper").addClass("print-content");
+                print();
+                $("#sign_fill_xmgs").show();
+                $("#sign_fill_xmgs_templ").hide();
+            }
+        }
 
 
     }
