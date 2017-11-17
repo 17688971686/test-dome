@@ -24,9 +24,22 @@
             expertSelectHis : expertSelectHis,	//专家抽取统计
             expertScoreHis : expertScoreHis,	//专家评分统计
 			reviewProjectGrid : reviewProjectGrid,  //专家评审项目列表
+            expertPrint : expertPrint,  //专家评审项目列表
 		};
-		return service;	
+		return service;
 
+        //编辑模板打印
+        function expertPrint(vm){
+            $("#expertApply").hide();
+            $("#expertApply_templ").show();
+            $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
+            $(".content-wrapper").addClass("print-content");
+            print();
+            $("#expertApply").show();
+            $("#expertApply_templ").hide();
+            $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
+            $(".content-wrapper").removeClass("print-content");
+        }
 		//begin formReset
 		function formReset(vm){
 			$("#searchform")[0].reset();
@@ -636,6 +649,7 @@
                 httpOptions : httpOptions,
                 success : httpSuccess,
             });
+
             /*// Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
@@ -727,4 +741,5 @@
 		}
 		//end reviewProjectGrid
 	}
+
 })();

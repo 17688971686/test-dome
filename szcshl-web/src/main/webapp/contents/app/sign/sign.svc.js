@@ -776,7 +776,7 @@
             }else if(vm.model.reviewstage=='进口设备'){
                 $("#sign_fill_jksb").hide();
                 $("#sign_fill_jksb_templ").show();
-                $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
+                $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").addClass("print-hide");
                 $(".content-wrapper").addClass("print-content");
                 print();
                 $("#sign_fill_jksb").show();
@@ -798,6 +798,8 @@
                 print();
                 $("#sign_fill_xmgs").show();
                 $("#sign_fill_xmgs_templ").hide();
+                $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
+                $(".content-wrapper").removeClass("print-content");
             }
         }
 

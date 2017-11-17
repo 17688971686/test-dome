@@ -4,7 +4,7 @@
 <!-- 专家评审项目 -->
 <#include "/expert/reviewProjectList.html"/>
 
-<div class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
+<div id="expertApply" class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
     <ol class="breadcrumb">
         <li><a href="#/expertList">专家管理</a></li>
         <li class="active">{{vm.title}}</li>
@@ -715,7 +715,7 @@
     </form>
 </div>
 <!--   E_专家聘书 div   -->
-
+<div id="expertApply_templ" style="display: none;"> <#include "/templatePrint/expert/expertEdit.html"/></div>
 
 <div class="navbar navbar-default navbar-fixed-bottom" style="padding: 0;margin: 0;">
     <div class="text-center" style="line-height: 50px;">
@@ -728,6 +728,7 @@
         <button ng-if="vm.model.expertID" class="btn btn-sm btn-success" ng-click="vm.selReviewProject()">
             <span class="glyphicon glyphicon-search"></span>专家评审项目列表
         </button>
+        <input id="btnPrint" class="btn btn-sm btn-primary" type="button" value="打印"  ng-click="vm.editPrint()" />
     </div>
 </div>
 </div>

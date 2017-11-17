@@ -14,7 +14,7 @@
 function printpage(act){
     $(act).parent().hide();
     $("#"+$(act).parent().attr("id")+"_templ").show();
-    $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
+    $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").addClass("print-hide");
     $(act).addClass("print-hide");
     $(".content-wrapper").addClass("print-content");
     print();
@@ -24,7 +24,7 @@ function printpage(act){
         $(act).parent().removeAttr("style");
     }
     $("#"+$(act).parent().attr("id")+"_templ").hide();
-    $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").removeClass("print-hide");
+    $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
     $(act).removeClass("print-hide");
     $(".content-wrapper").removeClass("print-content");
 }
