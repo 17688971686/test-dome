@@ -20,7 +20,7 @@ function printpage(act){
     print();
     var showId = $(act).parent().attr("id")
     $(act).parent().show();
-    if(showId == "expert_score" || showId == "expert_payment" || showId == "suppLetter_list" || showId == "registerFile_list"){
+    if(showId == "expert_score" || showId == "expert_payment" || showId == "suppLetter_list" || showId == "registerFile_list" || showId == "busi_workplan" || showId == "busi_filerecord"){
         $(act).parent().removeAttr("style");
     }
     $("#"+$(act).parent().attr("id")+"_templ").hide();

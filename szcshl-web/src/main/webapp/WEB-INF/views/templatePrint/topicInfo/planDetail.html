@@ -1,0 +1,124 @@
+<meta charset="UTF-8">
+<div class="well well-sm" style="background:white;">
+    <table class="print-table">
+        <caption>QR-4.1-03-A3</caption>
+        <caption class="text-center"><h3><strong>课题研究成果鉴定（论证）会工作方案</strong></h3></caption>
+        <caption class="text-right" style="padding-right:100px;">日期：{{vm.model.workPlanDto.createdDate | date:'yyyy年MM月dd日'}}</span></caption>
+        <tr height="50px" >
+            <td class="text-center">课题名称</td>
+            <td colspan="8">{{vm.model.workPlanDto.topicName}}</td>
+        </tr>
+        <tr height="50px">
+            <td class="text-center">合作单位</td>
+            <td colspan="8">{{vm.model.workPlanDto.cooperator}}</td>
+        </tr>
+        <tr height="50px">
+            <td width="11%" class="text-center">联系人</td>
+            <td colspan="2" width="22%" >
+                {{vm.model.workPlanDto.contactName}}
+            </td>
+            <td width="15%" class="text-center">联系电话</td>
+            <td colspan="2" width="22%">
+                {{vm.model.workPlanDto.tellPhone}}
+            </td>
+            <td width="11%" class="text-center">传真</td>
+            <td colspan="2" width="22%">
+                {{vm.model.workPlanDto.fax}}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center">课题主要研究
+                <br>内容和研究成果</td>
+            <td colspan="8">
+                <div style="min-height: 50px;width: 100%;">
+                    {{vm.model.workPlanDto.topicContent}}
+                </div>
+            </td>
+        </tr>
+
+        <tr height="50px">
+            <td width="11%" class="text-center">会议时间</td>
+            <td colspan="4" width="22%" >
+                {{vm.model.workPlanDto.roomDtoList.beginTimeStr}}
+            </td>
+            <td width="12%" class="text-center">会  期</td>
+            <td colspan="4" width="22%">
+                {{vm.model.workPlanDto.roomDtoList.rbDate}}
+            </td>
+        </tr>
+
+        <tr height="50px">
+            <td width="11%" class="text-center">会议地点</td>
+            <td colspan="4" width="22%" >
+                {{vm.model.workPlanDto.roomDtoList.addressName}}
+            </td>
+            <td class="text-center" width="12%">经费估算</td>
+            <td colspan="4" >
+                {{vm.workplan.cost}} （单位：元）
+            </td>
+        </tr>
+        <tr height="50px">
+            <td class="text-center">调研时间</td>
+            <td colspan="4" >
+                <span ng-if="(vm.model.workPlanDto.studyQuantum == 'am' || !vm.model.workPlanDto.studyQuantum)">上午</span>
+                <span ng-if="vm.model.workPlanDto.studyQuantum == 'pm'">下午</span>
+                <span ng-if="vm.model.workPlanDto.studyQuantum== 'day'">全天</span>
+            </td>
+            <td class="text-center" width="12%">会议议程</td>
+            <td colspan="3" >见附件一</td>
+        </tr>
+        <tr ng-show="vm.model.workPlanDto.expertDtoList && vm.model.workPlanDto.expertDtoList.length > 0">
+            <td class="text-center" style="width:11%;">拟聘请专家</td>
+            <td class="text-center" style="width:11%;">工作单位</td>
+            <td class="text-center" style="width:11%;">职务</td>
+            <td class="text-center" style="width:11%;">职称</td>
+            <td class="text-center" style="width:22%;" colspan="2">专业</td>
+            <td class="text-center" style="width:11%;">联系电话</td>
+            <td class="text-center" style="width:11%;">专家类别</td>
+            <td class="text-center" style="width:11%;">备注</td>
+        </tr>
+        <tr ng-repeat="x in vm.model.workPlanDto.expertDtoList track by $index" ng-show="vm.model.workPlanDto.expertDtoList && vm.model.workPlanDto.expertDtoList.length > 0">
+            <td class="text-center">{{x.name}}</td>
+            <td class="text-center">{{x.comPany}}</td>
+            <td class="text-center">{{x.job}}</td>
+            <td class="text-center">{{x.post}}</td>
+            <td class="text-center" colspan="2">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
+            <td class="text-center">{{x.userPhone}}</td>
+            <td class="text-center">{{x.expeRttype}}</td>
+            <td class="text-center">{{x.remark}}</td>
+        </tr>
+
+        <tr height="80px">
+            <td class="text-center">拟邀请单位及领导</td>
+            <td colspan="8" >
+                <div style="min-height: 50px;">
+                    {{vm.model.workPlanDto.unitAndLeader}}
+                </div>
+            </td>
+        </tr>
+        <tr height="80px">
+            <td class="text-center">拟邀请单位及领导</td>
+            <td colspan="8" >
+                <div style="min-height: 50px;">
+                    {{vm.model.workPlanDto.unitAndLeader}}
+                </div>
+            </td>
+        </tr>
+        <tr height="80px">
+            <td class="text-center">部门主管意见</td>
+            <td colspan="8" >
+                <div style="min-height: 50px;">
+                    {{vm.model.workPlanDto.directorOption}}
+                </div>
+            </td>
+        </tr>
+        <tr height="80px">
+            <td class="text-center">领导批示</td>
+            <td colspan="8" >
+                <div style="min-height: 50px;">
+                    {{vm.model.workPlanDto.leaderOption}}
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

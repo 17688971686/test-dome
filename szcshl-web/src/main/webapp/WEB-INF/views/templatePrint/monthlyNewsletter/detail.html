@@ -1,0 +1,99 @@
+
+<!--S 年度月报简报添加页面 -->
+<meta charset="UTF-8">
+<form id="suppletter_form" name="suppletter_form">
+    <div class="text-center h3" >深圳市政府投资项目评审中心文件（稿纸）</br>年度月报简报<br></div>
+    <div style="width: 100%;margin-bottom: 30px; padding-top: 30px;">
+        <div style="float: left;margin-left: 6%">
+            <span>分&nbsp&nbsp&nbsp&nbsp&nbsp类:</span>
+        </div>
+        <div style="margin-left: 60%;">
+            <td style="width:150px;" class="text-center">存档编号:</td>
+            <td>
+
+            </td>
+        </div>
+    </div>
+    <!-- s table -->
+    <table class="print-table style="color:red;"">
+    <tbody>
+    <tr style="height: 80px;" >
+        <td style="width:150px;height:50px;" class="text-center">拟稿部门<br>拟稿人</td>
+        <td>
+            {{vm.suppletter.orgName}}<br>
+            {{vm.suppletter.userName}}
+        </td>
+
+        <td style="width:150px;" class="text-center">拟稿时间</td>
+        <td>
+            {{vm.suppletter.suppLetterTime}}
+        </td>
+    </tr>
+    <tr style="height: 80px;">
+        <td style="width:150px;" class="text-center">秘密等级</td>
+        <td>
+            {{vm.suppletter.secretLevel}}
+        </td>
+
+        <td style="width:150px;" class="text-center">缓急程度</td>
+        <td>
+            {{vm.suppletter.mergencyLevel}}
+        </td>
+    </tr>
+
+
+    <tr style="height: 80px;">
+        <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">文件标题</td>
+        <td colspan="3">
+            {{vm.suppletter.title}}
+        </td>
+    </tr>
+    <tr style="height:100px;">
+        <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">
+            发行范围</td>
+        <td colspan="3">
+            <div style="min-height: 50px;">
+                {{vm.suppletter.dispaRange}}
+            </div>
+            <span ng-show="vm.suppletter.printnum" style="float: right;">
+                    (印{{vm.suppletter.printnum}}份)
+                </span>
+            <span ng-hide="vm.suppletter.printnum" style="float: right;">
+                    (印&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp份)
+             </span>
+        </td>
+    </tr>
+
+
+
+    <tr>
+        <td style="width:150px; height: 120px;" class="text-center">核稿意见</td>
+        <td colspan="3">
+            <p> {{vm.suppletter.deptMinisterIdeaContent}}</p>
+            <p class="text-right" ng-if="vm.suppletter.deptMinisterName">签名：{{vm.suppletter.deptMinisterName}}</p>
+            <p class="text-right" ng-if="vm.suppletter.deptMinisterDate">日期：{{vm.suppletter.deptMinisterDate}}</p>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="width:150px; height: 120px;" class="text-center">会签意见</td>
+        <td colspan="3">
+            <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
+            <p class="text-right" ng-if="vm.suppletter.deptSLeaderName">签名：{{vm.suppletter.deptSLeaderName}}</p>
+            <p class="text-right" ng-if="vm.suppletter.deptSleaderDate">日期：{{vm.suppletter.deptSleaderDate}}</p>
+        </td>
+    </tr>
+    <tr>
+        <td style="width:150px; height: 120px;" class="text-center">领导意见</td>
+        <td colspan="3">
+            <p> {{vm.suppletter.deptDirectorIdeaContent}}</p>
+            <p class="text-right" ng-if="vm.suppletter.deptDirectorName">签名：{{vm.suppletter.deptDirectorName}}</p>
+            <p class="text-right" ng-if="vm.suppletter.deptDirectorDate">日期：{{vm.suppletter.deptDirectorDate}}</p>
+        </td>
+    </tr>
+    </tbody>
+    </table>    <!-- end table -->
+</form> <!-- end form -->
+
+</div>
+<!--E 年度月报简报添加页面 -->
