@@ -228,5 +228,10 @@
             });
         }
 
+        //项目签收编辑模板打印
+        vm.editPrint = function () {
+            signSvc.editTemplatePrint(vm);
+        }
+
     }
 })();
