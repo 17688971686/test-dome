@@ -80,7 +80,11 @@
 				<td class="text-right" >申请日期</td>
 				<td>
 					<input name="applyDate" operator="ge" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.expert.applyDate" value="" />
+				至
+                    <input name="applyDate" operator="le" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  value="" />
 				</td>
+
+
 				<td class="text-right" >综合评分</td>
 				<td>
                     <select name="compositeScore" operator="ge">
