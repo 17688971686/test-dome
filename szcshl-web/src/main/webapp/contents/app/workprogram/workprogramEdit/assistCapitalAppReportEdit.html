@@ -112,7 +112,9 @@
     <tr>
         <td  >拟聘请专家</td>
         <td colspan="7">
-            <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();">
+            <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();"
+                    ng-hide="vm.work.reviewType == '自评' || (vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审')"
+                    ng-show="vm.work.reviewType == '专家函评' || (vm.work.isMainProject == 9 && vm.work.isSigle=='合并评审'">
                 <span class="glyphicon glyphicon-pencil"></span>编辑
             </button>
         </td>
@@ -127,7 +129,7 @@
         <td class="text-center" style="width:10%;">专家类别</td>
         <td class="text-center" style="width:15%;">备注</td>
     </tr>
-    <tr ng-repeat="x in vm.work.expertDtoList track by $index" ng-show="vm.work.expertDtoList && vm.work.expertDtoList.length > 0">
+    <tr ng-repeat="x in vm.work.expertDtoList  track by $index" ng-show="vm.work.expertDtoList && vm.work.expertDtoList.length > 0">
         <td class="text-center">{{x.name}}</td>
         <td class="text-center">{{x.comPany}}</td>
         <td class="text-center">{{x.job}}</td>

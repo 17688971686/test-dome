@@ -877,8 +877,11 @@
                     ids.push(isCheck[i].value);
                 }
                 expertReviewSvc.updateJoinState("","", ids.join(','), '0',vm.isCommit,function(data){
-                    bsWin.success("操作成功！");
+                    //1、更改专家评分和评审费发放的专家
                     vm.reFleshJoinState(ids,'0');
+                    //2、
+                    bsWin.success("操作成功！");
+
                 });
             }
         }

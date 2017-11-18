@@ -72,7 +72,8 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
     public List<Expert> findByBusinessId(String businessId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" select e.* from cs_expert e where e.expertID in (select expertID from cs_expert_selected ");
-        sqlBuilder.append(" where "+ ExpertSelected_.isConfrim.getName()+" = '"+ Constant.EnumState.YES.getValue()+"' ");
+        sqlBuilder.append(" where "+ ExpertSelected_.isConfrim.getName()+" = :isConfirm ");
+        sqlBuilder.setParam("isConfirm",Constant.EnumState.YES.getValue());
         sqlBuilder.append("  and "+ExpertSelected_.businessId.getName()+" = :businessId )");
         sqlBuilder.setParam("businessId",businessId);
 

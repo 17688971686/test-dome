@@ -63,6 +63,7 @@ public class ExpertDto extends BaseDto {
      */
     private Integer scoreNum;
 
+
     public Integer getScoreNum() {
         return scoreNum;
     }

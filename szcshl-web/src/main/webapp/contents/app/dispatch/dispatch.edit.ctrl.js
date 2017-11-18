@@ -179,9 +179,10 @@
             if(isValid){
                 dispatchSvc.saveDispatch(vm);
             }else{
-                bsWin.alert("页面未填报完整或者为正确，请检查！");
+                bsWin.alert("提交失败，有红色标识的是必填项，请确认是否填写！");
             }
         }
+
         // 核减（增）/核减率（增）计算
         vm.count = function () {
             var pt = /^(-)?(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,4})?$/;    //保留4个小数点

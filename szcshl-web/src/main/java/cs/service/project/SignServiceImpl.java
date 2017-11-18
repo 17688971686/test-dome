@@ -168,6 +168,10 @@ public class SignServiceImpl implements SignService {
         //1、根据收文编号获取项目信息
         if (sign == null) {
             sign = new Sign();
+            //送来时间
+            if (sign.getReceivedate() == null) {
+                sign.setReceivedate(now);
+            }
             BeanCopierUtils.copyProperties(signDto, sign);
             sign.setSignid(UUID.randomUUID().toString());
             sign.setSignState(EnumState.NORMAL.getValue());
