@@ -1,0 +1,197 @@
+<meta charset="UTF-8">
+<!--专家申请表-->
+<style>
+    #proTotal {
+        border-top-width: 0px;
+        border-left-width: 0px;
+        /*border-right: none;*/
+        /*border-bottom: none;*/
+    }
+</style>
+<table class="print-table">
+
+    <caption class="title" style="margin-top: 20px;">
+        <strong>深圳市政府投资项目咨询专家申请表</strong>
+    </caption>
+    <tr class="tr-hidden">
+        <td width="10%"></td>
+        <td width="20%"></td>
+        <td width="10%"></td>
+        <td width="10%"></td>
+        <td width="10%"></td>
+        <td width="20%"></td>
+        <td width="10%"></td>
+        <td width="10%"></td>
+    </tr>
+    <t>
+        <td>姓名</td>
+        <td>{{vm.model.name}}</td>
+        <td>性别</td>
+        <td>{{vm.model.sex}}</td>
+        <td>出生年月</td>
+        <td>{{vm.model.birthDay}}</td>
+        <td colspan="2" rowspan="4"></td>
+    </t>
+    <tr>
+        <td>身份证号</td>
+        <td>{{vm.model.idCard}}</td>
+        <td>最高学历</td>
+        <td>{{vm.model.qualifiCations}}</td>
+        <td>最高学位</td>
+        <td>{{vm.model.degRee}}</td>
+    </tr>
+    <tr>
+        <td>毕业学校</td>
+        <td colspan="3">{{vm.model.acaDemy}}</td>
+        <td>毕业时间</td>
+        <td>{{vm.model.graduateDate}}</td>
+    </tr>
+    <tr>
+        <td>工作单位</td>
+        <td colspan="3">{{vm.model.comPany}}</td>
+        <td>现任职务</td>
+        <td>{{vm.model.job}}</td>
+    </tr>
+    <tr>
+        <td>手机号码</td>
+        <td>{{vm.model.userPhone}}</td>
+        <td>职称</td>
+        <td>{{vm.model.post}}</td>
+        <td>电子邮箱</td>
+        <td>{{vm.model.email}}</td>
+        <td>办公电话</td>
+        <td>{{vm.model.phone}}</td>
+    </tr>
+    <tr>
+        <td>通讯地址</td>
+        <td colspan="3">{{vm.model.addRess}}</td>
+        <td>传真</td>
+        <td>{{vm.model.fax}}</td>
+        <td>邮编</td>
+        <td>{{vm.model.zipCode}}</td>
+    </tr>
+    <tr>
+        <td>所学专业</td>
+        <td colspan="7">
+            <span>专业门类：{{vm.model.majorSSort}}</span>
+            <span>专业大类：{{vm.model.majorbigSSort}}</span>
+            <span>专业：{{vm.majorStudy}}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>从事专业</td>
+        <td colspan="7">
+            <span>专业门类：{{vm.model.majorWSort}}</span>
+            <span>专业大类：{{vm.model.majorbigWSort}}</span>
+            <span>专业：{{vm.majorWork}}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>专业类别</td>
+        <td colspan="3">{{vm.model.expertSort}}</td>
+        <td>区域类别</td>
+        <td colspan="3">{{vm.model.expertField}}</td>
+    </tr>
+    <tr>
+        <td>开户行</td>
+        <td colspan="3">{{vm.model.openingBank}}</td>
+        <td>银行账户</td>
+        <td colspan="3">{{vm.model.bankAccount}}</td>
+    </tr>
+    <tr style="height: 100px;">
+        <td>备注</td>
+        <td colspan="7"></td>
+    </tr>
+    <tr>
+        <td>专家代码</td>
+        <td colspan="3">{{vm.model.expertNo}}</td>
+        <td>录入人/时间</td>
+        <td colspan="3">{{vm.model.inputPerson}}/{{vm.model.applyDate}}</td>
+    </tr>
+    <tr >
+        <td>专业类别</td>
+        <td colspan="7" width="100%" style="padding: 0px;">
+            <table width="100%" id="proTotal"  style="text-align: center; " >
+                <tr>
+                    <td width="10%">序号</td>
+                    <td width="30%">突出专业(大类)</td>
+                    <td width="30%">突出专业(小类)</td>
+                    <td width="30%">专家类型</td>
+                </tr>
+                <tr ng-repeat="t in vm.model.expertTypeDtoList" ng-if="vm.model.expertTypeDtoList">
+                    <td class="text-center">{{$index+1}}</td>
+                    <td class="text-center">{{t.maJorBig}}</td>
+                    <td class="text-center">{{t.maJorSmall}}</td>
+                    <td class="text-center" >{{t.expertType}}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <tr>
+        <td>工作简历</td>
+        <td colspan="7" style="padding: 0px;">
+            <table style="width: 100%;text-align: center; " id="proTotal" >
+                <tr>
+                    <td width="20%">开始时间</td>
+                    <td width="20%">结束时间</td>
+                    <td width="40%">工作单位</td>
+                    <td width="20%">职务</td>
+                </tr>
+                <tr ng-if="vm.model.workDtoList" ng-repeat="w in vm.model.workDtoList">
+                    <td class="text-center">{{ w.beginTime }}</td>
+                    <td class="text-center">{{ w.endTime }}</td>
+                    <td class="text-center" >{{ w.companyName }}</td>
+                    <td class="text-center">{{ w.workJob }}</td>
+                </tr>
+                <tr >
+                    <td class="text-center">132</td>
+                    <td class="text-center">243</td>
+                    <td class="text-center">454</td>
+                    <td class="text-center" >213</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>项目经历</td>
+        <td colspan="7" style="padding: 0px;">
+            <table style="width: 100%; text-align: center;" id="proTotal">
+                <tr >
+                    <td width="50%">项目名称</td>
+                    <td width="50%">项目类别</td>
+                </tr>
+                <tr ng-if="vm.model.projectDtoList" ng-repeat="x in vm.model.projectDtoList">
+                    <td class="text-center" >{{x.projectName}}</td>
+                    <td class="text-center" >{{x.projectType}}</td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>专家聘书</td>
+        <td colspan="7" style="padding: 0px;">
+            <table style="width: 100%; text-align: center;" id="proTotal" >
+                <tr >
+                    <td width="15%">是否发证</td>
+                    <td width="20%">发证日期</td>
+                    <td width="15%">有效期</td>
+                    <td width="20%">有效期至</td>
+                    <td width="20%">是否作废</td>
+                    <td width="10%">备注</td>
+                </tr>
+                <tr ng-if="vm.model.expertOfferDtoList" ng-repeat="o in vm.model.expertOfferDtoList">
+                    <td class="text-center">{{ o.isSendCcie == 9?'是':'否'}}</td>
+                    <td class="text-center">{{ o.sendCcieDate }}</td>
+                    <td class="text-center">{{ o.period }}</td>
+                    <td class="text-center">{{ o.periodDate }}</td>
+                    <td class="text-center">{{ o.isInvalid == 9?'是':'否'}}</td>
+                    <td class="text-center">{{ o.descInfo }}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+
+</table>

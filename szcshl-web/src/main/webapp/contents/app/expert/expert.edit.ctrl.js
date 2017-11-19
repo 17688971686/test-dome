@@ -580,5 +580,12 @@
             $state.go('signDetails' ,{signid : signId , processInstanceId :  processInstanceId} );
 
         }
+
+
+        //项目签收编辑模板打印
+        vm.editPrint = function () {
+           expertSvc.expertPrint(vm);
+        }
+
     }
 })();

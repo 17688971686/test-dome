@@ -1,0 +1,179 @@
+<meta charset="UTF-8">
+<!-- start 主项目 -->
+<div   ng-if="(vm.work.workreviveStage=='项目建议书' || vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它' || vm.work.workreviveStage=='资金申请报告')&&(vm.work.branchId == '1' || vm.work.branchId == 1)">
+    <!--<a  data-toggle="collapse" data-target="#wp_{{$index}}" ng-show="(vm.work.workProgramDtoList.length > 1) || vm.showAll">-->
+        <!--[{{vm.work.titleName}}]-->
+    <!--</a>-->
+    <div id="wp_{{$index}}" class="collapse in">
+        <table class="print-table">
+            <caption class="title" style="padding-top: 14px;">{{vm.work.titleName}}</caption>
+            <caption>
+                <span ng-show="vm.work.workreviveStage=='项目建议书'">QR-4.3-02-A3</span>
+                <span ng-show="vm.work.workreviveStage=='可行性研究报告'">QR-4.4-01-A3</span>
+                <span ng-show="vm.work.workreviveStage=='资金申请报告'">QR-4.11-02-A0</span>
+                <span ng-show="vm.work.workreviveStage=='项目概算'">QR-4.7-01-A2</span>
+            </caption>
+            <caption style="width:100%;">
+                <span style="float:left;">
+                    <span>评审方式: {{vm.work.reviewType}}</span>
+                    <span style="margin:0px 10px;">{{vm.work.isSigle}}</span>
+                    <span ng-if="vm.work.isSigle=='合并评审' && vm.work.isMainProject == 9" > 主项目 </span>
+                    <span ng-if="vm.work.isSigle=='合并评审' && vm.work.isMainProject == 0" > 次项目 </span>
+                </span>
+                <span style="float:right;">{{vm.work.titleDate | date:'yyyy年MM月dd日' }}</span>
+            </caption>
+            <tr class="tr-hidden">
+                <td width="5%"></td>
+                <td width="10%"></td>
+                <td width="20%"></td>
+                <td width="14%"></td>
+                <td width="12%"></td>
+                <td width="18%"></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">项目名称</td>
+                <td colspan="6">{{vm.work.projectName}}</td>
+            </tr>
+            <tr>
+                <td colspan="2">来文单位</td>
+                <td colspan="3">{{vm.work.sendFileUnit}}</td>
+                <td class="text-center">来文单位联系人</td>
+                <td colspan="2">{{vm.work.sendFileUser}}</td>
+            </tr>
+            <tr>
+                <td colspan="2">建设单位</td>
+                <td colspan="3">{{vm.work.buildCompany}}</td>
+                <td class="text-center">编制单位</td>
+                <td colspan="2">{{vm.work.designCompany}}</td>
+            </tr>
+
+            <tr>
+                <td colspan="2">主管部门</td>
+                <td colspan="3">{{vm.work.mainDeptName}}</td>
+                <td class="text-center">是否有环评</td>
+                <td colspan="2">
+                    <input style="margin:0 10px" type="radio" ng-value="9" ng-model="vm.work.isHaveEIA" name="isHaveEIA">是
+                    <input style="margin:0 10px" type="radio" ng-value="0" ng-model="vm.work.isHaveEIA" name="isHaveEIA">否
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center" colspan="2">项目类别</td>
+                <td>{{vm.work.projectType}}</td>
+                <td class="text-center">小类</td>
+                <td>{{vm.work.projectSubType}}</td>
+                <td class="text-center">行业类别</td>
+                <td colspan="2">{{vm.work.industryType}}</td>
+            </tr>
+            <tr>
+                <td colspan="2" rowspan="3">联系人</td>
+                <td colspan="3" rowspan="3"></td>
+                <td class="text-center">手机</td>
+                <td colspan="2">{{vm.work.contactPersonPhone}}</td>
+            </tr>
+            <tr>
+                <td>电话</td>
+                <td colspan="2">{{vm.work.contactPersonTel}}</td>
+            </tr>
+            <tr>
+                <td>传真</td>
+                <td colspan="2">{{vm.work.contactPersonFax}}</td>
+            </tr>
+            <tr>
+                <td rowspan="3">项目概况</td>
+                <td>申报建设规模</td>
+                <td colspan="3">{{vm.work.buildSize}}</td>
+                <td class="text-center">申报投资</td>
+                <td colspan="2">{{vm.work.appalyInvestment}} 万元</td>
+            </tr>
+            <tr>
+                <td>申报建设内容</td>
+                <td height="120" colspan="6">{{vm.work.buildContent}}</td>
+            </tr>
+            <tr>
+                <td>项目背景</td>
+                <td height="120" colspan="6">{{vm.work.projectBackGround}}</td>
+            </tr>
+            <tr>
+                <td height="120" colspan="2" rowspan="2">评审部门</td>
+                <td colspan="3" rowspan="2"></td>
+                <td class="text-center">第一负责人</td>
+                <td colspan="2">{{vm.work.mianChargeUserName}}</td>
+            </tr>
+            <tr>
+                <td>第二负责人</td>
+                <td colspan="2">{{vm.work.secondChargeUserName}}</td>
+            </tr>
+            <tr>
+                <td class="text-center" colspan="2">补充资料函</td>
+                <td colspan="3">
+                    <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="vm.work.isHaveSuppLetter==9" ng-true-value="9" >是
+                    <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="!vm.work.isHaveSuppLetter || vm.work.isHaveSuppLetter==0"  ng-true-value="0">否
+                </td>
+                <td class="text-center">补充资料函发文日期</td>
+                <td colspan="2">{{vm.work.suppLetterDate}}</td>
+            </tr>
+            <tr>
+                <td colspan="2">评审会时间</td>
+                <td colspan="3">{{vm.work.rbDate}}</td>
+                <td class="text-center">会议地点</td>
+                <td colspan="2">{{vm.work.addressName}}</td>
+            </tr>
+            <tr></tr>
+            <tr ng-if="vm.work.isSigle=='单个评审' || (vm.work.isSigle=='合并评审' && vm.work.isMainProject == 9)">
+                <td colspan="2">调研时间</td>
+                <td colspan="3">{{vm.work.studyAllDay}}<span ng-if="vm.work.studyQuantum">,</span>{{vm.work.studyQuantum}}<span ng-if="vm.work.studyBeginTimeStr">,</span>{{vm.work.studyBeginTimeStr}}<span ng-if="vm.work.studyEndTimeStr">至</span>{{vm.work.studyEndTimeStr}}</td>
+                <td class="text-center">专家费用</td>
+                <td colspan="2">{{vm.work.expertCost}}</td>
+            </tr>
+            <tr>
+                <td colspan="2">合并评审相关项目</td>
+                <td colspan="6"></td>
+            </tr>
+            <tr class="text-center" ng-show="vm.work.expertDtoList && vm.work.expertDtoList.length > 0">
+                <td colspan="2">拟邀请专家</td>
+                <td>工作单位</td>
+                <td>职务/职称</td>
+                <td>专业</td>
+                <td>联系电话</td>
+                <td>专家类别</td>
+                <td>备注</td>
+            </tr>
+            <tr ng-repeat="x in vm.work.expertDtoList track by $index" ng-show="vm.work.expertDtoList && vm.work.expertDtoList.length > 0">
+                <td colspan="2">{{x.name}}</td>
+                <td>{{x.comPany}}</td>
+                <td>{{x.job}}</td>
+                <td>{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
+                <td>{{x.userPhone}}</td>
+                <td>{{x.post}}</td>
+                <td>{{x.expeRttype}}</td>
+            </tr>
+            <tr>
+                <td colspan="2" height="100px">拟邀请单位及领导</td>
+                <td colspan="6">{{vm.work.inviteUnitLeader}}</td>
+            </tr>
+            <tr>
+                <td  colspan="2" height="100px">拟评审重点问题</td>
+                <td colspan="6">{{vm.work.mainPoint}}</td>
+            </tr>
+            <tr>
+                <td colspan="2" height="100px">部长意见</td>
+                <td colspan="6">
+                    <p class="text-left"> {{vm.work.ministerSuggesttion}}</p>
+                    <p class="text-right" ng-if="vm.work.ministerName">签名：{{vm.work.ministerName}}</p>
+                    <p class="text-right" ng-if="vm.work.ministerDate">日期：{{vm.work.ministerDate}}</p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" height="100px">中心领导签批意见</td>
+                <td colspan="6">
+                    <p class="text-left"> {{vm.work.leaderSuggesttion}}</p>
+                    <p class="text-right" ng-if="vm.work.leaderName">签名：{{vm.work.leaderName}}</p>
+                    <p class="text-right" ng-if="vm.work.leaderDate">日期：{{vm.work.leaderDate}}</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!-- end 主项目 -->
