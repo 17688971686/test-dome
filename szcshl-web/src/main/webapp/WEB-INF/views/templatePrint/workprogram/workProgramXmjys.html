@@ -80,7 +80,7 @@
             <tr>
                 <td rowspan="4">项目概况</td>
                 <td>申报投资</td>
-                <td colspan="6" height="120">{{vm.model.workProgramDtoList[0].appalyInvestment}} 万元</td>
+                <td colspan="6" height="20">{{vm.model.workProgramDtoList[0].appalyInvestment}} 万元</td>
 
             </tr>
             <tr>
@@ -219,7 +219,7 @@
                 <td colspan="7">{{w.expertCost}}</td>
             </tr>
             <tr  ng-if="w.reviewType == '专家函评'" >
-                <td class="text-center" colspan="2">函评会日期</td>
+                <td class="text-center" >函评会日期</td>
                 <td colspan="7">{{w.letterDate}}</td>
             </tr>
             <tr ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">

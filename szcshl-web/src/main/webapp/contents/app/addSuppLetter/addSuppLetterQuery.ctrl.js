@@ -31,7 +31,8 @@
         vm.resetSuppContent = function(){
             var tab = $("#supQueryForm").find('input,select');
             $.each(tab, function (i, obj) {
-                obj.attr("selected",false);
+
+                // obj.attr("selected",false);
                 obj.value = "";
             });
         }

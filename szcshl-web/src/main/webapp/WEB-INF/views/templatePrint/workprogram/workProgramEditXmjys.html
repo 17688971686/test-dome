@@ -81,11 +81,15 @@
                 <td colspan="2">{{vm.work.contactPersonFax}}</td>
             </tr>
             <tr>
-                <td rowspan="3">项目概况</td>
+                <td rowspan="4">项目概况</td>
+                <td>申报投资</td>
+                <td colspan="6" height="20">{{vm.model.workProgramDtoList[0].appalyInvestment}} 万元</td>
+
+            </tr>
+            <tr>
                 <td>申报建设规模</td>
-                <td colspan="3">{{vm.work.buildSize}}</td>
-                <td class="text-center">申报投资</td>
-                <td colspan="2">{{vm.work.appalyInvestment}} 万元</td>
+                <td colspan="6" height="120">{{vm.model.workProgramDtoList[0].buildSize}}</td>
+            </tr> colspan="2">{{vm.work.appalyInvestment}} 万元</td>
             </tr>
             <tr>
                 <td>申报建设内容</td>

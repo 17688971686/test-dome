@@ -102,7 +102,9 @@
                             </td>
                             <td> {{x.reviewTaxes}}</td>
                             <td> {{x.totalCost}}</td>
-                            <td> <input type="checkbox" ng-disabled="vm.expertReview.state==9" ng-model="vm.expertReview.expertSelectedDtoList[$index].isLetterRw" ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
+                            <td> <input type="checkbox" ng-disabled="vm.expertReview.state==9"
+                                        ng-model="vm.expertReview.expertSelectedDtoList[$index].isLetterRw" ng-true-value="9" ng-false-value="0"
+                                        ng-checked="vm.expertReview.expertSelectedDtoList[$index].isLetterR==9"></td>
                         </tr>
                         <tr>
                             <td colspan="4"></td>
