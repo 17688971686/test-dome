@@ -36,10 +36,11 @@ public class RoomBookingDto extends BaseDto {
     private Date rbDay;//会议日期
 
     private String rbDate;//会议日期显示星期
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
 
+    @JSONField(format = "HH:mm")
     private Date beginTime;//会议开始时间
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+
+    @JSONField(format = "HH:mm")
     private Date endTime;//结束时间
     /**
      * 会议预定状态，1,已预定，0未预定(停用)

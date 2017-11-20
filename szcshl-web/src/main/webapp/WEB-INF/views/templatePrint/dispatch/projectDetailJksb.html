@@ -64,18 +64,15 @@
         </td>
     </tr>
 
-    <tr style="height: 90px;">
+    <tr >
         <td  class="text-center">发行范围</td>
-        <td colspan="7">
+        <td colspan="7" height="100">
             <div style="min-height: 50px;">
                 {{vm.dispatchDoc.fileTitle}}
             </div>
             <span ng-show="vm.dispatchDoc.printCount" style="float: right;">
                     (印{{vm.dispatchDoc.printCount}}份)
                 </span>
-            <span ng-hide="vm.dispatchDoc.printCount" style="float: right;">
-                    (印&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp份)
-             </span>
 
         </td>
     </tr>
@@ -85,7 +82,7 @@
             {{vm.dispatchDoc.reviewAbstract}}
         </td>
     </tr>
-    <tr style="height: 90px;">
+    <tr style="height: 80px;">
         <td  class="text-center">部长核稿意见 </td>
         <td colspan="7" style="min-height: 100px; height: 80px;">
             <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
@@ -93,7 +90,7 @@
             <p class="text-right" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
         </td>
     </tr>
-    <tr style="height: 90px;">
+    <tr style="height: 80px;">
         <td  class="text-center">分管副主任意见 </td>
         <td colspan="7" style="min-height: 100px; height: 80px;">
             {{vm.dispatchDoc.viceDirectorSuggesttion}}
@@ -101,7 +98,7 @@
             <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
         </td>
     </tr>
-    <tr style="height: 90px;">
+    <tr style="height: 80px;">
         <td  class="text-center">主任签发 </td>
         <td colspan="7" style="min-height: 100px; height: 80px;">
             {{vm.dispatchDoc.directorSuggesttion}}

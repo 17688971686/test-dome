@@ -215,7 +215,7 @@
         <td colspan="7">
             <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();"
                     ng-hide="vm.work.reviewType == '自评' || (vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审')"
-                    ng-show="vm.work.reviewType == '专家函评' || (vm.work.isMainProject == 9 && vm.work.isSigle=='合并评审'">
+                    ng-show="vm.work.reviewType == '专家函评' || (vm.work.isMainProject == 9 && vm.work.isSigle=='合并评审')">
                 <span class="glyphicon glyphicon-pencil"></span>编辑
             </button>
         </td>
@@ -255,4 +255,5 @@
     </tbody>
 </table>    <!--  	end table -->
 </form>  <!-- end form -->
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
 <!-- E 设备清单（国产）  /设备清单（进口）-->

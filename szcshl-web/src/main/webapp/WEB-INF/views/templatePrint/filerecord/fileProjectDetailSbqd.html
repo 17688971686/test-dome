@@ -180,18 +180,24 @@
             </table>
         </td>
     </tr>
-    <tr style="height: 60px">
-        <td colspan="6" style="text-align: left;">四：其他资料</td>
+    <tr >
+        <td colspan="6" style="text-align: left;" height="100">四：其他资料</td>
     </tr>
     <tr>
-        <td colspan="2">项目负责人（签名）</td>
-        <td>{{vm.fileRecord.projectChargeUser}}</td>
-        <td colspan="3"></td>
+        <td height="50">项目负责人（签名）</td>
+        <td colspan="2">{{vm.fileRecord.projectChargeUser}}</td>
+        <td rowspan="2">发送存档日期</td>
+        <td rowspan='2' colspan="2">{{vm.fileRecord.sendStoreDate}}</td>
     </tr>
     <tr>
-        <td colspan="2">档案员签收</td>
-        <td>{{vm.fileRecord.signUserName}}</td>
-        <td colspan="3">存档日期 : {{vm.fileRecord.fileDate}}</td>
+        <td height="50">项目第二负责人（签名）</td>
+        <td colspan="2">{{vm.fileRecord.projectTwoUser}}</td>
+    </tr>
+    <tr>
+        <td height="50">档案员签收</td>
+        <td colspan="2">{{vm.fileRecord.signUserName}}</td>
+        <td height="50">存档日期</td>
+        <td colspan="2">{{vm.fileRecord.fileDate}}</td>
     </tr>
     </tbody>
 </table>
