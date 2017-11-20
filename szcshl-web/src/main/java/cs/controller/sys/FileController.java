@@ -120,7 +120,7 @@ public class FileController {
         if (result) {
            return  fileService.saveToFtp(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType,propertyUtil.readProperty(FTP_IP1),propertyUtil.readProperty(FTP_PORT1), propertyUtil.readProperty(FTP_USER),propertyUtil.readProperty(FTP_PWD),propertyUtil.readProperty(FTP_BASE_PATH),"");
         } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件上传失败，无法获取文件信息！");
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"附件上传失败，连接ftp服务失败，请核查！");
         }
     }
 
