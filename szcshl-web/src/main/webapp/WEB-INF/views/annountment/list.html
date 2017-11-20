@@ -52,11 +52,11 @@
 <script type="text/template" id="columnBtns">
     <button class="btn btn-xs btn-success" ng-click="{0}"><span class="glyphicon glyphicon-edit"></span>查看</button>
     <@shiro.hasPermission name="annountment##put">
-    <a class="btn btn-xs btn-primary" href="#/annountmentEdit/{1}">
+    <a ng-if="{3}==undefined || {3}=='9'" class="btn btn-xs btn-primary" href="#/annountmentEdit/{1}">
         <span class="glyphicon glyphicon-pencil"></span>编辑</a>
     </@shiro.hasPermission>
     <@shiro.hasPermission name="annountment##delete">
-    <button class="btn btn-xs btn-danger" ng-click="{2}"><span class="glyphicon glyphicon-remove"></span>删除</button>
+    <button ng-if="{3}==undefined || {3}=='9'" class="btn btn-xs btn-danger" ng-click="{2}"><span class="glyphicon glyphicon-remove"></span>删除</button>
     </@shiro.hasPermission>
 </script>
 

@@ -234,6 +234,18 @@ public class FlowConstant {
     public static final String MONTH_FG = "MONTH_FG";        //分管领导审批
     public static final String MONTH_ZR = "MONTH_ZR";        //主任审批
 
+    /**
+     * 通知公告流程
+     */
+    public final static String ANNOUNT_MENT_FLOW = "ANNOUNT_MENT_FLOW";
+    /**
+     * 通知公告流程环节
+     */
+    public final static String ANNOUNT_TZ = "ANNOUNT_TZ";              //通知公告填报
+    public static final String ANNOUNT_BZ = "ANNOUNT_BZ";          //部长审批
+    public static final String ANNOUNT_FZ = "ANNOUNT_FZ";        //副主任审批
+    public static final String ANNOUNT_ZR = "ANNOUNT_ZR";        //主任审批
+
 
     /**
      * 流程参数
@@ -314,9 +326,31 @@ public class FlowConstant {
         USER_FGLD("user_fgld"),  //分管领导
         USER_ZR("user_zr"); //主任
 
+
         private String value;
 
         MonthlyNewsletterFlowParams(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * 通知公告流程参数
+     */
+    public static enum AnnountMentFLOWParams{
+        USER("user"),         //用户申请
+        USER_BZ("user_bz"),    //部长
+        USER_FZ("user_fz"),  //副主任
+        USER_ZR("user_zr"); //主任
+
+
+        private String value;
+
+        AnnountMentFLOWParams(String value) {
             this.value = value;
         }
 

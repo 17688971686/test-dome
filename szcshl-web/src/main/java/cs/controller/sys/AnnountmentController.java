@@ -1,6 +1,7 @@
 package cs.controller.sys;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.sys.AnnountmentDto;
 import cs.repository.odata.ODataObj;
@@ -35,7 +36,12 @@ public class AnnountmentController {
         PageModelDto<AnnountmentDto> pageModelDto = annService.findByCurUser(odataObj);
         return pageModelDto;
     }
-    
+    @RequiresAuthentication
+    @RequestMapping(name="发起流程" , path="startFlow" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg startFlow(@RequestParam String id){
+        return annService.startFlow(id);
+    }
     //@RequiresPermissions("annountment#findByIssue#post")
     @RequiresAuthentication
     @RequestMapping(name = "获取已发布的通知公告", path = "findByIssue", method = RequestMethod.POST)

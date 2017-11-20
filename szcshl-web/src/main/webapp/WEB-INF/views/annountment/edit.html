@@ -9,9 +9,15 @@
         <li class="active" >{{vm.title}}</li>
     </ol>
     <div class="toolbar">
-        <a class="btn btn-sm btn-primary" href="#/annountment"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
-        <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>保存</button>
-        <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新</button>
+        <a ng-hide="vm.annountment.processInstanceId" class="btn btn-sm btn-primary" href="#/annountment"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+        <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate || vm.isNeed!='1'"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.startNewFlow()" ng-disabled="vm.isSubmit" ng-hide="vm.isUpdate || vm.isNeed!='0'"><span class="glyphicon glyphicon-ok"></span>保存</button>
+       <!--判断是否需要审批 -->
+        <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate && vm.isNeed=='1' && vm.annountment.processInstanceId==undefined "><span class="glyphicon glyphicon-ok"></span>更新</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.startNewFlow()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate && vm.isNeed=='0' && vm.annountment.processInstanceId==undefined"><span class="glyphicon glyphicon-ok"></span>更新</button>
+       <!--退回的处理-->
+        <a ng-show="vm.annountment.processInstanceId" class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
+        <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.annountment.processInstanceId"><span class="glyphicon glyphicon-ok"></span>保存</button>
     </div>
 
     <form id="form" name="form">
@@ -24,21 +30,30 @@
                     <span data-valmsg-for="anTitle" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
-            <tr>
+             <tr ng-hide="vm.annountment.processInstanceId">
+                 <td class="formAlignRight">是否需要审批：{{vm.annountment.isNeed}} </td>
+                 <td >
+                     <select ng-model="vm.isNeed" ng-change="vm.annountment.issue=''">
+                         <option value="0">需要</option>
+                         <option value="1">不需要</option>
+                     </select>
+                 </td>
+             </tr>
+            <tr ng-hide="vm.annountment.processInstanceId">
                 <td class="formAlignRight">是否置顶： </td>
                 <td >
                 	<input type="radio" ng-model="vm.annountment.isStick "  name="isStick" value="9"/>是
                 	<input type="radio" ng-model="vm.annountment.isStick "  name="isStick" value="0"/>否
                 </td>
             </tr>
-             <tr>
+             <tr ng-if="vm.isNeed=='1'" ng-hide="vm.annountment.processInstanceId">
                  <td class="formAlignRight">发布： </td>
                  <td >
                      <input type="radio" ng-model="vm.annountment.issue "  name="issue" value="9"/>是
                      <input type="radio" ng-model="vm.annountment.issue "  name="issue" value="0"/>否
                  </td>
              </tr>
-             <tr>
+             <tr ng-hide="vm.annountment.processInstanceId">
                 <td class="formAlignRight">排序序号： </td>
                 <td >
                     <input  type="number" maxlength="50" class="form-control input-sm "   ng-model="vm.annountment.anSort " id="anSort" name="anSort" >
