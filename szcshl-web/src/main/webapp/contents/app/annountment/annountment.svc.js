@@ -20,6 +20,8 @@
             findDetailById: findDetailById,	            //通过id获取通过公告
             postArticle: postArticle,	                //访问上一篇文章
             nextArticle: nextArticle,	                //访问下一篇文章
+            startFlow: startFlow,                           //启动流程
+            initFlowDeal: initFlowDeal                      //初始化流程数据
         };
 
         return service;
@@ -70,7 +72,7 @@
         }//end findAnnountmentById
 
         //begin createAnnountment
-        function createAnnountment(vm) {
+        function createAnnountment(vm,callBack) {
         	vm.annountment.anContent=vm.editor.getContentTxt();
             common.initJqValidation();
             var isValid = $('#form').valid();
@@ -82,9 +84,9 @@
                     data: vm.annountment
                 }
                 var httpSuccess = function success(response) {
-                    vm.isSubmit = false;
-                    vm.annountment.anId = response.data.anId;
-                    bsWin.alert("保存成功！");
+                    if (callBack != undefined && typeof callBack == 'function') {
+                        callBack(response.data);
+                    }
                 }
                 common.http({
                     $http: $http,
@@ -98,9 +100,9 @@
         }//end createAnnountment
 
         //begin updateAnnountment
-        function updateAnnountment(vm) {
+        function updateAnnountment(vm,callBack) {
             vm.isSubmit = true;
-        	vm.annountment.anContent=$("#froalaEditor").val();
+            vm.annountment.anContent=vm.editor.getContentTxt();
             var httpOptions = {
                 method: "put",
                 url: url_annountment,
@@ -108,8 +110,10 @@
             }
 
             var httpSuccess = function success(response) {
-                vm.isSubmit = false;
-                bsWin.alert("操作成功！");
+                if (callBack != undefined && typeof callBack == 'function') {
+
+                    callBack(response.data);
+                }
             }
 
             common.http({
@@ -247,7 +251,7 @@
                     template: function (item) {
                     	
                         return common.format($('#columnBtns').html(),
-                            "vm.detail('" + item.anId + "')", item.anId, "vm.del('" + item.anId + "')");
+                            "vm.detail('" + item.anId + "')", item.anId, "vm.del('" + item.anId + "')",item.appoveStatus);
                     	
                     }
                 }
@@ -376,6 +380,38 @@
                 success: httpSuccess
             });
         }//end nextArticle
+
+
+        //S_startFlow
+        function startFlow(id, callBack) {
+            console.log(id);
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/annountment/startFlow",
+                params: {
+                    id: id
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_startFlow
+
+        //S_初始化流程数据
+        function initFlowDeal(vm) {
+            vm.annountment={};
+            vm.annountment.anId=vm.businessKey;
+            findAnnountmentById(vm, function (data) {
+                vm.suppletter = data;
+            })
+        }//E_initFlowDeal
 
 
     }

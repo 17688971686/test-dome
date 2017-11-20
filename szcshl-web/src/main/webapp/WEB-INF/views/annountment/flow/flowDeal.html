@@ -11,18 +11,18 @@
 
     <!-- 流程处理页面 -->
     <div >
-        <#include "/monthlyNewsletter/flow/dealOption.html"/>
+        <#include "/annountment/flow/dealOption.html"/>
     </div>
 
     <ul id="myTab" class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" for-div="busi_baseinfo">月报简报</a></li>
+        <li class="active"><a data-toggle="tab" for-div="busi_baseinfo">通知公告</a></li>
         <li><a data-toggle="tab" for-div="flow_diagram">流程图</a></li>
         <li><a data-toggle="tab" for-div="flow_history">处理记录</a></li>
     </ul>
 
     <div   class="tab-content" style="background:white;">
         <div  class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
-            <#include "/monthlyNewsletter/flow/detail.html"/>
+            <#include "/annountment/flow/detail.html"/>
         </div><!-- end tab -->
 
         <div class="tab-pane fade" style="background:white;" id="flow_diagram">
@@ -33,9 +33,5 @@
             <div class="grid" kendo-grid="grid" k-options="vm.historygrid"
                  k-data-source="vm.historygrid.dataSource"></div>
         </div>
-        <!-- end tab -->
-        <!--打印的模版-->
-        <!--月报简报-->
-        <div id="busi_baseinfo_templ" style="display: none;"> <#include "/templatePrint/monthlyNewsletter/detail.html"/></div>
     </div>
 </div>

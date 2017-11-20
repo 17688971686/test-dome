@@ -6,9 +6,9 @@
 
     angular.module('app').controller('flowDealCtrl', flowDeal);
 
-    flowDeal.$inject = ['$scope','ideaSvc','sysfileSvc', '$state', 'bsWin', 'topicSvc', 'flowSvc', 'bookBuyBusinessSvc','expertReviewSvc','assertStorageBusinessSvc','pauseProjectSvc','archivesLibrarySvc','reviewProjectAppraiseSvc','addSuppLetterSvc','monthlyMultiyearSvc'];
+    flowDeal.$inject = ['$scope','ideaSvc','sysfileSvc', '$state', 'bsWin', 'topicSvc', 'flowSvc', 'bookBuyBusinessSvc','expertReviewSvc','assertStorageBusinessSvc','pauseProjectSvc','archivesLibrarySvc','reviewProjectAppraiseSvc','addSuppLetterSvc','monthlyMultiyearSvc','annountmentSvc'];
 
-    function flowDeal($scope,ideaSvc,sysfileSvc, $state, bsWin, topicSvc, flowSvc, bookBuyBusinessSvc,expertReviewSvc,assertStorageBusinessSvc,pauseProjectSvc,archivesLibrarySvc,reviewProjectAppraiseSvc,addSuppLetterSvc,monthlyMultiyearSvc) {
+    function flowDeal($scope,ideaSvc,sysfileSvc, $state, bsWin, topicSvc, flowSvc, bookBuyBusinessSvc,expertReviewSvc,assertStorageBusinessSvc,pauseProjectSvc,archivesLibrarySvc,reviewProjectAppraiseSvc,addSuppLetterSvc,monthlyMultiyearSvc,annountmentSvc) {
         var vm = this;
         vm.title = '待办任务处理';
         vm.businessKey = $state.params.businessKey;            // 业务ID
@@ -78,6 +78,9 @@
                     break;
                 case flowcommon.getFlowDefinedKey().MONTHLY_BULLETIN_FLOW:       //月报简报流程
                     monthlyMultiyearSvc.initFlowDeal(vm);
+                    break;
+                case flowcommon.getFlowDefinedKey().ANNOUNT_MENT_FLOW:       //通知公告
+                    annountmentSvc.initFlowDeal(vm);
                     break;
             }
             // 初始化上传附件

@@ -10,6 +10,7 @@ import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
 import cs.domain.monthly.MonthlyNewsletter;
 import cs.domain.project.SignDispaWork;
+import cs.domain.sys.Annountment;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
@@ -27,6 +28,7 @@ import cs.service.project.AddSuppLetterService;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
 import cs.service.reviewProjectAppraise.AppraiseService;
+import cs.service.sys.AnnountmentService;
 import cs.service.topic.TopicInfoService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
@@ -95,6 +97,9 @@ public class FlowController {
     @Autowired
     @Qualifier("suppLetterFlowImpl")
     private IFlow suppLetterFlowImpl;
+    @Autowired
+    @Qualifier("annountMentFlowImpl")
+    private IFlow annountMentFlowImpl;
 
     @Autowired
     private TopicInfoService topicInfoService;
@@ -112,6 +117,8 @@ public class FlowController {
     private AddSuppLetterService addSuppLetterService;
     @Autowired
     private MonthlyNewsletterService monthlyNewsletterService;
+    @Autowired
+    private AnnountmentService annountmentService;
 
     //@RequiresPermissions("flow#html/tasks#post")
     @RequiresAuthentication
@@ -350,6 +357,9 @@ public class FlowController {
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
                 flowDto.setBusinessMap(suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                 break;
+            case FlowConstant.ANNOUNT_MENT_FLOW:
+                flowDto.setBusinessMap(annountMentFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                break;
             default:
                     ;
         }
@@ -419,6 +429,9 @@ public class FlowController {
                 break;
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
                 resultMsg = monthlyNewsletterService.dealSignSupperFlow(processInstance, task,flowDto);
+                break;
+            case FlowConstant.ANNOUNT_MENT_FLOW:
+                resultMsg = annountmentService.dealSignSupperFlow(processInstance, task,flowDto);
                 break;
             default:
                 resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
@@ -511,6 +524,9 @@ public class FlowController {
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
                 resultPage = "monthlyNewsletter/flow/flowDeal";
                 break;
+            case FlowConstant.ANNOUNT_MENT_FLOW:
+                resultPage = "annountMent/flow/flowDeal";
+                break;
             default:
                 ;
         }
@@ -545,7 +561,10 @@ public class FlowController {
                 resultPage = "addSuppLetter/letterFlowDetail";
                 break;
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                resultPage = "monthlyNewsletter/flow/flowDeal";
+                resultPage = "monthlyNewsletter/flow/flowDetail";
+                break;
+            case FlowConstant.ANNOUNT_MENT_FLOW:
+                resultPage = "annountMent/flow/flowDetail";
                 break;
             default:
                 ;
@@ -579,6 +598,9 @@ public class FlowController {
                 break;
             case FlowConstant.MONTHLY_BULLETIN_FLOW:
                 resultPage = "monthlyNewsletter/flow/flowDeal";
+                break;
+            case FlowConstant.ANNOUNT_MENT_FLOW:
+                resultPage = "annountMent/flow/flowDeal";
                 break;
             default:
                 ;
