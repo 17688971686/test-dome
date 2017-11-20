@@ -62,7 +62,6 @@
         MODAL_EVENTS: ['show', 'shown', 'hide', 'hidden', 'loaded'],
         objUrl: window.URL || window.webkitURL,
         compare: function (input, str, exact) {
-            console.log(exact);
             return input !== undefined && (exact ? input === str : input.match(str));
         },
         isIE: function (ver) {
@@ -1915,7 +1914,7 @@
                 hasPostData = self.filestack.length > 0 || !$.isEmptyObject(self.uploadExtraData),
                 $prog = $('#' + previewId).find('.file-thumb-progress'),
                 fnBefore, fnSuccess, fnComplete, fnError, updateUploadLog, params = {id: previewId, index: i};
-            self.formdata = formdata;
+                self.formdata = formdata;
             if (self.showPreview) {
                 $thumb = $('#' + previewId + ':not(.file-preview-initial)');
                 $btnUpload = $thumb.find('.kv-file-upload');
@@ -2009,7 +2008,7 @@
                 outData = self._getOutData(jqXHR, data);
                 $.extend(true, params, outData);
                 setTimeout(function () {
-                    if ($h.isEmpty(data) || $h.isEmpty(data.error)) {
+                    if ($h.isEmpty(data) || data.flag) {
                         if (self.showPreview) {
                             self._setThumbStatus($thumb, 'Success');
                             $btnUpload.hide();
@@ -2023,7 +2022,9 @@
                             updateUploadLog(i, pid);
                         }
                     } else {
-                        self._showUploadError(data.error, params);
+                        $prog.addClass('hide');
+                        self.$progress.addClass("hide");
+                        self._showUploadError(data.reMsg, params);
                         self._setPreviewError($thumb, i);
                         if (allFiles) {
                             updateUploadLog(i, pid);
@@ -2105,7 +2106,7 @@
                 var outData = self._getOutData(jqXHR, data), $thumbs = self._getThumbs(':not(.file-preview-error)'),
                     key = 0,
                     keys = $h.isEmpty(data) || $h.isEmpty(data.errorkeys) ? [] : data.errorkeys;
-                if ($h.isEmpty(data) || $h.isEmpty(data.error)) {
+                if ($h.isEmpty(data) || data.flag) {
                     self._raise('filebatchuploadsuccess', [outData]);
                     setAllUploaded();
                     if (self.showPreview) {
@@ -2144,7 +2145,8 @@
                         });
                         self._initUploadSuccess(data);
                     }
-                    self._showUploadError(data.error, outData, 'filebatchuploaderror');
+                    self.$progress.addClass("hide");
+                    self._showUploadError(data.reMsg, outData, 'filebatchuploaderror');
                 }
             };
             fnComplete = function () {
@@ -3577,7 +3579,7 @@
                 return;
             }
             self._resetUpload();
-            if (totLen === 0 && !hasExtraData) {
+            if (totLen === 0) {
                 self._showUploadError(self.msgUploadEmpty);
                 return;
             }
