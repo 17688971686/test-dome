@@ -87,7 +87,7 @@ public class MonthlyNewsletter extends DomainBase {
 	/**
 	 * 月报简报类型:
 	 * 1.表示月报简报管理列表数据,2表示删除月报简报列表
-	 * 5:表示月报简报历史数据,7:表示删除月报简历史数据
+	 * 5:表示月报简报历史数据,7:表示删除月报简历史数据(5和7暂时没用)
 	 */
 	@Column(columnDefinition="varchar(4)")
 	private String monthlyType;

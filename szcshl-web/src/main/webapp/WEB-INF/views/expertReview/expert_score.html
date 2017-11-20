@@ -43,22 +43,22 @@
             关闭
         </button>
     </div>
-    <div>
-        <form id="expert_score_form" name="expert_score_form">
-            <table class="table table-bordered">
-                <tr>
-                    <td style="width:90px;">专家星级:</td>
-                    <td>
-                        <div id="star" data-num=""></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width:90px;">评级描述:</td>
-                    <td><textarea rows="7" style="width: 96%;" ng-model="vm.scoreExpert.describes" ></textarea></td>
-                </tr>
-            </table>
-        </form>
-    </div>
+    <form id="expert_score_form" name="expert_score_form">
+        <table class="table table-bordered">
+            <tr>
+                <td style="width:90px;">专家星级:</td>
+                <td>
+                    <div ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
+                        <div id="star_{{x.id}}" data-num="{{x.score}}" ng-show="x.id == vm.scoreExpert.id"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:90px;">评级描述:</td>
+                <td><textarea rows="7" style="width: 96%;" ng-model="vm.scoreExpert.describes" ></textarea></td>
+            </tr>
+        </table>
+    </form>
 </div>
 <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
 <!-- end 专家评分弹窗-->

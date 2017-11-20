@@ -21,9 +21,35 @@
             chooseSign: chooseSign,                 //选择合并评审的工作方案
             cancelMergeSign: cancelMergeSign,       //取消合并评审的工作方案
             deleteAllMerge:deleteAllMerge,          //删除所有合并评审的工作方案
+
+            findById : findById,                    //根据主键查询
         };
 
         return service;
+
+        /**
+         * 根据主键查询工作方案信息
+         * @param wpId
+         */
+        function findById(workId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/initWorkProgramById",
+                params: {
+                    workId:workId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         //S_初始化已选项目列表
         function getMergeSignBySignId(signId,callBack) {
@@ -127,13 +153,14 @@
         }//E_chooseWP
 
         //S_删除所有合并评审工作方案
-        function deleteAllMerge(signId,callBack){
+        function deleteAllMerge(signId,businessId,callBack){
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/signView/deleteAllMerge",
                 params: {
                     signId: signId,
-                    mergeType:"1"
+                    mergeType:"1",
+                    businessId : businessId
                 }
             }
             var httpSuccess = function success(response) {
@@ -245,7 +272,7 @@
                     if(response.data.WPList && response.data.WPList.length > 0){
                         vm.model.workProgramDtoList = response.data.WPList;
                     }
-                    console.log(vm.model.workProgramDtoList[0]);
+
                     if(vm.work.branchId == "1"){
                         findCompanys(vm);//查找主管部门
                     }
@@ -253,7 +280,7 @@
                     if(vm.work.projectType){
                         vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType,$rootScope.DICT.PROJECTTYPE.dicts)
                     }
-                    //初始化数值
+                    /*//初始化数值
                     if(vm.work.reviewType == "自评"){
                         vm.businessFlag.isSelfReview = true;           //是否自评
                     }
@@ -263,7 +290,7 @@
                     if(vm.work.isMainProject == "9"){
                         vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
                     }
-
+*/
                     //如果是合并评审次项目，则不允许修改
                     if(vm.work.isSigle == "合并评审" && (vm.work.isMainProject == "0" || vm.work.isMainProject == 0)){
                         vm.businessFlag.isReveiwAWP = true;

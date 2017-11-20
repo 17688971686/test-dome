@@ -14,6 +14,7 @@
             businessType: $state.params.businessType,
         };
         vm.startDateTime = new Date("2005/6/1 08:00");
+        vm.startRbDate = new Date();
         vm.endDateTime = new Date("2030/6/1 21:00");
         vm.currentDate = "";
         vm.reportName = "会议室安排表";//默认会议室导出文件名

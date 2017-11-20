@@ -66,34 +66,21 @@
         }
 
         // begin#deleteMonthlyNewsletter
-        function deleteMonthlyNewsletter(vm, id) {
-            vm.isSubmit = true;
+        function deleteMonthlyNewsletter(id,callBack) {
             var httpOptions = {
                 method: 'delete',
                 url: url_monthlyNewsletter+"/deleteMonthlyData",
-                data: id
+                params: {
+                    id:id
+                }
             };
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                    	common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                            	vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                                refresh();
-                            }
-                        })
-                    }
-                });
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
 
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -177,7 +164,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData"),
+                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData",$("#monthlyForm"),{filter:"monthlyType eq '1'"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -288,7 +275,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/deleteMonthlyList"),
+                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData",$("#monthlyForm"),{filter:"monthlyType eq '2'"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {

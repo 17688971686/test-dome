@@ -1,5 +1,8 @@
 package cs.repository.repositoryImpl.monthly;
 
+import cs.common.Constant;
+import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.domain.monthly.MonthlyNewsletter;
 import cs.domain.monthly.MonthlyNewsletter_;
 import cs.repository.AbstractRepository;
@@ -29,5 +32,21 @@ public class MonthlyNewsletterRepoImpl extends AbstractRepository<MonthlyNewslet
         List<MonthlyNewsletter> monthlyNewsletterList=criteria.list();
         String year=monthlyNewsletterList.get(0).getReportMultiyear();
         return year;
+    }
+
+    /**
+     * 更改月报简报状态
+     * @param id
+     * @param value
+     * @return
+     */
+    @Override
+    public ResultMsg updateMonthlyType(String id, String value) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" update "+MonthlyNewsletter.class.getSimpleName()+" set "+MonthlyNewsletter_.monthlyType.getName()+"=:monthlyType ");
+        hqlBuilder.setParam("monthlyType",value);
+        hqlBuilder.bulidPropotyString("where",MonthlyNewsletter_.id.getName(),id);
+        executeHql(hqlBuilder);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
 }

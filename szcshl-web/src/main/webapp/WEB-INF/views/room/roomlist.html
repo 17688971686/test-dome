@@ -37,14 +37,20 @@
         padding: 5px;
         width: 90%;
     }
+    .k-nonwork-hour{
+        background-color:#ffffff;
+    }
+    .k-scheduler-table .k-today, .k-today>.k-scheduler-datecolumn, .k-today>.k-scheduler-groupcolumn{
+        background-color:#ffffff;
+    }
 </style>
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/room">会议室预定管理</a></li>
-        <li class="active">{{vm.title}}</li>
+        <li>会议室管理</li>
+        <li class="active">会议室预定管理</li>
     </ol>
     <div class="well well-sm">
         会议室查询：
@@ -66,7 +72,7 @@
         </button>
     </div>
 
-    <div class="label-default" style="width: 100%;padding:3px 10px;font-size: 12px;">
+    <div class="label-info" style="width: 100%;padding:3px 10px;font-size: 12px;">
         双击时间段进行会议室预定或者修改！
     </div>
 
@@ -81,7 +87,6 @@
         <div>【#: dueToPeople #】</div>
     </p>
    <!-- <p style="padding:0;margin: 0;padding-left: 5px;">会议内容：#: content #</p>-->
-
 </script>
 
 <div id="customEditorTemplate" type="text/x-kendo-template"style="display: none;">
@@ -110,7 +115,8 @@
             <tr>
                 <td class="text-center">会议日期<span class="required">*</span></td>
                 <td>
-                    <input kendo-date-picker k-format="'yyyy-MM-dd'" data-bind="value:rbDay"
+                    <input kendo-date-picker k-format="'yyyy-MM-dd'" data-bind="value:start"
+                           min="vm.startDateTime" max="vm.endDateTime"
                            id="rbDay" name="rbDay"  data-val="true" style="width: 100px;"
                            data-val-required="时间段不能为空"/>
                     <span data-valmsg-for="rbDay" data-valmsg-replace="true" class="errors"></span>

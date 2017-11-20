@@ -26,9 +26,12 @@
                 date: new Date(),
                 startTime: new Date("2005/6/1 08:00"),
                 endTime: new Date("2030/6/1 21:00"),
-                height: 600,
                 views: [
-                    {type: "week", selected: true, allDaySlot: false},
+                    {   type: "week",
+                        selected: true,
+                        allDaySlot: false,
+                        selectedDateFormat: "{0:yyyy-MM-dd}"
+                    },
                 ],
                 editable: {
                     destroy: false,      //不可删除
@@ -89,10 +92,10 @@
                         id: "bookId",
                         fields: {
                             bookId: {from: "id"},
-                            title: {from: "addressName", defaultValue: "会议室"},
+                            title: {from: "addressName", defaultValue: "会议室",validation: { required: true }},
                             start: {type: "date", from: "beginTime"},
                             end: {type: "date", from: "endTime"},
-                            rbDay: {type: "date", from: "rbDay"},
+                            rbDay: {type: "date", from: "rbDay",format:"yyyy-MM-dd"},
                             businessId: {from: "businessId", defaultValue: vm.model.businessId},
                             businessType: {from: "businessType", defaultValue: vm.model.businessType},
                             rbName: {from: "rbName", defaultValue: vm.model.rbName},

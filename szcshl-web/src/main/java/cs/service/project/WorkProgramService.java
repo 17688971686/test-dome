@@ -29,6 +29,11 @@ public interface WorkProgramService {
      */
     ResultMsg createMeetingDoc(String signId);
 
+    /**
+     * 根据主键查询工作方案信息
+     * @param workId
+     * @return
+     */
     WorkProgramDto initWorkProgramById(String workId);
 
     /**

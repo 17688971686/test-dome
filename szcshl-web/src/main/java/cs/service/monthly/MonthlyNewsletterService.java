@@ -37,11 +37,9 @@ public interface MonthlyNewsletterService {
 
 	PageModelDto<MonthlyNewsletterDto> getMonthlyList(ODataObj odataObj);
 
-	PageModelDto<MonthlyNewsletterDto> deleteMonthlyList(ODataObj odataObj);
+	//PageModelDto<MonthlyNewsletterDto> deleteMonthlyList(ODataObj odataObj);
 
-	void deleteMonthlyDatas(String[] ids);
-
-	void deleteMonthlyData(String id);
+	ResultMsg deleteMonthlyData(String id);
 
 	void editTheMonthly(MonthlyNewsletterDto record);
 

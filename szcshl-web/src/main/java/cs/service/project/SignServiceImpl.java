@@ -2050,10 +2050,10 @@ public class SignServiceImpl implements SignService {
             criteria.add(Restrictions.not(Restrictions.like(RuProcessTask_.nodeDefineKey.getName(),"%"+FlowConstant.FLOW_SIGN_BMFB1.substring(0,FlowConstant.FLOW_SIGN_BMFB1.length()-1)+"%")));
             //是副主任，只要没发文，均可取回
         } else {
-            sBuffer.append(" ( ( SUBSTR (NODEDEFINEKEY, -1) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue() + "' ");
-            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue() + "' ");
-            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue() + "' ");
-            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue() + "' ) ");
+            sBuffer.append(" ( ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue() + "' ");
+            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue() + "' ");
+            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue() + "' ");
+            sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue() + "' ) ");
             //合并评审的工作方案，部长没审批时可以回退
             criteria.add(Restrictions.ge(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.IS_START.getValue()));
             criteria.add(Restrictions.le(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.END_WP.getValue()));

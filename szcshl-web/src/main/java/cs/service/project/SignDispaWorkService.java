@@ -56,7 +56,13 @@ public interface SignDispaWorkService {
      */
     ResultMsg cancelMergeSign(String signId, String cancelIds, String mergeType);
 
-    ResultMsg deleteAllMerge(String signId,String mergeType);
+    /**
+     * 删除已经合并的工作方案
+     * @param signId
+     * @param mergeType
+     * @return
+     */
+    ResultMsg deleteAllMerge(String signId,String mergeType,String businessId);
 
     List<SignDispaWork> getSignDispaWork(String filters);
 

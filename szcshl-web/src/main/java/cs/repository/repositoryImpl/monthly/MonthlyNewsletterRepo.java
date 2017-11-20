@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.monthly;
 
+import cs.common.ResultMsg;
 import cs.domain.monthly.MonthlyNewsletter;
 import cs.repository.IRepository;
 
@@ -18,4 +19,11 @@ public interface MonthlyNewsletterRepo extends IRepository<MonthlyNewsletter, St
     String findYear(String businessId);
 
 
+    /**
+     * 更改月报简报类型状态
+     * @param id
+     * @param value
+     * @return
+     */
+    ResultMsg updateMonthlyType(String id, String value);
 }

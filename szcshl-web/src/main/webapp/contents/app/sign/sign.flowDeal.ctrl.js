@@ -172,12 +172,13 @@
             vm.scoreExpert = {};
             $.each(vm.model.expertReviewDto.expertSelectedDtoList,function (i,scopeEP) {
                 if(scopeEP.id == id){
-                    vm.scoreExpert = scopeEP;
+                    vm.scoreExpert = angular.copy(scopeEP);
                     return ;
                 }
             })
 
-            $("#star").raty({
+            $("#star_"+vm.scoreExpert.id).raty({
+                number:5,
                 score: function () {
                     $(this).attr("data-num", angular.isUndefined(vm.scoreExpert.score)?0:vm.scoreExpert.score);
                     return $(this).attr("data-num");
@@ -215,6 +216,12 @@
             var isValid = $('#expert_score_form').valid();
             if(isValid){
                 expertReviewSvc.saveMark(vm.scoreExpert,function(){
+                    angular.forEach(vm.model.expertReviewDto.expertSelectedDtoList,function (scopeEP,index) {
+                        if(scopeEP.id == vm.scoreExpert.id){
+                            scopeEP.score = vm.scoreExpert.score;
+                            scopeEP.describes = vm.scoreExpert.describes;
+                        }
+                    })
                     bsWin.success("保存成功！",function(){
                         vm.closeEditMark();
                     });
@@ -662,14 +669,14 @@
                         return ;
                     }
                     if(vm.businessFlag.isSelMainPriUser == true && vm.isMainPriUser == 9){
-                        bsWin.alert("你已经选择了一个总负责人，不能再次选择负责人！");
+                        bsWin.alert("你已经选择了一个总负责人！");
                         return ;
                     }
                 }
-                if(vm.businessFlag.principalUsers && (vm.businessFlag.principalUsers.length + isCheck.length) > 3){
+               /* if(vm.businessFlag.principalUsers && (vm.businessFlag.principalUsers.length + isCheck.length) > 3){
                     bsWin.alert("最多只能选择3个负责人，请重新选择！");
                     return ;
-                }
+                }*/
 
                 for (var i = 0; i < isCheck.length; i++) {
                     var priUser = {};
@@ -678,7 +685,7 @@
                     if(vm.isMainPriUser == 9){
                         vm.businessFlag.isSelMainPriUser = true;
                         priUser.isMainUser = 9;
-                        vm.isMainPriUser == 0;
+                        vm.isMainPriUser = 0;
                     }else{
                         priUser.isMainUser = 0;
                     }
@@ -901,7 +908,7 @@
         //签收模板打印
         vm.printpage = function ($event) {
           var id =  $($event.target).parent().attr("id");
-          console.log(id);
+         // console.log(id);
    /*       var obj = $event.target
           console.log(aaa);
 */

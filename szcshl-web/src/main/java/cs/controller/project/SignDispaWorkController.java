@@ -1,16 +1,13 @@
 package cs.controller.project;
 
-import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
 import cs.common.utils.ExcelTools;
-import cs.domain.flow.RuProcessTask;
 import cs.domain.project.SignDispaWork;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
-import cs.model.expert.ProReviewConditionDto;
 import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertSelectedService;
@@ -27,9 +24,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 项目详情信息视图控制器
@@ -65,6 +63,7 @@ public class SignDispaWorkController {
     @RequestMapping(name = "待选合并评审项目", path = "unMergeWPSign", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> unMergeWPSign(@RequestParam(required = true) String signId) {
+        System.out.println(signId);
         return signDispaWorkService.unMergeWPSign(signId);
     }
 
@@ -113,8 +112,10 @@ public class SignDispaWorkController {
     //@RequiresPermissions("signView#deleteAllMerge#post")
     @RequestMapping(name = "删除所有合并项目", path = "deleteAllMerge", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg deleteAllMerge(@RequestParam(required = true) String signId, @RequestParam(required = true) String mergeType) {
-        return signDispaWorkService.deleteAllMerge(signId, mergeType);
+    public ResultMsg deleteAllMerge(@RequestParam(required = true) String signId,
+                                    @RequestParam(required = true) String mergeType,
+                                    @RequestParam(required = true) String businessId) {
+        return signDispaWorkService.deleteAllMerge(signId, mergeType,businessId);
     }
 
     @RequiresAuthentication

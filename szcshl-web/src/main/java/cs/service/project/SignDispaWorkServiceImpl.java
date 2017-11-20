@@ -37,7 +37,8 @@ import java.util.*;
 
 /**
  * 项目信息视图 Service
- * @author  ldm
+ *
+ * @author ldm
  */
 @Service
 public class SignDispaWorkServiceImpl implements SignDispaWorkService {
@@ -58,34 +59,35 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
     /**
      * 查询个人办理项目
+     *
      * @param oDataObj
      * @param isMianUser
      * @return
      */
     @Override
-    public PageModelDto<SignDispaWork> findMyDoProject(ODataObj oDataObj,boolean isMianUser) {
+    public PageModelDto<SignDispaWork> findMyDoProject(ODataObj oDataObj, boolean isMianUser) {
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         criteria = oDataObj.buildFilterToCriteria(criteria);
-        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.mUserId.getName() , SessionUtil.getUserId()),Restrictions.like(SignDispaWork_.aUserID.getName() , SessionUtil.getUserId())));
+        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.mUserId.getName(), SessionUtil.getUserId()), Restrictions.like(SignDispaWork_.aUserID.getName(), SessionUtil.getUserId())));
         //criteria.add(Restrictions.like(SignDispaWork_.aUserID.getName() , SessionUtil.getUserId()));
         //统计总数
-        Integer totalResult=((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         pageModelDto.setCount(totalResult);
         //处理分页
         criteria.setProjection(null);
-        if(oDataObj.getSkip() > 0){
+        if (oDataObj.getSkip() > 0) {
             criteria.setFirstResult(oDataObj.getSkip());
         }
-        if(oDataObj.getTop() > 0){
+        if (oDataObj.getTop() > 0) {
             criteria.setMaxResults(oDataObj.getTop());
         }
 
         //处理orderby
-        if(Validate.isString(oDataObj.getOrderby())){
-            if(oDataObj.isOrderbyDesc()){
+        if (Validate.isString(oDataObj.getOrderby())) {
+            if (oDataObj.isOrderbyDesc()) {
                 criteria.addOrder(Property.forName(oDataObj.getOrderby()).desc());
-            }else{
+            } else {
                 criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
             }
         }
@@ -97,8 +99,10 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
         return pageModelDto;
     }
+
     /**
      * 项目综合查询
+     *
      * @param odataObj
      * @return
      */
@@ -133,13 +137,13 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     public List<SignDispaWork> unMergeWPSign(String signId) {
         SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() );
+        hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName());
         //已经完成工作方案，但是未评审的项目
-        hqlBuilder.append(" where " + SignDispaWork_.processState.getName() + " >=:processState1 and "+ SignDispaWork_.processState.getName() + " <=:processState2 ");
+        hqlBuilder.append(" where " + SignDispaWork_.processState.getName() + " >=:processState1 and " + SignDispaWork_.processState.getName() + " <=:processState2 ");
         hqlBuilder.setParam("processState1", Constant.SignProcessState.DO_WP.getValue(), IntegerType.INSTANCE);
         hqlBuilder.setParam("processState2", Constant.SignProcessState.END_WP.getValue(), IntegerType.INSTANCE);
         //只能关联同部门的项目
-        hqlBuilder.append(" and " + SignDispaWork_.mOrgId.getName() +" = :mainOrgId ");
+        hqlBuilder.append(" and " + SignDispaWork_.mOrgId.getName() + " = :mainOrgId ");
         hqlBuilder.setParam("mainOrgId", mergeSign.getmOrgId());
         //排除自身
         hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " != :self ").setParam("self", signId);
@@ -148,8 +152,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         hqlBuilder.append(" where " + SignMerge_.signId.getName() + " =:signId and " + SignMerge_.mergeType.getName() + " =:mergeType )");
         hqlBuilder.setParam("signId", signId).setParam("mergeType", Constant.MergeType.WORK_PROGRAM.getValue());
         //排除有分支的项目(合并评审的项目一般只有一个分支)
-        hqlBuilder.append(" and (select count("+ SignBranch_.signId.getName()+") from "+SignBranch.class.getSimpleName()+" where "+SignBranch_.signId.getName()+" =:signId ) = 1");
-        hqlBuilder.setParam("signId",signId);
+        hqlBuilder.append(" and (select count(" + SignBranch_.signId.getName() + ") from " + SignBranch.class.getSimpleName() + " where " + SignBranch_.signId.getName() + " =:signId ) = 1");
+        hqlBuilder.setParam("signId", signId);
 
         return signDispaWorkRepo.findByHql(hqlBuilder);
     }
@@ -182,11 +186,11 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where ");
-        hqlBuilder.append(SignDispaWork_.processState.getName() + " > :processState1  and " + SignDispaWork_.processState.getName() + " <= :processState2 " );
-        hqlBuilder.setParam("processState1",Constant.SignProcessState.DO_WP.getValue(),IntegerType.INSTANCE);
-        hqlBuilder.setParam("processState2",Constant.SignProcessState.END_DIS_NUM.getValue(),IntegerType.INSTANCE);
+        hqlBuilder.append(SignDispaWork_.processState.getName() + " > :processState1  and " + SignDispaWork_.processState.getName() + " <= :processState2 ");
+        hqlBuilder.setParam("processState1", Constant.SignProcessState.DO_WP.getValue(), IntegerType.INSTANCE);
+        hqlBuilder.setParam("processState2", Constant.SignProcessState.END_DIS_NUM.getValue(), IntegerType.INSTANCE);
         //只能关联同部门的项目
-        hqlBuilder.append("and " + SignDispaWork_.mOrgId.getName() +" = :mainOrgId ");
+        hqlBuilder.append("and " + SignDispaWork_.mOrgId.getName() + " = :mainOrgId ");
         hqlBuilder.setParam("mainOrgId", mergeSign.getmOrgId());
         //发文编号为空
         hqlBuilder.append(" and (" + SignDispaWork_.dfilenum.getName() + " is null or " + SignDispaWork_.dfilenum.getName() + " = '') ");
@@ -250,31 +254,31 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         signMergeRepo.bathUpdate(saveList);
 
         //如果是合并评审，还要删除之前的评审方案和预定的会议室信息
-        if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)){
+        if (Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)) {
             //获取所有合并评审方案信息
-            List<ExpertReview> reviewList = expertReviewRepo.findByIds(ExpertReview_.businessId.getName(),mergeIds,null);
-            if(Validate.isList(reviewList)){
-                for(ExpertReview er : reviewList){
+            List<ExpertReview> reviewList = expertReviewRepo.findByIds(ExpertReview_.businessId.getName(), mergeIds, null);
+            if (Validate.isList(reviewList)) {
+                for (ExpertReview er : reviewList) {
                     expertReviewRepo.delete(er);        //删除评审方案，顺便删除抽取专家信息(级联删除)
                 }
             }
             //删除会议室信息
-            List<WorkProgram> workProgramList = workProgramRepo.findByIds("signid",mergeIds,null);
-            if(Validate.isList(workProgramList)){
+            List<WorkProgram> workProgramList = workProgramRepo.findByIds("signid", mergeIds, null);
+            if (Validate.isList(workProgramList)) {
                 StringBuffer removeIds = new StringBuffer();
-                for(int i=0,l=workProgramList.size();i<l;i++){
+                for (int i = 0, l = workProgramList.size(); i < l; i++) {
                     WorkProgram wp = workProgramList.get(i);
-                    if(i>0){
+                    if (i > 0) {
                         removeIds.append(",");
                     }
                     removeIds.append(wp.getId());
                 }
-                roomBookingRepo.deleteById(RoomBooking_.businessId.getName(),removeIds.toString());
+                roomBookingRepo.deleteById(RoomBooking_.businessId.getName(), removeIds.toString());
             }
             //把所有被合并的项目改为合并评审次项目，同时评审方式也要跟主项目一致
-            workProgramRepo.updateWPReivewType(signId,Constant.MergeType.REVIEW_MERGE.getValue(), Constant.EnumState.NO.getValue(),mergeIds);
-        }else if(Constant.MergeType.DISPATCH.getValue().equals(mergeType)){
-            dispatchDocRepo.updateRWType(Constant.MergeType.DIS_MERGE.getValue(), Constant.EnumState.NO.getValue(),mergeIds);
+            workProgramRepo.updateWPReivewType(signId, Constant.MergeType.REVIEW_MERGE.getValue(), Constant.EnumState.NO.getValue(), mergeIds);
+        } else if (Constant.MergeType.DISPATCH.getValue().equals(mergeType)) {
+            dispatchDocRepo.updateRWType(Constant.MergeType.DIS_MERGE.getValue(), Constant.EnumState.NO.getValue(), mergeIds);
         }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
@@ -303,10 +307,10 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         //如果有解除删除，则解除相应的项目，否则解除所有,把所有被合并的项目改为单个评审
         if (Validate.isString(cancelIds)) {
             hqlBuilder.bulidPropotyString("and", SignMerge_.mergeId.getName(), cancelIds);
-            if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)){
-                workProgramRepo.updateWPReivewType(signId,Constant.MergeType.REVIEW_SIGNLE.getValue(), null,cancelIds);
-            }else if(Constant.MergeType.DISPATCH.getValue().equals(mergeType)){
-                dispatchDocRepo.updateRWType(Constant.MergeType.DIS_SINGLE.getValue(), null,cancelIds);
+            if (Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)) {
+                workProgramRepo.updateWPReivewType(signId, Constant.MergeType.REVIEW_SIGNLE.getValue(), null, cancelIds);
+            } else if (Constant.MergeType.DISPATCH.getValue().equals(mergeType)) {
+                dispatchDocRepo.updateRWType(Constant.MergeType.DIS_SINGLE.getValue(), null, cancelIds);
             }
         }
 
@@ -317,31 +321,54 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
     /**
      * 根据主项目ID，删除所有的合并项目
+     *
      * @param signId
      * @return
      */
     @Override
     @Transactional
-    public ResultMsg deleteAllMerge(String signId,String mergeType) {
-        List<SignMerge> mergeSignList = signMergeRepo.findByIds(SignMerge_.signId.getName(),signId,null);
-        if(Validate.isList(mergeSignList)){
+    public ResultMsg deleteAllMerge(String signId, String mergeType, String businessId) {
+        List<SignMerge> mergeSignList = signMergeRepo.findByIds(SignMerge_.signId.getName(), signId, null);
+        if (Validate.isList(mergeSignList)) {
             StringBuffer sbString = new StringBuffer();
-            for(int i=0,l=mergeSignList.size();i<l;i++){
+            for (int i = 0, l = mergeSignList.size(); i < l; i++) {
                 SignMerge sm = mergeSignList.get(i);
-                if(i> 0){
+                if (i > 0) {
                     sbString.append(",");
                 }
                 sbString.append(sm.getMergeId());
             }
-            signMergeRepo.deleteById(SignMerge_.mergeId.getName(),sbString.toString());
+            signMergeRepo.deleteById(SignMerge_.mergeId.getName(), sbString.toString());
 
-            if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)){
-                workProgramRepo.updateWPReivewType(signId,Constant.MergeType.REVIEW_SIGNLE.getValue(), null,sbString.toString());
-            }else if(Constant.MergeType.DISPATCH.getValue().equals(mergeType)){
-                dispatchDocRepo.updateRWType(Constant.MergeType.DIS_SINGLE.getValue(), null,sbString.toString());
+            //修改合并评审项目
+            if (Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)) {
+                workProgramRepo.updateWPReivewType(signId, Constant.MergeType.REVIEW_SIGNLE.getValue(), null, sbString.toString());
+            } else if (Constant.MergeType.DISPATCH.getValue().equals(mergeType)) {
+                dispatchDocRepo.updateRWType(Constant.MergeType.DIS_SINGLE.getValue(), null, sbString.toString());
             }
         }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
+        //修改自身状态
+        if (Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)) {
+            HqlBuilder hqlBuilder = HqlBuilder.create();
+            hqlBuilder.append(" update " + WorkProgram.class.getSimpleName() + " set " + WorkProgram_.isSigle.getName() + " =:isSigle ");
+            hqlBuilder.setParam("isSigle", Constant.MergeType.REVIEW_SIGNLE.getValue());
+            hqlBuilder.append(" ," + WorkProgram_.isMainProject.getName() + " =:isMainProject ");
+            hqlBuilder.setParam("isMainProject", Constant.EnumState.NO.getValue());
+            hqlBuilder.append(" where " + WorkProgram_.id.getName() + " =:id ");
+            hqlBuilder.setParam("id", businessId);
+            workProgramRepo.executeHql(hqlBuilder);
+        } else if (Constant.MergeType.DISPATCH.getValue().equals(mergeType)) {
+            HqlBuilder hqlBuilder = HqlBuilder.create();
+            hqlBuilder.append(" update " + DispatchDoc.class.getSimpleName() + " set " + DispatchDoc_.dispatchWay.getName() + " =:dispatchWay ");
+            hqlBuilder.setParam("dispatchWay", Constant.MergeType.DIS_SINGLE.getValue());
+            hqlBuilder.append(" ," + DispatchDoc_.isMainProject.getName() + " =:isMainProject ");
+            hqlBuilder.setParam("isMainProject", Constant.EnumState.NO.getValue());
+            hqlBuilder.append(" where " + DispatchDoc_.id.getName() + " =:id ");
+            hqlBuilder.setParam("id", businessId);
+            dispatchDocRepo.executeHql(hqlBuilder);
+        }
+
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
     @Override
@@ -350,27 +377,27 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         String[] filterArr = filters.split(",");
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select * from V_SIGN_DISP_WORK  ");
-        if(filterArr.length>0 && !"".equals(filterArr[0]) ){
+        if (filterArr.length > 0 && !"".equals(filterArr[0])) {
             hqlBuilder.append(" where ");
-            for(int i=0 ; i<filterArr.length ; i++){
+            for (int i = 0; i < filterArr.length; i++) {
                 String filter = filterArr[i];
                 String[] params = filter.split(":");
-                hqlBuilder.append( params[0].substring(1,params[0].length()-1) + "=:" + params[0].substring(1,params[0].length()-1) );
-                hqlBuilder.setParam(params[0].substring(1,params[0].length()-1) , params[1].substring(1,params[1].length()-1));
-                if(i<filterArr.length-1){
+                hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + "=:" + params[0].substring(1, params[0].length() - 1));
+                hqlBuilder.setParam(params[0].substring(1, params[0].length() - 1), params[1].substring(1, params[1].length() - 1));
+                if (i < filterArr.length - 1) {
                     hqlBuilder.append(" and ");
                 }
             }
         }
 
         List<SignDispaWork> signDispaWorkList = signDispaWorkRepo.findBySql(hqlBuilder);
-        for(SignDispaWork s : signDispaWorkList){
-            s.setIsAppraising(( Constant.EnumState.YES.getValue()).equals(s.getIsAppraising()) ? "是" : "否" );
-            s.setIsassistproc( ( Constant.EnumState.YES.getValue()).equals(s.getIsassistproc()) ? "是" : "否");
-            s.setIsRelated( ( Constant.EnumState.YES.getValue()).equals(s.getIsRelated()) ? "是" : "否");
-            s.setIshaveeia( ( Constant.EnumState.YES.getValue()).equals(s.getIshaveeia()) ? "是" : "否");
-            s.setIsSupplementary( ( Constant.EnumState.YES.getValue()).equals(s.getIsSupplementary())? "是" : "否");
-            s.setIsHaveSuppLetter( ( Constant.EnumState.YES.getValue()).equals(s.getIsHaveSuppLetter())? "是" : "否");
+        for (SignDispaWork s : signDispaWorkList) {
+            s.setIsAppraising((Constant.EnumState.YES.getValue()).equals(s.getIsAppraising()) ? "是" : "否");
+            s.setIsassistproc((Constant.EnumState.YES.getValue()).equals(s.getIsassistproc()) ? "是" : "否");
+            s.setIsRelated((Constant.EnumState.YES.getValue()).equals(s.getIsRelated()) ? "是" : "否");
+            s.setIshaveeia((Constant.EnumState.YES.getValue()).equals(s.getIshaveeia()) ? "是" : "否");
+            s.setIsSupplementary((Constant.EnumState.YES.getValue()).equals(s.getIsSupplementary()) ? "是" : "否");
+            s.setIsHaveSuppLetter((Constant.EnumState.YES.getValue()).equals(s.getIsHaveSuppLetter()) ? "是" : "否");
             s.setSignState((Constant.EnumState.STOP.getValue()).equals(s.getSignState()) ? "是" : "否");
 
         }
@@ -379,28 +406,29 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
     /**
      * 查询发文申请阶段，发放评审费超时的项目信息
+     *
      * @return
      */
     @Override
     public PageModelDto<SignDispaWork> findOverSignDispaWork() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where " + SignDispaWork_.processState.getName() + "=:processState ");
-        hqlBuilder.setParam("processState" , Constant.SignProcessState.DO_DIS.getValue().toString());
+        hqlBuilder.setParam("processState", Constant.SignProcessState.DO_DIS.getValue().toString());
         List<SignDispaWork> signDispaWorkList = signDispaWorkRepo.findByHql(hqlBuilder);
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
         List<SignDispaWork> resoultList = new ArrayList<>();
-        for(SignDispaWork s : signDispaWorkList){
+        for (SignDispaWork s : signDispaWorkList) {
             HqlBuilder hql = HqlBuilder.create();
             hql.append(" from " + ExpertReview.class.getSimpleName() + " where " + ExpertReview_.businessId.getName() + "=:businessId");
             hql.append(" and " + ExpertReview_.reviewDate.getName() + " is not null ");
             hql.append(" and " + ExpertReview_.payDate.getName() + " is null");
 //            hql.append(" and " + ExpertReview_.state.getName() + "<>:state or " + ExpertReview_.state.getName() + " is null");
-            hql.setParam("businessId" , s.getSignid());
+            hql.setParam("businessId", s.getSignid());
 //            hql.setParam("state" , Constant.EnumState.YES.getValue());
             List<ExpertReview> expertReviewList = expertReviewRepo.findByHql(hql);
-            if(expertReviewList.size()>0){
-                for(ExpertReview er : expertReviewList){
-                    if(DateUtils.daysBetween(er.getReviewDate(),new Date())>1){
+            if (expertReviewList.size() > 0) {
+                for (ExpertReview er : expertReviewList) {
+                    if (DateUtils.daysBetween(er.getReviewDate(), new Date()) > 1) {
                         resoultList.add(s);
                     }
                 }
@@ -412,30 +440,32 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     }
 
     @Override
-    public  List<SignDispaWork> reviewProject(String expertId) {
+    public List<SignDispaWork> reviewProject(String expertId) {
         return signDispaWorkRepo.reviewProject(expertId);
     }
 
     /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
+     *
      * @param startTime
      * @param endTime
      * @return
      */
     @Override
     public ResultMsg findByTime(String startTime, String endTime) {
-        return signDispaWorkRepo.findByTime(startTime , endTime);
+        return signDispaWorkRepo.findByTime(startTime, endTime);
     }
 
     /**
      * 通过评审阶段，项目类别，统计项目信息
+     *
      * @param startTime
      * @param endTime
      * @return
      */
     @Override
     public ResultMsg findByTypeAndReview(String startTime, String endTime) {
-        return signDispaWorkRepo.findByTypeAndReview(startTime , endTime);
+        return signDispaWorkRepo.findByTypeAndReview(startTime, endTime);
     }
 
 

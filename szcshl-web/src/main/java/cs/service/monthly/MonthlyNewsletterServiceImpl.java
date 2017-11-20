@@ -4,6 +4,7 @@ import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.Constant.MsgCode;
 import cs.common.FlowConstant;
+import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.monthly.MonthlyNewsletter;
@@ -292,7 +293,7 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
     /**
      * 删除月报简报管理数据列表
      */
-    @Override
+    /*@Override
     public PageModelDto<MonthlyNewsletterDto> deleteMonthlyList(ODataObj odataObj) {
         PageModelDto<MonthlyNewsletterDto> pageModelDto = new PageModelDto<MonthlyNewsletterDto>();
         Criteria criteria = monthlyNewsletterRepo.getExecutableCriteria();
@@ -320,27 +321,21 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
         pageModelDto.setValue(monthDtos);
 
         return pageModelDto;
-    }
+    }*/
 
-    @Override
-    public void deleteMonthlyDatas(String[] ids) {
-        for (String id : ids) {
-            this.delete(id);
-        }
-
-    }
 
     /**
-     * 删除月报简报记录
+     * 更改月报简报状态
      */
     @Override
-    public void deleteMonthlyData(String id) {
-        MonthlyNewsletterDto monthlyDto = new MonthlyNewsletterDto();
+    @Transactional
+    public ResultMsg deleteMonthlyData(String id) {
+        /*MonthlyNewsletterDto monthlyDto = new MonthlyNewsletterDto();
         MonthlyNewsletter domain = monthlyNewsletterRepo.findById(id);
         domain.setMonthlyType(Constant.EnumState.STOP.getValue());
         BeanCopierUtils.copyProperties(domain, monthlyDto);
-        monthlyNewsletterRepo.save(domain);
-
+        monthlyNewsletterRepo.save(domain);*/
+        return monthlyNewsletterRepo.updateMonthlyType(id,Constant.EnumState.STOP.getValue());
     }
 
     @Override

@@ -305,7 +305,7 @@
                 <td width="10%" align="center">专家类别</td>
                 <td width="20%" align="center">备注</td>
             </tr>
-            <tr ng-repeat="x in vm.confirmEPList|filter:{selectType:'2'} track by $index">
+            <tr ng-repeat="x in vm.confirmEPList|filter:{selectType:'2',isConfrim:'9'} track by $index">
                 <td align="center">
                     <input type="checkbox" name="seletedEp" ng-checked="selectExpertList" value="{{x.id}}"/>
                 </td>
@@ -405,7 +405,7 @@
                 <td width="10%" align="center">专家类别</td>
                 <td width="20%" align="center">备注</td>
             </tr>
-            <tr ng-repeat="x in vm.confirmEPList|filter:{selectType:'3'} track by $index ">
+            <tr ng-repeat="x in vm.confirmEPList|filter:{selectType:'3',isConfrim:'9'} track by $index ">
                 <td align="center">
                     <input type="checkbox" name="seletedOutEp" ng-checked="selectOutExpertList" value="{{x.id}}"/>
                 </td>

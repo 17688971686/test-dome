@@ -80,9 +80,9 @@
     <tr>
         <td class="text-center">电话<span class="required">*</span></td>
         <td colspan="3">
-            <input type="text"  class="form-control input-sm " style="max-width: 200px;"
+            <input type="text" maxlength="100" class="form-control input-sm " style="max-width: 200px;"
                    ng-model="vm.work.contactPersonTel" id="contactPersonTel" name="contactPersonTel"
-                   data-val-digits="电话号码只能为数字" data-val="true" data-val-required="必填">
+                   data-val="true" data-val-required="必填">
             <span data-valmsg-for="contactPersonTel" data-valmsg-replace="true" class="errors"></span>
         </td>
         <td class="text-center">传真<span class="required">*</span></td>

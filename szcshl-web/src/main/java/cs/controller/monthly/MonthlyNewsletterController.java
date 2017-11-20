@@ -94,7 +94,7 @@ public class MonthlyNewsletterController {
         return monthlyNewsletterDtos;
     }
 
-    @RequiresAuthentication
+   /* @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#deleteMonthlyList#post")
     @RequestMapping(name = "删除月报简报管理数据列表", path = "deleteMonthlyList", method = RequestMethod.POST)
     @ResponseBody
@@ -102,7 +102,7 @@ public class MonthlyNewsletterController {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<MonthlyNewsletterDto> monthlyNewsletterDtos = monthlyNewsletterService.deleteMonthlyList(odataObj);	
         return monthlyNewsletterDtos;
-    }
+    }*/
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#savaMonthlyNewsletter#post")
@@ -123,14 +123,9 @@ public class MonthlyNewsletterController {
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#deleteMonthlyData#delete")
 	@RequestMapping(name = "删除月报简报记录", path = "deleteMonthlyData", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteMonthlyData(@RequestBody String id) {
-    	String [] ids = id.split(",");
-    	if(ids.length > 1){
-    		monthlyNewsletterService.deleteMonthlyDatas(ids);
-    	}else{
-    		monthlyNewsletterService.deleteMonthlyData(id);      
-    	}
+    @ResponseBody
+    public ResultMsg deleteMonthlyData(@RequestParam String id) {
+        return monthlyNewsletterService.deleteMonthlyData(id);
     }
 
     @RequiresAuthentication

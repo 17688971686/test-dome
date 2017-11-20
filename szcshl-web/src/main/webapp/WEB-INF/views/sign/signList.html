@@ -71,6 +71,15 @@
                     </td>
                 </tr>
                 <tr>
+                    <td  class="text-right" style="width:150px;">项目状态</td>
+                    <td>
+                        <select name="signState" ng-model="vm.sign.signState" operator="eq" class="form-control input-sm " >
+                            <option value="">请选择</option>
+                            <option value="1">进行中</option>
+                            <option value="2">已暂停</option>
+                            <option value="9">已完成</option>
+                        </select>
+                    </td>
                     <td  class="text-right">评审阶段</td>
                     <td>
                         <select name="reviewstage"  operator="eq" class="form-control select "  ng-model="vm.project.reviewstage">
@@ -78,14 +87,6 @@
                             <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                         </select>
                     </td>
-                    <!-- <td  class="text-right" style="width:150px;">项目状态</td>
-                    <td>
-                        <select name="reviewstage" ng-model="vm.sign.reviewstage" operator="eq" class="form-control input-sm " >
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.STATE.dicts" value="{{x.dictCode}}">{{x.dictName}}</option>
-                        </select>
-                    </td> -->
-
                     <td  class="text-right">缓急程度</td>
                     <td>
                         <select operator="eq" name="urgencydegree" class="form-control select " ng-model="vm.project.urgencydegree">

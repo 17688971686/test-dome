@@ -9,18 +9,13 @@
         <!--  <li class="active">{{vm.title}}</li> -->
     </ol>
      
-    <form id="form" name="form">
+    <form id="reserveform" name="form">
         <div class="toolbar">
             <button class="btn btn-sm btn-success" ng-click="vm.reserveAdd()" ><span class="glyphicon glyphicon-ok"></span>确定签收</button>
         </div>
         <table style="width:100%">
             <tr>
-                <td class="formAlignRight" style="width:150px;"></td>
-                <td style="width:400px;"><span class="errors">{{vm.message}}</span></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td class="formAlignRight">委内收文编号： </td>
+                <td class="text-right" style="width: 180px;">委内收文编号： </td>
                 <td>
                     <input  type="text" maxlength="20" class="form-control input-sm "  ng-model="vm.model.filecode" id="filecode" name="filecode" data-val="true"
                              data-val-length-max="20">
@@ -28,7 +23,7 @@
                 <td><span data-valmsg-for="filecode" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">项目代码：</td>
+                <td class="text-right">项目代码：</td>
                 <td>
                     <input  type="text" maxlength="12" class="form-control input-sm "  ng-model="vm.model.projectcode" id="projectcode" name="projectcode"
                              data-val-length-max="12">
@@ -37,7 +32,7 @@
             </tr>
 
             <tr>
-                <td class="formAlignRight">评审阶段：</td>
+                <td class="text-right">评审阶段：</td>
                 <td colspan="3">
                     <select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage"  >
                         <option value="">请选择</option>
@@ -49,35 +44,35 @@
             </tr>
 
             <tr>
-                <td class="formAlignRight">项目名称：</td>
+                <td class="text-right">项目名称：<span class="required">*</span></td>
                 <td >
-                    <input  type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.projectname" id="projectname" name="projectname" >
+                    <input  type="text" maxlength="200" class="form-control input-sm " ng-model="vm.model.projectname" id="projectname" name="projectname" data-val="true" data-val-required="必填">
                 </td>
                 <td><span data-valmsg-for="projectname" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">资料存放位置：</td>
+                <td class="text-right">资料存放位置：</td>
                 <td>
                     <textarea  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.palceStorage" id="palceStorage" name="palceStorage" />
                 </td>
                 <td><span data-valmsg-for="palceStorage" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="formAlignRight">资料送来时间：</td>
+                <td class="text-right">资料送来时间：</td>
                 <td >
                     <input  type="text" maxlength="200" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm "  ng-model="vm.model.palceTime" id="palceTime" name="palceTime" >
                 </td>
                 <td><span data-valmsg-for="palceTime" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
              <tr>
-                <td class="formAlignRight">联系人：</td>
+                <td class="text-right">联系人：</td>
                 <td >
                     <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.contacts" id="contacts" name="contacts" >
                 </td>
                 <td><span data-valmsg-for="contacts" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
              <tr>
-                <td class="formAlignRight">联系方式：</td>
+                <td class="text-right">联系方式：</td>
                 <td >
                     <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.contactsPhone" id="contactsPhone" name="contactsPhone" >
                 </td>
@@ -85,9 +80,5 @@
             </tr>
         </table>
     </form>
-    <div class="toolbar">
-        <!-- <p>使用帮助：</p>
-        <p style="color:#000">1、签收项目时选择好项目的评审阶段。</p>
-        <p style="color:#000">2、如果是直接根据收文编号内下载数据，只要填写收文编号就可以直接下载。</p> -->
-    </div>
+
 </div>

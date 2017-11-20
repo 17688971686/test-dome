@@ -149,11 +149,18 @@
             }else{
                 expertReviewSvc.saveSelfExpert(vm.businessId,vm.minBusinessId,vm.businessType,selectIds[0].value,vm.expertReview.id,vm.isCommit,function(data){
                     if(data.flag || data.reCode == 'ok'){
+                        var ids = [];
+                        $.each(vm.confirmEPList,function(i, obj){
+                            if(obj.selectType == '2'){
+                                ids.push(obj.id)
+                            }
+                        })
                         if(!vm.expertReview.id){
                             vm.expertReview.id = data.idCode;
                         }
                         //刷新
                         vm.reFleshSelEPInfo(data.reObj);
+                        vm.reFleshAfterRemove(ids);
                         bsWin.success("操作成功！",function(){
                             window.parent.$("#selfExpertDiv").data("kendoWindow").close();
                         });
