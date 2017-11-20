@@ -35,13 +35,13 @@
         </tr>
 
         <tr>
-            <td class="text-center">文件标题 </td>
+            <td class="text-center" height="50">文件标题 </td>
             <td colspan="3">
                 {{x.title}}
             </td>
         </tr>
         <tr>
-            <td class="text-center">发行范围</td>
+            <td class="text-center" height="100">发行范围</td>
             <td colspan="3">
                 {{x.dispaRange}}<br/>
                 <span style="float: right;">(印{{x.printnum}}份)</span>
@@ -50,7 +50,7 @@
 
 
         <tr>
-            <td class="text-center">核稿意见</td>
+            <td class="text-center" height="80">核稿意见</td>
             <td colspan="3">
                 <p> {{x.deptMinisterIdeaContent}}</p>
                 <p class="text-right" ng-if="x.deptMinisterName">签名：{{x.deptMinisterName}}</p>
@@ -59,13 +59,13 @@
         </tr>
 
         <tr>
-            <td class="text-center">会签意见</td>
+            <td class="text-center" height="150">会签意见</td>
             <td colspan="3">
                 <div class="text-right" style="min-height: 50px;" ng-bind-html="x.leaderSignIdeaContent | trust2Html"></div>
             </td>
         </tr>
         <tr>
-            <td class="text-center">领导意见</td>
+            <td class="text-center" height="80">领导意见</td>
             <td colspan="3">
                 <p> {{x.deptSLeaderIdeaContent}}</p>
                 <p class="text-right" ng-if="x.deptSLeaderName">签名：{{x.deptSLeaderName}}</p>

@@ -26,7 +26,7 @@
             isLoadMeetRoom: false,         //是否已经加载了会议室
             isReveiwAWP: false,             //是否是合并评审次项目，如果是，则不允许修改，由主项目控制
         }
-
+        vm.expertList =  new Array(15); //用于打印页面的专家列表，控制行数
         //页面初始化
         activate();
         function activate() {

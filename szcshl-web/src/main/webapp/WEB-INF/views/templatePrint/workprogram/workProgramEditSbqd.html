@@ -1,11 +1,8 @@
 <!-- start 主项目 -->
-<div style="margin-bottom: 10px;"   ng-if="vm.work.branchId == '1' || vm.work.branchId == 1">
-   <!-- <a  data-toggle="collapse" data-target="#wp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
-        [{{w.titleName}}]123
-    </a>-->
+<div  style="margin-top: 10px;"  ng-if="vm.work.branchId == '1' || vm.work.branchId == 1">
     <div id="wp_{{$index}}" class="collapse in">
         <table class="print-table">
-            <caption class="title" style="padding-top: 12px;">{{vm.work.titleName}}</caption>
+            <caption class="title" >{{vm.work.titleName}}</caption>
             <caption>
                 <span>QR-4.9-02-A0</span>
             </caption>
@@ -45,7 +42,7 @@
 
             <tr>
                 <td colspan="2" rowspan="3">联系人</td>
-                <td colspan="3" rowspan="3"></td>
+                <td colspan="3" rowspan="3">{{vm.work.contactPerson}}</td>
                 <td class="text-center">手机</td>
                 <td colspan="2">{{vm.work.contactPersonPhone}}</td>
             </tr>
@@ -58,20 +55,20 @@
                 <td colspan="2">{{vm.work.contactPersonFax}}</td>
             </tr>
 
-            <tr>
+           <!-- <tr>
                 <td colspan="2">项目类型</td>
                 <td colspan="3">{{vm.work.projectType}}</td>
                 <td class="text-center">设备清单申报总额</td>
                 <td colspan="2">{{vm.work.appalyInvestment}}</td>
-            </tr>
+            </tr>-->
 
             <tr>
                 <td colspan="2" style="height: 100px;">项目概况</td>
-                <td colspan="6">{{vm.work.projectSurvey}}</td>
+                <td colspan="6" height="80">{{vm.work.projectSurvey}}</td>
             </tr>
             <tr>
                 <td height="120" colspan="2" rowspan="2">评审部门</td>
-                <td colspan="3" rowspan="2"></td>
+                <td colspan="3" rowspan="2">{{vm.work.reviewOrgName}}</td>
                 <td class="text-center">第一负责人</td>
                 <td colspan="2">{{vm.work.mianChargeUserName}}</td>
             </tr>
@@ -114,25 +111,34 @@
                 <td>专家类别</td>
                 <td>备注</td>
             </tr>
-            <tr ng-repeat="x in vm.work.expertDtoList track by $index" ng-show="vm.work.expertDtoList && vm.work.expertDtoList.length > 0">
-                <td colspan="2">{{x.name}}</td>
-                <td>{{x.comPany}}</td>
-                <td>{{x.job}}</td>
-                <td>{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
-                <td>{{x.userPhone}}</td>
-                <td>{{x.post}}</td>
-                <td>{{x.expeRttype}}</td>
+            <tr  ng-repeat="x in vm.model.workProgramDtoList[0].expertDtoList |limitTo :15 track by $index  " ng-show="vm.model.workProgramDtoList[0].expertDtoList && vm.model.workProgramDtoList[0].expertDtoList.length > 0">
+                <td colspan="2" class="text-center" height="30px">{{x.name}}</td>
+                <td class="text-center">{{x.comPany}}</td>
+                <td class="text-center">{{x.job}}/{{x.post}}</td>
+                <td class="text-center">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
+                <td class="text-center">{{x.userPhone}}</td>
+                <td class="text-center">{{x.expeRttype}}</td>
+                <td class="text-center">{{x.remark}}</td>
+            </tr>
+            <tr  ng-repeat="x in vm.expertList |limitTo :(15 - vm.model.workProgramDtoList[0].expertDtoList.length) track by $index  " >
+                <td colspan="2" height="30px">&nbsp;</td>
+                <td >&nbsp;</td>
+                <td >&nbsp;</td>
+                <td >&nbsp;</td>
+                <td >&nbsp;</td>
+                <td >&nbsp;</td>
+                <td >&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="2">拟邀请单位及领导</td>
-                <td colspan="6">{{vm.work.inviteUnitLeader}}</td>
+                <td colspan="2" height="80">拟邀请单位及领导</td>
+                <td colspan="6" >{{vm.work.inviteUnitLeader}}</td>
             </tr>
             <tr>
-                <td  colspan="2">拟评审重点问题</td>
-                <td colspan="6">{{vm.work.mainPoint}}</td>
+                <td  colspan="2" height="80">拟评审重点问题</td>
+                <td colspan="6" >{{vm.work.mainPoint}}</td>
             </tr>
             <tr>
-                <td colspan="2">部长意见</td>
+                <td colspan="2" height="100">部长意见</td>
                 <td colspan="6">
                     <p class="text-left"> {{vm.work.ministerSuggesttion}}</p>
                     <p class="text-right" ng-if="w.ministerName">签名：{{vm.work.ministerName}}</p>
@@ -140,7 +146,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2">中心领导签批意见</td>
+                <td colspan="2" height="100">中心领导签批意见</td>
                 <td colspan="6">
                     <p class="text-left"> {{vm.work.leaderSuggesttion}}</p>
                     <p class="text-right" ng-if="w.leaderName">签名：{{vm.work.leaderName}}</p>

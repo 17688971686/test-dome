@@ -137,17 +137,19 @@
                     filterable: false
                 },
                 {
-                    field: "beginTimeStr",
+                    field: "beginTime",
                     title: "会议开始时间",
                     width: "10%",
                     filterable: false,
+                    format : "{0: HH:mm}"
                 },
                 {
-                    field: "endTimeStr",
+                    field: "endTime",
                     title: "会议结束时间",
                     type: "date",
                     width: "10%",
                     filterable: false,
+                    format : "{0: HH:mm}"
                 },
                 {
                     field: "dueToPeople",

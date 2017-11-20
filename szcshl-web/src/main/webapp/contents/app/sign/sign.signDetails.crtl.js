@@ -25,7 +25,9 @@
         vm.businessFlag = {
             expertReviews : [],         // 专家评审方案
         }
-       
+
+        vm.expertList =  new Array(15); //用于打印页面的专家列表，控制行数
+
         active();
         function active(){
             $('#myTab li').click(function (e) {
