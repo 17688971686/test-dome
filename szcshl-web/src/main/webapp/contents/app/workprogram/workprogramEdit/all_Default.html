@@ -132,7 +132,7 @@
                 </td>
                 <td style="width:100px;" class="text-center">手机<span class="required">*</span></td>
                 <td>
-                    <input type="text" style="width:30%;" class="form-control input-sm "
+                    <input maxlength="11" type="text" style="width:30%;" class="form-control input-sm "
                            ng-model="vm.work.contactPersonPhone" name="contactPersonPhone" data-val="true"
                            data-val-digits="手机号码只能为数字" data-val-required="必填">
                     <span data-valmsg-for="contactPersonPhone" data-valmsg-replace="true" class="errors"></span>
@@ -141,14 +141,14 @@
             <tr>
                 <td colspan="2" class="text-center">电话<span class="required">*</span></td>
                 <td colspan="3">
-                    <input type="text" style="width:30%;" class="form-control input-sm "
+                    <input maxlength="50" type="text" style="width:30%;" class="form-control input-sm "
                            ng-model="vm.work.contactPersonTel" id="contactPersonTel" name="contactPersonTel"
                            data-val-digits="电话号码只能为数字" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="contactPersonTel" data-valmsg-replace="true" class="errors"></span>
                 </td>
                 <td style="width:100px;" class="text-center">传真<span class="required">*</span></td>
                 <td>
-                    <input type="text" style="width:30%;" class="form-control input-sm "
+                    <input maxlength="32" type="text" style="width:30%;" class="form-control input-sm "
                            ng-model="vm.work.contactPersonFax" name="contactPersonFax" id="contactPersonFax"
                            data-val-digits="传真只能为数字" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="contactPersonFax" data-valmsg-replace="true" class="errors"></span>
@@ -158,7 +158,7 @@
                 <td rowspan="3" style="width:50px;" class="text-center">项目概况</td>
                 <td style="width:100px;" class="text-center">申报建设规模<span class="required">*</span></td>
                 <td colspan="3">
-                    <input class="form-control input-sm " ng-model="vm.work.buildSize" name="buildSize" id="buildSize"
+                    <input maxlength="1500" class="form-control input-sm " ng-model="vm.work.buildSize" name="buildSize" id="buildSize"
                            data-val="true" data-val-required="必填">
                     <span data-valmsg-for="buildSize" data-valmsg-replace="true" class="errors"></span>
 
@@ -175,7 +175,7 @@
                 <td style="width:100px;" class="text-center">申报建设内容</td>
                 <td colspan="5">
 
-                    <textarea rows="3" ng-model="vm.work.buildContent" name="buildContent" cols=""
+                    <textarea maxlength="2048" rows="3" ng-model="vm.work.buildContent" name="buildContent" cols=""
                               style="width:100%;"></textarea>
                 </td>
             </tr>
@@ -183,7 +183,7 @@
                 <td style="width:100px;" class="text-center">项目背景</td>
                 <td colspan="5">
 
-                    <textarea rows="3" cols="" ng-model="vm.work.projectBackGround" name="projectBackGround"
+                    <textarea maxlength="2048" rows="3" cols="" ng-model="vm.work.projectBackGround" name="projectBackGround"
                               style="width:100%;"></textarea>
                 </td>
             </tr>
@@ -306,7 +306,7 @@
             <tr>
                 <td colspan="2" style="width:100px;" class="text-center">拟评审重点问题</td>
                 <td colspan="5">
-                    <textarea rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:98%"> </textarea>
+                    <textarea maxlength="2000" rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:98%"> </textarea>
                 </td>
             </tr>
             <tr>

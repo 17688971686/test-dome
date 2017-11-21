@@ -58,7 +58,7 @@
     <tr>
         <td width="15%" class="text-center">文件标题</td>
         <td>
-            <input type="text" class="form-control input-sm " ng-model="vm.fileRecord.fileTitle" name="fileTitle"
+            <input maxlength="512" type="text" class="form-control input-sm " ng-model="vm.fileRecord.fileTitle" name="fileTitle"
                    id="fileTitle" data-val="true" placeholder="《项目名称+阶段》+评审意见" data-val-required="必填">
             <span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>
 
@@ -815,7 +815,7 @@
     <tr>
         <td width="15%" class="text-center">项目负责人签名</td>
         <td>
-            <input type="text" style="width:30%;" class="form-control input-sm "
+            <input maxlength="64" type="text" style="width:30%;" class="form-control input-sm "
                    ng-model="vm.fileRecord.projectChargeUser" name="projectChargeUser">
         </td>
         <td width="15%" rowspan='2' class="text-center">发送存档日期</td>
@@ -828,7 +828,8 @@
     <tr>
         <td width="15%" class="text-center">项目第二负责人签名</td>
         <td>
-
+            <input maxlength="64" type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.fileRecord.projectTwoUser"
+                   name="projectTwoUser">
         </td>
     </tr>
     <tr>
