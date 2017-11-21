@@ -10,9 +10,13 @@ public class ExpertSelConditionDto {
     private String id;
 
     /**
-     * 综合评分
+     * 综合评分(大于这个分数)
      */
     private Integer compositeScore;
+    /**
+     * 综合评分(小于这个分数)
+     */
+    private Integer compositeScoreEnd;
     /**
      * 突出专业(大类)
      */
@@ -165,5 +169,13 @@ public class ExpertSelConditionDto {
 
     public void setSelectIndex(Integer selectIndex) {
         this.selectIndex = selectIndex;
+    }
+
+    public Integer getCompositeScoreEnd() {
+        return compositeScoreEnd;
+    }
+
+    public void setCompositeScoreEnd(Integer compositeScoreEnd) {
+        this.compositeScoreEnd = compositeScoreEnd;
     }
 }

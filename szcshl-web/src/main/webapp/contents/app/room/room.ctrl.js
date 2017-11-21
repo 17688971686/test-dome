@@ -29,14 +29,15 @@
                 roomSvc.initScheduler(vm);
                 vm.meetings = {};
                 vm.meetings = data;
-                if (vm.meetings && vm.meetings.length > 0) {
-                    vm.search.mrID = vm.meetings[0].id;
-                    //查询预订会议数据
-                    vm.findMeeting();
-                }
+                //设置默认值
                 roomSvc.initDefaultValue(vm.model.businessId, vm.model.businessType, function (data2) {
                     vm.model = data2;
-                    vm.model.mrID =  vm.search.mrID;
+                    if (vm.meetings && vm.meetings.length > 0) {
+                        vm.search.mrID = vm.meetings[0].id;
+                        vm.model.mrID =  vm.meetings[0].id;
+                        //查询预订会议数据
+                        vm.findMeeting();
+                    }
                 })
             });
         }

@@ -7,6 +7,7 @@ import cs.common.ResultMsg;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
+import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.repository.odata.ODataObj;
@@ -44,4 +45,11 @@ public interface ExpertReviewService {
 	 * @return
 	 */
 	PageModelDto<ExpertReviewDto> findOverTimeReview(ODataObj oDataObj);
+
+	/**
+	 * 查询业务的专家信息
+	 * @param businessId
+	 * @return
+	 */
+    List<ExpertDto> refleshBusinessEP(String businessId);
 }

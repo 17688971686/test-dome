@@ -326,8 +326,11 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 				rb.setCreatedDate(now);
 			}
 			//会议室名称，还是要保存的
-			MeetingRoom meeting= meetingRoomRepo.findById(MeetingRoom_.id.getName(),roomDto.getMrID());
-			rb.setAddressName(meeting.getAddr());
+			if(Validate.isString(roomDto.getMrID())){
+				MeetingRoom meeting = meetingRoomRepo.findById(MeetingRoom_.id.getName(),roomDto.getMrID());
+				rb.setAddressName(meeting.getAddr());
+			}
+
 			String strdate = DateUtils.toStringDay(roomDto.getRbDay());
 			String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
 			rb.setRbDate(strdate+"("+stageday+")");//星期几

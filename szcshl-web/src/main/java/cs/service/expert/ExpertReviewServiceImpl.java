@@ -464,4 +464,24 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         return pageModelDto;
     }
 
+    /**
+     * 查询业务的专家信息
+     * @param businessId
+     * @return
+     */
+    @Override
+    public List<ExpertDto> refleshBusinessEP(String businessId) {
+        List<ExpertDto> expertDtoList = new ArrayList<>();
+        List<Expert> expertList = expertRepo.findByBusinessId(businessId);
+        if(Validate.isList(expertList)){
+            expertList.forEach( el ->{
+                ExpertDto expertDto = new ExpertDto();
+                el.setPhoto(null);
+                BeanCopierUtils.copyProperties(el,expertDto);
+                expertDtoList.add(expertDto);
+            });
+        }
+        return expertDtoList;
+    }
+
 }

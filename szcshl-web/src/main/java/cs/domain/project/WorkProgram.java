@@ -1,16 +1,11 @@
 package cs.domain.project;
 
 import cs.domain.DomainBase;
-import cs.domain.meeting.RoomBooking;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.*;
-
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 工作方案

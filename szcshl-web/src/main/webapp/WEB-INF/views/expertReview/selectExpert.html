@@ -48,19 +48,19 @@
                 <span class="glyphicon glyphicon-check"></span>查看所有抽取结果
             </button>
             <div class="label-default" style="font-size: 12px; padding: 5px 10px;margin: 3px 0px;">
-               * 整体方案只能进行一次抽取！* 为了保证结果的正确性，请在每个条件抽取前，先保存已抽取的专家信息！* 已经抽取专家的抽取信息不可删除！
+               * 整体方案只能进行一次抽取！为了保证结果的正确性，请在每个条件抽取前，先保存已抽取的专家信息！ 已经抽取专家的抽取信息不可删除！
             </div>
         </div>
         <table class="table table-bordered" id="conditionTable">
             <tr>
                 <td style="width:30px;" align="center"><input type='checkbox' ng-model="epCondtion"/></td>
                 <td style="width:40px;" align="center">序号</td>
-                <td style="width:24%;" align="center">突出专业<br>（大类）</td>
+                <td style="width:22%;" align="center">突出专业<br>（大类）</td>
                 <td style="width:15%;" align="center">突出专业<br>（小类）</td>
                 <td style="width:10%;" align="center">专家类别</td>
-                <td style="width:8%;" align="center">综合评分</td>
-                <td style="width:8%;" align="center">正选专家<br>人数</td>
-                <td style="width:8%;" align="center">备选专家<br>人数</td>
+                <td style="width:12%;" align="center">综合评分</td>
+                <td style="width:6%;" align="center">正选<br>人数</td>
+                <td style="width:6%;" align="center">备选<br>人数</td>
                 <td style="width:5%;" align="center">人数</td>
                 <td style="width:15%;" align="center">操作</td>
             </tr>
@@ -101,13 +101,24 @@
                 <td align="center">
                     <select ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="compositeScore{{x.id}}"
                             ng-model="vm.expertReview.expertSelConditionDtoList[$index].compositeScore">
-                        <option value="" >请选择</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
+                        <option value="" ></option>
+                        <option value="1" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScore == 1">1</option>
+                        <option value="2" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScore == 2">2</option>
+                        <option value="3" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScore == 3">3</option>
+                        <option value="4" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScore == 4">4</option>
+                        <option value="5" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScore == 5">5</option>
+                    </select>分
+                    -
+                    <select ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="compositeScore_end_{{x.id}}"
+                            ng-model="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd" ng-change="vm.checkScore(vm.expertReview.expertSelConditionDtoList[$index])">
+                        <option value="" ></option>
+                        <option value="1" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd == 1">1</option>
+                        <option value="2" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd == 2">2</option>
+                        <option value="3" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd == 3">3</option>
+                        <option value="4" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd == 4">4</option>
+                        <option value="5" ng-selected="vm.expertReview.expertSelConditionDtoList[$index].compositeScoreEnd == 5">5</option>
+                    </select>分
+                    <p id="compositeScoreEnd_{{x.id}}"class="errors"></p>
                 </td>
                 <td align="center">
                     <input ng-disabled="vm.expertReview.state == 9 || vm.expertReview.state == '9'" id="officialNum{{x.id}}"

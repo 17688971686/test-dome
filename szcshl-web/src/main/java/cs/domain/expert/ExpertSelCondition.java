@@ -14,11 +14,15 @@ public class ExpertSelCondition {
     private String id;
 
     /**
-     * 综合评分
+     * 综合评分(开始分值)
      */
     @Column(columnDefinition = "NUMBER")
     private Integer compositeScore;
-
+    /**
+     * 综合评分(结束分值)
+     */
+    @Column(columnDefinition = "NUMBER")
+    private Integer compositeScoreEnd;
     /**
      * 突出专业(大类)
      */
@@ -159,5 +163,13 @@ public class ExpertSelCondition {
 
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
+    }
+
+    public Integer getCompositeScoreEnd() {
+        return compositeScoreEnd;
+    }
+
+    public void setCompositeScoreEnd(Integer compositeScoreEnd) {
+        this.compositeScoreEnd = compositeScoreEnd;
     }
 }

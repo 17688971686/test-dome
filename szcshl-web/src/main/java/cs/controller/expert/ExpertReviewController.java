@@ -4,9 +4,12 @@ import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
+import cs.domain.expert.Expert;
 import cs.model.PageModelDto;
+import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertReviewService;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -97,6 +101,12 @@ public class ExpertReviewController {
        return expertReviewService.save(businessId,minBusinessId,businessType,reviewId,expertIds,selectType);
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "获取业务模块确认的专家", path = "refleshBusinessEP", method = RequestMethod.POST)
+    @ResponseBody
+    public List<ExpertDto> refleshBusinessEP(@RequestParam(required = true) String businessId){
+        return expertReviewService.refleshBusinessEP(businessId);
+    }
 
     @RequiresAuthentication
     @RequestMapping(name = "主键查询", path = "html/findById", method = RequestMethod.GET)

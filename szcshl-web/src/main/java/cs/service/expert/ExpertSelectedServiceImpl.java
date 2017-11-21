@@ -71,22 +71,18 @@ public class ExpertSelectedServiceImpl  implements ExpertSelectedService {
 	@Override
 	@Transactional
 	public void update(ExpertSelectedDto record) {
+	    boolean isUpdateScore = false;
 		ExpertSelected domain = expertSelectedRepo.findById(record.getId());
+		if(!record.getScore().equals(domain.getScore())){
+            isUpdateScore = true;
+        }
 		BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-		Expert expert = domain.getExpert();
-		expert.setScoreNum(expert.getScoreNum() == null ? 0 : expert.getScoreNum());
-		expert.setCompositeScore( expert.getCompositeScore() == null ? 0 : expert.getCompositeScore());
-		Double score = expert.getScoreNum() > 1 ? ((expert.getCompositeScore() + record.getScore())/(expert.getScoreNum()+1)) : record.getScore();
-		HqlBuilder hqlBuilder = HqlBuilder.create();
-		hqlBuilder.append("update " + Expert.class.getSimpleName() + " set " + Expert_.compositeScore.getName() + "=:compositeScore" );
-		hqlBuilder.append(" , " + Expert_.scoreNum.getName() + "=:scoreNum where " + Expert_.expertID.getName() + "=:expertId");
-		hqlBuilder.setParam("compositeScore" , score);
-		hqlBuilder.setParam("scoreNum" ,(expert.getScoreNum()+1));
-		hqlBuilder.setParam("expertId" , expert.getExpertID());
-		expertRepo.executeHql(hqlBuilder);
-		domain.setCompositeScore(expert.getCompositeScore());
 		expertSelectedRepo.save(domain);
 
+		if(isUpdateScore){
+            //计算综合评分（根据有评分总数，除以评分次数，没有评分的次数不算）
+            expertRepo.updateExpertCompositeScore(domain.getExpert().getExpertID());
+        }
 	}
 
 	@Override

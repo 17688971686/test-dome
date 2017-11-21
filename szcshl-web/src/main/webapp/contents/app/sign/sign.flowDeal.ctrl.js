@@ -867,8 +867,8 @@
                     ids.push(isCheck[i].value);
                 }
                 expertReviewSvc.updateJoinState("","", ids.join(','), '9',vm.isCommit,function(data){
-                    bsWin.success("操作成功！");
                     vm.reFleshJoinState(ids,'9');
+                    bsWin.success("操作成功！");
                 });
             }
         }
@@ -888,7 +888,6 @@
                     vm.reFleshJoinState(ids,'0');
                     //2、
                     bsWin.success("操作成功！");
-
                 });
             }
         }
@@ -902,6 +901,12 @@
                         epObj.isJoin = state;
                     }
                 })
+            })
+            //刷新工作方案的专家信息
+            $.each(vm.model.workProgramDtoList,function(i, wpObj){
+                expertReviewSvc.refleshBusinessEP(wpObj.id,function(data){
+                    wpObj.expertDtoList = data;
+                });
             })
         }
 

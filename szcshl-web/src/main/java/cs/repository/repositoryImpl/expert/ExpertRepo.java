@@ -14,6 +14,11 @@ public interface ExpertRepo extends IRepository<Expert, String> {
 
     List<Expert> findAllRepeat();
 
+    /**
+     * 根据业务ID获取选取的专家信息(确认并参加会议的专家)
+     * @param businessId
+     * @return
+     */
     List<Expert> findByBusinessId(String businessId);
 
     List<Expert> get(ODataObj odataObj);
@@ -24,4 +29,10 @@ public interface ExpertRepo extends IRepository<Expert, String> {
      * @return
      */
     List<Expert> exportData(String  filters);
+
+    /**
+     * 更新专家的综合评分
+     * @param expertID
+     */
+    void updateExpertCompositeScore(String expertID);
 }

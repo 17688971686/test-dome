@@ -18,16 +18,18 @@ import java.util.List;
 public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> {
     /**
      * 根据大类，小类和专家类别确认已经抽取的专家
+     *
      * @param reviewId
      * @param maJorBig
      * @param maJorSmall
      * @param expeRttype
      * @return
      */
-    int findConfirmSeletedEP(String reviewId,String maJorBig,String maJorSmall,String expeRttype , Integer compositeScort);
+    int findConfirmSeletedEP(String reviewId, String maJorBig, String maJorSmall, String expeRttype, Integer compositeScore, Integer compositeScortEnd);
 
     /**
      * 根据业务ID统计已经确认的抽取专家
+     *
      * @param businessId
      * @return
      */
@@ -35,14 +37,16 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
 
     /**
      * 专家抽取统计
+     *
      * @param expertSelectHis
-     * @param isScore 是否评分统计
+     * @param isScore         是否评分统计
      * @return
      */
-    List<Object[]> getSelectHis(ExpertSelectHis expertSelectHis,boolean isScore);
+    List<Object[]> getSelectHis(ExpertSelectHis expertSelectHis, boolean isScore);
 
     /**
-     *专家评审基本情况详细统计
+     * 专家评审基本情况详细统计
+     *
      * @param expertReviewCondDto
      * @return
      */
@@ -50,6 +54,7 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
 
     /**
      * 专家评审基本情况详细综合
+     *
      * @param expertReviewConSimpleDto
      * @return
      */
@@ -57,6 +62,7 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
 
     /**
      * 专家评审基本情况不规则
+     *
      * @param expertReviewConSimpleDto
      * @return
      */
@@ -64,6 +70,7 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
 
     /**
      * 项目评审情况统计(按类别)
+     *
      * @param projectReviewConditionDto
      * @return
      */
@@ -71,6 +78,7 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
 
     /**
      * 项目评审情况汇总
+     *
      * @param projectReviewConditionDto
      * @return
      */
@@ -79,6 +87,7 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
 
     /**
      * 项目评审情况明细
+     *
      * @param projectReviewConditionDto
      * @return
      */
@@ -86,14 +95,16 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
 
     /**
      * 项目评审情况汇总(按照申报投资金额)
+     *
      * @param beginTime
      * @param endTime
      * @return
      */
-    Integer[]  proReviewCondByDeclare(String beginTime , String endTime);
+    Integer[] proReviewCondByDeclare(String beginTime, String endTime);
 
     /**
      * 专家评审会次数
+     *
      * @param projectReviewConditionDto
      * @return
      */
@@ -101,6 +112,7 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
 
     /**
      * 项目评审次数
+     *
      * @param projectReviewConditionDto
      * @return
      */

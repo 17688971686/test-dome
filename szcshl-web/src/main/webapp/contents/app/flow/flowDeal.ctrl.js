@@ -176,12 +176,13 @@
             vm.scoreExpert = {};
             $.each(vm.model.expertReviewDto.expertSelectedDtoList,function (i,scopeEP) {
                 if(scopeEP.id == id){
-                    vm.scoreExpert = scopeEP;
+                    vm.scoreExpert = angular.copy(scopeEP);
                     return ;
                 }
             })
 
-            $("#star").raty({
+            $("#star_"+vm.scoreExpert.id).raty({
+                number:5,
                 score: function () {
                     $(this).attr("data-num", angular.isUndefined(vm.scoreExpert.score)?0:vm.scoreExpert.score);
                     return $(this).attr("data-num");
@@ -204,7 +205,7 @@
                 visible: false,
                 modal: true,
                 closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
+                actions: ["Close"]
             }).data("kendoWindow").center().open();
         }
 
@@ -219,6 +220,12 @@
             var isValid = $('#expert_score_form').valid();
             if(isValid){
                 expertReviewSvc.saveMark(vm.scoreExpert,function(){
+                    angular.forEach(vm.model.expertReviewDto.expertSelectedDtoList,function (scopeEP,index) {
+                        if(scopeEP.id == vm.scoreExpert.id){
+                            scopeEP.score = vm.scoreExpert.score;
+                            scopeEP.describes = vm.scoreExpert.describes;
+                        }
+                    })
                     bsWin.success("保存成功！",function(){
                         vm.closeEditMark();
                     });
@@ -226,6 +233,75 @@
             }else{
                 bsWin.alert("请填写评分和评分内容！");
             }
+        }
+
+        //确定实际参加会议的专家
+        vm.affirmJoinExpert = function () {
+            if(vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList){
+                vm.confirmEPList = vm.model.expertReviewDto.expertSelectedDtoList;
+                $("#confirmJoinExpert").kendoWindow({
+                    width: "75%",
+                    height: "600px",
+                    title: "参加评审会专家确认",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }else{
+                bsWin.alert("该项目没有评审专家！");
+            }
+        }
+
+        //未参加改为参加
+        vm.updateToJoin = function () {
+            var isCheck = $("#notJoinExpertTable input[name='notJoinExpert']:checked");
+            if (isCheck.length < 1) {
+                bsWin.alert("请选择要改为参加会议的专家");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                expertReviewSvc.updateJoinState("","", ids.join(','), '9',vm.isCommit,function(data){
+                    vm.reFleshJoinState(ids,'9');
+                    bsWin.success("操作成功！");
+                });
+            }
+        }
+
+        //参加改为未参加
+        vm.updateToNotJoin = function () {
+            var isCheck = $("#joinExpertTable input[name='joinExpert']:checked");
+            if (isCheck.length < 1) {
+                bsWin.alert("请选择未参加会议的专家");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                expertReviewSvc.updateJoinState("","", ids.join(','), '0',vm.isCommit,function(data){
+                    //1、更改专家评分和评审费发放的专家
+                    vm.reFleshJoinState(ids,'0');
+                    //2、
+                    bsWin.success("操作成功！");
+                });
+            }
+        }
+
+        //更新参加未参加状态
+        vm.reFleshJoinState = function(ids,state){
+            $.each(ids,function(i, obj){
+                //1、删除已确认的专家
+                $.each(vm.confirmEPList,function(index, epObj){
+                    if(obj == epObj.id){
+                        epObj.isJoin = state;
+                    }
+                })
+            })
+            expertReviewSvc.refleshBusinessEP(vm.model.workPlanDto.id,function(data){
+                vm.model.workPlanDto.expertDtoList = data;
+            });
         }
 
         // 计算应纳税额
@@ -334,6 +410,7 @@
             }
         }
         /***************  E_专家评分，评审费发放  ***************/
+
         /***************  s_月报简报  ***************/
         vm.updateFlow=function(){
             common.initJqValidation();

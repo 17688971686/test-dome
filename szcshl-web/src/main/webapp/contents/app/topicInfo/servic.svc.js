@@ -247,15 +247,11 @@
                 //显示附件上传按钮
                 case flowcommon.getTopicFlowNode().TOPIC_CGJD:
                 case flowcommon.getTopicFlowNode().TOPIC_KTBG:
-                    vm.showFlag.isMainPrinUser = true;      //可以进行专家评分
-                    vm.showFlag.expertEdit = true;          //评审费编辑
-                    break;
                 case flowcommon.getTopicFlowNode().TOPIC_KTJT:
                     if(flow.businessMap) {  //判断是否第一负责人
-                        showFlag.isMainPrinUser = flow.businessMap.MAIN_USER;
+                        vm.showFlag.isMainPrinUser = flow.businessMap.MAIN_USER;
+                        vm.showFlag.expertEdit = true;          //评审费编辑
                     }
-                    vm.showFlag.isMainPrinUser = true;      //可以进行专家评分
-                    vm.showFlag.expertEdit = true;          //评审费编辑
                     break;
                 case flowcommon.getTopicFlowNode().TOPIC_LXDW:
                 case flowcommon.getTopicFlowNode().TOPIC_QDHT:
@@ -272,9 +268,9 @@
                 //工作方案填报环节
                 case flowcommon.getTopicFlowNode().TOPIC_GZFA:
                     showFlag.businessTr = true;
-                    if(flow.businessMap) {  //判断是否第一负责人
+                    /*if(flow.businessMap) {  //判断是否第一负责人
                         showFlag.isMainPrinUser = flow.businessMap.MAIN_USER;
-                    }
+                    }*/
                     break;
                 //归档环节
                 case flowcommon.getTopicFlowNode().TOPIC_ZLGD:

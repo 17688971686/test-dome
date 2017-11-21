@@ -25,6 +25,7 @@
             saveMark: saveMark,                         // 保存专家评分
             savePayment: savePayment,                   // 保存专家费用
             countTaxes: countTaxes,                     // 计算应纳税额
+            refleshBusinessEP : refleshBusinessEP,      //刷新业务的专家信息（已经确认和确定参加会议的专家）
         };
         return service;
 
@@ -574,5 +575,29 @@
 
             return isVilad;
         }// E_validateNum
+
+        //S_刷新业务的专家信息
+        function refleshBusinessEP(businessId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/refleshBusinessEP",
+                params: {
+                    businessId : businessId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError:function () {
+
+                }
+            });
+        }//E_refleshBusinessEP
     }
 })();

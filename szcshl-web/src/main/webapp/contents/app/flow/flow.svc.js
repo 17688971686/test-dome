@@ -112,38 +112,38 @@
                 field: "",
                 title: "序号",
                 template: "<span class='row-number'></span>",
-                width: 40
+                width: 50
             }, {
                 field: "nodeName",
                 title: "环节名称",
-                width: 120,
+                width: "20%",
                 filterable: false
             }, {
                 field: "displayName",
                 title: "处理人",
-                width: 80,
+                width: "15%",
                 filterable: false
             }, {
                 field: "startTime",
                 title: "开始时间",
-                width: 120,
+                width: "15%",
                 filterable: false,
                 format: "{0: yyyy-MM-dd HH:mm:ss}"
             }, {
                 field: "endTime",
                 title: "结束时间",
-                width: 120,
+                width: "15%",
                 filterable: false,
                 format: "{0: yyyy-MM-dd HH:mm:ss}"
             }, {
                 field: "durationStr",
                 title: "处理时长",
-                width: 120,
+                width: "15%",
                 filterable: false
             }, {
                 field: "message",
                 title: "处理信息",
-                width: 300,
+                width: "20%",
                 filterable: false
             }];
             // End:column

@@ -61,16 +61,16 @@ public class ExpertDto extends BaseDto {
     /**
      * 点评数目
      */
-    private Integer scoreNum;
+    /*private Integer scoreNum;*/
 
 
-    public Integer getScoreNum() {
+    /*public Integer getScoreNum() {
         return scoreNum;
     }
 
     public void setScoreNum(Integer scoreNum) {
         this.scoreNum = scoreNum;
-    }
+    }*/
 
     public Double getCompositeScore() {
         return compositeScore;

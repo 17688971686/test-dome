@@ -329,16 +329,18 @@ public class ExpertServiceImpl implements ExpertService {
         if (Validate.isString(epSelCondition.getMaJorBig()) || Validate.isString(epSelCondition.getMaJorSmall()) || Validate.isString(epSelCondition.getExpeRttype()) || epSelCondition.getCompositeScore() != null) {
             hqlBuilder.append(" AND (select count(ept.ID) from CS_EXPERT_TYPE ept where ept.expertid = ep.expertid ");
             buildCondition(hqlBuilder, "ept", epSelCondition);
-            hqlBuilder.append(" ) > 0");
-            if (epSelCondition.getCompositeScore() != null && epSelCondition.getCompositeScore() > 0) {
-                hqlBuilder.append(" and  ep.compositeScore>=:compositeScore");
-                hqlBuilder.setParam("compositeScore", epSelCondition.getCompositeScore());
-            } else {
-                hqlBuilder.append(" and  ep.compositeScore is null or ep.compositeScore >=:compositeScore");
-                hqlBuilder.setParam("compositeScore", epSelCondition.getCompositeScore() == null ? 0 : epSelCondition.getCompositeScore());
-            }
+            hqlBuilder.append(" ) > 0 ");
         }
 
+        //综合评分条件筛选
+        if (epSelCondition.getCompositeScore() != null && epSelCondition.getCompositeScore() > 0) {
+            hqlBuilder.append(" and  ep.compositeScore >= :compositeScore");
+            hqlBuilder.setParam("compositeScore", epSelCondition.getCompositeScore());
+        }
+        if (epSelCondition.getCompositeScoreEnd() != null && epSelCondition.getCompositeScoreEnd() > 0) {
+            hqlBuilder.append(" and  ep.compositeScore <= :compositeScoreEnd");
+            hqlBuilder.setParam("compositeScoreEnd", epSelCondition.getCompositeScoreEnd());
+        }
         List<Expert> listExpert = expertRepo.findBySql(hqlBuilder);
         List<ExpertDto> listExpertDto = new ArrayList<>();
         if (Validate.isList(listExpert)) {
@@ -453,10 +455,10 @@ public class ExpertServiceImpl implements ExpertService {
             int chooseCount = epConditon.getOfficialNum();
             //如果是再次抽取，则要计算已经确认的专家数
             if (notFirstTime) {
-                selectedEPCount = expertSelectedRepo.findConfirmSeletedEP(reviewId, epConditon.getMaJorBig(), epConditon.getMaJorSmall(), epConditon.getExpeRttype(), epConditon.getCompositeScore());
+                selectedEPCount = expertSelectedRepo.findConfirmSeletedEP(reviewId, epConditon.getMaJorBig(), epConditon.getMaJorSmall(), epConditon.getExpeRttype(), epConditon.getCompositeScore(), epConditon.getCompositeScoreEnd());
                 chooseCount = (selectedEPCount > -1) ? (chooseCount - selectedEPCount) : chooseCount;
                 if (chooseCount < 1) {
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"该条件抽取的专家已经达到设定数，不能再次抽取！");
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该条件抽取的专家已经达到设定数，不能再次抽取！");
                     return resultMsg;
                 }
             }
@@ -641,7 +643,7 @@ public class ExpertServiceImpl implements ExpertService {
                 //最后一个
                 if (i == (l - 1)) {
                     //如果只有一个专家的情况
-                    if(!Validate.isList(expertSelectHisObj.getChildList())){
+                    if (!Validate.isList(expertSelectHisObj.getChildList())) {
                         expertSelectHisObj.setChildList(childList);
                     }
                     resultList.add(expertSelectHisObj);

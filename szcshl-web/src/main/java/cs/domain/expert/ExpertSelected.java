@@ -27,7 +27,10 @@ public class ExpertSelected {
      * 综合评分
      */
     @Column(columnDefinition = "NUMBER")
-    private Double compositeScore;
+    private Integer compositeScore;
+
+    @Column(columnDefinition = "NUMBER")
+    private Integer compositeScoreEnd;
 
     //评审费用
     @Column(columnDefinition = "NUMBER default 1000")
@@ -94,15 +97,6 @@ public class ExpertSelected {
     @ManyToOne
     @JoinColumn(name = "expertId")
     private Expert expert;
-
-
-    public Double getCompositeScore() {
-        return compositeScore;
-    }
-
-    public void setCompositeScore(Double compositeScore) {
-        this.compositeScore = compositeScore;
-    }
 
     public String getId() {
         return id;
@@ -238,5 +232,21 @@ public class ExpertSelected {
 
     public void setIsLetterRw(String isLetterRw) {
         this.isLetterRw = isLetterRw;
+    }
+
+    public Integer getCompositeScore() {
+        return compositeScore;
+    }
+
+    public void setCompositeScore(Integer compositeScore) {
+        this.compositeScore = compositeScore;
+    }
+
+    public Integer getCompositeScoreEnd() {
+        return compositeScoreEnd;
+    }
+
+    public void setCompositeScoreEnd(Integer compositeScoreEnd) {
+        this.compositeScoreEnd = compositeScoreEnd;
     }
 }

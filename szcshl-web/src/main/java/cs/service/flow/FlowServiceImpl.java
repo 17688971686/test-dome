@@ -582,9 +582,11 @@ public class FlowServiceImpl implements FlowService {
         if (!Validate.isString(activityId)) {
             throw new Exception("目标节点ID为空！");
         }
+        ProcessInstance ProcessInstance = findProcessInstanceByTaskId(taskId);
+        taskService.addComment(taskId, ProcessInstance.getId(), "【"+SessionUtil.getDisplayName()+"】重新分办项目");    //添加处理信息
         if(allBranch){
             // 如果是删除所有分支，查找所有并行任务节点，同时取回
-            List<Task> taskList = findTaskListByKey(findProcessInstanceByTaskId(taskId).getId());
+            List<Task> taskList = findTaskListByKey(ProcessInstance.getId());
             for(Task task:taskList ){
                 if(task.getId().equals(taskId)){
                     //取回项目流程

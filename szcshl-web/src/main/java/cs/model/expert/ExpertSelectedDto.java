@@ -6,9 +6,13 @@ public class ExpertSelectedDto {
 
     private String id;
     /**
-     * 综合评分
+     * 综合评分(开始评分)
      */
     private Integer compositeScore;
+    /**
+     * 综合评分(结束评分)
+     */
+    private Integer compositeScoreEnd;
     //评分
     private Double score;
     //评审费用
@@ -43,14 +47,6 @@ public class ExpertSelectedDto {
      * 是否函评
      */
     private String isLetterRw;
-
-    public Integer getCompositeScore() {
-        return compositeScore;
-    }
-
-    public void setCompositeScore(Integer compositeScore) {
-        this.compositeScore = compositeScore;
-    }
 
     private ExpertReviewDto expertReviewDto;
     private ExpertDto expertDto;
@@ -197,5 +193,21 @@ public class ExpertSelectedDto {
 
     public void setIsLetterRw(String isLetterRw) {
         this.isLetterRw = isLetterRw;
+    }
+
+    public Integer getCompositeScore() {
+        return compositeScore;
+    }
+
+    public void setCompositeScore(Integer compositeScore) {
+        this.compositeScore = compositeScore;
+    }
+
+    public Integer getCompositeScoreEnd() {
+        return compositeScoreEnd;
+    }
+
+    public void setCompositeScoreEnd(Integer compositeScoreEnd) {
+        this.compositeScoreEnd = compositeScoreEnd;
     }
 }

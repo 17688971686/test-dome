@@ -1,14 +1,12 @@
 package cs.repository.repositoryImpl.expert;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
+import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected_;
-import cs.model.PageModelDto;
-import cs.model.expert.ExpertDto;
+import cs.domain.expert.Expert_;
+import cs.repository.AbstractRepository;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
@@ -18,9 +16,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
-import cs.domain.expert.Expert;
-import cs.domain.expert.Expert_;
-import cs.repository.AbstractRepository;
+import java.util.List;
 
 @Service
 public class ExpertRepoImpl extends AbstractRepository<Expert, String> implements ExpertRepo {
@@ -64,7 +60,7 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
     }
 
     /**
-     * 根据业务ID获取选取的专家信息
+     * 根据业务ID获取选取的专家信息(确认并参加会议的专家)
      * @param businessId
      * @return
      */
@@ -72,11 +68,12 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
     public List<Expert> findByBusinessId(String businessId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" select e.* from cs_expert e where e.expertID in (select expertID from cs_expert_selected ");
-        sqlBuilder.append(" where "+ ExpertSelected_.isConfrim.getName()+" = :isConfirm ");
-        sqlBuilder.setParam("isConfirm",Constant.EnumState.YES.getValue());
-        sqlBuilder.append("  and "+ExpertSelected_.businessId.getName()+" = :businessId )");
+        sqlBuilder.append("  where "+ExpertSelected_.businessId.getName()+" = :businessId ");
         sqlBuilder.setParam("businessId",businessId);
-
+        sqlBuilder.append(" and "+ ExpertSelected_.isConfrim.getName()+" = :isConfirm ");
+        sqlBuilder.setParam("isConfirm",Constant.EnumState.YES.getValue());
+        sqlBuilder.append(" and "+ ExpertSelected_.isJoin.getName()+" = :isJoin )");
+        sqlBuilder.setParam("isJoin",Constant.EnumState.YES.getValue());
         return findBySql(sqlBuilder);
     }
 
@@ -188,5 +185,35 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
 
         List<Expert> expertList = this.findBySql(hqlBuilder);
         return expertList;
+    }
+
+    /**
+     * 更新
+     * @param expertID
+     */
+    @Override
+    public void updateExpertCompositeScore(String expertID) {
+        /**
+         * UPDATE CS_EXPERT
+         SET compositeScore =
+         ROUND ( (SELECT SUM (SCORE) / COUNT (id)
+         FROM CS_EXPERT_SELECTED
+         WHERE EXPERTID = '3FD4FCCAA9BB4EC2A5CB54D8410040C3' AND SCORE is not null AND SCORE > 0),
+         2)
+         WHERE expertID = '3FD4FCCAA9BB4EC2A5CB54D8410040C3'
+         */
+        if(Validate.isString(expertID)){
+            HqlBuilder sqlBuilder = HqlBuilder.create();
+            sqlBuilder.append("update CS_EXPERT set "+Expert_.compositeScore.getName()+" = ROUND( " );
+            sqlBuilder.append(" (SELECT SUM (SCORE) / COUNT (id) FROM CS_EXPERT_SELECTED WHERE EXPERTID =:sExpertID ");
+            sqlBuilder.setParam("sExpertID",expertID);
+            sqlBuilder.append(" AND ISCONFRIM = :isconfrim AND ISJOIN = :isjoin ");
+            sqlBuilder.setParam("isconfrim", Constant.EnumState.YES.getValue()).setParam("isjoin", Constant.EnumState.YES.getValue());
+            sqlBuilder.append(" AND SCORE is not null AND SCORE > 0),2)");
+            sqlBuilder.append(" where "+Expert_.expertID.getName()+" =:expertID");
+            sqlBuilder.setParam("expertID",expertID);
+            executeSql(sqlBuilder);
+        }
+
     }
 }

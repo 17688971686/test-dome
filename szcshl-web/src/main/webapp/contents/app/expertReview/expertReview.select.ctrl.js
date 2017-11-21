@@ -618,5 +618,19 @@
                 });
             }
         }
+
+        //判断分值大小
+        vm.checkScore = function(expertSelObj){
+            if(expertSelObj.compositeScoreEnd){
+                if(expertSelObj.compositeScore && (expertSelObj.compositeScore>expertSelObj.compositeScoreEnd)){
+                    $("#compositeScoreEnd_"+expertSelObj.id).html("分值设置错误");
+                    expertSelObj.compositeScoreEnd = "";
+                }else{
+                    $("#compositeScoreEnd_"+expertSelObj.id).html("");
+                }
+            }else{
+                $("#compositeScoreEnd_"+expertSelObj.id).html("");
+            }
+        }
     }
 })();

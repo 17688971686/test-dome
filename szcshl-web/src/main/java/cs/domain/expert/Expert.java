@@ -29,8 +29,8 @@ public class Expert extends DomainBase {
     /**
      * 点评数目
      */
-    @Column(columnDefinition = "NUMBER")
-    private Integer scoreNum;
+    /*@Column(columnDefinition = "NUMBER")
+    private Integer scoreNum;*/
 
     @Column(columnDefinition = "varchar(10)")
     private String expertNo;//专家代码，系统自动生成
@@ -167,13 +167,13 @@ public class Expert extends DomainBase {
         this.compositeScore = compositeScore;
     }
 
-    public Integer getScoreNum() {
+    /*public Integer getScoreNum() {
         return scoreNum;
     }
 
     public void setScoreNum(Integer scoreNum) {
         this.scoreNum = scoreNum;
-    }
+    }*/
 
     public void setExpertSort(String expertSort) {
 		this.expertSort = expertSort;

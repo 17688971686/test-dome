@@ -83,7 +83,7 @@
                 case flowcommon.getSignFlowNode().SIGN_XMFZR1:
                     vm.businessFlag.isMainBranch = true;
                     vm.businessFlag.curBranchId = "1";
-                    vm.showFlag.isMainPrinUser = true;      //可以进行专家评分
+
                 case flowcommon.getSignFlowNode().SIGN_XMFZR2:
                     if(!vm.businessFlag.curBranchId){
                         vm.businessFlag.curBranchId = "2";
