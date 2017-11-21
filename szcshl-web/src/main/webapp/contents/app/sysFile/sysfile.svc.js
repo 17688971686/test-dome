@@ -241,7 +241,7 @@
                     allowedFileExtensions: ['sql', 'exe','lnk'],//修改过，改为了不支持了。比如不支持.sql的
                     maxFileSize: 5000,
                     showRemove: false,
-                    uploadUrl: rootPath + "/file/fileUpload",
+                    uploadUrl: rootPath + "/file/fileUpload",// 默认上传ftp服务器 /file/fileUploadLocal 为上传到本地服务
                     uploadExtraData: function (previewId, index) {
                         var result = {};
                         result.businessId = options.vm.sysFile.businessId;

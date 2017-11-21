@@ -75,7 +75,13 @@ public class SysFileServiceImpl implements SysFileService {
         }
     }
 
+    @Transactional
+    public void update(SysFile sysFile) {
+        sysFileRepo.save(sysFile);
+    }
+
     @Override
+    @Transactional
     public ResultMsg saveToFtp(byte[] bytes, String fileName, String businessId, String fileType, String mainId, String mainType, String sysfileType, String sysBusiType, String ftpIp, String port, String ftpUser, String ftpPwd, String ftpBasePath, String ftpFilePath) {
         try {
             String fileUploadPath = SysFileUtil.getUploadPath();
@@ -171,6 +177,16 @@ public class SysFileServiceImpl implements SysFileService {
     @Override
     public SysFile findFileById(String sysfileId) {
         SysFile sysFile = sysFileRepo.findById(sysfileId);
+        return sysFile;
+    }
+
+    /**
+     * 根据ID获取附件信息
+     * @param sysfileId
+     * @return
+     */
+    public SysFile findFileByIdGet(String sysfileId) {
+        SysFile sysFile = sysFileRepo.findByIdGet(sysfileId);
         return sysFile;
     }
 
