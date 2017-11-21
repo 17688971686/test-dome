@@ -2,8 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>用户登录</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <title>用户登录</title>
 </head>
 <body>
 <!-- Bootstrap 3.3.6 -->
@@ -45,146 +47,113 @@
 <!--End:自定义css -->
 <style>
     body{
-        background:url(${path}/contents/images/bg.jpg) no-repeat;
-        background-size: cover;
+        background: url(${path}/contents/images/loginpage-bg.jpg) no-repeat left top/cover;
     }
-    .login-box-body {
-        background: rgba(255,255,255,1);
-        width: 460px;
-        float: right;
-        padding: 50px;
-        padding-top: 40px;
-        padding-bottom: 30px;
-        margin: 5px;
-        border-radius: 5px;
-        -webkit-box-shadow: 0px 1px 6px rgba(0,0,0,0.3);
-        -moz-box-shadow: 0px 1px 6px rgba(0,0,0,0.3);
-        box-shadow: 0px 1px 6px rgba(0,0,0,0.3);
+    .logo{
+        text-align: center;
+        margin:50px auto 0;
     }
-/*    .login-logo{
-   		 width:480px;
-   		 line-height: 40px;
-   		 margin-top: 240px;
-   		 margin-left:  -136px;
-
-    }*/
-    .vcode{
-        cursor:pointer;
+    .loginform{
+        width: 450px;
+        position: absolute;
+        background-color:#fff;
+        right: 8%;
+        top: 25%;
+        box-shadow: 5px 5px 5px rgba(0,0,0,0.2);
+        border-radius:10px;
     }
-    .input-validation-error{
-        border:1px solid red;
+    .loginform form{
+        padding:40px;
     }
-    ul{
-        list-style:none;
+    .loginform h3{
+        color:#00447a;
+        font-size:24px;
+        letter-spacing:2px;
+        margin-bottom:30px;
+    }
+    .loginform .input-container{
+        position: relative;
+        text-align: center;
+        margin:30px 0;
+    }
+    .loginform .input-container input{
+        background:#fafafa;
+        height:40px;
+        width: 100%;
+        padding-left:40px;
+    }
+    .loginform .input-container input:focus{
+        border: 1px solid #128471;
+        box-shadow: 0 0 10px #128471;
+    }
+    .loginform .input-container span{
+        position: absolute;
+        left: 0;
+        top:-15px;
+        width: 100px;
+        height: 40px;
+        line-height:40px;
         color:red;
     }
-    .has-feedback .form-control {
-        padding-right: 42.5px;
-        border-radius: 3px;
-        height: 50px;
-        margin: 20px 0px;
-        background-color: #fafafa;
-        border: 1px solid #fff;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    .loginform .input-container span.glyphicon{
+        width: 40px;
+        top:0;
+        font-size:16px;
+        color:#128471;
     }
-    .form-control-feedback{
-        height: 50px;
-        line-height: 50px;
+    .loginform-footer{
+        height:100px;
+        background: #eee;
+        padding:20px 40px 0;
+        border-radius:0 0 10px 10px;
     }
-.btn.btn-flat {
-    border-radius: 3px;
-}
-
-    .btn-primary {
-        background-color: #0089e9;
-        border-color: #0089e9;
-        padding: 13px 12px;
+    .loginform-footer .btn{
+        width: 100%;
+        height: 40px;
+        border-radius:10px;
+        background: #03a98e;
     }
-footer{    position: absolute;
-    bottom: 0px;
+    .loginform-footer .btn:hover{
+        background: #128471;
+        border:none;
+    }
+    footer{
+    position: absolute;
+    bottom: 10px;
     width: 100%;
     height: 40px;
     text-align: center;
-    /* background-color: rgba(60, 141, 188, 1); */
     line-height: 40px;
-    color: #fff;}
-header{
-    text-align: center;
-    line-height: 180px;
-}
-    .slogan {
-        position: absolute;
-        z-index: -2;
-        padding: 40px;
-    }
-    @media (min-width: 1200px){
-        .login-box, .register-box {
-            width: 1200px;
-            margin: 2% auto;
-            overflow: hidden;
-        }
+    color: #fff;
     }
 </style>
 
-<header><img src="${path}/contents/images/logintitle.png"></header>
-
-<div class="login-box" ng-app="loginApp" ng-controller="LoginCtrl as vm">
-
+<div class="logo">
+    <img src="${path}/contents/images/loginpage-title.png" alt="">
+</div>
+<div class="loginform" ng-app="loginApp" ng-controller="LoginCtrl as vm">
     <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
     <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-    <div class="slogan">
-       <!-- <img src="${path}/contents/images/solgan.png"/>-->
+    <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" >
+        <h3 style="color:#26ae95">用户登录</h3>
+        <span ng-show="vm.message" class="errors" ng-bind="vm.message">${msg!''}</span>
+        <div class="input-container">
+            <span class="glyphicon glyphicon-user"></span>
+            <input autofocus="autofocus" type="text" class="form-control" placeholder="用户名" name="loginName" id="loginName" ng-model="vm.model.loginName" data-val="true" data-val-required="用户名必填">
+            <span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
+        </div>
+        <div class="input-container" style="margin-bottom:10px;">
+            <input type="password" class="form-control" placeholder="密码" maxlength="100"  name="password" id="password" ng-model="vm.model.password" data-val="true" data-val-required="密码必填">
+            <span class="glyphicon glyphicon-lock"></span>
+            <span data-valmsg-for="password" data-valmsg-replace="true" class="errors"></span>
+        </div>
+    </form>
+    <div class="loginform-footer" style="">
+        <button ng-click="vm.submit()" ng-disabled="vm.isSubmit" class="btn btn-success" type="submit" value="登录">登录</button>
+        <p style="margin-top: 10px;">温馨提示：系统常见问题请<a href="javascript:;" ng-click="vm.sysInfo()">点击这里</a> </p>
     </div>
-    <!-- /.login-logo -->
-    <div class="login-box-body" >
-        <h3><span style="color:#0089e9; padding-bottom: 10px">系统登录</span></h3>
-        <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" >
-            <div>
-                <span ng-show="vm.message" class="errors" ng-bind="vm.message">${msg!''}</span>
-            </div>
-            <div>
-
-            </div>
-            <div class="form-group has-feedback">
-                <input type="text" class="form-control" style="border-radius: 5px 5px 0px 0px;margin-top: 40px;" placeholder="用户名" maxlength="100" name="loginName" id="loginName" ng-model="vm.model.loginName" data-val="true" data-val-required="用户名必填">
-                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-            </div>
-            <div>
-
-            </div>
-            <div class="form-group has-feedback">
-                <input type="password" class="form-control" style="border-radius: 0px 0px 5px 5px;margin-top: -21px;" placeholder="密码" maxlength="100"  name="password" id="password" ng-model="vm.model.password" data-val="true" data-val-required="密码必填">
-                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-            </div>
-
-            <div style="height: 30px">
-                <span data-valmsg-for="password" data-valmsg-replace="true" class="errors"></span>
-                <span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
-            </div>
-
-
-            <div class="row">
-                <!-- /.col -->
-                <div class="pull-right col-sm-12">
-                    <button  type="button" ng-click="vm.submit()" ng-disabled="vm.isSubmit" class="btn btn-primary btn-block btn-flat">登 录</button>
-                   <!-- <button  type="button" ng-click="vm.sysInfo()" class="btn btn-info btn-block btn-flat">说明</button>-->
-                    <p style="margin: 30px 0px">温馨提示：系统常见问题请<a href="javascript:;" ng-click="vm.sysInfo()">点击这里</a> </p>
-                </div>
-
-                <!-- /.col -->
-            </div>
-        </form>
-    </div>
-    <!-- /.login-box-body -->
 </div>
-<!-- /.login-box -->
-
-
-
-<footer> 深圳市政府投资项目评审中心版权所有  </footer>
+<footer> 深圳市政府投资项目评审中心版权所有</footer>
 <script src="${path}/contents/libs/jquery/jquery.js"></script>
 <script src="${path}/contents/libs/bootstrap/customize/js/bootstrap.js"></script>
 <script src="${path}/contents/libs/angular/angular.js"></script>
