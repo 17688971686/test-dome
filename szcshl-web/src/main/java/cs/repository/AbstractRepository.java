@@ -59,6 +59,13 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
 
     }
 
+    @Override
+    public T findByIdGet(ID id) {
+        logger.debug("findByIdGet");
+        return  getSession().get(this.getPersistentClass(),id);
+
+    }
+
     /**
      * 用hql方式 根据ID查询
      *
@@ -109,7 +116,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public T save(T entity) {
         logger.debug("save");
-
+        flush();
         this.getSession().saveOrUpdate(entity);
         return entity;
     }

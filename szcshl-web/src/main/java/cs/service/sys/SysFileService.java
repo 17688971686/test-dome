@@ -18,6 +18,8 @@ public interface SysFileService {
     ResultMsg save(byte[] bytes, String fileName, String businessId, String fileType,
                    String mainId,String mainType, String sysfileType, String sysBusiType);
 
+    public void update(SysFile sysFile);
+
     ResultMsg saveToFtp(byte[] bytes, String fileName, String businessId, String fileType,
                    String mainId,String mainType, String sysfileType, String sysBusiType, String ftpIp,
                    String port,String ftpUser, String ftpPwd, String ftpBasePath, String  ftpFilePath);
@@ -27,6 +29,8 @@ public interface SysFileService {
     PageModelDto<SysFileDto> get(ODataObj odataObj);
 
     SysFile findFileById(String sysfileId);
+
+    SysFile findFileByIdGet(String sysfileId);
 
     List<SysFileDto> findByBusinessId(String businessId);
 

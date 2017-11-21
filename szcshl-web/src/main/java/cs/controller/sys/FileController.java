@@ -4,19 +4,18 @@ import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.FtpUtil;
-import cs.common.utils.PropertyUtil;
-import cs.common.utils.SysFileUtil;
+import cs.common.utils.*;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.sys.SysFileService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.hibernate.id.UUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -30,7 +29,9 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -59,6 +60,7 @@ public class FileController {
     
     @Autowired
     private RealPathResolver realPathResolver;
+
 
     @RequiresAuthentication
     @RequestMapping(name = "获取文件数据", path = "", method = RequestMethod.GET)
@@ -126,6 +128,36 @@ public class FileController {
 
 
     /**
+     *文件上传保留本地（预留）
+     * @param request
+     * @param multipartFile
+     * @param businessId 业务ID
+     * @param mainId     主ID
+     * @param sysfileType 附件模块类型
+     * @param sysBusiType 附件业务类型
+     * @return
+     * @throws IOException
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "文件上传", path = "fileUploadLocal", method = RequestMethod.POST)
+    @ResponseBody
+    public  ResultMsg uploadLocal(HttpServletRequest request, @RequestParam("file") MultipartFile multipartFile,
+                             @RequestParam(required = true) String businessId, String mainId,String mainType,
+                             String sysfileType, String sysBusiType) throws IOException {
+
+        String fileName = multipartFile.getOriginalFilename();
+        String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+        fileType = fileType.toLowerCase();      //统一转成小写
+
+        if (!multipartFile.isEmpty()) {
+            return  fileService.save(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType);
+        } else {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件上传失败，无法获取文件信息！");
+        }
+    }
+
+
+    /**
      *
      * @return
      * @throws IOException
@@ -148,6 +180,9 @@ public class FileController {
         if (result) {
             file.delete();
             SysFileDto sysFileDto = new SysFileDto();
+            sysFile.setModifiedBy(SessionUtil.getDisplayName());
+            sysFile.setModifiedDate(new Date());
+            fileService.update(sysFile);
             BeanCopierUtils.copyProperties(sysFile,sysFileDto);
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"文件同步成功！",sysFileDto);
         } else {
