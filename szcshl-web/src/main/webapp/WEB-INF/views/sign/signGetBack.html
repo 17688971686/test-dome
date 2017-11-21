@@ -9,6 +9,16 @@
         <li class="active">项目取回</li>
     </ol>
 
+    <form id="signBackform" name="signBackform" class="well well-sm">
+        <span class="help-inline">项目名称：</span>
+        <input type="text" ng-model="vm.model.projectName" operator="like" name="projectName" id="projectName"
+               placeholder="请输入">
+        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.query()">
+            <span class="glyphicon glyphicon-search"></span>查询</button>
+    </form>
+
+
+
     <div class="label-info" style="font-size: 12px;padding:3px 5px;">
         温馨提示：1、分管领导取回，流程分支被消除，已做工作方案被清空；2、部长只能取回没提交审批工作方案的分支流程；3、系统暂不支持合并评审项目回退
     </div>

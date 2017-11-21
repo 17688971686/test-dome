@@ -77,7 +77,7 @@
 			 <tr>
                 <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
                 <td colspan="5">
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                    <input type="text" maxlength="256" class="form-control input-sm " ng-disabled="vm.isnotEdit"
                            ng-model="vm.dispatchDoc.fileTitle" id="fileTitle" name="fileTitle" data-val="true"
                            data-val-required="必填" placeholder="《项目名称+阶段》+评审意见">
                     <span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>
@@ -87,7 +87,7 @@
             <tr>
                 <td style="width:150px;" class="text-center">发行范围</td>
                 <td colspan="5">
-                    <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
+                    <textarea maxlength="512" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
                               ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
                               data-val="true" data-val-required="必填" />
                     <span style="float: right;">(印<input type="text" name="printCount" ng-model="vm.dispatchDoc.printCount" style="width: 50px">份)</span>
@@ -98,7 +98,7 @@
             <tr>
                 <td style="width:150px;" class="text-center">项目概况</td>
                 <td colspan="5">
-                    <textarea maxlength="200" class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
+                    <textarea maxlength="2000" class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
                               ng-model="vm.dispatchDoc.description" id="description" name="description"/>
                 </td>
             </tr>
@@ -106,12 +106,12 @@
             <tr>
                 <td style="width:150px;" class="text-center">项目负责人拟稿意见</td>
                 <td colspan="3">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                    <textarea maxlength="2000" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.mianChargeSuggest" id="mianChargeSuggest"
                               name="mianChargeSuggest" placeholder="第一负责人" ng-disabled="true"/>
                 </td>
                 <td colspan="2">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                    <textarea maxlength="2000" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.secondChargeSuggest" id="secondChargeSuggest"
                               name="secondChargeSuggest" placeholder="第二负责人" ng-disabled="true"/>
                 </td>
@@ -120,7 +120,7 @@
             <tr>
                 <td style="width:150px;" class="text-center">评审意见摘要</td>
                 <td colspan="5">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                    <textarea maxlength="2000" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
                 </td>
             </tr>
@@ -128,7 +128,7 @@
              <tr>
                 <td style="width:150px;" class="text-center">部长审核意见</td>
                 <td colspan="5">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                    <textarea maxlength="2000" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion"
                               name="ministerSuggesttion" ng-disabled="true"/>
                 </td>
@@ -137,7 +137,7 @@
             <tr>
                 <td style="width:150px;" class="text-center">分管副主任意见</td>
                 <td colspan="5">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                    <textarea maxlength="2000" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.viceDirectorSuggesttion" id="viceDirectorSuggesttion"
                               name="viceDirectorSuggesttion" ng-disabled="true"/>
                 </td>

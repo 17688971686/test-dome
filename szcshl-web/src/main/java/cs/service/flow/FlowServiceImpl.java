@@ -45,6 +45,7 @@ import org.hibernate.criterion.*;
 import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -102,6 +103,8 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     @Qualifier("suppLetterFlowBackImpl")
     private IFlowBack suppLetterFlowBackImpl;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
 
 
@@ -862,5 +865,14 @@ public class FlowServiceImpl implements FlowService {
         nativeQuery = session.createNativeQuery(stringBuffer.toString());
         nativeQuery.setParameter("executionId",executionId).executeUpdate();
 
+    }
+
+    /**
+     * 获取流程列表
+     */
+    @Override
+    public List<Map<String, Object>> getProc(){
+        List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp  GROUP BY arp.NAME_,arp.KEY_");
+        return list;
     }
 }

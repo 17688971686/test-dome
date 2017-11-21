@@ -65,13 +65,13 @@
     <tr>
         <td colspan="2" style="width:100px;" class="text-center">联系人<span class="required">*</span></td>
         <td colspan="3">
-            <input type="text" class="form-control input-sm " ng-model="vm.work.contactPerson" id="contactPerson"
+            <input maxlength="16" type="text" class="form-control input-sm " ng-model="vm.work.contactPerson" id="contactPerson"
                    name="contactPerson" data-val="true" data-val-required="必填">
             <span data-valmsg-for="contactPerson" data-valmsg-replace="true" class="errors"></span>
         </td>
         <td style="width:100px;" class="text-center">手机<span class="required">*</span></td>
         <td>
-            <input type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.contactPersonPhone"
+            <input maxlength="11" type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.contactPersonPhone"
                    name="contactPersonPhone" data-val="true" data-val-digits="手机号码只能为数字" data-val-required="必填">
             <span data-valmsg-for="contactPersonPhone" data-valmsg-replace="true" class="errors"></span>
         </td>
@@ -79,14 +79,14 @@
     <tr>
         <td colspan="2" class="text-center">电话<span class="required">*</span></td>
         <td colspan="3">
-            <input type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.contactPersonTel"
+            <input maxlength="50" type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.contactPersonTel"
                    id="contactPersonTel" name="contactPersonTel" data-val-digits="电话号码只能为数字" data-val="true"
                    data-val-required="必填">
             <span data-valmsg-for="contactPersonTel" data-valmsg-replace="true" class="errors"></span>
         </td>
         <td style="width:100px;" class="text-center">传真<span class="required">*</span></td>
         <td>
-            <input type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.contactPersonFax"
+            <input maxlength="32" type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.contactPersonFax"
                    name="contactPersonFax" id="contactPersonFax" data-val-digits="传真只能为数字" data-val="true"
                    data-val-required="必填">
             <span data-valmsg-for="contactPersonFax" data-valmsg-replace="true" class="errors"></span>
@@ -96,7 +96,7 @@
     <tr>
         <td colspan="2" class="text-center">项目类型<span class="required">*</span></td>
         <td colspan="3">
-            <input type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.projectType"
+            <input maxlength="40" type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.projectType"
                    id="projectType" name="projectType" data-val-digits="电话号码只能为数字" data-val="true"
                    data-val-required="必填">
             <span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span>
@@ -113,7 +113,7 @@
     <tr>
         <td colspan="2" style="width:80px;" class="text-center">项目概况</td>
         <td colspan="5">
-            <textarea rows="3" cols="" ng-model="vm.work.projectSurvey" name="projectSurvey"
+            <textarea maxlength="1500" rows="3" cols="" ng-model="vm.work.projectSurvey" name="projectSurvey"
                       style="width:100%;"></textarea>
         </td>
     </tr>
@@ -121,7 +121,7 @@
     <tr>
         <td colspan="2" style="width:80px;" class="text-center">评审重点</td>
         <td colspan="5">
-            <textarea rows="3" cols="" ng-model="vm.work.stageEmphasis" name="stageEmphasis"
+            <textarea maxlength="1024" rows="3" cols="" ng-model="vm.work.stageEmphasis" name="stageEmphasis"
                       style="width:100%;"></textarea>
         </td>
     </tr>

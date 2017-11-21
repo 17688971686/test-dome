@@ -11,6 +11,7 @@
         activate();
         function activate() {
             adminSvc.agendaTaskGrid(vm);
+            adminSvc.workName(vm);
         }
 
         /**
