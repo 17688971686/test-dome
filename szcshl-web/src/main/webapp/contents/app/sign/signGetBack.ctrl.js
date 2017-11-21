@@ -31,6 +31,10 @@
             });
         }
 
+        vm.query=function () {//查找
+         vm.signGetBackGrid.dataSource.read();
+        }
+
         active();
         function active() {
             signSvc.signGetBackGrid(vm);

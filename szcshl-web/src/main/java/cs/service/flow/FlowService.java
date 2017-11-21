@@ -18,6 +18,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FlowService {
 
@@ -115,4 +116,11 @@ public interface FlowService {
      * @param executionId 流程实例节点ID
      * */
     void deleteTask(String taskId, String executionId);
+
+
+    /**
+     * 获取流程列表
+     * @return
+     */
+    List<Map<String, Object>> getProc();
 }

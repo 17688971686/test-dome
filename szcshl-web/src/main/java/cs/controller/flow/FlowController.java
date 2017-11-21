@@ -52,6 +52,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
@@ -584,5 +585,11 @@ public class FlowController {
                 ;
         }
         return resultPage;
+    }
+
+    @RequestMapping(name = "获取流程列表",path = "proc",method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String, Object>> getProc(){
+        return  flowService.getProc();
     }
 }

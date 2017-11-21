@@ -27,6 +27,7 @@
              findHomePluginFile :findHomePluginFile,    //获取首页安装文件*/
             excelExport: excelExport,                   //项目统计导出
             statisticalGrid: statisticalGrid,
+            workName:workName,  //获取流程列表
         }
         return service;
 
@@ -1282,7 +1283,7 @@
         function doingTaskGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask"),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask", $('#doingTaskForm')),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -1309,10 +1310,13 @@
                     width: 50
                 },
                 {
-                    field: "instanceName",
-                    title: "流程名称",
+                    field: "",
+                    title: "文件名称",
                     filterable: false,
-                    width: "20%"
+                    width: "20%",
+                    template: function (item) {
+                        return '<a href="#/flowDetail/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/' + item.instanceId + '" >' + item.instanceName + '</a>';
+                    }
                 },
                 {
                     field: "nodeName",
@@ -1403,6 +1407,24 @@
                 }
             });
         }
+
+        //begin countWorakday
+        function workName(vm) {
+            var httpOptions = {
+                method: "get",
+                url: rootPath + "/flow/proc"
+            }
+            var httpSuccess = function success(response) {
+                vm.workName=response.data;
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
+        }//end countWorakday
 
     }
 })();

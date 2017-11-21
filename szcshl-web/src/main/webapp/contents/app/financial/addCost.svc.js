@@ -10,7 +10,6 @@
 
         function initAddCost(vm, costType, object, id) {
             vm.financial = {};
-
             //该判断用于项目签收流程中的财务办理
             if (object.businessId == undefined) {
                 if(object.signid == undefined){
@@ -128,6 +127,9 @@
                     }
                 }
             }
+            vm.count=function(){//当输入框输入值时就计算
+                 vm.countCost();
+            }
 
             $("#" + id).kendoWindow({
                 width: "70%",
@@ -144,8 +146,10 @@
                         //如果已经有项目费用，则计算总额
                         if (vm.financials && vm.financials.length > 0) {
                             vm.countCost();
-                            vm.financial.paymentData = vm.financials[0].paymentData;
+                            //vm.financial.paymentData = vm.financials[0].paymentData;
+                            vm.financial.paymentData=new Date(vm.financials[0].paymentData).toISOString().slice(0,10) ;
                         }
+
                         //2、查找专家评审费
                         expertReviewSvc.initReview(vm.financial.businessId, "", function (data) {
                             vm.expertReview = data;
