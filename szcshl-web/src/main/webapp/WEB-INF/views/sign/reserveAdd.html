@@ -32,13 +32,12 @@
             </tr>
 
             <tr>
-                <td class="text-right">评审阶段：</td>
-                <td colspan="3">
-                    <select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage"  >
+                <td class="text-right">评审阶段：<span class="required">*</span></td>
+                <td >
+                    <select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage" data-val="true" data-val-required="请选择项目阶段"  >
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
                     </select>
-                  
                 </td>
                 <td><span data-valmsg-for="reviewstage" data-valmsg-replace="true" class="errors"></span></td>
             </tr>

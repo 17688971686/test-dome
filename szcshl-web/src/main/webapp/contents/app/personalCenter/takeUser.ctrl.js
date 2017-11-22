@@ -3,17 +3,16 @@
     'use strict';
     angular.module('app').controller('takeUserCtrl',takeUser);
 
-    takeUser.$inject=['$location','takeUserSvc'];
+    takeUser.$inject=['bsWin','takeUserSvc'];
 
-        function takeUser($location,takeUserSvc){
+        function takeUser(bsWin,takeUserSvc){
 
             var vm = this;
             vm.title="个人代办";
-            // vm.takeUserId="";
 
             activate();
             function activate(){
-                takeUserSvc.getUser(vm);
+                takeUserSvc.getUser();
             }
 
             //  取消代办人
@@ -60,7 +59,18 @@
              * 保存代办人
              * */
             vm.saveTakeUser=function(){
-                takeUserSvc.saveTakeUser(vm);
+                common.initJqValidation();
+                var isValid = $('#form').valid();
+                if (isValid) {
+                    takeUserSvc.saveTakeUser(vm.takeUserId,function(data){
+                        takeUserSvc.getUser(vm.takeUserId,function (data) {
+                            vm.takeUser = data.displayName;
+                        });
+                        bsWin.alert("操作成功！",function(){
+                            window.parent.$("#chooseTakeUserWindow").data("kendoWindow").close();
+                        });
+                    });
+                }
             }
 
         }

@@ -279,7 +279,7 @@
                 workprogramSvc.createWP(vm.work, false, vm.iscommit, function (data) {
                     if (data.flag || data.reCode == "ok") {
                         vm.work.id = data.reObj.id;
-                        //初始化数值
+                        /*//初始化数值
                         if (data.reObj.reviewType == "自评") {
                             vm.businessFlag.isSelfReview = true;           //是否自评
                         }
@@ -288,7 +288,7 @@
                         }
                         if (data.reObj.isMainProject == "9") {
                             vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
-                        }
+                        }*/
                         bsWin.success("操作成功！");
                     } else {
                         bsWin.error(data.reMsg);

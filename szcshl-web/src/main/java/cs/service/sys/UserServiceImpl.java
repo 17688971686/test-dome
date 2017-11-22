@@ -535,7 +535,7 @@ public class UserServiceImpl implements UserService {
         userRepo.executeHql(hqlBuilder);
         fleshPostUserCache();
     }
-
+/*
     @Override
     public UserDto getTakeUserByLoginName() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
@@ -549,7 +549,7 @@ public class UserServiceImpl implements UserService {
             userDto.setDisplayName(obj[0].toString());
         }
         return userDto;
-    }
+    }*/
 
     /**
      * 取消代办人
@@ -558,9 +558,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void cancelTakeUser() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("update " + User.class.getSimpleName() + " set " + User_.takeUserId.getName() + "=:takeUserId where " + User_.loginName.getName() + "=:loginName");
+        hqlBuilder.append("update " + User.class.getSimpleName() + " set " + User_.takeUserId.getName() + "=:takeUserId where " + User_.id.getName() + "=:userId");
         hqlBuilder.setParam("takeUserId", "");
-        hqlBuilder.setParam("loginName", SessionUtil.getLoginName());
+        hqlBuilder.setParam("userId", SessionUtil.getUserId());
         userRepo.executeHql(hqlBuilder);
         fleshPostUserCache();
     }
@@ -582,7 +582,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void fleshPostUserCache() {
-        userRepo.findAllPostUser();
+        userRepo.fleshPostUserCache();
     }
 
     @Override
@@ -594,11 +594,13 @@ public class UserServiceImpl implements UserService {
             u.setModifiedDate(new Date());
         }
         userRepo.bathUpdate(userList);
+        userRepo.fleshPostUserCache();
     }
 
     @Override
     public void saveUser(User user) {
         userRepo.save(user);
+        userRepo.fleshPostUserCache();
     }
 }
 

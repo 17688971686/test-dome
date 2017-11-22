@@ -44,8 +44,13 @@
                     //vm.editScheduler(e);
                 },
                 save: function (e) {
-                    saveBookRoom(e.event,function(){
+                    saveBookRoom(e.event,function(data){
                         vm.findMeeting();
+                        if (data.flag || data.reCode == 'ok') {
+                            bsWin.alert("操作成功");
+                        } else {
+                            bsWin.alert(data.reMsg);
+                        }
                     });
                 },
                 eventTemplate: $("#event-template").html(),
@@ -130,11 +135,6 @@
                     data: model
                 }
                 var httpSuccess = function success(response) {
-                    if (response.data.flag || response.data.reCode == 'ok') {
-                        bsWin.alert("操作成功");
-                    } else {
-                        bsWin.alert(response.data.reMsg);
-                    }
                     if (callBack != undefined && typeof callBack == 'function') {
                         callBack(response.data);
                     }

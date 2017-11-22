@@ -126,7 +126,7 @@
                 },
                 {
                     field: "addressName",
-                    title: "会议地点",
+                    title: "会议室",
                     width: "20%",
                     filterable: false
                 },
@@ -137,19 +137,33 @@
                     filterable: false
                 },
                 {
-                    field: "beginTime",
+                    field: "",
                     title: "会议开始时间",
                     width: "10%",
                     filterable: false,
-                    format : "{0: HH:mm}"
+                    template: function(item){
+                        if(item.beginTime){
+                            return (new Date(item.beginTime)).Format("hh:mm");
+                        }else{
+                            return "";
+                        }
+                    },
+                    //format : "{0: HH:mm}"
                 },
                 {
-                    field: "endTime",
+                    field: "",
                     title: "会议结束时间",
                     type: "date",
                     width: "10%",
                     filterable: false,
-                    format : "{0: HH:mm}"
+                    //format : "{0: HH:mm}",
+                    template: function(item){
+                        if(item.endTime){
+                            return (new Date(item.endTime)).Format("hh:mm");
+                        }else{
+                            return "";
+                        }
+                    },
                 },
                 {
                     field: "dueToPeople",

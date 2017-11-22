@@ -445,34 +445,34 @@ public class ProcessDiagramGenerator {
      * @Version: [v2.0.0]
      */
     protected static void drawActivityFlowHighLight(ProcessDiagramCanvas processDiagramCanvas, ActivityImpl activity, List<String> highLightedActivities, int index) {
-        logger.info("第【" + index + "】个节点=" + activity.getId());
+        //logger.info("第【" + index + "】个节点=" + activity.getId());
         // Outgoing transitions of activity
         // 绘制当前节点的所有流出流程线，如果流程线已被执行过，则高亮显示
         int flowIndex = 1;
         boolean isHighLightedFlow;
         ActivityImpl lastActivityImpl = null;
         for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
-            logger.info("节点的第[" + flowIndex + "]条流出流程线=" + sequenceFlow.getId());
+            //logger.info("节点的第[" + flowIndex + "]条流出流程线=" + sequenceFlow.getId());
             isHighLightedFlow = false;
             // 当前流程线对应的后续节点
             lastActivityImpl = (ActivityImpl) sequenceFlow.getDestination();
-            logger.info("流程线[" + sequenceFlow.getId() + "]对应的后续节点ID=[" + lastActivityImpl.getId() + "]");
+            //logger.info("流程线[" + sequenceFlow.getId() + "]对应的后续节点ID=[" + lastActivityImpl.getId() + "]");
             // 当前节点的后续节点在需高亮显示的节点List中，并且当前节点已经执行过就是也在高亮显示的节点List中，
             if (highLightedActivities.contains(lastActivityImpl.getId()) && highLightedActivities.contains(activity.getId())) {
                 // 获取在已执行节点List中当前节点的下一个节点ID
                 if (index >= highLightedActivities.size()) {
                     // 没有下一个节点，当前的流程线不高亮显示
-                    logger.info("流程线[" + sequenceFlow.getId() + "]不需要高亮显示");
+                    //logger.info("流程线[" + sequenceFlow.getId() + "]不需要高亮显示");
                 } else {
                     // 【注意：以下处理对于并发的处理可能不完善，遇到时再进行具体处理】
                     // 如果下一个节点是当前流程线指向的节点，则流程线高亮显示
                     if (lastActivityImpl.getId().equals(highLightedActivities.get(index))) {
                         isHighLightedFlow = true;
-                        logger.info("流程线【" + sequenceFlow.getId() + "】需要高亮显示");
+                        //logger.info("流程线【" + sequenceFlow.getId() + "】需要高亮显示");
                     }
                 }
             } else {
-                logger.info("---流程线[" + sequenceFlow.getId() + "]不需要高亮显示");
+                //logger.info("---流程线[" + sequenceFlow.getId() + "]不需要高亮显示");
             }
 
             List<Integer> waypoints = ((TransitionImpl) sequenceFlow).getWaypoints();

@@ -599,7 +599,7 @@
         }//E_createDispatchFileNum
 
         //S_项目正式签收
-        function realSign(vm,signid){
+        function realSign(signid,callBack){
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/sign/realSign",

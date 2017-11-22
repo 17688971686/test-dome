@@ -61,10 +61,17 @@ public interface UserService {
 
     List<UserDto> getAllUserDisplayName();
 
+    /**
+     * 保存代办人
+     * @param takeUserId
+     */
     void saveTakeUser(String takeUserId);
 
-    UserDto getTakeUserByLoginName();
+    /*UserDto getTakeUserByLoginName();*/
 
+    /**
+     * 取消代办
+     */
     void cancelTakeUser();
 
     User getCacheUserById(String userId);
