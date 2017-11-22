@@ -94,6 +94,9 @@
                 var deActive = $("#myTab .active");
                 var deObj = $("a", deActive);
                 vm.model.showDiv = deObj.attr("for-div");
+
+                console.log(vm.model);
+                console.log(vm.model.isassistproc);
                 //发文
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
@@ -123,6 +126,7 @@
                     vm.showSupperIndex = 0;
                 }
             });
+
             // 初始化流程数据
             flowSvc.getFlowInfo(vm.flow.taskId,vm.flow.processInstanceId,function(data){
                 vm.flow = data;

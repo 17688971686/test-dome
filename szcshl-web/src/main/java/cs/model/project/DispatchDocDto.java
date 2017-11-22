@@ -92,6 +92,7 @@ public class DispatchDocDto extends BaseDto {
     private String directorSuggesttion;
 
     //局长核稿日期
+    @JSONField(format = "yyyy-MM-dd")
     private String directorDate;
 
     private String directorName;//局长名称

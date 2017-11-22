@@ -65,13 +65,13 @@
                 </td>
             </tr>
             <tr>
-                <td class="text-center">是否协审</td>
-                <td >
-                    <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated"
-                           ng-checked="vm.dispatchDoc.signDto.isassistproc==9 || vm.dispatchDoc.signDto.isassistproc=='9'" name="isRelated"/>
+                <td class="text-center">是否协审{{vm.model.isassistproc}}</td>
+                <td colspan="2">
+                    <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0"
+                           ng-checked="vm.model.isassistproc && (vm.model.isassistproc==9 || vm.model.isassistproc=='9')" />
                 </td>
                 <td class="text-center">协审单位</td>
-                <td colspan="2">{{vm.assistPlanSign.unitNameStr}}</td>
+                <td >{{vm.assistPlanSign.unitNameStr}}</td>
                 <td class="text-center">协审金额</td>
                 <td>{{vm.assistPlanSign.assistCost}}</td>
             </tr>

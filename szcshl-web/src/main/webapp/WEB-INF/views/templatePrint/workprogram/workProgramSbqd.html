@@ -1,7 +1,7 @@
 <!-- start 主项目 -->
 <div ng-repeat="w in vm.model.workProgramDtoList"    ng-if="w.signId == vm.model.signid">
     <div id="wp_{{$index}}" class="collapse in">
-        <table class="print-table">
+        <table class="print-table" style="width:100%;">
             <caption class="title" style="margin-top: 60px; ">{{w.titleName}}</caption>
             <caption>
                 <span>QR-4.9-02-A0</span>
@@ -16,14 +16,14 @@
                 <span style="float:right;">{{w.titleDate | date:'yyyy年MM月dd日' }}</span>
             </caption>
             <tr class="tr-hidden">
-                <td width="5%"></td>
+                <td width="10%"></td>
                 <td width="10%"></td>
                 <td width="20%"></td>
-                <td width="14%"></td>
+                <td width="10%"></td>
                 <td width="12%"></td>
                 <td width="18%"></td>
-                <td></td>
-                <td></td>
+                <td width="10%"></td>
+                <td width="10%"></td>
             </tr>
             <tr>
                 <td colspan="2" class="text-center">项目名称</td>
@@ -55,12 +55,12 @@
                 <td colspan="2">{{w.contactPersonFax}}</td>
             </tr>
 
-          <!--  <tr>
-                <td colspan="2">项目类型</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].projectType}}</td>
-                <td class="text-center">设备清单申报总额</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].appalyInvestment}}</td>
-            </tr>-->
+            <!--  <tr>
+                  <td colspan="2">项目类型</td>
+                  <td colspan="3">{{vm.model.workProgramDtoList[0].projectType}}</td>
+                  <td class="text-center">设备清单申报总额</td>
+                  <td colspan="2">{{vm.model.workProgramDtoList[0].appalyInvestment}}</td>
+              </tr>-->
 
             <tr>
                 <td rowspan="4">项目概况</td>
@@ -124,7 +124,7 @@
             <tr class="text-center" >
                 <td colspan="2">拟邀请专家</td>
                 <td>工作单位</td>
-                <td>职务/职称</td>
+                <td >职务/职称</td>
                 <td>专业</td>
                 <td>联系电话</td>
                 <td>专家类别</td>
@@ -133,7 +133,7 @@
             <tr  ng-repeat="x in w.expertDtoList |limitTo :10 track by $index  " ng-show="w.expertDtoList && w.expertDtoList.length > 0">
                 <td colspan="2" class="text-center" height="50px">{{x.name}}</td>
                 <td class="text-center">{{x.comPany}}</td>
-                <td class="text-center">{{x.job}}/{{x.post}}</td>
+                <td class="text-center" >{{x.job}}/{{x.post}}</td>
                 <td class="text-center">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
                 <td class="text-center">{{x.userPhone}}</td>
                 <td class="text-center">{{x.expeRttype}}</td>
@@ -161,16 +161,16 @@
                 <td colspan="2" height="80px">部长意见</td>
                 <td colspan="6">
                     <p class="text-left"> {{w.ministerSuggesttion}}</p>
-                    <p class="text-right" style="margin-right: 100px; margin-top: 20px;">签名：</p>
-                    <p class="text-right" style="margin-right: 100px; margin-top: 5px;">日期：</p>
+                    <p class="text-right" style="margin-right: 80px; margin-top: 20px;">签名：</p>
+                    <p class="text-right" style="margin-right: 12px; margin-top: 5px;">日期：{{w.ministerDate}}</p>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" height="80px">中心领导签批意见</td>
                 <td colspan="6">
                     <p class="text-left"> {{w.leaderSuggesttion}}</p>
-                    <p class="text-right" style="margin-right: 100px; margin-top: 20px;">签名：</p>
-                    <p class="text-right" style="margin-right: 100px; margin-top: 5px;">日期：</p>
+                    <p class="text-right" style="margin-right: 80px; margin-top: 20px;">签名：</p>
+                    <p class="text-right" style="margin-right: 12px; margin-top: 5px;">日期：{{w.leaderDate}}</p>
                 </td>
             </tr>
         </table>

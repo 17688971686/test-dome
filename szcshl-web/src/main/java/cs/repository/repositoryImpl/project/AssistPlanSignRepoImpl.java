@@ -57,7 +57,10 @@ public class AssistPlanSignRepoImpl extends AbstractRepository<AssistPlanSign, S
 			String unitName = objects[1] == null ? "" : objects[1].toString();
 			assistPlanSignDto.setAssistCost(numCost);
 			assistPlanSignDto.setUnitNameStr(unitName);
+			return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询成功！" , assistPlanSignDto);
+		}else{
+			return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "查询失败！" , null);
 		}
-		return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询成功！" , assistPlanSignDto);
+
 	}
 }
