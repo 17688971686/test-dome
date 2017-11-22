@@ -169,7 +169,7 @@ public class UserController {
      */
     //@RequiresPermissions("user#getAllUserDisplayName#get")
     @RequiresAuthentication
-    @RequestMapping(name = "获取所有用户显示名和id", path = "getAllUserDisplayName", method = RequestMethod.GET)
+    @RequestMapping(name = "获取所有用户显示名和id", path = "getAllUserDisplayName", method = RequestMethod.POST)
     @ResponseBody
     public List<UserDto> getAllUserDisPlayName() {
         return userService.getAllUserDisplayName();
@@ -185,8 +185,9 @@ public class UserController {
 
     @RequiresAuthentication
     @RequestMapping(name = "获取当前用户信息", path = "findCurrentUser", method = RequestMethod.POST)
+    @ResponseBody
     public UserDto findCurrentUser() {
-        return userService.findById(SessionUtil.getUserId(),false);
+        return userService.findById(SessionUtil.getUserId(),true);
     }
 
     //@RequiresPermissions("user#saveTakeUser#post")

@@ -208,7 +208,7 @@
         function initZtreeClient(vm) {
             var httpOptions = {
                 method: 'post',
-                url: url_role = rootPath + "/role/findAllRoles"
+                url: rootPath + "/role/findAllRoles"
             }
             var httpSuccess = function success(response) {
                 common.requestSuccess({

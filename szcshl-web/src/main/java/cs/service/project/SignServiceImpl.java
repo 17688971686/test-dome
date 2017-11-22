@@ -643,6 +643,8 @@ public class SignServiceImpl implements SignService {
         List<SignPrincipal> signPriList = null;     //项目负责人
         User dealUser = null;                       //处理人
         OrgDept orgDept = null;                     //部门和小组
+        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，目前主要有两个地方，部长审批工作方案和分管领导审批发文）
+
 
         //取得之前的环节处理人信息
         Map<String, Object> variables = new HashMap<>();
@@ -896,7 +898,6 @@ public class SignServiceImpl implements SignService {
                             if(!signRepo.isMergeSignEndWP(signid)){
                                 return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还没有完成工作方案，不能进行下一步操作！");
                             }
-
                         }
                     }
                     //如果做工作方案，则要判断该分支工作方案是否完成
@@ -1024,14 +1025,35 @@ public class SignServiceImpl implements SignService {
                 //设定下一环节处理人
                 dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                //下一环节KEY值
+                String nextNodeKey = "";
                 if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
+                    nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW1;
                 } else if (FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue().equals(branchIndex)) {
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD2.getValue(), assigneeValue);
+                    nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW2;
                 } else if (FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue().equals(branchIndex)) {
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD3.getValue(), assigneeValue);
+                    nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW3;
                 } else if (FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue().equals(branchIndex)) {
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD4.getValue(), assigneeValue);
+                    nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW4;
+                }
+                //如果下一环节还是自己
+                if(assigneeValue.equals(SessionUtil.getUserId()) || assigneeValue.equals(SessionUtil.getUserInfo().getTakeUserId())){
+                    isNextUser = true;
+                    FlowDto flowDto2 = new FlowDto();
+                    flowDto2.setDealOption(flowDto.getDealOption());
+                    ResultMsg resultMsg = flowService.dealFlowByBusinessKey(signid, nextNodeKey, flowDto2, processInstance.getProcessDefinitionKey());
+                    if (resultMsg.isFlag() || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
+                            || Constant.MsgCode.FLOW_TASK_NULL.getValue().equals(resultMsg.getReCode())
+                            || Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue().equals(resultMsg.getReCode())
+                            || Constant.MsgCode.FLOW_NOT_MATCH.getValue().equals(resultMsg.getReCode())) {
+
+                    } else {
+                        return resultMsg;
+                    }
                 }
                 break;
 
@@ -1202,6 +1224,21 @@ public class SignServiceImpl implements SignService {
                 } else {
                     assigneeValue = getMainSLeader(signid);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
+                    //如果下一环节还是自己
+                    if(assigneeValue.equals(SessionUtil.getUserId()) || assigneeValue.equals(SessionUtil.getUserInfo().getTakeUserId())){
+                        isNextUser = true;
+                        FlowDto flowDto2 = new FlowDto();
+                        flowDto2.setDealOption(flowDto.getDealOption());
+                        ResultMsg resultMsg = flowService.dealFlowByBusinessKey(signid, FlowConstant.FLOW_SIGN_FGLD_QRFW, flowDto2, processInstance.getProcessDefinitionKey());
+                        if (resultMsg.isFlag() || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
+                                || Constant.MsgCode.FLOW_TASK_NULL.getValue().equals(resultMsg.getReCode())
+                                || Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue().equals(resultMsg.getReCode())
+                                || Constant.MsgCode.FLOW_NOT_MATCH.getValue().equals(resultMsg.getReCode())) {
+
+                        } else {
+                            return resultMsg;
+                        }
+                    }
                 }
 
                 //修改发文信息
@@ -1246,6 +1283,21 @@ public class SignServiceImpl implements SignService {
                 dp.setViceDirectorDate(new Date());
                 dp.setViceDirectorName(SessionUtil.getDisplayName());
                 dispatchDocRepo.save(dp);
+                //如果下一环节还是自己
+                if(assigneeValue.equals(SessionUtil.getUserId()) || assigneeValue.equals(SessionUtil.getUserInfo().getTakeUserId())){
+                    isNextUser = true;
+                    FlowDto flowDto2 = new FlowDto();
+                    flowDto2.setDealOption(flowDto.getDealOption());
+                    ResultMsg resultMsg = flowService.dealFlowByBusinessKey(signid, FlowConstant.FLOW_SIGN_ZR_QRFW, flowDto2, processInstance.getProcessDefinitionKey());
+                    if (resultMsg.isFlag() || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
+                            || Constant.MsgCode.FLOW_TASK_NULL.getValue().equals(resultMsg.getReCode())
+                            || Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue().equals(resultMsg.getReCode())
+                            || Constant.MsgCode.FLOW_NOT_MATCH.getValue().equals(resultMsg.getReCode())) {
+
+                    } else {
+                        return resultMsg;
+                    }
+                }
                 break;
             //主任审批发文
             case FlowConstant.FLOW_SIGN_ZR_QRFW:
@@ -1387,8 +1439,12 @@ public class SignServiceImpl implements SignService {
         } else {
             taskService.complete(task.getId(), variables);
         }
-        //放入腾讯通消息缓冲池
-        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+
+        if(isNextUser == false){
+            //放入腾讯通消息缓冲池
+            RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+        }
+
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
     }
 
