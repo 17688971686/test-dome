@@ -643,7 +643,7 @@ public class SignServiceImpl implements SignService {
         List<SignPrincipal> signPriList = null;     //项目负责人
         User dealUser = null;                       //处理人
         OrgDept orgDept = null;                     //部门和小组
-        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，目前主要有两个地方，部长审批工作方案和分管领导审批发文）
+        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，目前主要有三个地方，部长审批工作方案，部长审批发文和分管领导审批发文）
 
 
         //取得之前的环节处理人信息
