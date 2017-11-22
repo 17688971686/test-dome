@@ -21,4 +21,13 @@ public interface AssistPlanSignService {
 	ResultMsg savePlanSign(AssistPlanSignDto[] planSigns);
 
 	List<AssistPlanSignDto> findBySignId(String signId);
+
+	/**
+	 * 通过收文Id 获取协审单位和协审费用
+	 * @param signId
+	 * @return
+	 */
+	ResultMsg findAssistPlanSignBySignId(String signId);
+
+
 }

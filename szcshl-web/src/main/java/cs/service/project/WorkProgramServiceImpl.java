@@ -136,14 +136,17 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         List<WorkProgram> wpList = criteria.list();
         //2、是否有当前用户负责的工作方案
         boolean isHaveCurUserWP = false;
-
+WorkProgram mainW = new WorkProgram();
         SignPrincipal signPrincipal = signPrincipalService.getPrincipalInfo(SessionUtil.getUserInfo().getId(),signId);
         if(Validate.isList(wpList)){
             List<WorkProgramDto> wpDtoList = new ArrayList<>();
             for(WorkProgram wp : wpList){
+                if(EnumState.PROCESS.getValue().equals(wp.getBranchId())){
+                   BeanCopierUtils.copyProperties(wp , mainW);
+                }
                 if((signPrincipal.getFlowBranch()).equals(wp.getBranchId())){
                     BeanCopierUtils.copyProperties(wp, workProgramDto);
-                    workProgramRepo.initWPMeetingExp(workProgramDto,wp);
+                    workProgramRepo.initWPMeetingExp(workProgramDto,mainW);
                     isHaveCurUserWP = true;
                 }else{
                     WorkProgramDto wpDto = new WorkProgramDto();
@@ -166,6 +169,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null?  Constant.EnumState.NO.getValue():sign.getIsHaveSuppLetter());
             //拟补充资料函发文日期
             workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
+
             if(signPrincipalService.isMainFlowPri(SessionUtil.getUserInfo().getId(),signId)){
                 //判断是否是关联次项目
                 boolean isMerge =signMergeRepo.checkIsMerege(signId, Constant.MergeType.WORK_PROGRAM.getValue());
@@ -220,6 +224,31 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     }
                     workProgramDto.setSecondChargeUserName(seUserName.substring(0,seUserName.length()-1));
                 }
+            }else{
+                if(mainW!=null && mainW.getId() != null){
+                    workProgramDto.setSendFileUnit(mainW.getSendFileUnit()); //来文单位
+                    workProgramDto.setSendFileUser(mainW.getSendFileUser());//来文单位联系人
+                    workProgramDto.setBuildCompany(mainW.getBuildCompany());//建设单位
+                    workProgramDto.setDesignCompany(mainW.getDesignCompany());//编制单位
+                    workProgramDto.setMainDeptName(mainW.getMainDeptName());//主管部门名称
+                    workProgramDto.setIsHaveEIA(mainW.getIsHaveEIA());//是否有环评
+                    workProgramDto.setProjectType(mainW.getProjectType());//项目类别
+                    workProgramDto.setProjectSubType(mainW.getProjectSubType());//小类
+                    workProgramDto.setIndustryType(mainW.getIndustryType());//行业类别
+                    workProgramDto.setContactPerson(mainW.getContactPerson());//联系人
+                    workProgramDto.setContactPersonPhone(mainW.getContactPersonPhone());//联系人手机号
+                    workProgramDto.setContactPersonTel(mainW.getContactPersonTel());//联系人电话
+                    workProgramDto.setContactPersonFax(mainW.getContactPersonFax());//联系人传真
+//                    workProgramDto.setBuildSize(mainW.getBuildSize());//建设规模
+//                    workProgramDto.setBuildContent(mainW.getBuildContent());//建设内容
+//                    workProgramDto.setProjectBackGround(mainW.getProjectBackGround());//项目背景
+                    workProgramDto.setReviewOrgName(mainW.getReviewOrgName());//评估部门
+                    workProgramDto.setMianChargeUserName(mainW.getMianChargeUserName());//第一负责人
+                    workProgramDto.setSecondChargeUserName(mainW.getSecondChargeUserName());//第二负责人
+
+                    workProgramRepo.initWPMeetingExp(workProgramDto, mainW);
+                }
+
             }
         }
 

@@ -143,11 +143,18 @@
     <tr>
         <td rowspan="4" style="width:5%;" class="text-center" style="vertical-align:middle;">项目概况</td>
         <td class="text-center">申报投资<span class="required">*</span></td>
-        <td colspan="6">
+        <td colspan="3">
             <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
                    id="appalyInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
             万元
             <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
+        </td>
+        <td class="text-center">总投资<span class="required">*</span></td>
+        <td colspan="2">
+            <input type="text" ng-model="vm.work.totalInvestment" name="totalInvestment"
+                   id="totalInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
+            万元
+            <span data-valmsg-for="totalInvestment" data-valmsg-replace="true" class="errors"></span>
         </td>
         
     </tr>
@@ -265,7 +272,7 @@
         </td>
     </tr>
     <tr ng-if="!vm.businessFlag.isReveiwAWP">
-        <td>拟聘请专家</td>
+        <td class="text-center">拟聘请专家</td>
         <td colspan="7">
             <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();"
                     ng-hide="vm.work.reviewType == '自评' || (vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审')"

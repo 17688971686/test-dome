@@ -17,8 +17,72 @@
                 <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
             </caption>
             <tbody>
-           
+
             <tr>
+                <td class="text-center" rowspan="2">发文部门 <br/> 拟稿人</td>
+                <td colspan="2">{{vm.dispatchDoc.orgName}}</td>
+                <td rowspan="2" class="text-center">校对人</td>
+                <td rowspan="2">{{vm.dispatchDoc.proofreadName}}</td>
+                <td rowspan="2" class="text-center">拟稿时间</td>
+                <td rowspan="2">{{vm.dispatchDoc.draftDate}}</td>
+            </tr>
+            <tr>
+                <td colspan="2">{{vm.dispatchDoc.userName}}</td>
+            </tr>
+
+            <tr>
+                <td class="text-center">秘密等级</td>
+                <td colspan="2">{{vm.dispatchDoc.secretLevel}}</td>
+                <td class="text-center">年底计划</td>
+                <td>{{vm.dispatchDoc.yearPlan}}</td>
+                <td class="text-center">急缓程度</td>
+                <td>{{vm.dispatchDoc.urgentLevel}}</td>
+            </tr>
+            <tr>
+                <td class="text-center">发文日期</td>
+                <td colspan="2">{{vm.dispatchDoc.dispatchDate}}</td>
+                <td class="text-center">文件字号</td>
+                <td>{{vm.dispatchDoc.fileNum}}</td>
+                <td class="text-center">是否有其他阶段关联</td>
+                <td>
+                    <span>
+                        <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'" name="isRelated" />是
+                    </span>
+                    <span style="margin-left:10px;">
+                        <input type="checkbox" ng-disabled="true" ng-true-value="0" ng-false-value="9" ng-model="vm.dispatchDoc.isRelated" ng-checked="!vm.dispatchDoc.isRelated || vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'" name="isRelated" />否
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">文件标题</td>
+                <td colspan="6">{{vm.dispatchDoc.fileTitle}}</td>
+            </tr>
+            <tr>
+                <td style="width:150px;" class="text-center">发行范围</td>
+                <td colspan="6" style="min-height: 30px;">
+                    {{vm.dispatchDoc.dispatchScope}}
+                    <span style="float: right;">(印{{vm.dispatchDoc.printCount}}份)</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">是否协审</td>
+                <td >
+                    <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated"
+                           ng-checked="vm.dispatchDoc.signDto.isassistproc==9 || vm.dispatchDoc.signDto.isassistproc=='9'" name="isRelated"/>
+                </td>
+                <td class="text-center">协审单位</td>
+                <td colspan="2">{{vm.assistPlanSign.unitNameStr}}</td>
+                <td class="text-center">协审金额</td>
+                <td>{{vm.assistPlanSign.assistCost}}</td>
+            </tr>
+            <tr>
+                <td class="text-center">相关说明</td>
+                <td colspan="6">{{vm.dispatchDoc.description}}</td>
+            </tr>
+
+
+           
+           <!-- <tr>
                 <td style="width:150px;" class="text-center">文件标题 </td>
                 <td colspan="5">
                 {{vm.dispatchDoc.fileTitle}}
@@ -89,11 +153,11 @@
                     第二负责人意见：
                     <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
                 </td>
-            </tr>
+            </tr>-->
 
             <tr>
                 <td style="width:150px;" class="text-center">评审意见摘要</td>
-                <td colspan="5" style="min-height: 30px;">
+                <td colspan="6" style="min-height: 30px;">
                 {{vm.dispatchDoc.reviewAbstract}}
                 </td>
             </tr>
@@ -101,7 +165,7 @@
 
             <tr>
                 <td style="width:150px;" class="text-center">部长审核意见</td>
-                <td colspan="5" style="min-height: 30px;">
+                <td colspan="6" style="min-height: 30px;">
                  <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
@@ -111,7 +175,7 @@
 
             <tr>
                 <td style="width:150px;" class="text-center">分管副主任意见</td>
-                <td colspan="5" style="min-height: 30px;">
+                <td colspan="6" style="min-height: 30px;">
                   {{vm.dispatchDoc.viceDirectorSuggesttion}}
                  <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">签名：{{vm.dispatchDoc.viceDirectorName}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
@@ -120,7 +184,7 @@
 
             <tr>
                 <td style="width:150px;" class="text-center">主任签发</td>
-                <td colspan="5" style="min-height: 30px;">
+                <td colspan="6" style="min-height: 30px;">
                 {{vm.dispatchDoc.directorSuggesttion}}
                 <p class="text-right" ng-if="vm.dispatchDoc.directorName">签名：{{vm.dispatchDoc.directorName}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
@@ -128,7 +192,7 @@
             </tr>
              <tr>
                 <td style="width:150px;" class="text-center">项目概况</td>
-                <td colspan="5">
+                <td colspan="6">
                     <!--前一阶段-->
                     <table ng-repeat="s in vm.model.associateSignDtoList.slice().reverse()" class="table table-bordered"
                            style="text-align: center;">

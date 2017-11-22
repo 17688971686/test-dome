@@ -60,10 +60,12 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , count(projectcode) projectCount from v_sign_disp_work" );
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >:start and " + SignDispaWork_.signdate.getName() + "<:end");
+            hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + "=:processState");
             hqlBuilder.append(" group by " + SignDispaWork_.reviewstage.getName());
             hqlBuilder.append(" order by " +  SignDispaWork_.reviewstage.getName() + " desc");
             hqlBuilder.setParam("start" , start);
             hqlBuilder.setParam("end" , end);
+            hqlBuilder.setParam("processState" , Constant.SignProcessState.END_DIS_NUM.getValue());//已发文
             List<Object[]> objctList = this.getObjectArray(hqlBuilder);
 
             if(objctList != null && objctList.size()>0){
@@ -126,11 +128,13 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append("select " + SignDispaWork_.reviewstage.getName() + "," + SignDispaWork_.projectType.getName() + ",count("+ SignDispaWork_.projectcode.getName() + ") projectNum from v_sign_disp_work ");
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >:start and " + SignDispaWork_.signdate.getName() + "<:end");
+            hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + "=:processState");
             hqlBuilder.append(" group by " + SignDispaWork_.projectType.getName() + " ," + SignDispaWork_.reviewstage.getName() );
             hqlBuilder.append(" having " + SignDispaWork_.projectType.getName() + " is not null ") ;
             hqlBuilder.append(" order by " + SignDispaWork_.reviewstage.getName() +" desc , " + SignDispaWork_.projectType.getName() );
             hqlBuilder.setParam("start" , start);
             hqlBuilder.setParam("end" , end);
+            hqlBuilder.setParam("processState" , Constant.SignProcessState.END_DIS_NUM.getValue()); //已发文
             List<Object[]> objctList = this.getObjectArray(hqlBuilder);
             if(objctList != null && objctList.size()>0){
                 for(int i=0 ; i<objctList.size() ; i++){

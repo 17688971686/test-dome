@@ -426,7 +426,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_work_program p  ");
         sqlBuilder.append("on s.signid = p.signid  ");
         sqlBuilder.append("where 1 = 1 ");
-        sqlBuilder.append("and s.signstate = '9'  ");
+//        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate = 6  ");//已发文
 
         //todo:添加查询条件
@@ -495,7 +495,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_dispatch_doc d   ");
         sqlBuilder.append("on s.signid = d.signid   ");
         sqlBuilder.append("where 1 = 1 ");
-        sqlBuilder.append("and s.signstate = '9'  ");
+//        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate = 6  ");//已发文
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
@@ -563,6 +563,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      * @param projectReviewConditionDto
      * @return
      */
+    @Override
     public Integer proReviewMeetingCount(ProReviewConditionDto projectReviewConditionDto){
         Integer proCount = 0;
         Map<String, Object> resultMap = new HashMap<>();
@@ -594,6 +595,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      * @param projectReviewConditionDto
      * @return
      */
+    @Override
    public  Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto){
        Integer proCount = 0;
        Map<String, Object> resultMap = new HashMap<>();
@@ -636,7 +638,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
-        sqlBuilder.append("and s.signstate = '9' ");
+//        sqlBuilder.append("and s.signstate = '9' ");
         sqlBuilder.append("and s.processstate = 6  ");//已发文
         List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
         //todo:添加查询条件
@@ -698,7 +700,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 
     /**
      * 项目评审情况汇总(按照申报投资金额)
-     * @param projectReviewConditionDto
+     * @param beginTime
+     * @param endTime
      * @return
      */
     @Override
@@ -711,7 +714,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
-        sqlBuilder.append("and s.signstate = '9'  ");
+//        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate = 6  ");//已发文
         //todo:添加查询条件
 //        if(null != projectReviewConditionDto){
@@ -731,7 +734,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
-        sqlBuilder.append("and s.signstate = '9'  ");
+//        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate = 6  ");//已发文
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
@@ -741,7 +744,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
-        sqlBuilder.append("and s.signstate = '9'  ");
+//        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate = 6  ");//已发文
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
@@ -751,7 +754,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
-        sqlBuilder.append("and s.signstate = '9'  ");
+//        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate = 6  ");//已发文
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");

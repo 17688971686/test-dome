@@ -97,14 +97,14 @@
    
     <tr>
         <td class="text-center">项目概况</td>
-        <td colspan="6">
+        <td colspan="7">
             <textarea rows="3" cols="" ng-model="vm.work.projectBackGround" name="projectBackGround"  style="width:98%;">{{vm.work.projectBackGround}}</textarea>
         </td>
     </tr>
     <tr>
         <td class="text-center">拟评审重点问题</td>
-        <td colspan="6">
-            <textarea rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:100%">{{vm.work.mainPoint}}</textarea>
+        <td colspan="7">
+            <textarea rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:98%">{{vm.work.mainPoint}}</textarea>
         </td>
     </tr>
     <tr>
@@ -202,7 +202,7 @@
         </td>
     </tr>
     <tr ng-if="!vm.businessFlag.isReveiwAWP">
-        <td>拟聘请专家</td>
+        <td class="text-center">拟聘请专家</td>
         <td colspan="7">
             <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();"
                     ng-hide="vm.work.reviewType == '自评' || (vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审')"
