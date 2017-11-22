@@ -558,7 +558,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 if (Validate.isString(oldMsg) && !"null".equals(oldMsg)) {
                     signString += oldMsg+"<br>";
                 }
-                signString += flowDto.getDealOption() + "<br>" + SessionUtil.getDisplayName() + "  " + DateUtils.converToString(new Date(), null);
+                signString += "<span style='float: left'>"+flowDto.getDealOption()+"</span>" + "<br>" + SessionUtil.getDisplayName() + "<br>" + DateUtils.converToString(new Date(), null);
                 addSuppLetter.setLeaderSignIdeaContent(signString);
                 //2表示到分管领导会签
                 addSuppLetterRepo.save(addSuppLetter);
