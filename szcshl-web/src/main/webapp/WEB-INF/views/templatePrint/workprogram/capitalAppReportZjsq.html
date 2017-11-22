@@ -127,7 +127,7 @@
                 <td class="text-center">专家费用</td>
                 <td colspan="2">{{W.expertCost}}</td>
             </tr>
-            <tr ng-if="w.isSigle && w.isSigle == '合并评审'">
+            <tr ng-if="w.isSigle && w.isSigle == '合并评审'  ">
                 <td colspan="2">合并评审相关项目</td>
                 <td colspan="6" height="50px"></td>
             </tr>
@@ -169,17 +169,17 @@
             <tr>
                 <td colspan="2" height="80">部长意见</td>
                 <td colspan="6">
-                    <p class="text-left"> {{vm.work.ministerSuggesttion}} </p>
-                    <p class="text-right" style="margin-right: 100px; margin-top: 20px;">签名：</p>
-                    <p class="text-right"  style="margin-right: 100px; margin-top: 5px;">日期：</p>
+                    <p class="text-left"> {{w.ministerSuggesttion}} </p>
+                    <p class="text-right" style="margin-right: 80px; margin-top: 20px;">签名：</p>
+                    <p class="text-right" style="margin-right: 12px; margin-top: 5px;" >日期：{{w.ministerDate}}</p>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" height="80">中心领导签批意见</td>
                 <td colspan="6">
-                    <p class="text-left"> {{vm.work.leaderSuggesttion}} </p>
-                    <p class="text-right" style="margin-right: 100px; margin-top: 20px;">签名：</p>
-                    <p class="text-right" style="margin-right: 100px; margin-top: 5px;" >日期：</p>
+                    <p class="text-left"> {{w.leaderSuggesttion}} </p>
+                    <p class="text-right" style="margin-right: 80px; margin-top: 20px;">签名：</p>
+                    <p class="text-right" style="margin-right: 12px; margin-top: 5px;" >日期：{{w.leaderDate}}</p>
                 </td>
             </tr>
         </table>

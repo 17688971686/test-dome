@@ -87,15 +87,15 @@
             </tr>
             <tr>
                 <td>申报建设规模</td>
-                <td colspan="6" height="120">{{w.buildSize}}</td>
+                <td colspan="6" height="100">{{w.buildSize}}</td>
             </tr>
             <tr>
                 <td>申报建设内容</td>
-                <td height="150" colspan="6">{{w.buildContent}}</td>
+                <td height="100" colspan="6">{{w.buildContent}}</td>
             </tr>
             <tr>
                 <td>项目背景</td>
-                <td height="120" colspan="6">{{w.projectBackGround}}</td>
+                <td height="100" colspan="6">{{w.projectBackGround}}</td>
             </tr>
             <tr>
                 <td height="120" colspan="2" rowspan="2">评审部门</td>
@@ -168,23 +168,23 @@
                 <td colspan="6">{{w.inviteUnitLeader}}</td>
             </tr>
             <tr>
-                <td  colspan="2" height="150">拟评审重点问题</td>
-                <td colspan="6">{{w.mainPoint}}</td>
+                <td  colspan="2" height="120">拟评审重点问题</td>
+                <td colspan="6" height="120">{{w.mainPoint}}</td>
             </tr>
             <tr>
                 <td colspan="2" height="100">部长意见</td>
-                <td colspan="6" >
-                    <p class="text-left"> {{vm.work.ministerSuggesttion}} </p>
-                    <p class="text-right" style="margin-right: 100px; margin-top: 20px;">签名：</p>
-                    <p class="text-right" style="margin-right: 100px; margin-top: 5px;">日期：</p>
+                <td colspan="6" height="100">
+                    <p class="text-left"> {{w.ministerSuggesttion}} </p>
+                    <p class="text-right" style="margin-right: 80px; margin-top: 20px;">签名：</p>
+                    <p class="text-right" style="margin-right: 12px; margin-top: 5px;">日期：{{w.ministerDate}}</p>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" height="100">中心领导签批意见</td>
-                <td colspan="6">
-                    <p class="text-left"> {{vm.work.leaderSuggesttion}} </p>
-                    <p class="text-right" style="margin-right: 100px; margin-top: 20px;" >签名：</p>
-                    <p class="text-right" style="margin-right: 100px; margin-top: 5px;" >日期：</p>
+                <td colspan="6" height="100">
+                    <p class="text-left"> {{w.leaderSuggesttion}} </p>
+                    <p class="text-right" style="margin-right: 80px; margin-top: 20px;" >签名：</p>
+                    <p class="text-right" style="margin-right: 12px; margin-top: 5px;" >日期：{{w.leaderDate}}</p>
                 </td>
             </tr>
         </table>

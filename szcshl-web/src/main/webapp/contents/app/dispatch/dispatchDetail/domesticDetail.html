@@ -76,7 +76,7 @@
 
 
             <tr>
-                <td style="width:150px;" class="text-center">相关说明</td>
+                <td style="width:150px;height: 80px;" class="text-center">相关说明</td>
                 <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.description}}
                 </td>
@@ -95,15 +95,15 @@
             </tr>
 
             <tr>
-                <td style="width:150px;" class="text-center">评审意见摘要</td>
-                <td colspan="5" style="min-height: 30px;">
+                <td style="width:150px; height: 80px;" class="text-center">评审意见摘要</td>
+                <td colspan="5" >
                 {{vm.dispatchDoc.reviewAbstract}}
                 </td>
             </tr>
 
              <tr>
-                <td style="width:150px;" class="text-center">部长审核意见</td>
-                <td colspan="5" style="min-height: 30px;">
+                <td style="width:150px;height: 80px;" class="text-center">部长审核意见</td>
+                <td colspan="5" >
                  <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
@@ -111,8 +111,8 @@
             </tr>
 
             <tr>
-                <td style="width:150px;" class="text-center">分管副主任意见</td>
-                <td colspan="5" style="min-height: 30px;">
+                <td style="width:150px;height: 80px;" class="text-center">分管副主任意见</td>
+                <td colspan="5">
                 {{vm.dispatchDoc.viceDirectorSuggesttion}}
                  <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">签名：{{vm.dispatchDoc.viceDirectorName}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
@@ -120,8 +120,8 @@
             </tr>
 
             <tr>
-                <td style="width:150px;" class="text-center">主任签发</td>
-                <td colspan="5" style="min-height: 30px;">
+                <td style="width:150px;height: 80px;" class="text-center">主任签发</td>
+                <td colspan="5" >
                 {{vm.dispatchDoc.directorSuggesttion}}
                 <p class="text-right" ng-if="vm.dispatchDoc.directorName">签名：{{vm.dispatchDoc.directorName}}</p>
              	 <p class="text-right" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>

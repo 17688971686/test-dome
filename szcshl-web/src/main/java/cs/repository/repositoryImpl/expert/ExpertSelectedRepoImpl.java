@@ -41,7 +41,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      * @return
      */
     @Override
-    public int findConfirmSeletedEP(String reviewId, String maJorBig, String maJorSmall, String expeRttype, Integer compositeScore,Integer compositeScortEnd) {
+    public int findConfirmSeletedEP(String reviewId,String maJorBig,String maJorSmall,String expeRttype , Integer compositeScore , Integer compositeScortEnd) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select count(ID) from cs_expert_selected where expertreviewid =:reviewId ");
         sqlBuilder.setParam("reviewId", reviewId);
@@ -65,8 +65,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     }
 
     /**
-     * 专家评审基本情况详细统计
-     *
+     *专家评审基本情况详细统计
      * @param expertReviewCondDto
      * @return
      */
