@@ -10,19 +10,16 @@ import cs.model.PageModelDto;
 import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.sys.SysFileService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.hibernate.id.UUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -31,7 +28,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -178,7 +174,7 @@ public class FileController {
                 sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(), "",
                 new String(sysFile.getShowName().getBytes("GBK"), "ISO-8859-1"), fileInputStream);
         if (result) {
-            file.delete();
+            //file.delete();
             SysFileDto sysFileDto = new SysFileDto();
             sysFile.setModifiedBy(SessionUtil.getDisplayName());
             sysFile.setModifiedDate(new Date());
@@ -332,6 +328,52 @@ public class FileController {
         os.close();
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "下载服务器Word", path = "html/download", method = RequestMethod.GET)
+    public String downloadFile(@RequestParam("fileName") String fileName, HttpServletResponse response) {
+        if (fileName != null) {
+            // String realPath = request.getServletContext().getRealPath("WEB-INF/File/");
+            String realPath = SysFileUtil.getUploadPath();
+            File file = new File(realPath, fileName);
+            if (file.exists()) {
+                response.setContentType("application/force-download");// 设置强制下载不打开
+                response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);// 设置文件名
+                byte[] buffer = new byte[1024];
+                FileInputStream fis = null;
+                BufferedInputStream bis = null;
+                try {
+                    fis = new FileInputStream(file);
+                    bis = new BufferedInputStream(fis);
+                    OutputStream os = response.getOutputStream();
+                    int i = bis.read(buffer);
+                    while (i != -1) {
+                        os.write(buffer, 0, i);
+                        i = bis.read(buffer);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+
     /**
      * 只针对office文件
      * @param model
@@ -340,15 +382,16 @@ public class FileController {
      */
     @RequiresAuthentication
     @RequestMapping(name = "附件编辑", path = "editFile", method = RequestMethod.GET)
-    public String editFile(Model model,@RequestParam(required = true) String sysFileId){
+    public String editFile(Model model,@RequestParam(required = true) String sysFileId,HttpServletRequest request){
         SysFile sysFile = fileService.findFileById(sysFileId);
         //文件路径
         String filePath = SysFileUtil.getUploadPath()+File.separator+sysFile.getShowName();
         filePath = filePath.replaceAll("\\\\", "/");
-        //下载ftp服务器附件到本地
+        //下载ftp服务器附件到本地服務
         Boolean flag = FtpUtil.downloadFile( sysFile.getFtpIp(), sysFile.getPort()!=null?Integer.parseInt(sysFile.getPort()):0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
                 sysFile.getShowName(), SysFileUtil.getUploadPath());
-        model.addAttribute("filePath",filePath);
+        String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+        model.addAttribute("filePath",basePath+"/file/html/download?fileName="+ sysFile.getShowName());
         //文件类型
         String fileTyp ;
         switch (sysFile.getFileType().toLowerCase()){
