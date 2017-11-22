@@ -45,7 +45,6 @@
          *  模糊查询
          */
         vm.queryPolicy=function(){
-            console.log(24654);
             fileLibrarySvc.queryUser(vm);
         };
 
@@ -53,7 +52,6 @@
          * 重置按钮
          */
         vm.resetPolicy = function(){
-            console.log(4546);
             var tab = $("#policyForm").find('input');
             $.each(tab, function (i, obj) {
                 obj.value = "";

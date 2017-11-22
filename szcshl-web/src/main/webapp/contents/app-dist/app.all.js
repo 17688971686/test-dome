@@ -16126,7 +16126,6 @@
          *  模糊查询
          */
         vm.queryPolicy=function(){
-            console.log(24654);
             fileLibrarySvc.queryUser(vm);
         };
 
@@ -16134,7 +16133,6 @@
          * 重置按钮
          */
         vm.resetPolicy = function(){
-            console.log(4546);
             var tab = $("#policyForm").find('input');
             $.each(tab, function (i, obj) {
                 obj.value = "";
@@ -26391,6 +26389,240 @@
 })();
 (function () {
     'use strict';
+    angular.module('app').controller('takeUserCtrl', takeUser);
+
+    takeUser.$inject = ['bsWin', 'takeUserSvc','userSvc'];
+
+    function takeUser(bsWin, takeUserSvc,userSvc) {
+        var vm = this;
+        vm.title = "个人代办";
+        vm.model = {};
+
+        activate();
+        function activate() {
+            takeUserSvc.getUser(function(data) {
+                vm.model = data;
+                takeUserSvc.initAllUser(function(data) {
+                    vm.takeUserList = data;
+                    vm.initTaskUser(vm.model.takeUserId);
+                });
+            });
+
+            userSvc.getOrg(function(data){
+                vm.org = {};
+                vm.org = data;
+            });
+        }
+
+        //  取消代办人
+        vm.cancelTakeUser = function () {
+            if(!vm.model.takeUserId) {
+                bsWin.alert("你还没有设置代办人！");
+            } else {
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确认取消代办人么？",
+                    onOk: function () {
+                        takeUserSvc.cancelTakeUser(function(){
+                            vm.model.takeUserId = "";
+                            vm.taskUserName = "";
+                            bsWin.alert("操作成功!");
+                        });
+                    }
+                });
+            }
+        }
+
+
+        /**
+         * 保存代办人
+         * */
+        vm.saveTakeUser = function () {
+            if(vm.takeUserId){
+                takeUserSvc.saveTakeUser(vm.takeUserId, function (data) {
+                    vm.model.takeUserId = vm.takeUserId;
+                    vm.initTaskUser(vm.takeUserId);
+                    bsWin.alert("操作成功！");
+                });
+            }else{
+                bsWin.alert("请选择代办人！");
+            }
+        }
+
+        vm.initTaskUser = function(userId){
+            angular.forEach(vm.takeUserList,function(u,index){
+                if(u.id == userId){
+                    vm.taskUserName = u.displayName;
+                }
+            })
+        }
+
+    }
+
+})();
+(function(){
+    'use strict';
+    angular.module('app').factory("takeUserSvc" ,takeUser);
+
+    takeUser.$inject=['$http'];
+    function takeUser($http){
+
+        var service={
+            initAllUser : initAllUser ,//初始化所有用户
+            saveTakeUser : saveTakeUser ,//保存代办人
+            getUser : getUser ,//通过id查询个人信息
+            cancelTakeUser : cancelTakeUser ,//取消代办人
+            initZtreeClient:initZtreeClient,
+            updateZtree : updateZtree,
+
+        }
+        return service;
+
+        // begin#initZtreeClient
+        function initZtreeClient(vm) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/role/findAllRoles"
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        var zTreeObj;
+                        var setting = {
+                            check: {
+                                chkboxType: {
+                                    "Y": "ps",
+                                    "N": "ps"
+                                },
+                                enable: true
+                            }
+                        };
+                        var zNodes = $linq(response.data).select(
+                            function (x) {
+                                return {
+                                    id: x.id,
+                                    name: x.roleName
+                                };
+                            }).toArray();
+                        var rootNode = {
+                            id: '',
+                            name: '角色集合',
+                            children: zNodes
+                        };
+                        zTreeObj = $.fn.zTree.init($("#zTree"), setting, rootNode);
+                        updateZtree(vm);
+                    }
+                });
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        //begin initAllUser
+        function  initAllUser(callBack){
+            var httpOptions={
+                method : "post",
+                url : rootPath + "/user/getAllUserDisplayName",
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+        //end initAllUser
+
+        //begin saveTakeUser
+        function saveTakeUser(takeUserId,callBack){
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/user/saveTakeUser",
+                params: {
+                    takeUserId:takeUserId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end saveTakeUser
+
+        //begin getUser
+        function getUser(callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/user/findCurrentUser",
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//end getUser
+
+        //begin cancelTakeUser
+        function cancelTakeUser(callBack){
+            var httpOptions={
+                method : "get",
+                url : rootPath + "/user/cancelTakeUser"
+            }
+
+            var httpSuccess = function success(response){
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end cancelTakeUser
+
+        function updateZtree(vm) {
+            var treeObj = $.fn.zTree.getZTreeObj("zTree");
+            var checkedNodes = $linq(vm.model.roleDtoList).select(function (x) {
+                return x.roleName;
+            }).toArray();
+            var allNodes = treeObj.getNodesByParam("level", 1, null);
+
+            var nodes = $linq(allNodes).where(function (x) {
+                return $linq(checkedNodes).contains(x.name);
+            }).toArray();
+
+            for (var i = 0, l = nodes.length; i < l; i++) {
+                treeObj.checkNode(nodes[i], true, true);
+            }
+        }
+    }
+})();
+(function () {
+    'use strict';
 
     angular.module('app').controller('quartzCtrl', quartz);
 
@@ -27596,240 +27828,6 @@
 })();
 (function () {
     'use strict';
-    angular.module('app').controller('takeUserCtrl', takeUser);
-
-    takeUser.$inject = ['bsWin', 'takeUserSvc','userSvc'];
-
-    function takeUser(bsWin, takeUserSvc,userSvc) {
-        var vm = this;
-        vm.title = "个人代办";
-        vm.model = {};
-
-        activate();
-        function activate() {
-            takeUserSvc.getUser(function(data) {
-                vm.model = data;
-                takeUserSvc.initAllUser(function(data) {
-                    vm.takeUserList = data;
-                    vm.initTaskUser(vm.model.takeUserId);
-                });
-            });
-
-            userSvc.getOrg(function(data){
-                vm.org = {};
-                vm.org = data;
-            });
-        }
-
-        //  取消代办人
-        vm.cancelTakeUser = function () {
-            if(!vm.model.takeUserId) {
-                bsWin.alert("你还没有设置代办人！");
-            } else {
-                bsWin.confirm({
-                    title: "询问提示",
-                    message: "确认取消代办人么？",
-                    onOk: function () {
-                        takeUserSvc.cancelTakeUser(function(){
-                            vm.model.takeUserId = "";
-                            vm.taskUserName = "";
-                            bsWin.alert("操作成功!");
-                        });
-                    }
-                });
-            }
-        }
-
-
-        /**
-         * 保存代办人
-         * */
-        vm.saveTakeUser = function () {
-            if(vm.takeUserId){
-                takeUserSvc.saveTakeUser(vm.takeUserId, function (data) {
-                    vm.model.takeUserId = vm.takeUserId;
-                    vm.initTaskUser(vm.takeUserId);
-                    bsWin.alert("操作成功！");
-                });
-            }else{
-                bsWin.alert("请选择代办人！");
-            }
-        }
-
-        vm.initTaskUser = function(userId){
-            angular.forEach(vm.takeUserList,function(u,index){
-                if(u.id == userId){
-                    vm.taskUserName = u.displayName;
-                }
-            })
-        }
-
-    }
-
-})();
-(function(){
-    'use strict';
-    angular.module('app').factory("takeUserSvc" ,takeUser);
-
-    takeUser.$inject=['$http'];
-    function takeUser($http){
-
-        var service={
-            initAllUser : initAllUser ,//初始化所有用户
-            saveTakeUser : saveTakeUser ,//保存代办人
-            getUser : getUser ,//通过id查询个人信息
-            cancelTakeUser : cancelTakeUser ,//取消代办人
-            initZtreeClient:initZtreeClient,
-            updateZtree : updateZtree,
-
-        }
-        return service;
-
-        // begin#initZtreeClient
-        function initZtreeClient(vm) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/role/findAllRoles"
-            }
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        var zTreeObj;
-                        var setting = {
-                            check: {
-                                chkboxType: {
-                                    "Y": "ps",
-                                    "N": "ps"
-                                },
-                                enable: true
-                            }
-                        };
-                        var zNodes = $linq(response.data).select(
-                            function (x) {
-                                return {
-                                    id: x.id,
-                                    name: x.roleName
-                                };
-                            }).toArray();
-                        var rootNode = {
-                            id: '',
-                            name: '角色集合',
-                            children: zNodes
-                        };
-                        zTreeObj = $.fn.zTree.init($("#zTree"), setting, rootNode);
-                        updateZtree(vm);
-                    }
-                });
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        //begin initAllUser
-        function  initAllUser(callBack){
-            var httpOptions={
-                method : "post",
-                url : rootPath + "/user/getAllUserDisplayName",
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http : $http,
-                httpOptions : httpOptions,
-                success : httpSuccess
-            });
-        }
-        //end initAllUser
-
-        //begin saveTakeUser
-        function saveTakeUser(takeUserId,callBack){
-            var httpOptions = {
-                method: "post",
-                url: rootPath + "/user/saveTakeUser",
-                params: {
-                    takeUserId:takeUserId
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        //end saveTakeUser
-
-        //begin getUser
-        function getUser(callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/user/findCurrentUser",
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//end getUser
-
-        //begin cancelTakeUser
-        function cancelTakeUser(callBack){
-            var httpOptions={
-                method : "get",
-                url : rootPath + "/user/cancelTakeUser"
-            }
-
-            var httpSuccess = function success(response){
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        //end cancelTakeUser
-
-        function updateZtree(vm) {
-            var treeObj = $.fn.zTree.getZTreeObj("zTree");
-            var checkedNodes = $linq(vm.model.roleDtoList).select(function (x) {
-                return x.roleName;
-            }).toArray();
-            var allNodes = treeObj.getNodesByParam("level", 1, null);
-
-            var nodes = $linq(allNodes).where(function (x) {
-                return $linq(checkedNodes).contains(x.name);
-            }).toArray();
-
-            for (var i = 0, l = nodes.length; i < l; i++) {
-                treeObj.checkNode(nodes[i], true, true);
-            }
-        }
-    }
-})();
-(function () {
-    'use strict';
 
     angular.module('app').controller('roleCtrl', role);
 
@@ -28695,6 +28693,7 @@
         function initScheduler(vm) {
             $("#scheduler").kendoScheduler({
                 date: new Date(),
+                width:"100%",
                 startTime: new Date("2005/6/1 08:00"),
                 endTime: new Date("2030/6/1 21:00"),
                 views: [
@@ -28792,7 +28791,11 @@
             var model = event;
 
             if(!model.rbName || !model.dueToPeople || !model.rbDay || !model.start|| !model.end ||!model.content){
-                bsWin.alert("会议信息填写不正确！请填写完整再提交！");
+                var resultMsg = {};
+                resultMsg.flag = false;
+                resultMsg.reCode = 'error';
+                resultMsg.reMsg = '保存失败！有红色*号的是必填项，请按要求填写再提交！';
+                callBack(resultMsg);
             }else{
                 model.id = model.bookId;
                 var beginTime = (model.start).Format("yyyy-MM-dd hh:mm:ss");
@@ -30709,6 +30712,7 @@
                 $("#" + showDiv).addClass("active").addClass("in").show(500);
                 vm.model.showDiv = showDiv;
             })
+
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
                 vm.model = data;
@@ -30744,6 +30748,7 @@
                     vm.showSupperIndex = 0;
                 }
             });
+
             // 初始化流程数据
             flowSvc.getFlowInfo(vm.flow.taskId,vm.flow.processInstanceId,function(data){
                 vm.flow = data;
@@ -31997,7 +32002,6 @@
             //初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
                 vm.model = data;
-                console.log(vm.model.workProgramDtoList);
                 var deActive = $("#myTab .active");
                 var deObj = $("a", deActive);
                 vm.model.showDiv = deObj.attr("for-div");
@@ -36390,75 +36394,6 @@
                 bsWin.alert("请先保存！");
             }
         }
-
-        //修改会议预定信息
-        vm.updateBookRoom = function (id) {
-            if (!vm.meetingList) {
-                //查找所有会议室地
-                meetingSvc.findAllMeeting(function (data) {
-                    vm.meetingList = data;
-                })
-            }
-            $.each(vm.work.roomBookingDtos, function (key, val) {
-                if (id == val.id) {
-                    vm.roombook = val;
-                }
-            });
-
-            $("#roomBookDetailWindow").kendoWindow({
-                width: "50%",
-                height: "620px",
-                title: "会议预定信息",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        //保存预定会议室信息
-        vm.saveRoom = function () {
-
-            roomSvc.saveRoom(vm.roombook, function (data) {
-                if (data.flag || data.reCode == "ok") {
-                    //替换修改的会议信息
-                    $.each(vm.work.roomBookingDtos, function (key, val) {
-                        if (vm.roombook.id == val.id) {
-                            vm.roombook = data.reObj;
-                            vm.work.roomBookingDtos[key].rbDate = vm.roombook.rbDate;
-                        }
-                    });
-                    bsWin.success("操作成功！", function () {
-                        vm.onRoomClose();
-                    });
-                } else {
-                    bsWin.error(data.reMsg);
-                }
-
-            })
-        }
-
-        vm.onRoomClose = function () {
-            window.parent.$("#roomBookDetailWindow").data("kendoWindow").close();
-        }
-
-        //删除会议室预定情况(预定的会议室不能删除)
-        /*vm.deleteBookRoom = function(id){
-         bsWin.confirm({
-         title: "询问提示",
-         message: "是否进行该操作！",
-         onOk: function () {
-         workprogramSvc.deleteBookRoom(id,function(){
-         bsWin.success("操作成功！");
-         $.each( vm.work.roomBookingDtos, function(key, val) {
-         if(id == val.id){
-         vm.work.roomBookingDtos.splice(key, 1);
-         }
-         } );
-         })
-         },
-         });
-         }*/
         /*********************  E_会议室模块   *************************/
 
         //查询评估部门
@@ -36876,6 +36811,389 @@
                 success: httpSuccess
             });
         }//E_deleteBookRoom
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('goodsDetailCtrl', goodsDetail);
+
+    goodsDetail.$inject = ['$location', 'goodsDetailSvc'];
+
+    function goodsDetail($location, goodsDetailSvc) {
+        var vm = this;
+        vm.title = '物品明细';
+
+        vm.del = function (id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    goodsDetailSvc.deleteGoodsDetail(vm, id);
+                }
+            });
+        }
+        vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+
+        activate();
+        function activate() {
+            goodsDetailSvc.grid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('goodsDetailEditCtrl', goodsDetail);
+
+    goodsDetail.$inject = ['$location', 'goodsDetailSvc', '$state'];
+
+    function goodsDetail($location, goodsDetailSvc, $state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '添加物品明细';
+        vm.isuserExist = false;
+        vm.id = $state.params.id;
+        if (vm.id) {
+            vm.isUpdate = true;
+            vm.title = '更新物品明细';
+        }
+
+        vm.create = function () {
+            goodsDetailSvc.createGoodsDetail(vm);
+        };
+        vm.update = function () {
+            goodsDetailSvc.updateGoodsDetail(vm);
+        };
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                goodsDetailSvc.getGoodsDetailById(vm);
+            }
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('goodsDetailSvc', goodsDetail);
+
+    goodsDetail.$inject = ['$http'];
+
+    function goodsDetail($http) {
+        var url_goodsDetail = rootPath + "/goodsDetail", url_back = '#/goodsDetailList';
+        var service = {
+            grid: grid,
+            getGoodsDetailById: getGoodsDetailById,
+            createGoodsDetail: createGoodsDetail,
+            deleteGoodsDetail: deleteGoodsDetail,
+            updateGoodsDetail: updateGoodsDetail,
+            getAllStoreAssert:getAllStoreAssert
+        };
+
+        return service;
+
+        // begin#updateGoodsDetail
+        function updateGoodsDetail(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                vm.model.id = vm.id;// id
+
+                var httpOptions = {
+                    method: 'put',
+                    url: url_goodsDetail,
+                    data: vm.model
+                }
+
+                var httpSuccess = function success(response) {
+
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
+
+        }
+
+        // begin#deleteGoodsDetail
+        function deleteGoodsDetail(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: url_goodsDetail,
+                data: id
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                    	common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog :true,
+                            fn: function () {
+                            	vm.isSubmit = false;
+                                vm.gridOptions.dataSource.read();
+                            }
+                        })
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#createGoodsDetail
+        function createGoodsDetail(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+
+                var httpOptions = {
+                    method: 'post',
+                    url: url_goodsDetail,
+                    data: vm.model
+                };
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                closeDialog :true,
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    location.href = url_back;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            }
+        }
+
+        // begin#getGoodsDetailById
+        function getGoodsDetailById(vm) {
+        	var httpOptions = {
+                method: 'get',
+                url: rootPath + "/goodsDetail/html/findById",
+                params:{id:vm.id}
+            };
+            var httpSuccess = function success(response) {
+                vm.model = response.data;
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });                       
+        }
+
+        //S_获取取入库资产信息
+        function getAllStoreAssert(callBack){
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/bookBuyBusiness/html/findById"
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //End_获取入库资产信息
+
+        // begin#grid
+        function grid(vm) {
+
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(url_goodsDetail),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                            item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {
+                    field: "id",
+                    title: "id",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "goodsCode",
+                    title: "goodsCode",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "goodsName",
+                    title: "goodsName",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "specifications",
+                    title: "specifications",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "models",
+                    title: "models",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "goodsPrice",
+                    title: "goodsPrice",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "evaluate",
+                    title: "evaluate",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "goodsNumber",
+                    title: "goodsNumber",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "assertStorageBusiness",
+                    title: "assertStorageBusiness",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            "vm.del('" + item.id + "')", item.id);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true
+            };
+
+        }// end fun grid
+
     }
 })();
 (function () {
@@ -37479,389 +37797,6 @@
                 dataBound:dataBound,
                 resizable: true
             };
-        }// end fun grid
-
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('goodsDetailCtrl', goodsDetail);
-
-    goodsDetail.$inject = ['$location', 'goodsDetailSvc'];
-
-    function goodsDetail($location, goodsDetailSvc) {
-        var vm = this;
-        vm.title = '物品明细';
-
-        vm.del = function (id) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    goodsDetailSvc.deleteGoodsDetail(vm, id);
-                }
-            });
-        }
-        vm.dels = function () {
-            var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.del(idStr);
-            }
-        };
-
-        activate();
-        function activate() {
-            goodsDetailSvc.grid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('goodsDetailEditCtrl', goodsDetail);
-
-    goodsDetail.$inject = ['$location', 'goodsDetailSvc', '$state'];
-
-    function goodsDetail($location, goodsDetailSvc, $state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '添加物品明细';
-        vm.isuserExist = false;
-        vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新物品明细';
-        }
-
-        vm.create = function () {
-            goodsDetailSvc.createGoodsDetail(vm);
-        };
-        vm.update = function () {
-            goodsDetailSvc.updateGoodsDetail(vm);
-        };
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                goodsDetailSvc.getGoodsDetailById(vm);
-            }
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('goodsDetailSvc', goodsDetail);
-
-    goodsDetail.$inject = ['$http'];
-
-    function goodsDetail($http) {
-        var url_goodsDetail = rootPath + "/goodsDetail", url_back = '#/goodsDetailList';
-        var service = {
-            grid: grid,
-            getGoodsDetailById: getGoodsDetailById,
-            createGoodsDetail: createGoodsDetail,
-            deleteGoodsDetail: deleteGoodsDetail,
-            updateGoodsDetail: updateGoodsDetail,
-            getAllStoreAssert:getAllStoreAssert
-        };
-
-        return service;
-
-        // begin#updateGoodsDetail
-        function updateGoodsDetail(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-
-                var httpOptions = {
-                    method: 'put',
-                    url: url_goodsDetail,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
-        }
-
-        // begin#deleteGoodsDetail
-        function deleteGoodsDetail(vm, id) {
-            vm.isSubmit = true;
-            var httpOptions = {
-                method: 'delete',
-                url: url_goodsDetail,
-                data: id
-            };
-
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                    	common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                            	vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#createGoodsDetail
-        function createGoodsDetail(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
-                var httpOptions = {
-                    method: 'post',
-                    url: url_goodsDetail,
-                    data: vm.model
-                };
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    location.href = url_back;
-                                }
-                            });
-                        }
-                    });
-                };
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            }
-        }
-
-        // begin#getGoodsDetailById
-        function getGoodsDetailById(vm) {
-        	var httpOptions = {
-                method: 'get',
-                url: rootPath + "/goodsDetail/html/findById",
-                params:{id:vm.id}
-            };
-            var httpSuccess = function success(response) {
-                vm.model = response.data;
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });                       
-        }
-
-        //S_获取取入库资产信息
-        function getAllStoreAssert(callBack){
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/bookBuyBusiness/html/findById"
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        //End_获取入库资产信息
-
-        // begin#grid
-        function grid(vm) {
-
-            // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(url_goodsDetail),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-            // End:dataSource
-
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-                {
-                    field: "id",
-                    title: "id",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "goodsCode",
-                    title: "goodsCode",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "goodsName",
-                    title: "goodsName",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "specifications",
-                    title: "specifications",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "models",
-                    title: "models",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "goodsPrice",
-                    title: "goodsPrice",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "evaluate",
-                    title: "evaluate",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "goodsNumber",
-                    title: "goodsNumber",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "assertStorageBusiness",
-                    title: "assertStorageBusiness",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 140,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
-                    }
-                }
-            ];
-            // End:column
-
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true
-            };
-
         }// end fun grid
 
     }

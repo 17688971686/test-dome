@@ -24,6 +24,7 @@
         function initScheduler(vm) {
             $("#scheduler").kendoScheduler({
                 date: new Date(),
+                width:"100%",
                 startTime: new Date("2005/6/1 08:00"),
                 endTime: new Date("2030/6/1 21:00"),
                 views: [
@@ -121,7 +122,11 @@
             var model = event;
 
             if(!model.rbName || !model.dueToPeople || !model.rbDay || !model.start|| !model.end ||!model.content){
-                bsWin.alert("会议信息填写不正确！请填写完整再提交！");
+                var resultMsg = {};
+                resultMsg.flag = false;
+                resultMsg.reCode = 'error';
+                resultMsg.reMsg = '保存失败！有红色*号的是必填项，请按要求填写再提交！';
+                callBack(resultMsg);
             }else{
                 model.id = model.bookId;
                 var beginTime = (model.start).Format("yyyy-MM-dd hh:mm:ss");

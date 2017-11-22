@@ -72,21 +72,18 @@
         </button>
     </div>
 
-    <div class="label-info" style="width: 100%;padding:3px 10px;font-size: 12px;">
+    <div class="label-info" style="width:100%;padding:3px 10px;font-size: 12px;">
         双击时间段进行会议室预定或者修改！
     </div>
 
     <!-- 行程控件 -->
-    <div id="scheduler"></div>
+    <div id="scheduler" ></div>
 
 </div>
 
 <script id="event-template" type="text/x-kendo-template">
-    <p style="padding:0;margin: 0;padding-left: 5px;">
-        <div>#: rbName #</div>
-        <div>【#: dueToPeople #】</div>
-    </p>
-   <!-- <p style="padding:0;margin: 0;padding-left: 5px;">会议内容：#: content #</p>-->
+    <div>#: rbName #</div>
+    <div>【#: dueToPeople #】</div>
 </script>
 
 <div id="customEditorTemplate" type="text/x-kendo-template"style="display: none;">

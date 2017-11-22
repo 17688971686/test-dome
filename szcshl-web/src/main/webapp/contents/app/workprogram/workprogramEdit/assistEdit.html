@@ -199,8 +199,7 @@
         <td class="text-center" style="width:8%;">开始时间</td>
         <td class="text-center" style="width:8%;">结束时间</td>
         <td class="text-center" style="width:6%;">主持人</td>
-        <td class="text-center" style="width:15%;">会议内容</td>
-        <td class="text-center" >操作</td>
+        <td class="text-center" colspan="2">会议内容</td>
     </tr>
     <tr ng-repeat="r in vm.work.roomBookingDtos track by $index" ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0">
         <td class="text-center" colspan="2">{{r.rbDate}}</td>
@@ -209,11 +208,7 @@
         <td class="text-center">{{r.beginTimeStr}}</td>
         <td class="text-center">{{r.endTimeStr}}</td>
         <td class="text-center">{{r.host}}</td>
-        <td class="text-center" >{{r.content}}</td>
-        <td class="text-center" >
-            <button class="btn btn-xs btn-primary" ng-click="vm.updateBookRoom(r.id);"><span class="glyphicon glyphicon-pencil">修改</span></button>
-            <button class="btn btn-xs btn-danger" ng-click="vm.deleteBookRoom(r.id)" ng-if="false"><span class="glyphicon glyphicon-remove">删除</span></button>
-        </td>
+        <td class="text-center" colspan="2">{{r.content}}</td>
     </tr>
     <tr ng-if="!vm.businessFlag.isReveiwAWP">
         <td class="text-center" colspan="2">拟聘请专家</td>

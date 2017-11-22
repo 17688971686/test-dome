@@ -167,13 +167,13 @@
     </tr>
     <tr>
         <td class="text-center">申报建设内容</td>
-        <td colspan="6">
+        <td colspan="7">
             <textarea maxlength="2048" rows="3" ng-model="vm.work.buildContent" name="buildContent" cols="" style="width:98%;">{{vm.work.buildContent}}</textarea>
         </td>
     </tr>
     <tr>
         <td class="text-center">项目背景</td>
-        <td colspan="6">
+        <td colspan="7">
             <textarea maxlength="2048" rows="3" cols="" ng-model="vm.work.projectBackGround" name="projectBackGround"  style="width:98%;">{{vm.work.projectBackGround}}</textarea>
         </td>
     </tr>
@@ -255,8 +255,7 @@
         <td class="text-center" style="width:8%;">开始时间</td>
         <td class="text-center" style="width:8%;">结束时间</td>
         <td class="text-center" style="width:6%;">主持人</td>
-        <td class="text-center" style="width:15%;">会议内容</td>
-        <td class="text-center" >操作</td>
+        <td class="text-center" colspan="2">会议内容</td>
     </tr>
     <tr ng-repeat="r in vm.work.roomBookingDtos track by $index" ng-show="vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0">
         <td class="text-center">{{r.rbDate}}</td>
@@ -265,11 +264,7 @@
         <td class="text-center">{{r.beginTimeStr}}</td>
         <td class="text-center">{{r.endTimeStr}}</td>
         <td class="text-center">{{r.host}}</td>
-        <td class="text-center" >{{r.content}}</td>
-        <td class="text-center" >
-            <button class="btn btn-xs btn-primary" ng-click="vm.updateBookRoom(r.id);"><span class="glyphicon glyphicon-pencil">修改</span></button>
-            <button class="btn btn-xs btn-danger" ng-click="vm.deleteBookRoom(r.id)" ng-if="false"><span class="glyphicon glyphicon-remove">删除</span></button>
-        </td>
+        <td class="text-center" colspan="2">{{r.content}}</td>
     </tr>
     <tr ng-if="!vm.businessFlag.isReveiwAWP">
         <td class="text-center">拟聘请专家</td>

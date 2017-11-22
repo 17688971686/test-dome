@@ -3,7 +3,6 @@
 <!--  s table -->
 <table class="table table-bordered">
     <caption class="text-center h3"><strong>
-
         {{getTBHeadName(vm.work.workreviveStage,vm.work.isAdvanced,'评审工作方案')}}
     </strong></caption>
 
@@ -65,13 +64,15 @@
     <tr>
         <td colspan="2" style="width:100px;" class="text-center">联系人<span class="required">*</span></td>
         <td colspan="3">
-            <input maxlength="16" type="text" class="form-control input-sm " ng-model="vm.work.contactPerson" id="contactPerson"
+            <input maxlength="16" type="text" class="form-control input-sm " ng-model="vm.work.contactPerson"
+                   id="contactPerson"
                    name="contactPerson" data-val="true" data-val-required="必填">
             <span data-valmsg-for="contactPerson" data-valmsg-replace="true" class="errors"></span>
         </td>
         <td style="width:100px;" class="text-center">手机<span class="required">*</span></td>
         <td>
-            <input maxlength="11" type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.contactPersonPhone"
+            <input maxlength="11" type="text" style="width:30%;" class="form-control input-sm "
+                   ng-model="vm.work.contactPersonPhone"
                    name="contactPersonPhone" data-val="true" data-val-digits="手机号码只能为数字" data-val-required="必填">
             <span data-valmsg-for="contactPersonPhone" data-valmsg-replace="true" class="errors"></span>
         </td>
@@ -79,14 +80,16 @@
     <tr>
         <td colspan="2" class="text-center">电话<span class="required">*</span></td>
         <td colspan="3">
-            <input maxlength="50" type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.contactPersonTel"
+            <input maxlength="50" type="text" style="width:30%;" class="form-control input-sm "
+                   ng-model="vm.work.contactPersonTel"
                    id="contactPersonTel" name="contactPersonTel" data-val-digits="电话号码只能为数字" data-val="true"
                    data-val-required="必填">
             <span data-valmsg-for="contactPersonTel" data-valmsg-replace="true" class="errors"></span>
         </td>
         <td style="width:100px;" class="text-center">传真<span class="required">*</span></td>
         <td>
-            <input maxlength="32" type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.contactPersonFax"
+            <input maxlength="32" type="text" style="width:30%;" class="form-control input-sm "
+                   ng-model="vm.work.contactPersonFax"
                    name="contactPersonFax" id="contactPersonFax" data-val-digits="传真只能为数字" data-val="true"
                    data-val-required="必填">
             <span data-valmsg-for="contactPersonFax" data-valmsg-replace="true" class="errors"></span>
@@ -96,7 +99,8 @@
     <tr>
         <td colspan="2" class="text-center">项目类型<span class="required">*</span></td>
         <td colspan="3">
-            <input maxlength="40" type="text" style="width:30%;" class="form-control input-sm " ng-model="vm.work.projectType"
+            <input maxlength="40" type="text" style="width:30%;" class="form-control input-sm "
+                   ng-model="vm.work.projectType"
                    id="projectType" name="projectType" data-val-digits="电话号码只能为数字" data-val="true"
                    data-val-required="必填">
             <span data-valmsg-for="projectType" data-valmsg-replace="true" class="errors"></span>
@@ -178,9 +182,9 @@
         <td colspan="3">
             <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();">
                 <span
-                    class="glyphicon glyphicon-pencil"
-                    ng-hide="vm.work.reviewType == '自评' || (vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审')"
-                    ng-show="vm.work.reviewType == '专家函评' || (vm.work.isMainProject == 9 && vm.work.isSigle=='合并评审')">
+                        class="glyphicon glyphicon-pencil"
+                        ng-hide="vm.work.reviewType == '自评' || (vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审')"
+                        ng-show="vm.work.reviewType == '专家函评' || (vm.work.isMainProject == 9 && vm.work.isSigle=='合并评审')">
 
                 </span>编辑
             </button>

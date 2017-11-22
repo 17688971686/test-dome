@@ -644,8 +644,7 @@ public class SignServiceImpl implements SignService {
         User dealUser = null;                       //处理人
         OrgDept orgDept = null;                     //部门和小组
         boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，目前主要有三个地方，部长审批工作方案，部长审批发文和分管领导审批发文）
-
-
+        String nextNodeKey = "";                    //下一环节名称
         //取得之前的环节处理人信息
         Map<String, Object> variables = new HashMap<>();
 
@@ -1025,8 +1024,10 @@ public class SignServiceImpl implements SignService {
                 //设定下一环节处理人
                 dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
-                //下一环节KEY值
-                String nextNodeKey = "";
+                //下一环节还是自己
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                }
                 if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
                     nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW1;
@@ -1040,21 +1041,7 @@ public class SignServiceImpl implements SignService {
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD4.getValue(), assigneeValue);
                     nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_SPW4;
                 }
-                //如果下一环节还是自己
-                if(assigneeValue.equals(SessionUtil.getUserId()) || assigneeValue.equals(SessionUtil.getUserInfo().getTakeUserId())){
-                    isNextUser = true;
-                    FlowDto flowDto2 = new FlowDto();
-                    flowDto2.setDealOption(flowDto.getDealOption());
-                    ResultMsg resultMsg = flowService.dealFlowByBusinessKey(signid, nextNodeKey, flowDto2, processInstance.getProcessDefinitionKey());
-                    if (resultMsg.isFlag() || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
-                            || Constant.MsgCode.FLOW_TASK_NULL.getValue().equals(resultMsg.getReCode())
-                            || Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue().equals(resultMsg.getReCode())
-                            || Constant.MsgCode.FLOW_NOT_MATCH.getValue().equals(resultMsg.getReCode())) {
 
-                    } else {
-                        return resultMsg;
-                    }
-                }
                 break;
 
             //分管副主任审批工作方案
@@ -1220,24 +1207,14 @@ public class SignServiceImpl implements SignService {
                 if (isHaveTwoSLeader) {
                     assigneeValue = buildUser(userList);
                     variables.put(FlowConstant.SignFlowParams.USER_XBFGLD_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
-                    //没有协办，则流转给主办分管领导审批
+                //没有协办，则流转给主办分管领导审批
                 } else {
                     assigneeValue = getMainSLeader(signid);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
-                    //如果下一环节还是自己
-                    if(assigneeValue.equals(SessionUtil.getUserId()) || assigneeValue.equals(SessionUtil.getUserInfo().getTakeUserId())){
+                    //下一环节还是自己处理
+                    if(assigneeValue.equals(SessionUtil.getUserId())){
                         isNextUser = true;
-                        FlowDto flowDto2 = new FlowDto();
-                        flowDto2.setDealOption(flowDto.getDealOption());
-                        ResultMsg resultMsg = flowService.dealFlowByBusinessKey(signid, FlowConstant.FLOW_SIGN_FGLD_QRFW, flowDto2, processInstance.getProcessDefinitionKey());
-                        if (resultMsg.isFlag() || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
-                                || Constant.MsgCode.FLOW_TASK_NULL.getValue().equals(resultMsg.getReCode())
-                                || Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue().equals(resultMsg.getReCode())
-                                || Constant.MsgCode.FLOW_NOT_MATCH.getValue().equals(resultMsg.getReCode())) {
-
-                        } else {
-                            return resultMsg;
-                        }
+                        nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_QRFW;
                     }
                 }
 
@@ -1259,7 +1236,7 @@ public class SignServiceImpl implements SignService {
                     variables.put(FlowConstant.SignFlowParams.XBFZR_SP.getValue(), true);
                     assigneeValue = getMainSLeader(signid);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
-                    //不同意则回退到发文申请环节
+                //不同意则回退到发文申请环节
                 } else {
                     variables.put(FlowConstant.SignFlowParams.XBFZR_SP.getValue(), false);
                     variables = buildMainPriUser(variables, signid, assigneeValue);
@@ -1283,20 +1260,10 @@ public class SignServiceImpl implements SignService {
                 dp.setViceDirectorDate(new Date());
                 dp.setViceDirectorName(SessionUtil.getDisplayName());
                 dispatchDocRepo.save(dp);
-                //如果下一环节还是自己
-                if(assigneeValue.equals(SessionUtil.getUserId()) || assigneeValue.equals(SessionUtil.getUserInfo().getTakeUserId())){
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
                     isNextUser = true;
-                    FlowDto flowDto2 = new FlowDto();
-                    flowDto2.setDealOption(flowDto.getDealOption());
-                    ResultMsg resultMsg = flowService.dealFlowByBusinessKey(signid, FlowConstant.FLOW_SIGN_ZR_QRFW, flowDto2, processInstance.getProcessDefinitionKey());
-                    if (resultMsg.isFlag() || Constant.MsgCode.FLOW_INSTANCE_NULL.getValue().equals(resultMsg.getReCode())
-                            || Constant.MsgCode.FLOW_TASK_NULL.getValue().equals(resultMsg.getReCode())
-                            || Constant.MsgCode.FLOW_ACTIVI_NEQ.getValue().equals(resultMsg.getReCode())
-                            || Constant.MsgCode.FLOW_NOT_MATCH.getValue().equals(resultMsg.getReCode())) {
-
-                    } else {
-                        return resultMsg;
-                    }
+                    nextNodeKey = FlowConstant.FLOW_SIGN_ZR_QRFW;
                 }
                 break;
             //主任审批发文
@@ -1408,6 +1375,7 @@ public class SignServiceImpl implements SignService {
                 //发送存档日期为第二负责人审批意见后的日期，
                 fileRecord.setSendStoreDate(new Date());
                 fileRecordRepo.save(fileRecord);
+
                 break;
             //确认归档
             case FlowConstant.FLOW_SIGN_QRGD:
@@ -1438,6 +1406,19 @@ public class SignServiceImpl implements SignService {
             taskService.complete(task.getId());
         } else {
             taskService.complete(task.getId(), variables);
+            //如果下一环节还是自己
+            if(isNextUser){
+                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                for(Task t:nextTaskList){
+                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+                      ResultMsg returnMsg = dealFlow(processInstance,t,flowDto);
+                      if(returnMsg.isFlag() == false){
+                          return returnMsg;
+                      }
+                      break;
+                    }
+                }
+            }
         }
 
         if(isNextUser == false){
