@@ -116,7 +116,10 @@
     function WebOffice_OpenOfficeFile(){
         if(filePath){
             try{
-                document.all.WebOffice.LoadOriginalFile(filePath, fileType);
+               // document.all.WebOffice.LoadOriginalFile(filePath, fileType);
+                document.all.WebOffice.OptionFlag |= 128;
+                // 新建文档
+                document.all.WebOffice.LoadOriginalFile(filePath,fileType);
             }catch(e){
                 alert("异常\r\nError:"+e+"\r\nError Code:"+e.number+"\r\nError Des:"+e.description);
             }
@@ -139,8 +142,8 @@
             error: function(result) {
             }
         });
-
     }
+
     /****************************************************
      *
      *				显示打印对话框
