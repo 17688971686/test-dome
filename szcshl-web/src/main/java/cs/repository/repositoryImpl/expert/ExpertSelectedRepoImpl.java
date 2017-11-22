@@ -41,38 +41,32 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      * @return
      */
     @Override
-    public int findConfirmSeletedEP(String reviewId,String maJorBig,String maJorSmall,String expeRttype , Integer compositeScore) {
+    public int findConfirmSeletedEP(String reviewId, String maJorBig, String maJorSmall, String expeRttype, Integer compositeScore,Integer compositeScortEnd) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select count(ID) from cs_expert_selected where expertreviewid =:reviewId ");
-        sqlBuilder.setParam("reviewId",reviewId);
-        sqlBuilder.append(" and "+ExpertSelected_.isConfrim.getName()+" =:isConfrim ");
+        sqlBuilder.setParam("reviewId", reviewId);
+        sqlBuilder.append(" and " + ExpertSelected_.isConfrim.getName() + " =:isConfrim ");
         sqlBuilder.setParam("isConfrim", Constant.EnumState.YES.getValue());
-        sqlBuilder.append(" and "+ExpertSelected_.maJorBig.getName()+" =:maJorBig ");
-        sqlBuilder.setParam("maJorBig",maJorBig);
-        sqlBuilder.append(" and "+ExpertSelected_.maJorSmall.getName()+" =:maJorSmall ");
-        sqlBuilder.setParam("maJorSmall",maJorSmall);
-        sqlBuilder.append(" and "+ExpertSelected_.expeRttype.getName()+" =:expeRttype ");
-        sqlBuilder.setParam("expeRttype",expeRttype);
+        sqlBuilder.append(" and " + ExpertSelected_.maJorBig.getName() + " =:maJorBig ");
+        sqlBuilder.setParam("maJorBig", maJorBig);
+        sqlBuilder.append(" and " + ExpertSelected_.maJorSmall.getName() + " =:maJorSmall ");
+        sqlBuilder.setParam("maJorSmall", maJorSmall);
+        sqlBuilder.append(" and " + ExpertSelected_.expeRttype.getName() + " =:expeRttype ");
+        sqlBuilder.setParam("expeRttype", expeRttype);
         if(compositeScore != null && compositeScore > 0){
-            sqlBuilder.append(" and " + ExpertSelected_.compositeScore.getName() + ">=:compositeScore");
+            sqlBuilder.append(" and " + ExpertSelected_.compositeScore.getName() + "=:compositeScore");
             sqlBuilder.setParam("compositeScore", compositeScore);
-        }else {
-            sqlBuilder.append( " and " + Expert_.compositeScore.getName()+ " is null or " + Expert_.compositeScore.getName() + ">=:compositeScore");
-            sqlBuilder.setParam("compositeScore" , compositeScore == null ? 0 : compositeScore);
-
+        }
+        if(compositeScortEnd != null && compositeScortEnd > 0){
+            sqlBuilder.append(" and " + ExpertSelected_.compositeScoreEnd.getName() + "=:compositeScortEnd");
+            sqlBuilder.setParam("compositeScortEnd", compositeScortEnd);
         }
         return returnIntBySql(sqlBuilder);
-
-        /*Criteria criteria = getExecutableCriteria();
-        criteria.add(Restrictions.sqlRestriction(" re"));
-        criteria.add(Restrictions.eq(ExpertSelected_.maJorBig.getName(),maJorBig));
-        criteria.add(Restrictions.eq(ExpertSelected_.maJorSmall.getName(),maJorSmall));
-        criteria.add(Restrictions.eq(ExpertSelected_.expeRttype.getName(), expeRttype));
-        return ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();*/
     }
 
     /**
-     *专家评审基本情况详细统计
+     * 专家评审基本情况详细统计
+     *
      * @param expertReviewCondDto
      * @return
      */
