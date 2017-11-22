@@ -19,6 +19,12 @@ public class WorkProgram extends DomainBase {
     @Id
     private String id;
 
+    /**
+     * 申报总投资
+     */
+    @Column(columnDefinition = "NUMBER")
+    private BigDecimal totalInvestment;
+
     //标题
     @Column(columnDefinition = "VARCHAR(64)")
     private String titleName;
@@ -646,5 +652,12 @@ public class WorkProgram extends DomainBase {
 	public void setLetterDate(Date letterDate) {
 		this.letterDate = letterDate;
 	}
-    
+
+	public void setTotalInvestment(BigDecimal totalInvestment){
+        this.totalInvestment = totalInvestment;
+    }
+
+    public BigDecimal getTotalInvestment(){
+	    return totalInvestment;
+    }
 }

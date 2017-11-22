@@ -27,10 +27,32 @@
             getUnitUser: getUnitUser,
             getAllUnit: getAllUnit,			                    //获取所有的协审单位
             saveAddChooleUnit: saveAddChooleUnit,		        //保存手动选择的协审单位
-            initAssistUnitByPlanId: initAssistUnitByPlanId	    //初始化计划项目的协审单位
+            initAssistUnitByPlanId: initAssistUnitByPlanId,	    //初始化计划项目的协审单位
+            findAssistPlanSignById : findAssistPlanSignById,    //根据收文Id获取协审单位和协审费用——主要用于发文阶段编辑和详情页
 
         };
         return service;
+        //begin findAssistPlanSignById
+        function findAssistPlanSignById(signId , callBack){
+
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + '/assistPlanSign/findAssistPlanSignById',
+                params : {signId : signId}
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == "function"){
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+
+        }
+        //end findAssistPlanSignById
 
         function getPlanColumns() {
             var columns = [

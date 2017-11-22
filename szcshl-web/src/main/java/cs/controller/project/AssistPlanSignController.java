@@ -55,4 +55,11 @@ public class AssistPlanSignController {
 
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name="通过收文ID获取协审单位和协审费用" , path = "findAssistPlanSignById" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg findAssistPlanSignById(String signId){
+        return assistPlanSignService.findAssistPlanSignBySignId(signId);
+    }
+
 }

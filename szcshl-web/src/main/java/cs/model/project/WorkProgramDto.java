@@ -21,6 +21,11 @@ import javax.persistence.Column;
 public class WorkProgramDto extends BaseDto {
 
     private String id;
+    /**
+     * 申报总投资
+     */
+    private BigDecimal totalInvestment;
+
     //签收ID
     private String signId;
     //标题
@@ -625,5 +630,13 @@ public class WorkProgramDto extends BaseDto {
 	public void setLetterDate(Date letterDate) {
 		this.letterDate = letterDate;
 	}
+
+    public void setTotalInvestment(BigDecimal totalInvestment){
+        this.totalInvestment = totalInvestment;
+    }
+
+    public BigDecimal getTotalInvestment(){
+        return totalInvestment;
+    }
     
 }

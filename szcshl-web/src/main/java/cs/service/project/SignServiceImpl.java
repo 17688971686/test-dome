@@ -429,6 +429,7 @@ public class SignServiceImpl implements SignService {
                             WorkProgramDto workProgramDto = new WorkProgramDto();
                             BeanCopierUtils.copyProperties(workProgram, workProgramDto);
                             workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
+                            workProgramDto.setSignId(signid);
                             workProgramDtoList.add(workProgramDto);
                             //还得查找合并评审次项目
                             List<WorkProgramDto> wpDtoList = workProgramService.findMergeWP(signid);
@@ -444,6 +445,7 @@ public class SignServiceImpl implements SignService {
                             WorkProgramDto workProgramDto = new WorkProgramDto();
                             BeanCopierUtils.copyProperties(workProgram, workProgramDto);
                             workProgramRepo.initWPMeetingExp(workProgramDto, wp);
+                            workProgramDto.setSignId(signid);
                             workProgramDtoList.add(workProgramDto);
                             signDto.setWorkProgramDtoList(workProgramDtoList);
                         }
@@ -453,10 +455,44 @@ public class SignServiceImpl implements SignService {
 
                 if (!isMergeReview) {
                     List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
+                    //由于工作方案不是按主次顺便排序，则遍历工作方案，获取主工作方案
+                    WorkProgram mainW = new WorkProgram();
+                    for(int i=0 ; i<sign.getWorkProgramList().size() ; i++){
+                        WorkProgram workProgram = sign.getWorkProgramList().get(i);
+                        if(workProgram != null && (EnumState.PROCESS.getValue()).equals(workProgram.getBranchId())){
+                            BeanCopierUtils.copyProperties(workProgram , mainW);
+                            break;
+                        }
+                    }
+
                     sign.getWorkProgramList().forEach(workProgram -> {
                         WorkProgramDto workProgramDto = new WorkProgramDto();
                         BeanCopierUtils.copyProperties(workProgram, workProgramDto);
                         workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
+                        workProgramDto.setSignId(signid);
+                        //判断如不是主工作方案，则初始化公共部分
+                        if(!(EnumState.PROCESS.getValue()).equals(workProgram.getBranchId())){
+                            workProgramDto.setSendFileUnit(mainW.getSendFileUnit()); //来文单位
+                            workProgramDto.setSendFileUser(mainW.getSendFileUser());//来文单位联系人
+                            workProgramDto.setBuildCompany(mainW.getBuildCompany());//建设单位
+                            workProgramDto.setDesignCompany(mainW.getDesignCompany());//编制单位
+                            workProgramDto.setMainDeptName(mainW.getMainDeptName());//主管部门名称
+                            workProgramDto.setIsHaveEIA(mainW.getIsHaveEIA());//是否有环评
+                            workProgramDto.setProjectType(mainW.getProjectType());//项目类别
+                            workProgramDto.setProjectSubType(mainW.getProjectSubType());//小类
+                            workProgramDto.setIndustryType(mainW.getIndustryType());//行业类别
+                            workProgramDto.setContactPerson(mainW.getContactPerson());//联系人
+                            workProgramDto.setContactPersonPhone(mainW.getContactPersonPhone());//联系人手机号
+                            workProgramDto.setContactPersonTel(mainW.getContactPersonTel());//联系人电话
+                            workProgramDto.setContactPersonFax(mainW.getContactPersonFax());//联系人传真
+//                            workProgramDto.setBuildSize(mainW.getBuildSize());//建设规模
+//                            workProgramDto.setBuildContent(mainW.getBuildContent());//建设内容
+//                            workProgramDto.setProjectBackGround(mainW.getProjectBackGround());//项目背景
+                            workProgramDto.setReviewOrgName(mainW.getReviewOrgName());//评估部门
+                            workProgramDto.setMianChargeUserName(mainW.getMianChargeUserName());//第一负责人
+                            workProgramDto.setSecondChargeUserName(mainW.getSecondChargeUserName());//第二负责人
+
+                        }
                         workProgramDtoList.add(workProgramDto);
                     });
                     signDto.setWorkProgramDtoList(workProgramDtoList);

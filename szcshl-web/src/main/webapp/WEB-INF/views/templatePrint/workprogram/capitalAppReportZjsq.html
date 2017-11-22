@@ -1,19 +1,19 @@
 <!-- start 主项目 -->
-<div style="margin-bottom: 10px; margin-top: 10px;"   ng-if="vm.model.workProgramDtoList[0].branchId == '1' || vm.model.workProgramDtoList[0].branchId == 1">
+<div  ng-repeat="w in vm.model.workProgramDtoList"  ng-if="w.signId == vm.model.signid">
     <div id="wp_{{$index}}" class="collapse in">
         <table class="print-table">
-            <caption class="title" style="padding-top: 10px;">{{vm.model.workProgramDtoList[0].titleName}}</caption>
+            <caption class="title" style="margin-top: 50px;">{{w.titleName}}</caption>
             <caption>
                 <span >QR-4.9-02-A0</span>
             </caption>
             <caption style="width:100%;">
                 <span style="float:left;">
-                    <span>评审方式: {{vm.model.workProgramDtoList[0].reviewType}}</span>
-                    <span style="margin:0px 10px;">{{vm.model.workProgramDtoList[0].isSigle}}</span>
-                    <span ng-if="vm.model.workProgramDtoList[0].isSigle=='合并评审' && vm.model.workProgramDtoList[0].isMainProject == 9" > 主项目 </span>
-                    <span ng-if="vm.model.workProgramDtoList[0].isSigle=='合并评审' && vm.model.workProgramDtoList[0].isMainProject == 0" > 次项目 </span>
+                    <span>评审方式: {{w.reviewType}}</span>
+                    <span style="margin:0px 10px;">{{w.isSigle}}</span>
+                    <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 9" > 主项目 </span>
+                    <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 0" > 次项目 </span>
                 </span>
-                <span style="float:right;">{{vm.model.workProgramDtoList[0].titleDate | date:'yyyy年MM月dd日' }}</span>
+                <span style="float:right;">{{w.titleDate | date:'yyyy年MM月dd日' }}</span>
             </caption>
             <tr class="tr-hidden">
                 <td width="5%"></td>
@@ -27,105 +27,109 @@
             </tr>
             <tr>
                 <td colspan="2" class="text-center">项目名称</td>
-                <td colspan="6">{{vm.model.workProgramDtoList[0].projectName}}</td>
+                <td colspan="6">{{w.projectName}}</td>
             </tr>
             <tr>
                 <td colspan="2">来文单位</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].sendFileUnit}}</td>
+                <td colspan="3">{{w.sendFileUnit}}</td>
                 <td class="text-center">来文单位联系人</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].sendFileUser}}</td>
+                <td colspan="2">{{w.sendFileUser}}</td>
             </tr>
             <tr>
                 <td colspan="2">建设单位</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].buildCompany}}</td>
+                <td colspan="3">{{w.buildCompany}}</td>
                 <td class="text-center">编制单位</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].designCompany}}</td>
+                <td colspan="2">{{w.designCompany}}</td>
             </tr>
 
             <tr>
                 <td colspan="2">主管部门</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].mainDeptName}}</td>
+                <td colspan="3">{{w.mainDeptName}}</td>
                 <td class="text-center">是否有环评</td>
                 <td colspan="2">
-                    <input style="margin:0 10px" type="radio" ng-value="9" ng-model="vm.model.workProgramDtoList[0].isHaveEIA" name="isHaveEIA" ng-checked="vm.model.workProgramDtoList[0].isHaveEIA == 9 || vm.model.workProgramDtoList[0].isHaveEIA == '9' " >是
-                    <input style="margin:0 10px" type="radio" ng-value="0" ng-model="vm.model.workProgramDtoList[0].isHaveEIA" name="isHaveEIA" ng-checked="vm.model.workProgramDtoList[0].isHaveEIA == 0 || vm.model.workProgramDtoList[0].isHaveEIA == '0' ">否
+                    <input style="margin:0 10px" type="checkbox" ng-value="9" ng-model="w.isHaveEIA" name="isHaveEIA" ng-checked="w.isHaveEIA == 9 || w.isHaveEIA == '9' " >是
+                    <input style="margin:0 10px" type="checkbox" ng-value="0" ng-model="w.isHaveEIA" name="isHaveEIA" ng-checked="w.isHaveEIA == 0 || w.isHaveEIA == '0' ">否
                 </td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">项目类别</td>
-                <td>{{vm.model.workProgramDtoList[0].projectType}}</td>
+                <td>{{w.projectType}}</td>
                 <td class="text-center">小类</td>
-                <td>{{vm.model.workProgramDtoList[0].projectSubType}}</td>
+                <td>{{w.projectSubType}}</td>
                 <td class="text-center">行业类别</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].industryType}}</td>
+                <td colspan="2">{{w.industryType}}</td>
             </tr>
             <tr>
                 <td colspan="2" rowspan="3">联系人</td>
-                <td colspan="3" rowspan="3">{{vm.model.workProgramDtoList[0].contactPerson}}</td>
+                <td colspan="3" rowspan="3">{{w.contactPerson}}</td>
                 <td class="text-center">手机</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].contactPersonPhone}}</td>
+                <td colspan="2">{{w.contactPersonPhone}}</td>
             </tr>
             <tr>
                 <td>电话</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].contactPersonTel}}</td>
+                <td colspan="2">{{w.contactPersonTel}}</td>
             </tr>
             <tr>
                 <td>传真</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].contactPersonFax}}</td>
+                <td colspan="2">{{w.contactPersonFax}}</td>
             </tr>
             <tr>
                 <td rowspan="4">项目概况</td>
                 <td>申报投资</td>
-                <td colspan="6" height="20">{{vm.model.workProgramDtoList[0].appalyInvestment}} 万元</td>
+                <td colspan="3" height="30">{{w.appalyInvestment}} 万元</td>
+                <td class="text-center">总投资</td>
+                <td colspan="2" height="30">{{w.totalInvestment}} 万元</td>
 
             </tr>
             <tr>
                 <td>申报建设规模</td>
-                <td colspan="6" height="100">{{vm.model.workProgramDtoList[0].buildSize}}</td>
+                <td colspan="6" height="120">{{w.buildSize}}</td>
             </tr>
             <tr>
                 <td>申报建设内容</td>
-                <td height="150" colspan="6">{{vm.model.workProgramDtoList[0].buildContent}}</td>
+                <td height="150" colspan="6">{{w.buildContent}}</td>
             </tr>
             <tr>
                 <td>项目背景</td>
-                <td height="100" colspan="6">{{vm.model.workProgramDtoList[0].projectBackGround}}</td>
+                <td height="120" colspan="6">{{w.projectBackGround}}</td>
             </tr>
             <tr>
                 <td height="120" colspan="2" rowspan="2">评审部门</td>
-                <td colspan="3" rowspan="2">{{vm.model.workProgramDtoList[0].reviewOrgName}}</td>
+                <td colspan="3" rowspan="2">{{w.reviewOrgName}}</td>
                 <td class="text-center">第一负责人</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].mianChargeUserName}}</td>
+                <td colspan="2">{{w.mianChargeUserName}}</td>
             </tr>
             <tr>
                 <td>第二负责人</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].secondChargeUserName}}</td>
+                <td colspan="2">{{w.secondChargeUserName}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">补充资料函</td>
                 <td colspan="3">
-                    <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="vm.model.workProgramDtoList[0].isHaveSuppLetter==9" ng-true-value="9" >是
-                    <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="!vm.model.workProgramDtoList[0].isHaveSuppLetter || vm.model.workProgramDtoList[0].isHaveSuppLetter==0"  ng-true-value="0">否
+                    <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="w.isHaveSuppLetter==9" ng-true-value="9" >是
+                    <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="!W.isHaveSuppLetter || W.isHaveSuppLetter==0"  ng-true-value="0">否
                 </td>
                 <td class="text-center">补充资料函发文日期</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].suppLetterDate}}</td>
+                <td colspan="2">{{W.suppLetterDate}}</td>
             </tr>
             <tr>
                 <td colspan="2">评审会时间</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].rbDate}}</td>
+                <td colspan="3">{{W.rbDate}}</td>
                 <td class="text-center">会议地点</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].addressName}}</td>
+                <td colspan="2">{{W.addressName}}</td>
             </tr>
             <tr></tr>
-            <tr ng-if="vm.model.workProgramDtoList[0].isSigle=='单个评审' || (vm.model.workProgramDtoList[0].isSigle=='合并评审' && vm.model.workProgramDtoList[0].isMainProject == 9)">
+            <tr ng-if="W.isSigle=='单个评审' || (W.isSigle=='合并评审' && W.isMainProject == 9)">
                 <td colspan="2">调研时间</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].studyAllDay}}<span ng-if="vm.model.workProgramDtoList[0].studyQuantum">,</span>{{vm.model.workProgramDtoList[0].studyQuantum}}<span ng-if="vm.model.workProgramDtoList[0].studyBeginTimeStr">,</span>{{vm.model.workProgramDtoList[0].studyBeginTimeStr}}<span ng-if="vm.model.workProgramDtoList[0].studyEndTimeStr">至</span>{{vm.model.workProgramDtoList[0].studyEndTimeStr}}</td>
+                <td colspan="3">{{W.studyAllDay}}<span ng-if="W.studyQuantum">,</span>{{W.studyQuantum}}
+                    <span ng-if="W.studyBeginTimeStr">,</span>{{W.studyBeginTimeStr}}
+                    <span ng-if="W.studyEndTimeStr">至</span>{{W.studyEndTimeStr}}</td>
                 <td class="text-center">专家费用</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].expertCost}}</td>
+                <td colspan="2">{{W.expertCost}}</td>
             </tr>
-            <tr>
+            <tr ng-if="w.isSigle && w.isSigle == '合并评审' = ">
                 <td colspan="2">合并评审相关项目</td>
-                <td colspan="6"></td>
+                <td colspan="6" height="50px"></td>
             </tr>
             <tr class="text-center" >
                 <td colspan="2">拟邀请专家</td>
@@ -136,8 +140,8 @@
                 <td>专家类别</td>
                 <td>备注</td>
             </tr>
-            <tr  ng-repeat="x in vm.model.workProgramDtoList[0].expertDtoList |limitTo :15 track by $index  " ng-show="vm.model.workProgramDtoList[0].expertDtoList && vm.model.workProgramDtoList[0].expertDtoList.length > 0">
-                <td colspan="2" class="text-center" height="30px">{{x.name}}</td>
+            <tr  ng-repeat="x in W.expertDtoList |limitTo :10 track by $index  " ng-show="w.expertDtoList && W.expertDtoList.length > 0">
+                <td colspan="2" class="text-center" height="50px">{{x.name}}</td>
                 <td class="text-center">{{x.comPany}}</td>
                 <td class="text-center">{{x.job}}/{{x.post}}</td>
                 <td class="text-center">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
@@ -145,8 +149,8 @@
                 <td class="text-center">{{x.expeRttype}}</td>
                 <td class="text-center">{{x.remark}}</td>
             </tr>
-            <tr  ng-repeat="x in vm.expertList |limitTo :(15 - vm.model.workProgramDtoList[0].expertDtoList.length) track by $index  " >
-                <td colspan="2" height="30px">&nbsp;</td>
+            <tr  ng-repeat="x in vm.expertList |limitTo :(10 - W.expertDtoList.length) track by $index  " >
+                <td colspan="2" height="50px">&nbsp;</td>
                 <td >&nbsp;</td>
                 <td >&nbsp;</td>
                 <td >&nbsp;</td>
@@ -156,26 +160,26 @@
             </tr>
             <tr>
                 <td colspan="2" height="80">拟邀请单位及领导</td>
-                <td colspan="6">{{vm.model.workProgramDtoList[0].inviteUnitLeader}}</td>
+                <td colspan="6">{{W.inviteUnitLeader}}</td>
             </tr>
             <tr>
                 <td  colspan="2" height="80">拟评审重点问题</td>
-                <td colspan="6">{{vm.model.workProgramDtoList[0].mainPoint}}</td>
+                <td colspan="6">{{W.mainPoint}}</td>
             </tr>
             <tr>
                 <td colspan="2" height="80">部长意见</td>
                 <td colspan="6">
-                    <p class="text-left"> {{vm.model.workProgramDtoList[0].ministerSuggesttion}}</p>
-                    <p class="text-right" ng-if="vm.model.workProgramDtoList[0].ministerName">签名：{{vm.model.workProgramDtoList[0].ministerName}}</p>
-                    <p class="text-right" ng-if="vm.model.workProgramDtoList[0].ministerDate">日期：{{vm.model.workProgramDtoList[0].ministerDate}}</p>
+                    <p class="text-left"> {{vm.work.ministerSuggesttion}} </p>
+                    <p class="text-right" style="margin-right: 100px; margin-top: 20px;">签名：</p>
+                    <p class="text-right"  style="margin-right: 100px; margin-top: 5px;">日期：</p>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" height="80">中心领导签批意见</td>
                 <td colspan="6">
-                    <p class="text-left"> {{vm.model.workProgramDtoList[0].leaderSuggesttion}}</p>
-                    <p class="text-right" ng-if="vm.model.workProgramDtoList[0].leaderName">签名：{{vm.model.workProgramDtoList[0].leaderName}}</p>
-                    <p class="text-right" ng-if="vm.model.workProgramDtoList[0].leaderDate">日期：{{vm.model.workProgramDtoList[0].leaderDate}}</p>
+                    <p class="text-left"> {{vm.work.leaderSuggesttion}} </p>
+                    <p class="text-right" style="margin-right: 100px; margin-top: 20px;">签名：</p>
+                    <p class="text-right" style="margin-right: 100px; margin-top: 5px;" >日期：</p>
                 </td>
             </tr>
         </table>
@@ -184,7 +188,7 @@
 <!-- end 主项目 -->
 
 <!-- start 协审项目 -->
-<div ng-repeat="w in vm.model.workProgramDtoList | orderBy:w.branchId"  style="margin-top:50px;"
+<!--<div ng-repeat="w in vm.model.workProgramDtoList | orderBy:w.branchId"  style="margin-top:50px;"
      ng-if="w.branchId != '1' && w.branchId != 1">
     <div id="aswp_{{$index}}" class="collapse in" >
         <table  class="print-table" style="margin-top: 50px;">
@@ -287,4 +291,4 @@
             </tr>
         </table>
     </div>
-</div>
+</div>-->

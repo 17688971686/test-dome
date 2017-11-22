@@ -103,4 +103,14 @@ public class AssistPlanSignServiceImpl  implements AssistPlanSignService {
 		}
 		return resultList;
 	}
+
+	/**
+	 * 通过收文Id 获取协审单位和协审费用
+	 * @param signId
+	 * @return
+	 */
+	@Override
+	public ResultMsg findAssistPlanSignBySignId(String signId) {
+		return assistPlanSignRepo.findAssistPlanSignById(signId);
+	}
 }

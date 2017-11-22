@@ -28,8 +28,20 @@ public class AssistPlanSignDto{
     private Integer splitNum;                   //拆分项目序号
     private BigDecimal estimateCost;			//报审概算
     private BigDecimal jiananCost;				//建安费
-    private String userName; 
-   
+    private String userName;
+    /**
+     * 多个协审单位拼接后的字段
+     */
+    private String unitNameStr;
+
+    public String getUnitNameStr() {
+        return unitNameStr;
+    }
+
+    public void setUnitNameStr(String unitNameStr) {
+        this.unitNameStr = unitNameStr;
+    }
+
     @JSONField(serialzeFeatures = SerializerFeature.DisableCircularReferenceDetect)
     private AssistUnit assistUnit;
     

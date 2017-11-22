@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signDetailsCtrl', sign);
 
-    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','$scope','templatePrintSvc'];
+    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','$scope','templatePrintSvc' , 'assistSvc'];
 
-    function sign(sysfileSvc, signSvc,$state,flowSvc,$scope,templatePrintSvc) {
+    function sign(sysfileSvc, signSvc,$state,flowSvc,$scope,templatePrintSvc , assistSvc) {
         var vm = this;
     	vm.model = {};							    //创建一个form对象
         vm.flow = {};                               //收文对象
@@ -48,6 +48,7 @@
             //初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
                 vm.model = data;
+                console.log(vm.model.workProgramDtoList);
                 var deActive = $("#myTab .active");
                 var deObj = $("a", deActive);
                 vm.model.showDiv = deObj.attr("for-div");
@@ -55,6 +56,9 @@
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
                     vm.dispatchDoc = vm.model.dispatchDocDto;
+                    assistSvc.findAssistPlanSignById(vm.model.signid , function(data){
+                        vm.assistPlanSign = data;
+                    })
                 }
                 //归档
                 if (vm.model.fileRecordDto) {
