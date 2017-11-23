@@ -10,13 +10,13 @@
             <strong>深圳市政府投资项目评审中心文件（稿纸）<br>拟补充资料函</strong>
         </caption>
         <tbody>
-        <tr>
+        <tr style="height: 50px">
             <td>拟稿部门<br>拟稿人</td>
             <td>{{x.orgName}}<br>{{x.userName}}</td>
             <td class="text-center">拟稿时间</td>
             <td >{{x.suppLetterTime}}</td>
         </tr>
-        <tr>
+        <tr style="height: 50px">
             <td  class="text-center">秘密等级</td>
             <td>{{x.secretLevel}}</td>
             <td class="text-center">缓急程度</td>
@@ -24,7 +24,7 @@
                 {{x.mergencyLevel}}
             </td>
         </tr>
-        <tr>
+        <tr style="height: 50px">
             <td class="text-center">发文日期</td>
             <td>
                 {{x.disapDate}}
@@ -34,42 +34,50 @@
             <td> {{x.filenum}} </td>
         </tr>
 
-        <tr>
-            <td class="text-center" height="50">文件标题 </td>
+        <tr style="height: 50px">
+            <td class="text-center">文件标题 </td>
             <td colspan="3">
                 {{x.title}}
             </td>
         </tr>
-        <tr>
-            <td class="text-center" height="100">发行范围</td>
+        <tr >
+            <td class="text-center" >发行范围</td>
             <td colspan="3">
+                <div style="width: 100%; height: 50px; overflow: hidden;">
                 {{x.dispaRange}}<br/>
                 <span style="float: right;">(印{{x.printnum}}份)</span>
+                </div>
             </td>
         </tr>
 
 
         <tr>
-            <td class="text-center" height="80">核稿意见</td>
+            <td class="text-center" >核稿意见</td>
             <td colspan="3">
-                <p> {{x.deptMinisterIdeaContent}}</p>
-                <p class="text-right" ng-if="x.deptMinisterName">签名：{{x.deptMinisterName}}</p>
-                <p class="text-right" ng-if="x.deptMinisterDate">日期：{{x.deptMinisterDate}}</p>
+                <div style="width: 100%; height: 120px; overflow: hidden;">
+                <p class="text-left" style="height: 60%;"> {{x.deptMinisterIdeaContent}}</p>
+                <p class="text-right" style="margin-right: 90px;">签名：</p>
+                <p class="text-right" style="margin-right: 12px; " ng-if="x.deptMinisterDate">日期：{{x.deptMinisterDate}}</p>
+                    <p class="text-right" style="margin-right: 90px; " ng-if="!(x.deptMinisterDate)">日期：</p>
+                </div>
             </td>
         </tr>
 
         <tr>
-            <td class="text-center" height="150">会签意见</td>
+            <td class="text-center" >会签意见</td>
             <td colspan="3">
-                <div class="text-right" style="min-height: 50px;" ng-bind-html="x.leaderSignIdeaContent | trust2Html"></div>
+                <div class="text-right" style="width: 100%; height: 150px; overflow: hidden;" ng-bind-html="x.leaderSignIdeaContent | trust2Html"></div>
             </td>
         </tr>
         <tr>
-            <td class="text-center" height="80">领导意见</td>
+            <td class="text-center" >领导意见</td>
             <td colspan="3">
-                <p> {{x.deptSLeaderIdeaContent}}</p>
-                <p class="text-right" ng-if="x.deptSLeaderName">签名：{{x.deptSLeaderName}}</p>
-                <p class="text-right" ng-if="x.deptSleaderDate">日期：{{x.deptSleaderDate}}</p>
+                <div style="width: 100%; height: 120px; overflow: hidden;">
+                <p class="text-left" style="height: 60%;"> {{x.deptSLeaderIdeaContent}}</p>
+                <p class="text-right" style="margin-right: 90px;">签名：</p>
+                <p class="text-right" style="margin-right: 12px;" ng-if="x.deptSleaderDate">日期：{{x.deptSleaderDate}}</p>
+                    <p class="text-right" style="margin-right: 90px;" ng-if="!(x.deptSleaderDate)">日期：</p>
+                </div>
             </td>
         </tr>
         </tbody>

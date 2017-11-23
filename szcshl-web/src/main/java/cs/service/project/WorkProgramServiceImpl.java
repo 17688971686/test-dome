@@ -146,7 +146,7 @@ WorkProgram mainW = new WorkProgram();
                 }
                 if((signPrincipal.getFlowBranch()).equals(wp.getBranchId())){
                     BeanCopierUtils.copyProperties(wp, workProgramDto);
-                    workProgramRepo.initWPMeetingExp(workProgramDto,mainW);
+                    workProgramRepo.initWPMeetingExp(workProgramDto,wp);
                     isHaveCurUserWP = true;
                 }else{
                     WorkProgramDto wpDto = new WorkProgramDto();
