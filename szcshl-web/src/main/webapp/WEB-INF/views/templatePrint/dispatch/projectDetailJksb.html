@@ -1,3 +1,4 @@
+<!--进口设备-->
 <table  class="print-table" style="margin-bottom: 0px;" >
     <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>进口设备项目发文审批表</strong></caption>
     <caption>
@@ -66,44 +67,54 @@
 
     <tr >
         <td  class="text-center">发行范围</td>
-        <td colspan="7" height="100">
-            <div style="min-height: 50px;">
-                {{vm.dispatchDoc.fileTitle}}
+        <td colspan="7" >
+            <div style="width: 100%; height: 60px; overflow: hidden;">
+                {{vm.dispatchDoc.description}} <br/>
+                <span style="float: right;">(印 {{vm.dispatchDoc.printCount}} 份)</span>
             </div>
-            <span ng-show="vm.dispatchDoc.printCount" style="float: right;">
-                    (印{{vm.dispatchDoc.printCount}}份)
-                </span>
 
         </td>
     </tr>
-    <tr style="height: 90px;">
+    <tr >
         <td  class="text-center">评审意见摘要 </td>
-        <td colspan="7" style="min-height: 100px; height: 80px;">
-            {{vm.dispatchDoc.reviewAbstract}}
+        <td colspan="7" >
+            <div style="width: 100%; height: 100px; overflow: hidden;">
+                {{vm.dispatchDoc.reviewAbstract}}
+            </div>
+
         </td>
     </tr>
-    <tr style="height: 80px;">
+    <tr >
         <td  class="text-center">部长核稿意见 </td>
-        <td colspan="7" style=" height: 80px;">
-            <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
-            <p class="text-right" style="margin-right: 80px; margin-top: 20px;">签名：</p>
-            <p class="text-right" style="margin-right: 12px; margin-top: 5px;">日期：{{vm.dispatchDoc.ministerDate}}</p>
+        <td colspan="7" >
+            <div style="width: 100%; height: 120px; overflow: hidden;">
+                <p class="text-left" style="height: 60%;"> {{vm.dispatchDoc.ministerSuggesttion}}</p>
+                <p class="text-right" style="margin-right: 90px;">签名：</p>
+                <p class="text-right" style="margin-right: 12px; " ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
+                <p class="text-right" style="margin-right: 90px; "  ng-if="!(vm.dispatchDoc.ministerDate)">日期：</p>
+            </div>
         </td>
     </tr>
-    <tr style="height: 80px;">
+    <tr >
         <td  class="text-center">分管副主任意见 </td>
-        <td colspan="7" style=" height: 80px;">
-            {{vm.dispatchDoc.viceDirectorSuggesttion}}
-            <p class="text-right" style="margin-right: 80px; margin-top: 20px;">签名：</p>
-            <p class="text-right" style="margin-right: 12px; margin-top: 5px;">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
+        <td colspan="7" >
+            <div style="width: 100%; height: 120px; overflow: hidden;">
+                <p class="text-left" style="height: 60%;"> {{vm.dispatchDoc.viceDirectorSuggesttion}}</p>
+                <p class="text-right" style="margin-right: 90px;">签名：</p>
+                <p class="text-right" style="margin-right: 12px;" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
+                <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.dispatchDoc.viceDirectorDate)">日期：</p>
+            </div>
         </td>
     </tr>
-    <tr style="height: 80px;">
+    <tr >
         <td  class="text-center">主任签发 </td>
-        <td colspan="7" style=" height: 80px;">
-            {{vm.dispatchDoc.directorSuggesttion}}
-            <p class="text-right" style="margin-right: 80px; margin-top: 20px;">签名：</p>
-            <p class="text-right" style="margin-right: 12px; margin-top: 5px;">日期：{{vm.dispatchDoc.directorDate}}</p>
+        <td colspan="7">
+            <div style="width: 100%; height: 120px; overflow: hidden;">
+                <p class="text-left" style="height: 60%;">{{vm.dispatchDoc.directorSuggesttion}}</p>
+                <p class="text-right" style="margin-right: 90px;">签名：</p>
+                <p class="text-right" style="margin-right: 12px;" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
+                <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.dispatchDoc.directorDate)">日期：{{vm.dispatchDoc.directorDate}}</p>
+            </div>
         </td>
     </tr>
 </table>

@@ -25,34 +25,43 @@
         <!--S 发文编辑页面 -->
 
         <!-- S 项目建议书  -->
-        <div ng-include ng-show="vm.dispatchDoc.dispatchStage=='项目建议书'"
+        <div id="projectEdit_xmjsy" ng-include ng-show="vm.dispatchDoc.dispatchStage=='项目建议书'"
              src="'${path}/contents/app/dispatch/dispatchEdit/projectEdit.html'"></div>
         <!-- S 项目建议书 -->
 
         <!-- S 可行性研究报告 -->
-        <div ng-show="vm.dispatchDoc.dispatchStage=='可行性研究报告'" ng-include
+        <div id="feasibilityEdit_kxxyj" ng-show="vm.dispatchDoc.dispatchStage=='可行性研究报告'" ng-include
              src="'${path}/contents/app/dispatch/dispatchEdit/feasibilityEdit.html'"></div>
         <!-- E 可行性研究报告 -->
 
         <!-- S 资金申请报告 -->
-        <div ng-show="vm.dispatchDoc.dispatchStage=='资金申请报告'" ng-include
+        <div id="capitalAppReportEdit_zjsq" ng-show="vm.dispatchDoc.dispatchStage=='资金申请报告'" ng-include
              src="'${path}/contents/app/dispatch/dispatchEdit/capitalAppReportEdit.html'"></div>
         <!-- E 资金申请报告 -->
 
         <!-- S 项目概算 -->
-        <div ng-show="vm.dispatchDoc.dispatchStage=='项目概算'" ng-include
+        <div id="projectBudgetEdit_xmgs" ng-show="vm.dispatchDoc.dispatchStage=='项目概算'" ng-include
              src="'${path}/contents/app/dispatch/dispatchEdit/projectBudgetEdit.html'"></div>
         <!-- E 项目概算 -->
 
         <!-- S 进口设备 -->
-        <div ng-show="vm.dispatchDoc.dispatchStage=='进口设备'" ng-include
+        <div id="foreignEdit_jksb" ng-show="vm.dispatchDoc.dispatchStage=='进口设备'" ng-include
              src="'${path}/contents/app/dispatch/dispatchEdit/foreignEdit.html'"></div>
         <!-- E 进口设备 -->
 
         <!-- S 设备清单（国产）/设备清单（进口） -->
-        <div ng-show="vm.dispatchDoc.dispatchStage=='设备清单（国产）' || vm.dispatchDoc.dispatchStage=='设备清单（进口）' " ng-include
+        <div id="domesticEdit_sbqd" ng-show="vm.dispatchDoc.dispatchStage=='设备清单（国产）' || vm.dispatchDoc.dispatchStage=='设备清单（进口）' " ng-include
              src="'${path}/contents/app/dispatch/dispatchEdit/domesticEdit.html'"></div>
         <!-- E 设备清单（国产）/设备清单（进口） -->
+
+        <!---S 发文打印模板 引入-->
+        <div id="projectEdit_xmjsy_templ" style="display: none;"> <#include "/templatePrint/dispatch/projectDetailXmjys.html"/></div>
+        <div id="foreignEdit_jksb_templ" style="display: none;"> <#include "/templatePrint/dispatch/projectDetailJksb.html"/></div>
+        <div id="domesticEdit_sbqd_templ" style="display: none;"> <#include "/templatePrint/dispatch/projectDetailSbqd.html"/></div>
+        <div id="projectBudgetEdit_xmgs_templ" style="display: none;"> <#include "/templatePrint/dispatch/projectDetailXmgs.html"/></div>
+        <div id="capitalAppReportEdit_zjsq_templ" style="display: none;"> <#include "/templatePrint/dispatch/capitalAppReportZjsq.html"/></div>
+        <div id="feasibilityEdit_kxxyj_templ" style="display: none;"> <#include "/templatePrint/dispatch/projectDetailKxxyjbg.html"/></div>
+        <!---E 发文打印模板 引入-->
 
         <!--S 发文编辑页面 -->
     </form> <!-- end form -->

@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <div ng-if="vm.model.isassistproc != 9 || vm.model.isassistproc !='9'">
     <table class="print-table"  >
-        <caption class="title" style="padding-top: 12px;">深圳市政府投资项目评审中心<br>
+        <caption class="title" style="margin-top: 12px;">深圳市政府投资项目评审中心<br>
             {{getTBHeadName(vm.fileRecord.fileReviewstage,vm.fileRecord.isAdvanced,'项目归档审批表')}}
         </caption>
         <caption>
@@ -277,9 +277,11 @@
             </td>
         </tr>
 
-        <tr style="height: 100px">
+        <tr >
             <td>其他资料</td>
-            <td colspan="6"></td>
+            <td colspan="6">
+                <div style="width: 100%; height: 100px; overflow: hidden;"></div>
+            </td>
         </tr>
 
         <tr>
@@ -337,10 +339,10 @@
             </td>
         </tr>
         <tr>
-            <td rowspan="2" width="5%">图纸</td>
-            <td colspan="7" style="padding: 0px;">
-                <table style="width: 100%; border: none;" >
-                    <tr>
+            <td rowspan="2" width="5%" height="200px">图纸</td>
+            <td colspan="7" style="padding: 0px 0px;height: 100px;">
+                <table style="width: 100%; border: none;height: 100px;" >
+                    <tr style="height: 50px;">
                         <td rowspan="2" width="10%">专业</td>
                         <td width="14%">
                             建筑<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.architecture" name="architecture"  ng-true-value="9" ng-false-value="0">
@@ -361,7 +363,7 @@
                             弱电<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.lightCurrent" name="lightCurrent"  ng-true-value="9" ng-false-value="0">
                         </td>
                     </tr>
-                    <tr style="height: 20px;">
+                    <tr style="height: 50px;">
                         <td >{{vm.fileRecord.architectureCount}}</td>
                         <td >{{vm.fileRecord.constructionCount}}</td>
                         <td  >{{vm.fileRecord.drainAwayWaterCount}}</td>
@@ -374,9 +376,9 @@
             </td>
         </tr>
         <tr>
-            <td colspan="7" style="padding: 0px;">
-                <table  style="border:none; width: 100%;">
-                    <tr>
+            <td colspan="7" style="padding: 0px 0px;height: 100px;">
+                <table  style="border:none; width: 100%;height: 100%;">
+                    <tr style="height: 50px;">
                         <td width="10%" class="text-center" rowspan="2">专业</td>
                         <td width="14%">
                             道路<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.roadway" name="roadway"  ng-true-value="9" ng-false-value="0">
@@ -397,7 +399,7 @@
                             其他<input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.fieOther" name="lightCurrent"  ng-true-value="9" ng-false-value="0">
                         </td>
                     </tr>
-                    <tr style="height: 20px;">
+                    <tr style="height: 50px;">
                         <td>{{vm.fileRecord.roadwayCount}}</td>
                         <td>{{vm.fileRecord.bridgeCount}}</td>
                         <td>{{vm.fileRecord.gardensCount}}</td>
@@ -411,15 +413,19 @@
 
         <tr>
             <td>项目负责人签名</td>
-            <td colspan="3" ></td>
-            <td >发送存档日期</td>
-            <td colspan="2"></td>
+            <td colspan="3" >{{vm.fileRecord.projectChargeUser}}</td>
+            <td rowspan="2">发送存档日期</td>
+            <td colspan="2" rowspan="2">{{vm.fileRecord.sendStoreDate}}</td>
+        </tr>
+        <tr>
+            <td >项目第二负责人（签名）</td>
+            <td colspan="3">{{vm.fileRecord.projectTwoUser}}</td>
         </tr>
         <tr>
             <td>档案管理员签名</td>
-            <td colspan="3"></td>
+            <td colspan="3">{{vm.fileRecord.signUserName}}</td>
             <td >存档日期</td>
-            <td colspan="2"></td>
+            <td colspan="2">{{vm.fileRecord.fileDate}}</td>
         </tr>
         </tbody>
     </table>
@@ -430,7 +436,7 @@
     <!-- S 项目概算 -->
     <meta charset="UTF-8">
     <table class="print-table"  >
-        <caption class="title" style="padding-top: 12px;">深圳市政府投资项目评审中心<br>
+        <caption class="title" style="margin-top: 12px;">深圳市政府投资项目评审中心<br>
             {{getTBHeadName(vm.fileRecord.fileReviewstage,vm.fileRecord.isAdvanced,'项目归档审批表')}}
         </caption>
         <caption>
@@ -864,7 +870,7 @@
     <!-- E 项目概算-->
 </div>
 
-<p style="line-height: 30px;">备注：存档表一式两份，一份贴于档案袋封面，另一份存入档案。{{vm.model.isassistproc}}</p>
+<p style="line-height: 30px;">备注：存档表一式两份，一份贴于档案袋封面，另一份存入档案。</p>
 <!--  end table		-->
 
 <!-- E 项目概算-->

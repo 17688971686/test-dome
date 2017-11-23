@@ -218,28 +218,36 @@
             </table>
         </td>
     </tr>
-    <tr style="height:50px;">
+    <tr >
         <td>综合部分办</td>
         <td colspan="5">
-            <p class="text-left"> {{vm.model.comprehensivehandlesug}}</p>
-            <p class="text-right" style="margin-right: 45px; margin-top: 5px;">签名：{{vm.model.comprehensiveName}}</p>
-            <p class="text-right" style="margin-right: 12px; margin-top: 5px;">日期：{{vm.model.comprehensiveDate}}</p>
+            <div style="width: 100%; height: 80px; overflow: hidden;">
+            <p class="text-left" style="height: 50%;"> {{vm.model.comprehensivehandlesug}}</p>
+            <p class="text-right" style="margin-right: 50px; ">签名：{{vm.model.comprehensiveName}}</p>
+            <p class="text-right" style="margin-right: 12px; ">日期：{{vm.model.comprehensiveDate}}</p>
+            </div>
         </td>
     </tr>
-    <tr style="height:50px;">
+    <tr >
         <td>中心领导签批意见</td>
         <td colspan="5" >
-            <p class="text-left"> {{vm.model.leaderhandlesug}}</p>
-            <p  class="text-right" style="margin-right: 80px;margin-top: 5px;" >签名：</p>
-            <p  class="text-right" style="margin-right: 12px; margin-top: 5px;">日期：{{vm.model.leaderDate}}</p>
+            <div style="width: 100%; height: 80px; overflow: hidden;">
+            <p class="text-left" style="height: 50%;"> {{vm.model.leaderhandlesug}}</p>
+            <p  class="text-right" style="margin-right: 90px;" >签名：</p>
+            <p  class="text-right" style="margin-right: 12px;" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
+                <p  class="text-right" style="margin-right: 90px;" ng-if="!(vm.model.leaderDate)">日期：</p>
+            </div>
         </td>
     </tr>
-    <tr style="height:50px;">
+    <tr >
         <td>部长处理意见</td>
         <td colspan="5" >
-            <p class="text-left"> {{vm.model.ministerhandlesug}}</p>
-            <p class="text-right" style="margin-right: 80px;margin-top: 5px; ">签名：</p>
-            <p class="text-right" style="margin-right: 12px; margin-top: 5px;">日期：{{vm.model.ministerDate}}</p>
+            <div style="width: 100%; height: 80px; overflow: hidden;">
+            <p class="text-left" style="height: 50%;"> {{vm.model.ministerhandlesug}}</p>
+            <p class="text-right" style="margin-right: 90px; ">签名：</p>
+            <p class="text-right" style="margin-right: 12px; " ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
+                <p class="text-right" style="margin-right: 90px; " ng-if="!(vm.model.ministerDate)">日期：</p>
+            </div>
         </td>
     </tr>
 </table>

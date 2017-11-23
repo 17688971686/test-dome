@@ -9,9 +9,8 @@
         <td width="20%">工作单位</td>
         <td width="20%">职位/职称</td>
         <td width="10%">专业</td>
-        <td width="22%">专家评分</td>
-        <td width="13%">评分描述</td>
-        <td width="10%" ng-if="vm.showFlag.isMainPrinUser">操作</td>
+        <td width="20%">专家评分</td>
+        <td width="15%">评分描述</td>
     </tr>
     <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
         <td>{{$index+1}}</td>
@@ -25,18 +24,13 @@
             </span>
         </td>
         <td>{{x.describes}}</td>
-        <td ng-if="vm.showFlag.isMainPrinUser">
-            <button class="btn btn-xs btn-primary" ng-click="vm.editSelectExpert(x.id)">
-                <span class="glyphicon glyphicon-pencil"></span>评分
-            </button>
-        </td>
     </tr>
     </tbody>
 </table>
 <!-- end 专家评分 -->
 
 <!-- start 专家评分弹窗-->
-<div id="print_score_win" style="display: none;">
+<!--<div id="print_score_win" style="display: none;">
     <div class="toolbar">
         <button class="btn btn-sm btn-success" ng-click="vm.saveMark()" ng-disabled="vm.isCommit" >
             <span class="glyphicon glyphicon-ok"></span>保存
@@ -61,5 +55,5 @@
             </table>
         </form>
     </div>
-</div>
+</div>-->
 <!-- end 专家评分弹窗-->
