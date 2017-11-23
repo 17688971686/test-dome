@@ -131,8 +131,9 @@
                 model.id = model.bookId;
                 var beginTime = (model.start).Format("yyyy-MM-dd hh:mm:ss");
                 model.beginTime = beginTime;
-                var endTime = (model.end).Format("yyyy-MM-dd hh:mm:ss");
-                model.endTime = endTime;
+                model.rbDay = (model.start).Format("yyyy-MM-dd");
+                var endTime = (model.end).Format("hh:mm:ss");
+                model.endTime = model.rbDay+ " "+endTime;
 
                 var httpOptions = {
                     method: 'post',

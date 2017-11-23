@@ -987,6 +987,9 @@ public class SignServiceImpl implements SignService {
                 if (!Validate.isString(branchIndex)) {
                     branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue();
                 }
+                if(SessionUtil.getUserInfo().getOrg() == null){
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "你还没设置所属部门！");
+                }
                 if (!Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgSLeader())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的分管领导！");
                 }
