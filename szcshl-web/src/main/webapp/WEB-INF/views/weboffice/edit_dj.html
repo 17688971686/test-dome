@@ -86,7 +86,7 @@
             <td style="text-align: center;">
                 <span style="font-size: 16px">文件名：${sysFile.showName}</span>
                 <span style="margin-left:20px;">
-                     <button type=button  class="btn" onclick="WebSave();">保存</button>
+                     <button type=button  class="btn" onclick="saveToServer();">保存</button>
                     <button type=button  class="btn" onclick="showPrintDialog();">打印</button>
                 </span>
             </td>
@@ -113,6 +113,8 @@
 <script type="text/javascript">
     var filePath = '${filePath}';
     var fileType = '${fileType}';
+    var uploadFile = '${uploadFile}';
+    var sysFileId = '${sysFileId}';
     function WebOffice_OpenOfficeFile(){
         if(filePath){
             try{
@@ -136,12 +138,42 @@
         $.ajax({
             type:"get",
             url: rootPath+"/file/fileSysUpload?sysFileId="+sysFileId,
+            async: false,
             contentType: 'application/x-www-form-urlencoded',
             success: function(result) {
             },
             error: function(result) {
             }
         });
+    }
+
+    /****************************************************
+     *
+     *保存weboffice的文档到服务器
+     *@url : 保存文件的远程地址
+     *
+     /****************************************************/
+    function saveToServer() {
+        document.all.WebOffice.HttpInit(); //  初始化 Http 引擎
+        document.all.WebOffice.SetTrackRevisions(0);
+        document.all.WebOffice.ShowRevisions(0);
+        //  添加上传文件
+        document.all.WebOffice.HttpAddPostString("state", 0);
+        document.all.WebOffice.HttpAddPostCurrFile("DocContent", ""); 	// 上传文件
+        //  提交上传文件
+        document.all.WebOffice.HttpPost(uploadFile);
+
+        $.ajax({
+            type:"get",
+            url: rootPath+"/file/fileSysUpload?sysFileId="+sysFileId,
+            async: false,
+            contentType: 'application/x-www-form-urlencoded',
+            success: function(result) {
+            },
+            error: function(result) {
+            }
+        });
+
     }
 
     /****************************************************

@@ -19,7 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.ServletConfigAware;
+import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartFile;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -37,7 +41,7 @@ import java.util.List;
 @Controller
 @RequestMapping(name = "文件管理", path = "file")
 @MudoleAnnotation(name = "系统管理",value = "permission#system")
-public class FileController {
+public class FileController implements ServletConfigAware,ServletContextAware {
     private static Logger logger = Logger.getLogger(FileController.class);
     
     private static final String plugin_file_path = "contents/plugins";
@@ -57,6 +61,16 @@ public class FileController {
     @Autowired
     private RealPathResolver realPathResolver;
 
+    private ServletContext servletContext;
+    @Override
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+    private ServletConfig servletConfig;
+    @Override
+    public void setServletConfig(ServletConfig servletConfig) {
+        this.servletConfig = servletConfig;
+    }
 
     @RequiresAuthentication
     @RequestMapping(name = "获取文件数据", path = "", method = RequestMethod.GET)
@@ -186,6 +200,7 @@ public class FileController {
         }
     }
 
+
     @RequiresAuthentication
     @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.GET)
     public @ResponseBody
@@ -198,8 +213,6 @@ public class FileController {
         //下载ftp服务器附件到本地
         Boolean flag = FtpUtil.downloadFile( sysFile.getFtpIp(), sysFile.getPort()!=null?Integer.parseInt(sysFile.getPort()):0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
                 sysFile.getShowName(), SysFileUtil.getUploadPath());
-
-
         String fileType = sysFile.getFileType().toLowerCase(); //最小化
         String filename = sysFile.getShowName();
         filename = URLDecoder.decode(filename, "UTF-8");
@@ -392,6 +405,8 @@ public class FileController {
                 sysFile.getShowName(), SysFileUtil.getUploadPath());
         String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
         model.addAttribute("filePath",basePath+"/file/html/download?fileName="+ sysFile.getShowName());
+        model.addAttribute("uploadFile",basePath+"/contents/uploadFile.jsp?file="+ sysFile.getShowName()+"&localFilePath="+filePath);
+        model.addAttribute("sysFileId",sysFileId);
         //文件类型
         String fileTyp ;
         switch (sysFile.getFileType().toLowerCase()){
