@@ -81,7 +81,7 @@
                             <td style="max-width: 180px;">姓名</td>
                             <td style="max-width: 360px;">身份证号码</td>
                             <td>开户行/银行账号</td>
-                            <td style="max-width: 180px;">评审费</td>
+                            <td >评审费</td>
                             <td style="max-width: 180px;">应纳税额</td>
                             <td style="max-width: 180px;">合计（元）</td>
                             <td style="max-width: 260px;">是否函评</td>
@@ -93,7 +93,7 @@
                             <td>{{x.expertDto.bankAccount}}/{{x.expertDto.openingBank}}</td>
                             <td>
                                 <div >
-                                    <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
+                                    <input style="width: 80%;" type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
                                            class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
                                            data-val-regex="评审费用只能为正数" data-val="true" data-val-required="必填"
                                            data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$" >

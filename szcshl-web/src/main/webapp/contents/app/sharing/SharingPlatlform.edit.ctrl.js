@@ -51,11 +51,17 @@
         activate();
         function activate() {
             if (vm.model.sharId) {
-                sharingPlatlformSvc.getSharingPlatlformById(vm);
-                //初始化附件列表
-                sysfileSvc.findByBusinessId(vm.model.sharId,function(data){
-                    vm.sysFilelists = data;
+                sharingPlatlformSvc.getSharingPlatlformById(vm,function (data) {
+                    vm.model = data;
+                    vm.businessFlag.isLoadModel = true;
+                    sharingPlatlformSvc.initSeleObj(vm);
+                    //初始化附件列表
+                    sysfileSvc.findByBusinessId(vm.model.sharId,function(data){
+                        vm.sysFilelists = data;
+                        vm.initFileUpload();
+                    });
                 });
+
             }else{
                 vm.initFileUpload();
             }
