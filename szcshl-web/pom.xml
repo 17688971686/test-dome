@@ -336,9 +336,12 @@
             <artifactId>json</artifactId>
             <version>20160810</version>
         </dependency>
-
-
-
+        <!-- 本地流上传到服务器-->
+        <dependency>
+            <groupId>com.jspsmart.upload</groupId>
+            <artifactId>jspsmartupload</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>szcshl-web</finalName>
