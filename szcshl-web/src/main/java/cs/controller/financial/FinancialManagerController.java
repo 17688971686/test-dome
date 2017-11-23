@@ -271,7 +271,7 @@ public class FinancialManagerController {
                 HSSFCell TotalCells = row.createCell((short) 5);//合计
                 //写入数据和样式
                 //名字
-                NameCells.setCellValue(expert.getName());
+                NameCells.setCellValue(expert.getName() == null ? "" :expert.getName());
                 NameCells.setCellStyle(style);
 
                 //是否外境
@@ -288,19 +288,25 @@ public class FinancialManagerController {
                 OpeningCells.setCellStyle(style);//居中
                 //定义评审费
                 BigDecimal b = new BigDecimal("2000");//定义评审费的额度
-                if (expertSelected.getReviewCost().compareTo(b) >= 0) {//判断，当评审费的额度大于或等于2000时，字体红色
-                    costCells.setCellValue(expertSelected.getReviewCost().toString());
-                    costCells.setCellStyle(styless);
-                } else {
-                    costCells.setCellValue(expertSelected.getReviewCost().toString());
+                if(expertSelected.getReviewCost()==null){
+                    costCells.setCellValue("");
                     costCells.setCellStyle(style);
+                }else{
+                    if (expertSelected.getReviewCost().compareTo(b) >= 0) {//判断，当评审费的额度大于或等于2000时，字体红色
+                        costCells.setCellValue(expertSelected.getReviewCost().toString());
+                        costCells.setCellStyle(styless);
+                    } else {
+                        costCells.setCellValue(expertSelected.getReviewCost().toString());
+                        costCells.setCellStyle(style);
+                    }
                 }
 
+
                 //应纳税额
-                ReviewCells.setCellValue(expertSelected.getReviewTaxes().toString());
+                ReviewCells.setCellValue(expertSelected.getReviewTaxes()== null ? "":expertSelected.getReviewTaxes().toString());
                 ReviewCells.setCellStyle(style);
                 //合计
-                TotalCells.setCellValue(expertSelected.getTotalCost().toString());
+                TotalCells.setCellValue(expertSelected.getTotalCost()== null ? "" :expertSelected.getTotalCost().toString());
                 TotalCells.setCellStyle(style);
             }
             // 第六步，将文件保存

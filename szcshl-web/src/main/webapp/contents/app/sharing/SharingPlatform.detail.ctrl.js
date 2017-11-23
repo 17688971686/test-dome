@@ -13,7 +13,7 @@
 
         //下载
         vm.downloadSysFile = function (id) {
-            sharingPlatlformSvc.downloadSysfile(id);
+            sysfileSvc.downloadFile(id);
         }
 
         activate();

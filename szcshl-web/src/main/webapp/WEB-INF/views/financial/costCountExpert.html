@@ -30,7 +30,8 @@
                             <td>{{x.expertDto.openingBank}}/{{x.expertDto.bankAccount}}</td>
                             <td>{{x.reviewCost}}</td>
                             <td> {{x.reviewTaxes}}</td>
-                            <td> {{x.totalCost}}</td>
+                            <td ng-if="x.totalCost==undefined || x.totalCost==''" > </td>
+                            <td ng-if="x.totalCost!=undefined || x.totalCost!=''" > {{x.totalCost}}</td>
                         </tr>
                         <tr>
                             <td colspan="4" >合计</td>

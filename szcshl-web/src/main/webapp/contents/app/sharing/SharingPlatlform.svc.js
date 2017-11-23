@@ -51,7 +51,7 @@
                     });
                 }
 
-                if(vm.noOrgUsetList && vm.noOrgUsetList.length > 0){
+                if(vm.noOrgUsetList && vm.noOrgUsetList.length > 0 &&  vm.model.privilegeDtoList!=undefined){
                     vm.noOrgUsetList.forEach(function (nu,i){
                         vm.model.privilegeDtoList.forEach(function (p,index) {
                              if( (p.businessType == 2 || p.businessType == "2") && p.businessId == nu.id){
@@ -181,7 +181,7 @@
         }
 
         // begin#getSharingPlatlformById
-        function getSharingPlatlformById(vm) {
+        function getSharingPlatlformById(vm,callBack) {
             var httpOptions = {
                 method: 'get',
                 url: url_sharingPlatlform + "/html/findById",
@@ -190,9 +190,9 @@
                 }
             };
             var httpSuccess = function success(response) {
-                vm.model = response.data;
-                vm.businessFlag.isLoadModel = true;
-                initSeleObj(vm);
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
             common.http({
                 vm: vm,

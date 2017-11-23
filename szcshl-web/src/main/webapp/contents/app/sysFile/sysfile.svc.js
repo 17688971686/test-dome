@@ -337,7 +337,11 @@
             vm.zNodes = [];
             //循环数据取出父类和相对应的子类
             for (var j = 0; j < array.length; j++) {
-                var name = array[j].sysBusiType;
+                if(array[j].sysBusiType==undefined ||array[j].sysBusiType==""){
+                    var name="其他文件";
+                }else{
+                    var name = array[j].sysBusiType;
+                }
                 var nodes = new Object();//定义父类的对象
                 nodes.id=array[j].mainId;
                 nodes.name = name;
