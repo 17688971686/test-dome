@@ -400,8 +400,11 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     @Transactional
     public ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
-                assigneeValue = "";                            //流程处理人
+        assigneeValue = "";                            //流程处理人
+        List<User> userList = null;                 //用户列表
         Map<String, Object> variables = new HashMap<>();       //流程参数
+        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+        String nextNodeKey = "";                    //下一环节名称
         Annountment annountment = annountmentRepo.findById(Annountment_.anId.getName(),businessId);
         task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
         //环节处理人设定
@@ -419,7 +422,13 @@ public class AnnountmentServiceImpl implements AnnountmentService {
                 annountment.setDeptMinisterIdeaContent(flowDto.getDealOption());
                 annountment.setAppoveStatus(Constant.EnumState.PROCESS.getValue());
                 annountmentRepo.save(annountment);
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_FZ.getValue(), SessionUtil.getUserInfo().getOrg().getOrgSLeader());
+                assigneeValue=SessionUtil.getUserInfo().getOrg().getOrgSLeader();//下一环节的处理人
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_FZ.getValue(), assigneeValue);
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.ANNOUNT_FZ;
+                }
                 break;
             //副主任审批
             case FlowConstant.ANNOUNT_FZ:
@@ -429,12 +438,19 @@ public class AnnountmentServiceImpl implements AnnountmentService {
                 annountment.setDeptSLeaderIdeaContent(flowDto.getDealOption());
                 annountment.setAppoveStatus(Constant.EnumState.STOP.getValue());
                 annountmentRepo.save(annountment);
-                //查询部门领导
-                User user = userRepo.findOrgDirector(annountment.getCreatedBy());//查询用户的所在部门
-                if (!Validate.isString(user.getOrg().getOrgMLeader())) {//判断是否有部门主任
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + user.getOrg().getName() + "】的主任未设置，请先设置！");
+                //查询部门主任领导
+
+                userList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
+                if (!Validate.isList(userList)) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_ZR.getValue(), user.getOrg().getOrgMLeader());
+                assigneeValue=userList.get(0).getId();//下一环节处理人
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_ZR.getValue(), assigneeValue);
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.ANNOUNT_ZR;
+                }
                 break;
 
             //主任审批
@@ -445,9 +461,14 @@ public class AnnountmentServiceImpl implements AnnountmentService {
                 annountment.setDeptDirectorIdeaContent(flowDto.getDealOption());
                 annountment.setAppoveStatus(Constant.EnumState.YES.getValue());
                 annountmentRepo.save(annountment);
-                if(flowDto.getBusinessMap().get("AGREE").equals("9")){//当主任同意时就发布通知公告
+                if(flowDto.getBusinessMap().get("AGREE")!=null){
+                    if(flowDto.getBusinessMap().get("AGREE").equals("9")){//当主任同意时就发布通知公告
+                        updateIssueState(annountment.getAnId(),"9");
+                    }
+                }else{
                     updateIssueState(annountment.getAnId(),"9");
                 }
+
                 break;
             default:
                 break;
@@ -457,6 +478,19 @@ public class AnnountmentServiceImpl implements AnnountmentService {
             taskService.complete(task.getId());
         } else {
             taskService.complete(task.getId(), variables);
+            //如果下一环节还是自己
+            if(isNextUser){
+                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                for(Task t:nextTaskList){
+                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+                        ResultMsg returnMsg = dealSignSupperFlow(processInstance,t,flowDto);
+                        if(returnMsg.isFlag() == false){
+                            return returnMsg;
+                        }
+                        break;
+                    }
+                }
+            }
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);

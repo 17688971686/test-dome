@@ -307,18 +307,25 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     @Transactional
     public ResultMsg dealFlow(ProcessInstance processInstance,Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
-               assigneeValue = "";                             //流程处理人
+        assigneeValue = "";                             //流程处理人
         Map<String,Object> variables = null;                   //流程参数
         User dealUser = null;                                  //用户
         List<User> dealUserList = null;                        //用户列表
         TopicInfo topicInfo = null;                            //课题研究
         WorkPlan workPlan = null;                              //工作方案
         Filing filing = null;                                  //资料归档
+        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+        String nextNodeKey = "";                    //下一环节名称
         //环节处理人设定
         switch (task.getTaskDefinitionKey()) {
             //部长审核计划
             case FlowConstant.TOPIC_BZSH_JH:
                 variables = findOrgLeader(businessId,true,assigneeValue);
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.TOPIC_FGLD_JH;
+                }
                 break;
             //分管领导审核计划
             case FlowConstant.TOPIC_FGLD_JH:
@@ -327,16 +334,28 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 dealUser = dealUserList.get(0);
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),
-                        Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId());
+                assigneeValue= Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),assigneeValue);
+
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.TOPIC_ZRSH_JH;
+                }
                 break;
             //主任审核计划
             case FlowConstant.TOPIC_ZRSH_JH:
                 topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(),businessId);
                 //如果送发改委
-                if(Constant.EnumState.YES.getValue().equals(topicInfo.getSendFgw())){
+                if(Constant.EnumState.YES.getValue().equals(topicInfo.getSendFgw()) || topicInfo.getSendFgw()==null){
                     variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ADMIN.getValue(),SUPER_USER);
                     variables.put(FlowConstant.FlowParams.SEND_FGW.getValue(), true);
+                    //下一环节还是自己处理
+                    if(assigneeValue.equals(SessionUtil.getUserId())){
+                        isNextUser = true;
+                        nextNodeKey = FlowConstant.TOPIC_BFGW;
+                    }
+
                 }else{
                     variables = findPrinUser(businessId,assigneeValue);
                     variables.put(FlowConstant.FlowParams.SEND_FGW.getValue(), false);
@@ -390,7 +409,11 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 dealUser = dealUserList.get(0);
                 assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),assigneeValue);
-
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.TOPIC_ZRSH_FA;
+                }
                 workPlan = workPlanRepo.findById("topId", businessId);
                 workPlan.setLeaderName(SessionUtil.getDisplayName());
                 workPlan.setLeaderOption(flowDto.getDealOption());
@@ -428,6 +451,11 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 dealUser = dealUserList.get(0);
                 assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),assigneeValue);
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.TOPIC_ZRSH_BG;
+                }
                 break;
             //主任审核
             case FlowConstant.TOPIC_ZRSH_BG :
@@ -453,6 +481,11 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 dealUser = dealUserList.get(0);
                 assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),assigneeValue);
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.TOPIC_ZRSH_JT;
+                }
                 break;
             //主任审核
             case FlowConstant.TOPIC_ZRSH_JT :
@@ -490,7 +523,11 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 dealUser = dealUserList.get(0);
                 assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_GDY.getValue(),assigneeValue);
-
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.TOPIC_GDY_QR;
+                }
                 filing = filingRepo.findById("topId", businessId);
                 filing.setDirector(SessionUtil.getDisplayName());
                 filingRepo.save(filing);
@@ -514,6 +551,19 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             taskService.complete(task.getId());
         } else {
             taskService.complete(task.getId(), variables);
+            //如果下一环节还是自己
+            if(isNextUser){
+                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                for(Task t:nextTaskList){
+                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+                        ResultMsg returnMsg = dealFlow(processInstance,t,flowDto);
+                        if(returnMsg.isFlag() == false){
+                            return returnMsg;
+                        }
+                        break;
+                    }
+                }
+            }
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(),assigneeValue);

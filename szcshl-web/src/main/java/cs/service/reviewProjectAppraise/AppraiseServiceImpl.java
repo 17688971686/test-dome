@@ -322,7 +322,8 @@ public class AppraiseServiceImpl implements AppraiseService {
         User dealUser = null;                                  //用户
         List<User> dealUserList = null;                        //用户列表
         AppraiseReport appraiseReport = null;                //档案借阅管理
-
+        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+        String nextNodeKey = "";                    //下一环节名称
         //环节处理人设定
         switch (task.getTaskDefinitionKey()) {
             //项目负责人填报
@@ -360,6 +361,11 @@ public class AppraiseServiceImpl implements AppraiseService {
                     assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                     variables.put(FlowConstant.FlowParams.USER_ZHB.getValue(), assigneeValue);
                     variables.put(FlowConstant.FlowParams.ISAGREE.getValue(), true);
+                    //下一环节还是自己处理
+                    if(assigneeValue.equals(SessionUtil.getUserId())){
+                        isNextUser = true;
+                        nextNodeKey = FlowConstant.FLOW_ARP_ZHB_SP;
+                    }
                     //如果不同意，则直接结束
                 } else {
                     Sign sign = signRepo.findById(Sign_.signid.getName(), appraiseReport.getSignId());
@@ -395,6 +401,19 @@ public class AppraiseServiceImpl implements AppraiseService {
             taskService.complete(task.getId());
         } else {
             taskService.complete(task.getId(), variables);
+            //如果下一环节还是自己
+            if(isNextUser){
+                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                for(Task t:nextTaskList){
+                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+                        ResultMsg returnMsg = dealFlow(processInstance,t,flowDto);
+                        if(returnMsg.isFlag() == false){
+                            return returnMsg;
+                        }
+                        break;
+                    }
+                }
+            }
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);

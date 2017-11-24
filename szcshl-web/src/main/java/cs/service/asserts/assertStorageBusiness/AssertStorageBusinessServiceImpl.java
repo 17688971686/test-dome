@@ -244,6 +244,8 @@ public class AssertStorageBusinessServiceImpl  implements AssertStorageBusinessS
 		Org org = null;
 		Map<String, Object> variables = processInstance.getProcessVariables();
 		boolean saveFlag = false;
+		boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+		String nextNodeKey = "";                    //下一环节名称
 		//以下是流程环节处理
 		switch (task.getTaskDefinitionKey()) {
 			case FlowConstant.ASSERT_STORAGE_BZSH:
@@ -255,7 +257,13 @@ public class AssertStorageBusinessServiceImpl  implements AssertStorageBusinessS
 				assertStorageBusinessRepo.save(goodsDetailBusiness);
 				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
 				dealUser = 	userRepo.findUserByRoleName("综合部部长").get(0);
-				variables = ActivitiUtil.setAssigneeValue(FlowConstant.AssertStorageFlowParams.USER_ZHB.getValue(), Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId());
+				assigneeValue=Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+				variables = ActivitiUtil.setAssigneeValue(FlowConstant.AssertStorageFlowParams.USER_ZHB.getValue(), assigneeValue);
+				//下一环节还是自己处理
+				if(assigneeValue.equals(SessionUtil.getUserId())){
+					isNextUser = true;
+					nextNodeKey = FlowConstant.ASSERT_STORAGE_ZHBSH;
+				}
 				break;
 			case FlowConstant.ASSERT_STORAGE_ZHBSH:
 				goodsDetailBusiness = assertStorageBusinessRepo.findById(AssertStorageBusiness_.businessId.getName(), businessKey);
@@ -265,7 +273,13 @@ public class AssertStorageBusinessServiceImpl  implements AssertStorageBusinessS
 				goodsDetailBusiness.setComprehensivehandlesug(flowDto.getDealOption());
 				assertStorageBusinessRepo.save(goodsDetailBusiness);
 				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-				variables = ActivitiUtil.setAssigneeValue(FlowConstant.AssertStorageFlowParams.USER_ZXLD.getValue(), SessionUtil.getUserInfo().getOrg().getOrgSLeader());
+				assigneeValue=SessionUtil.getUserInfo().getOrg().getOrgSLeader();
+				variables = ActivitiUtil.setAssigneeValue(FlowConstant.AssertStorageFlowParams.USER_ZXLD.getValue(), assigneeValue);
+				//下一环节还是自己处理
+				if(assigneeValue.equals(SessionUtil.getUserId())){
+					isNextUser = true;
+					nextNodeKey = FlowConstant.ASSERT_STORAGE_ZXLDSH;
+				}
 				break;
 			case FlowConstant.ASSERT_STORAGE_ZXLDSH:
 				goodsDetailBusiness = assertStorageBusinessRepo.findById(AssertStorageBusiness_.businessId.getName(), businessKey);
@@ -284,6 +298,19 @@ public class AssertStorageBusinessServiceImpl  implements AssertStorageBusinessS
 			taskService.complete(task.getId());
 		} else {
 			taskService.complete(task.getId(), variables);
+			//如果下一环节还是自己
+			if(isNextUser){
+				List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+				for(Task t:nextTaskList){
+					if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+						ResultMsg returnMsg = dealFlow(processInstance,t,flowDto);
+						if(returnMsg.isFlag() == false){
+							return returnMsg;
+						}
+						break;
+					}
+				}
+			}
 		}
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
 	}
