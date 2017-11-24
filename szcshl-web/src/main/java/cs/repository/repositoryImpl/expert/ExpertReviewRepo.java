@@ -56,4 +56,11 @@ public interface ExpertReviewRepo extends IRepository<ExpertReview, String> {
      */
     @Deprecated
     List<ExpertReview> findReviewOverTime(String businessType);
+
+    /**
+     * 判断评审方式是否为空（即没有专家抽取条件，也没有抽取专家）
+     * @param businessId
+     * @return
+     */
+    boolean isReviewIsEmpty(String businessId);
 }

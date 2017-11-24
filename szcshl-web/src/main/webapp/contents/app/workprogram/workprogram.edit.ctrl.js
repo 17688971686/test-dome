@@ -73,6 +73,8 @@
             //如果已经保存了工作方案，则从数据库查找工作方案内容进行对比
             if(vm.work.id){
                 workprogramSvc.findById(vm.work.id,function(data){
+                    console.log(data.isSigle +"---"+vm.work.isSigle);
+                    console.log(data.reviewType +"---"+vm.work.reviewType)
                     //1、由合并评审改为单个评审
                     if(data.isSigle == '合并评审' && data.isMainProject == "9" && "单个评审" == vm.work.isSigle){
                         bsWin.confirm({
@@ -94,7 +96,56 @@
                                 vm.work.isMainProject = "9";
                             }
                         });
+                    //由专家评审会改成专家函评，并且已经预定了会议室
+                    }else if(data.reviewType =='专家评审会' && vm.work.reviewType =='专家函评' && vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0){
+                        bsWin.confirm({
+                            title: "询问提示",
+                            message: "改成专家函评，预定会议室将会删除，确定修改么？",
+                            onOk: function () {
+                                workprogramSvc.updateReviewType($state.params.signid,vm.work.id,vm.work.reviewType, function (data) {
+                                    if (data.flag || data.reCode == 'ok') {
+                                        vm.work = data.reObj;
+                                        vm.work.signId = $state.params.signid;
+                                        bsWin.alert("操作成功！");
+                                    } else {
+                                        bsWin.error("操作失败！");
+                                    }
+                                });
+                            },
+                            onCancel: function () {
+                                vm.work.reviewType = data.reviewType;
+                            }
+                        });
+
+                    }else if((data.reviewType =='专家评审会' || data.reviewType =='专家函评') && vm.work.reviewType =='自评'){
+                        var isNeedUpdate = false;
+                        if(vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0){
+                            isNeedUpdate = true;
+                        }else if(vm.work.expertDtoList &&vm.work.expertDtoList.length > 0){
+                            isNeedUpdate = true;
+                        }
+                        if(isNeedUpdate){
+                            bsWin.confirm({
+                                title: "询问提示",
+                                message: "改成自评，预定会议室和抽取专家将会删除，确定修改么？",
+                                onOk: function () {
+                                    workprogramSvc.updateReviewType($state.params.signid,vm.work.id,vm.work.reviewType, function (data) {
+                                        if (data.flag || data.reCode == 'ok') {
+                                            vm.work = data.reObj;
+                                            vm.work.signId = $state.params.signid;
+                                            bsWin.alert("操作成功！");
+                                        } else {
+                                            bsWin.error("操作失败！");
+                                        }
+                                    });
+                                },
+                                onCancel: function () {
+                                    vm.work.reviewType = data.reviewType;
+                                }
+                            });
+                        }
                     }
+
                 });
             }
         }
@@ -191,7 +242,14 @@
         //会议预定添加弹窗
         vm.addTimeStage = function () {
             if (vm.work.id) {
-                $state.go('room', {businessId: vm.work.id, businessType: "SIGN_WP"});
+                workprogramSvc.findById(vm.work.id,function(data){
+                    //2、如果已经保存，则弹框
+                    if(data.reviewType == '专家评审会'){
+                        $state.go('room', {businessId: vm.work.id, businessType: "SIGN_WP"});
+                    }else{
+                        bsWin.alert("请先保存工作方案！");
+                    }
+                });
             } else {
                 bsWin.alert("请先保存！");
             }
@@ -210,16 +268,6 @@
                 workprogramSvc.createWP(vm.work, false, vm.iscommit, function (data) {
                     if (data.flag || data.reCode == "ok") {
                         vm.work.id = data.reObj.id;
-                        /*//初始化数值
-                        if (data.reObj.reviewType == "自评") {
-                            vm.businessFlag.isSelfReview = true;           //是否自评
-                        }
-                        if (data.reObj.isSigle == "合并评审") {
-                            vm.businessFlag.isSingleReview = false;         //是否单个评审
-                        }
-                        if (data.reObj.isMainProject == "9") {
-                            vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
-                        }*/
                         bsWin.success("操作成功！");
                     } else {
                         bsWin.error(data.reMsg);
@@ -233,10 +281,24 @@
         //拟聘请专家
         vm.selectExpert = function () {
             if (vm.work.id) {
-                $state.go('expertReviewEdit', {
-                    businessId: vm.work.signId,
-                    minBusinessId: vm.work.id,
-                    businessType: "SIGN"
+                //2、如果已经保存，则弹框
+                workprogramSvc.findById(vm.work.id,function(data){
+                    if(data.reviewType == '专家评审会' || data.reviewType == '专家函评'){
+                        //先让用户选择会议时间
+                        if(vm.work.reviewType == '专家评审会' && (!vm.work.roomBookingDtos || vm.work.roomBookingDtos.length == 0) ){
+                            bsWin.alert("请先预定评审会日期！");
+                        }else if(vm.work.reviewType == '专家函评' && !data.letterDate){
+                            bsWin.alert("请先选择函评日期并保存！");
+                        }else{
+                            $state.go('expertReviewEdit', {
+                                businessId: vm.work.signId,
+                                minBusinessId: vm.work.id,
+                                businessType: "SIGN"
+                            });
+                        }
+                    }else{
+                        bsWin.alert("请先保存工作方案！");
+                    }
                 });
             } else {
                 bsWin.alert("请先保存当前信息，再继续操作！");

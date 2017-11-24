@@ -78,6 +78,14 @@ public class WorkProgramController {
     }
 
     @RequiresAuthentication
+    @RequestMapping(name = "专家评审会修改", path = "updateReviewType", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg updateReviewType(@RequestBody WorkProgramDto workProgramDto) {
+        return workProgramService.updateReviewType(workProgramDto.getSignId(),workProgramDto.getId(),workProgramDto.getReviewType());
+    }
+
+
+    @RequiresAuthentication
     //@RequiresPermissions("workprogram#html/edit#get")
     @RequestMapping(name = "工作方案编辑", path = "html/edit", method = RequestMethod.GET)
     public String edit() {

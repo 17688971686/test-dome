@@ -186,21 +186,25 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             Date now = new Date();
             expertReview = new ExpertReview();
             expertReview.setBusinessId(businessId);
-            expertReview.setCreatedBy(SessionUtil.getLoginName());
-            expertReview.setModifiedBy(SessionUtil.getLoginName());
+            expertReview.setCreatedBy(SessionUtil.getDisplayName());
+            expertReview.setModifiedBy(SessionUtil.getDisplayName());
             expertReview.setCreatedDate(now);
             expertReview.setModifiedDate(now);
             expertReview.setBusinessType(businessType);
-            //获取评审会日期
-            if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
-                WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),minBusinessId);
-                if("专家函评".equals(wp.getReviewType())){
-                    expertReview.setReviewDate(wp.getLetterDate());
-                }
-            }
+
+            /*审批通过工作方案，再更新评审会日期
             if(expertReview.getReviewDate() == null){
-                expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(minBusinessId));
-            }
+                if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
+                    WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),minBusinessId);
+                    if(Constant.MergeType.REVIEW_LEETER.getValue().equals(wp.getReviewType())){
+                        //函评日期
+                        expertReview.setReviewDate(wp.getLetterDate());
+                    }else{
+                        //获取评审会日期
+                        expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(minBusinessId));
+                    }
+                }
+            }*/
             //评审费发放标题
             expertReviewRepo.initReviewTitle(expertReview, businessId, businessType);
             expertReviewRepo.save(expertReview);

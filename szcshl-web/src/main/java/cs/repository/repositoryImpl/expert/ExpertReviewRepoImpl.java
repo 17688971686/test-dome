@@ -211,4 +211,21 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
         }
         return resultList;
     }
+
+    /**
+     * 判断评审方式是否为空（即没有专家抽取条件，也没有抽取专家）
+     * @param businessId
+     * @return
+     */
+    @Override
+    public boolean isReviewIsEmpty(String businessId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(ExpertReview_.businessId.getName(),businessId));
+        ExpertReview expertReview = (ExpertReview) criteria.uniqueResult();
+        if(expertReview == null || (!Validate.isList(expertReview.getExpertSelectedList())
+        && !Validate.isList(expertReview.getExpertSelConditionList()))){
+            return true;
+        }
+        return false;
+    }
 }

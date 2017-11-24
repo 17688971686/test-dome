@@ -49,4 +49,13 @@ public interface WorkProgramService {
      * @return
      */
     List<WorkProgramDto> findMergeWP(String signid);
+
+    /**
+     * 专家评审方式修改
+     * @param signId            项目ID
+     * @param workprogramId     工作方案ID
+     * @param reviewType        新的评审方式
+     * @return
+     */
+    ResultMsg updateReviewType(String signId, String workprogramId, String reviewType);
 }

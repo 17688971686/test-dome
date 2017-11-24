@@ -334,10 +334,10 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			rb.setModifiedBy(SessionUtil.getUserId());
 			roomBookingRepo.save(rb);
 
-			//根据业务类型，更新专家评审会事件
-			if(Validate.isString(rb.getBusinessId()) && Validate.isString(rb.getBusinessType())){
+			//根据业务类型，更新专家评审会事件(在流程处理环节，统一更改评审会日期，以审批通过的日期为准)
+			/*if(Validate.isString(rb.getBusinessId()) && Validate.isString(rb.getBusinessType())){
 				expertReviewRepo.updateReviewDate(rb.getBusinessId(),rb.getBusinessType(),rb.getRbDay());
-			}
+			}*/
 			return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",rb);
 		}
 	}

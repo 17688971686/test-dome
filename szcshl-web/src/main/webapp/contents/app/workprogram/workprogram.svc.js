@@ -3,40 +3,65 @@
 
     angular.module('app').factory('workprogramSvc', workprogram);
 
-    workprogram.$inject = [ '$http', '$state','$rootScope'];
-    function workprogram( $http, $state,$rootScope) {
+    workprogram.$inject = ['$http', '$state', '$rootScope'];
+    function workprogram($http, $state, $rootScope) {
         var url_company = rootPath + "/company";
         var service = {
             initPage: initPage,				        //初始化页面参数
             createWP: createWP,				        //新增操作
             findCompanys: findCompanys,		        //查找主管部门
             findUsersByOrgId: findUsersByOrgId,     //查询评估部门
-            deleteBookRoom:deleteBookRoom,          //删除会议室
+            deleteBookRoom: deleteBookRoom,          //删除会议室
             findAllMeeting: findAllMeeting,         //查找会议室地点
 
-            initMergeInfo : initMergeInfo,          //初始化合并项目信息
+            initMergeInfo: initMergeInfo,          //初始化合并项目信息
             getMergeSignBySignId: getMergeSignBySignId,   //初始化已选项目列表
             unMergeWPSign: unMergeWPSign,			//待选项目列表
 
             chooseSign: chooseSign,                 //选择合并评审的工作方案
             cancelMergeSign: cancelMergeSign,       //取消合并评审的工作方案
-            deleteAllMerge:deleteAllMerge,          //删除所有合并评审的工作方案
+            deleteAllMerge: deleteAllMerge,          //删除所有合并评审的工作方案
 
-            findById : findById,                    //根据主键查询
+            findById: findById,                    //根据主键查询
+            updateReviewType: updateReviewType,        //工作方案由专家评审会改成专家函评
         };
 
         return service;
+
+        //S_工作方案由专家评审会改成专家函评
+        function updateReviewType(signId, workprogramId, reviewType, callBack) {
+            var wpObj = {
+                signId: signId,
+                id: workprogramId,
+                reviewType: reviewType
+            }
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/updateReviewType",
+                data: wpObj,
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_expertToLetter
 
         /**
          * 根据主键查询工作方案信息
          * @param wpId
          */
-        function findById(workId,callBack){
+        function findById(workId, callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/workprogram/initWorkProgramById",
                 params: {
-                    workId:workId
+                    workId: workId
                 }
             }
             var httpSuccess = function success(response) {
@@ -52,12 +77,12 @@
         }
 
         //S_初始化已选项目列表
-        function getMergeSignBySignId(signId,callBack) {
+        function getMergeSignBySignId(signId, callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/signView/getMergeSignBySignId",
                 params: {
-                    signId:signId
+                    signId: signId
                 }
             }
             var httpSuccess = function success(response) {
@@ -71,10 +96,11 @@
                 success: httpSuccess
             });
         }
+
         //E_初始化已选项目列表
 
         //S_待选项目列表
-        function unMergeWPSign(signId,callBack) {
+        function unMergeWPSign(signId, callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/signView/unMergeWPSign",
@@ -93,28 +119,30 @@
                 success: httpSuccess
             });
         }
+
         //E_待选项目列表
 
         //S_initMergeInfo
-        function initMergeInfo(vm,signId){
-            unMergeWPSign(signId,function (data) {
+        function initMergeInfo(vm, signId) {
+            unMergeWPSign(signId, function (data) {
                 vm.unMergeSign = [];
                 vm.unMergeSign = data;
             });//待选
-            getMergeSignBySignId(signId,function (data) {
+            getMergeSignBySignId(signId, function (data) {
                 vm.mergeSign = [];
                 vm.mergeSign = data;
             });//初始化已选项目
         }
+
         //S_取消合并评审工作方案
-        function cancelMergeSign(signId,cancelIds,callBack) {
+        function cancelMergeSign(signId, cancelIds, callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/signView/cancelMergeSign",
                 params: {
                     signId: signId,
                     cancelIds: cancelIds,
-                    mergeType:"1"
+                    mergeType: "1"
                 }
             }
             var httpSuccess = function success(response) {
@@ -130,14 +158,14 @@
         }//E_cancelWP
 
         //S_选择合并评审工作方案
-        function chooseSign(signId,mergeIds,callBack) {
+        function chooseSign(signId, mergeIds, callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/signView/mergeSign",
                 params: {
-                    signId:signId ,
+                    signId: signId,
                     mergeIds: mergeIds,
-                    mergeType:"1"
+                    mergeType: "1"
                 }
             }
             var httpSuccess = function success(response) {
@@ -153,14 +181,14 @@
         }//E_chooseWP
 
         //S_删除所有合并评审工作方案
-        function deleteAllMerge(signId,businessId,callBack){
+        function deleteAllMerge(signId, businessId, callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/signView/deleteAllMerge",
                 params: {
                     signId: signId,
-                    mergeType:"1",
-                    businessId : businessId
+                    mergeType: "1",
+                    businessId: businessId
                 }
             }
             var httpSuccess = function success(response) {
@@ -214,6 +242,7 @@
                 success: httpSuccess
             });
         }
+
         //end 查找主管部门
 
         //S_根据部门ID选择用户
@@ -247,6 +276,7 @@
                 success: httpSuccess
             });
         }
+
         //E_根据部门ID选择用户
 
         //S_初始化页面参数
@@ -261,38 +291,38 @@
             var httpSuccess = function success(response) {
                 if (response.data != null && response.data != "") {
                     vm.work = response.data.eidtWP;
-                 
+
                     //如果选了专家，并且评审费有变动，则更改
-                    if(vm.work.expertDtoList && vm.work.expertDtoList.length > 0){
-                        if(!vm.work.expertCost || vm.work.expertCost < 1000*(vm.work.expertDtoList.length) ){
-                            vm.work.expertCost = 1000*(vm.work.expertDtoList.length);
+                    if (vm.work.expertDtoList && vm.work.expertDtoList.length > 0) {
+                        if (!vm.work.expertCost || vm.work.expertCost < 1000 * (vm.work.expertDtoList.length)) {
+                            vm.work.expertCost = 1000 * (vm.work.expertDtoList.length);
                         }
                     }
                     vm.model.workProgramDtoList = {};
-                    if(response.data.WPList && response.data.WPList.length > 0){
+                    if (response.data.WPList && response.data.WPList.length > 0) {
                         vm.model.workProgramDtoList = response.data.WPList;
                     }
 
-                    if(vm.work.branchId == "1"){
+                    if (vm.work.branchId == "1") {
                         findCompanys(vm);//查找主管部门
                     }
                     vm.work.signId = $state.params.signid;		//收文ID(重新赋值)
-                    if(vm.work.projectType){
-                        vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType,$rootScope.DICT.PROJECTTYPE.dicts)
+                    if (vm.work.projectType) {
+                        vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType, $rootScope.DICT.PROJECTTYPE.dicts)
                     }
                     /*//初始化数值
-                    if(vm.work.reviewType == "自评"){
-                        vm.businessFlag.isSelfReview = true;           //是否自评
-                    }
-                    if(vm.work.isSigle == "合并评审"){
-                        vm.businessFlag.isSingleReview = false;         //是否单个评审
-                    }
-                    if(vm.work.isMainProject == "9"){
-                        vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
-                    }
-*/
+                     if(vm.work.reviewType == "自评"){
+                     vm.businessFlag.isSelfReview = true;           //是否自评
+                     }
+                     if(vm.work.isSigle == "合并评审"){
+                     vm.businessFlag.isSingleReview = false;         //是否单个评审
+                     }
+                     if(vm.work.isMainProject == "9"){
+                     vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
+                     }
+                     */
                     //如果是合并评审次项目，则不允许修改
-                    if(vm.work.isSigle == "合并评审" && (vm.work.isMainProject == "0" || vm.work.isMainProject == 0)){
+                    if (vm.work.isSigle == "合并评审" && (vm.work.isMainProject == "0" || vm.work.isMainProject == 0)) {
                         vm.businessFlag.isReveiwAWP = true;
                     }
 
@@ -309,18 +339,18 @@
         }//S_初始化页面参数
 
         //S_保存操作
-        function createWP(work, isNeedWorkProgram,isCommit,callBack) {
+        function createWP(work, isNeedWorkProgram, isCommit, callBack) {
             isCommit = true;
-            if($("#studyBeginTime").val()){
+            if ($("#studyBeginTime").val()) {
                 work.studyBeginTimeStr = $("#studyBeginTime").val();
             }
-            if($("#studyEndTime").val()){
+            if ($("#studyEndTime").val()) {
                 work.studyEndTimeStr = $("#studyEndTime").val();
             }
-            if($("#studyAllDay").val() && $("#studyBeginTime").val()){
+            if ($("#studyAllDay").val() && $("#studyBeginTime").val()) {
                 work.studyBeginTime = $("#studyAllDay").val() + " " + $("#studyBeginTime").val() + ":00";
             }
-            if($("#studyAllDay").val() && $("#studyEndTime").val()){
+            if ($("#studyAllDay").val() && $("#studyEndTime").val()) {
                 work.studyEndTime = $("#studyAllDay").val() + " " + $("#studyEndTime").val() + ":00";
             }
             var httpOptions = {
@@ -347,7 +377,7 @@
         }//E_保存操作
 
         //S_删除会议室
-        function deleteBookRoom(bookId,callBack){
+        function deleteBookRoom(bookId, callBack) {
             var httpOptions = {
                 method: 'delete',
                 url: rootPath + "/room",

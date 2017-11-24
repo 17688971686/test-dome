@@ -908,6 +908,7 @@ public class SignServiceImpl implements SignService {
                     if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置该分支的部门负责人！");
                     }
+
                     dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
                     assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                     //设定下一环节处理人
@@ -1101,13 +1102,26 @@ public class SignServiceImpl implements SignService {
                 wk.setLeaderName(SessionUtil.getDisplayName());
                 workProgramRepo.save(wk);
 
+                //更新评审会时间
+                ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.businessId.getName(),signid);
+                //更新专家评审方案评审日期
+                if(expertReview != null){
+                    if(Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType())){
+                        //获取评审会日期
+                        expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(wk.getId()));
+                    }else{
+                        //函评日期
+                        expertReview.setReviewDate(wk.getLetterDate());
+                    }
+                    expertReviewRepo.save(expertReview);
+                }
                 break;
             //发文申请
             case FlowConstant.FLOW_SIGN_FW:
                 //如果有专家评审费，则要先办理专家评审费
                 if (expertReviewRepo.isHaveEPReviewCost(signid)) {
-                    ExpertReview expertReview = expertReviewRepo.findByBusinessId(signid);
-                    if (expertReview.getPayDate() == null || expertReview.getTotalCost() == null) {
+                    ExpertReview expertReview2 = expertReviewRepo.findById(ExpertReview_.businessId.getName(),signid);
+                    if (expertReview2.getPayDate() == null || expertReview2.getTotalCost() == null) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
                     }
                 }

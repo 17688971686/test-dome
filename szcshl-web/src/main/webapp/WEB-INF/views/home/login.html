@@ -140,12 +140,12 @@
         <div class="input-container">
             <span class="glyphicon glyphicon-user"></span>
             <input autofocus="autofocus" type="text" class="form-control" placeholder="用户名" name="loginName" id="loginName" ng-model="vm.model.loginName" data-val="true" data-val-required="用户名必填">
-            <span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
+            <p data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></p>
         </div>
         <div class="input-container" style="margin-bottom:10px;">
             <input type="password" class="form-control" placeholder="密码" maxlength="100"  name="password" id="password" ng-model="vm.model.password" data-val="true" data-val-required="密码必填">
             <span class="glyphicon glyphicon-lock"></span>
-            <span data-valmsg-for="password" data-valmsg-replace="true" class="errors"></span>
+            <p data-valmsg-for="password" data-valmsg-replace="true" class="errors"></p>
         </div>
     </form>
     <div class="loginform-footer" style="">
