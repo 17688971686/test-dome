@@ -162,10 +162,11 @@
         document.all.WebOffice.HttpAddPostCurrFile("DocContent", ""); 	// 上传文件
         //  提交上传文件
         document.all.WebOffice.HttpPost(uploadFile);
-
+        var myDate = new Date();
+        var ranDom = myDate.getMinutes()+myDate.getSeconds();
         $.ajax({
             type:"get",
-            url: rootPath+"/file/fileSysUpload?sysFileId="+sysFileId,
+            url: rootPath+"/file/fileSysUpload?sysFileId="+sysFileId+"&ranDom="+ranDom,
             async: false,
             contentType: 'application/x-www-form-urlencoded',
             success: function(result) {
