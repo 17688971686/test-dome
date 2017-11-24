@@ -271,6 +271,7 @@
                     vm.model.workProgramDtoList = {};
                     if(response.data.WPList && response.data.WPList.length > 0){
                         vm.model.workProgramDtoList = response.data.WPList;
+                        vm.showTotalInvestment = true;
                     }
 
                     if(vm.work.branchId == "1"){

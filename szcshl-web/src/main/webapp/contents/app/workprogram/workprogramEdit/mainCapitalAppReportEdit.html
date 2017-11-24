@@ -143,14 +143,22 @@
     <tr>
         <td rowspan="4" style="width:5%;" class="text-center" style="vertical-align:middle;">项目概况</td>
         <td class="text-center">申报投资<span class="required">*</span></td>
-        <td colspan="3">
+        <td colspan="3" ng-show="vm.showTotalInvestment">
             <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
                    id="appalyInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
             万元
             <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
         </td>
-        <td class="text-center">总投资<span class="required">*</span></td>
-        <td colspan="2">
+
+        <td colspan="6" ng-hide="vm.showTotalInvestment">
+            <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
+                   id="appalyInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
+            万元
+            <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
+        </td>
+
+        <td class="text-center" ng-show="vm.showTotalInvestment">总投资<span class="required">*</span></td>
+        <td colspan="2" ng-show="vm.showTotalInvestment">
             <input type="text" ng-model="vm.work.totalInvestment" name="totalInvestment"
                    id="totalInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
             万元
@@ -236,7 +244,7 @@
     <tr ng-if="!vm.businessFlag.isReveiwAWP">
         <td class="text-center" >
         <span ng-if="!vm.work.reviewType || vm.work.reviewType != '专家函评'">评审会时间</span>
-        <span ng-if="vm.work.reviewType == '专家函评'">函评会日期</span></td>
+        <span ng-if="vm.work.reviewType == '专家函评'">函评日期</span></td>
         <td colspan="7">
         <span ng-if="vm.work.reviewType == '专家评审会'">
             <button class="btn btn-xs btn-primary" ng-click="vm.addTimeStage();" ng-hide="vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审'">

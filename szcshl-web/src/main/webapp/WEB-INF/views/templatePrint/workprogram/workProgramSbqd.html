@@ -67,9 +67,11 @@
             <tr>
                 <td rowspan="4">项目概况</td>
                 <td>申报投资</td>
-                <td colspan="3" height="20">{{w.appalyInvestment}} 万元</td>
-                <td>总投资</td>
-                <td colspan="2" height="20">{{w.totalInvestment}} 万元</td>
+                <td colspan="3" height="20" ng-show="vm.showTotalInvestment">{{w.appalyInvestment}} 万元</td>
+                <td ng-show="vm.showTotalInvestment" class="text-center">总投资</td>
+                <td colspan="2" height="20" ng-show="vm.showTotalInvestment">{{w.totalInvestment}} 万元</td>
+
+                <td colspan="6" height="20" ng-hide="vm.showTotalInvestment">{{w.appalyInvestment}} 万元</td>
 
             </tr>
             <tr>

@@ -61,12 +61,43 @@
              <td colspan="2">{{vm.work.appalyInvestment}}</td>
          </tr>-->
 
-        <tr>
+
+       <!-- <tr>
             <td colspan="2" >项目概况</td>
             <td colspan="6" >
                 <div style="width: 100%; height: 100px ; overflow: hidden;">{{vm.work.projectSurvey}}</div>
             </td>
+        </tr>-->
+
+        <tr>
+            <td rowspan="4">项目概况</td>
+            <td>申报投资</td>
+            <td colspan="3" height="20" ng-show="vm.showTotalInvestment">{{vm.work.appalyInvestment}} 万元</td>
+            <td ng-show="vm.showTotalInvestment" class="text-center">总投资</td>
+            <td colspan="2" height="20" ng-show="vm.showTotalInvestment">{{vm.work.totalInvestment}} 万元</td>
+
+            <td colspan="6" height="20" ng-hide="vm.showTotalInvestment">{{vm.work.appalyInvestment}} 万元</td>
+
         </tr>
+        <tr>
+            <td>申报建设规模</td>
+            <td colspan="6" >
+                <div style="width: 100%; height: 80px; overflow: hidden;">{{vm.work.buildSize}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td>申报建设内容</td>
+            <td colspan="6">
+                <div style="width: 100%; height: 80px; overflow: hidden;">{{vm.work.buildContent}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td>项目背景</td>
+            <td colspan="6">
+                <div style="width: 100%; height: 80px; overflow: hidden;">{{vm.work.projectBackGround}}</div>
+            </td>
+        </tr>
+
         <tr>
             <td height="120" colspan="2" rowspan="2">评审部门</td>
             <td colspan="3" rowspan="2">{{vm.work.reviewOrgName}}</td>
@@ -147,20 +178,20 @@
         <tr>
             <td colspan="2" >拟邀请单位及领导</td>
             <td colspan="6" >
-                <div style="width: 100%; height: 100px;overflow: hidden;">{{vm.work.inviteUnitLeader}}</div>
+                <div style="width: 100%; height: 80px;overflow: hidden;">{{vm.work.inviteUnitLeader}}</div>
             </td>
         </tr>
         <tr>
             <td  colspan="2">拟评审重点问题</td>
             <td colspan="6" >
-                <div style="width: 100%; height: 100px;overflow: hidden;">{{vm.work.mainPoint}}</div>
+                <div style="width: 100%; height: 80px;overflow: hidden;">{{vm.work.mainPoint}}</div>
             </td>
         </tr>
         <tr>
             <td colspan="2">部长意见</td>
             <td colspan="6">
-                <div style="width: 100%; height: 100px;overflow: hidden;">
-                    <p class="text-left" style="height: 35%;"> {{w.ministerSuggesttion}}</p>
+                <div style="width: 100%; height: 80px;overflow: hidden;">
+                    <p class="text-left" style="height: 25%;"> {{w.ministerSuggesttion}}</p>
                     <p class="text-right" style="margin-right: 90px;">签名：</p>
                     <p class="text-right" style="margin-right: 12px;" ng-if="vm.work.ministerDate">日期：{{vm.work.ministerDate}}</p>
                     <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.work.ministerDate)">日期：</p>
@@ -170,8 +201,8 @@
         <tr>
             <td colspan="2">中心领导签批意见</td>
             <td colspan="6">
-                <div style="width: 100%; height: 100px;overflow: hidden;">
-                    <p class="text-left" style="height: 35%;"> {{w.leaderSuggesttion}}</p>
+                <div style="width: 100%; height: 80px;overflow: hidden;">
+                    <p class="text-left" style="height: 25%;"> {{w.leaderSuggesttion}}</p>
                     <p class="text-right" style="margin-right: 90px; ">签名：</p>
                     <p class="text-right" style="margin-right: 12px;" ng-if="vm.work.leaderDate">日期：{{vm.work.leaderDate}}</p>
                     <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.work.leaderDate)">日期：</p>

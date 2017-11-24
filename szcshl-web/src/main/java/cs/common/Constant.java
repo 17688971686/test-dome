@@ -382,7 +382,7 @@ public class Constant {
         FILELIBRARY("质量管理文件库"),
         POLICYLIBRARY("政策标准库"),
         SUBJECT_STUDY("课题研究"),
-        TEMOLATE("发文模板");
+        TEMOLATE("评审报告");
 
         private String value;
 
