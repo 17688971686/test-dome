@@ -75,9 +75,12 @@
         <tr>
             <td rowspan="4">项目概况</td>
             <td>申报投资</td>
-            <td colspan="3" height="20">{{vm.work.appalyInvestment}} 万元</td>
-            <td class="text-center">总投资</td>
-            <td colspan="2" height="20">{{vm.work.totalInvestment}} 万元</td>
+            <td colspan="3" height="20" ng-show="vm.showTotalInvestment">{{vm.work.appalyInvestment}} 万元</td>
+            <td class="text-center" ng-show="vm.showTotalInvestment">总投资</td>
+            <td colspan="2" height="20" ng-show="vm.showTotalInvestment">{{vm.work.totalInvestment}} 万元</td>
+
+
+            <td colspan="6" height="20" ng-hide="vm.showTotalInvestment">{{vm.work.appalyInvestment}} 万元</td>
 
         </tr>
         <tr>
@@ -130,7 +133,7 @@
             <td class="text-center">专家费用</td>
             <td colspan="2">{{vm.work.expertCost}}</td>
         </tr>
-        <tr ng-if="w.isSigle && w.isSigle == '合并评审' ">
+        <tr ng-if="vm.work.isSigle && vm.work.isSigle == '合并评审' ">
             <td colspan="2">合并评审相关项目</td>
             <td colspan="6" height="20px"></td>
         </tr>

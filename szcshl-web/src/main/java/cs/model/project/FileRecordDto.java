@@ -520,6 +520,241 @@ public class FileRecordDto extends BaseDto {
     //项目第二负责人
     private String projectTwoUser;
 
+    /**
+     * 协审计划审批表原件
+     */
+    private String assistPlanOriginal;
+
+    /**
+     * 协审计划审批表扫描
+     */
+    private String assistPlanCountScan;
+
+    /**
+     * 协审计划审批表份数
+     */
+    private Integer assistPlanCount;
+
+    /**
+     * 协审资料清单原件
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String assistMaterialOriginal;
+
+    /**
+     * 协审资料清单扫描
+     */
+    private String assistMaterialCountScan;
+
+    /**
+     * 协审资料清单份数
+     */
+    private Integer assistMaterialCount;
+
+    /**
+     * 协审考核评价表 原件
+     */
+    private String assistAppraiseOriginal;
+
+    /**
+     * 协审考核评价表 扫描
+     */
+    private String assistAppraiseCountScan;
+
+    /**
+     * 协审考核评价表 份数
+     */
+    private Integer assistAppraiseCount;
+
+    /**
+     * 协审电子光盘 原件
+     */
+    private String assistDiskOriginal;
+
+    /**
+     * 协审电子光盘 扫描
+     */
+    private String assistDiskCountScan;
+
+    /**
+     * 协审电子光盘 份数
+     */
+    private Integer assistDiskCount;
+
+    /**
+     * 协审工程量计算底稿 原件
+     */
+    private String assistManuscriptOriginal;
+
+    /**
+     * 协审工程量计算底稿 电子版/扫描
+     */
+    private String assistManuscriptCountScan;
+
+    /**
+     * 协审项目审核意见书 原件
+     */
+    private String assistPositionOriginal;
+
+    /**
+     * 协审项目审核意见书 电子版/扫描
+     */
+    private String assistPositionCountScan;
+
+    /**
+     * 协审工程概算书 原件
+     */
+    private String assistBudgetOriginal;
+
+    /**
+     * 协审工程概算书 电子版/扫描
+     */
+    private String assistBudgetCountScan;
+
+    public String getAssistPlanOriginal() {
+        return assistPlanOriginal;
+    }
+
+    public void setAssistPlanOriginal(String assistPlanOriginal) {
+        this.assistPlanOriginal = assistPlanOriginal;
+    }
+
+    public String getAssistPlanCountScan() {
+        return assistPlanCountScan;
+    }
+
+    public void setAssistPlanCountScan(String assistPlanCountScan) {
+        this.assistPlanCountScan = assistPlanCountScan;
+    }
+
+    public Integer getAssistPlanCount() {
+        return assistPlanCount;
+    }
+
+    public void setAssistPlanCount(Integer assistPlanCount) {
+        this.assistPlanCount = assistPlanCount;
+    }
+
+    public String getAssistMaterialOriginal() {
+        return assistMaterialOriginal;
+    }
+
+    public void setAssistMaterialOriginal(String assistMaterialOriginal) {
+        this.assistMaterialOriginal = assistMaterialOriginal;
+    }
+
+    public String getAssistMaterialCountScan() {
+        return assistMaterialCountScan;
+    }
+
+    public void setAssistMaterialCountScan(String assistMaterialCountScan) {
+        this.assistMaterialCountScan = assistMaterialCountScan;
+    }
+
+    public Integer getAssistMaterialCount() {
+        return assistMaterialCount;
+    }
+
+    public void setAssistMaterialCount(Integer assistMaterialCount) {
+        this.assistMaterialCount = assistMaterialCount;
+    }
+
+    public String getAssistAppraiseOriginal() {
+        return assistAppraiseOriginal;
+    }
+
+    public void setAssistAppraiseOriginal(String assistAppraiseOriginal) {
+        this.assistAppraiseOriginal = assistAppraiseOriginal;
+    }
+
+    public String getAssistAppraiseCountScan() {
+        return assistAppraiseCountScan;
+    }
+
+    public void setAssistAppraiseCountScan(String assistAppraiseCountScan) {
+        this.assistAppraiseCountScan = assistAppraiseCountScan;
+    }
+
+    public Integer getAssistAppraiseCount() {
+        return assistAppraiseCount;
+    }
+
+    public void setAssistAppraiseCount(Integer assistAppraiseCount) {
+        this.assistAppraiseCount = assistAppraiseCount;
+    }
+
+    public String getAssistDiskOriginal() {
+        return assistDiskOriginal;
+    }
+
+    public void setAssistDiskOriginal(String assistDiskOriginal) {
+        this.assistDiskOriginal = assistDiskOriginal;
+    }
+
+    public String getAssistDiskCountScan() {
+        return assistDiskCountScan;
+    }
+
+    public void setAssistDiskCountScan(String assistDiskCountScan) {
+        this.assistDiskCountScan = assistDiskCountScan;
+    }
+
+    public Integer getAssistDiskCount() {
+        return assistDiskCount;
+    }
+
+    public void setAssistDiskCount(Integer assistDiskCount) {
+        this.assistDiskCount = assistDiskCount;
+    }
+
+    public String getAssistManuscriptOriginal() {
+        return assistManuscriptOriginal;
+    }
+
+    public void setAssistManuscriptOriginal(String assistManuscriptOriginal) {
+        this.assistManuscriptOriginal = assistManuscriptOriginal;
+    }
+
+    public String getAssistManuscriptCountScan() {
+        return assistManuscriptCountScan;
+    }
+
+    public void setAssistManuscriptCountScan(String assistManuscriptCountScan) {
+        this.assistManuscriptCountScan = assistManuscriptCountScan;
+    }
+
+    public String getAssistPositionOriginal() {
+        return assistPositionOriginal;
+    }
+
+    public void setAssistPositionOriginal(String assistPositionOriginal) {
+        this.assistPositionOriginal = assistPositionOriginal;
+    }
+
+    public String getAssistPositionCountScan() {
+        return assistPositionCountScan;
+    }
+
+    public void setAssistPositionCountScan(String assistPositionCountScan) {
+        this.assistPositionCountScan = assistPositionCountScan;
+    }
+
+    public String getAssistBudgetOriginal() {
+        return assistBudgetOriginal;
+    }
+
+    public void setAssistBudgetOriginal(String assistBudgetOriginal) {
+        this.assistBudgetOriginal = assistBudgetOriginal;
+    }
+
+    public String getAssistBudgetCountScan() {
+        return assistBudgetCountScan;
+    }
+
+    public void setAssistBudgetCountScan(String assistBudgetCountScan) {
+        this.assistBudgetCountScan = assistBudgetCountScan;
+    }
+
     public String getFileRecordId() {
         return fileRecordId;
     }

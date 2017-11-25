@@ -113,6 +113,11 @@
                     vm.fileRecord = vm.model.fileRecordDto;
                 }
 
+                //判断是否有多个分支，用于控制是否显示总投资字段
+                if(vm.model.workProgramDtoList.length >0){
+                    vm.showTotalInvestment = true;
+                }
+
                 //更改状态,并初始化业务参数
                 vm.businessFlag.isLoadSign = true;
                 if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){

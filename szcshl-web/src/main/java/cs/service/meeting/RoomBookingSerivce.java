@@ -17,7 +17,13 @@ public interface RoomBookingSerivce {
 
     ResultMsg saveRoom(RoomBookingDto roomDto);
 
-    void deleteRoom(String id);
+    /**
+     * 删除会议室
+     * @param id
+     * @param dueToPeople
+     * @return
+     */
+    ResultMsg deleteRoom(String id , String dueToPeople);
 
     List<RoomBookingDto> getRoomList();
 

@@ -194,9 +194,9 @@ public class RoomBookingController {
     @RequiresAuthentication
     //@RequiresPermissions("room##delete")
     @RequestMapping(name = "删除会议室预定", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestParam String id) {
-        roomBookingSerivce.deleteRoom(id);
+    @ResponseBody
+    public ResultMsg delete(@RequestParam String id , @RequestParam String dueToPeople) {
+       return  roomBookingSerivce.deleteRoom(id , dueToPeople);
     }
 
     @RequiresPermissions("room#html/roomlist#get")

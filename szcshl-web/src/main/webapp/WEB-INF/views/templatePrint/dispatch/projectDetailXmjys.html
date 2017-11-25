@@ -69,13 +69,13 @@
     <tr>
         <td>相关说明</td>
         <td colspan="7"  >
-            <div style="width: 100% ; height: 100px; overflow: hidden;">{{vm.dispatchDoc.description}}</div>
+            <div style="width: 100% ; height: 50px; overflow: hidden;">{{vm.dispatchDoc.description}}</div>
         </td>
     </tr>
     <tr>
         <td >项目负责人拟稿意见</td>
-        <td colspan="3" style="padding-top: 50px;">
-            <div style="width: 100% ; height: 150px; overflow: hidden;">
+        <td colspan="3" style="padding-top: 5px;">
+            <div style="width: 100% ; height: 100px; overflow: hidden;">
                 第一负责人意见：
                 <div ng-bind-html="vm.dispatchDoc.mianChargeSuggest | trust2Html"></div>
             </div>
@@ -88,16 +88,16 @@
         </td>
     </tr>
     <tr>
-        <td height="100">评审意见摘要</td>
+        <td>评审意见摘要</td>
         <td colspan="7">
-            <div style="width: 100% ; height: 100px ; overflow: hidden;">{{vm.dispatchDoc.reviewAbstract}}</div>
+            <div style="width: 100% ; height: 50px ; overflow: hidden;">{{vm.dispatchDoc.reviewAbstract}}</div>
         </td>
     </tr>
     <tr>
         <td >部长审核意见</td>
         <td colspan="7" style="min-height: 30px;" height="80">
-            <div style="width: 100% ; height: 80px ; overflow: hidden;">
-                <p class="text-left" style="height: 50%;"> {{vm.dispatchDoc.ministerSuggesttion}}</p>
+            <div style="width: 100% ; height: 70px ; overflow: hidden;">
+                <p class="text-left" style="height: 40%;"> {{vm.dispatchDoc.ministerSuggesttion}}</p>
                 <p class="text-right" style="margin-right: 90px;">签名：</p>
                 <p class="text-right" style="margin-right: 12px;" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
                 <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.dispatchDoc.ministerDate)">日期：{{vm.dispatchDoc.ministerDate}}</p>
@@ -107,8 +107,8 @@
     <tr>
         <td >分管副主任意见</td>
         <td colspan="7">
-            <div style="width: 100% ; height: 80px ; overflow: hidden;">
-                <p class="text-left" style="height: 50%;">{{vm.dispatchDoc.viceDirectorSuggesttion}}</p>
+            <div style="width: 100% ; height: 70px ; overflow: hidden;">
+                <p class="text-left" style="height: 40%;">{{vm.dispatchDoc.viceDirectorSuggesttion}}</p>
                 <p class="text-right" style="margin-right: 90px;">签名：</p>
                 <p class="text-right" style="margin-right: 12px;" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
                 <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.dispatchDoc.viceDirectorDate)">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
@@ -119,8 +119,8 @@
     <tr>
         <td >主任签发</td>
         <td colspan="7">
-            <div style="width: 100% ; height: 80px ; overflow: hidden;">
-                <p class="text-left" style="height: 50%;">{{vm.dispatchDoc.directorSuggesttion}}</p>
+            <div style="width: 100% ; height: 70px ; overflow: hidden;">
+                <p class="text-left" style="height: 40%;">{{vm.dispatchDoc.directorSuggesttion}}</p>
                 <p class="text-right" style="margin-right: 90px;">签名：</p>
                 <p class="text-right" style="margin-right: 12px;" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
                 <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.dispatchDoc.directorDate)">日期：{{vm.dispatchDoc.directorDate}}</p>
@@ -154,7 +154,7 @@
                 <tr>
                     <td style="border-left-width: 0px; " >项目建设必要性</td>
                     <td colspan="6" class="text-left">
-                        <div style="width: 100% ; height: 85px; overflow: hidden;">
+                        <div style="width: 100% ; height: 70px; overflow: hidden;">
                             {{s.dispatchDocDto.projectBuildNecess}}
                         </div>
 
@@ -163,7 +163,7 @@
                 <tr>
                     <td style="border-left-width: 0px; ">审定建设规模及内容</td>
                     <td colspan="6" class="text-left">
-                        <div style="width: 100% ; height: 85px; overflow: hidden;">
+                        <div style="width: 100% ; height: 70px; overflow: hidden;">
                             {{s.dispatchDocDto.buildSizeContent}}
                         </div>
                     </td>
@@ -172,7 +172,7 @@
                 <tr>
                     <td style="border-left-width: 0px;">投资匡算及资金来源</td>
                     <td colspan="6" class="text-left">
-                        <div style="width: 100% ; height: 85px; overflow: hidden;">
+                        <div style="width: 100% ; height: 70px; overflow: hidden;">
                             {{s.dispatchDocDto.fundTotalOrigin}}
                         </div>
                     </td>
@@ -181,7 +181,7 @@
                 <tr>
                     <td style="border-left-width: 0px;">下一阶段工作要求</td>
                     <td colspan="6" class="text-left">
-                        <div style="width: 100% ; height: 85px; overflow: hidden;">
+                        <div style="width: 100% ; height: 70px; overflow: hidden;">
                             {{s.dispatchDocDto.nextWorkPlan}}
                         </div>
                     </td>
@@ -212,7 +212,7 @@
                 <tr>
                     <td style="border-left-width: 0px;">项目建设必要性</td>
                     <td colspan="6" class="text-left">
-                        <div style="width: 100% ; height: 85px; overflow: hidden;">
+                        <div style="width: 100% ; height: 70px; overflow: hidden;">
                             {{vm.dispatchDoc.projectBuildNecess}}
                         </div>
                     </td>
@@ -221,7 +221,7 @@
                 <tr>
                     <td style="border-left-width: 0px;">审定建设规模及内容</td>
                     <td colspan="6" class="text-left">
-                        <div style="width: 100% ; height: 85px; overflow: hidden;">
+                        <div style="width: 100% ; height: 70px; overflow: hidden;">
                             {{vm.dispatchDoc.buildSizeContent}}
                         </div>
                     </td>
@@ -230,7 +230,7 @@
                 <tr>
                     <td style="border-left-width: 0px;">投资匡算及资金来源</td>
                     <td colspan="6" class="text-left">
-                        <div style="width: 100% ; height: 85px; overflow: hidden;">
+                        <div style="width: 100% ; height: 70px; overflow: hidden;">
                             {{vm.dispatchDoc.fundTotalOrigin}}
                         </div>
                     </td>
@@ -239,7 +239,7 @@
                 <tr>
                     <td style="border-left-width: 0px;border-bottom-width: 0px;">下一阶段工作要求</td>
                     <td style="border-bottom-width: 0px;"colspan="6" class="text-left">
-                        <div style="width: 100% ; height: 85px; overflow: hidden;">
+                        <div style="width: 100% ; height:70px; overflow: hidden;">
                             {{vm.dispatchDoc.nextWorkPlan}}
                         </div>
                     </td>

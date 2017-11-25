@@ -18,6 +18,7 @@
             exportThisWeek: exportThisWeek,
             initDefaultValue: initDefaultValue,         //初始化会议信息
             saveBookRoom: saveBookRoom,                 //保存会议预定信息
+            deleteRoom : deleteRoom ,                //删除会议室
         };
         return service;
         //start 初始化日程控件
@@ -35,7 +36,7 @@
                     },
                 ],
                 editable: {
-                    destroy: false,      //不可删除
+                    destroy: true,      //不可删除
                     template: $("#customEditorTemplate").html(),
                 },
                 navigate: function (e) {
@@ -54,6 +55,16 @@
                         }
                     });
                 },
+                remove: function(e) {
+                    deleteRoom(e.event , function(data){
+                        if(data.flag || data.reCode == "ok"){
+                            bsWin.alert("删除成功！")
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                        vm.findMeeting();
+                    });
+                },
                 eventTemplate: $("#event-template").html(),
                 timezone: "Etc/UTC",
                 footer: false,
@@ -63,6 +74,28 @@
             var timeRange = formattedShortDate.split("-");
             vm.search.beginTimeStr = (new Date(timeRange[0].trim())).Format("yyyy-MM-dd");
             vm.search.endTimeStr = (new Date(timeRange[1].trim())).Format("yyyy-MM-dd");
+        }
+
+        /**
+         * 删除会议室
+         */
+        function deleteRoom(room , callBack){
+            var httpOptions = {
+                method : 'delete' ,
+                url : rootPath + "/room",
+                params : {id : room.id , dueToPeople : room.dueToPeople}
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                httpOptions : httpOptions ,
+                $http : $http,
+                success : httpSuccess
+            });
+
         }
 
         /**

@@ -290,10 +290,23 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		return roomBookingRepo.returnIntBySql(sqlBuilder);
 	}
 
+	/**
+	 * 删除会议室
+	 * @param id
+	 * @param dueToPeople
+	 * @return
+	 */
 	@Override
 	@Transactional
-	public void deleteRoom(String id) {
-		roomBookingRepo.deleteById(RoomBooking_.id.getName(),id);
+	public ResultMsg deleteRoom(String id , String dueToPeople) {
+//		roomBookingRepo.deleteById(RoomBooking_.id.getName(),id);
+		//会议预定人和admin才可以删除该会议室
+		if(SessionUtil.getDisplayName().equals(dueToPeople) || SessionUtil.getLoginName().equals(Constant.SUPER_USER)){
+			roomBookingRepo.deleteById(RoomBooking_.id.getName() , id);
+			return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "删除成功！" , null);
+		}else{
+			return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您没有该权限，删除失败！", null);
+		}
 	}
 
 	/**
@@ -312,6 +325,10 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 			Date now = new Date();
 			RoomBooking rb = new RoomBooking();
 			if(Validate.isString(roomDto.getId())){
+				if(!(Constant.SUPER_USER.equals(SessionUtil.getLoginName())
+						|| SessionUtil.getDisplayName().equals(roomDto.getDueToPeople()))){
+					return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您没有该权限，更新失败！" , null);
+				}
 				rb = roomBookingRepo.getById(roomDto.getId());
 				BeanCopierUtils.copyPropertiesIgnoreNull(roomDto,rb);
 			}else{

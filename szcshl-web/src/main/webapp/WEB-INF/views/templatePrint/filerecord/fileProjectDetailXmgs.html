@@ -657,7 +657,7 @@
                     <tr>
                         <td width="20%" style="padding-bottom:10px;"></td>
                         <td width="7%">原件</td>
-                        <td width="10%">复印件</td>
+                        <td width="10%">份数</td>
                         <td width="10%">扫描件</td>
                         <td width="20%"></td>
                         <td width="6%" ></td>
@@ -668,13 +668,13 @@
                     <tr>
                         <td class="printing-td">协审计划审批表</td>
                         <td>
-                            <input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" name="planOriginal"  ng-true-value="9" ng-false-value="0">
+                            <input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.assistPlanOriginal" name="assistPlanOriginal"  ng-true-value="9" ng-false-value="0">
                         </td>
-                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" name="planCopy" ng-true-value="9" ng-false-value="0"></td>
-                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" name="planScan" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.assistPlanCount" name="assistPlanCount" id="assistPlanCount" ng-readonly="true"></td>
+                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.assistPlanCountScan" name="assistPlanCountScan" ng-true-value="9" ng-false-value="0"></td>
                         <td colspan="2">协审工程量计算底稿 </td>
-                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" ng-true-value="9" ng-false-value="0"></td>
-                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.assistManuscriptOriginal" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.assistManuscriptCountScan" ng-true-value="9" ng-false-value="0"></td>
                     </tr>
                     <tr>
                         <td class="printing-td">协审资料清单</td>
@@ -690,21 +690,21 @@
                     <tr>
                         <td class="printing-td">协审考核评价表</td>
                         <td>
-                            <input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" name="meetingSignOriginal"  ng-true-value="9" ng-false-value="0">
+                            <input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.assistAppraiseOriginal" name="assistAppraiseOriginal"  ng-true-value="9" ng-false-value="0">
                         </td>
-                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" name="meetingSignCopy" ng-true-value="9" ng-false-value="0"></td>
-                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" name="meetingScan" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.assistAppraiseCount" name="assistAppraiseCount" id="assistAppraiseCount" ng-readonly="true"></td>
+                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.assistAppraiseCountScan" name="assistAppraiseCountScan" ng-true-value="9" ng-false-value="0"></td>
                         <td colspan="2">协审工程概算书</td>
-                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" ng-true-value="9" ng-false-value="0"></td>
-                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.assistBudgetOriginal" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.assistBudgetCountScan" ng-true-value="9" ng-false-value="0"></td>
                     </tr>
                     <tr>
                         <td class="printing-td">协审电子光盘</td>
                         <td>
-                            <input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" name="meetingSignOriginal"  ng-true-value="9" ng-false-value="0">
+                            <input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.assistDiskOriginal" name="assistDiskOriginal"  ng-true-value="9" ng-false-value="0">
                         </td>
-                        <td><input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.sss" name="meetingSignCopy" ng-true-value="9" ng-false-value="0"></td>
-                        <td></td>
+                        <td><input type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.assistDiskCountScan" name="assistDiskCountScan" id="assistDiskCountScan" ng-readonly="true"></td>
+                        <td> <input type="checkbox" ng-disabled="true"  ng-model="vm.fileRecord.assistDiskCountScan" ng-true-value="9" ng-false-value="0"></td>
                         <td></td>
                         <td></td>
                         <td></td>

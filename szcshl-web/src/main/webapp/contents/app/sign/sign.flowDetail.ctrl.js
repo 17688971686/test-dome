@@ -72,6 +72,11 @@
                     vm.fileRecord = vm.model.fileRecordDto;
                 }
 
+                //判断是否有多个分支，用于控制是否显示总投资字段
+                if(vm.model.workProgramDtoList.length >0){
+                    vm.showTotalInvestment = true;
+                }
+
                 //初始化专家评分
                 if (vm.model.processState > 1) {
                     vm.showFlag.tabWorkProgram=true;        //显示工作方案
