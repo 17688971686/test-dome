@@ -490,10 +490,12 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
     @Transactional
     public ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
-                assigneeValue = "";                            //流程处理人
+        assigneeValue = "";                            //流程处理人
         Map<String, Object> variables = new HashMap<>();       //流程参数
         User dealUser = null;                                  //用户
         List<User> dealUserList = null;                        //用户列表
+        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+        String nextNodeKey = "";                    //下一环节名称
         AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(businessId);
         task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
         //环节处理人设定
@@ -511,7 +513,13 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 addSuppLetter.setDeptMinisterIdeaContent(flowDto.getDealOption());
                 addSuppLetter.setAppoveStatus(EnumState.PROCESS.getValue());
                 addSuppLetterRepo.save(addSuppLetter);
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_FGLD.getValue(), SessionUtil.getUserInfo().getOrg().getOrgSLeader());
+                assigneeValue=SessionUtil.getUserInfo().getOrg().getOrgSLeader();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_FGLD.getValue(), assigneeValue);
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.MONTH_FG;
+                }
                 break;
             //分管领导审批
             case FlowConstant.MONTH_FG:
@@ -522,11 +530,17 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 addSuppLetter.setAppoveStatus(EnumState.STOP.getValue());
                 addSuppLetterRepo.save(addSuppLetter);
                 //查询部门领导
-                User user = userRepo.findOrgDirector(addSuppLetter.getCreatedBy());//查询用户的所在部门
-                if (!Validate.isString(user.getOrg().getOrgMLeader())) {//判断是否有部门主任
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + user.getOrg().getName() + "】的主任未设置，请先设置！");
+                dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
+                if (!Validate.isList(dealUserList)) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_ZR.getValue(), user.getOrg().getOrgMLeader());
+                assigneeValue=dealUserList.get(0).getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_ZR.getValue(), assigneeValue);
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.MONTH_ZR;
+                }
                 break;
 
             //主任审批
@@ -561,6 +575,19 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
             taskService.complete(task.getId());
         } else {
             taskService.complete(task.getId(), variables);
+            //如果下一环节还是自己
+            if(isNextUser){
+                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                for(Task t:nextTaskList){
+                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+                        ResultMsg returnMsg = dealSignSupperFlow(processInstance,t,flowDto);
+                        if(returnMsg.isFlag() == false){
+                            return returnMsg;
+                        }
+                        break;
+                    }
+                }
+            }
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);

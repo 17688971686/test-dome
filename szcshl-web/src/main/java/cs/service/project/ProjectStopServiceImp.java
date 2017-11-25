@@ -289,7 +289,8 @@ public class ProjectStopServiceImp implements ProjectStopService {
         Map<String,Object> variables = null;                   //流程参数
         User dealUser = null;                                  //用户
         ProjectStop projectStop = null;                        //项目暂停对象
-
+        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+        String nextNodeKey = "";                    //下一环节名称
         //环节处理人设定
         switch (task.getTaskDefinitionKey()) {
             //项目负责人填报
@@ -308,14 +309,19 @@ public class ProjectStopServiceImp implements ProjectStopService {
                 projectStop.setApproveStatus(Constant.EnumState.PROCESS.getValue());
                 projectStopRepo.save(projectStop);
                 dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_FGLD1.getValue(),
-                        Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId());
+                assigneeValue= Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.FLOW_STOP_FGLD_SP;
+                }
                 break;
             //分管领导审批
             case FlowConstant.FLOW_STOP_FGLD_SP:
-                if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+  /*              if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
-                }
+                }*/
                 String isactive = flowDto.getBusinessMap().get("AGREE").toString();
                 isactive = Constant.EnumState.YES.getValue().equals(isactive)?Constant.EnumState.YES.getValue():Constant.EnumState.NO.getValue();
                 projectStop = projectStopRepo.findById(businessId);
@@ -326,7 +332,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
                     projectStop.setIsOverTime(Constant.EnumState.PROCESS.getValue());
                     Sign sign = projectStop.getSign();
                     //如果领导同意，则将流程暂停
-                    if(Constant.EnumState.YES.getValue().equals(isactive)){
+                    if(Constant.EnumState.YES.getValue().equals(isactive) ||isactive==null){
                         ResultMsg stopResult = flowService.stopFlow(projectStop.getSign().getSignid());
                         if(!stopResult.isFlag()){
                             return stopResult;
@@ -356,6 +362,19 @@ public class ProjectStopServiceImp implements ProjectStopService {
             taskService.complete(task.getId());
         } else {
             taskService.complete(task.getId(), variables);
+            //如果下一环节还是自己
+            if(isNextUser){
+                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                for(Task t:nextTaskList){
+                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+                        ResultMsg returnMsg = dealFlow(processInstance,t,flowDto);
+                        if(returnMsg.isFlag() == false){
+                            return returnMsg;
+                        }
+                        break;
+                    }
+                }
+            }
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(),assigneeValue);

@@ -250,6 +250,8 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 		List<User> dealUserList = null;
 		User dealUser = null;
 		Org org = null;
+		boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+		String nextNodeKey = "";                    //下一环节名称
 		Map<String, Object> variables = processInstance.getProcessVariables();
 		boolean saveFlag = false;
 		//以下是流程环节处理
@@ -262,7 +264,13 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setApplyReason(flowDto.getDealOption());
 				bookBuyBusinessRepo.save(bookBuyBusiness);
 				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-				variables = ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_FGLD.getValue(), SessionUtil.getUserInfo().getOrg().getOrgSLeader());
+				assigneeValue=SessionUtil.getUserInfo().getOrg().getOrgSLeader();
+				variables = ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_FGLD.getValue(),assigneeValue);
+				//下一环节还是自己处理
+				if(assigneeValue.equals(SessionUtil.getUserId())){
+					isNextUser = true;
+					nextNodeKey = FlowConstant.BOOK_FGFZRSP;
+				}
 				break;
 			case FlowConstant.BOOK_FGFZRSP:
 				bookBuyBusiness = bookBuyBusinessRepo.findById(BookBuyBusiness_.businessId.getName(), businessKey);
@@ -277,7 +285,13 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				}
 				dealUser = dealUserList.get(0);
 				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-				variables = ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_ZR.getValue(), Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId());
+				assigneeValue=Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+				variables = ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_ZR.getValue(),assigneeValue );
+				//下一环节还是自己处理
+				if(assigneeValue.equals(SessionUtil.getUserId())){
+					isNextUser = true;
+					nextNodeKey = FlowConstant.BOOK_ZXZRSP;
+				}
 				break;
 			case FlowConstant.BOOK_ZXZRSP:
 				bookBuyBusiness = bookBuyBusinessRepo.findById(BookBuyBusiness_.businessId.getName(), businessKey);
@@ -294,6 +308,12 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				dealUser = dealUserList.get(0);
 				assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
 				variables = ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_DAY.getValue(), assigneeValue);
+				//下一环节还是自己处理
+				if(assigneeValue.equals(SessionUtil.getUserId())){
+					isNextUser = true;
+					nextNodeKey = FlowConstant.BOOK_YSRK;
+				}
+
 				break;
 			case FlowConstant.BOOK_YSRK:
 				bookBuyBusiness = bookBuyBusinessRepo.findById(BookBuyBusiness_.businessId.getName(), businessKey);
@@ -312,6 +332,19 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 			taskService.complete(task.getId());
 		} else {
 			taskService.complete(task.getId(), variables);
+			//如果下一环节还是自己
+			if(isNextUser){
+				List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+				for(Task t:nextTaskList){
+					if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+						ResultMsg returnMsg = dealFlow(processInstance,t,flowDto);
+						if(returnMsg.isFlag() == false){
+							return returnMsg;
+						}
+						break;
+					}
+				}
+			}
 		}
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
 	}

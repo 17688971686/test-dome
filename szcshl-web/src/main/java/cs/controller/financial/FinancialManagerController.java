@@ -238,7 +238,7 @@ public class FinancialManagerController {
             cell.setCellValue("姓名");
             cell.setCellStyle(style);
             cell = row.createCell((short) 1);
-            cell.setCellValue("是否外境");
+            cell.setCellValue("是否外地");
             cell.setCellStyle(style);
             cell = row.createCell((short) 2);
             cell.setCellValue("开户行/银行账号");

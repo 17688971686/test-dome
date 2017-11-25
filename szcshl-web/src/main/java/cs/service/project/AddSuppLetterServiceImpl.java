@@ -501,6 +501,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         Map<String, Object> variables = new HashMap<>();       //流程参数
         User dealUser = null;                                  //用户
         List<User> dealUserList = null;                        //用户列表
+        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+        String nextNodeKey = "";                    //下一环节名称
         AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), businessId);
         //环节处理人设定
         switch (task.getTaskDefinitionKey()) {
@@ -529,7 +531,11 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                     variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), true);             //设置分支条件
                     //2表示到分管领导会签
                     addSuppLetter.setAppoveStatus(EnumState.STOP.getValue());
-
+                    //下一环节还是自己处理
+                    if(assigneeValue.equals(SessionUtil.getUserId())){
+                        isNextUser = true;
+                        nextNodeKey = FlowConstant.FLOW_SPL_FGLD_SP;
+                    }
                     //有分支，则跳转到领导会签环节
                 } else {
                     dealUserList = signBranchRepo.findAssistOrgDirector(addSuppLetter.getBusinessId());
@@ -552,6 +558,11 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                 variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);
 
+                //下一环节还是自己处理
+                if(assigneeValue.equals(SessionUtil.getUserId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.FLOW_SPL_FGLD_SP;
+                }
                 String signString = "";
                 //旧的会签记录
                 String oldMsg = addSuppLetter.getLeaderSignIdeaContent();
@@ -587,6 +598,19 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             taskService.complete(task.getId());
         } else {
             taskService.complete(task.getId(), variables);
+            //如果下一环节还是自己
+            if(isNextUser){
+                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                for(Task t:nextTaskList){
+                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+                        ResultMsg returnMsg = dealSignSupperFlow(processInstance,t,flowDto);
+                        if(returnMsg.isFlag() == false){
+                            return returnMsg;
+                        }
+                        break;
+                    }
+                }
+            }
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);

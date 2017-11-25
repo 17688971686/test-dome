@@ -64,6 +64,41 @@
                     modal: true,
                     open:function(){
                         $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.model.expertID + "&t=" + Math.random());
+                       //tab标签
+                        $('#myTab li').click(function (e) {
+                            var aObj = $("a", this);
+                            e.preventDefault();
+                            aObj.tab('show');
+                            var showDiv = aObj.attr("for-div");
+                            $(".tab-pane").removeClass("active").removeClass("in");
+                            $("#" + showDiv).addClass("active").addClass("in").show(500);
+                        })
+                        //项目签收编辑模板打印
+                        vm.editPrint = function () {
+                            $("#expertApply").hide();
+                            $("#auditExportDetail").data("kendoWindow").close();
+                            $("#expertApply_templ").show();
+                            $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
+                            $(".content-wrapper").addClass("print-content");
+                            print();
+                            $("#expertApply").show();
+                            $("#auditExportDetail").data("kendoWindow").open();
+                            $("#expertApply_templ").hide();
+                            $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
+                            $(".content-wrapper").removeClass("print-content");
+
+                        }
+                        //评审过项目
+                        expertSvc.reviewProjectGrid(vm.model.expertID,function(data){
+                            vm.isLoading = false;
+                            if(data && data.length > 0){
+                                vm.reviewProjectList = data;
+                                vm.noData = false;
+                            }else{
+                                vm.noData = true;
+                            }
+
+                        });
                     },
                     closable: true,
                     actions: ["Pin", "Minimize", "Maximize", "Close"]

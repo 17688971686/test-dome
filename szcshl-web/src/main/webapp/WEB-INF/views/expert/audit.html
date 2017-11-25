@@ -4,9 +4,27 @@
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div style="background:white;display: none;" id="auditExportDetail">
-    <#include "/expertReview/expertDetail.html"/>
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" for-div="busi_baseinfo">专家信息</a></li>
+        <li><a id="show_workprogram_a" data-toggle="tab" for-div="busi_workplan">评审过项目</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" style="background:white;">
+        <div class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
+        <#include "/expertReview/expertDetail.html"/>
+        </div><!-- end tab -->
+
+        <div class="tab-pane fade" style="background:white;" id="busi_workplan">
+        <#include "/expert/reviewProjectList.html"/>
+        </div><!-- end tab -->
+    <!-- end tab -->
+
 </div>
-<div class="well well-sm" style="background:white;margin: auto;overflow: auto">
+</div>
+<!--打印的模版-->
+<div id="expertApply_templ" style="display: none;"> <#include "/templatePrint/expert/expertEdit.html"/></div>
+<div id="expertApply" class="well well-sm" style="background:white;margin: auto;overflow: auto">
     <ol class="breadcrumb">
         <li><a>专家库管理</a></li>
         <li class="active">{{vm.title}}</li>
