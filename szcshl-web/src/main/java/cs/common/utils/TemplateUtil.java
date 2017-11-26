@@ -1,16 +1,14 @@
 package cs.common.utils;
 
 import com.ibm.icu.text.SimpleDateFormat;
+import cs.common.Constant;
 import cs.domain.sys.SysFile;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -71,18 +69,18 @@ public class TemplateUtil {
 
 
     public static void main(String[] args){
-    	
 
-    	
-    	 Map<String,Object> dataMap = new HashMap<>();
 
-         TemplateUtil.createDoc(dataMap,"budget/roster","G:\\test\\test.doc");
-        
+
+        Map<String,Object> dataMap = new HashMap<>();
+
+        TemplateUtil.createDoc(dataMap,"budget/roster","G:\\test\\test.doc");
+
     }
-    
+
     public static void nextWeekMeeting(){
-    	
-		Calendar cal =Calendar.getInstance();
+
+        Calendar cal =Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
         cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
@@ -91,7 +89,7 @@ public class TemplateUtil {
         //星期一
         cal.add(Calendar.DAY_OF_WEEK, 1);
         Date nextMonday=cal.getTime();
-        
+
         //星期二
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         cal.add(Calendar.DAY_OF_WEEK, 1);
@@ -100,27 +98,27 @@ public class TemplateUtil {
         cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
         cal.add(Calendar.DAY_OF_WEEK, 1);
         Date nextWednesday = cal.getTime();
-        
+
         //星期四
         cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
         cal.add(Calendar.DAY_OF_WEEK, 1);
         Date nextThursday = cal.getTime();
-        
+
         //星期五
         cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
         cal.add(Calendar.DAY_OF_WEEK, 1);
         Date nextFriday = cal.getTime();
-        
+
         //星期六
         cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
         cal.add(Calendar.DAY_OF_WEEK, 1);
         Date nextSatday = cal.getTime();
-      
+
         //获取下周星期日
         cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         Date nextSunday=cal.getTime();
-        
+
         System.out.println(nextMonday);
         System.out.println(nextTuesday);
         System.out.println(nextWednesday);
@@ -143,20 +141,38 @@ public class TemplateUtil {
      * @return
      */
     public static SysFile createTemplate(String signId ,  String mainType , String businessType , String reviewStage,
-                                        String templateUrl , String fileName , String fileType , Map<String , Object> dataMap){
-
+                                         String templateUrl , String fileName , String fileType , Map<String , Object> dataMap){
+        SysFile sysFile = new SysFile();
         String  showName = fileName + fileType;
         String path = SysFileUtil.getUploadPath();
         String relativeFileUrl = SysFileUtil.generatRelativeUrl(path ,  mainType ,signId , businessType , showName);
-
         File docFile = createDoc(dataMap , templateUrl , path + File.separator + relativeFileUrl);
-        SysFile sysFile = null;
-        if(docFile !=null){
-//    public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Integer fileSize, String fileType,
-//                    String mainId,String mainType, String sysfileType, String sysBusiType)
-           sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
-                    Integer.valueOf(String.valueOf(docFile.length())) , fileType , signId , mainType , reviewStage , businessType);
+        fileType = fileType.toLowerCase();//统一转成小写
+
+        try{
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName); //系统业务属性文件名
+            boolean result = FtpUtil.uploadFile(propertyUtil.readProperty(Constant.FTP_IP1) , Integer.parseInt(propertyUtil.readProperty(Constant.FTP_PORT1)),
+                    propertyUtil.readProperty(Constant.FTP_USER) , propertyUtil.readProperty(Constant.FTP_PWD) , propertyUtil.readProperty(Constant.FTP_BASE_PATH) ,
+                    "" , new String(showName.getBytes("GBK"),"ISO-8859-1") , new FileInputStream(docFile));
+            if(result){
+                sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
+                        Integer.valueOf(String.valueOf(docFile.length())) , fileType , signId , mainType , reviewStage , businessType);
+                sysFile.setFtpIp(propertyUtil.readProperty(Constant.FTP_IP1));
+                sysFile.setPort(propertyUtil.readProperty(Constant.FTP_PORT1));
+                sysFile.setFtpUser(propertyUtil.readProperty(Constant.FTP_USER));
+                sysFile.setFtpPwd(propertyUtil.readProperty(Constant.FTP_PWD));
+                sysFile.setFtpBasePath(propertyUtil.readProperty(Constant.FTP_BASE_PATH));
+                sysFile.setFtpFilePath("");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
+//        SysFile sysFile = null;
+//        if(docFile !=null){
+//           sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
+//                    Integer.valueOf(String.valueOf(docFile.length())) , fileType , signId , mainType , reviewStage , businessType);
+//        }
         return sysFile;
     }
 }

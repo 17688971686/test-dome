@@ -52,7 +52,7 @@
               <tr >
                 <td class="formAlignRight">会议室类型： <span class="required">*</span></td>
                 <td>
-                    <select class="form-control input-sm " ng-model="vm.model.mrType " id="mrType" name="mrType" data-val-required="必填">
+                    <select class="form-control input-xm " ng-model="vm.model.mrType " id="mrType" name="mrType" data-val-required="必填">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.MEETING_ROOM.dicts" ng-selected="vm.model.mrType == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
                     </select>
@@ -63,7 +63,7 @@
               <tr >
                 <td class="formAlignRight">会议室状态： <span class="required">*</span></td>
                 <td>
-                    <select class="form-control input-sm " ng-model="vm.model.mrStatus " id="mrStatus" name="mrStatus" data-val="true" data-val-required="必填">
+                    <select class="form-control input-xm " ng-model="vm.model.mrStatus " id="mrStatus" name="mrStatus" data-val="true" data-val-required="必填">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.USERSTATE.dicts" ng-selected="vm.model.mrStatus == x.dictKey" value="{{x.dictKey}}">{{x.dictName}}</option>
                     </select>

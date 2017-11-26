@@ -402,7 +402,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             queryHql.append(" from " + SysFile.class.getSimpleName() + " where " + SysFile_.mainId.getName() + " =:signId ");
             queryHql.setParam("signId", signId);
             queryHql.append(" and " + SysFile_.businessId.getName() + " =:businessId ");
-            queryHql.setParam("businessId", workProgram.getId());
+            queryHql.setParam("businessId", signId);
             queryHql.append(" and " + SysFile_.sysfileType.getName() + " =:sysfileType ");
             queryHql.setParam("sysfileType", Constant.SysFileType.WORKPROGRAM.getValue());   //模块类型
             queryHql.append(" and " + SysFile_.sysBusiType.getName() + " =:sysBusiType ");
