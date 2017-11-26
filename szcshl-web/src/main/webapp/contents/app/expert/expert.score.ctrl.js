@@ -23,7 +23,6 @@
             expertSvc.expertScoreHis(vm.selectHis,function(data){
                 vm.isSubmit = false;
                 vm.expScoreList = data;
-                console.log(vm.expScoreList);
                 if(!vm.expScoreList || vm.expScoreList.length == 0){
                     vm.noData = true;
                 }

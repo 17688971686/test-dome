@@ -980,7 +980,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
             }
 
             if(Validate.isString(expertSelectHis.getMajorBig())){
-                sqlBuilder.append(" AND ES.MAJORSMALL =:majorBig ").setParam("majorBig",expertSelectHis.getMajorBig());
+                sqlBuilder.append(" AND ES.MAJORBIG =:majorBig ").setParam("majorBig",expertSelectHis.getMajorBig());
             }
             if(Validate.isString(expertSelectHis.getMarjorSmall())){
                 sqlBuilder.append(" AND ES.MAJORSMALL =:marjorSmall ").setParam("marjorSmall",expertSelectHis.getMarjorSmall());

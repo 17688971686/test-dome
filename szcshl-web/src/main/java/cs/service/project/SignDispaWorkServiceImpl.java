@@ -19,10 +19,7 @@ import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
-import cs.repository.repositoryImpl.project.DispatchDocRepo;
-import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
-import cs.repository.repositoryImpl.project.SignMergeRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.project.*;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
@@ -56,6 +53,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     private RoomBookingRepo roomBookingRepo;
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
+    @Autowired
+    private SignBranchRepo signBranchRepo;
 
     /**
      * 查询个人办理项目
@@ -237,6 +236,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         if (!Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType) && !Constant.MergeType.DISPATCH.getValue().equals(mergeType)) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，参数异常，请联系管理员查看！");
         }
+        Date now = new Date();
+        String createUserName = SessionUtil.getDisplayName();
         List<String> mergeSignIdList = StringUtil.getSplit(mergeIds, ",");
         List<SignMerge> saveList = new ArrayList<>(mergeSignIdList.size());
         for (String mergeId : mergeSignIdList) {
@@ -244,11 +245,20 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             signMerge.setSignId(signId);
             signMerge.setMergeId(mergeId);
             signMerge.setMergeType(mergeType);
-            Date now = new Date();
-            signMerge.setCreatedBy(SessionUtil.getLoginName());
-            signMerge.setModifiedBy(SessionUtil.getLoginName());
+            signMerge.setCreatedBy(createUserName);
+            signMerge.setModifiedBy(createUserName);
             signMerge.setCreatedDate(now);
             signMerge.setModifiedDate(now);
+            //如果是合并评审，要再次确认是否有其他分支，如果有其他分支，则不允许保存
+            if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)){
+                if(signBranchRepo.allAssistCount(mergeId) > 0){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，选择的项目存在多个部门办理工作方案，不符合合并评审要求，请刷新重新选择！");
+                }
+            }
+            //如果已经合并的，也不能再次合并
+            if(signMergeRepo.checkIsMerege(mergeId,mergeType)){
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，选择的项目已经是合并项目，请刷新重新选择！");
+            }
             saveList.add(signMerge);
         }
         signMergeRepo.bathUpdate(saveList);

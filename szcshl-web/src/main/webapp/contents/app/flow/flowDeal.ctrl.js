@@ -40,17 +40,24 @@
             //3、查询当前环节信息
             flowSvc.getFlowInfo(vm.taskId, vm.instanceId, function (data) {
                 vm.flow = data;
-                vm.currentFlow = data;
-                //如果是结束环节，则不显示下一环节信息
-                if (vm.flow.end) {
-                    vm.showFlag.nodeNext = false;
-                } else {
-                    //初始化环节信息
-                    switch (vm.processKey) {
-                        case flowcommon.getFlowDefinedKey().TOPIC_FLOW:
-                            topicSvc.initFlowNode(vm.flow, vm.showFlag, vm);
-                            break;
+                //有任务ID，说明任务还没办理
+                if(vm.flow.taskId){
+                    vm.currentFlow = data;
+                    //如果是结束环节，则不显示下一环节信息
+                    if (vm.flow.end) {
+                        vm.showFlag.nodeNext = false;
+                    } else {
+                        //初始化环节信息
+                        switch (vm.processKey) {
+                            case flowcommon.getFlowDefinedKey().TOPIC_FLOW:
+                                topicSvc.initFlowNode(vm.flow, vm.showFlag, vm);
+                                break;
+                        }
                     }
+                }else{
+                    bsWin.alert("该任务已处理！",function(){
+                        $state.go('gtasks');
+                    });
                 }
             });
             //4、各自显示模块

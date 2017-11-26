@@ -2,10 +2,9 @@
 <#assign path=request.contextPath/>
 
 <div class="" style="background:white; margin-bottom: 10px;">
-    <div>
-        <span><span class="cs-icon-d" style="background-position: -266px -245px;">&nbsp;</span> 欢迎您：<b
-                style="color:#ffae00;">${user}</b>,</span> <span>上次登录时间 ${lastLoginDate}</span>
-    </div>
+    <span>
+        欢迎您：<b style="color:#ffae00;">${user}</b>,</span> <span>上次登录时间 ${lastLoginDate}
+    </span>
 </div>
 
 <div class="cared">
@@ -107,8 +106,10 @@
                         <tr ng-repeat="e in vm.endTasksList|limitTo:5">
                             <td ng-bind="$index+1">1</td>
                             <td>
-                                <a href="#/endSignDetail/{{e.businessKey}}/{{e.processInstanceId}}" ng-if="e.flowKey == 'FINAL_SIGN_FLOW'">{{e.businessName}}</a>
-                                <a href="#/flowEnd/{{e.businessKey}}/{{e.flowKey}}/{{e.processInstanceId}}" ng-if="e.flowKey && e.flowKey != 'FINAL_SIGN_FLOW'">{{e.businessName}}</a>
+                                <a href="#/endSignDetail/{{e.businessKey}}/{{e.processInstanceId}}"
+                                   ng-if="e.flowKey == 'FINAL_SIGN_FLOW'">{{e.businessName}}</a>
+                                <a href="#/flowEnd/{{e.businessKey}}/{{e.flowKey}}/{{e.processInstanceId}}"
+                                   ng-if="e.flowKey && e.flowKey != 'FINAL_SIGN_FLOW'">{{e.businessName}}</a>
                             </td>
                             <td><span class="badge bg-yellow">{{e.createDate}}</span></td>
                         </tr>

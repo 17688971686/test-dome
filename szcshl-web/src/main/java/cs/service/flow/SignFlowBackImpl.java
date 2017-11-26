@@ -1,42 +1,24 @@
 package cs.service.flow;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import cs.common.FlowConstant;
-import cs.repository.repositoryImpl.project.SignBranchRepo;
-import cs.repository.repositoryImpl.project.SignMergeRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.service.project.SignPrincipalService;
-import cs.service.sys.UserService;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by ldm on 2017/8/21.
  */
 @Service("signFlowBackImpl")
 public class SignFlowBackImpl implements IFlowBack {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private SignPrincipalService signPrincipalService;
-    @Autowired
-    private SignBranchRepo signBranchRepo;
-    @Autowired
-    private SignMergeRepo signMergeRepo;
-
-    @Autowired
-    private SignRepo signRepo;
-
 
     /**
      * 获取回退环节
+     *
      * @param curActivitiId
      * @return
      */
     @Override
-    public String backActivitiId(String businessKey,String curActivitiId) {
+    public String backActivitiId(String businessKey, String curActivitiId) {
         String backActivitiId = "";
-        switch (curActivitiId){
+        switch (curActivitiId) {
             //分管领导审批，直接回到签收环节
             case FlowConstant.FLOW_SIGN_FGLD_FB:
                 backActivitiId = FlowConstant.FLOW_SIGN_QS;
@@ -70,6 +52,8 @@ public class SignFlowBackImpl implements IFlowBack {
             case FlowConstant.FLOW_SIGN_QRGD:
                 backActivitiId = FlowConstant.FLOW_SIGN_GD;
                 break;
+            default:
+                ;
         }
         return backActivitiId;
     }

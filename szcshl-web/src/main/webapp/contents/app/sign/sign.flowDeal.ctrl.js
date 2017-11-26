@@ -133,14 +133,21 @@
             // 初始化流程数据
             flowSvc.getFlowInfo(vm.flow.taskId,vm.flow.processInstanceId,function(data){
                 vm.flow = data;
-                //如果是结束环节，则不显示下一环节信息
-                if (vm.flow.end) {
-                    vm.showFlag.nodeNext = false;
-                }
-                //更改状态,并初始化业务参数
-                vm.businessFlag.isLoadFlow = true;
-                if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){
-                    signFlowSvc.initBusinessParams(vm);
+                //如果任务ID为空，说明任务已经被处理
+                if(vm.flow.taskId){
+                    //如果是结束环节，则不显示下一环节信息
+                    if (vm.flow.end) {
+                        vm.showFlag.nodeNext = false;
+                    }
+                    //更改状态,并初始化业务参数
+                    vm.businessFlag.isLoadFlow = true;
+                    if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){
+                        signFlowSvc.initBusinessParams(vm);
+                    }
+                }else{
+                    bsWin.alert("该任务已处理！",function(){
+                        $state.go('gtasks');
+                    });
                 }
             });
             // 初始化办理信息

@@ -307,78 +307,83 @@ public class FlowController {
     public @ResponseBody
     FlowDto flowNodeInfo(@RequestParam(required = true) String taskId, @RequestParam(required = true) String processInstanceId) {
         FlowDto flowDto = new FlowDto();
-        flowDto.setTaskId(taskId);
         flowDto.setProcessInstanceId(processInstanceId);
         flowDto.setEnd(false);
 
-        //流程实例
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-        flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
-        flowDto.setEnd(processInstance.isEnded());
-
         //获取当前任务数据
         Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
-        if (task != null) {
+        if (Validate.isObject(task)) {
+            //任务不为空，说明任务还未办理
+            flowDto.setTaskId(taskId);
+            //流程实例
+            ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+            flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
+            flowDto.setEnd(processInstance.isEnded());
+
             Node curNode = new Node();
             curNode.setActivitiName(task.getName());
             curNode.setActivitiId(task.getTaskDefinitionKey());
             flowDto.setCurNode(curNode);
             flowDto.setSuspended(task.isSuspended());
-        }
-        flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
+            flowDto.setProcessKey(processInstance.getProcessDefinitionKey());
 
-        /**
-         * 流程的一些参数处理
-         */
-        switch (processInstance.getProcessDefinitionKey()){
-            case FlowConstant.SIGN_FLOW:
-                flowDto.setBusinessMap(signFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
-                break;
-            case FlowConstant.TOPIC_FLOW:
-                flowDto.setBusinessMap(topicFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
-                break;
-            case FlowConstant.BOOKS_BUY_FLOW:
-                flowDto.setBusinessMap(booksBuyBusFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
-                break;
-            case FlowConstant.ASSERT_STORAGE_FLOW:
-                flowDto.setBusinessMap(assertStorageFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
-                break;
-            case FlowConstant.PROJECT_STOP_FLOW:
-                flowDto.setBusinessMap(projectStopFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
-                break;
-            case FlowConstant.FLOW_ARCHIVES:
-                flowDto.setBusinessMap(archivesFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
-                break;
-            case FlowConstant.FLOW_APPRAISE_REPORT:
-                flowDto.setBusinessMap(appraiseFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
-                break;
-            case FlowConstant.FLOW_SUPP_LETTER:
-                flowDto.setBusinessMap(suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
-                break;
-            case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                flowDto.setBusinessMap(suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
-                break;
-            case FlowConstant.ANNOUNT_MENT_FLOW:
-                flowDto.setBusinessMap(annountMentFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
-                break;
-            default:
+            /**
+             * 流程的一些参数处理
+             */
+            switch (processInstance.getProcessDefinitionKey()){
+                case FlowConstant.SIGN_FLOW:
+                    flowDto.setBusinessMap(signFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    break;
+                case FlowConstant.TOPIC_FLOW:
+                    flowDto.setBusinessMap(topicFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    break;
+                case FlowConstant.BOOKS_BUY_FLOW:
+                    flowDto.setBusinessMap(booksBuyBusFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    break;
+                case FlowConstant.ASSERT_STORAGE_FLOW:
+                    flowDto.setBusinessMap(assertStorageFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    break;
+                case FlowConstant.PROJECT_STOP_FLOW:
+                    flowDto.setBusinessMap(projectStopFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    break;
+                case FlowConstant.FLOW_ARCHIVES:
+                    flowDto.setBusinessMap(archivesFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    break;
+                case FlowConstant.FLOW_APPRAISE_REPORT:
+                    flowDto.setBusinessMap(appraiseFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    break;
+                case FlowConstant.FLOW_SUPP_LETTER:
+                    flowDto.setBusinessMap(suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    break;
+                case FlowConstant.MONTHLY_BULLETIN_FLOW:
+                    flowDto.setBusinessMap(suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    break;
+                case FlowConstant.ANNOUNT_MENT_FLOW:
+                    flowDto.setBusinessMap(annountMentFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    break;
+                default:
                     ;
-        }
-
-        //获取下一环节信息
-        if(flowDto.isEnd() == false){
-            //获取下一环节信息--获取从某个节点出来的所有线路
-            ProcessDefinitionEntity def = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
-                    .getDeployedProcessDefinition(task.getProcessDefinitionId());
-            ActivityImpl activityImpl = def.findActivity(task.getTaskDefinitionKey());
-            List<Node> nextNodeList = new ArrayList<>();
-            flowService.nextTaskDefinition(nextNodeList,activityImpl,task.getTaskDefinitionKey());
-            //如果有环节需要过滤，则过滤
-            FlowNextNodeFilter flowNextNodeFilter = FlowNextNodeFilter.getInstance(task.getTaskDefinitionKey());
-            if(flowNextNodeFilter != null){
-                nextNodeList = flowNextNodeFilter.filterNextNode(flowDto.getBusinessMap(),nextNodeList);
             }
-            flowDto.setNextNode(nextNodeList);
+
+            //获取下一环节信息
+            if(flowDto.isEnd() == false){
+                //获取下一环节信息--获取从某个节点出来的所有线路
+                ProcessDefinitionEntity def = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+                        .getDeployedProcessDefinition(task.getProcessDefinitionId());
+                ActivityImpl activityImpl = def.findActivity(task.getTaskDefinitionKey());
+                List<Node> nextNodeList = new ArrayList<>();
+                flowService.nextTaskDefinition(nextNodeList,activityImpl,task.getTaskDefinitionKey());
+                //如果有环节需要过滤，则过滤
+                FlowNextNodeFilter flowNextNodeFilter = FlowNextNodeFilter.getInstance(task.getTaskDefinitionKey());
+                if(flowNextNodeFilter != null){
+                    nextNodeList = flowNextNodeFilter.filterNextNode(flowDto.getBusinessMap(),nextNodeList);
+                }
+                flowDto.setNextNode(nextNodeList);
+            }
+
+        }else{
+            //如果任务已处理，则任务ID为空
+            flowDto.setTaskId(null);
         }
 
         return flowDto;

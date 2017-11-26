@@ -22,6 +22,11 @@ import java.util.Map;
 
 public interface FlowService {
 
+    /**
+     * 流程回退
+     * @param flowDto
+     * @return
+     */
     ResultMsg rollBackLastNode(FlowDto flowDto);
 
     void nextTaskDefinition(List<Node> nextNodeList, ActivityImpl activityImpl, String activityId);
