@@ -75,9 +75,15 @@ public class FileController implements ServletConfigAware,ServletContextAware {
     @RequiresAuthentication
     @RequestMapping(name = "获取文件数据", path = "", method = RequestMethod.GET)
     public @ResponseBody
-    PageModelDto<SysFileDto> get(HttpServletRequest request) throws ParseException {
-        ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SysFileDto> sysFileDtos = fileService.get(odataObj);
+    PageModelDto<SysFileDto> get(HttpServletRequest request){
+        PageModelDto<SysFileDto> sysFileDtos = null;
+        try{
+            ODataObj odataObj = new ODataObj(request);
+            sysFileDtos = fileService.get(odataObj);
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         return sysFileDtos;
     }
 
@@ -99,8 +105,13 @@ public class FileController implements ServletConfigAware,ServletContextAware {
     @RequiresAuthentication
     @RequestMapping(name = "点树形图文件夹获取附件", path = "queryFile", method = RequestMethod.POST)
     public @ResponseBody
-    List<SysFileDto> queryFile(@RequestParam String mainId,@RequestParam String sysBusiType)throws ParseException{
-        List<SysFileDto> sysfileDto = fileService.queryFile(mainId,sysBusiType);
+    List<SysFileDto> queryFile(@RequestParam String mainId,@RequestParam String sysBusiType){
+        List<SysFileDto> sysfileDto = null;
+        try{
+             sysfileDto = fileService.queryFile(mainId,sysBusiType);
+        }catch (Exception e){
+            e.printStackTrace();;
+        }
         return sysfileDto;
     }
 
@@ -120,20 +131,26 @@ public class FileController implements ServletConfigAware,ServletContextAware {
     @ResponseBody
     public  ResultMsg upload(HttpServletRequest request, @RequestParam("file") MultipartFile multipartFile,
                      @RequestParam(required = true) String businessId, String mainId,String mainType,
-                     String sysfileType, String sysBusiType) throws IOException {
+                     String sysfileType, String sysBusiType) {
+        ResultMsg resultMsg = null;
+        try{
+            String fileName = multipartFile.getOriginalFilename();
+            String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+            fileType = fileType.toLowerCase();      //统一转成小写
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            boolean result = FtpUtil.uploadFile(propertyUtil.readProperty(FTP_IP1),Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)),
+                    propertyUtil.readProperty(FTP_USER), propertyUtil.readProperty(FTP_PWD), propertyUtil.readProperty(FTP_BASE_PATH), "",
+                    new String(fileName.getBytes("GBK"), "ISO-8859-1"), multipartFile.getInputStream());
+            if (result) {
+                 resultMsg = fileService.saveToFtp(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType,propertyUtil.readProperty(FTP_IP1),propertyUtil.readProperty(FTP_PORT1), propertyUtil.readProperty(FTP_USER),propertyUtil.readProperty(FTP_PWD),propertyUtil.readProperty(FTP_BASE_PATH),"");
+            } else {
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"附件上传失败，连接ftp服务失败，请核查！");
+            }
 
-        String fileName = multipartFile.getOriginalFilename();
-        String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-        fileType = fileType.toLowerCase();      //统一转成小写
-        PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-        boolean result = FtpUtil.uploadFile(propertyUtil.readProperty(FTP_IP1),Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)),
-                propertyUtil.readProperty(FTP_USER), propertyUtil.readProperty(FTP_PWD), propertyUtil.readProperty(FTP_BASE_PATH), "",
-                new String(fileName.getBytes("GBK"), "ISO-8859-1"), multipartFile.getInputStream());
-        if (result) {
-           return  fileService.saveToFtp(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType,propertyUtil.readProperty(FTP_IP1),propertyUtil.readProperty(FTP_PORT1), propertyUtil.readProperty(FTP_USER),propertyUtil.readProperty(FTP_PWD),propertyUtil.readProperty(FTP_BASE_PATH),"");
-        } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"附件上传失败，连接ftp服务失败，请核查！");
+        }catch (Exception e){
+            e.printStackTrace();
         }
+        return  resultMsg;
     }
 
 
@@ -153,17 +170,22 @@ public class FileController implements ServletConfigAware,ServletContextAware {
     @ResponseBody
     public  ResultMsg uploadLocal(HttpServletRequest request, @RequestParam("file") MultipartFile multipartFile,
                              @RequestParam(required = true) String businessId, String mainId,String mainType,
-                             String sysfileType, String sysBusiType) throws IOException {
+                             String sysfileType, String sysBusiType) {
+        ResultMsg resultMsg = null;
+        try {
+            String fileName = multipartFile.getOriginalFilename();
+            String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+            fileType = fileType.toLowerCase();      //统一转成小写
 
-        String fileName = multipartFile.getOriginalFilename();
-        String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-        fileType = fileType.toLowerCase();      //统一转成小写
-
-        if (!multipartFile.isEmpty()) {
-            return  fileService.save(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType);
-        } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件上传失败，无法获取文件信息！");
+            if (!multipartFile.isEmpty()) {
+                resultMsg =  fileService.save(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType);
+            } else {
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件上传失败，无法获取文件信息！");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+        return  resultMsg;
     }
 
 
@@ -287,7 +309,7 @@ public class FileController implements ServletConfigAware,ServletContextAware {
     @RequiresAuthentication
     @RequestMapping(name = "文件删除", path = "delete", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestParam(required = true) String sysFileId) throws IOException {
+    public void delete(@RequestParam(required = true) String sysFileId){
         fileService.deleteById(sysFileId);
     }
 
@@ -300,45 +322,50 @@ public class FileController implements ServletConfigAware,ServletContextAware {
     @RequiresAuthentication
     @RequestMapping(name = "预览附件", path = "preview/{sysFileId}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    public void preview(@PathVariable String sysFileId, HttpServletResponse response) throws IOException {
+    public void preview(@PathVariable String sysFileId, HttpServletResponse response) {
         SysFile sysFile = fileService.findFileById(sysFileId);
         //文件路径
         String filePath = SysFileUtil.getUploadPath()+File.separator+sysFile.getShowName();
-        filePath = filePath.replaceAll("\\\\", "/");
-        //下载ftp服务器附件到本地
-        Boolean flag = FtpUtil.downloadFile( sysFile.getFtpIp(), sysFile.getPort()!=null?Integer.parseInt(sysFile.getPort()):0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
-                sysFile.getShowName(), SysFileUtil.getUploadPath());
-        File file = new File(filePath);
-        if(!file.exists()){
-            file = new File(realPathResolver.get(plugin_file_path)+File.separator+"nofile.png");
-            sysFile.setFileType(".png");
+        try{
+            filePath = filePath.replaceAll("\\\\", "/");
+            //下载ftp服务器附件到本地
+            Boolean flag = FtpUtil.downloadFile( sysFile.getFtpIp(), sysFile.getPort()!=null?Integer.parseInt(sysFile.getPort()):0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
+                    sysFile.getShowName(), SysFileUtil.getUploadPath());
+            File file = new File(filePath);
+            if(!file.exists()){
+                file = new File(realPathResolver.get(plugin_file_path)+File.separator+"nofile.png");
+                sysFile.setFileType(".png");
+            }
+
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);  //读取文件流
+            inputStream.close();
+
+            response.reset();  //重置结果集
+            switch (sysFile.getFileType()){
+                case ".pdf":
+                    response.setContentType("application/pdf");
+                    break;
+                case ".png":
+                case ".jpg":
+                case ".gif":
+                    response.setContentType("text/html; charset=UTF-8");
+                    response.setContentType("image/jpeg");
+                    break;
+            }
+            response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
+            response.setHeader("Content-Disposition", "inline;filename=" + new String(sysFile.getShowName().getBytes(), "ISO-8859-1"));
+
+            //获取返回体输出权
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            os.write(buffer); // 输出文件
+            os.flush();
+            os.close();
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-        byte[] buffer = new byte[inputStream.available()];
-        inputStream.read(buffer);  //读取文件流
-        inputStream.close();
-
-        response.reset();  //重置结果集
-        switch (sysFile.getFileType()){
-            case ".pdf":
-                response.setContentType("application/pdf");
-                break;
-            case ".png":
-            case ".jpg":
-            case ".gif":
-                response.setContentType("text/html; charset=UTF-8");
-                response.setContentType("image/jpeg");
-                break;
-        }
-        response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
-        response.setHeader("Content-Disposition", "inline;filename=" + new String(sysFile.getShowName().getBytes(), "ISO-8859-1"));
-
-        //获取返回体输出权
-        OutputStream os = new BufferedOutputStream(response.getOutputStream());
-        os.write(buffer); // 输出文件
-        os.flush();
-        os.close();
     }
 
     @RequiresAuthentication

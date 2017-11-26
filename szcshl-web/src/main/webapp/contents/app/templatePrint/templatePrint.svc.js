@@ -9,6 +9,7 @@
         vm.model={};
         var service = {
             templatePrint: templatePrint,       //模板打印
+            getBrowserType: getBrowserType     //获取浏览器类型
         };
         return service;
 
@@ -47,6 +48,28 @@
                $(act).removeClass("print-hide");
                $(".content-wrapper").removeClass("print-content");
            }
+        }
+
+        //获取浏览器类型
+        function getBrowserType(){
+            var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+            console.log(userAgent);
+            var isOpera = userAgent.indexOf("Opera") > -1;
+            if (isOpera) {
+                return "Opera"
+            }; //判断是否Opera浏览器
+            if (userAgent.indexOf("Firefox") > -1) {
+                return "FF";
+            } //判断是否Firefox浏览器
+            if (userAgent.indexOf("Chrome") > -1){
+                return "Chrome";
+            }
+            if (userAgent.indexOf("Safari") > -1) {
+                return "Safari";
+            } //判断是否Safari浏览器
+            if (!!window.ActiveXObject || "ActiveXObject" in window) {
+                return "IE";
+            }; //判断是否IE浏览器
         }
     }
 })();

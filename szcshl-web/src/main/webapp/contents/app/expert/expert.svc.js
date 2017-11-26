@@ -3,9 +3,9 @@
 
 	angular.module('app').factory('expertSvc', expert);
 
-	expert.$inject = [ '$http','FileSaver', 'Blob'];
+	expert.$inject = [ '$http','FileSaver', 'Blob','templatePrintSvc'];
 	
-	function expert($http,FileSaver,Blob) {
+	function expert($http,FileSaver,Blob,templatePrintSvc) {
 		var url_expert = rootPath + "/expert";
 		var service = {
 			grid : grid,						//初始化综合查询grid
@@ -24,17 +24,23 @@
             expertSelectHis : expertSelectHis,	//专家抽取统计
             expertScoreHis : expertScoreHis,	//专家评分统计
 			reviewProjectGrid : reviewProjectGrid,  //专家评审项目列表
-            expertPrint : expertPrint,  //专家评审项目列表
+            expertPrint : expertPrint,  //专家评审模板打印
 		};
 		return service;
 
+
         //编辑模板打印
         function expertPrint(vm){
+            var mb = templatePrintSvc.getBrowserType();
             $("#expertApply").hide();
             $("#expertApply_templ").show();
             $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
             $(".content-wrapper").addClass("print-content");
-            print();
+            if(mb == 'IE'){
+                document.all.WebBrowser.ExecWB(7,1);
+            }else{
+				print();
+			}
             $("#expertApply").show();
             $("#expertApply_templ").hide();
             $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
