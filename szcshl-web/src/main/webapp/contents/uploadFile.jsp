@@ -1,8 +1,9 @@
+<%@ page contentType="text/html;charset=GBK" language="java" %>
 <%@ page import="java.io.*" %>
 <jsp:useBean id="mySmartUpload" scope="page" class="com.jspsmart.upload.SmartUpload"/>
 <%
     try {
-        // åˆå§‹åŒ–ä¸Šä¼ ç»„ä»¶
+        // ³õÊ¼»¯ÉÏ´«×é¼þ
         mySmartUpload.initialize(pageContext);
         mySmartUpload.upload();
         com.jspsmart.upload.File myFile = null;
@@ -10,13 +11,13 @@
         //String filePath = request.getParameter("file");
         String localFilePath = request.getParameter("localFilePath");
         if (!myFile.isMissing()) {
-            myFile.saveAs(localFilePath, mySmartUpload.SAVE_PHYSICAL);    // ä¿å­˜ä¸Šä¼ æ–‡ä»¶åˆ°å†…å­˜
+            myFile.saveAs(localFilePath, mySmartUpload.SAVE_PHYSICAL);    // ±£´æÉÏ´«ÎÄ¼þµ½ÄÚ´æ
             out.clear();
-            out.write("success");//è¿”å›žæŽ§ä»¶HttpPost()æ–¹æ³•å€¼ã€‚
+            out.write("±£´æ³É¹¦");//·µ»Ø¿Ø¼þHttpPost()·½·¨Öµ¡£
             out.flush();
         }
     } catch (Exception e) {
         out.clear();
-        out.write("failed");//è¿”å›žæŽ§ä»¶HttpPost()æ–¹æ³•å€¼ã€‚
+        out.write("failed");//·µ»Ø¿Ø¼þHttpPost()·½·¨Öµ¡£
         out.flush();
     }%>

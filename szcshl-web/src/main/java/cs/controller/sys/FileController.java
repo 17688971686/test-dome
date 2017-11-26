@@ -197,37 +197,46 @@ public class FileController implements ServletConfigAware,ServletContextAware {
     @RequiresAuthentication
     @RequestMapping(name = "ftp文件同步", path = "fileSysUpload", method = RequestMethod.GET)
     @ResponseBody
-    public  ResultMsg fileSysUpload( String sysFileId) throws IOException {
+    public  ResultMsg fileSysUpload( String sysFileId) {
         logger.debug("==================ftp文件同步==================");
-       SysFile sysFile = fileService.findFileById(sysFileId);
-        //文件路径
-        String filePath = SysFileUtil.getUploadPath()+File.separator+sysFile.getShowName();
-        filePath = filePath.replaceAll("\\\\", "/");
-        File file = new File (filePath);
-        FileInputStream fileInputStream = new FileInputStream(file);
-        PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-        boolean result = FtpUtil.uploadFile(sysFile.getFtpIp(),Integer.parseInt(sysFile.getPort()),
-                sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(), "",
-                new String(sysFile.getShowName().getBytes("GBK"), "ISO-8859-1"), fileInputStream);
-        if (result) {
-            //file.delete();
-            SysFileDto sysFileDto = new SysFileDto();
-            sysFile.setModifiedBy(SessionUtil.getDisplayName());
-            sysFile.setModifiedDate(new Date());
-            fileService.update(sysFile);
-            BeanCopierUtils.copyProperties(sysFile,sysFileDto);
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"文件同步成功！",sysFileDto);
-        } else {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件同步失败！");
+        ResultMsg resultMsg = null;
+        try{
+            SysFile sysFile = fileService.findFileById(sysFileId);
+            //文件路径
+            String filePath = SysFileUtil.getUploadPath()+File.separator+sysFile.getShowName();
+            filePath = filePath.replaceAll("\\\\", "/");
+            File file = new File (filePath);
+            FileInputStream fileInputStream = new FileInputStream(file);
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            boolean result = FtpUtil.uploadFile(sysFile.getFtpIp(),Integer.parseInt(sysFile.getPort()),
+                    sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(), "",
+                    new String(sysFile.getShowName().getBytes("GBK"), "ISO-8859-1"), fileInputStream);
+            if (result) {
+                //file.delete();
+                SysFileDto sysFileDto = new SysFileDto();
+                sysFile.setModifiedBy(SessionUtil.getDisplayName());
+                sysFile.setModifiedDate(new Date());
+                fileService.update(sysFile);
+                BeanCopierUtils.copyProperties(sysFile,sysFileDto);
+                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"文件同步成功！",sysFileDto);
+            } else {
+                resultMsg =  new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"文件同步失败！");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+        return resultMsg;
     }
 
 
     @RequiresAuthentication
     @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.GET)
     public @ResponseBody
-    void fileDownload(@RequestParam(required = true) String sysfileId, HttpServletResponse response) throws IOException {
+    void fileDownload(@RequestParam(required = true) String sysfileId, HttpServletResponse response) {
         logger.debug("==================附件下载==================");
+        FileInputStream in = null;
+        OutputStream out = null;
+        try {
         SysFile sysFile = fileService.findFileById(sysfileId);
         //文件路径
         String filePath = SysFileUtil.getUploadPath()+File.separator+sysFile.getShowName();
@@ -249,9 +258,9 @@ public class FileController implements ServletConfigAware,ServletContextAware {
         if (!f.exists()) {
             return;
         }
-        FileInputStream in = new FileInputStream(f);
-        OutputStream out = response.getOutputStream();
-        try {
+         in = new FileInputStream(f);
+         response.getOutputStream();
+
             switch (fileType) {
                 case ".jpg":
                     response.setHeader("Content-type", "application/.jpg");
@@ -293,8 +302,12 @@ public class FileController implements ServletConfigAware,ServletContextAware {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            in.close();
-            out.close();
+            try {
+                in.close();
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -442,8 +455,10 @@ public class FileController implements ServletConfigAware,ServletContextAware {
                 fileTyp = "doc";
                 break;
             case ".xls":
-            case ".xlsx":
                 fileTyp = "xls";
+                break;
+            case ".xlsx":
+                fileTyp = "xlsx";
                 break;
             case ".ppt":
             case ".pptx":
