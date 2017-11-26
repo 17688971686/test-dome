@@ -73,7 +73,7 @@
                 }
 
                 //判断是否有多个分支，用于控制是否显示总投资字段
-                if(vm.model.workProgramDtoList.length >0){
+                if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length >0){
                     vm.showTotalInvestment = true;
                 }
 

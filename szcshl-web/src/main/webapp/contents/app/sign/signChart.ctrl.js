@@ -228,7 +228,7 @@
                 //工具栏设置
                 toolbox :{
                     show : true,
-                    x : '1000',
+                    x : '850',
                     feature : {
                         dataView : {show : true ,readOnly : true},//数据统计
                         restore : {show : true },//还原
@@ -306,6 +306,7 @@
                 },
                 toolbox :{
                     show : true,
+                    x : '800',
                     feature : {
                         dataView : {show : true ,readOnly : true},//数据统计
                         restore : {show : true },//还原
@@ -383,6 +384,7 @@
                 },
                 toolbox :{
                     show : true,
+                    x : '900',
                     feature : {
                         dataView : {show : true ,readOnly : true},//数据统计
                         restore : {show : true },//还原

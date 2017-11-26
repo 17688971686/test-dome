@@ -89,6 +89,17 @@ public class Constant {
      */
     public final static String USER_SESSION_KEY = "CURRENT_USER";
 
+    /**
+     * 文件存到ftp的
+     * Ip地址、服务端口、用户名、密码、基础路径、文件存放路径
+     */
+    public static final String FTP_IP1 = "FTP_IP1";
+    public static final String FTP_PORT1 = "FTP_PORT1";
+    public static final String FTP_USER = "FTP_USER";
+    public static final String FTP_PWD = "FTP_PWD";
+    public static final String FTP_BASE_PATH = "FTP_BASE_PATH";
+    public static final String FTP_FILE_PATH = "FTP_FILE_PATH";
+
 
     /**
      * 项目流程信息状态
