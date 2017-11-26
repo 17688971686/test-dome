@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
 <!-- start 主项目 -->
-<div ng-repeat="w in vm.model.workProgramDtoList"  ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告')&&(w.branchId == '1' || w.branchId == 1)">
+<div ng-repeat="w in vm.model.workProgramDtoList"  ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它')&&(w.branchId == '1' || w.branchId == 1)">
     <a  data-toggle="collapse" data-target="#wp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [{{w.titleName}}]
     </a>
@@ -157,7 +157,7 @@
                 <td class="text-center" style="width:10%;">专家类别</td>
                 <td class="text-center" style="width:15%;">备注</td>
             </tr>
-            <tr ng-repeat="x in w.expertDtoList track by $index" ng-show="w.expertDtoList && w.expertDtoList.length > 0">
+            <tr ng-show="w.expertDtoList && w.expertDtoList.length > 0" ng-repeat="x in w.expertDtoList track by $index" >
                 <td class="text-center" colspan="2">{{x.name}}</td>
                 <td class="text-center">{{x.comPany}}</td>
                 <td class="text-center">{{x.job}}</td>

@@ -592,39 +592,45 @@ public class SignServiceImpl implements SignService {
         if (!Validate.isString(sign.getLeaderId())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，请先设置默认办理部门！");
         }
-        //1、启动流程
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.SIGN_FLOW, signid,
-                ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_ZR.getValue(), SessionUtil.getUserId()));
 
-        //2、设置流程实例名称
-        processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), sign.getProjectname());
+        try {
+            //1、启动流程
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.SIGN_FLOW, signid,
+                    ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_ZR.getValue(), SessionUtil.getUserId()));
 
-        //3、更改项目状态
-        sign.setProcessInstanceId(processInstance.getId());
-        sign.setSignState(EnumState.PROCESS.getValue());
-        sign.setProcessState(Constant.SignProcessState.IS_START.getValue());
-        signRepo.save(sign);
+            //2、设置流程实例名称
+            processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), sign.getProjectname());
 
-        //4、跳过第一环节（主任审核）
-        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-        taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
-        taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_QS.getValue(), SessionUtil.getUserId()));
+            //3、更改项目状态
+            sign.setProcessInstanceId(processInstance.getId());
+            sign.setSignState(EnumState.PROCESS.getValue());
+            sign.setProcessState(Constant.SignProcessState.IS_START.getValue());
+            signRepo.save(sign);
 
-        //5、跳过第二环节（签收）
-        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-        taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
-        taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_ZHB.getValue(), SessionUtil.getUserId()));
+            //4、跳过第一环节（主任审核）
+            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+            taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
+            taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_QS.getValue(), SessionUtil.getUserId()));
 
-        //6、跳过第三个环节（综合部拟办意见）
-        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-        taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());    //综合部拟办意见
-        //查询是否有待办人员
-        User leadUser = userRepo.findById(User_.id.getName(), sign.getLeaderId());
-        String assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
-        taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_FGLD.getValue(), assigneeValue));
-        //放入腾讯通消息缓冲池
-        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
-        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+            //5、跳过第二环节（签收）
+            task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+            taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
+            taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_ZHB.getValue(), SessionUtil.getUserId()));
+
+            //6、跳过第三个环节（综合部拟办意见）
+            task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+            taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());    //综合部拟办意见
+            //查询是否有待办人员
+            User leadUser = userRepo.findById(User_.id.getName(), sign.getLeaderId());
+            String assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
+            taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_FGLD.getValue(), assigneeValue));
+            //放入腾讯通消息缓冲池
+            RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+            return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+        } catch (Exception e) {
+            log.error("发起项目签收流程异常："+e.getMessage());
+            return new ResultMsg(true, MsgCode.OK.getValue(), "操作异常，错误信息已记录，请刷新重试或联系管理员处理！");
+        }
     }
 
     @Override

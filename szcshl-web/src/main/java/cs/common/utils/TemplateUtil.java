@@ -45,15 +45,15 @@ public class TemplateUtil {
 
 
     public static File createDoc(Map<?, ?> dataMap, String templateName, String outputFile) {
-        if(cfg == null){
+        if (cfg == null) {
             cfg = getConfiguration();
         }
         File f = new File(outputFile);
         Template t = allTemplates.get(templateName);
         try {
-            if(t == null ){
-                t = cfg.getTemplate(templateName+suffix);
-                allTemplates.put(templateName,t);
+            if (t == null) {
+                t = cfg.getTemplate(templateName + suffix);
+                allTemplates.put(templateName, t);
             }
             // 这个地方不能使用FileWriter因为需要指定编码类型否则生成的Word文档会因为有无法识别的编码而无法打开
             Writer w = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
@@ -66,21 +66,9 @@ public class TemplateUtil {
         return f;
     }
 
+    public static void nextWeekMeeting() {
 
-
-    public static void main(String[] args){
-
-
-
-        Map<String,Object> dataMap = new HashMap<>();
-
-        TemplateUtil.createDoc(dataMap,"budget/roster","G:\\test\\test.doc");
-
-    }
-
-    public static void nextWeekMeeting(){
-
-        Calendar cal =Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         //这种输出的是上个星期周日的日期，因为老外那边把周日当成第一天
         cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
@@ -88,7 +76,7 @@ public class TemplateUtil {
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         //星期一
         cal.add(Calendar.DAY_OF_WEEK, 1);
-        Date nextMonday=cal.getTime();
+        Date nextMonday = cal.getTime();
 
         //星期二
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
@@ -117,46 +105,47 @@ public class TemplateUtil {
         //获取下周星期日
         cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
         cal.add(Calendar.WEEK_OF_YEAR, 1);
-        Date nextSunday=cal.getTime();
+        Date nextSunday = cal.getTime();
 
-        System.out.println(nextMonday);
+        /*System.out.println(nextMonday);
         System.out.println(nextTuesday);
         System.out.println(nextWednesday);
         System.out.println(nextThursday);
         System.out.println(nextFriday);
-        System.out.println(nextSunday);
+        System.out.println(nextSunday);*/
 
     }
 
     /**
      * 生成模板并且同时生成附件
-     * @param signId   收文ID
-     * @param mainType   附件模块
-     * @param businessType   附件业务
+     *
+     * @param signId       收文ID
+     * @param mainType     附件模块
+     * @param businessType 附件业务
      * @param reviewStage  评审阶段(项目阶段)
      * @param templateUrl  模板路径
-     * @param fileName   文件名称
-     * @param fileType   文件类型
-     * @param dataMap    数据
+     * @param fileName     文件名称
+     * @param fileType     文件类型
+     * @param dataMap      数据
      * @return
      */
-    public static SysFile createTemplate(String signId ,  String mainType , String businessType , String reviewStage,
-                                         String templateUrl , String fileName , String fileType , Map<String , Object> dataMap){
+    public static SysFile createTemplate(String signId, String mainType, String businessType, String reviewStage,
+                                         String templateUrl, String fileName, String fileType, Map<String, Object> dataMap) {
         SysFile sysFile = new SysFile();
-        String  showName = fileName + fileType;
+        String showName = fileName + fileType;
         String path = SysFileUtil.getUploadPath();
-        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path ,  mainType ,signId , businessType , showName);
-        File docFile = createDoc(dataMap , templateUrl , path + File.separator + relativeFileUrl);
+        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, mainType, signId, businessType, showName);
+        File docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl);
         fileType = fileType.toLowerCase();//统一转成小写
 
-        try{
+        try {
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName); //系统业务属性文件名
-            boolean result = FtpUtil.uploadFile(propertyUtil.readProperty(Constant.FTP_IP1) , Integer.parseInt(propertyUtil.readProperty(Constant.FTP_PORT1)),
-                    propertyUtil.readProperty(Constant.FTP_USER) , propertyUtil.readProperty(Constant.FTP_PWD) , propertyUtil.readProperty(Constant.FTP_BASE_PATH) ,
-                    "" , new String(showName.getBytes("GBK"),"ISO-8859-1") , new FileInputStream(docFile));
-            if(result){
-                sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
-                        Integer.valueOf(String.valueOf(docFile.length())) , fileType , signId , mainType , reviewStage , businessType);
+            boolean result = FtpUtil.uploadFile(propertyUtil.readProperty(Constant.FTP_IP1), Integer.parseInt(propertyUtil.readProperty(Constant.FTP_PORT1)),
+                    propertyUtil.readProperty(Constant.FTP_USER), propertyUtil.readProperty(Constant.FTP_PWD), propertyUtil.readProperty(Constant.FTP_BASE_PATH),
+                    "", new String(showName.getBytes("GBK"), "ISO-8859-1"), new FileInputStream(docFile));
+            if (result) {
+                sysFile = new SysFile(UUID.randomUUID().toString(), signId, relativeFileUrl, showName,
+                        Integer.valueOf(String.valueOf(docFile.length())), fileType, signId, mainType, reviewStage, businessType);
                 sysFile.setFtpIp(propertyUtil.readProperty(Constant.FTP_IP1));
                 sysFile.setPort(propertyUtil.readProperty(Constant.FTP_PORT1));
                 sysFile.setFtpUser(propertyUtil.readProperty(Constant.FTP_USER));
@@ -164,7 +153,7 @@ public class TemplateUtil {
                 sysFile.setFtpBasePath(propertyUtil.readProperty(Constant.FTP_BASE_PATH));
                 sysFile.setFtpFilePath("");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -174,5 +163,10 @@ public class TemplateUtil {
 //                    Integer.valueOf(String.valueOf(docFile.length())) , fileType , signId , mainType , reviewStage , businessType);
 //        }
         return sysFile;
+    }
+
+    public static void main(String[] args) {
+        Map<String, Object> dataMap = new HashMap<>();
+        TemplateUtil.createDoc(dataMap, "budget/roster", "G:\\test\\test.doc");
     }
 }
