@@ -17,7 +17,8 @@
 			deleteOrg:deleteOrg	,
 			getCompany : getCompany,
 			initRoleUsers: initRoleUsers, //初始化角色数据
-			queryOrg:queryOrg
+			queryOrg:queryOrg,
+            queryOrgList:queryOrgList//查询部门列表
 		};		
 		return service;	
 		
@@ -269,7 +270,25 @@
 				success:httpSuccess
 			});
 		}//E_initRoleUsers
-		
+
+
+        function queryOrgList(vm,callBack) {
+            var httpOptions = {
+                method : 'post',
+                url : rootPath +"/org/queryOrgList",
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+				vm:vm,
+                $http:$http,
+                httpOptions:httpOptions,
+                success:httpSuccess,
+            });
+        }// end fun queryOrgList
 
 	}
 	

@@ -3,8 +3,8 @@
 
     angular.module('app').factory('sysfileSvc', sysfile);
 
-    sysfile.$inject = ['$http', 'bsWin','$state'];
-    function sysfile($http, bsWin,$state) {
+    sysfile.$inject = ['$http', 'bsWin','$state','$interval'];
+    function sysfile($http, bsWin,$state,$interval) {
         var service = {
             initUploadOptions: initUploadOptions,       // 初始化上传附件控件
             delSysFile: delSysFile,                     // 删除系统文件
@@ -208,7 +208,6 @@
                         visible: false,
                         modal: true,
                         closable: true,
-                        actions: ["Pin", "Minimize", "Maximize", "Close"]
                     }).data("kendoWindow").center().open();
                 }
             }
@@ -362,11 +361,17 @@
                 nodes.children = ss;
                 vm.zNodes.push(nodes);
 
+
             }
-            $scope.$watch("vm.zNodes",function (newValue, oldValue) {
-                setTimeout(function() {//页面的ID可能没有加载完成
-                    zTreeObj = $.fn.zTree.init($("#zTree"), setting, vm.zNodes);
-                },500)
+
+          $scope.$watch("vm.zNodes",function (newValue, oldValue) {//监听值改变
+            var timer= $interval(function(){//使用angular定时器
+                   var s=document.getElementById("zTree");//获取到前台页面ztree的id
+                  if(s!=null){//当有ztree的id时开始赋值
+                      zTreeObj = $.fn.zTree.init($("#zTree"), setting, vm.zNodes);
+                      $interval.cancel(timer);//停止定时器
+                  }
+                },500);   //间隔0.5秒定时执行
             },true);
         }// end fun initZtreeClient
          //点击跳转
