@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs.common.ResultMsg;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.sys.OrgDept;
@@ -127,7 +128,8 @@ public class SignFlowImpl implements IFlow {
                 //自动生成发文模板
                 Sign sign = signRepo.findById(Sign_.signid.getName(), businessKey);
                 if(!Constant.EnumState.YES.getValue().equals(sign.getIsSignTemplate())){
-                    dispatchDocService.createDisPatchTemplate(businessKey);
+                    ResultMsg resultMsg = dispatchDocService.createDisPatchTemplate(businessKey);
+                    businessMap.put("resultMsg" , resultMsg);
                 }
                 userList = signPrincipalService.getAllSecondPriUser(businessKey);
                 if(Validate.isList(userList)){

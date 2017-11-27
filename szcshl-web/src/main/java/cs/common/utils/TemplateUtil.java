@@ -131,7 +131,7 @@ public class TemplateUtil {
      */
     public static SysFile createTemplate(String signId, String mainType, String businessType, String reviewStage,
                                          String templateUrl, String fileName, String fileType, Map<String, Object> dataMap) {
-        SysFile sysFile = new SysFile();
+        SysFile sysFile = null;
         String showName = fileName + fileType;
         String path = SysFileUtil.getUploadPath();
         String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, mainType, signId, businessType, showName);
@@ -144,6 +144,7 @@ public class TemplateUtil {
                     propertyUtil.readProperty(Constant.FTP_USER), propertyUtil.readProperty(Constant.FTP_PWD), propertyUtil.readProperty(Constant.FTP_BASE_PATH),
                     "", new String(showName.getBytes("GBK"), "ISO-8859-1"), new FileInputStream(docFile));
             if (result) {
+                sysFile = new SysFile();
                 sysFile = new SysFile(UUID.randomUUID().toString(), signId, relativeFileUrl, showName,
                         Integer.valueOf(String.valueOf(docFile.length())), fileType, signId, mainType, reviewStage, businessType);
                 sysFile.setFtpIp(propertyUtil.readProperty(Constant.FTP_IP1));
@@ -157,11 +158,6 @@ public class TemplateUtil {
             e.printStackTrace();
         }
 
-//        SysFile sysFile = null;
-//        if(docFile !=null){
-//           sysFile = new SysFile(UUID.randomUUID().toString() , signId , relativeFileUrl , showName ,
-//                    Integer.valueOf(String.valueOf(docFile.length())) , fileType , signId , mainType , reviewStage , businessType);
-//        }
         return sysFile;
     }
 

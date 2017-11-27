@@ -435,16 +435,32 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(), workProgram.getId(), null);
 
         //2.1 生成签到表
-        saveFile.add(CreateTemplateUtils.createtTemplateSignIn(sign, workProgram));
+        SysFile sysFile1 = CreateTemplateUtils.createtTemplateSignIn(sign, workProgram);
+        if(sysFile1 != null){
+            saveFile.add(sysFile1);
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理" , null);
+        }
+
 
         //2.2 生成主持人表
-        saveFile.add(CreateTemplateUtils.createTemplateCompere(sign, workProgram, expertList));
+        SysFile sysFile2 = CreateTemplateUtils.createTemplateCompere(sign, workProgram, expertList);
+        if(sysFile2 != null){
+            saveFile.add(sysFile2);
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
+        }
 
         //2.3 会议议程
         List<SysFile> sList = CreateTemplateUtils.createTemplateMeeting(sign, workProgram, roomBookings);
         if (sList != null && sList.size() > 0) {
             for (SysFile sysFile : sList) {
-                saveFile.add(sysFile);
+                if(saveFile !=null){
+
+                    saveFile.add(sysFile);
+                }else{
+                    return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
+                }
             }
         }
 
@@ -453,6 +469,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             SysFile invitation = CreateTemplateUtils.createTemplateInvitation(sign, workProgram, expert, user, roomBookings);
             if (invitation != null) {
                 saveFile.add(invitation);
+            }else{
+                return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
             }
         }
 
@@ -461,6 +479,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         SysFile notice = CreateTemplateUtils.createTemplateNotice(sign, workProgram, user, roomBookings);
         if (notice != null) {
             saveFile.add(notice);
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
         }
 
 
@@ -478,7 +498,13 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
             org = orgRepo.findById(sign.getMaindepetid());//甲方
         }
-        saveFile.add(CreateTemplateUtils.createTemplateAssist(sign, workProgram, apsList, assistUnit, org));
+        SysFile sysFile3 = CreateTemplateUtils.createTemplateAssist(sign, workProgram, apsList, assistUnit, org);
+        if(sysFile3 != null){
+
+            saveFile.add(sysFile3);
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
+        }
 
         //3、保存文件信息
         if (saveFile.size() > 0) {
