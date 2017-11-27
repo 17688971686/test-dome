@@ -18,7 +18,7 @@
 
     <table class="table table-bordered">
         <tbody>
-        <tr ng-if="vm.model.ispresign == 0 && vm.flow.curNode.activitiName == '项目负责人办理' ">
+        <tr ng-if="vm.model.ispresign == 0 && (vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4') ">
             <td width="10%" class="text-center">资料存放位置</td>
             <td>
                 {{vm.model.palceStorage}}
@@ -116,11 +116,11 @@
                             </td>
                             <td>
                                 <div id="principalAssistUser">
-                                <li ng-repeat="u in vm.users" style="float: left;width: 80px;">
-                                    <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}"
-                                           value="{{u.id}}"
-                                           ng-click="vm.initUserOption()"/> {{u.displayName}}
-                                </li>
+                                    <li ng-repeat="u in vm.users" style="float: left;width: 80px;">
+                                        <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}"
+                                               value="{{u.id}}"
+                                               ng-click="vm.initUserOption()"/> {{u.displayName}}
+                                    </li>
                                 </div>
                             </td>
                         </tr>
@@ -143,9 +143,9 @@
                     <div class="label-default" style="font-size: 12px;padding:5px 10px;">
                         *总负责人只有一人，且要优先选择；其它负责人可以选多个。
                     </div>
-                    <table class="table table-bordered" >
+                    <table class="table table-bordered">
                         <tr>
-                            <td >
+                            <td>
                                 <ul>
                                     <li ng-repeat="u in vm.users | filter:{isSelected:false}"
                                         style="float: left;width: 80px;">
