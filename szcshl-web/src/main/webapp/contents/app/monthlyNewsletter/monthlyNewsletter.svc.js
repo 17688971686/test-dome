@@ -116,7 +116,9 @@
 
         // begin#生成月报简报
         function createMonthReport(vm) {
-            var httpOptions = {
+            window.open(rootPath + "/monthlyNewsletter/createMonthReport?reportMultiyear=" + vm.monthly.reportMultiyear + "&theMonths="
+                + vm.monthly.theMonths + "&startMoultiyear=" + vm.monthly.startMoultiyear + "&endMoultiyear=" + vm.monthly.endMoultiyear+ "&staerTheMonths=" + vm.monthly.staerTheMonths+ "&endTheMonths=" + vm.monthly.endTheMonths);
+        /*    var httpOptions = {
                 method: 'post',
                 url: rootPath + "/monthlyNewsletter/createMonthReport",
                 data: vm.monthly
@@ -136,7 +138,7 @@
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
-            });
+            });*/
         }//E_生成月报简报
 
         // begin#getMonthlyNewsletterById

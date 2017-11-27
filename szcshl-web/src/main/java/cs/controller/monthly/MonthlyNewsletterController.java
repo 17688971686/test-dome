@@ -191,12 +191,18 @@ public class MonthlyNewsletterController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "生成月报简报", path = "createMonthReport", method = RequestMethod.POST)
+    @RequestMapping(name = "生成月报简报", path = "createMonthReport", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void createMonthReport(HttpServletResponse resp ,@RequestBody  MonthlyNewsletterDto monthlyNewsletterDto) {
+    public void createMonthReport(HttpServletResponse resp , @RequestParam String reportMultiyear, @RequestParam String theMonths, @RequestParam String startMoultiyear, @RequestParam String endMoultiyear, @RequestParam String staerTheMonths, @RequestParam String endTheMonths) {
         InputStream is = null;
         ServletOutputStream out = null;
-
+        MonthlyNewsletterDto  monthlyNewsletterDto = new MonthlyNewsletterDto();
+        monthlyNewsletterDto.setReportMultiyear(reportMultiyear);
+        monthlyNewsletterDto.setTheMonths(theMonths);
+        monthlyNewsletterDto.setStartMoultiyear(startMoultiyear);
+        monthlyNewsletterDto.setEndMoultiyear(endMoultiyear);
+        monthlyNewsletterDto.setStaerTheMonths(staerTheMonths);
+        monthlyNewsletterDto.setEndTheMonths(endTheMonths);
         try {
             if(!StringUtil.isNotEmpty(monthlyNewsletterDto.getReportMultiyear())){
                 monthlyNewsletterDto.setReportMultiyear(String.valueOf(DateUtils.getCurYear()));
