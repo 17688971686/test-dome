@@ -291,8 +291,13 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         return dispatchDocDto;
     }
 
+    /**
+     * 生成发文模板
+     * @param signId
+     * @return
+     */
     @Override
-    public void createDisPatchTemplate(String signId) {
+    public ResultMsg createDisPatchTemplate(String signId) {
         SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
 
         //获得拟聘专家信息
@@ -301,22 +306,97 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         List<SysFile> sysFileList = new ArrayList<>();
 
         if(Constant.STAGE_STUDY.equals(signDispaWork.getReviewstage())){//可行性研究报告
-            sysFileList.add(CreateTemplateUtils.createStudyTemplateOpinion(signDispaWork ));
-            sysFileList.add(CreateTemplateUtils.createStudyTemplateEstimate(signDispaWork ));
-            sysFileList.add(CreateTemplateUtils.createStudyTemplateRoster(signDispaWork , expertList));
+            SysFile studyOpinion = CreateTemplateUtils.createStudyTemplateOpinion(signDispaWork );
+            if(studyOpinion != null){
+                sysFileList.add(studyOpinion);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
+
+            SysFile studyEstimate = CreateTemplateUtils.createStudyTemplateEstimate(signDispaWork );
+            if(studyEstimate != null){
+                sysFileList.add(studyEstimate);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
+
+            SysFile studyRoster = CreateTemplateUtils.createStudyTemplateRoster(signDispaWork , expertList);
+            if(studyRoster != null){
+                sysFileList.add(studyRoster);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
         }else if(Constant.STAGE_BUDGET.equals(signDispaWork.getReviewstage())){//项目概算
-            sysFileList.add(CreateTemplateUtils.createBudgetTemplateEstimate(signDispaWork ));
-            sysFileList.add(CreateTemplateUtils.createBudgetTemplateOpinion(signDispaWork ));
-            sysFileList.add(CreateTemplateUtils.createBudgetTemplateProjectCost(signDispaWork ));
-            sysFileList.add(CreateTemplateUtils.createBudgetTemplateRoster(signDispaWork  ,expertList));
+
+            SysFile budgetEstimate = CreateTemplateUtils.createBudgetTemplateEstimate(signDispaWork );
+            if(budgetEstimate != null){
+                sysFileList.add(budgetEstimate);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
+
+            SysFile budgetOpinion = CreateTemplateUtils.createBudgetTemplateOpinion(signDispaWork );
+            if(budgetOpinion != null){
+                sysFileList.add(budgetOpinion);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
+
+            SysFile budgetProjectCost = CreateTemplateUtils.createBudgetTemplateProjectCost(signDispaWork );
+            if(budgetProjectCost != null){
+                sysFileList.add(budgetProjectCost);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
+
+            SysFile budgetRoster = CreateTemplateUtils.createBudgetTemplateRoster(signDispaWork  ,expertList);
+            if(budgetRoster != null){
+                sysFileList.add(budgetRoster);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
         }else if(Constant.APPLY_REPORT.equals(signDispaWork.getReviewstage())){//资金申请报告
-            sysFileList.add( CreateTemplateUtils.createReportTemplateEstimate(signDispaWork ));
-            sysFileList.add(CreateTemplateUtils.createReportTemplateOpinion(signDispaWork ));
-            sysFileList.add(CreateTemplateUtils.createReportTemplateRoster(signDispaWork , expertList));
+            SysFile reportEstimate = CreateTemplateUtils.createReportTemplateEstimate(signDispaWork );
+            if(reportEstimate != null){
+                sysFileList.add(reportEstimate);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
+
+            SysFile reportOpinion = CreateTemplateUtils.createReportTemplateOpinion(signDispaWork );
+            if(reportOpinion != null){
+                sysFileList.add(reportOpinion);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
+
+            SysFile reportRoster = CreateTemplateUtils.createReportTemplateRoster(signDispaWork , expertList);
+            if(reportRoster != null){
+                sysFileList.add(reportRoster);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
         }else{//项目建议书以及其他评审阶段
-            sysFileList.add(CreateTemplateUtils.createSugTemplateEstime(signDispaWork ));
-            sysFileList.add(CreateTemplateUtils.createSugTemplateOpinion(signDispaWork ));
-            sysFileList.add(CreateTemplateUtils.createSugTemplateRoster(signDispaWork , expertList));
+            SysFile sugEstimate = CreateTemplateUtils.createSugTemplateEstime(signDispaWork );
+            if(sugEstimate != null){
+                sysFileList.add(sugEstimate);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
+
+            SysFile sugOpinion = CreateTemplateUtils.createSugTemplateOpinion(signDispaWork );
+            if(sugOpinion != null){
+                sysFileList.add(sugOpinion);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
+
+            SysFile sugRoster = CreateTemplateUtils.createSugTemplateRoster(signDispaWork , expertList);
+            if(sugRoster != null){
+                sysFileList.add(sugRoster);
+            }else{
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
         }
 
         //3、保存文件信息
@@ -331,6 +411,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             sysFileRepo.bathUpdate(sysFileList);
             signService.updateSignTemplate(signId);//修改是否生成发文模板状态
         }
+
+        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "评审报告文件生成成功！" , null);
     }
 
 }

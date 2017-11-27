@@ -19,6 +19,6 @@ public interface DispatchDocService {
 
     DispatchDocDto initDispatchBySignId(String signId);
 
-    void createDisPatchTemplate (String signId);
+    ResultMsg createDisPatchTemplate (String signId);
 
 }
