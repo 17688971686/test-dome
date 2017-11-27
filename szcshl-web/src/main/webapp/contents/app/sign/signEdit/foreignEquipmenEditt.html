@@ -69,11 +69,12 @@
     </tr>
 
     <tr>
-        <td rowspan="2" width="15%" class="text-center" style="vertical-align: middle;">项目名称</td>
-        <td rowspan="2" style="vertical-align: middle;"><input type="text" style="width:90%;" class="form-control input-sm "
-                               ng-model="vm.model.projectname"
-                               name="projectname" id="projectname" data-val="true" data-val-required="必填">
-            <span data-valmsg-for="projectname" data-valmsg-replace="true" class="errors"></span></td>
+        <td rowspan="2" width="15%" class="text-center" style="vertical-align: middle;">项目名称<span class="required">*</span></td>
+        <td rowspan="2" style="vertical-align: middle;">
+            <input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.projectname"
+                   name="projectname" id="projectname" data-val="true" data-val-required="必填">
+            <span data-valmsg-for="projectname" data-valmsg-replace="true" class="errors"></span>
+        </td>
         <td width="15%" class="text-center">收文编号</td>
         <td> {{vm.model.signNum}}</td>
     </tr>

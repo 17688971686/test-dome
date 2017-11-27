@@ -228,55 +228,11 @@ public class SignServiceImpl implements SignService {
         if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
             sign.setSigndate(now);
             sign.setIssign(EnumState.YES.getValue());       //正式签收
-            if (Validate.isString(sign.getReviewstage())) {
-                //先查找系统配置对否有评审阶段的评审天数，如有则用系统的，如果没有则用默认值
-                String configKey = "";
-                switch (sign.getReviewstage()) {
-                    case Constant.STAGE_SUG:
-                        configKey = Constant.RevireStageKey.KEY_SUG.getValue();
-                        break;
-                    case Constant.STAGE_STUDY:
-                        configKey = Constant.RevireStageKey.KEY_STUDY.getValue();
-                        break;
-                    case Constant.STAGE_BUDGET:
-                        configKey = Constant.RevireStageKey.KEY_BUDGET.getValue();
-                        break;
-                    case Constant.APPLY_REPORT:
-                        configKey = Constant.RevireStageKey.KEY_REPORT.getValue();
-                        break;
-                    case Constant.OTHERS:
-                        configKey = Constant.RevireStageKey.KEY_OTHER.getValue();
-                        break;
-                    case Constant.DEVICE_BILL_HOMELAND:
-                        configKey = Constant.RevireStageKey.KEY_HOMELAND.getValue();
-                        break;
-                    case Constant.DEVICE_BILL_IMPORT:
-                        configKey = Constant.RevireStageKey.KEY_IMPORT.getValue();
-                        break;
-                    case Constant.IMPORT_DEVICE:
-                        configKey = Constant.RevireStageKey.KEY_DEVICE.getValue();
-                        break;
-                    default:
-                        configKey = "";
-                }
 
-                if (Validate.isString(configKey)) {
-                    SysConfigDto sysConfigDto = sysConfigService.findByKey(configKey);
-                    if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
-                        sign.setReviewdays(Float.parseFloat(sysConfigDto.getConfigValue()));
-                        sign.setSurplusdays(Float.parseFloat(sysConfigDto.getConfigValue()));
-                    } else {
-                        //设定默认值，项目建议书和资金申请报告是12天，其他是15天
-                        if ((Constant.STAGE_SUG).equals(sign.getReviewstage())
-                                || (Constant.APPLY_REPORT).equals(sign.getReviewstage())) {
-                            sign.setSurplusdays(Constant.WORK_DAY_12);  //剩余评审天数
-                            sign.setReviewdays(Constant.WORK_DAY_12);   //评审天数，完成的时候再结算
-                        } else {
-                            sign.setSurplusdays(Constant.WORK_DAY_15);
-                            sign.setReviewdays(Constant.WORK_DAY_15);
-                        }
-                    }
-                }
+            Float reviewsDays = getReviewDays(sign.getReviewstage());
+            if(reviewsDays > 0){
+                sign.setSurplusdays(Constant.WORK_DAY_15);
+                sign.setReviewdays(Constant.WORK_DAY_15);
             }
 
         }
@@ -1715,20 +1671,76 @@ public class SignServiceImpl implements SignService {
         if (EnumState.YES.getValue().equals(sign.getIssign())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，该项目已经签收完毕！");
         }
-        boolean is15Days = (Validate.isString(sign.getReviewstage()) && ("可行性研究报告".equals(sign.getReviewstage()) || "项目概算".equals(sign.getReviewstage())));
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" update cs_sign set " + Sign_.signdate.getName() + " = sysdate,");
-        sqlBuilder.append(Sign_.issign.getName() + " =:issign ").setParam("issign", EnumState.YES.getValue());
-        sqlBuilder.append(" ," + Sign_.surplusdays.getName() + " = :surplusdays  ");
-        if (is15Days) {
-            sqlBuilder.setParam("surplusdays", Constant.WORK_DAY_15);
-        } else {
-            sqlBuilder.setParam("surplusdays", Constant.WORK_DAY_12);
+        //6、收文编号
+        if (!Validate.isString(sign.getSignNum())) {
+            int maxSeq = findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate());
+            sign.setSignSeq(maxSeq + 1);
+            String signSeqString = (maxSeq + 1) > 999 ? (maxSeq + 1) + "" : String.format("%03d", Integer.valueOf(maxSeq + 1));
+            sign.setSignNum(DateUtils.converToString(new Date(), "yyyy") + sign.getDealOrgType() + signSeqString);
         }
-        sqlBuilder.bulidPropotyString("where", Sign_.signid.getName(), signId);
-        signRepo.executeSql(sqlBuilder);
-
+        //7、正式签收
+        if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
+            sign.setSigndate(new Date());
+            sign.setIssign(EnumState.YES.getValue());       //正式签收
+            Float reviewsDays = getReviewDays(sign.getReviewstage());
+            if(reviewsDays > 0){
+                sign.setSurplusdays(Constant.WORK_DAY_15);
+                sign.setReviewdays(Constant.WORK_DAY_15);
+            }
+        }
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    private Float getReviewDays(String reviewstage){
+        Float resultFloat = 0f;
+        if (Validate.isString(reviewstage)) {
+            //先查找系统配置对否有评审阶段的评审天数，如有则用系统的，如果没有则用默认值
+            String configKey = "";
+            switch (reviewstage) {
+                case Constant.STAGE_SUG:
+                    configKey = Constant.RevireStageKey.KEY_SUG.getValue();
+                    break;
+                case Constant.STAGE_STUDY:
+                    configKey = Constant.RevireStageKey.KEY_STUDY.getValue();
+                    break;
+                case Constant.STAGE_BUDGET:
+                    configKey = Constant.RevireStageKey.KEY_BUDGET.getValue();
+                    break;
+                case Constant.APPLY_REPORT:
+                    configKey = Constant.RevireStageKey.KEY_REPORT.getValue();
+                    break;
+                case Constant.OTHERS:
+                    configKey = Constant.RevireStageKey.KEY_OTHER.getValue();
+                    break;
+                case Constant.DEVICE_BILL_HOMELAND:
+                    configKey = Constant.RevireStageKey.KEY_HOMELAND.getValue();
+                    break;
+                case Constant.DEVICE_BILL_IMPORT:
+                    configKey = Constant.RevireStageKey.KEY_IMPORT.getValue();
+                    break;
+                case Constant.IMPORT_DEVICE:
+                    configKey = Constant.RevireStageKey.KEY_DEVICE.getValue();
+                    break;
+                default:
+                    configKey = "";
+            }
+
+            if (Validate.isString(configKey)) {
+                SysConfigDto sysConfigDto = sysConfigService.findByKey(configKey);
+                if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
+                    return Float.parseFloat(sysConfigDto.getConfigValue());
+                } else {
+                    //设定默认值，项目建议书和资金申请报告是12天，其他是15天
+                    if ((Constant.STAGE_SUG).equals(reviewstage)
+                            || (Constant.APPLY_REPORT).equals(reviewstage)) {
+                        return Constant.WORK_DAY_12;
+                    } else {
+                        return Constant.WORK_DAY_15;
+                    }
+                }
+            }
+        }
+        return  resultFloat ;
     }
 
     /**
@@ -1830,10 +1842,8 @@ public class SignServiceImpl implements SignService {
     public ResultMsg reserveAddSign(SignDto signDto) {
         Sign sign = new Sign();
         BeanCopierUtils.copyProperties(signDto, sign);
-        //O 为预签收状态
-        sign.setSignState(EnumState.NO.getValue());
-        //送件人默认魏俊辉(可以更改)
-        //sign.setSendusersign(Constant.SEND_SIGN_NAME);
+        sign.setSignState(EnumState.NORMAL.getValue());
+
         //0 用于区别签收和预签收页面实现送来资料存放位置
         sign.setIspresign(Constant.EnumState.NO.getValue());
         //2、是否是项目概算流程
@@ -1875,8 +1885,8 @@ public class SignServiceImpl implements SignService {
             sign.setSignNum(DateUtils.converToString(new Date(), "yyyy") + sign.getDealOrgType() + signSeqString);
         }
 
-        //签收时间
-        sign.setSigndate(now);
+        //项目预签收，没有签收日期
+        //sign.setSigndate(now);
         sign.setSignid(UUID.randomUUID().toString());
         sign.setCreatedDate(now);
         sign.setModifiedDate(now);

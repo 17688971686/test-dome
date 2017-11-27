@@ -106,8 +106,9 @@ public class PropertyUtil {
             e.printStackTrace();
         } finally {
             try {
-                if (null != os)
+                if (null != os) {
                     os.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
