@@ -212,7 +212,7 @@
             <td class="text-center">{{r.host}}</td>
             <td class="text-center" colspan="2">{{r.content}}</td>
         </tr>
-        <tr ng-if="!vm.businessFlag.isReveiwAWP">
+        <tr ng-if="!vm.businessFlag.isReveiwAWP && vm.work.reviewType != '自评'">
             <td class="text-center">拟聘请专家</td>
             <td colspan="7">
                 <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert();"

@@ -1047,10 +1047,17 @@
                     filterable: false
                 },
                 {
-                    field: "signdate",
+                    field: "",
                     title: "收文日期",
                     width: 150,
-                    filterable: false
+                    filterable: false,
+                    template: function(item){
+                        if(item.signdate){
+                            return (new Date(item.signdate)).Format("yyyy-MM-dd");
+                        }else{
+                            return "";
+                        }
+                    },
                 },
                 {
                     field: "",
@@ -1079,16 +1086,30 @@
                     }
                 },
                 {
-                    field: "dispatchDate",
+                    field: "",
                     title: "发文日期",
                     width: 100,
-                    filterable: false
+                    filterable: false,
+                    template: function(item){
+                        if(item.dispatchDate){
+                            return (new Date(item.dispatchDate)).Format("yyyy-MM-dd");
+                        }else{
+                            return "";
+                        }
+                    },
                 },
                 {
-                    field: "signdate",
+                    field: "",
                     title: "项目签收时间",
                     width: 150,
-                    filterable: false
+                    filterable: false,
+                    template: function(item){
+                        if(item.signdate){
+                            return (new Date(item.signdate)).Format("yyyy-MM-dd");
+                        }else{
+                            return "";
+                        }
+                    },
                 },
                 {
                     field: "surplusdays",

@@ -12,6 +12,7 @@ import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
+import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
@@ -667,6 +668,10 @@ public class FlowServiceImpl implements FlowService {
         //激活流程
         try {
             ProcessInstance processInstance = findProcessInstanceByBusinessKey(businessKey);
+            //项目签收流程
+            if(processInstance.getProcessDefinitionKey().equals(FlowConstant.SIGN_FLOW)){//修改状态
+                signService.updateSignState(businessKey,"1");
+            }
             runtimeService.activateProcessInstanceById(processInstance.getId());
         } catch (Exception e) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作异常：" + e.getMessage());

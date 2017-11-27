@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
+import cs.domain.sys.OrgDept;
+import cs.service.sys.OrgDeptService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,8 @@ public class OrgController {
     private String ctrlName = "org";
     @Autowired
     private OrgService orgService;
+    @Autowired
+    private OrgDeptService orgDeptService;
 
     //@RequiresPermissions("org#fingByOData#post")
     @RequiresAuthentication
@@ -137,7 +141,12 @@ public class OrgController {
     public @ResponseBody  List<OrgDto> listAll() {
         return orgService.listAll();
     }
-
+    //根据部门视图进行查询
+    @RequiresAuthentication
+    @RequestMapping(name = "部门列表查询", path = "queryOrgList", method = RequestMethod.POST)
+    public @ResponseBody  List<OrgDept> queryOrgList() {
+        return orgDeptService.queryAll();
+    }
 
     // begin#html
 

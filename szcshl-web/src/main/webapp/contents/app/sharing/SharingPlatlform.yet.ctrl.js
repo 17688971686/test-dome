@@ -7,7 +7,7 @@
 
     function sharingPlatlformYet($location,$state, $http,sharingPlatlformYetSvc) {
         var vm = this;
-        vm.title = '共享管理';
+        vm.title = '共享资料列表';
         vm.model = {};
 
         activate();

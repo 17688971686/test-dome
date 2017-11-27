@@ -72,8 +72,9 @@
         vm.findMeeting = function () {
             //查询预订会议数据
             roomSvc.queryBookRoom(vm.search, function (data) {
-                roomSvc.setSCDataSource(vm,data);      //设置数据源
                 vm.model.mrID =  vm.search.mrID;
+                roomSvc.setSCDataSource(vm,data);      //设置数据源
+
             });
         }
 

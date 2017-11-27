@@ -15,7 +15,7 @@
         <span class="help-inline" style="margin-left:10px;">拟稿部门：</span>
         <select name="orgName" id="orgName" operator="like">
             <option value="">请选择</option>
-            <option ng-repeat="x in DICT.TRANSACT_DEPARTMENT.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+            <option ng-repeat="x in vm.model.org" value="{{x.name}}">{{x.name}}</option>
         </select>
 
         <span class="help-inline" style="margin-left:10px;">拟稿时间：</span>

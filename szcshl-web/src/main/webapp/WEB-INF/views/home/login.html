@@ -137,16 +137,16 @@
     <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" >
         <h3 style="color:#26ae95">用户登录</h3>
         <span ng-show="vm.message" class="errors" ng-bind="vm.message">${msg!''}</span>
-        <div class="input-container">
+        <div class="input-container" style="margin-bottom:10px;">
             <span class="glyphicon glyphicon-user"></span>
             <input autofocus="autofocus" type="text" class="form-control" placeholder="用户名" name="loginName" id="loginName" ng-model="vm.model.loginName" data-val="true" data-val-required="用户名必填">
-            <p data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></p>
         </div>
+        <p data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></p>
         <div class="input-container" style="margin-bottom:10px;">
             <input type="password" class="form-control" placeholder="密码" maxlength="100"  name="password" id="password" ng-model="vm.model.password" data-val="true" data-val-required="密码必填">
             <span class="glyphicon glyphicon-lock"></span>
-            <p data-valmsg-for="password" data-valmsg-replace="true" class="errors"></p>
         </div>
+        <p   data-valmsg-for="password" data-valmsg-replace="true" class="errors"></p>
     </form>
     <div class="loginform-footer" style="">
         <button ng-click="vm.submit()" ng-disabled="vm.isSubmit" class="btn btn-success" type="submit" value="登录">登录</button>
