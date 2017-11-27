@@ -5,7 +5,7 @@
 		{{getTBHeadName(vm.fileRecord.fileReviewstage,vm.fileRecord.isAdvanced,'项目归档审批表')}}
 	</caption>
 	<caption>
-		<span style="margin-left: 10px;">QR-4.3-11-A6</span>
+		<span style="margin-left: 10px;">QR-4.3-11-A5</span>
 		<span style="float: right;margin-right: 10px;">档案编号:{{vm.fileRecord.fileNo}}</span>
 	</caption>
 	<tbody>
@@ -56,12 +56,12 @@
 					<td width="20%" style="padding-bottom:10px;"></td>
 					<td width="7%">原件</td>
 					<td width="10%">复印件</td>
-					<td width="10%">扫描件</td>
+					<td width="10%">扫描</td>
 					<td width="20%"></td>
 					<td width="7%">原件</td>
                     <td width="10%">复印件</td>
                     <td width="7%">份数</td>
-                    <td width="10%">扫描件</td>
+                    <td width="10%">扫描</td>
 				</tr>
 				<tr>
 					<td class="printing-td">中心报审登记表</td>
@@ -133,9 +133,9 @@
 				<tr>
 					<td width="30%"></td>
 					<td width="10%">复印件</td>
-					<td width="10%">扫描件</td>
+					<td width="10%">扫描</td>
 					<td width="18%"></td>
-					<td width="12%">复印件</td>
+					<td width="12%">原件</td>
                     <td width="10%">份数</td>
                     <td width="10%">电子版</td>
 				</tr>
@@ -222,21 +222,19 @@
 	<tr >
 		<td>其他资料</td>
 		<td colspan="3" >
-			<div style="width: 100%; height: 100px ; overflow: hidden;"></div>
+			<div style="width: 100%; height: 80px ; overflow: hidden;font-size: 12px;"></div>
 		</td>
 	</tr>
 	<tr>
-		<td height="50">项目负责人（签名）</td>
-		<td>{{vm.fileRecord.projectChargeUser}}</td>
-		<td rowspan="2">发送存档日期</td>
-		<td rowspan='2'>{{vm.fileRecord.sendStoreDate}}</td>
+		<td height="50">项目负责人签名</td>
+		<td>{{vm.fileRecord.projectChargeUser}}
+            <span ng-if="vm.fileRecord.projectTwoUser">、</span>
+			{{vm.fileRecord.projectTwoUser}}</td>
+		<td >发送存档日期</td>
+		<td >{{vm.fileRecord.sendStoreDate}}</td>
 	</tr>
 	<tr>
-		<td height="50">项目第二负责人（签名）</td>
-		<td>{{vm.fileRecord.projectTwoUser}}</td>
-	</tr>
-	<tr>
-		<td height="50">档案员签收</td>
+		<td height="50">档案管理员签收</td>
 		<td>{{vm.fileRecord.signUserName}}	</td>
 		<td height="50">存档日期</td>
 		<td>{{vm.fileRecord.fileDate}}</td>
