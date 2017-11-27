@@ -1,35 +1,24 @@
 <meta charset="UTF-8">
-<!-- S_设备清单（进口） -->
-<table class="table table-bordered" ng-show="vm.model.reviewstage=='设备清单（进口）'">
+<!-- S_设备清单（进口） 暂时没用-->
+<table class="table table-bordered" >
     <caption class="text-center h3">
         <strong>
             深圳市政府投资项目评审中心 <br>
-            {{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}
-
+            进口设备项目报审登记表
         </strong>
     </caption>
     <caption class="text-right">
         <tr>
-            <td width="15%" class="text-center"> QR-4.9-01-A0</td>
+            <td width="15%" class="text-center">QR-4.10-01-A0</td>
             <td></td>
             <td width="20%" class="text-center"></td>
             <td> 收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</td>
         </tr>
     </caption>
     <tbody>
-    <!-- 这个不用在表单显示，在流程办理工作方案环节显示即可
-        <tr ng-if="vm.model.ispresign == 0">
-            <td width="15%" class="text-center">资料存放位置</td>
-            <td><input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.palceStorage"
-                       name="palceStorage" id="palceStorage" data-val="true" data-val-required="必填">
-                <span data-valmsg-for="palceStorage" data-valmsg-replace="true" class="errors"></span></td>
-            <td width="15%" class="text-center">资料送来时间</td>
-            <td> {{vm.model.palceTime | date:'yyyy年MM月dd日'}}</td>
-        </tr>
-        -->
     <tr>
         <td width="15%" class="text-center">主办处室</td>
-        <td>
+        <td width="32%">
             <div style="position: relative;">
                 <span style="margin-left: 100px; width: 128px; overflow: hidden;">
                     <select ng-model="vm.model.maindeptName" ng-change="vm.findOfficeUsersByDeptName('main')" name="maindeptName"
@@ -98,14 +87,14 @@
         <td width="15%" class="text-center">缓急程度</td>
         <td>
             <select ng-model="vm.model.urgencydegree" name="urgencydegree" id="urgencydegree">
-                <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                <option ng-repeat="x in DICT.BAOMI.dicts" ng-selected="vm.model.urgencydegree == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
             </select>
         </td>
 
         <td width="15%" class="text-center">年度计划类别</td>
         <td>
             <select ng-model="vm.model.yearplantype" name="yearplantype" id="yearplantype">
-                <option ng-repeat="x in DICT.YEARPLANTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                <option ng-repeat="x in DICT.YEARPLANTYPE.dicts" ng-selected="vm.model.yearplantype == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
             </select>
         </td>
     </tr>
@@ -114,7 +103,7 @@
         <td width="15%" class="text-center">秘密登记</td>
         <td>
             <select ng-model="vm.model.secrectlevel" name="secrectlevel" id="secrectlevel">
-                <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                <option ng-repeat="x in DICT.SECRECTLEVEL.dicts"  ng-selected="vm.model.secrectlevel == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
             </select>
         </td>
         <td width="15%" class="text-center"></td>

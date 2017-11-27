@@ -13,16 +13,6 @@
     </caption>
 
     <tbody>
-    <!-- 这个不用在表单显示，在流程办理工作方案环节显示即可
-    <tr ng-if="vm.model.ispresign == 0">
-        <td width="15%" class="text-center">资料存放位置</td>
-        <td><input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.palceStorage"
-                   name="palceStorage" id="palceStorage" data-val="true" data-val-required="必填">
-            <span data-valmsg-for="palceStorage" data-valmsg-replace="true" class="errors"></span></td>
-        <td width="15%" class="text-center">资料送来时间</td>
-        <td> {{vm.model.palceTime | date:'yyyy年MM月dd日'}}</td>
-    </tr>
-    -->
     <tr>
         <td width="15%" class="text-center">项目名称</td>
         <td><input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.projectname"
@@ -122,14 +112,14 @@
         <td width="15%" class="text-center">缓急程度</td>
         <td>
             <select ng-model="vm.model.urgencydegree" name="urgencydegree" id="urgencydegree">
-                <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                <option ng-repeat="x in DICT.BAOMI.dicts" ng-selected="vm.model.urgencydegree == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
             </select>
         </td>
 
         <td width="15%" class="text-center">秘密等级</td>
         <td>
             <select ng-model="vm.model.secrectlevel" name="secrectlevel" id="secrectlevel">
-                <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" ng-selected="vm.model.secrectlevel == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
             </select>
         </td>
     </tr>
@@ -384,19 +374,19 @@
     </tr>
 
     <tr>
-        <td width="15%" class="text-center">综合部拟办意见</td>
+        <td width="15%" class="text-center" style="vertical-align: middle;">综合部拟办意见</td>
         <td colspan="3">
             <textarea rows="3" ng-model="vm.model.comprehensivehandlesug" style="width: 98%">{{ vm.model.comprehensivehandlesug }}</textarea>
         </td>
     </tr>
     <tr>
-        <td width="15%" class="text-center">中心领导签批意见</td>
+        <td width="15%" class="text-center" style="vertical-align: middle;">中心领导签批意见</td>
         <td colspan="3">
             <textarea rows="3" name="leaderhandlesug" id="leaderhandlesug" value="" style="width: 98%">{{vm.model.leaderhandlesug}}</textarea>
         </td>
     </tr>
     <tr>
-        <td width="15%" class="text-center">部长处理意见</td>
+        <td width="15%" class="text-center" style="vertical-align: middle;">部长处理意见</td>
         <td colspan="3">
             <textarea rows="3" ng-model="vm.model.ministerhandlesug"
                       style="width: 98%">{{vm.model.ministerhandlesug}}</textarea>
