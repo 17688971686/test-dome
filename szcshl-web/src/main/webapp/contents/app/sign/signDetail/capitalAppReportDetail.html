@@ -16,77 +16,78 @@
     <tbody>
 
     <tr  ng-if="vm.model.ispresign == 0">
-           		 <td width="15%" class="text-center">资料存放位置</td>
-           		<td>
-           		{{vm.model.palceStorage}}
-          		</td>
-        		<td width="15%" class="text-center">资料送来时间</td>
-       			<td> {{vm.model.palceTime | date:'yyyy年MM月dd日'}}</td>
-   		</tr>
-	 <tr>
+        <td width="15%" class="text-center">资料存放位置</td>
+        <td>
+            {{vm.model.palceStorage}}
+        </td>
+        <td width="15%" class="text-center">资料送来时间</td>
+        <td> {{vm.model.palceTime | date:'yyyy年MM月dd日'}}</td>
+    </tr>
+    <tr>
         <td width="15%" class="text-center">项目名称</td>
         <td>{{vm.model.projectname}}</td>
         <td width="15%" class="text-center">收文编号</td>
         <td> {{vm.model.signNum}}</td>
     </tr>
-     <tr>
+    <tr>
         <td width="15%" class="text-center">建设单位</td>
         <td>
-        {{vm.model.builtcompanyName}}
-         </td>
+            {{vm.model.builtcompanyName}}
+        </td>
         <td width="15%" class="text-center">编制单位</td>
         <td>
-        {{vm.model.designcompanyName}}
+            {{vm.model.designcompanyName}}
         </td>
     </tr>
     <tr>
         <td width="15%" class="text-center">主办处室</td>
         <td>
-        {{vm.model.maindeptName}}
+            {{vm.model.maindeptName}}
         </td>
         <td width="15%" class="text-center">主办处室联系人</td>
         <td>
-        {{vm.model.mainDeptUserName}}
+            {{vm.model.mainDeptUserName}}
         </td>
     </tr>
 
     <tr>
         <td width="15%" class="text-center">协办处室</td>
         <td>
-        {{vm.model.assistdeptName}}
+            {{vm.model.assistdeptName}}
         </td>
         <td width="15%" class="text-center">协办处室联系人</td>
         <td>
-        {{vm.model.assistDeptUserName}}
+            {{vm.model.assistDeptUserName}}
         </td>
     </tr>
-   
+
 
     <tr>
         <td width="5%" class="text-center" >缓急程度</td>
         <td>
-        {{vm.model.urgencydegree}}
+            {{vm.model.urgencydegree}}
         </td>
 
         <td width="5%" class="text-center">项目代码</td>
         <td>
-        {{vm.model.projectcode}}
+            {{vm.model.projectcode}}
         </td>
-        
+
     </tr>
     <tr>
-    	 <td class="text-center">秘密等级</td>
+        <td class="text-center">秘密等级</td>
         <td>
-        {{vm.model.secrectlevel}}
+            {{vm.model.secrectlevel}}
         </td>
+        <td colspan="2">&nbsp;</td>
     </tr>
 
 
     <tr>
-        <td width="15%" class="text-center" rowspan="2">备审资料</td>
+        <td width="15%" class="text-center" >备审资料</td>
         <td colspan="3">
             <table class="table" style="border: 0px solid transparent !important;">
-               
+
                 <tbody>
                 <tr>
                     <td style="border-top:none;width:40%;">
@@ -139,6 +140,7 @@
                                 <td style="border-top:none;width:50%;"></td>
                                 <td style="border-top:none;">份数</td>
                                 <td style="border-top:none;">原件</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td style="border-top:none;text-align:right;">资金申请报告</td>
@@ -167,39 +169,35 @@
             </table>
         </td>
     </tr>
+
     <tr>
-        <td>
-           
+        <td width="15%" class="text-center">综合部拟办意见</td>
+        <td colspan="3">
+            <p> {{vm.model.comprehensivehandlesug}}</p>
+            <p class="text-right" ng-if="vm.model.comprehensiveName">签名：{{vm.model.comprehensiveName}}</p>
+            <p class="text-right" ng-if="vm.model.comprehensiveDate">日期：{{vm.model.comprehensiveDate}}</p>
         </td>
     </tr>
-   <tr>
-				<td width="15%" class="text-center">综合部拟办意见</td>
-				<td colspan="3">
-					<p> {{vm.model.comprehensivehandlesug}}</p>
-             	    <p class="text-right" ng-if="vm.model.comprehensiveName">签名：{{vm.model.comprehensiveName}}</p>
-              		<p class="text-right" ng-if="vm.model.comprehensiveDate">日期：{{vm.model.comprehensiveDate}}</p>
-				</td>
-			</tr>
-			<tr>
-				<td width="15%" class="text-center">中心领导签批意见</td>
-				<td colspan="3">
-				<p> {{vm.model.leaderhandlesug}}</p>
-			  <p class="text-right" ng-if="vm.model.leaderName">签名：{{vm.model.leaderName}}</p>
-			  <p class="text-right" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
-				</td>
-			</tr>
-			<tr>
-				<td width="15%" class="text-center">部长处理意见</td>
-				<td colspan="3">
-					<p> {{vm.model.ministerhandlesug}}</p>
-			 		 <p class="text-right" ng-if="vm.model.ministerName">签名：{{vm.model.ministerName}}</p>
-			 		 <p class="text-right" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
-				</td>
-			</tr>
+    <tr>
+        <td width="15%" class="text-center">中心领导签批意见</td>
+        <td colspan="3">
+            <p> {{vm.model.leaderhandlesug}}</p>
+            <p class="text-right" ng-if="vm.model.leaderName">签名：{{vm.model.leaderName}}</p>
+            <p class="text-right" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" class="text-center">部长处理意见</td>
+        <td colspan="3">
+            <p> {{vm.model.ministerhandlesug}}</p>
+            <p class="text-right" ng-if="vm.model.ministerName">签名：{{vm.model.ministerName}}</p>
+            <p class="text-right" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
+        </td>
+    </tr>
     <tr>
         <td width="15%" class="text-center">送件人：</td>
         <td colspan="3">
-        {{vm.model.sendusersign}}
+            {{vm.model.sendusersign}}
         </td>
     </tr>
 

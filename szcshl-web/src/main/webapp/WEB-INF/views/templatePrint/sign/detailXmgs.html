@@ -7,9 +7,9 @@
   }
 </style>-->
 
-<table  class="print-table">
+<table  class="print-table" style="margin-top:13px;">
     <caption class="title">
-        <p style="padding-top:13px;"> 深圳市政府投资项目评审中心 </p>
+        <p > 深圳市政府投资项目评审中心 </p>
         <p>{{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}</p>
     </caption>
     <caption>
@@ -32,13 +32,17 @@
     </tr>
     <tr>
         <td>建设单位</td>
-        <td colspan="2">{{vm.model.builtcompanyName}}</td>
+        <td colspan="2">
+            <div style="width: 100%; height: 40px; overflow: hidden; font-size: 12px;">{{vm.model.builtcompanyName}}</div>
+        </td>
         <td>项目代码</td>
         <td colspan="2">{{vm.model.projectcode}}</td>
     </tr>
     <tr>
         <td>编制单位</td>
-        <td colspan="2">{{vm.model.designcompanyName}}</td>
+        <td colspan="2">
+            <div style="width: 100%; height: 40px; overflow: hidden; font-size: 12px;">{{vm.model.designcompanyName}}</div>
+        </td>
         <td>申报概算</td>
         <td colspan="2">{{vm.model.declaration}}万元</td>
     </tr>
@@ -153,29 +157,41 @@
                 <tr>
                     <td class="item-name">项目建议书批复</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.studyProSugOriginal" ng-disabled="true" name="studyProSugOriginal" id="studyProSugOriginal" ng-true-value="9" ng-false-value="0">
+                        <input type="checkbox" ng-model="vm.model.studyProSugOriginal" ng-disabled="true" name="studyProSugOriginal"
+                               id="studyProSugOriginal" ng-true-value="9" ng-false-value="0"/>
                     </td>
                     <td>
-                        <input class="num" type="text" ng-model="vm.model.studyProSugCount" name="studyProSugCount" ng-readonly="true" id="studyProSugCount" data-val="true">
+                        <input class="num" type="text" ng-model="vm.model.studyProSugCount" name="studyProSugCount" ng-readonly="true"
+                               id="studyProSugCount" data-val="true"/>
                     </td>
                     <td class="item-name">环境影响评价报告</td>
-                    <td><input type="checkbox" ng-model="vm.model.environmentalEffectOriginal" ng-disabled="true" id="environmentalEffectOriginal" ng-true-value="9" ng-false-value="0"></td>
                     <td>
-                        <input class="num" type="text" ng-model="vm.model.environmentalEffectCount" name="environmentalEffectCount" ng-readonly="true" id="environmentalEffectCount" data-val="true">
+                        <input type="checkbox" ng-model="vm.model.environmentalEffectOriginal" ng-disabled="true"
+                               id="environmentalEffectOriginal" ng-true-value="9" ng-false-value="0"/>
+                    </td>
+                    <td>
+                        <input class="num" type="text" ng-model="vm.model.environmentalEffectCount"
+                               name="environmentalEffectCount" ng-readonly="true" id="environmentalEffectCount" data-val="true"/>
                     </td>
                 </tr>
                 <tr>
                     <td class="item-name">可研报告批复</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.reportOrigin" ng-disabled="true" name="reportOrigin" id="reportOrigin" ng-true-value="9" ng-false-value="0">
+                        <input type="checkbox" ng-model="vm.model.reportOrigin" ng-disabled="true"
+                               name="reportOrigin" id="reportOrigin" ng-true-value="9" ng-false-value="0"/>
                     </td>
                     <td>
-                        <input class="num" type="text" ng-model="vm.model.reportCount" name="reportCount" ng-readonly="true" id="reportCount" data-val="true">
+                        <input class="num" type="text" ng-model="vm.model.reportCount" name="reportCount" ng-readonly="true"
+                               id="reportCount" data-val="true"/>
                     </td>
                     <td class="item-name">用地规划许可证</td>
-                    <td><input type="checkbox" ng-model="vm.model.landPlanningLicenseOriginal" ng-disabled="true" id="landPlanningLicenseOriginal" ng-true-value="9" ng-false-value="0"></td>
                     <td>
-                        <input class="num" type="text" ng-model="vm.model.landPlanningLicenseCount" name="landPlanningLicenseCount" ng-readonly="true" id="landPlanningLicenseCount" data-val="true">
+                        <input type="checkbox" ng-model="vm.model.landPlanningLicenseOriginal" ng-disabled="true"
+                               id="landPlanningLicenseOriginal" ng-true-value="9" ng-false-value="0"/>
+                    </td>
+                    <td>
+                        <input class="num" type="text" ng-model="vm.model.landPlanningLicenseCount"
+                               name="landPlanningLicenseCount" ng-readonly="true" id="landPlanningLicenseCount" data-val="true"/>
                     </td>
                 </tr>
             </table>
@@ -204,43 +220,55 @@
                 <tr>
                     <td class="item-name">地质勘察报告</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.geologicalSurveyOriginal" ng-disabled="true" name="geologicalSurveyOriginal" id="geologicalSurveyOriginal" ng-true-value="9" ng-false-value="0">
+                        <input type="checkbox" ng-model="vm.model.geologicalSurveyOriginal" ng-disabled="true" name="geologicalSurveyOriginal"
+                               id="geologicalSurveyOriginal" ng-true-value="9" ng-false-value="0"/>
                     </td>
                     <td>
-                        <input class="num" type="text" ng-model="vm.model.geologicalSurveyCount" name="geologicalSurveyCount" ng-readonly="true" id="geologicalSurveyCount" data-val="true">
+                        <input class="num" type="text" ng-model="vm.model.geologicalSurveyCount" name="geologicalSurveyCount" ng-readonly="true" id="geologicalSurveyCount" data-val="true"/>
                     </td>
                     <td class="item-name">初步设计图纸 </td>
-                    <td><input type="checkbox" ng-model="vm.model.preliminaryDrawingOriginal" ng-disabled="true" id="preliminaryDrawingOriginal" ng-true-value="9" ng-false-value="0"></td>
                     <td>
-                        <input class="num" type="text" ng-model="vm.model.preliminaryDrawingCount" name="preliminaryDrawingCount" ng-readonly="true" id="preliminaryDrawingCount" data-val="true">
+                        <input type="checkbox" ng-model="vm.model.preliminaryDrawingOriginal" ng-disabled="true" id="preliminaryDrawingOriginal" ng-true-value="9" ng-false-value="0"/>
+                    </td>
+                    <td>
+                        <input class="num" type="text" ng-model="vm.model.preliminaryDrawingCount" name="preliminaryDrawingCount" ng-readonly="true"
+                               id="preliminaryDrawingCount" data-val="true"/>
                     </td>
                 </tr>
                 <tr>
                     <td class="item-name">设计说明</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.descriptionDesignOriginal" ng-disabled="true" name="descriptionDesignOriginal" id="descriptionDesignOriginal" ng-true-value="9" ng-false-value="0">
+                        <input type="checkbox" ng-model="vm.model.descriptionDesignOriginal" ng-disabled="true" name="descriptionDesignOriginal"
+                               id="descriptionDesignOriginal" ng-true-value="9" ng-false-value="0"/>
                     </td>
                     <td>
                         <input class="num" type="text" ng-model="vm.model.descriptionDesignCount" name="descriptionDesignCount" ng-readonly="true" id="descriptionDesignCount" data-val="true">
                     </td>
                     <td class="item-name">施工设计图纸</td>
-                    <td><input type="checkbox" ng-model="vm.model.constructionDrawingsOriginal" ng-disabled="true" id="constructionDrawingsOriginal" ng-true-value="9" ng-false-value="0"></td>
                     <td>
-                        <input class="num" type="text" ng-model="vm.model.constructionDrawingsCount" name="constructionDrawingsCount" ng-readonly="true" id="constructionDrawingsCount" data-val="true">
+                        <input type="checkbox" ng-model="vm.model.constructionDrawingsOriginal" ng-disabled="true"
+                               id="constructionDrawingsOriginal" ng-true-value="9" ng-false-value="0"/>
+                    </td>
+                    <td>
+                        <input class="num" type="text" ng-model="vm.model.constructionDrawingsCount" name="constructionDrawingsCount"
+                               ng-readonly="true" id="constructionDrawingsCount" data-val="true"/>
                     </td>
                 </tr>
                 <tr>
                     <td class="item-name">工程概算书</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.projectBudgetOriginal" ng-disabled="true" name="projectBudgetOriginal" id="projectBudgetOriginal" ng-true-value="9" ng-false-value="0">
+                        <input type="checkbox" ng-model="vm.model.projectBudgetOriginal" ng-disabled="true"
+                               name="projectBudgetOriginal" id="projectBudgetOriginal" ng-true-value="9" ng-false-value="0"/>
                     </td>
                     <td>
-                        <input class="num" type="text" ng-model="vm.model.projectBudgetCount" name="projectBudgetCount" ng-readonly="true" id="projectBudgetCount" data-val="true">
+                        <input class="num" type="text" ng-model="vm.model.projectBudgetCount" name="projectBudgetCount"
+                               ng-readonly="true" id="projectBudgetCount" data-val="true"/>
                     </td>
                     <td class="item-name">项目电子文档</td>
                     <td></td>
                     <td>
-                        <input class="num" type="text" ng-model="vm.model.proSugEledocCount" name="proSugEledocCount" ng-readonly="true" id="proSugEledocCount" data-val="true">
+                        <input class="num" type="text" ng-model="vm.model.proSugEledocCount" name="proSugEledocCount"
+                               ng-readonly="true" id="proSugEledocCount" data-val="true"/>
                     </td>
                 </tr>
             </table>
@@ -248,33 +276,33 @@
     </tr>
 
     <tr>
-        <td height=50">综合部分办</td>
+        <td >综合部分办</td>
         <td colspan="5" >
-            <div style="width: 100%; height: 70px; overflow: hidden;">
-                <p class="text-left" style="height: 40%;"> {{vm.model.comprehensivehandlesug}}</p>
+            <div style="width: 100%; height:80px; overflow: hidden;font-size: 12px;">
+                <p class="text-left" style="height: 30%;"> {{vm.model.comprehensivehandlesug}}</p>
                 <p class="text-right" style="margin-right: 50px;">签名：{{vm.model.comprehensiveName}}</p>
-                <p class="text-right" style="margin-right: 12px; " >日期：{{vm.model.comprehensiveDate}}</p>
+                <p class="text-right" style="margin-right: 20px; " >日期：{{vm.model.comprehensiveDate}}</p>
             </div>
         </td>
     </tr>
     <tr>
-        <td height="50">中心领导签批意见</td>
+        <td >中心领导签批意见</td>
         <td colspan="5" >
-            <div style="width: 100%; height: 70px; overflow: hidden;">
-                <p class="text-left" style="height: 40%;"> {{vm.model.leaderhandlesug}}</p>
+            <div style="width: 100%; height: 80px; overflow: hidden;">
+                <p class="text-left" style="height: 30%;"> {{vm.model.leaderhandlesug}}</p>
                 <p class="text-right" style="margin-right: 90px; ">签名：</p>
-                <p class="text-right" style="margin-right: 12px;" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
+                <p class="text-right" style="margin-right: 22px;" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
                 <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.model.leaderDate)">日期：</p>
             </div>
         </td>
     </tr>
     <tr>
-        <td height="50">部长处理意见</td>
+        <td >部长处理意见</td>
         <td  colspan="5" >
-            <div style="width: 100%; height: 70px; overflow: hidden;">
-                <p class="text-left" style="height: 40%;"> {{vm.model.ministerhandlesug}}</p>
+            <div style="width: 100%; height: 80px; overflow: hidden;font-size: 12px;">
+                <p class="text-left" style="height: 30%;"> {{vm.model.ministerhandlesug}}</p>
                 <p class="text-right" style="margin-right: 90px;" >签名：</p>
-                <p class="text-right" style="margin-right: 12px;" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
+                <p class="text-right" style="margin-right: 22px;" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
                 <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.model.ministerDate)">日期：</p>
             </div>
         </td>

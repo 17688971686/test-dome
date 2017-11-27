@@ -60,7 +60,7 @@
     </tr>
     <tr >
         <td  class="text-center">文件标题 </td>
-        <td colspan="7" style="min-height: 100px; height: 80px;">
+        <td colspan="7" style=" height: 30px;">
             {{vm.dispatchDoc.fileTitle}}
         </td>
     </tr>
@@ -68,7 +68,7 @@
     <tr >
         <td  class="text-center">发行范围</td>
         <td colspan="7" >
-            <div style="width: 100%; height: 60px; overflow: hidden;">
+            <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">
                 {{vm.dispatchDoc.description}} <br/>
                 <span style="float: right;">(印 {{vm.dispatchDoc.printCount}} 份)</span>
             </div>
@@ -78,7 +78,7 @@
     <tr >
         <td  class="text-center">评审意见摘要 </td>
         <td colspan="7" >
-            <div style="width: 100%; height: 100px; overflow: hidden;">
+            <div style="width: 100%; height: 100px; overflow: hidden;font-size: 12px;">
                 {{vm.dispatchDoc.reviewAbstract}}
             </div>
 
@@ -87,10 +87,10 @@
     <tr >
         <td  class="text-center">部长核稿意见 </td>
         <td colspan="7" >
-            <div style="width: 100%; height: 120px; overflow: hidden;">
+            <div style="width: 100%; height: 120px; overflow: hidden;font-size: 12px;">
                 <p class="text-left" style="height: 60%;"> {{vm.dispatchDoc.ministerSuggesttion}}</p>
                 <p class="text-right" style="margin-right: 90px;">签名：</p>
-                <p class="text-right" style="margin-right: 12px; " ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
+                <p class="text-right" style="margin-right: 22px; " ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
                 <p class="text-right" style="margin-right: 90px; "  ng-if="!(vm.dispatchDoc.ministerDate)">日期：</p>
             </div>
         </td>
@@ -98,10 +98,10 @@
     <tr >
         <td  class="text-center">分管副主任意见 </td>
         <td colspan="7" >
-            <div style="width: 100%; height: 120px; overflow: hidden;">
+            <div style="width: 100%; height: 120px; overflow: hidden;font-size: 12px;">
                 <p class="text-left" style="height: 60%;"> {{vm.dispatchDoc.viceDirectorSuggesttion}}</p>
                 <p class="text-right" style="margin-right: 90px;">签名：</p>
-                <p class="text-right" style="margin-right: 12px;" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
+                <p class="text-right" style="margin-right: 22px;" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
                 <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.dispatchDoc.viceDirectorDate)">日期：</p>
             </div>
         </td>
@@ -109,10 +109,10 @@
     <tr >
         <td  class="text-center">主任签发 </td>
         <td colspan="7">
-            <div style="width: 100%; height: 120px; overflow: hidden;">
+            <div style="width: 100%; height: 120px; overflow: hiddenfont-size: 12px;">
                 <p class="text-left" style="height: 60%;">{{vm.dispatchDoc.directorSuggesttion}}</p>
                 <p class="text-right" style="margin-right: 90px;">签名：</p>
-                <p class="text-right" style="margin-right: 12px;" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
+                <p class="text-right" style="margin-right: 22px;" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
                 <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.dispatchDoc.directorDate)">日期：{{vm.dispatchDoc.directorDate}}</p>
             </div>
         </td>

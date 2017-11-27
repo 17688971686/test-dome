@@ -50,7 +50,7 @@
         </strong>
     </caption>
     <caption>
-        <span style="width: 200px;float: left;padding: 0 10px;">QR-4.10-01-AO</span>
+        <span style="width: 200px;float: left;padding: 0 10px;">QR-4.10-01-A0</span>
         <span style="width: 200px;float: right;padding: 0 10px;">收文日期：{{vm.model.signdate | date:'yyyy年MM月dd日'}}</span>
     </caption>
     <tr class="tr-hidden">
@@ -230,10 +230,10 @@
     <tr>
         <td>综合部分办</td>
         <td colspan="5" >
-            <div style="width: 100%; height: 120px; overflow: hidden;">
-                <p class="text-left" style="height: 40%;"> {{vm.model.comprehensivehandlesug}}</p>
-                <p class="text-right" style="margin-right: 50px; margin-top: 30px;">签名：{{vm.model.comprehensiveName}}</p>
-                <p class="text-right" style="margin-right: 12px;">日期：{{vm.model.comprehensiveDate}}</p>
+            <div style="width: 100%; height: 110px; overflow: hidden;font-size: 12px;">
+                <p class="text-left" style="height: 60%;"> {{vm.model.comprehensivehandlesug}}</p>
+                <p class="text-right" style="margin-right: 50px;">签名：{{vm.model.comprehensiveName}}</p>
+                <p class="text-right" style="margin-right: 20px;">日期：{{vm.model.comprehensiveDate}}</p>
             </div>
 
         </td>
@@ -241,10 +241,10 @@
     <tr>
         <td>中心领导签批意见</td>
         <td colspan="5" >
-            <div style="width: 100%; height: 120px; overflow: hidden;">
+            <div style="width: 100%; height: 110px; overflow: hidden;font-size: 12px;">
                 <p class="text-left" style="height:60%;"> {{vm.model.leaderhandlesug}}</p>
                 <p class="text-right" style="margin-right: 90px; ">签名：</p>
-                <p class="text-right" style="margin-right: 12px;" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
+                <p class="text-right" style="margin-right: 22px;" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
                 <p class="text-right" style="margin-right: 12px;" ng-if="!(vm.model.leaderDate)">日期：</p>
             </div>
         </td>
@@ -252,10 +252,10 @@
     <tr>
         <td>部长处理意见</td>
         <td colspan="5">
-            <div style="width: 100%; height: 120px; overflow: hidden;">
+            <div style="width: 100%; height: 110px; overflow: hidden;font-size: 12px;">
                 <p class="text-left" style="height: 60%;"> {{vm.model.ministerhandlesug}}</p>
                 <p class="text-right" style="margin-right: 90px;">签名：</p>
-                <p class="text-right" style="margin-right: 12px;" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
+                <p class="text-right" style="margin-right: 22px;" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
                 <p class="text-right" style="margin-right: 12px;" ng-if="!(vm.model.ministerDate)">日期：</p>
             </div>
         </td>
