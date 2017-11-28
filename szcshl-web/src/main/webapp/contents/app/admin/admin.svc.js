@@ -1053,7 +1053,7 @@
                     filterable: false,
                     template: function(item){
                         if(item.signdate){
-                            return (new Date(item.signdate)).Format("yyyy-MM-dd");
+                            return (new Date((item.signdate).CompatibleDate())).Format("yyyy-MM-dd");
                         }else{
                             return "";
                         }
@@ -1092,7 +1092,7 @@
                     filterable: false,
                     template: function(item){
                         if(item.dispatchDate){
-                            return (new Date(item.dispatchDate)).Format("yyyy-MM-dd");
+                            return (new Date((item.dispatchDate).CompatibleDate())).Format("yyyy-MM-dd");
                         }else{
                             return "";
                         }
@@ -1105,7 +1105,7 @@
                     filterable: false,
                     template: function(item){
                         if(item.signdate){
-                            return (new Date(item.signdate)).Format("yyyy-MM-dd");
+                            return (new Date((item.signdate).CompatibleDate())).Format("yyyy-MM-dd");
                         }else{
                             return "";
                         }

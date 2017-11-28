@@ -3,6 +3,7 @@ package cs.model.project;
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
 
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -33,16 +34,25 @@ public class AssistPlanDto extends BaseDto {
 
     private List<AssistPlanSignDto> assistPlanSignDtoList;
     private List assistUnitList;
+
+    /**
+     * 协审类型
+     */
+    private String assistType;
+
+    /**
+     * 拆分项目个数（只有独立项目才有才分，默认是1）
+     */
+    private Integer splitNum;
     //以下参数为传递参数用
-    private String signId;          //收文ID
-    private boolean single;       //是否单个项目
-    private Integer splitNum;       //拆分个数
-    private String assistType;      //协审类型
-    private String projectName;     //项目名称
+    /**
+     * 收文ID
+     */
+    private String signId;
 
     public AssistPlanDto() {
     }
-   
+
     public String getId() {
         return id;
     }
@@ -50,6 +60,7 @@ public class AssistPlanDto extends BaseDto {
     public void setId(String id) {
         this.id = id;
     }
+
     public String getPlanName() {
         return planName;
     }
@@ -57,6 +68,7 @@ public class AssistPlanDto extends BaseDto {
     public void setPlanName(String planName) {
         this.planName = planName;
     }
+
     public Date getReportTime() {
         return reportTime;
     }
@@ -64,6 +76,15 @@ public class AssistPlanDto extends BaseDto {
     public void setReportTime(Date reportTime) {
         this.reportTime = reportTime;
     }
+
+    public String getApprovalTime() {
+        return approvalTime;
+    }
+
+    public void setApprovalTime(String approvalTime) {
+        this.approvalTime = approvalTime;
+    }
+
     public String getDrawTime() {
         return drawTime;
     }
@@ -71,15 +92,13 @@ public class AssistPlanDto extends BaseDto {
     public void setDrawTime(String drawTime) {
         this.drawTime = drawTime;
     }
+
     public String getDrawType() {
         return drawType;
     }
 
     public void setDrawType(String drawType) {
         this.drawType = drawType;
-    }
-    public List getAssistUnitList() {
-        return assistUnitList;
     }
 
     public String getMinisterOpinion() {
@@ -130,44 +149,12 @@ public class AssistPlanDto extends BaseDto {
         this.totalCost = totalCost;
     }
 
-    public String getSignId() {
-        return signId;
+    public List<AssistUnitDto> getAssistUnitDtoList() {
+        return assistUnitDtoList;
     }
 
-    public void setSignId(String signId) {
-        this.signId = signId;
-    }
-
-    public boolean isSingle() {
-        return single;
-    }
-
-    public void setSingle(boolean single) {
-        this.single = single;
-    }
-
-    public Integer getSplitNum() {
-        return splitNum;
-    }
-
-    public void setSplitNum(Integer splitNum) {
-        this.splitNum = splitNum;
-    }
-
-    public String getAssistType() {
-        return assistType;
-    }
-
-    public void setAssistType(String assistType) {
-        this.assistType = assistType;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setAssistUnitDtoList(List<AssistUnitDto> assistUnitDtoList) {
+        this.assistUnitDtoList = assistUnitDtoList;
     }
 
     public List<AssistPlanSignDto> getAssistPlanSignDtoList() {
@@ -178,21 +165,36 @@ public class AssistPlanDto extends BaseDto {
         this.assistPlanSignDtoList = assistPlanSignDtoList;
     }
 
-    public List<AssistUnitDto> getAssistUnitDtoList() {
-        return assistUnitDtoList;
+    public List getAssistUnitList() {
+        return assistUnitList;
     }
 
-    public void setAssistUnitDtoList(List<AssistUnitDto> assistUnitDtoList) {
-        this.assistUnitDtoList = assistUnitDtoList;
+    public void setAssistUnitList(List assistUnitList) {
+        this.assistUnitList = assistUnitList;
     }
 
-	public String getApprovalTime() {
-		return approvalTime;
-	}
+    public String getAssistType() {
+        return assistType;
+    }
 
-	public void setApprovalTime(String approvalTime) {
-		this.approvalTime = approvalTime;
-	}
-    
-    
+    public void setAssistType(String assistType) {
+        this.assistType = assistType;
+    }
+
+    public Integer getSplitNum() {
+        return splitNum;
+    }
+
+    public void setSplitNum(Integer splitNum) {
+        this.splitNum = splitNum;
+    }
+
+    public String getSignId() {
+        return signId;
+    }
+
+    public void setSignId(String signId) {
+        this.signId = signId;
+    }
+
 }

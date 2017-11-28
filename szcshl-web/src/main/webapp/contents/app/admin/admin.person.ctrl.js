@@ -7,7 +7,7 @@
 
     function adminPersonDoing($location, adminSvc, flowSvc,pauseProjectSvc) {
         var vm = this;
-        vm.title = '个人主办项目';
+        vm.title = '个人经办项目';
 
         activate();
         function activate() {

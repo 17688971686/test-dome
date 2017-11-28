@@ -14,6 +14,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SignService {
 
@@ -55,9 +56,18 @@ public interface SignService {
     ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
     //流程处理end
 
+    /**
+     * 查询协审项目（调概项目）
+     * @return
+     */
     List<SignDto> findAssistSign();
 
-    List<SignDto> findByPlanId(String planId);
+    /**
+     * 根据协审计划ID，查询对应的项目信息
+     * @param planId
+     * @return
+     */
+    Map<String,Object> findByPlanId(String planId);
 
     void updateAssistState(String signIds, String status);
 

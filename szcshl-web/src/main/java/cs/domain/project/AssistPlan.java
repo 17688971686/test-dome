@@ -88,15 +88,27 @@ public class AssistPlan extends DomainBase {
     private String isDrawed;
 
     /**
+     * 协审类型
+     */
+    @Column(columnDefinition="VARCHAR(32)")
+    private String assistType;
+
+    /**
+     * 拆分项目个数（只有独立项目才有才分，默认是1）
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer splitNum;
+
+    /**
      * 参加抽签单位
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<AssistUnit> assistUnitList;
 
     /**
      * 协审项目信息
      */
-    @OneToMany(mappedBy = "assistPlan")
+    @OneToMany(mappedBy = "assistPlan",fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<AssistPlanSign> assistPlanSignList;
 
     public String getPlanState() {
@@ -210,6 +222,20 @@ public class AssistPlan extends DomainBase {
 	public void setApprovalTime(String approvalTime) {
 		this.approvalTime = approvalTime;
 	}
-    
-    
+
+    public String getAssistType() {
+        return assistType;
+    }
+
+    public void setAssistType(String assistType) {
+        this.assistType = assistType;
+    }
+
+    public Integer getSplitNum() {
+        return splitNum;
+    }
+
+    public void setSplitNum(Integer splitNum) {
+        this.splitNum = splitNum;
+    }
 }

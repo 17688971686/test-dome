@@ -18,16 +18,33 @@ public interface AssistPlanService {
     
     PageModelDto<AssistPlanDto> get(ODataObj odataObj);
 
+    /**
+     * 保存协审项目信息
+     * @param record
+     * @return
+     */
     ResultMsg save(AssistPlanDto record);
-
-	void update(AssistPlanDto record);
 
 	AssistPlanDto findById(String deptId);
 
+    /**
+     * 删除操作
+     * @param id
+     */
 	void delete(String id);
 
-    Map<String,Object> initPlanManager();
+    /**
+     * 协审计划管理页面
+     * @return
+     */
+    Map<String,Object> initPlanManager(String isOnlySign);
 
+    /**
+     * 删除协审计划中的协审项目（所有）
+     * @param planId
+     * @param signIds
+     * @param isMain
+     */
     void cancelPlanSign(String planId, String signIds,boolean isMain);
 
 	void saveLowPlanSign(AssistPlanDto assistPlanDto);

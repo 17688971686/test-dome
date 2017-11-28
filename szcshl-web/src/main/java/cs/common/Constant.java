@@ -446,7 +446,9 @@ public class Constant {
         REVIEW_MEETING("专家评审会"),
         REVIEW_LEETER("专家函评"),
         REVIEW_MERGE("合并评审"),   //合并评审
-        REVIEW_SIGNLE("单个评审");  //单个评审
+        REVIEW_SIGNLE("单个评审"),  //单个评审
+        ASSIST_SIGNLE("独立项目"),  //协审独立项目
+        ASSIST_MERGE("合并项目");   //协审合并项目
         private String value;
 
         MergeType(String value) {

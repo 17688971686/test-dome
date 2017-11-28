@@ -11,25 +11,70 @@
         vm.filterModel = {};                    //filter对象
         vm.filterLow = {};
         vm.title = '协审计划管理';        		//标题
-        vm.splitNumArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+        vm.splitNumArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12,13,14,15];
         vm.plan = {};                           //添加的协审对象
-        vm.planList = new Array();              //在办协审计划列表
-        vm.showPlan = {};                       //显示协审计划信息
+        vm.plan.assistType = "独立项目";        //默认的协审类型
+        vm.planList = [];                       //在办协审计划列表
+        vm.assistSign = [];                     //待选项目列表
+        vm.pickSign = [];                       //协审计划已选的项目列表
+        vm.pickMainSign =[];                    //主项目对象
+        vm.lowerSign = [];                      //次项目对象
+        vm.showPlanId = "";                     //显示的协审计划ID
 
-        vm.assistSign = new Array();            //待选项目列表
-        vm.pickSign = new Array();              //协审计划已选的项目列表
-        vm.pickMainSign = new Array();          //主项目对象
-        vm.lowerSign = new Array();             //次项目对象
-        vm.selectPlanId = "";                   //选择显示的协审计划ID
-        vm.selectMainSignId = "";               //查看的主项目ID
-        vm.initPickLowSign = false;             //是否初始化选择的次项目信息
-        vm.drawType = "";
-        vm.plan.assistType = "独立项目";
         vm.assistPlan = {};                      //弹窗协审计划对象
-        var weekArray = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
+        var weekArray = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
+        /**
+         * 刷新页面数据
+         * @param isOnlySign
+         */
+        vm.refleshPageInfo = function(isOnlySign){
+            vm.assistSign = [];
+            assistSvc.initPlanPage(isOnlySign,function(data){
+                vm.assistSign = data.signList;
+                //刷新协审计划信息
+                vm.refleshPlanInfo(vm.plan.id);
+            });
+        }
+
+        /**
+         * 刷新协审计划信息
+         */
+        vm.refleshPlanInfo = function(planId){
+            //查询对应的协审项目信息
+            assistSvc.findPlanSign(planId,vm.isCommit,function(data) {
+                vm.pickMainSign = [];                   //主项目对象全部清空
+                vm.lowerSign = [];                      //次项目对象
+                vm.plan = data.planDto;
+                //合并评审，还要挑选出主项目和次项目
+                if(vm.plan.assistType == '合并项目'){
+                    angular.forEach(vm.plan.assistPlanSignDtoList,function(obj,i){
+                        if(obj.isMain == '9'||obj.isMain == 9){
+                            angular.forEach(data.signList,function(sObj,index){
+                                if(obj.signId == sObj.signid){
+                                    vm.pickMainSign.push(sObj);
+                                }else{
+                                    vm.lowerSign.push(sObj);
+                                }
+                            })
+                        }
+                    })
+                }else{
+                    vm.pickMainSign = data.signList;
+                }
+            });
+        }
+
         active();
         function active() {
-            assistSvc.initPlanPage(vm);
+            assistSvc.initPlanPage(false,function(data){
+                if (data.signList && data.signList.length > 0) {
+                    vm.assistSign = data.signList;
+                }
+                if (data.planList && data.planList.length > 0) {
+                    vm.planList = data.planList;
+                }
+            });
             assistSvc.initPlanGrid(vm);
             $('#planInfo li').click(function (e) {
                 var aObj = $("a", this);
@@ -142,32 +187,28 @@
                         bsWin.alert("独立项目，每次只能选择一个！");
                     }
                 } else {
-                    vm.model.signId = isCheckSign[0].value;
-                    vm.model.assistType = vm.plan.assistType;
-                    vm.model.single = vm.plan.assistType == '合并项目' ? false : true;
-                    vm.model.splitNum = vm.plan.spliNum;
-                    vm.model.id = vm.selectPlanId;
-                    vm.assistSign.forEach(function (st, index) {
-                        if (st.signid == vm.model.signId) {
-                            vm.model.projectName = st.projectname;
-                        }
-                    });
-                    vm.model.isDrawed = "0";
-                    vm.model.assistPlanSignDtoList = vm.showPlan.assistPlanSignDtoList;
-                    assistSvc.saveAssistPlan(vm.model, vm.isCommit, function (data) {
+                    var saveSignId = isCheckSign[0].value;
+                    vm.plan.signId = saveSignId;
+                    /**
+                     * 保存协审计划信息
+                     */
+                    assistSvc.saveAssistPlan(vm.plan, vm.isCommit, function (data) {
                         vm.isCommit = false;
-                        //如果是新增，则重新刷新列表
-                        if (!vm.showPlan.id) {
-                            vm.gridOptions.dataSource.read();
-                        }
-                        vm.showPlan = data.reObj;
-                        vm.selectPlanId = vm.showPlan.id;
-                        assistSvc.initPlanPage(vm);
-                        //如果是合并对象，则选择次项目
-                        if (vm.plan.assistType == '合并项目') {
-                            vm.showPickLowSign(vm.model.signId);
-                        } else {
-                            bsWin.success("操作成功！");
+                        if(data.flag || date.reCode=='ok'){
+                            //如果是新增，则重新刷新列表
+                            if (!vm.plan.id) {
+                                vm.gridOptions.dataSource.read();
+                            }
+                            vm.plan = data.reObj;
+                            assistSvc.initPlanPage(true,function(data) {
+                                if (data.signList && data.signList.length > 0) {
+                                    vm.assistSign = data.signList;
+                                }
+                            });
+                            vm.planList.push(vm.plan);
+                            vm.showPickLowSign(vm.plan.id);
+                        }else{
+                            bsWin.alert(data.reMsg);
                         }
                     });
                 }
@@ -184,12 +225,15 @@
                     title: "询问提示",
                     message: "确认取消挑选项目吗?",
                     onOk: function () {
-                        $('.confirmDialog').modal('hide');
                         var ids = [];
                         for (var i = 0; i < isCheckSign.length; i++) {
                             ids.push(isCheckSign[i].value);
                         }
-                        assistSvc.cancelPlanSign(vm, ids.join(','));
+                        assistSvc.cancelPlanSign(vm, ids.join(','),function(data){
+                            vm.isCommit = false;
+                            vm.refleshPageInfo(true);
+                            bsWin.alert("操作成功！");
+                        });
                     }
                 });
             }
@@ -197,22 +241,43 @@
 
         //初始化选择的协审计划信息
         vm.initSelPlan = function () {
-            assistSvc.initSelPlan(vm);
+            vm.pickMainSign = [];                   //主项目对象全部清空
+            vm.lowerSign = [];                      //次项目对象
+            if(vm.showPlanId){
+                //查询对应的协审项目信息
+                assistSvc.findPlanSign(vm.showPlanId,vm.isCommit,function(data) {
+                    vm.plan = data.planDto;
+                    vm.refleshPlanInfo(vm.showPlanId);
+                });
+            }else{
+                vm.plan = {};
+            }
         }
-
         //删除操作
         vm.doDelete = function () {
-            if (vm.showPlan.id) {
+            if (vm.plan.id) {
                 bsWin.confirm({
                     title: "询问提示",
-                    message: "确认删除数据吗？删除数据不可恢复，请慎重！",
+                    message: "确认删除吗？删除数据不可恢复，请慎重！",
                     onOk: function () {
-                        $('.confirmDialog').modal('hide');
-                        assistSvc.deletePlan(vm.showPlan.id, vm.isCommit, function (data) {
+                        assistSvc.deletePlan(vm.plan.id, vm.isCommit, function(data) {
+                            assistSvc.initPlanPage(true,function(data) {
+                                if (data.signList && data.signList.length > 0) {
+                                    vm.assistSign = data.signList;
+                                }
+                            });
                             vm.isCommit = false;
-                            assistSvc.initPlanPage(vm);
+                            vm.pickMainSign = [];                   //主项目对象全部清空
+                            vm.lowerSign = [];                      //次项目对象
+                            angular.forEach(vm.planList,function(pObj,i){
+                                if(pObj.id ==vm.plan.id){
+                                    vm.planList.splice(pObj, 1);
+                                }
+                            })
+                            vm.plan = {};
                             //刷新列表信息
                             vm.gridOptions.dataSource.read();
+                            bsWin.alert("操作成功！");
                         });
                     }
                 });
@@ -221,20 +286,39 @@
             }
         }
 
-        //显示次项目信息
-        vm.showPickLowSign = function (mainSignId) {
-            vm.selectMainSignId = mainSignId;
-            assistSvc.showPickLowSign(vm);
-            //显示次项目窗口
-            $("#lowerSignWin").kendoWindow({
-                width: "1024px",
-                height: "600px",
-                title: "次项目信息",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
+        vm.showPickLowSign = function(planId){
+            //查询对应的协审项目信息
+            assistSvc.findPlanSign(planId,vm.isCommit,function(data) {
+                vm.pickMainSign = [];                   //主项目对象全部清空
+                vm.lowerSign = [];                      //次项目对象
+                vm.plan = data.planDto;
+                //合并评审，还要挑选出主项目和次项目
+                if(vm.plan.assistType == '合并项目'){
+                    angular.forEach(vm.plan.assistPlanSignDtoList,function(obj,i){
+                        if(obj.isMain == '9'||obj.isMain == 9){
+                            angular.forEach(data.signList,function(sObj,index){
+                                if(obj.signId == sObj.signid){
+                                    vm.pickMainSign.push(sObj);
+                                }else{
+                                    vm.lowerSign.push(sObj);
+                                }
+                            })
+                        }
+                    })
+                    //显示次项目窗口
+                    $("#lowerSignWin").kendoWindow({
+                        width: "1024px",
+                        height: "600px",
+                        title: "次项目信息",
+                        visible: false,
+                        modal: true,
+                        closable: true,
+                        actions: ["Pin", "Minimize", "Maximize", "Close"]
+                    }).data("kendoWindow").center().open();
+                }else{
+                    vm.pickMainSign = data.signList;
+                }
+            });
         }
 
         //挑选次项目
@@ -247,7 +331,11 @@
                 for (var i = 0; i < checkSign.length; i++) {
                     ids.push(checkSign[i].value);
                 }
-                assistSvc.saveLowPlanSign(vm, ids);
+                assistSvc.saveLowPlanSign(vm,ids,function(data){
+                    vm.isCommit = false;
+                    bsWin.alert("操作成功！");
+                    vm.refleshPageInfo(true);
+                });
             }
         }
 
@@ -261,7 +349,11 @@
                 for (var i = 0; i < checkSign.length; i++) {
                     ids.push(checkSign[i].value);
                 }
-                assistSvc.cancelLowPlanSign(vm, ids.join(","));
+                assistSvc.cancelLowPlanSign(vm, ids.join(","),function(){
+                    vm.isCommit = false;
+                    bsWin.alert("操作成功！");
+                    vm.refleshPageInfo(true);
+                });
             }
         }
 

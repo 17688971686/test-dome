@@ -125,7 +125,7 @@
                         if(isNeedUpdate){
                             bsWin.confirm({
                                 title: "询问提示",
-                                message: "改成自评，预定会议室和抽取专家将会删除，确定修改么？",
+                                message: "评审方式改成自评，预定会议室和抽取专家将会删除，确定修改么？",
                                 onOk: function () {
                                     workprogramSvc.updateReviewType($state.params.signid,vm.work.id,vm.work.reviewType, function (data) {
                                         if (data.flag || data.reCode == 'ok') {

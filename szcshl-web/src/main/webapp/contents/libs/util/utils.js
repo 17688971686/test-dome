@@ -73,3 +73,12 @@ Date.prototype.yearAgo = function(year){
 String.prototype.trim = function() {
     return this.replace(/(^\s*)|(\s*$)/g, "");
 }
+
+/**
+ * 把日期格式转换为兼容所有浏览器方式的字符串
+ * @param dateString
+ * @constructor
+ */
+String.prototype.CompatibleDate = function(){
+    return this.replace(/-/g,"/");
+}

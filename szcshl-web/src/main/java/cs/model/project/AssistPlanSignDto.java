@@ -17,17 +17,43 @@ import cs.domain.project.Sign;
 public class AssistPlanSignDto{
 
     private String id;
-    private String planId;                      //计划ID
-    private String signId;                      //项目ID
-    private String projectName;                 //项目名称
-    private String assistType;                  //协审类型
-    private String mainSignId;                  //主项目ID
-    private BigDecimal assistCost;              //协审费用
-    private Float assistDays;                   //协审天数
-    private String isMain;                      //是否主项目
-    private Integer splitNum;                   //拆分项目序号
-    private BigDecimal estimateCost;			//报审概算
-    private BigDecimal jiananCost;				//建安费
+    /**
+     * 协审计划ID
+     */
+    private String planId;
+    /**
+     * 项目ID
+     */
+    private String signId;
+    /**
+     * 拆分项目序号（拆分项目的时候才有）
+     */
+    private Integer splitNum;
+    /**
+     * 项目名称
+     */
+    private String projectName;
+    /**
+     * 协审费用
+     */
+    private BigDecimal assistCost;
+    /**
+     * 协审天数
+     */
+    private Float assistDays;
+    /**
+     * 是否主项目（合并项目的时候才有）
+     */
+    private String isMain;
+    /**
+     * 报审概算
+     */
+    private BigDecimal estimateCost;
+    /**
+     * 建安费
+     */
+    private BigDecimal jiananCost;
+
     private String userName;
     /**
      * 多个协审单位拼接后的字段
@@ -75,22 +101,6 @@ public class AssistPlanSignDto{
         this.signId = signId;
     }
 
-    public String getAssistType() {
-        return assistType;
-    }
-
-    public void setAssistType(String assistType) {
-        this.assistType = assistType;
-    }
-
-    public String getMainSignId() {
-        return mainSignId;
-    }
-
-    public void setMainSignId(String mainSignId) {
-        this.mainSignId = mainSignId;
-    }
-
     public BigDecimal getAssistCost() {
         return assistCost;
     }
@@ -113,14 +123,6 @@ public class AssistPlanSignDto{
 
     public void setIsMain(String isMain) {
         this.isMain = isMain;
-    }
-
-    public Integer getSplitNum() {
-        return splitNum;
-    }
-
-    public void setSplitNum(Integer splitNum) {
-        this.splitNum = splitNum;
     }
 
     public String getProjectName() {
@@ -171,6 +173,11 @@ public class AssistPlanSignDto{
 		this.userName = userName;
 	}
 
+    public Integer getSplitNum() {
+        return splitNum;
+    }
 
-    
+    public void setSplitNum(Integer splitNum) {
+        this.splitNum = splitNum;
+    }
 }

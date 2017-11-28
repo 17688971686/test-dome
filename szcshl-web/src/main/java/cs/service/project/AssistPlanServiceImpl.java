@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.activiti.ProcessDiagramGenerator;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.project.*;
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,7 @@ import cs.repository.repositoryImpl.project.SignRepo;
  */
 @Service
 public class AssistPlanServiceImpl implements AssistPlanService {
-
+    private static final Logger log = Logger.getLogger(AssistPlanServiceImpl.class);
     @Autowired
     private AssistPlanRepo assistPlanRepo;
     @Autowired
@@ -66,84 +68,67 @@ public class AssistPlanServiceImpl implements AssistPlanService {
     }
 
     /**
-     * TODO(递增序号还要实现)
      *
      * @param record
      */
     @Override
     @Transactional
     public ResultMsg save(AssistPlanDto record) {
-        AssistPlan assistPlan = new AssistPlan();
-        Date now = new Date();
-        if (!Validate.isString(record.getId())) {
-            BeanCopierUtils.copyProperties(record, assistPlan);
-            assistPlan.setId(UUID.randomUUID().toString());
-            int maxPlanName = findMaxPlanName(now);
-            String panName = "";
-            if (maxPlanName == 0) {
-                panName = DateUtils.converToString(now, "yyyyMMdd") + String.format("%02d", maxPlanName + 1);
+        try{
+            AssistPlan assistPlan = new AssistPlan();
+            Date now = new Date();
+            if (!Validate.isString(record.getId())) {
+                BeanCopierUtils.copyProperties(record, assistPlan);
+                assistPlan.setId(UUID.randomUUID().toString());
+                int maxPlanName = findMaxPlanName(now);
+                String panName = DateUtils.converToString(now, "yyyyMMdd") + String.format("%02d", (maxPlanName+1));
+                assistPlan.setPlanName(panName);
+                assistPlan.setCreatedBy(SessionUtil.getDisplayName());
+                assistPlan.setCreatedDate(now);
+                assistPlan.setPlanState(Constant.EnumState.PROCESS.getValue());
             } else {
-                panName = String.valueOf(maxPlanName++);
+                assistPlan = assistPlanRepo.findById(record.getId());
+                BeanCopierUtils.copyPropertiesIgnoreNull(record, assistPlan);
             }
-            assistPlan.setPlanName(panName);
-            assistPlan.setCreatedBy(SessionUtil.getDisplayName());
-            assistPlan.setCreatedDate(now);
-            assistPlan.setPlanState(Constant.EnumState.PROCESS.getValue());
-        } else {
-            assistPlan = assistPlanRepo.findById(record.getId());
-            BeanCopierUtils.copyPropertiesIgnoreNull(record, assistPlan);
-        }
-        assistPlan.setModifiedBy(SessionUtil.getDisplayName());
-        assistPlan.setModifiedDate(now);
-        assistPlanRepo.save(assistPlan);
-        record.setId(assistPlan.getId());   //copy ID
-        /************************  协审类型判断 **************************/
-        if (record.isSingle()) {//单个协审
-            if (record.getSplitNum() == null) {
-                record.setSplitNum(1);  //默认不拆分
-            }
-            List<AssistPlanSign> saveList = new ArrayList<>(record.getSplitNum());
-            int i = 1;
-            while (i <= record.getSplitNum()) {
+            assistPlan.setModifiedBy(SessionUtil.getDisplayName());
+            assistPlan.setModifiedDate(now);
+            assistPlanRepo.save(assistPlan);
+
+            //赋值返回页面
+            BeanCopierUtils.copyProperties(assistPlan,record);
+
+            /************************  协审类型判断 **************************/
+            if (Constant.MergeType.ASSIST_SIGNLE.getValue().equals(record.getAssistType())) {
+                List<AssistPlanSign> saveList = new ArrayList<>(record.getSplitNum());
+                int i = 1;
+                while (i <= record.getSplitNum()) {
+                    AssistPlanSign assistPlanSign = new AssistPlanSign();
+                    assistPlanSign.setSignId(record.getSignId());
+                    assistPlanSign.setSplitNum(i);
+                    assistPlanSign.setAssistPlan(assistPlan);
+                    assistPlanSign.setIsMain(i == 1 ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue()); //主要为了方便显示
+                    saveList.add(assistPlanSign);
+                    i++;
+                }
+                assistPlanSignRepo.bathUpdate(saveList);
+            } else {
+                //合并协审，保存的只有主项目
                 AssistPlanSign assistPlanSign = new AssistPlanSign();
                 assistPlanSign.setSignId(record.getSignId());
-                assistPlanSign.setMainSignId(record.getSignId());
-                assistPlanSign.setProjectName(record.getProjectName());
-                assistPlanSign.setAssistType(record.getAssistType());
-                assistPlanSign.setSplitNum(i);
                 assistPlanSign.setAssistPlan(assistPlan);
-                assistPlanSign.setIsMain(i == 1 ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue()); //主要为了方便显示
-                saveList.add(assistPlanSign);
-                i++;
+                assistPlanSign.setIsMain(Constant.EnumState.YES.getValue());
+                assistPlanSignRepo.save(assistPlanSign);
             }
-            assistPlanSignRepo.bathUpdate(saveList);
 
-        } else {  //合并协审，保存的只有主项目
-            AssistPlanSign assistPlanSign = new AssistPlanSign();
-            assistPlanSign.setSignId(record.getSignId());
-            assistPlanSign.setMainSignId(record.getSignId());
-            assistPlanSign.setProjectName(record.getProjectName());
-            assistPlanSign.setAssistType(record.getAssistType());
-            assistPlanSign.setAssistPlan(assistPlan);
-            assistPlanSign.setIsMain(Constant.EnumState.YES.getValue());
-            assistPlanSignRepo.save(assistPlanSign);
+            //更新项目协审状态
+            signService.updateAssistState(record.getSignId(), Constant.EnumState.YES.getValue());
+
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "保存成功！", record);
+        }catch (Exception e){
+            log.error("项目协审保存异常："+e.getMessage());
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，错误信息已记录，请联系管理员查看！");
         }
 
-        //更新项目协审状态
-        signService.updateAssistState(record.getSignId(), Constant.EnumState.YES.getValue());
-
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "保存成功！", record);
-    }
-
-    @Override
-    @Transactional
-    public void update(AssistPlanDto record) {
-        AssistPlan domain = assistPlanRepo.findById(record.getId());
-        BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
-        domain.setModifiedBy(SessionUtil.getLoginName());
-        domain.setModifiedDate(new Date());
-
-        assistPlanRepo.save(domain);
     }
 
     @Override
@@ -187,27 +172,10 @@ public class AssistPlanServiceImpl implements AssistPlanService {
         signRepo.executeSql(sqlBuilder);
 
         //2、先删除协审项目信息
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" delete from " + AssistPlanSign.class.getSimpleName());
-        String[] idArr = id.split(",");
-        if (idArr.length > 1) {
-            hqlBuilder.append(" where " + AssistPlanSign_.assistPlan.getName() + "." + AssistPlan_.id.getName() + " in ( ");
-            int totalL = idArr.length;
-            for (int i = 0; i < totalL; i++) {
-                if (i == totalL - 1) {
-                    hqlBuilder.append(" :id" + i).setParam("id" + i, idArr[i]);
-                } else {
-                    hqlBuilder.append(" :id" + i + ",").setParam("id" + i, idArr[i]);
-                }
-            }
-            hqlBuilder.append(" )");
-        } else {
-            hqlBuilder.append(" where " + AssistPlanSign_.assistPlan.getName() + "." + AssistPlan_.id.getName() + " = :id ");
-            hqlBuilder.setParam("id", id);
+        AssistPlan assistPlan = assistPlanRepo.findById(id);
+        if(assistPlan != null){
+            assistPlanRepo.delete(assistPlan);      //删除协审计划，同时级联删除协审项目
         }
-        assistPlanSignRepo.executeHql(hqlBuilder);
-        //3、再删协审计划信息
-        assistPlanRepo.deleteById(AssistPlan_.id.getName(), id);
     }
 
     /**
@@ -216,20 +184,23 @@ public class AssistPlanServiceImpl implements AssistPlanService {
      * @return
      */
     @Override
-    public Map<String, Object> initPlanManager() {
+    public Map<String, Object> initPlanManager(String isOnlySign) {
         Map<String, Object> resultMap = new HashMap<String, Object>(2);
         //1、待选择的协审项目
         resultMap.put("signList", signService.findAssistSign());
 
-        //2、正在处理的协审计划包
-        Criteria criteria = assistPlanRepo.getExecutableCriteria();
-        criteria.add(Restrictions.eq(AssistPlan_.planState.getName(), Constant.EnumState.PROCESS.getValue()));
-        List<AssistPlan> planList = criteria.list();
-        List<AssistPlanDto> dtoList = new ArrayList<>(planList == null ? 0 : planList.size());
-        planList.forEach(p -> {
-            AssistPlanDto planDto = new AssistPlanDto();
-            BeanCopierUtils.copyProperties(p, planDto);
-            //获取评审单位
+        //如果还要查询计划包信息
+        if(Constant.EnumState.NO.getValue().equals(isOnlySign)){
+            //2、正在处理的协审计划包
+            Criteria criteria = assistPlanRepo.getExecutableCriteria();
+            criteria.add(Restrictions.eq(AssistPlan_.planState.getName(), Constant.EnumState.PROCESS.getValue()));
+            List<AssistPlan> planList = criteria.list();
+            List<AssistPlanDto> dtoList = new ArrayList<>(planList == null ? 0 : planList.size());
+            planList.forEach(p -> {
+                AssistPlanDto planDto = new AssistPlanDto();
+                BeanCopierUtils.copyProperties(p, planDto);
+                //这里不用查询这么细的数据（2017-11-28）
+            /*//获取评审单位
             if (Validate.isList(p.getAssistUnitList())) {
                 List<AssistUnitDto> unitDtoList = new ArrayList<>(p.getAssistUnitList().size());
                 for (AssistUnit assistUnit : p.getAssistUnitList()) {
@@ -248,11 +219,12 @@ public class AssistPlanServiceImpl implements AssistPlanService {
                     planSignDtoList.add(planSignDto);
                 }
                 planDto.setAssistPlanSignDtoList(planSignDtoList);
-            }
+            }*/
 
-            dtoList.add(planDto);
-        });
-        resultMap.put("planList", dtoList);
+                dtoList.add(planDto);
+            });
+            resultMap.put("planList", dtoList);
+        }
         return resultMap;
     }
 
@@ -263,47 +235,32 @@ public class AssistPlanServiceImpl implements AssistPlanService {
      * @param signIds
      */
     @Override
+    @Transactional
     public void cancelPlanSign(String planId, String signIds, boolean isMain) {
-        boolean isHavePlanId = Validate.isString(planId) ? true : false;
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" delete from cs_as_plansign  where ");
-        if (isHavePlanId) {
-            sqlBuilder.append(" planid =:planid  ").setParam("planid", planId).append(" and ");
-        }
-        List<String> signIdList = StringUtil.getSplit(signIds, ",");
-        if (signIdList.size() == 0) {
-            sqlBuilder.append("( signid = :signid ").setParam("signid", signIdList.get(0));
-            if (isMain) {//删除次项目
-                sqlBuilder.append(" or mainsignid = :mainsignid  ").setParam("signid", signIdList.get(0));
-            }
-            sqlBuilder.append(" ) ");
-        } else {
-            sqlBuilder.append(" ( signid in ( ");
-            for (int i = 0, l = signIdList.size(); i < l; i++) {
-                if (i == l - 1) {
-                    sqlBuilder.append(" :id" + i).setParam("id" + i, signIdList.get(i));
-                } else {
-                    sqlBuilder.append(" :id" + i + ",").setParam("id" + i, signIdList.get(i));
-                }
-            }
-            sqlBuilder.append(" ) ");
-            if (isMain) {//删除次项目
-                sqlBuilder.append(" or mainsignid in ( ");
-                for (int i = 0, l = signIdList.size(); i < l; i++) {
-                    if (i == l - 1) {
-                        sqlBuilder.append(" :mainsignid" + i).setParam("mainsignid" + i, signIdList.get(i));
-                    } else {
-                        sqlBuilder.append(" :mainsignid" + i + ",").setParam("mainsignid" + i, signIdList.get(i));
+        StringBuffer updateSignId = new StringBuffer();
+        StringBuffer removeId = new StringBuffer();
+        List<AssistPlanSign> planSignList = assistPlanSignRepo.findByIds("planId",planId,null);
+        if(isMain){
+            //删除所有
+            planSignList.forEach(sl ->{
+                updateSignId.append(sl.getSignId()+",");
+                removeId.append(sl.getId()+",");
+            });
+        }else{
+            //删除部分（删除次项目用）
+            List<String> removeSignIdList = StringUtil.getSplit(signIds,",");
+            planSignList.forEach(sl ->{
+                for(String signId:removeSignIdList){
+                    if(signId.equals(sl.getSignId())){
+                        updateSignId.append(sl.getSignId()+",");
+                        removeId.append(sl.getId()+",");
                     }
                 }
-                sqlBuilder.append(" ) ");
-            }
-            sqlBuilder.append(" ) ");
+            });
         }
-        assistPlanRepo.executeSql(sqlBuilder);
-
+        assistPlanSignRepo.deleteById(AssistPlanSign_.id.getName(),removeId.toString());
         //更新项目协审状态
-        signService.updateAssistState(signIds, Constant.EnumState.NO.getValue());
+        signService.updateAssistState(updateSignId.toString(), Constant.EnumState.NO.getValue());
     }
 
     /**
@@ -495,7 +452,8 @@ public class AssistPlanServiceImpl implements AssistPlanService {
      */
     private int findMaxPlanName(Date date) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max(to_number(" + AssistPlan_.planName.getName() + ")) from cs_as_plan where " + AssistPlan_.planName.getName() + " like :cdate ");
+        sqlBuilder.append(" select max(to_number(substr(" + AssistPlan_.planName.getName() + ",9))) from cs_as_plan ");
+        sqlBuilder.append(" where " + AssistPlan_.planName.getName() + " like :cdate " );
         sqlBuilder.setParam("cdate", "%" + DateUtils.converToString(date, "yyyyMMdd") + "%");
         return assistPlanRepo.returnIntBySql(sqlBuilder);
     }

@@ -349,7 +349,6 @@
                         title: "询问提示",
                         message: "删除数据不可恢复，确定删除么？",
                         onOk: function () {
-                            $('.confirmDialog').modal('hide');
                             var ids = [];
                             for (var i = 0; i < isCheck.length; i++) {
                                 $.each(vm.expertReview.expertSelConditionDtoList,function(c,con){

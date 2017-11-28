@@ -15,11 +15,13 @@ import cs.domain.flow.RuProcessTask_;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.*;
+import cs.model.project.*;
 import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
+import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.*;
 import cs.service.sys.SysConfigService;
 import org.activiti.engine.ProcessEngine;
@@ -56,29 +58,11 @@ import cs.model.expert.ExpertReviewDto;
 import cs.model.external.DeptDto;
 import cs.model.external.OfficeUserDto;
 import cs.model.flow.FlowDto;
-import cs.model.project.AddRegisterFileDto;
-import cs.model.project.AddSuppLetterDto;
-import cs.model.project.DispatchDocDto;
-import cs.model.project.FileRecordDto;
-import cs.model.project.ProjectStopDto;
-import cs.model.project.SignDto;
-import cs.model.project.WorkProgramDto;
 import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.external.DeptRepo;
-import cs.repository.repositoryImpl.project.AddRegisterFileRepo;
-import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
-import cs.repository.repositoryImpl.project.DispatchDocRepo;
-import cs.repository.repositoryImpl.project.FileRecordRepo;
-import cs.repository.repositoryImpl.project.ProjectStopRepo;
-import cs.repository.repositoryImpl.project.SignBranchRepo;
-import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
-import cs.repository.repositoryImpl.project.SignMergeRepo;
-import cs.repository.repositoryImpl.project.SignPrincipalRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
@@ -148,6 +132,8 @@ public class SignServiceImpl implements SignService {
     private ExpertSelConditionRepo expertSelConditionRepo;
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
+    @Autowired
+    private AssistPlanRepo assistPlanRepo;
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -230,7 +216,7 @@ public class SignServiceImpl implements SignService {
             sign.setIssign(EnumState.YES.getValue());       //正式签收
 
             Float reviewsDays = getReviewDays(sign.getReviewstage());
-            if(reviewsDays > 0){
+            if (reviewsDays > 0) {
                 sign.setSurplusdays(Constant.WORK_DAY_15);
                 sign.setReviewdays(Constant.WORK_DAY_15);
             }
@@ -413,10 +399,10 @@ public class SignServiceImpl implements SignService {
                     List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
                     //由于工作方案不是按主次顺便排序，则遍历工作方案，获取主工作方案
                     WorkProgram mainW = new WorkProgram();
-                    for(int i=0 ; i<sign.getWorkProgramList().size() ; i++){
+                    for (int i = 0; i < sign.getWorkProgramList().size(); i++) {
                         WorkProgram workProgram = sign.getWorkProgramList().get(i);
-                        if(workProgram != null && (EnumState.PROCESS.getValue()).equals(workProgram.getBranchId())){
-                            BeanCopierUtils.copyProperties(workProgram , mainW);
+                        if (workProgram != null && (EnumState.PROCESS.getValue()).equals(workProgram.getBranchId())) {
+                            BeanCopierUtils.copyProperties(workProgram, mainW);
                             break;
                         }
                     }
@@ -427,7 +413,7 @@ public class SignServiceImpl implements SignService {
                         workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
                         workProgramDto.setSignId(signid);
                         //判断如不是主工作方案，则初始化公共部分
-                        if(!(EnumState.PROCESS.getValue()).equals(workProgram.getBranchId())){
+                        if (!(EnumState.PROCESS.getValue()).equals(workProgram.getBranchId())) {
                             workProgramDto.setSendFileUnit(mainW.getSendFileUnit()); //来文单位
                             workProgramDto.setSendFileUser(mainW.getSendFileUser());//来文单位联系人
                             workProgramDto.setBuildCompany(mainW.getBuildCompany());//建设单位
@@ -584,7 +570,7 @@ public class SignServiceImpl implements SignService {
             RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
             return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
         } catch (Exception e) {
-            log.error("发起项目签收流程异常："+e.getMessage());
+            log.error("发起项目签收流程异常：" + e.getMessage());
             return new ResultMsg(true, MsgCode.OK.getValue(), "操作异常，错误信息已记录，请刷新重试或联系管理员处理！");
         }
     }
@@ -852,11 +838,11 @@ public class SignServiceImpl implements SignService {
                         if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle())
                                 && EnumState.YES.getValue().equals(wk.getIsMainProject())) {
                             //如果没有合并其他项目，则不准提交
-                            if(!signMergeRepo.isHaveMerge(signid,Constant.MergeType.WORK_PROGRAM.getValue())){
+                            if (!signMergeRepo.isHaveMerge(signid, Constant.MergeType.WORK_PROGRAM.getValue())) {
                                 return new ResultMsg(false, MsgCode.ERROR.getValue(), "工作方案您选择的是合并评审主项目，您还没有设置关联项目，不能提交到下一步！");
                             }
                             //如果合并评审次项目没提交，不能进行下一步操作
-                            if(!signRepo.isMergeSignEndWP(signid)){
+                            if (!signRepo.isMergeSignEndWP(signid)) {
                                 return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还没有完成工作方案，不能进行下一步操作！");
                             }
                         }
@@ -950,7 +936,7 @@ public class SignServiceImpl implements SignService {
                 if (!Validate.isString(branchIndex)) {
                     branchIndex = FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue();
                 }
-                if(SessionUtil.getUserInfo().getOrg() == null){
+                if (SessionUtil.getUserInfo().getOrg() == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "你还没设置所属部门！");
                 }
                 if (!Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgSLeader())) {
@@ -991,7 +977,7 @@ public class SignServiceImpl implements SignService {
                 dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                 //下一环节还是自己
-                if(assigneeValue.equals(SessionUtil.getUserId())){
+                if (assigneeValue.equals(SessionUtil.getUserId())) {
                     isNextUser = true;
                 }
                 if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
@@ -1065,13 +1051,13 @@ public class SignServiceImpl implements SignService {
                 workProgramRepo.save(wk);
 
                 //更新评审会时间
-                ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.businessId.getName(),signid);
+                ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.businessId.getName(), signid);
                 //更新专家评审方案评审日期
-                if(expertReview != null){
-                    if(Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType())){
+                if (expertReview != null) {
+                    if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType())) {
                         //获取评审会日期
                         expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(wk.getId()));
-                    }else{
+                    } else {
                         //函评日期
                         expertReview.setReviewDate(wk.getLetterDate());
                     }
@@ -1082,7 +1068,7 @@ public class SignServiceImpl implements SignService {
             case FlowConstant.FLOW_SIGN_FW:
                 //如果有专家评审费，则要先办理专家评审费
                 if (expertReviewRepo.isHaveEPReviewCost(signid)) {
-                    ExpertReview expertReview2 = expertReviewRepo.findById(ExpertReview_.businessId.getName(),signid);
+                    ExpertReview expertReview2 = expertReviewRepo.findById(ExpertReview_.businessId.getName(), signid);
                     if (expertReview2.getPayDate() == null || expertReview2.getTotalCost() == null) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
                     }
@@ -1186,12 +1172,12 @@ public class SignServiceImpl implements SignService {
                 if (isHaveTwoSLeader) {
                     assigneeValue = buildUser(userList);
                     variables.put(FlowConstant.SignFlowParams.USER_XBFGLD_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
-                //没有协办，则流转给主办分管领导审批
+                    //没有协办，则流转给主办分管领导审批
                 } else {
                     assigneeValue = getMainSLeader(signid);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
                     //下一环节还是自己处理
-                    if(assigneeValue.equals(SessionUtil.getUserId())){
+                    if (assigneeValue.equals(SessionUtil.getUserId())) {
                         isNextUser = true;
                         nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_QRFW;
                     }
@@ -1215,7 +1201,7 @@ public class SignServiceImpl implements SignService {
                     variables.put(FlowConstant.SignFlowParams.XBFZR_SP.getValue(), true);
                     assigneeValue = getMainSLeader(signid);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
-                //不同意则回退到发文申请环节
+                    //不同意则回退到发文申请环节
                 } else {
                     variables.put(FlowConstant.SignFlowParams.XBFZR_SP.getValue(), false);
                     variables = buildMainPriUser(variables, signid, assigneeValue);
@@ -1240,7 +1226,7 @@ public class SignServiceImpl implements SignService {
                 dp.setViceDirectorName(SessionUtil.getDisplayName());
                 dispatchDocRepo.save(dp);
                 //下一环节还是自己处理
-                if(assigneeValue.equals(SessionUtil.getUserId())){
+                if (assigneeValue.equals(SessionUtil.getUserId())) {
                     isNextUser = true;
                     nextNodeKey = FlowConstant.FLOW_SIGN_ZR_QRFW;
                 }
@@ -1386,21 +1372,21 @@ public class SignServiceImpl implements SignService {
         } else {
             taskService.complete(task.getId(), variables);
             //如果下一环节还是自己
-            if(isNextUser){
+            if (isNextUser) {
                 List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
-                for(Task t:nextTaskList){
-                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
-                      ResultMsg returnMsg = dealFlow(processInstance,t,flowDto);
-                      if(returnMsg.isFlag() == false){
-                          return returnMsg;
-                      }
-                      break;
+                for (Task t : nextTaskList) {
+                    if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
+                        ResultMsg returnMsg = dealFlow(processInstance, t, flowDto);
+                        if (returnMsg.isFlag() == false) {
+                            return returnMsg;
+                        }
+                        break;
                     }
                 }
             }
         }
 
-        if(isNextUser == false){
+        if (isNextUser == false) {
             //放入腾讯通消息缓冲池
             RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         }
@@ -1448,6 +1434,11 @@ public class SignServiceImpl implements SignService {
         return variables;
     }
 
+    /**
+     * 查询项目信息，调概项目
+     *
+     * @return
+     */
     @Override
     public List<SignDto> findAssistSign() {
         HqlBuilder sqlBuilder = HqlBuilder.create();
@@ -1460,20 +1451,15 @@ public class SignServiceImpl implements SignService {
         //排除掉已经在选的项目
         sqlBuilder.append(" and plang." + AssistPlanSign_.signId.getName() + " is null ");
         sqlBuilder.append(" order by sign." + Sign_.createdDate.getName() + " desc ");
-        List<Sign> signList = signRepo.findByHql(sqlBuilder);
 
-        if (Validate.isList(signList)) {
-            List<SignDto> resultList = new ArrayList<>(signList.size());
-            if (signList != null && signList.size() > 0) {
-                signList.forEach(s -> {
-                    SignDto signDto = new SignDto();
-                    BeanCopierUtils.copyProperties(s, signDto);
-                    resultList.add(signDto);
-                });
-            }
-            return resultList;
-        }
-        return null;
+        List<Sign> signList = signRepo.findByHql(sqlBuilder);
+        List<SignDto> resultList = new ArrayList<>(signList == null ? 0 : signList.size());
+        signList.forEach(s -> {
+            SignDto signDto = new SignDto();
+            BeanCopierUtils.copyProperties(s, signDto);
+            resultList.add(signDto);
+        });
+        return resultList;
     }
 
     /**
@@ -1483,23 +1469,47 @@ public class SignServiceImpl implements SignService {
      * @return
      */
     @Override
-    public List<SignDto> findByPlanId(String planId) {
+    public Map<String,Object> findByPlanId(String planId) {
+        Map<String,Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
-
-        sqlBuilder.append(" select  distinct sign from " + Sign.class.getSimpleName() + " as sign,AssistPlanSign as psign where sign." + Sign_.signid.getName() + " = psign." + AssistPlanSign_.signId.getName());
+        sqlBuilder.append(" select distinct sign from " + Sign.class.getSimpleName() + " as sign,AssistPlanSign as psign ");
+        sqlBuilder.append(" where sign." + Sign_.signid.getName() + " = psign." + AssistPlanSign_.signId.getName());
         sqlBuilder.append(" and psign.assistPlan.id =:planid");
         sqlBuilder.setParam("planid", planId);
 
         List<Sign> signList = signRepo.findByHql(sqlBuilder);
         List<SignDto> resultList = new ArrayList<>(signList == null ? 0 : signList.size());
-        if (signList != null && signList.size() > 0) {
-            signList.forEach(s -> {
-                SignDto signDto = new SignDto();
-                BeanCopierUtils.copyProperties(s, signDto);
-                resultList.add(signDto);
-            });
+        signList.forEach(s -> {
+            SignDto signDto = new SignDto();
+            BeanCopierUtils.copyProperties(s, signDto);
+            resultList.add(signDto);
+        });
+        resultMap.put("signList",resultList);
+        //协审计划信息
+        AssistPlan assistPlan = assistPlanRepo.findById(planId);
+        AssistPlanDto planDto = new AssistPlanDto();
+        BeanCopierUtils.copyProperties(assistPlan,planDto);
+        /*if (Validate.isList(assistPlan.getAssistUnitList())) {
+            List<AssistUnitDto> unitDtoList = new ArrayList<>(assistPlan.getAssistUnitList().size());
+            for (AssistUnit assistUnit : assistPlan.getAssistUnitList()) {
+                AssistUnitDto unitDto = new AssistUnitDto();
+                BeanCopierUtils.copyProperties(assistUnit, unitDto);
+                unitDtoList.add(unitDto);
+            }
+            planDto.setAssistUnitDtoList(unitDtoList);
+        }*/
+        //获取项目信息
+        if (Validate.isList(assistPlan.getAssistPlanSignList())) {
+            List<AssistPlanSignDto> planSignDtoList = new ArrayList<>(assistPlan.getAssistPlanSignList().size());
+            for (AssistPlanSign assistPlanSign : assistPlan.getAssistPlanSignList()) {
+                AssistPlanSignDto planSignDto = new AssistPlanSignDto();
+                BeanCopierUtils.copyProperties(assistPlanSign, planSignDto);
+                planSignDtoList.add(planSignDto);
+            }
+            planDto.setAssistPlanSignDtoList(planSignDtoList);
         }
-        return resultList;
+        resultMap.put("planDto",planDto);
+        return resultMap;
     }
 
     /**
@@ -1683,7 +1693,7 @@ public class SignServiceImpl implements SignService {
             sign.setSigndate(new Date());
             sign.setIssign(EnumState.YES.getValue());       //正式签收
             Float reviewsDays = getReviewDays(sign.getReviewstage());
-            if(reviewsDays > 0){
+            if (reviewsDays > 0) {
                 sign.setSurplusdays(Constant.WORK_DAY_15);
                 sign.setReviewdays(Constant.WORK_DAY_15);
             }
@@ -1691,7 +1701,7 @@ public class SignServiceImpl implements SignService {
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
     }
 
-    private Float getReviewDays(String reviewstage){
+    private Float getReviewDays(String reviewstage) {
         Float resultFloat = 0f;
         if (Validate.isString(reviewstage)) {
             //先查找系统配置对否有评审阶段的评审天数，如有则用系统的，如果没有则用默认值
@@ -1740,7 +1750,7 @@ public class SignServiceImpl implements SignService {
                 }
             }
         }
-        return  resultFloat ;
+        return resultFloat;
     }
 
     /**
@@ -2153,7 +2163,7 @@ public class SignServiceImpl implements SignService {
             sBuffer.append(" (SELECT ID FROM V_ORG_DEPT WHERE DIRECTORID = '" + SessionUtil.getUserId() + "'))) ");
             criteria.add(Restrictions.sqlRestriction(sBuffer.toString()));
             //除去部门分办环节
-            criteria.add(Restrictions.not(Restrictions.like(RuProcessTask_.nodeDefineKey.getName(),"%"+FlowConstant.FLOW_SIGN_BMFB1.substring(0,FlowConstant.FLOW_SIGN_BMFB1.length()-1)+"%")));
+            criteria.add(Restrictions.not(Restrictions.like(RuProcessTask_.nodeDefineKey.getName(), "%" + FlowConstant.FLOW_SIGN_BMFB1.substring(0, FlowConstant.FLOW_SIGN_BMFB1.length() - 1) + "%")));
             //是副主任，只要没发文，均可取回
         } else {
             sBuffer.append(" ( ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue() + "' ");
@@ -2203,8 +2213,8 @@ public class SignServiceImpl implements SignService {
         }
         //1、删除分支，如果是分管领导分办，则删除分支；如果是部长，则改变相应的状态即可
         if (deleteBranchId) {
-            signBranchRepo.resetBranchState(signId,branchId);
-        }else{
+            signBranchRepo.resetBranchState(signId, branchId);
+        } else {
             HqlBuilder sqlBuilder1 = HqlBuilder.create();
             sqlBuilder1.append("delete from CS_SIGN_BRANCH where " + SignBranch_.signId.getName() + " =:signId ");
             sqlBuilder1.setParam("signId", signId);
@@ -2223,59 +2233,59 @@ public class SignServiceImpl implements SignService {
         //3、删除工作方案、会议室、专家评审方案
         Sign sign = signRepo.findById(signId);
         List<WorkProgram> workProgramList = sign.getWorkProgramList();
-        if(Validate.isList(workProgramList)){
+        if (Validate.isList(workProgramList)) {
             String deleteWPId = null;             //删除工作方案ID
-            for(int i=0,l=workProgramList.size();i<l;i++){
+            for (int i = 0, l = workProgramList.size(); i < l; i++) {
                 WorkProgram wp = workProgramList.get(i);
-                if(deleteBranchId && branchId.equals(wp.getBranchId())){
+                if (deleteBranchId && branchId.equals(wp.getBranchId())) {
                     deleteWPId = wp.getId();
                     break;
-                }else{
-                    if(i > 0){
+                } else {
+                    if (i > 0) {
                         deleteWPId += ",";
                     }
                     deleteWPId += wp.getId();
                 }
             }
             //删除会议室信息
-            roomBookingRepo.deleteById(RoomBooking_.businessId.getName(),deleteWPId);
+            roomBookingRepo.deleteById(RoomBooking_.businessId.getName(), deleteWPId);
 
             //如果是分管领导回退，则删除整个专家评审方案信息；部长回退，则删除对应的分支信息，并修改评审方案状态
             Criteria criteria = expertReviewRepo.getExecutableCriteria();
-            criteria.add(Restrictions.eq(ExpertReview_.businessId.getName(),signId));
+            criteria.add(Restrictions.eq(ExpertReview_.businessId.getName(), signId));
             List<ExpertReview> reviewList = criteria.list();
-            if(Validate.isList(reviewList)){
+            if (Validate.isList(reviewList)) {
                 ExpertReview review = reviewList.get(0);
-                if(deleteBranchId){
-                    if(Validate.isList(review.getExpertSelConditionList())){
-                        for(int n=0,m=review.getExpertSelConditionList().size();n<m;n++){
+                if (deleteBranchId) {
+                    if (Validate.isList(review.getExpertSelConditionList())) {
+                        for (int n = 0, m = review.getExpertSelConditionList().size(); n < m; n++) {
                             ExpertSelCondition ec = review.getExpertSelConditionList().get(n);
-                            if(deleteWPId.equals(ec.getBusinessId())){
+                            if (deleteWPId.equals(ec.getBusinessId())) {
                                 expertSelConditionRepo.delete(ec);
                             }
                         }
                     }
-                    if(Validate.isList(review.getExpertSelectedList())){
-                        for(int n=0,m=review.getExpertSelectedList().size();n<m;n++){
+                    if (Validate.isList(review.getExpertSelectedList())) {
+                        for (int n = 0, m = review.getExpertSelectedList().size(); n < m; n++) {
                             ExpertSelected el = review.getExpertSelectedList().get(n);
-                            if(deleteWPId.equals(el.getBusinessId())){
+                            if (deleteWPId.equals(el.getBusinessId())) {
                                 expertSelectedRepo.delete(el);
                             }
                         }
                     }
                     review.setState(EnumState.NO.getValue());
                     expertReviewRepo.save(review);
-                }else{
+                } else {
                     expertReviewRepo.delete(review);        //删除评审方案，顺便删除抽取专家信息(级联删除)
                 }
             }
             //最后删除工作方案信息
-            for(int i=0,l=workProgramList.size();i<l;i++){
+            for (int i = 0, l = workProgramList.size(); i < l; i++) {
                 WorkProgram wp = workProgramList.get(i);
-                if(deleteBranchId && deleteWPId.equals(wp.getId())){
+                if (deleteBranchId && deleteWPId.equals(wp.getId())) {
                     workProgramRepo.delete(wp);
                     break;
-                }else{
+                } else {
                     workProgramRepo.delete(wp);
                 }
             }

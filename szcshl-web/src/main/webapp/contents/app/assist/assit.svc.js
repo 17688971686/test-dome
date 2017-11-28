@@ -15,8 +15,6 @@
             cancelPlanSign: cancelPlanSign,                     //取消挑选项目
             saveLowPlanSign: saveLowPlanSign,                   //保存挑选的次项目
             cancelLowPlanSign: cancelLowPlanSign,               //取消次项目
-            initSelPlan: initSelPlan,                           //初始化选择的计划信息
-            showPickLowSign: showPickLowSign,                   //初始化选择的次项目信息
             queryPlan: queryPlan,                               //查询协审计划信息
             getPlanSignByPlanId: getPlanSignByPlanId,			//通过协审计划id或取协审项目信息
             savePlanSign: savePlanSign,						    //保存协审项目信息(停用)
@@ -137,37 +135,21 @@
         }//E_initPlanGrid
 
         //S_initPlanPage
-        function initPlanPage(vm) {
+        function initPlanPage(isOnlySign,callBack) {
             //1、查找正在办理的项目概算流程
             var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/assistPlan/initPlanManager",
+                params:{
+                    isOnlySign : (isOnlySign==true)?"9":"0",
+                }
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-
-                        vm.planList = new Array();
-                        if (response.data.signList && response.data.signList.length > 0) {
-                            vm.assistSign = response.data.signList;
-                        }
-                        if (response.data.planList && response.data.planList.length > 0) {
-                            vm.planList = response.data.planList;
-                            //如果之前有选择，则默认显示选择的协审计划，否则默认显示第一个
-                            if (!vm.selectPlanId) {
-                                vm.showPlan = response.data.planList[0];
-                                vm.selectPlanId = vm.showPlan.id;
-                            }
-                            //初始化显示的协审计划信息
-                            initSelPlan(vm);
-                        }
-                    }
-                });
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -199,12 +181,14 @@
         }//E_saveAssistPlan
 
         //S_deletePlan
-        function deletePlan(showPlanId, isCommit, callBack) {
+        function deletePlan(id, isCommit, callBack) {
             isCommit = true;
             var httpOptions = {
                 method: 'delete',
                 url: rootPath + "/assistPlan",
-                data: showPlanId,
+                params:{
+                    id: id,
+                }
             }
             var httpSuccess = function success(response) {
                 isCommit = false;
@@ -223,77 +207,47 @@
         }//E_deletePlan
 
         //S_findPlanSign
-        function findPlanSign(vm, planId) {
+        function findPlanSign(planId,isCommit,callBack) {
+            isCommit = true;
             var httpOptions = {
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/sign/findByPlanId",
-                params: {planId: planId},
+                params: {
+                    planId: planId
+                },
             }
             var httpSuccess = function success(response) {
-                $('#planName').val(vm.selectPlanId);
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.pickSign = response.data;             //已选项目列表
-                        vm.pickMainSign = new Array();          //主项目对象全部清空
-                        vm.lowerSign = new Array();             //次项目对象
-                        //挑选主项目
-                        if (vm.showPlan.assistPlanSignDtoList) {
-                            vm.pickSign.forEach(function (ps, index) {
-                                vm.showPlan.assistPlanSignDtoList.forEach(function (apsl, number) {
-                                    if (apsl.isMain == '9' && apsl.signId == ps.signid) {
-                                        //添加评审类型属性
-                                        ps.assistType = apsl.assistType;
-                                        vm.pickMainSign.push(ps);
-                                    }
-                                });
-                            });
-                        }
-
-                        if (vm.initPickLowSign == true) {
-                            showPickLowSign(vm);
-                        }
-                    }
-                });
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess,
                 onError: function () {
-                    vm.isCommit = false;
+                    isCommit = false;
                 }
             });
         }//E_findPlanSign
 
         //S_cancelPlanSign
-        function cancelPlanSign(vm, signIds) {
+        function cancelPlanSign(vm, signIds,callBack) {
             var httpOptions = {
                 method: 'delete',
                 url: rootPath + "/assistPlan/cancelPlanSign",
                 params: {
-                    planId: vm.selectPlanId,
+                    planId: vm.plan.id,
                     signIds: signIds
                 },
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        initPlanPage(vm);
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功！",
-                            closeDialog: true
-                        })
-                    }
-                });
+                vm.isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess,
@@ -304,7 +258,7 @@
         }//E_cancelPlanSign
 
         //S_saveLowPlanSign
-        function saveLowPlanSign(vm, signIdArr) {
+        function saveLowPlanSign(vm, signIdArr,callBack) {
             var saveLowSignArr = new Array();
             vm.assistSign.forEach(function (asts, index) {
                 for (var i = 0, l = signIdArr.length; i < l; i++) {
@@ -314,38 +268,25 @@
                         LowSign.projectName = asts.projectname;
                         LowSign.assistType = '合并项目';
                         LowSign.isMain = '0';
-                        LowSign.mainSignId = vm.selectMainSignId;
                         saveLowSignArr.push(LowSign);
                     }
                 }
             });
 
-            vm.model = vm.showPlan;
-            vm.model.assistPlanSignDtoList = saveLowSignArr;
+            vm.plan.assistPlanSignDtoList = saveLowSignArr;
             vm.isCommit = true;
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/assistPlan/saveLowPlanSign",
-                data: vm.model,
+                data: vm.plan,
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.isCommit = false;
-                        vm.initPickLowSign = true;
-                        initPlanPage(vm);
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功！",
-                            closeDialog: true
-                        })
-                    }
-                });
+                vm.isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess,
@@ -356,31 +297,21 @@
         }//E_saveLowPlanSign
 
         //S_cancelLowPlanSign
-        function cancelLowPlanSign(vm, signIds) {
+        function cancelLowPlanSign(vm, signIds,callBack) {
             vm.isCommit = true;
             var httpOptions = {
                 method: 'delete',
                 url: rootPath + "/assistPlan/cancelLowPlanSign",
                 params: {
-                    planId: vm.showPlan.id,
+                    planId: vm.plan.id,
                     signIds: signIds
                 }
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.isCommit = false;
-                        vm.initPickLowSign = true;
-                        initPlanPage(vm);
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功！",
-                            closeDialog: true
-                        })
-                    }
-                });
+                vm.isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
                 vm: vm,
@@ -392,39 +323,6 @@
                 }
             });
         }//E_cancelLowPlanSign
-
-        //S_initSelPlan
-        function initSelPlan(vm) {
-            if (vm.selectPlanId) {
-                vm.planList.forEach(function (ps, number) {
-                    if (ps.id == vm.selectPlanId) {
-                        vm.showPlan = ps;
-                        vm.drawType = vm.showPlan.drawType;
-                    }
-                });
-                findPlanSign(vm, vm.selectPlanId);
-            } else {
-                //全部初始化
-                vm.showPlan = {};                       //显示协审计划信息
-                vm.pickSign = new Array();              //协审计划已选的项目列表
-                vm.pickMainSign = new Array();          //主项目对象
-                vm.lowerSign = new Array();             //次项目对象
-                vm.selectMainSignId = "";               //查看的主项目ID
-                vm.initPickLowSign = false;             //是否初始化选择的次项目信息
-            }
-        }//E_initSelPlan
-
-        //S_showPickLowSign
-        function showPickLowSign(vm) {
-            vm.lowerSign = new Array();
-            vm.pickSign.forEach(function (ps, number) {
-                vm.showPlan.assistPlanSignDtoList.forEach(function (lps, index) {
-                    if (lps.isMain == '0' && lps.mainSignId == vm.selectMainSignId && lps.signId == ps.signid) {
-                        vm.lowerSign.push(ps);
-                    }
-                });
-            });
-        }//E_showPickLowSign
 
         //S_queryPlan
         function queryPlan(vm) {

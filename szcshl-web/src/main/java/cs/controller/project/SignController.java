@@ -249,9 +249,9 @@ public class SignController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "根据协审计划查询收文信息", path = "findByPlanId", method = RequestMethod.GET)
-    public @ResponseBody
-    List<SignDto> findByPlanId(@RequestParam(required = true) String planId) {
+    @RequestMapping(name = "根据协审计划查询收文信息", path = "findByPlanId", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String,Object> findByPlanId(@RequestParam(required = true) String planId) {
         return signService.findByPlanId(planId);
     }
 

@@ -60,6 +60,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     private ExpertSelConditionRepo expertSelConditionRepo;
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
+    @Autowired
+    private SignDispaWorkService signDispaWorkService;
 
     @Override
     @Transactional
@@ -75,7 +77,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 // 2、自评和单个评审不能有关联
                 if (Constant.MergeType.REVIEW_SELF.getValue().equals(workProgramDto.getReviewType()) || Constant.MergeType.REVIEW_SIGNLE.getValue().equals(workProgramDto.getIsSigle())) {
                     if (signMergeRepo.isHaveMerge(workProgramDto.getSignId(), Constant.MergeType.WORK_PROGRAM.getValue())) {
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，自评和单个评审不能关联其他工作方案，请先删除关联关系！");
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，自评和单个评审不能关联其他工作方案，请先在主工作方案中删除关联关系再修改！");
                     }
                 }
                 // 3、合并评审 次项目
@@ -107,7 +109,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             }
             //只有主方案改了，才会更新
             if ((FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()).equals(workProgram.getBranchId())
-                    && sign.getAppalyInvestment() != workProgram.getAppalyInvestment()) {
+                    && (sign.getAppalyInvestment().compareTo(workProgram.getAppalyInvestment()) != 0 )) {
                 sign.setAppalyInvestment(workProgram.getAppalyInvestment());
             }
             //表示正在做工作方案
@@ -326,6 +328,14 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             //删除抽取专家时，确认该项目还有分支又抽取专家，如果没有，则删除评审专家记录
             if (expertReviewRepo.isReviewIsEmpty(signId)) {
                 expertReviewRepo.deleteById(ExpertReview_.businessId.getName(), signId);
+            }
+
+            //如果原先是合并评审主项目，还要修改对应的次项目信息
+            if(Constant.MergeType.REVIEW_MEETING.getValue().equals(workProgram.getReviewType())
+            && EnumState.YES.getValue().equals(workProgram.getIsMainProject())){
+                signDispaWorkService.deleteAllMerge(signId, Constant.MergeType.WORK_PROGRAM.getValue(),workprogramId);
+                workProgram.setReviewType(Constant.MergeType.REVIEW_SIGNLE.getValue());
+                workProgram.setIsMainProject(EnumState.NO.getValue());
             }
         }
         //3、更改评审方式

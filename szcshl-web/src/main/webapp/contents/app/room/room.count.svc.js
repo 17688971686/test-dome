@@ -143,7 +143,7 @@
                     filterable: false,
                     template: function(item){
                         if(item.beginTime){
-                            return (new Date(item.beginTime)).Format("hh:mm");
+                            return (new Date((item.beginTime).CompatibleDate())).Format("hh:mm");
                         }else{
                             return "";
                         }
@@ -159,7 +159,7 @@
                     //format : "{0: HH:mm}",
                     template: function(item){
                         if(item.endTime){
-                            return (new Date(item.endTime)).Format("hh:mm");
+                            return (new Date((item.endTime).CompatibleDate())).Format("hh:mm");
                         }else{
                             return "";
                         }

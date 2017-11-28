@@ -69,9 +69,10 @@ public class AssistPlanController {
      * @return
      */
     @RequiresAuthentication
-    @RequestMapping(name = "初始化管理页面", path = "initPlanManager",method=RequestMethod.GET)
-    public @ResponseBody Map<String,Object> initPlanManager(){
-        return assistPlanService.initPlanManager();
+    @RequestMapping(name = "初始化管理页面", path = "initPlanManager",method=RequestMethod.POST)
+    public @ResponseBody Map<String,Object> initPlanManager(@RequestParam(defaultValue="0")String isOnlySign){
+
+        return assistPlanService.initPlanManager(isOnlySign);
     }
 
     @RequiresAuthentication
@@ -85,7 +86,7 @@ public class AssistPlanController {
     //@RequiresPermissions("assistPlan##delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String id) {
+    public void delete(@RequestParam String id) {
         assistPlanService.delete(id);
     }
 
