@@ -109,10 +109,13 @@
 				    template: "<span class='row-number'></span>"
 				 },
                 {
-                    field: "projectname",
+                    field: "",
                     title: "项目名称",
                     width: 120,
-                    filterable: false
+                    filterable: false,
+                    template: function (item) {
+                        return '<a href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                    }
                 },
                 {
                     field: "filecode",

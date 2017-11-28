@@ -105,6 +105,13 @@ public class FlowServiceImpl implements FlowService {
     @Qualifier("suppLetterFlowBackImpl")
     private IFlowBack suppLetterFlowBackImpl;
     @Autowired
+    @Qualifier("annountmentFlowBackImpl")
+    private IFlowBack annountmentFlowBackImpl;
+    @Autowired
+    @Qualifier("monthFlowBackImpl")
+    private IFlowBack monthFlowBackImpl;
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
 
@@ -190,6 +197,12 @@ public class FlowServiceImpl implements FlowService {
                     break;
                 case FlowConstant.FLOW_SUPP_LETTER:
                     backActivitiId = suppLetterFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    break;
+                case FlowConstant.ANNOUNT_MENT_FLOW:
+                    backActivitiId = annountmentFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    break;
+                case FlowConstant.MONTHLY_BULLETIN_FLOW:
+                    backActivitiId = monthFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 default:
                     backActivitiId = "";

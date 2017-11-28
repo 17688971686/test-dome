@@ -348,6 +348,8 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     @Override
     public ResultMsg startFlow(String id) {
         Annountment annountment = annountmentRepo.findById(Annountment_.anId.getName(), id);
+        String assigneeValue;
+        Map<String, Object> variables = new HashMap<>();       //流程参数
         if (annountment == null) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "发起流程失败，该项目已不存在！");
         }
@@ -379,9 +381,17 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
         taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
 
-        User leadUser = userRepo.getCacheUserById(user.getId());
-        String assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
-        taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_BZ.getValue(), assigneeValue));
+        if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
+            assigneeValue=SessionUtil.getUserInfo().getOrg().getOrgSLeader();
+            variables=ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_FZ.getValue(), assigneeValue);
+            variables.put(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), true);
+            taskService.complete(task.getId(), variables);
+        }else{
+            assigneeValue = Validate.isString(user.getTakeUserId()) ? user.getTakeUserId() : user.getId();
+            variables=ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_BZ.getValue(), assigneeValue);
+            variables.put(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), false);
+            taskService.complete(task.getId(), variables);
+        }
 
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
@@ -402,6 +412,7 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         String businessId = processInstance.getBusinessKey(),
         assigneeValue = "";                            //流程处理人
         List<User> userList = null;                 //用户列表
+        User dealUser = null;
         Map<String, Object> variables = new HashMap<>();       //流程参数
         boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
         String nextNodeKey = "";                    //下一环节名称
@@ -412,7 +423,18 @@ public class AnnountmentServiceImpl implements AnnountmentService {
             //项目负责人填报
             case FlowConstant.ANNOUNT_TZ:
                 flowDto.setDealOption("");//默认意见为空
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_BZ.getValue(), SessionUtil.getUserInfo().getOrg().getOrgDirector());
+                if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){//判断是否是部长
+                    dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
+                    assigneeValue= Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                    variables=ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), assigneeValue);
+                    variables.put(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), true);
+                }else{
+                    String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null?SessionUtil.getUserId():SessionUtil.getUserInfo().getOrg().getOrgDirector();
+                    User leadUser = userRepo.getCacheUserById(userId);
+                    assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
+                    variables=ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), assigneeValue);
+                    variables.put(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), false);
+                }
                 break;
             //部长审批
             case FlowConstant.ANNOUNT_BZ:

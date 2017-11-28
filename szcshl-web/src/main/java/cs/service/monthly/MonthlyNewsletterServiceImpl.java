@@ -11,6 +11,8 @@ import cs.domain.monthly.MonthlyNewsletter;
 import cs.domain.monthly.MonthlyNewsletter_;
 import cs.domain.project.AddSuppLetter;
 import cs.domain.project.AddSuppLetter_;
+import cs.domain.sys.Role;
+import cs.domain.sys.Role_;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.expert.ProReviewConditionDto;
@@ -438,6 +440,8 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
     @Override
     public ResultMsg startFlow(String id) {
         AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), id);
+        String assigneeValue;
+        Map<String, Object> variables = new HashMap<>();       //流程参数
         if (addSuppLetter == null) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "发起流程失败，该项目已不存在！");
         }
@@ -469,9 +473,17 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
         taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
 
-        User leadUser = userRepo.getCacheUserById(user.getId());
-        String assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
-        taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_BZ.getValue(), assigneeValue));
+        if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
+            assigneeValue=SessionUtil.getUserInfo().getOrg().getOrgSLeader();
+            variables=ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_FGLD.getValue(), assigneeValue);
+            variables.put(FlowConstant.MonthlyNewsletterFlowParams.MONTH_USER.getValue(), true);
+            taskService.complete(task.getId(), variables);
+        }else{
+            assigneeValue = Validate.isString(user.getTakeUserId()) ? user.getTakeUserId() : user.getId();
+            variables=ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_BZ.getValue(), assigneeValue);
+            variables.put(FlowConstant.MonthlyNewsletterFlowParams.MONTH_USER.getValue(), false);
+            taskService.complete(task.getId(), variables);
+        }
 
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
@@ -503,7 +515,15 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
             //项目负责人填报
             case FlowConstant.MONTH_YB:
                 flowDto.setDealOption("");//默认意见为空
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_BZ.getValue(), SessionUtil.getUserInfo().getOrg().getOrgDirector());
+                if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
+                    assigneeValue=SessionUtil.getUserInfo().getOrg().getOrgSLeader();
+                    variables=ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_FGLD.getValue(), assigneeValue);
+                    variables.put(FlowConstant.MonthlyNewsletterFlowParams.MONTH_USER.getValue(), true);
+                }else{
+                    variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_BZ.getValue(), SessionUtil.getUserInfo().getOrg().getOrgDirector());
+                    variables.put(FlowConstant.MonthlyNewsletterFlowParams.MONTH_USER.getValue(), false);
+                }
+
                 break;
             //部长审批
             case FlowConstant.MONTH_BZ:

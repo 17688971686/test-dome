@@ -11,7 +11,9 @@ import cs.domain.archives.ArchivesLibrary_;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.sys.OrgDept;
+import cs.domain.sys.Role;
 import cs.domain.sys.User;
+import cs.domain.sys.User_;
 import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.archives.ArchivesLibraryRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
@@ -37,6 +39,8 @@ public class ArchivesFlowImpl implements IFlow {
 
     @Autowired
     private ArchivesLibraryRepo archivesLibraryRepo;
+    @Autowired
+    private UserRepo userRepo;
     /**
      * 获取流程参数
      * @param businessKey
@@ -47,6 +51,23 @@ public class ArchivesFlowImpl implements IFlow {
     public Map<String, Object> getFlowBusinessMap(String businessKey,String taskDefinitionKey) {
         Map<String, Object> businessMap = new HashMap<>();
         switch (taskDefinitionKey) {
+            //填报环节
+            case FlowConstant.FLOW_ARC_SQ:
+                ArchivesLibrary archivesLibrary = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessKey);
+                Set role=userRepo.getUserRoles(archivesLibrary.getCreatedBy());//取到用户角色
+                boolean isUser=false;
+                for (Object str : role) {//循环判断是否是部门负责人
+                    if(str.equals(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
+                        isUser=true;
+                    }
+                }
+                if(isUser){//是否是部门负责人
+                    businessMap.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), Constant.EnumState.STOP.getValue());
+                }else{
+                    businessMap.put(FlowConstant.FlowParams.BZ_FZ.getValue(), Constant.EnumState.PROCESS.getValue());
+                }
+                break;
+
             //审批环节，默认都是通过
             case FlowConstant.FLOW_ARC_BZ_SP:
                 ArchivesLibrary archivesLibrary1 = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessKey);

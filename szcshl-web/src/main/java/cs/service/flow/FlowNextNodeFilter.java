@@ -167,6 +167,29 @@ public enum FlowNextNodeFilter {
         }
     },
     //以下是档案借阅环节
+    ARC_SQ {
+        //档案借阅填报
+        @Override
+        public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            if (businessMap.get(FlowConstant.FlowParams.BZ_FZ.getValue()) != null) {
+                for (int i = 0; i < nextNodeList.size(); i++) {
+                    if ((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_BZ_SP)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            } else {
+                for (int i = 0; i < nextNodeList.size(); i++) {
+                    if ((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_FGLD_SP)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }
+            return resultList;
+        }
+    },
     ARC_BZ_SP {
         //部长审批档案借阅
         @Override
@@ -250,6 +273,53 @@ public enum FlowNextNodeFilter {
             }
             return resultList;
         }
+    },
+    //以下是通知公告
+    ANNOUNT_TZ {
+        //通知公告填报
+        @Override
+        public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            if (businessMap.get(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue()) != null) {
+                for (int i = 0; i < nextNodeList.size(); i++) {
+                    if ((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.ANNOUNT_FZ)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            } else {
+                for (int i = 0; i < nextNodeList.size(); i++) {
+                    if ((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.ANNOUNT_BZ)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }
+            return resultList;
+        }
+    },
+    MONTH_YB{
+        //月报填报
+        @Override
+        public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
+            List<Node> resultList = new ArrayList<>(1);
+            if (businessMap.get(FlowConstant.MonthlyNewsletterFlowParams.MONTH_USER.getValue()) != null) {
+                for (int i = 0; i < nextNodeList.size(); i++) {
+                    if ((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.MONTH_FG)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            } else {
+                for (int i = 0; i < nextNodeList.size(); i++) {
+                    if ((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.MONTH_BZ)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
+                }
+            }
+            return resultList;
+        }
     };
 
     public abstract List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList);
@@ -279,17 +349,25 @@ public enum FlowNextNodeFilter {
             case FlowConstant.FLOW_SIGN_FWBH:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SIGN_FWBH);
             //以下是档案借阅环节
+            case FlowConstant.FLOW_ARC_SQ:
+                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_ARC_SQ);
             case FlowConstant.FLOW_ARC_BZ_SP:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_ARC_BZ_SP);
             case FlowConstant.FLOW_ARC_FGLD_SP:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_ARC_FGLD_SP);
+
             //以下是拟补充资料函环节
             case FlowConstant.FLOW_SPL_BZ_SP:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_SPL_BZ_SP);
             //以下是课题环节
             case FlowConstant.TOPIC_ZRSH_JH:
                 return FlowNextNodeFilter.valueOf(FlowConstant.TOPIC_ZRSH_JH);
-
+            //以下是通知公告环节
+            case FlowConstant.ANNOUNT_TZ:
+                return FlowNextNodeFilter.valueOf(FlowConstant.ANNOUNT_TZ);
+            //以下是月报环节
+            case FlowConstant.MONTH_YB:
+                return FlowNextNodeFilter.valueOf(FlowConstant.MONTH_YB);
 
             default:
                 return null;
