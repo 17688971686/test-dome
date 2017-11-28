@@ -19,6 +19,7 @@
         vm.showWC = false;
         vm.MW = false;
         vm.MS = false;
+        vm.expertList = new Array(10); // 控制空白行
 
         activice();
         function activice() {

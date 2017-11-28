@@ -126,11 +126,11 @@ public class SignFlowImpl implements IFlow {
             //发文申请
             case FlowConstant.FLOW_SIGN_FW:
                 //自动生成发文模板
-                Sign sign = signRepo.findById(Sign_.signid.getName(), businessKey);
+              /*  Sign sign = signRepo.findById(Sign_.signid.getName(), businessKey);
                 if(!Constant.EnumState.YES.getValue().equals(sign.getIsSignTemplate())){
                     ResultMsg resultMsg = dispatchDocService.createDisPatchTemplate(businessKey);
                     businessMap.put("resultMsg" , resultMsg);
-                }
+                }*/
                 userList = signPrincipalService.getAllSecondPriUser(businessKey);
                 if(Validate.isList(userList)){
                     List<UserDto> userDtoList = new ArrayList<>(userList.size());

@@ -1,10 +1,7 @@
 <!-- start 主项目 -->
-<div style="height: 100%;padding-top: 10px;" ng-repeat="w in vm.model.workProgramDtoList"  ng-if="w.signId == vm.model.signid">
-    <div id="wp_{{$index}}" class="collapse in">
+<div ng-repeat="w in vm.model.workProgramDtoList"  ng-if="w.signId == vm.model.signid">
         <table class="print-table">
-            <caption class="title" style="margin-top: 20px;" ng-if="$index == 0">{{w.titleName}}</caption>
-            <caption class="title" style="margin-top: 100px;" ng-if="w.isSigle == '合并评审' && $index != 0">{{w.titleName}}</caption>
-            <caption class="title" style="margin-top: 130px;" ng-if="w.isSigle != '合并评审' && $index != 0 ">{{w.titleName}}</caption>
+            <caption class="title" style="margin-top: 20px;" >{{w.titleName}}</caption>
             <caption>
                 <span >QR-4.9-02-A0</span>
             </caption>
@@ -78,29 +75,29 @@
             <tr>
                 <td rowspan="4">项目概况</td>
                 <td>申报投资</td>
-                <td colspan="3" height="20" ng-show="vm.showTotalInvestment">{{w.appalyInvestment}} 万元</td>
+                <td colspan="3"  ng-show="vm.showTotalInvestment">{{w.appalyInvestment}} 万元</td>
                 <td class="text-center" ng-show="vm.showTotalInvestment">总投资</td>
-                <td colspan="2" height="20" ng-show="vm.showTotalInvestment">{{w.totalInvestment}} 万元</td>
+                <td colspan="2" ng-show="vm.showTotalInvestment">{{w.totalInvestment}} 万元</td>
 
-                <td colspan="6" height="20" ng-hide="vm.showTotalInvestment">{{w.appalyInvestment}} 万元</td>
+                <td colspan="6"  ng-hide="vm.showTotalInvestment">{{w.appalyInvestment}} 万元</td>
 
             </tr>
             <tr>
                 <td>申报建设规模</td>
                 <td colspan="6">
-                    <div style="width: 100%; height: 80px; overflow: hidden;">{{w.buildSize}}</div>
+                    <div style="width: 100%; height: 80px; overflow: hidden;font-size: 12px;">{{w.buildSize}}</div>
                 </td>
             </tr>
             <tr>
                 <td>申报建设内容</td>
                 <td  colspan="6">
-                    <div style="width: 100%; height: 80px; overflow: hidden;">{{w.buildContent}}</div>
+                    <div style="width: 100%; height: 100px; overflow: hidden;font-size: 12px;">{{w.buildContent}}</div>
                 </td>
             </tr>
             <tr>
                 <td>项目背景</td>
                 <td  colspan="6">
-                    <div style="width: 100%; height: 80px; overflow: hidden;">{{w.projectBackGround}}</div>
+                    <div style="width: 100%; height: 80px; overflow: hidden;font-size: 12px;">{{w.projectBackGround}}</div>
                 </td>
             </tr>
             <tr>
@@ -137,6 +134,19 @@
                 <td class="text-center">专家费用</td>
                 <td colspan="2">{{W.expertCost}}</td>
             </tr>
+        </table>
+    <table class="print-table" style="margin-top: 20px; margin-bottom: 50px;"
+           ng-show="($index != (vm.model.workProgramDtoList.length-1)) && w.isSigle && w.isSigle == '合并评审'">
+        <tr class="tr-hidden">
+            <td width="5%"></td>
+            <td width="10%"></td>
+            <td width="20%"></td>
+            <td width="14%"></td>
+            <td width="12%"></td>
+            <td width="18%"></td>
+            <td></td>
+            <td></td>
+        </tr>
             <tr ng-if="w.isSigle && w.isSigle == '合并评审' ">
                 <td colspan="2">合并评审相关项目</td>
                 <td colspan="6" height="20px"></td>
@@ -150,30 +160,30 @@
                 <td>专家类别</td>
                 <td>备注</td>
             </tr>
-            <tr  ng-repeat="x in W.expertDtoList |limitTo :10 track by $index  " ng-show="w.expertDtoList && W.expertDtoList.length > 0">
+            <tr  ng-repeat="x in W.expertDtoList |limitTo :8 track by $index  " ng-show="w.expertDtoList && W.expertDtoList.length > 0">
                 <td colspan="2" class="text-center">
-                    <div style="width: 100%; height: 60px; overflow: hidden;">{{x.name}}</div>
+                    <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.name}}</div>
                 </td>
                 <td class="text-center">
-                    <div style="width: 100%; height: 60px; overflow: hidden;">{{x.comPany}}</div>
+                    <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.comPany}}</div>
                 </td>
                 <td class="text-center">
-                    <div style="width: 100%; height: 60px; overflow: hidden;">{{x.job}}/{{x.post}}</div>
+                    <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.job}}/{{x.post}}</div>
                 </td>
                 <td class="text-center">
-                    <div style="width: 100%; height: 60px; overflow: hidden;">{{x.majorStudy}}、{{x.expertDto.majorWork}}</div>
+                    <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.majorStudy}}、{{x.expertDto.majorWork}}</div>
                 </td>
                 <td class="text-center">
-                    <div style="width: 100%; height: 60px; overflow: hidden;">{{x.userPhone}}</div>
+                    <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.userPhone}}</div>
                 </td>
                 <td class="text-center">
-                    <div style="width: 100%; height: 60px; overflow: hidden;">{{x.expeRttype}}</div>
+                    <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.expeRttype}}</div>
                 </td>
                 <td class="text-center">
-                    <div style="width: 100%; height: 60px; overflow: hidden;">{{x.remark}}</div>
+                    <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.remark}}</div>
                 </td>
             </tr>
-            <tr  ng-repeat="x in vm.expertList |limitTo :(10 - W.expertDtoList.length) track by $index  " ng-show="(10 - w.expertDtoList.length)>0" >
+            <tr  ng-repeat="x in vm.expertList |limitTo :(8 - W.expertDtoList.length) track by $index  " ng-show="(8 - w.expertDtoList.length)>0" >
                 <td colspan="2"><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
                 <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
                 <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
@@ -185,23 +195,23 @@
             <tr>
                 <td colspan="2">拟邀请单位及领导</td>
                 <td colspan="6">
-                    <div style="width: 100%; height: 80px; overflow: hidden;">
+                    <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">
                         {{W.inviteUnitLeader}}</div>
                 </td>
             </tr>
             <tr>
                 <td  colspan="2" >拟评审重点问题</td>
                 <td colspan="6">
-                    <div style="width: 100%; height: 80px; overflow: hidden;">{{W.mainPoint}}</div>
+                    <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{W.mainPoint}}</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" >部长意见</td>
                 <td colspan="6">
-                    <div style="width: 100%; height: 80px; overflow: hidden;">
+                    <div style="width: 100%; height: 80px; overflow: hidden;font-size: 12px;">
                         <p class="text-left" style="height: 50%;"> {{w.ministerSuggesttion}} </p>
                         <p class="text-right" style="margin-right: 90px;">签名：</p>
-                        <p class="text-right" style="margin-right: 12px; " ng-if="w.ministerDate">日期：{{w.ministerDate}}</p>
+                        <p class="text-right" style="margin-right: 22px; " ng-if="w.ministerDate">日期：{{w.ministerDate}}</p>
                         <p class="text-right" style="margin-right: 90px;" ng-if="!(w.ministerDate)">日期：</p>
                     </div>
                 </td>
@@ -209,121 +219,200 @@
             <tr>
                 <td colspan="2">中心领导签批意见</td>
                 <td colspan="6">
-                    <div style="width: 100%; height: 80px; overflow: hidden;">
+                    <div style="width: 100%; height: 80px; overflow: hidden;font-size: 12px;">
                         <p class="text-left" style="height: 50%;"> {{w.leaderSuggesttion}} </p>
                         <p class="text-right" style="margin-right: 90px;">签名：</p>
-                        <p class="text-right" style="margin-right: 12px;" ng-if="w.leaderDate">日期：{{w.leaderDate}}</p>
+                        <p class="text-right" style="margin-right: 22px;" ng-if="w.leaderDate">日期：{{w.leaderDate}}</p>
                         <p class="text-right" style="margin-right: 90px;" ng-if="!(w.leaderDate)">日期：</p>
                     </div>
                 </td>
             </tr>
         </table>
-    </div>
+    <table class="print-table" style="margin-top: 20px; margin-bottom: 80px;"
+           ng-show="($index != (vm.model.workProgramDtoList.length-1)) &&  w.isSigle != '合并评审'">
+        <tr class="tr-hidden">
+            <td width="5%"></td>
+            <td width="10%"></td>
+            <td width="20%"></td>
+            <td width="14%"></td>
+            <td width="12%"></td>
+            <td width="18%"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr ng-if="w.isSigle && w.isSigle == '合并评审' ">
+            <td colspan="2">合并评审相关项目</td>
+            <td colspan="6" height="20px"></td>
+        </tr>
+        <tr class="text-center" >
+            <td colspan="2">拟邀请专家</td>
+            <td>工作单位</td>
+            <td>职务/职称</td>
+            <td>专业</td>
+            <td>联系电话</td>
+            <td>专家类别</td>
+            <td>备注</td>
+        </tr>
+        <tr  ng-repeat="x in W.expertDtoList |limitTo :8 track by $index  " ng-show="w.expertDtoList && W.expertDtoList.length > 0">
+            <td colspan="2" class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.name}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.comPany}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.job}}/{{x.post}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.majorStudy}}、{{x.expertDto.majorWork}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.userPhone}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.expeRttype}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.remark}}</div>
+            </td>
+        </tr>
+        <tr  ng-repeat="x in vm.expertList |limitTo :(8 - W.expertDtoList.length) track by $index  " ng-show="(8 - w.expertDtoList.length)>0" >
+            <td colspan="2"><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+        </tr>
+        <tr>
+            <td colspan="2">拟邀请单位及领导</td>
+            <td colspan="6">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">
+                    {{W.inviteUnitLeader}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td  colspan="2" >拟评审重点问题</td>
+            <td colspan="6">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{W.mainPoint}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" >部长意见</td>
+            <td colspan="6">
+                <div style="width: 100%; height: 80px; overflow: hidden;font-size: 12px;">
+                    <p class="text-left" style="height: 50%;"> {{w.ministerSuggesttion}} </p>
+                    <p class="text-right" style="margin-right: 90px;">签名：</p>
+                    <p class="text-right" style="margin-right: 22px; " ng-if="w.ministerDate">日期：{{w.ministerDate}}</p>
+                    <p class="text-right" style="margin-right: 90px;" ng-if="!(w.ministerDate)">日期：</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">中心领导签批意见</td>
+            <td colspan="6">
+                <div style="width: 100%; height: 80px; overflow: hidden;font-size: 12px;">
+                    <p class="text-left" style="height: 50%;"> {{w.leaderSuggesttion}} </p>
+                    <p class="text-right" style="margin-right: 90px;">签名：</p>
+                    <p class="text-right" style="margin-right: 22px;" ng-if="w.leaderDate">日期：{{w.leaderDate}}</p>
+                    <p class="text-right" style="margin-right: 90px;" ng-if="!(w.leaderDate)">日期：</p>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <table class="print-table" style="margin-top: 20px;" ng-show="$index == (vm.model.workProgramDtoList.length-1)">
+        <tr class="tr-hidden">
+            <td width="5%"></td>
+            <td width="10%"></td>
+            <td width="20%"></td>
+            <td width="14%"></td>
+            <td width="12%"></td>
+            <td width="18%"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr ng-if="w.isSigle && w.isSigle == '合并评审' ">
+            <td colspan="2">合并评审相关项目</td>
+            <td colspan="6" height="20px"></td>
+        </tr>
+        <tr class="text-center" >
+            <td colspan="2">拟邀请专家</td>
+            <td>工作单位</td>
+            <td>职务/职称</td>
+            <td>专业</td>
+            <td>联系电话</td>
+            <td>专家类别</td>
+            <td>备注</td>
+        </tr>
+        <tr  ng-repeat="x in W.expertDtoList |limitTo :8 track by $index  " ng-show="w.expertDtoList && W.expertDtoList.length > 0">
+            <td colspan="2" class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.name}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.comPany}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.job}}/{{x.post}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.majorStudy}}、{{x.expertDto.majorWork}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.userPhone}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.expeRttype}}</div>
+            </td>
+            <td class="text-center">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.remark}}</div>
+            </td>
+        </tr>
+        <tr  ng-repeat="x in vm.expertList |limitTo :(8 - W.expertDtoList.length) track by $index  " ng-show="(8 - w.expertDtoList.length)>0" >
+            <td colspan="2"><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+            <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
+        </tr>
+        <tr>
+            <td colspan="2">拟邀请单位及领导</td>
+            <td colspan="6">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">
+                    {{W.inviteUnitLeader}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td  colspan="2" >拟评审重点问题</td>
+            <td colspan="6">
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{W.mainPoint}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" >部长意见</td>
+            <td colspan="6">
+                <div style="width: 100%; height: 80px; overflow: hidden;font-size: 12px;">
+                    <p class="text-left" style="height: 50%;"> {{w.ministerSuggesttion}} </p>
+                    <p class="text-right" style="margin-right: 90px;">签名：</p>
+                    <p class="text-right" style="margin-right: 22px; " ng-if="w.ministerDate">日期：{{w.ministerDate}}</p>
+                    <p class="text-right" style="margin-right: 90px;" ng-if="!(w.ministerDate)">日期：</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">中心领导签批意见</td>
+            <td colspan="6">
+                <div style="width: 100%; height: 80px; overflow: hidden;font-size: 12px;">
+                    <p class="text-left" style="height: 50%;"> {{w.leaderSuggesttion}} </p>
+                    <p class="text-right" style="margin-right: 90px;">签名：</p>
+                    <p class="text-right" style="margin-right: 22px;" ng-if="w.leaderDate">日期：{{w.leaderDate}}</p>
+                    <p class="text-right" style="margin-right: 90px;" ng-if="!(w.leaderDate)">日期：</p>
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>
 <!-- end 主项目 -->
 
-<!-- start 协审项目 -->
-<!--<div ng-repeat="w in vm.model.workProgramDtoList | orderBy:w.branchId"  style="margin-top:50px;"
-     ng-if="w.branchId != '1' && w.branchId != 1">
-    <div id="aswp_{{$index}}" class="collapse in" >
-        <table  class="print-table" style="margin-top: 50px;">
-            <tr>
-                <td style="width:12%;">评审方式</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].reviewType}} </td>
-                <td style="width:12%;" >申报投资</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].appalyInvestment}} 万元</td>
-            </tr>
-            <tr>
-                <td  height="100">申报建设内容</td>
-                <td colspan="7">
-                    {{vm.model.workProgramDtoList[0].buildContent}}
-                </td>
-            </tr>
-            <tr>
-                <td >是否有补充资料函</td>
-                <td colspan="3">
-                    <span>
-                        <input type="checkbox" ng-disabled="true" name="isHaveSuppLetter" ng-checked="vm.model.workProgramDtoList[0].isHaveSuppLetter==9" ng-true-value="9" >是
-                    </span>
-                    <span style="margin-left: 10px;">
-                        <input type="checkbox" ng-disabled="true" name="isHaveSuppLetter" ng-checked="!vm.model.workProgramDtoList[0].isHaveSuppLetter || vm.model.workProgramDtoList[0].isHaveSuppLetter==0"  ng-true-value="0">否
-                    </span>
-                </td>
-                <td >补充资料函发文日期</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].suppLetterDate}}</td>
-            </tr>
-            <tr>
-                <td colspan="2">评审会时间</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].rbDate}}</td>
-                <td class="text-center">会议地点</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].addressName}}</td>
-            </tr>
-            <tr></tr>
-            <tr ng-if="vm.model.workProgramDtoList[0].isSigle=='单个评审' || (vm.model.workProgramDtoList[0].isSigle=='合并评审' && vm.model.workProgramDtoList[0].isMainProject == 9)">
-                <td colspan="2">调研时间</td>
-                <td colspan="3">{{vm.model.workProgramDtoList[0].studyAllDay}}<span ng-if="vm.model.workProgramDtoList[0].studyQuantum">,</span>{{vm.model.workProgramDtoList[0].studyQuantum}}<span ng-if="vm.model.workProgramDtoList[0].studyBeginTimeStr">,</span>{{vm.model.workProgramDtoList[0].studyBeginTimeStr}}<span ng-if="vm.model.workProgramDtoList[0].studyEndTimeStr">至</span>{{vm.model.workProgramDtoList[0].studyEndTimeStr}}</td>
-                <td class="text-center">专家费用</td>
-                <td colspan="2">{{vm.model.workProgramDtoList[0].expertCost}}</td>
-            </tr>
-            <tr>
-                <td colspan="2">合并评审相关项目</td>
-                <td colspan="6" height="50px"></td>
-            </tr>
-            <tr class="text-center" >
-                <td colspan="2">拟邀请专家</td>
-                <td>工作单位</td>
-                <td>职务/职称</td>
-                <td>专业</td>
-                <td>联系电话</td>
-                <td>专家类别</td>
-                <td>备注</td>
-            </tr>
-            <tr  ng-repeat="x in vm.model.workProgramDtoList[0].expertDtoList |limitTo :5 track by $index  " ng-show="vm.model.workProgramDtoList[0].expertDtoList && vm.model.workProgramDtoList[0].expertDtoList.length > 0">
-                <td colspan="2" class="text-center" height="30px">{{x.name}}</td>
-                <td class="text-center">{{x.comPany}}</td>
-                <td class="text-center">{{x.job}}/{{x.post}}</td>
-                <td class="text-center">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
-                <td class="text-center">{{x.userPhone}}</td>
-                <td class="text-center">{{x.expeRttype}}</td>
-                <td class="text-center">{{x.remark}}</td>
-            </tr>
-            <tr  ng-repeat="x in vm.expertList |limitTo :(5 - vm.model.workProgramDtoList[0].expertDtoList.length) track by $index  " >
-                <td colspan="2" height="30px">&nbsp;</td>
-                <td >&nbsp;</td>
-                <td >&nbsp;</td>
-                <td >&nbsp;</td>
-                <td >&nbsp;</td>
-                <td >&nbsp;</td>
-                <td >&nbsp;</td>
-            </tr>
-            <tr>
-                <td height="80" >拟邀请单位及领导</td>
-                <td colspan="7">
-                    {{vm.model.workProgramDtoList[0].inviteUnitLeader}}
-                </td>
-            </tr>
-            <tr>
-                <td height="80" >拟评审重点问题</td>
-                <td colspan="7">
-                    {{vm.model.workProgramDtoList[0].mainPoint}}
-                </td>
-            </tr>
-            <tr>
-                <td height="100">部长处理意见</td>
-                <td colspan="7">
-                    <p> {{vm.model.workProgramDtoList[0].ministerSuggesttion}}</p>
-                    <p class="text-right" ng-if="vm.model.workProgramDtoList[0].ministerName">签名：{{vm.model.workProgramDtoList[0].ministerName}}</p>
-                    <p class="text-right" ng-if="vm.model.workProgramDtoList[0].ministerDate">日期：{{vm.model.workProgramDtoList[0].ministerDate}}</p>
-                </td>
-            </tr>
-            <tr>
-                <td height="100">中心领导签批意见</td>
-                <td colspan="7">
-                    <p> {{vm.model.workProgramDtoList[0].leaderSuggesttion}}</p>
-                    <p class="text-right" ng-if="vm.model.workProgramDtoList[0].leaderName">签名：{{vm.model.workProgramDtoList[0].leaderName}}</p>
-                    <p class="text-right" ng-if="vm.model.workProgramDtoList[0].leaderDate">日期：{{vm.model.workProgramDtoList[0].leaderDate}}</p>
-                </td>
-            </tr>
-        </table>
-    </div>
-</div>-->
