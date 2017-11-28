@@ -7,8 +7,10 @@
             <td style="width: 300px;">项目名称</td>
             <td style="width: 300px;">抽中单位</td>
         </tr>
-        <tr ng-repeat="x in vm.assistPlanSign">
-            <td><span>{{x.projectName}}</span><span ng-if="x.splitNum!=1">({{x.splitNum}})</span></td>
+        <tr ng-repeat="x in vm.assistPlan.assistPlanSignDtoList">
+            <td><span>{{x.projectName}}</span>
+                <span ng-if="(x.splitNum && x.splitNum > 1)">({{x.splitNum}})</span>
+            </td>
             <td>{{x.assistUnit.unitName}}</td>
         </tr>
     </table>
@@ -16,7 +18,7 @@
     <div ng-if="vm.assistPlan.isDrawed == undefined || vm.assistPlan.isDrawed != '9'">
         <div ng-show="vm.isStartDraw && !vm.isDrawDone" style="margin-bottom:20px;">
             <span>
-                项目：{{vm.drawPlanSign.projectName}}({{vm.drawPlanSign.splitNum}})
+                项目：{{vm.drawPlanSign.projectName}}
             </span>
             <span style="margin-left:40px;">
                 {{vm.showAssitUnitName}}
@@ -24,7 +26,7 @@
         </div>
         <div ng-show="vm.isDrawDone" style="color:red;">抽签完成</div>
         <button class="btn btn-sm btn-success" ng-disabled="vm.isStartDraw && !vm.isDrawDone"
-                ng-click="vm.drawAssistUnit()" ng-hide="vm.isDrawDone">
+                ng-click="vm.drawAssistUnit()" ng-show="vm.assistPlan.assistUnitDtoList.length > 0" ng-hide="vm.isDrawDone">
             开始抽签
         </button>
         <button ng-show="vm.isDrawDone" ng-disabled="vm.isCommit" class="btn btn-sm btn-success"

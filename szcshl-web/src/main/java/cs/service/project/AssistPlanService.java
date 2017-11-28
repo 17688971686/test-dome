@@ -25,6 +25,11 @@ public interface AssistPlanService {
      */
     ResultMsg save(AssistPlanDto record);
 
+    /**
+     * 根据主键查询
+     * @param deptId
+     * @return
+     */
 	AssistPlanDto findById(String deptId);
 
     /**
@@ -68,7 +73,7 @@ public interface AssistPlanService {
      * @param planId
      * @param unitId
      */
-   void addAssistUnit(String planId,String unitId);
+    ResultMsg addAssistUnit(String planId,String unitId);
    
    List<AssistUnitDto> getAssistUnit(String planId);
 

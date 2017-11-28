@@ -12,16 +12,13 @@
                 <td style="width: 25%;">电话</td>
                 <td style="width: 15%;">签名</td>
             </tr>
-            <tr  ng-repeat="au in vm.unitList|filter:{isLastUnSelected:'0'}">
+            <tr  ng-repeat="au in vm.assistPlan.assistUnitDtoList|filter:{isLastUnSelected:'0'}">
                 <td class="text-center">{{$index + 1}}</td>
                 <td>{{au.unitName}}</td>
                 <td>{{au.contactName}}</td>
                 <td>{{au.phoneNum}}</td>
                 <td></td>
             </tr>
-
         </table>
     </div>
-
-
 </div>

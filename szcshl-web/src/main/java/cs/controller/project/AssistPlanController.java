@@ -33,10 +33,10 @@ import cs.service.project.AssistPlanService;
  */
 @Controller
 @RequestMapping(name = "协审方案", path = "assistPlan")
-@MudoleAnnotation(name = "项目管理",value = "permission#sign")
+@MudoleAnnotation(name = "项目管理", value = "permission#sign")
 public class AssistPlanController {
 
-	String ctrlName = "assist";
+    String ctrlName = "assist";
 
     @Autowired
     private AssistPlanService assistPlanService;
@@ -47,38 +47,42 @@ public class AssistPlanController {
     @ResponseBody
     public PageModelDto<AssistPlanDto> findByOData(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<AssistPlanDto> assistPlanDtos = assistPlanService.get(odataObj);	
+        PageModelDto<AssistPlanDto> assistPlanDtos = assistPlanService.get(odataObj);
         return assistPlanDtos;
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("assistPlan##post")
     @RequestMapping(name = "新增计划信息", path = "", method = RequestMethod.POST)
-    public @ResponseBody ResultMsg post(@RequestBody AssistPlanDto record) {
+    @ResponseBody
+    public ResultMsg post(@RequestBody AssistPlanDto record) {
         return assistPlanService.save(record);
     }
 
     @RequiresAuthentication
-	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.POST)
-	public @ResponseBody AssistPlanDto findById(@RequestParam(required = true)String id){		
-		return assistPlanService.findById(id);
-	}
+    @RequestMapping(name = "主键查询", path = "findById", method = RequestMethod.POST)
+    @ResponseBody
+    public AssistPlanDto findById(@RequestParam(required = true) String id) {
+        return assistPlanService.findById(id);
+    }
 
     /**
      * 初始化协审计划信息
+     *
      * @return
      */
     @RequiresAuthentication
-    @RequestMapping(name = "初始化管理页面", path = "initPlanManager",method=RequestMethod.POST)
-    public @ResponseBody Map<String,Object> initPlanManager(@RequestParam(defaultValue="0")String isOnlySign){
+    @RequestMapping(name = "初始化管理页面", path = "initPlanManager", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> initPlanManager(@RequestParam(defaultValue = "0") String isOnlySign) {
 
         return assistPlanService.initPlanManager(isOnlySign);
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "保存次项目信息", path = "saveLowPlanSign",method=RequestMethod.POST)
+    @RequestMapping(name = "保存次项目信息", path = "saveLowPlanSign", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void saveLowPlanSign(@RequestBody AssistPlanDto assistPlanDto){
+    public void saveLowPlanSign(@RequestBody AssistPlanDto assistPlanDto) {
         assistPlanService.saveLowPlanSign(assistPlanDto);
     }
 
@@ -93,54 +97,53 @@ public class AssistPlanController {
     @RequiresAuthentication
     @RequestMapping(name = "删除主项目", path = "cancelPlanSign", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void cancelPlanSign(@RequestParam(required = false) String planId,@RequestParam(required = true)String signIds) {
-        assistPlanService.cancelPlanSign(planId,signIds,true);
+    public void cancelPlanSign(@RequestParam(required = false) String planId, @RequestParam(required = true) String signIds) {
+        assistPlanService.cancelPlanSign(planId, signIds, true);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "删除次项目", path = "cancelLowPlanSign", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void cancelLowPlanSign(@RequestParam(required = false) String planId,@RequestParam(required = true)String signIds) {
-        assistPlanService.cancelPlanSign(planId,signIds,false);
+    public void cancelLowPlanSign(@RequestParam(required = false) String planId, @RequestParam(required = true) String signIds) {
+        assistPlanService.cancelPlanSign(planId, signIds, false);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "根据项目ID查询", path = "getAssistPlanBySignId", method = RequestMethod.GET)
     @ResponseBody
-    public AssistPlanDto getAssistPlanBySignId(@RequestParam(required = true)String signId) {
-       return assistPlanService.getAssistPlanBySignId(signId);
+    public AssistPlanDto getAssistPlanBySignId(@RequestParam(required = true) String signId) {
+        return assistPlanService.getAssistPlanBySignId(signId);
     }
 
     /**
      * @param drawAssitUnitIds 协审项目抽签，格式AssistPlanSign.id|AssistUnit.id,,,
-     * @param unSelectedIds 轮空的单位
-     * */
+     * @param unSelectedIds    轮空的单位
+     */
     @RequiresAuthentication
     //@RequiresPermissions("assistPlan#saveDrawAssistUnit#post")
     @RequestMapping(name = "保存协审项目抽签结果", path = "saveDrawAssistUnit", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg saveDrawAssistUnit(@RequestParam(required = true)String planId,
+    public ResultMsg saveDrawAssistUnit(@RequestParam(required = true) String planId,
                                         @RequestParam(required = true) String drawAssitUnitIds,
                                         String unSelectedIds) {
-       return assistPlanService.saveDrawAssistUnit(planId,drawAssitUnitIds,unSelectedIds);
+        return assistPlanService.saveDrawAssistUnit(planId, drawAssitUnitIds, unSelectedIds);
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("assistPlan#initAssistUnit#get")
-    @RequestMapping(name="初始化项目的协审单位",path="initAssistUnit",method=RequestMethod.POST)
+    @RequestMapping(name = "初始化项目的协审单位", path = "initAssistUnit", method = RequestMethod.POST)
     @ResponseBody
-    public List<AssistUnitDto> initAssistUnit(@RequestParam String planId){
-    	
-    	return assistPlanService.getAssistUnit(planId);
+    public List<AssistUnitDto> initAssistUnit(@RequestParam String planId) {
+
+        return assistPlanService.getAssistUnit(planId);
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("assistPlan#saveChooleUnit#post")
-    @RequestMapping(name="保存手动选择的协审单位",path="saveChooleUnit",method=RequestMethod.POST)
-    @ResponseStatus(value=HttpStatus.NO_CONTENT)
-    public void saveChooleUnit(@RequestParam String unitId,@RequestParam String planId){
-    	
-    	assistPlanService.addAssistUnit(planId, unitId);
+    @RequestMapping(name = "保存手动选择的协审单位", path = "saveChooleUnit", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveChooleUnit(@RequestParam String unitId, @RequestParam String planId) {
+        return assistPlanService.addAssistUnit(planId, unitId);
     }
 
     @RequiresAuthentication
@@ -155,16 +158,15 @@ public class AssistPlanController {
     @RequiresPermissions("assistPlan#html/manager#get")
     @RequestMapping(name = "协审计划管理", path = "html/manager", method = RequestMethod.GET)
     public String manager() {
-        return ctrlName+"/manager";
+        return ctrlName + "/manager";
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("assistPlan#html/edit#get")
     @RequestMapping(name = "编辑页面", path = "html/edit", method = RequestMethod.GET)
     public String edit() {
-        return ctrlName+"/edit";
+        return ctrlName + "/edit";
     }
-
 
 
     // end#html

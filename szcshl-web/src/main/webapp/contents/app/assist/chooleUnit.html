@@ -4,22 +4,24 @@
         <label class="checkbox-inline">
             <input type="checkbox" name="optionsRadiosinline" id="optionsRadios3" ng-true-value="1" ng-false-value="0"
                    ng-model="vm.assistPlan.drawType" ng-disabled="vm.assistPlan.planState == '9'"
-                   ng-checked="(!vm.assistPlan.drawType || vm.assistPlan.drawType == '1')">轮空一家单位
+                   ng-checked="(!vm.assistPlan.drawType || vm.assistPlan.drawType == '1')"
+                   ng-disabled="vm.assistPlan.isDrawed == '9' || (vm.assistPlan.assistUnitDtoList.length >= vm.assistPlan.assistPlanSignDtoList.length)">轮空一家单位
         </label>
         <label class="checkbox-inline">
             <input type="checkbox" name="optionsRadiosinline" id="optionsRadios4" ng-true-value="0" ng-false-value="1"
                    ng-model="vm.assistPlan.drawType" ng-disabled="vm.assistPlan.planState == '9'"
-                   ng-checked="vm.assistPlan.drawType == '0'">全部抽中
+                   ng-checked="vm.assistPlan.drawType == '0'"
+                   ng-disabled="vm.assistPlan.isDrawed == '9' || (vm.assistPlan.assistUnitDtoList.length >= vm.assistPlan.assistPlanSignDtoList.length) ">全部抽中
         </label>
         <button class="btn btn-sm btn-success" ng-click="vm.chooseAssistUnit()"
-                ng-disabled="vm.assistPlan.isDrawed == '9'">获取协审单位
+                ng-disabled="vm.assistPlan.isDrawed == '9' || (vm.assistPlan.assistUnitDtoList.length >= vm.assistPlan.assistPlanSignDtoList.length)">获取协审单位
         </button>
     </div>
 
     <p>
         共
-        <span style="color: red;">{{vm.assistPlanSign.length}}</span>个评审项目，
-        <span style="color: red;">{{vm.unitList.length}}</span>个单位进行抽签
+        <span style="color: red;">{{vm.assistPlan.assistPlanSignDtoList.length}}</span>个评审项目，
+        <span style="color: red;">{{vm.assistPlan.assistUnitDtoList.length}}</span>个单位进行抽签
     </p>
     <table class="table table-bordered" width="43%">
         <tr class="active">
@@ -33,7 +35,7 @@
             <th style="width: 180px;">序号</th>
         </tr>
         </thead>
-        <tr ng-repeat="au in vm.unitList">
+        <tr ng-repeat="au in vm.assistPlan.assistUnitDtoList">
             <td style="width: 60px;">{{ $index + 1}}</td>
             <td style="width: 180px;">{{au.unitName}}</td>
             <td style="width: 180px;">{{au.drawCount}}</td>
@@ -46,8 +48,8 @@
         </tbody>
     </table>
     <p>
-        上一次抽签轮空的单位：
-        <span ng-repeat="au in vm.unitList|filter:{isLastUnSelected:'9'}" style="color: red;">{{au.unitName}}</span>
+        抽签轮空的单位：
+        <span ng-repeat="au in vm.assistPlan.assistUnitDtoList|filter:{isLastUnSelected:'9'}" style="color: red;">{{au.unitName}}</span>
     </p>
 
 </div>

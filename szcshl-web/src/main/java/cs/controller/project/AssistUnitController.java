@@ -116,16 +116,10 @@ public class AssistUnitController {
     public ResultMsg chooseAssistUnit(@RequestParam String planId, @RequestParam Integer number, @RequestParam String drawType) {
         List<AssistUnitDto> assistUnitDtoList = assistUnitService.findDrawUnit(planId, number,drawType);
         if(Validate.isList(assistUnitDtoList)){
-           /* 不明白为什么要这么做，修改ldm 2017-11-16
-            for (AssistUnitDto assistUnitDto : assistUnitDtoList) {
-                assistPlanService.addAssistUnit(planId, assistUnitDto.getId());
-                assistUnitService.update(assistUnitDto);
-            }*/
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"抽取协审成功！",assistUnitDtoList);
         }else{
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"抽取协审单位失败,没有协审单位！");
         }
-        //assistPlanService.updateDrawType(planId, drawType);
     }
 
     @RequiresAuthentication

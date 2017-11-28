@@ -65,9 +65,10 @@ public interface SignService {
     /**
      * 根据协审计划ID，查询对应的项目信息
      * @param planId
+     * @param isOnlySign 是否只查询项目信息（9代表是，0代表否，默认为否）
      * @return
      */
-    Map<String,Object> findByPlanId(String planId);
+    Map<String,Object> findByPlanId(String planId,String isOnlySign);
 
     void updateAssistState(String signIds, String status);
 

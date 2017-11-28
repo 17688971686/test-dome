@@ -1466,10 +1466,11 @@ public class SignServiceImpl implements SignService {
      * 根据协审计划，查询收文信息
      *
      * @param planId
+     * @param isOnlySign 是否只查询项目信息（9代表是，0代表否，默认为否）
      * @return
      */
     @Override
-    public Map<String,Object> findByPlanId(String planId) {
+    public Map<String,Object> findByPlanId(String planId,String isOnlySign) {
         Map<String,Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" select distinct sign from " + Sign.class.getSimpleName() + " as sign,AssistPlanSign as psign ");
@@ -1485,30 +1486,25 @@ public class SignServiceImpl implements SignService {
             resultList.add(signDto);
         });
         resultMap.put("signList",resultList);
-        //协审计划信息
-        AssistPlan assistPlan = assistPlanRepo.findById(planId);
-        AssistPlanDto planDto = new AssistPlanDto();
-        BeanCopierUtils.copyProperties(assistPlan,planDto);
-        /*if (Validate.isList(assistPlan.getAssistUnitList())) {
-            List<AssistUnitDto> unitDtoList = new ArrayList<>(assistPlan.getAssistUnitList().size());
-            for (AssistUnit assistUnit : assistPlan.getAssistUnitList()) {
-                AssistUnitDto unitDto = new AssistUnitDto();
-                BeanCopierUtils.copyProperties(assistUnit, unitDto);
-                unitDtoList.add(unitDto);
+
+        if(EnumState.NO.getValue().equals(isOnlySign)){
+            //协审计划信息
+            AssistPlan assistPlan = assistPlanRepo.findById(planId);
+            AssistPlanDto planDto = new AssistPlanDto();
+            BeanCopierUtils.copyProperties(assistPlan,planDto);
+
+            //获取项目信息
+            if (Validate.isList(assistPlan.getAssistPlanSignList())) {
+                List<AssistPlanSignDto> planSignDtoList = new ArrayList<>(assistPlan.getAssistPlanSignList().size());
+                for (AssistPlanSign assistPlanSign : assistPlan.getAssistPlanSignList()) {
+                    AssistPlanSignDto planSignDto = new AssistPlanSignDto();
+                    BeanCopierUtils.copyProperties(assistPlanSign, planSignDto);
+                    planSignDtoList.add(planSignDto);
+                }
+                planDto.setAssistPlanSignDtoList(planSignDtoList);
             }
-            planDto.setAssistUnitDtoList(unitDtoList);
-        }*/
-        //获取项目信息
-        if (Validate.isList(assistPlan.getAssistPlanSignList())) {
-            List<AssistPlanSignDto> planSignDtoList = new ArrayList<>(assistPlan.getAssistPlanSignList().size());
-            for (AssistPlanSign assistPlanSign : assistPlan.getAssistPlanSignList()) {
-                AssistPlanSignDto planSignDto = new AssistPlanSignDto();
-                BeanCopierUtils.copyProperties(assistPlanSign, planSignDto);
-                planSignDtoList.add(planSignDto);
-            }
-            planDto.setAssistPlanSignDtoList(planSignDtoList);
+            resultMap.put("planDto",planDto);
         }
-        resultMap.put("planDto",planDto);
         return resultMap;
     }
 

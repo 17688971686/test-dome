@@ -19,7 +19,7 @@
 				<td style="width: 90px;">项目负责人</td>
 				<td style="width: 200px;">备注</td>
 			</tr>
-			<tr ng-repeat="x in vm.assistPlanSign">
+			<tr ng-repeat="x in vm.assistPlan.assistPlanSignDtoList">
 				<td >{{$index + 1}}</td>
 				<td >{{x.projectName}}<span ng-if="x.splitNum!=1">({{x.splitNum}})</span></td>
 				<td >{{x.estimateCost}}</td>

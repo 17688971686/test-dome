@@ -53,9 +53,8 @@ public class AssistPlanServiceImpl implements AssistPlanService {
     public PageModelDto<AssistPlanDto> get(ODataObj odataObj) {
         PageModelDto<AssistPlanDto> pageModelDto = new PageModelDto<AssistPlanDto>();
         List<AssistPlan> resultList = assistPlanRepo.findByOdata(odataObj);
-        List<AssistPlanDto> resultDtoList = new ArrayList<AssistPlanDto>(resultList.size());
-
-        if (resultList != null && resultList.size() > 0) {
+        List<AssistPlanDto> resultDtoList = new ArrayList<AssistPlanDto>(resultList==null?0:resultList.size());
+        if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 AssistPlanDto modelDto = new AssistPlanDto();
                 BeanCopierUtils.copyProperties(x, modelDto);
@@ -85,6 +84,8 @@ public class AssistPlanServiceImpl implements AssistPlanService {
                 assistPlan.setPlanName(panName);
                 assistPlan.setCreatedBy(SessionUtil.getDisplayName());
                 assistPlan.setCreatedDate(now);
+                //默认全部抽中
+                assistPlan.setDrawType(Constant.EnumState.PROCESS.getValue());
                 assistPlan.setPlanState(Constant.EnumState.PROCESS.getValue());
             } else {
                 assistPlan = assistPlanRepo.findById(record.getId());
@@ -131,6 +132,11 @@ public class AssistPlanServiceImpl implements AssistPlanService {
 
     }
 
+    /**
+     * 根据主键查询
+     * @param id
+     * @return
+     */
     @Override
     public AssistPlanDto findById(String id) {
         AssistPlanDto planDto = new AssistPlanDto();
@@ -396,13 +402,21 @@ public class AssistPlanServiceImpl implements AssistPlanService {
      */
     @Override
     @Transactional
-    public void addAssistUnit(String planId, String unitId) {
-        AssistPlan assistPlan = assistPlanRepo.findById(planId);
-        AssistUnit assistUnit = assistUnitRepo.findById(unitId);
-        List<AssistUnit> assistUnitList = assistPlan.getAssistUnitList();
-        assistUnitList.add(assistUnit);
-        assistPlan.setAssistUnitList(assistUnitList);
-        assistPlanRepo.save(assistPlan);
+    public ResultMsg addAssistUnit(String planId, String unitId) {
+        try{
+            AssistUnitDto assistUnitDto = new AssistUnitDto();
+            AssistPlan assistPlan = assistPlanRepo.findById(planId);
+            AssistUnit assistUnit = assistUnitRepo.findById(unitId);
+            List<AssistUnit> assistUnitList = assistPlan.getAssistUnitList();
+            assistUnitList.add(assistUnit);
+            assistPlan.setAssistUnitList(assistUnitList);
+            assistPlanRepo.save(assistPlan);
+            BeanCopierUtils.copyProperties(assistUnit,assistUnitDto);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"添加成功！",assistUnitDto);
+        }catch (Exception e){
+            log.error("手动添加协审抽签单位异常："+e.getMessage());
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，错误信息已记录，请联系管理员查看！");
+        }
     }
 
     @Override
@@ -432,15 +446,20 @@ public class AssistPlanServiceImpl implements AssistPlanService {
         BeanCopierUtils.copyPropertiesIgnoreNull(record, assistPlan);
         assistPlanRepo.save(assistPlan);
         if (Validate.isList(record.getAssistPlanSignDtoList())) {
-            for (AssistPlanSign assistPlanSign : assistPlan.getAssistPlanSignList()) {
+            List<AssistPlanSign> planSignList = new ArrayList<>();
+            for (AssistPlanSign assistPlanSign :assistPlan.getAssistPlanSignList() ) {
                 for (AssistPlanSignDto assistPlanSignDto : record.getAssistPlanSignDtoList()) {
                     if (assistPlanSign.getId().equals(assistPlanSignDto.getId())) {
                         BeanCopierUtils.copyPropertiesIgnoreNull(assistPlanSignDto, assistPlanSign);
-                        assistPlanSignRepo.save(assistPlanSign);
+                        assistPlanSign.setAssistPlan(assistPlan);
+                        planSignList.add(assistPlanSign);
                     }
                 }
             }
+            //assistPlan.setAssistPlanSignList(planSignList);
+            assistPlanSignRepo.bathUpdate(planSignList);
         }
+
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
