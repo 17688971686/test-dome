@@ -18,10 +18,6 @@ function printpage(act){
     $(act).addClass("print-hide");
     $(".content-wrapper").addClass("print-content")
     var mb = getBrowserType();
-    console.log(mb+"66666");
-
-
-
     if(mb == 'IE'){
         document.all.WebBrowser.ExecWB(7,1);
     }else{

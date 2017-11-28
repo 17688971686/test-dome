@@ -905,10 +905,14 @@ public class CreateTemplateUtils {
         String dayStr =  DateUtils.converToString(new Date(),null).split("-")[2];
         dataMap.put("curDay",dayStr);
         dataMap.put("curMonth",curMonth);
+        dataMap.put("beginMonth",monthlyNewsletterDto.getStaerTheMonths());
         dataMap.put("curYear",curYear);
         String[] reviewStage = {"xmjys-项目建议书","kxxyj-可行性研究报告","xmgs-项目概算","zjsq-资金申请报告","qt-其它","jksb-进口设备","sbqdgc-设备清单(国产)","sbqdjk-设备清单(进口)"};
+        String[] reviewStageTemp = {"xmjys-项 目 建 议 书 ","kxxyj-可 行 性 研 究 报 告 ","xmgs-项 目 概 算 ","zjsq-资 金 申 请 报 告 ","qt-其 它 ","jksb-进 口 设 备 ","sbqdgc-设 备 清 单 ( 国 产 ) ","sbqdjk-设 备 清 单 ( 进 口 ) "};
         String[] reviewStageTotal = {"xmjysTotal-项目建议书","kxxyjTotal-可行性研究报告","xmgsTotal-项目概算","zjsqTotal-资金申请报告","qtTotal-其它","jksbTotal-进口设备","sbqdgcTotal-设备清单(国产)","sbqdjkTotal-设备清单(进口)"};
+        String[] reviewStageTotalTemp = {"xmjysTotal-项 目 建 议 书 ","kxxyjTotal-可 行 性 研 究 报 告 ","xmgsTotal-项 目 概 算 ","zjsqTotal-资 金 申 请 报 告 ","qtTotal-其 它 ","jksbTotal-进 口 设 备 ","sbqdgcTotal-设 备 清 单 ( 国 产 ) ","sbqdjkTotal-设 备 清 单 ( 进 口 ) "};
         String[] projectType = {"projectTypeA-市政工程","projectTypeHouse-房建工程","projectTypeInfo-信息工程","projectTypeBuy-设备采购","projectTypeOther-其他"};
+        String[] projectTypeTemp = {"projectTypeA-市 政 工 程 ","projectTypeHouse-房 建 工 程 ","projectTypeInfo-信 息 工 程 ","projectTypeBuy-设 备 采 购 ","projectTypeOther-其 他 "};
         boolean flag = true;
         //当月月报
         if (proReviewConditionDtoList.size()>0){
@@ -916,14 +920,15 @@ public class CreateTemplateUtils {
               for(int i=0;i<reviewStage.length;i++){
                 flag = true;
                 String [] tempArr = reviewStage[i].split("-");
-                    if(tempArr[1].equals(proReviewConditionDtoList.get(j).getReviewStage()) || proReviewConditionDtoList.get(j).getReviewStage().contains("提前介入")){
+                String [] tempArrTemp = reviewStageTemp[i].split("-");
+                    if(tempArr[1].contains(proReviewConditionDtoList.get(j).getReviewStage()) || proReviewConditionDtoList.get(j).getReviewStage().contains("提前介入")){
                         flag = false;
                         if(!proReviewConditionDtoList.get(j).getIsadvanced().equals("9")){
-                            dataMap.put(tempArr[0], "完成"+tempArr[1]+"评审"+proReviewConditionDtoList.get(j).getProCount()+"项，申报总投资"+proReviewConditionDtoList.get(j).getDeclareValue()
-                                    +"亿元，审核后总投资"+proReviewConditionDtoList.get(j).getAuthorizeValue()+"亿元，累计净核减投资"+proReviewConditionDtoList.get(j).getLjhj()+"亿元,核减率"+proReviewConditionDtoList.get(j).getHjl()+"%");
+                            dataMap.put(tempArrTemp[0], " 完 成 "+tempArrTemp[1]+" 评 审 "+proReviewConditionDtoList.get(j).getProCount()+" 项 ， 申 报 总 投 资 "+proReviewConditionDtoList.get(j).getDeclareValue()
+                                    +" 亿 元 ， 审 核 后 总 投 资 "+proReviewConditionDtoList.get(j).getAuthorizeValue()+" 亿 元 ， 累 计 净 核 减 投 资 "+proReviewConditionDtoList.get(j).getLjhj()+" 亿 元 ,核 减 率 "+proReviewConditionDtoList.get(j).getHjl()+" % ");
                         }else{
-                            dataMap.put(tempArr[0], "完成"+tempArr[1]+"（提前介入）评审"+proReviewConditionDtoList.get(j).getProCount()+"项，申报总投资"+proReviewConditionDtoList.get(j).getDeclareValue()
-                                    +"亿元，审核后总投资"+proReviewConditionDtoList.get(j).getAuthorizeValue()+"亿元，累计净核减投资"+proReviewConditionDtoList.get(j).getLjhj()+"亿元,核减率"+proReviewConditionDtoList.get(j).getHjl()+"%");
+                            dataMap.put(tempArrTemp[0], " 完 成 "+tempArrTemp[1]+" （ 提 前 介 入 ）评 审 "+proReviewConditionDtoList.get(j).getProCount()+" 项 ， 申 报 总 投 资 "+proReviewConditionDtoList.get(j).getDeclareValue()
+                                    +" 亿 元 ， 审 核 后 总 投 资 "+proReviewConditionDtoList.get(j).getAuthorizeValue()+" 亿 元 ， 累 计 净 核 减 投 资 "+proReviewConditionDtoList.get(j).getLjhj()+" 亿 元 , 核 减 率 "+proReviewConditionDtoList.get(j).getHjl()+" % ");
                         }
 
                         break;
@@ -967,7 +972,8 @@ public class CreateTemplateUtils {
                     flag = true;
                     for(int i=0;i<reviewStageTotal.length;i++){
                         String [] tempArr = reviewStageTotal[i].split("-");
-                    if(tempArr[1].equals(proReviewConditionDtoAllList.get(j).getReviewStage()) || proReviewConditionDtoAllList.get(j).getReviewStage().contains("提前介入")){
+                        String [] tempArrTemp = reviewStageTotalTemp[i].split("-");
+                    if(tempArr[1].contains(proReviewConditionDtoAllList.get(j).getReviewStage()) || proReviewConditionDtoAllList.get(j).getReviewStage().contains("提前介入")){
                         flag = false;
                         if(!proReviewConditionDtoAllList.get(j).getIsadvanced().equals("9")){
 
@@ -975,8 +981,8 @@ public class CreateTemplateUtils {
                                 proCent = String.format("%.2f",(proReviewConditionDtoAllList.get(j).getProCount().floatValue()/(float) reviewTotal)*100)+"%";
                             }
 
-                            dataMap.put(tempArr[0], "完成"+tempArr[1]+"评审"+proReviewConditionDtoAllList.get(j).getProCount()+"项，占评审项目数的"+proCent+"申报总投资"+proReviewConditionDtoAllList.get(j).getDeclareValue()
-                                    +"亿元，审核后总投资"+proReviewConditionDtoAllList.get(j).getAuthorizeValue()+"亿元，累计净核减投资"+proReviewConditionDtoAllList.get(j).getLjhj()+"亿元,核减率"+proReviewConditionDtoAllList.get(j).getHjl()+"%");
+                            dataMap.put(tempArrTemp[0], " 完 成 "+tempArrTemp[1]+" 评 审 "+proReviewConditionDtoAllList.get(j).getProCount()+" 项，占 评 审 项 目 数 的 "+proCent+" 申 报 总 投 资 "+proReviewConditionDtoAllList.get(j).getDeclareValue()
+                                    +" 亿 元 ，审 核 后 总 投 资 "+proReviewConditionDtoAllList.get(j).getAuthorizeValue()+" 亿 元， 累 计 净 核 减 投 资 "+proReviewConditionDtoAllList.get(j).getLjhj()+" 亿 元 ,核 减 率 "+proReviewConditionDtoAllList.get(j).getHjl()+" %");
                             break;
                         }else{//提前介入
                             advancedPoCount = advancedPoCount.add(proReviewConditionDtoAllList.get(j).getProCount());
@@ -996,23 +1002,24 @@ public class CreateTemplateUtils {
             if (isAdvanced){//提前介入
                 BigDecimal diffNum = new BigDecimal (advanceDecVal.subtract(advanceAuthorizeVal).toString());
                 double temp = diffNum.divide(advanceDecVal,3,BigDecimal.ROUND_HALF_UP).doubleValue()*100;
-                dataMap.put("tqjrTotal", "另，完成提前介入项目评审"+advancedPoCount+"项，申报总投资"+advanceDecVal
-                        +"亿元，审核后总投资"+advanceAuthorizeVal+"亿元，累计净核减投资"+advanceljhjTotalVal+"亿元,核减率"+temp+"%");
+                dataMap.put("tqjrTotal", "另 ， 完 成 提 前 介 入 项 目 评 审 "+advancedPoCount+" 项，申 报 总 投 资 "+advanceDecVal
+                        +" 亿 元 ， 审 核 后 总 投 资 "+advanceAuthorizeVal+" 亿 元 ， 累 计 净 核 减 投 资 "+advanceljhjTotalVal+" 亿 元 ,核 减 率 "+temp+"%");
             }
         }
         //项目类别
-        String projectTypeItem = "1至"+monthlyNewsletterDto.getTheMonths()+"月评审的项目中,";
+        String projectTypeItem = monthlyNewsletterDto.getStaerTheMonths()+"至"+monthlyNewsletterDto.getTheMonths()+" 月 评 审 的 项 目 中,";
         if(proReviewConditionByTypeList.size()>0){
             for(int i=0;i<proReviewConditionByTypeList.size();i++){
               for(int j=0;j<projectType.length;j++){
                     String [] tempArr = projectType[j].split("-");
+                    String [] tempArrTemp = projectTypeTemp[j].split("-");
                     if(tempArr[1].equals(proReviewConditionByTypeList.get(i).getProjectType())){
                         proCent = String.format("%.2f",(proReviewConditionByTypeList.get(i).getProjectTypeCount().floatValue()/totalNum.floatValue()*100))+"%";
 
                         if(i!=(proReviewConditionByTypeList.size()-1)){
-                            projectTypeItem += tempArr[1]+"类项目"+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占项目总数的"+proCent+";";
+                            projectTypeItem += tempArrTemp[1]+"类 项 目 "+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占 项 目 总 数 的 "+proCent+";";
                         }else{
-                            projectTypeItem += tempArr[1]+"类项目"+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占项目总数的"+proCent+"。";
+                            projectTypeItem += tempArrTemp[1]+"类 项 目 "+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项 ，占 项 目 总 数 的 "+proCent+"。";
                         }
                         break;
                     }
