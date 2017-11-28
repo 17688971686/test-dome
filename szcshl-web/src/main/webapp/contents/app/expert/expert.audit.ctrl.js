@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertAuditCtrl', expert);
 
-    expert.$inject = ['$location', 'expertSvc'];
+    expert.$inject = ['$location', 'expertSvc','templatePrintSvc'];
 
-    function expert($location, expertSvc) {   
+    function expert($location, expertSvc,templatePrintSvc) {
     	var vm = this;
         vm.title = "专家审核";
 
@@ -75,12 +75,17 @@
                         })
                         //项目签收编辑模板打印
                         vm.editPrint = function () {
+                            var mb = templatePrintSvc.getBrowserType();
                             $("#expertApply").hide();
                             $("#auditExportDetail").data("kendoWindow").close();
                             $("#expertApply_templ").show();
                             $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
                             $(".content-wrapper").addClass("print-content");
-                            print();
+                            if(mb == 'IE'){
+                                document.all.WebBrowser.ExecWB(7,1);
+                            }else{
+                                print();
+                            }
                             $("#expertApply").show();
                             $("#auditExportDetail").data("kendoWindow").open();
                             $("#expertApply_templ").hide();

@@ -101,6 +101,9 @@ public class FlowController {
     @Autowired
     @Qualifier("annountMentFlowImpl")
     private IFlow annountMentFlowImpl;
+    @Autowired
+    @Qualifier("monthFlowImpl")
+    private IFlow monthFlowImpl;
 
     @Autowired
     private TopicInfoService topicInfoService;
@@ -356,7 +359,7 @@ public class FlowController {
                     flowDto.setBusinessMap(suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                     break;
                 case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                    flowDto.setBusinessMap(suppLetterFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    flowDto.setBusinessMap(monthFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
                     break;
                 case FlowConstant.ANNOUNT_MENT_FLOW:
                     flowDto.setBusinessMap(annountMentFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));

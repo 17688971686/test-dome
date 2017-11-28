@@ -252,8 +252,10 @@ public class FlowConstant {
      */
     public static enum FlowParams{
         ISAGREE("agree"),                //是否同意
+        TB_FZ("tbfz"),                   //填报分支，用来判断是否是部长发起
         ZR_FZ("zrfz"),                   //主任分支
         FGLD_FZ("fgldfz"),               //分管领导分支
+        BZ_FZ("bzfz"),                    //部长分支
         USER("user"),                    //单个用户
         USERS("users"),                  //多个用户
         USER_BZ("user_bz"),              //部长
@@ -324,7 +326,8 @@ public class FlowConstant {
         USER("user"),         //用户申请
         USER_BZ("user_bz"),    //部长
         USER_FGLD("user_fgld"),  //分管领导
-        USER_ZR("user_zr"); //主任
+        USER_ZR("user_zr"), //主任
+        MONTH_USER("month_user");//是否部长发起
 
 
         private String value;
@@ -345,7 +348,9 @@ public class FlowConstant {
         USER("user"),         //用户申请
         USER_BZ("user_bz"),    //部长
         USER_FZ("user_fz"),  //副主任
-        USER_ZR("user_zr"); //主任
+        USER_ZR("user_zr"), //主任
+        ANNOUNT_USER("annount_user"); //是否部长发起
+
 
 
         private String value;

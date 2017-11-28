@@ -3,18 +3,21 @@ package cs.service.flow;
 import cs.common.FlowConstant;
 import cs.domain.archives.ArchivesLibrary;
 import cs.domain.archives.ArchivesLibrary_;
+import cs.domain.sys.Annountment;
+import cs.domain.sys.Annountment_;
 import cs.repository.repositoryImpl.archives.ArchivesLibraryRepo;
+import cs.repository.repositoryImpl.sys.AnnountmentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by hjm on 2017/11/2.
+ * Created by hjm on 2017/11/28.
  */
-@Service("archivesFlowBackImpl")
-public class ArchivesFlowBackImpl implements IFlowBack {
+@Service("annountmentFlowBackImpl")
+public class AnnountMentFlowBackImpl implements IFlowBack {
 
     @Autowired
-    private ArchivesLibraryRepo archivesLibraryRepo;
+    private AnnountmentRepo annountmentRepo;
 
     /**
      * 获取回退环节(全部指定，避免报错)
@@ -24,22 +27,22 @@ public class ArchivesFlowBackImpl implements IFlowBack {
     @Override
     public String backActivitiId(String businessKey,String curActivitiId) {
         //根据businessKey查出数据
-        ArchivesLibrary archivesLibrary =archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(),businessKey);
+        Annountment annountment =annountmentRepo.findById(Annountment_.anId.getName(),businessKey);
         String backActivitiId = "";
         switch (curActivitiId){
-            case FlowConstant.FLOW_ARC_BZ_SP:
-                backActivitiId = FlowConstant.FLOW_ARC_SQ;
+            case FlowConstant.ANNOUNT_BZ:
+                backActivitiId = FlowConstant.ANNOUNT_TZ;
                 break;
-            case FlowConstant.FLOW_ARC_FGLD_SP:
-                if(archivesLibrary.getDeptMinisterId()==null){
-                    backActivitiId = FlowConstant.FLOW_ARC_SQ;
+            case FlowConstant.ANNOUNT_FZ:
+                if(annountment.getDeptMinisterId()==null){//是否有部门负责人ID
+                    backActivitiId = FlowConstant.ANNOUNT_TZ;
                 }else{
-                    backActivitiId = FlowConstant.FLOW_ARC_BZ_SP;
+                    backActivitiId = FlowConstant.ANNOUNT_BZ;
                 }
 
                 break;
-            case FlowConstant.FLOW_ARC_ZR_SP:
-                backActivitiId = FlowConstant.FLOW_ARC_FGLD_SP;
+            case FlowConstant.ANNOUNT_ZR:
+                backActivitiId = FlowConstant.ANNOUNT_FZ;
                 break;
            default:
                break;

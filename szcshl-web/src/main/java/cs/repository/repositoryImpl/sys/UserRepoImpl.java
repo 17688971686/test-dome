@@ -80,6 +80,20 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     }
 
     @Override
+    public Set<String> getUserRole(String userId) {
+        User user = findById(userId);
+        if(user == null || user.getRoles() == null) {
+            return Collections.EMPTY_SET;
+        }
+        Set<String> roles = new HashSet<String>();
+        //如果超级管理员，则默认给所有权限，开发阶段暂时这么使用
+        user.getRoles().forEach(x -> {
+            roles.add(x.getRoleName());
+        });
+        return roles;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public List<User> findUserByRoleName(String roleName) {
          Criteria criteria = getExecutableCriteria();
