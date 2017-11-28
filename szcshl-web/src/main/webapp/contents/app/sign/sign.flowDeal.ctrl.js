@@ -133,11 +133,11 @@
             // 初始化流程数据
             flowSvc.getFlowInfo(vm.flow.taskId,vm.flow.processInstanceId,function(data){
                 vm.flow = data;
-                if(vm.flow.businessMap && vm.flow.businessMap.resultMsg){
+               /* if(vm.flow.businessMap && vm.flow.businessMap.resultMsg){
                     if(!vm.flow.businessMap.resultMsg.flag){
                         bsWin.alert(vm.flow.businessMap.resultMsg.reMsg);
                     }
-                }
+                }*/
                 //如果任务ID为空，说明任务已经被处理
                 if(vm.flow.taskId){
                     //如果是结束环节，则不显示下一环节信息
@@ -937,6 +937,19 @@
           console.log(aaa);
 */
             //templatePrintSvc.templatePrint($event.target,vm.model);
+        }
+
+        /**
+         * 生成评审报告
+         */
+        vm.reviewReportDoc = function(){
+            signSvc.createDispatchTemplate(vm , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.success("操作成功！");
+                }else{
+                    bsWin.alert(data.reMsg);
+                }
+            });
         }
 
     }

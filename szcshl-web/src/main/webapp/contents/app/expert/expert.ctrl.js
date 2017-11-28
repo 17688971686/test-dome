@@ -13,7 +13,7 @@
         vm.headerType = "专家类型";
         vm.fileName = "专家信息";
         vm.expert = {};
-
+        vm.expertList = new Array(10); // 控制空白行
         activate();
         function activate() {
             expertSvc.grid(vm);

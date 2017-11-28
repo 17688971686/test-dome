@@ -174,6 +174,50 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             //拟补充资料函发文日期
             workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
 
+            //项目基本信息
+            workProgramDto.setProjectName(sign.getProjectname());
+            workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
+            workProgramDto.setDesignCompany(sign.getDesigncompanyName());
+            workProgramDto.setAppalyInvestment(sign.getDeclaration());
+            //是否有拟补充资料函
+            workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null ? Constant.EnumState.NO.getValue() : sign.getIsHaveSuppLetter());
+            //拟补充资料函发文日期
+            workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
+            workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
+
+            workProgramDto.setTitleDate(new Date());
+            //来文单位默认全部是：深圳市发展和改革委员会，可改...
+            //联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段
+            workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
+            workProgramDto.setSendFileUser(sign.getMainDeptUserName());
+
+            //获取评审部门
+            List<OrgDept> orgList = signBranchRepo.getOrgDeptBySignId(signId);
+            if (Validate.isList(orgList)) {
+                StringBuffer orgName = new StringBuffer();
+                for (int i = 0, l = orgList.size(); i < l; i++) {
+                    if (i > 0) {
+                        orgName.append(",");
+                    }
+                    orgName.append(orgList.get(i).getName());
+                }
+                workProgramDto.setReviewOrgName(orgName.toString());
+            }
+            //项目第一负责人
+            User mainUser = signPrincipalService.getMainPriUser(signId);
+            if (mainUser != null && Validate.isString(mainUser.getId())) {
+                workProgramDto.setMianChargeUserName(mainUser.getDisplayName());
+            }
+            //项目其它负责人
+            List<User> secondPriUserList = signPrincipalService.getAllSecondPriUser(signId);
+            if (Validate.isList(secondPriUserList)) {
+                String seUserName = "";
+                for (User u : secondPriUserList) {
+                    seUserName += u.getDisplayName() + ",";
+                }
+                workProgramDto.setSecondChargeUserName(seUserName.substring(0, seUserName.length() - 1));
+            }
+
             if (signPrincipalService.isMainFlowPri(SessionUtil.getUserInfo().getId(), signId)) {
                 //判断是否是关联次项目
                 boolean isMerge = signMergeRepo.checkIsMerege(signId, Constant.MergeType.WORK_PROGRAM.getValue());
@@ -185,49 +229,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     workProgramDto.setIsSigle(Constant.MergeType.REVIEW_MERGE.getValue());
                     workProgramDto.setIsMainProject(EnumState.NO.getValue());
                 }
-                //项目基本信息
-                workProgramDto.setProjectName(sign.getProjectname());
-                workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
-                workProgramDto.setDesignCompany(sign.getDesigncompanyName());
-                workProgramDto.setAppalyInvestment(sign.getDeclaration());
-                //是否有拟补充资料函
-                workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null ? Constant.EnumState.NO.getValue() : sign.getIsHaveSuppLetter());
-                //拟补充资料函发文日期
-                workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
-                workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
 
-                workProgramDto.setTitleDate(new Date());
-                //来文单位默认全部是：深圳市发展和改革委员会，可改...
-                //联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段
-                workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
-                workProgramDto.setSendFileUser(sign.getMainDeptUserName());
-
-                //获取评审部门
-                List<OrgDept> orgList = signBranchRepo.getOrgDeptBySignId(signId);
-                if (Validate.isList(orgList)) {
-                    StringBuffer orgName = new StringBuffer();
-                    for (int i = 0, l = orgList.size(); i < l; i++) {
-                        if (i > 0) {
-                            orgName.append(",");
-                        }
-                        orgName.append(orgList.get(i).getName());
-                    }
-                    workProgramDto.setReviewOrgName(orgName.toString());
-                }
-                //项目第一负责人
-                User mainUser = signPrincipalService.getMainPriUser(signId);
-                if (mainUser != null && Validate.isString(mainUser.getId())) {
-                    workProgramDto.setMianChargeUserName(mainUser.getDisplayName());
-                }
-                //项目其它负责人
-                List<User> secondPriUserList = signPrincipalService.getAllSecondPriUser(signId);
-                if (Validate.isList(secondPriUserList)) {
-                    String seUserName = "";
-                    for (User u : secondPriUserList) {
-                        seUserName += u.getDisplayName() + ",";
-                    }
-                    workProgramDto.setSecondChargeUserName(seUserName.substring(0, seUserName.length() - 1));
-                }
             } else {
                 if (mainW != null && mainW.getId() != null) {
                     workProgramDto.setSendFileUnit(mainW.getSendFileUnit()); //来文单位

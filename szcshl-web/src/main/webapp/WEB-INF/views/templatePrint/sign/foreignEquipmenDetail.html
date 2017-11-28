@@ -42,12 +42,10 @@
         text-align: left;
     }
 </style>
-<table class="print-table">
-    <caption class="text-center h3">
-        <strong>
+<table class="print-table" style="margin-top: 10px;">
+    <caption class="title">
             <p>深圳市政府投资项目评审中心 </p>
             <p>{{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}</p>
-        </strong>
     </caption>
     <caption>
         <span style="width: 200px;float: left;padding: 0 10px;">QR-4.10-01-A0</span>
@@ -94,7 +92,7 @@
     <tr>
         <td rowspan="1">备审资料</td>
         <td colspan="7">
-            <table class="child-table">
+            <table class="child-table" style="font-size: 12px;">
                 <tr class="tr-hidden">
                     <td width="15%"></td>
                     <td width="10%"></td>
@@ -230,7 +228,7 @@
     <tr>
         <td>综合部分办</td>
         <td colspan="5" >
-            <div style="width: 100%; height: 110px; overflow: hidden;font-size: 12px;">
+            <div style="width: 100%; height: 100px; overflow: hidden;font-size: 12px;">
                 <p class="text-left" style="height: 60%;"> {{vm.model.comprehensivehandlesug}}</p>
                 <p class="text-right" style="margin-right: 50px;">签名：{{vm.model.comprehensiveName}}</p>
                 <p class="text-right" style="margin-right: 20px;">日期：{{vm.model.comprehensiveDate}}</p>
@@ -241,7 +239,7 @@
     <tr>
         <td>中心领导签批意见</td>
         <td colspan="5" >
-            <div style="width: 100%; height: 110px; overflow: hidden;font-size: 12px;">
+            <div style="width: 100%; height: 100px; overflow: hidden;font-size: 12px;">
                 <p class="text-left" style="height:60%;"> {{vm.model.leaderhandlesug}}</p>
                 <p class="text-right" style="margin-right: 90px; ">签名：</p>
                 <p class="text-right" style="margin-right: 22px;" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
@@ -252,7 +250,7 @@
     <tr>
         <td>部长处理意见</td>
         <td colspan="5">
-            <div style="width: 100%; height: 110px; overflow: hidden;font-size: 12px;">
+            <div style="width: 100%; height: 100px; overflow: hidden;font-size: 12px;">
                 <p class="text-left" style="height: 60%;"> {{vm.model.ministerhandlesug}}</p>
                 <p class="text-right" style="margin-right: 90px;">签名：</p>
                 <p class="text-right" style="margin-right: 22px;" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>

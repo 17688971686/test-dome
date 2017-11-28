@@ -61,10 +61,10 @@ public class DispatchDocController {
     @RequiresAuthentication
     //@RequiresPermissions("dispatch#createDispatchTemplate#post")
     @RequestMapping(name="生成发文模板" , path="createDispatchTemplate" , method = RequestMethod.POST )
-    @ResponseStatus(value=HttpStatus.NO_CONTENT)
-    public void createDispatchTemplate(@RequestParam  String signId){
+    @ResponseBody
+    public ResultMsg createDispatchTemplate(@RequestParam  String signId){
 
-        dispatchDocService.createDisPatchTemplate(signId );
+      return   dispatchDocService.createDisPatchTemplate(signId );
     }
 
     @RequiresAuthentication

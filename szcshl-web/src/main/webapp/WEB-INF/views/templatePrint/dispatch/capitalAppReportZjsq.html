@@ -21,7 +21,6 @@
         <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0" style="margin-left:10px;">次项目</span>
         <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
     </caption>
-    <tbody>
     <tr class="tr-hidden">
         <td width="16%"></td>
         <td width="10%"></td>
@@ -60,7 +59,7 @@
     <tr>
         <td >发行范围</td>
         <td colspan="7" >
-            <div style="width: 100%; height: 45px; overflow: hidden;font-size: 12px;">{{vm.dispatchDoc.dispatchScope}}<br/>
+            <div style="width: 100%; height: 45px; overflow: hidden;font-size: 12px;">{{vm.dispatchDoc.dispatchScope}}
                 <span style="float: right;font-size: 12px;">(印 {{vm.dispatchDoc.printCount}} 份)</span></div>
         </td>
     </tr>
@@ -126,18 +125,17 @@
             </div>
         </td>
     </tr>
-    <tr ng-if="vm.model.associateSignDtoList.slice().reverse() && vm.model.associateSignDtoList.slice().reverse().length >0 ">
-        <td rowspan="2">项目概况</td>
+    <tr ng-show="vm.model.associateSignDtoList.slice().reverse() && vm.model.associateSignDtoList.slice().reverse().length >0 ">
+        <td >项目概况</td>
         <td colspan="7"  style="padding:0">
-            <!--前一阶段-->
-            <table >
+            <table style="font-size: 12px;">
                 <tr id="proItem">
                     <td width="22%">{{vm.model.associateSignDtoList.slice().reverse()[0].reviewstage}}</td>
                     <td width="10%">申报</td>
                     <td width="10%">审定</td>
-                    <td width="18%">核减（增）</td>
-                    <td width="20%">核减（增）率</td>
-                    <td width="10%">批复金额</td>
+                    <td width="16%">核减（增）</td>
+                    <td width="18%">核减（增）率</td>
+                    <td width="14%">批复金额</td>
                     <td style="border-right-width: 0px;" width="10%">备注</td>
                 </tr>
                 <tr>
@@ -187,17 +185,93 @@
 
         </td>
     </tr>
+    <tr ng-hide="vm.model.associateSignDtoList.slice().reverse() && vm.model.associateSignDtoList.slice().reverse().length >0 ">
+        <td >项目概况</td>
+        <td colspan="7"  style="padding:0">
+            <table  style="text-align: center; font-size: 12px;">
+                <tr id="proTotal">
+                    <td width="22%">{{vm.model.reviewstage}}</td>
+                    <td width="10%">申报</td>
+                    <td width="10%">审定</td>
+                    <td width="16%">核减（增）</td>
+                    <td width="18%">核减（增）率</td>
+                    <td width="14%">批复金额</td>
+                    <td style="border-right-width: 0px;" width="10%">备注</td>
+                </tr>
+
+                <tr>
+                    <td style="border-left-width: 0px;">投资额（万元）</td>
+                    <td>{{vm.dispatchDoc.declareValue}}</td>
+                    <td>{{vm.dispatchDoc.authorizeValue}}</td>
+                    <td>{{vm.dispatchDoc.extraValue}}</td>
+                    <td>{{vm.dispatchDoc.extraRate}}<span>%</span></td>
+                    <td>{{vm.dispatchDoc.approveValue}}</td>
+                    <td>{{vm.dispatchDoc.remark}}</td>
+                </tr>
+
+                <tr>
+                    <td style="border-left-width: 0px;">项目建设必要性</td>
+                    <td colspan="6" class="text-left" >
+                        <div style="width: 100%; height: 50px; overflow: hidden;font-size: 12px;">
+                            {{vm.dispatchDoc.projectBuildNecess}}
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border-left-width: 0px;">审定建设规模及内容</td>
+                    <td colspan="6" class="text-left" >
+                        <div style="width: 100%; height: 50px; overflow: hidden;font-size: 12px;">
+                            {{vm.dispatchDoc.buildSizeContent}}
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border-left-width: 0px;">投资匡算及资金来源</td>
+                    <td colspan="6" class="text-left">
+                        <div style="width: 100%; height: 50px; overflow: hidden;font-size: 12px;">
+                            {{vm.dispatchDoc.fundTotalOrigin}}
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border-left-width: 0px;border-bottom-width: 0px;">下一阶段工作要求</td>
+                    <td style="border-bottom-width: 0px;" colspan="6" class="text-left">
+                        <div style="width: 100%; height: 50px; overflow: hidden;font-size: 12px;">
+                            {{vm.dispatchDoc.nextWorkPlan}}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+    </table>
+<table class="print-table">
+    <tr class="tr-hidden">
+        <td width="16%"></td>
+        <td width="10%"></td>
+        <td width="12%"></td>
+        <td width="12%"></td>
+        <td width="12%"></td>
+        <td width="15%"></td>
+        <td width="11%"></td>
+        <td width="12%"></td>
+    </tr>
     <tr>
+        <td>项目概况</td>
         <td colspan="7"  style="padding:0">
             <!--前一阶段-->
-            <table ng-repeat="s in vm.model.associateSignDtoList.slice().reverse()"  ng-if="$index >0">
+            <table ng-repeat="s in vm.model.associateSignDtoList.slice().reverse()"  ng-if="$index >0" style="font-size: 12px;">
                 <tr id="proItem">
                     <td width="22%">{{s.reviewstage}}</td>
                     <td width="10%">申报</td>
                     <td width="10%">审定</td>
-                    <td width="18%">核减（增）</td>
-                    <td width="20%">核减（增）率</td>
-                    <td width="10%">批复金额</td>
+                    <td width="16%">核减（增）</td>
+                    <td width="18%">核减（增）率</td>
+                    <td width="14%">批复金额</td>
                     <td style="border-right-width: 0px;" width="10%">备注</td>
                 </tr>
                 <tr>
@@ -245,14 +319,14 @@
                 </tr>
             </table>
 
-            <table  style="text-align: center;">
+            <table  style="text-align: center; font-size: 12px;">
                 <tr id="proTotal">
                     <td width="22%">{{vm.model.reviewstage}}</td>
                     <td width="10%">申报</td>
                     <td width="10%">审定</td>
-                    <td width="18%">核减（增）</td>
-                    <td width="20%">核减（增）率</td>
-                    <td width="10%">批复金额</td>
+                    <td width="16%">核减（增）</td>
+                    <td width="18%">核减（增）率</td>
+                    <td width="14%">批复金额</td>
                     <td style="border-right-width: 0px;" width="10%">备注</td>
                 </tr>
 

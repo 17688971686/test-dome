@@ -32,7 +32,7 @@
         return service;
 
         //negin createDispatchTemplate
-        function createDispatchTemplate(vm){
+        function createDispatchTemplate(vm , callBack){
             var httpOptions = {
                 method : "post" ,
                 url : rootPath + "/dispatch/createDispatchTemplate",
@@ -40,7 +40,9 @@
             }
 
             var httpSuccess = function success(response){
-                // bsWin.success("操作成功！");
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
             }
 
             common.http({
