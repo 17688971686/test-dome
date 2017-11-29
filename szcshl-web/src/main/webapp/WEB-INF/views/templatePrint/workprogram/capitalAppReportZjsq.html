@@ -117,22 +117,22 @@
                     <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="!W.isHaveSuppLetter || W.isHaveSuppLetter==0"  ng-true-value="0">否
                 </td>
                 <td class="text-center">补充资料函发文日期</td>
-                <td colspan="2">{{W.suppLetterDate}}</td>
+                <td colspan="2">{{w.suppLetterDate}}</td>
             </tr>
             <tr>
                 <td colspan="2">评审会时间</td>
-                <td colspan="3">{{W.rbDate}}</td>
+                <td colspan="3">{{w.rbDate}}</td>
                 <td class="text-center">会议地点</td>
-                <td colspan="2">{{W.addressName}}</td>
+                <td colspan="2">{{w.addressName}}</td>
             </tr>
             <tr></tr>
-            <tr ng-if="W.isSigle=='单个评审' || (W.isSigle=='合并评审' && W.isMainProject == 9)">
+            <tr ng-if="w.isSigle=='单个评审' || (w.isSigle=='合并评审' && w.isMainProject == 9)">
                 <td colspan="2">调研时间</td>
-                <td colspan="3">{{W.studyAllDay}}<span ng-if="W.studyQuantum">,</span>{{W.studyQuantum}}
-                    <span ng-if="W.studyBeginTimeStr">,</span>{{W.studyBeginTimeStr}}
-                    <span ng-if="W.studyEndTimeStr">至</span>{{W.studyEndTimeStr}}</td>
+                <td colspan="3">{{w.studyAllDay}}<span ng-if="w.studyQuantum">,</span>{{w.studyQuantum}}
+                    <span ng-if="w.studyBeginTimeStr">,</span>{{w.studyBeginTimeStr}}
+                    <span ng-if="w.studyEndTimeStr">至</span>{{w.studyEndTimeStr}}</td>
                 <td class="text-center">专家费用</td>
-                <td colspan="2">{{W.expertCost}}</td>
+                <td colspan="2">{{w.expertCost}}</td>
             </tr>
         </table>
     <table class="print-table" style="margin-top: 20px; margin-bottom: 50px;"
@@ -160,7 +160,7 @@
                 <td>专家类别</td>
                 <td>备注</td>
             </tr>
-            <tr  ng-repeat="x in W.expertDtoList |limitTo :8 track by $index  " ng-show="w.expertDtoList && W.expertDtoList.length > 0">
+            <tr  ng-repeat="x in w.expertDtoList |limitTo :8 track by $index  " ng-show="w.expertDtoList && w.expertDtoList.length > 0">
                 <td colspan="2" class="text-center">
                     <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.name}}</div>
                 </td>
@@ -183,7 +183,7 @@
                     <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.remark}}</div>
                 </td>
             </tr>
-            <tr  ng-repeat="x in vm.expertList |limitTo :(8 - W.expertDtoList.length) track by $index  " ng-show="(8 - w.expertDtoList.length)>0" >
+            <tr  ng-repeat="x in vm.expertList |limitTo :(8 - w.expertDtoList.length) track by $index  " ng-show="(8 - w.expertDtoList.length)>0" >
                 <td colspan="2"><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
                 <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
                 <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
@@ -253,7 +253,7 @@
             <td>专家类别</td>
             <td>备注</td>
         </tr>
-        <tr  ng-repeat="x in W.expertDtoList |limitTo :8 track by $index  " ng-show="w.expertDtoList && W.expertDtoList.length > 0">
+        <tr  ng-repeat="x in w.expertDtoList |limitTo :8 track by $index  " ng-show="w.expertDtoList && w.expertDtoList.length > 0">
             <td colspan="2" class="text-center">
                 <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.name}}</div>
             </td>
@@ -276,7 +276,7 @@
                 <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.remark}}</div>
             </td>
         </tr>
-        <tr  ng-repeat="x in vm.expertList |limitTo :(8 - W.expertDtoList.length) track by $index  " ng-show="(8 - w.expertDtoList.length)>0" >
+        <tr  ng-repeat="x in vm.expertList |limitTo :(8 - w.expertDtoList.length) track by $index  " ng-show="(8 - w.expertDtoList.length)>0" >
             <td colspan="2"><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
             <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
             <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
@@ -345,7 +345,7 @@
             <td>专家类别</td>
             <td>备注</td>
         </tr>
-        <tr  ng-repeat="x in W.expertDtoList |limitTo :8 track by $index  " ng-show="w.expertDtoList && W.expertDtoList.length > 0">
+        <tr  ng-repeat="x in w.expertDtoList |limitTo :8 track by $index  " ng-show="w.expertDtoList && w.expertDtoList.length > 0">
             <td colspan="2" class="text-center">
                 <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.name}}</div>
             </td>
@@ -368,7 +368,7 @@
                 <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{x.remark}}</div>
             </td>
         </tr>
-        <tr  ng-repeat="x in vm.expertList |limitTo :(8 - W.expertDtoList.length) track by $index  " ng-show="(8 - w.expertDtoList.length)>0" >
+        <tr  ng-repeat="x in vm.expertList |limitTo :(8 - w.expertDtoList.length) track by $index  " ng-show="(8 - w.expertDtoList.length)>0" >
             <td colspan="2"><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
             <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>
             <td ><div style="width: 100%; height: 60px; overflow: hidden;">&nbsp;</div></td>

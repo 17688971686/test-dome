@@ -109,7 +109,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             }
             //只有主方案改了，才会更新
             if ((FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()).equals(workProgram.getBranchId())
-                    && (sign.getAppalyInvestment().compareTo(workProgram.getAppalyInvestment()) != 0 )) {
+                    && (sign.getAppalyInvestment() == null ||  (sign.getAppalyInvestment().compareTo(workProgram.getAppalyInvestment()) != 0 ))) {
                 sign.setAppalyInvestment(workProgram.getAppalyInvestment());
             }
             //表示正在做工作方案
