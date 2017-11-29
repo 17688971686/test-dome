@@ -23,10 +23,10 @@
             var httpSuccess = function success(response) {
                 if (response.data != null && response.data != "") {
                     vm.fileRecord = response.data.file_record;
-
                     vm.fileRecord.signId = vm.signId;
                     vm.signUserList = response.data.sign_user_List;
-
+                    //是否协审
+                    vm.isassistproc = (vm.fileRecord.isassistproc == '9')?true:false;
                     //初始化附件上传
                     vm.initFileUpload();
                 }

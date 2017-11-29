@@ -5,7 +5,9 @@ import java.util.List;
 
 import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,13 +90,20 @@ public class AssistPlanSignServiceImpl  implements AssistPlanSignService {
 	        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败:"+e.getMessage());
         }
 	}
+
+	/**
+	 * 根据项目ID，查询对应的项目信息
+	 * @param signId
+	 * @return
+	 */
 	@Override
 	public List<AssistPlanSignDto> findBySignId(String signId) {
 		Criteria criteria = assistPlanSignRepo.getExecutableCriteria();
 		criteria.add(Restrictions.eq(AssistPlanSign_.signId.getName(),signId));
+        criteria.addOrder(Order.desc(AssistPlanSign_.isMain.getName())).addOrder(Order.asc(AssistPlanSign_.splitNum.getName()));
 		List<AssistPlanSign> list = criteria.list();
 		List<AssistPlanSignDto> resultList = new ArrayList<>(list == null?0:list.size());
-		if(list != null && list.size() > 0){
+		if(Validate.isList(list)){
 			list.forEach( l -> {
 				AssistPlanSignDto assistPlanSignDto = new AssistPlanSignDto();
 				BeanCopierUtils.copyProperties(l,assistPlanSignDto);

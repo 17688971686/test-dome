@@ -611,6 +611,12 @@ public class FileRecordDto extends BaseDto {
      */
     private String assistBudgetCountScan;
 
+    /**
+     * 是否协审
+     * @return
+     */
+    private String isassistproc;
+
     public String getAssistPlanOriginal() {
         return assistPlanOriginal;
     }
@@ -2395,5 +2401,13 @@ public class FileRecordDto extends BaseDto {
 
     public void setFieOtherCount(Integer fieOtherCount) {
         this.fieOtherCount = fieOtherCount;
+    }
+
+    public String getIsassistproc() {
+        return isassistproc;
+    }
+
+    public void setIsassistproc(String isassistproc) {
+        this.isassistproc = isassistproc;
     }
 }

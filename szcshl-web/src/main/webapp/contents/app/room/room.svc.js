@@ -47,22 +47,27 @@
                 },
                 save: function (e) {
                     saveBookRoom(e.event,function(data){
-                        vm.findMeeting();
-                        if (data.flag || data.reCode == 'ok') {
+                        bsWin.alert(data.reMsg,function(){
+                            vm.findMeeting();
+                        });
+                        /*if (data.flag || data.reCode == 'ok') {
                             bsWin.alert("操作成功");
                         } else {
                             bsWin.alert(data.reMsg);
-                        }
+                        }*/
                     });
                 },
                 remove: function(e) {
                     deleteRoom(e.event , function(data){
                         if(data.flag || data.reCode == "ok"){
-                            bsWin.alert("删除成功！")
+                            bsWin.alert("删除成功！",function(){
+                                vm.findMeeting();
+                            })
                         }else{
-                            bsWin.alert(data.reMsg);
+                            bsWin.alert(data.reMsg,function(){
+                                vm.findMeeting();
+                            });
                         }
-                        vm.findMeeting();
                     });
                 },
                 eventTemplate: $("#event-template").html(),

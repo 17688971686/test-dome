@@ -1,0 +1,30 @@
+<meta charset="UTF-8">
+<ul id="assistTab" class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" for-div="assist_unitlist">协审单位</a></li>
+    <li><a data-toggle="tab" for-div="assist_plansign">项目计划审批表</a></li>
+    <li><a data-toggle="tab" for-div="assist_drawSignin">协审抽签签到表</a></li>
+    <li><a data-toggle="tab" for-div="assist_drawPro">协审项目抽签</a></li>
+    <li><a data-toggle="tab" for-div="assist_drawHis">项目抽签记录表</a></li>
+</ul>
+
+<div class="tab-content" style="background:white;">
+    <div class="well well-sm tab-pane fade in active" style="background:white;" id="assist_unitlist"
+         ng-include src="'${path}/contents/app/assist/chooleUnit.html'">
+    </div><!-- end tab1 -->
+    <div class="well well-sm tab-pane fade" style="background:white;" id="assist_plansign"
+         ng-include src="'${path}/contents/app/assist/approve.html'">
+        <!--项目计划审批表-->
+    </div><!-- end tab2 -->
+    <div class="well well-sm tab-pane fade" style="background:white;" id="assist_drawSignin"
+         ng-include src="'${path}/contents/app/assist/signInForm.html'">
+        <!--协审抽签签到表-->
+    </div><!-- end tab3 -->
+    <div class="well well-sm tab-pane fade" style="background:white;" id="assist_drawPro"
+         ng-include src="'${path}/contents/app/assist/drawAssitUnit.html'">
+        <!--协审项目抽签-->
+    </div><!-- end tab4 -->
+    <div class="well well-sm tab-pane fade" style="background:white;" id="assist_drawHis"
+         ng-include src="'${path}/contents/app/assist/signInRecord.html'">
+        <!--项目抽签记录表-->
+    </div><!-- end tab5 -->
+</div>

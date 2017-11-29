@@ -7,6 +7,9 @@
             ng-show="vm.showFlag.buttBack"><span class="glyphicon glyphicon-step-backward"></span>回退
     </button>
     <button class="btn btn-sm btn-success" ng-click="vm.ideaEdit({targetId:'dealOption'})">管理个人常用意见</button>
+    <span style="margin-left:20px;padding:3px 5px; color:#F39C12" ng-if="vm.model.ispresign == 0 && vm.model.palceStorage && (vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4') ">
+        <i class="fa fa-bullhorn" aria-hidden="true" ></i>  资料存放位置：{{vm.model.palceStorage}}
+    </span>
 </div>
 <form id="flow_form" name="flow_form">
     <input type="hidden" ng-model="vm.flow.end" value="{{vm.flow.end}}"/> <!-- hidden taskId -->
@@ -15,15 +18,8 @@
     <!-- hidden processInstanceId -->
     <input type="hidden" ng-model="vm.flow.curNode.activitiId" value="{{vm.flow.curNode.activitiId}}"/>
 
-
     <table class="table table-bordered">
         <tbody>
-        <tr ng-if="vm.model.ispresign == 0 && (vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4') ">
-            <td width="10%" class="text-center">资料存放位置</td>
-            <td>
-                {{vm.model.palceStorage}}
-            </td>
-        </tr>
         <tr>
             <td width="10%" class="text-center">本环节名称</td>
             <td>
@@ -48,9 +44,9 @@
                 下一环节名称
             </td>
             <td>
-                <div class="label-default" style="font-size: 12px;padding:5px 10px;"
+                <div class="toolbar" style="font-size:12px;padding:5px 10px; width: 470px;"
                      ng-show="vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4'">
-                    如果做工作方案，则下一环节是部长审批；否则，下一环节为发文申请
+                    <span class="required">*</span> 温馨提示：如果做工作方案，则下一环节是部长审批；否则，下一环节为发文申请
                 </div>
                 <div ng-repeat="x in vm.flow.nextNode">
                     <span>{{$index+1}}、{{x.activitiName}}</span>
@@ -70,15 +66,19 @@
                 </div>
                 <!-- 选择分管部门 -->
                 <div ng-if="vm.showFlag.nodeSelOrgs" style="width:100%;">
-                    <div class="label-default" style="font-size: 12px;padding:5px 10px;">
-                        * 主办部门只能选一个，协办部门可以选多个（最多3个）！
-                        * 合并评审的项目只能有一个分支，请注意项目分办情况！
-                    </div>
-                    <table class="table table-bordered seleteTable" style="max-width: 500px;">
+                    <table class="table table-bordered seleteTable">
                         <tr>
-                            <td width="40%" align="center">部门名称</td>
-                            <td width="20%" align="center">主办部门</td>
-                            <td width="20%" align="center">协办部门</td>
+                            <td width="250px;" align="center">部门名称</td>
+                            <td width="100px;" align="center">主办部门</td>
+                            <td width="100px;" align="center">协办部门</td>
+                            <td rowspan="7">
+                                <div >
+                                    <p>温馨提示：</p>
+                                    <p>1、主办部门必须选择，并且只能选一个！</p>
+                                    <p>2、协办部门可以不选或者选择多个，最多只能选3个！</p>
+                                    <p>3、合并评审的项目只能有一个分支，请注意项目分办情况！</p>
+                                </div>
+                            </td>
                         </tr>
                         <tr ng-repeat="x in vm.orgs">
                             <td align="center">{{x.name}}</td>
@@ -141,11 +141,11 @@
                 <!-- 协审部门分办 -->
                 <div ng-show="vm.showFlag.nodeSelPrincipal && vm.model.isassistflow == 9" id="xs_bmfb">
                     <div class="label-default" style="font-size: 12px;padding:5px 10px;">
-                        *总负责人只有一人，且要优先选择；其它负责人可以选多个。
+                        <span class="required">*</span>温馨提水：总负责人由主工作方案选择，且只能选一人；其它负责人可以选多个。
                     </div>
                     <table class="table table-bordered">
                         <tr>
-                            <td>
+                            <td colspan="4">
                                 <ul>
                                     <li ng-repeat="u in vm.users | filter:{isSelected:false}"
                                         style="float: left;width: 80px;">
@@ -155,7 +155,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="text-align:center;vertical-align:middle;">
+                            <td style="text-align:center;vertical-align:middle;" colspan="4">
                                 <span style="text-align:center;">
                                     负责分工:
                                     <select name="userType" id="userType">
@@ -184,24 +184,18 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <td width="10%" align="center">选择</td>
-                                        <td width="30%" align="center">人员</td>
-                                        <td width="30%" align="center">负责分工</td>
-                                        <td width="30%" align="center">总负责人</td>
-                                    </tr>
-                                    <tr ng-repeat="x in vm.businessFlag.principalUsers">
-                                        <td align="center">
-                                            <input type="checkbox" name="selPriUser" value="{{x.userId}}"/>
-                                        </td>
-                                        <td align="center">{{x.userName}}</td>
-                                        <td align="center">{{x.userType}}</td>
-                                        <td align="center">{{x.isMainUser == 9?'是':'否'}}</td>
-                                    </tr>
-                                </table>
+                            <td width="10%" align="center">选择</td>
+                            <td width="30%" align="center">人员</td>
+                            <td width="30%" align="center">负责分工</td>
+                            <td width="30%" align="center">总负责人</td>
+                        </tr>
+                        <tr ng-repeat="x in vm.businessFlag.principalUsers">
+                            <td align="center">
+                                <input type="checkbox" name="selPriUser" value="{{x.userId}}"/>
                             </td>
+                            <td align="center">{{x.userName}}</td>
+                            <td align="center">{{x.userType}}</td>
+                            <td align="center">{{x.isMainUser == 9?'是':'否'}}</td>
                         </tr>
                     </table>
                 </div>
@@ -265,13 +259,15 @@
                 </div>
                 <!--项目负责人确认发文-->
                 <div ng-if="vm.showFlag.nodeConfirmDis">
-                    <ol class="breadcrumb" style="font-size: 12px;">
-                        <li class="active">温馨提示：该环节只要有一个负责人不通过，则流程就会返回负责人填报发文申请环节！</li>
-                    </ol>
+                    <span style="font-size: 12px;color: #F39C12;">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i> 温馨提示：该环节只要有一人不通过，流程就会返回负责人填报发文申请环节！</li>
+                    </span>
+                    <p style="margin-top:5px;">
                     <input type="checkbox" ng-model="vm.businessFlag.passDis" ng-true-value="9" ng-false-value="0"
                            ng-checked="vm.businessFlag.passDis == 9"><span>通过</span>
                     <input type="checkbox" ng-model="vm.businessFlag.passDis" ng-true-value="0" ng-false-value="9"
                            ng-checked="vm.businessFlag.passDis == 0"><span>不通过</span>
+                    </p>
                 </div>
 
 
@@ -314,7 +310,7 @@
             </td>
         </tr>
         <tr ng-if="vm.model.isassistproc == '9'">
-            <td>
+            <td style="vertical-align: middle;">
                 是否协审项目：<input class="formAlignRight" type="checkbox" style="width:20px;"
                               ng-model="vm.model.isassistproc" name="isassistproc"
                               ng-checked="vm.model.isassistproc == 9" ng-disabled="true">
@@ -323,21 +319,26 @@
                 <table class="table table-bordered">
                     <tr>
                         <td width="5%" align="center">序号</td>
-                        <td width="40%" align="center">项目名称</td>
-                        <td width="15%" align="center">协审单位</td>
-                        <td width="15%" align="center">协审金额</td>
+                        <td width="25%" align="center">项目名称</td>
+                        <td width="30%" align="center">协审单位</td>
+                        <td width="15%" align="center">协审金额（万元）</td>
                         <td width="10%" align="center">协审时间</td>
                         <td width="10%" align="center">类型</td>
                     </tr>
                     <tr ng-repeat="x in vm.model.planSignDtoList">
                         <td align="center">{{ $index + 1}}</td>
-                        <td align="center">{{x.projectName}}<span
-                                ng-show="x.assistType == '独立项目'">（{{x.splitNum}}）</span></td>
-                        <td align="center">{{}}</td>
+                        <td align="center">{{x.projectName}}</td>
+                        <td align="center">{{x.assistUnit.unitName}}</td>
                         <td align="center">{{x.assistCost}}</td>
                         <td align="center">{{x.assistDays}}</td>
-                        <td align="center">{{x.assistType}}<span ng-show="x.assistType == '合并项目'"><span
-                                ng-show="x.isMain == '9'">主项目</span><span ng-hide="x.isMain == '9'">次项目</span></span>
+                        <td align="center">
+                            {{x.assistPlan.assistType}}
+                            <span ng-show="x.assistPlan.assistType == '合并项目' && x.isMain == '9'">
+                                主项目
+                            </span>
+                            <span ng-show="x.assistPlan.assistType == '合并项目' && x.isMain != '9'">
+                                次项目
+                            </span>
                         </td>
                     </tr>
                 </table>

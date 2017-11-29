@@ -121,6 +121,8 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileTitle += "》";
             fileTitle += (sign.getIsAdvanced() == null ? "" : sign.getIsAdvanced());
             fileRecordDto.setFileTitle(fileTitle);
+            //是否协审
+            fileRecordDto.setIsassistproc(sign.getIsassistproc());
         }
         return fileRecordDto;
     }

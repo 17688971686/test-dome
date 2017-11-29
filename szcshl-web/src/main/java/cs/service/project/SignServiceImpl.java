@@ -455,7 +455,18 @@ public class SignServiceImpl implements SignService {
 
             //如果是协审项目，还要查询项目协审方案信息
             if (EnumState.YES.getValue().equals(sign.getIsassistproc())) {
-                signDto.setPlanSignDtoList(assistPlanSignService.findBySignId(sign.getSignid()));
+                List<AssistPlanSignDto> planSignDtoList = assistPlanSignService.findBySignId(sign.getSignid());
+                //设置项目名称之类的信息
+                planSignDtoList.forEach(ps ->{
+                    if(!Validate.isString(ps.getProjectName())){
+                        String newProjectName = signDto.getProjectname();
+                        if(ps.getSplitNum() > 1){
+                            newProjectName += "（"+ps.getSplitNum()+"）";
+                        }
+                        ps.setProjectName(newProjectName);
+                    }
+                });
+                signDto.setPlanSignDtoList(planSignDtoList);
             }
 
             //专家评审方案
@@ -1052,16 +1063,19 @@ public class SignServiceImpl implements SignService {
 
                 //更新评审会时间
                 ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.businessId.getName(), signid);
-                //更新专家评审方案评审日期
                 if (expertReview != null) {
-                    if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType())) {
-                        //获取评审会日期
-                        expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(wk.getId()));
-                    } else {
-                        //函评日期
-                        expertReview.setReviewDate(wk.getLetterDate());
+                    //以主工作方案为准，工作方案不做工作方案，则任选一个
+                    if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)
+                            || expertReview.getReviewDate() == null){
+                        if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType())) {
+                            //获取评审会日期
+                            expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(wk.getId()));
+                        } else {
+                            //函评日期
+                            expertReview.setReviewDate(wk.getLetterDate());
+                        }
+                        expertReviewRepo.save(expertReview);
                     }
-                    expertReviewRepo.save(expertReview);
                 }
                 break;
             //发文申请
@@ -1891,13 +1905,13 @@ public class SignServiceImpl implements SignService {
             sign.setSignNum(DateUtils.converToString(new Date(), "yyyy") + sign.getDealOrgType() + signSeqString);
         }
 
-        //项目预签收，没有签收日期
-        //sign.setSigndate(now);
         sign.setSignid(UUID.randomUUID().toString());
         sign.setCreatedDate(now);
         sign.setModifiedDate(now);
         sign.setCreatedBy(SessionUtil.getLoginName());
         sign.setModifiedBy(SessionUtil.getLoginName());
+        //预签收日期
+        sign.setPresignDate(now);
         //默认为不亮灯
         sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
         signRepo.save(sign);

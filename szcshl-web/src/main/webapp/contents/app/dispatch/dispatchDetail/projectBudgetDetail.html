@@ -4,7 +4,6 @@
     <form id="dispatch_form" name="dispatch_form">
         <!-- s table -->
         <table class="table table-bordered" >
-
             <caption>
                 <span >  QR-4.7-19-A2</span>
             </caption>
@@ -13,18 +12,17 @@
                 <span >发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
                 <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9" style="margin-left:10px;">主项目</span>
                 <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0" style="margin-left:10px;">次项目</span>
-
                 <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
             </caption>
-            <tbody>
 
+            <tbody>
             <tr>
-                <td class="text-center" rowspan="2">发文部门 <br/> 拟稿人</td>
-                <td colspan="2">{{vm.dispatchDoc.orgName}}</td>
-                <td rowspan="2" class="text-center">校对人</td>
-                <td rowspan="2">{{vm.dispatchDoc.proofreadName}}</td>
-                <td rowspan="2" class="text-center">拟稿时间</td>
-                <td rowspan="2">{{vm.dispatchDoc.draftDate}}</td>
+                <td class="text-center" rowspan="2" width="15%">发文部门 <br/> 拟稿人</td>
+                <td colspan="2" width="25%">{{vm.dispatchDoc.orgName}}</td>
+                <td rowspan="2" class="text-center" width="15%">校对人</td>
+                <td rowspan="2" width="15%">{{vm.dispatchDoc.proofreadName}}</td>
+                <td rowspan="2" class="text-center" width="15%">拟稿时间</td>
+                <td rowspan="2" width="15%">{{vm.dispatchDoc.draftDate}}</td>
             </tr>
             <tr>
                 <td colspan="2">{{vm.dispatchDoc.userName}}</td>
@@ -65,7 +63,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="text-center">是否协审{{vm.model.isassistproc}}</td>
+                <td class="text-center">是否协审</td>
                 <td colspan="2">
                     <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0"
                            ng-checked="vm.model.isassistproc && (vm.model.isassistproc==9 || vm.model.isassistproc=='9')" />

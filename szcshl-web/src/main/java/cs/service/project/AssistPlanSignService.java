@@ -20,6 +20,11 @@ public interface AssistPlanSignService {
 	 */
 	ResultMsg savePlanSign(AssistPlanSignDto[] planSigns);
 
+	/**
+	 * 根据项目ID，查询对应的协审信息
+	 * @param signId
+	 * @return
+	 */
 	List<AssistPlanSignDto> findBySignId(String signId);
 
 	/**

@@ -13,6 +13,8 @@
         vm.fileRecord.signId = $state.params.signid;
         vm.fileRecord.fileRecordId = "";
         vm.signId = $state.params.signid;
+        //是否协审归档（默认不是）
+        vm.isassistproc = false;
       
         //初始化附件上传控件
         vm.initFileUpload = function(){

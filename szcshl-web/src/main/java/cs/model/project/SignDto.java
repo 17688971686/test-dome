@@ -11,6 +11,13 @@ import java.util.List;
 
 public class SignDto extends BaseDto{
 
+    private String signid;
+
+    /**
+     * 委里收文编号
+     */
+    private String filecode;
+
     /**
      * 旧项目ID
      */
@@ -18,6 +25,9 @@ public class SignDto extends BaseDto{
 
     private String comprehensiveName;//综合部拟办人名称
 
+    /**
+     * 警示灯状态
+     */
     private String isLightUp;
     private String isSendFileRecord;
 
@@ -36,10 +46,6 @@ public class SignDto extends BaseDto{
 
     @JSONField(format = "yyyy-MM-dd")
     private Date presignDate;  //预签收时间
-
-    private String signid;
-
-    private String filecode;
 
     /**
      * 收文编号(年份+收文类型+序号[序号保留3位数])
