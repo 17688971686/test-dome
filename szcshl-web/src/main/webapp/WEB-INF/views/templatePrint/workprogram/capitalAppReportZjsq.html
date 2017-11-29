@@ -121,9 +121,9 @@
             </tr>
             <tr>
                 <td colspan="2">评审会时间</td>
-                <td colspan="3">{{w.rbDate}}</td>
+                <td colspan="3">{{w.roomBookingDtos[0].rbDate}}</td>
                 <td class="text-center">会议地点</td>
-                <td colspan="2">{{w.addressName}}</td>
+                <td colspan="2">{{w.roomBookingDtos[0].addressName}}</td>
             </tr>
             <tr></tr>
             <tr ng-if="w.isSigle=='单个评审' || (w.isSigle=='合并评审' && w.isMainProject == 9)">
@@ -196,13 +196,13 @@
                 <td colspan="2">拟邀请单位及领导</td>
                 <td colspan="6">
                     <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">
-                        {{W.inviteUnitLeader}}</div>
+                        {{w.inviteUnitLeader}}</div>
                 </td>
             </tr>
             <tr>
                 <td  colspan="2" >拟评审重点问题</td>
                 <td colspan="6">
-                    <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{W.mainPoint}}</div>
+                    <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{w.mainPoint}}</div>
                 </td>
             </tr>
             <tr>
@@ -289,13 +289,13 @@
             <td colspan="2">拟邀请单位及领导</td>
             <td colspan="6">
                 <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">
-                    {{W.inviteUnitLeader}}</div>
+                    {{w.inviteUnitLeader}}</div>
             </td>
         </tr>
         <tr>
             <td  colspan="2" >拟评审重点问题</td>
             <td colspan="6">
-                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{W.mainPoint}}</div>
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{w.mainPoint}}</div>
             </td>
         </tr>
         <tr>
@@ -381,13 +381,13 @@
             <td colspan="2">拟邀请单位及领导</td>
             <td colspan="6">
                 <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">
-                    {{W.inviteUnitLeader}}</div>
+                    {{w.inviteUnitLeader}}</div>
             </td>
         </tr>
         <tr>
             <td  colspan="2" >拟评审重点问题</td>
             <td colspan="6">
-                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{{W.mainPoint}}</div>
+                <div style="width: 100%; height: 60px; overflow: hidden;font-size: 12px;">{w.mainPoint}}</div>
             </td>
         </tr>
         <tr>
