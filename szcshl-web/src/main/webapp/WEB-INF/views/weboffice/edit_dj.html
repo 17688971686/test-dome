@@ -115,13 +115,16 @@
     var fileType = '${fileType}';
     var uploadFile = '${uploadFile}';
     var sysFileId = '${sysFileId}';
+    var fileName = '${fileName}';
     function WebOffice_OpenOfficeFile(){
         if(filePath){
             try{
-               // document.all.WebOffice.LoadOriginalFile(filePath, fileType);
                 document.all.WebOffice.OptionFlag |= 128;
+                 fileName = escape(encodeURIComponent(fileName));
                 // 新建文档
-                document.all.WebOffice.LoadOriginalFile(filePath,fileType);
+                var realPath = filePath+"?fileName="+fileName;
+                uploadFile = uploadFile + "?fileName=" + fileName;
+                document.all.WebOffice.LoadOriginalFile(realPath,fileType);
             }catch(e){
                 alert("异常\r\nError:"+e+"\r\nError Code:"+e.number+"\r\nError Des:"+e.description);
             }

@@ -38,7 +38,6 @@ function printpage(act){
 //获取浏览器类型
 function getBrowserType(){
     var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
-    console.log(userAgent);
     var isOpera = userAgent.indexOf("Opera") > -1;
     if (isOpera) {
         return "Opera"
