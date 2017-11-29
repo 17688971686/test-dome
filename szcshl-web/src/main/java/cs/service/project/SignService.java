@@ -128,4 +128,10 @@ public interface SignService {
      * @param branchIndex
      */
     void deleteBranchInfo(String signId,String branchIndex);
+
+    /**
+     * 启动项目更新状态
+     * businessKey
+     */
+    void updateState(String businessKey);
 }

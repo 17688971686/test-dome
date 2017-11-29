@@ -3,9 +3,9 @@
 
     angular.module('app').factory('assistUnitSvc', assistUnit);
 
-    assistUnit.$inject = ['$http'];
+    assistUnit.$inject = ['$http','$state','bsWin'];
 
-    function assistUnit($http) {
+    function assistUnit($http,$state,bsWin) {
         var url_assistUnit = rootPath + "/assistUnit";
         var url_back = '#/assistUnit';
         var service = {
@@ -72,16 +72,7 @@
         			vm:vm,
         			response:response,
         			fn:function(){
-        			 common.alert({
-        			 	vm:vm,
-	        				msg:"操作成功",
-	        				fn:function(){
-			        			 vm.isSubmit=false;
-			        			 $('.alertDialog').modal('hide');
-	        					$('.modal-backdrop').remove();
-			        			 vm.gridOptions.dataSource.read();
-	        				}
-        			 });
+                        bsWin.alert("操作成功",function(){$state.go("assistUnit");})
         			}
         		});
         	
@@ -117,17 +108,7 @@
         			vm:vm,
         			response:response,
         			fn:function(){
-        				common.alert({
-	        				vm:vm,
-	        				msg:"操作成功",
-	        				fn:function(){
-	        					vm.isSubmit=false;
-	        					$('.alertDialog').modal('hide');
-	        					$('.modal-backdrop').remove();
-	        					location.href=url_back;
-	        					
-	        				}
-        				})
+                        bsWin.alert("操作成功",function(){$state.go("assistUnit");})
         			}
         		});
         	}

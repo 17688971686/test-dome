@@ -683,7 +683,7 @@ public class FlowServiceImpl implements FlowService {
             ProcessInstance processInstance = findProcessInstanceByBusinessKey(businessKey);
             //项目签收流程
             if(processInstance.getProcessDefinitionKey().equals(FlowConstant.SIGN_FLOW)){//修改状态
-                signService.updateSignState(businessKey,"1");
+                signService.updateState(businessKey);
             }
             runtimeService.activateProcessInstanceById(processInstance.getId());
         } catch (Exception e) {
