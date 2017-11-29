@@ -124,15 +124,15 @@ public class SignController {
             ResultMsg result = null;
             try {
                 result = flowService.callBackProcess(taskId, backActivityId, businessKey, Validate.isString(branch) ? false : true);
+                //取回成功,则删除相应的分支信息
+                if (result.isFlag()) {
+                    signService.deleteBranchInfo(businessKey, Validate.isString(branch) ? branch : null);
+                }
+                return result;
             } catch (Exception e) {
                 logger.info("项目签收流程取回异常：" + e.getMessage());
-                result = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "流程回退失败，请联系系统管理员查看！");
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "流程回退失败，请联系系统管理员查看！");
             }
-            //取回成功,则删除相应的分支信息
-            if (result.isFlag()) {
-                signService.deleteBranchInfo(businessKey, Validate.isString(branch) ? branch : null);
-            }
-            return result;
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，你没有权限进行此操作！");
         }

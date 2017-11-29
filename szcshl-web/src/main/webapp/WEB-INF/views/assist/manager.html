@@ -42,10 +42,10 @@
         <table class="table table-bordered" style="margint-top:0px;border-top:0px; ">
             <tr>
                 <td style="width:45%">
-                    <div style="max-height: 500px;overflow-y: scroll;">
-                        <div class="label-info" style="width: 100%;padding:2px 5px; font-size: 12px;">
-                            中心在办核算项目
-                        </div>
+                    <div class="label-info" style="width: 100%;padding:2px 5px; font-size: 12px;">
+                        中心在办核算项目
+                    </div>
+                    <div style="max-height: 400px;overflow-y: scroll;">
                         <table class="table table-bordered" style="border-top:1px solid #989898">
                             <thead>
                             <tr class="active">
@@ -95,10 +95,10 @@
                     </p>
                 </td>
                 <td style="width: 45%">
-                    <div style="max-height: 500px;overflow-y: scroll;">
-                        <div class="label-info" style="width: 100%;padding:2px 5px; font-size: 12px;">
-                            计划已挑选的项目情况（双击项目查看详情）
-                        </div>
+                    <div class="label-info" style="width: 100%;padding:2px 5px; font-size: 12px;">
+                        计划已挑选的项目情况（双击项目查看详情）
+                    </div>
+                    <div style="max-height: 400px;overflow-y: scroll;">
                         <table class="table table-bordered" style="border-top:1px solid #989898">
                             <thead>
                             <tr class="active">
@@ -148,7 +148,7 @@
 
 <!-- S_DIV 次项目选择弹窗 -->
 <div id="lowerSignWin" style="display: none;">
-    <table class="table table-bordered" style="margin-top:10px;">
+    <table class="table table-bordered" style="margin-top:5px;">
         <tr>
             <td class="text-right">收文编号</td>
             <td><input ng-model="vm.filterLow.filterFilecode"></td>
@@ -163,26 +163,29 @@
         </tr>
     </table>
 
-    <table class="table table-bordered" style="margin-top:10px;">
+    <table class="table table-bordered" style="margin-top:5px;">
         <tr>
             <td>
-                <p>中心在办核算项目</p>
-                <table class="table table-bordered" width="43%">
+                <div class="label-info" style="width: 100%;padding:2px 5px; font-size: 12px;">
+                    中心在办核算项目
+                </div>
+                <div style="max-height: 400px;overflow-y: scroll;">
+                    <table class="table table-bordered" width="43%">
                     <tr>
-                        <th style="width: 60px;">选择</th>
-                        <th style="width: 60px;">序号</th>
+                        <th style="width: 70px;" colspan="2">选择</th>
                         <th style="width: 180px;">项目名称</th>
                         <th style="width: 180px;">收文编号</th>
                         <th style="width: 180px;">建设单位</th>
                     </tr>
                     <tr ng-repeat="ss in vm.assistSign | filter:vm.filterLowSign">
-                        <td style="width: 60px;"><input type="checkbox" name="selLowSign" value="{{ss.signid}}"/></td>
-                        <td style="width: 60px;">{{ $index + 1}}</td>
-                        <td style="width: 180px;">{{ss.projectname}}</td>
-                        <td style="width: 180px;">{{ss.filecode}}</td>
-                        <td style="width: 180px;">{{ss.builtcompanyName}}</td>
+                        <td ><input type="checkbox" name="selLowSign" value="{{ss.signid}}"/></td>
+                        <td >{{ $index + 1}}</td>
+                        <td >{{ss.projectname}}</td>
+                        <td >{{ss.filecode}}</td>
+                        <td >{{ss.builtcompanyName}}</td>
                     </tr>
-                </table>
+                    </table>
+                </div>
             </td>
             <td width="14%;" style="text-align:center;vertical-align:middle;">
                 <p>
@@ -197,26 +200,26 @@
                 </p>
             </td>
             <td width="43%">
-                <p>计划已挑选的项目情况</p>
-                <table class="table table-bordered" width="43%">
-                    <tr>
-                        <th style="width: 60px;">选择</th>
-                        <th style="width: 60px;">序号</th>
-                        <th style="width: 180px;">项目名称</th>
-                        <th style="width: 180px;">收文编号</th>
-                        <th style="width: 180px;">建设单位</th>
-                    </tr>
-                    </thead>
-                    <tr ng-repeat="sas in vm.lowerSign ">
-                        <td style="width: 60px;"><input type="checkbox" name="checkLowSign" value="{{sas.signid}}"/>
-                        </td>
-                        <td style="width: 60px;">{{ $index + 1}}</td>
-                        <td style="width: 180px;">{{sas.projectname}}</td>
-                        <td style="width: 180px;">{{sas.filecode}}</td>
-                        <td style="width: 180px;">{{sas.builtcompanyName}}</td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div class="label-info" style="width: 100%;padding:2px 5px; font-size: 12px;">
+                    计划已挑选的项目情况
+                </div>
+                <div style="max-height: 400px;overflow-y: scroll;">
+                    <table class="table table-bordered" width="43%">
+                        <tr>
+                            <th style="width: 60px;" colspan="2">选择</th>
+                            <th style="width: 180px;">项目名称</th>
+                            <th style="width: 180px;">收文编号</th>
+                            <th style="width: 180px;">建设单位</th>
+                        </tr>
+                        <tr ng-repeat="sas in vm.lowerSign ">
+                            <td ><input type="checkbox" name="checkLowSign" value="{{sas.signid}}"/></td>
+                            <td >{{ $index + 1}}</td>
+                            <td >{{sas.projectname}}</td>
+                            <td >{{sas.filecode}}</td>
+                            <td >{{sas.builtcompanyName}}</td>
+                        </tr>
+                    </table>
+                </div>
             </td>
         </tr>
     </table>

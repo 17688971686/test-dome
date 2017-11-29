@@ -2226,21 +2226,27 @@ public class SignServiceImpl implements SignService {
             sqlBuilder2.setParam("branchId", branchId);
         }
         signBranchRepo.executeSql(sqlBuilder2);
+
         //3、删除工作方案、会议室、专家评审方案
         Sign sign = signRepo.findById(signId);
         List<WorkProgram> workProgramList = sign.getWorkProgramList();
         if (Validate.isList(workProgramList)) {
+            List<WorkProgram> deleteWPList = new ArrayList<>();
             String deleteWPId = null;             //删除工作方案ID
             for (int i = 0, l = workProgramList.size(); i < l; i++) {
                 WorkProgram wp = workProgramList.get(i);
-                if (deleteBranchId && branchId.equals(wp.getBranchId())) {
-                    deleteWPId = wp.getId();
-                    break;
+                if (deleteBranchId) {
+                    if(branchId.equals(wp.getBranchId())){
+                        deleteWPId = wp.getId();
+                        deleteWPList.add(wp);
+                        break;
+                    }
                 } else {
                     if (i > 0) {
                         deleteWPId += ",";
                     }
                     deleteWPId += wp.getId();
+                    deleteWPList.add(wp);
                 }
             }
             //删除会议室信息
@@ -2276,14 +2282,13 @@ public class SignServiceImpl implements SignService {
                 }
             }
             //最后删除工作方案信息
-            for (int i = 0, l = workProgramList.size(); i < l; i++) {
-                WorkProgram wp = workProgramList.get(i);
-                if (deleteBranchId && deleteWPId.equals(wp.getId())) {
-                    workProgramRepo.delete(wp);
-                    break;
-                } else {
-                    workProgramRepo.delete(wp);
-                }
+            for(WorkProgram wp : deleteWPList){
+                sign.getWorkProgramList().remove(wp);
+                signRepo.save(sign);
+                wp.setSign(null);
+                //先解除关联，再删除
+                workProgramRepo.save(wp);
+                workProgramRepo.delete(wp);
             }
         }
 

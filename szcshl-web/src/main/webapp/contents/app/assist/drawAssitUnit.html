@@ -26,7 +26,7 @@
         </div>
         <div ng-show="vm.isDrawDone" style="color:red;">抽签完成</div>
         <button class="btn btn-sm btn-success" ng-disabled="vm.isStartDraw && !vm.isDrawDone"
-                ng-click="vm.drawAssistUnit()" ng-show="vm.assistPlan.assistUnitDtoList.length > 0" ng-hide="vm.isDrawDone">
+                ng-click="vm.drawAssistUnit()"  ng-hide="(!vm.assistPlan.assistUnitDtoList || vm.assistPlan.assistUnitDtoList.length==0 || vm.isDrawDone)">
             开始抽签
         </button>
         <button ng-show="vm.isDrawDone" ng-disabled="vm.isCommit" class="btn btn-sm btn-success"

@@ -522,70 +522,74 @@
                 angular.forEach(vm.assistPlan.assistPlanSignDtoList, function (t, n) {
                     t.assistUnit = null;
                 })
-                var drawAssistUnitLength = vm.assistPlan.assistUnitDtoList.length;
-                vm.drawAssistUnits = angular.copy(vm.assistPlan.assistUnitDtoList);
+                if(!vm.assistPlan.assistUnitDtoList ||  vm.assistPlan.assistUnitDtoList.length == 0){
+                    bsWin.alert("还没有设置协审单位，无法进行抽签！");
+                }else{
+                    var drawAssistUnitLength = vm.assistPlan.assistUnitDtoList.length;
+                    vm.drawAssistUnits = angular.copy(vm.assistPlan.assistUnitDtoList);
 
-                //判断协审单位个数是否不少于协审计划个数，若少则先手动选择参与的协审单位，不少则可以直接抽签 drawType
-                if ((vm.assistPlan.drawType == "1") ? (drawAssistUnitLength > assistSignListLength) : (drawAssistUnitLength >= assistSignListLength)) {
-                    var drawPlanSignIndex = 0;
-                    //记录被抽取的协审单位下标
-                    var signIndex = -1;
-                    //先让上次轮空的协审单位进行抽取项目
-                    //遍历协审单位，判断是否为空，9表示为空，如果为空，则进行抽签协审计划，分配协审单位
-                    for (var i = 0; i < drawAssistUnitLength; i++) {
-                        if (vm.assistPlan.assistUnitDtoList[i].isLastUnSelected == '9') {
-                            //产生随机数
+                    //判断协审单位个数是否不少于协审计划个数，若少则先手动选择参与的协审单位，不少则可以直接抽签 drawType
+                    if ((vm.assistPlan.drawType == "1") ? (drawAssistUnitLength > assistSignListLength) : (drawAssistUnitLength >= assistSignListLength)) {
+                        var drawPlanSignIndex = 0;
+                        //记录被抽取的协审单位下标
+                        var signIndex = -1;
+                        //先让上次轮空的协审单位进行抽取项目
+                        //遍历协审单位，判断是否为空，9表示为空，如果为空，则进行抽签协审计划，分配协审单位
+                        for (var i = 0; i < drawAssistUnitLength; i++) {
+                            if (vm.assistPlan.assistUnitDtoList[i].isLastUnSelected == '9') {
+                                //产生随机数
+                                var selscope = Math.floor(Math.random() * (drawAssistUnitLength));
+                                signIndex = selscope;
+                                //将协审单位分配给协审计划
+                                vm.assistPlan.assistPlanSignDtoList[selscope].assistUnit = vm.drawAssistUnits[i];
+                                vm.drawPlanSign = vm.assistPlan.assistPlanSignDtoList[selscope];
+                                //将上轮轮空的协审单位移除
+                                vm.drawAssistUnits.splice(i, 1);
+                            }
+                        }
+
+                        //当前抽取第一个项目的协审单位
+                        var timeCount = 0;
+                        vm.isStartDraw = true;
+                        vm.isDrawDone = false;
+                        vm.t = $interval(function () {
+                            vm.drawPlanSign = vm.assistPlan.assistPlanSignDtoList[drawPlanSignIndex];
                             var selscope = Math.floor(Math.random() * (drawAssistUnitLength));
-                            signIndex = selscope;
-                            //将协审单位分配给协审计划
-                            vm.assistPlan.assistPlanSignDtoList[selscope].assistUnit = vm.drawAssistUnits[i];
-                            vm.drawPlanSign = vm.assistPlan.assistPlanSignDtoList[selscope];
-                            //将上轮轮空的协审单位移除
-                            vm.drawAssistUnits.splice(i, 1);
-                        }
+                            var selAssistUnit = vm.drawAssistUnits[selscope];
+                            vm.showAssitUnitName = selAssistUnit.unitName;
+                            timeCount++;
+                            //一秒后，选中协审单位
+                            if (timeCount % 5 == 0) {
+                                //选中协审单位
+                                if (drawPlanSignIndex != signIndex) {
+                                    vm.assistPlan.assistPlanSignDtoList[drawPlanSignIndex].assistUnit = selAssistUnit;
+                                } else {
+                                    if (drawPlanSignIndex != (assistSignListLength-1)) {
+                                        vm.assistPlan.assistPlanSignDtoList[++drawPlanSignIndex].assistUnit = selAssistUnit;
+                                    }
+                                }
+                                drawPlanSignIndex++;
+                                //判断轮空抽签的是不是最后一个，并且协审计划轮抽到最后一个时，停止抽签
+                                if (drawPlanSignIndex == signIndex && signIndex == (assistSignListLength-1)) {
+                                    $interval.cancel(vm.t);
+                                    vm.isDrawDone = true;
+                                }
+                                if (drawPlanSignIndex == assistSignListLength) {
+                                    //抽签完毕
+                                    $interval.cancel(vm.t);
+                                    vm.isDrawDone = true;
+                                }
+
+                                vm.drawAssistUnits.forEach(function (t, n) {
+                                    if (t.id == selAssistUnit.id) {
+                                        vm.drawAssistUnits.splice(n, 1);
+                                    }
+                                });
+                            }
+                        }, 200);
+                    } else {
+                        bsWin.alert("当前协审单位少于协审项目数，不能抽签！请先到项目计划表中选择参加的协审单位后再进行抽签！");
                     }
-
-                    //当前抽取第一个项目的协审单位
-                    var timeCount = 0;
-                    vm.isStartDraw = true;
-                    vm.isDrawDone = false;
-                    vm.t = $interval(function () {
-                        vm.drawPlanSign = vm.assistPlan.assistPlanSignDtoList[drawPlanSignIndex];
-                        var selscope = Math.floor(Math.random() * (drawAssistUnitLength));
-                        var selAssistUnit = vm.drawAssistUnits[selscope];
-                        vm.showAssitUnitName = selAssistUnit.unitName;
-                        timeCount++;
-                        //一秒后，选中协审单位
-                        if (timeCount % 5 == 0) {
-                            //选中协审单位
-                            if (drawPlanSignIndex != signIndex) {
-                                vm.assistPlan.assistPlanSignDtoList[drawPlanSignIndex].assistUnit = selAssistUnit;
-                            } else {
-                                if (drawPlanSignIndex != (assistSignListLength-1)) {
-                                    vm.assistPlan.assistPlanSignDtoList[++drawPlanSignIndex].assistUnit = selAssistUnit;
-                                }
-                            }
-                            drawPlanSignIndex++;
-                            //判断轮空抽签的是不是最后一个，并且协审计划轮抽到最后一个时，停止抽签
-                            if (drawPlanSignIndex == signIndex && signIndex == (assistSignListLength-1)) {
-                                $interval.cancel(vm.t);
-                                vm.isDrawDone = true;
-                            }
-                            if (drawPlanSignIndex == assistSignListLength) {
-                                //抽签完毕
-                                $interval.cancel(vm.t);
-                                vm.isDrawDone = true;
-                            }
-
-                            vm.drawAssistUnits.forEach(function (t, n) {
-                                if (t.id == selAssistUnit.id) {
-                                    vm.drawAssistUnits.splice(n, 1);
-                                }
-                            });
-                        }
-                    }, 200);
-                } else {
-                    bsWin.alert("当前协审单位少于协审项目数，不能抽签！请先到项目计划表中选择参加的协审单位后再进行抽签！");
                 }
             } else {
                 bsWin.alert("没有协审项目，不能进行抽签！");
