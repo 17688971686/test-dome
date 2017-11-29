@@ -399,6 +399,7 @@ public class SignServiceImpl implements SignService {
                     List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
                     //由于工作方案不是按主次顺便排序，则遍历工作方案，获取主工作方案
                     WorkProgram mainW = new WorkProgram();
+               /*     WorkProgram mainW =workProgramRepo.findByPrincipalUser(signid);*/
                     for (int i = 0; i < sign.getWorkProgramList().size(); i++) {
                         WorkProgram workProgram = sign.getWorkProgramList().get(i);
                         if (workProgram != null && (EnumState.PROCESS.getValue()).equals(workProgram.getBranchId())) {
@@ -430,9 +431,9 @@ public class SignServiceImpl implements SignService {
 //                            workProgramDto.setBuildSize(mainW.getBuildSize());//建设规模
 //                            workProgramDto.setBuildContent(mainW.getBuildContent());//建设内容
 //                            workProgramDto.setProjectBackGround(mainW.getProjectBackGround());//项目背景
-                            workProgramDto.setReviewOrgName(mainW.getReviewOrgName());//评估部门
+/*                            workProgramDto.setReviewOrgName(mainW.getReviewOrgName());//评估部门
                             workProgramDto.setMianChargeUserName(mainW.getMianChargeUserName());//第一负责人
-                            workProgramDto.setSecondChargeUserName(mainW.getSecondChargeUserName());//第二负责人
+                            workProgramDto.setSecondChargeUserName(mainW.getSecondChargeUserName());//第二负责人*/
 
                         }
                         workProgramDtoList.add(workProgramDto);
@@ -2305,6 +2306,22 @@ public class SignServiceImpl implements SignService {
                 workProgramRepo.delete(wp);
             }
         }
+
+    }
+
+
+    /**
+     * 启动时更新数据状态
+     *
+     * @param businessKey
+     */
+    @Override
+    public void updateState(String businessKey) {
+        Sign sign = signRepo.findById(businessKey);
+        //更改项目状态
+        sign.setSignState(Constant.EnumState.PROCESS.getValue());
+        sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
+        signRepo.save(sign);
 
     }
 }
