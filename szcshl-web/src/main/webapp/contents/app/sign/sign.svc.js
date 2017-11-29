@@ -3,9 +3,9 @@
 
     angular.module('app').factory('signSvc', sign);
 
-    sign.$inject = ['$http', '$state','bsWin','sysfileSvc'];
+    sign.$inject = ['$http', '$state','bsWin','sysfileSvc','templatePrintSvc'];
 
-    function sign($http, $state,bsWin,sysfileSvc) {
+    function sign($http, $state,bsWin,sysfileSvc,templatePrintSvc) {
         var service = {
             signGrid: signGrid,				//初始化项目列表
             createSign: createSign,			//新增
@@ -761,12 +761,17 @@
 
         //编辑模板打印
         function editTemplatePrint(vm){
+            var mb = templatePrintSvc.getBrowserType();
             if(vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'){
                 $("#sign_fill_xmjys").hide();
                 $("#sign_fill_xmjys_templ").show();
                 $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").addClass("print-hide");
                 $(".content-wrapper").addClass("print-content");
-                print();
+                if(mb == 'IE'){
+                    document.all.WebBrowser.ExecWB(7,1);
+                }else{
+                    print();
+                }
                 $("#sign_fill_xmjys").show();
                 $("#sign_fill_xmjys_templ").hide();
                 $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
@@ -776,7 +781,11 @@
                 $("#sign_fill_zjsq_templ").show();
                 $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").addClass("print-hide");
                 $(".content-wrapper").addClass("print-content");
-                print();
+                if(mb == 'IE'){
+                    document.all.WebBrowser.ExecWB(7,1);
+                }else{
+                    print();
+                }
                 $("#sign_fill_zjsq").show();
                 $("#sign_fill_zjsq_templ").hide();
                 $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
@@ -787,7 +796,11 @@
                 $("#sign_fill_jksb_templ").show();
                 $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").addClass("print-hide");
                 $(".content-wrapper").addClass("print-content");
-                print();
+                if(mb == 'IE'){
+                    document.all.WebBrowser.ExecWB(7,1);
+                }else{
+                    print();
+                }
                 $("#sign_fill_jksb").show();
                 $("#sign_fill_jksb_templ").hide();
                 $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
@@ -797,7 +810,11 @@
                 $("#sign_fill_sbqd_templ").show();
                 $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").addClass("print-hide");
                 $(".content-wrapper").addClass("print-content");
-                print();
+                if(mb == 'IE'){
+                    document.all.WebBrowser.ExecWB(7,1);
+                }else{
+                    print();
+                }
                 $("#sign_fill_sbqd").show();
                 $("#sign_fill_sbqd_templ").hide();
                 $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
@@ -807,7 +824,11 @@
                 $("#sign_fill_xmgs_templ").show();
                 $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").addClass("print-hide");
                 $(".content-wrapper").addClass("print-content");
-                print();
+                if(mb == 'IE'){
+                    document.all.WebBrowser.ExecWB(7,1);
+                }else{
+                    print();
+                }
                 $("#sign_fill_xmgs").show();
                 $("#sign_fill_xmgs_templ").hide();
                 $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");

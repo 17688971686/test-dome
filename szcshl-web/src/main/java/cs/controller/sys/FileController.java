@@ -385,7 +385,11 @@ public class FileController implements ServletConfigAware,ServletContextAware {
     @RequestMapping(name = "下载服务器Word", path = "html/download", method = RequestMethod.GET)
     public String downloadFile(@RequestParam("fileName") String fileName, HttpServletResponse response) {
         if (fileName != null) {
-            // String realPath = request.getServletContext().getRealPath("WEB-INF/File/");
+            try {
+                fileName = java.net.URLDecoder.decode(java.net.URLDecoder.decode(fileName,"UTF-8"),"UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             String realPath = SysFileUtil.getUploadPath();
             File file = new File(realPath, fileName);
             if (file.exists()) {
@@ -438,14 +442,15 @@ public class FileController implements ServletConfigAware,ServletContextAware {
     public String editFile(Model model,@RequestParam(required = true) String sysFileId,HttpServletRequest request){
         SysFile sysFile = fileService.findFileById(sysFileId);
         //文件路径
-        String filePath = SysFileUtil.getUploadPath()+File.separator+sysFile.getShowName();
+        String filePath = SysFileUtil.getUploadPath();
         filePath = filePath.replaceAll("\\\\", "/");
         //下载ftp服务器附件到本地服務
         Boolean flag = FtpUtil.downloadFile( sysFile.getFtpIp(), sysFile.getPort()!=null?Integer.parseInt(sysFile.getPort()):0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
                 sysFile.getShowName(), SysFileUtil.getUploadPath());
         String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
-        model.addAttribute("filePath",basePath+"/file/html/download?fileName="+ sysFile.getShowName());
-        model.addAttribute("uploadFile",basePath+"/contents/uploadFile.jsp?file="+ sysFile.getShowName()+"&localFilePath="+filePath);
+        model.addAttribute("filePath",basePath+"/file/html/download");
+        model.addAttribute("uploadFile",basePath+"/contents/uploadFile.jsp");
+        model.addAttribute("fileName",sysFile.getShowName());
         model.addAttribute("sysFileId",sysFileId);
         //文件类型
         String fileTyp ;
@@ -461,8 +466,10 @@ public class FileController implements ServletConfigAware,ServletContextAware {
                 fileTyp = "xlsx";
                 break;
             case ".ppt":
-            case ".pptx":
                 fileTyp = "ppt";
+                break;
+            case ".pptx":
+                fileTyp = "pptx";
                 break;
             case ".pdf":
                 fileTyp = "pdf";
