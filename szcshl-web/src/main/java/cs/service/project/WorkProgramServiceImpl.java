@@ -109,7 +109,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             }
             //只有主方案改了，才会更新
             if ((FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()).equals(workProgram.getBranchId())
-                    && (sign.getAppalyInvestment().compareTo(workProgram.getAppalyInvestment()) != 0 )) {
+                    && (sign.getAppalyInvestment() == null ||  (sign.getAppalyInvestment().compareTo(workProgram.getAppalyInvestment()) != 0 ))) {
                 sign.setAppalyInvestment(workProgram.getAppalyInvestment());
             }
             //表示正在做工作方案
@@ -147,6 +147,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         if (Validate.isList(wpList)) {
             List<WorkProgramDto> wpDtoList = new ArrayList<>();
             for (WorkProgram wp : wpList) {
+                //查询主工作方案
                 if (EnumState.PROCESS.getValue().equals(wp.getBranchId())) {
                     BeanCopierUtils.copyProperties(wp, mainW);
                 }
@@ -182,10 +183,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setDesignCompany(sign.getDesigncompanyName());
             workProgramDto.setAppalyInvestment(sign.getDeclaration());
             //是否有拟补充资料函
-            workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null ? Constant.EnumState.NO.getValue() : sign.getIsHaveSuppLetter());
+//            workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null ? Constant.EnumState.NO.getValue() : sign.getIsHaveSuppLetter());
             //拟补充资料函发文日期
-            workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
-            workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
+//            workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
+//            workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
 
             workProgramDto.setTitleDate(new Date());
             //来文单位默认全部是：深圳市发展和改革委员会，可改...
@@ -233,6 +234,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 }
 
             } else {
+                //通过主工作方案 初始化协办分支的公共部分
                 if (mainW != null && mainW.getId() != null) {
                     workProgramDto.setSendFileUnit(mainW.getSendFileUnit()); //来文单位
                     workProgramDto.setSendFileUser(mainW.getSendFileUser());//来文单位联系人
@@ -254,7 +256,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     workProgramDto.setMianChargeUserName(mainW.getMianChargeUserName());//第一负责人
                     workProgramDto.setSecondChargeUserName(mainW.getSecondChargeUserName());//第二负责人
 
-                    workProgramRepo.initWPMeetingExp(workProgramDto, mainW);
                 }
 
             }

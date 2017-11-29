@@ -291,6 +291,12 @@
             var httpSuccess = function success(response) {
                 if (response.data != null && response.data != "") {
                     vm.work = response.data.eidtWP;
+                    console.log(vm.work.id);
+                    //如果首次填写公安方案，则默认评审方式为：自评、单个评审
+                    if(! vm.work.id){
+                        vm.work.reviewType = "自评";
+                        vm.work.isSigle = '单个评审';
+                    }
 
                     //如果选了专家，并且评审费有变动，则更改
                     if (vm.work.expertDtoList && vm.work.expertDtoList.length > 0) {

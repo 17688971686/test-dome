@@ -126,9 +126,9 @@
         </tr>
         <tr>
             <td colspan="2">评审会时间</td>
-            <td colspan="3">{{w.rbDate}}</td>
+            <td colspan="3">{{w.roomBookingDtos[0].rbDate}}</td>
             <td class="text-center">会议地点</td>
-            <td colspan="2">{{w.addressName}}</td>
+            <td colspan="2">{{w.roomBookingDtos[0].addressName}}</td>
         </tr>
         <tr></tr>
         <tr ng-if="w.isSigle=='单个评审' || (w.isSigle=='合并评审' && w.isMainProject == 9)">
