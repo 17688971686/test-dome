@@ -111,7 +111,14 @@ public class ArchivesLibraryController {
     @RequestMapping(name = "档案借阅查询", path = "html/archivesLibraryList", method = RequestMethod.GET)
     public String archivesCenterList() {
         return ctrlName+"/archivesLibraryList"; 
-    } 
+    }
+
+    @RequiresPermissions("archivesLibrary#html/archivesLibraryView#get")
+    @RequestMapping(name = "档案借阅查看详情", path = "html/archivesLibraryView", method = RequestMethod.GET)
+    public String archivesCenterView() {
+        return ctrlName+"/archivesLibraryView";
+    }
+
 
     // end#html
 

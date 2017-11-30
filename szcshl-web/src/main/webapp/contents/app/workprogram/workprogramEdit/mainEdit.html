@@ -19,10 +19,16 @@
                     <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == vm.work.reviewType"
                             value="{{x.dictName}}">{{x.dictName}}</option>
                 </select>
-                <select ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" id="isSigle" ng-disabled="vm.businessFlag.isReveiwAWP">
+             <select ng-if="vm.work.reviewType!='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" id="isSigle" ng-disabled="vm.businessFlag.isReveiwAWP">
                     <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == vm.work.isSigle"
                             value="{{x.dictName}}">{{x.dictName}}</option>
-                </select>
+             </select>
+             <select ng-if="vm.work.reviewType=='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" id="isSigle" ng-disabled="vm.businessFlag.isReveiwAWP">
+                    <option value="单个评审">单个评审</option>
+             </select>
+
+
+
             </span>
             <span ng-show="vm.work.isSigle=='合并评审'" style="float: left;">
                 <input type="radio" name="isMainProject" ng-model="vm.work.isMainProject" ng-value="9"
@@ -236,14 +242,14 @@
          </td>
      </tr>
   
-    <tr ng-if="!vm.businessFlag.isReveiwAWP">
+    <tr ng-if="!vm.businessFlag.isReveiwAWP && vm.work.reviewType != '自评'">
         <td class="text-center" colspan="2">专家费用（元）</td>
         <td colspan="7">
             <input type="text"  ng-model="vm.work.expertCost" ng-value="0" name="expertCost" data-val-digits="只能为数字">
             <span data-valmsg-for="expertCost" data-valmsg-replace="true" class="errors"></span>
         </td>
     </tr>
-    <tr ng-if="!vm.businessFlag.isReveiwAWP">
+    <tr ng-if="!vm.businessFlag.isReveiwAWP && vm.work.reviewType != '自评'">
         <td class="text-center" colspan="2">
         <span ng-if="!vm.work.reviewType || vm.work.reviewType != '专家函评'">评审会时间</span>
         <span ng-if="vm.work.reviewType == '专家函评'">函评日期</span></td>
