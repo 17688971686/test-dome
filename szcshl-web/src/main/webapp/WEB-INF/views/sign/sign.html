@@ -2,7 +2,6 @@
 <ul id="myTab" class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" for-div="sign_detail"> 审批登记</a></li>
     <li ng-show="vm.model.workProgramDtoList" ><a id="show_workprogram_a" data-toggle="tab"  for-div="sign_workprogram">工作方案</a></li>
-    <!--<li ng-show="vm.showFlag.tabBaseWP"><a id="show_basewp_a" data-toggle="tab"  for-div="sign_basewp">项目基本信息</a></li>-->
     <li ng-show="vm.showFlag.tabDispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
     <li ng-show="vm.showFlag.tabFilerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
     <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab" for-div="expert_score">专家评分</a></li>
@@ -20,24 +19,24 @@
     <div class="tab-pane fade in active" style="background:white;" id="sign_detail">
      
     	 <!-- S 项目建议书/可行性研究报告  -->
-        <div id="sign_detail_xmjys" ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它'" ng-include src="'${path}/contents/app/sign/signDetail/detail.html'"></div>
+        <div id="sign_detail_xmjys" ng-if="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它'" ng-include src="'${path}/contents/app/sign/signDetail/detail.html'"></div>
         <!-- E 项目建议书/可行性研究报告  -->
         
         <!-- S 资金申请报告  -->
-        <div id="sign_detail_zjsq" ng-show="vm.model.reviewstage=='资金申请报告'" ng-include src="'${path}/contents/app/sign/signDetail/capitalAppReportDetail.html'"></div>
+        <div id="sign_detail_zjsq" ng-if="vm.model.reviewstage=='资金申请报告'" ng-include src="'${path}/contents/app/sign/signDetail/capitalAppReportDetail.html'"></div>
         <!-- E 资金申请报告  -->
         
         <!-- S 设备清单（国产）/设备清单（进口）  -->
-        <div id="sign_detail_sbqd" ng-show="vm.model.reviewstage=='设备清单（国产）' || vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/sign/signDetail/equipmenDomesticDetail.html'"></div>
+        <div id="sign_detail_sbqd" ng-if="vm.model.reviewstage=='设备清单（国产）' || vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/sign/signDetail/equipmenDomesticDetail.html'"></div>
         <!-- E 设备清单（进口）/设备清单（进口）  -->
         
-       <!--  <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/sign/signDetail/equipmentImportDetail.html'"></div> -->
+
        <!-- S 进口设备 -->
-        <div id="sign_detail_jksb" ng-show="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/sign/signDetail/foreignEquipmenDetail.html'"></div>
+        <div id="sign_detail_jksb" ng-if="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/sign/signDetail/foreignEquipmenDetail.html'"></div>
        <!-- E 进口设备 -->
        
         <!-- S 项目概算  -->
-        <div id="sign_detail_xmgs" ng-show="vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/sign/signDetail/projectBudgetDetail.html'"></div>
+        <div id="sign_detail_xmgs" ng-if="vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/sign/signDetail/projectBudgetDetail.html'"></div>
   	 	<!-- E 项目概算  -->
 
         <!-- 引入审批登记模板-->
@@ -60,23 +59,23 @@
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_workprogram" >
 
         <!-- （包含：主、次项目）项目建议书/可行性研究报告/项目概算/其它  -->
-        <div id="sign_workprogram_xmjys" ng-show="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'"
+        <div id="sign_workprogram_xmjys" ng-if="vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'"
              ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
        
        <!--S  资金申请报告  包含：主项目、次项目 -->
-        <div id="sign_workprogram_zjsq" ng-show="vm.model.reviewstage=='资金申请报告'"
+        <div id="sign_workprogram_zjsq" ng-if="vm.model.reviewstage=='资金申请报告'"
              ng-include src="'${path}/contents/app/workprogram/workprogramDetail/capitalAppReportDetail.html'"></div>
        <!--S  资金申请报告  包含：主项目、次项目 -->
        
        <!--S  进口设备  包含：主项目、次项目 -->
-        <div id="sign_workprogram_jksb" ng-show="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/foregnDetail.html'"></div>
+        <div id="sign_workprogram_jksb" ng-if="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/foregnDetail.html'"></div>
        <!--E  进口设备  包含：主项目、次项目 -->
        
         <!-- 设备清单（国产） 包含：主项目、次项目 -->
-        <div id="sign_workprogram_sbqd" ng-show="vm.model.reviewstage=='设备清单（国产）' ||vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainDomesticDetail.html'"></div>
+        <div id="sign_workprogram_sbqd" ng-if="vm.model.reviewstage=='设备清单（国产）' ||vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainDomesticDetail.html'"></div>
       
         <!-- 设备清单（进口）包含： 主项目 、次项目-->
-       <!--  <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainImportDetail.html'"></div> -->
+       <!--  <div ng-if="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainImportDetail.html'"></div> -->
 
         <!-- 引入工作方案模板-->
         <div id="sign_workprogram_xmjys_templ" style="display: none;"> <#include "/templatePrint/workprogram/workProgramXmjys.html"/></div>
@@ -85,36 +84,30 @@
         <div id="sign_workprogram_sbqd_templ" style="display: none;"><#include "/templatePrint/workprogram/workProgramSbqd.html"/></div>
     </div><!-- 工作方案 -->
 
-    <div class="well well-sm tab-pane fade" style="background:white;" id="sign_basewp" >
-        <div ng-include src="'${path}/contents/app/workprogram/base_detail.html'"/>
-    </div><!-- 工作方案 【项目基本信息 协审流程才有】-->
-
 	 <!--S 发文 -->
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_dispatch" >
-        <!-- <div ng-include src="'${path}/contents/app/dispatch/detail.html'"/> -->
-       	 
        	 <!-- S 项目建议书 -->
-         <div id="sign_dispatch_xmjys" ng-show="vm.model.reviewstage =='项目建议书'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/projectDetail.html'"/>
+         <div id="sign_dispatch_xmjys" ng-if="vm.model.reviewstage =='项目建议书'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/projectDetail.html'"/>
          <!-- E 项目建议书 -->
          
           <!-- S 可行性研究报告 -->
-         <div id="sign_dispatch_kxxyj" ng-show="vm.model.reviewstage =='可行性研究报告'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/feasibilityDeatil.html'"/>
+         <div id="sign_dispatch_kxxyj" ng-if="vm.model.reviewstage =='可行性研究报告'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/feasibilityDeatil.html'"/>
          <!-- E 可行性研究报告 -->
          
            <!-- S 资金申请报告 -->
-         <div id="sign_dispatch_zjsq" ng-show="vm.model.reviewstage =='资金申请报告'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/capitalAppReportDetail.html'"/>
+         <div id="sign_dispatch_zjsq" ng-if="vm.model.reviewstage =='资金申请报告'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/capitalAppReportDetail.html'"/>
          <!-- E 资金申请报告 -->
          
           <!-- S 项目概算 -->
-         <div id="sign_dispatch_xmgs" ng-show="vm.model.reviewstage =='项目概算'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/projectBudgetDetail.html'"/>
+         <div id="sign_dispatch_xmgs" ng-if="vm.model.reviewstage =='项目概算'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/projectBudgetDetail.html'"/>
          <!-- E 项目概算 -->
          
        	 <!-- S 进口设备 -->
-         <div id="sign_dispatch_jksb" ng-show="vm.model.reviewstage =='进口设备'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/foreignDetail.html'"/>
+         <div id="sign_dispatch_jksb" ng-if="vm.model.reviewstage =='进口设备'"ng-include src="'${path}/contents/app/dispatch/dispatchDetail/foreignDetail.html'"/>
          <!-- E 进口设备 -->
          
          <!-- S 设备清单（进口）/设备清单（国产） -->
-         <div id="sign_dispatch_sbqd" ng-show="vm.model.reviewstage =='设备清单（国产）' || vm.model.reviewstage =='设备清单（进口）' "ng-include src="'${path}/contents/app/dispatch/dispatchDetail/domesticDetail.html'"/>
+         <div id="sign_dispatch_sbqd" ng-if="vm.model.reviewstage =='设备清单（国产）' || vm.model.reviewstage =='设备清单（进口）' "ng-include src="'${path}/contents/app/dispatch/dispatchDetail/domesticDetail.html'"/>
          <!-- E 设备清单（进口）/设备清单（国产） -->
 
         <!-- 项目发文模板-->
@@ -130,25 +123,26 @@
     <!-- S 归档 -->
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_filerecord" >
         <!-- 项目建议书 -->
-        <div id="sign_filerecord_xmjys" ng-show="vm.model.reviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileProjectIdeaDetail.html'"></div>
+        <div id="sign_filerecord_xmjys" ng-if="vm.model.reviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileProjectIdeaDetail.html'"></div>
        
         <!-- 资金申请报告 -->
-        <div id="sign_filerecord_zjsq" ng-show="vm.model.reviewstage=='资金申请报告'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/filecapitalAppReportDetail.html'"></div>
+        <div id="sign_filerecord_zjsq" ng-if="vm.model.reviewstage=='资金申请报告'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/filecapitalAppReportDetail.html'"></div>
         
         <!-- 可行性研究报告 -->
-        <div id="sign_filerecord_kxxyj" ng-show="vm.model.reviewstage=='可行性研究报告'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileFeasibilityDetail.html'"></div>
+        <div id="sign_filerecord_kxxyj" ng-if="vm.model.reviewstage=='可行性研究报告'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileFeasibilityDetail.html'"></div>
         
         <!-- 进口设备 -->
-        <div id="sign_filerecord_jksb" ng-show="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordForeignDetail.html'"></div>
+        <div id="sign_filerecord_jksb" ng-if="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordForeignDetail.html'"></div>
         
         <!-- 项目概算 -->
-        <div id="sign_filerecord_xmgs" ng-show="vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordProjectDetail.html'"></div>
+        <div id="sign_filerecord_xmgs" ng-if="(vm.model.isassistproc!= 9 && vm.model.isassistproc!= '9') && vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordProjectDetail.html'"></div>
+        <div id="sign_filerecord_xmgs_xs" ng-if="(vm.model.isassistproc== 9 || vm.model.isassistproc== '9') && vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordProjectDetailXS.html'"></div>
 
         <!-- 设备清单（国产） /设备清单（进口）-->
-        <div id="sign_filerecord_sbqd" ng-show="vm.model.reviewstage=='设备清单（进口）' || vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordDomestiDetail.html'"></div>
+        <div id="sign_filerecord_sbqd" ng-if="vm.model.reviewstage=='设备清单（进口）' || vm.model.reviewstage=='设备清单（国产）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordDomestiDetail.html'"></div>
 
         <!-- 设备清单（进口） -->
-        <!-- <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordImportDetail.html'"></div> -->
+        <!-- <div ng-if="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordImportDetail.html'"></div> -->
         <!-- 引入归档模板-->
         <div id="sign_filerecord_xmjys_templ" style="display: none;"> <#include "/templatePrint/filerecord/fileProjectDetailXmjysl.html"/></div>
         <div id="sign_filerecord_kxxyj_templ" style="display: none;"> <#include "/templatePrint/filerecord/fileProjectDetailKxxyjbg.html"/></div>
@@ -208,7 +202,3 @@
     <!-- end tab3 -->
 
 </div>
-<!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="vm.printpage($event)">打印</button>-->
-<script>
-
-</script>
