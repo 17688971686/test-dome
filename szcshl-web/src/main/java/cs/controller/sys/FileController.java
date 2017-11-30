@@ -259,7 +259,7 @@ public class FileController implements ServletConfigAware,ServletContextAware {
             return;
         }
          in = new FileInputStream(f);
-         response.getOutputStream();
+            out = response.getOutputStream();
 
             switch (fileType) {
                 case ".jpg":
