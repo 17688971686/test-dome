@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -340,6 +341,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram.setReviewType(Constant.MergeType.REVIEW_SIGNLE.getValue());
                 workProgram.setIsMainProject(EnumState.NO.getValue());
             }
+            //清除专家费用，和协审会日期
+            workProgram.setExpertCost(null);
+            workProgram.setLetterDate(null);
         }
         //3、更改评审方式
         workProgram.setReviewType(reviewType);

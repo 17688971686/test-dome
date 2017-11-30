@@ -151,16 +151,16 @@
                                ng-model="vm.work.studyEndTimeStr" data-datecompare-msg="结束时间必须大于开始时间！"/>
          </td>
      </tr>
-    <tr ng-if="!vm.businessFlag.isReveiwAWP">
+    <tr ng-if="!vm.businessFlag.isReveiwAWP && vm.work.reviewType != '自评'">
         <td class="text-center">专家费用（元）</td>
         <td colspan="7">
             <input type="text"  ng-model="vm.work.expertCost" ng-value="0" name="expertCost" data-val-digits="只能为数字">
             <span data-valmsg-for="expertCost" data-valmsg-replace="true" class="errors"></span>
         </td>
     </tr>
-    <tr ng-if="!vm.businessFlag.isReveiwAWP">
+    <tr ng-if="!vm.businessFlag.isReveiwAWP && vm.work.reviewType != '自评'">
          <td class="text-center" >
-        <span ng-if="!vm.work.reviewType || vm.work.reviewType != '专家函评'">评审会时间</span>
+        <span ng-if="vm.work.reviewType == '专家评审会'">评审会时间</span>
         <span ng-if="vm.work.reviewType == '专家函评'">函评日期</span></td>
         <td colspan="7">
         <span ng-if="vm.work.reviewType == '专家评审会'">
@@ -168,7 +168,7 @@
                 <span class="glyphicon glyphicon-pencil"></span>编辑
             </button>
         </span>    
-            <span ng-if="vm.work.reviewType == '专家函评' || vm.work.reviewType == '自评' ">
+            <span ng-if="vm.work.reviewType == '专家函评'">
               <input name="letterDate" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.work.letterDate" type="text"/>
             </span>
         </td>

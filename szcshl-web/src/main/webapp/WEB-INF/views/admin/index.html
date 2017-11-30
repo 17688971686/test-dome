@@ -97,7 +97,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <nav class="navbar navbar-static-top" role="navigation">
                     <!-- Sidebar toggle button-->
                     <a href="javascript:void(0)" class="sidebar-toggle" data-toggle="offcanvas" role="button"
-                       style="color:#fff">
+                       id="menu_offcanvas_id" style="color:#fff">
                         <span class="sr-only">Toggle navigation</span>
                     </a>
                     <!-- Navbar Right Menu -->
@@ -126,14 +126,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </li>
                                 </ul>
                             </li>
-
                         </ul>
                     </div>
                 </nav>
             </header>
         </div>
         <!-- Left side column. contains the logo and sidebar -->
-        <aside class="main-sidebar">
+        <aside class="main-sidebar" id="main-sidebar">
             <!-- sidebar: style can be found in sidebar.less -->
             <section class="sidebar">
                 <!-- Sidebar Menu -->
@@ -141,7 +140,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <li class="treeview menu" style="height: 47px;">
                         <a href="javascript:void(0)" style="color:#fff;">
                             <span class="cs-icon-w" style="background-position: -101px -337px;"></span>
-                            <span class="title">菜单</span></a>
+                            <span class="title">菜单</span>
+                        </a>
                     </li>
 
                 <@shiro.hasPermission name="permission#workbench">
@@ -629,7 +629,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="${path}/contents/app-dist/app.all.js?version = ${.now}"></script>
     <script src="${path}/contents/shared/index.js"></script>
     <script type="text/javascript">
-
         $(".sidebar-menu .treeview-menu > li > a").click(function () {
             $(".sidebar-menu .treeview-menu > li > a").css({"font-weight": "normal"});
             $(".sidebar-menu .treeview-menu > li").css({"background": "none"});

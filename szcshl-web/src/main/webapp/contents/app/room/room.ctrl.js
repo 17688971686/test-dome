@@ -3,9 +3,9 @@
 
     angular.module('app').controller('roomCtrl', room);
 
-    room.$inject = ['bsWin', 'roomSvc', '$state'];
+    room.$inject = ['bsWin', 'roomSvc', '$state','$interval'];
 
-    function room(bsWin, roomSvc, $state) {
+    function room(bsWin, roomSvc, $state,$interval) {
         var vm = this;
         vm.title = '会议室预定列表';
         vm.initSuccess = false;
@@ -38,9 +38,28 @@
                         //查询预订会议数据
                         vm.findMeeting();
                     }
-                })
+                });
+                //添加监听事件,防止会议室变形
+                $("#menu_offcanvas_id").click(function(){
+                    if ($("body").hasClass('sidebar-collapse')) {
+                        vm.t = $interval(function () {
+                            if($("#main-sidebar").width() > 50){
+                                vm.findMeeting();
+                                $interval.cancel(vm.t);
+                            }
+                        },300);
+                    } else {
+                        vm.t = $interval(function () {
+                            if($("#main-sidebar").width() <= 50){
+                                vm.findMeeting();
+                                $interval.cancel(vm.t);
+                            }
+                        },300);
+                    }
+                });
             });
         }
+
 
         /**
          * 切换日期时查询
@@ -74,7 +93,6 @@
             roomSvc.queryBookRoom(vm.search, function (data) {
                 vm.model.mrID =  vm.search.mrID;
                 roomSvc.setSCDataSource(vm,data);      //设置数据源
-
             });
         }
 
