@@ -43,8 +43,11 @@ public class RoomBookingDto extends BaseDto {
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;//结束时间
     /**
-     * 会议预定状态，1,已预定，0未预定(停用)
-     */
+     * 会议室状态
+     * 0：预定状态，可以修改和删除，
+     * 1：表示已经提交审核，（预定人不能修改）系统管理员可以修改，不能删除
+     * 9：表示不可以删除和修改
+     * */
     private String rbStatus;
     /**
      * 会议类型(停用)

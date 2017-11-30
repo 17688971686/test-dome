@@ -146,10 +146,13 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         hqlBuilder.setParam("mainOrgId", mergeSign.getmOrgId());
         //排除自身
         hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " != :self ").setParam("self", signId);
-        //排除已关联的项目
-        hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " not in ( select " + SignMerge_.mergeId.getName() + " from " + SignMerge.class.getSimpleName());
-        hqlBuilder.append(" where " + SignMerge_.signId.getName() + " =:signId and " + SignMerge_.mergeType.getName() + " =:mergeType )");
-        hqlBuilder.setParam("signId", signId).setParam("mergeType", Constant.MergeType.WORK_PROGRAM.getValue());
+        //排除已关联的项目(不管是主项目还是次项目)
+        hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " not in ( select " + SignMerge_.mergeId.getName() );
+        hqlBuilder.append(" from " + SignMerge.class.getSimpleName() +" where  " + SignMerge_.mergeType.getName() + " =:mergeType ) ");
+        hqlBuilder.setParam("mergeType", Constant.MergeType.WORK_PROGRAM.getValue());
+        hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " not in ( select distinct " + SignMerge_.signId.getName() );
+        hqlBuilder.append(" from " + SignMerge.class.getSimpleName() +" where  " + SignMerge_.mergeType.getName() + " =:mergeType2 )");
+        hqlBuilder.setParam("mergeType2", Constant.MergeType.WORK_PROGRAM.getValue());
         //排除有分支的项目(合并评审的项目一般只有一个分支)
         hqlBuilder.append(" and (select count(" + SignBranch_.signId.getName() + ") from " + SignBranch.class.getSimpleName() + " where " + SignBranch_.signId.getName() + " =:signId ) = 1");
         hqlBuilder.setParam("signId", signId);
@@ -256,8 +259,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 }
             }
             //如果已经合并的，也不能再次合并
-            if(signMergeRepo.checkIsMerege(mergeId,mergeType)){
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，选择的项目已经是合并项目，请刷新重新选择！");
+            if(signMergeRepo.checkIsMerege(mergeId,mergeType) || signMergeRepo.isHaveMerge(mergeId,mergeType)){
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，选择的项目已经是合并项目，不能再次合并，请刷新选择！");
             }
             saveList.add(signMerge);
         }

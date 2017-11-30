@@ -1,8 +1,6 @@
 <meta charset="UTF-8">
 <!--  主流程编辑的工作方案  -->
 <!--S 项目建议书/可行性研究报告/项目概算/其他 -->
-<form id="work_program_form" name="work_program_form">
-
 <!--  s table-->
 <table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
     <caption>
@@ -143,18 +141,18 @@
         </td>
     </tr>
     <tr>
-        <td rowspan="4" style="width:5%;" class="text-center" style="vertical-align:middle;">项目概况</td>
+        <td rowspan="4" style="width:5%;vertical-align:middle;" class="text-center" >项目概况</td>
         <td class="text-center" style="width:10%;" >申报投资<span class="required">*</span></td>
         <td colspan="3" ng-show="vm.showTotalInvestment">
             <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
-                   id="appalyInvestment" data-val="true" data-val-required="必填">
+                   id="appalyInvestment" data-val="true" data-val-required="必填" data-val-digits="只能为数字" >
             万元
             <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
         </td>
 
         <td colspan="7" ng-hide="vm.showTotalInvestment">
             <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
-                   id="appalyInvestment" data-val="true" data-val-required="必填">
+                   id="appalyInvestment" data-val="true" data-val-required="必填" data-val-digits="只能为数字" >
             万元
             <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
         </td>
@@ -162,7 +160,7 @@
         <td class="text-center" style="width:10%;" ng-show="vm.showTotalInvestment">总投资<span class="required">*</span></td>
         <td colspan="3" ng-show="vm.showTotalInvestment">
             <input type="text" ng-model="vm.work.totalInvestment" name="totalInvestment"
-                   id="totalInvestment" data-val="true" data-val-required="必填">
+                   id="totalInvestment" data-val="true" data-val-required="必填" data-val-digits="只能为数字" >
             万元
             <span data-valmsg-for="totalInvestment" data-valmsg-replace="true" class="errors"></span>
         </td>
@@ -187,8 +185,8 @@
         </td>
     </tr>
     <tr>
-        <td rowspan="2" colspan="2" class="text-center">评审部门</td>
-        <td rowspan="2" colspan="3">
+        <td rowspan="2" colspan="2" class="text-center" style="vertical-align: middle;">评审部门</td>
+        <td rowspan="2" colspan="3" style="vertical-align: middle;">
             {{vm.work.reviewOrgName}}
         </td>
         <td class="text-center">第一负责人</td>
@@ -320,6 +318,5 @@
     </tr>
     </tbody>
 </table>    <!--  	end table -->
-</form>  <!-- end form -->
 <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
 <!--E 项目建议书/可行性研究报告/项目概算/其他 -->

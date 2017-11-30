@@ -34,6 +34,11 @@ public interface SignDispaWorkService {
      */
     List<SignDispaWork> getMergeWPSignBySignId(String signId);
 
+    /**
+     * 选择待合并的项目
+     * @param signId
+     * @return
+     */
     List<SignDispaWork> unMergeDISSign(String signId);
 
     List<SignDispaWork> getMergeDISSignBySignId(String signId);

@@ -16,6 +16,12 @@ public interface SignPrincipalService {
 
     boolean isFlowPri(String userId,String signId);
 
+    /**
+     * 判断是否主项目负责人
+     * @param userId
+     * @param signId
+     * @return
+     */
     boolean isMainFlowPri(String userId,String signId);
 
     List<User> getSignPriUser(String signId,String branchId);

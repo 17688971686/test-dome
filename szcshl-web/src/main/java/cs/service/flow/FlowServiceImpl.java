@@ -8,20 +8,21 @@ import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.*;
 import cs.domain.project.*;
+import cs.domain.topic.WorkPlan;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
-import cs.model.project.SignDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
+import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.topic.WorkPlanRepo;
 import cs.service.project.SignService;
-import cs.service.project.WorkProgramService;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -42,7 +43,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -87,6 +91,10 @@ public class FlowServiceImpl implements FlowService {
     private SignDispaWorkRepo signDispaWorkRepo;
     @Autowired
     private SessionFactory sessionFactory;
+    @Autowired
+    private RoomBookingRepo roomBookingRepo;
+    @Autowired
+    private WorkPlanRepo workPlanRepo;
 
     @Autowired
     @Qualifier("signFlowBackImpl")
@@ -185,9 +193,24 @@ public class FlowServiceImpl implements FlowService {
                             }
                         }
                     }
+                    //如果是回退到工作方案环节，还要修改预定会议室状态
+                    if(FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR2.equals(backActivitiId)
+                            || FlowConstant.FLOW_SIGN_XMFZR3.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR4.equals(backActivitiId)){
+                        WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(instance.getBusinessKey(), backActivitiId.substring(backActivitiId.length()-1,backActivitiId.length()));
+                        if(wk != null){
+                            roomBookingRepo.updateStateByBusinessId(wk.getId(), Constant.EnumState.NO.getValue());
+                        }
+                    }
                     break;
                 case FlowConstant.TOPIC_FLOW:
                     backActivitiId = topicFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
+                    //如果是回退到工作方案环节，还要修改预定会议室状态
+                    if(FlowConstant.TOPIC_GZFA.equals(backActivitiId)){
+                        WorkPlan workPlan = workPlanRepo.findById("topId", instance.getBusinessKey());
+                        if(workPlan != null){
+                            roomBookingRepo.updateStateByBusinessId(workPlan.getId(), Constant.EnumState.NO.getValue());
+                        }
+                    }
                     break;
                 case FlowConstant.FLOW_APPRAISE_REPORT:
                     backActivitiId = appraiseFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());

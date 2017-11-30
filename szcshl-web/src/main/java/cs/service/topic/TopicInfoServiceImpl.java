@@ -25,6 +25,7 @@ import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.flow.FlowPrincipalRepo;
+import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.AddRegisterFileRepo;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
@@ -77,7 +78,8 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     private WorkPlanService workPlanService;
     @Autowired
     private ExpertReviewRepo expertReviewRepo;
-
+    @Autowired
+    private RoomBookingRepo roomBookingRepo;
 
     @Override
     public PageModelDto<TopicInfoDto> get(ODataObj odataObj) {
@@ -388,6 +390,8 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 if(workPlan == null || !Validate.isString(workPlan.getId())){
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没完成工作方案，不能进行下一步操作！");
                 }
+                //更改预定会议室状态
+                roomBookingRepo.updateStateByBusinessId(workPlan.getId(), Constant.EnumState.PROCESS.getValue());
                 variables = findOrgLeader(businessId,false,assigneeValue);
                 break;
             //部长审核方案
@@ -429,6 +433,9 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 workPlan.setMleaderOption(flowDto.getDealOption());
                 workPlan.setMleaderDate(new Date());
                 workPlanRepo.save(workPlan);
+
+                //更改预定会议室状态
+                roomBookingRepo.updateStateByBusinessId(workPlan.getId(), Constant.EnumState.YES.getValue());
                 break;
             /*//召开成果鉴定会
             case FlowConstant.TOPIC_CGJD :

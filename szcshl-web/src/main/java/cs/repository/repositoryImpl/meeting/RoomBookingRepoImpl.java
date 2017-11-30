@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
 import cs.domain.meeting.RoomBooking_;
 import org.hibernate.Criteria;
@@ -131,5 +132,22 @@ public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>
         return totalResult > 0 ;
     }
 
+    /**
+     * 根据业务ID，更改会议室预定状态
+     * @param businessId
+     * @param status
+     */
+    @Override
+    public void updateStateByBusinessId(String businessId, String status) {
+        if(Validate.isString(businessId) && Validate.isString(status)){
+            HqlBuilder hqlBuilder = HqlBuilder.create();
+            hqlBuilder.append(" update "+RoomBooking.class.getSimpleName()+" set ");
+            hqlBuilder.append(RoomBooking_.rbStatus.getName()+" =:rbStatus ");
+            hqlBuilder.setParam("rbStatus",status);
+            hqlBuilder.append(" where "+RoomBooking_.businessId.getName()+" =:businessId ");
+            hqlBuilder.setParam("businessId",businessId);
+            executeHql(hqlBuilder);
+        }
+    }
 
 }

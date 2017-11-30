@@ -149,6 +149,12 @@
             万元
             <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
         </td>
+        <td colspan="6" ng-hide="vm.showTotalInvestment">
+            <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
+                   id="appalyInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
+            万元
+            <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
+        </td>
 
         <td class="text-center" ng-show="vm.showTotalInvestment">总投资<span class="required">*</span></td>
         <td colspan="2" ng-show="vm.showTotalInvestment">
@@ -157,7 +163,6 @@
             万元
             <span data-valmsg-for="totalInvestment" data-valmsg-replace="true" class="errors"></span>
         </td>
-        
     </tr>
     <tr>
         <td class="text-center">申报建设规模<span class="required">*</span></td>

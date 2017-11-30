@@ -392,52 +392,43 @@ public class SignServiceImpl implements SignService {
                             signDto.setWorkProgramDtoList(workProgramDtoList);
                         }
                     }
-
                 }
 
                 if (!isMergeReview) {
-                    List<WorkProgramDto> workProgramDtoList = new ArrayList<>(sign.getWorkProgramList().size());
+                    int totalL = sign.getWorkProgramList().size();
+                    List<WorkProgramDto> workProgramDtoList = new ArrayList<>(totalL);
                     //由于工作方案不是按主次顺便排序，则遍历工作方案，获取主工作方案
                     WorkProgram mainW = new WorkProgram();
-               /*     WorkProgram mainW =workProgramRepo.findByPrincipalUser(signid);*/
-                    for (int i = 0; i < sign.getWorkProgramList().size(); i++) {
-                        WorkProgram workProgram = sign.getWorkProgramList().get(i);
-                        if (workProgram != null && (EnumState.PROCESS.getValue()).equals(workProgram.getBranchId())) {
-                            BeanCopierUtils.copyProperties(workProgram, mainW);
-                            break;
+                    if(totalL > 1){
+                        //遍历第一遍，先找出主分支工作方案
+                        for (int i=0;i<totalL;i++) {
+                            WorkProgram wp = sign.getWorkProgramList().get(i);
+                            if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                                mainW = wp;
+                                break;
+                            }
                         }
                     }
 
-                    sign.getWorkProgramList().forEach(workProgram -> {
+                    for (int i=0;i<totalL;i++) {
+                        WorkProgram workProgram = sign.getWorkProgramList().get(i);
                         WorkProgramDto workProgramDto = new WorkProgramDto();
                         BeanCopierUtils.copyProperties(workProgram, workProgramDto);
                         workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
                         workProgramDto.setSignId(signid);
-                        //判断如不是主工作方案，则初始化公共部分
-                        if (!(EnumState.PROCESS.getValue()).equals(workProgram.getBranchId())) {
-                            workProgramDto.setSendFileUnit(mainW.getSendFileUnit()); //来文单位
-                            workProgramDto.setSendFileUser(mainW.getSendFileUser());//来文单位联系人
-                            workProgramDto.setBuildCompany(mainW.getBuildCompany());//建设单位
-                            workProgramDto.setDesignCompany(mainW.getDesignCompany());//编制单位
-                            workProgramDto.setMainDeptName(mainW.getMainDeptName());//主管部门名称
-                            workProgramDto.setIsHaveEIA(mainW.getIsHaveEIA());//是否有环评
-                            workProgramDto.setProjectType(mainW.getProjectType());//项目类别
-                            workProgramDto.setProjectSubType(mainW.getProjectSubType());//小类
-                            workProgramDto.setIndustryType(mainW.getIndustryType());//行业类别
-                            workProgramDto.setContactPerson(mainW.getContactPerson());//联系人
-                            workProgramDto.setContactPersonPhone(mainW.getContactPersonPhone());//联系人手机号
-                            workProgramDto.setContactPersonTel(mainW.getContactPersonTel());//联系人电话
-                            workProgramDto.setContactPersonFax(mainW.getContactPersonFax());//联系人传真
-//                            workProgramDto.setBuildSize(mainW.getBuildSize());//建设规模
-//                            workProgramDto.setBuildContent(mainW.getBuildContent());//建设内容
-//                            workProgramDto.setProjectBackGround(mainW.getProjectBackGround());//项目背景
-/*                            workProgramDto.setReviewOrgName(mainW.getReviewOrgName());//评估部门
-                            workProgramDto.setMianChargeUserName(mainW.getMianChargeUserName());//第一负责人
-                            workProgramDto.setSecondChargeUserName(mainW.getSecondChargeUserName());//第二负责人*/
-
+                        if(!FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())){
+                            WorkProgramDto mainWPDto = new WorkProgramDto();
+                            //如果已经填报了主工作方案，则从主工作方案中获取
+                            if(Validate.isString(mainW.getId())){
+                                BeanCopierUtils.copyProperties(mainW,mainWPDto);
+                            //否则从项目中初始化
+                            }else{
+                                workProgramService.copySignCommonInfo(mainWPDto,sign);
+                            }
+                            workProgramDto.setMainWorkProgramDto(mainWPDto);
                         }
                         workProgramDtoList.add(workProgramDto);
-                    });
+                    }
                     signDto.setWorkProgramDtoList(workProgramDtoList);
                 }
             }
@@ -885,7 +876,8 @@ public class SignServiceImpl implements SignService {
                         variables.put(FlowConstant.SignFlowParams.WORK_PLAN4.getValue(), true);
                         variables.put(FlowConstant.SignFlowParams.USER_BZ4.getValue(), assigneeValue);
                     }
-
+                    //更改预定会议室状态
+                    roomBookingRepo.updateStateByBusinessId(wk.getId(),EnumState.PROCESS.getValue());
                     //不做工作方案
                 } else {
                     dealUser = signPrincipalService.getMainPriUser(signid);
@@ -905,9 +897,8 @@ public class SignServiceImpl implements SignService {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "协审分支还没处理完，您不能进行直接发文操作！");
                         }
                         sign = signRepo.findById(Sign_.signid.getName(), signid);
-                        if ((Constant.STAGE_SUG.equals(sign.getReviewstage()) ||
-                                Constant.STAGE_STUDY.equals(sign.getReviewstage())) &&
-                                !signBranchRepo.isHaveWP(signid)) {
+                        if ((Constant.STAGE_SUG.equals(sign.getReviewstage()) || Constant.STAGE_STUDY.equals(sign.getReviewstage()))
+                                && !signBranchRepo.isHaveWP(signid)) {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "【项目建议书，可行性研究报告】必要要做工作方案！");
                         }
                     }
@@ -1061,7 +1052,10 @@ public class SignServiceImpl implements SignService {
                 wk.setLeaderDate(new Date());
                 wk.setLeaderName(SessionUtil.getDisplayName());
                 workProgramRepo.save(wk);
-
+                //完成分支的工作方案
+                signBranchRepo.finishBranch(signid, branchIndex);
+                //更改预定会议室状态
+                roomBookingRepo.updateStateByBusinessId(wk.getId(),EnumState.YES.getValue());
                 //更新评审会时间
                 ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.businessId.getName(), signid);
                 if (expertReview != null) {

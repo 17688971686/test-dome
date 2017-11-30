@@ -44,8 +44,8 @@
                 <td colspan="3">{{w.mainDeptName}}</td>
                 <td class="text-center">是否有环评</td>
                 <td colspan="3">
-                    <input type="radio" ng-value="9" ng-model="w.isHaveEIA" name="isHaveEIA" disabled>是
-                    <input type="radio" ng-value="0" ng-model="w.isHaveEIA" name="isHaveEIA" disabled>否
+                    <input type="radio" ng-value="9" ng-checked="w.isHaveEIA==9 || w.isHaveEIA=='9'" name="isHaveEIA" ng-disabled="true">是
+                    <input type="radio" ng-value="0" ng-checked="!w.isHaveEIA || w.isHaveEIA==0 || w.isHaveEIA=='0'" name="isHaveEIA" ng-disabled="true">否
                 </td>
             </tr>
             <tr>
@@ -69,7 +69,7 @@
                 <td colspan="3">{{w.contactPersonFax}}</td>
             </tr>
             <tr>
-                <td rowspan="4" style="width:5%;" class="text-center" style="vertical-align:middle;">项目概况</td>
+                <td rowspan="4" style="width:5%;vertical-align:middle;" class="text-center" >项目概况</td>
                 <td class="text-center" style="width:10%;">申报投资</td>
                 <td colspan="3">{{w.appalyInvestment}} 万元</td>
                 <td  class="text-center">总投资</td>
@@ -88,8 +88,8 @@
                 <td colspan="7">{{w.projectBackGround}}</td>
             </tr>
             <tr>
-                <td rowspan="2" colspan="2" class="text-center">评估部门</td>
-                <td rowspan="2" colspan="3">
+                <td rowspan="2" colspan="2" class="text-center" style="vertical-align: middle;">评估部门</td>
+                <td rowspan="2" colspan="3" style="vertical-align: middle;">
                     {{w.reviewOrgName}}
                 </td>
                 <td class="text-center">第一负责人</td>
@@ -106,11 +106,11 @@
             <tr>
                 <td class="text-center" colspan="2">是否有补充资料函</td>
                 <td colspan="3">
-                     <span>
-                        <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="w.isHaveSuppLetter==9" ng-true-value="9" >是
+                    <span>
+                        <input type="checkbox" ng-disabled="true" name="isHaveSuppLetter" ng-checked="w.isHaveSuppLetter==9 || w.isHaveSuppLetter=='9'" ng-true-value="9" >是
                     </span>
-                            <span style="margin-left: 10px;">
-                        <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="!w.isHaveSuppLetter || w.isHaveSuppLetter==0"  ng-true-value="0">否
+                    <span style="margin-left: 10px;">
+                        <input type="checkbox" ng-disabled="true" name="isHaveSuppLetter" ng-checked="!w.isHaveSuppLetter || w.isHaveSuppLetter==0 || w.isHaveSuppLetter=='0'"  ng-true-value="0">否
                     </span>
                 </td>
                 <td class="text-center">补充资料函发文日期</td>
@@ -220,54 +220,50 @@
             </tr>
             <tr>
                 <td class="text-center" colspan="2">来文单位</td>
-                <td colspan="3">{{w.sendFileUnit}}</td>
+                <td colspan="3">{{w.mainWorkProgramDto.sendFileUnit}}</td>
                 <td style="width:10%;" class="text-center">来文单位联系人</td>
-                <td colspan="3">{{w.sendFileUser}}</td>
+                <td colspan="3">{{w.mainWorkProgramDto.sendFileUser}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">建设单位</td>
-                <td colspan="3">{{w.buildCompany}}</td>
+                <td colspan="3">{{w.mainWorkProgramDto.buildCompany}}</td>
                 <td class="text-center">编制单位</td>
-                <td colspan="3">{{w.designCompany}}</td>
+                <td colspan="3">{{w.mainWorkProgramDto.designCompany}}</td>
             </tr>
 
             <tr>
                 <td class="text-center" colspan="2">主管部门</td>
-                <td colspan="3">{{w.mainDeptName}}</td>
+                <td colspan="3">{{w.mainWorkProgramDto.mainDeptName}}</td>
                 <td class="text-center">是否有环评</td>
                 <td colspan="3">
-                    <input type="radio" ng-value="9" ng-model="w.isHaveEIA" name="isHaveEIA" disabled>是
-                    <input type="radio" ng-value="0" ng-model="w.isHaveEIA" name="isHaveEIA" disabled>否
+                    <input type="checkbox" ng-value="9" ng-disabled="true"  name="isHaveEIA" ng-checked="w.mainWorkProgramDto.isHaveEIA == '9' || w.mainWorkProgramDto.isHaveEIA == 9">是
+                    <input type="checkbox" ng-value="0" ng-disabled="true"  name="isHaveEIA" ng-checked="!w.mainWorkProgramDto.isHaveEIA || w.mainWorkProgramDto.isHaveEIA == '0' || w.mainWorkProgramDto.isHaveEIA == 0">否
                 </td>
             </tr>
             <tr>
                 <td style="width:10%;" class="text-center" colspan="2">项目类别</td>
-                <td style="width:15%;">{{w.projectType}}</td>
+                <td style="width:15%;">{{w.mainWorkProgramDto.projectType}}</td>
                 <td style="width:10%;" class="text-center">小类</td>
-                <td style="width:15%;">{{w.projectSubType}}</td>
+                <td style="width:15%;">{{w.mainWorkProgramDto.projectSubType}}</td>
                 <td class="text-center">行业类别</td>
-                <td colspan="3">{{w.industryType}}</td>
+                <td colspan="3">{{w.mainWorkProgramDto.industryType}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">联系人</td>
-                <td colspan="3">{{w.contactPerson}}</td>
+                <td colspan="3">{{w.mainWorkProgramDto.contactPerson}}</td>
                 <td class="text-center">手机</td>
-                <td colspan="3">{{w.contactPersonPhone}}</td>
+                <td colspan="3">{{w.mainWorkProgramDto.contactPersonPhone}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">电话</td>
-                <td colspan="3">{{w.contactPersonTel}}</td>
+                <td colspan="3">{{w.mainWorkProgramDto.contactPersonTel}}</td>
                 <td class="text-center">传真</td>
-                <td colspan="3">{{w.contactPersonFax}}</td>
+                <td colspan="3">{{w.mainWorkProgramDto.contactPersonFax}}</td>
             </tr>
             <tr>
-                <td rowspan="4" style="width:5%;" class="text-center" style="vertical-align:middle;">项目概况</td>
+                <td rowspan="4" style="width:5%;vertical-align:middle;" class="text-center" >项目概况</td>
                 <td class="text-center" style="width:10%;">申报投资</td>
-                <td colspan="3" ng-show="vm.showTotalInvestment">{{w.appalyInvestment}} 万元</td>
-                <td  class="text-center" ng-show="vm.showTotalInvestment">总投资</td>
-                <td colspan="3" ng-show="vm.showTotalInvestment">{{w.totalInvestment}} 万元</td>
-
-                <td colspan="7" ng-hide="vm.showTotalInvestment">{{w.appalyInvestment}} 万元</td>
+                <td colspan="7">{{w.appalyInvestment}} 万元</td>
             </tr>
             <tr>
                 <td class="text-center" style="height: 80px;">申报建设规模</td>
@@ -282,19 +278,19 @@
                 <td colspan="7">{{w.projectBackGround}}</td>
             </tr>
             <tr>
-                <td rowspan="2" colspan="2" class="text-center">评估部门</td>
-                <td rowspan="2" colspan="3">
-                    {{w.reviewOrgName}}
+                <td rowspan="2" colspan="2" class="text-center" style="vertical-align:middle;">评估部门</td>
+                <td rowspan="2" colspan="3" style="vertical-align:middle;">
+                    {{w.mainWorkProgramDto.reviewOrgName}}
                 </td>
                 <td class="text-center">第一负责人</td>
                 <td colspan="3">
-                    {{w.mianChargeUserName}}
+                    {{w.mainWorkProgramDto.mianChargeUserName}}
                 </td>
             </tr>
             <tr>
                 <td class="text-center" >第二负责人</td>
                 <td colspan="3">
-                    {{w.secondChargeUserName}}
+                    {{w.mainWorkProgramDto.secondChargeUserName}}
                 </td>
             </tr>
             <tr>

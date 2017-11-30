@@ -1,7 +1,6 @@
 <meta charset="UTF-8">
 <!--  协审流程编辑的工作方案  -->
 <!--S 进口设备 -->
-<form id="work_program_form" name="work_program_form">
 <!--  s table-->
 <table class="table table-bordered">
     <caption style="width:100%;color: #333;">
@@ -24,37 +23,37 @@
     <tr>
         <td class="text-center">来文单位</td>
         <td colspan="3">
-            {{vm.work.sendFileUnit}}
+            {{vm.work.mainWorkProgramDto.sendFileUnit}}
         </td>
         <td style="width:10%;" class="text-center">来文单位联系人</td>
         <td colspan="3">
-            {{vm.work.sendFileUser}}
+            {{vm.work.mainWorkProgramDto.sendFileUser}}
         </td>
     </tr>
     <tr>
         <td class="text-center">采购单位</td>
         <td colspan="7">
-            {{vm.work.buildCompany}}
+            {{vm.work.mainWorkProgramDto.buildCompany}}
         </td>
     </tr>
     <tr>
         <td class="text-center">联系人</td>
         <td colspan="3">
-            {{vm.work.contactPerson}}
+            {{vm.work.mainWorkProgramDto.contactPerson}}
         </td>
         <td class="text-center">手机</td>
         <td colspan="3">
-            {{vm.work.contactPersonPhone}}
+            {{vm.work.mainWorkProgramDto.contactPersonPhone}}
         </td>
     </tr>
     <tr>
         <td class="text-center">电话</td>
         <td colspan="3">
-            {{vm.work.contactPersonTel}}
+            {{vm.work.mainWorkProgramDto.contactPersonTel}}
         </td>
         <td class="text-center">传真</td>
         <td colspan="3">
-            {{vm.work.contactPersonFax}}
+            {{vm.work.mainWorkProgramDto.contactPersonFax}}
         </td>
     </tr>
     <tr>
@@ -70,19 +69,19 @@
         </td>
     </tr>
     <tr>
-        <td rowspan="2"  class="text-center">评审部门</td>
-        <td rowspan="2" colspan="3">
-            {{vm.work.reviewOrgName}}
+        <td rowspan="2"  class="text-center" style="vertical-align: middle;">评审部门</td>
+        <td rowspan="2" colspan="3" style="vertical-align: middle;">
+            {{vm.work.mainWorkProgramDto.reviewOrgName}}
         </td>
         <td class="text-center">第一负责人</td>
         <td colspan="3">
-            {{vm.work.mianChargeUserName}}
+            {{vm.work.mainWorkProgramDto.mianChargeUserName}}
         </td>
     </tr>
     <tr>
         <td class="text-center">第二负责人</td>
         <td colspan="3">
-            {{vm.work.secondChargeUserName}}
+            {{vm.work.mainWorkProgramDto.secondChargeUserName}}
         </td>
     </tr>
     <tr>
@@ -343,6 +342,5 @@
     </tr>-->
     </tbody>
 </table>    <!--  	end table -->
-</form>  <!-- end form -->
 <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
 <!--E 进口设备 -->

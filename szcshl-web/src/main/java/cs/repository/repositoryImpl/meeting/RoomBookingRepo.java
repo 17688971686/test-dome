@@ -32,4 +32,11 @@ public interface RoomBookingRepo extends IRepository<RoomBooking, String> {
      * @return
      */
     boolean isHaveBookMeeting(String businessId);
+
+    /**
+     * 根据业务状态，修改会议室预定状态
+     * @param businessId
+     * @param status
+     */
+    void updateStateByBusinessId(String businessId,String status);
 }

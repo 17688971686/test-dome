@@ -88,10 +88,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 }
                 workProgram = workProgramRepo.findById(workProgramDto.getId());
                 BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
-                /*//如果是专家函评，则要更新函评日期(在流程处理环节，统一更改评审会日期，以审批通过的日期为准)
-                if (Constant.MergeType.REVIEW_LEETER.getValue().equals(workProgram.getReviewType())) {
-                    expertReviewRepo.updateReviewDate(workProgram.getId(), Constant.BusinessType.SIGN_WP.getValue(), workProgram.getLetterDate());
-                }*/
+
             } else {
                 workProgram = new WorkProgram();
                 BeanCopierUtils.copyProperties(workProgramDto, workProgram);
@@ -143,85 +140,67 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         //2、是否有当前用户负责的工作方案
         boolean isHaveCurUserWP = false;
         WorkProgram mainW = new WorkProgram();
-        SignPrincipal signPrincipal = signPrincipalService.getPrincipalInfo(SessionUtil.getUserInfo().getId(), signId);
+        SignPrincipal signPrincipal = signPrincipalService.getPrincipalInfo(SessionUtil.getUserId(), signId);
         if (Validate.isList(wpList)) {
-            List<WorkProgramDto> wpDtoList = new ArrayList<>();
-            for (WorkProgram wp : wpList) {
-                //查询主工作方案
-                if (EnumState.PROCESS.getValue().equals(wp.getBranchId())) {
-                    BeanCopierUtils.copyProperties(wp, mainW);
+            int totalL = wpList.size();
+            //遍历第一遍，先找出主分支工作方案
+            for (int i=0;i<totalL;i++) {
+                WorkProgram wp = wpList.get(i);
+                if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                    mainW = wp;
+                    break;
                 }
+            }
+            List<WorkProgramDto> wpDtoList = new ArrayList<>();
+            for (int i=0;i<totalL;i++) {
+                WorkProgram wp = wpList.get(i);
                 if ((signPrincipal.getFlowBranch()).equals(wp.getBranchId())) {
                     BeanCopierUtils.copyProperties(wp, workProgramDto);
+                    if(Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                        WorkProgramDto mainWPDto = new WorkProgramDto();
+                        BeanCopierUtils.copyProperties(mainW,mainWPDto);
+                        workProgramDto.setMainWorkProgramDto(mainWPDto);
+                    }
                     workProgramRepo.initWPMeetingExp(workProgramDto, wp);
                     isHaveCurUserWP = true;
                 } else {
                     WorkProgramDto wpDto = new WorkProgramDto();
                     BeanCopierUtils.copyProperties(wp, wpDto);
+                    if(Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                        WorkProgramDto mainWPDto = new WorkProgramDto();
+                        BeanCopierUtils.copyProperties(mainW,mainWPDto);
+                        wpDto.setMainWorkProgramDto(mainWPDto);
+                    }
                     workProgramRepo.initWPMeetingExp(wpDto, wp);
                     wpDtoList.add(wpDto);
                 }
             }
             resultMap.put("WPList", wpDtoList);
         }
-        //3、主流程负责人，可以填写主要信息
+        //3、如果还没填报工作方案，则初始化
         if (isHaveCurUserWP == false) {
+            WorkProgramDto mainWPDto = new WorkProgramDto();
+            boolean isMainFlowPri = signPrincipalService.isMainFlowPri(SessionUtil.getUserInfo().getId(), signId);
             Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
+            //项目基本信息
+            workProgramDto.setProjectName(sign.getProjectname());
+            workProgramDto.setAppalyInvestment(sign.getDeclaration());
+            workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
+            workProgramDto.setDesignCompany(sign.getDesigncompanyName());
+            workProgramDto.setAppalyInvestment(sign.getDeclaration());
             workProgramDto.setWorkreviveStage(sign.getReviewstage());
             workProgramDto.setBranchId(signPrincipal.getFlowBranch());
-            workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);    //默认名称
-            workProgramDto.setProjectName(sign.getProjectname());
-            workProgramDto.setAppalyInvestment(sign.getDeclaration());//申报投资
+            //默认名称
+            workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
+            workProgramDto.setTitleDate(new Date());
+
             //是否有拟补充资料函
             workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null ? Constant.EnumState.NO.getValue() : sign.getIsHaveSuppLetter());
             //拟补充资料函发文日期
             workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
 
-            //项目基本信息
-            workProgramDto.setProjectName(sign.getProjectname());
-            workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
-            workProgramDto.setDesignCompany(sign.getDesigncompanyName());
-            workProgramDto.setAppalyInvestment(sign.getDeclaration());
-            //是否有拟补充资料函
-//            workProgramDto.setIsHaveSuppLetter(sign.getIsHaveSuppLetter() == null ? Constant.EnumState.NO.getValue() : sign.getIsHaveSuppLetter());
-            //拟补充资料函发文日期
-//            workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
-//            workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
-
-            workProgramDto.setTitleDate(new Date());
-            //来文单位默认全部是：深圳市发展和改革委员会，可改...
-            //联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段
-            workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
-            workProgramDto.setSendFileUser(sign.getMainDeptUserName());
-
-            //获取评审部门
-            List<OrgDept> orgList = signBranchRepo.getOrgDeptBySignId(signId);
-            if (Validate.isList(orgList)) {
-                StringBuffer orgName = new StringBuffer();
-                for (int i = 0, l = orgList.size(); i < l; i++) {
-                    if (i > 0) {
-                        orgName.append(",");
-                    }
-                    orgName.append(orgList.get(i).getName());
-                }
-                workProgramDto.setReviewOrgName(orgName.toString());
-            }
-            //项目第一负责人
-            User mainUser = signPrincipalService.getMainPriUser(signId);
-            if (mainUser != null && Validate.isString(mainUser.getId())) {
-                workProgramDto.setMianChargeUserName(mainUser.getDisplayName());
-            }
-            //项目其它负责人
-            List<User> secondPriUserList = signPrincipalService.getAllSecondPriUser(signId);
-            if (Validate.isList(secondPriUserList)) {
-                String seUserName = "";
-                for (User u : secondPriUserList) {
-                    seUserName += u.getDisplayName() + ",";
-                }
-                workProgramDto.setSecondChargeUserName(seUserName.substring(0, seUserName.length() - 1));
-            }
-
-            if (signPrincipalService.isMainFlowPri(SessionUtil.getUserInfo().getId(), signId)) {
+            if(isMainFlowPri){
+                copySignCommonInfo(workProgramDto,sign);
                 //判断是否是关联次项目
                 boolean isMerge = signMergeRepo.checkIsMerege(signId, Constant.MergeType.WORK_PROGRAM.getValue());
                 if (isMerge) {
@@ -232,37 +211,58 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     workProgramDto.setIsSigle(Constant.MergeType.REVIEW_MERGE.getValue());
                     workProgramDto.setIsMainProject(EnumState.NO.getValue());
                 }
-
-            } else {
+            }else{
                 //通过主工作方案 初始化协办分支的公共部分
-                if (mainW != null && mainW.getId() != null) {
-                    workProgramDto.setSendFileUnit(mainW.getSendFileUnit()); //来文单位
-                    workProgramDto.setSendFileUser(mainW.getSendFileUser());//来文单位联系人
-                    workProgramDto.setBuildCompany(mainW.getBuildCompany());//建设单位
-                    workProgramDto.setDesignCompany(mainW.getDesignCompany());//编制单位
-                    workProgramDto.setMainDeptName(mainW.getMainDeptName());//主管部门名称
-                    workProgramDto.setIsHaveEIA(mainW.getIsHaveEIA());//是否有环评
-                    workProgramDto.setProjectType(mainW.getProjectType());//项目类别
-                    workProgramDto.setProjectSubType(mainW.getProjectSubType());//小类
-                    workProgramDto.setIndustryType(mainW.getIndustryType());//行业类别
-                    workProgramDto.setContactPerson(mainW.getContactPerson());//联系人
-                    workProgramDto.setContactPersonPhone(mainW.getContactPersonPhone());//联系人手机号
-                    workProgramDto.setContactPersonTel(mainW.getContactPersonTel());//联系人电话
-                    workProgramDto.setContactPersonFax(mainW.getContactPersonFax());//联系人传真
-//                    workProgramDto.setBuildSize(mainW.getBuildSize());//建设规模
-//                    workProgramDto.setBuildContent(mainW.getBuildContent());//建设内容
-//                    workProgramDto.setProjectBackGround(mainW.getProjectBackGround());//项目背景
-                    workProgramDto.setReviewOrgName(mainW.getReviewOrgName());//评估部门
-                    workProgramDto.setMianChargeUserName(mainW.getMianChargeUserName());//第一负责人
-                    workProgramDto.setSecondChargeUserName(mainW.getSecondChargeUserName());//第二负责人
-
+                if (mainW != null && Validate.isString(mainW.getId())) {
+                    BeanCopierUtils.copyProperties(mainW,mainWPDto);
+                }else{
+                    copySignCommonInfo(mainWPDto,sign);
                 }
-
             }
+            workProgramDto.setMainWorkProgramDto(mainWPDto);
         }
 
         resultMap.put("eidtWP", workProgramDto);
         return resultMap;
+    }
+
+    /**
+     * 拷贝主要属性
+     * @param workProgramDto
+     * @param sign
+     */
+    @Override
+    public void copySignCommonInfo(WorkProgramDto workProgramDto,Sign sign){
+        //来文单位默认全部是：深圳市发展和改革委员会，可改...
+        //联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段
+        workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
+        workProgramDto.setSendFileUser(sign.getMainDeptUserName());
+        //获取评审部门
+        List<OrgDept> orgList = signBranchRepo.getOrgDeptBySignId(sign.getSignid());
+        if (Validate.isList(orgList)) {
+            StringBuffer orgName = new StringBuffer();
+            for (int i = 0, l = orgList.size(); i < l; i++) {
+                if (i > 0) {
+                    orgName.append(",");
+                }
+                orgName.append(orgList.get(i).getName());
+            }
+            workProgramDto.setReviewOrgName(orgName.toString());
+        }
+        //项目第一负责人
+        User mainUser = signPrincipalService.getMainPriUser(sign.getSignid());
+        if (mainUser != null && Validate.isString(mainUser.getId())) {
+            workProgramDto.setMianChargeUserName(mainUser.getDisplayName());
+        }
+        //项目其它负责人
+        List<User> secondPriUserList = signPrincipalService.getAllSecondPriUser(sign.getSignid());
+        if (Validate.isList(secondPriUserList)) {
+            String seUserName = "";
+            for (User u : secondPriUserList) {
+                seUserName += u.getDisplayName() + ",";
+            }
+            workProgramDto.setSecondChargeUserName(seUserName.substring(0, seUserName.length() - 1));
+        }
     }
 
     /**

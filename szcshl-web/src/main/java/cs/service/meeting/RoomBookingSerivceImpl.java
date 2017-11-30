@@ -292,6 +292,10 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 
 	/**
 	 * 删除会议室
+     * 1、普通预定的会议室，没到会议日期前，可以修改和删除
+     * 2、业务预定的会议室，没提交审核之前（不管有没有到会议日期），可以修改和删除。
+     * 3、提交审核的会议室，不可删除，admin可以修改，其他人不可修改和删除。
+     * 4、审核通过的会议室，不可修改和删除（不管有没有到会议日期也不管用户是谁）。
 	 * @param id
 	 * @param dueToPeople
 	 * @return
@@ -299,19 +303,48 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	@Override
 	@Transactional
 	public ResultMsg deleteRoom(String id , String dueToPeople) {
-//		roomBookingRepo.deleteById(RoomBooking_.id.getName(),id);
-		//会议预定人和admin才可以删除该会议室
-		if(SessionUtil.getDisplayName().equals(dueToPeople) || SessionUtil.getLoginName().equals(Constant.SUPER_USER)){
-			roomBookingRepo.deleteById(RoomBooking_.id.getName() , id);
-			return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "删除成功！" , null);
-		}else{
-			return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您没有该权限，删除失败！", null);
-		}
+        RoomBooking roomBooking = roomBookingRepo.findById(RoomBooking_.id.getName(),id);
+        if(roomBooking == null ){
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该会议室预定信息已被删除！");
+        }else{
+            //业务预定的会议室
+            if(Validate.isString(roomBooking.getBusinessId())){
+                if(Constant.EnumState.YES.getValue().equals(roomBooking.getRbStatus()) || Constant.EnumState.PROCESS.getValue().equals(roomBooking.getRbStatus())){
+                    return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "会议室已经提交审核，不能进行删除操作！");
+                }
+                if(Constant.EnumState.NO.getValue().equals(roomBooking.getRbStatus())){
+                    if(SessionUtil.getUserId().equals(roomBooking.getCreatedBy()) || SessionUtil.getLoginName().equals(Constant.SUPER_USER)){
+                        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功！");
+                    }else{
+                        return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "操作失败，您没有删除权限！");
+                    }
+                }
+                //旧数据默认不可删除
+                return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "预定的会议室不可删除！");
+            //普通预定的会议室
+            }else{
+                if((new Date()).after(roomBooking.getBeginTime()) || Constant.EnumState.YES.getValue().equals(roomBooking.getRbStatus())){
+                    roomBooking.setRbStatus(Constant.EnumState.YES.getValue());
+                    roomBookingRepo.save(roomBooking);
+                    return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "操作失败，只能在预定会议的时间段之前进行删除操作！");
+                }
+                if(SessionUtil.getDisplayName().equals(dueToPeople) || SessionUtil.getLoginName().equals(Constant.SUPER_USER)){
+                    roomBookingRepo.delete(roomBooking);
+                    return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功！");
+                }else{
+                    return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您没有该权限，删除失败！", null);
+                }
+            }
+        }
 	}
 
 	/**
 	 * 保存会议预定信息
 	 * @param roomDto
+     * 1、普通预定的会议室，没到会议日期前，可以修改和删除
+     * 2、业务预定的会议室，没提交审核之前（不管有没有到会议日期），可以修改和删除。
+     * 3、提交审核的会议室，不可删除，admin可以修改，其他人不可修改和删除。
+     * 4、审核通过的会议室，不可修改和删除（不管有没有到会议日期也不管用户是谁）。
 	 * @return
 	 */
 	@Override
@@ -319,43 +352,71 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 	public ResultMsg saveRoom(RoomBookingDto roomDto) {
 		if(checkRootBook(roomDto) > 0){
 			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"预定的会议室时间跟其他会议有冲突！");
-		}else if(((roomDto.getEndTime().getTime()) - (roomDto.getBeginTime().getTime())) < 0) {
+		}else if((roomDto.getBeginTime()).after(roomDto.getEndTime())) {
 			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue() , "开始时间不能大于结束时间!");
 		}else{
 			Date now = new Date();
-			RoomBooking rb = new RoomBooking();
+			RoomBooking roomBooking = new RoomBooking();
 			if(Validate.isString(roomDto.getId())){
-				if(!(Constant.SUPER_USER.equals(SessionUtil.getLoginName())
-						|| SessionUtil.getDisplayName().equals(roomDto.getDueToPeople()))){
-					return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您没有该权限，更新失败！" , null);
-				}
-				rb = roomBookingRepo.getById(roomDto.getId());
-				BeanCopierUtils.copyPropertiesIgnoreNull(roomDto,rb);
+                roomBooking = roomBookingRepo.getById(roomDto.getId());
+                //业务预定的会议室
+                if(Validate.isString(roomBooking.getBusinessId())){
+                    if(Constant.EnumState.YES.getValue().equals(roomBooking.getRbStatus())){
+                        return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "会议室已经提交审核，不能进行修改操作！");
+                    }
+                    //已经提交审核的，只有系统管理员才能审核
+                    if(Constant.EnumState.PROCESS.getValue().equals(roomBooking.getRbStatus())){
+                        if(!SessionUtil.getLoginName().equals(Constant.SUPER_USER)){
+                            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您没有修改权限，请联系系统管理员处理！");
+                        }
+                    }
+                    if(Constant.EnumState.NO.getValue().equals(roomBooking.getRbStatus())){
+                        if(!SessionUtil.getUserId().equals(roomBooking.getCreatedBy())
+                                && !SessionUtil.getLoginName().equals(Constant.SUPER_USER)){
+                            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您没有修改权限！");
+                        }
+                    }
+                //普通预定的会议室
+                }else{
+                    if((new Date()).after(roomBooking.getBeginTime()) || Constant.EnumState.YES.getValue().equals(roomBooking.getRbStatus())){
+                        roomBooking.setRbStatus(Constant.EnumState.YES.getValue());
+                        roomBookingRepo.save(roomBooking);
+                        return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "操作失败，只能在预定会议的时间段之前进行修改操作！");
+                    }
+                    if(Constant.EnumState.NO.getValue().equals(roomBooking.getRbStatus())){
+                        if(!SessionUtil.getUserId().equals(roomBooking.getCreatedBy())
+                                && !SessionUtil.getLoginName().equals(Constant.SUPER_USER)){
+                            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您没有修改权限！");
+                        }
+                    }
+                }
+				BeanCopierUtils.copyPropertiesIgnoreNull(roomDto,roomBooking);
 			}else{
-				BeanCopierUtils.copyProperties(roomDto, rb);
-				rb.setId(UUID.randomUUID().toString());
-				rb.setCreatedBy(SessionUtil.getUserId());
-				rb.setCreatedDate(now);
+			    if((new Date()).after(roomDto.getBeginTime())){
+                    return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "操作失败，只能选择当前日期之后的时间进行预定！");
+                }
+				BeanCopierUtils.copyProperties(roomDto, roomBooking);
+                roomBooking.setId(UUID.randomUUID().toString());
+                roomBooking.setCreatedBy(SessionUtil.getUserId());
+                roomBooking.setCreatedDate(now);
+                //设定为审批状态
+                roomBooking.setRbStatus(Constant.EnumState.NO.getValue());
 			}
 			//会议室名称，还是要保存的
 			if(Validate.isString(roomDto.getMrID())){
 				MeetingRoom meeting = meetingRoomRepo.findById(MeetingRoom_.id.getName(),roomDto.getMrID());
-				rb.setAddressName(meeting.getAddr());
+                roomBooking.setAddressName(meeting.getAddr());
 			}
-
 			String strdate = DateUtils.toStringDay(roomDto.getRbDay());
 			String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
-			rb.setRbDate(strdate+"("+stageday+")");//星期几
-			rb.setStageProject(Validate.isString(roomDto.getStageProject())?roomDto.getStageProject():""+"("+strdate+"("+stageday+")"+")");
-			rb.setModifiedDate(now);
-			rb.setModifiedBy(SessionUtil.getUserId());
-			roomBookingRepo.save(rb);
+            roomBooking.setRbDate(strdate+"("+stageday+")");//星期几
+            roomBooking.setStageProject(Validate.isString(roomDto.getStageProject())?roomDto.getStageProject():""+"("+strdate+"("+stageday+")"+")");
+            roomBooking.setModifiedDate(now);
+            roomBooking.setModifiedBy(SessionUtil.getUserId());
+			roomBookingRepo.save(roomBooking);
 
-			//根据业务类型，更新专家评审会事件(在流程处理环节，统一更改评审会日期，以审批通过的日期为准)
-			/*if(Validate.isString(rb.getBusinessId()) && Validate.isString(rb.getBusinessType())){
-				expertReviewRepo.updateReviewDate(rb.getBusinessId(),rb.getBusinessType(),rb.getRbDay());
-			}*/
-			return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",rb);
+			BeanCopierUtils.copyProperties(roomBooking,roomDto);
+			return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",roomDto);
 		}
 	}
 

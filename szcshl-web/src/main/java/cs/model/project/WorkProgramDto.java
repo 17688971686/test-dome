@@ -172,12 +172,18 @@ public class WorkProgramDto extends BaseDto {
     private String inviteUnitLeader;
 
     private List<RoomBookingDto> roomBookingDtos;
+
     //拟聘请专家
     private List<ExpertDto> expertDtoList;
 
     public List<ExpertDto> getExpertDtoList() {
         return expertDtoList;
     }
+
+    /**
+     * 主工作方案DTO
+     */
+    private WorkProgramDto mainWorkProgramDto;
 
     public void setExpertDtoList(List<ExpertDto> expertDtoList) {
         this.expertDtoList = expertDtoList;
@@ -638,5 +644,12 @@ public class WorkProgramDto extends BaseDto {
     public BigDecimal getTotalInvestment(){
         return totalInvestment;
     }
-    
+
+    public WorkProgramDto getMainWorkProgramDto() {
+        return mainWorkProgramDto;
+    }
+
+    public void setMainWorkProgramDto(WorkProgramDto mainWorkProgramDto) {
+        this.mainWorkProgramDto = mainWorkProgramDto;
+    }
 }

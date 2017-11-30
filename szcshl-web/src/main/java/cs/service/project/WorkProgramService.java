@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import cs.common.ResultMsg;
+import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
 import cs.model.project.WorkProgramDto;
 
@@ -58,4 +59,12 @@ public interface WorkProgramService {
      * @return
      */
     ResultMsg updateReviewType(String signId, String workprogramId, String reviewType);
+
+
+    /**
+     * 初始化项目的共同部分信息
+     * @param workProgramDto
+     * @param sign
+     */
+    void copySignCommonInfo(WorkProgramDto workProgramDto,Sign sign);
 }

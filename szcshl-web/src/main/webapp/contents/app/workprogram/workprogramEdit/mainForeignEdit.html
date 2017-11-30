@@ -1,7 +1,6 @@
 <meta charset="UTF-8">
 <!--  主流程编辑的工作方案  -->
 <!--S 进口设备 -->
-<form id="work_program_form" name="work_program_form">
 <!--  s table-->
 <table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
     <caption>
@@ -32,8 +31,6 @@
     </caption>
     
     <tbody>
-
-
 	<tr>
         <td style="width:10%;" class="text-center">项目名称</td>
         <td colspan="7">
@@ -60,8 +57,6 @@
         </td>
     </tr>
 
-    
-    
     <tr>
         <td class="text-center">联系人<span class="required">*</span></td>
         <td colspan="3">
@@ -98,18 +93,18 @@
     <tr>
         <td class="text-center">项目概况</td>
         <td colspan="7">
-            <textarea maxlength="1500" rows="3" cols="" ng-model="vm.work.projectBackGround" name="projectBackGround"  style="width:98%;">{{vm.work.projectBackGround}}</textarea>
+            <textarea maxlength="1500" rows="5" cols="" ng-model="vm.work.projectBackGround" name="projectBackGround"  style="width:98%;">{{vm.work.projectBackGround}}</textarea>
         </td>
     </tr>
     <tr>
         <td class="text-center">拟评审重点问题</td>
         <td colspan="7">
-            <textarea maxlength="1024"  rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:98%">{{vm.work.mainPoint}}</textarea>
+            <textarea maxlength="1024"  rows="5" ng-model="vm.work.mainPoint" name="mainPoint" style="width:98%">{{vm.work.mainPoint}}</textarea>
         </td>
     </tr>
     <tr>
-        <td rowspan="2"  class="text-center">评审部门</td>
-        <td rowspan="2" colspan="3">
+        <td rowspan="2"  class="text-center" style="vertical-align: middle;">评审部门</td>
+        <td rowspan="2" colspan="3" style="vertical-align: middle;">
             {{vm.work.reviewOrgName}}
         </td>
         <td class="text-center">第一负责人</td>
@@ -235,6 +230,5 @@
     
     </tbody>
 </table>    <!--  	end table -->
-</form>  <!-- end form -->
 <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
 <!--E 进口设备 -->

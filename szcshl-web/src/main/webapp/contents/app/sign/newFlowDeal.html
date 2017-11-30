@@ -44,10 +44,6 @@
                 下一环节名称
             </td>
             <td>
-                <div class="toolbar" style="font-size:12px;padding:5px 10px; width: 470px;"
-                     ng-show="vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4'">
-                    <span class="required">*</span> 温馨提示：如果做工作方案，则下一环节是部长审批；否则，下一环节为发文申请
-                </div>
                 <div ng-repeat="x in vm.flow.nextNode">
                     <span>{{$index+1}}、{{x.activitiName}}</span>
                 </div>
@@ -71,9 +67,9 @@
                             <td width="250px;" align="center">部门名称</td>
                             <td width="100px;" align="center">主办部门</td>
                             <td width="100px;" align="center">协办部门</td>
-                            <td rowspan="7">
+                            <td rowspan="{{vm.orgs.length + 1}}">
                                 <div >
-                                    <p>温馨提示：</p>
+                                    <p><i class="fa fa-exclamation-triangle" aria-hidden="true" ></i> 温馨提示：</p>
                                     <p>1、主办部门必须选择，并且只能选一个！</p>
                                     <p>2、协办部门可以不选或者选择多个，最多只能选3个！</p>
                                     <p>3、合并评审的项目只能有一个分支，请注意项目分办情况！</p>
@@ -94,10 +90,11 @@
                 <!-- 选择负责人 -->
                 <div ng-if="vm.showFlag.nodeSelPrincipal && vm.model.isassistflow != 9 && vm.model.isassistflow != '9'"
                      style="margin: 0px;padding:0px;">
-                    <div class="label-default" style="font-size: 12px;padding:5px 10px;">
-                        （温馨提示：主办部门才能选第一负责人，并且只能选一个，项目负责人可以选多个）
-                    </div>
-                    <table style="width: 100%;">
+                    <span  style="color: #FF6700;font-size:12px;" >
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
+                        <span >温馨提示：主办部门才能选第一负责人，并且只能选一个，项目负责人可以选多个</span>
+                    </span>
+                    <table style="width: 100%;margin-top:5px;">
                         <tr ng-if="vm.businessFlag.isMainBranch">
                             <td style="width: 100px; text-align: right">
                                 第一负责人：
@@ -141,7 +138,7 @@
                 <!-- 协审部门分办 -->
                 <div ng-show="vm.showFlag.nodeSelPrincipal && vm.model.isassistflow == 9" id="xs_bmfb">
                     <div class="label-default" style="font-size: 12px;padding:5px 10px;">
-                        <span class="required">*</span>温馨提水：总负责人由主工作方案选择，且只能选一人；其它负责人可以选多个。
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i> 温馨提水：总负责人由主工作方案选择，且只能选一人；其它负责人可以选多个。
                     </div>
                     <table class="table table-bordered">
                         <tr>
@@ -215,9 +212,16 @@
                 </div>
                 <!-- 工作方案 -->
                 <div ng-if="vm.showFlag.nodeWorkProgram">
-                    <p>是否做工作方案：<input class="formAlignRight" type="checkbox" style="width:20px;"
+                    <p>
+                        是否做工作方案：<input class="formAlignRight" type="checkbox" style="width:20px;"
                                       ng-checked="vm.businessFlag.isNeedWP == 9" ng-true-value="9" ng-false-value="0"
-                                      ng-click="vm.checkNeedWP($event)"></p>
+                                      ng-click="vm.checkNeedWP($event)">
+                    </p>
+                    <p  style="color: #FF6700;font-size:12px;"
+                        ng-show="vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4'">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
+                        <span >温馨提示：勾选做工作方案，下一环节是部长审批；否则，下一环节为发文申请</span>
+                    </p>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit"
                             ng-show="vm.businessFlag.isNeedWP == 9 "><span class="glyphicon glyphicon-edit"></span>工作方案
                     </button>
@@ -259,9 +263,9 @@
                 </div>
                 <!--项目负责人确认发文-->
                 <div ng-if="vm.showFlag.nodeConfirmDis">
-                    <span style="font-size: 12px;color: #F39C12;">
-                        <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i> 温馨提示：该环节只要有一人不通过，流程就会返回负责人填报发文申请环节！</li>
-                    </span>
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: #F39C12;"></i>
+                    <span style="font-size: 12px;">温馨提示：该环节只要有一人不通过，流程就会返回负责人填报发文申请环节！</span>
+
                     <p style="margin-top:5px;">
                     <input type="checkbox" ng-model="vm.businessFlag.passDis" ng-true-value="9" ng-false-value="0"
                            ng-checked="vm.businessFlag.passDis == 9"><span>通过</span>

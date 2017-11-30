@@ -785,7 +785,7 @@ public class DateUtils {
 
 
     public static void main(String[] args) throws ParseException {
-        long totalDay = DateUtils.daysBetween(DateUtils.converToDate("2017-11-12","yyyy-MM-dd"),DateUtils.converToDate("2017-11-26","yyyy-MM-dd"));
-        System.out.println(15/7);
+        //long totalDay = DateUtils.daysBetween(DateUtils.converToDate("2017-11-12","yyyy-MM-dd"),DateUtils.converToDate("2017-11-26","yyyy-MM-dd"));
+        System.out.println("XMFZR1".substring("XMFZR1".length()-1,"XMFZR1".length()));
     }
 }

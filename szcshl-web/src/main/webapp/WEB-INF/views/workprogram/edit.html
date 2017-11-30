@@ -33,7 +33,7 @@
       
         <!--S 编辑页面 -->
         <div class="well well-sm tab-pane fade in active" style="background:white;" id="wp_edit">
-
+            <form id="work_program_form" name="work_program_form">
             <!-- S 项目建议书/可行性研究报告 -->
             <div ng-show="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它'">
                 <div id="mainEdit" ng-show="vm.work.branchId == '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainEdit.html'"></div>
@@ -67,12 +67,13 @@
             <div id="mainCapitalAppReportEdit_templ" style="display: none;"> <#include "/templatePrint/workprogram/capitalAppReportEditZjsq.html"/></div>
             <div id="mainForeignEdit_templ" style="display: none;"> <#include "/templatePrint/workprogram/workProgramEditJksb.html"/></div>
             <div id="mainEquipmentImportEdit_templ" style="display: none;"> <#include "/templatePrint/workprogram/workProgramEditSbqd.html"/></div>
-
+            </form>
             <!--协办 工作方案模板--->
             <div id="assistEdit_templ" style="display: none;"> <#include "/templatePrint/workprogram/workProgramEditXmjys.html"/></div>
             <div id="assistEquipmentImportEdit_templ" style="display: none;"> <#include "/templatePrint/workprogram/workProgramEditSbqd.html"/></div>
             <div id="assistForeignEdit_templ" style="display: none;"> <#include "/templatePrint/workprogram/workProgramEditJksb.html"/></div>
             <div id="assistCapitalAppReportEdit_templ" style="display: none;"> <#include "/templatePrint/workprogram/capitalAppReportEditZjsq.html"/></div>
+
         </div>
         <!--E 编辑页面 -->  
       

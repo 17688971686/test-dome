@@ -291,18 +291,16 @@
             var httpSuccess = function success(response) {
                 if (response.data != null && response.data != "") {
                     vm.work = response.data.eidtWP;
-                    console.log(vm.work.id);
-                    //如果首次填写公安方案，则默认评审方式为：自评、单个评审
-                    if(! vm.work.id){
+
+                    //如果没有赋值，则初始化一种类型，否则按照默认的类型
+                    //因为合并评审次项目是不可以修改的
+                    if(!vm.work.reviewType){
                         vm.work.reviewType = "自评";
+                    }
+                    if(!vm.work.isSigle){
                         vm.work.isSigle = '单个评审';
                     }
 
-                    //如果首次填写公安方案，则默认评审方式为：自评、单个评审
-                    if(! vm.work.id){
-                        vm.work.reviewType = "自评";
-                        vm.work.isSigle = '单个评审';
-                    }
                     //如果选了专家，并且评审费有变动，则更改
                     if (vm.work.expertDtoList && vm.work.expertDtoList.length > 0) {
                         if (!vm.work.expertCost || vm.work.expertCost < 1000 * (vm.work.expertDtoList.length)) {
@@ -322,17 +320,7 @@
                     if (vm.work.projectType) {
                         vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType, $rootScope.DICT.PROJECTTYPE.dicts)
                     }
-                    /*//初始化数值
-                     if(vm.work.reviewType == "自评"){
-                     vm.businessFlag.isSelfReview = true;           //是否自评
-                     }
-                     if(vm.work.isSigle == "合并评审"){
-                     vm.businessFlag.isSingleReview = false;         //是否单个评审
-                     }
-                     if(vm.work.isMainProject == "9"){
-                     vm.businessFlag.isMainWorkProj = true;           //合并评审主项目
-                     }
-                     */
+
                     //如果是合并评审次项目，则不允许修改
                     if (vm.work.isSigle == "合并评审" && (vm.work.isMainProject == "0" || vm.work.isMainProject == 0)) {
                         vm.businessFlag.isReveiwAWP = true;
