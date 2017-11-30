@@ -245,7 +245,7 @@
 
         // 询问窗口模板
         $templateCache.put(confirmTplPath,
-            '<div class="confirmDialog modal fade" tabindex="-1" role="dialog" style="z-index: 10000;">\
+            '<div class="confirmDialog modal fade" tabindex="-1" role="dialog" style="z-index: 100000;">\
                 <div class="modal-dialog" role="document" style="margin:80px auto;width:80%;max-width:400px;">\
                     <div class="modal-content">\
                         <div class="modal-header">\

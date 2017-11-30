@@ -55,12 +55,12 @@
         <!-- E 设备清单（国产）/设备清单（进口） -->
 
         <!---S 发文打印模板 引入-->
-        <div id="projectEdit_xmjsy_templ" style="display: none;"> <#include "/templatePrint/dispatch/projectDetailXmjys.html"/></div>
-        <div id="foreignEdit_jksb_templ" style="display: none;"> <#include "/templatePrint/dispatch/projectDetailJksb.html"/></div>
-        <div id="domesticEdit_sbqd_templ" style="display: none;"> <#include "/templatePrint/dispatch/projectDetailSbqd.html"/></div>
-        <div id="projectBudgetEdit_xmgs_templ" style="display: none;"> <#include "/templatePrint/dispatch/projectDetailXmgs.html"/></div>
-        <div id="capitalAppReportEdit_zjsq_templ" style="display: none;"> <#include "/templatePrint/dispatch/capitalAppReportZjsq.html"/></div>
-        <div id="feasibilityEdit_kxxyj_templ" style="display: none;"> <#include "/templatePrint/dispatch/projectDetailKxxyjbg.html"/></div>
+        <div id="projectEdit_xmjsy_templ" style="display: none;" ng-show="vm.dispatchDoc.dispatchStage=='项目建议书'"> <#include "/templatePrint/dispatch/projectDetailXmjys.html"/></div>
+        <div id="foreignEdit_jksb_templ" style="display: none;" ng-show="vm.dispatchDoc.dispatchStage=='进口设备'"> <#include "/templatePrint/dispatch/projectDetailJksb.html"/></div>
+        <div id="domesticEdit_sbqd_templ" style="display: none;" ng-show="vm.dispatchDoc.dispatchStage=='设备清单（国产）' || vm.dispatchDoc.dispatchStage=='设备清单（进口）' "> <#include "/templatePrint/dispatch/projectDetailSbqd.html"/></div>
+        <div id="projectBudgetEdit_xmgs_templ" style="display: none;" ng-show="vm.dispatchDoc.dispatchStage=='项目概算'"> <#include "/templatePrint/dispatch/projectDetailXmgs.html"/></div>
+        <div id="capitalAppReportEdit_zjsq_templ" style="display: none;" ng-show="vm.dispatchDoc.dispatchStage=='资金申请报告'"> <#include "/templatePrint/dispatch/capitalAppReportZjsq.html"/></div>
+        <div id="feasibilityEdit_kxxyj_templ" style="display: none;" ng-show="vm.dispatchDoc.dispatchStage=='可行性研究报告'"> <#include "/templatePrint/dispatch/projectDetailKxxyjbg.html"/></div>
         <!---E 发文打印模板 引入-->
 
         <!--S 发文编辑页面 -->

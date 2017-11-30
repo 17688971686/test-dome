@@ -1,5 +1,5 @@
 <!-- start  主项目 （ 进口设备） -->
-<div  ng-repeat="w in vm.model.workProgramDtoList"   ng-if="w.signId == vm.model.signid">
+<div  ng-repeat="w in vm.model.workProgramDtoList | orderBy : 'branchId'"   ng-if="w.signId == vm.model.signid">
     <table  class="print-table" style="margin-bottom: 0px;" >
         <caption class="title" style="margin-top: 20px;" >{{w.titleName}}</caption>
         <caption>

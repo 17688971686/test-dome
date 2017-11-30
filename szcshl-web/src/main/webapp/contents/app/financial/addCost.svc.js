@@ -112,19 +112,25 @@
                 if (isChecked.length < 1) {
                     bsWin.alert("请选择要删除的记录！");
                 } else {
-                    var ids = [];
-                    for (var i = 0; i < isChecked.length; i++) {
-                        vm.financials.forEach(function (f, number) {
-                            if (isChecked[i].value == f.id || f.id == undefined) {
-                                vm.financials.splice(number, 1);
-                            }
-                            ids.push(isChecked[i].value);
-                        });
-                        var idsStr = ids.join(",");
-                        financialManagerSvc.deleteFinancialManager(idsStr, function (data) {
+                    bsWin.confirm({
+                        title: "询问提示",
+                        message: "确认删除？",
+                        onOk: function () {
+                            var ids = [];
+                            for (var i = 0; i < isChecked.length; i++) {
+                                vm.financials.forEach(function (f, number) {
+                                    if (isChecked[i].value == f.id || f.id == undefined) {
+                                        vm.financials.splice(number, 1);
+                                    }
+                                    ids.push(isChecked[i].value);
+                                });
+                                var idsStr = ids.join(",");
 
-                        });
-                    }
+                            }
+                            financialManagerSvc.deleteFinancialManager(idsStr, function (data) {});
+                        }
+                    });
+
                 }
             }
             vm.count=function(){//当输入框输入值时就计算
