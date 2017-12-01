@@ -113,8 +113,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             //表示正在做工作方案
             sign.setProcessState(Constant.SignProcessState.DO_WP.getValue());
             workProgram.setSign(sign);
-            if (workProgram.getReviewType().equals("自评")){
+            if (Constant.MergeType.REVIEW_SELF.getValue().equals(workProgram.getReviewType())){
+                //清除专家费用，和协审会日期
                 workProgram.setExpertCost(null);
+                workProgram.setLetterDate(null);
             }
             workProgramRepo.save(workProgram);
 
