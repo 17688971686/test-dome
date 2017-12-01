@@ -61,14 +61,11 @@
         }
         //返回调用
         vm.refleshData = function(data){
+            vm.findMeeting();
             if (data.flag || data.reCode == 'ok') {
-                bsWin.alert("操作成功",function(){
-                    vm.findMeeting();
-                });
+                bsWin.alert("操作成功");
             } else {
-                bsWin.alert(data.reMsg,function(){
-                    vm.findMeeting();
-                });
+                bsWin.alert(data.reMsg);
             }
         }
 
