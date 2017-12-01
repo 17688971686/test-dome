@@ -318,9 +318,9 @@ public class MonthlyNewsletterController {
 
     @RequiresAuthentication
     //@RequiresPermissions("monthlyNewsletter#html/monthlyMultiyearDetail#get")
-    @RequestMapping(name = "月报简报页面详细", path = "html/monthlyMultiyearDetail", method = RequestMethod.GET)
-    public String monthlyMultiyearDetail() {
-        return ctrlName+"/monthlyMultiyearDetail"; 
+    @RequestMapping(name = "月报简报页面详细", path = "html/monthlyMultiyView", method = RequestMethod.GET)
+    public String monthlyMultiyView() {
+        return ctrlName+"/monthlyMultiyView";
     }
 
     @RequiresAuthentication

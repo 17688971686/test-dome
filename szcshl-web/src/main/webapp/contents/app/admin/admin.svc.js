@@ -1328,7 +1328,7 @@
                     field: "",
                     title: "序号",
                     template: "<span class='row-number'></span>",
-                    width: 50
+                    width: "3%",
                 },
                 {
                     field: "",
@@ -1354,7 +1354,12 @@
                 {
                     field: "processName",
                     title: "流程类别",
-                    width: "20%",
+                    width: "20" +
+                    "" +
+                    "" +
+                    "" +
+                    "" +
+                    "%",
                     filterable: false,
                 },
                 {
