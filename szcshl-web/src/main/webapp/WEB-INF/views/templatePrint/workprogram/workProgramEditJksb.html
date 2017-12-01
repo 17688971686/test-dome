@@ -31,28 +31,35 @@
         </tr>
         <tr>
             <td style="width:13%;" class="text-center" colspan="2">来文单位</td>
-            <td colspan="3">{{vm.work.sendFileUnit}}</td>
+            <td colspan="3" ng-show="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.sendFileUnit}}</td>
+            <td colspan="3" ng-hide="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.mainWorkProgramDto.sendFileUnit}}</td>
             <td style="width:13%;" class="text-center">来文单位联系人</td>
-            <td colspan="3">{{vm.work.sendFileUser}}</td>
+            <td colspan="3" ng-show="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.sendFileUser}}</td>
+            <td colspan="3" ng-hide="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.mainWorkProgramDto.sendFileUser}}</td>
         </tr>
         <tr>
             <td style="width:13%;" colspan="2" class="text-center">项目单位</td>
-            <td colspan="7">{{vm.work.buildCompany}}</td>
+            <td colspan="7" ng-show="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.buildCompany}}</td>
+            <td colspan="7" ng-hide="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.mainWorkProgramDto.buildCompany}}</td>
         </tr>
         <tr>
             <td rowspan="3" colspan="2" style="width:13%;" class="text-center" >联系人</td>
-            <td colspan="3" rowspan="3" >{{vm.work.contactPerson}}</td>
+            <td colspan="3" rowspan="3" ng-show="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.contactPerson}}</td>
+            <td colspan="3" rowspan="3" ng-hide="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.mainWorkProgramDto.contactPerson}}</td>
             <td class="text-center">手机</td>
-            <td colspan="3">{{vm.work.contactPersonPhone}}</td>
+            <td colspan="3" ng-show="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.contactPersonPhone}}</td>
+            <td colspan="3" ng-hide="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.mainWorkProgramDto.contactPersonPhone}}</td>
         </tr>
 
         <tr>
             <td class="text-center">电话</td>
-            <td colspan="3">{{vm.work.contactPersonTel}}</td>
+            <td colspan="3" ng-show="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.contactPersonTel}}</td>
+            <td colspan="3" ng-hide="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.mainWorkProgramDto.contactPersonTel}}</td>
         </tr>
         <tr>
             <td class="text-center">传真</td>
-            <td colspan="3">{{vm.work.contactPersonFax}}</td>
+            <td colspan="3" ng-show="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.contactPersonFax}}</td>
+            <td colspan="3" ng-hide="vm.work.branchId == '1' || vm.work.branchId == 1">{{vm.work.mainWorkProgramDto.contactPersonFax}}</td>
         </tr>
 
         <tr>
@@ -73,18 +80,27 @@
         </tr>
         <tr style="height: 80px;">
             <td rowspan="2" colspan="2" >评估部门</td>
-            <td rowspan="2" colspan="3">
+            <td rowspan="2" colspan="3" ng-show="vm.work.branchId == '1' || vm.work.branchId == 1">
                 {{vm.work.reviewOrgName}}
             </td>
+            <td rowspan="2" colspan="3" ng-hide="vm.work.branchId == '1' || vm.work.branchId == 1">
+                {{vm.work.mainWorkProgramDto.reviewOrgName}}
+            </td>
             <td class="text-center">第一负责人</td>
-            <td colspan="3">
-                {{vm.work.mianChargeUserName}}
+            <td colspan="3" ng-show="vm.work.branchId == '1' || vm.work.branchId == 1">
+                {{vm.work..mianChargeUserName}}
+            </td>
+            <td colspan="3" ng-hide="vm.work.branchId == '1' || vm.work.branchId == 1">
+                {{vm.work.mainWorkProgramDto.mianChargeUserName}}
             </td>
         </tr>
         <tr style="height: 80px;">
             <td class="text-center" >第二负责人</td>
-            <td colspan="3">
+            <td colspan="3" ng-show="vm.work.branchId == '1' || vm.work.branchId == 1">
                 {{vm.work.secondChargeUserName}}
+            </td>
+            <td colspan="3" ng-hide="vm.work.branchId == '1' || vm.work.branchId == 1">
+                {{vm.work.mainWorkProgramDto.secondChargeUserName}}
             </td>
         </tr>
         <tr style="height: 50px;">

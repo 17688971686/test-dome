@@ -11,8 +11,8 @@
 </style>
 <!--  S 项目建议书-->
 <!-- s table -->
-<table class="print-table">
-    <caption >
+<table class="print-table" >
+    <caption style="padding-top: 20px;">
         <span>QR-4.7-19-A2</span>
     </caption>
     <caption class="title"><p>深圳市政府投资项目评审中心</p><p>项目发文审批表</p></caption>
@@ -72,7 +72,7 @@
     <tr>
         <td >发行范围</td>
         <td colspan="7"  >
-            <div style="width: 100%; height: 45px; overflow: hidden;font-size: 12px;">{{vm.dispatchDoc.description}} <br/>
+            <div style="width: 100%; height: 30px; overflow: hidden;font-size: 12px;">{{vm.dispatchDoc.description}}
                 <span style="float: right;">(印 {{vm.dispatchDoc.printCount}} 份)</span></div>
         </td>
     </tr>
@@ -98,14 +98,14 @@
     <tr>
         <td >评审意见摘要</td>
         <td colspan="7">
-            <div style="width: 100%; height: 15px; overflow: hidden;font-size: 12px;">{{vm.dispatchDoc.reviewAbstract}}</div>
+            <div style="width: 100%; height: 20px; overflow: hidden;font-size: 12px;">{{vm.dispatchDoc.reviewAbstract}}</div>
         </td>
     </tr>
     <tr>
         <td >部长审核意见</td>
         <td colspan="7" >
             <div style="width: 100%; height: 45px; overflow: hidden;font-size: 12px;">
-                <p class="text-left" style="height: 13%;"> {{vm.dispatchDoc.ministerSuggesttion}}</p>
+                <p class="text-left" style="height: 5%;"> {{vm.dispatchDoc.ministerSuggesttion}}</p>
                 <p class="text-right" style="margin-right: 90px;">签名：</p>
                 <p class="text-right" style="margin-right: 20px;" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
                 <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.dispatchDoc.ministerDate)">日期：</p>
@@ -116,7 +116,7 @@
         <td>分管副主任意见</td>
         <td colspan="7">
             <div style="width: 100%; height: 45px; overflow: hidden;font-size: 12px;">
-                <p class="text-left" style="height: 13%;">{{vm.dispatchDoc.viceDirectorSuggesttion}}</p>
+                <p class="text-left" style="height: 5%;">{{vm.dispatchDoc.viceDirectorSuggesttion}}</p>
             <p class="text-right" style="margin-right: 90px;">签名：</p>
             <p class="text-right" style="margin-right: 22px; " ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
                 <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.dispatchDoc.viceDirectorDate)">日期：</p>
@@ -128,7 +128,7 @@
         <td>主任签发</td>
         <td colspan="7">
             <div style="width: 100%; height: 45px; overflow: hidden;font-size: 12px;">
-                <p class="text-left" style="height: 13%;">{{vm.dispatchDoc.directorSuggesttion}}</p>
+                <p class="text-left" style="height: 5%;">{{vm.dispatchDoc.directorSuggesttion}}</p>
             <p class="text-right" style="margin-right: 90px;">签名：</p>
             <p class="text-right" style="margin-right: 22px;" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
                 <p class="text-right" style="margin-right: 90px;" ng-if="!(vm.dispatchDoc.directorDate)">日期：</p>
