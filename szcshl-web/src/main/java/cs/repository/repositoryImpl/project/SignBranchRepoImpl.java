@@ -355,5 +355,17 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
         executeHql(hqlBuilder);
     }
 
+    /**
+     * 统计项目分办情况
+     * @param signId
+     * @return
+     */
+    @Override
+    public int countBranch(String signId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(SignBranch_.signId.getName(),signId));
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        return totalResult;
+    }
 
 }

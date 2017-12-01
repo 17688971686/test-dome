@@ -106,4 +106,11 @@ public interface SignBranchRepo extends IRepository<SignBranch, String> {
      * @param branchId
      */
     void resetBranchState(String signId,String branchId);
+
+    /**
+     * 统计分办部门个数
+     * @param signid
+     * @return
+     */
+    int countBranch(String signid);
 }

@@ -190,7 +190,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
             //项目基本信息
             workProgramDto.setProjectName(sign.getProjectname());
-            workProgramDto.setAppalyInvestment(sign.getDeclaration());
             workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
             workProgramDto.setDesignCompany(sign.getDesigncompanyName());
             workProgramDto.setAppalyInvestment(sign.getDeclaration());
@@ -206,6 +205,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
 
             if(isMainFlowPri){
+                //判断是否是分办给多个部门办理，如果是，则显示申报总投资金额
+                if(signBranchRepo.countBranch(sign.getSignid()) > 1){
+                    workProgramDto.setTotalInvestment(sign.getDeclaration());
+                    resultMap.put("showTotalInvestment", EnumState.YES.getValue());
+                }
                 copySignCommonInfo(workProgramDto,sign);
                 //判断是否是关联次项目
                 boolean isMerge = signMergeRepo.checkIsMerege(signId, Constant.MergeType.WORK_PROGRAM.getValue());

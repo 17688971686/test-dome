@@ -47,27 +47,12 @@
                 },
                 save: function (e) {
                     saveBookRoom(e.event,function(data){
-                        bsWin.alert(data.reMsg,function(){
-                            vm.findMeeting();
-                        });
-                        /*if (data.flag || data.reCode == 'ok') {
-                            bsWin.alert("操作成功");
-                        } else {
-                            bsWin.alert(data.reMsg);
-                        }*/
+                        vm.refleshData(data);
                     });
                 },
                 remove: function(e) {
                     deleteRoom(e.event , function(data){
-                        if(data.flag || data.reCode == "ok"){
-                            bsWin.alert("删除成功！",function(){
-                                vm.findMeeting();
-                            })
-                        }else{
-                            bsWin.alert(data.reMsg,function(){
-                                vm.findMeeting();
-                            });
-                        }
+                        vm.refleshData(data);
                     });
                 },
                 eventTemplate: $("#event-template").html(),
@@ -158,13 +143,23 @@
 
         function saveBookRoom(event,callBack) {
             var model = event;
-
             if(!model.rbName || !model.dueToPeople || !model.rbDay || !model.start|| !model.end ||!model.content){
-                var resultMsg = {};
-                resultMsg.flag = false;
-                resultMsg.reCode = 'error';
-                resultMsg.reMsg = '保存失败！有红色*号的是必填项，请按要求填写再提交！';
-                callBack(resultMsg);
+                //返回一个自定义错误对象，不能直接返回自定义js对象，目前找不到好的解决办法
+                var httpOptions = {
+                    method: 'post',
+                    url: rootPath + "/room/errorResult",
+                }
+                var httpSuccess = function success(response) {
+                    if (callBack != undefined && typeof callBack == 'function') {
+                        callBack(response.data);
+                    }
+                }
+                common.http({
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
             }else{
                 model.id = model.bookId;
                 var beginTime = (model.start).Format("yyyy-MM-dd hh:mm:ss");
@@ -180,6 +175,7 @@
                 }
                 var httpSuccess = function success(response) {
                     if (callBack != undefined && typeof callBack == 'function') {
+                        console.log(response.data);
                         callBack(response.data);
                     }
                 }

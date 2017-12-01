@@ -1,6 +1,7 @@
 package cs.controller.meeting;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.ExcelUtils;
 import cs.common.utils.FileUtils;
@@ -197,6 +198,13 @@ public class RoomBookingController {
     @ResponseBody
     public ResultMsg delete(@RequestParam String id , @RequestParam String dueToPeople) {
        return  roomBookingSerivce.deleteRoom(id , dueToPeople);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "返回自定义错误对象", path = "errorResult", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg errorResult() {
+        return  new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败！有红色*号的是必填项，请按要求填写再提交！");
     }
 
     @RequiresPermissions("room#html/roomlist#get")

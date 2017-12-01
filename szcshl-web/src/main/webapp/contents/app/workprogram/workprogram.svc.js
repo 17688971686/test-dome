@@ -308,7 +308,9 @@
                         }
                     }
                     vm.model.workProgramDtoList = {};
-                    if (response.data.WPList && response.data.WPList.length > 0) {
+                    //如果存在多个分支的情况，则显示项目总投资
+                    if ((response.data.showTotalInvestment == '9' || response.data.showTotalInvestment == 9)
+                        || (response.data.WPList && response.data.WPList.length > 0)) {
                         vm.model.workProgramDtoList = response.data.WPList;
                         vm.showTotalInvestment = true;
                     }
