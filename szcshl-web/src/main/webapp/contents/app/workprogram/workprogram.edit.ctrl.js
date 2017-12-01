@@ -260,7 +260,8 @@
         }
 
         vm.create = function () {
-            common.initJqValidation($("#work_program_form"));
+            var id = $("#work_program_form").find('div[class="ng-scope"]').attr("id");
+            common.initJqValidation($("#"+id));
             var isValid = $("#work_program_form").valid();
             if (isValid) {
                 workprogramSvc.createWP(vm.work, false, vm.iscommit, function (data) {
