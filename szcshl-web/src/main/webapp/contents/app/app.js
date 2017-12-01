@@ -829,6 +829,13 @@
                 controller: 'archivesLibraryListCtrl',
                 controllerAs: 'vm'
             })
+            //档案借阅查看详情页
+            .state('archivesLibraryView', {
+                url: '/archivesLibraryView/:id',
+                templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryView.html',
+                controller: 'archivesLibraryViewCtrl',
+                controllerAs: 'vm'
+            })
             //E 档案借阅管理
 
               //begin#dispatch

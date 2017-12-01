@@ -14,10 +14,14 @@
                     <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == vm.work.reviewType"
                             value="{{x.dictName}}">{{x.dictName}}</option>
                 </select>
-                <select ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" id="isSigle" ng-disabled="vm.businessFlag.isReveiwAWP">
-                    <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == vm.work.isSigle"
-                            value="{{x.dictName}}">{{x.dictName}}</option>
-                </select>
+                 <select ng-if="vm.work.reviewType!='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" id="isSigle" ng-disabled="vm.businessFlag.isReveiwAWP">
+                        <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == vm.work.isSigle"
+                                value="{{x.dictName}}">{{x.dictName}}</option>
+                 </select>
+                 <select ng-if="vm.work.reviewType=='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" id="isSigle" ng-disabled="vm.businessFlag.isReveiwAWP">
+                        <option value="单个评审">单个评审</option>
+                 </select>
+
             </span>
         <span ng-show="vm.work.isSigle=='合并评审'" style="margin-left:10px;">
                 <input type="radio" name="isMainProject" ng-model="vm.work.isMainProject" ng-value="9"

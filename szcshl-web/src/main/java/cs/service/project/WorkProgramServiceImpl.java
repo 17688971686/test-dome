@@ -113,6 +113,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             //表示正在做工作方案
             sign.setProcessState(Constant.SignProcessState.DO_WP.getValue());
             workProgram.setSign(sign);
+            if (workProgram.getReviewType().equals("自评")){
+                workProgram.setExpertCost(null);
+            }
             workProgramRepo.save(workProgram);
 
             //完成分支工作方案
@@ -347,6 +350,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         }
         //3、更改评审方式
         workProgram.setReviewType(reviewType);
+        workProgram.setExpertCost(null);
         workProgramRepo.save(workProgram);
         //4、回调函数对象
         WorkProgramDto workProgramDto = new WorkProgramDto();

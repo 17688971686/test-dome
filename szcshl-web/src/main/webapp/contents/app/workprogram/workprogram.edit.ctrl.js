@@ -70,9 +70,15 @@
 
         //评审方式修改
         vm.reviewTypeChange = function () {
+            if(vm.work.reviewType =='自评'){
+                vm.work.expertCost="";
+            }
             //如果已经保存了工作方案，则从数据库查找工作方案内容进行对比
             if(vm.work.id){
                 workprogramSvc.findById(vm.work.id,function(data){
+                    if(data.expertCost!=undefined && vm.work.expertCost==""){
+                        vm.work.expertCost=data.expertCost;
+                    }
                     //1、由合并评审改为单个评审
                     if(data.isSigle == '合并评审' && data.isMainProject == "9" && "单个评审" == vm.work.isSigle){
                         bsWin.confirm({
