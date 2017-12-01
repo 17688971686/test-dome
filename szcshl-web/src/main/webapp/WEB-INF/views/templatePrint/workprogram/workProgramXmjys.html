@@ -2,7 +2,7 @@
 <!-- start 主项目 -->
 <div  ng-repeat="w in vm.model.workProgramDtoList | orderBy : 'branchId' "   ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告')  && (w.signId == vm.model.signid)">
     <table class="print-table"  >
-        <caption class="title" style="margin-top: 10px;" >{{w.titleName}}{{w.branchId}}</caption>
+        <caption class="title" style="margin-top: 10px;" >{{w.titleName}}</caption>
         <caption>
             <span ng-show="w.workreviveStage=='项目建议书'">QR-4.3-02-A3</span>
             <span ng-show="w.workreviveStage=='可行性研究报告'">QR-4.4-01-A3</span>
@@ -34,47 +34,63 @@
         </tr>
         <tr>
             <td colspan="2">来文单位</td>
-            <td colspan="3">{{w.sendFileUnit}}</td>
+            <td colspan="3" ng-show="w.branchId == '1' || w.branchId == 1">{{w.sendFileUnit}}</td>
+            <td colspan="3" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.sendFileUnit}}</td>
             <td class="text-center">来文单位联系人</td>
-            <td colspan="2">{{w.sendFileUser}}</td>
+            <td colspan="2" ng-show="w.branchId == '1' || w.branchId == 1">{{w.sendFileUser}}</td>
+            <td colspan="2" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.sendFileUser}}</td>
         </tr>
         <tr style="height: 60px;">
             <td colspan="2">建设单位</td>
-            <td colspan="3">{{w.buildCompany}}</td>
+            <td colspan="3" ng-show="w.branchId == '1' || w.branchId == 1">{{w.buildCompany}}</td>
+            <td colspan="3" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.buildCompany}}</td>
             <td class="text-center">编制单位</td>
-            <td colspan="2">{{w.designCompany}}</td>
+            <td colspan="2" ng-show="w.branchId == '1' || w.branchId == 1">{{w.designCompany}}</td>
+            <td colspan="2" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.designCompany}}</td>
         </tr>
 
         <tr>
             <td colspan="2">主管部门</td>
-            <td colspan="3">{{w.mainDeptName}}</td>
+            <td colspan="3" ng-show="w.branchId == '1' || w.branchId == 1">{{w.mainDeptName}}</td>
+            <td colspan="3" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.mainDeptName}}</td>
             <td class="text-center">是否有环评</td>
-            <td colspan="2">
-                <input style="margin:0 10px" type="checkbox" ng-value="9" ng-model="vm.model.workProgramDtoList[0].isHaveEIA" name="isHaveEIA" ng-checked="w.isHaveEIA == 9 || w.isHaveEIA == '9' " >是
-                <input style="margin:0 10px" type="checkbox" ng-value="0" ng-model="vm.model.workProgramDtoList[0].isHaveEIA" name="isHaveEIA" ng-checked="w.isHaveEIA == 0 || w.isHaveEIA == '0' ">否
+            <td colspan="2" ng-show="w.branchId == '1' || w.branchId == 1">
+                <input style="margin:0 10px" type="checkbox" ng-value="9" ng-model="w.isHaveEIA" name="isHaveEIA" ng-checked="w.isHaveEIA == 9 || w.isHaveEIA == '9' " >是
+                <input style="margin:0 10px" type="checkbox" ng-value="0" ng-model="w.isHaveEIA" name="isHaveEIA" ng-checked="w.isHaveEIA == 0 || w.isHaveEIA == '0' ">否
+            </td>
+            <td colspan="2" ng-hide="w.branchId == '1' || w.branchId == 1">
+                <input style="margin:0 10px" type="checkbox" ng-value="9" ng-model="w.mainWorkProgramDto.isHaveEIA" name="isHaveEIA" ng-checked="w.mainWorkProgramDto.isHaveEIA == 9 || w.mainWorkProgramDto.isHaveEIA == '9' " >是
+                <input style="margin:0 10px" type="checkbox" ng-value="0" ng-model="w.mainWorkProgramDto.isHaveEIA" name="isHaveEIA" ng-checked="w.mainWorkProgramDto.isHaveEIA == 0 || w.mainWorkProgramDto.isHaveEIA == '0' ">否
             </td>
         </tr>
         <tr>
             <td class="text-center" colspan="2">项目类别</td>
-            <td>{{w.projectType}}</td>
+            <td ng-show="w.branchId == '1' || w.branchId == 1">{{w.projectType}}</td>
+            <td ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.projectType}}</td>
             <td class="text-center">小类</td>
-            <td>{{w.projectSubType}}</td>
+            <td ng-show="w.branchId == '1' || w.branchId == 1">{{w.projectSubType}}</td>
+            <td ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.projectSubType}}</td>
             <td class="text-center">行业类别</td>
-            <td colspan="2">{{w.industryType}}</td>
+            <td colspan="2" ng-show="w.branchId == '1' || w.branchId == 1">{{w.industryType}}</td>
+            <td colspan="2" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.industryType}}</td>
         </tr>
         <tr>
             <td colspan="2" rowspan="3">联系人</td>
-            <td colspan="3" rowspan="3">{{w.contactPerson}}</td>
+            <td colspan="3" rowspan="3" ng-show="w.branchId == '1' || w.branchId == 1">{{w.contactPerson}}</td>
+            <td colspan="3" rowspan="3" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.contactPerson}}</td>
             <td class="text-center">手机</td>
-            <td colspan="2">{{w.contactPersonPhone}}</td>
+            <td colspan="2" ng-show="w.branchId == '1' || w.branchId == 1">{{w.contactPersonPhone}}</td>
+            <td colspan="2" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.contactPersonPhone}}</td>
         </tr>
         <tr>
             <td>电话</td>
-            <td colspan="2">{{w.contactPersonTel}}</td>
+            <td colspan="2" ng-show="w.branchId == '1' || w.branchId == 1">{{w.contactPersonTel}}</td>
+            <td colspan="2" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.contactPersonTel}}</td>
         </tr>
         <tr>
             <td>传真</td>
-            <td colspan="2">{{w.contactPersonFax}}</td>
+            <td colspan="2" ng-show="w.branchId == '1' || w.branchId == 1">{{w.contactPersonFax}}</td>
+            <td colspan="2" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.contactPersonFax}}</td>
         </tr>
         <tr >
             <td rowspan="4" style="vertical-align:middle;">项目概况</td>
@@ -107,13 +123,16 @@
 
         <tr>
             <td colspan="2" rowspan="2">评审部门</td>
-            <td colspan="3" rowspan="2">{{w.reviewOrgName}}</td>
+            <td colspan="3" rowspan="2" ng-show="w.branchId == '1' || w.branchId == 1">{{w.reviewOrgName}}</td>
+            <td colspan="3" rowspan="2" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.reviewOrgName}}</td>
             <td class="text-center">第一负责人</td>
-            <td colspan="2">{{w.mianChargeUserName}}</td>
+            <td colspan="2" ng-show="w.branchId == '1' || w.branchId == 1">{{w.mianChargeUserName}}</td>
+            <td colspan="2" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.mianChargeUserName}}</td>
         </tr>
         <tr>
             <td>第二负责人</td>
-            <td colspan="2">{{w.secondChargeUserName}}</td>
+            <td colspan="2" ng-show="w.branchId == '1' || w.branchId == 1">{{w.secondChargeUserName}}</td>
+            <td colspan="2" ng-hide="w.branchId == '1' || w.branchId == 1">{{w.mainWorkProgramDto.secondChargeUserName}}</td>
         </tr>
         <tr>
             <td class="text-center" colspan="2">补充资料函</td>
