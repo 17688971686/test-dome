@@ -312,9 +312,10 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                     archivesLibrary.setDeptSLeaderId(SessionUtil.getUserId());
                     archivesLibrary.setDeptSLeader(SessionUtil.getDisplayName());
                     archivesLibrary.setDeptSLeaderIdeaContent(flowDto.getDealOption());
+                    archivesLibrary.setDeptSleaderDate(new Date());
                     archivesLibrary.setArchivesStatus(Constant.EnumState.PROCESS.getValue());   //1表示部长已经审批
-                    //如果是外借档案或者是借阅市中心文档，则由主任审批
-                    if(EnumState.YES.getValue().equals(archivesLibrary.getIsLendOut()) || EnumState.YES.getValue().equals(archivesLibrary.getArchivesType())){
+                    //如果是外借档案，则由主任审批
+                    if(EnumState.YES.getValue().equals(archivesLibrary.getIsLendOut())){
                         archivesLibrary.setArchivesStatus(EnumState.STOP.getValue());   //2表示到主任审批
                         dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                         if (!Validate.isList(dealUserList)) {
@@ -329,16 +330,21 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                             isNextUser = true;
                             nextNodeKey = FlowConstant.FLOW_ARC_ZR_SP;
                         }
-                    }else{
-                        archivesLibrary.setArchivesStatus(EnumState.NORMAL.getValue()); //5表示到归档员处理
-                        dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.FILER.getValue());
-                        if (!Validate.isList(dealUserList)) {
-                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
+                    }else{//借阅评审中心文档,需要经过归档员
+                        if(EnumState.NO.getValue().equals(archivesLibrary.getArchivesType())) {
+                            archivesLibrary.setArchivesStatus(EnumState.NORMAL.getValue()); //5表示到归档员处理
+                            dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.FILER.getValue());
+                            if (!Validate.isList(dealUserList)) {
+                                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
+                            }
+                            dealUser = dealUserList.get(0);
+                            assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                            variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_GDY.getValue(), assigneeValue);
+                            variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), EnumState.PROCESS.getValue());
+                        }else{
+                            variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(),EnumState.NO.getValue());
+                            archivesLibrary.setIsAgree(EnumState.YES.getValue());
                         }
-                        dealUser = dealUserList.get(0);
-                        assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
-                        variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_GDY.getValue(),assigneeValue);
-                        variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(),EnumState.PROCESS.getValue());
                     }
                 //不同意，则直接结束
                 }else{
