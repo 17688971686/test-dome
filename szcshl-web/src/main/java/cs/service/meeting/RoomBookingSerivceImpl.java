@@ -314,7 +314,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
                 }
                 if(Constant.EnumState.NO.getValue().equals(roomBooking.getRbStatus())){
                     if(SessionUtil.getUserId().equals(roomBooking.getCreatedBy()) || SessionUtil.getLoginName().equals(Constant.SUPER_USER)){
-                        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功！");
+						roomBookingRepo.delete(roomBooking);
+                    	return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功！");
                     }else{
                         return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "操作失败，您没有删除权限！");
                     }
@@ -328,7 +329,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
                     roomBookingRepo.save(roomBooking);
                     return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "操作失败，只能在预定会议的时间段之前进行删除操作！");
                 }
-                if(SessionUtil.getDisplayName().equals(dueToPeople) || SessionUtil.getLoginName().equals(Constant.SUPER_USER)){
+                if(SessionUtil.getUserId().equals(roomBooking.getCreatedBy()) || SessionUtil.getLoginName().equals(Constant.SUPER_USER)){
                     roomBookingRepo.delete(roomBooking);
                     return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功！");
                 }else{
