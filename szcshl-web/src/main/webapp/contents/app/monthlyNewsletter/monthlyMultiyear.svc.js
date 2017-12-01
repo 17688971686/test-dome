@@ -242,14 +242,18 @@
                     width: 50,
                     filterable: false,
                     template: "<span class='row-number'></span>"
-                },
-                {
+                },{
                     field: "title",
                     title: "文件标题",
                     width: 180,
                     filterable: false,
                     template: function (item) {
-                        return '<a href="#/monthlyMultiyearEdit/' + item.id + '" >' + item.title + '</a>';
+                        if(!item.processInstanceId){
+                            return '<a href="#/monthlyMultiyearEdit/' + item.id + '" >' + item.title + '</a>';
+                        }else{
+                            return '<a href="#/monthlyMultiyView/' + item.id + '" >' + item.title + '</a>';
+                        }
+
                     }
                 },
                 {
@@ -364,7 +368,7 @@
                     width: "30%",
                     filterable: false,
                     template: function (item) {
-                        return '<a href="#/monthlyMultiyearEdit/' + item.id + '" >' + item.title + '</a>';
+                        return '<a href="#/monthlyMultiyView/' + item.id + '" >' + item.title + '</a>';
                     }
                 },
                 {
