@@ -82,7 +82,7 @@
         //添加报销记录
        vm.addFinancial =  function () {
            var financial = {};
-           financial.chargeType = "9";
+           financial.chargeType = "1";
            financial.businessId = vm.model.businessId;
            financial.projectName = vm.model.projectName;
            financial.paymentData = vm.model.paymentData;

@@ -45,7 +45,9 @@ public class FinancialManagerDto extends BaseDto {
 	private String businessId;
 
     /**
-     *  费用类型：协审费用录入8,评审费用录入9
+     * 费用类型
+     * 1：表示评审费（包括项目和课题）
+     * 2：表示协审费（只有项目有协审费）
      */
 	private String chargeType;
 

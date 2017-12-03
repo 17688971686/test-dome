@@ -209,7 +209,7 @@
         function monthlyYearGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type : 'odata',
-                transport : common.kendoGridConfig().transport(rootPath + "/addSuppLetter/monthlyMultiyearList", $("#form_monthly"), {filter:"monthLetterYearName lt '"+vm.suppletter.monthLetterYearName+"'"}),
+                transport : common.kendoGridConfig().transport(rootPath + "/addSuppLetter/monthlyMultiyearList", $("#form_monthly"), {filter:"monthLetterYearName lt '"+vm.suppletter.monthLetterYearName+"' and fileType eq '2' and monthlyType eq '月报简报'"}),
                 schema : common.kendoGridConfig().schema({
                     id : "id",
                     fields : {

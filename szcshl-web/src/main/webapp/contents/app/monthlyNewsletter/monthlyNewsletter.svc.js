@@ -388,11 +388,7 @@
                             type: "date"
                         }
                     }
-                }),
-                sort: {
-                    field: "createdDate",
-                    dir: "asc"
-                }
+                })
             });
             // End:dataSource
 

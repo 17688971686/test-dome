@@ -25,7 +25,7 @@ public class FinancialManager extends DomainBase {
     private String id;
 
     //费用名称
-    @Column(columnDefinition = "varchar(100)")
+    @Column(columnDefinition = "varchar(128)")
     private String chargeName;
 
     //费用
@@ -41,15 +41,19 @@ public class FinancialManager extends DomainBase {
     private Date paymentData;
 
     //业务ID
-    @Column(columnDefinition = "varchar(50)")
+    @Column(columnDefinition = "varchar(64)")
     private String businessId;
 
-    //费用类型：协审费用录入8,评审费用录入9
-    @Column(columnDefinition = "varchar(20)")
+    /**
+     * 费用类型
+     * 1：表示评审费（包括项目和课题）
+     * 2：表示协审费（只有项目有协审费）
+     */
+    @Column(columnDefinition = "varchar(16)")
     private String chargeType;
 
     //备注
-    @Column(columnDefinition = "varchar(200)")
+    @Column(columnDefinition = "varchar(256)")
     private String remarke;
 
     public FinancialManager() {

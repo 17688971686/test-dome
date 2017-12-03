@@ -755,10 +755,10 @@
             })
 
              //年度(中心文件)月报简报详细页面
-             .state('monthlyMultiyearDetail', {
-                url: '/monthlyMultiyearDetail/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearDetail.html',
-                controller: 'monthlyMultiyearEditCtrl',
+             .state('monthlyMultiyView', {
+                url: '/monthlyMultiyView/:id',
+                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyView.html',
+                controller: 'monthlyMultiyViewCtrl',
                 controllerAs: 'vm'
             })
 

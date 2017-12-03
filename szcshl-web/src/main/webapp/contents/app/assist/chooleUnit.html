@@ -3,15 +3,13 @@
         <label class="checkbox-inline">抽签方式：</label>
         <label class="checkbox-inline">
             <input type="checkbox" name="optionsRadiosinline" id="optionsRadios3" ng-true-value="1" ng-false-value="0"
-                   ng-model="vm.assistPlan.drawType" ng-disabled="vm.assistPlan.planState == '9'"
-                   ng-checked="(!vm.assistPlan.drawType || vm.assistPlan.drawType == '1')"
-                   ng-disabled="vm.assistPlan.isDrawed == '9' || (vm.assistPlan.assistUnitDtoList.length >= vm.assistPlan.assistPlanSignDtoList.length)">轮空一家单位
+                   ng-model="vm.assistPlan.drawType" ng-checked="(!vm.assistPlan.drawType || vm.assistPlan.drawType == '1')"
+                   ng-disabled="vm.assistPlan.isDrawed == '9' || vm.assistPlan.planState == '9' ||(vm.assistPlan.assistUnitDtoList.length >= vm.assistPlan.assistPlanSignDtoList.length)">轮空一家单位
         </label>
         <label class="checkbox-inline">
             <input type="checkbox" name="optionsRadiosinline" id="optionsRadios4" ng-true-value="0" ng-false-value="1"
-                   ng-model="vm.assistPlan.drawType" ng-disabled="vm.assistPlan.planState == '9'"
-                   ng-checked="vm.assistPlan.drawType == '0'"
-                   ng-disabled="vm.assistPlan.isDrawed == '9' || (vm.assistPlan.assistUnitDtoList.length >= vm.assistPlan.assistPlanSignDtoList.length) ">全部抽中
+                   ng-model="vm.assistPlan.drawType" ng-checked="vm.assistPlan.drawType == '0'"
+                   ng-disabled="vm.assistPlan.isDrawed == '9' || vm.assistPlan.planState == '9' ||(vm.assistPlan.assistUnitDtoList.length >= vm.assistPlan.assistPlanSignDtoList.length) ">全部抽中
         </label>
         <button class="btn btn-sm btn-success" ng-click="vm.chooseAssistUnit()"
                 ng-disabled="vm.assistPlan.isDrawed == '9' || (vm.assistPlan.assistUnitDtoList.length >= vm.assistPlan.assistPlanSignDtoList.length)">获取协审单位

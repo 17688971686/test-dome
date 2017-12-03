@@ -155,7 +155,7 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
      */
     @Override
     public List<SignAssistCostDto> signAssistCostList(SignAssistCostDto signAssistCostDto, boolean isShowDetail) {
-        List<Object[]> signAssistList = assistPlanRepo.signAssistCostList(signAssistCostDto);
+        List<Object[]> signAssistList = assistPlanRepo.signAssistCostList(signAssistCostDto,(isShowDetail==true? Constant.EnumState.YES.getValue():null));
         if (Validate.isList(signAssistList)) {
             List<SignAssistCostDto> resultList = new ArrayList<>(signAssistList.size());
             for (int i = 0, l = signAssistList.size(); i < l; i++) {
@@ -221,6 +221,7 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
      */
     @Override
     public ResultMsg save(FinancialManagerDto[] record) {
+        String businessId ="",chargeType="";
         if(record == null || record.length == 0){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，请先填写费用项信息！");
         }
@@ -229,6 +230,12 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
             FinancialManagerDto dto = record[i];
             if(!Validate.isString(dto.getChargeName()) || !Validate.isObject(dto.getCharge())){
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，存在费用名称或者费用没有填写！");
+            }
+            if(!Validate.isString(businessId)){
+                businessId = dto.getBusinessId();
+            }
+            if(!Validate.isString(chargeType)){
+                chargeType = dto.getChargeType();
             }
             FinancialManager financialManager = new FinancialManager();
             Date now = new Date();
@@ -246,9 +253,17 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
             }
             financialManager.setModifiedBy(SessionUtil.getDisplayName());
             financialManager.setModifiedDate(now);
+            //默认是评审费
+            if(!Validate.isString(financialManager.getChargeType())){
+                financialManager.setChargeType(Constant.EnumState.PROCESS.getValue());
+            }
             saveList.add(financialManager);
         }
         financialManagerRepo.bathUpdate(saveList);
+        //如果是协审费，要更改协审计划状态
+        if(Constant.EnumState.STOP.getValue().equals(chargeType)){
+            assistPlanRepo.updatePlanStateByBusinessId(businessId, Constant.EnumState.YES.getValue());
+        }
         //用于返回页面
         List<FinancialManagerDto> resultList = new ArrayList<>(saveList.size());
         saveList.forEach(l->{

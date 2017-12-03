@@ -1,7 +1,16 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('adminCtrl', admin);
+    angular.module('app')
+    .filter('date', function(){
+        return function(val){
+            if(val){
+                return (new Date(val.CompatibleDate())).Format("yyyy-MM-dd");
+            }else{
+                return "";
+            }
+        }
+    }).controller('adminCtrl', admin);
 
     admin.$inject = ['$location','adminSvc'];
 

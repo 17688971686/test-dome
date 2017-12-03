@@ -52,7 +52,8 @@
                     </td>
                     <td width="5%" align="center">{{$index+1}}</td>
                     <td>
-                        <select ng-change="vm.changeName($index , vm.financials[$index].chargeName)"
+                        <!-- 去掉费用项判断 ng-change="vm.changeName($index , vm.financials[$index].chargeName)"-->
+                        <select
                                 ng-model="vm.financials[$index].chargeName"
                                 style="width:220px;height:26px;">
                             <option ng-repeat="d in DICT.CWBL_FYMC.dicts" value="{{d.dictName}}"

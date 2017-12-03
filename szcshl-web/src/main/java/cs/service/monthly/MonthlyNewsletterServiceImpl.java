@@ -267,25 +267,28 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
     @Override
     public PageModelDto<MonthlyNewsletterDto> getMonthlyList(ODataObj odataObj) {
         PageModelDto<MonthlyNewsletterDto> pageModelDto = new PageModelDto<>();
-        Criteria criteria = monthlyNewsletterRepo.getExecutableCriteria();
+       /* Criteria criteria = monthlyNewsletterRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
         criteria.add(Restrictions.eq(MonthlyNewsletter_.monthlyType.getName(), EnumState.PROCESS.getValue()));
         criteria.addOrder(Order.desc(MonthlyNewsletter_.createdDate.getName()));
         List<MonthlyNewsletter> monthlist = criteria.list();
-        List<MonthlyNewsletterDto> monthDtos = new ArrayList<>(monthlist == null ? 0 : monthlist.size());
+        List<MonthlyNewsletterDto> monthDtos = new ArrayList<>(monthlist == null ? 0 : monthlist.size());*/
 
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("SELECT t.*  FROM (SELECT ROW_NUMBER () OVER (PARTITION BY REPORTMULTIYEAR ORDER BY theMonths) rn " );
+        sqlBuilder.append(" ,m.* FROM CS_MONTHLY_NEWSLETTER m) t  WHERE t.rn = 1 and t.reportMultiyear is not null ");
+        sqlBuilder.append(" AND t."+MonthlyNewsletter_.monthlyType.getName()+" =:monthlyType ");
+        sqlBuilder.setParam("monthlyType",EnumState.PROCESS.getValue());
+        sqlBuilder.append(" ORDER BY t.reportMultiyear DESC ");
+        List<MonthlyNewsletter> monthlist = monthlyNewsletterRepo.findBySql(sqlBuilder);
+        List<MonthlyNewsletterDto> monthDtos = new ArrayList<>(monthlist == null ? 0 : monthlist.size());
         //取每年添加第一条即可
         if (Validate.isList(monthlist)) {
-            Map<String,Object> cacheMap = new HashMap<>();
             monthlist.forEach(x -> {
-                if(cacheMap.get(x.getReportMultiyear()) == null){
-                    MonthlyNewsletterDto monthDto = new MonthlyNewsletterDto();
-                    BeanCopierUtils.copyProperties(x, monthDto);
-                    monthDtos.add(monthDto);
-                    cacheMap.put(x.getReportMultiyear(),true);
-                }
+                MonthlyNewsletterDto monthDto = new MonthlyNewsletterDto();
+                BeanCopierUtils.copyProperties(x, monthDto);
+                monthDtos.add(monthDto);
             });
-            cacheMap.clear();
         }
         pageModelDto.setValue(monthDtos);
 

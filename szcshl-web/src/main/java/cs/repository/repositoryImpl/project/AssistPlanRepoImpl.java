@@ -25,17 +25,24 @@ public class AssistPlanRepoImpl extends AbstractRepository<AssistPlan, String> i
      * @return
      */
     @Override
-    public List<Object[]> signAssistCostList(SignAssistCostDto signAssistCostDto) {
+    public List<Object[]> signAssistCostList(SignAssistCostDto signAssistCostDto,String planState) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" SELECT CPS.SIGNID,CASE CPS.SPLITNUM WHEN NULL THEN CPS.PROJECTNAME WHEN 1 THEN CPS.PROJECTNAME ELSE CPS.PROJECTNAME || '[' || CPS.SPLITNUM || ']' END PROJECTNAME, ");
+        sqlBuilder.append(" SELECT CPS.SIGNID,CASE CPS.SPLITNUM WHEN NULL THEN CS.PROJECTNAME WHEN 1 THEN CS.PROJECTNAME ELSE CS.PROJECTNAME || '(' || CPS.SPLITNUM || ')' END PROJECTNAME, ");
         sqlBuilder.append(" AU.UNITNAME,CP.PLANNAME,CPS.assistCost,fm.charge,FM.PAYMENTDATA,CPS.estimateCost,CS.ISLIGHTUP,CS.PROCESSSTATE ");
         sqlBuilder.append(" FROM CS_AS_PLAN cp, CS_AS_PLANSIGN cps ");
         sqlBuilder.append(" LEFT JOIN CS_AS_UNIT au ON AU.ID = CPS.ASSISTUNITID ");
-        sqlBuilder.append(" LEFT JOIN CS_FINANCIAL_MANAGER fm ON FM.BUSINESSID = CPS.SIGNID  "); //AND FM.CHARGENAME = '协审费'
-        sqlBuilder.append(" LEFT JOIN CS_sign cs on CS.SIGNID = CPS.SIGNID ");
-        sqlBuilder.append(" WHERE CP.PLANSTATE = :planState AND CP.ID = CPS.PLANID ");
-        //后面要改成9，只有完成的才可以发放费用
-        sqlBuilder.setParam("planState", Constant.EnumState.PROCESS.getValue());
+        sqlBuilder.append(" LEFT JOIN CS_FINANCIAL_MANAGER fm ON FM.BUSINESSID = CPS.SIGNID  ");
+        //AND FM.CHARGENAME = '协审费'
+        sqlBuilder.append(" LEFT JOIN CS_SIGN cs on CS.SIGNID = CPS.SIGNID ");
+        sqlBuilder.append(" WHERE  CP.ID = CPS.PLANID AND CS.ISASSISTPROC = :isassistproc");
+        //2表示协审项目
+        sqlBuilder.setParam("isassistproc", Constant.EnumState.YES.getValue());
+        //有状态的要加上状态
+        if(Validate.isString(planState)){
+            sqlBuilder.append(" AND CP.PLANSTATE = :planState ");
+            sqlBuilder.setParam("planState",planState);
+        }
+
         //加上查询条件
         if(signAssistCostDto != null){
             if(Validate.isString(signAssistCostDto.getProjectName())){
@@ -59,8 +66,22 @@ public class AssistPlanRepoImpl extends AbstractRepository<AssistPlan, String> i
             }
         }
 
-        sqlBuilder.append(" ORDER BY CP.PLANNAME,CPS.MAINSIGNID, CPS.SPLITNUM ");
+        sqlBuilder.append(" ORDER BY CP.PLANNAME,CPS.MAINSIGNID DESC, CPS.SPLITNUM ");
 
         return getObjectArray(sqlBuilder);
+    }
+
+    /**
+     * 根据业务ID，更新协审计划状态
+     * @param businessId
+     * @param value
+     */
+    @Override
+    public void updatePlanStateByBusinessId(String businessId, String value) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" UPDATE CS_AS_PLAN SET planState = :planState ").setParam("planState", value);
+        sqlBuilder.append(" WHERE id = (SELECT DISTINCT planid FROM CS_AS_PLANSIGN WHERE SIGNID =:signId ) ");
+        sqlBuilder.setParam("signId",businessId);
+        executeSql(sqlBuilder);
     }
 }

@@ -24,9 +24,9 @@
                         <tbody>
                         <tr>
                             <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
-                            <th>最新待办</th>
-                            <th style="width: 80px" align="center">流程状态</th>
-                            <th style="width: 100px" align="center">日期</th>
+                            <th>最新待办<span ng-if="t.processState == '2'" style="color:red;">[已暂停]</span></th>
+                            <th >环节名称</th>
+                            <th style="width: 100px" align="center">接收日期</th>
                         </tr>
                         <tr ng-repeat="t in vm.tasksList|limitTo:5">
                             <td ng-bind="$index+1"></td>
@@ -36,10 +36,7 @@
                                 <a ng-if="t.processState == '2'"
                                    href="#/signFlowDetail/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a>
                             </td>
-                            <td>
-                                <span ng-if="t.processState == '1'" style="color:green;">进行中</span>
-                                <span ng-if="t.processState == '2'" style="color:orange;">已暂停</span>
-                            </td>
+                            <td>{{t.nodeName}}</td>
                             <td><span class="badge bg-red">{{t.createTime}}</span></td>
                         </tr>
                         </tbody>
@@ -65,13 +62,15 @@
                         <tr>
                             <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
                             <th>最新待办</th>
-                            <th style="width: 100px" align="center">日期</th>
+                            <th >环节名称</th>
+                            <th style="width: 100px" align="center">接收日期</th>
                         </tr>
                         <tr ng-repeat="t in vm.agendaTaskList|limitTo:5">
                             <td ng-bind="$index+1">1</td>
                             <td>
                                 <a href="#/flowDeal/{{t.businessKey}}/{{t.processKey}}/{{t.taskId}}/{{t.instanceId}}">{{t.instanceName}}</a>
                             </td>
+                            <td>{{t.nodeName}}</td>
                             <td><span class="badge bg-yellow">{{t.createTime}}</span></td>
                         </tr>
                         </tbody>
@@ -101,7 +100,7 @@
                         <tr>
                             <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
                             <th>最新已办</th>
-                            <th style="width: 100px" align="center">日期</th>
+                            <th style="width: 100px" align="center">办结日期</th>
                         </tr>
                         <tr ng-repeat="e in vm.endTasksList|limitTo:5">
                             <td ng-bind="$index+1">1</td>
@@ -111,7 +110,7 @@
                                 <a href="#/flowEnd/{{e.businessKey}}/{{e.flowKey}}/{{e.processInstanceId}}"
                                    ng-if="e.flowKey && e.flowKey != 'FINAL_SIGN_FLOW'">{{e.businessName}}</a>
                             </td>
-                            <td><span class="badge bg-yellow">{{e.createDate}}</span></td>
+                            <td><span class="badge bg-yellow">{{e.endDate}}</span></td>
                         </tr>
                         </tbody>
                     </table>
@@ -136,13 +135,13 @@
                             <th style="width: 10px"><span class="fa fa-commenting"></span></th>
                             <th>最新通告</th>
                             <th>发布人</th>
-                            <th style="width: 100px" align="center">日期</th>
+                            <th style="width: 100px" align="center">发布日期</th>
                         </tr>
                         <tr ng-repeat="x in vm.annountmentList|limitTo:5">
                             <td>{{$index +1}}.</td>
                             <td><a href="#/annountmentDetail/{{x.anId}}">{{x.anTitle}}</a></td>
                             <td>{{x.issueUser}}</td>
-                            <td><span class="badge bg-green">{{x.issueDate}}</span></td>
+                            <td><span class="badge bg-green">{{x.issueDate | date}}</span></td>
                         </tr>
                         </tbody>
                     </table>

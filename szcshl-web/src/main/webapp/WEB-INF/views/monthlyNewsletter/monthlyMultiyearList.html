@@ -18,10 +18,8 @@
         <a class="btn btn-sm btn-primary" ng-click="vm.resetAddSupp()">重置</a>
     </div>
 
-    <form id="form_monthly" name="form_monthly">
-        <ol class="breadcrumb">
-            <!--隐藏传初始条件bing-->
-            <input type="hidden" name="fileType" operator="eq" value="2"/>
+    <div class="well well-sm">
+        <form id="form_monthly" name="form_monthly">
             <!--隐藏传初始条件end-->
             文件标题：
             <input type="text" ng-model="vm.suppletter.title" operator="like" name="title" id="title" placeholder="请输入">
@@ -38,18 +36,19 @@
 
             <span class="help-inline" style="margin-left:10px;">拟稿时间：</span>
             <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
-                    value="" type="text" operator="ge"/>
+                   value="" type="text" operator="ge"/>
             至
             <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
                    value="" type="text" operator="le"/>
-        </ol>
-    </form>
-    <script type="text/template" id="columnBtns">
-        <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{0}" ng-hide="{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-        <a class="btn btn-xs btn-info" href="#/monthlyMultiyView/{2}"><span class="glyphicon glyphicon-search"></span>查看</a>
-    </script>
+        </form>
+    </div>
+
     <div class="grid" kendo-grid="grid" k-options="vm.monthlyYearGrid"></div>
 
 </div>
-
 <!--E 年度月报简报列表  -->
+<script type="text/template" id="columnBtns">
+    <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{0}" ng-hide="{1}"><span
+            class="glyphicon glyphicon-pencil"></span>编辑</a>
+    <a class="btn btn-xs btn-info" href="#/monthlyMultiyView/{2}"><span class="glyphicon glyphicon-search"></span>查看</a>
+</script>

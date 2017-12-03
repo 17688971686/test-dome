@@ -1,110 +1,119 @@
 <!-- S 中心文件详细页面 -->
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+
 <!-- 查看中心文件附件页面 -->
 <div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 <div class="well well-sm" style="background:white; color: red">
-   <ol class="breadcrumb">
+    <ol class="breadcrumb">
         <li><a href="#/monthlyMultiyFileList">月报简报管理</a></li>
-        <li class="active" >月报简报详请</li>
+        <li class="active">月报简报详请</li>
     </ol>
-<div class="toolbar">
-    <button class="btn btn-sm btn-success" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
-    <go-back></go-back>
-</div>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
+        <go-back></go-back>
+    </div>
 
-     <!-- s form -->
+    <!-- s form -->
     <form id="suppletter_form" name="suppletter_form">
- 
-<#--    公文分类：{{vm.suppletter.missiveType}} &nbsp &nbsp {{vm.suppletter.missiveMonthlyType}}&nbsp &nbsp {{vm.suppletter.missiveOtherType}}
-    
-    -->
+        <!--
+        公文分类：{{vm.suppletter.missiveType}} &nbsp &nbsp {{vm.suppletter.missiveMonthlyType}}&nbsp &nbsp {{vm.suppletter.missiveOtherType}}
+         -->
         <!-- s table -->
         <table class="table table-bordered">
-            <caption class="text-center h3"><strong >深圳市政府投资项目评审中心文件（稿纸）</br>月报简报<br></strong></caption>
-          
+            <caption class="text-center h3"><strong>深圳市政府投资项目评审中心文件（稿纸）</br>月报简报<br></strong></caption>
+
             <tbody>
-              <tr>
+            <tr>
                 <td style="width:150px;" class="text-center">分类</td>
                 <td>
-                {{vm.suppletter.monthlyType}}
+                    {{vm.suppletter.monthlyType}}
                 </td>
 
                 <td style="width:150px;" class="text-center">存档编号</td>
                 <td>
-                {{vm.suppletter.fileCode}}
+                    {{vm.suppletter.fileCode}}
                 </td>
             </tr>
             <tr>
                 <td style="width:150px;" class="text-center">拟稿部门<br>拟稿人</td>
                 <td>
-                   {{vm.suppletter.orgName}}<br>
-                   {{vm.suppletter.userName}}
+                    {{vm.suppletter.orgName}}<br>
+                    {{vm.suppletter.userName}}
                 </td>
 
                 <td style="width:150px;" class="text-center">拟稿时间</td>
-                <td >
-                {{vm.suppletter.suppLetterTime}}
+                <td>
+                    {{vm.suppletter.suppLetterTime}}
                 </td>
             </tr>
             <tr>
                 <td style="width:150px;" class="text-center">秘密等级</td>
                 <td>
-                {{vm.suppletter.secretLevel}}
+                    {{vm.suppletter.secretLevel}}
                 </td>
 
                 <td style="width:150px;" class="text-center">缓急程度</td>
                 <td>
-                {{vm.suppletter.mergencyLevel}}
+                    {{vm.suppletter.mergencyLevel}}
                 </td>
             </tr>
-           
+
 
             <tr>
-                <td style="width:150px; height: 80px; vertical-align: middle !important;text-align: center;" class="text-center">文件标题 <span class="required">*</span></td>
+                <td style="width:150px; height: 80px; vertical-align: middle !important;text-align: center;"
+                    class="text-center">文件标题 <span class="required">*</span></td>
                 <td colspan="3">
-                {{vm.suppletter.title}}
+                    {{vm.suppletter.title}}
                 </td>
             </tr>
             <tr>
-                <td style="width:150px; height: 80px; vertical-align: middle !important;text-align: center;" class="text-center">发行范围<span class="required">*</span></td>
+                <td style="width:150px; height: 80px; vertical-align: middle !important;text-align: center;"
+                    class="text-center">发行范围<span class="required">*</span></td>
                 <td colspan="3">
-                {{vm.suppletter.dispaRange}}
+                    {{vm.suppletter.dispaRange}}
                 </td>
             </tr>
 
 
             <tr>
-                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;" class="text-center">核稿意见</td>
+                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;"
+                    class="text-center">核稿意见
+                </td>
                 <td colspan="3">
                     <p> {{vm.suppletter.deptMinisterIdeaContent}}</p>
-			 	 <p class="text-right" ng-if="vm.suppletter.deptMinisterName">签名：{{vm.suppletter.deptMinisterName}}</p>
-			     <p class="text-right" ng-if="vm.suppletter.deptMinisterDate">日期：{{vm.suppletter.deptMinisterDate}}</p>
+                    <p class="text-right" ng-if="vm.suppletter.deptMinisterName">
+                        签名：{{vm.suppletter.deptMinisterName}}</p>
+                    <p class="text-right" ng-if="vm.suppletter.deptMinisterDate">
+                        日期：{{vm.suppletter.deptMinisterDate}}</p>
                 </td>
             </tr>
 
             <tr>
-                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;" class="text-center">会签意见</td>
+                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;"
+                    class="text-center">会签意见
+                </td>
                 <td colspan="3">
-                   <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
-			 	 <p class="text-right" ng-if="vm.suppletter.deptSLeaderName">签名：{{vm.suppletter.deptSLeaderName}}</p>
-			     <p class="text-right" ng-if="vm.suppletter.deptSleaderDate">日期：{{vm.suppletter.deptSleaderDate}}</p>
+                    <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
+                    <p class="text-right" ng-if="vm.suppletter.deptSLeaderName">签名：{{vm.suppletter.deptSLeaderName}}</p>
+                    <p class="text-right" ng-if="vm.suppletter.deptSleaderDate">日期：{{vm.suppletter.deptSleaderDate}}</p>
                 </td>
             </tr>
             <tr>
-                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;" class="text-center">领导意见</td>
+                <td style="width:150px;height: 120px; vertical-align: middle !important;text-align: center;"
+                    class="text-center">领导意见
+                </td>
                 <td colspan="3">
                     <p> {{vm.suppletter.deptDirectorIdeaContent}}</p>
-			 		<p class="text-right" ng-if="vm.suppletter.deptDirectorName">签名：{{vm.suppletter.deptDirectorName}}</p>
-			     	<p class="text-right" ng-if="vm.suppletter.deptDirectorDate">日期：{{vm.suppletter.deptDirectorDate}}</p>
+                    <p class="text-right" ng-if="vm.suppletter.deptDirectorName">
+                        签名：{{vm.suppletter.deptDirectorName}}</p>
+                    <p class="text-right" ng-if="vm.suppletter.deptDirectorDate">
+                        日期：{{vm.suppletter.deptDirectorDate}}</p>
                 </td>
             </tr>
             </tbody>
         </table>    <!-- end table -->
     </form> <!-- end form -->
-        
+
 </div>
 <!-- E 中心文件详细页面 -->

@@ -25,9 +25,11 @@
             if (costType == "REVIEW") {
                 vm.windowName = "项目评审费录入";
                 vm.financial.businessType = "SIGN";
+                vm.financial.chargeType = '1';      //费用类型，1表示评审费，2表示协审费
             } else if (costType == "ASSIST") {
                 vm.windowName = "项目协审费录入";
                 vm.financial.businessType = "SIGN";
+                vm.financial.chargeType = '2';      //费用类型，1表示评审费，2表示协审费
             }
 
             vm.financial.businessId = object.businessId;
@@ -60,7 +62,7 @@
              * 改变费用名称时判断是否已存在
              * @param index
              */
-            vm.changeName = function (index, changeName) {
+            /*vm.changeName = function (index, changeName) {
                 if (vm.financials.length > 0) {
                     for (var i = 0; i < (vm.financials.length) - 1; i++) {
                         if (i != index) {
@@ -71,15 +73,15 @@
                         }
                     }
                 }
-            }
+            }*/
 
             //添加报销记录
             vm.addFinancial = function () {
                 var financial = {};
-                financial.chargeType = "8";
                 financial.businessId = vm.financial.businessId;
                 financial.projectName = vm.financial.projectName;
                 financial.paymentData = vm.financial.paymentData;
+                financial.chargeType = vm.financial.chargeType;
                 if (!vm.financials) {
                     vm.financials = [];
                 }
