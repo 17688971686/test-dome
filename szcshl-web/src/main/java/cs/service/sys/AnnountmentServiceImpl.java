@@ -262,7 +262,9 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         hqlBuilder.append("with res as(select cs_annountment.*,row_number() over(order by isstick desc,issueDate desc)t from cs_annountment)");
         hqlBuilder.append(" select res.* from res where t=(");
         hqlBuilder.append("select res.t-1 from res where res.anid=:id)");
+        hqlBuilder.append(" and res.issue=:issue");
         hqlBuilder.setParam("id", id);
+        hqlBuilder.setParam("issue" , Constant.EnumState.YES.getValue());
         List<Annountment> annList = annountmentRepo.findBySql(hqlBuilder);
         AnnountmentDto annDto = new AnnountmentDto();
         if (annList.size() > 0) {
@@ -283,7 +285,9 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         hqlBuilder.append("with res as(select cs_annountment.*,row_number() over(order by isstick desc,issueDate desc)t from cs_annountment)");
         hqlBuilder.append(" select res.* from res where t=(");
         hqlBuilder.append("select res.t+1 from res where res.anid=:id)");
+        hqlBuilder.append(" and res.issue=:issue");
         hqlBuilder.setParam("id", id);
+        hqlBuilder.setParam("issue" , Constant.EnumState.YES.getValue());
         List<Annountment> annList = annountmentRepo.findBySql(hqlBuilder);
         AnnountmentDto annDto = new AnnountmentDto();
         if (annList.size() > 0) {
