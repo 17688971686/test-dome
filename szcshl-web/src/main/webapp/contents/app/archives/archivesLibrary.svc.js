@@ -249,12 +249,7 @@
                     title: "操作",
                     width: 100,
                     template: function (item) {
-                        if(item.processInstanceId){
                             return common.format($('#columnBtns').html(),"archivesLibraryView/"+item.id);
-                        }else{
-                            return "";
-                        }
-
                     }
                 }
             ];

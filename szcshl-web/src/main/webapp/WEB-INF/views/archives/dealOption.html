@@ -32,7 +32,7 @@
                 <span data-valmsg-for="dealOption" data-valmsg-replace="true" class="errors"></span>
             </td>
         </tr>
-        <tr ng-show="vm.flow.nextNode && (vm.flow.nextNode.length > 0) ">
+        <tr ng-show="vm.flow.nextNode && (vm.flow.nextNode.length > 0) &&  vm.model.archivesType!=9 && vm.model.isLendOut==9">
             <td width="10%" class="text-center">
                 下一环节名称
             </td>

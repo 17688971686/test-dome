@@ -1,8 +1,5 @@
-<meta charset="UTF-8">
-
-
-
-<div class="well well-sm" style="background:white;">
+<meta charset="UTF-8" xmlns="http://www.w3.org/1999/html">
+<div class="well well-sm" style="background:white;" id="busi_baseinfo">
     <ol class="breadcrumb">
         <li> <a href="#/archivesLibraryList/">档案借阅管理</a></li>
         <li class="active">{{vm.title}}</li>
@@ -11,8 +8,9 @@
 
 <p style="width: 100%;">
     <span style="width:30%;float:left; ">借阅人员：
+
         <select ng-model="vm.model.isSZECUser" ng-disabled="true">
-            <option value="9" ng-selected="!vm.model.archivesType || vm.model.archivesType == 9">本单位人员</option>
+            <option value="9" ng-selected="!vm.model.isSZECUser || vm.model.isSZECUser == 9">本单位人员</option>
             <option value="0" ng-selected="vm.model.isSZECUser == 0" >非本单位人员</option>
         </select>
     </span>
@@ -66,14 +64,20 @@
         <td class="text-center" width="27%">主任</td>
     </tr>
     <tr>
-        <td class="text-center">
-            <div style="min-height: 50px;">{{vm.model.deptMinister}}</div>
+        <td >
+                <p>{{vm.model.deptMinisterIdeaContent}}</p>
+                <p class="text-right"  style="margin-top: 5px; ">{{vm.model.deptMinister}}</p>
+                <p class="text-right" style="margin-top: 10px;">{{vm.model.deptMinisterDate}}</p>
         </td>
-        <td class="text-center">
-            <div style="min-height: 50px;">{{vm.model.deptSLeader}}</div>
+        <td >
+            <p>{{vm.model.deptSLeaderIdeaContent}}</p>
+            <p class="text-right"  style="margin-top: 5px; ">{{vm.model.deptSLeader}}</p>
+            <p class="text-right" style="margin-top: 10px;">{{vm.model.deptSleaderDate}}</p>
         </td>
-        <td class="text-center">
-            <div style="min-height: 50px;">{{vm.model.deptDirector}}</div>
+        <td >
+            <p>{{vm.model.deptDirectorIdeaContent}}</p>
+            <p class="text-right"  style="margin-top: 5px; ">{{vm.model.deptDirector}}</p>
+            <p class="text-right" style="margin-top: 10px;">{{vm.model.deptDirectorDate}}</p>
         </td>
     </tr>
     <tr>
@@ -88,8 +92,11 @@
     </tr>
     <tr>
         <td class="text-center">档案管理员签名</td>
-        <td colspan="3">
+        <td>
             {{vm.model.archivesUserName}}
+        </td>
+        <td colspan="2">
+
         </td>
     </tr>
 </table>
@@ -97,5 +104,9 @@
 <div style="margin-top:15px;font-size: 14px; ">
     注：本单位员工查阅非本人负责的项目档案需部长批准，外单位人员查阅档案需分管副主任批准，如外借档案，需中心主任审批，审批表由档案室存档。
 </div>
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
+
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto; margin-top: 20px;" onclick="printpage(this)">打印</button>
 </div>
+
+<!--项目档案借阅审批表-->
+<div id="busi_baseinfo_templ" style="display: none;"> <#include "/templatePrint/archives/detail.html"/></div>
