@@ -59,7 +59,7 @@
             }
 
             /**
-             * 改变费用名称时判断是否已存在
+             * 改变费用名称时判断是否已存在(停用，2017-12-03)
              * @param index
              */
             /*vm.changeName = function (index, changeName) {

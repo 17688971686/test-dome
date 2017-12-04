@@ -1,5 +1,6 @@
 package cs.service.expert;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,21 @@ public interface ExpertReviewService {
 
 	void updateExpertState(String minBusinessId,String businessType,String expertSelId,String state,boolean isConfirm);
 
+    /**
+     * 根据专家ID和月份，获取对应月份的评审费
+     * @param expertIds
+     * @param month
+     * @return
+     */
     List<Map<String,Object>> getExpertReviewCost(String expertIds, String month);
+
+    /**
+     * 根据专家评审方案ID和月份获取专家对应月份的评审费
+     * @param expertReviewId
+     * @param month
+     * @return
+     */
+    List<Object[]> countExpertReviewCost(String expertReviewId, String month);
 
     void saveExpertReviewCost(ExpertReviewDto[]  expertReviews);
 
@@ -52,4 +67,17 @@ public interface ExpertReviewService {
 	 * @return
 	 */
     List<ExpertDto> refleshBusinessEP(String businessId);
+
+
+	/**
+	 * 查询超期未办理专家评审费的方法
+	 * @return
+	 */
+	List<ExpertReview> queryUndealReview();
+
+    /**
+     * 级联保存
+     * @param expertReview
+     */
+    void save(ExpertReview expertReview);
 }

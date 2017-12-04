@@ -4,13 +4,17 @@ import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
+import cs.domain.expert.ExpertReview;
+import cs.domain.expert.ExpertSelected;
 import cs.domain.financial.FinancialManager;
 import cs.domain.financial.FinancialManager_;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.sys.User;
+import cs.model.expert.ExpertReviewDto;
 import cs.model.financial.FinancialManagerDto;
 import cs.model.project.SignAssistCostDto;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.financial.FinancialManagerRepo;
 import cs.repository.repositoryImpl.project.AssistPlanRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Description: 财务管理 业务操作实现类
@@ -40,6 +45,8 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
     private AssistPlanRepo assistPlanRepo;
     @Autowired
     private SignPrincipalService signPrincipalService;
+    @Autowired
+    private ExpertReviewRepo expertReviewRepo;
 
     @Override
     @Transactional
@@ -62,7 +69,7 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
     @Override
     @Transactional
     public void update(FinancialManagerDto record) {
-        FinancialManager domain = financialManagerRepo.findById(FinancialManager_.id.getName(),record.getId());
+        FinancialManager domain = financialManagerRepo.findById(FinancialManager_.id.getName(), record.getId());
         BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
         domain.setModifiedBy(SessionUtil.getDisplayName());
         domain.setModifiedDate(new Date());
@@ -107,10 +114,60 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
      * @return
      */
     @Override
-    public Map<String, Object> initfinancialData(String businessId, String businessType) {
+    public Map<String, Object> initfinancialData(String businessId, String chargeType, String businessType) {
         Map<String, Object> map = new HashMap<String, Object>();
+        List<FinancialManagerDto> financialDtolist = new ArrayList<>();
         List<FinancialManager> financiallist = financialManagerRepo.findByIds(FinancialManager_.businessId.getName(), businessId, null);
-        map.put("financiallist", financiallist);
+        //如果还没评审费用，则初始化两条记录
+        if (!Validate.isList(financiallist)) {
+            //如果是评审费，则初始化两条记录，1是专家费，2是专家税费
+            if (Constant.EnumState.PROCESS.getValue().equals(chargeType) && expertReviewRepo.isHaveEPReviewCost(businessId)) {
+                ExpertReview expertReview = expertReviewRepo.findByBusinessId(businessId);
+                if (Validate.isObject(expertReview) && Validate.isObject(expertReview.getPayDate()) && Validate.isList(expertReview.getExpertSelectedList())) {
+                    BigDecimal expertExpense = BigDecimal.ZERO;
+                    BigDecimal expertTaxes = BigDecimal.ZERO;
+                    for(int i=0,l=expertReview.getExpertSelectedList().size();i<l;i++){
+                        ExpertSelected expertSelected = expertReview.getExpertSelectedList().get(i);
+                        if(Constant.EnumState.YES.getValue().equals(expertSelected.getIsConfrim()) && Constant.EnumState.YES.getValue().equals(expertSelected.getIsJoin())){
+                            expertExpense = Arith.safeAdd(expertExpense,expertSelected.getReviewCost());
+                            expertTaxes = Arith.safeAdd(expertTaxes,expertSelected.getReviewTaxes());
+                        }
+                    }
+                    Date now = new Date();
+                    financiallist = new ArrayList<>();
+                    //新增两条记录
+                    FinancialManager financialManager = new FinancialManager();
+                    financialManager.setBusinessId(businessId);
+                    financialManager.setChargeName("专家评审费");
+                    financialManager.setCharge(expertExpense);
+                    financialManager.setCreatedBy(SessionUtil.getDisplayName());
+                    financialManager.setCreatedDate(now);
+                    financialManager.setModifiedBy(SessionUtil.getDisplayName());
+                    financialManager.setModifiedDate(now);
+                    financiallist.add(financialManager);
+
+                    FinancialManager financialManager1 = new FinancialManager();
+                    financialManager1.setBusinessId(businessId);
+                    financialManager1.setChargeName("应缴税");
+                    financialManager1.setCharge(expertExpense);
+                    financialManager1.setCreatedBy(SessionUtil.getDisplayName());
+                    financialManager1.setCreatedDate(now);
+                    financialManager1.setModifiedBy(SessionUtil.getDisplayName());
+                    financialManager1.setModifiedDate(now);
+                    financiallist.add(financialManager1);
+
+                    financialManagerRepo.bathUpdate(financiallist);
+                }
+            }
+        }
+        if(Validate.isList(financiallist)){
+            financiallist.forEach(fl->{
+                FinancialManagerDto financialManagerDto = new FinancialManagerDto();
+                BeanCopierUtils.copyProperties(fl,financialManagerDto);
+                financialDtolist.add(financialManagerDto);
+            });
+        }
+        map.put("financiallist", financialDtolist);
         /*if (Validate.isString(businessType)) {
             FinancialManagerDto dto = new FinancialManagerDto();
             if(Constant.BusinessType.SIGN.getValue().equals(businessType)){
@@ -155,7 +212,7 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
      */
     @Override
     public List<SignAssistCostDto> signAssistCostList(SignAssistCostDto signAssistCostDto, boolean isShowDetail) {
-        List<Object[]> signAssistList = assistPlanRepo.signAssistCostList(signAssistCostDto,(isShowDetail==true? Constant.EnumState.YES.getValue():null));
+        List<Object[]> signAssistList = assistPlanRepo.signAssistCostList(signAssistCostDto, (isShowDetail == true ? Constant.EnumState.YES.getValue() : null));
         if (Validate.isList(signAssistList)) {
             List<SignAssistCostDto> resultList = new ArrayList<>(signAssistList.size());
             for (int i = 0, l = signAssistList.size(); i < l; i++) {
@@ -216,62 +273,63 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
 
     /**
      * 批量保存评审费
+     *
      * @param record
      * @return
      */
     @Override
     public ResultMsg save(FinancialManagerDto[] record) {
-        String businessId ="",chargeType="";
-        if(record == null || record.length == 0){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，请先填写费用项信息！");
+        String businessId = "", chargeType = "";
+        if (record == null || record.length == 0) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败，请先填写费用项信息！");
         }
         List<FinancialManager> saveList = new ArrayList<>(record.length);
-        for(int i=0,l=record.length;i<l;i++){
+        for (int i = 0, l = record.length; i < l; i++) {
             FinancialManagerDto dto = record[i];
-            if(!Validate.isString(dto.getChargeName()) || !Validate.isObject(dto.getCharge())){
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，存在费用名称或者费用没有填写！");
+            if (!Validate.isString(dto.getChargeName()) || !Validate.isObject(dto.getCharge())) {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败，存在费用名称或者费用没有填写！");
             }
-            if(!Validate.isString(businessId)){
+            if (!Validate.isString(businessId)) {
                 businessId = dto.getBusinessId();
             }
-            if(!Validate.isString(chargeType)){
+            if (!Validate.isString(chargeType)) {
                 chargeType = dto.getChargeType();
             }
             FinancialManager financialManager = new FinancialManager();
             Date now = new Date();
             if (Validate.isString(dto.getId())) {
                 financialManager = financialManagerRepo.findById(dto.getId());
-                BeanCopierUtils.copyPropertiesIgnoreNull(dto,financialManager);
-            }else{
+                BeanCopierUtils.copyPropertiesIgnoreNull(dto, financialManager);
+            } else {
                 BeanCopierUtils.copyProperties(dto, financialManager);
-                financialManager .setId(UUID.randomUUID().toString());
+                financialManager.setId(UUID.randomUUID().toString());
                 financialManager.setCreatedDate(now);
                 financialManager.setCreatedBy(SessionUtil.getDisplayName());
             }
-            if(financialManager.getPaymentData() == null){
+            if (financialManager.getPaymentData() == null) {
                 financialManager.setPaymentData(now);
             }
             financialManager.setModifiedBy(SessionUtil.getDisplayName());
             financialManager.setModifiedDate(now);
             //默认是评审费
-            if(!Validate.isString(financialManager.getChargeType())){
+            if (!Validate.isString(financialManager.getChargeType())) {
                 financialManager.setChargeType(Constant.EnumState.PROCESS.getValue());
             }
             saveList.add(financialManager);
         }
         financialManagerRepo.bathUpdate(saveList);
         //如果是协审费，要更改协审计划状态
-        if(Constant.EnumState.STOP.getValue().equals(chargeType)){
+        if (Constant.EnumState.STOP.getValue().equals(chargeType)) {
             assistPlanRepo.updatePlanStateByBusinessId(businessId, Constant.EnumState.YES.getValue());
         }
         //用于返回页面
         List<FinancialManagerDto> resultList = new ArrayList<>(saveList.size());
-        saveList.forEach(l->{
+        saveList.forEach(l -> {
             FinancialManagerDto fmDto = new FinancialManagerDto();
-            BeanCopierUtils.copyPropertiesIgnoreNull(l,fmDto);
+            BeanCopierUtils.copyPropertiesIgnoreNull(l, fmDto);
             resultList.add(fmDto);
         });
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",resultList);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", resultList);
 
     }
 

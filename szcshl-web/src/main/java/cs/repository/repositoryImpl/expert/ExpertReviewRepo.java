@@ -7,6 +7,7 @@ import cs.repository.IRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 专家评审 数据操作实现接口
@@ -63,4 +64,18 @@ public interface ExpertReviewRepo extends IRepository<ExpertReview, String> {
      * @return
      */
     boolean isReviewIsEmpty(String businessId);
+
+    /**
+     * 根据专家评审方案和月份，统计专家的收入
+     * @param expertReviewId
+     * @param month
+     * @return
+     */
+    List<Object[]> countExpertReviewCost(String expertReviewId, String month);
+
+    /**
+     * 查询未处理的评审方案
+     * @return
+     */
+    List<ExpertReview> queryUndealReview();
 }

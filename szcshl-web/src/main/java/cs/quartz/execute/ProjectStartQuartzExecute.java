@@ -16,6 +16,8 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ import java.util.List;
  * 2017/8/3
  * 自动启动暂停的项目
  */
+@Service
 public class ProjectStartQuartzExecute implements Job{
 
     @Autowired

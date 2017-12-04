@@ -320,6 +320,14 @@
         }
 
         // S_countNum
+        /**
+         	800<X≤4000时：（所得额-800）*20%——如果是1000元，就是缴税40
+         	4000<X≤20000时:所得额*(1-20%)*20%
+         	20000＜X≤50000时：所得额*（1-20%）*30%-2000
+         	超过50000忘记是多少了，我再问财务找一个那个文件
+         * @param reviewCost
+         * @returns {number}
+         */
         function countNum(reviewCost) {
             reviewCost = reviewCost == undefined ? 0 : reviewCost;
             var reviewTaxes = 0;
@@ -330,7 +338,7 @@
             } else if (reviewCost > 20000 && reviewCost <= 50000) {
                 reviewTaxes = reviewCost * (1 - 0.2) * 0.3 - 2000;
             } else if (reviewCost > 50000) {
-                //待确认
+                reviewTaxes = reviewCost * (1 - 0.2) * 0.3 - 2755;
             }
             return reviewTaxes;
         }// E_countNum

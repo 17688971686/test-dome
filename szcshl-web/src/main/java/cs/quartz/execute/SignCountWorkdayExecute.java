@@ -11,7 +11,9 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import cs.common.Constant;
@@ -27,7 +29,7 @@ import cs.service.project.SignService;
  * @author MCL
  * @date 2017年7月4日 下午4:41:43
  */
-@Controller
+@Service
 public class SignCountWorkdayExecute implements Job {
     private static Logger logger = Logger.getLogger(SignCountWorkdayExecute.class);
     @Autowired

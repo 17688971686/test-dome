@@ -113,7 +113,8 @@
                 url: rootPath + "/financialManager/initfinancial",        
                 params: {
                     businessId: financial.businessId,
-                    businessType: financial.businessType
+                    businessType: financial.businessType,
+                    chargeType : financial.chargeType
                 }
             };
             var httpSuccess = function success(response) {

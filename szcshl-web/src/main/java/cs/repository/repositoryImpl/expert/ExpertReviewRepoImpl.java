@@ -1,12 +1,14 @@
 package cs.repository.repositoryImpl.expert;
 
 import cs.common.Constant;
+import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
+import cs.domain.expert.ExpertSelected;
 import cs.domain.expert.ExpertSelected_;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
@@ -22,6 +24,8 @@ import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.topic.TopicInfoRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -29,6 +33,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 专家评审 数据操作实现类
@@ -227,5 +232,62 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Object[]> countExpertReviewCost(String expertReviewId, String month) {
+        List<Object[]> experReviewCosts = null;
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("SELECT SUM (veph.REVIEWCOST) ecost, veph.EXPERTID FROM V_EXPERT_PAY_HIS veph ");
+        hqlBuilder.append(" WHERE veph.PAYDATE = :month ").setParam("month",month);
+        hqlBuilder.append(" AND veph.EXPERTID IN (SELECT EXPERTID FROM CS_EXPERT_SELECTED es ");
+        hqlBuilder.append(" WHERE es.EXPERTREVIEWID = :expertReviewId ").setParam("expertReviewId",expertReviewId);
+        hqlBuilder.append(" AND es.ISCONFRIM =:isconfirm AND es.isJoin =:isjoin ) ");
+        hqlBuilder.setParam("isconfirm", Constant.EnumState.YES.getValue());
+        hqlBuilder.setParam("isjoin", Constant.EnumState.YES.getValue());
+        hqlBuilder.append(" GROUP BY veph.EXPERTID ");
+        experReviewCosts = getObjectArray(hqlBuilder);
+        return experReviewCosts;
+    }
+
+    /**
+     * 查询在发文环节，或者课题归档环节，未处理的专家评审费信息
+     * @return
+     */
+    @Override
+    public List<ExpertReview> queryUndealReview() {
+        Object[] values = new Object[4];
+        Type[] types = new Type[4];
+        StringBuffer sqlBuffer = new StringBuffer();
+        sqlBuffer.append(" ({alias}.REVIEWDATE IS NOT NULL AND (SYSDATE - {alias}.REVIEWDATE) > 1) ");
+        sqlBuffer.append(" AND (CASE WHEN {alias}.BUSINESSTYPE = ? ");
+        values[0] = Constant.BusinessType.SIGN.getValue();
+        types[0] = StringType.INSTANCE;
+        sqlBuffer.append(" THEN (select count(pt.taskid) from V_RU_PROCESS_TASK pt where pt.NODEDEFINEKEY = ? and pt.BUSINESSKEY ={alias}.businessId and pt.TASKSTATE = '1') ");
+        values[1] = FlowConstant.FLOW_SIGN_FW;
+        types[1] = StringType.INSTANCE;
+        sqlBuffer.append(" WHEN {alias}.BUSINESSTYPE = ? ");
+        values[2] = Constant.BusinessType.TOPIC.getValue();
+        types[2] = StringType.INSTANCE;
+        sqlBuffer.append(" THEN (select count(rt.taskid) from V_RU_TASK rt where rt.NODEKEY = ? and rt.BUSINESSKEY ={alias}.businessId and rt.TASKSTATE = '1' ) ");
+        sqlBuffer.append(" ELSE 0  END) > 0 ");
+        values[3] = FlowConstant.TOPIC_ZLGD;
+        types[3] = StringType.INSTANCE;
+
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.isNull(ExpertReview_.payDate.getName()));
+        criteria.add(Restrictions.sqlRestriction(sqlBuffer.toString(),values,types));
+        List<ExpertReview> expertReviewList = criteria.list();
+        expertReviewList.forEach(er->{
+            List<ExpertSelected> unconfirmList = new ArrayList<>();
+            //只筛选出确认过的
+            er.getExpertSelectedList().forEach(sl ->{
+                if(!Constant.EnumState.YES.getValue().equals(sl.getIsConfrim()) || !Constant.EnumState.YES.getValue().equals(sl.getIsJoin())){
+                    unconfirmList.add(sl);
+                }
+            });
+            er.getExpertSelectedList().removeAll(unconfirmList);
+        });
+        return criteria.list();
     }
 }

@@ -36,7 +36,7 @@ public interface FinancialManagerService {
 	 * @param businessType 业务类型
 	 * @return
 	 */
-	Map<String, Object> initfinancialData(String businessId,String businessType);
+	Map<String, Object> initfinancialData(String businessId,String chargeType,String businessType);
 
     /**
      * 协审费统计列表

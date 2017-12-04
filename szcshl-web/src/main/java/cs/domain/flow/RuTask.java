@@ -19,6 +19,11 @@ public class RuTask {
      */
     @Id
     private String taskId;
+    /**
+     * 环节KEY
+     */
+    @Column
+    private String nodeKey;
 
     /**
      * 环节名称
@@ -220,6 +225,14 @@ public class RuTask {
 
     public String getProcessState() {
         return processState;
+    }
+
+    public String getNodeKey() {
+        return nodeKey;
+    }
+
+    public void setNodeKey(String nodeKey) {
+        this.nodeKey = nodeKey;
     }
 
     public void setProcessState(String processState) {

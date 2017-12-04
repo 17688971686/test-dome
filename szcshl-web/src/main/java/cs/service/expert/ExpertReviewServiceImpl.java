@@ -5,8 +5,6 @@ import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.*;
-import cs.domain.project.WorkProgram;
-import cs.domain.project.WorkProgram_;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertReviewDto;
@@ -47,8 +45,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     private ExpertRepo expertRepo;
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
-    @Autowired
-    private RoomBookingRepo roomBookingRepo;
 
     @Autowired
     private WorkProgramRepo workProgramRepo;
@@ -291,6 +287,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     /**
      * 获取指定专家，指定月份的评审费用
+     * @param expertIds 专家ID
+     * @param month 月份
+     * @return
      */
     @Override
     public List<Map<String, Object>> getExpertReviewCost(String expertIds, String month) {
@@ -300,6 +299,11 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         NativeQuery nativeQuery = expertReviewRepo.getSession().createNativeQuery(hqlBuilder.getHqlString());
         experReviewCosts = nativeQuery.list();
         return experReviewCosts;
+    }
+
+    @Override
+    public List<Object[]> countExpertReviewCost(String expertReviewId, String month) {
+        return expertReviewRepo.countExpertReviewCost(expertReviewId,month);
     }
 
     @Override
@@ -486,6 +490,18 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             });
         }
         return expertDtoList;
+    }
+
+    @Override
+    @Transactional
+    public List<ExpertReview> queryUndealReview() {
+        return expertReviewRepo.queryUndealReview();
+    }
+
+    @Override
+    @Transactional
+    public void save(ExpertReview expertReview) {
+        expertReviewRepo.save(expertReview);
     }
 
 }
