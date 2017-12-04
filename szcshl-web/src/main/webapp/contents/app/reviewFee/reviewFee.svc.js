@@ -87,9 +87,9 @@
                     width: "20%",
                     filterable: false,
                     template: function (item) {
-                        if(item.businessType.trim() == "SIGN"){
+                        if(item.businessType && item.businessType.trim() == "SIGN"){
                             return "项目评审费";
-                        }else if(item.businessType.trim() == "TOPIC"){
+                        }else if(item.businessType && item.businessType.trim() == "TOPIC"){
                             return "课题评审费";
                         }else{
                             return "";

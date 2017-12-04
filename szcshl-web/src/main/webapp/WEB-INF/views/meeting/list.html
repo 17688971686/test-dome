@@ -8,8 +8,21 @@
         <li><a href="#/meeting">会议室管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
-    <div class="toolbar">
+    <form id="meetingForm" name="meetingForm" class="well well-sm">
+        <span class="help-inline">会议室名称：</span>
+        <input type="text"  operator="like" name="mrName" id="mrName"
+               placeholder="请输入"/>
+        <span class="help-inline">会议室类型：</span>
+        <select operator="like" name="mrType" id="mrType" >
+            <option value="">请选择</option>
+            <option ng-repeat="x in DICT.MEETING_ROOM.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+        </select>
+        <span class="help-inline">会议地点：</span>
+        <input type="text"  operator="like" name="addr" id="addr"
+               placeholder="请输入"/>
         <a class="btn btn-sm btn-primary" ng-click="vm.queryMeeting()"><span class="glyphicon glyphicon-search"></span>查询</a>
+        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
+            <span class="glyphicon glyphicon-repeat"></span>重置</button>
         <a class="btn btn-sm btn-primary" ui-sref="meetingEdit({id:null})"><span class="glyphicon glyphicon-plus"></span>新增会议室</a>
         <!--
             <@shiro.hasPermission name="meeting##delete">
@@ -18,7 +31,7 @@
                 </button>
             </@shiro.hasPermission>
             -->
-    </div>
+    </form>
     <!--
     <form id="meetingFrom" name="meetingFrom">
             <span class="help-inline">会议室名称：</span>

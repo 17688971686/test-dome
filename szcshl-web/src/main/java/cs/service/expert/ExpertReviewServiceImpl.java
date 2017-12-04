@@ -371,8 +371,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             if(expertReview.getPayDate() != null){
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "已经进行评审费发送，不能再次保存！");
             }
-            //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存(或者超级管理员)
-            if (expertReview.getReviewDate() != null && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
+            //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存(或者超级管理员) 超级管理员发放，不做时间限制
+            if ( !Constant.SUPER_USER.equals(SessionUtil.getLoginName()) &&  expertReview.getReviewDate() != null && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
                 //String sysDateString = expertReviewRepo.getDataBaseTime("yyyy-mm-dd");
                 //long diffDays = DateUtils.daysBetween(DateUtils.converToDate(sysDateString, "yyyy-MM-dd"), expertReview.getReviewDate());
                 long diffDays = DateUtils.daysBetween(new Date(), expertReview.getReviewDate());
@@ -439,9 +439,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
         //未完成评审费发放
         criteria.add(Restrictions.or(Restrictions.isNull(ExpertReview_.state.getName()),Restrictions.eq(ExpertReview_.state.getName(), Constant.EnumState.NO.getValue()),Restrictions.eq(ExpertReview_.state.getName(), "")));
-        String newDate = DateUtils.converToString(new Date(),"yyyy-MM-dd");
+//        String newDate = DateUtils.converToString(new Date(),"yyyy-MM-dd");
         //超期
-        criteria.add(Restrictions.sqlRestriction( " ( (to_date('"+newDate+"','yyyy-mm-dd') - "+criteria.getAlias()+"_."+ExpertReview_.reviewDate.getName()+") > 0 and '"+newDate+"' != TO_CHAR("+criteria.getAlias()+"_."+ExpertReview_.reviewDate.getName()+", 'yyyy-mm-dd') )"));
+//        criteria.add(Restrictions.sqlRestriction( " ( (to_date('"+newDate+"','yyyy-mm-dd') - "+criteria.getAlias()+"_."+ExpertReview_.reviewDate.getName()+") > 0 and '"+newDate+"' != TO_CHAR("+criteria.getAlias()+"_."+ExpertReview_.reviewDate.getName()+", 'yyyy-mm-dd') )"));
         if(odataObj.isCount()){
             Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
             criteria.setProjection(null);

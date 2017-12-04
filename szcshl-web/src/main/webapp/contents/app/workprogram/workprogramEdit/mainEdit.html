@@ -40,8 +40,18 @@
 
 	<tr>
         <td style="width:15%;" class="text-center" colspan="2">项目名称</td>
-        <td colspan="7">
+        <td colspan="3" ng-show="vm.showTotalInvestment">
             {{vm.work.projectName}}
+        </td>
+        <td colspan="7" ng-hide="vm.showTotalInvestment">
+            {{vm.work.projectName}}
+        </td>
+        <td class="text-center" style="width:10%;" ng-show="vm.showTotalInvestment">总投资<span class="required">*</span></td>
+        <td colspan="3" ng-show="vm.showTotalInvestment">
+            <input type="text" ng-model="vm.work.totalInvestment" name="totalInvestment"
+                   id="totalInvestment" data-val="true" data-val-required="必填" data-val-digits="只能为数字" >
+            万元
+            <span data-valmsg-for="totalInvestment" data-valmsg-replace="true" class="errors"></span>
         </td>
     </tr>
     <tr>
@@ -146,26 +156,11 @@
     <tr>
         <td rowspan="4" style="width:5%;vertical-align:middle;" class="text-center" >项目概况</td>
         <td class="text-center" style="width:10%;" >申报投资<span class="required">*</span></td>
-        <td colspan="3" ng-show="vm.showTotalInvestment">
+        <td colspan="7" >
             <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
                    id="appalyInvestment" data-val="true" data-val-required="必填" data-val-digits="只能为数字" >
             万元
             <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
-        </td>
-
-        <td colspan="7" ng-hide="vm.showTotalInvestment">
-            <input type="text" ng-model="vm.work.appalyInvestment" name="appalyInvestment"
-                   id="appalyInvestment" data-val="true" data-val-required="必填" data-val-digits="只能为数字" >
-            万元
-            <span data-valmsg-for="appalyInvestment" data-valmsg-replace="true" class="errors"></span>
-        </td>
-
-        <td class="text-center" style="width:10%;" ng-show="vm.showTotalInvestment">总投资<span class="required">*</span></td>
-        <td colspan="3" ng-show="vm.showTotalInvestment">
-            <input type="text" ng-model="vm.work.totalInvestment" name="totalInvestment"
-                   id="totalInvestment" data-val="true" data-val-required="必填" data-val-digits="只能为数字" >
-            万元
-            <span data-valmsg-for="totalInvestment" data-valmsg-replace="true" class="errors"></span>
         </td>
     </tr>
     <tr>

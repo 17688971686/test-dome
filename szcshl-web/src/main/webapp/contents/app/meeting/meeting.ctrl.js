@@ -75,6 +75,16 @@
             vm.gridOptions.dataSource.read();
         }
 
+        /**
+         * 重置
+         */
+        vm.formReset = function(){
+            var tab = $("#meetingForm").find('input,select');
+            $.each(tab, function (i, obj) {
+                obj.value = "";
+            });
+        }
+
         activate();
         function activate() {
             meetingSvc.grid(vm);
