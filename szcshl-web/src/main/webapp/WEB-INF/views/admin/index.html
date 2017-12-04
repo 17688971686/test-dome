@@ -548,6 +548,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </aside>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
+            <object  id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>
+                <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0></embed>
+            </object>
             <section class="content">
                 <div ui-view></div>
             </section>
@@ -607,6 +610,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!--Ueditor-->
     <script  src="${path}/contents/libs/ueditor/ueditor.config.js"></script>
     <script  src="${path}/contents/libs/ueditor/ueditor.all.min.js"> </script>
+    <!- Lodop-->
+    <script  src="${path}/contents/libs/lodop/LodopFuncs.js"> </script>
+
     <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
     <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
     <script type="text/javascript" charset="utf-8" src="${path}/contents/libs/ueditor/lang/zh-cn/zh-cn.js"></script>
