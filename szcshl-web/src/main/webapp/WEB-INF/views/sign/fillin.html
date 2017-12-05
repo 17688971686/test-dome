@@ -44,35 +44,45 @@
     <form id="sign_fill_form" name="sign_fill_form">
 		<!-- S 编辑页面 -->
 		<!--S_ 项目建议书/可行性研究报告 -->
-		<div id="sign_fill_xmjys" ng-show="vm.model.reviewstage=='项目建议书' || vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它'" ng-include src="'${path}/contents/app/sign/signEdit/default.html'"></div>
-
+        <div ng-if="vm.model.reviewstage=='项目建议书' || vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它'">
+            <div id="sign_fill_xmjys"  ng-include src="'${path}/contents/app/sign/signEdit/default.html'"></div>
+            <!-- 打印模板-->
+            <div id="sign_fill_xmjys_templ" style="display: none;"> <#include "/templatePrint/sign/detaiXmjys.html"/></div>
+        </div>
         <!--E_ 项目建议书/可行性研究报告 -->
 
 		<!-- S 资金申请报告 -->
-        <div id="sign_fill_zjsq" ng-show="vm.model.reviewstage=='资金申请报告'" ng-include src="'${path}/contents/app/sign/signEdit/capitalAppReportEdit.html'"></div>
+        <div ng-if="vm.model.reviewstage=='资金申请报告'">
+            <div id="sign_fill_zjsq"  ng-include src="'${path}/contents/app/sign/signEdit/capitalAppReportEdit.html'"></div>
+            <div id="sign_fill_zjsq_templ" style="display: none;"><#include "/templatePrint/sign/capitalAppReportZjsq.html"/></div>
+        </div>
         <!-- S 资金申请报告 -->
         
 		<!-- S 进口设备 -->
-        <div id="sign_fill_jksb" ng-show="vm.model.reviewstage=='进口设备'" ng-include src="'${path}/contents/app/sign/signEdit/foreignEquipmenEditt.html'"></div>
+        <div ng-if="vm.model.reviewstage=='进口设备'">
+            <div id="sign_fill_jksb"  ng-include src="'${path}/contents/app/sign/signEdit/foreignEquipmenEditt.html'"></div>
+            <div id="sign_fill_jksb_templ" style="display: none;"><#include "/templatePrint/sign/foreignEquipmenDetail.html"/></div>
+        </div>
         <!-- S 进口设备 -->
         
          <!-- S_设备清单（国产） -->
-        <div id="sign_fill_sbqd" ng-show="vm.model.reviewstage=='设备清单（国产）' || vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/sign/signEdit/equipmenDomesticEdit.html'"></div>
-    	<!-- E_设备清单（国产） --> 
+        <div ng-if="vm.model.reviewstage=='设备清单（国产）' || vm.model.reviewstage=='设备清单（进口）'">
+            <div id="sign_fill_sbqd"  ng-include src="'${path}/contents/app/sign/signEdit/equipmenDomesticEdit.html'"></div>
+            <div id="sign_fill_sbqd_templ" style="display: none;"><#include "/templatePrint/sign/equipmenDomesticDetail.html"/></div>
+        </div>
+        <!-- E_设备清单（国产） -->
     	
-    	<!-- S 项目概算  --> 
-    	  <div id="sign_fill_xmgs" ng-show="vm.model.reviewstage=='项目概算'" ng-include src="'${path}/contents/app/sign/signEdit/projectBudgetEidt.html'"></div>
-    	<!-- E 项目概算  -->
+    	<!-- S 项目概算  -->
+        <div ng-if="vm.model.reviewstage=='项目概算'">
+            <div id="sign_fill_xmgs"  ng-include src="'${path}/contents/app/sign/signEdit/projectBudgetEidt.html'"></div>
+            <div id="sign_fill_xmgs_templ" style="display: none;"> <#include "/templatePrint/sign/detailXmgs.html"/></div>
+        </div>
+        <!-- E 项目概算  -->
     	
     	 <!-- S_设备清单（进口） -->
        <!--  <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/sign/signEdit/equipmentImportEdit.html'"></div> -->
     	<!-- E_设备清单（进口） -->
-        <!-- 引入模板-->
-        <div id="sign_fill_xmjys_templ" style="display: none;"> <#include "/templatePrint/sign/detaiXmjys.html"/></div>
-        <div id="sign_fill_zjsq_templ" style="display: none;"><#include "/templatePrint/sign/capitalAppReportZjsq.html"/></div>
-        <div id="sign_fill_jksb_templ" style="display: none;"><#include "/templatePrint/sign/foreignEquipmenDetail.html"/></div>
-        <div id="sign_fill_sbqd_templ" style="display: none;"><#include "/templatePrint/sign/equipmenDomesticDetail.html"/></div>
-        <div id="sign_fill_xmgs_templ" style="display: none;"> <#include "/templatePrint/sign/detailXmgs.html"/></div>
+
 
     </form> <!-- end form -->
 

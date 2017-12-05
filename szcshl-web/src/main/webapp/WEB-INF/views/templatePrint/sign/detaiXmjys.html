@@ -1,59 +1,34 @@
 <meta charset="UTF-8">
 <!--S_ 项目建议书/可行性研究报告 -->
-<!-- s table -->
-<style>
-    .print-table p{
-        margin-bottom: 0;
-    }
-    .print-table caption{
-        padding:0;
-    }
-</style>
 <table class="print-table">
     <caption class="title">
         <p style="margin-top: 15px;">深圳市政府投资项目评审中心 </p>
         <p>{{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}</p>
     </caption>
-    <caption>
+    <caption style="margin:5px 0px;">
         <span style="width: 200px;float: left;padding: 0 10px;">QR-4.3-01-A4</span>
         <span style="width: 200px;float: right;padding: 0 10px;">收文日期：{{vm.model.signdate | date:'yyyy年MM月dd日'}}</span>
     </caption>
-    <tr class="tr-hidden">
-        <td width="16%"></td>
-        <td width="17%"></td>
-        <td width="17%"></td>
-        <td width="18%"></td>
-        <td width="17%"></td>
-        <td width="15%"></td>
-    </tr>
-    <!--
-    <tr ng-if="vm.model.ispresign == 0">
-        <td>资料存放位置</td>
-        <td colspan="2">{{vm.model.palceStorage}}</td>
-        <td>资料送来时间</td>
-        <td colspan="2"> {{vm.model.palceTime | date:'yyyy年MM月dd日'}}</td>
-    </tr>
-    -->
     <tr>
-        <td>项目名称</td>
-        <td colspan="2">{{vm.model.projectname}}</td>
-        <td>收文编号</td>
-        <td colspan="2"> {{vm.model.signNum}}</td>
+        <td width="16%">项目名称</td>
+        <td colspan="2" width="34%">{{vm.model.projectname}}</td>
+        <td width="16%">收文编号</td>
+        <td colspan="2" width="34%"> {{vm.model.signNum}}</td>
     </tr>
     <tr>
         <td>建设单位</td>
         <td colspan="2">
-            <div style="width: 100%; height: 40px; overflow: hidden; font-size: 12px;">{{vm.model.builtcompanyName}}</div>
+            {{vm.model.builtcompanyName}}
         </td>
         <td>编制单位</td>
         <td colspan="2">
-            <div style="width: 100%; height: 40px; overflow: hidden; font-size: 12px;">{{vm.model.designcompanyName}}</div>
+            {{vm.model.designcompanyName}}
         </td>
     </tr>
     <tr>
         <td>主办处室</td>
         <td colspan="2">{{vm.model.maindeptName}}</td>
-        <td >主办处室联系人</td>
+        <td>主办处室联系人</td>
         <td colspan="2">{{vm.model.mainDeptUserName}}</td>
     </tr>
     <tr>
@@ -64,78 +39,85 @@
     </tr>
     <tr>
         <td>缓急程度</td>
-        <td>{{vm.model.urgencydegree}}</td>
-        <td>项目代码</td>
+        <td width="17%">{{vm.model.urgencydegree}}</td>
+        <td width="17%">项目代码</td>
         <td>{{vm.model.projectcode}}</td>
-        <td>秘密等级</td>
-        <td>{{vm.model.secrectlevel}}</td>
+        <td width="17%">秘密等级</td>
+        <td width="17%">{{vm.model.secrectlevel}}</td>
     </tr>
     <tr>
         <td rowspan="2">备审资料</td>
         <td colspan="5">
             <table class="child-table" style="font-size: 12px;">
-                <caption>（一）项目建议书阶段 </caption>
-                <tr class="tr-hidden">
-                    <td width="22%"></td>
-                    <td width="18%"></td>
-                    <td width="10%"></td>
-                    <td width="20%"></td>
-                    <td width="20%"></td>
-                    <td width="10%"></td>
-                </tr>
+                <caption>（一）项目建议书阶段</caption>
                 <tr>
-                    <td></td>
-                    <td>原件/复印件</td>
-                    <td>数量</td>
-                    <td></td>
-                    <td>原件</td>
-                    <td>数量</td>
+                    <td width="20%"></td>
+                    <td width="15%">原件/复印件</td>
+                    <td width="15%">数量</td>
+                    <td width="20%"></td>
+                    <td width="15%">原件</td>
+                    <td width="15%">数量</td>
                 </tr>
                 <tr>
                     <td class="printing-td">委项目处理表</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugProDealOriginal"ng-disabled="true" name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0">
+                        <input type="checkbox" ng-model="vm.model.sugProDealOriginal" readOnly="true"
+                               name="sugProDealOriginal"
+                               id="addOriginal"
+                               ng-checked="vm.model.sugProDealOriginal == 9 || vm.model.sugProDealOriginal == '9'">
                     </td>
                     <td>
-                        <input class="num" type="text" ng-model="vm.model.sugProDealCount" name="sugProDealCount" ng-readonly="true" id="sugProDealCount"data-val="true">
+                        <input class="num" type="text" ng-model="vm.model.sugProDealCount" name="sugProDealCount"
+                               ng-readonly="true" value="{{vm.model.sugProDealCount}}">
                     </td>
                     <td style="text-align: left">项目建议书</td>
-                    <td><input type="checkbox" ng-model="vm.model.sugProAdviseOriginal" ng-disabled="true" id="sugProAdviseOriginal" ng-true-value="9" ng-false-value="0"></td>
+                    <td><input type="checkbox" ng-model="vm.model.sugProAdviseOriginal" readOnly="true"
+                               ng-checked="vm.model.sugProAdviseOriginal == 9 || vm.model.sugProAdviseOriginal == '9'">
+                    </td>
                     <td>
-                        <input class="num" type="text" ng-model="vm.model.sugProAdviseCount" name="sugProAdviseCount" ng-readonly="true" id="sugProAdviseCount" data-val="true">
+                        <input class="num" type="text" ng-model="vm.model.sugProAdviseCount" readOnly="true"
+                               name="sugProAdviseCount" value="{{vm.model.sugProAdviseCount}}">
                     </td>
                 </tr>
                 <tr>
                     <td class="printing-td">委文件处理表</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugFileDealOriginal" ng-disabled="true"id="sugFileDealOriginal" ng-true-value="9" ng-false-value="0">
+                        <input type="checkbox" ng-model="vm.model.sugFileDealOriginal" readOnly="true"
+                               id="sugFileDealOriginal"
+                               ng-checked="vm.model.sugFileDealOriginal == 9 || vm.model.sugFileDealOriginal == '9'">
                     </td>
                     <td>
-                        <input type="text" class="num"  ng-model="vm.model.sugFileDealCount" id="sugFileDealCount" name="sugFileDealCount" ng-readonly="true"
-                               data-val="true">
+                        <input type="text" class="num" ng-model="vm.model.sugFileDealCount" readOnly="true"
+                               name="sugFileDealCount" value="{{vm.model.sugFileDealCount}}">
                     </td>
                     <td style="text-align: left" colspan="2">项目建议书电子文档
                     </td>
                     <td>
-                        <input type="text" class="num"  ng-model="vm.model.proSugEledocCount" name="proSugEledocCount" ng-readonly="true"
-                               id="proSugEledocCount"data-val="true" data-val-digits="只能输入数字">
+                        <input type="text" class="num" ng-model="vm.model.proSugEledocCount" name="proSugEledocCount"
+                               readOnly="true" value="{{vm.model.proSugEledocCount}}">
                     </td>
                 </tr>
                 <tr>
                     <td class="printing-td">项目单位申报表</td>
-                    <td><input type="checkbox"  ng-model="vm.model.sugOrgApplyOriginal"id="sugOrgApplyOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.sugOrgApplyCount" name="sugOrgApplyCount" ng-readonly="true"
-                               id="sugOrgApplyCount"data-val="true" 12></td>
+                    <td><input type="checkbox" ng-model="vm.model.sugOrgApplyOriginal" readOnly="true"
+                               ng-checked="vm.model.sugOrgApplyOriginal == 9 || vm.model.sugOrgApplyOriginal == '9'">
+                    </td>
+                    <td><input type="text" class="num" ng-model="vm.model.sugOrgApplyCount" name="sugOrgApplyCount"
+                               ng-readonly="true" value="{{vm.model.sugOrgApplyCount}}"></td>
                     <td style="text-align: left">相关会议纪要</td>
-                    <td><input type="checkbox"  ng-model="vm.model.sugMeetOriginal" id="sugMeetOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0" ></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.sugMeetCount" name="sugMeetCount" ng-readonly="true"
-                               id="sugMeetCount"data-val="true"></td>
+                    <td><input type="checkbox" ng-model="vm.model.sugMeetOriginal" readOnly="true"
+                               ng-checked="vm.model.sugMeetOriginal == 9 || vm.model.sugMeetOriginal == '9'"></td>
+                    <td><input type="text" class="num" ng-model="vm.model.sugMeetCount" name="sugMeetCount"
+                               ng-readonly="true"
+                               value="{{vm.model.sugMeetCount}}"></td>
                 </tr>
                 <tr>
                     <td class="printing-td">项目单位请示报告</td>
-                    <td><input type="checkbox" ng-model="vm.model.sugOrgReqOriginal" id="sugOrgReqOriginal" ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.sugOrgReqCount" name="sugOrgReqCount" ng-readonly="true"
-                               id="sugOrgReqCount"data-val="true"></td>
+                    <td><input type="checkbox" ng-model="vm.model.sugOrgReqOriginal" readOnly="true"
+                               ng-checked="vm.model.sugOrgReqOriginal == 9 || vm.model.sugOrgReqOriginal == '9'"></td>
+                    <td><input type="text" class="num" ng-model="vm.model.sugOrgReqCount" name="sugOrgReqCount"
+                               ng-readonly="true"
+                               value="{{vm.model.sugOrgReqCount}}"></td>
                     <td colspan="3" style="text-align: left">其他（名称需备注）</td>
                 </tr>
             </table>
@@ -144,115 +126,140 @@
     <tr>
         <td colspan="5" style="padding:4px 10px">
             <table class="child-table" style="font-size: 12px;">
-                <caption>（二）可行性研究报告阶段 </caption>
-                <tr class="tr-hidden">
-                    <td width="22%"></td>
-                    <td width="18%"></td>
-                    <td width="10%"></td>
-                    <td width="20%"></td>
-                    <td width="10%"></td>
-                    <td width="10%"></td>
-                    <td width="10%"></td>
-                </tr>
+                <caption>（二）可行性研究报告阶段</caption>
                 <tr>
-                    <td></td>
-                    <td>原件/复印件</td>
-                    <td>数量</td>
-                    <td></td>
-                    <td>原件 </td>
-                    <td>复印件</td>
-                    <td>数量</td>
+                    <td width="20%"></td>
+                    <td width="15%">原件/复印件</td>
+                    <td width="15%">数量</td>
+                    <td width="20%"></td>
+                    <td width="10%">原件</td>
+                    <td width="10%">复印件</td>
+                    <td width="10%">数量</td>
                 </tr>
                 <tr>
                     <td class="printing-td">委项目处理表</td>
-                    <td><input type="checkbox"  ng-model="vm.model.studyPealOriginal" ng-disabled="true" id="studyPealOriginal"ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.studyProDealCount" name="studyProDealCount" ng-readonly="true"
-                               id="studyProDealCount"data-val="true" data-val-digits="只能输入数字"></td>
-                    <td colspan="2" style="text-align: left">环评批复文件</td>
-                    <td><input type="checkbox" ng-model="vm.model.envproReplyCopy" id="envproReplyCopy" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.envproReplyCount" name="envproReplyCount" ng-readonly="true"
-                               id="envproReplyCount"data-val="true" data-val-digits="只能输入数字"></td>
+                    <td><input type="checkbox" ng-model="vm.model.studyPealOriginal" readOnly="true"
+                               ng-checked="vm.model.studyPealOriginal == 9 || vm.model.studyPealOriginal == '9'"></td>
+                    <td><input type="text" class="num" ng-model="vm.model.studyProDealCount" name="studyProDealCount"
+                               ng-readonly="true"
+                               value="{{vm.model.studyProDealCount}}"></td>
+                    <td>环评批复文件</td>
+                    <td></td>
+                    <td><input type="checkbox" ng-model="vm.model.envproReplyCopy" readOnly="true"
+                               ng-checked="vm.model.envproReplyCopy == 9 || vm.model.envproReplyCopy == '9'"></td>
+                    <td><input type="text" class="num" ng-model="vm.model.envproReplyCount" name="envproReplyCount"
+                               ng-readonly="true"
+                               value="{{vm.model.envproReplyCount}}"></td>
                 </tr>
                 <tr>
                     <td class="printing-td">委文件处理表</td>
-                    <td><input type="checkbox" ng-model="vm.model.studyFileDealOriginal"id="studyFileDealOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.studyFileDealCount" name="studyFileDealCount" ng-readonly="true"
-                               id="studyFileDealCount"data-val="true" data-val-digits="只能输入数字"></td>
-                    <td colspan="2" style="text-align: left">规划选址批文</td>
-                    <td><input type="checkbox" ng-model="vm.model.planAddrCopy" id="planAddrCopy" ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.planAddrCount" name="planAddrCount" ng-readonly="true"
-                               id="planAddrCount"data-val="true" data-val-digits="只能输入数字"></td>
+                    <td><input type="checkbox" ng-model="vm.model.studyFileDealOriginal" readOnly="true"
+                               ng-checked="vm.model.studyFileDealOriginal == 9 || vm.model.studyFileDealOriginal == '9'">
+                    </td>
+                    <td><input type="text" class="num" ng-model="vm.model.studyFileDealCount" name="studyFileDealCount"
+                               ng-readonly="true"
+                               {{vm.model.studyFileDealCount}}></td>
+                    <td>规划选址批文</td>
+                    <td></td>
+                    <td><input type="checkbox" ng-model="vm.model.planAddrCopy" readOnly="true"
+                               ng-checked="vm.model.planAddrCopy == 9 || vm.model.planAddrCopy == '9'"></td>
+                    <td><input type="text" class="num" ng-model="vm.model.planAddrCount" name="planAddrCount"
+                               ng-readonly="true"
+                               value="{{vm.model.planAddrCount}}"></td>
                 </tr>
                 <tr>
                     <td class="printing-td">项目单位申报表</td>
-                    <td><input type="checkbox" ng-model="vm.model.studyOrgApplyOriginal" id="studyOrgApplyOriginal" ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.studyOrgApplyCount" name="studyOrgApplyCount" ng-readonly="true"
-                               id="studyOrgApplyCount"data-val="true" data-val-digits="只能输入数字"></td>
-                    <td style="text-align: left">可研报告</td>
-                    <td><input type="checkbox" ng-model="vm.model.reportOrigin"id="reportOrigin" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="checkbox" ng-model="vm.model.reportCopy"id="reportCopy" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.reportCount" name="reportCount" ng-readonly="true"
-                               id="reportCount"data-val="true" data-val-digits="只能输入数字"></td>
+                    <td><input type="checkbox" ng-model="vm.model.studyOrgApplyOriginal" readOnly="true"
+                               ng-checked="vm.model.studyOrgApplyOriginal == 9 || vm.model.studyOrgApplyOriginal == '9'">
+                    </td>
+                    <td><input type="text" class="num" ng-model="vm.model.studyOrgApplyCount" name="studyOrgApplyCount"
+                               ng-readonly="true"
+                               value="{{vm.model.studyOrgApplyCount}}"></td>
+                    <td>可研报告</td>
+                    <td><input type="checkbox" ng-model="vm.model.reportOrigin" readOnly="true"
+                               ng-checked="vm.model.reportOrigin == 9 || vm.model.reportOrigin == '9'"></td>
+                    <td><input type="checkbox" ng-model="vm.model.reportCopy" readOnly="true"
+                               ng-checked="vm.model.reportCopy == 9 || vm.model.reportCopy == '9'"></td>
+                    <td><input type="text" class="num" ng-model="vm.model.reportCount" name="reportCount"
+                               ng-readonly="true"
+                               value="{{vm.model.reportCount}}"></td>
                 </tr>
                 <tr>
                     <td class="printing-td">项目单位请示报告</td>
-                    <td><input type="checkbox"  ng-model="vm.model.studyOrgReqOriginal" id="studyOrgReqOriginal" ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.studyOrgReqCount" name="studyOrgReqCount" ng-readonly="true"
-                               id="studyOrgReqCount"data-val="true" data-val-digits="只能输入数字"></td>
-                    <td colspan="3" style="text-align: left">可研报告电子文档</td>
-                    <td><input type="text" class="num"  ng-model="vm.model.eledocCount" name="eledocCount" ng-readonly="true"
-                               id="eledocCount"data-val="true" data-val-digits="只能输入数字"></td></td>
+                    <td><input type="checkbox" ng-model="vm.model.studyOrgReqOriginal" readOnly="true"
+                               ng-checked="vm.model.studyOrgReqOriginal == 9 || vm.model.studyOrgReqOriginal == '9'">
+                    </td>
+                    <td><input type="text" class="num" ng-model="vm.model.studyOrgReqCount" name="studyOrgReqCount"
+                               ng-readonly="true"
+                               value="{{vm.model.studyOrgReqCount}}"></td>
+                    <td>可研报告电子文档</td>
+                    <td></td>
+                    <td></td>
+                    <td><input type="text" class="num" ng-model="vm.model.eledocCount" name="eledocCount"
+                               ng-readonly="true"
+                               value="{{vm.model.eledocCount}}"></td>
                 </tr>
                 <tr>
                     <td class="printing-td">项目建议书批复</td>
-                    <td><input type="checkbox"  ng-model="vm.model.studyProSugOriginal"id="studyProSugOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="text"  class="num"  ng-model="vm.model.studyProSugCount" name="studyProSugCount" ng-readonly="true"
-                               id="studyProSugCount"data-val="true" data-val-digits="只能输入数字"></td>
+                    <td><input type="checkbox" ng-model="vm.model.studyProSugOriginal" readOnly="true"
+                               ng-checked="vm.model.studyProSugOriginal == 9 || vm.model.studyProSugOriginal == '9'">
+                    </td>
+                    <td><input type="text" class="num" ng-model="vm.model.studyProSugCount" name="studyProSugCount"
+                               ng-readonly="true"
+                               value="{{vm.model.studyProSugCount}}"></td>
                     <td style="text-align: left">节能报告</td>
-                    <td><input type="checkbox" ng-model="vm.model.energyOriginal"  id="energyOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="checkbox" ng-model="vm.model.energyCopy" id="energyCopy" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.energyCount" name="energyCount" ng-readonly="true"
-                               id="energyCount"data-val="true" data-val-digits="只能输入数字"></td>
+                    <td><input type="checkbox" ng-model="vm.model.energyOriginal" readOnly="true"
+                               ng-checked="vm.model.energyOriginal == 9 || vm.model.energyOriginal == '9'"></td>
+                    <td><input type="checkbox" ng-model="vm.model.energyCopy" readOnly="true"
+                               ng-checked="vm.model.energyCopy == 9 || vm.model.energyCopy == '9'"></td>
+                    <td><input type="text" class="num" ng-model="vm.model.energyCount" name="energyCount"
+                               ng-readonly="true"
+                               value="{{vm.model.energyCount}}"></td>
                 </tr>
                 <tr>
                     <td class="printing-td">相关会议纪要</td>
-                    <td><input type="checkbox" ng-model="vm.model.studyMeetOriginal" name="studyMeetOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0" ></td>
-                    <td><input type="text" class="num"  ng-model="vm.model.studyMeetCount" name="studyMeetCount" ng-readonly="true"
-                               id="studyMeetCount" data-val="true" data-val-digits="只能输入数字"></td>
-                    <td colspan="3" style="text-align: left">其他（名称需备注）</td>
+                    <td><input type="checkbox" ng-model="vm.model.studyMeetOriginal" name="studyMeetOriginal"
+                               readOnly="true"
+                               ng-checked="vm.model.studyMeetOriginal == 9 || vm.model.studyMeetOriginal == '9'"></td>
+                    <td><input type="text" class="num" ng-model="vm.model.studyMeetCount" name="studyMeetCount"
+                               ng-readonly="true"
+                               value="{{vm.model.studyMeetCount}}"></td>
+                    <td>其他（名称需备注）</td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </table>
         </td>
     </tr>
-    <tr >
+    <tr>
         <td>综合部分办</td>
-        <td colspan="5">
-            <div style="width: 100%; height: 45px; overflow: hidden; font-size: 12px;">
-            <p class="text-left" style="height: 15%;"> {{vm.model.comprehensivehandlesug}}</p>
-            <p class="text-right" style="margin-right: 50px; ">签名：{{vm.model.comprehensiveName}}</p>
-            <p class="text-right" style="margin-right: 20px; ">日期：{{vm.model.comprehensiveDate}}</p>
+        <td colspan="5" style="vertical-align: middle;">
+            <div class="signName">
+            <div class="signDetail"> {{vm.model.comprehensivehandlesug}}</div>
+            <p class="nameDate">签名：{{vm.model.comprehensiveName}}</p>
+            <p class="nameDate">日期：{{vm.model.comprehensiveDate}}</p>
             </div>
         </td>
     </tr>
-    <tr >
+    <tr>
         <td>中心领导签批意见</td>
-        <td colspan="5" >
-            <div style="width: 100%; height: 45px; overflow: hidden;font-size: 12px;">
-            <p class="text-left" style="height: 15%;"> {{vm.model.leaderhandlesug}}</p>
-            <p  class="text-right" style="margin-right: 90px;" >签名：</p>
-            <p  class="text-right" style="margin-right: 22px;" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
-                <p  class="text-right" style="margin-right: 90px;" ng-if="!(vm.model.leaderDate)">日期：</p>
+        <td colspan="5" style="vertical-align: middle;">
+            <div class="signName">
+            <div class="signDetail"> {{vm.model.leaderhandlesug}}</div>
+            <p class="nameDate">签名：</p>
+            <p class="nameDate" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
+            <p class="nameDate" ng-if="!(vm.model.leaderDate)">日期：</p>
             </div>
         </td>
     </tr>
-    <tr >
+    <tr>
         <td>部长处理意见</td>
-        <td colspan="5" >
-            <div style="width: 100%; height:45px; overflow: hidden;font-size: 12px;">
-            <p class="text-left" style="height: 15%;"> {{vm.model.ministerhandlesug}}</p>
-            <p class="text-right" style="margin-right: 90px; ">签名：</p>
-            <p class="text-right" style="margin-right: 22px; " ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
-                <p class="text-right" style="margin-right: 90px; " ng-if="!(vm.model.ministerDate)">日期：</p>
+        <td colspan="5" style="vertical-align: middle;">
+            <div class="signName">
+            <div class="signDetail"> {{vm.model.ministerhandlesug}}</div>
+            <p class="nameDate">签名：</p>
+            <p class="nameDate" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
+            <p class="nameDate" ng-if="!(vm.model.ministerDate)">日期：</p>
             </div>
         </td>
     </tr>

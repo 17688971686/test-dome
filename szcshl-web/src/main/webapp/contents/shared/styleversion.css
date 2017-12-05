@@ -531,74 +531,6 @@ div.k-window{
     padding-top: .2em;
 }
 
-/*调整打印样式*/
-.print-table{
-    width: 100%;
-    font-size:12px;
-}
-.print-table .title{
-    font-family: simun;
-    text-align: center;
-    font-size:20px;
-    font-weight: 500;
-    line-height:20px;
-}
-.print-table th{
-    text-align: center;
-}
-.print-table th,
-.print-table td{
-    border:1px solid #000;
-    border-collapse:collapse;
-    vertical-align: middle;
-    padding:4px 10px;
-}
-.print-table td:first-child{
-    text-align: center;
-    padding:5px 0;
-}
-.print-table .tr-hidden td{
-    border:none;
-    height:0;
-    paddign:0;
-    margin: 0;
-}
-.print-table .child-table td{
-    padding:5px 0;
-}
-.num{
-    width: 20px;
-    height: 16px;
-    background: #fff;
-    border:1px solid #000;
-    outline: none;
-    text-align: center;
-}
-.child-table{
-    width: 100%;
-    font-size: 13px;
-}
-.child-table td{
-    border:none;
-    text-align: center;
-}
-.print-table  input[type="checkbox"] {
-    position: relative;
-    -webkit-appearance: none;  /*清除复选框默认样式*/
-    border:1px solid #000;
-    height: 16px;
-    width: 20px;
-    vertical-align: middle;
-    text-align: center;
-    margin:0;
-}
-.print-table input[type="checkbox"]:checked:before{
-    content:'√';
-    position: absolute;
-    left: 2px;
-    top: -4px;
-    font-size:16px;
-}
 @media print {
     .print-table{
         margin-top:-40px;
@@ -609,24 +541,4 @@ div.k-window{
     .print-table .child-table .printing-td {
         text-align: left;
     }
-}
-#sign_history .k-grid-content{
-    overflow: hidden;
-    overflow-x:auto;
-}
-#sign_history .k-grid-header{
-    padding-right:0!important;
-}
-#sign_history table{
-    border-collapse: collapse;
-}
-#sign_history table th{
-    line-height: 30px;
-}
-#sign_history table th,
-#sign_history table td{
-    border:1px solid #000;
-    border-collapse:collapse!important;
-    vertical-align: middle;
-    padding:4px 10px;
 }

@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLDecoder;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,8 +43,6 @@ import java.util.List;
 @MudoleAnnotation(name = "系统管理",value = "permission#system")
 public class FileController implements ServletConfigAware,ServletContextAware {
     private static Logger logger = Logger.getLogger(FileController.class);
-    
-    private static final String plugin_file_path = "contents/plugins";
 
     private static String FTP_IP1 = "FTP_IP1";
     private static String FTP_PORT1 = "FTP_PORT1";
@@ -346,7 +344,7 @@ public class FileController implements ServletConfigAware,ServletContextAware {
                     sysFile.getShowName(), SysFileUtil.getUploadPath());
             File file = new File(filePath);
             if(!file.exists()){
-                file = new File(realPathResolver.get(plugin_file_path)+File.separator+"nofile.png");
+                file = new File(realPathResolver.get(Constant.plugin_file_path)+File.separator+"nofile.png");
                 sysFile.setFileType(".png");
             }
 
@@ -483,7 +481,7 @@ public class FileController implements ServletConfigAware,ServletContextAware {
         if("pdf".equals(fileTyp)){
             return "weboffice/reader_pdf";
         }else{
-            model.addAttribute("pluginFilePath",plugin_file_path+"/weboffice.rar");
+            model.addAttribute("pluginFilePath",Constant.plugin_file_path+"/weboffice.rar");
             return "weboffice/edit_dj";
         }
     }
@@ -510,12 +508,12 @@ public class FileController implements ServletConfigAware,ServletContextAware {
     public PageModelDto listFile() {
         PageModelDto<PluginFileDto> pageModelDto = new PageModelDto();
         List<PluginFileDto> list = new ArrayList<PluginFileDto>();
-		File parent = new File(realPathResolver.get(plugin_file_path));
+		File parent = new File(realPathResolver.get(Constant.plugin_file_path));
 		if (parent.exists()) {			
 			 File flist[] = parent.listFiles();
 			 for (File f : flist) {
 	                if (!f.isDirectory() && !f.getName().toLowerCase().endsWith("png")) {
-	                	list.add(new PluginFileDto(f,plugin_file_path)) ;
+	                	list.add(new PluginFileDto(f,Constant.plugin_file_path)) ;
 	                } 
 	         }
 		}
@@ -530,12 +528,12 @@ public class FileController implements ServletConfigAware,ServletContextAware {
     @ResponseBody
     public List<PluginFileDto> listHomeFile() {
         List<PluginFileDto> list = new ArrayList<PluginFileDto>();
-        File parent = new File(realPathResolver.get(plugin_file_path));
+        File parent = new File(realPathResolver.get(Constant.plugin_file_path));
         if (parent.exists()) {
             File flist[] = parent.listFiles();
             for (File f : flist) {
                 if (!f.isDirectory() && !f.getName().toLowerCase().endsWith("png")) {
-                    list.add(new PluginFileDto(f,plugin_file_path)) ;
+                    list.add(new PluginFileDto(f,Constant.plugin_file_path)) ;
                 }
             }
         }

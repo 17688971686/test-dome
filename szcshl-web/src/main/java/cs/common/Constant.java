@@ -64,7 +64,7 @@ public class Constant {
     public static Float WORK_DAY_25 = 25f;
 
     /**
-     * 25
+     * 3
      */
     public static Float WORK_DAY_3 = 3f;
     /**
@@ -75,9 +75,11 @@ public class Constant {
     /**
      * 评审报告评优 综合部负责人
      */
-    //public static final String GENERALCONDUTOR = "王纯";
 
-
+    /**
+     * 插件默认地址
+     */
+    public static final String plugin_file_path = "contents/plugins";
     /**
      * 工作方案表抬头
      */

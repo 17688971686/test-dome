@@ -69,6 +69,7 @@ public class AdminController {
     public String index(Model model) {
         model.addAttribute("user", SessionUtil.getLoginName());
         model.addAttribute("DICT_ITEMS", JSON.toJSONString(dictService.getDictItemByCode(null)));
+        model.addAttribute("pluginFilePath",Constant.plugin_file_path);
         /*String userState = rtxService.queryUserState(null,SessionUtil.getLoginName());
         if("0".equals(userState) || "2".equals(userState)){
             model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null,SessionUtil.getLoginName()));

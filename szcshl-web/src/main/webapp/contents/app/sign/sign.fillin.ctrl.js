@@ -215,7 +215,12 @@
 
         //项目签收编辑模板打印
         vm.editPrint = function () {
-            signSvc.editTemplatePrint(vm);
+            var LODOP = getLodop();
+            var strBodyStyle="<style>"+document.getElementById("printCss").innerHTML+"</style>";
+            LODOP.PRINT_INIT("");
+            LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strBodyStyle+"<body>"+document.getElementById("sign_fill_xmjys_templ").innerHTML+"</body>");
+            LODOP.PREVIEW();
+            //signSvc.editTemplatePrint(vm);
         }
 
     }
