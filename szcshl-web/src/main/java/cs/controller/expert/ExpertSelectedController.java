@@ -65,9 +65,10 @@ public class ExpertSelectedController {
     @RequiresAuthentication
     //@RequiresPermissions("expertSelected##put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void put(@RequestBody ExpertSelectedDto record) {
-        expertSelectedService.update(record);
+    @ResponseBody
+    public ResultMsg put(@RequestBody ExpertSelectedDto record) {
+
+        return expertSelectedService.update(record);
     }
 
     @RequiresAuthentication

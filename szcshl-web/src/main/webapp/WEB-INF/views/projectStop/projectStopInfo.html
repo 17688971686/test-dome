@@ -10,7 +10,7 @@
         <div id="stopForm_{{$index}}" class="collapse in">
             <form id="form" name="form">
                 <table class="table table-bordered">
-                    <caption class="text-center h3"><strong>项目暂停审批表【{{$index+1}}】</strong></caption>
+                    <caption class="text-center h3"><strong>项目暂停审批表</strong></caption>
                     <caption>WR-4.3-04-01-A0</caption>
                     <tr>
                         <td width="15%" class="text-right">项目名称:</td>
@@ -45,66 +45,60 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="15%" class="text-right">项目暂停天数<br>(工作日):<span class="required">*</span></td>
+                        <td width="15%" class="text-right">项目暂停天数<br>(工作日):</td>
                         <td colspan="3">
-                            <input type="number" class="form-control input-sm " style="width: 120px;" id="pausedays" name="pausedays"
-                                   ng-model="x.pausedays" data-val="true" data-val-required="必填"/>
-                            <span data-valmsg-for="pausedays" data-valmsg-replace="true" class="errors"></span>
+                            {{x.expectpausedays}}
                         </td>
                     </tr>
                     <tr>
-                        <td width="15%" class="text-right">项目基本情况:<span class="required">*</span></td>
+                        <td width="15%" class="text-right">项目基本情况</td>
                         <td colspan="3">
-                    <textarea style="width:98%;"  cols="10" rows="4" name="projectDesc" id="projectDesc"
-                              ng-model="x.projectDesc" ng-disabled="vm.showIdea" data-val="true"
-                              data-val-required="必填"></textarea>
-                            <span data-valmsg-for="projectDesc" data-valmsg-replace="true" class="errors"></span>
+                            <div style="min-height: 50px;">
+                                {{x.projectDesc}}
+                            </div>
                         </td>
                     </tr>
                     <tr>
-                        <td width="15%" class="text-right">要求暂定原因:<span class="required">*</span></td>
+                        <td width="15%" class="text-right">要求暂定原因</td>
                         <td colspan="3">
-                    <textarea style="width:98%;"  cols="10" rows="4" name="pasedescription" id="pasedescription"
-                              ng-model="x.pasedescription" ng-disabled="vm.showIdea" data-val="true"
-                              data-val-required="必填"></textarea>
-                            <span data-valmsg-for="pasedescription" data-valmsg-replace="true" class="errors"></span>
-                        </td>
+                            <div style="min-height: 50px;">
+                                {{x.pasedescription}}
+                            </div>
                     </tr>
                     <tr>
                         <td width="15%" class="text-right">项目文件函:</td>
                         <td colspan="3" >
                             <p>中心发补充材料函
-                                <input type="checkbox" ng-model="x.isSupplementMaterial" ng-true-value="9" ng-false-value="0"
-                                       ng-click="vm.Checked($event,true)" ng-checked="vm.projectStop.isSupplementMaterial == '9'"/>
+                                <input type="checkbox" ng-model="x.isSupplementMaterial" ng-true-value="9" ng-false-value="0" ng-disabled="true"
+                                       ng-checked="x.isSupplementMaterial == '9'"/>
                             </p>
                             <p>申报单位要求暂停审核函
-                                <input type="checkbox"ng-model="x.isPuaseApprove" ng-true-value="9" ng-false-value="0"
-                                       ng-click="vm.Checked($event,true)" ng-checked="vm.projectStop.isPuaseApprove == '9'"/>
+                                <input type="checkbox" ng-model="x.isPuaseApprove" ng-true-value="9" ng-false-value="0" ng-disabled="true"
+                                       ng-checked="x.isPuaseApprove == '9'"/>
                             </p>
                             <p>无以上文件
-                                <input type="checkbox"  ng-click="vm.Checked($event,false)" ng-model="vm.noFile"
-                                       ng-checked="vm.projectStop.isPuaseApprove != '9' && vm.projectStop.isSupplementMaterial!= '9'"/>
+                                <input type="checkbox"   ng-model="vm.noFile" ng-disabled="true"
+                                       ng-checked="x.isPuaseApprove != '9' && x.isSupplementMaterial!= '9'"/>
                             </p>
                         </td>
                     </tr>
                     <tr >
                         <td  width="15%" class="text-right">部长意见:</td>
                         <td colspan="3">
+                            <div style="min-height: 50px;">
                             <p> {{vm.projectStop.directorIdeaContent}}</p>
                             <p class="text-right" ng-if="vm.projectStop.directorName">签名：{{vm.projectStop.directorName}}</p>
                             <p class="text-right" ng-if="vm.projectStop.directorDate">日期：{{vm.model.directorDate}}</p>
-                    <#--<textarea style="width:98%;"  cols="10" rows="3" name="directorIdeaContent" id="directorIdeaContent"
-                              ng-model="x.directorIdeaContent" ng-disabled="true" ></textarea>
-                        </td>-->
+                            </div>
                     </tr>
                     <tr >
                         <td  width="15%" class="text-right">分管副主任签批:</td>
                         <td colspan="3">
+                            <div style="min-height: 50px;">
                             <p> {{vm.projectStop.leaderIdeaContent}}</p>
                             <p class="text-right" ng-if="vm.projectStop.leaderName">签名：{{vm.model.leaderName}}</p>
                             <p class="text-right" ng-if="vm.projectStop.leaderDate">日期：{{vm.model.leaderDate}}</p>
-                   <#-- <textarea style="width:98%;" cols="10" rows="3" name="leaderIdeaContent" id="leaderIdeaContent"
-                              ng-model="x.leaderIdeaContent"ng-disabled="true" ></textarea>-->
+                            </div>
                         </td>
                     </tr>
 
@@ -116,9 +110,6 @@
             </div>
         </div>
 
-
     </div>
-
-
 
 </div>

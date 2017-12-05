@@ -3,6 +3,7 @@ package cs.repository.repositoryImpl.project;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.Validate;
 import cs.domain.project.ProjectStop;
 import cs.domain.project.ProjectStop_;
 import cs.domain.project.Sign_;
@@ -19,29 +20,29 @@ public class ProjectStopRepoImpl extends AbstractRepository<ProjectStop, String>
     @Autowired
     private ProjectStopRepo projectStopRepo;
 
+    /**
+     * 根据项目和状态查询审批结果信息
+     * @param signid        //项目ID
+     * @param isactive      //是否审批通过
+     * @param isactive      //是否已经执行完
+     * @return
+     */
     @Override
-    //获取已暂停项目
-    public List<ProjectStop> getProjectStop(String signid, String ispause) {
+    public List<ProjectStop> findProjectStop(String signid,String isactive,String isOverTime) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select p.* from cs_projectstop p where p." + Sign_.signid.getName() + " = '" + signid + "'");
-        sqlBuilder.append(" and p." + ProjectStop_.isactive.getName() + " =:isactive");
-        sqlBuilder.setParam("isactive", ispause);
+        sqlBuilder.append("select p.* from cs_projectstop p where p." + Sign_.signid.getName() + " = :signid ");
+        sqlBuilder.setParam("signid",signid);
+
+        if(Validate.isString(isactive)){
+            sqlBuilder.append(" and p." + ProjectStop_.isactive.getName() + " =:isactive");
+            sqlBuilder.setParam("isactive", isactive);
+        }
+        if(Validate.isString(isOverTime)){
+            sqlBuilder.append(" and p." + ProjectStop_.isOverTime.getName() + " =:isOverTime");
+            sqlBuilder.setParam("isOverTime", isOverTime);
+        }
         List<ProjectStop> pList = projectStopRepo.findBySql(sqlBuilder);
         return pList;
-    }
-
-    @Override
-    public ProjectStop findProjectStop(String signid) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + ProjectStop.class.getSimpleName() + " where " + ProjectStop_.sign.getName() + "." + Sign_.signid.getName());
-        hqlBuilder.append(" =:signid ").setParam("signid", signid);
-        hqlBuilder.append(" and " + ProjectStop_.isactive.getName() + " =:isactive").setParam("isactive", Constant.EnumState.YES.getValue());
-        hqlBuilder.append(" order by "+ProjectStop_.createdDate.getName()+" desc");
-        List<ProjectStop> resultList = projectStopRepo.findByHql(hqlBuilder);
-        if(resultList != null && resultList.size() > 0){
-            return resultList.get(0);
-        }
-        return null;
     }
 
     /**

@@ -17,7 +17,7 @@ public interface ExpertSelectedService {
 
 	void save(ExpertSelectedDto record);
 
-	void update(ExpertSelectedDto record);
+	ResultMsg update(ExpertSelectedDto record);
 
 	ExpertSelectedDto findById(String deptId);
 

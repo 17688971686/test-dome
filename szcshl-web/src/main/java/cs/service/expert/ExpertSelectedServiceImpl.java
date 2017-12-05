@@ -70,8 +70,11 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
 
     @Override
     @Transactional
-    public void update(ExpertSelectedDto record) {
+    public ResultMsg update(ExpertSelectedDto record) {
         boolean isUpdateScore = false;
+        if(!Validate.isObject(record.getScore()) || record.getScore() <= 0){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，你还没对专家进行评分！");
+        }
         ExpertSelected domain = expertSelectedRepo.findById(record.getId());
         if (!record.getScore().equals(domain.getScore())) {
             isUpdateScore = true;
@@ -83,6 +86,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             //计算综合评分（根据有评分总数，除以评分次数，没有评分的次数不算）
             expertRepo.updateExpertCompositeScore(domain.getExpert().getExpertID());
         }
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
 
     @Override

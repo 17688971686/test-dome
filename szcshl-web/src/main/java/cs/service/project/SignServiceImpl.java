@@ -893,7 +893,7 @@ public class SignServiceImpl implements SignService {
                     //注意：1、项目建议书、可研阶段一定要做工作方案；
                     // 2、主分支跳转，则必须要所有协办分支都完成才能跳转。
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
-                        if (signBranchRepo.assistFlowFinish(signid)) {
+                        if ((signBranchRepo.countBranch(signid) > 1) && signBranchRepo.assistFlowFinish(signid)) {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "协审分支还没处理完，您不能进行直接发文操作！");
                         }
                         sign = signRepo.findById(Sign_.signid.getName(), signid);

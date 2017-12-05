@@ -223,22 +223,26 @@
 
         // 保存专家评分
         vm.saveMark = function () {
-            common.initJqValidation($('#expert_score_form'));
-            var isValid = $('#expert_score_form').valid();
-            if(isValid){
-                expertReviewSvc.saveMark(vm.scoreExpert,function(){
-                    angular.forEach(vm.model.expertReviewDto.expertSelectedDtoList,function (scopeEP,index) {
-                        if(scopeEP.id == vm.scoreExpert.id){
-                            scopeEP.score = vm.scoreExpert.score;
-                            scopeEP.describes = vm.scoreExpert.describes;
-                        }
-                    })
-                    bsWin.success("保存成功！",function(){
-                        vm.closeEditMark();
-                    });
-                });
+            if(!vm.scoreExpert.score || vm.scoreExpert.score == 0){
+                bsWin.alert("请对专家进行评分！");
+            }else if(!vm.scoreExpert.describes){
+                bsWin.alert("请对专家进行评分描述！");
             }else{
-                bsWin.alert("请填写评分和评分内容！");
+                expertReviewSvc.saveMark(vm.scoreExpert,function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        angular.forEach(vm.model.expertReviewDto.expertSelectedDtoList,function (scopeEP,index) {
+                            if(scopeEP.id == vm.scoreExpert.id){
+                                scopeEP.score = vm.scoreExpert.score;
+                                scopeEP.describes = vm.scoreExpert.describes;
+                            }
+                        })
+                        bsWin.success("保存成功！",function(){
+                            vm.closeEditMark();
+                        });
+                    }else{
+                        bsWin.alert(data.reMsg);
+                    }
+                });
             }
         }
 

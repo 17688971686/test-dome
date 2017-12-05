@@ -4,12 +4,12 @@
     <tr class="active">
         <td style="width: 5%;max-width: 70px;">序号</td>
         <td width="8%">姓名</td>
-        <td width="20%">工作单位</td>
-        <td width="20%">职位/职称</td>
-        <td width="15%">专业</td>
-        <td width="10%">专家评分</td>
-        <td width="15%">评分描述</td>
-        <td width="15%" ng-if="vm.showFlag.isMainPrinUser">操作</td>
+        <td width="15%">工作单位</td>
+        <td width="15%">职位/职称</td>
+        <td width="10%">专业</td>
+        <td width="12%">专家评分</td>
+        <td width="28%">评分描述</td>
+        <td width="12%" ng-if="vm.showFlag.isMainPrinUser">操作</td>
     </tr>
     <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
         <td>{{$index+1}}</td>
@@ -46,7 +46,7 @@
     <form id="expert_score_form" name="expert_score_form">
         <table class="table table-bordered">
             <tr>
-                <td style="width:90px;">专家星级:</td>
+                <td style="width:90px;">专家星级:<span class="required">*</span></td>
                 <td>
                     <div ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
                         <div id="star_{{x.id}}" data-num="{{x.score}}" ng-show="x.id == vm.scoreExpert.id"></div>
@@ -54,8 +54,11 @@
                 </td>
             </tr>
             <tr>
-                <td style="width:90px;">评级描述:</td>
-                <td><textarea rows="7" style="width: 96%;" ng-model="vm.scoreExpert.describes" ></textarea></td>
+                <td style="width:90px;">评级描述:<span class="required">*</span></td>
+                <td>
+                    <textarea maxlength="120" rows="7" style="width: 100%;" ng-model="vm.scoreExpert.describes" ></textarea>
+                    <p style="text-align: right;padding: 0px;margin:0px;font-size: 12px;"><span>最多输入120字</span></p>
+                </td>
             </tr>
         </table>
     </form>

@@ -45,7 +45,7 @@ public class ExpertSelected {
     private BigDecimal totalCost;
 
     //评级描述
-    @Column(columnDefinition = "VARCHAR(200)")
+    @Column(columnDefinition = "VARCHAR(256)")
     private String describes;
 
     //是否参加

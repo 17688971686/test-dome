@@ -37,7 +37,7 @@
     <tr>
         <td width="15%" class="text-right">项目暂停天数<br>(工作日):</td>
         <td colspan="3">
-            {{vm.model.pausedays}}
+            {{vm.model.expectpausedays}}
         </td>
     </tr>
     <tr>
@@ -74,23 +74,21 @@
     <tr >
         <td  width="15%" class="text-right">部长意见:</td>
         <td colspan="3" >
+            <div style="min-height: 50px;">
             <p> {{vm.model.directorIdeaContent}}</p>
             <p class="text-right" ng-if="vm.model.directorName">签名：{{vm.model.directorName}}</p>
             <p class="text-right" ng-if="vm.model.directorDate">日期：{{vm.model.directorDate}}</p>
-            <#--<div style="min-height: 50px;">
-                {{vm.model.directorIdeaContent}}
-            </div>-->
+            </div>
         </td>
     </tr>
     <tr >
         <td  width="15%" class="text-right">分管副主任签批:</td>
         <td colspan="3">
+            <div style="min-height: 50px;">
             <p> {{vm.model.leaderIdeaContent}}</p>
             <p class="text-right" ng-if="vm.model.leaderName">签名：{{vm.model.leaderName}}</p>
             <p class="text-right" ng-if="vm.model.leaderDate">日期：{{vm.model.leaderDate}}</p>
-            <#--<div style="min-height: 50px;">
-                {{vm.model.leaderIdeaContent}}
-            </div>-->
+            </div>
         </td>
     </tr>
 

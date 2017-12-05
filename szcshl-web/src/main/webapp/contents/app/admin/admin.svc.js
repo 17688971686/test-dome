@@ -12,7 +12,7 @@
             etasksGrid: etasksGrid,		                //办结项目
             dtasksGrid: dtasksGrid,                     //在办项目
             doingTaskGrid: doingTaskGrid,               //在办任务
-            personMainTasksGrid: personMainTasksGrid,   //个人主办项目
+            personMainTasksGrid: personMainTasksGrid,   //个人经办项目
             countWorakday: countWorakday,	            //计算工作日
             agendaTaskGrid: agendaTaskGrid,             //个人待办任务（除项目流程外）
             initFile: initFile,	        //初始化附件
@@ -1048,19 +1048,6 @@
                 },
                 {
                     field: "",
-                    title: "收文日期",
-                    width: 150,
-                    filterable: false,
-                    template: function(item){
-                        if(item.signdate){
-                            return (new Date((item.signdate).CompatibleDate())).Format("yyyy-MM-dd");
-                        }else{
-                            return "";
-                        }
-                    },
-                },
-                {
-                    field: "",
                     title: "项目状态",
                     width: 80,
                     filterable: false,
@@ -1098,9 +1085,9 @@
                         }
                     },
                 },
-                {
+                /*{
                     field: "",
-                    title: "项目签收时间",
+                    title: "签收时间",
                     width: 150,
                     filterable: false,
                     template: function(item){
@@ -1110,19 +1097,19 @@
                             return "";
                         }
                     },
-                },
+                },*/
                 {
                     field: "surplusdays",
                     title: "剩余工作日",
                     width: 100,
                     filterable: false
                 },
-                {
+                /*{
                     field: "receivedate",
                     title: "送来时间",
                     width: 100,
                     filterable: false
-                },
+                },*/
                 {
                     field: "builtcompanyname",
                     title: "建设单位",
