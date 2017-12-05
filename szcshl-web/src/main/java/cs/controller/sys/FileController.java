@@ -226,6 +226,28 @@ public class FileController implements ServletConfigAware,ServletContextAware {
         return resultMsg;
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "ftp文件校验", path = "fileSysCheck", method = RequestMethod.POST)
+    @ResponseBody
+    public  ResultMsg checkFtpFile(@RequestParam(required = true)  String sysFileId) {
+        logger.debug("==================ftp文件校验==================");
+        ResultMsg resultMsg = null;
+        try{
+            SysFile sysFile = fileService.findFileById(sysFileId);
+            //下载ftp服务器附件到本地
+            Boolean flag = FtpUtil.downloadFile( sysFile.getFtpIp(), sysFile.getPort()!=null?Integer.parseInt(sysFile.getPort()):0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
+                    sysFile.getShowName(), SysFileUtil.getUploadPath());
+            if(flag){
+                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"","");
+            }else{
+                resultMsg =  new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"ftp服务器上不存在改文件请核查！");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return resultMsg;
+    }
+
 
     @RequiresAuthentication
     @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.GET)
