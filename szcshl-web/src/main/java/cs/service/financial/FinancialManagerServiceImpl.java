@@ -137,6 +137,7 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
                     financiallist = new ArrayList<>();
                     //新增两条记录
                     FinancialManager financialManager = new FinancialManager();
+                    financialManager.setId(UUID.randomUUID().toString());
                     financialManager.setBusinessId(businessId);
                     financialManager.setChargeName("专家评审费");
                     financialManager.setCharge(expertExpense);
@@ -147,9 +148,10 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
                     financiallist.add(financialManager);
 
                     FinancialManager financialManager1 = new FinancialManager();
+                    financialManager1.setId(UUID.randomUUID().toString());
                     financialManager1.setBusinessId(businessId);
                     financialManager1.setChargeName("应缴税");
-                    financialManager1.setCharge(expertExpense);
+                    financialManager1.setCharge(expertTaxes);
                     financialManager1.setCreatedBy(SessionUtil.getDisplayName());
                     financialManager1.setCreatedDate(now);
                     financialManager1.setModifiedBy(SessionUtil.getDisplayName());
