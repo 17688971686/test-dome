@@ -2,6 +2,7 @@ package cs.service.project;
 
 import cs.common.ResultMsg;
 import cs.domain.project.ProjectStop;
+import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
@@ -56,4 +57,11 @@ public interface ProjectStopService {
      * @return
      */
     List<ProjectStopDto> getStopList(String signId);
+
+    /**
+     * 根据项目暂停ID获取项目信息
+     * @param stopid
+     * @return
+     */
+    Sign findSignByStopId(String stopid);
 }

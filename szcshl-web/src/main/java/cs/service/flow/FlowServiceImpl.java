@@ -700,15 +700,23 @@ public class FlowServiceImpl implements FlowService {
      * @return
      */
     @Override
+    @Transactional
     public ResultMsg restartFlow(String businessKey) {
         //激活流程
         try {
             ProcessInstance processInstance = findProcessInstanceByBusinessKey(businessKey);
-            //项目签收流程
-            if(processInstance.getProcessDefinitionKey().equals(FlowConstant.SIGN_FLOW)){//修改状态
-                signService.updateState(businessKey);
+            if(processInstance != null){
+                //项目签收流程
+                if(processInstance.getProcessDefinitionKey().equals(FlowConstant.SIGN_FLOW)){//修改状态
+                    signService.updateState(businessKey);
+                }
+                //如果是暂停，则重新启动
+                if(processInstance.isSuspended()){
+                    runtimeService.activateProcessInstanceById(processInstance.getId());
+                }
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
             }
-            runtimeService.activateProcessInstanceById(processInstance.getId());
+
         } catch (Exception e) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作异常：" + e.getMessage());
         }

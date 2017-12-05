@@ -19,7 +19,6 @@ import java.util.List;
  * @author MCL
  * @date 2017年7月3日 上午11:46:11
  */
-@Component
 public class QuartzUnit {
     /**
      * 计算工作日
@@ -27,8 +26,7 @@ public class QuartzUnit {
      * @param signDate
      * @return
      */
-    public int countWorkday(List<Workday> workdayList, Date signDate) {
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    public static int countWorkday(List<Workday> workdayList, Date signDate) {
         int result = 0;
 
         //签收日期
@@ -43,7 +41,7 @@ public class QuartzUnit {
         cleanHMSM(c2);
 
         //如果当期日期大于签收日期，则计算
-        while (c1.compareTo(c2) <= 0) {
+        if (c1.compareTo(c2) <= 0) {
             //1、计算当前日期-签收日期之间有多少个星期
             int weekDay1 = c1.get(Calendar.DAY_OF_WEEK);
             int weekDay2 = c2.get(Calendar.DAY_OF_WEEK);
@@ -101,7 +99,7 @@ public class QuartzUnit {
      * @param signDate
      * @return
      */
-    private List<Workday> filterWorkDay(List<Workday> workdayList, Date signDate) {
+    private static List<Workday> filterWorkDay(List<Workday> workdayList, Date signDate) {
         List<Workday> resultList = new ArrayList<>();
         for (int i = 0, l = workdayList.size(); i < l; i++) {
             Workday workday = workdayList.get(i);
@@ -117,7 +115,7 @@ public class QuartzUnit {
      *
      * @param calendar
      */
-    private void cleanHMSM(Calendar calendar) {
+    private static void cleanHMSM(Calendar calendar) {
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);

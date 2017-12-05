@@ -1,27 +1,23 @@
 package cs.quartz.execute;
 
-import java.util.List;
-
+import cs.common.Constant;
 import cs.common.utils.Validate;
+import cs.domain.project.ProjectStop;
+import cs.domain.project.Sign;
 import cs.domain.sys.Workday;
-import cs.service.sys.UserServiceImpl;
+import cs.quartz.unit.QuartzUnit;
+import cs.service.project.ProjectStopService;
+import cs.service.project.SignService;
 import cs.service.sys.WorkdayService;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import cs.common.Constant;
-import cs.domain.project.ProjectStop;
-import cs.domain.project.Sign;
-import cs.quartz.unit.QuartzUnit;
-import cs.service.project.ProjectStopService;
-import cs.service.project.SignService;
+import java.util.List;
 
 /**
  * 计算工作日的执行类
@@ -53,50 +49,72 @@ public class SignCountWorkdayExecute implements Job {
      */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        logger.info("正在执行工作日计算...");
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-        List<Workday> workdayList = null;
-        QuartzUnit unit = new QuartzUnit();
-        // 1、查询正在办理的项目，通过签收时间计算工作日，通过项目类型判断超过多少个工作日后显示警示灯，不同阶段显示不同的警示灯
-        List<Sign> signList = signService.selectSignNotFinish();
-        int total = 0;
-        if (Validate.isList(signList)) {
-            total = signList.size();
-            //一次性查出近一年的调休记录，不用每次循环都查
-            workdayList = workdayService.findWorkDayByNow();
-        }
-        for (int i=0;i<total;i++) {
-            Sign sign = signList.get(i);
-            //1、如果项目未正式签收，不用计算工作日
-            if(null == sign.getSigndate() || !Constant.EnumState.YES.getValue().equals(sign.getIssign())){
-                continue;
+        try{
+            logger.info("------------------ 工作日计算定时器 开始 ------------------");
+            List<Workday> workdayList = null;
+            // 1、查询正在办理的项目，通过签收时间计算工作日，通过项目类型判断超过多少个工作日后显示警示灯，不同阶段显示不同的警示灯
+            List<Sign> signList = signService.selectSignNotFinish();
+            int total = 0;
+            if (Validate.isList(signList)) {
+                total = signList.size();
+                //一次性查出近一年的调休记录，不用每次循环都查
+                workdayList = workdayService.findWorkDayByNow();
             }
-            //2、如果没有亮灯的，则设置为默认亮灯状态
-            if (!Validate.isString(sign.getIsLightUp())) {
-                sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
-            }
+            for (int i=0;i<total;i++) {
+                Sign sign = signList.get(i);
+                //项目阶段都没有的，直接过滤掉
+                if(!Validate.isString(sign.getReviewstage())){
+                    continue;
+                }
+                //没有评审日期的，重新赋值
+                if(sign.getReviewdays() == null){
+                    Float reviewsDays = signService.getReviewDays(sign.getReviewstage());
+                    if (reviewsDays > 0) {
+                        sign.setSurplusdays(reviewsDays);
+                        sign.setReviewdays(reviewsDays);
+                    }
+                }
+                //1、如果项目未正式签收，不用计算工作日
+                if(null == sign.getSigndate() || !Constant.EnumState.YES.getValue().equals(sign.getIssign())){
+                    continue;
+                }
+                //2、如果没有亮灯的，则设置为默认亮灯状态
+                if (!Validate.isString(sign.getIsLightUp())) {
+                    sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
+                }
 
-            //3、通过收文ID查找 项目暂停情况,并计算项目总共暂停了几个工作日
-            List<ProjectStop> projectStopList = projectStopService.findProjectStopBySign(sign.getSignid());
-            float stopWorkday = 0;
-            for (ProjectStop ps : projectStopList) {
-                //记录实际暂停的工作日
-                stopWorkday += ps.getPausedays();
+                //3、通过收文ID查找 项目暂停情况,并计算项目总共暂停了几个工作日
+                List<ProjectStop> projectStopList = projectStopService.findProjectStopBySign(sign.getSignid());
+                float stopWorkday = 0;
+                for (ProjectStop ps : projectStopList) {
+                    //记录实际暂停的工作日
+                    stopWorkday += ps.getPausedays() == null?0:ps.getPausedays();
+                }
+                //4、判断该项目是否为暂停状态。 未暂停，计算从正式签收到当前时间的工作日，再减掉暂停的工作日，并设置相对应的状态
+                if (!Constant.EnumState.STOP.getValue().equals(sign.getSignState())) {
+                    float usedWorkDay = QuartzUnit.countWorkday(workdayList,sign.getSigndate()) - stopWorkday;
+                    //剩余评审天数 = 评审天数-已用评审天数
+                    sign.setSurplusdays(sign.getReviewdays() - usedWorkDay);
+                    //默认是在办
+                    sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
+                    //如果已经发文，要计算发文日期
+                    float disWorkDay = 0;
+                    if(Validate.isObject(sign.getExpectdispatchdate())){
+                        disWorkDay = QuartzUnit.countWorkday(workdayList,sign.getExpectdispatchdate());
+                    }
+                    //计算更新亮灯状态
+                    updateLightUpState(sign, usedWorkDay, new Float(sign.getReviewdays()).intValue(),new Float(disWorkDay).intValue());
+                }else{
+                    sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
+                }
             }
-            //4、判断该项目是否为暂停状态。 未暂停，计算从正式签收到当前时间的工作日，再减掉暂停的工作日，并设置相对应的状态
-            if (!Constant.EnumState.STOP.getValue().equals(sign.getSignState())) {
-                float usedWorkDay = unit.countWorkday(workdayList,sign.getSigndate()) - stopWorkday;
-                //剩余评审天数 = 评审天数-已用评审天数
-                sign.setSurplusdays(sign.getReviewdays() - usedWorkDay);
-                //默认是在办
-                sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
-                //计算更新亮灯状态
-                updateLightUpState(sign, usedWorkDay, new Float(sign.getReviewdays()).intValue());
-            }else{
-                sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
-            }
+            signService.bathUpdate(signList);
+            logger.info("------------------ 工作日计算定时器 结束 ------------------");
+        }catch (Exception e){
+            logger.info("工作日计算定时器异常："+e.getMessage());
         }
-        signService.bathUpdate(signList);
+
     }
 
     /**
@@ -105,8 +123,9 @@ public class SignCountWorkdayExecute implements Job {
      * @param sign         收文
      * @param usedWorkDay  已用工作日
      * @param totalWorkDay 总共工作日
+     * @param dispatchDay  发文日期
      */
-    public void updateLightUpState(Sign sign, float usedWorkDay, int totalWorkDay) {
+    public void updateLightUpState(Sign sign, float usedWorkDay, int totalWorkDay,int dispatchDay) {
         /*NOLIGHT("0"),                 //不显示
         PROCESS("1"),                   //在办
         PAUSE("4"),                     //暂停
@@ -140,8 +159,8 @@ public class SignCountWorkdayExecute implements Job {
                 if ((sign.getProcessState() < Constant.SignProcessState.END_FILE.getValue()) ) {
                     //存档超期
                     sign.setIsLightUp(Constant.signEnumState.ARCHIVEOVER.getValue());
-                    if (usedWorkDay > Constant.WORK_DAY_25) {
-                        //超过25个工作日未存档
+                    //超过25个工作日未存档(指发文之后，超过25个工作日未存档)
+                    if ((usedWorkDay-dispatchDay) > Constant.WORK_DAY_25) {
                         sign.setIsLightUp(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue());
                     }
                 }

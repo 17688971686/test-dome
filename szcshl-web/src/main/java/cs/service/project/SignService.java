@@ -134,4 +134,17 @@ public interface SignService {
      * businessKey
      */
     void updateState(String businessKey);
+
+    /**
+     * 保存项目信心
+     * @param sign
+     */
+    void save(Sign sign);
+
+    /**
+     * 根据项目阶段，获取评审天数
+     * @param reviewstage
+     * @return
+     */
+    Float getReviewDays(String reviewstage);
 }

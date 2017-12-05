@@ -217,8 +217,8 @@ public class SignServiceImpl implements SignService {
 
             Float reviewsDays = getReviewDays(sign.getReviewstage());
             if (reviewsDays > 0) {
-                sign.setSurplusdays(Constant.WORK_DAY_15);
-                sign.setReviewdays(Constant.WORK_DAY_15);
+                sign.setSurplusdays(reviewsDays);
+                sign.setReviewdays(reviewsDays);
             }
 
         }
@@ -1699,14 +1699,15 @@ public class SignServiceImpl implements SignService {
             sign.setIssign(EnumState.YES.getValue());       //正式签收
             Float reviewsDays = getReviewDays(sign.getReviewstage());
             if (reviewsDays > 0) {
-                sign.setSurplusdays(Constant.WORK_DAY_15);
-                sign.setReviewdays(Constant.WORK_DAY_15);
+                sign.setSurplusdays(reviewsDays);
+                sign.setReviewdays(reviewsDays);
             }
         }
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
     }
 
-    private Float getReviewDays(String reviewstage) {
+    @Override
+    public Float getReviewDays(String reviewstage) {
         Float resultFloat = 0f;
         if (Validate.isString(reviewstage)) {
             //先查找系统配置对否有评审阶段的评审天数，如有则用系统的，如果没有则用默认值
@@ -2317,5 +2318,15 @@ public class SignServiceImpl implements SignService {
         sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
         signRepo.save(sign);
 
+    }
+
+    /**
+     * 保存项目信息，这个在定时器中用到，请不要删除
+     * @param sign
+     */
+    @Override
+    @Transactional
+    public void save(Sign sign) {
+        signRepo.save(sign);
     }
 }
