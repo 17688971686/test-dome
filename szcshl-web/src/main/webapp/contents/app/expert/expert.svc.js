@@ -30,21 +30,8 @@
 
 
         //编辑模板打印
-        function expertPrint(vm){
-            var mb = templatePrintSvc.getBrowserType();
-            $("#expertApply").hide();
-            $("#expertApply_templ").show();
-            $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
-            $(".content-wrapper").addClass("print-content");
-            if(mb == 'IE'){
-                document.all.WebBrowser.ExecWB(7,1);
-            }else{
-				print();
-			}
-            $("#expertApply").show();
-            $("#expertApply_templ").hide();
-            $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
-            $(".content-wrapper").removeClass("print-content");
+        function expertPrint(){
+            templatePrintSvc.templatePrint("expertApply_templ");
         }
 		//begin formReset
 		function formReset(vm){
@@ -108,13 +95,12 @@
 				onError:function () {
                     isSubmit = false;
                 }
-            });
-
+            })
 
 		}
 		// end#saveExpert
-						
-		// begin#getExpertById
+
+        // begin#getExpertById
 		function getExpertById(expertID,callBack) {
 			var httpOptions = {
 				method : 'post',

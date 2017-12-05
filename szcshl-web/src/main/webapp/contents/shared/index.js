@@ -12,28 +12,14 @@
 
 //打印功能
 function printpage(act){
-    $(act).parent().hide();
-    $("#"+$(act).parent().attr("id")+"_templ").show();
-    $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").addClass("print-hide");
-    $(act).addClass("print-hide");
-    $(".content-wrapper").addClass("print-content")
-    var mb = getBrowserType();
-    if(mb == 'IE'){
-        document.all.WebBrowser.ExecWB(7,1);
-    }else{
-        print();
-    }
-    var showId = $(act).parent().attr("id")
-    $(act).parent().show();
-    if(showId == "expert_score" || showId == "expert_payment" || showId == "suppLetter_list" || showId == "registerFile_list" || showId == "busi_workplan" || showId == "busi_filerecord"){
-        $(act).parent().removeAttr("style");
-    }
-    $("#"+$(act).parent().attr("id")+"_templ").hide();
-    $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
-    $(act).removeClass("print-hide");
-    $(".content-wrapper").removeClass("print-content");
+    var strStylePath = rootPath +"/contents/shared/styleversion.css";
+    var strStyleCSS="<link href="+strStylePath+" type='text/css' rel='stylesheet'>";
+    var strFormHtml="<head>"+strStyleCSS+"</head><body>"+$("#"+$(act).parent().attr("id")+"_templ").html()+"</body>";
+    LODOP=getLodop();
+    LODOP.PRINT_INIT("打印控件Lodop初始化");
+    LODOP.ADD_PRINT_HTM(0,0,"100%","100%",strFormHtml);
+    LODOP.PREVIEW();
 }
-
 
 //获取浏览器类型
 function getBrowserType(){
