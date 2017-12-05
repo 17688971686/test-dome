@@ -59,18 +59,16 @@
                     <td width="15%">数量</td>
                 </tr>
                 <tr>
-                    <td class="printing-td">委项目处理表</td>
+                    <td style="text-align: right;">委项目处理表</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugProDealOriginal" readOnly="true"
-                               name="sugProDealOriginal"
-                               id="addOriginal"
+                        <input type="checkbox" ng-model="vm.model.sugProDealOriginal" readOnly="true" name="sugProDealOriginal"
                                ng-checked="vm.model.sugProDealOriginal == 9 || vm.model.sugProDealOriginal == '9'">
                     </td>
                     <td>
                         <input class="num" type="text" ng-model="vm.model.sugProDealCount" name="sugProDealCount"
                                ng-readonly="true" value="{{vm.model.sugProDealCount}}">
                     </td>
-                    <td style="text-align: left">项目建议书</td>
+                    <td style="text-align: right;">项目建议书</td>
                     <td><input type="checkbox" ng-model="vm.model.sugProAdviseOriginal" readOnly="true"
                                ng-checked="vm.model.sugProAdviseOriginal == 9 || vm.model.sugProAdviseOriginal == '9'">
                     </td>
@@ -80,31 +78,30 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="printing-td">委文件处理表</td>
+                    <td style="text-align: right;">委文件处理表</td>
                     <td>
                         <input type="checkbox" ng-model="vm.model.sugFileDealOriginal" readOnly="true"
-                               id="sugFileDealOriginal"
                                ng-checked="vm.model.sugFileDealOriginal == 9 || vm.model.sugFileDealOriginal == '9'">
                     </td>
                     <td>
                         <input type="text" class="num" ng-model="vm.model.sugFileDealCount" readOnly="true"
                                name="sugFileDealCount" value="{{vm.model.sugFileDealCount}}">
                     </td>
-                    <td style="text-align: left" colspan="2">项目建议书电子文档
-                    </td>
+                    <td style="text-align: right;">项目建议书电子文档</td>
+                    <td></td>
                     <td>
                         <input type="text" class="num" ng-model="vm.model.proSugEledocCount" name="proSugEledocCount"
                                readOnly="true" value="{{vm.model.proSugEledocCount}}">
                     </td>
                 </tr>
                 <tr>
-                    <td class="printing-td">项目单位申报表</td>
+                    <td style="text-align: right;">项目单位申报表</td>
                     <td><input type="checkbox" ng-model="vm.model.sugOrgApplyOriginal" readOnly="true"
                                ng-checked="vm.model.sugOrgApplyOriginal == 9 || vm.model.sugOrgApplyOriginal == '9'">
                     </td>
                     <td><input type="text" class="num" ng-model="vm.model.sugOrgApplyCount" name="sugOrgApplyCount"
                                ng-readonly="true" value="{{vm.model.sugOrgApplyCount}}"></td>
-                    <td style="text-align: left">相关会议纪要</td>
+                    <td style="text-align: right;">相关会议纪要</td>
                     <td><input type="checkbox" ng-model="vm.model.sugMeetOriginal" readOnly="true"
                                ng-checked="vm.model.sugMeetOriginal == 9 || vm.model.sugMeetOriginal == '9'"></td>
                     <td><input type="text" class="num" ng-model="vm.model.sugMeetCount" name="sugMeetCount"
@@ -112,13 +109,15 @@
                                value="{{vm.model.sugMeetCount}}"></td>
                 </tr>
                 <tr>
-                    <td class="printing-td">项目单位请示报告</td>
+                    <td style="text-align: right;">项目单位请示报告</td>
                     <td><input type="checkbox" ng-model="vm.model.sugOrgReqOriginal" readOnly="true"
                                ng-checked="vm.model.sugOrgReqOriginal == 9 || vm.model.sugOrgReqOriginal == '9'"></td>
                     <td><input type="text" class="num" ng-model="vm.model.sugOrgReqCount" name="sugOrgReqCount"
                                ng-readonly="true"
                                value="{{vm.model.sugOrgReqCount}}"></td>
-                    <td colspan="3" style="text-align: left">其他（名称需备注）</td>
+                    <td style="text-align: right;">其他（名称需备注）</td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </table>
         </td>
@@ -137,13 +136,13 @@
                     <td width="10%">数量</td>
                 </tr>
                 <tr>
-                    <td class="printing-td">委项目处理表</td>
+                    <td style="text-align: right;">委项目处理表</td>
                     <td><input type="checkbox" ng-model="vm.model.studyPealOriginal" readOnly="true"
                                ng-checked="vm.model.studyPealOriginal == 9 || vm.model.studyPealOriginal == '9'"></td>
                     <td><input type="text" class="num" ng-model="vm.model.studyProDealCount" name="studyProDealCount"
                                ng-readonly="true"
                                value="{{vm.model.studyProDealCount}}"></td>
-                    <td>环评批复文件</td>
+                    <td style="text-align: right;">环评批复文件</td>
                     <td></td>
                     <td><input type="checkbox" ng-model="vm.model.envproReplyCopy" readOnly="true"
                                ng-checked="vm.model.envproReplyCopy == 9 || vm.model.envproReplyCopy == '9'"></td>
@@ -152,14 +151,14 @@
                                value="{{vm.model.envproReplyCount}}"></td>
                 </tr>
                 <tr>
-                    <td class="printing-td">委文件处理表</td>
+                    <td style="text-align: right;">委文件处理表</td>
                     <td><input type="checkbox" ng-model="vm.model.studyFileDealOriginal" readOnly="true"
                                ng-checked="vm.model.studyFileDealOriginal == 9 || vm.model.studyFileDealOriginal == '9'">
                     </td>
                     <td><input type="text" class="num" ng-model="vm.model.studyFileDealCount" name="studyFileDealCount"
                                ng-readonly="true"
                                {{vm.model.studyFileDealCount}}></td>
-                    <td>规划选址批文</td>
+                    <td style="text-align: right;">规划选址批文</td>
                     <td></td>
                     <td><input type="checkbox" ng-model="vm.model.planAddrCopy" readOnly="true"
                                ng-checked="vm.model.planAddrCopy == 9 || vm.model.planAddrCopy == '9'"></td>
@@ -168,14 +167,14 @@
                                value="{{vm.model.planAddrCount}}"></td>
                 </tr>
                 <tr>
-                    <td class="printing-td">项目单位申报表</td>
+                    <td style="text-align: right;">项目单位申报表</td>
                     <td><input type="checkbox" ng-model="vm.model.studyOrgApplyOriginal" readOnly="true"
                                ng-checked="vm.model.studyOrgApplyOriginal == 9 || vm.model.studyOrgApplyOriginal == '9'">
                     </td>
                     <td><input type="text" class="num" ng-model="vm.model.studyOrgApplyCount" name="studyOrgApplyCount"
                                ng-readonly="true"
                                value="{{vm.model.studyOrgApplyCount}}"></td>
-                    <td>可研报告</td>
+                    <td style="text-align: right;">可研报告</td>
                     <td><input type="checkbox" ng-model="vm.model.reportOrigin" readOnly="true"
                                ng-checked="vm.model.reportOrigin == 9 || vm.model.reportOrigin == '9'"></td>
                     <td><input type="checkbox" ng-model="vm.model.reportCopy" readOnly="true"
@@ -185,14 +184,14 @@
                                value="{{vm.model.reportCount}}"></td>
                 </tr>
                 <tr>
-                    <td class="printing-td">项目单位请示报告</td>
+                    <td style="text-align: right;">项目单位请示报告</td>
                     <td><input type="checkbox" ng-model="vm.model.studyOrgReqOriginal" readOnly="true"
                                ng-checked="vm.model.studyOrgReqOriginal == 9 || vm.model.studyOrgReqOriginal == '9'">
                     </td>
                     <td><input type="text" class="num" ng-model="vm.model.studyOrgReqCount" name="studyOrgReqCount"
                                ng-readonly="true"
                                value="{{vm.model.studyOrgReqCount}}"></td>
-                    <td>可研报告电子文档</td>
+                    <td style="text-align: right;">可研报告电子文档</td>
                     <td></td>
                     <td></td>
                     <td><input type="text" class="num" ng-model="vm.model.eledocCount" name="eledocCount"
@@ -200,14 +199,14 @@
                                value="{{vm.model.eledocCount}}"></td>
                 </tr>
                 <tr>
-                    <td class="printing-td">项目建议书批复</td>
+                    <td style="text-align: right;">项目建议书批复</td>
                     <td><input type="checkbox" ng-model="vm.model.studyProSugOriginal" readOnly="true"
                                ng-checked="vm.model.studyProSugOriginal == 9 || vm.model.studyProSugOriginal == '9'">
                     </td>
                     <td><input type="text" class="num" ng-model="vm.model.studyProSugCount" name="studyProSugCount"
                                ng-readonly="true"
                                value="{{vm.model.studyProSugCount}}"></td>
-                    <td style="text-align: left">节能报告</td>
+                    <td style="text-align: right;">节能报告</td>
                     <td><input type="checkbox" ng-model="vm.model.energyOriginal" readOnly="true"
                                ng-checked="vm.model.energyOriginal == 9 || vm.model.energyOriginal == '9'"></td>
                     <td><input type="checkbox" ng-model="vm.model.energyCopy" readOnly="true"
@@ -217,14 +216,14 @@
                                value="{{vm.model.energyCount}}"></td>
                 </tr>
                 <tr>
-                    <td class="printing-td">相关会议纪要</td>
+                    <td style="text-align: right;">相关会议纪要</td>
                     <td><input type="checkbox" ng-model="vm.model.studyMeetOriginal" name="studyMeetOriginal"
                                readOnly="true"
                                ng-checked="vm.model.studyMeetOriginal == 9 || vm.model.studyMeetOriginal == '9'"></td>
                     <td><input type="text" class="num" ng-model="vm.model.studyMeetCount" name="studyMeetCount"
                                ng-readonly="true"
                                value="{{vm.model.studyMeetCount}}"></td>
-                    <td>其他（名称需备注）</td>
+                    <td style="text-align: right;">其他（名称需备注）</td>
                     <td></td>
                     <td></td>
                 </tr>
