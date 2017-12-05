@@ -53,7 +53,26 @@
 
         // 系统文件下载
         function downloadFile(id) {
-            window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/file/fileSysCheck",
+                params: {
+                    sysFileId: id
+                }
+            }
+            var httpSuccess = function success(response) {
+                if(response.data.flag || response.data.reCode == 'ok'){
+                    window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
+                }else{
+                    bsWin.error(response.data.reMsg);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
         }
 
         //根据主业务获取所有的附件信息
