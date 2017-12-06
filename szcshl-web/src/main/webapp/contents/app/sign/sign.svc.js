@@ -761,7 +761,7 @@
 
         //编辑模板打印
         function editTemplatePrint(vm){
-            if(vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'  ||vm.model.reviewstage=='项目概算' || vm.model.reviewstage=='其它'){
+            if(vm.model.reviewstage=='项目建议书'|| vm.model.reviewstage=='可行性研究报告'|| vm.model.reviewstage=='其它'){
                 templatePrintSvc.templatePrint("sign_fill_xmjys_templ");
             }else if(vm.model.reviewstage=='资金申请报告'){
                 templatePrintSvc.templatePrint("sign_fill_zjsq_templ");
@@ -773,7 +773,5 @@
                 templatePrintSvc.templatePrint("sign_fill_xmgs_templ");
             }
         }
-
-
     }
 })();

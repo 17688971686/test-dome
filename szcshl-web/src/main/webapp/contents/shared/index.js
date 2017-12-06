@@ -12,12 +12,12 @@
 
 //打印功能
 function printpage(act){
-    var strStylePath = rootPath +"/contents/shared/styleversion.css";
+    var LODOP = getLodop();
+    var strStylePath = rootPath +"/contents/shared/templatePrint.css";
     var strStyleCSS="<link href="+strStylePath+" type='text/css' rel='stylesheet'>";
     var strFormHtml="<head>"+strStyleCSS+"</head><body>"+$("#"+$(act).parent().attr("id")+"_templ").html()+"</body>";
-    LODOP=getLodop();
-    LODOP.PRINT_INIT("打印控件Lodop初始化");
-    LODOP.ADD_PRINT_HTM(0,0,"100%","100%",strFormHtml);
+    LODOP.PRINT_INIT("");
+    LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml);
     LODOP.PREVIEW();
 }
 

@@ -84,23 +84,7 @@
                         })
                         //项目签收编辑模板打印
                         vm.editPrint = function () {
-                            var mb = templatePrintSvc.getBrowserType();
-                            $("#queryAll_list").hide();
-                            $("#queryExportDetail").data("kendoWindow").close();
-                            $("#expertApply_templ").show();
-                            $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
-                            $(".content-wrapper").addClass("print-content");
-                            if(mb == 'IE'){
-                                document.all.WebBrowser.ExecWB(7,1);
-                            }else{
-                                print();
-                            }
-                            $("#queryAll_list").show();
-                            $("#queryExportDetail").data("kendoWindow").open();
-                            $("#expertApply_templ").hide();
-                            $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
-                            $(".content-wrapper").removeClass("print-content");
-
+                            templatePrintSvc.templatePrint("expertApply_templ");
                         }
                         //评审过项目
                         expertSvc.reviewProjectGrid(vm.model.expertID,function(data){

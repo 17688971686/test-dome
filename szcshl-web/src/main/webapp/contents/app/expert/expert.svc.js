@@ -32,7 +32,7 @@
         //编辑模板打印
         function expertPrint(){
             templatePrintSvc.templatePrint("expertApply_templ");
-        }
+    }
 		//begin formReset
 		function formReset(vm){
 			$("#searchform")[0].reset();
