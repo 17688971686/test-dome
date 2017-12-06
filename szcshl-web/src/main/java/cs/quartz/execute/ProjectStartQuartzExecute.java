@@ -118,15 +118,4 @@ public class ProjectStartQuartzExecute implements Job{
         }
     }
 
-    /**
-     * 清除日期的小时、分、秒和毫秒
-     *
-     * @param calendar
-     */
-    private void cleanHMSM(Calendar calendar) {
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-    }
 }

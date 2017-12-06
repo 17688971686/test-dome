@@ -461,11 +461,11 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String sprcialDevicesOriginal;
 
-	//E（进口设备）
 	//设备说明书是否有复印件
 	@Column(columnDefinition="VARCHAR(2)")
 	private String sprcialDevicesCopy;
-	
+	//E（进口设备）
+
 	//S 设备清单（国产）
 	//项目申报表是否有分数
 	@Column(columnDefinition="INTEGER")

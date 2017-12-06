@@ -130,10 +130,10 @@ public interface SignService {
     void deleteBranchInfo(String signId,String branchIndex);
 
     /**
-     * 启动项目更新状态
+     * 激活流程
      * businessKey
      */
-    void updateState(String businessKey);
+    ResultMsg activateFlow(String businessKey);
 
     /**
      * 保存项目信心
@@ -147,4 +147,5 @@ public interface SignService {
      * @return
      */
     Float getReviewDays(String reviewstage);
+
 }

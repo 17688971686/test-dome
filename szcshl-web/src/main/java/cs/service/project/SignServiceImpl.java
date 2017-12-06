@@ -17,6 +17,7 @@ import cs.domain.project.*;
 import cs.domain.sys.*;
 import cs.model.project.*;
 import cs.model.sys.SysConfigDto;
+import cs.quartz.unit.QuartzUnit;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
@@ -24,6 +25,7 @@ import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.*;
 import cs.service.sys.SysConfigService;
+import cs.service.sys.WorkdayService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -134,6 +136,10 @@ public class SignServiceImpl implements SignService {
     private ExpertSelectedRepo expertSelectedRepo;
     @Autowired
     private AssistPlanRepo assistPlanRepo;
+    @Autowired
+    private WorkdayService workdayService;
+    @Autowired
+    private ProjectStopService projectStopService;
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -1367,9 +1373,6 @@ public class SignServiceImpl implements SignService {
                 sign.setSignState(EnumState.YES.getValue());
                 sign.setProcessState(Constant.SignProcessState.FINISH.getValue());
                 signRepo.save(sign);
-               /* signRepo.updateSignState(signid, EnumState.YES.getValue());
-                signRepo.updateSignProcessState(signid, Constant.SignProcessState.FINISH.getValue());*/
-
                 break;
             default:
                 ;
@@ -1642,7 +1645,7 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 查找正在运行并没有结束的收文
+     * 查找正在运行并没有结束的项目（关联在办项目）
      *
      * @return
      */
@@ -1650,9 +1653,10 @@ public class SignServiceImpl implements SignService {
     @Transactional
     public List<Sign> selectSignNotFinish() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select s from " + Sign.class.getSimpleName() + " s where s." + Sign_.signState.getName() + "=:state ");
-        hqlBuilder.setParam("state", EnumState.PROCESS.getValue());
-        hqlBuilder.append(" and s." + Sign_.issign.getName() + " =:issign").setParam("issign", EnumState.YES.getValue());
+        hqlBuilder.append(" SELECT s FROM " + Sign.class.getSimpleName() + " s LEFT JOIN ");
+        hqlBuilder.append( RuProcessTask.class.getSimpleName()+" pt ON s."+Sign_.signid.getName()+" = pt."+RuProcessTask_.businessKey.getName());
+        hqlBuilder.append(" WHERE pt."+RuProcessTask_.taskId.getName()+" is not null AND pt."+RuProcessTask_.taskState.getName()+ "=:taskState " );
+        hqlBuilder.setParam("taskState",EnumState.PROCESS.getValue());
         List<Sign> signList = signRepo.findByHql(hqlBuilder);
         return signList;
     }
@@ -2311,13 +2315,42 @@ public class SignServiceImpl implements SignService {
      * @param businessKey
      */
     @Override
-    public void updateState(String businessKey) {
+    public ResultMsg activateFlow(String businessKey) {
+        boolean isLoadWorkDay = false;
         Sign sign = signRepo.findById(businessKey);
+        //如果有项目暂停列表，则要更新对应的状态信息
+        if(Validate.isList(sign.getProjectStopList())){
+            List<Workday> workdayList = null;
+            List<ProjectStop> updateList = null;
+            for(int i=0,l=sign.getProjectStopList().size();i<l;i++){
+                ProjectStop pl = sign.getProjectStopList().get(i);
+                //审批通过，又没执行完的（正常情况下，只有一条记录）
+                if(EnumState.YES.getValue().equals(pl.getIsactive()) && !EnumState.YES.getValue().equals(pl.getIsOverTime())){
+                    if(!isLoadWorkDay){
+                        workdayList = workdayService.findWorkDayByNow();
+                        updateList = new ArrayList<>();
+                        isLoadWorkDay = true;
+                    }
+                    int countDay = QuartzUnit.countWorkday(workdayList,(pl.getPausetime()==null?pl.getCreatedDate():pl.getPausetime()));
+                    pl.setIsOverTime(Constant.EnumState.YES.getValue());
+                    //实际启动日期
+                    pl.setStartTime(new Date());
+                    //实际暂停天数
+                    pl.setPausedays(Float.parseFloat(String.valueOf(countDay)));
+
+                    updateList.add(pl);
+                }
+            }
+            if(Validate.isList(updateList)){
+                projectStopService.updateProjectStopStatus(updateList);
+            }
+        }
         //更改项目状态
         sign.setSignState(Constant.EnumState.PROCESS.getValue());
         sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
         signRepo.save(sign);
 
+        return new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
     }
 
     /**

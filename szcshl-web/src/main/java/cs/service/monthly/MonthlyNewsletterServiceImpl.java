@@ -276,9 +276,9 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
 
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("SELECT t.*  FROM (SELECT ROW_NUMBER () OVER (PARTITION BY REPORTMULTIYEAR ORDER BY theMonths) rn " );
-        sqlBuilder.append(" ,m.* FROM CS_MONTHLY_NEWSLETTER m) t  WHERE t.rn = 1 and t.reportMultiyear is not null ");
-        sqlBuilder.append(" AND t."+MonthlyNewsletter_.monthlyType.getName()+" =:monthlyType ");
+        sqlBuilder.append(" ,m.* FROM CS_MONTHLY_NEWSLETTER m WHERE m."+MonthlyNewsletter_.monthlyType.getName()+" =:monthlyType) ");
         sqlBuilder.setParam("monthlyType",EnumState.PROCESS.getValue());
+        sqlBuilder.append(" t  WHERE t.rn = 1 and t.reportMultiyear is not null ");
         sqlBuilder.append(" ORDER BY t.reportMultiyear DESC ");
         List<MonthlyNewsletter> monthlist = monthlyNewsletterRepo.findBySql(sqlBuilder);
         List<MonthlyNewsletterDto> monthDtos = new ArrayList<>(monthlist == null ? 0 : monthlist.size());

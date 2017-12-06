@@ -785,16 +785,11 @@
                     width: 100,
                     filterable: false,
                     template: function (item) {
-                        if (item.surplusdays != undefined) {
-                            if (item.surplusdays >= 0) {
-                                return item.surplusdays;
-                            } else {
-                                return 0;
-                            }
+                        if (item.surplusDays != undefined) {
+                            return (item.surplusDays > 0) ? item.surplusDays : 0;
                         } else {
                             return "";
                         }
-
                     }
                 },
                 {

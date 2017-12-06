@@ -67,6 +67,10 @@ public class SignCountWorkdayExecute implements Job {
                 if(!Validate.isString(sign.getReviewstage())){
                     continue;
                 }
+                //1、如果项目未正式签收，不用计算工作日
+                if(null == sign.getSigndate() || !Constant.EnumState.YES.getValue().equals(sign.getIssign())){
+                    continue;
+                }
                 //没有评审日期的，重新赋值
                 if(sign.getReviewdays() == null){
                     Float reviewsDays = signService.getReviewDays(sign.getReviewstage());
@@ -75,12 +79,10 @@ public class SignCountWorkdayExecute implements Job {
                         sign.setReviewdays(reviewsDays);
                     }
                 }
-                //1、如果项目未正式签收，不用计算工作日
-                if(null == sign.getSigndate() || !Constant.EnumState.YES.getValue().equals(sign.getIssign())){
-                    continue;
-                }
-                //2、如果没有亮灯的，则设置为默认亮灯状态
-                if (!Validate.isString(sign.getIsLightUp())) {
+
+                //2、如果没有亮灯的，则设置为默认亮灯状态,如果目前是暂停状态，则改为进行中状态
+                if (!Validate.isString(sign.getIsLightUp()) || Constant.EnumState.STOP.equals(sign.getSignState())
+                        || Constant.signEnumState.PAUSE.getValue().equals(sign.getIsLightUp())) {
                     sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
                 }
 
@@ -91,23 +93,21 @@ public class SignCountWorkdayExecute implements Job {
                     //记录实际暂停的工作日
                     stopWorkday += ps.getPausedays() == null?0:ps.getPausedays();
                 }
-                //4、判断该项目是否为暂停状态。 未暂停，计算从正式签收到当前时间的工作日，再减掉暂停的工作日，并设置相对应的状态
-                if (!Constant.EnumState.STOP.getValue().equals(sign.getSignState())) {
-                    float usedWorkDay = QuartzUnit.countWorkday(workdayList,sign.getSigndate()) - stopWorkday;
-                    //剩余评审天数 = 评审天数-已用评审天数
-                    sign.setSurplusdays(sign.getReviewdays() - usedWorkDay);
-                    //默认是在办
-                    sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
-                    //如果已经发文，要计算发文日期
-                    float disWorkDay = 0;
-                    if(Validate.isObject(sign.getExpectdispatchdate())){
-                        disWorkDay = QuartzUnit.countWorkday(workdayList,sign.getExpectdispatchdate());
-                    }
-                    //计算更新亮灯状态
-                    updateLightUpState(sign, usedWorkDay, new Float(sign.getReviewdays()).intValue(),new Float(disWorkDay).intValue());
-                }else{
-                    sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
+                //4、计算从正式签收到当前时间的工作日，再减掉暂停的工作日，并设置相对应的状态
+                float usedWorkDay = QuartzUnit.countWorkday(workdayList,sign.getSigndate()) - stopWorkday;
+                //剩余评审天数 = 评审天数-已用评审天数
+                sign.setSurplusdays(sign.getReviewdays() - usedWorkDay);
+                //默认是在办
+                sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
+                //如果已经发文，要计算发文日期
+                float disWorkDay = 0;
+                if(Validate.isObject(sign.getExpectdispatchdate())){
+                    disWorkDay = QuartzUnit.countWorkday(workdayList,sign.getExpectdispatchdate());
                 }
+                //计算更新亮灯状态
+                updateLightUpState(sign, usedWorkDay, new Float(sign.getReviewdays()).intValue(),new Float(disWorkDay).intValue());
+
+                sign.setSignState(Constant.signEnumState.PROCESS.getValue());
             }
             signService.bathUpdate(signList);
             logger.info("------------------ 工作日计算定时器 结束 ------------------");

@@ -708,7 +708,7 @@ public class FlowServiceImpl implements FlowService {
             if(processInstance != null){
                 //项目签收流程
                 if(processInstance.getProcessDefinitionKey().equals(FlowConstant.SIGN_FLOW)){//修改状态
-                    signService.updateState(businessKey);
+                    signService.activateFlow(businessKey);
                 }
                 //如果是暂停，则重新启动
                 if(processInstance.isSuspended()){
@@ -718,6 +718,7 @@ public class FlowServiceImpl implements FlowService {
             }
 
         } catch (Exception e) {
+            log.info("流程重新激活异常："+e.getMessage());
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作异常：" + e.getMessage());
         }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");

@@ -10,13 +10,8 @@
         function activate(){
             pauseProjectSvc.initProject(signId,function(data){
                 vm.sign = data;
-                if(vm.sign.reviewstage == '可行性研究报告' || vm.sign.reviewstage == '项目概算'){
-
-                    vm.sign.countUsedWorkday = 15-vm.sign.surplusdays;
-                }else{
-
-                    vm.sign.countUsedWorkday = 12-vm.sign.surplusdays;
-                }
+                //评审天数-剩余工作日
+                vm.sign.countUsedWorkday = vm.sign.reviewdays-vm.sign.surplusdays;
             });
             pauseProjectSvc.getListInfo(signId , function(data){
                 vm.projectStopList = data;
