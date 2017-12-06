@@ -190,46 +190,27 @@ public enum FlowNextNodeFilter {
             return resultList;
         }
     },
-    ARC_BZ_SP {
-        //部长审批档案借阅
-        @Override
-        public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
-            List<Node> resultList = new ArrayList<>(1);
-            if (businessMap.get(FlowConstant.FlowParams.FGLD_FZ.getValue()) != null) {
-                for (int i = 0; i < nextNodeList.size(); i++) {
-                    if ((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_FGLD_SP)) {
-                        resultList.add(nextNodeList.get(i));
-                        break;
-                    }
-                }
-            } else {
-                for (int i = 0; i < nextNodeList.size(); i++) {
-                    if ((nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_GDY)) {
-                        resultList.add(nextNodeList.get(i));
-                        break;
-                    }
-                }
-            }
-            return resultList;
-        }
-    },
     ARC_FGLD_SP {
         //分管领导审批档案借阅
         @Override
         public List<Node> filterNextNode(Map<String, Object> businessMap, List<Node> nextNodeList) {
             List<Node> resultList = new ArrayList<>(1);
             boolean zrfl = businessMap.get(FlowConstant.FlowParams.ZR_FZ.getValue()) != null?true:false;
-            for (int i = 0; i < nextNodeList.size(); i++) {
-                //主任分支
-                if (zrfl && (nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_ZR_SP)) {
-                    resultList.add(nextNodeList.get(i));
-                    break;
-                //归档员
-                }else if(!zrfl && (nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_GDY)){
-                    resultList.add(nextNodeList.get(i));
-                    break;
+            boolean usergdy = businessMap.get(FlowConstant.FlowParams.USER_GDY.getValue()) != null?true:false;
+            if(zrfl ||  usergdy){
+                for (int i = 0; i < nextNodeList.size(); i++) {
+                    //主任分支
+                    if (zrfl && (nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_ZR_SP)) {
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                        //归档员
+                    }else if(!zrfl && (nextNodeList.get(i).getActivitiId()).equals(FlowConstant.FLOW_ARC_GDY)){
+                        resultList.add(nextNodeList.get(i));
+                        break;
+                    }
                 }
             }
+
             return resultList;
         }
     },
@@ -351,8 +332,6 @@ public enum FlowNextNodeFilter {
             //以下是档案借阅环节
             case FlowConstant.FLOW_ARC_SQ:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_ARC_SQ);
-            case FlowConstant.FLOW_ARC_BZ_SP:
-                return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_ARC_BZ_SP);
             case FlowConstant.FLOW_ARC_FGLD_SP:
                 return FlowNextNodeFilter.valueOf(FlowConstant.FLOW_ARC_FGLD_SP);
 

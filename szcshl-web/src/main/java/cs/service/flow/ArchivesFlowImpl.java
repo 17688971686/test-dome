@@ -70,16 +70,14 @@ public class ArchivesFlowImpl implements IFlow {
 
             //审批环节，默认都是通过
             case FlowConstant.FLOW_ARC_BZ_SP:
-                ArchivesLibrary archivesLibrary1 = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessKey);
-                if( Constant.EnumState.NO.getValue().equals(archivesLibrary1.getIsSZECUser()) || Constant.EnumState.YES.getValue().equals(archivesLibrary1.getArchivesType()) || Constant.EnumState.YES.getValue().equals(archivesLibrary1.getIsLendOut())){
-                    businessMap.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), Constant.EnumState.YES.getValue());
-                }
                 businessMap.put("AGREE", Constant.EnumState.YES.getValue());
                 break;
             case FlowConstant.FLOW_ARC_FGLD_SP:
                 ArchivesLibrary archivesLibrary2 = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessKey);
-                if( Constant.EnumState.YES.getValue().equals(archivesLibrary2.getIsLendOut()) || Constant.EnumState.YES.getValue().equals(archivesLibrary2.getArchivesType())){
+                if( Constant.EnumState.YES.getValue().equals(archivesLibrary2.getIsLendOut()) ){
                     businessMap.put(FlowConstant.FlowParams.ZR_FZ.getValue(), Constant.EnumState.YES.getValue());
+                }else if( Constant.EnumState.NO.getValue().equals(archivesLibrary2.getArchivesType())){
+                    businessMap.put(FlowConstant.FlowParams.USER_GDY.getValue(), Constant.EnumState.YES.getValue());
                 }
                 businessMap.put("AGREE", Constant.EnumState.YES.getValue());
                 break;

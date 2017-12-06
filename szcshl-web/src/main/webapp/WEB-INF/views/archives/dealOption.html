@@ -4,7 +4,7 @@
             class="glyphicon glyphicon-ok"></span>提交
     </button>
     <button class="btn btn-sm btn-warning" ng-click="vm.backFlow()" ng-disabled="vm.isCommit"
-            ng-show="vm.flow.curNode.activitiId!='ARC_SQ'"><span class="glyphicon glyphicon-step-backward"></span>回退
+            ng-show="vm.flow.curNode.activitiId!='ARC_SQ' && vm.flow.curNode.activitiId!='ARC_GDY'"><span class="glyphicon glyphicon-step-backward"></span>回退
     </button>
     <button class="btn btn-sm btn-success" ng-click="vm.ideaEdit({targetId:'dealOption'})">管理个人常用意见</button>
     <flow-file-button ng-if="vm.showFlag.showUploadBT"></flow-file-button>   <!--附件上传按钮-->
@@ -32,7 +32,7 @@
                 <span data-valmsg-for="dealOption" data-valmsg-replace="true" class="errors"></span>
             </td>
         </tr>
-        <tr ng-show="vm.flow.nextNode && (vm.flow.nextNode.length > 0) &&  vm.model.archivesType!=9 && vm.model.isLendOut==9">
+        <tr ng-show="vm.flow.nextNode && (vm.flow.nextNode.length > 0) ">
             <td width="10%" class="text-center">
                 下一环节名称
             </td>
