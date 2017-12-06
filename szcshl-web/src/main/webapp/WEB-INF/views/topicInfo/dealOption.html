@@ -4,7 +4,9 @@
             class="glyphicon glyphicon-ok"></span>提交
     </button>
     <button class="btn btn-sm btn-warning" ng-click="vm.backFlow()" ng-disabled="vm.isCommit"
-            ng-show="vm.flow.curNode.activitiId != 'TOPIC_GZFA' && vm.flow.curNode.activitiId != 'TOPIC_BFGW'&& vm.flow.curNode.activitiId != 'TOPIC_JHTC'">
+            ng-show="vm.flow.curNode.activitiId != 'TOPIC_GZFA' && vm.flow.curNode.activitiId != 'TOPIC_BFGW'&&
+            vm.flow.curNode.activitiId != 'TOPIC_JHTC'&& vm.flow.curNode.activitiId != 'TOPIC_KTJT' && vm.flow.curNode.activitiId != 'TOPIC_ZLGD' &&
+              vm.flow.curNode.activitiId != 'TOPIC_KTBG'        ">
         <span class="glyphicon glyphicon-step-backward"></span>回退
     </button>
     <button class="btn btn-sm btn-success" ng-click="vm.ideaEdit({targetId:'dealOption'})">管理个人常用意见</button>
