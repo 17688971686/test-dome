@@ -61,7 +61,7 @@
                     }
                 });
             }else{
-                bsWin.alert("信息填写不完整或者填写不正确，请检查改正之后再保存！");
+                bsWin.alert("保存失败，有红色*号的选项是必填项，请按要求填写！");
             }
 
         };
@@ -90,11 +90,11 @@
                     if(data.flag || data.reCode == 'ok'){
                         bsWin.success("操作成功！");
                     }else{
-                        bsWin.error(data.reMsg);
+                        bsWin.alert(data.reMsg);
                     }
                 });
             }else{
-                bsWin.alert("信息填写不完整或者填写不正确，请检查改正之后再保存！");
+                bsWin.alert("保存失败，有红色*号的选项是必填项，请按要求填写！");
             }
         };
 

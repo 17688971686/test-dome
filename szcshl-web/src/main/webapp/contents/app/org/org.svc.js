@@ -205,8 +205,8 @@
 		function updateOrg(orgModel,isSubmit,callBack){
             isSubmit = true;
             var httpOptions = {
-                method : 'put',
-                url : rootPath +"/org",
+                method : 'post',
+                url : rootPath +"/org/updateOrg",
                 data : orgModel
             }
             var httpSuccess = function success(response) {

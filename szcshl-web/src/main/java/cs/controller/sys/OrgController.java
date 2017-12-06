@@ -81,7 +81,7 @@ public class OrgController {
 
     //@RequiresPermissions("org##put")
     @RequiresAuthentication
-    @RequestMapping(name = "更新部门", path = "", method = RequestMethod.PUT)
+    @RequestMapping(name = "更新部门", path = "updateOrg", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg update(@RequestBody OrgDto orgDto) {
         return orgService.updateOrg(orgDto);

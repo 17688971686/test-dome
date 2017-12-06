@@ -9,4 +9,10 @@ public interface OrgRepo extends IRepository<Org, String> {
 
 	List<Org> findUserChargeOrg();
 
+    /**
+     * 根据账号ID统计是否还有分管部门
+     * @param oldOrgSLeader
+     * @return
+     */
+    int checkMngOrg(String oldOrgSLeader);
 }

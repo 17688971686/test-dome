@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import cs.common.Constant;
+import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
@@ -83,17 +84,23 @@ public class OrgServiceImpl implements OrgService {
         if (orgCount < 1) {
             Org org = new Org();
             BeanCopierUtils.copyProperties(orgDto, org);
+            if (Validate.isString(org.getOrgSLeader())) {
+                User user = userRepo.findById(User_.id.getName(), org.getOrgSLeader());
+                String newMngOrgType = Constant.OrgType.getValue(org.getName());
+                //查看其是否还有分管部门
+                if(orgRepo.checkMngOrg(user.getId())>0 && !user.getMngOrgType().equals(newMngOrgType)){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，分管领导不能同时分管概算部又分管评估部！");
+                }
+                user.setMngOrgType(newMngOrgType);
+                userRepo.save(user);
+            }
+
             Date now = new Date();
             org.setId(UUID.randomUUID().toString());
             org.setCreatedBy(SessionUtil.getLoginName());
             org.setCreatedDate(now);
             org.setModifiedBy(SessionUtil.getLoginName());
             org.setModifiedDate(now);
-            if (Validate.isString(org.getOrgSLeader())) {
-                User user = userRepo.findById(User_.id.getName(), org.getOrgSLeader());
-                user.setMngOrgType(Constant.OrgType.getValue(org.getName()));
-                userRepo.save(user);
-            }
 
             orgRepo.save(org);
             orgDeptRepo.fleshOrgDeptCache();
@@ -109,18 +116,36 @@ public class OrgServiceImpl implements OrgService {
     @Transactional
     public ResultMsg updateOrg(OrgDto orgDto) {
         Org org = orgRepo.findById(Org_.id.getName(), orgDto.getId());
+        String oldOrgSLeader = org.getOrgSLeader();
+        if (Validate.isString(orgDto.getOrgSLeader()) && !oldOrgSLeader.equals(orgDto.getOrgSLeader())) {
+            User user = userRepo.findById(User_.id.getName(), orgDto.getOrgSLeader());
+            String newMngOrgType = Constant.OrgType.getValue(orgDto.getName());
+            //查看其是否还有分管部门
+            if(orgRepo.checkMngOrg(user.getId())>0 && !newMngOrgType.equals(user.getMngOrgType())){
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，分管领导不能同时分管概算部又分管评估部！");
+            }else{
+                user.setMngOrgType(newMngOrgType);
+                userRepo.save(user);
+            }
+        }
         BeanCopierUtils.copyPropertiesIgnoreNull(orgDto, org);
+        if(Validate.isString(oldOrgSLeader)){
+            //查看其是否还有分管部门
+            if(orgRepo.checkMngOrg(oldOrgSLeader) == 0){
+                User oldUser = userRepo.findById(User_.id.getName(), oldOrgSLeader);
+                if(oldUser != null){
+                    oldUser.setMngOrgType(null);
+                    userRepo.save(oldUser);
+                }
+            }
+        }
         org.setModifiedBy(SessionUtil.getLoginName());
         org.setModifiedDate(new Date());
-        if (Validate.isString(org.getOrgSLeader())) {
-            User user = userRepo.findById(User_.id.getName(), org.getOrgSLeader());
-            user.setMngOrgType(Constant.OrgType.getValue(org.getName()));
-            userRepo.save(user);
-        }
         orgRepo.save(org);
         orgDeptRepo.fleshOrgDeptCache();
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
+
 
     @Override
     @Transactional
