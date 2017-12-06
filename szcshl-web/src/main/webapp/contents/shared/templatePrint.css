@@ -79,7 +79,8 @@
 }
 .signName .nameDate {
     line-height: 17px;
-    text-align: right;
+    /*text-align: right;*/
+    padding-left: 80%;
 }
 .signName .signDetail {
     max-height: 51px;
@@ -99,3 +100,4 @@
 .text-right {
     text-align: right;
 }
+
