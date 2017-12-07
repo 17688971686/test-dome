@@ -1,11 +1,12 @@
 <!--  S 可行性研究报告-->
 <style>
-    #proItem td{
+    .proItem td {
         border-top-width: 0px;
         border-left-width: 0px;
 
     }
-    #proTotal td{
+
+    .proTotal td {
         border-top-width: 0px;
         border-left-width: 0px;
     }
@@ -13,10 +14,11 @@
 <!-- s table -->
 <div id="sign_dispatch_kxxyj_templ1">
     <table class="print-table">
-        <caption >
-            <span >QR-4.4-08-A3</span>
+        <caption>
+            <span>QR-4.4-08-A3</span>
         </caption>
-        <caption class="title"><p>深圳市政府投资项目评审中心</p><p>项目发文审批表</p></caption>
+        <caption class="title"><p>深圳市政府投资项目评审中心</p>
+            <p>项目发文审批表</p></caption>
         <caption>
             <span style="margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
             <span ng-if="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9" style="margin-left:10px;">主项目</span>
@@ -52,14 +54,17 @@
             <td>{{vm.dispatchDoc.urgentLevel}}</td>
             <td>是否有其他阶段关联</td>
             <td colspan="2">
-                <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated"
+                <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0"
+                       ng-model="vm.dispatchDoc.isRelated"
                        ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'" name="isRelated"/>是
-                <input type="checkbox" ng-disabled="true" ng-true-value="0" ng-false-value="9" ng-model="vm.dispatchDoc.isRelated"
-                       ng-checked="!vm.dispatchDoc.isRelated || vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'" name="isRelated"/>否
+                <input type="checkbox" ng-disabled="true" ng-true-value="0" ng-false-value="9"
+                       ng-model="vm.dispatchDoc.isRelated"
+                       ng-checked="!vm.dispatchDoc.isRelated || vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'"
+                       name="isRelated"/>否
             </td>
         </tr>
         <tr>
-            <td >发行范围</td>
+            <td>发行范围</td>
             <td colspan="7">
                 <div style="width: 100%; height: 60px; overflow: hidden;">
                     <div style="height: 60%; overflow: hidden;">{{vm.dispatchDoc.dispatchScope}}</div>
@@ -69,12 +74,12 @@
         </tr>
         <tr>
             <td>相关说明</td>
-            <td colspan="7" >
+            <td colspan="7">
                 <div style="width: 100%; height: 60px; overflow: hidden;"></div>
             </td>
         </tr>
         <tr>
-            <td >评审意见摘要</td>
+            <td>评审意见摘要</td>
             <td colspan="7">
                 <div style="width: 100%; height: 60px; overflow: hidden;">{{vm.dispatchDoc.reviewAbstract}}</div>
             </td>
@@ -90,28 +95,30 @@
             <td colspan="3">
                 <div style="width: 100% ; height: 100px; overflow: hidden;">
                     <span style="font-size: 12px;">第二负责人意见：</span>
-                    <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html" ></div>
+                    <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
                 </div>
             </td>
         </tr>
 
         <tr>
-            <td >部长审核意见</td>
+            <td>部长审核意见</td>
             <td colspan="7">
                 <div class="signName" style="height: 150px;">
-                    <div  style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;">
-                        {{vm.dispatchDoc.ministerSuggesttion}}</div>
+                    <div style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;">
+                        {{vm.dispatchDoc.ministerSuggesttion}}
+                    </div>
                     <p class="nameDate">签名：</p>
                     <p class="nameDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
                 </div>
             </td>
         </tr>
         <tr>
-            <td >分管副主任意见</td>
+            <td>分管副主任意见</td>
             <td colspan="7">
                 <div class="signName" style="height: 150px;">
-                    <div  style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;">
-                        {{vm.dispatchDoc.viceDirectorSuggesttion}}</div>
+                    <div style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;">
+                        {{vm.dispatchDoc.viceDirectorSuggesttion}}
+                    </div>
                     <p class="nameDate">签名：</p>
                     <p class="nameDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
                 </div>
@@ -119,19 +126,21 @@
         </tr>
 
         <tr>
-            <td >主任签发</td>
+            <td>主任签发</td>
             <td colspan="7">
                 <div class="signName" style="height: 150px;">
-                    <div  style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;">
-                        {{vm.dispatchDoc.directorSuggesttion}}</div>
+                    <div style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;">
+                        {{vm.dispatchDoc.directorSuggesttion}}
+                    </div>
                     <p class="nameDate">签名：</p>
                     <p class="nameDate">日期：{{vm.dispatchDoc.directorDate}}</p>
                 </div>
             </td>
         </tr>
-    </table></div>
+    </table>
+</div>
 <div id="sign_dispatch_kxxyj_templ2">
-    <table class="print-table" >
+    <table class="print-table">
         <!-- <tr class="tr-hidden">
              <td width="16%"></td>
              <td width="10%"></td>
@@ -144,9 +153,10 @@
          </tr>-->
         <tr>
             <td width="16%">项目概况</td>
-            <td colspan="7"  style="padding:0 ; width: 84%;">
-                <table ng-repeat=" s in vm.model.associateSignDtoList.slice().reverse() | limitTo : 1" ng-if="s.reviewstage == '项目建议书'" >
-                    <tr id="proItem">
+            <td colspan="7" style="padding:0 ; width: 84%;">
+                <table ng-repeat=" s in vm.model.associateSignDtoList.slice().reverse() | limitTo : 1"
+                       ng-if="s.reviewstage == '项目建议书'">
+                    <tr class="proItem">
                         <td width="22%">{{s.reviewstage}}</td>
                         <td width="10%">申报</td>
                         <td width="10%">审定</td>
@@ -199,8 +209,8 @@
                         </td>
                     </tr>
                 </table>
-                <table  ng-if=" !(vm.model.associateSignDtoList.slice().reverse()) || vm.model.associateSignDtoList.slice().reverse().length <= 0" >
-                    <tr id="proItem">
+                <table ng-if=" !(vm.model.associateSignDtoList.slice().reverse()) || vm.model.associateSignDtoList.slice().reverse().length <= 0">
+                    <tr class="proItem">
                         <td width="22%">项目建议书</td>
                         <td width="10%">申报</td>
                         <td width="10%">审定</td>
@@ -254,8 +264,8 @@
                     </tr>
                 </table>
                 <table style="text-align: center;width: 100%;">
-                    <tr id="proTotal">
-                        <td  width="22%">{{vm.model.reviewstage ? vm.model.reviewstage : vm.sign.reviewstage}}</td>
+                    <tr class="proTotal">
+                        <td width="22%">{{vm.model.reviewstage ? vm.model.reviewstage : vm.sign.reviewstage}}</td>
                         <td width="10%">申报</td>
                         <td width="10%">审定</td>
                         <td width="16%">核减（增）</td>
@@ -311,5 +321,6 @@
             </td>
         </tr>
         </tbody>
-    </table> </div>   <!-- end table -->
+    </table>
+</div>   <!-- end table -->
 <!--  E 可行性研究报告-->
