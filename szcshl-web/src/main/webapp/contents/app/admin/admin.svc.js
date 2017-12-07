@@ -279,7 +279,7 @@
                     template:function(item){
                         if(item.signprocessState && item.signprocessState >=6 && item.signprocessState<=7){
                             return "<span class='row-number label label-primary'></span>";
-                        }else if(item.signprocessState && item.signprocessState >=8){
+                        }else if(item.signprocessState && item.signprocessState ==9){
                             return "<span class='row-number label label-success'></span>";
                         }else{
                             return "<span class='row-number'></span>";
@@ -1013,7 +1013,7 @@
                     template:function(item){
                         if(item.processState && item.processState >=6 && item.processState<=7){
                             return "<span class='row-number label label-primary'></span>";
-                        }else if(item.processState && item.processState >=8 ){
+                        }else if(item.processState && item.processState ==9  ){
                             return "<span class='row-number label label-success'></span>";
                         }else{
                             return "<span class='row-number'></span>";

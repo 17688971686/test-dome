@@ -16,4 +16,11 @@ public interface FileRecordService{
 	 */
 	FileRecordDto initBySignId(String signid);
 
+	/**
+	 *  生成归档编号
+	 * @param fileRecordDate
+	 * @return fileRecordDate
+	 */
+	int findCurMaxSeq(Date fileRecordDate);
+
 }
