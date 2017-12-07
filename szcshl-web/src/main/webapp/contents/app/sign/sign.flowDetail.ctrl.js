@@ -104,7 +104,8 @@
 
         //签收模板打印
         vm.printpage = function ($event) {
-            templatePrintSvc.templatePrint($event.target,vm.model);
+            var id =  $($event.target).attr("id");
+            signSvc.workProgramPrint(id);
         }
 
     }

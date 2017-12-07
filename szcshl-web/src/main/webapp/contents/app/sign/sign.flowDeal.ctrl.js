@@ -92,7 +92,6 @@
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
                 vm.model = data;
-                console.log(vm.model);
                 var deActive = $("#myTab .active");
                 var deObj = $("a", deActive);
                 vm.model.showDiv = deObj.attr("for-div");
@@ -946,10 +945,9 @@
         //签收模板打印
         vm.printpage = function ($event) {
           var id =  $($event.target).parent().attr("id");
-         // console.log(id);
-   /*       var obj = $event.target
-          console.log(aaa);
-*/
+            console.log(id);
+            console.log("longyuyue");
+
             //templatePrintSvc.templatePrint($event.target,vm.model);
         }
 

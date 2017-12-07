@@ -1,7 +1,7 @@
 <meta charset="UTF-8">
 <!-- start 主项目 -->
-<div  ng-repeat="w in vm.model.workProgramDtoList"   ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告') && (w.branchId == '1') && (w.signId == vm.model.signid)">
-   <div id="wp1">
+<div  ng-repeat="w in vm.model.workProgramDtoList"   ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它' || w.workreviveStage=='资金申请报告') && (w.branchId != '1') && (w.signId == vm.model.signid)">
+   <div id="wpAssistTempl1{{w.branchId}}">
     <table class="print-table">
         <caption class="title" style="margin-top: 10px;" >{{w.titleName}}</caption>
         <caption>
@@ -31,48 +31,48 @@
         </tr>
         <tr>
             <td >来文单位</td>
-            <td colspan="2">{{w.sendFileUnit}}</td>
+            <td colspan="2">{{w.mainWorkProgramDto.sendFileUnit}}</td>
             <td class="text-center">来文单位联系人</td>
-            <td colspan="2">{{w.sendFileUser}}</td>
+            <td colspan="2">{{w.mainWorkProgramDto.sendFileUser}}</td>
         </tr>
         <tr style="height: 60px;">
             <td >建设单位</td>
-            <td colspan="2">{{w.buildCompany}}</td>
+            <td colspan="2">{{w.mainWorkProgramDto.buildCompany}}</td>
             <td class="text-center">编制单位</td>
-            <td colspan="2">{{w.designCompany}}</td>
+            <td colspan="2">{{w.mainWorkProgramDto.designCompany}}</td>
         </tr>
         <tr>
             <td >主管部门</td>
-            <td colspan="2">{{w.mainDeptName}}</td>
+            <td colspan="2">{{w.mainWorkProgramDto.mainDeptName}}</td>
             <td  class="text-center">是否有环评{{w.isHaveEIA }}</td>
             <td colspan="2">
-                <input style="margin:0 10px" type="checkbox" ng-value="9" ng-model="w.isHaveEIA" name="isHaveEIA" ng-checked="w.isHaveEIA == 9 || w.isHaveEIA == '9' " >是
-                <input style="margin:0 10px" type="checkbox" ng-value="0" ng-model="w.isHaveEIA" name="isHaveEIA" ng-checked="w.isHaveEIA == 0 || w.isHaveEIA == '0' ">否
+                <input style="margin:0 10px" type="checkbox" ng-value="9" ng-model="w.mainWorkProgramDto.isHaveEIA" name="isHaveEIA" ng-checked="w.mainWorkProgramDto.isHaveEIA == 9 || w.mainWorkProgramDto.isHaveEIA == '9' " >是
+                <input style="margin:0 10px" type="checkbox" ng-value="0" ng-model="w.mainWorkProgramDto.isHaveEIA" name="isHaveEIA" ng-checked="w.mainWorkProgramDto.isHaveEIA == 0 || w.mainWorkProgramDto.isHaveEIA == '0' ">否
             </td>
         </tr>
 
         <tr>
             <td class="text-center">项目类别</td>
-            <td>{{w.projectType}}</td>
+            <td>{{w.mainWorkProgramDto.projectType}}</td>
             <td class="text-center">小类</td>
-            <td>{{w.projectSubType}}</td>
+            <td>{{w.mainWorkProgramDto.projectSubType}}</td>
             <td class="text-center">行业类别</td>
-            <td>{{w.industryType}}</td>
+            <td>{{w.mainWorkProgramDto.industryType}}</td>
         </tr>
 
         <tr>
             <td >联系人</td>
-            <td colspan="2">{{w.contactPerson}}</td>
+            <td colspan="2">{{w.mainWorkProgramDto.contactPerson}}</td>
             <td class="text-center">手机</td>
-            <td colspan="2">{{w.contactPersonPhone}}</td>
+            <td colspan="2">{{w.mainWorkProgramDto.contactPersonPhone}}</td>
         </tr>
         <tr>
             <td>电话</td>
-            <td colspan="5">{{w.contactPersonTel}}</td>
+            <td colspan="5">{{w.mainWorkProgramDto.contactPersonTel}}</td>
         </tr>
         <tr>
             <td>传真</td>
-            <td colspan="5">{{w.contactPersonFax}}</td>
+            <td colspan="5">{{w.mainWorkProgramDto.contactPersonFax}}</td>
         </tr>
         <tr >
             <td rowspan="4" style="vertical-align:middle;">项目概况</td>
@@ -100,13 +100,13 @@
         </tr>
         <tr>
             <td rowspan="2" height="60px">评审部门</td>
-            <td colspan="2" rowspan="2">{{w.reviewOrgName}}</td>
+            <td colspan="2" rowspan="2">{{w.mainWorkProgramDto.reviewOrgName}}</td>
             <td class="text-center">第一负责人</td>
-            <td colspan="2">{{w.mianChargeUserName}}</td>
+            <td colspan="2">{{w.mainWorkProgramDto.mianChargeUserName}}</td>
         </tr>
         <tr>
             <td>第二负责人</td>
-            <td colspan="2">{{w.secondChargeUserName}}</td>
+            <td colspan="2">{{w.mainWorkProgramDto.secondChargeUserName}}</td>
         </tr>
 
         <tr>
@@ -135,7 +135,7 @@
         </tr>
     </table>
    </div>
-    <div id="wp2">
+    <div id="wpAssistTempl2{{w.branchId}}">
     <table class="print-table">
         <tr ng-if="w.isSigle && w.isSigle == '合并评审' ">
             <td >合并评审相关项目</td>

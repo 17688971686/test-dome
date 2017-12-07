@@ -3,9 +3,9 @@
 
     angular.module('app').controller('workprogramEditCtrl', workprogram);
 
-    workprogram.$inject = ['workprogramSvc', '$state', 'bsWin', 'sysfileSvc', '$scope', 'meetingSvc', 'roomSvc'];
+    workprogram.$inject = ['workprogramSvc', '$state', 'bsWin', 'sysfileSvc', '$scope', 'meetingSvc', 'roomSvc','signSvc'];
 
-    function workprogram(workprogramSvc, $state, bsWin, sysfileSvc, $scope, meetingSvc, roomSvc) {
+    function workprogram(workprogramSvc, $state, bsWin, sysfileSvc, $scope, meetingSvc, roomSvc,signSvc) {
         var vm = this;
         vm.work = {};						//创建一个form对象
         vm.model = {};                      //项目对象
@@ -308,6 +308,12 @@
             } else {
                 bsWin.alert("请先保存当前信息，再继续操作！");
             }
+        }
+
+        //签收模板打印
+        vm.printpage = function ($event) {
+            var id =  $($event.target).attr("id");
+            signSvc.workProgramPrint(id);
         }
     }
 })();
