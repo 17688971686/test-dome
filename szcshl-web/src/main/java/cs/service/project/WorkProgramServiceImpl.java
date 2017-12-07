@@ -120,8 +120,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             }
             workProgramRepo.save(workProgram);
 
-            //完成分支工作方案
-            signBranchRepo.finishWP(workProgramDto.getSignId(), workProgram.getBranchId());
             //用于返回页面
             workProgramDto.setId(workProgram.getId());
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", workProgramDto);

@@ -29,8 +29,6 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
     private UserRepo userRepo;
     @Autowired
     private OrgDeptRepo orgDeptRepo;
-    @Autowired
-    private SignBranchRepo signBranchRepo;
     /**
      * 完成分支工作方案
      * @param signId
@@ -326,7 +324,7 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
      */
     @Override
     public SignBranch findByOrgDirector(String signId, String orgId) {
-        Criteria criteria = signBranchRepo.getExecutableCriteria();
+        Criteria criteria = getExecutableCriteria();
         criteria.add(Restrictions.eq(SignBranch_.signId.getName(),signId));
         criteria.add(Restrictions.eq(SignBranch_.orgId.getName(),orgId));
         List<SignBranch> resuList = criteria.list();

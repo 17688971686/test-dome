@@ -11,25 +11,27 @@
             <span>
                 评审方式：
                 <select ng-model="vm.work.reviewType" name="reviewType" ng-change="vm.reviewTypeChange()" id="reviewType" ng-disabled="vm.businessFlag.isReveiwAWP">
-                    <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == vm.work.reviewType"
-                            value="{{x.dictName}}">{{x.dictName}}</option>
+                    <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}"
+                            ng-selected="x.dictName == vm.work.reviewType" >{{x.dictName}}</option>
                 </select>
                  <select ng-if="vm.work.reviewType!='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
-                        <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == vm.work.isSigle"
-                                value="{{x.dictName}}">{{x.dictName}}</option>
+                        <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" value="{{x.dictName}}"
+                                ng-selected="x.dictName == vm.work.isSigle" >{{x.dictName}}</option>
                  </select>
-                 <select ng-if="vm.work.reviewType=='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()"  ng-disabled="vm.businessFlag.isReveiwAWP">
+                 <select ng-if="vm.work.reviewType=='自评'"  ng-model="vm.work.isSigle" name="isSigle"
+                         ng-change="vm.reviewTypeChange()"  ng-disabled="vm.businessFlag.isReveiwAWP">
                         <option value="单个评审">单个评审</option>
                  </select>
-
             </span>
-        <span ng-show="vm.work.isSigle=='合并评审'" style="margin-left:10px;">
-                <input type="radio" name="isMainProject" ng-model="vm.work.isMainProject" ng-value="9"
-                       ng-checked="vm.work.isMainProject == 9" ng-disabled="vm.businessFlag.isReveiwAWP">主项目
-                <input type="radio" name="isMainProject" ng-model="vm.work.isMainProject" ng-value="0"
-                       ng-checked="vm.work.isMainProject == 0" ng-disabled="vm.businessFlag.isReveiwAWP">次项目
+            <span ng-show="vm.work.isSigle=='合并评审'" style="float: left;">
+                <input type="checkbox" name="isMainProject" ng-model="vm.work.isMainProject" ng-true-value="9"
+                       ng-false-value="0"
+                       ng-checked="vm.work.isMainProject == '9'" ng-disabled="vm.businessFlag.isReveiwAWP">主项目
+                <input type="checkbox" name="isMainProject" ng-model="vm.work.isMainProject" ng-true-value="0"
+                       ng-false-value="9"
+                       ng-checked="vm.work.isMainProject == '0'" ng-disabled="vm.businessFlag.isReveiwAWP">次项目
                 <button class="btn btn-xs btn-default" ng-click="vm.initMergeWP()"
-                        ng-show="vm.work.isMainProject == 9 && vm.work.isSigle=='合并评审'">关联项目</button>
+                        ng-show="(vm.work.isMainProject==9 || vm.work.isMainProject=='9') && vm.work.isSigle=='合并评审'">关联项目</button>
             </span>
         <span style="float: right;padding: 0px 20px;">{{vm.work.titleDate | date:'yyyy年MM月dd日'}}</span>
     </caption>

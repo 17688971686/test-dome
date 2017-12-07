@@ -18,6 +18,7 @@ import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
@@ -95,6 +96,8 @@ public class FlowServiceImpl implements FlowService {
     private RoomBookingRepo roomBookingRepo;
     @Autowired
     private WorkPlanRepo workPlanRepo;
+    @Autowired
+    private SignBranchRepo signBranchRepo;
 
     @Autowired
     @Qualifier("signFlowBackImpl")
@@ -193,12 +196,14 @@ public class FlowServiceImpl implements FlowService {
                             }
                         }
                     }
-                    //如果是回退到工作方案环节，还要修改预定会议室状态
+                    //如果是回退到工作方案环节，还要修改预定会议室状态和重置分支工作方案状态
                     if(FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR2.equals(backActivitiId)
                             || FlowConstant.FLOW_SIGN_XMFZR3.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR4.equals(backActivitiId)){
                         WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(instance.getBusinessKey(), backActivitiId.substring(backActivitiId.length()-1,backActivitiId.length()));
-                        if(wk != null){
+                        if(Validate.isObject(wk) && Validate.isString(wk.getId())){
                             roomBookingRepo.updateStateByBusinessId(wk.getId(), Constant.EnumState.NO.getValue());
+                            signService.updateSignProcessState(instance.getBusinessKey(), Constant.SignProcessState.DO_WP.getValue());
+                            signBranchRepo.resetBranchState(instance.getBusinessKey(), wk.getBranchId());
                         }
                     }
                     break;

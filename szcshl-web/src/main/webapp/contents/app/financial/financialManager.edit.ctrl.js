@@ -60,7 +60,10 @@
          * 查询
          */
         vm.queryFinancl = function (){
-            activate();
+            //统计评审费信息
+            financialManagerSvc.initfinancial(vm.model , function(data){
+                vm.stageCountList = data;
+            })
         }
 
         /**

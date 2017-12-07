@@ -833,6 +833,11 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("IS_NEED_WP").toString();
                 if (EnumState.YES.getValue().equals(businessId)) {
                     wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
+                    //如果做工作方案，则要判断该分支工作方案是否完成
+                    if (!Validate.isObject(wk) || !Validate.isString(wk.getId())) {
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没有完成工作方案，不能进行下一步操作！");
+                    }
+
                     //如果是主项目
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
                         //如果是专家评审会，则一定要选会议室(单个评审或者合并评审主项目要判断，合并评审次项目不用判断)
@@ -853,10 +858,7 @@ public class SignServiceImpl implements SignService {
                             }
                         }
                     }
-                    //如果做工作方案，则要判断该分支工作方案是否完成
-                    if (!signBranchRepo.checkFinishWP(signid, branchIndex)) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没有完成工作方案，不能进行下一步操作！");
-                    }
+
                     //查询部门领导
                     orgDept = orgDeptRepo.queryBySignBranchId(signid, branchIndex);
                     if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
@@ -881,7 +883,9 @@ public class SignServiceImpl implements SignService {
                     }
                     //更改预定会议室状态
                     roomBookingRepo.updateStateByBusinessId(wk.getId(),EnumState.PROCESS.getValue());
-                    //不做工作方案
+                    //完成分支工作方案
+                    signBranchRepo.finishWP(signid, wk.getBranchId());
+                //不做工作方案
                 } else {
                     dealUser = signPrincipalService.getMainPriUser(signid);
                     if (dealUser == null) {
@@ -897,12 +901,12 @@ public class SignServiceImpl implements SignService {
                     // 2、主分支跳转，则必须要所有协办分支都完成才能跳转。
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
                         if ((signBranchRepo.countBranch(signid) > 1) && signBranchRepo.assistFlowFinish(signid)) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "协审分支还没处理完，您不能进行直接发文操作！");
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "协办分支还没处理完，不能直接进行发文操作！");
                         }
                         sign = signRepo.findById(Sign_.signid.getName(), signid);
                         if ((Constant.STAGE_SUG.equals(sign.getReviewstage()) || Constant.STAGE_STUDY.equals(sign.getReviewstage()))
                                 && !signBranchRepo.isHaveWP(signid)) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "【项目建议书，可行性研究报告】必要要做工作方案！");
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "【项目建议书】和【可行性研究报告】阶段必须要做工作方案！");
                         }
                     }
                     signBranchRepo.finishBranch(signid, branchIndex);

@@ -1118,6 +1118,28 @@
             }
         }
 
+        /**
+         * 控制textarea输入长度限制
+         * @param key
+         * @param maxnumber
+         * @param msgId
+         * @returns {*}
+         */
+        $rootScope.countCharacter = function(key,maxnumber,msgId) {
+            var writeNum = key?key.length:0;
+            var resultMsg = "<span style='font-size:12px;'>（最多允许输入"+maxnumber+"个字";
+            if(writeNum > 0){
+                var lessNum = (maxnumber - writeNum)>0?(maxnumber - writeNum):0;
+                resultMsg += ",还能输入<font color='red'>"+lessNum+"</font>个字";
+                if(lessNum == 0){
+                    key = key.substr(0,maxnumber);
+                }
+            }
+            resultMsg += "</span>)";
+            $("#"+msgId).html(resultMsg);
+            return key;
+        }
+
         //文件预览
         $rootScope.previewFile = function(sysFileId,fileType) {
             var url,width,height;

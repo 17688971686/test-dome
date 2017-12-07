@@ -8,9 +8,11 @@ import java.util.Map;
 import cs.common.ResultMsg;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
 import cs.domain.sys.OrgDept;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.project.DispatchDocService;
@@ -46,7 +48,7 @@ public class SignFlowImpl implements IFlow {
     @Autowired
     private OrgDeptService orgDeptService;
     @Autowired
-    private DispatchDocService dispatchDocService;
+    private WorkProgramRepo workProgramRepo;
     @Autowired
     private SignRepo signRepo;
     @Autowired
@@ -121,7 +123,13 @@ public class SignFlowImpl implements IFlow {
                 if(!Validate.isString(branchIndex)){
                     branchIndex =  FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue();
                 }
-                businessMap.put("isFinishWP", signBranchRepo.checkFinishWP(businessKey,branchIndex));
+                WorkProgram wp = workProgramRepo.findBySignIdAndBranchId(businessKey,branchIndex);
+                boolean isFinishWP = false;
+                if(Validate.isObject(wp) && Validate.isString(wp.getId())){
+                    isFinishWP = true;
+                }
+                //能查询出工作方案，代表已经完成工作填写
+                businessMap.put("isFinishWP", isFinishWP);
                 break;
             //发文申请
             case FlowConstant.FLOW_SIGN_FW:
