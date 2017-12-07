@@ -9,7 +9,8 @@
         vm.model={};
         var service = {
             templatePrint: templatePrint,       //模板打印
-            getBrowserType: getBrowserType     //获取浏览器类型
+            getBrowserType: getBrowserType,     //获取浏览器类型
+            templatePage : templatePage , //打印 （分页）
         };
         return service;
 
@@ -44,5 +45,33 @@
                 return "IE";
             }; //判断是否IE浏览器
         }
+
+        //begin templatePage
+        function templatePage(id){
+            var LODOP = getLodop();
+            var strStylePath = rootPath +"//contents//shared//templatePrint.css";
+            var strStyleCSS="<link href="+strStylePath+" type='text/css' rel='stylesheet'>";
+            var strFormHtml1="<head>"+strStyleCSS+"</head><body>"+$("#"+ id +"_templ1").html()+"</body>";
+
+            LODOP.PRINT_INIT("");
+            LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml1);
+
+            //分页
+            if($("#"+ id +"_templ2").html()){
+                LODOP.NewPage();
+                var strFormHtml2="<head>"+strStyleCSS+"</head><body>"+$("#"+ id +"_templ2").html()+"</body>";
+                LODOP.ADD_PRINT_HTML(50,20,"100%","100%",strFormHtml2);
+            }
+
+
+            if($("#"+ id +"_templ3").html()){
+                LODOP.NewPage();
+                var strFormHtml3="<head>"+strStyleCSS+"</head><body>"+$("#"+ id +"_templ3").html()+"</body>";
+                LODOP.ADD_PRINT_HTML(50,20,"100%","100%",strFormHtml3);
+            }
+            //打印预览
+            LODOP.PREVIEW();
+        }
+        //end templatePage
     }
 })();

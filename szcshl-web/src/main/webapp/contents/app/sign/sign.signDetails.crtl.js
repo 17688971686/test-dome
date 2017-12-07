@@ -90,5 +90,12 @@
         vm.printpage = function ($event) {
             templatePrintSvc.templatePrint($event.target,vm.model);
         }
+
+        /**
+         * 打印功能 - 分页
+         */
+        vm.templatePage = function(id){
+            templatePrintSvc.templatePage(id);
+        }
     }
 })();
