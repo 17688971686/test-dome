@@ -26,7 +26,8 @@
             createDispatchTemplate : createDispatchTemplate ,//生成发文模板
             signGetBackGrid :signGetBackGrid,                //项目取回列表
             getBack:getBack,                            //项目取回
-            editTemplatePrint:editTemplatePrint      //编辑模板打印
+            editTemplatePrint:editTemplatePrint,      //编辑模板打印
+            workProgramPrint:workProgramPrint        //工作方案模板打印
 
         };
         return service;
@@ -771,6 +772,34 @@
                 templatePrintSvc.templatePrint("sign_fill_sbqd_templ");
             }else if(vm.model.reviewstage=='项目概算'){
                 templatePrintSvc.templatePrint("sign_fill_xmgs_templ");
+            }
+        }
+
+        //工作方案详细打印
+        function workProgramPrint(id){
+            if(id.indexOf("wpMain")>-1){
+                var LODOP = getLodop();
+                var strStylePath = rootPath +"/contents/shared/templatePrint.css";
+                var strStyleCSS="<link href="+strStylePath+" type='text/css' rel='stylesheet'>";
+                var strFormHtml1="<head>"+strStyleCSS+"</head><body>"+$("#wp1").html()+"</body>";
+                LODOP.PRINT_INIT("");
+                LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml1);
+                LODOP.NewPage();
+                var strFormHtml2="<head>"+strStyleCSS+"</head><body>"+$("#wp2").html()+"</body>";
+                LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml2);
+                LODOP.PREVIEW();
+            }else if(id.indexOf("wpAssist") > -1 ){
+                var strArr  = id.split("_");
+                var LODOP = getLodop();
+                var strStylePath = rootPath +"/contents/shared/templatePrint.css";
+                var strStyleCSS="<link href="+strStylePath+" type='text/css' rel='stylesheet'>";
+                var strFormHtml1="<head>"+strStyleCSS+"</head><body>"+$("#wpAssistTempl1"+strArr[1]).html()+"</body>";
+                LODOP.PRINT_INIT("");
+                LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml1);
+                LODOP.NewPage();
+                var strFormHtml2="<head>"+strStyleCSS+"</head><body>"+$("#wpAssistTempl2"+strArr[1]).html()+"</body>";
+                LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml2);
+                LODOP.PREVIEW();
             }
         }
     }

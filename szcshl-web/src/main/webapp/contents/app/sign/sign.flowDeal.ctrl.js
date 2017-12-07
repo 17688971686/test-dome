@@ -946,10 +946,9 @@
         //签收模板打印
         vm.printpage = function ($event) {
           var id =  $($event.target).parent().attr("id");
-         // console.log(id);
-   /*       var obj = $event.target
-          console.log(aaa);
-*/
+            console.log(id);
+            console.log("longyuyue");
+
             //templatePrintSvc.templatePrint($event.target,vm.model);
         }
 
