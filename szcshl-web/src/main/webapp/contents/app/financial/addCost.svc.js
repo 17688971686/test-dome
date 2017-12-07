@@ -96,8 +96,9 @@
                     financialManagerSvc.savefinancial(vm.financials, function (data) {
                         if (data.flag || data.reCode == 'ok') {
                             vm.financials = data.reObj;
-                            bsWin.success(data.reMsg);
-                            $("#" + id).data("kendoWindow").close();
+                            bsWin.success(data.reMsg,function(){
+                                $("#" + id).data("kendoWindow").close();
+                            });
                         } else {
                             bsWin.error(data.reMsg);
                         }
@@ -154,8 +155,9 @@
                         //如果已经有项目费用，则计算总额
                         if (vm.financials && vm.financials.length > 0) {
                             vm.countCost();
-                            //vm.financial.paymentData = vm.financials[0].paymentData;
-                            vm.financial.paymentData=new Date(vm.financials[0].paymentData).toISOString().slice(0,10) ;
+                            if(vm.financials[0].paymentData){
+                                vm.financial.paymentData = (new Date((vm.financials[0].paymentData).CompatibleDate())).Format("yyyy-MM-dd");
+                            }
                         }
 
                         //2、查找专家评审费

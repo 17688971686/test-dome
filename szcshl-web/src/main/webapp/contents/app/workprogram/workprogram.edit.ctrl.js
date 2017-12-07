@@ -73,6 +73,9 @@
             if(vm.work.reviewType =='自评'){
                 vm.work.expertCost="";
             }
+            if(vm.work.reviewType =='合并评审'){
+                vm.work.isMainProject = "9";
+            }
             //如果已经保存了工作方案，则从数据库查找工作方案内容进行对比
             if(vm.work.id){
                 workprogramSvc.findById(vm.work.id,function(data){

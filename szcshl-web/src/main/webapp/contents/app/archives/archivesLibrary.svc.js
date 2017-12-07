@@ -77,7 +77,6 @@
             };
             var httpSuccess = function success(response) {
                 vm.userlist = response.data;
-                console.log(vm.userlist);
             };
 
             common.http({

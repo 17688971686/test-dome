@@ -1,18 +1,12 @@
 
 package cs.domain.project;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import cs.domain.DomainBase;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Formula;
-
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-
-import cs.domain.DomainBase;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 发文

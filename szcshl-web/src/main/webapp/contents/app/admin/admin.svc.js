@@ -837,7 +837,7 @@
                 {
                     field: "extraRate",
                     title: "核减率",
-                    width: 60,
+                    width: 100,
                     filterable: false
                 },
                 {
@@ -1094,10 +1094,17 @@
                     },
                 },*/
                 {
-                    field: "surplusdays",
+                    field: "",
                     title: "剩余工作日",
                     width: 100,
-                    filterable: false
+                    filterable: false,
+                    template: function (item) {
+                        if (item.surplusdays != undefined) {
+                            return (item.surplusdays > 0) ? item.surplusdays : 0;
+                        } else {
+                            return "";
+                        }
+                    }
                 },
                 /*{
                     field: "receivedate",

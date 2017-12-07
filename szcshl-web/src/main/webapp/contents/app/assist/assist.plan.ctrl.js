@@ -91,20 +91,26 @@
             var isMatch = true;
             if (!angular.isUndefined(item)) {
                 if (!angular.isUndefined(vm.filterModel.filterFilecode)) {
-                    if ((item.filecode).indexOf(vm.filterModel.filterFilecode) == -1) {
+                    if(!item.projectcode){
+                        isMatch = false;
+                    }else if((item.filecode).indexOf(vm.filterModel.filterFilecode) == -1) {
                         isMatch = false;
                     }
                 }
                 if (isMatch) {
                     if (!angular.isUndefined(vm.filterModel.filterProjectCode)) {
-                        if ((item.projectcode).indexOf(vm.filterModel.filterProjectCode) == -1) {
+                        if(!item.projectcode){
+                            isMatch = false;
+                        }else if( (item.projectcode).indexOf(vm.filterModel.filterProjectCode) == -1) {
                             isMatch = false;
                         }
                     }
                 }
                 if (isMatch) {
                     if (!angular.isUndefined(vm.filterModel.filterProjectName)) {
-                        if ((item.projectname).indexOf(vm.filterModel.filterProjectName) == -1) {
+                        if(!item.projectname){
+                            isMatch = false;
+                        }else if( (item.projectname).indexOf(vm.filterModel.filterProjectName) == -1) {
                             isMatch = false;
                         }
                     }
@@ -130,20 +136,26 @@
             var isMatch = true;
             if (!angular.isUndefined(item)) {
                 if (!angular.isUndefined(vm.filterLow.filterFilecode)) {
-                    if ((item.filecode).indexOf(vm.filterLow.filterFilecode) == -1) {
+                    if(!item.filecode){
+                        isMatch = false;
+                    }else if ((item.filecode).indexOf(vm.filterLow.filterFilecode) == -1) {
                         isMatch = false;
                     }
                 }
                 if (isMatch) {
                     if (!angular.isUndefined(vm.filterLow.filterProjectCode)) {
-                        if ((item.projectcode).indexOf(vm.filterLow.filterProjectCode) == -1) {
+                        if(!item.projectcode){
+                            isMatch = false;
+                        }else if ((item.projectcode).indexOf(vm.filterLow.filterProjectCode) == -1) {
                             isMatch = false;
                         }
                     }
                 }
                 if (isMatch) {
                     if (!angular.isUndefined(vm.filterLow.filterProjectName)) {
-                        if ((item.projectname).indexOf(vm.filterLow.filterProjectName) == -1) {
+                        if(!item.projectname){
+                            isMatch = false;
+                        }else if ((item.projectname).indexOf(vm.filterLow.filterProjectName) == -1) {
                             isMatch = false;
                         }
                     }

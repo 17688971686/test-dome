@@ -14,18 +14,18 @@
     </div>
     <table class="table table-bordered" id="conditionTable">
         <tr>
-            <td width="15%" align="center">项目名称</td>
-            <td width="15%" colspan="3">{{vm.financial.projectName}}</td>
+            <td width="15%" class="text-center">项目名称</td>
+            <td colspan="3">{{vm.financial.projectName}}</td>
         </tr>
         <tr>
-            <td width="5%" align="center">付款日期</td>
-            <td width="5%" align="center">
+            <td class="text-center">付款日期</td>
+            <td width="30%">
                 <input kendo-date-picker  k-format="'yyyy-MM-dd'"
                        ng-model="vm.financial.paymentData" id="paymentData" name="paymentData" data-val="true"
                        data-val-required="必填">
             </td>
-            <td width="5%" align="center">总金额（元）</td>
-            <td width="15%" align="center">
+            <td width="15%" class="text-center">总金额（元）</td>
+            <td  >
                <span id="financialCount"></span>
             </td>
         </tr>

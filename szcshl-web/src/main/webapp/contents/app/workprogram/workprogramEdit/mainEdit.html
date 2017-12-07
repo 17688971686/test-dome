@@ -17,27 +17,27 @@
                     <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == vm.work.reviewType"
                             value="{{x.dictName}}">{{x.dictName}}</option>
                 </select>
-                <select ng-if="vm.work.reviewType!='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
-                        <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == vm.work.isSigle"
-                                value="{{x.dictName}}">{{x.dictName}}</option>
-                 </select>
-                 <select ng-if="vm.work.reviewType=='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
-                        <option value="单个评审">单个评审</option>
-                 </select>
+
+                 <select ng-show="vm.work.reviewType!='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
+                         <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == vm.work.isSigle"
+                                 value="{{x.dictName}}">{{x.dictName}}</option>
+                  </select>
+                  <select ng-show="vm.work.reviewType=='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
+                         <option value="单个评审">单个评审</option>
+                  </select>
             </span>
             <span ng-show="vm.work.isSigle=='合并评审'" style="float: left;">
-                <input type="radio" name="isMainProject" ng-model="vm.work.isMainProject" ng-value="9"
-                       ng-checked="vm.work.isMainProject == 9" ng-disabled="vm.businessFlag.isReveiwAWP">主项目
-                <input type="radio" name="isMainProject" ng-model="vm.work.isMainProject" ng-value="0"
-                       ng-checked="vm.work.isMainProject == 0" ng-disabled="vm.businessFlag.isReveiwAWP">次项目
+                <input type="checkbox" name="isMainProject" ng-model="vm.work.isMainProject" ng-true-value="9" ng-false-value="0"
+                       ng-checked="vm.work.isMainProject == '9'" ng-disabled="vm.businessFlag.isReveiwAWP">主项目
+                <input type="checkbox" name="isMainProject" ng-model="vm.work.isMainProject" ng-true-value="0" ng-false-value="9"
+                       ng-checked="vm.work.isMainProject == '0'" ng-disabled="vm.businessFlag.isReveiwAWP">次项目
                 <button class="btn btn-xs btn-default" ng-click="vm.initMergeWP()"
-                        ng-show="vm.work.isMainProject == 9 && vm.work.isSigle=='合并评审'">关联项目</button>
+                        ng-show="(vm.work.isMainProject==9 || vm.work.isMainProject=='9') && vm.work.isSigle=='合并评审'">关联项目</button>
             </span>
             <span style="float: right;padding: 0px 20px;">{{vm.work.titleDate | date:'yyyy年MM月dd日'}}</span>
     </caption>
     
     <tbody>
-
 	<tr>
         <td style="width:15%;" class="text-center" colspan="2">项目名称</td>
         <td colspan="3" ng-show="vm.showTotalInvestment">
@@ -97,6 +97,7 @@
         <td style="width:15%;">
             <select ng-model="vm.work.projectType"  ng-change="vm.work.projectTypeDicts = topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)"
                     name="projectType" id="projectType" data-val-required="必选项" data-val="true">
+                <option value="">请选择</option>
                 <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}"
                         ng-selected="vm.work.projectType == x.dictName">{{x.dictName}}
                 </option>
@@ -106,6 +107,7 @@
         <td style="width:10%;" class="text-center">小类<span class="required">*</span></td>
         <td style="width:15%;">
             <select ng-model="vm.work.projectSubType" name="projectSubType" data-val="true" id="projectSubType">
+                <option value="">请选择</option>
                 <option ng-repeat="x in vm.work.projectTypeDicts" value="{{x.dictName}}"
                         ng-selected="vm.work.projectSubType == x.dictName">{{x.dictName}}
                 </option>
@@ -115,6 +117,7 @@
         <td class="text-center">行业类别<span class="required">*</span></td>
         <td colspan="3">
             <select ng-model="vm.work.industryType" name="industryType" id="industryType" data-val="true" data-val-required="必填">
+                <option value="">请选择</option>
                 <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictKey}}"
                         ng-selected="vm.work.industryType == x.dictKey">{{x.dictName}}
                 </option>

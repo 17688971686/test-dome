@@ -92,7 +92,6 @@
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid,function(data){
                 vm.model = data;
-                console.log(vm.model);
                 var deActive = $("#myTab .active");
                 var deObj = $("a", deActive);
                 vm.model.showDiv = deObj.attr("for-div");
@@ -384,20 +383,21 @@
             if(vm.flow.isSuspended){
                 bsWin.error("该流程目前为暂停状态，不能进行流转操作！");
                 return ;
-            }
-            var checkResult = signFlowSvc.checkBusinessFill(vm);
-            if (checkResult.resultTag) {
-                flowSvc.commit(vm.isCommit,vm.flow,function(data){
-                    if (data.flag || data.reCode == "ok") {
-                        bsWin.success("操作成功！",function(){
-                            $state.go('gtasks');
-                        })
-                    }else{
-                        bsWin.alert(data.reMsg);
-                    }
-                });
-            } else {
-                bsWin.alert(checkResult.resultMsg);
+            }else{
+                var checkResult = signFlowSvc.checkBusinessFill(vm);
+                if (checkResult.resultTag) {
+                    flowSvc.commit(vm.isCommit,vm.flow,function(data){
+                        if (data.flag || data.reCode == "ok") {
+                            bsWin.success("操作成功！",function(){
+                                $state.go('gtasks');
+                            })
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                } else {
+                    bsWin.alert(checkResult.resultMsg);
+                }
             }
         }
 

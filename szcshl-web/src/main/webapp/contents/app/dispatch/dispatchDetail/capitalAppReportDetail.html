@@ -1,259 +1,270 @@
 <meta charset="UTF-8">
 <!--  S 资金申请报告-->
- <!-- s form -->
-    <form id="dispatch_form" name="dispatch_form">
-        <!-- s table -->
-        <table class="table table-bordered"  >
-            <caption>
-                <span >QR-4.11-03-A0</span>
-            </caption>
-            <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
-            <caption >
+<!-- s form -->
+<form id="dispatch_form" name="dispatch_form">
+    <!-- s table -->
+    <table class="table table-bordered">
+        <caption>
+            <span>QR-4.11-03-A0</span>
+        </caption>
+        <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
+        <caption>
 
-                <span style="margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
-                <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9" style="margin-left:10px;">主项目</span>
-                <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0" style="margin-left:10px;">次项目</span>
+            <span style="margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
+            <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9"
+                  style="margin-left:10px;">主项目</span>
+            <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0"
+                  style="margin-left:10px;">次项目</span>
 
-                <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
-            </caption>
-            <tbody>
-           
-            <tr>
-                <td style="width:150px;" class="text-center">文件标题 </td>
-                <td colspan="5">
+            <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
+        </caption>
+        <tbody>
+
+        <tr>
+            <td style="width:15%;" class="text-center">文件标题</td>
+            <td colspan="5">
                 {{vm.dispatchDoc.fileTitle}}
-                </td>
-            </tr>
+            </td>
+        </tr>
 
-            <tr>
-                <td style="width:150px;" class="text-center">发文部门</td>
-                <td>
-                    {{vm.dispatchDoc.orgName}}
-                   
-                </td>
+        <tr>
+            <td class="text-center">发文部门</td>
+            <td>
+                {{vm.dispatchDoc.orgName}}
 
-                <td style="width:150px;" class="text-center">发文日期</td>
-                <td>
-                   {{vm.dispatchDoc.dispatchDate}}
-                 
-                </td>
+            </td>
 
-                <td style="width:150px;" class="text-center">文号</td>
-                <td>
-                   {{vm.dispatchDoc.fileNum}}
-                  
-                </td>
-            </tr>
-            <tr>
-                <td style="width:150px;" class="text-center">秘密等级</td>
-                <td> {{vm.dispatchDoc.secretLevel}}</td>
+            <td class="text-center">发文日期</td>
+            <td>
+                {{vm.dispatchDoc.dispatchDate}}
 
-                <td style="width:150px;" class="text-center">紧急程度</td>
-                <td>{{vm.dispatchDoc.urgentLevel}}</td>
+            </td>
 
-                <td style="width:150px;" class="text-center">是否有其他阶段关联</td>
-                <td>
+            <td class="text-center">文号</td>
+            <td>
+                {{vm.dispatchDoc.fileNum}}
+
+            </td>
+        </tr>
+        <tr>
+            <td style="width:15%;" class="text-center">秘密等级</td>
+            <td style="width:20%;"> {{vm.dispatchDoc.secretLevel}}</td>
+
+            <td style="width:15%;" class="text-center">紧急程度</td>
+            <td style="width:15%;">{{vm.dispatchDoc.urgentLevel}}</td>
+
+            <td style="width:15%;" class="text-center">是否有其他阶段关联</td>
+            <td style="width:20%;">
                     <span>
-                        <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'" name="isRelated" />是
+                        <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0"
+                               ng-model="vm.dispatchDoc.isRelated"
+                               ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'"
+                               name="isRelated"/>是
                     </span>
-                    <span style="margin-left:10px;">
-                        <input type="checkbox" ng-disabled="true" ng-true-value="0" ng-false-value="9" ng-model="vm.dispatchDoc.isRelated" ng-checked="!vm.dispatchDoc.isRelated || vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'" name="isRelated" />否
+                <span style="margin-left:10px;">
+                        <input type="checkbox" ng-disabled="true" ng-true-value="0" ng-false-value="9"
+                               ng-model="vm.dispatchDoc.isRelated"
+                               ng-checked="!vm.dispatchDoc.isRelated || vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'"
+                               name="isRelated"/>否
                     </span>
-                </td>
-            </tr>
-          
-            <tr>
-                <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
-                <td colspan="5" style="min-height: 30px;">
+            </td>
+        </tr>
+
+        <tr>
+            <td class="text-center">发行范围 </td>
+            <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.dispatchScope}}
-                </td>
-            </tr>
+            </td>
+        </tr>
 
 
-            <tr>
-                <td style="width:150px;" class="text-center">相关说明</td>
-                <td colspan="5" style="min-height: 30px;">
+        <tr>
+            <td style="vertical-align: middle;" class="text-center">相关说明</td>
+            <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.description}}
-                </td>
-            </tr>
+            </td>
+        </tr>
 
-             <tr>
-                <td style="width:150px;" class="text-center">项目负责人拟稿意见</td>
-                 <td colspan="3" style="min-height: 30px;">
-                     第一负责人意见：
-                     <div ng-bind-html="vm.dispatchDoc.mianChargeSuggest | trust2Html"></div>
-                 </td>
-                 <td colspan="2" style="min-height: 30px;">
-                     第二负责人意见：
-                     <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
-                 </td>
-            </tr>
+        <tr>
+            <td style="vertical-align: middle;" class="text-center">项目负责人<br>拟稿意见</td>
+            <td colspan="3" style="min-height: 30px;">
+                第一负责人意见：
+                <div ng-bind-html="vm.dispatchDoc.mianChargeSuggest | trust2Html"></div>
+            </td>
+            <td colspan="2" style="min-height: 30px;">
+                第二负责人意见：
+                <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
+            </td>
+        </tr>
 
-            <tr>
-                <td style="width:150px;" class="text-center">评审意见摘要</td>
-                <td colspan="5" style="min-height: 30px;">
+        <tr>
+            <td style="vertical-align: middle;" class="text-center">评审意见摘要</td>
+            <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.reviewAbstract}}
-                </td>
-            </tr>
+            </td>
+        </tr>
 
-            <tr>
-                <td style="width:150px;" class="text-center">部长审核意见</td>
-                <td colspan="5" style="min-height: 30px;">
-                 <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
-             	 <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
-             	 <p class="text-right" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
-                </td>
-            </tr>
+        <tr>
+            <td style="vertical-align: middle;" class="text-center">部长审核意见</td>
+            <td colspan="5" style="min-height: 30px;">
+                <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
+                <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
+                <p class="text-right" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
+            </td>
+        </tr>
 
-            <tr>
-                <td style="width:150px;" class="text-center">分管副主任意见</td>
-                <td colspan="5" style="min-height: 30px;">
+        <tr>
+            <td style="vertical-align: middle;" class="text-center">分管副主任意见</td>
+            <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.viceDirectorSuggesttion}}
-                 <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">签名：{{vm.dispatchDoc.viceDirectorName}}</p>
-             	 <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
-                </td>
-            </tr>
+                <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">签名：{{vm.dispatchDoc.viceDirectorName}}</p>
+                <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
+            </td>
+        </tr>
 
-            <tr>
-                <td style="width:150px;" class="text-center">主任签发</td>
-                <td colspan="5" style="min-height: 30px;">
+        <tr>
+            <td style="vertical-align: middle;" class="text-center">主任签发</td>
+            <td colspan="5" style="min-height: 30px;">
                 {{vm.dispatchDoc.directorSuggesttion}}
                 <p class="text-right" ng-if="vm.dispatchDoc.directorName">签名：{{vm.dispatchDoc.directorName}}</p>
-             	 <p class="text-right" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
-                </td>
-            </tr> 
-            
-            <tr>
-                <td style="width:150px;" class="text-center">项目概况</td>
-                <td colspan="5">
-                    <!--前一阶段-->
-                    <table ng-repeat="s in vm.model.associateSignDtoList.slice().reverse()" class="table table-bordered"
-                           style="text-align: center;">
-                        <tr>
-                            <td width="20%">{{s.reviewstage}}</td>
-                            <td width="14%">申报</td>
-                            <td width="14%">审定</td>
-                            <td width="14%">核减（增）</td>
-                            <td width="14%">核减（增）率</td>
-                            <td width="14%">批复金额</td>
-                            <td width="14%">备注</td>
-                        </tr>
-                        <tr>
-                            <td>投资额（万元）</td>
-                            <td>
-                                {{s.dispatchDocDto.declareValue}}
-                            </td>
-                            <td>
-                                {{s.dispatchDocDto.authorizeValue}}
-                            </td>
-                            <td>
-                                {{s.dispatchDocDto.extraValue}}
-                            </td>
-                            <td>
-                                {{s.dispatchDocDto.extraRate}}<span>%</span>
-                            </td>
-                            <td>
-                                {{s.dispatchDocDto.approveValue}}
-                            </td>
-                            <td>
-                                {{s.dispatchDocDto.remark}}
-                            </td>
-                        </tr>
+                <p class="text-right" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
+            </td>
+        </tr>
 
-                        <tr style="50px;">
-                            <td>项目建设必要性</td>
-                            <td colspan="6" class="text-left">
-                                {{s.dispatchDocDto.projectBuildNecess}}
-                            </td>
-                        </tr>
+        <tr>
+            <td style="vertical-align: middle;" class="text-center">项目概况</td>
+            <td colspan="5">
+                <!--前一阶段-->
+                <table class="table table-bordered" style="text-align: center;">
 
-                        <tr style="50px;">
-                            <td>审定建设规模及内容</td>
-                            <td colspan="6" class="text-left">
-                                {{s.dispatchDocDto.buildSizeContent}}
-                            </td>
-                        </tr>
+                    <tbody ng-repeat="s in vm.model.associateSignDtoList.slice().reverse()">
+                    <tr>
+                        <td width="20%">{{s.reviewstage}}</td>
+                        <td width="14%">申报</td>
+                        <td width="14%">审定</td>
+                        <td width="14%">核减（增）</td>
+                        <td width="14%">核减（增）率</td>
+                        <td width="14%">批复金额</td>
+                        <td width="14%">备注</td>
+                    </tr>
+                    <tr>
+                        <td>投资额（万元）</td>
+                        <td>
+                            {{s.dispatchDocDto.declareValue}}
+                        </td>
+                        <td>
+                            {{s.dispatchDocDto.authorizeValue}}
+                        </td>
+                        <td>
+                            {{s.dispatchDocDto.extraValue}}
+                        </td>
+                        <td>
+                            {{s.dispatchDocDto.extraRate}}<span>%</span>
+                        </td>
+                        <td>
+                            {{s.dispatchDocDto.approveValue}}
+                        </td>
+                        <td>
+                            {{s.dispatchDocDto.remark}}
+                        </td>
+                    </tr>
 
-                        <tr style="50px;">
-                            <td>投资匡算及资金来源</td>
-                            <td colspan="6" class="text-left">
-                                {{s.dispatchDocDto.fundTotalOrigin}}
-                            </td>
-                        </tr>
+                    <tr style="height: 60px;">
+                        <td>项目建设必要性</td>
+                        <td colspan="6" class="text-left">
+                            {{s.dispatchDocDto.projectBuildNecess}}
+                        </td>
+                    </tr>
 
-                        <tr style="50px;">
-                            <td >下一阶段工作要求</td>
-                            <td colspan="6" class="text-left">
-                                {{s.dispatchDocDto.nextWorkPlan}}
-                            </td>
-                        </tr>
-                    </table>
+                    <tr style="height: 60px;">
+                        <td>审定建设规模及内容</td>
+                        <td colspan="6" class="text-left">
+                            {{s.dispatchDocDto.buildSizeContent}}
+                        </td>
+                    </tr>
 
-                    <table class="table table-bordered" style="text-align: center;">
-                        <tr>
-                            <td width="20%">{{vm.model.reviewstage}}</td>
-                            <td width="14%">申报</td>
-                            <td width="14%">审定</td>
-                            <td width="14%">核减（增）</td>
-                            <td width="14%">核减（增）率</td>
-                            <td width="14%">批复金额</td>
-                            <td width="14%">备注</td>
-                        </tr>
+                    <tr style="height:60px;">
+                        <td>投资匡算及资金来源</td>
+                        <td colspan="6" class="text-left">
+                            {{s.dispatchDocDto.fundTotalOrigin}}
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td>投资额（万元）</td>
-                            <td>
-                                {{vm.dispatchDoc.declareValue}}
-                            </td>
-                            <td>
-                                {{vm.dispatchDoc.authorizeValue}}
-                            </td>
-                            <td>
-                                {{vm.dispatchDoc.extraValue}}
-                            </td>
-                            <td>
-                                {{vm.dispatchDoc.extraRate}}<span>%</span>
-                            </td>
-                            <td>
-                                {{vm.dispatchDoc.approveValue}}
-                            </td>
-                            <td>
-                                {{vm.dispatchDoc.remark}}
-                            </td>
-                        </tr>
+                    <tr style="height: 60px;">
+                        <td>下一阶段工作要求</td>
+                        <td colspan="6" class="text-left">
+                            {{s.dispatchDocDto.nextWorkPlan}}
+                        </td>
+                    </tr>
+                    </tbody>
 
-                        <tr style="50px;">
-                            <td >项目建设必要性</td>
-                            <td colspan="6" class="text-left">
-                                {{vm.dispatchDoc.projectBuildNecess}}
-                            </td>
-                        </tr>
+                    <tbody>
+                    <tr>
+                        <td width="20%">{{vm.model.reviewstage}}</td>
+                        <td width="14%">申报</td>
+                        <td width="14%">审定</td>
+                        <td width="14%">核减（增）</td>
+                        <td width="14%">核减（增）率</td>
+                        <td width="14%">批复金额</td>
+                        <td width="14%">备注</td>
+                    </tr>
 
-                        <tr style="50px;">
-                            <td >审定建设规模及内容</td>
-                            <td colspan="6" class="text-left">
-                                {{vm.dispatchDoc.buildSizeContent}}
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>投资额（万元）</td>
+                        <td>
+                            {{vm.dispatchDoc.declareValue}}
+                        </td>
+                        <td>
+                            {{vm.dispatchDoc.authorizeValue}}
+                        </td>
+                        <td>
+                            {{vm.dispatchDoc.extraValue}}
+                        </td>
+                        <td>
+                            {{vm.dispatchDoc.extraRate}}<span>%</span>
+                        </td>
+                        <td>
+                            {{vm.dispatchDoc.approveValue}}
+                        </td>
+                        <td>
+                            {{vm.dispatchDoc.remark}}
+                        </td>
+                    </tr>
 
-                        <tr style="50px;">
-                            <td >投资匡算及资金来源</td>
-                            <td colspan="6" class="text-left">
-                                {{vm.dispatchDoc.fundTotalOrigin}}
-                            </td>
-                        </tr>
+                    <tr style="height: 60px;">
+                        <td>项目建设必要性</td>
+                        <td colspan="6" class="text-left">
+                            {{vm.dispatchDoc.projectBuildNecess}}
+                        </td>
+                    </tr>
 
-                        <tr style="50px;">
-                            <td >下一阶段工作要求</td>
-                            <td colspan="6" class="text-left">
-                                {{vm.dispatchDoc.nextWorkPlan}}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            </tbody>
-        </table>    <!-- end table -->
-    </form> <!-- end form -->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
+                    <tr style="height: 60px;">
+                        <td>审定建设规模及内容</td>
+                        <td colspan="6" class="text-left">
+                            {{vm.dispatchDoc.buildSizeContent}}
+                        </td>
+                    </tr>
+
+                    <tr style="height: 60px;">
+                        <td>投资匡算及资金来源</td>
+                        <td colspan="6" class="text-left">
+                            {{vm.dispatchDoc.fundTotalOrigin}}
+                        </td>
+                    </tr>
+
+                    <tr style="height: 60px;">
+                        <td>下一阶段工作要求</td>
+                        <td colspan="6" class="text-left">
+                            {{vm.dispatchDoc.nextWorkPlan}}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>    <!-- end table -->
+</form> <!-- end form -->
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
+</button>
 <!--  E 资金申请报告-->
