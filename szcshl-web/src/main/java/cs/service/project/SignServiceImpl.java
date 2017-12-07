@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.common.utils.*;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelected;
@@ -47,12 +48,6 @@ import cs.common.Constant.MsgCode;
 import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.ActivitiUtil;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
 import cs.domain.expert.ExpertReview;
 import cs.domain.external.Dept;
 import cs.model.PageModelDto;
@@ -95,6 +90,8 @@ public class SignServiceImpl implements SignService {
     private ProcessEngine processEngine;
     @Autowired
     private OfficeUserService officeUserService;
+    @Autowired
+    private  FileRecordService fileRecordService;
     @Autowired
     private CompanyRepo companyRepo;
     @Autowired
@@ -1365,8 +1362,25 @@ public class SignServiceImpl implements SignService {
                 fileRecord.setSignUserid(SessionUtil.getUserId());
                 fileRecord.setSignUserName(SessionUtil.getDisplayName());
                 //纸质文件接受日期 ：为归档员陈春燕确认的归档日期
+                //设置归档编号
+                if (!Validate.isString(fileRecord.getFileNo())) {
+                    String fileNumValue = "";
+                    int maxSeq =fileRecordService.findCurMaxSeq(fileRecord.getFileDate());
+                    if(maxSeq < 1000){
+                        fileNumValue = String.format("%03d", Integer.valueOf(maxSeq+1));
+                    }else{
+                        fileNumValue = (maxSeq+1)+"";
+                    }
+                    //归档编号=发文年份+档案类型+存档年份+存档顺序号
+                    fileNumValue = DateUtils.converToString(sign.getExpectdispatchdate(),"yyyy")+ ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
+                            +DateUtils.converToString(fileRecord.getFileDate(),"yy")+fileNumValue;
+                    fileRecord.setFileNo(fileNumValue);
+                }
                 fileRecord.setPageDate(new Date());
                 fileRecordRepo.save(fileRecord);
+
+
+
 
                 //更改项目状态
                 sign = signRepo.findById(Sign_.signid.getName(), signid);

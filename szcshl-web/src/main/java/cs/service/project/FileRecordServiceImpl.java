@@ -58,7 +58,7 @@ public class FileRecordServiceImpl implements FileRecordService {
 
             //获取收文信息
             Sign sign = signRepo.findById(Sign_.signid.getName(),fileRecordDto.getSignId());
-            //设置归档编号
+/*            //设置归档编号  移到了确认归档的环节流程去了
             if (!Validate.isString(fileRecord.getFileNo())) {
                 String fileNumValue = "";
                 int maxSeq = findCurMaxSeq(fileRecord.getFileDate());
@@ -71,7 +71,7 @@ public class FileRecordServiceImpl implements FileRecordService {
                 fileNumValue = DateUtils.converToString(sign.getExpectdispatchdate(),"yyyy")+ ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
                         +DateUtils.converToString(fileRecord.getFileDate(),"yy")+fileNumValue;
                 fileRecord.setFileNo(fileNumValue);
-            }
+            }*/
             //更新收文信息
             sign.setFilenum(fileRecord.getFileNo());
             sign.setFileRecord(fileRecord);
@@ -132,7 +132,7 @@ public class FileRecordServiceImpl implements FileRecordService {
      * @param fileRecordDate
      * @return
      */
-    private int findCurMaxSeq(Date fileRecordDate) {
+    public int findCurMaxSeq(Date fileRecordDate) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select max("+ FileRecord_.fileSeq.getName()+") from cs_file_record where "+FileRecord_.fileDate.getName()+" between ");
         sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )");

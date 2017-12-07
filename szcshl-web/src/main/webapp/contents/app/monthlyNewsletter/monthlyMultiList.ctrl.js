@@ -20,9 +20,10 @@
          }
          //重置
          vm.resetAddSupp = function(){
-        	 var tab = $("#form_monthly").find('input,select');
+        	 var tab = $("#form").find('input,select');
  			$.each(tab, function(i, obj) {
  				obj.value = "";
+                vm.multiyearGrid.dataSource.read();
  			});
          }
     }
