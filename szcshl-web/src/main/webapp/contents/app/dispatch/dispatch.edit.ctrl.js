@@ -3,9 +3,9 @@
 
     angular.module('app').controller('dispatchEditCtrl', dispatch);
 
-    dispatch.$inject = [ 'dispatchSvc','sysfileSvc', '$state', 'bsWin','$scope','signSvc'];
+    dispatch.$inject = [ 'dispatchSvc','sysfileSvc', '$state', 'bsWin','$scope','signSvc' , 'templatePrintSvc'];
 
-    function dispatch(dispatchSvc,sysfileSvc, $state, bsWin,$scope,signSvc) {
+    function dispatch(dispatchSvc,sysfileSvc, $state, bsWin,$scope,signSvc , templatePrintSvc) {
         var vm = this;
         vm.title = '项目发文编辑';
         vm.sign = {};
@@ -162,10 +162,10 @@
                         }
                     });
                 }
-            //2、由单个发文改为合并发文
+                //2、由单个发文改为合并发文
             }else if(vm.dispatchDoc.dispatchWay == "2" ){
                 if(!vm.busiFlag.isMerge){
-                	vm.busiFlag.isMerge=true;
+                    vm.busiFlag.isMerge=true;
                     vm.busiFlag.isMain=(vm.dispatchDoc.isMainProject=="9")?true:false;//判断是否为主项目
                 }
             }
@@ -206,8 +206,8 @@
 
         // 打开合并页面
         vm.gotoMergePage = function () {
-        	 vm.busiFlag.isMain=(vm.dispatchDoc.isMainProject=="9")?true:false;//判断是否为主项目
-             //没保存或者单个发文改成合并发文主项目时候要先进行保存
+            vm.busiFlag.isMain=(vm.dispatchDoc.isMainProject=="9")?true:false;//判断是否为主项目
+            //没保存或者单个发文改成合并发文主项目时候要先进行保存
             if( vm.dispatchDoc.isMainProject == 9 && !vm.dispatchDoc.id){
                 bsWin.alert("请先保存！");
             }else{
@@ -286,6 +286,14 @@
         //重置合并发文
         vm.formReset = function () {
             vm.searchSign = {};
+        }
+
+        /**
+         * 打印功能 -分页
+         * @param id
+         */
+        vm.templatePage = function(id){
+            templatePrintSvc.templatePage(id);
         }
 
     }

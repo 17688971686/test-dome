@@ -91,5 +91,12 @@
             var id =  $($event.target).attr("id");
             signSvc.workProgramPrint(id);
         }
+
+        /**
+         * 打印功能 - 分页
+         */
+        vm.templatePage = function(id){
+            templatePrintSvc.templatePage(id);
+        }
     }
 })();

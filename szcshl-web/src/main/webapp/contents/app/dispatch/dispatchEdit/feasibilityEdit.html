@@ -10,14 +10,12 @@
     <caption>
                 <span>
                     发文方式：
-                    <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
-                            ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
-                        <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false"
-                                value="{{x.dictKey}}"
+                    <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay" ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
+                        <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false" value="{{x.dictKey}}"
                                 ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
                     </select>
                 </span>
-        <span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
+				<span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
 					<input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="vm.showFlag.isReveiwDS"
                            ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
 
@@ -29,7 +27,7 @@
                             ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
 				</span>
 
-        <span style="float:right;">发文类型： <span class="required">*</span>
+                <span style="float:right;">发文类型： <span class="required">*</span>
 		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true"
                         data-val-required="必填">
 					<option ng-repeat="x in DICT.DISPATCH_TYPE.dicts | orderBy:'dictSort':false" value="{{x.dictName}}"
@@ -75,17 +73,13 @@
         <td class="text-center">是否有其他阶段关联</td>
         <td>
                     <span>
-                        <input type="checkbox" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated"
-                               ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'"
-                               name="isRelated"/>是
+                        <input type="checkbox" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'" name="isRelated" />是
                     </span>
-            <span style="margin-left:10px;">
-                        <input type="checkbox" ng-true-value="0" ng-false-value="9" ng-model="vm.dispatchDoc.isRelated"
-                               ng-checked="vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'"
-                               name="isRelated"/>否
+                    <span style="margin-left:10px;">
+                        <input type="checkbox" ng-true-value="0" ng-false-value="9" ng-model="vm.dispatchDoc.isRelated" ng-checked="vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'" name="isRelated" />否
                     </span>
-        </td>
-    </tr>
+                </td>
+            </tr>
 
 
     <tr>
@@ -315,6 +309,5 @@
     </tbody>
 </table>    <!-- end table -->
 
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
-</button>
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="vm.templatePage('sign_dispatch_kxxyj')">打印</button>
 <!--  E 可行性研究报告-->

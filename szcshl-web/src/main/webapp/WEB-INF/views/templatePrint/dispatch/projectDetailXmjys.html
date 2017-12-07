@@ -11,7 +11,8 @@
     }
 </style>
 <!-- s form -->
-<table class="print-table">
+<div id="sign_dispatch_xmjys_templ1" style="text-align: center;">
+<table class="print-table" >
     <caption>
         <span >QR-4.3-10-A3</span>
     </caption>
@@ -60,8 +61,8 @@
     <tr>
         <td >发行范围</td>
         <td colspan="7" >
-            <div style="width: 100% ; height: 60px; overflow: hidden;">
-                <div style="width: 100%; height: 60%; overflow: hidden;">{{vm.dispatchDoc.dispatchScope}}</div>
+            <div style="width: 100% ; height: 80px; overflow: hidden;">
+                <div style="width: 100%; height: 70%; overflow: hidden;">{{vm.dispatchDoc.dispatchScope}}</div>
                 <span style="float: right;">(印 {{vm.dispatchDoc.printCount}} 份)</span></div>
         </td>
         </td>
@@ -69,13 +70,13 @@
     <tr>
         <td>相关说明</td>
         <td colspan="7"  >
-            <div style="width: 100% ; height: 60px; overflow: hidden;">{{vm.dispatchDoc.description}}</div>
+            <div style="width: 100% ; height: 80px; overflow: hidden;">{{vm.dispatchDoc.description}}</div>
         </td>
     </tr>
     <tr>
         <td>评审意见摘要</td>
         <td colspan="7">
-            <div style="width: 100% ; height: 60px ; overflow: hidden;">{{vm.dispatchDoc.reviewAbstract}}</div>
+            <div style="width: 100% ; height: 80px ; overflow: hidden;">{{vm.dispatchDoc.reviewAbstract}}</div>
         </td>
     </tr>
     <tr>
@@ -130,13 +131,14 @@
         </td>
     </tr>
 
-</table>
-<div style="page-break-after: always ; height: 120px;"  ></div>
-<table class="print-table">
+</table></div>
+<!--<div style="page-break-after: always ; height: 120px;"  ></div>-->
+<div id="sign_dispatch_xmjys_templ2" style="text-align: center;">
+<table class="print-table" >
     <tr>
         <td width="15%">项目概况</td>
         <td colspan="7"  style="padding:0 ; width: 85%;">
-            <table ng-repeat="s in vm.model.associateSignDtoList.slice().reverse()"
+            <!--<table ng-repeat="s in vm.model.associateSignDtoList.slice().reverse()"
                    style="width : 100%;font-size: 12px;">
                 <tr id="proItem">
                     <td width="22%">{{s.reviewstage}}</td>
@@ -191,10 +193,10 @@
                         </div>
                     </td>
                 </tr>
-            </table>
-            <table style="text-align: center;width: 100%; font-size: 12px;">
-                <tr id="proTotal">
-                    <td  width="22%">{{vm.model.reviewstage}}</td>
+            </table>-->
+            <table style="text-align: center;width: 100%; ">
+                <tr id="proTotal" style="height: 50px;">
+                    <td  width="22%">{{vm.model.reviewstage ? vm.model.reviewstage : vm.sign.reviewstage}}</td>
                     <td  width="10%">申报</td>
                     <td width="10%">审定</td>
                     <td width="18%">核减（增）</td>
@@ -203,7 +205,7 @@
                     <td style="border-right-width: 0px;" width="10%">备注</td>
                 </tr>
 
-                <tr>
+                <tr style="height: 50px;">
                     <td style="border-left-width: 0px;">投资额（万元）</td>
                     <td>{{vm.dispatchDoc.declareValue}}</td>
                     <td>{{vm.dispatchDoc.authorizeValue}}</td>
@@ -216,7 +218,7 @@
                 <tr>
                     <td style="border-left-width: 0px;">项目建设必要性</td>
                     <td colspan="6" class="text-left">
-                        <div style="width: 100% ; height: 60px; overflow: hidden;font-size: 12px;">
+                        <div style="width: 100% ; height: 200px; overflow: hidden;font-size: 12px;">
                             {{vm.dispatchDoc.projectBuildNecess}}
                         </div>
                     </td>
@@ -225,7 +227,7 @@
                 <tr>
                     <td style="border-left-width: 0px;">审定建设规模及内容</td>
                     <td colspan="6" class="text-left">
-                        <div style="width: 100% ; height: 60px; overflow: hidden;font-size: 12px;">
+                        <div style="width: 100% ; height: 300px; overflow: hidden;font-size: 12px;">
                             {{vm.dispatchDoc.buildSizeContent}}
                         </div>
                     </td>
@@ -234,7 +236,7 @@
                 <tr>
                     <td style="border-left-width: 0px;">投资匡算及资金来源</td>
                     <td colspan="6" class="text-left">
-                        <div style="width: 100% ; height: 60px; overflow: hidden;">
+                        <div style="width: 100% ; height: 200px; overflow: hidden;">
                             {{vm.dispatchDoc.fundTotalOrigin}}
                         </div>
                     </td>
@@ -243,7 +245,7 @@
                 <tr>
                     <td style="border-left-width: 0px;border-bottom-width: 0px;">下一阶段工作要求</td>
                     <td style="border-bottom-width: 0px;"colspan="6" class="text-left">
-                        <div style="width: 100% ; height:60px; overflow: hidden;font-size: 12px;">
+                        <div style="width: 100% ; height: 200px; overflow: hidden;font-size: 12px;">
                             {{vm.dispatchDoc.nextWorkPlan}}
                         </div>
                     </td>
@@ -251,5 +253,5 @@
             </table>
         </td>
     </tr>
-</table>    <!-- end table &ndash;&gt;
+</table></div>    <!-- end table &ndash;&gt;
 <!--  E 项目建议书-->
