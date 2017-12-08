@@ -36,12 +36,12 @@ public class Constant {
     /**
      * 发文范围默认值
      */
-    public static final String DIS_SCOPE_XSY = "艾传荣副巡视员" ;
+    public static final String DIS_SCOPE_XSY = "艾传荣副巡视员";
 
     /**
      * 发文范围默认值
      */
-    public static final String DIS_SCOPE_ZXLD = "中心领导" ;
+    public static final String DIS_SCOPE_ZXLD = "中心领导";
 
     /**
      * 发文编号前缀
@@ -107,7 +107,7 @@ public class Constant {
      * 项目流程信息状态
      * (1:已发起，2:正在做工作方案，3:已完成工作方案，4:正在做发文 5:已完成发文 6:已完成发文编号 7:正在归档，8:已完成归档，9:已确认归档)
      */
-    public static enum SignProcessState{
+    public static enum SignProcessState {
         IS_START(1),
         DO_WP(2),
         END_WP(3),
@@ -128,6 +128,7 @@ public class Constant {
             return value;
         }
     }
+
     /**
      * 以下是缓存参数
      */
@@ -215,7 +216,7 @@ public class Constant {
         }
 
         public static String getName(String key) {
-            switch (key){
+            switch (key) {
                 case "1":
                     return "随机抽取";
                 case "2":
@@ -223,7 +224,7 @@ public class Constant {
                 case "3":
                     return "境外、市外专家";
                 default:
-                     return "";
+                    return "";
             }
         }
     }
@@ -267,12 +268,7 @@ public class Constant {
         FLOW_INSTANCE_NULL("01"),       //流程实例为空
         FLOW_TASK_NULL("02"),           //任务为空
         FLOW_ACTIVI_NEQ("03"),          //当前环节名称不对
-        FLOW_NOT_MATCH("04"),           //没有匹配
-        //以下主要用于接口对接
-        SUCCESS("01"),                  //成功
-        OBJ_NULL("02"),                 //空对象
-        MAIN_VALUE_NULL("03"),          //关键属性为空
-        SAVE_ERROR("04");               //保存异常
+        FLOW_NOT_MATCH("04");           //没有匹配
 
         private String value;
 
@@ -286,7 +282,7 @@ public class Constant {
     }
 
     /**
-     *  项目业务类型
+     * 项目业务类型
      *
      * @author ldm
      */
@@ -324,40 +320,40 @@ public class Constant {
         UNIT_NOTICE("notice", "项目单位会议通知"),
         THIS_STAGE_MEETING("thisStageMeeing", "本周评审会议安排"),
         NEXT_STAGE_MEETING("nextStageMeeting", "下周评审会议安排"),
-        OUTPUT_SUFFIX_XLS(".xls","xls表格"),//生成xls表格
+        OUTPUT_SUFFIX_XLS(".xls", "xls表格"),//生成xls表格
 
         //可行性研究报告
-        STUDY_OPINION("study/opinion","可行性研究报告_评审意见"),
-        STUDY_ESTIMATE("study/estimate","可行性研究报告_投资估算表"),
-        STUDY_ROSTER("study/roster","可行性研究报告_评审组名单"),
+        STUDY_OPINION("study/opinion", "可行性研究报告_评审意见"),
+        STUDY_ESTIMATE("study/estimate", "可行性研究报告_投资估算表"),
+        STUDY_ROSTER("study/roster", "可行性研究报告_评审组名单"),
 
         //资金申请报告
-        REPORT_OPINION("report/opinion","资金申请报告_评审意见"),
-        REPORT_ESTIMATE("report/estimate","资金申请报告_投资估算表"),
-        REPORT_ROSTER("report/roster","资金申请报告_评审组名单"),
+        REPORT_OPINION("report/opinion", "资金申请报告_评审意见"),
+        REPORT_ESTIMATE("report/estimate", "资金申请报告_投资估算表"),
+        REPORT_ROSTER("report/roster", "资金申请报告_评审组名单"),
 
         //项目建议书
-        SUG_OPINION("sug/opinion","项目建议书_评审意见"),
-        SUG_ESTIMATE("sug/estimate","项目建议书_投资匡算表"),
-        SUG_ROSTER("sug/roster","项目建议书_评审组名单"),
+        SUG_OPINION("sug/opinion", "项目建议书_评审意见"),
+        SUG_ESTIMATE("sug/estimate", "项目建议书_投资匡算表"),
+        SUG_ROSTER("sug/roster", "项目建议书_评审组名单"),
 
         //项目概算
-        BUDGET_OPINION("budget/opinion","项目概算_审核意见"),
-        BUDGET_ESTIMATE("budget/estimate","项目概算_概算汇总表和审核对照表"),
-        BUDGET_PROJECTCOST("budget/projectCost","项目概算_建安工程费用"),
+        BUDGET_OPINION("budget/opinion", "项目概算_审核意见"),
+        BUDGET_ESTIMATE("budget/estimate", "项目概算_概算汇总表和审核对照表"),
+        BUDGET_PROJECTCOST("budget/projectCost", "项目概算_建安工程费用"),
         BUDGET_ROSTER("budget/roster", "项目概算_审核组名单"),
 
         //课题研究
-        SUBJECT_STUDY_NOVICE("subjectStudy/subjectNovice" , "课题研究_会议通知"),
-        SUBJECT_STUDY_SIGNIN("subjectStudy/subjectSignIn","课题研究_签到表"),
-        SUBJECT_STUDY_EXPERTAIGNATURE("subjectStudy/expertSignature" , "课题研究_专家签名"),
-        SUBJECT_STUDY_INVITATION("subjectStudy/subjectInvitation" , "课题研究_邀请函"),
-        SUBJECT_STUDY_MEETINGAM("subjectStudy/subjectMeetingAM" ,"课题研究_会议议程（上午）"),
-        SUBJECT_STUDY_MEETINGPM("subjectStudy/subjectMeetingPM" , "课题研究_会议议程（下午）"),
+        SUBJECT_STUDY_NOVICE("subjectStudy/subjectNovice", "课题研究_会议通知"),
+        SUBJECT_STUDY_SIGNIN("subjectStudy/subjectSignIn", "课题研究_签到表"),
+        SUBJECT_STUDY_EXPERTAIGNATURE("subjectStudy/expertSignature", "课题研究_专家签名"),
+        SUBJECT_STUDY_INVITATION("subjectStudy/subjectInvitation", "课题研究_邀请函"),
+        SUBJECT_STUDY_MEETINGAM("subjectStudy/subjectMeetingAM", "课题研究_会议议程（上午）"),
+        SUBJECT_STUDY_MEETINGPM("subjectStudy/subjectMeetingPM", "课题研究_会议议程（下午）"),
         //月报简报
-        MONTH_REPORT("monthReport/monthReport","月报简报");
+        MONTH_REPORT("monthReport/monthReport", "月报简报");
 
-      private String key;
+        private String key;
         private String value;
 
         Template(String key, String value) {
@@ -410,8 +406,9 @@ public class Constant {
 
     /**
      * 警示灯状态
+     *
      * @author MCL
-     *@date 2017年6月29日 下午12:03:19 
+     * @date 2017年6月29日 下午12:03:19
      */
     public static enum signEnumState {
         NOLIGHT("0"),                   //不显示
@@ -464,8 +461,8 @@ public class Constant {
 
     /**
      * 部门名称
-     * @author sjy
      *
+     * @author sjy
      */
     public static enum OrgName {
         ORGZHB("综合部"),
@@ -488,17 +485,17 @@ public class Constant {
     /**
      * 部门对应的类型
      */
-    public static enum OrgType{
-        ORGZHB("综合部",""),
-        ORGPGYB("评估一部","PX"),
-        ORGPGEB("评估二部","PX"),
-        ORGGSYB("概算一部","GX"),
-        ORGGSEB("概算二部","GX");
+    public static enum OrgType {
+        ORGZHB("综合部", ""),
+        ORGPGYB("评估一部", "PX"),
+        ORGPGEB("评估二部", "PX"),
+        ORGGSYB("概算一部", "GX"),
+        ORGGSEB("概算二部", "GX");
 
         private String key;
         private String value;
 
-        OrgType(String key,String value) {
+        OrgType(String key, String value) {
             this.key = key;
             this.value = value;
         }
@@ -534,93 +531,34 @@ public class Constant {
      * 文件库-文件类型
      */
     public static enum libraryType {
-        FOLDER_TYPE("FOLDER"),//文件夹
+        FOLDER_TYPE("FOLDER"),      //文件夹
+        FILE_TYPE("FILE"),          //文件
+        QUALITY_LIBRARY("QUALITY"), //质量管理文件库
+        POLICY_LIBRARY("POLICY");   //政策标准文件库
 
-        FILE_TYPE("FILE"),//文件
-
-        QUALITY_LIBRARY("QUALITY"),//质量管理文件库
-
-        POLICY_LIBRARY("POLICY");//政策标准文件库
         private String value;
-
         libraryType(String value) {
             this.value = value;
         }
-
         public String getValue() {
             return value;
         }
     }
 
-    /**
-     * 文件夹类型
-     */
-    public static enum folderType{
-
-        FILE_LIBRARY("1"),//文件库
-
-        POLICY_LIBRARY("2");//政策库
-
-        private String value;
-
-        folderType(String value){
-            this.value=value;
-        }
-
-        public String getValue(){
-            return value;
-        }
-
-    }
-
-    /**
-     * 文件类型
-     */
-    public static enum fileNatrue{
-
-        FOLDER_TYPE("1"),//文件夹
-
-        FILE_TYPE("2");//文件
-
-        private String value;
-
-        fileNatrue(String value){
-            this.value=value;
-        }
-
-        public String getValue(){
-            return value;
-        }
-
-    }
-
-    /**
-     * 表头类型
-     */
-    public static enum HeaderType{
-        TYPE_PROJECT("项目类型"),
-        TYPE_TOPIC("课题类型");
-        private String value;
-        HeaderType(String value){
-            this.value = value ;
-        }
-        public String getValue(){
-            return value;
-        }
-    }
 
     /**
      * 菜单类型
      */
     public static enum menu {
-        EXPERT("expert","专家库");
+        EXPERT("expert", "专家库");
         private String key;
         private String value;
 
-        menu(String key,String value) {
+        menu(String key, String value) {
             this.key = key;
             this.value = value;
         }
+
         public static menu getByKey(String key) {
             menu[] enums = menu.values();
             for (int i = 0; i < enums.length; i++) {
@@ -663,22 +601,62 @@ public class Constant {
     /**
      * 评审阶段key值
      */
-    public static enum RevireStageKey{
-        KEY_SUG("STAGE_SUG"),//项目建议书
-        KEY_STUDY("STAGE_STUDY"),//可行性研究报告
-        KEY_BUDGET("STAGE_BUDGET"),//项目概算
-        KEY_REPORT("STAGE_REPORT"),//资金申请报告
-        KEY_HOMELAND("STAGE_HOMELAND"),//设备清单（国产）
-        KEY_IMPORT("STAGE_IMPORT"),//设备清单（进口）
-        KEY_DEVICE("STAGE_DEVICE"),//进口设备
-        KEY_OTHER("STAGE_OTHER");//其它
+    public static enum RevireStageKey {
+        KEY_SUG("STAGE_SUG"),           //项目建议书
+        KEY_STUDY("STAGE_STUDY"),       //可行性研究报告
+        KEY_BUDGET("STAGE_BUDGET"),     //项目概算
+        KEY_REPORT("STAGE_REPORT"),     //资金申请报告
+        KEY_HOMELAND("STAGE_HOMELAND"), //设备清单（国产）
+        KEY_IMPORT("STAGE_IMPORT"),     //设备清单（进口）
+        KEY_DEVICE("STAGE_DEVICE"),     //进口设备
+        KEY_OTHER("STAGE_OTHER");       //其他
 
         private String value;
+
         RevireStageKey(String value) {
             this.value = value;
         }
+
         public String getValue() {
             return value;
+        }
+
+        /**
+         * 根据阶段标识获取中文字符(主要用于接口)
+         * @param value
+         * @return
+         */
+        public static String getZHCNName(String value) {
+            String resultZHName = "";
+            switch (value){
+                case "STAGE_SUG":
+                    resultZHName = STAGE_SUG;
+                    break;
+                case "STAGE_STUDY":
+                    resultZHName = STAGE_STUDY;
+                    break;
+                case "STAGE_BUDGET":
+                    resultZHName = STAGE_BUDGET;
+                    break;
+                case "STAGE_REPORT":
+                    resultZHName = APPLY_REPORT;
+                    break;
+                case "STAGE_HOMELAND":
+                    resultZHName = DEVICE_BILL_HOMELAND;
+                    break;
+                case "STAGE_IMPORT":
+                    resultZHName = DEVICE_BILL_IMPORT;
+                    break;
+                case "STAGE_DEVICE":
+                    resultZHName = IMPORT_DEVICE;
+                    break;
+                case "STAGE_OTHER":
+                    resultZHName = OTHERS;
+                    break;
+                default:
+                    ;
+            }
+            return resultZHName;
         }
 
     }
@@ -688,7 +666,7 @@ public class Constant {
      * 存档编号KEY值
      * 评估类、资金申请报告、其他类：PD，概算类：GD，设备类：SD
      */
-    public static enum FILE_RECORD_KEY{
+    public static enum FILE_RECORD_KEY {
         KT("KT"),                //课题编号
         KD("KD"),                //课题归档编号
         YD("YD"),                //月报简报
@@ -696,9 +674,11 @@ public class Constant {
         GD("GD"),
         SD("SD");
         private String value;
+
         FILE_RECORD_KEY(String value) {
             this.value = value;
         }
+
         public String getValue() {
             return value;
         }

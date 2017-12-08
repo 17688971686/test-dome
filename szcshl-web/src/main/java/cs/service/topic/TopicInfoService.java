@@ -32,4 +32,10 @@ public interface TopicInfoService {
 
     ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
 
+    /**
+     * 处理发改委审核之后的方法
+     * @param resultMsg
+     * @return
+     */
+    ResultMsg dealReturnAudit(ResultMsg resultMsg);
 }

@@ -106,12 +106,6 @@ public interface SignService {
 
     List<SignDispaWork> findAssociateSign(SignDispaWork signDispaWork);
 
-    /***********************   以下是对接接口部分  ****************************/
-    ResultMsg pushProject(SignDto signDto);
-
-
-    List<SignDispaWork> getStastitacalData(ODataObj oDataObj);
-
     void updateSignTemplate(String signId);
 
     /**
@@ -148,4 +142,6 @@ public interface SignService {
      */
     Float getReviewDays(String reviewstage);
 
+    /***********************   以下是对接接口部分  ****************************/
+    ResultMsg pushProject(SignDto signDto);
 }

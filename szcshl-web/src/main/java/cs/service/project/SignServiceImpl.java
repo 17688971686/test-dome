@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cs.common.*;
 import cs.common.utils.*;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.ExpertSelCondition;
@@ -41,13 +42,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
 
-import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.Constant.EnumState;
 import cs.common.Constant.MsgCode;
-import cs.common.FlowConstant;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
 import cs.domain.expert.ExpertReview;
 import cs.domain.external.Dept;
 import cs.model.PageModelDto;
@@ -2032,10 +2029,38 @@ public class SignServiceImpl implements SignService {
     @Override
     public ResultMsg pushProject(SignDto signDto) {
         if (signDto == null) {
-            return new ResultMsg(false, MsgCode.OBJ_NULL.getValue(), "获取对象为空！");
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
         }
         if (!Validate.isString(signDto.getFilecode())) {
-            return new ResultMsg(false, MsgCode.MAIN_VALUE_NULL.getValue(), "收文编号为空！");
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_02.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_02.getValue());
+        }
+        String stageCode = "";
+        if(Validate.isString(signDto.getReviewstage())){
+            stageCode = signDto.getReviewstage();
+            String stageCHName = Constant.RevireStageKey.getZHCNName(stageCode);
+            if(!Validate.isString(stageCHName)){
+                StringBuffer resultMsg = new StringBuffer("各阶段对应的标识如下：");
+                resultMsg.append("("+Constant.RevireStageKey.KEY_SUG.getValue()+":"+Constant.STAGE_SUG);
+                resultMsg.append("|"+Constant.RevireStageKey.KEY_STUDY.getValue()+":"+Constant.STAGE_STUDY);
+                resultMsg.append("|"+Constant.RevireStageKey.KEY_BUDGET.getValue()+":"+Constant.STAGE_BUDGET);
+                resultMsg.append("|"+Constant.RevireStageKey.KEY_REPORT.getValue()+":"+Constant.APPLY_REPORT);
+                resultMsg.append("|"+Constant.RevireStageKey.KEY_HOMELAND.getValue()+":"+Constant.DEVICE_BILL_HOMELAND);
+                resultMsg.append("|"+Constant.RevireStageKey.KEY_IMPORT.getValue()+":"+Constant.DEVICE_BILL_IMPORT);
+                resultMsg.append("|"+Constant.RevireStageKey.KEY_DEVICE.getValue()+":"+Constant.IMPORT_DEVICE);
+                resultMsg.append("|"+Constant.RevireStageKey.KEY_OTHER.getValue()+":"+Constant.OTHERS +")");
+                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue()+resultMsg.toString());
+            }
+            //对应系统的阶段名称
+            signDto.setReviewstage(stageCHName);
+            //是否是项目概算流程
+            if (Constant.RevireStageKey.KEY_BUDGET.getValue().equals(signDto.getReviewstage())
+                    || Validate.isString(signDto.getIschangeEstimate())) {
+                signDto.setIsassistflow(EnumState.YES.getValue());
+            } else {
+                signDto.setIsassistflow(EnumState.NO.getValue());
+            }
+        }else{
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
         }
         //1、根据收文编号获取项目信息
         Sign sign = signRepo.findByFilecode(signDto.getFilecode());
@@ -2044,12 +2069,6 @@ public class SignServiceImpl implements SignService {
             sign = new Sign();
             BeanCopierUtils.copyProperties(signDto, sign);
 
-            //是否是项目概算流程
-            if (Constant.STAGE_BUDGET.equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
-                sign.setIsassistflow(EnumState.YES.getValue());
-            } else {
-                sign.setIsassistflow(EnumState.NO.getValue());
-            }
             sign.setSignid(UUID.randomUUID().toString());
             sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
             sign.setCreatedDate(now);
@@ -2061,63 +2080,31 @@ public class SignServiceImpl implements SignService {
         }
 
         //送来时间
-        if (sign.getReceivedate() == null) {
+        if (Validate.isObject(sign.getReceivedate())) {
             sign.setReceivedate(now);
         }
 
+        //未签收的，改为正式签收
         if (!Validate.isString(sign.getIssign()) || EnumState.NO.getValue().equals(sign.getIssign())) {
             //正式签收
             sign.setIssign(EnumState.YES.getValue());
             sign.setSigndate(now);
 
-            if (Validate.isString(sign.getReviewstage())) {
-                //先查找系统配置对否有评审阶段的评审天数，如有则用系统的，如果没有则用默认值
-                String configKey = "";
-                switch (sign.getReviewstage()) {
-                    case Constant.STAGE_SUG:
-                        configKey = Constant.RevireStageKey.KEY_SUG.getValue();
-                        break;
-                    case Constant.STAGE_STUDY:
-                        configKey = Constant.RevireStageKey.KEY_STUDY.getValue();
-                        break;
-                    case Constant.STAGE_BUDGET:
-                        configKey = Constant.RevireStageKey.KEY_BUDGET.getValue();
-                        break;
-                    case Constant.APPLY_REPORT:
-                        configKey = Constant.RevireStageKey.KEY_REPORT.getValue();
-                        break;
-                    case Constant.OTHERS:
-                        configKey = Constant.RevireStageKey.KEY_OTHER.getValue();
-                        break;
-                    case Constant.DEVICE_BILL_HOMELAND:
-                        configKey = Constant.RevireStageKey.KEY_HOMELAND.getValue();
-                        break;
-                    case Constant.DEVICE_BILL_IMPORT:
-                        configKey = Constant.RevireStageKey.KEY_IMPORT.getValue();
-                        break;
-                    case Constant.IMPORT_DEVICE:
-                        configKey = Constant.RevireStageKey.KEY_DEVICE.getValue();
-                        break;
-                    default:
-                        configKey = "";
-                }
-
-                if (Validate.isString(configKey)) {
-                    SysConfigDto sysConfigDto = sysConfigService.findByKey(configKey);
-                    if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
-                        sign.setReviewdays(Float.parseFloat(sysConfigDto.getConfigValue()));
-                        sign.setSurplusdays(Float.parseFloat(sysConfigDto.getConfigValue()));
-                    } else {
-                        //设定默认值，项目建议书和资金申请报告是12天，其他是15天
-                        if ((Constant.STAGE_SUG).equals(sign.getReviewstage())
-                                || (Constant.APPLY_REPORT).equals(sign.getReviewstage())) {
-                            sign.setSurplusdays(Constant.WORK_DAY_12);  //剩余评审天数
-                            sign.setReviewdays(Constant.WORK_DAY_12);   //评审天数，完成的时候再结算
-                        } else {
-                            sign.setSurplusdays(Constant.WORK_DAY_15);
-                            sign.setReviewdays(Constant.WORK_DAY_15);
-                        }
-                    }
+            SysConfigDto sysConfigDto = sysConfigService.findByKey(stageCode);
+            if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
+                sign.setReviewdays(Float.parseFloat(sysConfigDto.getConfigValue()));
+                sign.setSurplusdays(Float.parseFloat(sysConfigDto.getConfigValue()));
+            } else {
+                //设定默认值，项目建议书和资金申请报告是12天，其他是15天
+                if ((Constant.RevireStageKey.KEY_SUG.getValue()).equals(stageCode)
+                        || (Constant.RevireStageKey.KEY_REPORT.getValue()).equals(stageCode)) {
+                    //剩余评审天数
+                    sign.setSurplusdays(Constant.WORK_DAY_12);
+                    //评审天数，完成的时候再结算
+                    sign.setReviewdays(Constant.WORK_DAY_12);
+                } else {
+                    sign.setSurplusdays(Constant.WORK_DAY_15);
+                    sign.setReviewdays(Constant.WORK_DAY_15);
                 }
             }
         }
@@ -2125,19 +2112,10 @@ public class SignServiceImpl implements SignService {
         //保存
         try {
             signRepo.save(sign);
-            return new ResultMsg(true, MsgCode.SUCCESS.getValue(), "推送成功！");
+            return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
         } catch (Exception e) {
-            return new ResultMsg(false, MsgCode.MAIN_VALUE_NULL.getValue(), "保存异常！", e);
+            return new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue()+e.getMessage());
         }
-
-    }
-
-    @Override
-    public List<SignDispaWork> getStastitacalData(ODataObj oDataObj) {
-        Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
-        criteria = oDataObj.buildFilterToCriteria(criteria);
-        List<SignDispaWork> signDispaWorks = criteria.list();
-        return signDispaWorks;
     }
 
     /**

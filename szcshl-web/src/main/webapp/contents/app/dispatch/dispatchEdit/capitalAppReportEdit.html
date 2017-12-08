@@ -324,9 +324,9 @@
                 <tr>
                     <td>下一阶段工作要求<span class="required">*</span></td>
                     <td colspan="6">
-                                <textarea maxlength="1000" data-val-length-max="1000" ng-change="vm.dispatchDoc.nextWorkPlan=countCharacter(vm.dispatchDoc.nextWorkPlan,1000,'nextWorkPlanCount')" class="form-control input-sm " ng-disabled="vm.isnotEdit"
-                                          rows="3" ng-model="vm.dispatchDoc.nextWorkPlan" id="nextWorkPlan"
-                                          name="nextWorkPlan" data-val="true" data-val-required="必填"/>
+                        <textarea maxlength="1000" data-val-length-max="1000" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                                  ng-change="vm.dispatchDoc.nextWorkPlan=countCharacter(vm.dispatchDoc.nextWorkPlan,1000,'nextWorkPlanCount')"
+                                  rows="3" ng-model="vm.dispatchDoc.nextWorkPlan" id="nextWorkPlan" name="nextWorkPlan" data-val="true" data-val-required="必填"/>
                         <span data-valmsg-for="nextWorkPlan" data-valmsg-replace="true" class="errors"></span>
                         <p id="nextWorkPlanCount" style="text-align: right;"></p>
                     </td>

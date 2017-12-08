@@ -1,9 +1,6 @@
 package cs.service.topic;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
+import cs.common.*;
 import cs.common.utils.*;
 import cs.domain.expert.ExpertReview;
 import cs.domain.flow.FlowPrincipal;
@@ -32,6 +29,7 @@ import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.repository.repositoryImpl.topic.FilingRepo;
 import cs.repository.repositoryImpl.topic.TopicInfoRepo;
 import cs.repository.repositoryImpl.topic.WorkPlanRepo;
+import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -80,6 +78,8 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     private ExpertReviewRepo expertReviewRepo;
     @Autowired
     private RoomBookingRepo roomBookingRepo;
+    @Autowired
+    private FlowService flowService;
 
     @Override
     public PageModelDto<TopicInfoDto> get(ODataObj odataObj) {
@@ -575,6 +575,61 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(),assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    /**
+     * 处理发改委返回的结果
+     * @param resultMsg
+     * @return
+     */
+    @Override
+    public ResultMsg dealReturnAudit(ResultMsg resultMsg) {
+        ResultMsg resultObj = null;
+        try{
+            TopicInfoDto topicInfoDto = (TopicInfoDto) resultMsg.getReObj();
+            if(topicInfoDto == null){
+                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_TOPIC_01.getCode(), IFResultCode.IFMsgCode.SZEC_TOPIC_01.getValue());
+            }
+            if(!Validate.isString(topicInfoDto.getProcessInstanceId())){
+                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_TOPIC_02.getCode(), IFResultCode.IFMsgCode.SZEC_TOPIC_02.getValue());
+            }
+            ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(topicInfoDto.getProcessInstanceId()).singleResult();
+            Task task = null;
+            if (Validate.isString(topicInfoDto.getTaskId())) {
+                task = taskService.createTaskQuery().taskId(topicInfoDto.getTaskId()).active().singleResult();
+            } else {
+                task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+            }
+            if (task == null) {
+                return new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_TOPIC_03.getCode(), IFResultCode.IFMsgCode.SZEC_TOPIC_03.getValue());
+            }
+            //方案通过，进行下一步处理
+            if(resultMsg.isFlag() || "01".equals(resultMsg.getReCode())){
+                FlowDto flowDto = new FlowDto();
+                flowDto.setDealOption(resultMsg.getReMsg());
+                return dealFlow(processInstance, task,flowDto);
+            }else{
+                switch (resultMsg.getReCode()){
+                    case "02":              //方案修改,流程回退
+                        FlowDto flowDto = new FlowDto();
+                        flowDto.setTaskId(task.getId());
+                        flowDto.setDealOption(resultMsg.getReMsg());
+                        resultObj = flowService.rollBackLastNode(flowDto);
+                        break;
+                    case "03":              //方案不通过，直接终止
+                        topicInfoDto.setState(Constant.EnumState.FORCE.getValue());
+                        save(topicInfoDto);
+                        runtimeService.deleteProcessInstance(processInstance.getId(), resultMsg.getReMsg());
+                        resultObj = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+                        break;
+                    default:
+                        ;
+                }
+            }
+            return resultObj;
+        }catch (Exception e){
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getValue());
+        }
     }
 
     /**
