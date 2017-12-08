@@ -33,7 +33,7 @@
              <td width="14%"></td>
              <td width="11%"></td>
          </tr>-->
-        <tr>
+        <tr style="height: 50px;">
             <td rowspan="2" width="16%">发文部门 <br/> 拟稿人</td>
             <td colspan="2" width="20%">{{vm.dispatchDoc.orgName}}</td>
             <td rowspan="2" width="12%">校对人</td>
@@ -41,10 +41,10 @@
             <td rowspan="2" width="15%">拟稿时间</td>
             <td colspan="2" rowspan="2" width="25%">{{vm.dispatchDoc.draftDate}}</td>
         </tr>
-        <tr>
+        <tr style="height: 50px;">
             <td colspan="2" style="text-align: left; padding-left: 10px;">{{vm.dispatchDoc.userName}}</td>
         </tr>
-        <tr>
+        <tr style="height: 50px;">
             <td>秘密等级</td>
             <td colspan="2">{{vm.dispatchDoc.secretLevel}}</td>
             <td>年底计划</td>
@@ -52,7 +52,7 @@
             <td>急缓程度</td>
             <td colspan="2">{{vm.dispatchDoc.urgentLevel}}</td>
         </tr>
-        <tr>
+        <tr style="height: 50px;">
             <td>发文日期</td>
             <td colspan="2">{{vm.dispatchDoc.dispatchDate}}</td>
             <td>文件字号</td>
@@ -65,7 +65,7 @@
                        ng-checked="!vm.dispatchDoc.isRelated || vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'" name="isRelated"/>否
             </td>
         </tr>
-        <tr>
+        <tr style="height: 50px;">
             <td>文件标题</td>
             <td colspan="7" >{{vm.dispatchDoc.fileTitle}}</td>
         </tr>
@@ -78,7 +78,7 @@
             </td>
         </tr>
 
-        <tr>
+        <tr style="height: 50px;">
             <td>是否协审</td>
             <td width="10%">
                 <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0"
@@ -105,8 +105,8 @@
         <tr>
             <td >部长审核意见</td>
             <td colspan="7" >
-                <div class="signName" style="height: 150px;">
-                    <div  style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;">
+                <div class="signName" style="height: 130px;">
+                    <div  style="height: 50%;text-align: left;text-indent: 2em;overflow: hidden;">
                         {{vm.dispatchDoc.ministerSuggesttion}}</div>
                     <p class="nameDate">签名：</p>
                     <p class="nameDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
@@ -116,8 +116,8 @@
         <tr>
             <td>分管副主任意见</td>
             <td colspan="7">
-                <div class="signName" style="height: 150px;">
-                    <div  style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;">
+                <div class="signName" style="height: 130px;">
+                    <div  style="height: 50%;text-align: left;text-indent: 2em;overflow: hidden;">
                         {{vm.dispatchDoc.viceDirectorSuggesttion}}</div>
                     <p class="nameDate">签名：</p>
                     <p class="nameDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
@@ -127,8 +127,8 @@
         <tr>
             <td>主任签发</td>
             <td colspan="7">
-                <div class="signName" style="height: 150px;">
-                    <div  style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;">
+                <div class="signName" style="height: 130px;">
+                    <div  style="height: 50%;text-align: left;text-indent: 2em;overflow: hidden;">
                         {{vm.dispatchDoc.directorSuggesttion}}</div>
                     <p class="nameDate">签名：</p>
                     <p class="nameDate">日期：{{vm.dispatchDoc.directorDate}}</p>

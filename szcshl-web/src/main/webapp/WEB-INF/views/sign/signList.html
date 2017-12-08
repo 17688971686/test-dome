@@ -42,7 +42,7 @@
 
                     <td  class="text-right" style="width:10%;">是否有其他关联</td>
                     <td style="width:15%;">
-                        <input type="checkbox" name="isAssociate"  operator="eq" ng-model="vm.project.isAssociate"  value="9" ng-true-value="9">
+                        <input type="checkbox" name="isRelated"  operator="eq" ng-model="vm.project.isRelated"  value="9" ng-true-value="9">
                     </td>
                 </tr>
                 <tr>
@@ -96,7 +96,7 @@
                     </td>
                     <td  class="text-right">评审方式</td>
                     <td>
-                        <select operator="eq" name="reviewtype"  class="form-control select-sm " ng-model="vm.project.reviewtype">
+                        <select operator="eq" name="reviewType"  class="form-control select-sm " ng-model="vm.project.reviewType">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
                             </option>
@@ -111,18 +111,18 @@
                     </td>
                     <td  class="text-right" style="width:150px;">收文日期</td>
                     <td>
-                        <input type="text" name="signdate" class="form-control input" style="width: 100%"  operator="eq" ng-model="vm.project.signdate"
+                        <input type="text" name="signdate" class="form-control input" style="width: 100%"  operator="ge" ng-model="vm.project.signdate"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
                     </td>
 
                     <td  class="text-right">发文日期</td>
                     <td>
-                        <input type="text" name="dispatchdate" class="form-control input-sm " style="width: 100%" operator="eq" ng-model="vm.project.dispatchdate"
+                        <input type="text" name="dispatchDate" class="form-control input-sm " style="width: 100%" operator="ge" ng-model="vm.project.dispatchDate"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
                     </td>
                     <td  class="text-right">归档日期</td>
                     <td>
-                        <input type="text" name="filedate" class="form-control input-sm " style="width: 100%" operator="eq" ng-model="vm.project.filedate"
+                        <input type="text" name="fileDate" class="form-control input-sm " style="width: 100%" operator="ge" ng-model="vm.project.fileDate"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                 </tr>
