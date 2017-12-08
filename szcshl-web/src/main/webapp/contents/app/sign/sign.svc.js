@@ -777,15 +777,24 @@
 
         //工作方案详细打印
         function workProgramPrint(id){
+            var tempStr1;
+            var tempStr2;
             if(id.indexOf("wpMain")>-1){
+                if(id=='wpMain'){
+                    tempStr1 = "wp1";
+                    tempStr2 = "wp2";
+                }else{
+                    tempStr1 = "wpEdit1";
+                    tempStr2 = "wpEdit2";
+                }
                 var LODOP = getLodop();
                 var strStylePath = rootPath +"/contents/shared/templatePrint.css";
                 var strStyleCSS="<link href="+strStylePath+" type='text/css' rel='stylesheet'>";
-                var strFormHtml1="<head>"+strStyleCSS+"</head><body>"+$("#wp1").html()+"</body>";
+                var strFormHtml1="<head>"+strStyleCSS+"</head><body>"+$("#"+tempStr1).html()+"</body>";
                 LODOP.PRINT_INIT("");
                 LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml1);
                 LODOP.NewPage();
-                var strFormHtml2="<head>"+strStyleCSS+"</head><body>"+$("#wp2").html()+"</body>";
+                var strFormHtml2="<head>"+strStyleCSS+"</head><body>"+$("#"+tempStr2).html()+"</body>";
                 LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml2);
                 LODOP.PREVIEW();
             }else if(id.indexOf("wpAssist") > -1 ){

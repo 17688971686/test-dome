@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
 <!-- start 主项目 -->
-<div ng-repeat="w in vm.model.workProgramDtoList"  ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它')&&(w.branchId == '1' || w.branchId == 1)">
+<div ng-repeat="w in vm.model.workProgramDtoList"  ng-if="(w.workreviveStage=='项目建议书' || w.workreviveStage=='可行性研究报告' || w.workreviveStage=='项目概算' || w.workreviveStage=='其它')&&(w.branchId == '1')">
     <a  data-toggle="collapse" data-target="#wp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [{{w.titleName}}]
     </a>
