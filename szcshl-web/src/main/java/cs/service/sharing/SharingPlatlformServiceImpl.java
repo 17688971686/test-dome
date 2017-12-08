@@ -127,6 +127,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         Criteria criteria = sharingPlatlformRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
         //查询个人接收到的记录信息（全局、部分和个人）
+        criteria.add(Restrictions.eq(SharingPlatlform_.isPublish.getName(),Constant.EnumState.YES.getValue()));
         StringBuilder linkSql = new StringBuilder("(isnopermission = '9' or sharid in ");
         linkSql.append(" ( select sharid from cs_sharing_privilege where (businesstype = '2' and  businessId ='"+SessionUtil.getUserId()+"') ");
         if(Validate.isObject(SessionUtil.getUserInfo().getOrg()) && Validate.isString(SessionUtil.getUserInfo().getOrg().getId())){

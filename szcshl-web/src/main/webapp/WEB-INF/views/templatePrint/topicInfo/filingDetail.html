@@ -3,12 +3,12 @@
 <div class="well well-sm" style="background:white;">
 <table class="print-table"  >
     <caption>QR-4.1-11-A2</caption>
-    <caption class="text-center">
-        <h3><strong>深圳市政府投资项目评审中心<br>课题研究存档表</strong></h3>
+    <caption style="margin-left: 33%;">
+        <h3><strong>深圳市政府投资项目评审中心</strong><br><strong style="margin-left: 10%;">课题研究存档表</strong></h3>
     </caption>
-    <caption class="text-right" style="padding-right:100px;">归档编号：{{vm.model.filingDto.fileNo}}</span></caption>
+    <caption style="margin-left: 75%;">归档编号：{{vm.model.filingDto.fileNo}}</span></caption>
     <tbody>
-    <tr class="tr-hidden">
+<!--    <tr class="tr-hidden">
         <td width="24%"></td>
         <td width="7%"></td>
         <td width="9%"></td>
@@ -17,23 +17,23 @@
         <td width="8%"></td>
         <td width="9%"></td>
         <td width="7%"></td>
-    </tr>
-    <tr>
+    </tr>-->
+    <tr height="40px;">
         <td>课题名称</td>
-        <td colspan="7">{{vm.model.filingDto.topicName}}</td>
+        <td colspan="8">{{vm.model.filingDto.topicName}}</td>
     </tr>
-    <tr>
+    <tr height="40px;">
         <td>合作单位</td>
-        <td colspan="4">{{vm.model.filingDto.cooperator}}</td>
+        <td colspan="5">{{vm.model.filingDto.cooperator}}</td>
         <td colspan="3">课题代码:{{vm.model.filingDto.topicCode}}</td>
     </tr>
-    <tr>
-        <td colspan="8" style="text-align: left;">一、课题前期资料</td>
+    <tr height="40px;" >
+        <td colspan="9" style="text-align: left;">一、课题前期资料</td>
     </tr>
 
 
-    <tr>
-        <td style="border-right: 0;"></td>
+    <tr height="40px;">
+        <td colspan="2" style="border-right: 0;"></td>
         <td style="border-right: 0; border-left: 0px;">原件</td>
         <td style="border-right: 0; border-left: 0px; ">复印件</td>
         <td style="border-left: 0px; border-right: 0;">份数</td>
@@ -43,59 +43,59 @@
         <td style="border-left: 0px;">份数</td>
     </tr>
 
-    <tr>
+    <tr height="40px;">
 
-        <td style="text-align: left; border-right: 0;">课题计划书</td>
+        <td colspan="2" style="text-align: left; border-right: 0;">课题计划书</td>
         <td style="border-right: 0px; border-left: 0px;">
-            <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.planOrig" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.planOrig==9 || vm.model.filingDto.planOrig=='9'"  ng-disabled="true"ng-model="vm.model.filingDto.planOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.planCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.planCopy==9 || vm.model.filingDto.planCopy=='9'"  ng-disabled="true" ng-model="vm.model.filingDto.planCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;" >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.planCount" name="planCount" id="planCount" ng-readonly="true">
+            <input type="text" value="{{ vm.model.filingDto.planCount}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.planCount" name="planCount" id="planCount" ng-readonly="true">
         </td>
         <td  style="text-align: left; border-right: 0;">电子文档</td>
-        <td style="border-right: 0px; border-left: 0px;"">
-        <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.eleDocOrig" ng-true-value="9" ng-false-value="0">
+        <td style="border-right: 0px; border-left: 0px;">
+        <input  type="checkbox" ng-checked="vm.model.filingDto.eleDocOrig==9 || vm.model.filingDto.eleDocOrig=='9'"  ng-disabled="true"ng-model="vm.model.filingDto.eleDocOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.eleDocCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox"  ng-checked="vm.model.filingDto.eleDocCopy==9 || vm.model.filingDto.eleDocCopy=='9'" ng-disabled="true" ng-model="vm.model.filingDto.eleDocCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;">
-            <input  type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.eleDocCount" name="eleDocCount" id="eleDocCount" ng-readonly="true">
+            <input  type="text" value="{{ vm.model.filingDto.eleDocCount}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.eleDocCount" name="eleDocCount" id="eleDocCount" ng-readonly="true">
         </td>
     </tr>
-    <tr>
+    <tr height="40px;">
 
-        <td style="text-align: left; border-right: 0;">课题合作研究合同</td>
+        <td colspan="2" style="text-align: left; border-right: 0;">课题合作研究合同</td>
         <td style="border-right: 0px; border-left: 0px;">
-            <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.contractOrig" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.contractOrig==9 || vm.model.filingDto.contractOrig=='9'"  ng-disabled="true"ng-model="vm.model.filingDto.contractOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px;text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.contractCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.contractCopy==9 || vm.model.filingDto.contractCopy=='9'"  ng-disabled="true" ng-model="vm.model.filingDto.contractCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px; " >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.contract" name="contract" id="contract" ng-readonly="true">
+            <input type="text" value="{{ vm.model.filingDto.contract}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.contract" name="contract" id="contract" ng-readonly="true">
         </td>
         <td  style="text-align: left; border-right: 0;">其它（名称需备注）</td>
-        <td style="border-right: 0px; border-left: 0px;"">
-        <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.otherOrig" ng-true-value="9" ng-false-value="0">
+        <td style="border-right: 0px; border-left: 0px;">
+        <input  type="checkbox" ng-checked="vm.model.filingDto.otherOrig==9 || vm.model.filingDto.otherOrig=='9'"  ng-disabled="true"ng-model="vm.model.filingDto.otherOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.otherCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.otherCopy==9 || vm.model.filingDto.otherCopy=='9'"  ng-disabled="true" ng-model="vm.model.filingDto.otherCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;">
-            <input  type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.otherCount" name="otherCount" id="otherCount" ng-readonly="true">
+            <input  type="text" value="{{ vm.model.filingDto.otherCount}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.otherCount" name="otherCount" id="otherCount" ng-readonly="true">
         </td>
     </tr>
 
-    <tr style="border-bottom: 0;">
-        <td  colspan="8" style="text-align: left;">二、课题结题资料</td>
+    <tr height="40px;" style="border-bottom: 0;">
+        <td  colspan="9" style="text-align: left;">二、课题结题资料</td>
     </tr>
 
-    <tr style="border-top: 0;">
-        <td style="border-right: 0;"></td>
+    <tr height="40px;" style="border-top: 0;">
+        <td colspan="2" style="border-right: 0;"></td>
         <td style="border-right: 0; border-left: 0px;">原件</td>
         <td style="border-right: 0; border-left: 0px;">复印件</td>
         <td style="border-left: 0px; border-right: 0;">份数</td>
@@ -105,127 +105,127 @@
         <td style="border-left: 0px;">份数</td>
     </tr>
 
-    <tr>
+    <tr height="40px;">
 
-        <td style="text-align: left; border-right: 0;">鉴定（论证）会工作方案</td>
+        <td colspan="2" style="text-align: left; border-right: 0;">鉴定（论证）会工作方案</td>
         <td style="border-right: 0px; border-left: 0px;">
-            <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.wplanOrig" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox"  ng-checked="vm.model.filingDto.wplanOrig==9 || vm.model.filingDto.wplanOrig=='9'" ng-disabled="true"ng-model="vm.model.filingDto.wplanOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.wplanCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.wplanCopy==9 || vm.model.filingDto.wplanCopy=='9'"  ng-disabled="true" ng-model="vm.model.filingDto.wplanCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;" >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.wplanCount" name="wplanCount" id="wplanCount" ng-readonly="true">
+            <input type="text" value="{{ vm.model.filingDto.wplanCount}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.wplanCount" name="wplanCount" id="wplanCount" ng-readonly="true">
         </td>
         <td  style="text-align: left; border-right: 0;">研究课题成果文本</td>
-        <td style="border-right: 0px; border-left: 0px;"">
-        <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.studyOrig" ng-true-value="9" ng-false-value="0">
+        <td style="border-right: 0px; border-left: 0px;">
+        <input  type="checkbox" ng-checked="vm.model.filingDto.studyOrig==9 || vm.model.filingDto.studyOrig=='9'"  ng-disabled="true"ng-model="vm.model.filingDto.studyOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.studyCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.studyCopy==9 || vm.model.filingDto.studyCopy=='9'"  ng-disabled="true" ng-model="vm.model.filingDto.studyCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;">
-            <input  type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.studyCount" name="studyCount" id="studyCount" ng-readonly="true">
+            <input  type="text" value="{{ vm.model.filingDto.studyCount}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.studyCount" name="studyCount" id="studyCount" ng-readonly="true">
         </td>
     </tr>
-    <tr>
+    <tr height="40px;">
 
-        <td style="text-align: left; border-right: 0;">课题研究成果鉴定（论证）意见</td>
+        <td colspan="2" style="text-align: left; border-right: 0;">课题研究成果鉴定（论证）意见</td>
         <td style="border-right: 0px; border-left: 0px;">
-            <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.studyIdeaOrig" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.studyIdeaOrig==9 || vm.model.filingDto.studyIdeaOrig=='9'"  ng-disabled="true"ng-model="vm.model.filingDto.studyIdeaOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.studyIdeaCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.studyIdeaCopy==9 || vm.model.filingDto.studyIdeaCopy=='9'"  ng-disabled="true" ng-model="vm.model.filingDto.studyIdeaCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;" >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.studyIdeaCount" name="studyIdeaCount" id="studyIdeaCount" ng-readonly="true">
+            <input type="text" value="{{ vm.model.filingDto.studyIdeaCount}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.studyIdeaCount" name="studyIdeaCount" id="studyIdeaCount" ng-readonly="true">
         </td>
         <td  style="text-align: left; border-right: 0;">研究课题电子文档</td>
-        <td style="border-right: 0px; border-left: 0px;"">
-        <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.studyEleOrig" ng-true-value="9" ng-false-value="0">
+        <td style="border-right: 0px; border-left: 0px;">
+        <input  type="checkbox" ng-checked="vm.model.filingDto.studyEleOrig==9 || vm.model.filingDto.studyEleOrig=='9'"  ng-disabled="true"ng-model="vm.model.filingDto.studyEleOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.studyEleCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.studyEleCopy==9 || vm.model.filingDto.studyEleCopy=='9'"  ng-disabled="true" ng-model="vm.model.filingDto.studyEleCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;">
-            <input  type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.studyEleCount" name="studyEleCount" id="studyEleCount" ng-readonly="true">
+            <input  type="text" value="{{ vm.model.filingDto.studyEleCount}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.studyEleCount" name="studyEleCount" id="studyEleCount" ng-readonly="true">
         </td>
     </tr>
-    <tr>
+    <tr height="40px;">
 
-        <td style="text-align: left; border-right: 0;">会议签到表</td>
+        <td colspan="2" style="text-align: left; border-right: 0;">会议签到表</td>
         <td style="border-right: 0px; border-left: 0px;">
-            <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.signinOrig" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.signinOrig==9 || vm.model.filingDto.signinOrig=='9'"  ng-disabled="true"ng-model="vm.model.filingDto.signinOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.signinCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.signinCopy==9 || vm.model.filingDto.signinCopy=='9'"  ng-disabled="true" ng-model="vm.model.filingDto.signinCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;" >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.signinCount" name="signinCount" id="signinCount" ng-readonly="true">
+            <input type="text" value="{{ vm.model.filingDto.signinCount}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.signinCount" name="signinCount" id="signinCount" ng-readonly="true">
         </td>
         <td  style="text-align: left; border-right: 0;">课题完成报告</td>
-        <td style="border-right: 0px; border-left: 0px;"">
-        <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.reportOrig" ng-true-value="9" ng-false-value="0">
+        <td style="border-right: 0px; border-left: 0px;">
+        <input  type="checkbox" ng-checked="vm.model.filingDto.reportOrig==9 || vm.model.filingDto.reportOrig=='9'"  ng-disabled="true"ng-model="vm.model.filingDto.reportOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.reportCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.reportCopy==9 || vm.model.filingDto.reportCopy=='9'"  ng-disabled="true" ng-model="vm.model.filingDto.reportCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;">
-            <input  type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.reportCount" name="reportCount" id="reportCount" ng-readonly="true">
+            <input  type="text" value="{{ vm.model.filingDto.reportCount}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.reportCount" name="reportCount" id="reportCount" ng-readonly="true">
         </td>
     </tr>
-    <tr>
+    <tr height="40px;">
 
-        <td style="text-align: left; border-right: 0;">其它（名称需备注)</td>
+        <td colspan="2" style="text-align: left; border-right: 0;">其它（名称需备注)</td>
         <td style="border-right: 0px; border-left: 0px;">
-            <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.sOtherOrig" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.sOtherOrig==9 || vm.model.filingDto.sOtherOrig=='9'"  ng-disabled="true"ng-model="vm.model.filingDto.sOtherOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.sOtherCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.sOtherCopy==9 || vm.model.filingDto.sOtherCopy=='9'" ng-disabled="true" ng-model="vm.model.filingDto.sOtherCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;" >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.sOtherCount" name="sOtherCount" id="sOtherCount" ng-readonly="true">
+            <input type="text" value="{{ vm.model.filingDto.sOtherCount}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.sOtherCount" name="sOtherCount" id="sOtherCount" ng-readonly="true">
         </td>
         <td  style="text-align: left; border-right: 0;">专家费发放表</td>
-        <td style="border-right: 0px; border-left: 0px;"">
-        <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.epCostOrig" ng-true-value="9" ng-false-value="0">
+        <td style="border-right: 0px; border-left: 0px;">
+        <input  type="checkbox" ng-checked="vm.model.filingDto.epCostOrig==9 || vm.model.filingDto.epCostOrig=='9'"  ng-disabled="true"ng-model="vm.model.filingDto.epCostOrig" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.epCostCopy" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox" ng-checked="vm.model.filingDto.epCostCopy==9 || vm.model.filingDto.epCostCopy=='9'"  ng-disabled="true" ng-model="vm.model.filingDto.epCostCopy" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;">
-            <input  type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.epCostCount" name="epCostCount" id="epCostCount" ng-readonly="true">
+            <input  type="text" value="{{ vm.model.filingDto.epCostCount}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.epCostCount" name="epCostCount" id="epCostCount" ng-readonly="true">
         </td>
     </tr>
 
 
-    <tr >
-        <td colspan="8" style="text-align: left;">三、其它资料</td>
+    <tr height="40px;" >
+        <td colspan="9" style="text-align: left;">三、其它资料</td>
     </tr>
 
-    <tr style="border-top: 0;">
-        <td colspan="5"></td>
+    <tr height="40px;" style="border-top: 0;">
+        <td colspan="6" style="border-right: 0px;"></td>
         <td style="border-right: 0; border-left: 0px;">原件</td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">复印件</td>
         <td style="border-left: 0px;">份数</td>
     </tr>
 
-    <tr ng-if="vm.model.filingDto.registerFileDto.length>0" ng-repeat="f in vm.model.filingDto.registerFileDto">
+    <tr height="40px;" ng-if="vm.model.filingDto.registerFileDto.length>0" ng-repeat="f in vm.model.filingDto.registerFileDto">
 
-        <td colspan="5" style="text-align: left; ">{{vm.model.filingDto.registerFileDto[$index].fileName}}</td>
+        <td colspan="6" style="text-align: left; ">{{vm.model.filingDto.registerFileDto[$index].fileName}}</td>
         <td style="border-right: 0px; ">
-            <input  type="checkbox"  ng-disabled="true"ng-model="vm.model.filingDto.registerFileDto[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox"  ng-checked="vm.model.filingDto.registerFileDto[$index].isHasOriginfile==9 || vm.model.filingDto.registerFileDto[$index].isHasOriginfile=='9'" ng-disabled="true"ng-model="vm.model.filingDto.registerFileDto[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-right: 0; border-left: 0px; text-align: center;">
-            <input  type="checkbox"  ng-disabled="true" ng-model="vm.model.filingDto.registerFileDto[$index].isHasCopyfile" ng-true-value="9" ng-false-value="0">
+            <input  type="checkbox"  ng-checked="vm.model.filingDto.registerFileDto[$index].isHasCopyfile==9 || vm.model.filingDto.registerFileDto[$index].isHasCopyfile=='9'"   ng-disabled="true" ng-model="vm.model.filingDto.registerFileDto[$index].isHasCopyfile" ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;" >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.registerFileDto[$index].totalNum" name="expertCount" id="expertCount" ng-readonly="true">
+            <input type="text" value="{{ vm.model.filingDto.registerFileDto[$index].totalNum}}" class="num" data-val="true" data-val-digits="只能输入数字" ng-model="vm.model.filingDto.registerFileDto[$index].totalNum" name="expertCount" id="expertCount" ng-readonly="true">
         </td>
     </tr>
 
-    <tr ng-if="vm.model.filingDto.registerFileDto.length==0 ||vm.model.filingDto.registerFileDto.length==undefined">
-        <td colspan="5" style="text-align: left; border-right: 0;">1、</td>
+    <tr height="40px;" ng-if="vm.model.filingDto.registerFileDto.length==0 ||vm.model.filingDto.registerFileDto.length==undefined">
+        <td colspan="6" style="text-align: left; border-right: 0;">1、</td>
         <td style="border-right: 0px;">
             <input  type="checkbox"  ng-disabled="true" ng-true-value="9" ng-false-value="0">
         </td>
@@ -233,11 +233,11 @@
             <input  type="checkbox"  ng-disabled="true"  ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;" >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字"  name="expertCount" id="expertCount" ng-readonly="true">
+            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字"  name="expertCount" ng-readonly="true">
         </td>
     </tr>
-    <tr ng-if="vm.model.filingDto.registerFileDto.length==0 ||vm.model.filingDto.registerFileDto.length==undefined">
-        <td colspan="5" style="text-align: left; border-right: 0;">2、</td>
+    <tr height="40px;" ng-if="vm.model.filingDto.registerFileDto.length==0 ||vm.model.filingDto.registerFileDto.length==undefined">
+        <td colspan="6" style="text-align: left; border-right: 0;">2、</td>
         <td style="border-right: 0px; ">
             <input  type="checkbox"  ng-disabled="true" ng-true-value="9" ng-false-value="0">
         </td>
@@ -245,11 +245,11 @@
             <input  type="checkbox"  ng-disabled="true"  ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;" >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字"  name="expertCount" id="expertCount" ng-readonly="true">
+            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字"  name="expertCount"  ng-readonly="true">
         </td>
     </tr>
-    <tr ng-if="vm.model.filingDto.registerFileDto.length==0 ||vm.model.filingDto.registerFileDto.length==undefined">
-        <td colspan="5" style="text-align: left; border-right: 0;">3、</td>
+    <tr height="40px;" ng-if="vm.model.filingDto.registerFileDto.length==0 ||vm.model.filingDto.registerFileDto.length==undefined">
+        <td colspan="6" style="text-align: left; border-right: 0;">3、</td>
         <td style="border-right: 0px; ">
             <input  type="checkbox"  ng-disabled="true" ng-true-value="9" ng-false-value="0">
         </td>
@@ -257,11 +257,11 @@
             <input  type="checkbox"  ng-disabled="true"  ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;" >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字"  name="expertCount" id="expertCount" ng-readonly="true">
+            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字"  name="expertCount"  ng-readonly="true">
         </td>
     </tr>
-    <tr ng-if="vm.model.filingDto.registerFileDto.length==0 ||vm.model.filingDto.registerFileDto.length==undefined">
-        <td colspan="5" style="text-align: left; border-right: 0;">4、</td>
+    <tr height="40px;" ng-if="vm.model.filingDto.registerFileDto.length==0 ||vm.model.filingDto.registerFileDto.length==undefined">
+        <td colspan="6" style="text-align: left; border-right: 0;">4、</td>
         <td style="border-right: 0px; ">
             <input  type="checkbox"  ng-disabled="true" ng-true-value="9" ng-false-value="0">
         </td>
@@ -269,11 +269,11 @@
             <input  type="checkbox"  ng-disabled="true"  ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;" >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字"  name="expertCount" id="expertCount" ng-readonly="true">
+            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字"  name="expertCount" ng-readonly="true">
         </td>
     </tr>
-    <tr ng-if="vm.model.filingDto.registerFileDto.length==0||vm.model.filingDto.registerFileDto.length==undefined">
-        <td colspan="5" style="text-align: left; border-right: 0;">5、</td>
+    <tr height="40px;" ng-if="vm.model.filingDto.registerFileDto.length==0||vm.model.filingDto.registerFileDto.length==undefined">
+        <td colspan="6" style="text-align: left; border-right: 0;">5、</td>
         <td style="border-right: 0px; ">
             <input  type="checkbox"  ng-disabled="true" ng-true-value="9" ng-false-value="0">
         </td>
@@ -281,20 +281,20 @@
             <input  type="checkbox"  ng-disabled="true"  ng-true-value="9" ng-false-value="0">
         </td>
         <td style="border-left: 0px;" >
-            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字"  name="expertCount" id="expertCount" ng-readonly="true">
+            <input type="text" class="num" data-val="true" data-val-digits="只能输入数字"  name="expertCount"  ng-readonly="true">
         </td>
     </tr>
 
 
 
-    <tr>
-        <td  style="border-right: 0px; text-align: left;">项目负责人（签名）：</td>
+    <tr height="40px;">
+        <td colspan="2"  style="border-right: 0px; text-align: left;">项目负责人（签名）：</td>
         <td style="border-right: 0; border-left: 0px;" colspan="3"></td>
         <td style="border-right: 0; border-left: 0px; text-align: right;" >负责部门部长审核： </td>
         <td  style="border-left: 0; " colspan="3">{{vm.model.filingDto.director}}</td>
     </tr>
-    <tr>
-        <td  style="border-right: 0px; text-align: left;" >档案员签收：</td>
+    <tr height="40px;">
+        <td colspan="2"  style="border-right: 0px; text-align: left;" >档案员签收：</td>
         <td style="border-right: 0; border-left: 0px;" style="border-right: 0; border-left: 0px;" colspan="3" ></td>
         <td  style="border-left: 0;text-align: right; " >归档日期：   </td>
         <td colspan="3" ></td>

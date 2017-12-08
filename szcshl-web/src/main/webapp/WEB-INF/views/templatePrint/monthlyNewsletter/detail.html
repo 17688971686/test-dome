@@ -15,7 +15,7 @@
         </div>
     </div>
     <!-- s table -->
-    <table class="print-table style="color:red;"">
+    <table class="print-table ">
     <tbody>
     <tr style="height: 80px;" >
         <td style="width:150px;height:50px;" class="text-center">拟稿部门<br>拟稿人</td>
@@ -55,10 +55,10 @@
             <div style="min-height: 50px;">
                 {{vm.suppletter.dispaRange}}
             </div>
-            <span ng-show="vm.suppletter.printnum" style="float: right;">
+            <span ng-if="vm.suppletter.printnum!=undefined" style="float: right;">
                     (印{{vm.suppletter.printnum}}份)
                 </span>
-            <span ng-hide="vm.suppletter.printnum" style="float: right;">
+            <span ng-if="vm.suppletter.printnum==undefined" style="float: right;">
                     (印&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp份)
              </span>
         </td>

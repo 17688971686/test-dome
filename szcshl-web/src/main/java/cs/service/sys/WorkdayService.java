@@ -1,7 +1,9 @@
 package cs.service.sys;
 
+import java.util.Date;
 import java.util.List;
 
+import cs.common.ResultMsg;
 import cs.domain.sys.Workday;
 import cs.model.PageModelDto;
 import cs.model.sys.WorkdayDto;
@@ -10,8 +12,15 @@ import cs.repository.odata.ODataObj;
 public interface WorkdayService {
 	
 	PageModelDto<WorkdayDto> getWorkday(ODataObj odataObj);
-	
-	void createWorkday(WorkdayDto workdayDto);
+
+	ResultMsg createWorkday(WorkdayDto workdayDto);
+
+	/**
+	 * 判断工作日期是否有重复
+	 * @param dates
+	 * @return
+	 */
+	Boolean isRepeat(Date dates);
 	
 	WorkdayDto getWorkdayById(String id);
 	

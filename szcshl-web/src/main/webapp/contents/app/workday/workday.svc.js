@@ -3,9 +3,9 @@
 	
 	angular.module('app').factory('workdaySvc', workday);
 	
-	workday.$inject = ['$http','$state'];
+	workday.$inject = ['$http','$state','bsWin'];
 
-	function workday($http,$state) {
+	function workday($http,$state,bsWin) {
 		
 		var url_workday=rootPath+'/workday';
 		var url_back="#/workday"
@@ -66,22 +66,22 @@
 				data : vm.workday
 			}
 			var httpSuccess=function success(response){
-				 common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                    $('.modal-backdrop').remove();
-                                    location.href = url_back;
-                                }
-                            })
-                        }
+				console.log(response);
+				if(response.data.flag){
+                    bsWin.alert("保存成功！", function(){
+                        vm.gridOptions.dataSource.read();
+                        window.parent.$("#workDay").data("kendoWindow").close();
+                        vm.workday="";
                     });
+				}else{
+                    bsWin.alert(response.data.reMsg+"已存在，不能重复添加！", function(){
+                        vm.gridOptions.dataSource.read();
+                        window.parent.$("#workDay").data("kendoWindow").close();
+                        vm.workday="";
+                    });
+				}
+
+
 			}
 			 common.http({
                     vm: vm,
@@ -175,6 +175,7 @@
 					field:"dates",
 					dir:"desc"
 				}
+
 				
 			});//end dataSource
 			
@@ -259,10 +260,12 @@
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
                 pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 dataBound:dataBound,
-                resizable: true
+                resizable: true,
             };
+
 		
 		}//end grid
 		}

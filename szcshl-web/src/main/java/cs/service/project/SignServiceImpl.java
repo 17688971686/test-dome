@@ -1362,6 +1362,7 @@ public class SignServiceImpl implements SignService {
             case FlowConstant.FLOW_SIGN_QRGD:
                 businessId = flowDto.getBusinessMap().get("GD_ID").toString();
                 fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName(), businessId);
+                sign = signRepo.findById(Sign_.signid.getName(), signid);
                 fileRecord.setFileDate(new Date());
                 fileRecord.setSignUserid(SessionUtil.getUserId());
                 fileRecord.setSignUserName(SessionUtil.getDisplayName());
@@ -1387,7 +1388,6 @@ public class SignServiceImpl implements SignService {
 
 
                 //更改项目状态
-                sign = signRepo.findById(Sign_.signid.getName(), signid);
                 sign.setSignState(EnumState.YES.getValue());
                 sign.setProcessState(Constant.SignProcessState.FINISH.getValue());
                 signRepo.save(sign);
