@@ -103,11 +103,14 @@
     <tr>
         <td class="text-center" style="vertical-align: middle;">发行范围<span class="required">*</span></td>
         <td colspan="5">
-                    <textarea maxlength="512" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
-                              ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
-                              data-val="true" data-val-required="必填"/>
-            <span style="float: right;">(印<input type="text" name="printCount" ng-model="vm.dispatchDoc.printCount"
-                                                 style="width: 50px">份)</span>
+                    <textarea  maxlength="250"  data-val-length-max="250" ng-change="vm.dispatchDoc.dispatchScope=countCharacter(vm.dispatchDoc.dispatchDoc,250,'dispatchScopeCount')"    class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
+                               ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
+                               data-val="true" data-val-required="必填"></textarea>
+            <span style="float: right;">
+                        (印<input type="text" name="printCount" ng-model="vm.dispatchDoc.printCount" style="width: 50px">份)
+                    </span>
+            <span data-valmsg-for="dispatchScope" data-valmsg-replace="true" class="errors"></span>
+            <p id="dispatchScopeCount" style="text-align: right;"></p>
         </td>
     </tr>
 
@@ -115,57 +118,71 @@
     <tr>
         <td class="text-center" style="vertical-align: middle;">相关说明</td>
         <td colspan="5">
-                    <textarea maxlength="2000" class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
+                    <textarea maxlength="1000"  data-val-length-max="1000" ng-change="vm.dispatchDoc.description=countCharacter(vm.dispatchDoc.description,1000,'descriptionCount')"   class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
                               ng-model="vm.dispatchDoc.description" id="description" name="description"/>
+            <span data-valmsg-for="description" data-valmsg-replace="true" class="errors"></span>
+            <p id="descriptionCount" style="text-align: right;"></p>
         </td>
     </tr>
 
     <tr>
         <td class="text-center" style="vertical-align: middle;">项目负责人<br>拟稿意见</td>
         <td colspan="3">
-                    <textarea maxlength="2000" class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.mianChargeSuggest" id="mianChargeSuggest"
-                              name="mianChargeSuggest" placeholder="第一负责人" ng-disabled="true"/>
+                    <textarea  maxlength="1000"  data-val-length-max="1000" ng-change="vm.dispatchDoc.mianChargeSuggest=countCharacter(vm.dispatchDoc.mianChargeSuggest,1000,'mianChargeSuggestCount')"  class="form-control input-sm " rows="5"
+                               ng-model="vm.dispatchDoc.mianChargeSuggest" id="mianChargeSuggest"
+                               name="mianChargeSuggest" placeholder="第一负责人" ng-disabled="true"/>
+            <span data-valmsg-for="mianChargeSuggest" data-valmsg-replace="true" class="errors"></span>
+            <p id="mianChargeSuggestCount" style="text-align: right;"></p>
         </td>
         <td colspan="2">
-                    <textarea maxlength="2000" class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.secondChargeSuggest" id="secondChargeSuggest"
-                              name="secondChargeSuggest" placeholder="第二负责人" ng-disabled="true"/>
+                    <textarea  maxlength="1000"  data-val-length-max="1000" ng-change="vm.dispatchDoc.secondChargeSuggest=countCharacter(vm.dispatchDoc.secondChargeSuggest,1000,'secondChargeSuggestCount')"  class="form-control input-sm " rows="5"
+                               ng-model="vm.dispatchDoc.secondChargeSuggest" id="secondChargeSuggest"
+                               name="secondChargeSuggest" placeholder="第二负责人" ng-disabled="true"/>
+            <span data-valmsg-for="secondChargeSuggest" data-valmsg-replace="true" class="errors"></span>
+            <p id="secondChargeSuggestCount" style="text-align: right;"></p>
         </td>
     </tr>
 
     <tr>
         <td class="text-center" style="vertical-align: middle;">评审意见摘要</td>
         <td colspan="5">
-                    <textarea maxlength="2000" class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
+                    <textarea  maxlength="1000"  data-val-length-max="1000" ng-change="vm.dispatchDoc.reviewAbstract=countCharacter(vm.dispatchDoc.reviewAbstract,1000,'reviewAbstractCount')" class="form-control input-sm " rows="5"
+                               ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
+            <span data-valmsg-for="reviewAbstract" data-valmsg-replace="true" class="errors"></span>
+            <p id="reviewAbstractCount" style="text-align: right;"></p>
         </td>
     </tr>
 
     <tr>
         <td class="text-center" style="vertical-align: middle;">部长审核意见</td>
         <td colspan="5">
-                    <textarea maxlength="2000" class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion"
-                              name="ministerSuggesttion" ng-disabled="true"/>
+                    <textarea  maxlength="1000"  data-val-length-max="1000" ng-change="vm.dispatchDoc.ministerSuggesttion=countCharacter(vm.dispatchDoc.ministerSuggesttion,1000,'ministerSuggesttionCount')"   class="form-control input-sm " rows="5"
+                               ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion"
+                               name="ministerSuggesttion" ng-disabled="true"/>
+            <span data-valmsg-for="ministerSuggesttion" data-valmsg-replace="true" class="errors"></span>
+            <p id="ministerSuggesttionCount" style="text-align: right;"></p>
         </td>
     </tr>
 
     <tr>
         <td class="text-center" style="vertical-align: middle;">分管副主任意见</td>
         <td colspan="5">
-                    <textarea maxlength="2000" class="form-control input-sm " rows="5"
+                    <textarea maxlength="1000" data-val-length-max="1000" ng-change="vm.dispatchDoc.viceDirectorSuggesttion=countCharacter(vm.dispatchDoc.viceDirectorSuggesttion,1000,'viceDirectorSuggesttionCount')" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.viceDirectorSuggesttion" id="viceDirectorSuggesttion"
                               name="viceDirectorSuggesttion" ng-disabled="true"/>
+            <span data-valmsg-for="viceDirectorSuggesttion" data-valmsg-replace="true" class="errors"></span>
+            <p id="viceDirectorSuggesttionCount" style="text-align: right;"></p>
         </td>
     </tr>
 
     <tr>
         <td class="text-center" style="vertical-align: middle;">主任签发</td>
         <td colspan="5">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                    <textarea maxlength="1000" data-val-length-max="1000" ng-change="vm.dispatchDoc.directorIssue=countCharacter(vm.dispatchDoc.directorIssue,1000,'directorIssueCount')" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"
                               ng-disabled="true"/>
+            <span data-valmsg-for="directorIssue" data-valmsg-replace="true" class="errors"></span>
+            <p id="directorIssueCount" style="text-align: right;"></p>
         </td>
     </tr>
     </tbody>

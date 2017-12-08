@@ -203,6 +203,10 @@ public class DispatchDoc extends DomainBase {
     @Column(columnDefinition = "VARCHAR(2)")
     private String isMainProject;
 
+    //主任签发
+    @Column(columnDefinition = "VARCHAR(2000)")
+    private String directorIssue;
+
 
     public String getMianChargeSuggest() {
         return mianChargeSuggest;
@@ -571,6 +575,13 @@ public class DispatchDoc extends DomainBase {
 	public void setDispatchStage(String dispatchStage) {
 		this.dispatchStage = dispatchStage;
 	}
-    
+
+    public String getDirectorIssue() {
+        return directorIssue;
+    }
+
+    public void setDirectorIssue(String directorIssue) {
+        this.directorIssue = directorIssue;
+    }
 }
 
