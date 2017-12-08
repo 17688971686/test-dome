@@ -2053,7 +2053,7 @@ public class SignServiceImpl implements SignService {
             //对应系统的阶段名称
             signDto.setReviewstage(stageCHName);
             //是否是项目概算流程
-            if (Constant.RevireStageKey.KEY_BUDGET.getValue().equals(signDto.getReviewstage())
+            if (Constant.RevireStageKey.KEY_BUDGET.getValue().equals(stageCode)
                     || Validate.isString(signDto.getIschangeEstimate())) {
                 signDto.setIsassistflow(EnumState.YES.getValue());
             } else {
