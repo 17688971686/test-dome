@@ -970,13 +970,10 @@
             })
         }
 
-        //签收模板打印
+        //工作方案模板打印
         vm.printpage = function ($event) {
-          var id =  $($event.target).parent().attr("id");
-            console.log(id);
-            console.log("longyuyue");
-
-            //templatePrintSvc.templatePrint($event.target,vm.model);
+            var id =  $($event.target).attr("id");
+            signSvc.workProgramPrint(id);
         }
 
         /**
