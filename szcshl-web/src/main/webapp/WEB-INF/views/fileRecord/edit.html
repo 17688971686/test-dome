@@ -25,7 +25,10 @@
            <div id="fileProjcetIdeaEdit_xmjys_templ"  style="display: none;"> <#include "/templatePrint/filerecord/fileProjectDetailXmjysl.html"/></div>
        </div>
 
-	   <div id="filecapitalAppReportEdit_zjsq" ng-if="vm.fileRecord.fileReviewstage=='资金申请报告'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/filecapitalAppReportEdit.html'"></div>
+	   <div  ng-if="vm.fileRecord.fileReviewstage=='资金申请报告'" >
+           <div id="filecapitalAppReportEdit_zjsq" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/filecapitalAppReportEdit.html'"></div>
+           <div id="filecapitalAppReportEdit_zjsq_templ" style="display: none;"> <#include "/templatePrint/filerecord/capitalAppReportZjsq.html"/></div>
+       </div>
 
         <div  ng-if="!vm.isassistproc && vm.fileRecord.fileReviewstage=='项目概算'" >
             <div id="fileProjcetEdit_xmgs" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetEdit.html'"></div>
@@ -36,17 +39,20 @@
            <div id="fileProjcetEdit_xmgs_xs" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetEditXS.html'" ></div>
            <div id="fileProjcetEdit_xmgs_xs_templ"  style="display: none;"> <#include "/templatePrint/filerecord/fileProjectDetailXmgs.html"/></div>
        </div>
-	   <div id="fileForeignEdit_jksb" ng-if="vm.fileRecord.fileReviewstage=='进口设备'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileForeignEdit.html'"></div>
-	   <div id="fileRecordEdit_sbqd" ng-if="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>
+	   <div  ng-if="vm.fileRecord.fileReviewstage=='进口设备'" >
+           <div id="fileForeignEdit_jksb" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileForeignEdit.html'"></div>
+           <div id="fileForeignEdit_jksb_templ"  style="display: none;"> <#include "/templatePrint/filerecord/fileRecordForeignJksb.html"/></div>
+       </div>
+	   <div  ng-if="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'" >
+           <div id="fileRecordEdit_sbqd" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>
+           <div id="fileRecordEdit_sbqd_templ"  style="display: none;"> <#include "/templatePrint/filerecord/fileProjectDetailSbqd.html"/></div>
+       </div>
 	  <!--  <div ng-show="vm.fileRecord.fileReviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>  -->
     </form> <!--  end form -->
 	<!--E 编辑页面/项目概算/进口设备/设备清单（进口）/设备清单（国产） -->
 
 	<!--S 归档打印模板  引入-->
 
-    <div id="filecapitalAppReportEdit_zjsq_templ" ng-if="vm.fileRecord.fileReviewstage=='资金申请报告'" style="display: none;"> <#include "/templatePrint/filerecord/capitalAppReportZjsq.html"/></div>
-    <div id="fileForeignEdit_jksb_templ" ng-if="vm.fileRecord.fileReviewstage=='进口设备'" style="display: none;"> <#include "/templatePrint/filerecord/fileRecordForeignJksb.html"/></div>
-    <div id="fileRecordEdit_sbqd_templ" ng-if="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'" style="display: none;"> <#include "/templatePrint/filerecord/fileProjectDetailSbqd.html"/></div>
     <!--E 归档打印模板  引入-->
 
 </div>

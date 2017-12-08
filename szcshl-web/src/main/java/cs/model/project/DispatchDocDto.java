@@ -93,7 +93,7 @@ public class DispatchDocDto extends BaseDto {
 
     //局长核稿日期
     @JSONField(format = "yyyy-MM-dd")
-    private String directorDate;
+    private Date directorDate;
 
     private String directorName;//局长名称
 
@@ -479,11 +479,11 @@ public class DispatchDocDto extends BaseDto {
         this.directorSuggesttion = directorSuggesttion;
     }
 
-    public String getDirectorDate() {
+    public Date getDirectorDate() {
         return directorDate;
     }
 
-    public void setDirectorDate(String directorDate) {
+    public void setDirectorDate(Date directorDate) {
         this.directorDate = directorDate;
     }
 

@@ -3,9 +3,9 @@
 
     angular.module('app').controller('fileRecordEditCtrl', fileRecord);
 
-    fileRecord.$inject = ['fileRecordSvc','$state','sysfileSvc', 'bsWin','$scope'];
+    fileRecord.$inject = ['fileRecordSvc','$state','sysfileSvc', 'bsWin','$scope' , 'templatePrintSvc'];
 
-    function fileRecord(fileRecordSvc,$state,sysfileSvc,bsWin,$scope) {
+    function fileRecord(fileRecordSvc,$state,sysfileSvc,bsWin,$scope , templatePrintSvc) {
         var vm = this;
         vm.title = '项目归档编辑';
 
@@ -46,6 +46,13 @@
 
         vm.create = function(){
             fileRecordSvc.saveFileRecord(vm);
+        }
+
+        /**
+         * 打印功能 -分页
+         */
+        vm.templatePage = function(id){
+            templatePrintSvc.templatePage(id);
         }
 
 

@@ -420,7 +420,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = p.signid  ");
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
-        sqlBuilder.append("and s.processstate = 6  ");//已发文
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
 
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
@@ -489,7 +489,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid   ");
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
-        sqlBuilder.append("and s.processstate = 6  ");//已发文
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
@@ -598,7 +598,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
        sqlBuilder.append("on s.signid = d.signid ");
        sqlBuilder.append("where 1 = 1 ");
        sqlBuilder.append("and s.signstate = '1'  ");
-       sqlBuilder.append("and s.processstate = 6  ");//已发文
+       sqlBuilder.append("and s.processstate >= 6  ");//已发文
        if(null != projectReviewConditionDto){
            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
@@ -632,7 +632,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9' ");
-        sqlBuilder.append("and s.processstate = 6  ");//已发文
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
@@ -708,7 +708,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
-        sqlBuilder.append("and s.processstate = 6  ");//已发文
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         //todo:添加查询条件
 //        if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(endTime)){
@@ -728,7 +728,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
-        sqlBuilder.append("and s.processstate = 6  ");//已发文
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 3000  and d.declarevalue < 10000   ");
@@ -738,7 +738,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
-        sqlBuilder.append("and s.processstate = 6  ");//已发文
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 10000  and d.declarevalue < 100000   ");
@@ -748,7 +748,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
-        sqlBuilder.append("and s.processstate = 6  ");//已发文
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 100000   ");
