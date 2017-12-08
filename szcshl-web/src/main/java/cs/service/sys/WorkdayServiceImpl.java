@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +50,13 @@ public class WorkdayServiceImpl implements WorkdayService {
 
     @Override
     @Transactional
-    public void createWorkday(WorkdayDto workdayDto) {
+    public  Boolean isRepeat(Date dates){
+        return workdayRepo.isExist(dates);
+    }
+
+    @Override
+    @Transactional
+    public ResultMsg createWorkday(WorkdayDto workdayDto) {
         Workday workday = new Workday();
         BeanCopierUtils.copyProperties(workdayDto, workday);
         workday.setId(UUID.randomUUID().toString());
@@ -57,6 +65,7 @@ public class WorkdayServiceImpl implements WorkdayService {
         workday.setModifiedBy(SessionUtil.getLoginName());
         workday.setModifiedDate(new Date());
         workdayRepo.save(workday);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"添加成功！");
     }
 
     @Override

@@ -22,7 +22,7 @@ public class WorkdayRepoImpl extends AbstractRepository<Workday, String> impleme
 		Criteria criteria=this.getSession().createCriteria(Workday.class);
 		criteria.add(Restrictions.eq(Workday_.dates.getName(), days));
 		List<Workday> workdayList=criteria.list();
-		return !workdayList.isEmpty();
+		return Validate.isList(workdayList);
 	}
 
 	/**

@@ -3,6 +3,11 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
+<!--工作日弹窗-->
+<div  style="background:white;display: none;" id="workDay">
+    <#include "/workday/edit.html"/>
+</div>
+
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/workday">工作日管理</a></li>
@@ -10,7 +15,7 @@
     </ol>
     <form name="workdayForm" id="workdayForm" class="well well-sm">
         <span>状态：</span>
-        <select ng-model="vm.workday.status" operator="like" name="status" id="status" >
+        <select ng-model="vm.workdays.status" operator="like" name="status" id="status" >
             <option value="">请选择</option>
             <option value="1">调休</option>
             <option value="2">加班</option>
@@ -20,7 +25,8 @@
         <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.ResetWorkday()">
             <span class="glyphicon glyphicon-repeat"></span> 重置</button>
 
-         <a class="btn btn-sm btn-primary" href="#/workdayEdit/"><span class="glyphicon glyphicon-plus"></span>新增工作日</a>
+       <!--  <a class="btn btn-sm btn-primary" href="#/workdayEdit/"><span class="glyphicon glyphicon-plus"></span>新增工作日</a>-->
+        <a class="btn btn-sm btn-primary" ng-click="vm.addWorkDay()"><span class="glyphicon glyphicon-plus"></span>新增工作日</a>
          <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量删除</button>
     </form>
 
@@ -30,7 +36,7 @@
     <@shiro.hasPermission name="workday##delete">
     <button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
     </@shiro.hasPermission>
-    <@shiro.hasPermission name="workday##put">
+<!--    <@shiro.hasPermission name="workday##put">
     <a class="btn btn-xs btn-primary" href="#/workdayEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-    </@shiro.hasPermission>
+    </@shiro.hasPermission>-->
 </script>

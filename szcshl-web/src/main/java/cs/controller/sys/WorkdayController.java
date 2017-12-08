@@ -1,11 +1,17 @@
 package cs.controller.sys;
 
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
+import cs.common.Constant;
+import cs.common.ResultMsg;
+import cs.common.utils.DateUtils;
+import cs.common.utils.StringUtil;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.quartz.Scheduler;
@@ -64,9 +70,58 @@ public class WorkdayController {
     @RequiresAuthentication
 	//@RequiresPermissions("workday#createWorkday#post")
 	@RequestMapping(name="新增工作日",path="createWorkday",method=RequestMethod.POST)
-	@ResponseStatus(value=HttpStatus.CREATED)
-	public void cresateWorkday(@RequestBody WorkdayDto workdayDto){
-		workdayService.createWorkday(workdayDto);
+	@ResponseBody
+	public ResultMsg cresateWorkday(@RequestBody WorkdayDto workdayDto){
+		ResultMsg resultMsg = null;
+		String isNodate="";//存重复的日期
+		boolean isrepeat;//判断是否已存在的日期
+		String str=workdayDto.getDatess();
+		//把中文字符串转换为英文字符串
+		str = str.replace("，",",");
+        //截取字符串
+		List strs = StringUtil.getSplit(str,",");
+		//获取当前年份
+		Calendar now = Calendar.getInstance();
+		String year= Integer.toString( now.get(Calendar.YEAR)) ;
+		//获取月份
+		String month=workdayDto.getMonth();
+		if (strs.size() > 1) {
+			for (int i=0;i<strs.size();i++){
+              String dates=year+"-"+month+"-"+strs.get(i);
+			  workdayDto.setDates(DateUtils.converToDate(dates,null));
+				isrepeat=workdayService.isRepeat(workdayDto.getDates());
+				if(isrepeat){
+					if(isNodate!=""){
+						isNodate+="、"+strs.get(i)+"号";
+					}else{
+						isNodate+=month+"月"+strs.get(i)+"号";
+					}
+
+				}else{
+					resultMsg=  workdayService.createWorkday(workdayDto);
+				}
+
+			}
+		} else {
+			String dates=year+"-"+month+"-"+str;
+			workdayDto.setDates(DateUtils.converToDate(dates,null));
+			isrepeat=workdayService.isRepeat(workdayDto.getDates());
+			if(isrepeat){
+					isNodate+=month+"月"+str+"号";
+			}else{
+				resultMsg=  workdayService.createWorkday(workdayDto);
+			}
+		}
+		if(!isNodate.equals("")){//当有重复日期时，返回重复日期的提示
+			if(resultMsg==null){
+				resultMsg=new ResultMsg(false, Constant.MsgCode.OK.getValue(),isNodate);
+			}else{
+				resultMsg.setFlag(false);
+				resultMsg.setReMsg(isNodate);
+			}
+		}
+
+     return  resultMsg;
 	}
 
 	//@RequiresPermissions("workday##put")
