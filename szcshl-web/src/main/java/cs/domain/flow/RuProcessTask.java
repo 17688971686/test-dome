@@ -34,7 +34,7 @@ public class RuProcessTask {
      * 环节名称
      */
     @Column
-    private String nodeName;
+    private String nodeNameValue;
 
     /**
      * 任务状态
@@ -183,16 +183,16 @@ public class RuProcessTask {
         this.taskId = taskId;
     }
 
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
-    }
-
     public String getTaskState() {
         return taskState;
+    }
+
+    public String getNodeNameValue() {
+        return nodeNameValue;
+    }
+
+    public void setNodeNameValue(String nodeNameValue) {
+        this.nodeNameValue = nodeNameValue;
     }
 
     public void setTaskState(String taskState) {

@@ -41,8 +41,6 @@ public class AnnountmentServiceImpl implements AnnountmentService {
 
     @Autowired
     private AnnountmentRepo annountmentRepo;
-    
-
     @Autowired
     private OrgRepo orgRepo;
     @Autowired
@@ -53,7 +51,6 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     private ProcessEngine processEngine;
     @Autowired
     private TaskService taskService;
-
 
     /* 
      * 获取个人发布的通知公告
@@ -173,7 +170,7 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         }
         annountment.setCreatedBy(SessionUtil.getUserId());
         annountment.setCreatedDate(now);
-        annountment.setModifiedBy(SessionUtil.getLoginName());
+        annountment.setModifiedBy(SessionUtil.getUserId());
         annountment.setModifiedDate(now);
         annountmentRepo.save(annountment);
         annountmentDto.setAnId(annountment.getAnId());
@@ -217,10 +214,29 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         annountmentRepo.save(annountment);
     }
 
+    /**
+     * 经过审批的通知公告，不能修改和删除！不用审批的通知公告，若已发布，不能删除
+     * @param id
+     * @return
+     */
     @Override
     @Transactional
-    public void deleteAnnountment(String id) {
-        annountmentRepo.deleteById(Annountment_.anId.getName(),id);
+    public ResultMsg deleteAnnountment(String id) {
+        ResultMsg resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
+        List<Annountment> deleteList = annountmentRepo.findByIds(Annountment_.anId.getName(),id,null);
+        if(Validate.isList(deleteList)){
+            for(int i=0,l=deleteList.size();i<l;i++){
+                Annountment dl = deleteList.get(i);
+                if(Validate.isString(dl.getProcessInstanceId()) || Constant.EnumState.YES.getValue().equals(dl.getIssue())){
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，审批的通知公告和已发布的通知公告不能删除！");
+                    break;
+                }
+            }
+        }
+        if(resultMsg.isFlag()){
+            annountmentRepo.deleteById(Annountment_.anId.getName(),id);
+        }
+	   return resultMsg;
     }
 
     /**
@@ -297,49 +313,47 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     }
 
     /**
-     * 更改通知公告的发布状态
+     * 更改通知公告的发布状态（如果是已审批的，不能取消发布）
      * @param ids
      * @param issueState
      */
     @Override
-    public void updateIssueState(String ids, String issueState) {
-/*        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" update "+Annountment.class.getSimpleName()+" set "+Annountment_.issue.getName()+" =:issueState" );
-        hqlBuilder.setParam("issueState",issueState);
-        if(Constant.EnumState.YES.getValue().equals(issueState)){
-            hqlBuilder.append(","+Annountment_.issueDate.getName()+"=sysdate ");
-            hqlBuilder.append(","+Annountment_.issueUser.getName()+"= :issueUser ").setParam("issueUser",SessionUtil.getLoginName());
-        }
-        List<String> idList = StringUtil.getSplit(ids,",");
-        if (idList != null && idList.size() > 1) {
-            hqlBuilder.append(" where " + Annountment_.anId.getName() + " in ( ");
-            int totalL = idList.size();
-            for (int i = 0; i < totalL; i++) {
-                if (i == totalL - 1) {
-                    hqlBuilder.append(" :id" + i).setParam("id" + i, idList.get(i));
-                } else {
-                    hqlBuilder.append(" :id" + i + ",").setParam("id" + i, idList.get(i));
+    @Transactional
+    public ResultMsg updateIssueState(String ids, String issueState) {
+        ResultMsg resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        List<Annountment> bathAnnountment = new ArrayList<>();
+        //是否取消发布
+        boolean isCancelPublish = (Constant.EnumState.NO.getValue().equals(issueState))?true:false;
+        List<Annountment> updateList = annountmentRepo.findByIds(Annountment_.anId.getName(),ids,null);
+        if(Validate.isList(updateList)){
+            Date now = new Date();
+            for(int i = 0,l=updateList.size(); i < l; i++){
+                Annountment annountment = updateList.get(i);
+                if(Validate.isString(annountment.getProcessInstanceId())){
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，审批的通知公告，不能对其进行修改和删除操作！");
+                    break;
                 }
-            }
-            hqlBuilder.append(" )");
-        } else {
-            hqlBuilder.append(" where " + Annountment_.anId.getName() + " = :id ");
-            hqlBuilder.setParam("id", idList.get(0));
-        }
-        annountmentRepo.executeHql(hqlBuilder);*/
-
-        List<String> idList = StringUtil.getSplit(ids,",");
-        if(idList != null && idList.size() >= 1){
-            for(int i = 0; i < idList.size(); i++){
-                Annountment annountment = annountmentRepo.findById(Annountment_.anId.getName(),idList.get(i));
-                annountment.setIssueUser(annountment.getModifiedBy());
+                //如果是发布
+                if(!isCancelPublish){
+                    if(!Validate.isString(annountment.getIssueUser())){
+                        annountment.setIssueUser(SessionUtil.getDisplayName());
+                    }
+                    if(!Validate.isObject(annountment.getIssueDate())){
+                        annountment.setIssueDate(now);
+                    }
+                }
+                annountment.setModifiedBy(SessionUtil.getUserId());
+                annountment.setModifiedDate(now);
                 annountment.setIssue(issueState);
-                annountment.setIssueDate(new Date());
-                annountmentRepo.save(annountment);
+
+                bathAnnountment.add(annountment);
             }
         }
+        if(resultMsg.isFlag() && Validate.isList(bathAnnountment)){
+            annountmentRepo.bathUpdate(bathAnnountment);
+        }
 
-
+        return resultMsg;
     }
 
 

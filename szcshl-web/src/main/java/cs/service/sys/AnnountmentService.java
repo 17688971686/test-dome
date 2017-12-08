@@ -22,9 +22,13 @@ public interface AnnountmentService {
 	AnnountmentDto findAnnountmentById(String anId);
 	
 	void updateAnnountment(AnnountmentDto annountmentDto);
-	
-	
-	void deleteAnnountment(String id);
+
+	/**
+	 * 删除通知公告
+	 * @param id
+	 * @return
+	 */
+	ResultMsg deleteAnnountment(String id);
 	
 	List<AnnountmentDto> getHomePageAnnountment();
 	
@@ -32,7 +36,13 @@ public interface AnnountmentService {
 	
 	AnnountmentDto nextArticle(String id);
 
-	void updateIssueState(String ids, String issueState);
+    /**
+     * 更改发布状态
+     * @param ids
+     * @param issueState
+     * @return
+     */
+    ResultMsg updateIssueState(String ids, String issueState);
 
 	PageModelDto<AnnountmentDto> findByIssue(ODataObj odataobj);
 

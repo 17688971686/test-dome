@@ -31,24 +31,19 @@
             $("section").removeClass("cont-alert");
         }
         //打印
-        vm.prints=function(){
-            var html='<div  style="width: 80%;height:80%; text-align: center; margin: auto; font-family: \'Microsoft YaHei\'">'
-                +$("#context-body").html()
-                +"</div>";
-            var newWindow;
-            var ht=$(window).height();
-            var wt=$(window).width();
-            newWindow=window.open('','','width='+wt+',height='+ht);
-            newWindow.document.body.innerHTML=html;
-            newWindow.print();
+        vm.printNotice = function(id){
+            var LODOP = getLodop();
+            var strStylePath = rootPath +"/contents/shared/annountmentPrint.css";
+            var strStyleCSS="<link href="+strStylePath+" type='text/css' rel='stylesheet'>";
+            var strFormHtml="<head>"+strStyleCSS+"</head><body>"+$("#"+id).html()+"</body>";
+            LODOP.PRINT_INIT("");
+            LODOP.SET_PRINT_STYLEA("FontName","System");
+            LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml);
+            LODOP.PREVIEW();
+
         }
 
-
     }
-
-
-
-
 
 })();
 

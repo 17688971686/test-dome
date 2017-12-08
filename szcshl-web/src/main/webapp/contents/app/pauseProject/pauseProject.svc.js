@@ -43,18 +43,16 @@
         //beign findPausingProject
         function findPausingProject(vm,signId){
             var httpOptions={
-                method : "get",
+                method : "post",
                 url : rootPath + "/projectStop/findPausingProject",
                 params :{signId : signId}
             }
 
             var httpSuccess=function success(response){
-                if(response.data !=""){
-                    bsWin.success("该项目暂停申请正在处理");
-
+                if(response.data){
+                    bsWin.alert("该项目暂停申请正在处理");
                 }else{
                     $state.go("projectStopForm" , {signId : signId , stopId : ''} );
-
                 }
             }
             common.http({

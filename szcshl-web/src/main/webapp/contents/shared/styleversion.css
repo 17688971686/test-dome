@@ -542,3 +542,7 @@ div.k-window{
         text-align: left;
     }
 }
+/****************提示样式**************/
+.attentionDiv{
+    border: 1px solid #e08e0b; border-radius: 3px;padding:3px 5px;color:#e08e0b;
+}

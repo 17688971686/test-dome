@@ -9,23 +9,53 @@
         <li class="active">项目取回</li>
     </ol>
 
-    <form id="signBackform" name="signBackform" class="well well-sm">
-        <span class="help-inline">项目名称：</span>
-        <input type="text" ng-model="vm.model.projectName" operator="like" name="projectName" id="projectName"
-               placeholder="请输入">
-        <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.query()">
-            <span class="glyphicon glyphicon-search"></span>查询</button>
-    </form>
-
-
-
-    <div class="label-info" style="font-size: 12px;padding:3px 5px;">
-        温馨提示：1、分管领导取回，流程分支被消除，已做工作方案被清空；2、部长只能取回没提交审批工作方案的分支流程；3、系统暂不支持合并评审项目回退
+    <div class="attentionDiv" style="padding:5px;font-size: 12px;margin-bottom: 10px;">
+        <table>
+            <tr>
+                <td style="width: 90px; text-align: right;">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>温馨提示：
+                </td>
+                <td>
+                    1、流程只能办理和审批工作方案阶段的项目；发文环节后的项目不能取回；
+                </td>
+            </tr>
+            <tr>
+                <td ></td>
+                <td>
+                    2、分管领导取回项目，流程回到分管领导分办环节，流程分支被消除，已做工作方案被清空；
+                </td>
+            </tr>
+            <tr>
+                <td ></td>
+                <td>
+                    3、部长取回项目，流程回到部门分办环节。部长只能取回部长尚未审批工作方案之前的环节，已提交分管领导审批的流程不能取回；
+                </td>
+            </tr>
+            <tr>
+                <td ></td>
+                <td>
+                    4、设定为合并评审的项目不支持重新分办。
+                </td>
+            </tr>
+        </table>
     </div>
+
+    <div class="well well-sm" style="margin-bottom: 10px;">
+        <form id="signBackform" name="signBackform">
+            <span class="help-inline">项目名称：</span>
+            <input type="text" ng-model="vm.model.projectName" operator="like" name="projectName" id="projectName"
+                   placeholder="请输入">
+            <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.query()">
+                <span class="glyphicon glyphicon-search"></span>查询
+            </button>
+        </form>
+    </div>
+
     <div class="grid" kendo-grid="grid" k-options="vm.signGetBackGrid"></div>
 </div>
 
 <script type="text/template" id="columnBtns">
-  <a class="btn btn-xs btn-primary" ng-click="vm.getBack('{2}','{1}')" ><span class="glyphicon glyphicon-pencil"></span>取回</a>
-  <a class="btn btn-xs btn-info" href="#/{0}/{1}/{2}/{3}" ><span class="glyphicon glyphicon-comment"></span>查看详情</a>
+    <a class="btn btn-xs btn-primary" ng-click="vm.getBack('{2}','{1}')"><span
+            class="glyphicon glyphicon-pencil"></span>取回</a>
+    <a class="btn btn-xs btn-info" href="#/{0}/{1}/{2}/{3}"><span class="glyphicon glyphicon-comment"></span>查看详情</a>
 </script>

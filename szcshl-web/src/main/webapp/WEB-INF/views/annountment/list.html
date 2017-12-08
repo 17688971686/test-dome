@@ -11,40 +11,41 @@
     </ol>
     <div class="toolbar">
         <a class="btn btn-sm btn-primary" href="#/annountmentEdit/">
-            <span class="glyphicon glyphicon-plus"></span>新增公告
+            新增公告
         </a>
+        <button class="btn btn-sm btn-success" ng-click="vm.bathIssue()" ng-disabled="vm.isSubmit">
+            批量发布
+        </button>
+        <button class="btn btn-sm btn-warning" ng-click="vm.bathUnissue()" ng-disabled="vm.isSubmit">
+            取消发布
+        </button>
+        <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit">
+            批量删除
+        </button>
+        <span class="attentionDiv" style="padding:5px;font-size: 12px;">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
+            提示：经过审批的通知公告，不能修改和删除！不用审批的通知公告，若已发布，不能删除；只能删除未发布的通知公告！
+        </span>
+    </div>
+
+
+    <div class="well well-sm" style="margin-bottom: 10px;">
+    <form id="annountmentform" name="annountmentform">
+        <span class="help-inline">标题：</span>
+        <input type="text"  operator="like" name="anTitle" id="anTitle" placeholder="请输入标题名称">
+
+        <span class="help-inline" style="margin-left: 20px;">创建日期：</span>
+        <input name="createdDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="ge"/>
+        至
+        <input name="createdDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="le" />
+
         <button class="btn btn-sm btn-primary" ng-click="vm.queryAnnountment()">
             <span class="glyphicon glyphicon-search"></span>查询
         </button>
-        <a class="btn btn-sm btn-primary" ng-click="vm.resetAnnountment()">
-            <span class="glyphicon glyphicon-repeat"></span>重置</a>
-        <button class="btn btn-sm btn-success" ng-click="vm.bathIssue()" ng-disabled="vm.isSubmit">
-            <span class="glyphicon glyphicon-cloud-upload"></span>批量发布
+        <button class="btn btn-sm btn-primary" ng-click="vm.resetAnnountment()">
+            <span class="glyphicon glyphicon-repeat"></span>重置
         </button>
-        <button class="btn btn-sm btn-warning" ng-click="vm.bathUnissue()" ng-disabled="vm.isSubmit">
-            <span class="glyphicon glyphicon-cloud-download"></span>取消发布
-        </button>
-        <button class="btn btn-sm btn-danger" ng-click="vm.dels()" ng-disabled="vm.isSubmit">
-            <span class="glyphicon glyphicon-remove"></span>批量删除
-        </button>
-    </div>
 
-    <div class="well well-sm">
-    <form id="annountmentform" name="annountmentform">
-        <table style="width: 100%;">
-            <tr>
-                <td class="text-right" style="width: 50px;">标题：</td>
-                <td>
-                    <input type="text"  operator="like" name="anTitle" id="anTitle" placeholder="请输入标题名称">
-                </td>
-                <td class="text-right"  style="width: 80px;">创建日期：</td>
-                <td>
-                    <input name="createdDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="ge"/>
-                    至
-                    <input name="createdDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="le" />
-                </td>
-            </tr>
-        </table>
     </form>
     </div>
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
@@ -52,11 +53,11 @@
 <script type="text/template" id="columnBtns">
     <button class="btn btn-xs btn-success" ng-click="{0}"><span class="glyphicon glyphicon-edit"></span>查看</button>
     <@shiro.hasPermission name="annountment##put">
-    <a ng-if="{3}==undefined || {3}=='9'" class="btn btn-xs btn-primary" href="#/annountmentEdit/{1}">
+    <a class="btn btn-xs btn-primary" href="#/annountmentEdit/{1}" ng-if="{2}">
         <span class="glyphicon glyphicon-pencil"></span>编辑</a>
     </@shiro.hasPermission>
     <@shiro.hasPermission name="annountment##delete">
-    <button ng-if="{3}==undefined || {3}=='9'" class="btn btn-xs btn-danger" ng-click="{2}"><span class="glyphicon glyphicon-remove"></span>删除</button>
+    <button class="btn btn-xs btn-danger" ng-click="{3}" ng-if="{4}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
     </@shiro.hasPermission>
 </script>
 

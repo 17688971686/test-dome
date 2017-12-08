@@ -84,15 +84,14 @@ public class AnnountmentController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody AnnountmentDto annountmentDto) {
         annService.updateAnnountment(annountmentDto);
-
     }
 
     //@RequiresPermissions("annountment#updateIssueState#post")
     @RequiresAuthentication
     @RequestMapping(name = "更改发布状态", path = "updateIssueState", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateIssueState(@RequestParam String ids,@RequestParam String issueState) {
-        annService.updateIssueState(ids,issueState);
+    @ResponseBody
+    public ResultMsg updateIssueState(@RequestParam String ids,@RequestParam String issueState) {
+       return annService.updateIssueState(ids,issueState);
     }
 
     //@RequiresPermissions("annountment#getHomePageAnnountment#get")
@@ -121,10 +120,10 @@ public class AnnountmentController {
 
     //@RequiresPermissions("annountment##delete")
     @RequiresAuthentication
-    @RequestMapping(name = "更新通知公告", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String anId) {
-        annService.deleteAnnountment(anId);
+    @RequestMapping(name = "删除通知公告", path = "", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResultMsg delete(@RequestParam String anId) {
+       return annService.deleteAnnountment(anId);
     }
     
     //begin  html

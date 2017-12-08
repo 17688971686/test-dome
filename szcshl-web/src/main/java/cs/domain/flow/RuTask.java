@@ -29,7 +29,7 @@ public class RuTask {
      * 环节名称
      */
     @Column
-    private String nodeName;
+    private String nodeNameValue;
 
     /**
      * 任务状态
@@ -119,12 +119,12 @@ public class RuTask {
         this.taskId = taskId;
     }
 
-    public String getNodeName() {
-        return nodeName;
+    public String getNodeNameValue() {
+        return nodeNameValue;
     }
 
-    public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
+    public void setNodeNameValue(String nodeNameValue) {
+        this.nodeNameValue = nodeNameValue;
     }
 
     public String getTaskState() {

@@ -506,4 +506,15 @@
         }).toUpperCase()
     }
 
+    //init
+    init();
+    function init() {
+        //begin#grid 处理
+        //全选
+        $(document).on('click', '#checkboxAll', function () {
+            var isSelected = $(this).is(':checked');
+            $('.grid').find('tr td:nth-child(1)').find('input:checkbox[ng-disabled!="true"]').prop('checked', isSelected);
+        });
+    }
+
 })();

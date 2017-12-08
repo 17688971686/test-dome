@@ -80,13 +80,13 @@ public class ProjectStopController {
 
     @RequiresAuthentication
 	//@RequiresPermissions("projectStop#findPausingProject#get")
-	@RequestMapping(name="判断该项目是否已申请暂停而未处理完",path="findPausingProject",method = RequestMethod.GET)
+	@RequestMapping(name="判断该项目是否已申请暂停而未处理完",path="findPausingProject",method = RequestMethod.POST)
 	@ResponseBody
 	public String findPausingProject(@RequestParam  String signId){
 		List<ProjectStop> projectStopList = projectStopService.findProjectStopBySign(signId);
 		String result =null;
 		for(ProjectStop p : projectStopList){
-			if(! Constant.EnumState.YES.getValue().equals(p.getApproveStatus())){
+			if(Constant.EnumState.YES.getValue().equals(p.getIsactive()) && !Constant.EnumState.YES.getValue().equals(p.getIsOverTime())){
 				result= "pausingProject";
 				break;
 			}

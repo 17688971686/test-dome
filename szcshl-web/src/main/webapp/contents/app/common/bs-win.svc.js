@@ -115,7 +115,7 @@
                             }).then(function (response) {
                                 var data = response.data;
                                 if (data.status == 'SUCCESS') {
-                                    bsWin.success(data.message || "登錄成功！", function () {
+                                    bsWin.success(data.message || "登录成功！", function () {
                                         me.el.modal("hide");
                                     });
                                 } else {

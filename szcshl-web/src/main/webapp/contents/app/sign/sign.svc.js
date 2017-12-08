@@ -666,7 +666,7 @@
                     filterable: false
                 },
                 {
-                    field: "nodeName",
+                    field: "nodeNameValue",
                     title: "当前环节",
                     width: "10",
                     filterable: false,

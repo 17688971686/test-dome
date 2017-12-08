@@ -1,4 +1,4 @@
-    (function () {
+(function () {
     'use strict';
 
     angular.module('app').factory('adminSvc', admin);
@@ -27,7 +27,7 @@
              findHomePluginFile :findHomePluginFile,    //获取首页安装文件*/
             excelExport: excelExport,                   //项目统计导出
             statisticalGrid: statisticalGrid,
-            workName:workName,  //获取流程列表
+            workName: workName,  //获取流程列表
         }
         return service;
 
@@ -206,7 +206,7 @@
         function gtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks"),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks", $("#searchform")),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -276,12 +276,12 @@
                     field: "",
                     title: "序号",
                     width: 50,
-                    template:function(item){
-                        if(item.signprocessState && item.signprocessState >=6 && item.signprocessState<=7){
+                    template: function (item) {
+                        if (item.signprocessState && item.signprocessState >= 6 && item.signprocessState <= 7) {
                             return "<span class='row-number label label-primary'></span>";
-                        }else if(item.signprocessState && item.signprocessState ==9){
+                        } else if (item.signprocessState && item.signprocessState == 9) {
                             return "<span class='row-number label label-success'></span>";
-                        }else{
+                        } else {
                             return "<span class='row-number'></span>";
                         }
                     }
@@ -291,7 +291,7 @@
                     field: "",
                     title: "项目名称",
                     filterable: false,
-                    width: "15%",
+                    width: 200,
                     template: function (item) {
                         if (checkCanEdit(item)) {
                             return '<a href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
@@ -304,18 +304,18 @@
                     field: "reviewStage",
                     title: "项目阶段",
                     filterable: false,
-                    width: "10%"
+                    width: 100
                 },
                 {
-                    field: "nodeName",
+                    field: "nodeNameValue",
                     title: "当前环节",
-                    width: "10%",
+                    width: 100,
                     filterable: false
                 },
                 {
                     field: "",
                     title: "合并评审",
-                    width: "10%",
+                    width: 140,
                     filterable: false,
                     template: function (item) {
                         if (item.reviewType) {
@@ -332,7 +332,7 @@
                 {
                     field: "",
                     title: "合并项目",
-                    width: "10%",
+                    width: 180,
                     filterable: false,
                     template: function (item) {
                         if (item.reviewSignDtoList) {
@@ -352,21 +352,21 @@
                 {
                     field: "preSignDate",
                     title: "预签收时间",
-                    width: "10%",
+                    width: 100,
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "signDate",
                     title: "签收时间",
-                    width: "10%",
+                    width: 100,
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "",
                     title: "剩余工作日",
-                    width: "10%",
+                    width: 100,
                     filterable: false,
                     template: function (item) {
                         if (item.surplusDays != undefined) {
@@ -379,13 +379,13 @@
                 {
                     field: "displayName",
                     title: "处理人",
-                    width: "10%",
+                    width: 120,
                     filterable: false
                 },
                 {
                     field: "",
                     title: "状态",
-                    width: "6%",
+                    width: 80,
                     filterable: false,
                     template: function (item) {
                         if (item.processState && item.processState == 2) {
@@ -398,7 +398,7 @@
                 {
                     field: "",
                     title: "操作",
-                    width: "6%",
+                    width: 80,
                     template: function (item) {
                         if (checkCanEdit(item)) {
                             return common.format($('#detailBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
@@ -519,7 +519,7 @@
                          } else {
                          return "";
                          }*/
-                        return common.format($('#columnBtns').html(),item.isAppraising,item.signid,"endSignDetail",item.signid,item.processInstanceId,item.mUserName);
+                        return common.format($('#columnBtns').html(), item.isAppraising, item.signid, "endSignDetail", item.signid, item.processInstanceId, item.mUserName);
                     }
                 }
             ];
@@ -950,7 +950,7 @@
         function personMainTasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks" , $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks", $("#searchform")),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -1010,12 +1010,12 @@
                     field: "",
                     title: "序号",
                     width: 50,
-                    template:function(item){
-                        if(item.processState && item.processState >=6 && item.processState<=7){
+                    template: function (item) {
+                        if (item.processState && item.processState >= 6 && item.processState <= 7) {
                             return "<span class='row-number label label-primary'></span>";
-                        }else if(item.processState && item.processState ==9  ){
+                        } else if (item.processState && item.processState == 9) {
                             return "<span class='row-number label label-success'></span>";
-                        }else{
+                        } else {
                             return "<span class='row-number'></span>";
                         }
                     }
@@ -1069,30 +1069,30 @@
                 },
                 {
                     field: "",
-                    title: "发文日期",
+                    title: "签收时间",
                     width: 100,
                     filterable: false,
-                    template: function(item){
-                        if(item.dispatchDate){
-                            return (new Date((item.dispatchDate).CompatibleDate())).Format("yyyy-MM-dd");
-                        }else{
+                    template: function (item) {
+                        if (item.signdate) {
+                            return (new Date((item.signdate).CompatibleDate())).Format("yyyy-MM-dd");
+                        } else {
                             return "";
                         }
                     },
                 },
-                /*{
+                {
                     field: "",
-                    title: "签收时间",
-                    width: 150,
+                    title: "发文日期",
+                    width: 100,
                     filterable: false,
-                    template: function(item){
-                        if(item.signdate){
-                            return (new Date((item.signdate).CompatibleDate())).Format("yyyy-MM-dd");
-                        }else{
+                    template: function (item) {
+                        if (item.dispatchDate) {
+                            return (new Date((item.dispatchDate).CompatibleDate())).Format("yyyy-MM-dd");
+                        } else {
                             return "";
                         }
                     },
-                },*/
+                },
                 {
                     field: "",
                     title: "剩余工作日",
@@ -1107,11 +1107,11 @@
                     }
                 },
                 /*{
-                    field: "receivedate",
-                    title: "送来时间",
-                    width: 100,
-                    filterable: false
-                },*/
+                 field: "receivedate",
+                 title: "送来时间",
+                 width: 100,
+                 filterable: false
+                 },*/
                 {
                     field: "builtcompanyname",
                     title: "建设单位",
@@ -1317,13 +1317,13 @@
                     field: "",
                     title: "序号",
                     template: "<span class='row-number'></span>",
-                    width: "3%",
+                    width: 50,
                 },
                 {
                     field: "",
-                    title: "文件名称",
+                    title: "流程名称",
                     filterable: false,
-                    width: "20%",
+                    width: "30%",
                     template: function (item) {
                         return '<a href="#/flowDetail/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/' + item.instanceId + '" >' + item.instanceName + '</a>';
                     }
@@ -1331,30 +1331,25 @@
                 {
                     field: "nodeName",
                     title: "当前环节",
-                    width: "10%",
+                    width: "20%",
                     filterable: false
                 },
                 {
                     field: "displayName",
                     title: "处理人",
-                    width: "10%",
+                    width: "15%",
                     filterable: false,
                 },
                 {
                     field: "processName",
                     title: "流程类别",
-                    width: "20" +
-                    "" +
-                    "" +
-                    "" +
-                    "" +
-                    "%",
+                    width: "25%",
                     filterable: false,
                 },
                 {
                     field: "",
                     title: "流程状态",
-                    width: "5%",
+                    width: "10%",
                     filterable: false,
                     template: function (item) {
                         if (item.processState && item.processState == 2) {
@@ -1367,7 +1362,7 @@
                 {
                     field: "",
                     title: "操作",
-                    width: "15%",
+                    width: "10%",
                     template: function (item) {
                         return common.format($('#columnBtns').html(), item.businessKey, item.processKey, item.taskId, item.instanceId);
                     }
@@ -1430,7 +1425,7 @@
                 url: rootPath + "/flow/proc"
             }
             var httpSuccess = function success(response) {
-                vm.workName=response.data;
+                vm.workName = response.data;
             }
             common.http({
                 vm: vm,

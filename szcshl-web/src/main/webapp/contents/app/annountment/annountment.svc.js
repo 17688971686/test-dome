@@ -73,7 +73,7 @@
 
         //begin createAnnountment
         function createAnnountment(vm,callBack) {
-        	vm.annountment.anContent=vm.editor.getContentTxt();
+        	vm.annountment.anContent = vm.editor.getContent();;
             common.initJqValidation();
             var isValid = $('#form').valid();
             if (isValid) {
@@ -102,7 +102,8 @@
         //begin updateAnnountment
         function updateAnnountment(vm,callBack) {
             vm.isSubmit = true;
-            vm.annountment.anContent=vm.editor.getContentTxt();
+            vm.annountment.anContent = vm.editor.getContent();
+            alert(vm.annountment.anContent);
             var httpOptions = {
                 method: "put",
                 url: url_annountment,
@@ -111,7 +112,6 @@
 
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
-
                     callBack(response.data);
                 }
             }
@@ -129,15 +129,18 @@
 
 
         //begin deleteAnnountment
-        function deleteAnnountment(vm,anId) {
+        function deleteAnnountment(anId,callBack) {
             var httpOptions = {
                 method: "delete",
                 url: url_annountment,
-                data: anId
+                params: {
+                    anId:anId
+                }
             }
             var httpSuccess = function success(response) {
-                vm.gridOptions.dataSource.read();
-                bsWin.alert("删除成功！");
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
             common.http({
                 $http: $http,
@@ -173,12 +176,10 @@
                 pageSize: 10,
                 sort: [
                 {
-                    field: "issue",
-                    dir: "asc"
+                    field: "createdDate",
+                    dir: "desc"
                 }
                 ]
-                	
-
             });
             // End:dataSource
 
@@ -199,8 +200,12 @@
             var columns = [
                 {
                     template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.anId)
+                        if (item.processInstanceId) {
+                            return "";
+                        }else{
+                            return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                                item.anId)
+                        }
                     },
                     filterable: false,
                     width: 40,
@@ -220,16 +225,42 @@
                     filterable: false
                 },
                 {
+                    field: "",
+                    title: "是否审批",
+                    width: 100,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.processInstanceId) {
+                            return "是";
+                        } else {
+                            return "否";
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "审批结果",
+                    width: 100,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.appoveStatus) {
+                            if(item.appoveStatus != '9'){
+                                return "审批中";
+                            }else if(item.appoveStatus == '9' && item.issue == '9'){
+                                return "<span style='color: green'>审批通过</span>";
+                            }else if(item.appoveStatus == '9' && item.issue != '9'){
+                                return "<span style='color: red'>审批不通过</span>";
+                            }
+                        } else {
+                            return "";
+                        }
+                    }
+                },
+                {
                     field: "issueDate",
                     title: "发布时间",
                     format: "{0:yyyy-MM-dd hh24:mm:ss}",
                     width: 160,
-                    filterable: false
-                },
-                {
-                    field: "issueUser",
-                    title: "发布人",
-                    width: 100,
                     filterable: false
                 },
                 {
@@ -249,9 +280,22 @@
                     title: "操作",
                     width: 150,
                     template: function (item) {
-                    	
-                        return common.format($('#columnBtns').html(),
-                            "vm.detail('" + item.anId + "')", item.anId, "vm.del('" + item.anId + "')",item.appoveStatus);
+                        var isCanDel = true;
+                        var isCanEdit = true;
+                        //已发布或者走流程的不能删除
+                        if(item.issue == '9' || item.processInstanceId){
+                            isCanDel = false;
+                        }
+                        if(item.processInstanceId){
+                            isCanEdit = false;
+                        }
+                        return common.format(
+                            $('#columnBtns').html(),
+                            "vm.detail('" + item.anId + "')",
+                            item.anId,
+                            isCanEdit,
+                            "vm.del('" + item.anId + "')",
+                            isCanDel);
                     	
                     }
                 }
@@ -273,10 +317,7 @@
         function updateIssueState(vm, state) {
             var selectIds = common.getKendoCheckId('.grid');
             if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: "请选择数据"
-                });
+                bsWin.alert("请选择要修改的数据");
             } else {
                 var ids = [];
                 for (var i = 0; i < selectIds.length; i++) {
@@ -291,28 +332,21 @@
                     }
                 }
                 var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            vm.isSubmit = false;
+                    vm.isSubmit = false;
+                    if(response.data.flag || response.data.reCode == 'ok'){
+                        bsWin.alert("操作成功！",function(){
                             vm.gridOptions.dataSource.read();
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog: true
-                            })
-                        }
-                    })
+                        });
+                    }else{
+                        bsWin.alert(response.data.reMsg);
+                    }
                 }
                 common.http({
-                    vm: vm,
                     $http: $http,
                     httpOptions: httpOptions,
                     success: httpSuccess
                 });
             }
-
         }//E_updateIssueState
 
         function findDetailById(vm,id) {
