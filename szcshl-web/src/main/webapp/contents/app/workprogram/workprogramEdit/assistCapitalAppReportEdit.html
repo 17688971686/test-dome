@@ -107,20 +107,25 @@
         <tr>
             <td class="text-center">申报建设规模<span class="required">*</span></td>
             <td colspan="6">
-                <textarea rows="3" ng-model="vm.work.buildSize" name="buildSize" cols="" style="width:98%;" data-val="true" data-val-required="必填"></textarea>
+                <textarea  maxlength="750"  data-val-length-max="750" ng-change="vm.work.buildSize=countCharacter(vm.work.buildSize,750,'buildSizeCount')"  rows="3" ng-model="vm.work.buildSize" name="buildSize" cols="" style="width:98%;" data-val="true" data-val-required="必填"></textarea>
                 <span data-valmsg-for="buildSize" data-valmsg-replace="true" class="errors"></span>
+                <p id="buildSizeCount" style="text-align: right;"></p>
             </td>
         </tr>
         <tr>
             <td class="text-center">申报建设内容</td>
             <td colspan="7">
-                <textarea rows="3" ng-model="vm.work.buildContent" name="buildContent" cols="" style="width:98%;"></textarea>
+                <textarea  maxlength="1000"  data-val-length-max="1000" ng-change="vm.work.buildContent=countCharacter(vm.work.buildContent,1000,'buildContentCount')" rows="3" ng-model="vm.work.buildContent" name="buildContent" cols="" style="width:98%;"></textarea>
+                <span data-valmsg-for="buildContent" data-valmsg-replace="true" class="errors"></span>
+                <p id="buildContentCount" style="text-align: right;"></p>
             </td>
         </tr>
         <tr>
             <td class="text-center">项目背景</td>
             <td colspan="7">
-                <textarea rows="3" ng-model="vm.work.projectBackGround" name="projectBackGround" cols="" style="width:98%;"></textarea>
+                <textarea maxlength="1000"  data-val-length-max="1000" ng-change="vm.work.projectBackGround=countCharacter(vm.work.projectBackGround,1000,'projectBackGroundCount')" rows="3" ng-model="vm.work.projectBackGround" name="projectBackGround" cols="" style="width:98%;"></textarea>
+                <span data-valmsg-for="projectBackGround" data-valmsg-replace="true" class="errors"></span>
+                <p id="projectBackGroundCount" style="text-align: right;"></p>
             </td>
         </tr>
         <tr>
@@ -245,13 +250,17 @@
         <tr>
             <td class="text-center">拟邀请单位及领导</td>
             <td colspan="7">
-                <textarea rows="3" ng-model="vm.work.inviteUnitLeader" name="inviteUnitLeader" style="width:100%">{{vm.work.inviteUnitLeader}}</textarea>
+                <textarea maxlength="500"  data-val-length-max="500" ng-change="vm.work.inviteUnitLeader=countCharacter(vm.work.inviteUnitLeader,500,'inviteUnitLeaderCount')" rows="3" ng-model="vm.work.inviteUnitLeader" name="inviteUnitLeader" style="width:100%">{{vm.work.inviteUnitLeader}}</textarea>
+                <span data-valmsg-for="inviteUnitLeader" data-valmsg-replace="true" class="errors"></span>
+                <p id="inviteUnitLeaderCount" style="text-align: right;"></p>
             </td>
         </tr>
         <tr>
             <td class="text-center">拟评审重点问题</td>
             <td colspan="7">
-                <textarea rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:100%">{{vm.work.mainPoint}}</textarea>
+                <textarea maxlength="1000"  data-val-length-max="1000" ng-change="vm.work.mainPoint=countCharacter(vm.work.mainPoint,1000,'mainPointCount')" rows="3" ng-model="vm.work.mainPoint" name="mainPoint" style="width:100%">{{vm.work.mainPoint}}</textarea>
+                <span data-valmsg-for="mainPoint" data-valmsg-replace="true" class="errors"></span>
+                <p id="mainPointCount" style="text-align: right;"></p>
             </td>
         </tr>
         </tbody>

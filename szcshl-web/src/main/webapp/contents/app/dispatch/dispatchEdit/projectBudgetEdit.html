@@ -100,11 +100,14 @@
     <tr>
         <td style="vertical-align: middle;" class="text-center">发行范围</td>
         <td colspan="6">
-                    <textarea maxlength="200" class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
-                              ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
-                              data-val="true" data-val-required="必填"></textarea>
-            <span style="float: right;">(印<input type="number" name="printCount" ng-model="vm.dispatchDoc.printCount"
-                                                 style="width: 50px">份)</span>
+                    <textarea  maxlength="250"  data-val-length-max="250" ng-change="vm.dispatchDoc.dispatchScope=countCharacter(vm.dispatchDoc.dispatchDoc,250,'dispatchScopeCount')"    class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
+                               ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
+                               data-val="true" data-val-required="必填"></textarea>
+            <span style="float: right;">
+                        (印<input type="text" name="printCount" ng-model="vm.dispatchDoc.printCount" style="width: 50px">份)
+                    </span>
+            <span data-valmsg-for="dispatchScope" data-valmsg-replace="true" class="errors"></span>
+            <p id="dispatchScopeCount" style="text-align: right;"></p>
         </td>
     </tr>
     <tr>
@@ -123,8 +126,10 @@
     <tr>
         <td class="text-center">相关说明</td>
         <td colspan="6">
-                    <textarea maxlength="200" class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
+                    <textarea maxlength="1000"  data-val-length-max="1000" ng-change="vm.dispatchDoc.description=countCharacter(vm.dispatchDoc.description,1000,'descriptionCount')"   class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
                               ng-model="vm.dispatchDoc.description" id="description" name="description"/>
+            <span data-valmsg-for="description" data-valmsg-replace="true" class="errors"></span>
+            <p id="descriptionCount" style="text-align: right;"></p>
         </td>
     </tr>
 
@@ -213,35 +218,43 @@
     <tr>
         <td class="text-center">评审意见摘要</td>
         <td colspan="6">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
+                    <textarea  maxlength="1000"  data-val-length-max="1000" ng-change="vm.dispatchDoc.reviewAbstract=countCharacter(vm.dispatchDoc.reviewAbstract,1000,'reviewAbstractCount')" class="form-control input-sm " rows="5"
+                               ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
+            <span data-valmsg-for="reviewAbstract" data-valmsg-replace="true" class="errors"></span>
+            <p id="reviewAbstractCount" style="text-align: right;"></p>
         </td>
     </tr>
 
     <tr>
         <td class="text-center">部长审核意见</td>
         <td colspan="6">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion"
-                              name="ministerSuggesttion" ng-disabled="true"/>
+                    <textarea  maxlength="1000"  data-val-length-max="1000" ng-change="vm.dispatchDoc.ministerSuggesttion=countCharacter(vm.dispatchDoc.ministerSuggesttion,1000,'ministerSuggesttionCount')"   class="form-control input-sm " rows="5"
+                               ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion"
+                               name="ministerSuggesttion" ng-disabled="true"/>
+            <span data-valmsg-for="ministerSuggesttion" data-valmsg-replace="true" class="errors"></span>
+            <p id="ministerSuggesttionCount" style="text-align: right;"></p>
         </td>
     </tr>
 
     <tr>
         <td class="text-center">分管副主任意见</td>
         <td colspan="6">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                    <textarea maxlength="1000" data-val-length-max="1000" ng-change="vm.dispatchDoc.viceDirectorSuggesttion=countCharacter(vm.dispatchDoc.viceDirectorSuggesttion,1000,'viceDirectorSuggesttionCount')" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.viceDirectorSuggesttion" id="viceDirectorSuggesttion"
                               name="viceDirectorSuggesttion" ng-disabled="true"/>
+            <span data-valmsg-for="viceDirectorSuggesttion" data-valmsg-replace="true" class="errors"></span>
+            <p id="viceDirectorSuggesttionCount" style="text-align: right;"></p>
         </td>
     </tr>
 
     <tr>
         <td class="text-center">主任签发</td>
         <td colspan="6">
-                    <textarea maxlength="200" class="form-control input-sm " rows="5"
+                    <textarea maxlength="1000" data-val-length-max="1000" ng-change="vm.dispatchDoc.directorIssue=countCharacter(vm.dispatchDoc.directorIssue,1000,'directorIssueCount')" class="form-control input-sm " rows="5"
                               ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"
                               ng-disabled="true"/>
+            <span data-valmsg-for="directorIssue" data-valmsg-replace="true" class="errors"></span>
+            <p id="directorIssueCount" style="text-align: right;"></p>
         </td>
     </tr>
     <tr>
@@ -362,41 +375,45 @@
                 <tr>
                     <td>项目建设必要性<span class="required">*</span></td>
                     <td colspan="6">
-                                <textarea maxlength="200" class="form-control input-sm " rows="3"
+                                <textarea maxlength="1000"  data-val-length-max="1000" ng-change="vm.dispatchDoc.projectBuildNecess=countCharacter(vm.dispatchDoc.projectBuildNecess,1000,'projectBuildNecessCount')" class="form-control input-sm " rows="3"
                                           ng-disabled="vm.isnotEdit" ng-model="vm.dispatchDoc.projectBuildNecess"
                                           id="projectBuildNecess" name="projectBuildNecess" data-val="true"
                                           data-val-required="必填"/>
                         <span data-valmsg-for="projectBuildNecess" data-valmsg-replace="true" class="errors"></span>
+                        <p id="projectBuildNecessCount" style="text-align: right;"></p>
                     </td>
                 </tr>
 
                 <tr>
                     <td>审定建设规模及内容<span class="required">*</span></td>
                     <td colspan="6">
-                                <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                                <textarea maxlength="1000" data-val-length-max="1000" ng-change="vm.dispatchDoc.buildSizeContent=countCharacter(vm.dispatchDoc.buildSizeContent,1000,'buildSizeContentCount')" class="form-control input-sm " ng-disabled="vm.isnotEdit"
                                           rows="3" ng-model="vm.dispatchDoc.buildSizeContent" id="buildSizeContent"
                                           name="buildSizeContent" data-val="true" data-val-required="必填"/>
                         <span data-valmsg-for="buildSizeContent" data-valmsg-replace="true" class="errors"></span>
+                        <p id="buildSizeContentCount" style="text-align: right;"></p>
                     </td>
                 </tr>
 
                 <tr>
                     <td>投资匡算及资金来源<span class="required">*</span></td>
                     <td colspan="6">
-                                <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                                <textarea maxlength="1000" data-val-length-max="1000" ng-change="vm.dispatchDoc.fundTotalOrigin=countCharacter(vm.dispatchDoc.fundTotalOrigin,1000,'fundTotalOriginCount')" class="form-control input-sm " ng-disabled="vm.isnotEdit"
                                           rows="3" ng-model="vm.dispatchDoc.fundTotalOrigin" id="fundTotalOrigin"
                                           name="fundTotalOrigin" data-val="true" data-val-required="必填"/>
                         <span data-valmsg-for="fundTotalOrigin" data-valmsg-replace="true" class="errors"></span>
+                        <p id="fundTotalOriginCount" style="text-align: right;"></p>
                     </td>
                 </tr>
 
                 <tr>
                     <td>下一阶段工作要求<span class="required">*</span></td>
                     <td colspan="6">
-                        <textarea maxlength="200" class="form-control input-sm " ng-disabled="vm.isnotEdit"
-                                  rows="3" ng-model="vm.dispatchDoc.nextWorkPlan" id="nextWorkPlan"
-                                  name="nextWorkPlan" data-val="true" data-val-required="必填"/>
+                                <textarea maxlength="1000" data-val-length-max="1000" ng-change="vm.dispatchDoc.nextWorkPlan=countCharacter(vm.dispatchDoc.nextWorkPlan,1000,'nextWorkPlanCount')" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                                          rows="3" ng-model="vm.dispatchDoc.nextWorkPlan" id="nextWorkPlan"
+                                          name="nextWorkPlan" data-val="true" data-val-required="必填"/>
                         <span data-valmsg-for="nextWorkPlan" data-valmsg-replace="true" class="errors"></span>
+                        <p id="nextWorkPlanCount" style="text-align: right;"></p>
                     </td>
                 </tr>
                 </tbody>

@@ -230,7 +230,9 @@
     <tr>
         <td class="text-center">拟邀请单位及领导</td>
         <td colspan="7">
-            <textarea maxlength="1024" rows="3" ng-model="vm.work.inviteUnitLeader" name="inviteUnitLeader" style="width:100%">{{vm.work.inviteUnitLeader}}</textarea>
+            <textarea maxlength="500"  data-val-length-max="500" ng-change="vm.work.inviteUnitLeader=countCharacter(vm.work.inviteUnitLeader,500,'inviteUnitLeaderCount')" rows="3" ng-model="vm.work.inviteUnitLeader" name="inviteUnitLeader" style="width:100%">{{vm.work.inviteUnitLeader}}</textarea>
+            <span data-valmsg-for="inviteUnitLeader" data-valmsg-replace="true" class="errors"></span>
+            <p id="inviteUnitLeaderCount" style="text-align: right;"></p>
         </td>
     </tr>
     
