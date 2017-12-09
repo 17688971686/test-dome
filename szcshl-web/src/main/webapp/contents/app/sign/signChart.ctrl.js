@@ -267,7 +267,9 @@
                 yAxis :{
                     type : 'value',
                     name : '金额（亿元）',
-                    interval : 5, //刻度值
+                    min : 0,
+                    max : 100,
+                    interval : 10, //刻度值
                 },
                 series :vm.series,
                 itemStyle : {
@@ -335,7 +337,11 @@
                 },
                 yAxis : {
                     type : 'value',
-                    name : '项目个数'
+                    name : '项目个数',
+                    min : 0 ,
+                    max : 100 ,
+                    interval : 10
+
                 },
                 series : vm.series,
                 lineStyle : {
