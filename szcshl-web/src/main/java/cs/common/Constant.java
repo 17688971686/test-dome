@@ -86,7 +86,10 @@ public class Constant {
      * session中用户的key
      */
     public final static String USER_SESSION_KEY = "CURRENT_USER";
-
+    /**
+     * session中用户的key
+     */
+    public final static String NOTICE_KEY = "NOTICE_KEY";
     /**
      * 文件存到ftp的
      * Ip地址、服务端口、用户名、密码、基础路径、文件存放路径

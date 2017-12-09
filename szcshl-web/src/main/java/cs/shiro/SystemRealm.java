@@ -38,8 +38,8 @@ public class SystemRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
-        String username = (String) token.getPrincipal();
-        String userName = (String) token.getPrincipal(); // 得到用户名
+        // 得到用户名
+        String userName = (String) token.getPrincipal();
         SimplePrincipalCollection principals = new SimplePrincipalCollection(userName, getName());
         super.doClearCache(principals);
 

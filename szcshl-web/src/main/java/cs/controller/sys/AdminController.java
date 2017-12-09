@@ -6,6 +6,7 @@ import cs.common.Constant;
 import cs.common.utils.DateUtils;
 import cs.common.utils.PropertyUtil;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Tools;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
 import cs.service.flow.FlowService;
@@ -16,6 +17,8 @@ import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
 import cs.service.sys.DictService;
 import org.activiti.engine.task.TaskQuery;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -51,14 +55,6 @@ public class AdminController {
     @Autowired
     private RuProcessTaskRepo ruProcessTaskRepo;
     @Autowired
-    private ProjectStopService projectStopService;
-
-    @Autowired
-    private AppraiseService appraiseService;
-
-    @Autowired
-    private AddSuppLetterService addSuppLetterService;
-    @Autowired
     private AnnountmentService annService;
     @Autowired
     private FlowService flowService;
@@ -66,15 +62,26 @@ public class AdminController {
     //@RequiresPermissions("admin#index#get")
     @RequiresAuthentication
     @RequestMapping(name = "首页", path = "index")
-    public String index(Model model) {
+    public String index(HttpServletRequest request , HttpServletRequest response,Model model) {
         model.addAttribute("user", SessionUtil.getLoginName());
         model.addAttribute("DICT_ITEMS", JSON.toJSONString(dictService.getDictItemByCode(null)));
-        /*String userState = rtxService.queryUserState(null,SessionUtil.getLoginName());
-        if("0".equals(userState) || "2".equals(userState)){
-            model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null,SessionUtil.getLoginName()));
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            model.addAttribute("RTX_IP", propertyUtil.readProperty("RTX_IP"));
-        }*/
+        String agent = request.getHeader("User-Agent").toLowerCase();
+        //登录时候提醒一次就行了
+        if(SessionUtil.getSession().getAttribute(Constant.NOTICE_KEY) != null){
+            List<String> noticeList = (List<String>) SessionUtil.getSession().getAttribute(Constant.NOTICE_KEY);
+            model.addAttribute("NOTICE_LIST", JSON.toJSONString(noticeList));
+            SessionUtil.getSession().removeAttribute(Constant.NOTICE_KEY);
+        }
+        //如果是IE浏览器，则登录
+        if(Tools.getBrowserName(agent).contains("ie")){
+            String userState = rtxService.queryUserState(null,SessionUtil.getLoginName());
+            if("0".equals(userState) || "2".equals(userState)){
+                model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null,SessionUtil.getLoginName()));
+                PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+                model.addAttribute("RTX_IP", propertyUtil.readProperty("RTX_IP"));
+            }
+        }
+
         return ctrlName + "/index";
     }
 
@@ -115,7 +122,7 @@ public class AdminController {
         }
         /*******************   以下是普通用户的首页   ********************/
         //1、查询个人待办项目
-        resultMap.put("proTaskList",flowService.queryMyRunProcessTasks());
+        resultMap.put("proTaskList",flowService.queryMyRunProcessTasks(6));
         //2、查询个人待办任务
         resultMap.put("comTaskList",flowService.queryMyHomeAgendaTask());
         //3、查询通知公告

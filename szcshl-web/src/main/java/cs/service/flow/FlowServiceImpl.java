@@ -470,7 +470,7 @@ public class FlowServiceImpl implements FlowService {
      * @return
      */
     @Override
-    public List<RuProcessTask> queryMyRunProcessTasks() {
+    public List<RuProcessTask> queryMyRunProcessTasks(Integer max) {
         Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
         Disjunction dis = Restrictions.disjunction();
         dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
@@ -486,8 +486,9 @@ public class FlowServiceImpl implements FlowService {
                 + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_FGLD_SPW1 + "' )"));
         criteria.add(dis2);
         criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
-        criteria.setMaxResults(6);
-
+        if(max != null && max > 0){
+            criteria.setMaxResults(max);
+        }
         return criteria.list();
     }
 

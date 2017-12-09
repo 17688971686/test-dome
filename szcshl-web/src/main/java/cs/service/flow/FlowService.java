@@ -50,7 +50,7 @@ public interface FlowService {
      * 查询主页上的待办任务
      * @return
      */
-    List<RuProcessTask> queryMyRunProcessTasks();
+    List<RuProcessTask> queryMyRunProcessTasks(Integer max);
 
     /**
      * 查询主页上的办结任务

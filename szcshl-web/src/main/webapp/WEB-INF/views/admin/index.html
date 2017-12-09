@@ -580,12 +580,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="${path}/contents/libs/angular/sanitize.js"></script>
     <script src="${path}/contents/libs/angular/angular-ui-router.js"></script>
     <script src="${path}/contents/libs/boilerplate/plugins.js"></script>
-    <script src="${path}/contents/libs/jquery-validation/jquery.validate.js"></script>
-    <script src="${path}/contents/libs/jquery-validation/jquery.validate.unobtrusive.js"></script>
+
     <script src="${path}/contents/libs/kendoui/kendo.all.min.js"></script>
     <script src="${path}/contents/libs/kendoui/kendo.message.zh-CN.js"></script>
     <script src="${path}/contents/libs/kendoui/kendo.culture.zh-CN.min.js"></script>
     <script src="${path}/contents/libs/jsLinq/jslinq.min.js"></script>
+
+    <script src="${path}/contents/libs/jquery-validation/jquery.validate.js"></script>
+    <script src="${path}/contents/libs/jquery-validation/jquery.validate.unobtrusive.js"></script>
+
+    <!--弹框提示-->
+    <script src="${path}/contents/libs/layer/layer.js"></script>
+    <link href="${path}/contents/libs/layer/theme/default/layer.css" rel="stylesheet"/>
     <!--文件下载插件-->
     <script src="${path}/contents/libs/file-save/angular-file-saver.bundle.js"></script>
 
@@ -597,10 +603,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- AdminLTE App -->
     <script src="${path}/contents/libs/adminLTE/dist/js/app.js"></script>
-
     <!--echarts图表-->
     <script src="${path}/contents/libs/echarts/echarts.js"></script>
-
     <!--ztree-->
     <script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
     <!--Ueditor-->
@@ -631,27 +635,68 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="${path}/contents/app-dist/app.all.js?version = ${.now}"></script>
     <script src="${path}/contents/shared/index.js"></script>
     <script type="text/javascript">
-        $(".sidebar-menu .treeview-menu > li > a").click(function () {
-            $(".sidebar-menu .treeview-menu > li > a").css({"font-weight": "normal"});
-            $(".sidebar-menu .treeview-menu > li").css({"background": "none"});
-            $(this).parent("li").css({"background": "rgb(230, 236, 242)"});
-            $(this).css({"font-weight": "bold"});
-        })
-        common.initDictItems(${DICT_ITEMS});
-        var rtxSessionKey = "${RTX_SEESION_KEY}";
-        if (rtxSessionKey) {
-            try {
-                var ip = "${RTX_IP}";
-                var objProp = RTXAX.GetObject("Property");
-                objProp.value("RTXUsername") = "${user}";
-                objProp.value("LoginSessionKey") = rtxSessionKey;
-                objProp.value("ServerAddress") = ip; //RTX Server IP地址
-                objProp.value("ServerPort") = 8000;
-                RTXAX.Call(2, objProp);               //2表示通过SessionKey登录
-            } catch (e) {
-                alert("该浏览器不支持腾讯通登录：");
+        $(document).ready(function(){
+            $(".sidebar-menu .treeview-menu > li > a").click(function () {
+                $(".sidebar-menu .treeview-menu > li > a").css({"font-weight": "normal"});
+                $(".sidebar-menu .treeview-menu > li").css({"background": "none"});
+                $(this).parent("li").css({"background": "rgb(230, 236, 242)"});
+                $(this).css({"font-weight": "bold"});
+            })
+            //初始化数字字典
+            common.initDictItems(${DICT_ITEMS});
+           
+            //消息弹窗
+            var noticeList = ${NOTICE_LIST};
+            if(noticeList && noticeList.length > 0){
+                for(var i=0,l=noticeList.length;i<l;i++){
+                    var t = layer.open({
+                        type: 1,
+                        title:"系统提示",
+                        offset: [
+                            ($(window).height()-160),
+                            ($(window).width()-365)
+                        ],
+                        content: '<div style="width: 360px;height:105px;padding:8px 10px;overflow: hidden;">'+noticeList[i]+'</div>',
+                        shade: 0,       //不显示遮罩层
+                        yes: function(){
+                            t.close();
+                        }
+                    });
+                }
             }
-        }
+            //判断是否是IE浏览器，如果是IE浏览器，则自动登录腾讯通
+            var isIE = (navigator.userAgent.indexOf('MSIE') >= 0) || (navigator.userAgent.indexOf('Trident') >= 0);
+            if(isIE){
+                var rtxSessionKey = "${RTX_SEESION_KEY}";
+                if (rtxSessionKey) {
+                    try {
+                        var ip = "${RTX_IP}";
+                        var objProp = RTXAX.GetObject("Property");
+                        objProp.value("RTXUsername") = "${user}";
+                        objProp.value("LoginSessionKey") = rtxSessionKey;
+                        objProp.value("ServerAddress") = ip; //RTX Server IP地址
+                        objProp.value("ServerPort") = 8000;
+                        RTXAX.Call(2, objProp);               //2表示通过SessionKey登录
+                    } catch (e) {
+                        alert("该浏览器不支持腾讯通登录：");
+                    }
+                }
+            }else{
+                var o = layer.open({
+                    type: 1,
+                    title:"系统提示",
+                    offset: [
+                        ($(window).height()-160),
+                        ($(window).width()-365)
+                    ],
+                    content: '<div style="width: 360px;height:105px;padding:8px 10px;overflow: hidden;">该浏览器不支持腾讯通登录！</div>',
+                    shade: 0,       //不显示遮罩层
+                    yes: function(){
+                        o.close();
+                    }
+                });
+            }
+        });
     </script>
     <!--<script src="${path}/contents/app/common/common.js?version = ${.now}"></script>-->
     <!--<script src="${path}/contents/app/app.js?version = ${.now}"></script>-->

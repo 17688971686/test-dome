@@ -192,7 +192,7 @@ public class FlowController {
     @RequestMapping(name = "查询主页我的待办任务", path = "getMyHomeTasks", method = RequestMethod.POST)
     @ResponseBody
     public  List<RuProcessTask> getMyHomeTasks() {
-        return flowService.queryMyRunProcessTasks();
+        return flowService.queryMyRunProcessTasks(6);
     }
 
     //@RequiresPermissions("flow#getMyHomeEndTask#post")

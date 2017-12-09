@@ -36,7 +36,7 @@
                                 <a ng-if="t.processState == '2'"
                                    href="#/signFlowDetail/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a>
                             </td>
-                            <td>{{t.nodeName}}</td>
+                            <td>{{t.nodeNameValue}}</td>
                             <td><span class="badge bg-red">{{t.createTime}}</span></td>
                         </tr>
                         </tbody>
@@ -70,7 +70,7 @@
                             <td>
                                 <a href="#/flowDeal/{{t.businessKey}}/{{t.processKey}}/{{t.taskId}}/{{t.instanceId}}">{{t.instanceName}}</a>
                             </td>
-                            <td>{{t.nodeName}}</td>
+                            <td>{{t.nodeNameValue}}</td>
                             <td><span class="badge bg-yellow">{{t.createTime}}</span></td>
                         </tr>
                         </tbody>
