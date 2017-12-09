@@ -2112,9 +2112,9 @@ public class SignServiceImpl implements SignService {
         //保存
         try {
             signRepo.save(sign);
-            return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
+            return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue(),sign.getSignid());
         } catch (Exception e) {
-            return new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue()+e.getMessage());
+            return new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue()+e.getMessage(),sign.getSignid());
         }
     }
 

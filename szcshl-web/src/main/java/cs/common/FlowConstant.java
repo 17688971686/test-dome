@@ -363,4 +363,43 @@ public class FlowConstant {
             return value;
         }
     }
+
+    public static String getFLowNameByFlowKey(String flowKey){
+        String resultValue = "";
+        switch (flowKey){
+            case SIGN_FLOW:
+                resultValue = "【项目签收流程】";
+                break;
+            case TOPIC_FLOW:
+                resultValue = "【课题研究流程】";
+                break;
+            case BOOKS_BUY_FLOW:
+                resultValue = "【图书采购流程】";
+                break;
+            case ASSERT_STORAGE_FLOW:
+                resultValue = "【资产入库流程】";
+                break;
+            case PROJECT_STOP_FLOW:
+                resultValue = "【项目暂停审批流程】";
+                break;
+            case FLOW_ARCHIVES:
+                resultValue = "【档案借阅流程】";
+                break;
+            case FLOW_APPRAISE_REPORT:
+                resultValue = "【优秀评审报告流程】";
+                break;
+            case FLOW_SUPP_LETTER:
+                resultValue = "【拟补充资料函流程】";
+                break;
+            case MONTHLY_BULLETIN_FLOW:
+                resultValue = "【月报简报流程】";
+                break;
+            case ANNOUNT_MENT_FLOW:
+                resultValue = "【通知公告流程】";
+                break;
+            default:
+                    ;
+        }
+        return resultValue;
+    }
 }

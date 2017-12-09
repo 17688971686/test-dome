@@ -5,10 +5,32 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/log">日志管理</a></li>
-        <li class="active">{{vm.title}}</li>
+        <li>系统管理员</li>
+        <li class="active">日志记录</li>
     </ol>
-    <form id="form" name="form">          
-         <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
-    </form>
+    <div class="well well-sm">
+        <form id="logform" name="logform">
+            <span class="help-inline">级别：</span>
+            <select name="logLevel">
+                <option value="">请选择</option>
+                <option value="1">高</option>
+                <option value="2">中</option>
+                <option value="3">低</option>
+            </select>
+
+            <span class="help-inline">所属模块：</span>
+            <input type="text"  operator="like" name="module" id="module" >
+            <span class="help-inline">操作者：</span>
+            <input type="text"  operator="like" name="userName" id="userName" >
+            <span class="help-inline">操作日期：</span>
+            <input type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="ge" name="createdDate">
+            至
+            <input type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="le" name="createdDate">
+
+            <button class="btn btn-sm btn-primary" ng-click="vm.queryLog()"><span class="glyphicon glyphicon-search"></span>查询</button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.formReset()"><span class="glyphicon glyphicon-repeat"></span>重置</button>
+        </form>
+    </div>
+
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>

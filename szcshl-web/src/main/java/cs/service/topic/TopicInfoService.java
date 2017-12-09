@@ -35,7 +35,8 @@ public interface TopicInfoService {
     /**
      * 处理发改委审核之后的方法
      * @param resultMsg
+     * @param topicInfoDto
      * @return
      */
-    ResultMsg dealReturnAudit(ResultMsg resultMsg);
+    ResultMsg dealReturnAudit(ResultMsg resultMsg,TopicInfoDto topicInfoDto);
 }

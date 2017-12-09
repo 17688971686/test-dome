@@ -580,13 +580,14 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     /**
      * 处理发改委返回的结果
      * @param resultMsg
+     * @param topicInfoDto
      * @return
      */
     @Override
-    public ResultMsg dealReturnAudit(ResultMsg resultMsg) {
+    public ResultMsg dealReturnAudit(ResultMsg resultMsg,TopicInfoDto topicInfoDto) {
         ResultMsg resultObj = null;
         try{
-            TopicInfoDto topicInfoDto = (TopicInfoDto) resultMsg.getReObj();
+
             if(topicInfoDto == null){
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_TOPIC_01.getCode(), IFResultCode.IFMsgCode.SZEC_TOPIC_01.getValue());
             }

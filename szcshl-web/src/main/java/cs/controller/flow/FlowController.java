@@ -1,9 +1,11 @@
 package cs.controller.flow;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.Constant;
 import cs.common.Constant.MsgCode;
 import cs.common.FlowConstant;
 import cs.common.ResultMsg;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
@@ -11,6 +13,7 @@ import cs.domain.flow.RuTask;
 import cs.domain.monthly.MonthlyNewsletter;
 import cs.domain.project.SignDispaWork;
 import cs.domain.sys.Annountment;
+import cs.domain.sys.Log;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
@@ -29,6 +32,7 @@ import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
 import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.sys.AnnountmentService;
+import cs.service.sys.LogService;
 import cs.service.topic.TopicInfoService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
@@ -53,6 +57,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -123,6 +128,9 @@ public class FlowController {
     private MonthlyNewsletterService monthlyNewsletterService;
     @Autowired
     private AnnountmentService annountmentService;
+    @Autowired
+    private LogService logService;
+
 
     //@RequiresPermissions("flow#html/tasks#post")
     @RequiresAuthentication
@@ -396,55 +404,79 @@ public class FlowController {
     @RequiresAuthentication
     @RequestMapping(name = "流程提交", path = "commit", method = RequestMethod.POST)
     public @ResponseBody
-    ResultMsg flowCommit(@RequestBody FlowDto flowDto) throws Exception {
+    ResultMsg flowCommit(@RequestBody FlowDto flowDto){
         ResultMsg resultMsg = null;
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
-        Task task = null;
-        if (Validate.isString(flowDto.getTaskId())) {
-            task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
-        } else {
-            task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        String errorMsg = "";
+        String module="";
+        String businessKey = "";
+        try{
+            ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
+            Task task = null;
+            if (Validate.isString(flowDto.getTaskId())) {
+                task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
+            } else {
+                task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+            }
+            if (task == null) {
+                return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
+            }
+            if (task.isSuspended()) {
+                return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
+            }
+            module = processInstance.getProcessDefinitionKey();
+            businessKey = processInstance.getBusinessKey();
+            switch (module){
+                case FlowConstant.SIGN_FLOW:
+                    resultMsg = signService.dealFlow(processInstance, task,flowDto);
+                    break;
+                case FlowConstant.TOPIC_FLOW:
+                    resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
+                    break;
+                case FlowConstant.BOOKS_BUY_FLOW:
+                    resultMsg = bookBuyBusinessService.dealFlow(processInstance, task,flowDto);
+                    break;
+                case FlowConstant.ASSERT_STORAGE_FLOW:
+                    resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
+                    break;
+                case FlowConstant.PROJECT_STOP_FLOW:
+                    resultMsg = projectStopService.dealFlow(processInstance, task,flowDto);
+                    break;
+                case FlowConstant.FLOW_ARCHIVES:
+                    resultMsg = archivesLibraryService.dealFlow(processInstance, task,flowDto);
+                    break;
+                case FlowConstant.FLOW_APPRAISE_REPORT:
+                    resultMsg = appraiseService.dealFlow(processInstance, task,flowDto);
+                    break;
+                case FlowConstant.FLOW_SUPP_LETTER:
+                    resultMsg = addSuppLetterService.dealSignSupperFlow(processInstance, task,flowDto);
+                    break;
+                case FlowConstant.MONTHLY_BULLETIN_FLOW:
+                    resultMsg = monthlyNewsletterService.dealSignSupperFlow(processInstance, task,flowDto);
+                    break;
+                case FlowConstant.ANNOUNT_MENT_FLOW:
+                    resultMsg = annountmentService.dealSignSupperFlow(processInstance, task,flowDto);
+                    break;
+                default:
+                    resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
+            }
+        }catch (Exception e){
+            errorMsg = e.getMessage();
+            log.info("流程提交异常："+errorMsg);
+            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作异常，错误信息已记录，请联系管理员查看！");
         }
-        if (task == null) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "该流程已被处理！");
-        }
-        if (task.isSuspended()) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目已暂停，不能进行操作！");
-        }
-        switch (processInstance.getProcessDefinitionKey()){
-            case FlowConstant.SIGN_FLOW:
-                resultMsg = signService.dealFlow(processInstance, task,flowDto);
-                break;
-            case FlowConstant.TOPIC_FLOW:
-                resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
-                break;
-            case FlowConstant.BOOKS_BUY_FLOW:
-                resultMsg = bookBuyBusinessService.dealFlow(processInstance, task,flowDto);
-                break;
-            case FlowConstant.ASSERT_STORAGE_FLOW:
-                resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
-                break;
-            case FlowConstant.PROJECT_STOP_FLOW:
-                resultMsg = projectStopService.dealFlow(processInstance, task,flowDto);
-                break;
-            case FlowConstant.FLOW_ARCHIVES:
-                resultMsg = archivesLibraryService.dealFlow(processInstance, task,flowDto);
-                break;
-            case FlowConstant.FLOW_APPRAISE_REPORT:
-                resultMsg = appraiseService.dealFlow(processInstance, task,flowDto);
-                break;
-            case FlowConstant.FLOW_SUPP_LETTER:
-                resultMsg = addSuppLetterService.dealSignSupperFlow(processInstance, task,flowDto);
-                break;
-            case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                resultMsg = monthlyNewsletterService.dealSignSupperFlow(processInstance, task,flowDto);
-                break;
-            case FlowConstant.ANNOUNT_MENT_FLOW:
-                resultMsg = annountmentService.dealSignSupperFlow(processInstance, task,flowDto);
-                break;
-            default:
-                resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");
-        }
+        //添加日记记录
+        Log log = new Log();
+        log.setCreatedDate(new Date());
+        log.setUserName(SessionUtil.getDisplayName());
+        log.setLogCode(resultMsg.getReCode());
+        log.setBuninessId(businessKey);
+        log.setMessage(resultMsg.getReMsg()+errorMsg);
+        log.setModule(Constant.LOG_MODULE.FLOWCOMMIT.getValue()+FlowConstant.getFLowNameByFlowKey(module) );
+        log.setResult(resultMsg.isFlag()? Constant.EnumState.YES.getValue(): Constant.EnumState.NO.getValue());
+        log.setLogger(this.getClass().getName()+".flowCommit");
+        //优先级别高
+        log.setLogLevel(Constant.EnumState.PROCESS.getValue());
+        logService.save(log);
         return resultMsg;
     }
 

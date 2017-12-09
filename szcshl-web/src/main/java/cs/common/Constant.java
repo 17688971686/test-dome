@@ -73,10 +73,6 @@ public class Constant {
     public static final String PASSWORD = "123456";
 
     /**
-     * 评审报告评优 综合部负责人
-     */
-
-    /**
      * 插件默认地址
      */
     public static final String plugin_file_path = "contents/plugins";
@@ -682,6 +678,25 @@ public class Constant {
         public String getValue() {
             return value;
         }
+    }
 
+    /**
+     * 日记模块
+     */
+    public static enum LOG_MODULE {
+        INTERFACE("系统接口"),
+        FLOWCOMMIT("流程提交"),
+        FLOWBACK("流程回退"),
+        FLOWACTIVE("流程激活"),
+        FLOWSTOP("流程暂停");
+        private String value;
+
+        LOG_MODULE(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 }

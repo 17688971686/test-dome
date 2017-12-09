@@ -4,15 +4,21 @@ import com.alibaba.fastjson.JSON;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
 import cs.ahelper.IgnoreAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
+import cs.domain.sys.Log;
 import cs.model.project.SignDto;
+import cs.model.topic.TopicInfoDto;
 import cs.service.project.SignService;
+import cs.service.sys.LogService;
 import cs.service.topic.TopicInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +38,8 @@ public class SysRestController {
     private TopicInfoService topicInfoService;
     @Autowired
     private HttpClientOperate httpClientOperate;
+    @Autowired
+    private LogService logService;
     /**
      * 项目签收信息
      * @param signDtoJson
@@ -42,7 +50,23 @@ public class SysRestController {
     public ResultMsg pushProject(@RequestParam String signDtoJson) {
         //json转出对象
         SignDto signDto = JSON.parseObject(signDtoJson,SignDto.class);
-        return signService.pushProject(signDto);
+        ResultMsg resultMsg = signService.pushProject(signDto);
+        //添加日记记录
+        Log log = new Log();
+        log.setCreatedDate(new Date());
+        log.setLogCode(resultMsg.getReCode());
+        log.setModule(Constant.LOG_MODULE.INTERFACE.getValue()+"【项目推送接口】");
+        log.setMessage(resultMsg.getReMsg());
+        log.setBuninessId(Validate.isObject(resultMsg.getReObj())?resultMsg.getReObj().toString():"");
+        log.setBuninessType(Constant.BusinessType.SIGN.getValue());
+        log.setResult(resultMsg.isFlag()? Constant.EnumState.YES.getValue(): Constant.EnumState.NO.getValue());
+        log.setLogger(this.getClass().getName()+".pushProject");
+        //优先级别高
+        log.setLogLevel(Constant.EnumState.PROCESS.getValue());
+        logService.save(log);
+
+        resultMsg.setReObj(null);
+        return resultMsg;
     }
 
 
@@ -54,8 +78,22 @@ public class SysRestController {
     @RequestMapping(name="课题研究审核",value = "/auditTopicResult", method = RequestMethod.POST)
     @Transactional
     public ResultMsg auditTopicResult(@RequestBody ResultMsg resultMsg) {
-
-        return topicInfoService.dealReturnAudit(resultMsg);
+        TopicInfoDto topicInfoDto = (TopicInfoDto) resultMsg.getReObj();
+        ResultMsg returnMsg = topicInfoService.dealReturnAudit(resultMsg,topicInfoDto);
+        //添加日记记录
+        Log log = new Log();
+        log.setCreatedDate(new Date());
+        log.setLogCode(returnMsg.getReCode());
+        log.setMessage(returnMsg.getReMsg());
+        log.setModule(Constant.LOG_MODULE.INTERFACE.getValue()+"【课题研究审核】");
+        log.setBuninessId(Validate.isObject(topicInfoDto)?topicInfoDto.getId():"");
+        log.setBuninessType(Constant.BusinessType.TOPIC.getValue());
+        log.setResult(returnMsg.isFlag()? Constant.EnumState.YES.getValue(): Constant.EnumState.NO.getValue());
+        log.setLogger(this.getClass().getName()+".auditTopicResult");
+        //优先级别高
+        log.setLogLevel(Constant.EnumState.PROCESS.getValue());
+        logService.save(log);
+        return returnMsg;
     }
 
 

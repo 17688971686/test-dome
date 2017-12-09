@@ -8,6 +8,7 @@ import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.*;
 import cs.domain.project.*;
+import cs.domain.sys.Log;
 import cs.domain.topic.WorkPlan;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
@@ -24,6 +25,7 @@ import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.topic.WorkPlanRepo;
 import cs.service.project.SignService;
+import cs.service.sys.LogService;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -57,10 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.ZipInputStream;
 
 @Service
@@ -125,7 +124,8 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-
+    @Autowired
+    private LogService logService;
     /**
      * 回退到上一环节或者指定环节
      *
@@ -135,45 +135,51 @@ public class FlowServiceImpl implements FlowService {
     @Override
     @Transactional
     public ResultMsg rollBackLastNode(FlowDto flowDto) {
-        // 取得当前任务
-        HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery().taskId(flowDto.getTaskId()).singleResult();
-        if (currTask == null) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取任务信息！");
-        }
-        // 取得流程实例
-        ProcessInstance instance = runtimeService.createProcessInstanceQuery().processInstanceId(currTask.getProcessInstanceId()).singleResult();
-        //流程结束
-        if (instance == null) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，流程已结束！");
-        }
-        // 取得流程定义
-        ProcessDefinitionEntity definition = (ProcessDefinitionEntity) (processEngine.getRepositoryService().getProcessDefinition(currTask
-                .getProcessDefinitionId()));
-        if (definition == null) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，流程定义数据为空！");
-        }
-        // 取得上一步活动
-        ActivityImpl currActivity = ((ProcessDefinitionImpl) definition).findActivity(currTask.getTaskDefinitionKey());
-
-        // 清除当前活动的出口
-        List<PvmTransition> oriPvmTransitionList = new ArrayList<PvmTransition>();
-        List<PvmTransition> pvmTransitionList = currActivity.getOutgoingTransitions();
-        for (PvmTransition pvmTransition : pvmTransitionList) {
-            oriPvmTransitionList.add(pvmTransition);
-        }
-        pvmTransitionList.clear();
-
-        // 完成任务
-        Task task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
-        if (task == null) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取任务信息！");
-        }
-
-        String backActivitiId = "";
+        ResultMsg resultMsg = null;
+        String errorMsg = "";
+        String module="";
+        String businessKey = "";
         try {
+            // 取得当前任务
+            HistoricTaskInstance currTask = historyService.createHistoricTaskInstanceQuery().taskId(flowDto.getTaskId()).singleResult();
+            if (currTask == null) {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取任务信息！");
+            }
+            // 取得流程实例
+            ProcessInstance instance = runtimeService.createProcessInstanceQuery().processInstanceId(currTask.getProcessInstanceId()).singleResult();
+            //流程结束
+            if (instance == null) {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，流程已结束！");
+            }
+            // 取得流程定义
+            ProcessDefinitionEntity definition = (ProcessDefinitionEntity) (processEngine.getRepositoryService().getProcessDefinition(currTask
+                    .getProcessDefinitionId()));
+            if (definition == null) {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，流程定义数据为空！");
+            }
+            // 取得上一步活动
+            ActivityImpl currActivity = ((ProcessDefinitionImpl) definition).findActivity(currTask.getTaskDefinitionKey());
+
+            // 清除当前活动的出口
+            List<PvmTransition> oriPvmTransitionList = new ArrayList<PvmTransition>();
+            List<PvmTransition> pvmTransitionList = currActivity.getOutgoingTransitions();
+            for (PvmTransition pvmTransition : pvmTransitionList) {
+                oriPvmTransitionList.add(pvmTransition);
+            }
+            pvmTransitionList.clear();
+
+            // 完成任务
+            Task task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
+            if (task == null) {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取任务信息！");
+            }
+
+            String backActivitiId = "";
             // 建立新出口
             List<TransitionImpl> newTransitions = new ArrayList<TransitionImpl>();
-            switch (instance.getProcessDefinitionKey()) {
+            module = instance.getProcessDefinitionKey();
+            businessKey = instance.getBusinessKey();
+            switch (module) {
                 case FlowConstant.SIGN_FLOW:
                     backActivitiId = signFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
                     //如果是合并评审环节，还要合并回退
@@ -182,7 +188,6 @@ public class FlowServiceImpl implements FlowService {
                         if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && Constant.EnumState.YES.getValue().equals(wk.getIsMainProject())) {
                             List<SignMerge> mergeList = signMergeRepo.findByIds(SignMerge_.signId.getName(), instance.getBusinessKey(), null);
                             if (Validate.isList(mergeList)) {
-                                ResultMsg resultMsg;
                                 FlowDto flowDto2 = new FlowDto();
                                 flowDto2.setDealOption(flowDto.getDealOption());
                                 for (SignMerge s : mergeList) {
@@ -268,11 +273,27 @@ public class FlowServiceImpl implements FlowService {
                 pvmTransitionList.add(pvmTransition);
             }
 
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
         } catch (Exception e) {
-            log.error("流程回退异常：" + e.getMessage());
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，错误问题已记录，请联系管理员检查确认！");
+            errorMsg = e.getMessage();
+            log.error("流程回退异常：" + errorMsg);
+            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，错误问题已记录，请联系管理员检查确认！");
         }
+        //添加日记记录
+        Log log = new Log();
+        log.setCreatedDate(new Date());
+        log.setUserName(SessionUtil.getDisplayName());
+        log.setLogCode(resultMsg.getReCode());
+        log.setBuninessId(businessKey);
+        log.setMessage(resultMsg.getReMsg()+errorMsg);
+        log.setModule(Constant.LOG_MODULE.FLOWBACK.getValue()+FlowConstant.getFLowNameByFlowKey(module) );
+        log.setResult(resultMsg.isFlag()? Constant.EnumState.YES.getValue(): Constant.EnumState.NO.getValue());
+        log.setLogger(this.getClass().getName()+".rollBackLastNode");
+        //优先级别高
+        log.setLogLevel(Constant.EnumState.PROCESS.getValue());
+        logService.save(log);
+
+        return resultMsg;
     }
 
 
@@ -689,13 +710,35 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public ResultMsg stopFlow(String businessKey) {
+        ResultMsg resultMsg = null;
+        String errorMsg = "";
+        String module="";
         try {
             ProcessInstance processInstance = findProcessInstanceByBusinessKey(businessKey);
             runtimeService.suspendProcessInstanceById(processInstance.getId());
+            module = processInstance.getProcessDefinitionKey();
+            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
         } catch (Exception e) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作异常：" + e.getMessage());
+            errorMsg = e.getMessage();
+            log.error("流程回退异常：" + errorMsg);
+            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，错误问题已记录，请联系管理员检查确认！");
         }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+
+        //添加日记记录
+        Log log = new Log();
+        log.setCreatedDate(new Date());
+        log.setBuninessId(businessKey);
+        log.setUserName(SessionUtil.getDisplayName());
+        log.setLogCode(resultMsg.getReCode());
+        log.setMessage(resultMsg.getReMsg()+errorMsg);
+        log.setModule(Constant.LOG_MODULE.FLOWSTOP.getValue()+FlowConstant.getFLowNameByFlowKey(module) );
+        log.setResult(resultMsg.isFlag()? Constant.EnumState.YES.getValue(): Constant.EnumState.NO.getValue());
+        log.setLogger(this.getClass().getName()+".stopFlow");
+        //优先级别高
+        log.setLogLevel(Constant.EnumState.PROCESS.getValue());
+        logService.save(log);
+
+        return resultMsg;
     }
 
     /**
@@ -707,26 +750,49 @@ public class FlowServiceImpl implements FlowService {
     @Override
     @Transactional
     public ResultMsg restartFlow(String businessKey) {
+        ResultMsg resultMsg = null;
+        String errorMsg = "";
+        String module="";
         //激活流程
         try {
             ProcessInstance processInstance = findProcessInstanceByBusinessKey(businessKey);
             if(processInstance != null){
-                //项目签收流程
-                if(processInstance.getProcessDefinitionKey().equals(FlowConstant.SIGN_FLOW)){//修改状态
-                    signService.activateFlow(businessKey);
+                module = processInstance.getProcessDefinitionKey();
+                switch (module){
+                    case FlowConstant.SIGN_FLOW:
+                        signService.activateFlow(businessKey);
+                        break;
+                    default:
+                        ;
                 }
                 //如果是暂停，则重新启动
                 if(processInstance.isSuspended()){
                     runtimeService.activateProcessInstanceById(processInstance.getId());
                 }
-                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            }else{
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "流程实例已被删除！");
             }
 
         } catch (Exception e) {
-            log.info("流程重新激活异常："+e.getMessage());
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作异常：" + e.getMessage());
+            errorMsg = e.getMessage();
+            log.info("流程重新激活异常："+errorMsg);
+            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作异常：" + e.getMessage());
         }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        //添加日记记录
+        Log log = new Log();
+        log.setCreatedDate(new Date());
+        log.setUserName(SessionUtil.getDisplayName());
+        log.setLogCode(resultMsg.getReCode());
+        log.setBuninessId(businessKey);
+        log.setMessage(resultMsg.getReMsg()+errorMsg);
+        log.setModule(Constant.LOG_MODULE.FLOWACTIVE.getValue()+FlowConstant.getFLowNameByFlowKey(module) );
+        log.setResult(resultMsg.isFlag()? Constant.EnumState.YES.getValue(): Constant.EnumState.NO.getValue());
+        log.setLogger(this.getClass().getName()+".restartFlow");
+        //优先级别高
+        log.setLogLevel(Constant.EnumState.PROCESS.getValue());
+        logService.save(log);
+        return resultMsg;
     }
 
     /**
