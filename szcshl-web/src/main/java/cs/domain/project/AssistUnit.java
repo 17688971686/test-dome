@@ -88,7 +88,7 @@ public class AssistUnit extends DomainBase {
     /**
      * 评审计划
      */
-    @ManyToMany(mappedBy = "assistUnitList")
+    @ManyToMany(mappedBy = "assistUnitList",fetch = FetchType.LAZY)
     private List<AssistPlan> assistPlanList;
 
 

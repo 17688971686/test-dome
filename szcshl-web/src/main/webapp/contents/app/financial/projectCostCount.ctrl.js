@@ -3,9 +3,9 @@
 
     angular.module('app').controller('projectCostCountCtrl', projectCostCount);
 
-    projectCostCount.$inject = ['$location', 'projectCostCountSvc','adminSvc','$state','$http','expertReviewSvc'];
+    projectCostCount.$inject = ['$location', 'projectCostCountSvc','adminSvc','$state','$http','expertReviewSvc','bsWin'];
 
-    function projectCostCount($location, projectCostCountSvc,adminSvc,$state,$http,expertReviewSvc) {
+    function projectCostCount($location, projectCostCountSvc,adminSvc,$state,$http,expertReviewSvc,bsWin) {
         var vm = this;
         vm.title = '项目评审费统计';
         vm.model={};
@@ -33,17 +33,21 @@
                 vm.expertSelectedDtoList = data.expertSelectedDtoList;
                 if( vm.expertSelectedDtoList && vm.expertSelectedDtoList.length >0){
                     vm.showReviewCost = true;
+                    $("#expertCostWindow").kendoWindow({
+                        width: "70%",
+                        height: "600px;",
+                        title: vm.titleName ,
+                        visible: false,
+                        modal: true,
+                        closable: true,
+                        actions: ["Pin", "Minimize", "Maximize", "close"]
+                    }).data("kendoWindow").center().open();
+                }else{
+                    bsWin.alert("没有专家");
                 }
+
             });
-            $("#expertCostWindow").kendoWindow({
-                width: "70%",
-                height: "600px;",
-                title: vm.windowName ,
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
+
         }
 
         // vm.initFinancial = function (businessId) {
