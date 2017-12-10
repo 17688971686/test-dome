@@ -38,7 +38,10 @@
                 msg: "确认删除数据吗？",
                 fn: function () {
                     $('.confirmDialog').modal('hide');
-                    expertSvc.deleteExpert(vm, id);
+                    expertSvc.deleteExpert(vm, id , function(data){
+                        vm.isSubmit = false;
+                        vm.gridOptions.dataSource.read();
+                    });
                 }
             })
         };

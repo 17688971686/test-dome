@@ -1,13 +1,13 @@
 <meta charset="UTF-8">
 <!-- start 主项目 -->
-<div  ng-repeat="w in vm.model.workProgramDtoList"   ng-if="(w.workreviveStage=='设备清单（国产）' || w.workreviveStage=='设备清单（进口）') && (w.branchId == '1') && (w.signId == vm.model.signid)">
-    <div id="wpTempl1{{w.branchId}}">
+<div  ng-repeat="w in vm.model.workProgramDtoList"   ng-if="(w.workreviveStage=='设备清单（国产）' || w.workreviveStage=='设备清单（进口）') ">
+    <div id="wpTempl1{{w.branchId}}{{w.isMainProject}}">
         <table class="print-table">
             <caption class="title" style="margin-top: 10px;" >{{w.titleName}}</caption>
             <caption>
                 <span>QR-4.9-02-A0</span>
             </caption>
-            <caption style="width:80%;">
+            <caption style="width:95%;">
                 <span style="float:left;">
                     <span>评审方式: {{w.reviewType}}</span>
                     <span style="margin:0px 10px;">{{w.isSigle}}</span>
@@ -113,7 +113,7 @@
             </tr>
         </table>
     </div>
-    <div id="wpTempl2{{w.branchId}}">
+    <div id="wpTempl2{{w.branchId}}{{w.isMainProject}}">
         <table class="print-table">
             <tr ng-if="w.isSigle && w.isSigle == '合并评审' ">
                 <td >合并评审相关项目</td>

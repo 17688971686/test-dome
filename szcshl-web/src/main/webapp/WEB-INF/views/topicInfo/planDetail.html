@@ -101,7 +101,9 @@
             <td class="text-center">部门主管意见</td>
             <td colspan="8" >
                 <div style="min-height: 50px;">
-                    {{vm.model.workPlanDto.directorOption}}
+                    <p> {{vm.model.workPlanDto.directorOption}}</p>
+                    <p class="text-right" ng-if="vm.model.workPlanDto.directorName">签名：{{vm.model.workPlanDto.directorName}}</p>
+                    <p class="text-right" ng-if="vm.model.workPlanDto.directorDate">日期：{{vm.model.workPlanDto.directorDate}}</p>
                 </div>
             </td>
         </tr>
@@ -109,7 +111,9 @@
             <td class="text-center">领导批示</td>
             <td colspan="8" >
                 <div style="min-height: 50px;">
-                    {{vm.model.workPlanDto.leaderOption}}
+                    <p>{{vm.model.workPlanDto.leaderOption}}</p>
+                    <p class="text-right" ng-if="vm.model.workPlanDto.leaderName">签名：{{vm.model.workPlanDto.leaderName}}</p>
+                    <p class="text-right" ng-if="vm.model.workPlanDto.leaderDate">日期：{{vm.model.workPlanDto.leaderDate}}</p>
                 </div>
             </td>
         </tr>

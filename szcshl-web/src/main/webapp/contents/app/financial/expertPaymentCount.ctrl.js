@@ -104,7 +104,7 @@
          * 专家评审费统计导出
          */
         vm.excelExport = function(){
-            vm.fileName = "专家评审费统计报表"+vm.model.beginTime;
+            vm.fileName = "专家缴税统计汇总表"+vm.model.beginTime;
             expertPaymentCountSvc.excelExport(vm,vm.expertCostTotalInfo,vm.fileName);
         }
         activate();

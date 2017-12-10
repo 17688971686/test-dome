@@ -32,9 +32,11 @@ public class WorkPlanDto extends BaseDto {
     private String unitAndLeader;
     private String directorOption;
     private String directorName;
+    @JSONField(format = "yyyy-MM-dd")
     private Date directorDate;
     private String leaderOption;
     private String leaderName;
+    @JSONField(format = "yyyy-MM-dd")
     private Date leaderDate;
     /**
      * 主任批示

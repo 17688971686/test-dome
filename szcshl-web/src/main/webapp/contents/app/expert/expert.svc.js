@@ -41,7 +41,7 @@
 		//end formReset
 		
 		// begin#deleteUser
-		function deleteExpert(vm, id) {
+		function deleteExpert(vm, id , callBack) {
 			vm.isSubmit = true;
 			var httpOptions = {
 				method : 'delete',
@@ -50,14 +50,17 @@
 
 			}
 			var httpSuccess = function success(response) {
-				common.requestSuccess({
+				if(callBack != undefined && typeof  callBack == 'function'){
+					callBack(response.data);
+				}
+				/*common.requestSuccess({
 					vm : vm,
 					response : response,
 					fn : function() {
 						vm.isSubmit = false;
 						vm.gridOptions.dataSource.read();
 					}
-				});
+				});*/
 			}
 			common.http({
 				vm : vm,
@@ -141,17 +144,22 @@
 				filterable : common.kendoGridConfig().filterable,
 				pageable : common.kendoGridConfig().pageable,
 				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : getExpertColumns(),
+				columns : getExpertColumns(vm),
 				dataBound:dataBound,
 				resizable : true
 			};
 		}// end fun grid
 		
-		function getExpertColumns(){
+		function getExpertColumns(vm){
 			var columns = [
 				{
 					template : function(item) {
-						return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",item.expertID)
+						if(item.state != '5'){
+                            return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",item.expertID)
+						}else{
+                            return kendo.format("<input type='checkbox' disabled='disabled'  relId='{0}' name='checkbox' class='checkbox' />",item.expertID)
+						}
+
 					},
 					filterable : false,
 					width : 40,
@@ -214,7 +222,16 @@
 					title : "操作",
 					width : "8%",
 					template : function(item) {
-						return common.format($('#columnBtns').html(), "vm.del('" + item.expertID + "')", item.expertID );
+						var showDel = true;
+                        if(item.state != '5'){
+                            showDel = true;
+						}else{
+                            showDel = false;
+
+						}
+                       return common.format($('#columnBtns').html(),
+                            "vm.del('" + item.expertID + "')", item.expertID  , showDel);
+
 					}
 				}
 			];			
@@ -477,7 +494,7 @@
 				dataSource : common.gridDataSource(dataSource),
 				filterable : common.kendoGridConfig().filterable,
 				noRecords : common.kendoGridConfig().noRecordMessage,
-				columns : getExpertColumns(),
+				columns : getExpertColumns(vm),
 				dataBound:dataBound,
 				resizable : true
 			};

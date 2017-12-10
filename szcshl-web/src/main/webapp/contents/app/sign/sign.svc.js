@@ -802,11 +802,11 @@
                 var LODOP = getLodop();
                 var strStylePath = rootPath +"/contents/shared/templatePrint.css";
                 var strStyleCSS="<link href="+strStylePath+" type='text/css' rel='stylesheet'>";
-                var strFormHtml1="<head>"+strStyleCSS+"</head><body>"+$("#wpTempl1"+strArr[1]).html()+"</body>";
+                var strFormHtml1="<head>"+strStyleCSS+"</head><body>"+$("#wpTempl1"+strArr[1]+strArr[2]).html()+"</body>";
                 LODOP.PRINT_INIT("");
                 LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml1);
                 LODOP.NewPage();
-                var strFormHtml2="<head>"+strStyleCSS+"</head><body>"+$("#wpTempl2"+strArr[1]).html()+"</body>";
+                var strFormHtml2="<head>"+strStyleCSS+"</head><body>"+$("#wpTempl2"+strArr[1]+strArr[2]).html()+"</body>";
                 LODOP.ADD_PRINT_HTML(50,20,"100%","100%",strFormHtml2);
                 LODOP.PREVIEW();
             }

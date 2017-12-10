@@ -130,7 +130,10 @@
                                 var idsStr = ids.join(",");
 
                             }
-                            financialManagerSvc.deleteFinancialManager(idsStr, function (data) {});
+                            financialManagerSvc.deleteFinancialManager(idsStr, function (data) {
+                               //删除成功后，总金额需要重新计算
+                                vm.countCost();
+                            });
                         }
                     });
 
