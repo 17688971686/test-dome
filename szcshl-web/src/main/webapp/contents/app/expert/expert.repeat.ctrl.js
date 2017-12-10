@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertRepeatCtrl', expert);
 
-    expert.$inject = ['$location', 'expertSvc'];
+    expert.$inject = ['$location', 'expertSvc' , 'bsWin'];
 
-    function expert($location, expertSvc) { 
+    function expert($location, expertSvc , bsWin) {
     	var vm = this;
     	
         activate();
@@ -32,5 +32,38 @@
             });
         }
         //S 查看专家详细
+
+        /**
+         * 删除专家
+         * @param expertId
+         */
+        vm.del = function(expertId){
+            bsWin.confirm("确认删除数据吗？" , function(){
+                expertSvc.deleteExpert(vm, expertId , function(data){
+
+                    bsWin.alert("操作成功", function(){
+                        vm.repeatGridOptions.dataSource.read();
+                    });
+                });
+            })
+        }
+
+
+        /**
+         * 批量删除
+         */
+        vm.dels = function(){
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                bsWin.alert("请选择数据");
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        }
     }
 })();

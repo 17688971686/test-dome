@@ -36,86 +36,104 @@
             <form id="work_program_form" name="work_program_form">
             <!-- S 项目建议书/可行性研究报告 -->
             <div ng-if="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它'">
-                <div id="mainEdit" ng-show="vm.work.branchId == '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainEdit.html'"></div>
-                <div id="assistEdit" ng-show="vm.work.branchId != '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistEdit.html'"></div>
+                <div  ng-show="vm.work.branchId == '1'" >
+                    <div id="mainEdit" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainEdit.html'"></div>
+                    <div id="mainEdit_templ" style="display: none;" > <#include "/templatePrint/workprogram/workProgramEditXmjys.html"/></div>
+                </div>
+
+                <div  ng-show="vm.work.branchId != '1'" >
+                    <div id="assistEdit" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistEdit.html'"></div>
+                    <div id="assistEdit_templ" style="display: none;" >
+                    <#include "/templatePrint/workprogram/workProgramEditXmjys.html"/>
+                    </div>
+                </div>
             </div>
             <!-- E 项目建议书/可行性研究报告 -->
 
 
             <!--S 资金申请报告 -->
              <div ng-if="vm.work.workreviveStage=='资金申请报告'">
-                <div id="mainCapitalAppReportEdit" ng-show="vm.work.branchId == '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainCapitalAppReportEdit.html'"></div>
-                <div id="assistCapitalAppReportEdit" ng-show="vm.work.branchId != '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistCapitalAppReportEdit.html'"></div>
+                <div  ng-show="vm.work.branchId == '1'">
+                    <div id="mainCapitalAppReportEdit" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainCapitalAppReportEdit.html'"></div>
+                    <div id="mainCapitalAppReportEdit_templ" style="display: none;" >
+                    <#include "/templatePrint/workprogram/capitalAppReportEditZjsq.html"/>
+                    </div>
+                </div>
+                <div  ng-show="vm.work.branchId != '1'" >
+                    <div id="assistCapitalAppReportEdit" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistCapitalAppReportEdit.html'"></div>
+                    <div id="assistCapitalAppReportEdit_templ" style="display: none;" >
+                    <#include "/templatePrint/workprogram/capitalAppReportEditZjsq.html"/>
+                    </div>
+                </div>
             </div> 
             <!--E 资金申请报告 -->
              
             <!-- S 进口设备 -->
              <div ng-if="vm.work.workreviveStage=='进口设备'">
-                <div id="mainForeignEdit" ng-show="vm.work.branchId == '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainForeignEdit.html'"></div>
-                <div id="assistForeignEdit" ng-show="vm.work.branchId != '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistForeignEdit.html'"></div>
+                <div  ng-show="vm.work.branchId == '1'" >
+                    <div id="mainForeignEdit" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainForeignEdit.html'"></div>
+                    <div id="mainForeignEdit_templ" style="display: none;" ng-if="vm.work.workreviveStage=='进口设备' && vm.work.branchId == '1'">
+                    <#include "/templatePrint/workprogram/workProgramEditJksb.html"/>
+                    </div>
+
+                </div>
+                <div  ng-show="vm.work.branchId != '1'" >
+                    <div id="assistForeignEdit" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistForeignEdit.html'"></div>
+                    <div id="assistForeignEdit_templ" style="display: none;" >
+                    <#include "/templatePrint/workprogram/workProgramEditJksb.html"/>
+                    </div>
+                </div>
             </div>
             <!-- E 进口设备 -->
 
             <!-- S 设备清单（国产）  /设备清单（进口）-->
             <div ng-if="vm.work.workreviveStage=='设备清单（国产）' ||vm.work.workreviveStage=='设备清单（进口）'">
-                 <div id="mainEquipmentImportEdit" ng-show="vm.work.branchId == '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainEquipmentImportEdit.html'"></div>
-                 <div id="assistEquipmentImportEdit" ng-show="vm.work.branchId != '1'" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistEquipmentImportEdit.html'"></div>
+                 <div  ng-show="vm.work.branchId == '1'" >
+                     <div id="mainEquipmentImportEdit" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/mainEquipmentImportEdit.html'"></div>
+                     <div id="mainEquipmentImportEdit_templ" style="display: none;" >
+                     <#include "/templatePrint/workprogram/workProgramEditSbqd.html"/>
+                     </div>
+                 </div>
+                 <div  ng-show="vm.work.branchId != '1'" >
+                     <div id="assistEquipmentImportEdit" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistEquipmentImportEdit.html'"></div>
+                     <div id="assistEquipmentImportEdit_templ" style="display: none;" >
+                     <#include "/templatePrint/workprogram/workProgramEditSbqd.html"/>
+                     </div>
+                 </div>
              </div>
             <!-- S 设备清单（国产）/设备清单（进口） -->
             </form>
-            <!--引入模板 -->
-            <div id="mainEdit_templ" style="display: none;" ng-if="(vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它') && (vm.work.branchId == '1')">
-            <#include "/templatePrint/workprogram/workProgramEditXmjys.html"/>
-            </div>
-            <div id="mainCapitalAppReportEdit_templ" style="display: none;" ng-if="vm.work.workreviveStage=='资金申请报告' && vm.work.branchId == '1'">
-            <#include "/templatePrint/workprogram/capitalAppReportEditZjsq.html"/>
-            </div>
-            <div id="mainForeignEdit_templ" style="display: none;" ng-if="vm.work.workreviveStage=='进口设备' && vm.work.branchId == '1'">
-            <#include "/templatePrint/workprogram/workProgramEditJksb.html"/>
-            </div>
-            <div id="mainEquipmentImportEdit_templ" style="display: none;" ng-if="(vm.work.workreviveStage=='设备清单（国产）' ||vm.work.workreviveStage=='设备清单（进口）') && (vm.work.branchId == '1')">
-            <#include "/templatePrint/workprogram/workProgramEditSbqd.html"/>
-            </div>
 
-            <!--协办 工作方案模板--->
-            <div id="assistEdit_templ" style="display: none;" ng-if="(vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它') && (vm.work.branchId != '1')">
-            <#include "/templatePrint/workprogram/workProgramEditXmjys.html"/>
-            </div>
-            <div id="assistEquipmentImportEdit_templ" style="display: none;" ng-if="(vm.work.workreviveStage=='设备清单（国产）' ||vm.work.workreviveStage=='设备清单（进口）') && (vm.work.branchId != '1')">
-            <#include "/templatePrint/workprogram/workProgramEditSbqd.html"/>
-            </div>
-            <div id="assistForeignEdit_templ" style="display: none;" ng-if="vm.work.workreviveStage=='进口设备' && vm.work.branchId != '1'">
-            <#include "/templatePrint/workprogram/workProgramEditJksb.html"/>
-            </div>
-            <div id="assistCapitalAppReportEdit_templ" style="display: none;" ng-if="vm.work.workreviveStage=='资金申请报告' && vm.work.branchId != '1'">
-            <#include "/templatePrint/workprogram/capitalAppReportEditZjsq.html"/>
-            </div>
         </div>
         <!--E 编辑页面 -->  
       
         <!--S 工作方案查看页面 -->
         <div class="well well-sm tab-pane fade" style="background:white;" id="wp_list">
-            <div id="detail_xmjys"  ng-if="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
-            <div id="detail_zjsq" ng-if="vm.work.workreviveStage=='资金申请报告'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/capitalAppReportDetail.html'"></div>
-            <div id="detail_sbqd" ng-if="vm.work.workreviveStage=='设备清单（国产）' || vm.work.workreviveStage=='设备清单（进口）'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainDomesticDetail.html'"></div>
-            <div id="detail_jksb" ng-if="vm.work.workreviveStage=='进口设备'" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/foregnDetail.html'"></div>
-            <!-- 引入工作方案模板-->
-            <div id="detail_xmjys_templ" style="display: none;" ng-if="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它'">
+            <div   ng-if="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它'" >
+                <div id="detail_xmjys" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
+                <div id="detail_xmjys_templ" style="display: none;" >
                 <#include "/templatePrint/workprogram/workProgramXmjys.html"/>
-                <#include "/templatePrint/workprogram/workProgramXmjysAssist.html"/>
+                </div>
             </div>
-            <div id="detail_zjsq_templ" style="display: none;" ng-if="vm.work.workreviveStage=='资金申请报告'">
+            <div  ng-if="vm.work.workreviveStage=='资金申请报告'" >
+                <div id="detail_zjsq" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/capitalAppReportDetail.html'"></div>
+                <div id="detail_zjsq_templ" style="display: none;">
                 <#include "/templatePrint/workprogram/capitalAppReportZjsq.html"/>
-                <#include "/templatePrint/workprogram/capitalAppReportZjsqAssist.html"/>
+                </div>
             </div>
-            <div id="detail_jksb_templ" style="display: none;" ng-if="vm.work.workreviveStage=='进口设备'">
-                <#include "/templatePrint/workprogram/workProgramJksb.html"/>
-                <#include "/templatePrint/workprogram/workProgramJksbAssist.html"/>
-            </div>
-            <div id="detail_sbqd_templ" style="display: none;" ng-if="vm.work.workreviveStage=='设备清单（国产）' ||vm.work.workreviveStage=='设备清单（进口）'" >
+            <div  ng-if="vm.work.workreviveStage=='设备清单（国产）' || vm.work.workreviveStage=='设备清单（进口）'" >
+                <div id="detail_sbqd" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/mainDomesticDetail.html'"></div>
+                <div id="detail_sbqd_templ" style="display: none;"  >
                 <#include "/templatePrint/workprogram/workProgramSbqd.html"/>
-                <#include "/templatePrint/workprogram/workProgramSbqdAssist.html"/>
+                </div>
             </div>
+            <div  ng-if="vm.work.workreviveStage=='进口设备'" >
+                <div id="detail_jksb" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/foregnDetail.html'"></div>
+                <div id="detail_jksb_templ" style="display: none;" ng-if="vm.work.workreviveStage=='进口设备'">
+                <#include "/templatePrint/workprogram/workProgramJksb.html"/>
+                </div>
+            </div>
+
         </div>
 
     </div>

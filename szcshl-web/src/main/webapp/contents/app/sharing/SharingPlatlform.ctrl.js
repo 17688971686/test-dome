@@ -62,5 +62,15 @@
             vm.gridOptions.dataSource.read();
         }
 
+        /**
+         * 重置
+         */
+        vm.resetSharing = function(){
+            var tab = $("#formSharing").find('input,select');
+            $.each(tab, function(i, obj) {
+                obj.value = "";
+            });
+        }
+
     }
 })();

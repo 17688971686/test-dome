@@ -100,8 +100,8 @@
 
 </style>
 <div class="toolbar">
-    <a class="btn btn-sm btn-default back" href="#/sharingPlatlformYet"  ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回列表</a>
-
+    <!--<a class="btn btn-sm btn-default back" href="#/sharingPlatlformYet"  ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回列表</a>-->
+<go-back></go-back>
     <!--弹出工具显示-->
     <span class="fa fa-times scre-closed" ng-click="vm.closeWindow()"></span>
     <span ng-if="vm.modelPost.sharId" class=" scre-left" ng-click="vm.post(vm.modelPost.sharId)" ><</span>

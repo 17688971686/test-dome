@@ -90,7 +90,17 @@ public class AssistPlanServiceImpl implements AssistPlanService {
             } else {
                 assistPlan = assistPlanRepo.findById(record.getId());
                 BeanCopierUtils.copyPropertiesIgnoreNull(record, assistPlan);
+                List<AssistUnit> assistUnitList = new ArrayList<>();
+                if(record.getAssistUnitDtoList()!= null && record.getAssistUnitDtoList().size()>0){
+                    for(AssistUnitDto assistUnitDto : record.getAssistUnitDtoList()){
+                        AssistUnit assistUnit = new AssistUnit();
+                        BeanCopierUtils.copyPropertiesIgnoreNull(assistUnitDto , assistUnit);
+                        assistUnitList.add(assistUnit);
+                    }
+                }
+                assistPlan.setAssistUnitList(assistUnitList);
             }
+
             assistPlan.setModifiedBy(SessionUtil.getDisplayName());
             assistPlan.setModifiedDate(now);
             assistPlanRepo.save(assistPlan);
