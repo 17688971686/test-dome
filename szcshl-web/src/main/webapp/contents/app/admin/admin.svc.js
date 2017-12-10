@@ -626,7 +626,7 @@
                     width: "10%"
                 },
                 {
-                    field: "nodeName",
+                    field: "nodeNameValue",
                     title: "当前环节",
                     width: "10%",
                     filterable: false
@@ -1228,7 +1228,7 @@
                     width: "25%"
                 },
                 {
-                    field: "nodeName",
+                    field: "nodeNameValue",
                     title: "当前环节",
                     width: "15%",
                     filterable: false
@@ -1329,7 +1329,7 @@
                     }
                 },
                 {
-                    field: "nodeName",
+                    field: "nodeNameValue",
                     title: "当前环节",
                     width: "20%",
                     filterable: false

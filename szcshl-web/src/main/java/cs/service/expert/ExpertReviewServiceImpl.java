@@ -20,6 +20,7 @@ import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.NativeQuery;
@@ -437,11 +438,16 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value));
             }
         }
+        //没有业务ID和评审日期的，过滤掉
+        criteria.add(Restrictions.isNotNull(ExpertReview_.businessId.getName()));
+        criteria.add(Restrictions.isNotNull(ExpertReview_.reviewDate.getName()));
         //未完成评审费发放
         criteria.add(Restrictions.or(Restrictions.isNull(ExpertReview_.state.getName()),Restrictions.eq(ExpertReview_.state.getName(), Constant.EnumState.NO.getValue()),Restrictions.eq(ExpertReview_.state.getName(), "")));
 //        String newDate = DateUtils.converToString(new Date(),"yyyy-MM-dd");
         //超期
 //        criteria.add(Restrictions.sqlRestriction( " ( (to_date('"+newDate+"','yyyy-mm-dd') - "+criteria.getAlias()+"_."+ExpertReview_.reviewDate.getName()+") > 0 and '"+newDate+"' != TO_CHAR("+criteria.getAlias()+"_."+ExpertReview_.reviewDate.getName()+", 'yyyy-mm-dd') )"));
+
+        criteria.addOrder(Order.desc(ExpertReview_.reviewDate.getName()));
         if(odataObj.isCount()){
             Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
             criteria.setProjection(null);

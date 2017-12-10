@@ -98,7 +98,7 @@
                 },
                 {
                     field: "reviewDate",
-                    title: "评审日期",
+                    title: "评审(函评)日期",
                     width: "15%",
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"

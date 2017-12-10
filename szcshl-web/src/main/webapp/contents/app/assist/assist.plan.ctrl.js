@@ -459,7 +459,6 @@
             if (vm.assistPlan.drawType == '1') {
                 vm.number = vm.number + 1;
             }
-            console.log(vm.number);
             //抽取协审单位
             assistSvc.chooseAssistUnit(vm.assistPlan.id, vm.number, vm.assistPlan.drawType, function (data) {
                 if (data.flag || data.reCode == 'ok') {

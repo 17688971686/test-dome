@@ -19,6 +19,12 @@
             <option value="SIGN">项目评审费</option>
             <option value="TOPIC">课题评审费</option>
         </select>
+        <td class="text-right" style="width: 80px;">评审/函评日期：</td>
+        <td style="min-width: 260px;">
+            <input name="reviewDate" style="width:114px" kendo-date-picker k-format="'yyyy-MM-dd'" type="text" operator="ge"/>
+            至
+            <input name="reviewDate" style="width:114px" kendo-date-picker k-format="'yyyy-MM-dd'" type="text"  operator="le"/>
+        </td>
         <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.query()">
             <span class="glyphicon glyphicon-search"></span>查询</button>
     </form>
