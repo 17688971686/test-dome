@@ -4643,9 +4643,9 @@
         }
     });
 
-    adminWelCome.$inject = ['$location','adminSvc'];
+    adminWelCome.$inject = ['bsWin','adminSvc'];
 
-    function adminWelCome($location, adminSvc) {
+    function adminWelCome(bsWin, adminSvc) {
         var vm = this;
         vm.title = '主页';
         activate();
@@ -4666,13 +4666,20 @@
                     }
                 }
             });
-
         }
-        //旧的初始化方法
-        /*adminSvc.initAnnountment(vm);
-         adminSvc.findtasks(vm);
-         adminSvc.findendTasks(vm);
-         adminSvc.findHomePluginFile(vm);*/
+
+        vm.testAlert = function(){
+            bsWin.confirm({
+                title: "询问提示",
+                message: "该项目已经关联其他合并评审会关联，您确定要改为单个评审吗？",
+                onOk: function () {
+                    alert("点击确认！");
+                },
+                onCancel: function () {
+                    alert("点击取消！");
+                }
+            });
+        }
     }
 })();
 
@@ -6245,19 +6252,19 @@
                     message: "确认删除吗？删除数据不可恢复，请慎重！",
                     onOk: function () {
                         assistSvc.deletePlan(vm.plan.id, vm.isCommit, function (data) {
-                            assistSvc.initPlanPage(true, function (data) {
+                            vm.planList = [];
+                            assistSvc.initPlanPage(false, function (data) {
                                 if (data.signList && data.signList.length > 0) {
                                     vm.assistSign = data.signList;
                                 }
+                                if (data.planList && data.planList.length > 0) {
+                                    vm.planList = data.planList;
+                                }
                             });
+
                             vm.isCommit = false;
                             vm.pickMainSign = [];                   //主项目对象全部清空
                             vm.lowerSign = [];                      //次项目对象
-                            angular.forEach(vm.planList, function (pObj, i) {
-                                if (pObj.id == vm.plan.id) {
-                                    vm.planList.splice(pObj, 1);
-                                }
-                            })
                             vm.plan = {};
                             //刷新列表信息
                             vm.gridOptions.dataSource.read();
@@ -8702,277 +8709,121 @@
 (function () {
     'use strict';
 
-    var app = angular.module('app'),
-        alertTplPath = "template/dialog/alert.html",
-        confirmTplPath = "template/dialog/confirm.html",
-        reloginTplPath = "template/dialog/relogin.html";
+    var app = angular.module('app');
+    angular.module('app').factory('bsWin', bsWinFactory);
 
-    app.factory('bsWin', ["$rootScope", "$injector", "$templateCache", "bsWinConfig",
-        function ($rootScope, $injector, $templateCache, bsWinConfig) {
-            var index = 0;
-
-            return {
-                success: function (message, onClose) {
-                    return this.alert({
-                        message: message,
-                        type: "success",
-                        onClose: onClose
-                    });
-                },
-                warning:  function (message, onClose) {
-                    return this.alert({
-                        message: message,
-                        type: "warning",
-                        onClose: onClose
-                    });
-                },
-                error: function (message, onClose) {
-                    return this.alert({
-                        message: message,
-                        type: "error",
-                        onClose: onClose
-                    });
-                },
-                alert: function (options, message, onClose) {
-                    if (!angular.isObject(options)) {
-                        var title;
-                        if (!message || angular.isFunction(message)) {
-                            onClose = message;
-                            message = options;
-                        } else {
-                            title = options;
-                        }
-
-                        options = {
-                            message: message,
-                            onClose: onClose || function () { }
-                        };
-                        if (title) {
-                            options.title = title;
-                        }
+    function bsWinFactory(){
+        return {
+            success: function (message, onClose) {
+                return this.alert({
+                    message: message,
+                    type: "success",
+                    onClose: onClose,
+                    icon: 1,
+                });
+            },
+            warning:  function (message, onClose) {
+                return this.alert({
+                    message: message,
+                    type: "warning",
+                    onClose: onClose,
+                    icon: 5,
+                });
+            },
+            error: function (message, onClose) {
+                return this.alert({
+                    message: message,
+                    type: "error",
+                    onClose: onClose,
+                    icon: 2,
+                });
+            },
+            alert: function (options, message, onClose) {
+                if (!angular.isObject(options)) {
+                    var title;
+                    if (!message || angular.isFunction(message)) {
+                        onClose = message;
+                        message = options;
+                    } else {
+                        title = options;
                     }
-                    options.templateUrl = alertTplPath;
-                    return initWin(options);
-                },
-                confirm: function (options, message, onOk, onClose,onCancel) {
-                    if (!angular.isObject(options)) {
-                        var title;
-                        if (!message || angular.isFunction(message)) {
-                            onCancel = onClose || function(){
-                                };
-                            onClose = onOk || function () {
-                                };
-                            onOk = message || function () {
-                                };
-                            message = options;
-                        } else {
-                            title = options;
-                        }
-
-                        options = {
-                            message: message,
-                            onOk: onOk,
-                            onClose: onClose,
-                            onCancel: onCancel
-                        };
-                        if (title) {
-                            options.title = title;
-                        }
-                    }
-                    options.templateUrl = confirmTplPath;
-                    return initWin(options);
-                },
-                relogin: function (message) {
-                    var bsWin = this;
-                    var  options = {
+                    options = {
                         message: message,
-                        onOk: function () {
-                            var me = this;
-                            $injector.get("$http")({
-                                method: 'POST',
-                                url: common.loginUrl,
-                                params: me.scope.model
-                            }).then(function (response) {
-                                var data = response.data;
-                                if (data.status == 'SUCCESS') {
-                                    bsWin.success(data.message || "登录成功！", function () {
-                                        me.el.modal("hide");
-                                    });
-                                } else {
-                                    bsWin.error(data.message);
-                                }
-                            });
-                            return false;
+                        onClose: onClose || function () {
                         }
                     };
-                    options.templateUrl = reloginTplPath;
-                    return initWin(options);
-                }
-            };
-
-            function initWin(opt) {
-                if (opt.msg) {
-                    opt.message = opt.msg;
-                }
-                var options = angular.extend({}, bsWinConfig, opt);
-
-                var newWin = {
-                    winId: index++,
-                    scope: $rootScope.$new()
-                };
-
-                createScope(newWin, options);
-
-                if (options.onOk) {
-                    newWin.scope.ok = function () {
-                        if (options.onOk && options.onOk.apply(this) == false) {
-                            return false;
-                        }
-                        newWin.el.modal("hide");
+                    if (title) {
+                        options.title = title;
                     }
                 }
-                if(options.onCancel){
-                    newWin.scope.onCancel = function () {
-                        if (options.onCancel && options.onCancel.apply(this) == false) {
-                            return false;
-                        }
-                        newWin.el.modal("hide");
+                options.onClose = options.onClose || function(){};
+                layer.alert(
+                    options.message,
+                    {
+                        title:(options.title)?options.title:"系统消息",
+                        icon: (!options.icon) ? 6 : options.icon,
+                        skin: 'layui-layer-lan',
+                    },
+                    function(index){
+                        layer.close(index);
+                        options.onClose();
+                    }
+                );
+            },
+            confirm: function (options, message, onOk, onClose,onCancel) {
+                if (!angular.isObject(options)) {
+                    var title;
+                    if (!message || angular.isFunction(message)) {
+                        onCancel = onClose || function(){
+                            };
+                        onClose = onOk || function () {
+                            };
+                        onOk = message || function () {
+                            };
+                        message = options;
+                    } else {
+                        title = options;
+                    }
+
+                    options = {
+                        message: message,
+                        onOk: onOk,
+                        onClose: onClose,
+                        onCancel: onCancel
+                    };
+                    if (title) {
+                        options.title = title;
                     }
                 }
-                newWin.el = createWinEl(newWin.scope, options.templateUrl)
-                    .on('hidden.bs.modal', function (e) {
-                        if (options.onClose && options.onClose.apply(this, e) == false) {
-                            return false;
+                options.onClose = options.onClose || function(){};
+                //询问框
+                layer.confirm(
+                    options.message,
+                    {
+                        title:(options.title)?options.title:"询问提示",
+                        icon: 3,
+                        skin: 'layui-layer-lan',
+                        btn: ['确认','取消'],
+                        end : options.onClose
+                    },
+                    function(index){
+                        layer.close(index);
+                        if ((options.onOk) != undefined && typeof (options.onOk) == 'function') {
+                            options.onOk();
                         }
-                        destroy(newWin);
-                    }).modal('show');  // 打开
-                return newWin;
+                    },
+                    function(index){
+                        layer.close(index);
+                        if ((options.onCancel) != undefined && typeof (options.onCancel) == 'function') {
+                            options.onCancel();
+                        }
+                    }
+                );
             }
 
-            function createScope(win, options) {
-                // console.log("bsWin createScope", options);
-                win.scope.title = options.title;
-                win.scope.message = options.message;
+        };
+    }
 
-                win.scope.winId = win.winId;
-                win.scope.type = options.type;
-                win.scope.extraData = options.extraData;
-
-                win.scope.options = {
-                    onClose: options.onClose
-                };
-            }
-
-            function createWinEl(scope, tpl) {
-                // debugger;
-                var $compile = $injector.get("$compile"),
-                    elHtml = $compile($templateCache.get(tpl))(scope);
-                return $(elHtml).appendTo("body");
-            }
-
-            /**
-             * 销毁窗口
-             * @param el
-             */
-            function destroy(win) {
-                // console.log("bsWin destroy", win);
-                win.scope.$destroy();
-                win.el.unbind();
-                win.el.remove();
-                win.el = null;
-                win = null;
-            }
-
-        }]);
-
-
-    /**
-     * 窗口默认配置
-     */
-    app.constant('bsWinConfig', {
-        title: "提示窗口",
-        message: "",
-        type: "info",
-        timeout: 0,
-        templateUrl: alertTplPath,
-        onOk: null,
-        onClose: function (e) {
-        }
-    });
-
-    app.run(["$templateCache", function ($templateCache) {
-        // 提示窗口模板
-        $templateCache.put(alertTplPath,
-            '<div class="alertDialog modal fade" tabindex="-1" role="dialog">\
-                <div class="modal-dialog" role="document" style="margin:80px auto;width:80%;max-width:400px;">\
-                    <div class="modal-content">\
-                        <div class="modal-header">\
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
-                            <h4 class="modal-title text-info">{{title || \'消息提醒\'}}</h4>\
-                        </div>\
-                        <div class="modal-body text-{{type==\'error\'? \'danger\' : type}}">\
-                            <p class="alertDialogMessage">\
-                                <i class="fa fa-{{type == \'success\' ? \'check\' : (type == \'error\' ? \'ban\' : type)}}" aria-hidden="true"></i> \
-                                {{message}}\
-                            </p>\
-                        </div>\
-                        <div class="modal-footer">\
-                            <button type="button"  class="btn btn-info" data-dismiss="modal">关闭</button>\
-                        </div>\
-                    </div>\
-                </div>\
-            </div>');
-
-        // 询问窗口模板
-        $templateCache.put(confirmTplPath,
-            '<div class="confirmDialog modal fade" tabindex="-1" role="dialog" style="z-index: 100000;">\
-                <div class="modal-dialog" role="document" style="margin:80px auto;width:80%;max-width:400px;">\
-                    <div class="modal-content">\
-                        <div class="modal-header">\
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
-                            <h4 class="modal-title text-info">{{title||\'提示\'}}</h4>\
-                        </div>\
-                        <div class="modal-body text-primary"><p><i class="fa fa-question-circle" aria-hidden="true"></i> {{message}}</p></div>\
-                        <div class="modal-footer">\
-                            <button type="button" ng-click="ok()" class="btn btn-info" >确认</button>\
-                            <button type="button" ng-click="onCancel()" class="btn btn-info" data-dismiss="modal">取消</button>\
-                        </div>\
-                    </div>\
-                </div>\
-            </div>');
-
-        // 重新登录窗口
-        $templateCache.put(reloginTplPath,
-            '<div class="confirmDialog modal fade" tabindex="-1" role="dialog" style="z-index: {{10000 + winId}};">\
-                <div class="modal-dialog" role="document" style="margin:80px auto;width:80%;max-width:400px;">\
-                    <div class="modal-content">\
-                        <div class="modal-header">\
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
-                            <h4 class="modal-title text-info">登录窗口</h4>\
-                        </div>\
-                        <div class="modal-body text-primary">\
-                            <p><i class="fa fa-warning" aria-hidden="true"></i> {{message}}</p>\
-                            <div><span ng-show="vm.message" class="errors" ng-bind="vm.message"></span></div>\
-                            <div><span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span></div>\
-                            <div class="form-group has-feedback">\
-                                <input type="text" class="form-control" placeholder="用户名" maxlength="100" name="loginName" id="loginName" ng-model="model.loginName" data-val="true" data-val-required="用户名必填">\
-                                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>\
-                            </div>\
-                            <div><span data-valmsg-for="password" data-valmsg-replace="true" class="errors"></span></div>\
-                            <div class="form-group has-feedback">\
-                                <input type="password" class="form-control" placeholder="密码" maxlength="100" name="password" id="password" ng-model="model.password" data-val="true" data-val-required="密码必填">\
-                                <span class="glyphicon glyphicon-lock form-control-feedback"></span>\
-                            </div>\
-                        </div>\
-                        <div class="modal-footer">\
-                            <div class="pull-right col-sm-12">\
-                                <button type="button" ng-click="ok()"  class="btn btn-primary btn-block btn-flat l-icon">登 录</button>\
-                            </div>\
-                        </div>\
-                    </div>\
-                </div>\
-            </div>');
-    }]);
 })();
 (function () {
     'use strict';
@@ -28879,7 +28730,7 @@
             if (data.flag || data.reCode == 'ok') {
                 bsWin.alert("操作成功");
             } else {
-                bsWin.alert(data.reMsg);
+                bsWin.error(data.reMsg);
             }
         }
 
@@ -33337,19 +33188,19 @@
                 LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml1);
                 LODOP.NewPage();
                 var strFormHtml2="<head>"+strStyleCSS+"</head><body>"+$("#"+tempStr2).html()+"</body>";
-                LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml2);
+                LODOP.ADD_PRINT_HTML(50,20,"100%","100%",strFormHtml2);
                 LODOP.PREVIEW();
-            }else if(id.indexOf("wpAssist") > -1 ){
+            }else if(id.indexOf("wp") > -1 ){
                 var strArr  = id.split("_");
                 var LODOP = getLodop();
                 var strStylePath = rootPath +"/contents/shared/templatePrint.css";
                 var strStyleCSS="<link href="+strStylePath+" type='text/css' rel='stylesheet'>";
-                var strFormHtml1="<head>"+strStyleCSS+"</head><body>"+$("#wpAssistTempl1"+strArr[1]).html()+"</body>";
+                var strFormHtml1="<head>"+strStyleCSS+"</head><body>"+$("#wpTempl1"+strArr[1]).html()+"</body>";
                 LODOP.PRINT_INIT("");
                 LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml1);
                 LODOP.NewPage();
-                var strFormHtml2="<head>"+strStyleCSS+"</head><body>"+$("#wpAssistTempl2"+strArr[1]).html()+"</body>";
-                LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml2);
+                var strFormHtml2="<head>"+strStyleCSS+"</head><body>"+$("#wpTempl2"+strArr[1]).html()+"</body>";
+                LODOP.ADD_PRINT_HTML(50,20,"100%","100%",strFormHtml2);
                 LODOP.PREVIEW();
             }
         }
@@ -33624,7 +33475,9 @@
                 yAxis :{
                     type : 'value',
                     name : '金额（亿元）',
-                    interval : 5, //刻度值
+                    min : 0,
+                    max : 100,
+                    interval : 10, //刻度值
                 },
                 series :vm.series,
                 itemStyle : {
@@ -33692,7 +33545,11 @@
                 },
                 yAxis : {
                     type : 'value',
-                    name : '项目个数'
+                    name : '项目个数',
+                    min : 0 ,
+                    max : 100 ,
+                    interval : 10
+
                 },
                 series : vm.series,
                 lineStyle : {

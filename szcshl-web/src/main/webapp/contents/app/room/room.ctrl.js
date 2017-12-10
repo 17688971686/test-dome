@@ -65,7 +65,7 @@
             if (data.flag || data.reCode == 'ok') {
                 bsWin.alert("操作成功");
             } else {
-                bsWin.alert(data.reMsg);
+                bsWin.error(data.reMsg);
             }
         }
 

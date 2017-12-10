@@ -100,20 +100,26 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         user.setUserSalt(null);
         subject.getSession().setAttribute(Constant.USER_SESSION_KEY, user); // 在session中设置用户信息
         logger.info("用户【" + username + "】登录成功！");
+
+
         //查询所有的待办项目
         List<RuProcessTask> processTaskList = flowService.queryMyRunProcessTasks(0);
         if(Validate.isList(processTaskList)){
             List<String> noticeList = new ArrayList<>();
             processTaskList.forEach( sl ->{
-                if(Constant.signEnumState.UNDER3WORKDAY.getValue().equals(sl.getLightState())){
-                    noticeList.add("项目【"+sl.getProjectName()+"】少于3个工作日，请尽快处理！");
-                }else if(Constant.signEnumState.DISPAOVER.getValue().equals(sl.getLightState())){
-                    noticeList.add("项目【"+sl.getProjectName()+"】发文超期，请尽快处理！");
-                }else if(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue().equals(sl.getLightState())){
-                    noticeList.add("项目【"+sl.getProjectName()+"】超过25个工作日未存档，请尽快处理！");
-                }else if(Constant.signEnumState.ARCHIVEOVER.getValue().equals(sl.getLightState())){
-                    noticeList.add("项目【"+sl.getProjectName()+"】超过25个工作日未存档，请尽快处理！");
+                if(Constant.EnumState.PROCESS.getValue().equals(sl.getProcessState())){
+                    String commonString = "项目【<a href='#/signFlowDeal/"+sl.getBusinessKey()+"/"+sl.getTaskId()+"/"+sl.getProcessInstanceId()+"'>"+sl.getProjectName()+"</a>】";
+                    if(Constant.signEnumState.UNDER3WORKDAY.getValue().equals(sl.getLightState())){
+                        noticeList.add(commonString+"少于3个工作日，请尽快处理！");
+                    }else if(Constant.signEnumState.DISPAOVER.getValue().equals(sl.getLightState())){
+                        noticeList.add(commonString+"发文超期，请尽快处理！");
+                    }else if(Constant.signEnumState.OVER25WORKDAYARCHIVE.getValue().equals(sl.getLightState())){
+                        noticeList.add(commonString +"超过25个工作日未存档，请尽快处理！");
+                    }else if(Constant.signEnumState.ARCHIVEOVER.getValue().equals(sl.getLightState())){
+                        noticeList.add(commonString +"超过25个工作日未存档，请尽快处理！");
+                    }
                 }
+
             });
             if(Validate.isList(noticeList)){
                 subject.getSession().setAttribute(Constant.NOTICE_KEY, noticeList);

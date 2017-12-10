@@ -635,18 +635,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="${path}/contents/app-dist/app.all.js?version = ${.now}"></script>
     <script src="${path}/contents/shared/index.js"></script>
     <script type="text/javascript">
-        $(document).ready(function(){
-            $(".sidebar-menu .treeview-menu > li > a").click(function () {
-                $(".sidebar-menu .treeview-menu > li > a").css({"font-weight": "normal"});
-                $(".sidebar-menu .treeview-menu > li").css({"background": "none"});
-                $(this).parent("li").css({"background": "rgb(230, 236, 242)"});
-                $(this).css({"font-weight": "bold"});
-            })
-            //初始化数字字典
-            common.initDictItems(${DICT_ITEMS});
-           
-            //消息弹窗
-            var noticeList = ${NOTICE_LIST};
+        function showNotice(noticeList){
             if(noticeList && noticeList.length > 0){
                 for(var i=0,l=noticeList.length;i<l;i++){
                     var t = layer.open({
@@ -664,6 +653,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     });
                 }
             }
+        }
+        $(document).ready(function(){
+            $(".sidebar-menu .treeview-menu > li > a").click(function () {
+                $(".sidebar-menu .treeview-menu > li > a").css({"font-weight": "normal"});
+                $(".sidebar-menu .treeview-menu > li").css({"background": "none"});
+                $(this).parent("li").css({"background": "rgb(230, 236, 242)"});
+                $(this).css({"font-weight": "bold"});
+            })
+            //初始化数字字典
+            common.initDictItems(${DICT_ITEMS});
+           
+            //消息弹窗
+            showNotice(${NOTICE_LIST});
+
             //判断是否是IE浏览器，如果是IE浏览器，则自动登录腾讯通
             var isIE = (navigator.userAgent.indexOf('MSIE') >= 0) || (navigator.userAgent.indexOf('Trident') >= 0);
             if(isIE){

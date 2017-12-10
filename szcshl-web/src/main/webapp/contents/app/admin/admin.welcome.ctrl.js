@@ -11,9 +11,9 @@
         }
     });
 
-    adminWelCome.$inject = ['$location','adminSvc'];
+    adminWelCome.$inject = ['bsWin','adminSvc'];
 
-    function adminWelCome($location, adminSvc) {
+    function adminWelCome(bsWin, adminSvc) {
         var vm = this;
         vm.title = '主页';
         activate();
@@ -34,12 +34,19 @@
                     }
                 }
             });
-
         }
-        //旧的初始化方法
-        /*adminSvc.initAnnountment(vm);
-         adminSvc.findtasks(vm);
-         adminSvc.findendTasks(vm);
-         adminSvc.findHomePluginFile(vm);*/
+
+        vm.testAlert = function(){
+            bsWin.confirm({
+                title: "询问提示",
+                message: "该项目已经关联其他合并评审会关联，您确定要改为单个评审吗？",
+                onOk: function () {
+                    alert("点击确认！");
+                },
+                onCancel: function () {
+                    alert("点击取消！");
+                }
+            });
+        }
     }
 })();

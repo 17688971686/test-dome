@@ -273,19 +273,19 @@
                     message: "确认删除吗？删除数据不可恢复，请慎重！",
                     onOk: function () {
                         assistSvc.deletePlan(vm.plan.id, vm.isCommit, function (data) {
-                            assistSvc.initPlanPage(true, function (data) {
+                            vm.planList = [];
+                            assistSvc.initPlanPage(false, function (data) {
                                 if (data.signList && data.signList.length > 0) {
                                     vm.assistSign = data.signList;
                                 }
+                                if (data.planList && data.planList.length > 0) {
+                                    vm.planList = data.planList;
+                                }
                             });
+
                             vm.isCommit = false;
                             vm.pickMainSign = [];                   //主项目对象全部清空
                             vm.lowerSign = [];                      //次项目对象
-                            angular.forEach(vm.planList, function (pObj, i) {
-                                if (pObj.id == vm.plan.id) {
-                                    vm.planList.splice(pObj, 1);
-                                }
-                            })
                             vm.plan = {};
                             //刷新列表信息
                             vm.gridOptions.dataSource.read();
