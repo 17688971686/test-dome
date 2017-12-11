@@ -49,7 +49,7 @@
         //begin templatePage
         function templatePage(id){
             var LODOP = getLodop();
-            var strStylePath = rootPath +"//contents//shared//templatePrint.css";
+            var strStylePath = rootPath +"/contents/shared/templatePrint.css";
             var strStyleCSS="<link href="+strStylePath+" type='text/css' rel='stylesheet'>";
             var strFormHtml1="<head>"+strStyleCSS+"</head><body>"+$("#"+ id +"_templ1").html()+"</body>";
 

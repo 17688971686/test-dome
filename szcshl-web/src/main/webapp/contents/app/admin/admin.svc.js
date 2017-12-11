@@ -963,7 +963,7 @@
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 15,
+                pageSize: 10,
                 sort: {
                     field: "signdate",
                     dir: "desc"
