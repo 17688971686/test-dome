@@ -219,6 +219,7 @@
                         url: url,
                         dataType: "json",
                         type: "post",
+                        cache : false ,
                         beforeSend: function (req) {
                             req.setRequestHeader('Token', service.getToken());
                         },

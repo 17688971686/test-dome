@@ -268,8 +268,8 @@
                     type : 'value',
                     name : '金额（亿元）',
                     min : 0,
-                    max : 100,
-                    interval : 10, //刻度值
+                    max : 1000,
+                    interval : 100, //刻度值
                 },
                 series :vm.series,
                 itemStyle : {
@@ -340,7 +340,7 @@
                     name : '项目个数',
                     min : 0 ,
                     max : 100 ,
-                    interval : 10
+                    interval : 20
 
                 },
                 series : vm.series,
