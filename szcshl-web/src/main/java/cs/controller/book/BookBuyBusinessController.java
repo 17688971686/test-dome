@@ -51,7 +51,7 @@ public class BookBuyBusinessController {
     }
 
     @RequiresAuthentication
-	//@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
+	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody BookBuyBusinessDto findById(@RequestParam(required = true)String id){		
 		return bookBuyBusinessService.findById(id);
 	}

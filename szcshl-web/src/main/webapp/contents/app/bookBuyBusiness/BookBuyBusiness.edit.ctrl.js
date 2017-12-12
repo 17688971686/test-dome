@@ -14,6 +14,7 @@
         vm.title = '添加图书采购申请业务信息';
         vm.isuserExist = false;
         vm.businessId = $state.params.businessId;
+        vm.viewDetail = $state.params.viewDetail;
         vm.showFlag={
             addBooksDeatail:true,
             modBooksDetail:true,
@@ -21,7 +22,9 @@
             bookBuyBzTr:true,
             bookBuyFgzrTr:true,
             bookBuyZrTr:true,
-            bookBuyYsrk:true
+            bookBuyYsrk:true,
+            buyChannel:false,
+            isCommit:false
         }
         if (vm.businessId) {
             vm.isUpdate = true;
@@ -32,6 +35,17 @@
         }else{
             vm.showFlag.modBooksDetail=false;
             vm.showFlag.addBooksDeatail=true;
+        }
+        if(vm.viewDetail=='1'){
+            vm.showFlag.bookBuyYsrk = true;
+            vm.showFlag.addBooksDeatail = true;
+            vm.showFlag.modBooksDetail = true;
+            vm.showFlag.bookBuyZrTr = true;
+            vm.showFlag.bookBuyFgzrTr = true;
+            vm.showFlag.bookBuyBzTr = true;
+            vm.showFlag.bookBuyApplyTr = true;
+            vm.showFlag.buyChannel = true;
+            vm.showFlag.isCommit = true;
         }
         vm.create = function () {
             bookBuyBusinessSvc.createBookBuyBusiness(vm);
@@ -73,7 +87,7 @@
                             })
                         }
                         if(ids.length > 0){
-                            expertConditionSvc.deleteSelConditions(ids.join(","),vm.isCommit,function(data){
+                            expertConditionSvc.deleteSelConditions(ids.join(","),vm.showFlag.isCommit,function(data){
                                 if(data.flag || data.reCode == 'ok'){
                                     bsWin.success("操作成功！");
                                     $.each(ids,function(i,id){
@@ -99,22 +113,24 @@
         }
 
         vm.saveCondition = function () {
-                if (buildCondition(false)) {
-                    bookBuyBusinessSvc.saveBookBuyBusinessDetail(vm.conditions,function(data){
-                        if(data.flag || data.reCode == 'ok'){
-                            $("#businessId").val(data.reObj.businessId);
-                            bsWin.success("保存成功！");
-                        }else{
-                            bsWin.error(data.reMsg);
-                        }
-                    });
-                } else {
-                    bsWin.error("请添加后再保存");
-                }
+            if (buildCondition()) {
+                bookBuyBusinessSvc.saveBookBuyBusinessDetail(vm.conditions,function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        $("#businessId").val(data.reObj.businessId);
+                        bsWin.success("保存成功！");
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                });
+            }
         }
 
-        function buildCondition(checkId) {
-            //TODO:表单参数校验待核实
+        function buildCondition() {
+            var buyChannel = $("#buyChannel").val();
+            if(buyChannel=="" || buyChannel==="undefined"){
+                bsWin.error("购买渠道没有填写，请选择后再进行保存！");
+                return false;
+            }
             if (vm.conditions.length > 0) {
                 var validateResult = true;
                 vm.conditions.forEach(function (p, number) {
@@ -133,19 +149,18 @@
                 });
                 return validateResult;
             } else {
+                bsWin.error("没有分录数据，无法保存！");
                 return false;
             }
         }
         //发起流程
         vm.startFlow = function(){
-          /*  common.initJqValidation($('#topicform'));
-            var isValid = $('#topicform').valid();*/
                 bsWin.confirm({
                     title: "询问提示",
                     message: "发起流程后，当前页面数据将不能再修改！确认发起流程么？",
                     onOk: function () {
-                        if (buildCondition(false)) {
-                            bookBuyBusinessSvc.startFlow(vm.conditions,vm.isCommit,function(data){
+                        if (buildCondition()) {
+                            bookBuyBusinessSvc.startFlow(vm.conditions,vm.showFlag.isCommit,function(data){
                                 if(data.flag || data.reCode == 'ok'){
                                     bsWin.alert("保存成功！",function(){
                                         $state.go('myBookBuyBusiness');
@@ -155,7 +170,7 @@
                                 }
                             });
                         }else{
-                            bsWin.error("请添加图书信息后再发起流程！");
+                            bsWin.error("没有分录数据，无法发起流程！");
                         }
                     }
                 });
@@ -203,6 +218,7 @@
                     vm.conditions = vm.model.bookBuyList;
                     for(var i=0;i<vm.conditions.length;i++){
                         vm.conditions[i]["sort"]= (i+1);
+                        vm.conditions[i]["total"] = parseFloat(vm.conditions[i].booksPrice)*(vm.conditions[i].bookNumber);
                     }
                 });
             }
