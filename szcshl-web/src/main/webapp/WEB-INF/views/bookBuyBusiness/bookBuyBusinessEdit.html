@@ -11,15 +11,15 @@
     <div class="toolbar">
         <a class="btn btn-sm btn-primary" href="#/myBookBuyBusiness"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
 
-        <button class="btn btn-sm btn-success" ng-click="vm.saveCondition()" ng-disabled="vm.isSubmit" ng-hide="vm.isCommit">
+        <button class="btn btn-sm btn-success" ng-click="vm.saveCondition()" ng-hide="vm.showFlag.isCommit">
             <span class="glyphicon glyphicon-ok"></span>保存
         </button>
-        <button class="btn btn-sm btn-success" ng-click="vm.startFlow()"  ng-hide="vm.isCommit">
+        <button class="btn btn-sm btn-success" ng-click="vm.startFlow()"  ng-hide="vm.showFlag.isCommit">
             <span class="glyphicon glyphicon-ok"></span>发起流程
         </button>
     </div>
 
-    <form id="form" name="form">
+    <form id="bookForm" name="bookForm">
         <table class="table table-bordered">
             <caption class="text-center"> <h3><strong>采购图书资料申请表</strong></h3></caption>
             <tr>
@@ -36,10 +36,13 @@
                 </td>
 
                 <td class="formAlignRight" width="10%">购买渠道</td>
-                <td width="30%">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                           ng-model="vm.model.buyChannel"  id="buyChannel" name="buyChannel" ng-disabled="vm.showFlag.bookBusApplyTr">
+         <td>
+                    <select id="buyChannel" class="form-control select-sm " ng-model="vm.model.buyChannel" ng-disabled="vm.showFlag.buyChannel">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in DICT.BOOK_BUYCHANLE_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                    </select>
                 </td>
+
             </tr>
             <tr>
                 <td class="formAlignRight" width="10%">申请事由及发放范围</td>
@@ -80,10 +83,10 @@
         </table>
 
         <div class="toolbar">
-            <button class="btn btn-sm btn-success" ng-click="vm.addCondition()" ng-disabled="vm.isCommit"><span
+            <button class="btn btn-sm btn-success" ng-click="vm.addCondition()" ng-hide="vm.showFlag.isCommit"><span
                     class="glyphicon glyphicon-ok"></span>添加
             </button>
-            <button class="btn btn-sm btn-danger" ng-click="vm.removeCondition()" ng-disabled="vm.isCommit"><span
+            <button class="btn btn-sm btn-danger" ng-click="vm.removeCondition()" ng-hide="vm.showFlag.isCommit"><span
                     class="glyphicon glyphicon-remove"></span>删除
             </button>
         </div>
@@ -97,7 +100,7 @@
                 <td class="text-center" style="width:10%;">书号\刊号</td>
                 <td class="text-center" style="width:10%;">作者</td>
                 <td class="text-center" style="width:10%;">购买数量</td>
-                <td class="text-center" style="width:8%;">库存确认</td>
+                <td class="text-center" style="width:8%;">库存</td>
                 <td class="text-center" style="width:10%;">价格</td>
                 <td class="text-center" style="width:10%;">合计</td>
             </tr>
@@ -108,43 +111,45 @@
                 <td align="center">{{x.sort}}</td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="booksName{{x.sort}}"  value="{{x.booksName}}"/>
+                           id="booksName{{x.sort}}"  value="{{x.booksName}}" ng-disabled="vm.showFlag.isCommit"/>
+                </td>
+                <td align="center">
+                    <select id="booksType{{x.sort}}" class="form-control select-sm " ng-disabled="vm.showFlag.isCommit">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in DICT.BOOK_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                    </select>
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="booksType{{x.sort}}"  value="{{x.booksType}}" />
+                           id="publishingCompany{{x.sort}}"  value="{{x.publishingCompany}}" ng-disabled="vm.showFlag.isCommit"/>
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="publishingCompany{{x.sort}}"  value="{{x.publishingCompany}}"/>
+                           id="bookNo{{x.sort}}"  value="{{x.bookNo}}" ng-disabled="vm.showFlag.isCommit"/>
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="bookNo{{x.sort}}"  value="{{x.bookNo}}"/>
-                </td>
-                <td align="center">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                           id="author{{x.sort}}"  value="{{x.author}}"/>
+                           id="author{{x.sort}}"  value="{{x.author}}" ng-disabled="vm.showFlag.isCommit"/>
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
                            id="bookNumber{{x.sort}}"  value="{{x.bookNumber}}"
-                           ng-blur="vm.checkBookNum(x.sort)"  />
+                           ng-blur="vm.checkBookNum(x.sort)"  ng-disabled="vm.showFlag.isCommit" />
                     <span data-valmsg-for="bookNumber{{x.sort}}" data-valmsg-replace="true" class="errors" ></span>
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="storeConfirm{{x.sort}}" value="{{x.storeConfirm}}" />
+                           id="storeConfirm{{x.sort}}" value="{{x.storeConfirm}}" disabled="true" />
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
                            id="booksPrice{{x.sort}}" value="{{x.booksPrice}}"
-                           ng-blur="vm.checkPrice(x.sort)"/>
+                           ng-blur="vm.checkPrice(x.sort)" ng-disabled="vm.showFlag.isCommit"/>
                     <span data-valmsg-for="booksPrice{{x.sort}}" data-valmsg-replace="true" class="errors"></span>
                 </td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
-                           id="total{{x.sort}}" />
+                           id="total{{x.sort}}" value="{{x.total}}" ng-disabled="vm.showFlag.isCommit" />
                 </td>
                 <input type="hidden"  id="applyDept{{x.sort}}"/>
                 <input type="hidden"  id="operator{{x.sort}}"/>
