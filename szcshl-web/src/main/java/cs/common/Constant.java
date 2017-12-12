@@ -601,14 +601,14 @@ public class Constant {
      * 评审阶段key值
      */
     public static enum RevireStageKey {
-        KEY_SUG("STAGE_SUG"),           //项目建议书
-        KEY_STUDY("STAGE_STUDY"),       //可行性研究报告
-        KEY_BUDGET("STAGE_BUDGET"),     //项目概算
-        KEY_REPORT("STAGE_REPORT"),     //资金申请报告
-        KEY_HOMELAND("STAGE_HOMELAND"), //设备清单（国产）
-        KEY_IMPORT("STAGE_IMPORT"),     //设备清单（进口）
-        KEY_DEVICE("STAGE_DEVICE"),     //进口设备
-        KEY_OTHER("STAGE_OTHER");       //其他
+        KEY_SUG("STAGESUG"),           //项目建议书
+        KEY_STUDY("STAGESTUDY"),       //可行性研究报告
+        KEY_BUDGET("STAGEBUDGET"),     //项目概算
+        KEY_REPORT("STAGEREPORT"),     //资金申请报告
+        KEY_HOMELAND("STAGEHOMELAND"), //设备清单（国产）
+        KEY_IMPORT("STAGEIMPORT"),     //设备清单（进口）
+        KEY_DEVICE("STAGEDEVICE"),     //进口设备
+        KEY_OTHER("STAGEOTHER");       //其他
 
         private String value;
 
@@ -628,28 +628,28 @@ public class Constant {
         public static String getZHCNName(String value) {
             String resultZHName = "";
             switch (value){
-                case "STAGE_SUG":
+                case "STAGESUG":
                     resultZHName = STAGE_SUG;
                     break;
-                case "STAGE_STUDY":
+                case "STAGESTUDY":
                     resultZHName = STAGE_STUDY;
                     break;
-                case "STAGE_BUDGET":
+                case "STAGEBUDGET":
                     resultZHName = STAGE_BUDGET;
                     break;
-                case "STAGE_REPORT":
+                case "STAGEREPORT":
                     resultZHName = APPLY_REPORT;
                     break;
-                case "STAGE_HOMELAND":
+                case "STAGEHOMELAND":
                     resultZHName = DEVICE_BILL_HOMELAND;
                     break;
-                case "STAGE_IMPORT":
+                case "STAGEIMPORT":
                     resultZHName = DEVICE_BILL_IMPORT;
                     break;
-                case "STAGE_DEVICE":
+                case "STAGEDEVICE":
                     resultZHName = IMPORT_DEVICE;
                     break;
-                case "STAGE_OTHER":
+                case "STAGEOTHER":
                     resultZHName = OTHERS;
                     break;
                 default:
