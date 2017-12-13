@@ -114,7 +114,7 @@
                 template: "<span class='row-number'></span>",
                 width: 50
             }, {
-                field: "nodeNameValue",
+                field: "nodeName",
                 title: "环节名称",
                 width: "20%",
                 filterable: false

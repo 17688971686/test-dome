@@ -1,119 +1,29 @@
-<#assign path=request.contextPath />
+<#assign path=request.contextPath/>
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div class="well well-sm conttent_list" style="background: white;min-height:960px;">
-    <p class="pro_title_1" style="margin:10px;margin-left:0px;">图书管理信息</p>
-    <form id="form" name="form">
-        <table class="" style="width: 90%;">
-            <caption class="text-center"> <h3><strong>采购图书资料申请表</strong></h3></caption>
-            <tr>
-                <input type="hidden" name="businessId" id="businessId"  ng-model="vm.model.businessId" value="{{vm.model.businessId}}"/>
-                <td class="formAlignRight" width="10%">申请部门</td>
-                <td width="20%">
-                    <input type="text" maxlength="200" class="form-control input-sm "  ng-disabled="vm.showFlag.bookBusApplyTr"
-                           ng-model="vm.model.applyDept"   id="applyDept" name="applyDept">
-                </td>
-                <td class="formAlignRight" width="10%">经办人</td>
-                <td width="20%">
-                    <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.showFlag.bookBusApplyTr"
-                          ng-model="vm.model.operator" id="operator" name="operator" >
-                </td>
+<div ng-include src="'${path}/contents/app/common/dialog-idea.html'"></div>
 
-                <td class="formAlignRight" width="10%">购买渠道</td>
-                <td width="30%">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                         ng-model="vm.model.buyChannel"  id="buyChannel" name="buyChannel" ng-disabled="vm.showFlag.bookBusApplyTr">
-                </td>
-            </tr>
-            <tr>
-                <td class="formAlignRight" width="10%">申请事由及发放范围</td>
-                <td width="90%" colspan="5" >
-                    <p> {{vm.model.applyReason}}</p>
-                    <p class="text-right" ng-if="vm.model.orgDirector">签名：{{vm.model.orgDirector}}</p>
-                    <p class="text-right" ng-if="vm.model.orgDirectorDate">日期：{{vm.model.orgDirectorDate}}</p>
-                </td>
-            </tr>
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/agendaTasks">任务待办</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" for-div="book_baseinfo">图书采购流程详细信息</a></li>
+        <li ><a data-toggle="tab" for-div="book_diagram">流程图</a></li>
+        <li ><a data-toggle="tab" for-div="book_history">处理记录</a></li>
+    </ul>
+    <div class="tab-content" style="background:white;">
+        <div class="tab-pane fade in active" style="background:white;" id="book_baseinfo">
+            <#include "/bookBuyBusiness/detail.html"/>
+        </div><!-- end tab -->
 
-            <tr>
-                <td class="formAlignRight" width="10%">分管副主任审核</td>
-                <td width="40%" >
-                    <p> {{vm.model.orgSLeaderHandlesug}}</p>
-                    <p class="text-right" ng-if="vm.model.orgSLeader">签名：{{vm.model.orgSLeader}}</p>
-                    <p class="text-right" ng-if="vm.model.orgSLeaderDate">日期：{{vm.model.orgSLeaderDate}}</p>
-                </td>
-                <td class="formAlignRight" width="10%">主任审批</td>
-                <td width="40%" colspan="3" >
-                    <p> {{vm.model.orgMLeaderHandlesug}}</p>
-                    <p class="text-right" ng-if="vm.model.orgMLeader">签名：{{vm.model.orgMLeader}}</p>
-                    <p class="text-right" ng-if="vm.model.orgMLeaderDate">日期：{{vm.model.orgMLeaderDate}}</p>
-                </td>
-            </tr>
+        <div class="well well-sm tab-pane fade" style="background:white;" id="book_diagram">
+            <img style="" src="{{vm.picture}}">
+        </div><!-- end tab -->
 
-            <tr>
-                <td class="formAlignRight" width="10%">购买后档案员验收并入库</td>
-                <td width="90%" colspan="5" >
-                    <p> {{vm.model.filerHandlesug}}</p>
-                    <p class="text-right" ng-if="vm.model.filer">签名：{{vm.model.filer}}</p>
-                    <p class="text-right" ng-if="vm.model.filerDate">日期：{{vm.model.filerDate}}</p>
-                </td>
-            </tr>
-        </table>
-        <table style="width: 90%;">
-            <tr class="bookBuyInfo">
-                <td style="width:5%;min-width:30px;" align="center"><input type='checkbox' ng-model="epCondtion"/></td>
-                <td style="width:7%;min-width:50px;" align="center">序号</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">书刊名称</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">图书\期刊分类</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">出版社</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">书号\刊号</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">作者</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">购买数量</td>
-                <td class="text-center" style="width:8%;border-top: 0px;">库存确认</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">价格</td>
-                <td class="text-center" style="width:10%;border-top: 0px;">合计</td>
-            </tr>
-            <tr ng-repeat="x in vm.model.bookBuyList">
-                <td align="center">
-                    <input type='checkbox' name="epConditionSort" ng-checked="bbCondtion" value="{{$index+1}}"/></td>
-                <td align="center">{{$index+1}}</td>
-                <td align="center">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                           id="booksName" name="booksName" value="{{x.booksName}}"/>
-                </td>
-                <td align="center">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                           id="booksType" value="{{x.booksType}}" />
-                </td>
-                <td align="center">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                           id="publishingCompany" value="{{x.publishingCompany}}"  />
-                </td>
-                <td align="center">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                           id="bookNo" value="{{x.bookNo}}" />
-                </td>
-                <td align="center">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                           id="author" value="{{x.author}}" />
-                </td>
-                <td align="center">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                           id="bookNumber" value="{{x.bookNumber}}" />
-                </td>
-                <td align="center">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                           id="storeConfirm" value="{{x.storeConfirm}}"/>
-                </td>
-                <td align="center">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                           id="booksPrice" value="{{x.booksPrice}}"/>
-                </td>
-                <td align="center">
-                    <input type="text" maxlength="200" class="form-control input-sm "
-                           id="total" name="total"  />
-                </td>
-            </tr>
-        </table>
-    </form>
-
+        <div class="well well-sm tab-pane fade" style="background:white;" id="book_history">
+            <div class="grid" kendo-grid="grid" k-options="vm.historygrid" k-data-source="vm.historygrid.dataSource"></div>
+        </div>
+        <!-- end tab -->
+    </div>
 </div>
