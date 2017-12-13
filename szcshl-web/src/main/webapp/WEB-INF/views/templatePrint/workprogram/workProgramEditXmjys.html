@@ -31,19 +31,19 @@
                 <td colspan="2" width="30%">{{vm.work.totalInvestment}} 万元</td>
             </tr>
             <tr style="height: 60px;">
-                <td colspan="2" width="20%">来文单位</td>
+                <td colspan="2" width="20%" class="text-center">来文单位</td>
                 <td colspan="3" width="35%">{{vm.work.sendFileUnit}}</td>
                 <td class="text-center" width="15%">来文单位联系人</td>
                 <td colspan="2" width="30%">{{vm.work.sendFileUser}}</td>
             </tr>
             <tr style="height: 40px;">
-                <td colspan="2">建设单位</td>
+                <td colspan="2" class="text-center">建设单位</td>
                 <td colspan="3">{{vm.work.buildCompany}}</td>
                 <td class="text-center">编制单位</td>
                 <td colspan="2">{{vm.work.designCompany}}</td>
             </tr>
             <tr style="height: 40px;">
-                <td colspan="2">主管部门</td>
+                <td colspan="2" class="text-center">主管部门</td>
                 <td colspan="3">{{vm.work.mainDeptName}}</td>
                 <td  class="text-center">是否有环评{{vm.work.isHaveEIA }}</td>
                 <td colspan="2">
@@ -64,22 +64,22 @@
             </tr>
 
             <tr style="height: 40px;">
-                <td rowspan="3" colspan="2">联系人</td>
+                <td rowspan="3" colspan="2" class="text-center">联系人</td>
                 <td colspan="3" rowspan="3">{{vm.work.contactPerson}}</td>
                 <td class="text-center">手机</td>
                 <td colspan="2">{{vm.work.contactPersonPhone}}</td>
             </tr>
             <tr style="height: 40px;">
-                <td>电话</td>
+                <td class="text-center">电话</td>
                 <td colspan="2">{{vm.work.contactPersonTel}}</td>
             </tr>
             <tr style="height: 40px;">
-                <td>传真</td>
+                <td class="text-center">传真</td>
                 <td colspan="2">{{vm.work.contactPersonFax}}</td>
             </tr>
             <tr style="height: 40px;">
-                <td rowspan="4" style="vertical-align:middle;width: 5%;">项目概况</td>
-                <td width="15%">申报投资</td>
+                <td rowspan="4" style="vertical-align:middle;width: 5%;" class="text-center">项目概况</td>
+                <td width="15%" class="text-center">申报投资</td>
                 <td  colspan="6">{{vm.work.appalyInvestment}} 万元</td>
             </tr>
 
@@ -90,25 +90,25 @@
                 </td>
             </tr>
             <tr >
-                <td>申报建设内容</td>
+                <td class="text-center">申报建设内容</td>
                 <td  colspan="6">
                     <div style="width : 100%; height: 120px; overflow: hidden;">{{vm.work.buildContent}}</div>
                 </td>
             </tr>
             <tr >
-                <td >项目背景</td>
+                <td class="text-center">项目背景</td>
                 <td  colspan="6">
                     <div style="width : 100%; height: 120px; overflow: hidden;">{{vm.work.projectBackGround}}</div>
                 </td>
             </tr>
             <tr style="height: 40px;">
-                <td rowspan="2" colspan="2">评审部门</td>
+                <td rowspan="2" colspan="2" class="text-center">评审部门</td>
                 <td colspan="3" rowspan="2">{{vm.work.reviewOrgName}}</td>
                 <td class="text-center">第一负责人</td>
                 <td colspan="2">{{vm.work.mianChargeUserName}}</td>
             </tr>
             <tr style="height: 40px;">
-                <td>第二负责人</td>
+                <td class="text-center">第二负责人</td>
                 <td colspan="2">{{vm.work.secondChargeUserName}}</td>
             </tr>
 
@@ -124,13 +124,13 @@
                 <td colspan="2">{{vm.work.suppLetterDate}}</td>
             </tr>
             <tr style="height: 40px;">
-                <td colspan="2">评审会时间</td>
+                <td colspan="2" class="text-center">评审会时间</td>
                 <td colspan="3">{{vm.work.roomBookingDtos[0].rbDate}}</td>
                 <td class="text-center">会议地点</td>
                 <td colspan="2">{{vm.work.roomBookingDtos[0].addressName}}</td>
             </tr>
             <tr style="height: 40px;">
-                <td colspan="2">调研时间</td>
+                <td colspan="2" class="text-center">调研时间</td>
                 <td colspan="3">{{vm.work.studyAllDay}}<span ng-if="vm.work.studyQuantum">,</span>{{vm.work.studyQuantum}}
                     <span ng-if="vm.work.studyBeginTimeStr">,</span>{{vm.work.studyBeginTimeStr}}
                     <span ng-if="vm.work.studyEndTimeStr">至</span>{{vm.work.studyEndTimeStr}}</td>
@@ -142,7 +142,7 @@
     <div id="wpEdit2">
         <table class="print-table">
             <tr ng-if="vm.work.isSigle && vm.work.isSigle == '合并评审' ">
-                <td >合并评审相关项目</td>
+                <td class="text-center">合并评审相关项目</td>
                 <td colspan="5" height="20px"></td>
             </tr>
             <tr class="text-center" >
@@ -198,7 +198,7 @@
                 <td>部长意见</td>
                 <td colspan="5" >
                     <div class="signName">
-                        <div class="signDetail" style="height: 40%;"> {{vm.work.ministerSuggesttion}} </div>
+                        <div class="signDetail" style="height: 30%;"> {{vm.work.ministerSuggesttion}} </div>
                         <p class="nameDate">签名：</p>
                         <p class="nameDate">日期：{{vm.work.ministerDate}}</p>
                     </div>
@@ -208,7 +208,7 @@
                 <td>中心领导签批意见</td>
                 <td colspan="5" >
                     <div class="signName">
-                        <div class="signDetail" style="height: 40%;"> {{vm.work.leaderSuggesttion}} </div>
+                        <div class="signDetail" style="height: 30%;"> {{vm.work.leaderSuggesttion}} </div>
                         <p class="nameDate" >签名：</p>
                         <p class="nameDate">日期：{{vm.work.leaderDate}}</p>
                     </div>
