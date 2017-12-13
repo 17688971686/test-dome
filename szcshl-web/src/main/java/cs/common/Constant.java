@@ -459,29 +459,6 @@ public class Constant {
     }
 
     /**
-     * 部门名称
-     *
-     * @author sjy
-     */
-    public static enum OrgName {
-        ORGZHB("综合部"),
-        ORGPGYB("评估一部"),
-        ORGPGEB("评估二部"),
-        ORGGSYB("概算一部"),
-        ORGGSEB("概算二部");
-
-        private String value;
-
-        OrgName(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    /**
      * 部门对应的类型
      */
     public static enum OrgType {

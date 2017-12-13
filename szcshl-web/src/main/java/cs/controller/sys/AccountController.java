@@ -1,6 +1,8 @@
 package cs.controller.sys;
+
 import cs.ahelper.IgnoreAnnotation;
-import cs.common.Response;
+import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -83,12 +85,10 @@ public class AccountController {
 
     @RequestMapping(name = "修改密码", path = "password", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
-    public @ResponseBody
-    Response password(@RequestBody String password) {
+    @ResponseBody
+    public ResultMsg password(@RequestBody String password) {
         userService.changePwd(password);
-        Response response = new Response();
-        response.setIsSuccess(true);
-        return response;
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
 
 

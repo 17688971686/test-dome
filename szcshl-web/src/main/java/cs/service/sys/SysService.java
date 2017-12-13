@@ -1,12 +1,13 @@
 package cs.service.sys;
 
-import java.util.List;
-
-import cs.common.Response;
+import cs.common.ResultMsg;
 import cs.common.sysResource.SysResourceDto;
+
+import java.util.List;
 
 public interface SysService {
 
-	List<SysResourceDto> get();
-	 Response SysInit();
+    List<SysResourceDto> get();
+
+    ResultMsg SysInit();
 }

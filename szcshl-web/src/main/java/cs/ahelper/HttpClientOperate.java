@@ -3,13 +3,7 @@ package cs.ahelper;
 /**
  * Created by shenning on 2017/10/15.
  */
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import cs.common.ResultMsg;
 import cs.common.utils.Validate;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -30,8 +24,14 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
- * @autho 董杨炀
+ * @autho 
  * @time 2017年5月8日 下午3:22:09
  */
 @Component("httpClientOperate")
@@ -58,7 +58,7 @@ public class HttpClientOperate implements BeanFactoryAware{
 
     /**
      * 无参get请求
-     * @autho 董杨炀
+     * @autho 
      * @time 2017年5月8日 下午3:30:08
      * @param url
      * @return
@@ -107,7 +107,7 @@ public class HttpClientOperate implements BeanFactoryAware{
 
     /**
      * 有参post请求
-     * @autho 董杨炀
+     * @autho 
      * @time 2017年5月8日 下午3:32:48
      * @param url
      * @param params
@@ -150,7 +150,7 @@ public class HttpClientOperate implements BeanFactoryAware{
 
     /**
      * 有参post请求,json交互
-     * @autho 董杨炀
+     * @autho 
      * @time 2017年5月8日 下午3:33:01
      * @param url
      * @param json
@@ -187,7 +187,7 @@ public class HttpClientOperate implements BeanFactoryAware{
 
     /**
      * 无参post请求
-     * @autho 董杨炀
+     * @autho 
      * @time 2017年5月8日 下午3:33:27
      * @param url
      * @return

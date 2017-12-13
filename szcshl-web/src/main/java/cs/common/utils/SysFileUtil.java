@@ -3,6 +3,7 @@ package cs.common.utils;
 import cs.common.Constant;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.UUID;
 
 /**
@@ -13,6 +14,20 @@ import java.util.UUID;
 public class SysFileUtil {
     private static String FILE_UPLOAD_PATH = "file_upload_path";
 
+    public static String getFileSize(long fileS){
+        String size = "";
+        DecimalFormat df = new DecimalFormat("#.00");
+        if (fileS < 1024) {
+            size = df.format((double) fileS) + "BT";
+        } else if (fileS < 1048576) {
+            size = df.format((double) fileS / 1024) + "KB";
+        } else if (fileS < 1073741824) {
+            size = df.format((double) fileS / 1048576) + "MB";
+        } else {
+            size = df.format((double) fileS / 1073741824) +"GB";
+        }
+        return  size;
+    }
     /**
      * 根据附件主类划分
      * @return
@@ -20,7 +35,7 @@ public class SysFileUtil {
     public static String getUploadPath() {
         PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
         String uploadPath = propertyUtil.readProperty(FILE_UPLOAD_PATH);
-        return  Validate.isString(uploadPath)?uploadPath : "E:\\szec_uploadfile";
+        return  Validate.isString(uploadPath)?uploadPath : "C:\\szec_uploadfile";
     }
 
     /**
@@ -75,10 +90,11 @@ public class SysFileUtil {
         if (!file.exists()) {
             return false;
         } else {
-            if (file.isFile())
+            if (file.isFile()) {
                 return deleteFile(fileName);
-            else
+            }else {
                 return deleteDirectory(fileName);
+            }
         }
     }
 
@@ -110,8 +126,9 @@ public class SysFileUtil {
      */
     public static boolean deleteDirectory(String dir) {
         // 如果dir不以文件分隔符结尾，自动添加文件分隔符
-        if (!dir.endsWith(File.separator))
+        if (!dir.endsWith(File.separator)) {
             dir = dir + File.separator;
+        }
         File dirFile = new File(dir);
         // 如果dir对应的文件不存在，或者不是一个目录，则退出
         if ((!dirFile.exists()) || (!dirFile.isDirectory())) {
@@ -124,15 +141,17 @@ public class SysFileUtil {
             // 删除子文件
             if (files[i].isFile()) {
                 flag = deleteFile(files[i].getAbsolutePath());
-                if (!flag)
+                if (!flag) {
                     break;
+                }
             }
             // 删除子目录
             else if (files[i].isDirectory()) {
                 flag = deleteDirectory(files[i]
                         .getAbsolutePath());
-                if (!flag)
+                if (!flag) {
                     break;
+                }
             }
         }
         if (!flag) {

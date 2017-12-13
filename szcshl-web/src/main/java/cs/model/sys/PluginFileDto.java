@@ -1,7 +1,5 @@
 package cs.model.sys;
 
-import cs.common.utils.FileUtils;
-
 import java.io.File;
 
 /**

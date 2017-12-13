@@ -1,32 +1,30 @@
 package cs.service.sys;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import javax.transaction.Transactional;
-
 import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
+import cs.common.ResultMsg;
+import cs.common.sysResource.ClassFinder;
+import cs.common.sysResource.SysResourceDto;
 import cs.common.utils.Validate;
+import cs.domain.sys.Resource;
+import cs.domain.sys.Role;
+import cs.domain.sys.User;
 import cs.model.sys.SysConfigDto;
+import cs.repository.repositoryImpl.sys.RoleRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import cs.common.Response;
-import cs.common.sysResource.ClassFinder;
-import cs.common.sysResource.SysResourceDto;
-import cs.domain.sys.Resource;
-import cs.domain.sys.Role;
-import cs.domain.sys.User;
-import cs.repository.repositoryImpl.sys.RoleRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
+import javax.transaction.Transactional;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import static cs.common.Constant.SUPER_USER;
 
@@ -138,13 +136,12 @@ public class SysServiceImpl implements SysService {
      */
     @Override
     @Transactional
-    public Response SysInit() {
-        Response response = new Response();
+    public ResultMsg SysInit() {
         SysConfigDto sysConfigDto = sysConfigService.findByKey(Constant.EnumConfigKey.SYSINIT.getValue());
         // 更新sysConfig
         if (sysConfigDto != null && (Constant.EnumState.YES.getValue()).equals(sysConfigDto.getConfigValue())) {// 已经被初始化
-            response.setMessage("已经存在初始化数据，此次操作无效");
             logger.warn("已经存在初始化数据，此次操作无效");
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"已经存在初始化数据，此次操作无效");
         } else {
             //初始化角色
             Role role = new Role();
@@ -189,13 +186,11 @@ public class SysServiceImpl implements SysService {
             sysConfigDto.setIsShow(Constant.EnumState.NO.getValue());
             sysConfigService.save(sysConfigDto);
 
-            response.setMessage("初始化成功");
-            response.setIsSuccess(true);
-
             logger.info("系统初始化成功!");
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"初始化成功");
+
 
         }
-        return response;
 
     }
 }

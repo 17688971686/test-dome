@@ -1,7 +1,7 @@
 package cs.controller.sys;
 
 import cs.ahelper.IgnoreAnnotation;
-import cs.common.Response;
+import cs.common.ResultMsg;
 import cs.common.sysResource.SysResourceDto;
 import cs.service.sys.SysService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -31,10 +31,10 @@ public class SysController {
     }
 
     @RequestMapping(name = "系统初始化", path = "init", method = RequestMethod.GET)
-    public @ResponseBody
-    String init(HttpServletRequest request) {
-        Response response = sysService.SysInit();
-        if (response.getIsSuccess()) {
+    @ResponseBody
+    public String init() {
+        ResultMsg resultMsg = sysService.SysInit();
+        if (resultMsg.isFlag()) {
             return "Init system success";
         } else {
             return "Init system fail";

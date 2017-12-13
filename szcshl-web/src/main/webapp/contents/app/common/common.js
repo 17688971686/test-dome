@@ -75,7 +75,7 @@
             showError("发生错误！");
         } else {
             var data = options.response.data;
-            if (data && data.status == 555) {
+            if (data && data.reCode == 555) {
                 showError(data.message);
             } else if (options.fn) {
                 options.fn(data);
