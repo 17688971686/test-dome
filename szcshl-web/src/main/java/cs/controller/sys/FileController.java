@@ -136,14 +136,21 @@ public class FileController implements ServletConfigAware,ServletContextAware {
             String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
             fileType = fileType.toLowerCase();      //统一转成小写
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            if(Validate.isString(sysBusiType)){
             boolean result = FtpUtil.uploadFile(propertyUtil.readProperty(FTP_IP1),Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)),
                     propertyUtil.readProperty(FTP_USER), propertyUtil.readProperty(FTP_PWD), propertyUtil.readProperty(FTP_BASE_PATH), "",
                     new String(fileName.getBytes("GBK"), "ISO-8859-1"), multipartFile.getInputStream());
-            if (result) {
-                 resultMsg = fileService.saveToFtp(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType,propertyUtil.readProperty(FTP_IP1),propertyUtil.readProperty(FTP_PORT1), propertyUtil.readProperty(FTP_USER),propertyUtil.readProperty(FTP_PWD),propertyUtil.readProperty(FTP_BASE_PATH),"");
-            } else {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"附件上传失败，连接ftp服务失败，请核查！");
+
+                if (result) {
+                    resultMsg = fileService.saveToFtp(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType,sysfileType,sysBusiType,propertyUtil.readProperty(FTP_IP1),propertyUtil.readProperty(FTP_PORT1), propertyUtil.readProperty(FTP_USER),propertyUtil.readProperty(FTP_PWD),propertyUtil.readProperty(FTP_BASE_PATH),"");
+                } else {
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"附件上传失败，连接ftp服务失败，请核查！");
+                }
+            }else{
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"附件上传失败，请选择文件类型！");
             }
+
+
 
         }catch (Exception e){
             e.printStackTrace();

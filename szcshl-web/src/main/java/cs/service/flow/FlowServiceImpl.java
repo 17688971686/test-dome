@@ -120,6 +120,9 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     @Qualifier("monthFlowBackImpl")
     private IFlowBack monthFlowBackImpl;
+    @Autowired
+    @Qualifier("projectStopFlowBackImpl")
+    private IFlowBack projectStopFlowBackImpl;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -221,6 +224,9 @@ public class FlowServiceImpl implements FlowService {
                             roomBookingRepo.updateStateByBusinessId(workPlan.getId(), Constant.EnumState.NO.getValue());
                         }
                     }
+                    break;
+                case FlowConstant.PROJECT_STOP_FLOW:
+                    backActivitiId = projectStopFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.FLOW_APPRAISE_REPORT:
                     backActivitiId = appraiseFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
