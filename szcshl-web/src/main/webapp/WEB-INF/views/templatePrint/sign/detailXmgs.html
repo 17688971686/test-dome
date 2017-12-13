@@ -11,47 +11,47 @@
     </caption>
 
     <tr>
-        <td width="16%">项目名称</td>
-        <td colspan="2" width="34%">{{vm.model.projectname}}</td>
-        <td width="16%">收文编号</td>
-        <td colspan="2" width="34%"> {{vm.model.signNum}}</td>
+        <td width="16%" class="text-center">项目名称</td>
+        <td colspan="2" width="48%">{{vm.model.projectname}}</td>
+        <td width="16%" class="text-center">收文编号</td>
+        <td colspan="2" width="20%"> {{vm.model.signNum}}</td>
     </tr>
     <tr>
-        <td>建设单位</td>
+        <td class="text-center">建设单位</td>
         <td colspan="2">
-            <div style="width: 100%; height: 40px; overflow: hidden;">{{vm.model.builtcompanyName}}</div>
+            <div style="width: 100%; height: 20px; overflow: hidden;">{{vm.model.builtcompanyName}}</div>
         </td>
-        <td>项目代码</td>
+        <td class="text-center">项目代码</td>
         <td colspan="2">{{vm.model.projectcode}}</td>
     </tr>
     <tr>
-        <td>编制单位</td>
+        <td class="text-center">编制单位</td>
         <td colspan="2">
-            <div style="width: 100%; height: 40px; overflow: hidden; ">{{vm.model.designcompanyName}}</div>
+            <div style="width: 100%; height: 20px; overflow: hidden; ">{{vm.model.designcompanyName}}</div>
         </td>
-        <td>申报概算</td>
+        <td class="text-center">申报概算</td>
         <td colspan="2">{{vm.model.declaration}}万元</td>
     </tr>
     <tr>
-        <td>主办处室</td>
+        <td class="text-center">主办处室</td>
         <td colspan="2">{{vm.model.maindeptName}}</td>
-        <td >主办处室联系人</td>
+        <td class="text-center">主办处室联系人</td>
         <td colspan="2">{{vm.model.mainDeptUserName}}</td>
     </tr>
     <tr>
-        <td>协办处室</td>
+        <td class="text-center">协办处室</td>
         <td colspan="2">{{vm.model.assistdeptName}}</td>
-        <td>协办处室联系人</td>
+        <td class="text-center">协办处室联系人</td>
         <td colspan="2">{{vm.model.assistDeptUserName}}</td>
     </tr>
     <tr>
-        <td>缓急程度</td>
+        <td class="text-center">缓急程度</td>
         <td colspan="2">{{vm.model.urgencydegree}}</td>
-        <td>秘密等级</td>
+        <td class="text-center">秘密等级</td>
         <td colspan="2">{{vm.model.secrectlevel}}</td>
     </tr>
     <tr>
-        <td rowspan="3">备审资料</td>
+        <td rowspan="3" class="text-center">备审资料</td>
         <td colspan="5">
             <table class="child-table" style="font-size: 12px;">
                 <caption>（一）来文资料 </caption>
@@ -66,14 +66,14 @@
                 <tr>
                     <td class="item-name">委项目处理表</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugProDealCount" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.sugProDealCount"  
                                ng-checked="vm.model.sugProDealCount == 9 || vm.model.sugProDealCount == '9'"
                                name="sugProDealCount"  ng-true-value="9" ng-false-value="0">
                     </td>
                     <td></td>
                     <td class="item-name">项目单位申报表</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugOrgApplyOriginal" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.sugOrgApplyOriginal"  
                                ng-checked="vm.model.sugOrgApplyOriginal == 9 || vm.model.sugOrgApplyOriginal == '9'"
                                 ng-true-value="9" ng-false-value="0"></td>
                     <td>
@@ -84,7 +84,7 @@
                 <tr>
                     <td class="item-name">委文件处理表</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugFileDealCount" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.sugFileDealCount"  
                                ng-checked="vm.model.sugFileDealCount == 9 || vm.model.sugFileDealCount == '9'"
                                ng-true-value="9" ng-false-value="0">
                     </td>
@@ -92,7 +92,7 @@
                     <td class="item-name" >项目单位请示报告
                     </td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugOrgReqOriginal" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.sugOrgReqOriginal"  
                                ng-checked="vm.model.sugOrgReqOriginal == 9 || vm.model.sugOrgReqOriginal == '9'"
                                 ng-true-value="9" ng-false-value="0">
                     </td>
@@ -109,7 +109,7 @@
                     <td class="item-name" >相关会议纪要
                     </td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugMeetOriginal" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.sugMeetOriginal"  
                                ng-checked="vm.model.sugMeetOriginal == 9 || vm.model.sugMeetOriginal == '9'"
                                ng-true-value="9" ng-false-value="0">
                     </td>
@@ -144,7 +144,7 @@
                 <tr>
                     <td class="item-name">项目建议书批复</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.studyProSugOriginal" ng-disabled="true" name="studyProSugOriginal"
+                        <input type="checkbox" ng-model="vm.model.studyProSugOriginal"   name="studyProSugOriginal"
                                ng-checked="vm.model.studyProSugOriginal == 9 || vm.model.studyProSugOriginal == '9'"
                                 ng-true-value="9" ng-false-value="0"/>
                     </td>
@@ -154,7 +154,7 @@
                     </td>
                     <td class="item-name">环境影响评价报告</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.environmentalEffectOriginal" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.environmentalEffectOriginal"  
                                ng-checked="vm.model.environmentalEffectOriginal == 9 || vm.model.environmentalEffectOriginal == '9'"
                                 ng-true-value="9" ng-false-value="0"/>
                     </td>
@@ -166,7 +166,7 @@
                 <tr>
                     <td class="item-name">可研报告批复</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.reportOrigin" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.reportOrigin"  
                                ng-checked="vm.model.reportOrigin == 9 || vm.model.reportOrigin == '9'"
                                name="reportOrigin"  ng-true-value="9" ng-false-value="0"/>
                     </td>
@@ -176,7 +176,7 @@
                     </td>
                     <td class="item-name">用地规划许可证</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.landPlanningLicenseOriginal" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.landPlanningLicenseOriginal"  
                                ng-checked="vm.model.landPlanningLicenseOriginal == 9 || vm.model.landPlanningLicenseOriginal == '9'"
                                 ng-true-value="9" ng-false-value="0"/>
                     </td>
@@ -211,7 +211,7 @@
                 <tr>
                     <td class="item-name">地质勘察报告</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.geologicalSurveyOriginal" ng-disabled="true" name="geologicalSurveyOriginal"
+                        <input type="checkbox" ng-model="vm.model.geologicalSurveyOriginal"   name="geologicalSurveyOriginal"
                                ng-checked="vm.model.geologicalSurveyOriginal == 9 || vm.model.geologicalSurveyOriginal == '9'"
                                 ng-true-value="9" ng-false-value="0"/>
                     </td>
@@ -221,7 +221,7 @@
                     </td>
                     <td class="item-name">初步设计图纸 </td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.preliminaryDrawingOriginal" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.preliminaryDrawingOriginal"  
                                ng-checked="vm.model.preliminaryDrawingOriginal == 9 || vm.model.preliminaryDrawingOriginal == '9'"
                                ng-true-value="9" ng-false-value="0"/>
                     </td>
@@ -233,7 +233,7 @@
                 <tr>
                     <td class="item-name">设计说明</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.descriptionDesignOriginal" ng-disabled="true" name="descriptionDesignOriginal"
+                        <input type="checkbox" ng-model="vm.model.descriptionDesignOriginal"   name="descriptionDesignOriginal"
                                ng-checked="vm.model.descriptionDesignOriginal == 9 || vm.model.descriptionDesignOriginal == '9'"
                                 ng-true-value="9" ng-false-value="0"/>
                     </td>
@@ -243,7 +243,7 @@
                     </td>
                     <td class="item-name">施工设计图纸</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.constructionDrawingsOriginal" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.constructionDrawingsOriginal"  
                                ng-checked="vm.model.constructionDrawingsOriginal == 9 || vm.model.constructionDrawingsOriginal == '9'"
                                 ng-true-value="9" ng-false-value="0"/>
                     </td>
@@ -255,7 +255,7 @@
                 <tr>
                     <td class="item-name">工程概算书</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.projectBudgetOriginal" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.projectBudgetOriginal"  
                               ng-checked="vm.model.projectBudgetOriginal == 9 || vm.model.projectBudgetOriginal == '9'"
                                name="projectBudgetOriginal"  ng-true-value="9" ng-false-value="0"/>
                     </td>
@@ -276,9 +276,9 @@
     </tr>
 
     <tr>
-        <td >综合部分办</td>
+        <td class="text-center">综合部分办</td>
         <td colspan="5" >
-            <div class="signName" style="height: 90px;">
+            <div class="signName" >
                 <div class="signDetail" style="height: 30%;">  {{vm.model.comprehensivehandlesug}}</div>
                 <p class="nameDate">签名：{{vm.model.comprehensiveName}}</p>
                 <p class="nameDate" >日期：{{vm.model.comprehensiveDate}}</p>
@@ -286,9 +286,9 @@
         </td>
     </tr>
     <tr>
-        <td >中心领导签批意见</td>
+        <td class="text-center">中心领导签批意见</td>
         <td colspan="5" >
-            <div class="signName" style="height: 90px;">
+            <div class="signName" >
                 <div class="signDetail" style="height: 30%;">  {{vm.model.leaderhandlesug}}</div>
                 <p class="nameDate">签名：</p>
                 <p class="nameDate">日期：{{vm.model.leaderDate}}</p>
@@ -296,9 +296,9 @@
         </td>
     </tr>
     <tr>
-        <td >部长处理意见</td>
+        <td class="text-center">部长处理意见</td>
         <td  colspan="5" >
-            <div class="signName" style="height: 90px;">
+            <div class="signName" >
                 <div class="signDetail" style="height: 30%;"> {{vm.model.ministerhandlesug}}</div>
                 <p class="nameDate" >签名：</p>
                 <p class="nameDate">日期：{{vm.model.ministerDate}}</p>

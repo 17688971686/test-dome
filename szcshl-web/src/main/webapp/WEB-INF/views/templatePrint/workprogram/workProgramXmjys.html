@@ -114,9 +114,9 @@
             <tr style="height: 40px;">
                 <td  class="text-center" colspan="2">补充资料函</td>
                 <td colspan="3">
-                    <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter"
+                    <input type="checkbox"     ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter"
                            ng-checked="w.isHaveSuppLetter==9" ng-true-value="9"/>是
-                    <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter"
+                    <input type="checkbox"     ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter"
                            ng-checked="!w.isHaveSuppLetter || w.isHaveSuppLetter==0"  ng-true-value="0"/>否
                 </td>
                 <td  class="text-center">补充资料函发文日期</td>
@@ -196,8 +196,8 @@
             <tr>
                 <td>部长意见</td>
                 <td colspan="5" >
-                    <div >
-                        <div class="signDetail" style="height: 40%;"> {{w.ministerSuggesttion}} </div>
+                    <div class="signName">
+                        <div class="signDetail" style="height: 25%;"> {{w.ministerSuggesttion}} </div>
                         <p class="nameDate">签名：</p>
                         <p class="nameDate">日期：{{w.ministerDate}}</p>
                     </div>
@@ -206,8 +206,8 @@
             <tr>
                 <td>中心领导签批意见</td>
                 <td colspan="5" >
-                    <div >
-                        <div class="signDetail" style="height: 40%;"> {{w.leaderSuggesttion}} </div>
+                    <div class="signName">
+                        <div class="signDetail" style="height: 25%;"> {{w.leaderSuggesttion}} </div>
                         <p class="nameDate" >签名：</p>
                         <p class="nameDate">日期：{{w.leaderDate}}</p>
                     </div>
