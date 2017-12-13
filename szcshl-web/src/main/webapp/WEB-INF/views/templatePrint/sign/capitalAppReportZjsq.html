@@ -61,39 +61,39 @@
         <td width="17%"></td>
     </tr>-->
     <tr style="height: 60px;">
-        <td width="16%">项目名称</td>
+        <td width="16%" class="text-center">项目名称</td>
         <td colspan="2" width="34%">{{vm.model.projectname}}</td>
-        <td width="16%">收文编号</td>
+        <td width="16%" class="text-center">收文编号</td>
         <td colspan="2" width="34%"> {{vm.model.signNum}}</td>
     </tr>
     <tr style="height: 60px;">
-        <td>建设单位</td>
+        <td class="text-center">建设单位</td>
         <td colspan="2">{{vm.model.builtcompanyName}}</td>
-        <td>编制单位</td>
+        <td class="text-center">编制单位</td>
         <td colspan="2">{{vm.model.designcompanyName}}</td>
     </tr>
     <tr style="height: 60px;">
-        <td>主办处室</td>
+        <td class="text-center">主办处室</td>
         <td colspan="2">{{vm.model.maindeptName}}</td>
-        <td >主办处室联系人</td>
+        <td class="text-center">主办处室联系人</td>
         <td colspan="2">{{vm.model.mainDeptUserName}}</td>
     </tr>
     <tr style="height: 60px;">
-        <td>协办处室</td>
+        <td class="text-center">协办处室</td>
         <td colspan="2">{{vm.model.assistdeptName}}</td>
-        <td>协办处室联系人</td>
+        <td class="text-center">协办处室联系人</td>
         <td colspan="2">{{vm.model.assistDeptUserName}}</td>
     </tr>
     <tr style="height: 60px;">
-        <td>缓急程度</td>
+        <td class="text-center">缓急程度</td>
         <td width="17%">{{vm.model.urgencydegree}}</td>
-        <td width="17%">项目代码</td>
+        <td width="17%" class="text-center">项目代码</td>
         <td>{{vm.model.projectcode}}</td>
-        <td width="17%">秘密等级</td>
+        <td width="17%" class="text-center">秘密等级</td>
         <td width="17%">{{vm.model.secrectlevel}}</td>
     </tr>
     <tr>
-        <td >备审资料</td>
+        <td class="text-center">备审资料</td>
         <td colspan="5">
             <table class="child-table" style="font-size: 12px;">
                 <tr>
@@ -107,7 +107,7 @@
                 <tr>
                     <td class="printing-td">委项目处理表</td>
                     <td>
-                        <input type="checkbox" ng-disabled="true" ng-model="vm.model.sugProDealOriginal"
+                        <input type="checkbox"   ng-model="vm.model.sugProDealOriginal"
                                ng-checked="vm.model.sugProDealOriginal == 9 || vm.model.sugProDealOriginal == '9'"
                                name="sugProDealOriginal"  ng-true-value="9" ng-false-value="0">
                     </td>
@@ -118,7 +118,7 @@
 
                     <td class="printing-td">资金申请报告</td>
                     <td>
-                        <input type="checkbox" ng-disabled="true" ng-model="vm.model.capitalAppReportOriginal"
+                        <input type="checkbox"   ng-model="vm.model.capitalAppReportOriginal"
                                ng-checked="vm.model.capitalAppReportOriginal == 9 || vm.model.capitalAppReportOriginal == '9'"
                                 ng-true-value="9" ng-false-value="0"></td>
                     <td>
@@ -129,7 +129,7 @@
                 <tr>
                     <td class="printing-td">委文件处理表</td>
                     <td>
-                        <input type="checkbox" ng-disabled="true" ng-model="vm.model.sugFileDealOriginal"
+                        <input type="checkbox"   ng-model="vm.model.sugFileDealOriginal"
                                ng-checked="vm.model.sugFileDealOriginal == 9 || vm.model.sugFileDealOriginal == '9'"
                                ng-true-value="9" ng-false-value="0">
                     </td>
@@ -150,7 +150,7 @@
                 <tr>
                     <td class="printing-td">项目单位申报表</td>
                     <td>
-                        <input type="checkbox"  ng-disabled="true" ng-model="vm.model.sugOrgApplyOriginal"
+                        <input type="checkbox"    ng-model="vm.model.sugOrgApplyOriginal"
                                ng-checked="vm.model.sugOrgApplyOriginal == 9 || vm.model.sugOrgApplyOriginal == '9'"
                                ng-true-value="9" ng-false-value="0">
                     </td>
@@ -159,7 +159,7 @@
                               value="{{vm.model.sugOrgApplyCount}}" name="sugOrgApplyCount"  data-val="true" 12></td>
                     <td class="printing-td">相关会议纪要</td>
                     <td>
-                        <input type="checkbox" ng-disabled="true"  ng-model="vm.model.sugMeetOriginal"
+                        <input type="checkbox"    ng-model="vm.model.sugMeetOriginal"
                                ng-checked="vm.model.sugMeetOriginal == 9 || vm.model.sugMeetOriginal == '9'"
                                ng-true-value="9" ng-false-value="0" ></td>
                     <td>
@@ -181,30 +181,30 @@
         </td>
     </tr>
     <tr>
-        <td>综合部分办</td>
+        <td class="text-center">综合部分办</td>
         <td colspan="5" >
-            <div class="signName" style="height: 120px;">
-                <div class="signDetail" style="height: 50%;">{{vm.model.comprehensivehandlesug}}</div>
+            <div class="signName" >
+                <div class="signDetail" style="height: 30%;">{{vm.model.comprehensivehandlesug}}</div>
                 <p class="nameDate">签名：{{vm.model.comprehensiveName}}</p>
                 <p class="nameDate">日期：{{vm.model.comprehensiveDate}}</p>
             </div>
         </td>
     </tr>
     <tr>
-        <td>中心领导签批意见</td>
+        <td class="text-center">中心领导签批意见</td>
         <td colspan="5" >
-            <div class="signName" style="height: 120px;" >
-                <div class="signDetail" style="height: 50%;"> {{vm.model.leaderhandlesug}}</div>
+            <div class="signName" >
+                <div class="signDetail" style="height: 30%;"> {{vm.model.leaderhandlesug}}</div>
                 <p class="nameDate" >签名：</p>
                 <p class="nameDate">日期：{{vm.model.leaderDate}}</p>
             </div>
         </td>
     </tr>
     <tr>
-        <td>部长处理意见</td>
+        <td class="text-center">部长处理意见</td>
         <td colspan="5" >
-            <div class="signName"  style="height: 120px;">
-                <div class="signDetail" style="height: 50%;"> {{vm.model.ministerhandlesug}}</div>
+            <div class="signName" >
+                <div class="signDetail" style="height: 30%;"> {{vm.model.ministerhandlesug}}</div>
                 <p class="nameDate">签名：</p>
                 <p class="nameDate">日期：{{vm.model.ministerDate}}</p>
             </div>

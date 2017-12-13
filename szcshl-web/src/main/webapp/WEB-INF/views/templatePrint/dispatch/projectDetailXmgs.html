@@ -18,7 +18,7 @@
         </caption>
         <caption class="title"><p>深圳市政府投资项目评审中心</p><p>项目发文审批表</p></caption>
         <caption>
-            <span style="margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
+            <span style="float: left;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
             <span ng-if="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9" style="margin-left:10px;">主项目</span>
             <span ng-if="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0" style="margin-left:10px;">次项目</span>
             <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
@@ -34,43 +34,43 @@
              <td width="11%"></td>
          </tr>-->
         <tr style="height: 50px;">
-            <td rowspan="2" width="16%">发文部门 <br/> 拟稿人</td>
+            <td rowspan="2" width="16%" class="text-center">发文部门 <br/> 拟稿人</td>
             <td colspan="2" width="20%">{{vm.dispatchDoc.orgName}}</td>
-            <td rowspan="2" width="12%">校对人</td>
-            <td rowspan="2" width="12%">{{vm.dispatchDoc.proofreadName}}</td>
-            <td rowspan="2" width="15%">拟稿时间</td>
-            <td colspan="2" rowspan="2" width="25%">{{vm.dispatchDoc.draftDate}}</td>
+            <td rowspan="2" width="12%" class="text-center">校对人</td>
+            <td rowspan="2" width="17%">{{vm.dispatchDoc.proofreadName}}</td>
+            <td rowspan="2" width="15%" class="text-center">拟稿时间</td>
+            <td colspan="2" rowspan="2" width="20%">{{vm.dispatchDoc.draftDate}}</td>
         </tr>
         <tr style="height: 50px;">
             <td colspan="2" style="text-align: left; padding-left: 10px;">{{vm.dispatchDoc.userName}}</td>
         </tr>
         <tr style="height: 50px;">
-            <td>秘密等级</td>
+            <td class="text-center">秘密等级</td>
             <td colspan="2">{{vm.dispatchDoc.secretLevel}}</td>
-            <td>年底计划</td>
+            <td class="text-center">年底计划</td>
             <td>{{vm.dispatchDoc.yearPlan}}</td>
-            <td>急缓程度</td>
+            <td class="text-center">急缓程度</td>
             <td colspan="2">{{vm.dispatchDoc.urgentLevel}}</td>
         </tr>
         <tr style="height: 50px;">
-            <td>发文日期</td>
+            <td class="text-center">发文日期</td>
             <td colspan="2">{{vm.dispatchDoc.dispatchDate}}</td>
-            <td>文件字号</td>
+            <td class="text-center">文件字号</td>
             <td>{{vm.dispatchDoc.fileNum}}</td>
-            <td>是否有其他阶段关联</td>
+            <td class="text-center">是否有其他阶段关联</td>
             <td colspan="2">
-                <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated"
+                <input type="checkbox"   ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated"
                        ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'" name="isRelated"/>是
-                <input type="checkbox" ng-disabled="true" ng-true-value="0" ng-false-value="9" ng-model="vm.dispatchDoc.isRelated"
+                <input type="checkbox"   ng-true-value="0" ng-false-value="9" ng-model="vm.dispatchDoc.isRelated"
                        ng-checked="!vm.dispatchDoc.isRelated || vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'" name="isRelated"/>否
             </td>
         </tr>
         <tr style="height: 50px;">
-            <td>文件标题</td>
+            <td class="text-center">文件标题</td>
             <td colspan="7" >{{vm.dispatchDoc.fileTitle}}</td>
         </tr>
         <tr>
-            <td >发行范围</td>
+            <td class="text-center">发行范围</td>
             <td colspan="7"  >
                 <div style="width: 100%; height: 60px; overflow: hidden;">
                     <div style="height: 60% ; width: 100%;">{{vm.dispatchDoc.description}}</div>
@@ -79,34 +79,34 @@
         </tr>
 
         <tr style="height: 50px;">
-            <td>是否协审</td>
+            <td class="text-center">是否协审</td>
             <td width="10%">
-                <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0"
+                <input type="checkbox"   ng-true-value="9" ng-false-value="0"
                        ng-checked="vm.model.isassistproc && (vm.model.isassistproc==9 || vvm.model.signDto.isassistproc=='9')"/>
             </td>
-            <td width="10%">协审单位</td>
+            <td width="10%" class="text-center">协审单位</td>
             <td colspan="2" width="24%">{{vm.assistPlanSign.unitNameStr}}</td>
-            <td>协审金额</td>
+            <td class="text-center">协审金额</td>
             <td colspan="2">{{vm.assistPlanSign.assistCost}}</td>
         </tr>
 
         <tr>
-            <td >相关说明</td>
+            <td class="text-center">相关说明</td>
             <td colspan="7" >
                 <div style="width: 100%; height: 60px; overflow: hidden;">{{vm.dispatchDoc.description}}</div>
             </td>
         </tr>
         <tr>
-            <td >评审意见摘要</td>
+            <td class="text-center">评审意见摘要</td>
             <td colspan="7">
                 <div style="width: 100%; height: 60px; overflow: hidden;">{{vm.dispatchDoc.reviewAbstract}}</div>
             </td>
         </tr>
         <tr>
-            <td >部长审核意见</td>
+            <td class="text-center">部长审核意见</td>
             <td colspan="7" >
                 <div class="signName" style="height: 130px;">
-                    <div  style="height: 50%;text-align: left;text-indent: 2em;overflow: hidden;">
+                    <div  style="height: 45%;text-align: left;text-indent: 2em;overflow: hidden;">
                         {{vm.dispatchDoc.ministerSuggesttion}}</div>
                     <p class="nameDate">签名：</p>
                     <p class="nameDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
@@ -114,10 +114,10 @@
             </td>
         </tr>
         <tr>
-            <td>分管副主任意见</td>
+            <td class="text-center">分管副主任意见</td>
             <td colspan="7">
                 <div class="signName" style="height: 130px;">
-                    <div  style="height: 50%;text-align: left;text-indent: 2em;overflow: hidden;">
+                    <div  style="height: 45%;text-align: left;text-indent: 2em;overflow: hidden;">
                         {{vm.dispatchDoc.viceDirectorSuggesttion}}</div>
                     <p class="nameDate">签名：</p>
                     <p class="nameDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
@@ -125,10 +125,10 @@
             </td>
         </tr>
         <tr>
-            <td>主任签发</td>
+            <td class="text-center">主任签发</td>
             <td colspan="7">
                 <div class="signName" style="height: 130px;">
-                    <div  style="height: 50%;text-align: left;text-indent: 2em;overflow: hidden;">
+                    <div  style="height: 45%;text-align: left;text-indent: 2em;overflow: hidden;">
                         {{vm.dispatchDoc.directorSuggesttion}}</div>
                     <p class="nameDate">签名：</p>
                     <p class="nameDate">日期：{{vm.dispatchDoc.directorDate}}</p>
@@ -149,39 +149,39 @@
             <td width="11%"></td>
         </tr>-->
         <tr>
-            <td width="16%">项目概况</td>
+            <td width="16%" class="text-center">项目概况</td>
             <td colspan="7"  style="padding:0; width: 84%;">
                 <!--前一阶段-->
-                <table>
-                    <tr id="proItem">
-                        <td  width="22%">项目建议书</td>
-                        <td  width="10%">申报</td>
-                        <td  width="10%">审定</td>
-                        <td  width="18%">核减（增）</td>
-                        <td  width="20%">核减（增）率</td>
-                        <td  width="10%">批复金额</td>
-                        <td style="border-right-width: 0px;" width="10%">备注</td>
+                <table cellspacing="0">
+                    <tr >
+                        <td  width="22%" style="border-left: none;border-top: none;">项目建议书</td>
+                        <td  width="10%" style="border-left: none;border-top: none;">申报</td>
+                        <td  width="10%" style="border-left: none;border-top: none;">审定</td>
+                        <td  width="18%" style="border-left: none;border-top: none;">核减（增）</td>
+                        <td  width="20%" style="border-left: none;border-top: none;">核减（增）率</td>
+                        <td  width="10%" style="border-left: none;border-top: none;">批复金额</td>
+                        <td  width="10%" style="border-left: none;border-top: none;border-right: none;">备注</td>
                     </tr>
                     <tr>
-                        <td  style="border-left-width: 0px;">投资额（万元）</td>
-                        <td>{{vm.workProgramXmjys.declareValue }}</td>
-                        <td>{{vm.workProgramXmjys.authorizeValue}}</td>
-                        <td>{{vm.workProgramXmjys.extraValue}}</td>
-                        <td>{{vm.workProgramXmjys.extraRate}}<span>%</span></td>
-                        <td>{{vm.workProgramXmjys.approveValue}}</td>
-                        <td>{{vm.workProgramXmjys.remark}}</td>
+                        <td  style="border-left: none;border-top: none;">投资额（万元）</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramXmjys.declareValue ? vm.workProgramXmjys.declareValue : '&nbsp;' }}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramXmjys.authorizeValue ? vm.workProgramXmjys.authorizeValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramXmjys.extraValue ? vm.workProgramXmjys.extraValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramXmjys.extraRate ? vm.workProgramXmjys.extraRate : '&nbsp;'}}<span>%</span></td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramXmjys.approveValue ? vm.workProgramXmjys.approveValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;border-right: none;">{{vm.workProgramXmjys.remark ? vm.workProgramXmjys.remark : '&nbsp;'}}</td>
                     </tr>
                     <tr>
-                        <td style="border-left-width: 0px;">项目建设必要性</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">项目建设必要性</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramXmjys.projectBuildNecess}}
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td style="border-left-width: 0px;">审定建设规模及内容</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">审定建设规模及内容</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramXmjys.buildSizeContent}}
                             </div>
@@ -189,8 +189,8 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">投资匡算及资金来源</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">投资匡算及资金来源</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramXmjys.fundTotalOrigin}}
                             </div>
@@ -198,44 +198,44 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">下一阶段工作要求</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">下一阶段工作要求</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramXmjys.nextWorkPlan}}
                             </div>
                         </td>
                     </tr>
                 </table>
-                <table>
-                    <tr id="proItem">
-                        <td  width="22%">可行性研究报告</td>
-                        <td  width="10%">申报</td>
-                        <td  width="10%">审定</td>
-                        <td  width="18%">核减（增）</td>
-                        <td  width="20%">核减（增）率</td>
-                        <td  width="10%">批复金额</td>
-                        <td style="border-right-width: 0px;" width="10%">备注</td>
+                <table cellspacing="0">
+                    <tr >
+                        <td  width="22%" style="border-left: none;border-top: none;">可行性研究报告</td>
+                        <td  width="10%" style="border-left: none;border-top: none;">申报</td>
+                        <td  width="10%" style="border-left: none;border-top: none;">审定</td>
+                        <td  width="18%" style="border-left: none;border-top: none;">核减（增）</td>
+                        <td  width="20%" style="border-left: none;border-top: none;">核减（增）率</td>
+                        <td  width="10%" style="border-left: none;border-top: none;">批复金额</td>
+                        <td style="border-left: none;border-top: none;border-right: none;" width="10%">备注</td>
                     </tr>
                     <tr>
-                        <td  style="border-left-width: 0px;">投资额（万元）</td>
-                        <td>{{vm.workProgramKxxyj.declareValue }}</td>
-                        <td>{{vm.workProgramKxxyj.authorizeValue}}</td>
-                        <td>{{vm.workProgramKxxyj.extraValue}}</td>
-                        <td>{{vm.workProgramKxxyj.extraRate}}<span>%</span></td>
-                        <td>{{vm.workProgramKxxyj.approveValue}}</td>
-                        <td>{{vm.workProgramKxxyj.remark}}</td>
+                        <td  style="border-left: none;border-top: none;">投资额（万元）</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramKxxyj.declareValue ? vm.workProgramKxxyj.declareValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramKxxyj.authorizeValue ? vm.workProgramKxxyj.authorizeValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramKxxyj.extraValue ? vm.workProgramKxxyj.extraValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramKxxyj.extraRate ? vm.workProgramKxxyj.extraRate : '&nbsp;'}}<span>%</span></td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramKxxyj.approveValue ? vm.workProgramKxxyj.approveValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;border-right: none;">{{vm.workProgramKxxyj.remark ? vm.workProgramKxxyj.remark : '&nbsp;'}}</td>
                     </tr>
                     <tr>
-                        <td style="border-left-width: 0px;">项目建设必要性</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">项目建设必要性</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramKxxyj.projectBuildNecess}}
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td style="border-left-width: 0px;">审定建设规模及内容</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">审定建设规模及内容</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramKxxyj.buildSizeContent}}
                             </div>
@@ -243,8 +243,8 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">投资匡算及资金来源</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">投资匡算及资金来源</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramKxxyj.fundTotalOrigin}}
                             </div>
@@ -252,44 +252,44 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">下一阶段工作要求</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">下一阶段工作要求</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramKxxyj.nextWorkPlan}}
                             </div>
                         </td>
                     </tr>
                 </table>
-                <table ng-if="vm.model.ischangeEstimate && (vm.model.ischangeEstimate == 9 ||vm.model.ischangeEstimate == '9')">
-                    <tr id="proItem">
-                        <td  width="22%">项目概算</td>
-                        <td  width="10%">申报</td>
-                        <td  width="10%">审定</td>
-                        <td  width="18%">核减（增）</td>
-                        <td  width="20%">核减（增）率</td>
-                        <td  width="10%">批复金额</td>
-                        <td style="border-right-width: 0px;" width="10%">备注</td>
+                <table cellspacing="0" ng-if="vm.model.ischangeEstimate && (vm.model.ischangeEstimate == 9 ||vm.model.ischangeEstimate == '9')">
+                    <tr >
+                        <td  width="22%" style="border-left: none;border-top: none;">项目概算</td>
+                        <td  width="10%" style="border-left: none;border-top: none;">申报</td>
+                        <td  width="10%" style="border-left: none;border-top: none;">审定</td>
+                        <td  width="18%" style="border-left: none;border-top: none;">核减（增）</td>
+                        <td  width="20%" style="border-left: none;border-top: none;">核减（增）率</td>
+                        <td  width="10%" style="border-left: none;border-top: none;">批复金额</td>
+                        <td style="border-left: none;border-top: none;border-right: none;" width="10%">备注</td>
                     </tr>
                     <tr>
-                        <td  style="border-left-width: 0px;">投资额（万元）</td>
-                        <td>{{vm.workProgramXmgs.declareValue }}</td>
-                        <td>{{vm.workProgramXmgs.authorizeValue}}</td>
-                        <td>{{vm.workProgramXmgs.extraValue}}</td>
-                        <td>{{vm.workProgramXmgs.extraRate}}<span>%</span></td>
-                        <td>{{vm.workProgramXmgs.approveValue}}</td>
-                        <td>{{vm.workProgramXmgs.remark}}</td>
+                        <td  style="border-left: none;border-top: none;">投资额（万元）</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramXmgs.declareValue ? vm.workProgramXmgs.declareValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramXmgs.authorizeValue ? vm.workProgramXmgs.authorizeValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramXmgs.extraValue ? vm.workProgramXmgs.extraValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramXmgs.extraRate ? vm.workProgramXmgs.extraRate : '&nbsp;'}}<span>%</span></td>
+                        <td style="border-left: none;border-top: none;">{{vm.workProgramXmgs.approveValue ? vm.workProgramXmgs.approveValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;border-right: none;">{{vm.workProgramXmgs.remark ? vm.workProgramXmgs.remark : '&nbsp;'}}</td>
                     </tr>
                     <tr>
-                        <td style="border-left-width: 0px;">项目建设必要性</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">项目建设必要性</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramXmgs.projectBuildNecess}}
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td style="border-left-width: 0px;">审定建设规模及内容</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">审定建设规模及内容</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramXmgs.buildSizeContent}}
                             </div>
@@ -297,8 +297,8 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">投资匡算及资金来源</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">投资匡算及资金来源</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramXmgs.fundTotalOrigin}}
                             </div>
@@ -306,8 +306,8 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">下一阶段工作要求</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">下一阶段工作要求</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.workProgramXmgs.nextWorkPlan}}
                             </div>
@@ -315,30 +315,30 @@
                     </tr>
                 </table>
                 <!--判断是否是调概-->
-                <table style="text-align: center;width: 100%; " ng-if="!vm.model.ischangeEstimate || vm.model.ischangeEstimate != 9 ||vm.model.ischangeEstimate != '9' ">
+                <table cellspacing="0" style="text-align: center;width: 100%; " ng-if="!vm.model.ischangeEstimate || vm.model.ischangeEstimate != 9 ||vm.model.ischangeEstimate != '9' ">
                     <tr id="proTotal">
-                        <td width="22%">{{vm.model.reviewstage ? vm.model.reviewstage : vm.sign.reviewstage}}</td>
-                        <td width="10%">申报</td>
-                        <td width="10%">审定</td>
-                        <td width="18%">核减（增）</td>
-                        <td width="20%">核减（增）率</td>
-                        <td width="10%">批复金额</td>
-                        <td style="border-right-width: 0px;" width="10%">备注</td>
+                        <td width="22%" style="border-left: none;border-top: none;">{{vm.model.reviewstage ? vm.model.reviewstage : vm.sign.reviewstage}}</td>
+                        <td width="10%" style="border-left: none;border-top: none;">申报</td>
+                        <td width="10%" style="border-left: none;border-top: none;">审定</td>
+                        <td width="18%" style="border-left: none;border-top: none;">核减（增）</td>
+                        <td width="20%" style="border-left: none;border-top: none;">核减（增）率</td>
+                        <td width="10%" style="border-left: none;border-top: none;">批复金额</td>
+                        <td style="border-left: none;border-top: none;border-right: none;" width="10%">备注</td>
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">投资额（万元）</td>
-                        <td>{{vm.dispatchDoc.declareValue}}</td>
-                        <td>{{vm.dispatchDoc.authorizeValue}}</td>
-                        <td>{{vm.dispatchDoc.extraValue}}</td>
-                        <td>{{vm.dispatchDoc.extraRate}}<span>%</span></td>
-                        <td>{{vm.dispatchDoc.approveValue}}</td>
-                        <td>{{vm.dispatchDoc.remark}}</td>
+                        <td style="border-left: none;border-top: none;">投资额（万元）</td>
+                        <td style="border-left: none;border-top: none;">{{vm.dispatchDoc.declareValue ? vm.dispatchDoc.declareValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.dispatchDoc.authorizeValue ? vm.dispatchDoc.authorizeValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.dispatchDoc.extraValue ? vm.dispatchDoc.extraValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.dispatchDoc.extraRate ? vm.dispatchDoc.extraRate : '&nbsp;'}}<span>%</span></td>
+                        <td style="border-left: none;border-top: none;">{{vm.dispatchDoc.approveValue ? vm.dispatchDoc.approveValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;border-right: none;">{{vm.dispatchDoc.remark ? vm.dispatchDoc.remark : '&nbsp;'}}</td>
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">项目建设必要性</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">项目建设必要性</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.dispatchDoc.projectBuildNecess}}
                             </div>
@@ -346,8 +346,8 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">审定建设规模及内容</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">审定建设规模及内容</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;;">
                                 {{vm.dispatchDoc.buildSizeContent}}
                             </div>
@@ -355,8 +355,8 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px; ">投资匡算及资金来源</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">投资匡算及资金来源</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.dispatchDoc.fundTotalOrigin}}
                             </div>
@@ -364,8 +364,8 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;border-bottom-width: 0px;">下一阶段工作要求</td>
-                        <td style="border-bottom-width: 0px;" colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;border-bottom: none;">下一阶段工作要求</td>
+                        <td  colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;border-bottom: none;">
                             <div style="width: 100%; height: 55px; overflow: hidden;">
                                 {{vm.dispatchDoc.nextWorkPlan}}
                             </div>
@@ -378,34 +378,34 @@
 
 <div id="sign_dispatch_xmgs_templ3"
      ng-if="vm.model.ischangeEstimate && (vm.model.ischangeEstimate == 9 ||vm.model.ischangeEstimate == '9') ">
-    <table style="text-align: center;width: 100%; " class="print-table">
+    <table  class="print-table">
         <tr>
-            <td width="16%">项目概况</td>
+            <td width="16%" class="text-center">项目概况</td>
             <td colspan="7"  style="padding:0; width: 84%;">
-                <table>
-                    <tr id="proTotal" style="height: 50px;">
-                        <td width="22%">{{vm.model.reviewstage ? vm.model.reviewstage : vm.sign.reviewstage}}</td>
-                        <td width="10%">申报</td>
-                        <td width="10%">审定</td>
-                        <td width="18%">核减（增）</td>
-                        <td width="20%">核减（增）率</td>
-                        <td width="10%">批复金额</td>
-                        <td style="border-right-width: 0px;" width="10%">备注</td>
+                <table cellspacing="0">
+                    <tr  style="height: 50px;">
+                        <td width="22%" style="border-left: none;border-top: none;">{{vm.model.reviewstage ? vm.model.reviewstage : vm.sign.reviewstage}}</td>
+                        <td width="10%" style="border-left: none;border-top: none;">申报</td>
+                        <td width="10%" style="border-left: none;border-top: none;">审定</td>
+                        <td width="18%" style="border-left: none;border-top: none;">核减（增）</td>
+                        <td width="20%" style="border-left: none;border-top: none;">核减（增）率</td>
+                        <td width="10%" style="border-left: none;border-top: none;">批复金额</td>
+                        <td style="border-left: none;border-top: none;border-right: none;" width="10%">备注</td>
                     </tr>
 
                     <tr style="height: 50px;">
-                        <td style="border-left-width: 0px;">投资额（万元）</td>
-                        <td>{{vm.dispatchDoc.declareValue}}</td>
-                        <td>{{vm.dispatchDoc.authorizeValue}}</td>
-                        <td>{{vm.dispatchDoc.extraValue}}</td>
-                        <td>{{vm.dispatchDoc.extraRate}}<span> %</span></td>
-                        <td>{{vm.dispatchDoc.approveValue}}</td>
-                        <td>{{vm.dispatchDoc.remark}}</td>
+                        <td style="border-left: none;border-top: none;">投资额（万元）</td>
+                        <td style="border-left: none;border-top: none;">{{vm.dispatchDoc.declareValue ? vm.dispatchDoc.declareValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.dispatchDoc.authorizeValue ? vm.dispatchDoc.authorizeValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.dispatchDoc.extraValue ? vm.dispatchDoc.extraValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;">{{vm.dispatchDoc.extraRate ? vm.dispatchDoc.extraRate : '&nbsp;'}}<span> %</span></td>
+                        <td style="border-left: none;border-top: none;">{{vm.dispatchDoc.approveValue ? vm.dispatchDoc.approveValue : '&nbsp;'}}</td>
+                        <td style="border-left: none;border-top: none;border-right: none;">{{vm.dispatchDoc.remark ? vm.dispatchDoc.remark : '&nbsp;'}}</td>
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">项目建设必要性</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">项目建设必要性</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 150px; overflow: hidden;">
                                 {{vm.dispatchDoc.projectBuildNecess}}
                             </div>
@@ -413,8 +413,8 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;">审定建设规模及内容</td>
-                        <td colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;">审定建设规模及内容</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
                             <div style="width: 100%; height: 150px; overflow: hidden;">
                                 {{vm.dispatchDoc.buildSizeContent}}
                             </div>
@@ -422,17 +422,17 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px; ">投资匡算及资金来源</td>
-                        <td colspan="6" class="text-left">
-                            <div style="width: 100%; height: 150px; overflow: hidden;">
+                        <td style="border-left: none;border-top: none;">投资匡算及资金来源</td>
+                        <td colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
+                            <div style="width: 100%; height: 200px; overflow: hidden;">
                                 {{vm.dispatchDoc.fundTotalOrigin}}
                             </div>
                         </td>
                     </tr>
 
                     <tr>
-                        <td style="border-left-width: 0px;border-bottom-width: 0px;">下一阶段工作要求</td>
-                        <td style="border-bottom-width: 0px;" colspan="6" class="text-left">
+                        <td style="border-left: none;border-top: none;border-bottom: none;">下一阶段工作要求</td>
+                        <td  colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;border-bottom: none;">
                             <div style="width: 100%; height: 150px; overflow: hidden;">
                                 {{vm.dispatchDoc.nextWorkPlan}}
                             </div>
