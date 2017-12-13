@@ -1,0 +1,104 @@
+<#assign path=request.contextPath />
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div class="well well-sm conttent_list" style="background: white;min-height:960px;">
+    <p class="pro_title_1" style="margin:10px;margin-left:0px;">图书管理信息</p>
+    <form id="form" name="form">
+        <table class="" style="width: 90%;">
+            <caption class="text-center"> <h3><strong>采购图书资料申请表</strong></h3></caption>
+            <tr>
+                <input type="hidden" name="businessId" id="businessId"  ng-model="vm.model.businessId" value="{{vm.model.businessId}}"/>
+                <td class="formAlignRight" width="10%">申请部门</td>
+                <td width="20%">
+                   {{vm.model.applyDept}}
+                </td>
+                <td class="formAlignRight" width="10%">经办人</td>
+                <td width="20%">
+                    {{vm.model.operator}}
+                </td>
+
+                <td class="formAlignRight" width="10%">购买渠道</td>
+                <td width="30%">
+                        {{vm.model.buyChannel}}
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="10%">申请事由及发放范围</td>
+                <td width="90%" colspan="5" >
+                    <p> {{vm.model.applyReason}}</p>
+                    <p class="text-right" ng-if="vm.model.orgDirector">签名：{{vm.model.orgDirector}}</p>
+                    <p class="text-right" ng-if="vm.model.orgDirectorDate">日期：{{vm.model.orgDirectorDate}}</p>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight" width="10%">分管副主任审核</td>
+                <td width="40%" >
+                    <p> {{vm.model.orgSLeaderHandlesug}}</p>
+                    <p class="text-right" ng-if="vm.model.orgSLeader">签名：{{vm.model.orgSLeader}}</p>
+                    <p class="text-right" ng-if="vm.model.orgSLeaderDate">日期：{{vm.model.orgSLeaderDate}}</p>
+                </td>
+                <td class="formAlignRight" width="10%">主任审批</td>
+                <td width="40%" colspan="3" >
+                    <p> {{vm.model.orgMLeaderHandlesug}}</p>
+                    <p class="text-right" ng-if="vm.model.orgMLeader">签名：{{vm.model.orgMLeader}}</p>
+                    <p class="text-right" ng-if="vm.model.orgMLeaderDate">日期：{{vm.model.orgMLeaderDate}}</p>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="formAlignRight" width="10%">购买后档案员验收并入库</td>
+                <td width="90%" colspan="5" >
+                    <p> {{vm.model.filerHandlesug}}</p>
+                    <p class="text-right" ng-if="vm.model.filer">签名：{{vm.model.filer}}</p>
+                    <p class="text-right" ng-if="vm.model.filerDate">日期：{{vm.model.filerDate}}</p>
+                </td>
+            </tr>
+        </table>
+        <table style="width: 90%;">
+            <tr class="bookBuyInfo">
+                <td style="width:7%;min-width:50px;" align="center">序号</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">书刊名称</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">图书\期刊分类</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">出版社</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">书号\刊号</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">作者</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">购买数量</td>
+                <td class="text-center" style="width:8%;border-top: 0px;">库存确认</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">价格</td>
+                <td class="text-center" style="width:10%;border-top: 0px;">合计</td>
+            </tr>
+            <tr ng-repeat="x in vm.model.bookBuyList">
+                <td align="center">{{$index+1}}</td>
+                <td align="center">
+                    {{x.booksName}}
+                </td>
+                <td align="center">
+                    {{x.booksType}}
+                </td>
+                <td align="center">
+                    {{x.publishingCompany}}
+                </td>
+                <td align="center">
+                    {{x.bookNo}}
+                </td>
+                <td align="center">
+                    {{x.author}}
+                </td>
+                <td align="center">
+                    {{x.bookNumber}}
+                </td>
+                <td align="center">
+                    {{x.storeConfirm}}
+                </td>
+                <td align="center">
+                    {{x.booksPrice}}
+                </td>
+                <td align="center">
+                    {{x.totalPrice}}
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</div>

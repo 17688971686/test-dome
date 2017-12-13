@@ -10,15 +10,12 @@ import cs.common.utils.Validate;
 import cs.domain.flow.HiProcessTask;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
-import cs.domain.monthly.MonthlyNewsletter;
 import cs.domain.project.SignDispaWork;
-import cs.domain.sys.Annountment;
 import cs.domain.sys.Log;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
-import cs.model.project.ProjectStopDto;
 import cs.repository.odata.ODataObj;
 import cs.service.archives.ArchivesLibraryService;
 import cs.service.asserts.assertStorageBusiness.AssertStorageBusinessService;
@@ -35,7 +32,10 @@ import cs.service.sys.AnnountmentService;
 import cs.service.sys.LogService;
 import cs.service.topic.TopicInfoService;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.*;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -584,10 +584,10 @@ public class FlowController {
                 resultPage = "topicInfo/flowDetail";
                 break;
             case FlowConstant.BOOKS_BUY_FLOW:
-                resultPage = "bookBuyBusiness/flowDeal";
+                resultPage = "bookBuyBusiness/flowDetail";
                 break;
             case FlowConstant.ASSERT_STORAGE_FLOW:
-                resultPage = "asserts/assertStorageBusiness/flowDeal";
+                resultPage = "asserts/assertStorageBusiness/flowDetail";
                 break;
             case FlowConstant.PROJECT_STOP_FLOW:
                 resultPage = "projectStop/flowDetail";

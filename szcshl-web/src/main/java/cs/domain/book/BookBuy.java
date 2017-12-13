@@ -46,6 +46,10 @@ public class BookBuy extends DomainBase {
     //作者
     @Column(columnDefinition="varchar(255)")
     private String author;
+
+    //合计
+    @Column(columnDefinition="varchar(255)")
+    private String totalPrice;
     /**
      * 出版时间
      */
@@ -190,5 +194,13 @@ public class BookBuy extends DomainBase {
 
     public void setStoreConfirm(String storeConfirm) {
         this.storeConfirm = storeConfirm;
+    }
+
+    public String getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(String totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

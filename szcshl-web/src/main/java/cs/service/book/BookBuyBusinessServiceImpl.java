@@ -141,6 +141,7 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setModifiedBy(SessionUtil.getDisplayName());
 				bookBuyBusiness.setCreatedDate(now);
 				bookBuyBusiness.setModifiedDate(now);
+				bookBuyBusiness.setApplyDate(now);
 				bookBuyBusiness.setApplyDept(bookList[0].getApplyDept());
 				bookBuyBusiness.setOperator(bookList[0].getOperator());
 				bookBuyBusiness.setBuyChannel(bookList[0].getBuyChannel());
@@ -152,6 +153,7 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setModifiedBy(SessionUtil.getDisplayName());
 				bookBuyBusiness.setCreatedDate(now);
 				bookBuyBusiness.setModifiedDate(now);
+				bookBuyBusiness.setApplyDate(now);
 				bookBuyBusiness.setApplyDept(bookList[0].getApplyDept());
 				bookBuyBusiness.setOperator(bookList[0].getOperator());
 				bookBuyBusiness.setBuyChannel(bookList[0].getBuyChannel());
@@ -186,7 +188,7 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 			bookBuyBusinessRepo.save(bookBuyBusiness);
 			return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"保存成功！",bookBuyBusiness);
 		}else{
-			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"请添加图书信息后，再进行保存！");
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有分录数据，无法保存！");
 		}
 	}
 
