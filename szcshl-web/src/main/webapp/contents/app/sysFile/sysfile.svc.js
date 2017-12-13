@@ -3,8 +3,8 @@
 
     angular.module('app').factory('sysfileSvc', sysfile);
 
-    sysfile.$inject = ['$http', 'bsWin','$state','$interval'];
-    function sysfile($http, bsWin,$state,$interval) {
+    sysfile.$inject = ['$http', 'bsWin', '$state', '$interval'];
+    function sysfile($http, bsWin, $state, $interval) {
         var service = {
             initUploadOptions: initUploadOptions,       // 初始化上传附件控件
             delSysFile: delSysFile,                     // 删除系统文件
@@ -15,7 +15,7 @@
             mainTypeValue: mainTypeValue,               // 各大模块附件根目录
             previewFile: previewFile,                   // pdf 预览
             initZtreeClient: initZtreeClient,
-            queryFile:queryFile
+            queryFile: queryFile
 
         };
         return service;
@@ -61,9 +61,9 @@
                 }
             }
             var httpSuccess = function success(response) {
-                if(response.data.flag || response.data.reCode == 'ok'){
+                if (response.data.flag || response.data.reCode == 'ok') {
                     window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
-                }else{
+                } else {
                     bsWin.error(response.data.reMsg);
                 }
             };
@@ -97,7 +97,7 @@
         }
 
         //根据主业务获取所有的附件信息
-        function findByMianId(mainId,callBack) {
+        function findByMianId(mainId, callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/file/findByMainId",
@@ -116,13 +116,14 @@
                 success: httpSuccess
             });
         }
+
         //根据点击的文件查询
-        function queryFile(mainId,type, callBack) {
-            var httpOptions ={
-                method : 'post',
-                url : rootPath+"/file/queryFile",
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
-                data: $.param({mainId: mainId, sysBusiType:type}),
+        function queryFile(mainId, type, callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/file/queryFile",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
+                data: $.param({mainId: mainId, sysBusiType: type}),
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -256,7 +257,7 @@
                 var projectfileoptions = {
                     language: 'zh',
                     allowedPreviewTypes: ['image'],
-                    allowedFileExtensions: ['sql', 'exe','lnk'],//修改过，改为了不支持了。比如不支持.sql的
+                    allowedFileExtensions: ['sql', 'exe', 'lnk'],//修改过，改为了不支持了。比如不支持.sql的
                     maxFileSize: 5000,
                     showRemove: false,
                     uploadUrl: rootPath + "/file/fileUpload",// 默认上传ftp服务器 /file/fileUploadLocal 为上传到本地服务
@@ -287,7 +288,6 @@
                 options.vm.initUploadOptionSuccess = true;
             }
         }
-
         // E 初始化上传附件控件
 
         // S 系统安装包管理
@@ -339,7 +339,7 @@
             };
         }// E queryPluginfile
 
-        function initZtreeClient(vm,$scope) {
+        function initZtreeClient(vm, $scope) {
             var zTreeObj;
             var setting = {
                 check: {
@@ -347,65 +347,68 @@
                     enable: false
                 },
                 callback: {
-                    onClick: zTreeOnClick
+                    onClick: function(event, treeId, treeNode){
+                        //点击文件夹
+                        if (treeNode.check_Child_State == 0) {
+                            vm.sysFileList = [];
+                            if(treeNode.children){
+                                vm.sysFileList = treeNode.children;
+                            }
+                            $scope.$apply();
+                        }
+                    }
                 }
             };
 
             var array = vm.sysFileList;
             vm.zNodes = [];
+            vm.initFileTreeSucess = false;
+            var data = [];
             //循环数据取出父类和相对应的子类
-            for (var j = 0; j < array.length; j++) {
-                if(array[j].sysBusiType==undefined ||array[j].sysBusiType==""){
-                    var name="其他文件";
-                }else{
-                    var name = array[j].sysBusiType;
+            for (var i = 0, l = array.length; i < l; i++) {
+                if(!array[i].sysBusiType){
+                    array[i].sysBusiType = "其他文件";
                 }
-                var nodes = new Object();//定义父类的对象
-                nodes.id=array[j].mainId;
-                nodes.name = name;
-                var ss = [];//定义子类对象数组
-                for (var i = 0; i < array.length;) {
-                    if (array[i].sysBusiType == name) {//判断是否是属于父类
-                        var s = new Object();
-                        s.name = array[i].showName;
-                        s.id = array[i].mainId;
-                        s.sysFileId=array[i].sysFileId;
-                        ss.push(s);
-                        array.splice(i, 1);
-                        j = -1;//让索引都是从0重新开始
-                    } else {
-                        i++;
+                var s = new Object();
+                s = array[i];
+                s.name = array[i].showName;
+                s.id = array[i].sysFileId;
+
+                if(!data[array[i].sysBusiType]) {
+                    var node = new Object();//定义父类的对象
+                    node.id = (new Date()).getTime();
+                    node.name = array[i].sysBusiType;
+                    vm.zNodes.push(node);
+                    var arr = [];
+                    arr.push(s);
+                    data[array[i].sysBusiType] = arr;
+                }else {
+                    data[array[i].sysBusiType].push(s)
+                }
+            }
+            for(var i=0,l=vm.zNodes.length;i<l;i++){
+                for(var key in data){
+                    if(vm.zNodes[i].name == key){
+                        vm.zNodes[i].children = data[key];
                     }
                 }
-                nodes.children = ss;
-                vm.zNodes.push(nodes);
-
-
-            }
-
-          $scope.$watch("vm.zNodes",function (newValue, oldValue) {//监听值改变
-            var timer= $interval(function(){//使用angular定时器
-                   var s=document.getElementById("zTree");//获取到前台页面ztree的id
-                  if(s!=null){//当有ztree的id时开始赋值
-                      zTreeObj = $.fn.zTree.init($("#zTree"), setting, vm.zNodes);
-                      $interval.cancel(timer);//停止定时器
-                  }
-                },500);   //间隔0.5秒定时执行
-            },true);
-        }// end fun initZtreeClient
-         //点击跳转
-        function zTreeOnClick(event, treeId, treeNode) {
-            if(treeNode.check_Child_State==0){//点击文件夹时展开列表
-                var test = window.location.hash;//获取到地址栏的参数从#开始获取
-                var arr=[];
-                arr= test.split("/");//截取字符串是数组的
-                if(treeNode.check_Child_State==0){//点击文件夹时展开列表
-                    $state.go(arr[1]+'.fileList', { id: treeNode.id,type:treeNode.name});//获第二个参数
+                if(i==(l-1)){
+                    vm.initFileTreeSucess = true;
                 }
             }
-        };
-
-        // end common fun
-
+            //监听值改变
+            $scope.$watch("vm.initFileTreeSucess", function (newValue, oldValue) {
+                if (newValue == true) {
+                    var timer = $interval(function () {
+                        var s = document.getElementById("zTree");
+                        //当有ztree的id时开始赋值
+                        if (s != null) {
+                            zTreeObj = $.fn.zTree.init($("#zTree"), setting, vm.zNodes);
+                            $interval.cancel(timer);//停止定时器
+                        }
+                    }, 500);   //间隔0.5秒定时执行
+                }
+            });
+        }// end fun initZtreeClient
     }
 })();
