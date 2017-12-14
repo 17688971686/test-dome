@@ -20,10 +20,10 @@
         <caption class="title"><p>深圳市政府投资项目评审中心</p>
             <p>项目发文审批表</p></caption>
         <caption>
-            <span style="width:200px;float: left;padding: 0 10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
-            <span ng-if="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9" style="margin-left:10px;">主项目</span>
-            <span ng-if="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0" style="margin-left:10px;">次项目</span>
-            <span style="width:200px;float:right;padding: 0 10px;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
+            <span style="float: left;padding: 0 10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
+            <span ng-if="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9" style="margin-left:10px;float: left;">主项目</span>
+            <span ng-if="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0" style="margin-left:10px;float: left;">次项目</span>
+            <span style="float:right;padding: 0 10px;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
         </caption>
         <!--<tr class="tr-hidden">
             <td width="16%"></td>
@@ -309,8 +309,8 @@
                     </tr>
 
                     <tr>
-                        <td style="border-left: none;border-top: none;">下一阶段工作要求</td>
-                        <td  colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;">
+                        <td style="border-left: none;border-top: none;border-bottom: none;">下一阶段工作要求</td>
+                        <td  colspan="6" class="text-left" style="border-left: none;border-top: none;border-right: none;border-bottom: none;">
                             <div style="width: 100%; height: 100px; overflow: hidden;">
                                 {{vm.dispatchDoc.nextWorkPlan}}
                             </div>

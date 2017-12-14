@@ -2,96 +2,94 @@
 <!--S 年度月报简报添加页面 -->
 <meta charset="UTF-8">
 <form id="suppletter_form" name="suppletter_form">
-    <div class="text-center h3" >深圳市政府投资项目评审中心文件（稿纸）</br>年度月报简报<br></div>
-    <div style="width: 100%;margin-bottom: 30px; padding-top: 30px;">
-        <div style="float: left;margin-left: 6%">
-            <span>分&nbsp&nbsp&nbsp&nbsp&nbsp类:</span>
-        </div>
-        <div style="margin-left: 60%;">
-            <td style="width:150px;" class="text-center">存档编号:</td>
-            <td>
-
-            </td>
-        </div>
-    </div>
     <!-- s table -->
     <table class="print-table ">
-    <tbody>
-    <tr style="height: 80px;" >
-        <td style="width:150px;height:50px;" class="text-center">拟稿部门<br>拟稿人</td>
-        <td>
-            {{vm.suppletter.orgName}}<br>
-            {{vm.suppletter.userName}}
-        </td>
+        <caption class="title"><p>深圳市政府投资项目评审中心文件（稿纸）</p><p>年度月报简报</p></caption>
+        <caption>
+            <span style="float: left;padding: 0 10px;">分类</span>
+            <span style="float: right;padding: 0 10px;">存档编号：</span>
+        </caption>
+        <tr style="height: 80px;" >
+            <td style="width:150px;height:50px;" class="text-center">拟稿部门<br>拟稿人</td>
+            <td>
+                {{vm.suppletter.orgName}}<br>
+                {{vm.suppletter.userName}}
+            </td>
 
-        <td style="width:150px;" class="text-center">拟稿时间</td>
-        <td>
-            {{vm.suppletter.suppLetterTime}}
-        </td>
-    </tr>
-    <tr style="height: 80px;">
-        <td style="width:150px;" class="text-center">秘密等级</td>
-        <td>
-            {{vm.suppletter.secretLevel}}
-        </td>
+            <td style="width:150px;" class="text-center">拟稿时间</td>
+            <td>
+                {{vm.suppletter.suppLetterTime}}
+            </td>
+        </tr>
+        <tr style="height: 80px;">
+            <td style="width:150px;" class="text-center">秘密等级</td>
+            <td>
+                {{vm.suppletter.secretLevel}}
+            </td>
 
-        <td style="width:150px;" class="text-center">缓急程度</td>
-        <td>
-            {{vm.suppletter.mergencyLevel}}
-        </td>
-    </tr>
+            <td style="width:150px;" class="text-center">缓急程度</td>
+            <td>
+                {{vm.suppletter.mergencyLevel}}
+            </td>
+        </tr>
 
 
-    <tr style="height: 80px;">
-        <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">文件标题</td>
-        <td colspan="3">
-            {{vm.suppletter.title}}
-        </td>
-    </tr>
-    <tr style="height:100px;">
-        <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">
-            发行范围</td>
-        <td colspan="3">
-            <div style="min-height: 50px;">
-                {{vm.suppletter.dispaRange}}
-            </div>
-            <span ng-if="vm.suppletter.printnum!=undefined" style="float: right;">
+        <tr style="height: 80px;">
+            <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">文件标题</td>
+            <td colspan="3">
+                {{vm.suppletter.title}}
+            </td>
+        </tr>
+        <tr style="height:100px;">
+            <td style="width:150px; vertical-align: middle !important;text-align: center;" class="text-center">
+                发行范围</td>
+            <td colspan="3">
+                <div style="height: 70%;">
+                    {{vm.suppletter.dispaRange}}
+                </div>
+                <span ng-if="vm.suppletter.printnum!=undefined" style="float: right;">
                     (印{{vm.suppletter.printnum}}份)
                 </span>
-            <span ng-if="vm.suppletter.printnum==undefined" style="float: right;">
+                <span ng-if="vm.suppletter.printnum==undefined" style="float: right;">
                     (印&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp份)
              </span>
-        </td>
-    </tr>
+            </td>
+        </tr>
 
 
 
-    <tr>
-        <td style="width:150px; height: 120px;" class="text-center">核稿意见</td>
-        <td colspan="3">
-            <p> {{vm.suppletter.deptMinisterIdeaContent}}</p>
-            <p class="text-right" style="margin-right: 100px;margin-top: 20px;">签名：</p>
-            <p class="text-right" style="margin-right: 100px;margin-top: 5px;">日期：</p>
-        </td>
-    </tr>
+        <tr>
+            <td style="width:150px; height: 120px;" class="text-center">核稿意见</td>
+            <td colspan="3">
+                <div class="signName" >
+                    <div class="signDetail" style="height: 30%;"> {{vm.suppletter.deptMinisterIdeaContent}}</div>
+                    <p class="nameDate">签名：</p>
+                    <p class="nameDate">日期：</p>
+                </div>
+            </td>
+        </tr>
 
-    <tr>
-        <td style="width:150px; height: 120px;" class="text-center">会签意见</td>
-        <td colspan="3">
-            <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
-            <p class="text-right" style="margin-right: 100px;margin-top: 20px;">签名：</p>
-            <p class="text-right" style="margin-right: 100px;margin-top: 5px;">日期：</p>
-        </td>
-    </tr>
-    <tr>
-        <td style="width:150px; height: 120px;" class="text-center">领导意见</td>
-        <td colspan="3">
-            <p> {{vm.suppletter.deptDirectorIdeaContent}}</p>
-            <p class="text-right" style="margin-right: 100px;margin-top: 20px;">签名：</p>
-            <p class="text-right" style="margin-right: 100px;margin-top: 5px;">日期：</p>
-        </td>
-    </tr>
-    </tbody>
+        <tr>
+            <td  class="text-center">会签意见</td>
+            <td colspan="3">
+                <div class="signName" >
+                    <div class="signDetail" style="height: 30%;"> {{vm.suppletter.deptSLeaderIdeaContent}}</div>
+                    <p class="nameDate">签名：</p>
+                    <p class="nameDate">日期：</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:150px; height: 120px;" class="text-center">领导意见</td>
+            <td colspan="3">
+                <div class="signName" >
+                    <div class="signDetail" style="height: 30%;"> {{vm.suppletter.deptDirectorIdeaContent}}</div>
+                    <p class="nameDate">签名：</p>
+                    <p class="nameDate">日期：</p>
+                </div>
+            </td>
+        </tr>
+        </tbody>
     </table>    <!-- end table -->
 </form> <!-- end form -->
 

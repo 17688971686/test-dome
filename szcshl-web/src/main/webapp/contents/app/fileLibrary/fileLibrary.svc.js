@@ -194,7 +194,7 @@
         //end saveFile
 
         //begin initFolder
-        function initFileFolder(vm,callBack) {
+        function initFileFolder(vm,$scope,callBack) {
             var httpOptions = {
                 method: "get",
                 url: rootPath + "/fileLibrary/initFileFolder",
