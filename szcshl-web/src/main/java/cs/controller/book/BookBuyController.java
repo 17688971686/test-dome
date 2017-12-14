@@ -1,11 +1,12 @@
 package cs.controller.book;
 
-import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.MudoleAnnotation;
 import cs.model.PageModelDto;
 import cs.model.book.BookBuyDto;
 import cs.repository.odata.ODataObj;
 import cs.service.book.BookBuyService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,7 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "图书信息", path = "bookBuy")
-@IgnoreAnnotation
+@MudoleAnnotation(name = "图书管理",value = "permission#bookBuy")
 public class BookBuyController {
 
 	String ctrlName = "bookBuy";
@@ -70,10 +71,10 @@ public class BookBuyController {
 
     // begin#html
     @RequiresAuthentication
-   // @RequiresPermissions("bookBuy#html/list#get")
-    @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
+    @RequiresPermissions("bookBuy#html/bookBuyList#get")
+    @RequestMapping(name = "列表页面", path = "html/bookBuyList", method = RequestMethod.GET)
     public String list() {
-        return ctrlName+"/list"; 
+        return ctrlName+"/bookBuyList";
     }
 
     @RequiresAuthentication

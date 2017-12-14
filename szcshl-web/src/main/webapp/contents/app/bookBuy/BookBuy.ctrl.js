@@ -8,7 +8,7 @@
     function bookBuy($location, bookBuySvc) {
         var vm = this;
         vm.title = '图书管理';
-
+        vm.model = {};
         vm.del = function (id) {
             common.confirm({
                 vm: vm,
@@ -40,6 +40,20 @@
         activate();
         function activate() {
             bookBuySvc.grid(vm);
+        }
+
+        //表单查询
+        vm.searchForm = function(){
+            vm.gridOptions.dataSource.read();
+        }
+
+        //重置查询表单
+        vm.formReset = function(){
+            vm.searchModel = {};
+        }
+
+        vm.borrowBook = function() {
+
         }
     }
 })();

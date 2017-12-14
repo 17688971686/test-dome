@@ -168,7 +168,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_bookBuy),
+                transport: common.kendoGridConfig().transport(rootPath + "/bookBuy/findByOData", $("#bookForm"),{filter: "storeConfirm eq 'isNotNull' "}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -189,100 +189,84 @@
 
             // End:dataSource
 
+            //S_序号
+            var  dataBound=function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+
             // Begin:column
             var columns = [
                 {
                     template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.id)
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
                     },
                     filterable: false,
                     width: 40,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+
                 },
                 {
-                    field: "id",
-                    title: "id",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "booksBarCode",
-                    title: "booksBarCode",
-                    width: 100,
-                    filterable: true
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    filterable : false,
+                    template: "<span class='row-number'></span>"
                 },
                 {
                     field: "booksCode",
-                    title: "booksCode",
+                    title: "图书编号",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
                     field: "booksName",
-                    title: "booksName",
+                    title: "图书名称",
                     width: 100,
-                    filterable: true
-                },
-                {
-                    field: "booksPrice",
-                    title: "booksPrice",
-                    width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
                     field: "booksType",
-                    title: "booksType",
+                    title: "图书分类",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
                     field: "professionalType",
-                    title: "professionalType",
+                    title: "专业类别",
                     width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
-                    field: "storePosition",
-                    title: "storePosition",
+                    field: "booksPrice",
+                    title: "价格",
                     width: 100,
-                    filterable: true
-                },
-                {
-                    field: "buyer",
-                    title: "buyer",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "publishingCompany",
-                    title: "publishingCompany",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "bookNo",
-                    title: "bookNo",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "author",
-                    title: "author",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "publishingTime",
-                    title: "publishingTime",
-                    width: 100,
-                    filterable: true
+                    filterable: false
                 },
                 {
                     field: "bookNumber",
-                    title: "bookNumber",
+                    title: "数量",
                     width: 100,
-                    filterable: true
+                    filterable: false
+                },
+                {
+                    field: "storeConfirm",
+                    title: "库存",
+                    width: 100,
+                    attributes: {style: "color:red"},
+                    filterable: false
+                },
+                {
+                    field: "storeTime",
+                    title: "入库时间",
+                    width: 100,
+                    filterable: false
                 },
                 {
                     field: "",
@@ -306,6 +290,5 @@
             };
 
         }// end fun grid
-
     }
 })();

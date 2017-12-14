@@ -51,11 +51,11 @@ public class BookBuy extends DomainBase {
     @Column(columnDefinition="varchar(255)")
     private String totalPrice;
     /**
-     * 出版时间
+     * 入库时间
      */
     @Temporal(TemporalType.DATE)
     @Column
-    private Date publishingTime;
+    private Date storeTime;
     //图书数量
     @Column(columnDefinition="NUMBER")
     private String bookNumber;
@@ -63,6 +63,13 @@ public class BookBuy extends DomainBase {
     //库存确认
     @Column(columnDefinition="varchar(30)")
     private String storeConfirm;
+
+    /**
+     * 出版时间
+     */
+    @Temporal(TemporalType.DATE)
+    @Column
+    private Date publishingTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "businessId")
@@ -202,5 +209,13 @@ public class BookBuy extends DomainBase {
 
     public void setTotalPrice(String totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Date getStoreTime() {
+        return storeTime;
+    }
+
+    public void setStoreTime(Date storeTime) {
+        this.storeTime = storeTime;
     }
 }

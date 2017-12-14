@@ -25,7 +25,7 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "图书采购申请业务信息", path = "bookBuyBusiness")
-@MudoleAnnotation(name = "图书管理",value = "permission#bookBuyBusiness")
+@MudoleAnnotation(name = "图书业务管理",value = "permission#bookBuyBusiness")
 public class BookBuyBusinessController {
 
 	String ctrlName = "bookBuyBusiness";
@@ -99,6 +99,13 @@ public class BookBuyBusinessController {
     @RequestMapping(name = "图书信息录入", path = "html/bookBuyBusinessEdit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/bookBuyBusinessEdit";
+    }
+
+    @RequiresAuthentication
+    @RequiresPermissions("bookBuyBusiness#html/bookBuyList#get")
+    @RequestMapping(name = "列表页面", path = "html/bookBuyList", method = RequestMethod.GET)
+    public String bookList() {
+        return "bookBuy/bookBuyList";
     }
     // end#html
 

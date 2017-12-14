@@ -128,7 +128,9 @@ public enum ODataObjFilterStrategy {
     private static Criterion includeNull(String field, Object value, ODataObjRestrictions restrictions) {
         if ("isNull".equals(value.toString())) {
             return Restrictions.isNull(field);
-        } else {
+        } else if ("isNotNull".equals(value.toString())){
+            return Restrictions.isNotNull(field);
+        }else{
             return restrictions.toRestrictions(field, value);
         }
     }
