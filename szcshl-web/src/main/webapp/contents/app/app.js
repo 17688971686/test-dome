@@ -900,7 +900,7 @@
             })
             //图书采购流程
             .state('bookBuyBusinessEdit', {
-                url: '/bookBuyBusinessEdit/:businessId',
+                url: '/bookBuyBusinessEdit/:businessId/:viewDetail',
                 templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessEdit.html',
                 controller: 'bookBuyBusinessEditCtrl',
                 controllerAs: 'vm'
@@ -909,6 +909,13 @@
                 url : '/myBookBuyBusiness',
                 templateUrl : rootPath + '/bookBuyBusiness/html/bookBuyBusinessList.html',
                 controller : 'bookBuyBusinessCtrl',
+                controllerAs : 'vm'
+            })
+            //图书查询
+            .state('bookDetailList',{
+                url : '/bookDetailList',
+                templateUrl : rootPath + '/bookBuyBusiness/html/bookBuyList.html',
+                controller : 'bookBuyCtrl',
                 controllerAs : 'vm'
             })
             //固定资产申购流程

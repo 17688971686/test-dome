@@ -398,6 +398,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="bookBuyBusiness#html/bookBuyBusinessList#get">
                                 <li><a href="javascript:void(0)" ui-sref="myBookBuyBusiness">图书采购流程查询</a></li>
                             </@shiro.hasPermission>
+                            <@shiro.hasPermission name="bookBuyBusiness#html/bookBuyList#get">
+                            <li><a href="javascript:void(0)" ui-sref="bookDetailList">图书查询</a></li>
+                            </@shiro.hasPermission>
                         </ul>
                     </li>
                 </@shiro.hasPermission>

@@ -315,7 +315,6 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 					isNextUser = true;
 					nextNodeKey = FlowConstant.BOOK_YSRK;
 				}
-
 				break;
 			case FlowConstant.BOOK_YSRK:
 				bookBuyBusiness = bookBuyBusinessRepo.findById(BookBuyBusiness_.businessId.getName(), businessKey);
@@ -323,6 +322,10 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setFiler(SessionUtil.getUserInfo().getLoginName());
 				bookBuyBusiness.setFilerDate(new Date());
 				bookBuyBusiness.setFilerHandlesug(flowDto.getDealOption());
+				List<BookBuy> booksList = bookBuyBusiness.getBookBuyList();
+				flowEndUpdateBooks(booksList);
+				bookBuyBusiness.getBookBuyList().clear();
+				bookBuyBusiness.setBookBuyList(booksList);
 				bookBuyBusinessRepo.save(bookBuyBusiness);
 				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
 				break;
@@ -349,6 +352,19 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 			}
 		}
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+	}
+
+	/**
+	 * 流程结束后更新图书库存数量、入库时间
+	 * @param booksList
+	 */
+	private  void flowEndUpdateBooks(List<BookBuy> booksList){
+		for(int i=0;i< booksList.size();i++){
+			if(null !=booksList.get(i).getBookNumber()){
+				booksList.get(i).setStoreConfirm(booksList.get(i).getBookNumber());
+			}
+			booksList.get(i).setStoreTime(new Date());
+		}
 	}
 
 }
