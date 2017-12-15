@@ -274,7 +274,7 @@
                     width: 140,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
+                            item.id);
                     }
                 }
             ];
@@ -286,7 +286,8 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                resizable: true
+                resizable: true,
+                selectable: "row"
             };
 
         }// end fun grid
