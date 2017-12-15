@@ -29,12 +29,11 @@ public interface FileLibraryService {
     ResultMsg addFolder(FileLibraryDto fileLibraryDto);
 
     /**
-     * 初始化文件夹下的所有文件
-     * @param oDataObj
+     * 通过父id初始化文件夹下的所有文件
      * @param fileId
      * @return
      */
-    PageModelDto<FileLibraryDto> initFileList(ODataObj oDataObj , String fileId);
+    ResultMsg initFileList(String fileId , String fileType);
 
     /**
      * 新增文件
