@@ -76,6 +76,7 @@
                              <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
                              <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
                              <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+                             <button class="btn btn-xs btn-primary" ng-click="previewFile(x.sysFileId,'pdf')"><i class="fa fa-times" aria-hidden="true"></i>预览</button>
                              <button class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
                          </p>
                      </div>

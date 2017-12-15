@@ -79,12 +79,14 @@
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-ehcache</artifactId>
             <version>${shiro.version}</version>
+            <!--
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
+            -->
         </dependency>
 
         <dependency>
@@ -290,6 +292,8 @@
             <artifactId>jasperreports-fonts</artifactId>
             <version>6.3.1_sn</version>
         </dependency>
+
+        <!-- shiro -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
@@ -341,6 +345,12 @@
             <groupId>com.jspsmart.upload</groupId>
             <artifactId>jspsmartupload</artifactId>
             <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.livesense</groupId>
+            <artifactId>jodconverter-core</artifactId>
+            <version>1.0.5</version>
         </dependency>
     </dependencies>
     <build>

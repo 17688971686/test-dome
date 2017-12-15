@@ -1,6 +1,7 @@
 package cs.controller.sys;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.ahelper.OpenOfficePdfConvert;
 import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
@@ -359,18 +360,29 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         SysFile sysFile = fileService.findFileById(sysFileId);
         //文件路径
         String filePath = SysFileUtil.getUploadPath()+File.separator+sysFile.getShowName();
+        File file = null;
+        InputStream inputStream = null;
         try{
             filePath = filePath.replaceAll("\\\\", "/");
             //下载ftp服务器附件到本地
             Boolean flag = FtpUtil.downloadFile( sysFile.getFtpIp(), sysFile.getPort()!=null?Integer.parseInt(sysFile.getPort()):0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
                     sysFile.getShowName(), SysFileUtil.getUploadPath());
-            File file = new File(filePath);
-            if(!file.exists()){
+            File downFile = new File(filePath);
+            if(!downFile.exists()){
                 file = new File(realPathResolver.get(Constant.plugin_file_path)+File.separator+"nofile.png");
                 sysFile.setFileType(".png");
+            }else{
+                if(!".pdf".equals(sysFile.getFileType())){
+                    filePath = filePath.substring(0,filePath.lastIndexOf("."))+".pdf";
+                    file = new File(filePath);
+                    OpenOfficePdfConvert.convert2PDF(downFile,file);
+                    inputStream = new BufferedInputStream(new FileInputStream(file));
+                }else{
+                    file = downFile;
+                    inputStream = new BufferedInputStream(new FileInputStream(file));
+                }
             }
 
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);  //读取文件流
             inputStream.close();
@@ -397,6 +409,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             os.close();
         }catch (Exception e){
             e.printStackTrace();
+        }finally {
+
         }
 
     }

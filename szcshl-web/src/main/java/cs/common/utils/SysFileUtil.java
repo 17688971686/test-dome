@@ -1,6 +1,8 @@
 package cs.common.utils;
 
+
 import cs.common.Constant;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -12,6 +14,8 @@ import java.util.UUID;
  * @author lqs
  */
 public class SysFileUtil {
+    private static Logger logger = Logger.getLogger(SysFileUtil.class);
+
     private static String FILE_UPLOAD_PATH = "file_upload_path";
 
     public static String getFileSize(long fileS){
@@ -164,5 +168,4 @@ public class SysFileUtil {
             return false;
         }
     }
-
 }

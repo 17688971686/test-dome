@@ -214,7 +214,6 @@ public class SysRestController {
         return returnMsg;
     }
 
-
     @RequestMapping(name = "项目签收信息", value = "/testJson")
     public void testJson() throws IOException {
         String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/";
