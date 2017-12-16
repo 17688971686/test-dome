@@ -53,7 +53,18 @@
         }
 
         vm.borrowBook = function() {
-
+            var grid = $("#bookListGrid").data("kendoGrid");
+            // 获取行对象
+            var data = grid.dataItem(grid.select());
+            vm.model = data;
+           $("#borrowBookWindow").kendoWindow({
+                width: "38%",
+                height: "300px",
+                title: "图书借阅",
+                visible: false,
+                modal: true,
+                closable: true,
+            }).data("kendoWindow").center().open();
         }
     }
 })();

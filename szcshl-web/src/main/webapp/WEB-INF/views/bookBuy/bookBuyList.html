@@ -2,7 +2,8 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<div ng-include src="bookBuyEdit.html"></div>
+<div ng-include src="'${path}/contents/app/bookBuy/bookBuyEdit.html'"></div>
+
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -56,11 +57,11 @@
             </table>
         </form>
     </div>
-    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+    <div id="bookListGrid" class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 
 <script type="text/template" id="columnBtns">
-    <a class="btn btn-xs btn-primary" href="#/bookBuyEdit/{1}"><span class="glyphicon"></span>查看详情</a>
-    <button class="btn btn-xs btn-primary" ng-click="vm.borrowBook()"><span class="glyphicon glyphicon-ok"></span>借书</button>
+    <a class="btn btn-xs btn-primary" href="#/bookBuyView/{0}"><span class="glyphicon"></span>查看详情</a>
+    <span style="width: 25%" class="btn btn-xs btn-primary glyphicon glyphicon-ok" ng-click="vm.borrowBook()">借书</span>
 </script>
 
