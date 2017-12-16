@@ -67,6 +67,11 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
             for(FileLibrary fl : fileLibraryList){
                 FileLibraryDto fileLibraryDto = new FileLibraryDto();
                 BeanCopierUtils.copyProperties(fl,fileLibraryDto);
+                List<SysFileDto> sysFileDtoList = sysFileService.findByBusinessId(fl.getFileId());
+                if(sysFileDtoList != null && sysFileDtoList .size()>0){
+
+                    fileLibraryDto.setSysFileDtoList(sysFileDtoList);
+                }
                 fileLibraryDtoList.add(fileLibraryDto);
             }
         }
@@ -146,7 +151,8 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
             fileLibrary.setFileNature(Constant.libraryType.FILE_TYPE.getValue());
             fileLibraryRepo.save(fileLibrary);
             FileLibraryDto fld = new FileLibraryDto();
-            fld.setFileId(fileLibrary.getFileId());
+            BeanCopierUtils.copyPropertiesIgnoreNull(fileLibrary , fld);
+//            fld.setFileId(fileLibrary.getFileId());
             return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功！" , fld);
         }else{
             return new ResultMsg(false , Constant.MsgCode.ERROR.getValue()  , String.format("文件：%s 已经存在，请重新输入",fileLibraryDto.getFileName()) , null);
@@ -216,16 +222,16 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
     public ResultMsg deleteRootDirectory(String parentFileId) {
 //        String[] ids = parentFileId.split(",");
 //        for(String fileId : ids){
-            HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append("delete from " + FileLibrary.class.getSimpleName() + " f1 where not exists (");
-            hqlBuilder.append("select 1 from "+ FileLibrary.class.getSimpleName() + " f2 where f2." + FileLibrary_.parentFileId.getName() + "=:parentFileId )");
-            hqlBuilder.append(" and f1."+ FileLibrary_.fileId.getName() + "=:fileId");
-            hqlBuilder.setParam("parentFileId",parentFileId);
-            hqlBuilder.setParam("fileId",parentFileId);
-            int count = fileLibraryRepo.executeHql(hqlBuilder);
-            if(count <=0){
-                return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该根目录包含子目录，不能将其删除！" , null );
-            }
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("delete from " + FileLibrary.class.getSimpleName() + " f1 where not exists (");
+        hqlBuilder.append("select 1 from "+ FileLibrary.class.getSimpleName() + " f2 where f2." + FileLibrary_.parentFileId.getName() + "=:parentFileId )");
+        hqlBuilder.append(" and f1."+ FileLibrary_.fileId.getName() + "=:fileId");
+        hqlBuilder.setParam("parentFileId",parentFileId);
+        hqlBuilder.setParam("fileId",parentFileId);
+        int count = fileLibraryRepo.executeHql(hqlBuilder);
+        if(count <=0){
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该根目录包含子目录，不能将其删除！" , null );
+        }
 //        }
 
         return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "删除成功！" , null);
@@ -233,38 +239,17 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
 
     /**
      * 初始化文件夹下的所有文件
-     * @param oDataObj
+     * @param fileType
      * @param  fileId
      * @return
      */
     @Override
-    public PageModelDto<FileLibraryDto> initFileList(ODataObj oDataObj , String fileId) {
-        PageModelDto<FileLibraryDto> pageModelDto = new PageModelDto<>();
+    public ResultMsg initFileList( String fileId , String fileType) {
         Criteria criteria = fileLibraryRepo.getExecutableCriteria();
-        criteria = oDataObj.buildFilterToCriteria(criteria);
         criteria.add(Restrictions.eq(FileLibrary_.parentFileId.getName() , fileId));
+        criteria.add(Restrictions.eq(FileLibrary_.fileType.getName() , fileType));
         criteria.add(Restrictions.eq(FileLibrary_.fileNature.getName(),Constant.libraryType.FILE_TYPE.getValue()));
         List<FileLibrary> fileLibraryList = criteria.list();
-        //统计总数
-        Integer totalResult=((Number)criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-        pageModelDto.setCount(totalResult);
-        //处理分页
-        criteria.setProjection(null);
-        if(oDataObj.getSkip() > 0){
-            criteria.setFirstResult(oDataObj.getSkip());
-        }
-        if(oDataObj.getTop() > 0){
-            criteria.setMaxResults(oDataObj.getTop());
-        }
-
-        //处理orderby
-        if(Validate.isString(oDataObj.getOrderby())){
-            if(oDataObj.isOrderbyDesc()){
-                criteria.addOrder(Property.forName(oDataObj.getOrderby()).desc());
-            }else{
-                criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
-            }
-        }
         List<FileLibraryDto> fileLibraryDtoList = new ArrayList<>();
         if(fileLibraryList!=null && fileLibraryList.size()>0){
             for(FileLibrary fileLibrary : fileLibraryList){
@@ -275,8 +260,11 @@ public class FileLibraryServiceImpl implements  FileLibraryService{
                 fileLibraryDtoList.add(fileLibraryDto);
             }
         }
-        pageModelDto.setValue(fileLibraryDtoList);
+        if(fileLibraryDtoList !=null && fileLibraryDtoList.size() > 0){
+            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询数据成功!" , fileLibraryDtoList);
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "查询数据失败！" , null);
+        }
 
-        return pageModelDto;
     }
 }

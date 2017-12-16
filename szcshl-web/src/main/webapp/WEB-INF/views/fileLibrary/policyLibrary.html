@@ -5,12 +5,13 @@
 
 <link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
 <script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
+<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 
 <style type="text/css">
     /*.ztree li span.button.ico_docu {*/
-        /*background-position: -110px 0;*/
-        /*margin-right: 2px;*/
-        /*vertical-align: top;*/
+    /*background-position: -110px 0;*/
+    /*margin-right: 2px;*/
+    /*vertical-align: top;*/
     /*}*/
     .ztree li span.button.add {
         margin-left:2px;
@@ -23,22 +24,66 @@
     <ol class="breadcrumb">
         <li><a href="#/fileLibrary">政策标准库</a></li>
     </ol>
-    <form id="form" name="form">
-        <div style="width:20%;min-height:800px;border-right:1px solid #888888;float:left;">
-            <div class="toolbar">
-                <button class="btn btn-sm btn-primary" ng-click="vm.addFolderWindow()">
-                    <span class="glyphicon glyphicon-plus"></span>新建文件夹
-                </button>
-                <button class="btn btn-sm btn-danger" ng-click=" vm.deleteFolder()">
-                    <span class="glyphicon glyphicon-remove"></span>删除文件夹
-                </button>
-            </div>
-            <ul id="zTree" class="ztree"></ul>
+    <div style="width:20%;min-height:800px;border-right:1px solid #888888;float:left;">
+        <div class="toolbar">
+            <button class="btn btn-sm btn-primary" ng-click="vm.addFolderWindow()">
+                <span class="glyphicon glyphicon-plus"></span>新建文件夹
+            </button>
+            <button class="btn btn-sm btn-danger" ng-click=" vm.deleteFolder()">
+                <span class="glyphicon glyphicon-remove"></span>删除文件夹
+            </button>
         </div>
-        <div style="width:80%;min-height:800px;border-right:1px solid #888888;float:left;">
-            <div ui-view></div>
+        <ul id="zTree" class="ztree"></ul>
+    </div>
+    <div style="width:80%;min-height:800px;border-right:1px solid #888888;float:left;" >
+        <!--<div ui-view></div>-->
+        <div class="toolbar">
+            <button class="btn btn-sm btn-primary" ng-click="vm.fileEdit()" ng-show="vm.parentFileId" style="margin-left: 10px;">
+                <span class="glyphicon glyphicon-plus"></span>新建文件
+            </button>
         </div>
-        <div style="clear:both;"></div>
+        <table class="table table-bordered" style="width: 98%;">
+            <tr class="active">
+                <td style="width: 250px;" align="center">文件名称</td>
+                <td style="width: 200px;" align="center">附件</td>
+                <td style="width: 100px;" align="center">操作</td>
+            </tr>
+            <tr ng-repeat="x in vm.policyList | filter: {fileNature : 'FILE'} ">
+                <td style="text-align: center;">{{x.fileName}}</td>
+                <td style="text-align: center;">
+                    <p ng-repeat="s in x.sysFileDtoList">
+                        <i class="fa fa-file-image-o" aria-hidden="true"  ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                        <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                        <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                        <i class="fa fa-file-powerpoint-o" aria-hidden="true" ng-show="x.fileType =='.pptx' || x.fileType =='.ppt'"></i>
+                        <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                        <a ng-click="vm.commonDownloadSysFile(s.sysFileId)">{{ s.showName }}</a>
+                        <button ng-click="vm.commonDownloadSysFile(s.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i
+                                class="fa fa-cloud-download" aria-hidden="true"></i>下载
+                        </button>
+                        <!-- word 类型，在线编辑 -->
+                        <span ng-if="s.fileType =='.docx' || s.fileType =='.doc' || s.fileType =='.xlsx' || s.fileType =='.xls' || s.fileType =='.ppt' || s.fileType =='.pptx'">
+                            <button ng-click="previewFile(s.sysFileId,'office')" class="btn btn-xs btn-primary"><span
+                                    class="glyphicon glyphicon-pencil"></span>编辑</button>
+                        </span>
+                        <!-- pdf 文件-->
+                        <span ng-if="s.fileType =='.pdf'">
+                            <button ng-click="previewFile(s.sysFileId,'pdf');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>查看</button>
+                        </span>
+                        <!-- image 文件-->
+                        <span ng-if="s.fileType =='.png' || s.fileType =='.jpg' || s.fileType =='.gif'">
+                            <button ng-click="previewFile(s.sysFileId,'image');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>查看</button>
+                        </span>
+                    </p>
+                </td>
+                <td>
+                    <button class="btn btn-xs btn-danger"  ng-click="vm.del(x.fileId)" ><span class="glyphicon glyphicon-remove"></span>删除</button>
+                    <button class="btn btn-xs btn-primary" ng-click="vm.fileEdit(x.fileId )" ><span class="glyphicon glyphicon-pencil"></span>编辑</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="clear:both;"></div>
 
     </form>
 
@@ -71,3 +116,5 @@
         </table>
     </form>
 </div>
+
+<div style="display: none;"><#include  "/fileLibrary/fileEdit.html"/></div>
