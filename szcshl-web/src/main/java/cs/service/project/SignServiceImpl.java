@@ -851,7 +851,7 @@ public class SignServiceImpl implements SignService {
                             }
                             //如果合并评审次项目没提交，不能进行下一步操作
                             if (!signRepo.isMergeSignEndWP(signid)) {
-                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还没有完成工作方案，不能进行下一步操作！");
+                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还未提交审批，主项目不能提交审批！");
                             }
                         }
                     }

@@ -1043,6 +1043,7 @@
 
 
     }]).run(function ($rootScope, $http, $state, $stateParams,bsWin) {
+        $rootScope.rootPath = rootPath;
         //获取表头名称
         $rootScope.getTBHeadName = function(stageName,isAdvanced,type){
             //项目建议书、可行性  提前介入称为评估论证
