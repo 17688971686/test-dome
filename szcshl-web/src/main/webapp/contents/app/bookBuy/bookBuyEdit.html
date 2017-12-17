@@ -1,8 +1,10 @@
 <meta charset="UTF-8">
 <div id="borrowBookWindow" style="margin:0px 20px 0px 10px;background:white;display:none;">
     <div class="toolbar">
-        <a class="btn btn-sm btn-primary" href="#/myBookBuyBusiness"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
-        <button class="btn btn-sm btn-success" ng-click="vm.saondition()" ng-hide="vm.showFlag.isCommit">
+        <button class="btn btn-sm btn-primary" ng-click="vm.returnBookList()">
+            <span class="glyphicon glyphicon-chevron-left"></span>返回
+        </button>
+        <button class="btn btn-sm btn-success" ng-click="vm.saveBooksDetail ()">
             <span class="glyphicon glyphicon-ok"></span>保存
         </button>
     </div>
@@ -11,30 +13,35 @@
             <tr>
                 <input type="hidden"  id="businessId"/>
                 <td class="formAlignRight" style="width: 15%">图书编号</td>
-                <td> {{vm.model.booksCode}}</td>
+                <td>
+                    <input type="hidden" name="booksCode"  ng-model="vm.model.booksCode"/>
+                    {{vm.model.booksCode}}
+                </td>
                 <td class="formAlignRight">图书名称</td>
                 <td>
+                    <input type="hidden" name="booksName"  ng-model="vm.model.booksName"/>
                     {{vm.model.booksName}}
                 </td>
             </tr>
             <tr>
                 <td class="formAlignRight" width="10%">借书人</td>
                 <td>
+                    <input type="hidden" name="bookBorrower"  ng-model="vm.model.bookBorrower"/>
                     {{vm.model.createdBy}}
                 </td>
                 <td class="formAlignRight" width="10%">借书数量</td>
                 <td>
-                    <input name="booksName" type="text"  ng-model="vm.model.borrowNum"/>
+                    <input name="borrowNum" type="text"  ng-model="vm.model.borrowNum"/>
                 </td>
             </tr>
             <tr>
                 <td class="formAlignRight" width="10%">借书日期</td>
                 <td>
-                    <input name="storeTime" operator="ge" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.borrowTime"  />
+                    <input name="borrowDate" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.borrowDate"  />
                 </td>
                 <td class="formAlignRight" width="10%">应还日期</td>
                 <td>
-                    <input name="storeTime" operator="ge" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.returnTime"  />
+                    <input name="returnDate"  style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.returnDate"  />
                 </td>
             </tr>
         </table>

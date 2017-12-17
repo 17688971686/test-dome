@@ -918,6 +918,13 @@
                 controller : 'bookBuyCtrl',
                 controllerAs : 'vm'
             })
+            //借书查询
+            .state('bookBorrowList',{
+                url : '/bookBorrowList',
+                templateUrl : rootPath + '/bookBuyBusiness/html/bookBorrowList.html',
+                controller : 'bookBorrowCtrl',
+                controllerAs : 'vm'
+            })
             //固定资产申购流程
             .state('assertStorageBusinessEdit', {
                 url: '/assertStorageBusinessEdit/:businessId',
