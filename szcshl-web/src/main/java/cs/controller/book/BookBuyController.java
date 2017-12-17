@@ -2,9 +2,11 @@ package cs.controller.book;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.model.PageModelDto;
+import cs.model.book.BookBorrowInfoDto;
 import cs.model.book.BookBuyDto;
 import cs.repository.odata.ODataObj;
 import cs.service.book.BookBuyService;
+import cs.service.book.BorrowBookService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class BookBuyController {
 	String ctrlName = "bookBuy";
     @Autowired
     private BookBuyService bookBuyService;
+    @Autowired
+    private BorrowBookService borrowBookService;
 
     @RequiresAuthentication
     //@RequiresPermissions("bookBuy#findByOData#post")
@@ -47,6 +51,12 @@ public class BookBuyController {
         bookBuyService.save(record);
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "保存借书信息", path = "saveBorrowDetail", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public void saveBorrowDetail(@RequestBody BookBorrowInfoDto bookBorrowInfoDto) {
+        borrowBookService.save(bookBorrowInfoDto);
+    }
     @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody BookBuyDto findById(@RequestParam(required = true)String id){		

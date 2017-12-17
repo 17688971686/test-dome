@@ -3,9 +3,9 @@
 
     angular.module('app').controller('bookBuyCtrl', bookBuy);
 
-    bookBuy.$inject = ['$location', 'bookBuySvc'];
+    bookBuy.$inject = ['$location', 'bookBuySvc','$state'];
 
-    function bookBuy($location, bookBuySvc) {
+    function bookBuy($location, bookBuySvc,$state) {
         var vm = this;
         vm.title = '图书管理';
         vm.model = {};
@@ -52,6 +52,9 @@
             vm.searchModel = {};
         }
 
+        /**
+         * 借书
+         */
         vm.borrowBook = function() {
             var grid = $("#bookListGrid").data("kendoGrid");
             // 获取行对象
@@ -64,7 +67,23 @@
                 visible: false,
                 modal: true,
                 closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
             }).data("kendoWindow").center().open();
+        }
+
+        /**
+         * 保存借书信息
+         */
+        vm.saveBooksDetail = function() {
+            bookBuySvc.saveBorrowBookDetail(vm);
+        }
+
+        /**
+         * 返回图书信息列表
+         */
+        vm.returnBookList = function () {
+            window.parent.$("#borrowBookWindow").data("kendoWindow").close()
+            $state.go("bookDetailList");
         }
     }
 })();
