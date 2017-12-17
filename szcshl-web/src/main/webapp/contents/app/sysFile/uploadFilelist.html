@@ -38,7 +38,7 @@
                         class="glyphicon glyphicon-pencil"></span>编辑</button>
             </span>
                 <!-- pdf 文件&ndash;&gt;-->
-                <span ng-if="x.fileType =='.pdf'">
+                <span ng-if="x.fileType =='.pdf' || x.fileType =='.docx' || x.fileType =='.doc' || x.fileType =='.xlsx' || x.fileType =='.xls' || x.fileType =='.ppt' || x.fileType =='.pptx' ">
                 <button ng-click="previewFile(x.sysFileId,'pdf');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>查看</button>
             </span>
                 <!-- image 文件&ndash;&gt;-->

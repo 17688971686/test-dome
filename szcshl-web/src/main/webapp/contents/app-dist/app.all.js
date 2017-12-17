@@ -918,6 +918,13 @@
                 controller : 'bookBuyCtrl',
                 controllerAs : 'vm'
             })
+            //借书查询
+            .state('bookBorrowList',{
+                url : '/bookBorrowList',
+                templateUrl : rootPath + '/bookBuyBusiness/html/bookBorrowList.html',
+                controller : 'bookBorrowCtrl',
+                controllerAs : 'vm'
+            })
             //固定资产申购流程
             .state('assertStorageBusinessEdit', {
                 url: '/assertStorageBusinessEdit/:businessId',
@@ -7696,11 +7703,38 @@
 (function () {
     'use strict';
 
+    angular.module('app').controller('bookBorrowCtrl', bookBorrow);
+
+    bookBorrow.$inject = ['$location', 'bookBuySvc'];
+
+    function bookBorrow($location, bookBuySvc) {
+        var vm = this;
+        vm.title = '借书列表';
+        vm.model = {};
+
+        activate();
+        function activate() {
+            bookBuySvc.bookBorrowGrid(vm);
+        }
+        //表单查询
+        vm.searchForm = function(){
+            vm.gridOptions.dataSource.read();
+        }
+        //重置查询表单
+        vm.formReset = function(){
+            vm.searchModel = {};
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
     angular.module('app').controller('bookBuyCtrl', bookBuy);
 
-    bookBuy.$inject = ['$location', 'bookBuySvc'];
+    bookBuy.$inject = ['$location', 'bookBuySvc','$state'];
 
-    function bookBuy($location, bookBuySvc) {
+    function bookBuy($location, bookBuySvc,$state) {
         var vm = this;
         vm.title = '图书管理';
         vm.model = {};
@@ -7747,8 +7781,38 @@
             vm.searchModel = {};
         }
 
+        /**
+         * 借书
+         */
         vm.borrowBook = function() {
+            var grid = $("#bookListGrid").data("kendoGrid");
+            // 获取行对象
+            var data = grid.dataItem(grid.select());
+            vm.model = data;
+           $("#borrowBookWindow").kendoWindow({
+                width: "38%",
+                height: "300px",
+                title: "图书借阅",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
 
+        /**
+         * 保存借书信息
+         */
+        vm.saveBooksDetail = function() {
+            bookBuySvc.saveBorrowBookDetail(vm);
+        }
+
+        /**
+         * 返回图书信息列表
+         */
+        vm.returnBookList = function () {
+            window.parent.$("#borrowBookWindow").data("kendoWindow").close()
+            $state.go("bookDetailList");
         }
     }
 })();
@@ -7797,14 +7861,49 @@
     function bookBuy($http) {
         var url_bookBuy = rootPath + "/bookBuy", url_back = '#/bookBuyList';
         var service = {
-            grid: grid,
+            grid: grid,  //图书查询列表
+            bookBorrowGrid: bookBorrowGrid, //借书列表
             getBookBuyById: getBookBuyById,
             createBookBuy: createBookBuy,
             deleteBookBuy: deleteBookBuy,
-            updateBookBuy: updateBookBuy
+            updateBookBuy: updateBookBuy,
+            saveBorrowBookDetail: saveBorrowBookDetail  //保存借书信息
         };
 
         return service;
+
+        //保存借书详细信息
+        function saveBorrowBookDetail(vm,callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/bookBuy/saveBorrowDetail",
+                data : vm.model
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        common.alert({
+                            vm: vm,
+                            msg: "保存成功",
+                            closeDialog: true,
+                            fn: function () {
+                                vm.isSubmit = false;
+                                $('.alertDialog').modal('hide');
+                            }
+                        })
+                    }
+
+                })
+            };
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+
 
         // begin#updateBookBuy
         function updateBookBuy(vm) {
@@ -7951,6 +8050,131 @@
             });                       
         }
 
+        /**
+         * 借书列表
+         */
+        function bookBorrowGrid(vm) {
+            console.log(1111);
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/bookBorrow/findByOData", $("#bookForm")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+
+            //S_序号
+            var  dataBound=function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+
+                },
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    filterable : false,
+                    template: "<span class='row-number'></span>"
+                },
+                {
+                    field: "booksCode",
+                    title: "图书编号",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "booksName",
+                    title: "图书名称",
+                    width: 100,
+                    filterable: false
+                },
+
+                {
+                    field: "bookBorrower",
+                    title: "借书人",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "borrowNum",
+                    title: "借书数量",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "borrowDate",
+                    title: "借书日期",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "returnDate",
+                    title: "应还日期",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "storeTime",
+                    title: "入库时间",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            item.id);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                selectable: "row"
+            };
+        }
+
         // begin#grid
         function grid(vm) {
 
@@ -8063,7 +8287,7 @@
                     width: 140,
                     template: function (item) {
                         return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
+                            item.id);
                     }
                 }
             ];
@@ -8075,7 +8299,8 @@
                 pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                resizable: true
+                resizable: true,
+                selectable: "row"
             };
 
         }// end fun grid
@@ -15671,7 +15896,7 @@
 
 
         //begin deleteFile
-        function deleteFile(vm, fileId) {
+        function deleteFile(fileId , callBack) {
             var httpOptions = {
                 method: "delete",
                 url: rootPath + "/fileLibrary/deleteFile",
@@ -15679,10 +15904,12 @@
             }
 
             var httpSuccess = function success(response) {
-                vm.gridOptions.dataSource.read();
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack();
+                }
+                // vm.gridOptions.dataSource.read();
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -15862,88 +16089,22 @@
         }//end saveChildFolder
 
         //begin initFileList
-        function initFileList(vm) {
-            // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/fileLibrary/initFileList?fileId=" + vm.parentId, $("#" + vm.formId)),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        },
-                        modifiedDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: [
-                    {
-                        field: "issue",
-                        dir: "asc"
-                    }
-                ]
-            });
-            // End:dataSource
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.anId)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-                {
-                    field: "fileName",
-                    title: "文件名",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "",
-                    title: "附件",
-                    width: 300,
-                    filterable: false,
-                    template: function (item) {
-                        if (item.sysFileDtoList.length > 0) {
-                            var sysFileDtoList = "";
-                            for (var i = 0, l = item.sysFileDtoList.length; i < l; i++) {
-                                sysFileDtoList += "<li>" + item.sysFileDtoList[i].showName + "</li>"
-                            }
-                            return sysFileDtoList;
-                        } else {
-                            return "";
-                        }
-                    }
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 150,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.fileId + "')", "vm.update('" + item.fileId + "')");
-                    }
+        function initFileList(fileId,fileType, callBack) {
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/fileLibrary/initFileList",
+                params : {fileId : fileId , fileType : fileType}
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
                 }
-            ];
-            // End:column
-
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true
-            };
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }//end initFileList
 
 
@@ -15956,18 +16117,19 @@
     'use strict';
     angular.module('app').controller('policyCtrl',policy);
 
-    policy.$inject=['$scope','$state','$location','fileLibrarySvc' , 'bsWin'];
+    policy.$inject=['$scope','$state','$location','fileLibrarySvc' , 'bsWin' , '$interval' , 'sysfileSvc'];
 
-    function policy($scope,$state,$location,fileLibrarySvc , bsWin){
+    function policy($scope,$state,$location,fileLibrarySvc , bsWin , $interval , sysfileSvc){
         var vm = this;
         // vm.title="";
         vm.parentId = $state.params.parentId;
         vm.fileId = $state.params.fileId;
         vm.fileLibrary={};
         vm.fileLibrary.fileType = "POLICY";//初始化文件库类型 - 政策标准文件库
+        vm.fileType = "POLICY";
         activate();
         function activate(){
-            fileLibrarySvc.initFileFolder(vm ,function(data){
+            fileLibrarySvc.initFileFolder(vm ,$scope,function(data){
                 var zTreeObj;
                 var setting = {
                     check: {
@@ -16002,7 +16164,15 @@
                     }
                 };
                 function zTreeOnClick(event, treeId, treeNode) {
-                    $state.go('policyLibrary.policyList',{parentId : treeNode.id});
+                    // $state.go('policyLibrary.policyList',{parentId : treeNode.id});
+                    vm.parentFileId = treeNode.fileId;
+                    if(treeNode.fileNature == "FOLDER" ){
+                        vm.policyList = [];
+                        if(treeNode.children){
+                            vm.policyList = treeNode.children;
+                        }
+                        $scope.$apply();
+                    }
                 };
 
                 //删除节点
@@ -16034,22 +16204,35 @@
                 function removeHoverDom(treeId,treeNode){
                     $("#addBtn_"+treeNode.tId).unbind().remove();
                 }
-                var zNodes = $linq(data).select(
+                vm.zNodes = $linq(data).select(
                     function(x){
-                        var isParent = false;
-                        var pId =null;
-                        if(x.parentFileId){
-                            pId = x.parentFileId;
+                        var pId = null;
+                        var returnObj = x;
+                        returnObj = x;
+                        returnObj.id = x.fileId;
+                        returnObj.name = x.fileName;
+                        returnObj.pId = x.parentFileId;
+
+                        if(x.fileNature == 'FOLDER'){
+                            returnObj.icon = rootPath+"/contents/libs/zTree/css/zTreeStyle/img/diy/7.png";
                         }
-                        return {
-                            id : x.fileId,
-                            name : x.fileName,
-                            pId : pId,
-                            fileNature : x.fileNature
-                        };
+                        return returnObj;
                     }).toArray();
-                zTreeObj = $.fn.zTree.init($("#zTree"),setting,zNodes);
-                vm.folderTree = zTreeObj;
+
+                vm.initFileTreeSucess = true;
+                //监听值改变
+                $scope.$watch("vm.initFileTreeSucess", function (newValue, oldValue) {
+                    if (newValue == true) {
+                        var timer = $interval(function () {
+                            var s = document.getElementById("zTree");
+                            //当有ztree的id时开始赋值
+                            if (s != null) {
+                                zTreeObj = $.fn.zTree.init($("#zTree"), setting, vm.zNodes);
+                                $interval.cancel(timer);//停止定时器
+                            }
+                        }, 500);   //间隔0.5秒定时执行
+                    }
+                });
             });
         }
 
@@ -16126,8 +16309,145 @@
             }
         }
 
+        //初始化附件上传控件
+        vm.initFileUpload = function(){
+            if(!vm.fileId){
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.fileId",function (newValue , oldValue){
+                    if(newValue && newValue != oldValue && !vm.initUploadOptionSuccess){
+                        vm.initFileUpload();
+                    }
+                });
+            }
+            //创建附件对象
+            vm.sysFile = {
+                businessId : vm.fileId,
+                mainId : '',
+                mainType : sysfileSvc.mainTypeValue().POLICYLIBRARY,
+                sysBusiType :vm.fileUrl.substring(vm.fileUrl.lastIndexOf(sysfileSvc.mainTypeValue().POLICYLIBRARY),vm.fileUrl.lastIndexOf(vm.fileName))
+            };
+            sysfileSvc.initUploadOptions({
+                inputId : "sysfileinput",
+                vm :vm ,
+                uploadSuccess : function(){
+                    sysfileSvc.findByBusinessId(vm.fileId,function(data){
+                        vm.sysFilelists = data;
+                        fileLibrarySvc.initFileList(vm.parentFileId , vm.fileType , function(data){
+                            vm.policyList = data.reObj;
+                        })
+                    });
+                }
+            });
+        }
 
+        /**
+         * 新建文件 或 更新文件 操作
+         */
+        vm.fileEdit = function(fileId ){
+            vm.isUpdate = false;
+            vm.fileId = fileId;
+            vm.fileLibrary = {};
+            vm.sysFilelists = {};
+            vm.fileLibrary.fileType = "POLICY";
+            if(vm.fileId){
+                vm.isUpdate=true;
+                fileLibrarySvc.findFileById(vm , vm.fileId);
+                sysfileSvc.findByBusinessId(vm.fileId,function(data){
+                    vm.sysFilelists = data;
+                });
+            }
+            $("#qualityEdit").kendoWindow({
+                width: "800px",
+                height: "500px",
+                title: "文件编辑",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"]
+            }).data("kendoWindow").center().open();
+        }
 
+        /**
+         * 保存新建文件
+         */
+        vm.createFile=function(){
+            vm.fileLibrary.parentFileId = vm.parentFileId;
+            common.initJqValidation();
+            if (vm.fileLibrary.fileName) {
+
+                fileLibrarySvc.saveFile(vm, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        bsWin.alert("保存成功！", function () {
+                            vm.policyList.push(data.reObj);
+                            vm.fileId = data.reObj.fileId;
+                            fileLibrarySvc.getFileUrlById(vm, vm.fileId);
+                            vm.initFileUpload();
+
+                        });
+                    } else {
+                        bsWin.error(data.reMsg);
+                    }
+                    // vm.fileLibrary = {};
+                });
+            }
+        }
+
+        /**
+         * 更新文件
+         */
+        vm.updateFile = function (){
+            fileLibrarySvc.updateFile(vm , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.alert("更新成功！", function(){
+                        vm.initFileUpload();
+                        window.parent.$("#qualityEdit").data("kendoWindow").close();
+                    });
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+            });
+        }
+
+        /**
+         * 删除文件
+         * @param fileId
+         */
+        vm.del = function(fileId){
+            bsWin.confirm("删除的数据将无法恢复，确认删除？" , function(){
+                fileLibrarySvc.deleteFile(fileId,function(){
+                    vm.policyList.forEach(function(quality , number){
+                        if(quality.fileId == fileId){
+                            vm.policyList.splice(number , 1);
+                        }
+                    });
+                });
+            })
+        }
+
+        /**
+         * 附件下载
+         */
+
+        vm.commonDownloadSysFile = function(sysFileId){
+            sysfileSvc.downloadFile(sysFileId);
+        }
+
+        /**
+         * 重写 删除附件
+         * @param fileId
+         */
+        vm.delFile = function(fileId){
+            sysfileSvc.delSysFile(fileId, function () {
+                $.each(vm.sysFilelists, function (i, sf) {
+                    if (sf.sysFileId == fileId) {
+                        vm.sysFilelists.splice(i, 1);
+                    }
+                });
+                fileLibrarySvc.initFileList(vm.parentFileId , vm.fileType , function(data){
+                    vm.policyList = data.reObj;
+                })
+            });
+        }
     }
 })();
 (function(){
@@ -16294,19 +16614,21 @@
     'use strict';
     angular.module('app').controller('qualityCtrl', quality);
 
-    quality.$inject=['bsWin','$state','$location','fileLibrarySvc' ,'$scope' , '$interval'];
+    quality.$inject=['bsWin','$state','$location','fileLibrarySvc' ,'$scope' , '$interval' , 'sysfileSvc'];
 
-    function quality(bsWin,$state,$location,fileLibrarySvc , $scope , $interval){
+    function quality(bsWin,$state,$location,fileLibrarySvc , $scope , $interval , sysfileSvc){
         var vm = this;
         // vm.title="";
         vm.parentId = $state.params.parentId;
         vm.fileLibrary={};
         vm.fileLibrary.fileType = "QUALITY";//初始化文件库类型 - 质量管理文件库
+        vm.fileType = "QUALITY";
         vm.qualityList = [];
         activate();
         function activate(){
             fileLibrarySvc.initFileFolder(vm, $scope , function(data){
-                vm.qualityList = data;
+                // vm.qualityList = data;
+
                 var zTreeObj;
                 var setting = {
                     check: {
@@ -16343,13 +16665,13 @@
                 };
                 function zTreeOnClick(event, treeId, treeNode ) {
                     // $state.go('fileLibrary.fileList',{parentId : treeNode.id});
-                    if(treeNode.check_Child_State == 0 ){
+                    vm.parentFileId = treeNode.fileId;
+                    if(treeNode.fileNature == "FOLDER" ){
                         vm.qualityList = [];
                         if(treeNode.children){
                             vm.qualityList = treeNode.children;
                         }
                         $scope.$apply();
-                        // console.log(vm.qualityList);
                     }
 
                 };
@@ -16385,68 +16707,21 @@
                 vm.zNodes = $linq(data).select(
                     function(x){
                         var pId = null;
-                        var returnObj = {
-                            id : x.fileId,
-                            name : x.fileName,
-                            pId : x.parentFileId,
-                            fileNature : x.fileNature,
-                            sysFileDtoList : x.sysFileDtoList,
-                        }
+                        var returnObj = x;
+                        returnObj = x;
+                        returnObj.id = x.fileId;
+                        returnObj.name = x.fileName;
+                        returnObj.pId = x.parentFileId;
 
                         if(x.fileNature == 'FOLDER'){
                             returnObj.icon = rootPath+"/contents/libs/zTree/css/zTreeStyle/img/diy/7.png";
                         }
-
-                        /*return {
-                            id : x.fileId,
-                            name : x.fileName,
-                            pId : pId,
-                            fileNature : x.fileNature,
-                            icon : rootPath+"/contents/libs/zTree/css/zTreeStyle/img/diy/7.png"
-                        };*/
                         return returnObj;
                     }).toArray();
+
+                vm.initFileTreeSucess = true;
                 // zTreeObj = $.fn.zTree.init($("#zTree"),setting,  zNodes );
                 // vm.folderTree = zTreeObj;
-
-                var array = vm.qualityList;
-                vm.zNodes = [];
-                vm.initFileTreeSucess = false;
-                var data = [];
-                //循环数据取出父类和相对应的子类
-                for(var i=0 , l = array.length ; i < l ; i++){
-                    var s = new Object();
-                    s = array[i];
-                    s.name = array[i].fileName;
-                    s.id = array[i].fileId ;
-                    //如果父id为空，说明是第一级文件夹,直接以第一级的文件名作为key
-                    if(!array[i].parentFileId  ) {
-                        var node = new Object();//定义父类的对象
-                        node.id = (new Date()).getTime();
-                        node.name = array[i].fileName;
-                        vm.zNodes.push(node);
-                        var arr = [];
-                        arr.push(s);
-                        data[array[i].fileName] = arr;
-                    }else {
-                        for(var j=0 , h = array.length ; j<h ; j++){
-                            if(array[i].parentFileId == array[j].fileId){
-                                data[array[j].fileName].push(s)
-                            }
-                        }
-                    }
-                }
-                for(var i=0,l=vm.zNodes.length;i<l;i++){
-                    for(var key in data){
-                        if(vm.zNodes[i].name == key){
-                            vm.zNodes[i].children = data[key];
-                        }
-                    }
-                    if(i==(l-1)){
-                        vm.initFileTreeSucess = true;
-                    }
-                }
-
 
                 //监听值改变
                 $scope.$watch("vm.initFileTreeSucess", function (newValue, oldValue) {
@@ -16557,20 +16832,99 @@
             }
         }
 
-
-        /**
-         * 新建文件跳转页
-         */
-        vm.addFile = function(){
-            $state.go('fileLibrary.fileEdit',{parentId : vm.parentId,fileId : ''});
+        //初始化附件上传控件
+        vm.initFileUpload = function(){
+            if(!vm.fileId){
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.fileId",function (newValue , oldValue){
+                    if(newValue && newValue != oldValue && !vm.initUploadOptionSuccess){
+                        vm.initFileUpload();
+                    }
+                });
+            }
+            //创建附件对象
+            vm.sysFile = {
+                businessId : vm.fileId,
+                mainId : '',
+                mainType : sysfileSvc.mainTypeValue().FILELIBRARY,
+                sysBusiType :vm.fileUrl.substring(vm.fileUrl.lastIndexOf(sysfileSvc.mainTypeValue().FILELIBRARY),vm.fileUrl.lastIndexOf(vm.fileName))
+            };
+            sysfileSvc.initUploadOptions({
+                inputId : "sysfileinput",
+                vm :vm ,
+                uploadSuccess : function(){
+                    sysfileSvc.findByBusinessId(vm.fileId,function(data){
+                        vm.sysFilelists = data;
+                        fileLibrarySvc.initFileList(vm.parentFileId , vm.fileType, function(data){
+                            vm.qualityList = data.reObj;
+                        })
+                    });
+                }
+            });
         }
 
         /**
-         * 跳转更新文件页面
-         * @param fileId
+         * 新建文件 或 更新文件 操作
          */
-        vm.update  = function(fileId,parentFileId){
-            $state.go('fileLibrary.fileEdit',{parentId :parentFileId ,fileId : fileId});
+        vm.fileEdit = function(fileId ){
+            vm.isUpdate = false;
+            vm.fileId = fileId;
+            vm.fileLibrary = {};
+            vm.fileLibrary.fileType = "QUALITY";
+            if(vm.fileId){
+                vm.isUpdate=true;
+                fileLibrarySvc.findFileById(vm , vm.fileId);
+                sysfileSvc.findByBusinessId(vm.fileId,function(data){
+                    vm.sysFilelists = data;
+                });
+            }
+            $("#qualityEdit").kendoWindow({
+                width: "800px",
+                height: "500px",
+                title: "文件编辑",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        /**
+         * 保存新建文件
+         */
+        vm.createFile=function(){
+            vm.fileLibrary.parentFileId = vm.parentFileId;
+            common.initJqValidation();
+            if (vm.fileLibrary.fileName) {
+                fileLibrarySvc.saveFile(vm, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        bsWin.alert("保存成功！", function () {
+                            vm.qualityList.push(data.reObj);
+                            vm.fileId = data.reObj.fileId;
+                            fileLibrarySvc.getFileUrlById(vm, vm.fileId);
+                            vm.initFileUpload();
+                        });
+                    } else {
+                        bsWin.error(data.reMsg);
+                    }
+                });
+            }
+        }
+
+        /**
+         * 更新文件
+         */
+        vm.updateFile = function (){
+            fileLibrarySvc.updateFile(vm , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.alert("更新成功！", function(){
+                        vm.initFileUpload();
+                        window.parent.$("#qualityEdit").data("kendoWindow").close();
+                    });
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+            });
         }
 
         /**
@@ -16579,7 +16933,13 @@
          */
         vm.del = function(fileId){
             bsWin.confirm("删除的数据将无法恢复，确认删除？" , function(){
-                fileLibrarySvc.deleteFile(vm,fileId);
+                fileLibrarySvc.deleteFile(fileId,function(){
+                    vm.qualityList.forEach(function(quality , number){
+                        if(quality.fileId == fileId){
+                            vm.qualityList.splice(number , 1);
+                        }
+                    });
+                });
             })
         }
 
@@ -16587,20 +16947,43 @@
         /**
          *  模糊查询
          */
-        vm.queryUser=function(){
+       /* vm.queryUser=function(){
             fileLibrarySvc.queryUser(vm);
-        };
+        };*/
 
         /**
          * 重置按钮
          */
-        vm.resetUser = function(){
+        /*vm.resetUser = function(){
             var tab = $("#fileForm").find('input');
             $.each(tab, function (i, obj) {
                 obj.value = "";
             });
-        }
+        }*/
 
+        /**
+         * 附件下载
+         */
+
+        vm.commonDownloadSysFile = function(sysFileId){
+            sysfileSvc.downloadFile(sysFileId);
+        }
+        /**
+         * 重写 删除附件
+         * @param fileId
+         */
+        vm.delFile = function(fileId){
+            sysfileSvc.delSysFile(fileId, function () {
+                $.each(vm.sysFilelists, function (i, sf) {
+                    if (sf.sysFileId == fileId) {
+                        vm.sysFilelists.splice(i, 1);
+                    }
+                });
+                fileLibrarySvc.initFileList(vm.parentFileId , vm.fileType , function(data){
+                    vm.qualityList = data.reObj;
+                })
+            });
+        }
     }
 })();
 (function(){
@@ -32608,6 +32991,16 @@
          */
         vm.templatePage = function(id){
             templatePrintSvc.templatePage(id);
+        }
+
+        /**
+         * 报审登记表导出
+         */
+        vm.printSign = function(){
+            console.log(vm.model.signid);
+            console.log(vm.model.reviewstage);
+            var reviewstage = escape(encodeURIComponent(vm.model.reviewstage));
+            window.open(rootPath + "/sign/printSign?signId=" + vm.model.signid + "&reviewStage=" + reviewstage);
         }
     }
 })();
