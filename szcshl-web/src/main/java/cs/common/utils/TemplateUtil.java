@@ -9,6 +9,8 @@ import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -160,6 +162,46 @@ public class TemplateUtil {
 
         return sysFile;
     }
+
+
+    /**
+     * 通过遍历实体类，获取属性名、属性类型、属性值，并添加到Map集合中（适用于导出功能所添加的数据过多）
+     * @param obj
+     * @return
+     */
+    public static Map<String , Object> entryAddMap(Object obj){
+        Map<String , Object> dataMap = new HashMap<>();
+        try{
+            Class c = obj.getClass();
+            //获取实体类的所有属性，返回field数字
+            Field[] fields = c.getDeclaredFields();
+            if(fields != null && fields.length > 0 ) {
+                for(Field field : fields){
+
+                    //获取属性名
+                    String name = field.getName();
+                    //将属性名的首字母转为大写，方便构造get、set方法
+                    name = name.substring(0,1).toUpperCase()  + name.substring(1);
+                    //构造get的方法
+                    Method method = c.getMethod("get" + name);
+
+                    //获取属性类型
+                    String type = field.getGenericType().toString();
+                    //如果数据类型是Date类型，则需要转换为yyyy年MM月dd日
+                    if(type.equals("class java.util.Date")){
+                        dataMap.put(field.getName() , DateUtils.converToString((Date) method.invoke(obj) , "yyyy年MM月dd日"));
+                    }else{
+                        dataMap.put( field.getName() , method.invoke(obj));
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return dataMap;
+    }
+
+
 
     public static void main(String[] args) {
         Map<String, Object> dataMap = new HashMap<>();
