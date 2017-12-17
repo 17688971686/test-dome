@@ -1,5 +1,6 @@
 package cs.service.project;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -2116,6 +2117,84 @@ public class SignServiceImpl implements SignService {
         } catch (Exception e) {
             return new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue()+e.getMessage(),sign.getSignid());
         }
+    }
+
+    /**
+     * 报审登记表导出
+     * @param signId
+     * @param reviewStage
+     * @return
+     */
+    @Override
+    public File printSign(String signId, String reviewStage) {
+
+        Map<String , Object> dataMap = new HashMap<>();
+        Sign sign = signRepo.findById(Sign_.signid.getName() , signId);
+//        SignDto signDto = new SignDto();
+//        BeanCopierUtils.copyProperties(sign , signDto);
+
+        dataMap.put("signdate" ,DateUtils.converToString(sign.getSigndate() , "yyyy年MM月dd日") );
+        dataMap.put("projectname" , sign.getProjectname());
+        dataMap.put("signNum" , sign.getSignNum());
+        dataMap.put("builtcompanyName" , sign.getBuiltcompanyName());
+        dataMap.put("designcompanyName" , sign.getDesigncompanyName());
+        dataMap.put("maindeptName" , sign.getMaindeptName());
+        dataMap.put("mainDeptUserName" , sign.getMainDeptUserName());
+        dataMap.put("assistdeptName" , sign.getAssistdeptName());
+        dataMap.put("assistDeptUserName" , sign.getAssistDeptUserName());
+        dataMap.put("urgencydegree" , sign.getUrgencydegree());
+        dataMap.put("projectcode" , sign.getProjectcode());
+        dataMap.put("secrectlevel" , sign.getSecrectlevel());
+        dataMap.put("sugProDealOriginal" , sign.getSugProDealOriginal());
+        dataMap.put("sugProDealCount" , sign.getSugProDealCount());
+        dataMap.put("sugProAdviseOriginal" , sign.getSugProAdviseOriginal());
+        dataMap.put("sugProAdviseCount" , sign.getSugProAdviseCount());
+        dataMap.put("sugFileDealOriginal" , sign.getSugFileDealOriginal());
+        dataMap.put("sugFileDealCount" , sign.getSugFileDealCount());
+        dataMap.put("proSugEledocCount" , sign.getProSugEledocCount());
+        dataMap.put("sugOrgApplyOriginal" , sign.getSugOrgApplyOriginal());
+        dataMap.put("sugOrgApplyCount" , sign.getSugOrgApplyCount());
+        dataMap.put("sugMeetOriginal" , sign.getSugMeetOriginal());
+        dataMap.put("sugMeetCount" , sign.getSugMeetCount());
+        dataMap.put("sugOrgReqOriginal" , sign.getSugOrgReqOriginal());
+        dataMap.put("sugOrgReqCount" , sign.getSugOrgReqCount());
+        dataMap.put("studyPealOriginal" , sign.getStudyPealOriginal());
+        dataMap.put("studyProDealCount" , sign.getStudyProDealCount());
+        dataMap.put("envproReplyCopy" , sign.getEnvproReplyCopy());
+        dataMap.put("envproReplyCount" , sign.getEnvproReplyCount());
+        dataMap.put("studyFileDealOriginal" , sign.getStudyFileDealOriginal());
+        dataMap.put("studyFileDealCount" , sign.getStudyFileDealCount());
+        dataMap.put("planAddrCopy" , sign.getPlanAddrCopy());
+        dataMap.put("planAddrCount" , sign.getPlanAddrCount());
+        dataMap.put("studyOrgApplyOriginal" , sign.getStudyOrgApplyOriginal());
+        dataMap.put("studyOrgApplyCount" , sign.getStudyOrgApplyCount());
+        dataMap.put("reportOrigin" , sign.getReportOrigin());
+        dataMap.put("reportCopy" , sign.getReportCopy());
+        dataMap.put("reportCount" , sign.getReportCount());
+        dataMap.put("studyOrgReqOriginal" , sign.getStudyOrgReqOriginal());
+        dataMap.put("studyOrgReqCount" , sign.getStudyOrgReqCount());
+        dataMap.put("eledocCount" , sign.getEledocCount());
+        dataMap.put("studyProSugOriginal" , sign.getStudyProSugOriginal());
+        dataMap.put("studyProSugCount" , sign.getStudyProSugCount());
+        dataMap.put("energyOriginal" , sign.getEnergyOriginal());
+        dataMap.put("energyCopy" , sign.getEnergyCopy());
+        dataMap.put("energyCount" , sign.getEnergyCount());
+        dataMap.put("studyMeetOriginal" , sign.getStudyMeetOriginal());
+        dataMap.put("studyMeetCount" , sign.getStudyMeetCount());
+        dataMap.put("comprehensivehandlesug" , sign.getComprehensivehandlesug());
+        dataMap.put("comprehensiveDate" ,DateUtils.converToString(sign.getComprehensiveDate() , "yyyy年MM月dd日") );
+        dataMap.put("leaderhandlesug" , sign.getLeaderhandlesug());
+        dataMap.put("leaderDate" ,DateUtils.converToString(sign.getLeaderDate() , "yyyy年MM月dd日") );
+        dataMap.put("ministerhandlesug" , sign.getMinisterhandlesug());
+        dataMap.put("ministerDate" ,DateUtils.converToString(sign.getMinisterDate() , "yyyy年MM月dd日") );
+        dataMap.put("sendusersign" , sign.getSendusersign());
+        String path =SysFileUtil.getUploadPath();//文件路劲
+        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), signId,null,sign.getReviewstage());
+        String pathFile = path + File.separator + relativeFileUrl;
+        File file = TemplateUtil.createDoc(dataMap , Constant.Template.SUG_SIGN.getKey() , pathFile);
+
+
+        return file;
     }
 
     /**

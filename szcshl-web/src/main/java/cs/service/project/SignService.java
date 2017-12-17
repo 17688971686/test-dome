@@ -13,6 +13,7 @@ import cs.repository.odata.ODataObj;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -144,4 +145,7 @@ public interface SignService {
 
     /***********************   以下是对接接口部分  ****************************/
     ResultMsg pushProject(SignDto signDto);
+
+    /************************以下是报审登记表导出***********************/
+    File printSign(String signId , String reviewStage);
 }

@@ -163,6 +163,10 @@ public class TemplateUtil {
 
     public static void main(String[] args) {
         Map<String, Object> dataMap = new HashMap<>();
-        TemplateUtil.createDoc(dataMap, "budget/roster", "G:\\test\\test.doc");
+        dataMap.put("sugProDealOriginal" , "9");
+        dataMap.put("sugProDealCount" , 23);
+//        dataMap.put("sugProAdviseOriginal" , "0");
+//        TemplateUtil.createDoc(dataMap, "report/roster", "G:\\test\\建议书报审.doc");
+        TemplateUtil.createDoc(dataMap, "print/sign/xmjys", "G:\\test\\申报登记最终.doc");
     }
 }

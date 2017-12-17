@@ -1,11 +1,17 @@
 package cs.controller.project;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
@@ -412,6 +418,39 @@ public class SignController {
     public String etasks(Model model) {
 
         return "admin/etasks";
+    }
+
+    /***************报审登记表导出***************/
+    @RequiresAuthentication
+    @RequestMapping(name="报审登记表导出" , path = "printSign" , method = RequestMethod.GET)
+    @ResponseStatus(value=HttpStatus.NO_CONTENT)
+    public void printSign(HttpServletResponse resp, @RequestParam String signId , @RequestParam String reviewStage){
+
+
+        InputStream is = null;
+        ServletOutputStream sos = null;
+        File file = signService.printSign(signId , reviewStage);
+        try {
+            String title = java.net.URLDecoder.decode(reviewStage, "UTF-8");//解码，需要抛异常
+            String fileName = reviewStage + "报审登记表";
+            is = new FileInputStream(file);
+            resp.setCharacterEncoding("utf-8");
+            resp.setContentType("application/msword");
+            // 设置浏览器以下载的方式处理该文件默认
+            String fileName2 = new String((fileName + ".doc").getBytes("GB2312"), "ISO-8859-1");
+            resp.addHeader("Content-Disposition", "attachment;filename=" + fileName2);
+            sos = resp.getOutputStream();
+            byte[] buffer = new byte[512];  // 缓冲区
+            int bytesToRead = -1;
+            // 通过循环将读入的Word文件的内容输出到浏览器中
+            while ((bytesToRead = is.read(buffer)) != -1) {
+                sos.write(buffer, 0, bytesToRead);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 }

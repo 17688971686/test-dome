@@ -350,7 +350,11 @@ public class Constant {
         SUBJECT_STUDY_MEETINGAM("subjectStudy/subjectMeetingAM", "课题研究_会议议程（上午）"),
         SUBJECT_STUDY_MEETINGPM("subjectStudy/subjectMeetingPM", "课题研究_会议议程（下午）"),
         //月报简报
-        MONTH_REPORT("monthReport/monthReport", "月报简报");
+        MONTH_REPORT("monthReport/monthReport", "月报简报"),
+
+        /*************以下是ISO模板*************/
+        //项目建议书
+                SUG_SIGN("print/sign/xmjys" , "项目建议书_报审登记表");
 
         private String key;
         private String value;

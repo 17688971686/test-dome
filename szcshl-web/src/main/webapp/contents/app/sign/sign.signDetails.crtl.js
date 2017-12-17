@@ -98,5 +98,15 @@
         vm.templatePage = function(id){
             templatePrintSvc.templatePage(id);
         }
+
+        /**
+         * 报审登记表导出
+         */
+        vm.printSign = function(){
+            console.log(vm.model.signid);
+            console.log(vm.model.reviewstage);
+            var reviewstage = escape(encodeURIComponent(vm.model.reviewstage));
+            window.open(rootPath + "/sign/printSign?signId=" + vm.model.signid + "&reviewStage=" + reviewstage);
+        }
     }
 })();
