@@ -559,7 +559,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     public WorkProgramDto initWorkProgramById(String workId) {
         WorkProgram work = workProgramRepo.findById(WorkProgram_.id.getName(), workId);
         WorkProgramDto workDto = new WorkProgramDto();
+        workDto.setSignId(work.getSign().getSignid());
         BeanCopierUtils.copyProperties(work, workDto);
+        workProgramRepo.initWPMeetingExp(workDto, work);
         return workDto;
     }
 

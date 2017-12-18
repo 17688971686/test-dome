@@ -356,7 +356,8 @@ public class Constant {
 
         /*************以下是ISO模板*************/
         //项目建议书
-        SUG_SIGN("print/sign/xmjys" , "项目建议书_报审登记表");
+        STAGE_SUG_SIGN("print/sign/xmjys" , "项目建议书_报审登记表"),
+        STAGE_SUG_WORKPROGRAM("print/workProgram/xmjys" , "项目建议书_工作方案");
 
         private String key;
         private String value;
