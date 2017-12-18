@@ -715,7 +715,7 @@ public class Tools {
 	/*
 	 * 生成随机文件名
 	 */
-	public synchronized String generateRandomFilename() {
+	public static synchronized String generateRandomFilename() {
 		String RandomFilename = "";
 		Random rand = new Random();// 生成随机数
 		int random = rand.nextInt();

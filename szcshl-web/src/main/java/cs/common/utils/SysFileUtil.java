@@ -1,6 +1,8 @@
 package cs.common.utils;
 
 
+import com.jacob.activeX.ActiveXComponent;
+import com.jacob.com.Dispatch;
 import cs.common.Constant;
 import org.apache.log4j.Logger;
 

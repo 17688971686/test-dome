@@ -7,173 +7,179 @@
         'angular-loading-bar',
         'ngAnimate',
         'ngFileSaver'
-        ]).filter('trust2Html', ['$sce',function($sce) {
-            return function(val) {
-                return $sce.trustAsHtml(val);
-            };
-        }])
-        .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+    ]).filter('trust2Html', ['$sce', function ($sce) {
+        return function (val) {
+            return $sce.trustAsHtml(val);
+        };
+    }])
+        .config(['cfpLoadingBarProvider', function (cfpLoadingBarProvider) {
             cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
             cfpLoadingBarProvider.spinnerTemplate = '<div style="position:fixed;width:100%;height:100%;left:0;top:0; z-index:10001;background:rgba(0, 0, 0, 0.3);overflow: hidden;"><div style="position: absolute;top:30%; width: 400px;height:40px;left:50%;"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>数据加载中...</div></div>';
         }])
         .config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/welcome');
-        $stateProvider
-            .state('welcome', {
-                url: '/welcome',
-                templateUrl: rootPath + '/admin/welcome.html',
-                controller: 'adminWelComeCtrl',
-                controllerAs: 'vm'
-            })
-            .state('gtasks', {
-                url: '/gtasks',
-                templateUrl: rootPath + '/admin/gtasks.html',
-                controller: 'adminCtrl',
-                controllerAs: 'vm'
-            })
-            .state('agendaTasks', {
-                url: '/agendaTasks',
-                templateUrl: rootPath + '/admin/agendaTasks.html',
-                controller: 'adminAgendaCtrl',
-                controllerAs: 'vm'
-            })
-            .state('doingTasks', {
-                url: '/doingTasks',
-                templateUrl: rootPath + '/admin/doingTasks.html',
-                controller: 'adminDoTaskCtrl',
-                controllerAs: 'vm'
-            })
-            //begin#流程公共页面
-            .state('flowDeal', {
-                url: '/flowDeal/:businessKey/:processKey/:taskId/:instanceId',
-                templateUrl: function($routeParams){return rootPath + '/flow/flowDeal/'+$routeParams.processKey+'.html';},
-                controller: 'flowDealCtrl',
-                controllerAs: 'vm'
-            })
-            .state('flowDetail', {
-                url: '/flowDetail/:businessKey/:processKey/:taskId/:instanceId',
-                templateUrl: function($routeParams){return rootPath + '/flow/flowDetail/'+$routeParams.processKey+'.html';},
-                controller: 'flowDetailCtrl',
-                controllerAs: 'vm'
-            })
-            .state('flowEnd', {
-                url: '/flowEnd/:businessKey/:processKey/:instanceId',
-                templateUrl: function($routeParams){return rootPath + '/flow/flowEnd/'+$routeParams.processKey+'.html';},
-                controller: 'flowEndCtrl',
-                controllerAs: 'vm'
-            })
-            //end#流程公共页面
+            $urlRouterProvider.otherwise('/welcome');
+            $stateProvider
+                .state('welcome', {
+                    url: '/welcome',
+                    templateUrl: rootPath + '/admin/welcome.html',
+                    controller: 'adminWelComeCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('gtasks', {
+                    url: '/gtasks',
+                    templateUrl: rootPath + '/admin/gtasks.html',
+                    controller: 'adminCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('agendaTasks', {
+                    url: '/agendaTasks',
+                    templateUrl: rootPath + '/admin/agendaTasks.html',
+                    controller: 'adminAgendaCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('doingTasks', {
+                    url: '/doingTasks',
+                    templateUrl: rootPath + '/admin/doingTasks.html',
+                    controller: 'adminDoTaskCtrl',
+                    controllerAs: 'vm'
+                })
+                //begin#流程公共页面
+                .state('flowDeal', {
+                    url: '/flowDeal/:businessKey/:processKey/:taskId/:instanceId',
+                    templateUrl: function ($routeParams) {
+                        return rootPath + '/flow/flowDeal/' + $routeParams.processKey + '.html';
+                    },
+                    controller: 'flowDealCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('flowDetail', {
+                    url: '/flowDetail/:businessKey/:processKey/:taskId/:instanceId',
+                    templateUrl: function ($routeParams) {
+                        return rootPath + '/flow/flowDetail/' + $routeParams.processKey + '.html';
+                    },
+                    controller: 'flowDetailCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('flowEnd', {
+                    url: '/flowEnd/:businessKey/:processKey/:instanceId',
+                    templateUrl: function ($routeParams) {
+                        return rootPath + '/flow/flowEnd/' + $routeParams.processKey + '.html';
+                    },
+                    controller: 'flowEndCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#流程公共页面
 
-             //S 拟补充资料函管理
+                //S 拟补充资料函管理
 
-            //begin#添加拟补充资料函
-            .state('addSupp', {
-                url: '/addSupp/:businessId/:businessType',
-                templateUrl: rootPath + '/addSuppLetter/edit.html',
-                controller: 'addSuppLetterCtrl',
-                controllerAs: 'vm'
-            })//end#添加拟补充资料函
+                //begin#添加拟补充资料函
+                .state('addSupp', {
+                    url: '/addSupp/:businessId/:businessType',
+                    templateUrl: rootPath + '/addSuppLetter/edit.html',
+                    controller: 'addSuppLetterCtrl',
+                    controllerAs: 'vm'
+                })//end#添加拟补充资料函
 
-             //begin#拟补充资料函列表
-            .state('addSuppletterList', {
-                url: '/addSuppletterList/:businessId',
-                templateUrl: rootPath + '/addSuppLetter/list.html',
-                controller: 'addSuppLetterListCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函列表
+                //begin#拟补充资料函列表
+                .state('addSuppletterList', {
+                    url: '/addSuppletterList/:businessId',
+                    templateUrl: rootPath + '/addSuppLetter/list.html',
+                    controller: 'addSuppLetterListCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函列表
 
-            //begin#拟补充资料函查看流程详细页面
-            .state('addSuppLetterEdit', {
-                url: '/addSuppLetterEdit/:id',
-                templateUrl: rootPath + '/addSuppLetter/editUpload.html',
-                controller: 'addSuppLetterEditCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函查看流程详细页面
+                //begin#拟补充资料函查看流程详细页面
+                .state('addSuppLetterEdit', {
+                    url: '/addSuppLetterEdit/:id',
+                    templateUrl: rootPath + '/addSuppLetter/editUpload.html',
+                    controller: 'addSuppLetterEditCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函查看流程详细页面
 
-            //begin#拟补充资料函查看流程详细页面
-            .state('suppLetterView', {
-                url: '/suppLetterView/:id',
-                templateUrl: rootPath + '/addSuppLetter/view.html',
-                controller: 'suppLetterViewCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函查看流程详细页面
-
-
-            //begin#拟补充资料函查询
-            .state('suppletterList', {
-                url: '/suppletterList',
-                templateUrl: rootPath + '/addSuppLetter/suppLetterList.html',
-                controller: 'addSuppLetterQueryCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函查询
+                //begin#拟补充资料函查看流程详细页面
+                .state('suppLetterView', {
+                    url: '/suppLetterView/:id',
+                    templateUrl: rootPath + '/addSuppLetter/view.html',
+                    controller: 'suppLetterViewCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函查看流程详细页面
 
 
-             //begin#拟补充资料函详细信息
-            .state('querySuppLetterDetail', {
-                url: '/querySuppLetterDetail/:id',
-                templateUrl: rootPath + '/addSuppLetter/detail.html',
-                controller: 'addSuppLetterQueryEditCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函详细信息
+                //begin#拟补充资料函查询
+                .state('suppletterList', {
+                    url: '/suppletterList',
+                    templateUrl: rootPath + '/addSuppLetter/suppLetterList.html',
+                    controller: 'addSuppLetterQueryCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函查询
 
 
-            //begin#拟补充资料函审批处理页面
-            .state('suppLetterApproveEdit', {
-                url: '/suppLetterApproveEdit/:id',
-                templateUrl: rootPath + '/addSuppLetter/suppLetterApproveEdit.html',
-                controller: 'addSuppLetterQueryEditCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函审批处理页面
+                //begin#拟补充资料函详细信息
+                .state('querySuppLetterDetail', {
+                    url: '/querySuppLetterDetail/:id',
+                    templateUrl: rootPath + '/addSuppLetter/detail.html',
+                    controller: 'addSuppLetterQueryEditCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函详细信息
 
-            //E 拟补充资料函管理
 
-             //begin#registerFile
-            .state('registerFile', {
-                url: '/registerFile/:businessId/',
-                templateUrl: rootPath + '/addRegisterFile/list.html',
-                controller: 'addRegisterFileCtrl',
-                controllerAs: 'vm'
-            }) //end#registerFile
-            .state('dtasks', {
-                url: '/dtasks',
-                templateUrl: rootPath + '/admin/dtasks.html',
-                controller: 'adminDoingCtrl',
-                controllerAs: 'vm'
-            })
-            .state('personDtasks', {
-                url: '/personDtasks',
-                templateUrl: rootPath + '/sign/personDtasks.html',
-                controller: 'adminPersonDoingCtrl',
-                controllerAs: 'vm'
-            })
-            .state('etasks', {
-                url: '/etasks',
-                templateUrl: rootPath + '/sign/etasks.html',
-                controller: 'adminEndCtrl',
-                controllerAs: 'vm'
-            })
-            //begin#role
-            .state('role', {
-                url: '/role',
-                templateUrl: rootPath + '/role/html/list.html',
-                controller: 'roleCtrl',
-                controllerAs: 'vm'
-            })
-            .state('roleEdit', {
-                url: '/roleEdit/:id',
-                templateUrl: rootPath + '/role/html/edit.html',
-                controller: 'roleEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#role
+                //begin#拟补充资料函审批处理页面
+                .state('suppLetterApproveEdit', {
+                    url: '/suppLetterApproveEdit/:id',
+                    templateUrl: rootPath + '/addSuppLetter/suppLetterApproveEdit.html',
+                    controller: 'addSuppLetterQueryEditCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函审批处理页面
 
-            //begin#user
-            .state('user', {
-                url: '/user',
-                templateUrl: rootPath + '/user/html/list.html',
-                controller: 'userCtrl',
-                controllerAs: 'vm'
-            }).state('userEdit', {
+                //E 拟补充资料函管理
+
+                //begin#registerFile
+                .state('registerFile', {
+                    url: '/registerFile/:businessId/',
+                    templateUrl: rootPath + '/addRegisterFile/list.html',
+                    controller: 'addRegisterFileCtrl',
+                    controllerAs: 'vm'
+                }) //end#registerFile
+                .state('dtasks', {
+                    url: '/dtasks',
+                    templateUrl: rootPath + '/admin/dtasks.html',
+                    controller: 'adminDoingCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('personDtasks', {
+                    url: '/personDtasks',
+                    templateUrl: rootPath + '/sign/personDtasks.html',
+                    controller: 'adminPersonDoingCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('etasks', {
+                    url: '/etasks',
+                    templateUrl: rootPath + '/sign/etasks.html',
+                    controller: 'adminEndCtrl',
+                    controllerAs: 'vm'
+                })
+                //begin#role
+                .state('role', {
+                    url: '/role',
+                    templateUrl: rootPath + '/role/html/list.html',
+                    controller: 'roleCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('roleEdit', {
+                    url: '/roleEdit/:id',
+                    templateUrl: rootPath + '/role/html/edit.html',
+                    controller: 'roleEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#role
+
+                //begin#user
+                .state('user', {
+                    url: '/user',
+                    templateUrl: rootPath + '/user/html/list.html',
+                    controller: 'userCtrl',
+                    controllerAs: 'vm'
+                }).state('userEdit', {
                 url: '/userEdit/:id',
                 templateUrl: rootPath + '/user/html/edit.html',
                 controller: 'userEditCtrl',
@@ -182,12 +188,12 @@
             //end#user
 
             //begin#org
-            .state('org', {
-                url: '/org',
-                templateUrl: rootPath + '/org/html/list.html',
-                controller: 'orgCtrl',
-                controllerAs: 'vm'
-            }).state('orgEdit', {
+                .state('org', {
+                    url: '/org',
+                    templateUrl: rootPath + '/org/html/list.html',
+                    controller: 'orgCtrl',
+                    controllerAs: 'vm'
+                }).state('orgEdit', {
                 url: '/orgEdit/:id',
                 templateUrl: rootPath + '/org/html/edit.html',
                 controller: 'orgEditCtrl',
@@ -201,12 +207,12 @@
             //end#org
 
             //begin#sysdept
-            .state('sysdept', {
-                url: '/sysdept',
-                templateUrl: rootPath + '/sysdept/html/list.html',
-                controller: 'sysdeptCtrl',
-                controllerAs: 'vm'
-            }).state('sysdeptEdit', {
+                .state('sysdept', {
+                    url: '/sysdept',
+                    templateUrl: rootPath + '/sysdept/html/list.html',
+                    controller: 'sysdeptCtrl',
+                    controllerAs: 'vm'
+                }).state('sysdeptEdit', {
                 url: '/sysdeptEdit/:id',
                 templateUrl: rootPath + '/sysdept/html/edit.html',
                 controller: 'sysdeptEditCtrl',
@@ -220,39 +226,39 @@
             //end#sysdept
 
             //begin#log
-            .state('log', {
-                url: '/log',
-                templateUrl: rootPath + '/log/html/list.html',
-                controller: 'logCtrl',
-                controllerAs: 'vm'
-            })
-            //end#log
+                .state('log', {
+                    url: '/log',
+                    templateUrl: rootPath + '/log/html/list.html',
+                    controller: 'logCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#log
 
-            //begin#config
-            .state('config', {
-                url: '/config',
-                templateUrl: rootPath + '/sysConfig/html/list.html',
-                controller: 'sysConfigCtrl',
-                controllerAs: 'vm'
-            })
-            //end#config
+                //begin#config
+                .state('config', {
+                    url: '/config',
+                    templateUrl: rootPath + '/sysConfig/html/list.html',
+                    controller: 'sysConfigCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#config
 
-            //begin#upload
-        	.state('upload', {
-        		url: '/upload/:uploadid',
-        		templateUrl: rootPath + '/upload/html/edit.html',
-        		controller: 'uploadEditCtrl',
-        		controllerAs: 'vm'
-        	})
-        	//end#upload
+                //begin#upload
+                .state('upload', {
+                    url: '/upload/:uploadid',
+                    templateUrl: rootPath + '/upload/html/edit.html',
+                    controller: 'uploadEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#upload
 
-            //begin#meeting
-            .state('meeting', {
-                url: '/meeting',
-                templateUrl: rootPath + '/meeting/html/list.html',
-                controller: 'meetingCtrl',
-                controllerAs: 'vm'
-            }).state('meetingEdit', {
+                //begin#meeting
+                .state('meeting', {
+                    url: '/meeting',
+                    templateUrl: rootPath + '/meeting/html/list.html',
+                    controller: 'meetingCtrl',
+                    controllerAs: 'vm'
+                }).state('meetingEdit', {
                 url: '/meetingEdit/:id',
                 templateUrl: rootPath + '/meeting/html/edit.html',
                 controller: 'meetingEditCtrl',
@@ -261,12 +267,12 @@
             //end#meeting
 
             //begin#room
-            .state('room', {
-                url: '/room/:businessId/:businessType',
-                templateUrl: rootPath + '/room/html/roomlist.html',
-                controller: 'roomCtrl',
-                controllerAs: 'vm'
-            }).state('roomCount', {
+                .state('room', {
+                    url: '/room/:businessId/:businessType',
+                    templateUrl: rootPath + '/room/html/roomlist.html',
+                    controller: 'roomCtrl',
+                    controllerAs: 'vm'
+                }).state('roomCount', {
                 url: '/roomCount/:id',
                 templateUrl: rootPath + '/room/html/countlist.html',
                 controller: 'roomCountCtrl',
@@ -275,12 +281,12 @@
             //end#room
 
             //begin#company
-            .state('company', {
-                url: '/company',
-                templateUrl: rootPath + '/company/html/list.html',
-                controller: 'companyCtrl',
-                controllerAs: 'vm'
-            }).state('companyEdit', {
+                .state('company', {
+                    url: '/company',
+                    templateUrl: rootPath + '/company/html/list.html',
+                    controller: 'companyCtrl',
+                    controllerAs: 'vm'
+                }).state('companyEdit', {
                 url: '/companyEdit/:id',
                 templateUrl: rootPath + '/company/html/edit.html',
                 controller: 'companyEditCtrl',
@@ -289,91 +295,91 @@
             //end#company
 
             //begin#home
-            .state('accountPwd', {
-                url: '/accountPwd',
-                templateUrl: rootPath + '/account/html/changePwd.html',
-                controller: 'homeCtrl',
-                controllerAs: 'vm'
-            })
-            //end#home
-            //begin#demo
-            .state('demo', {
-                url: '/demo',
-                templateUrl: rootPath + '/demo/html/list.html',
-                controller: 'demoCtrl',
-                controllerAs: 'vm'
-            })
-            //end#demo
+                .state('accountPwd', {
+                    url: '/accountPwd',
+                    templateUrl: rootPath + '/account/html/changePwd.html',
+                    controller: 'homeCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#home
+                //begin#demo
+                .state('demo', {
+                    url: '/demo',
+                    templateUrl: rootPath + '/demo/html/list.html',
+                    controller: 'demoCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#demo
 
-            //begin Dict
-            .state('dict', {
-                url: '/dict',
-                templateUrl: rootPath + '/dict/html/list.html',
-                controller: 'dictCtrl',
-                controllerAs: 'vm'
-            })
-            .state('dict.edit', {
-                url: '/edit/:id',
-                templateUrl: rootPath + '/dict/html/edit.html',
-                controller: 'dictEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end Dict
+                //begin Dict
+                .state('dict', {
+                    url: '/dict',
+                    templateUrl: rootPath + '/dict/html/list.html',
+                    controller: 'dictCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('dict.edit', {
+                    url: '/edit/:id',
+                    templateUrl: rootPath + '/dict/html/edit.html',
+                    controller: 'dictEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end Dict
 
-            //begin expert
-            .state('expert', {
-            	url: '/expert',
-                templateUrl: rootPath + '/expert/html/queryAllList.html',
-                controller: 'expertCtrl',
-                controllerAs: 'vm'
-            })
-            .state('expertAudit', {
-            	url: '/expertAudit',
-                templateUrl: rootPath + '/expert/html/audit.html',
-                controller: 'expertAuditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('expertRepeat', {
-            	url: '/expertRepeat',
-                templateUrl: rootPath + '/expert/html/repeat.html',
-                controller: 'expertRepeatCtrl',
-                controllerAs: 'vm'
-            })
-            .state('expertEdit', {
-                url: '/expertEdit/:expertID',
-                templateUrl: rootPath + '/expert/html/edit.html',
-                controller: 'expertEditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('expertReviewEdit', {
-                url: '/expertReview/:businessId/:minBusinessId/:businessType',
-                templateUrl: rootPath + '/expertReview/html/selectExpert.html',
-                controller: 'expertSelectCtrl',
-                controllerAs: 'vm'
-            })
-            
-            .state('expertScore',{
-                url: '/expertScore',
-                templateUrl: rootPath + '/expert/html/scoreList.html',
-                controller: 'expertScoreCtrl',
-                controllerAs: 'vm'
-            })
-            .state('expertSelectHis',{
-                url: '/expertSelectHis',
-                templateUrl: rootPath + '/expert/html/selectHisList.html',
-                controller: 'expertSelectHisCtrl',
-                controllerAs: 'vm'
-            })
-            //end expert
-            //begin#sign
-            .state('addSign', {
-                url: '/addSign',
-                templateUrl: rootPath + '/sign/html/add.html',
-                controller: 'signCreateCtrl',
-                controllerAs: 'vm'
-            }).state('fillSign', {
+                //begin expert
+                .state('expert', {
+                    url: '/expert',
+                    templateUrl: rootPath + '/expert/html/queryAllList.html',
+                    controller: 'expertCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('expertAudit', {
+                    url: '/expertAudit',
+                    templateUrl: rootPath + '/expert/html/audit.html',
+                    controller: 'expertAuditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('expertRepeat', {
+                    url: '/expertRepeat',
+                    templateUrl: rootPath + '/expert/html/repeat.html',
+                    controller: 'expertRepeatCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('expertEdit', {
+                    url: '/expertEdit/:expertID',
+                    templateUrl: rootPath + '/expert/html/edit.html',
+                    controller: 'expertEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('expertReviewEdit', {
+                    url: '/expertReview/:businessId/:minBusinessId/:businessType',
+                    templateUrl: rootPath + '/expertReview/html/selectExpert.html',
+                    controller: 'expertSelectCtrl',
+                    controllerAs: 'vm'
+                })
+
+                .state('expertScore', {
+                    url: '/expertScore',
+                    templateUrl: rootPath + '/expert/html/scoreList.html',
+                    controller: 'expertScoreCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('expertSelectHis', {
+                    url: '/expertSelectHis',
+                    templateUrl: rootPath + '/expert/html/selectHisList.html',
+                    controller: 'expertSelectHisCtrl',
+                    controllerAs: 'vm'
+                })
+                //end expert
+                //begin#sign
+                .state('addSign', {
+                    url: '/addSign',
+                    templateUrl: rootPath + '/sign/html/add.html',
+                    controller: 'signCreateCtrl',
+                    controllerAs: 'vm'
+                }).state('fillSign', {
                 url: '/fillSign/:signid',
-                cache:'false',
+                cache: 'false',
                 templateUrl: rootPath + '/sign/html/fillin.html',
                 controller: 'signFillinCtrl',
                 controllerAs: 'vm'
@@ -408,49 +414,49 @@
                 controller: 'adminSignListCtrl',
                 controllerAs: 'vm'
             })//end#signList
-            .state('projectStopInfo', { //项目暂停表单（多个）
-                url: '/projectStopInfo/:signId',
-                templateUrl: rootPath + '/projectStop/html/projectStopInfo.html',
-                controller: 'projectStopInfoCtrl',
-                controllerAs: 'vm'
-            })//end#signList
-            .state('selectHeader',{
-                url : '/selectHeader',
-                templateUrl : rootPath + '/sign/html/selectHeader.html',
-                controller : 'selectHeaderCtrl',
-                controllerAs : 'vm'
+                .state('projectStopInfo', { //项目暂停表单（多个）
+                    url: '/projectStopInfo/:signId',
+                    templateUrl: rootPath + '/projectStop/html/projectStopInfo.html',
+                    controller: 'projectStopInfoCtrl',
+                    controllerAs: 'vm'
+                })//end#signList
+                .state('selectHeader', {
+                    url: '/selectHeader',
+                    templateUrl: rootPath + '/sign/html/selectHeader.html',
+                    controller: 'selectHeaderCtrl',
+                    controllerAs: 'vm'
 
-            })
-            .state('signGetBack', {//项目取回
-                url: '/signGetBack',
-                templateUrl: rootPath + '/sign/html/signGetBack.html',
-                controller: 'signGetBackCtrl',
-                controllerAs: 'vm'
-            })
-            .state('pauseProject', { //项目暂停审批
-                url: '/pauseProject',
-                templateUrl: rootPath + '/projectStop/html/pauseProjectList.html',
-                controller: 'pauseProjectCtrl',
-                controllerAs: 'vm'
-            })
-            .state('projectStopForm', { //项目暂停表单
-                url: '/projectStopForm/:signId/:stopId',
-                templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
-                controller: 'projectStopFormCtrl',
-                controllerAs: 'vm'
-            })
-            .state('projectStopFormEdit', { //编辑项目暂停表单
-                url: '/projectStopFormEdit/:stopId',
-                templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
-                controller: 'projectStopFormEditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('reserveAdd', {	//新增预签收
-                url: '/reserveAdd',
-                templateUrl: rootPath + '/sign/html/reserveAdd.html',
-                controller: 'signReserveAddCtrl',
-                controllerAs: 'vm'
-            }).state('reserveList', {	//预签收列表
+                })
+                .state('signGetBack', {//项目取回
+                    url: '/signGetBack',
+                    templateUrl: rootPath + '/sign/html/signGetBack.html',
+                    controller: 'signGetBackCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('pauseProject', { //项目暂停审批
+                    url: '/pauseProject',
+                    templateUrl: rootPath + '/projectStop/html/pauseProjectList.html',
+                    controller: 'pauseProjectCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('projectStopForm', { //项目暂停表单
+                    url: '/projectStopForm/:signId/:stopId',
+                    templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
+                    controller: 'projectStopFormCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('projectStopFormEdit', { //编辑项目暂停表单
+                    url: '/projectStopFormEdit/:stopId',
+                    templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
+                    controller: 'projectStopFormEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('reserveAdd', {	//新增预签收
+                    url: '/reserveAdd',
+                    templateUrl: rootPath + '/sign/html/reserveAdd.html',
+                    controller: 'signReserveAddCtrl',
+                    controllerAs: 'vm'
+                }).state('reserveList', {	//预签收列表
                 url: '/reserveList',
                 templateUrl: rootPath + '/sign/html/reserveList.html',
                 controller: 'signReserveCtrl',
@@ -464,81 +470,81 @@
             //end#signList
 
             //begin#workprogram
-            .state('workprogramEdit', {
-                url: '/workprogramEdit/:signid',
-                templateUrl: rootPath + '/workprogram/html/edit.html',
-                controller: 'workprogramEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#workprogram
+                .state('workprogramEdit', {
+                    url: '/workprogramEdit/:signid',
+                    templateUrl: rootPath + '/workprogram/html/edit.html',
+                    controller: 'workprogramEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#workprogram
 
-            //begin#dispatch
-            .state('dispatchEdit', {
-                url: '/dispatchEdit/:signid',
-                templateUrl: rootPath + '/dispatch/html/edit.html',
-                controller: 'dispatchEditCtrl',
-                controllerAs: 'vm'
-            })//end#dispatch
+                //begin#dispatch
+                .state('dispatchEdit', {
+                    url: '/dispatchEdit/:signid',
+                    templateUrl: rootPath + '/dispatch/html/edit.html',
+                    controller: 'dispatchEditCtrl',
+                    controllerAs: 'vm'
+                })//end#dispatch
 
-            //begin#fileRecord
-        	.state('fileRecordEdit', {
-            	url: '/fileRecordEdit/:signid',
-            	templateUrl: rootPath + '/fileRecord/html/edit.html',
-            	controller: 'fileRecordEditCtrl',
-            	controllerAs: 'vm'
-        	})
-        	//end#fileRecord
+                //begin#fileRecord
+                .state('fileRecordEdit', {
+                    url: '/fileRecordEdit/:signid',
+                    templateUrl: rootPath + '/fileRecord/html/edit.html',
+                    controller: 'fileRecordEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#fileRecord
 
-            //begin#assistMng
-            .state('assistPlan', {
-                url: '/assistPlan',
-                templateUrl: rootPath + '/assistPlan/html/manager.html',
-                controller: 'assistPlanCtrl',
-                controllerAs: 'vm'
-            })
-            //begin#assistMng
+                //begin#assistMng
+                .state('assistPlan', {
+                    url: '/assistPlan',
+                    templateUrl: rootPath + '/assistPlan/html/manager.html',
+                    controller: 'assistPlanCtrl',
+                    controllerAs: 'vm'
+                })
+                //begin#assistMng
 
-        	//start #officeUser
-        	.state('officeUserList', {
-                url: '/officeUserList',
-                templateUrl: rootPath + '/officeUser/html/list.html',
-                controller: 'officeUserCtrl',
-                controllerAs: 'vm'
-            })
-        	.state('officeUserEdit', {
-            	url: '/officeUserEdit/:officeID',
-            	templateUrl: rootPath + '/officeUser/html/edit.html',
-            	controller: 'officeUserEditCtrl',
-            	controllerAs: 'vm'
-        	})
-        	// end #officeUser
+                //start #officeUser
+                .state('officeUserList', {
+                    url: '/officeUserList',
+                    templateUrl: rootPath + '/officeUser/html/list.html',
+                    controller: 'officeUserCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('officeUserEdit', {
+                    url: '/officeUserEdit/:officeID',
+                    templateUrl: rootPath + '/officeUser/html/edit.html',
+                    controller: 'officeUserEditCtrl',
+                    controllerAs: 'vm'
+                })
+                // end #officeUser
 
-        	//begin#dept
-        	.state('listDept', {
-                url: '/listDept',
-                templateUrl: rootPath + '/dept/html/list.html',
-                controller: 'deptCtrl',
-                controllerAs: 'vm'
-            })
-        	.state('deptEdit', {
-            	url: '/deptEdit/:deptId',
-            	templateUrl: rootPath + '/dept/html/edit.html',
-            	controller: 'deptEditCtrl',
-            	controllerAs: 'vm'
-        	}).state('deptOfficeUser', {
+                //begin#dept
+                .state('listDept', {
+                    url: '/listDept',
+                    templateUrl: rootPath + '/dept/html/list.html',
+                    controller: 'deptCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('deptEdit', {
+                    url: '/deptEdit/:deptId',
+                    templateUrl: rootPath + '/dept/html/edit.html',
+                    controller: 'deptEditCtrl',
+                    controllerAs: 'vm'
+                }).state('deptOfficeUser', {
                 url: '/deptOfficeUser/:deptId',
                 templateUrl: rootPath + '/dept/html/listOfficeUser.html',
                 controller: 'deptOfficeUserCtrl',
                 controllerAs: 'vm'
             })
-        	//end#dept
+            //end#dept
             //begin#assistUnit
-            .state('assistUnit', {
-                url: '/assistUnit',
-                templateUrl: rootPath + '/assistUnit/html/assistUnitList.html',
-                controller: 'assistUnitCtrl',
-                controllerAs: 'vm'
-            }).state('assistUnitEdit', {
+                .state('assistUnit', {
+                    url: '/assistUnit',
+                    templateUrl: rootPath + '/assistUnit/html/assistUnitList.html',
+                    controller: 'assistUnitCtrl',
+                    controllerAs: 'vm'
+                }).state('assistUnitEdit', {
                 url: '/assistUnitEdit/:id',
                 templateUrl: rootPath + '/assistUnit/html/assistUnitEdit.html',
                 controller: 'assistUnitEditCtrl',
@@ -546,523 +552,523 @@
             })
             //end#assistUnit
             //begin#assistUnit
-            .state('quartz', {
-                url: '/quartz',
-                templateUrl: rootPath + '/quartz/html/list.html',
-                controller: 'quartzCtrl',
-                controllerAs: 'vm'
-            })
-            //begin workday
-             .state('workday', {
-                url: '/workday',
-                templateUrl: rootPath + '/workday/html/list.html',
-                controller: 'workdayCtrl',
-                controllerAs: 'vm'
-            })
-             .state('workdayEdit', {
-                url: '/workdayEdit/:id',
-                templateUrl: rootPath + '/workday/html/edit.html',
-                controller: 'workdayEditCtrl',
-                controllerAs: 'vm'
-            })
-            //通过公告
-            .state('annountment', {
-                url: '/annountment',
-                templateUrl: rootPath + '/annountment/html/list.html',
-                controller: 'annountmentCtrl',
-                controllerAs: 'vm'
-            })
-            .state('annountmentEdit', {
-                url: '/annountmentEdit/:id',
-                templateUrl: rootPath + '/annountment/html/edit.html',
-                controller: 'annountmentEditCtrl',
-                controllerAs: 'vm'
-            })
-             //通知公告详情页
-             .state('annountmentDetail', {
-                url: '/annountmentDetail/:id',
-                templateUrl: rootPath + '/annountment/html/detail.html',
-                controller: 'annountmentDetailCtrl',
-                controllerAs: 'vm'
-            })
-             //通过公告
-            .state('annountmentYet', {
-                url: '/annountmentYet',
-                templateUrl: rootPath + '/annountment/html/yetList.html',
-                controller: 'annountmentYetCtrl',
-                controllerAs: 'vm'
-            })
-            //begin#sharing
-            .state('sharingPlatlform', {
-                url: '/sharingPlatlform',
-                templateUrl: rootPath + '/sharingPlatlform/html/list.html',
-                controller: 'sharingPlatlformCtrl',
-                controllerAs: 'vm'
-            }).state('sharingPlatlformEdit', {
+                .state('quartz', {
+                    url: '/quartz',
+                    templateUrl: rootPath + '/quartz/html/list.html',
+                    controller: 'quartzCtrl',
+                    controllerAs: 'vm'
+                })
+                //begin workday
+                .state('workday', {
+                    url: '/workday',
+                    templateUrl: rootPath + '/workday/html/list.html',
+                    controller: 'workdayCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('workdayEdit', {
+                    url: '/workdayEdit/:id',
+                    templateUrl: rootPath + '/workday/html/edit.html',
+                    controller: 'workdayEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //通过公告
+                .state('annountment', {
+                    url: '/annountment',
+                    templateUrl: rootPath + '/annountment/html/list.html',
+                    controller: 'annountmentCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('annountmentEdit', {
+                    url: '/annountmentEdit/:id',
+                    templateUrl: rootPath + '/annountment/html/edit.html',
+                    controller: 'annountmentEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //通知公告详情页
+                .state('annountmentDetail', {
+                    url: '/annountmentDetail/:id',
+                    templateUrl: rootPath + '/annountment/html/detail.html',
+                    controller: 'annountmentDetailCtrl',
+                    controllerAs: 'vm'
+                })
+                //通过公告
+                .state('annountmentYet', {
+                    url: '/annountmentYet',
+                    templateUrl: rootPath + '/annountment/html/yetList.html',
+                    controller: 'annountmentYetCtrl',
+                    controllerAs: 'vm'
+                })
+                //begin#sharing
+                .state('sharingPlatlform', {
+                    url: '/sharingPlatlform',
+                    templateUrl: rootPath + '/sharingPlatlform/html/list.html',
+                    controller: 'sharingPlatlformCtrl',
+                    controllerAs: 'vm'
+                }).state('sharingPlatlformEdit', {
                 url: '/sharingPlatlformEdit/:sharId',
                 templateUrl: rootPath + '/sharingPlatlform/html/edit.html',
                 controller: 'sharingPlatlformEditCtrl',
                 controllerAs: 'vm'
             })
-             //资料共享详情页
-             .state('sharingDetil', {
-                url: '/sharingDetil/:sharId',
-                templateUrl: rootPath + '/sharingPlatlform/html/detail.html',
-                controller: 'sharingDetailCtrl',
-                controllerAs: 'vm'
-            })
-             .state('sharingPlatlformYet', {
-                url: '/sharingPlatlformYet',
-                templateUrl: rootPath + '/sharingPlatlform/html/yetList.html',
-                controller: 'sharingPlatlformYetCtrl',
-                controllerAs: 'vm'
-            })
-            //end#sharing
-             //S 项目费用管理
-            //评审费录入页面
-             .state('financialManager', {
-                url: '/financialManager/:businessId',
-                templateUrl: rootPath + '/financialManager/html/add.html',
-                controller: 'financialManagerCtrl',
-                controllerAs: 'vm'
-            })
-            //协审费录入
-           .state('financialAssistManager', {
-               url: '/financialAssistManager/:businessId',
-                templateUrl: rootPath + '/financialManager/html/assistCostAdd.html',
-               controller: 'assistCostEditCtrl',
-                controllerAs: 'vm'
-            })
-            //协审费录入列表页面
-            .state('assistCostlist', {
-                url: '/assistCostlist/:costType',
-                templateUrl: rootPath + '/financialManager/html/assistCostList.html',
-                controller: 'assistCostCountEditCtrl',
-                controllerAs: 'vm'
-            })
-            //协审费统计列表
-             .state('assistCostCountList', {
-                url: '/assistCostCountList',
-                templateUrl: rootPath + '/financialManager/html/assistCostCount.html',
-                controller: 'assistCostCountListCtrl',
-                controllerAs: 'vm'
-            })
-            //评审费录入列表
-             .state('financialManagerList', {
-                url: '/financialManagerList/:costType',
-                templateUrl: rootPath + '/financialManager/html/list.html',
-                controller: 'financialManagerEditCtrl',
-                controllerAs: 'vm'
-            })
+            //资料共享详情页
+                .state('sharingDetil', {
+                    url: '/sharingDetil/:sharId',
+                    templateUrl: rootPath + '/sharingPlatlform/html/detail.html',
+                    controller: 'sharingDetailCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('sharingPlatlformYet', {
+                    url: '/sharingPlatlformYet',
+                    templateUrl: rootPath + '/sharingPlatlform/html/yetList.html',
+                    controller: 'sharingPlatlformYetCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#sharing
+                //S 项目费用管理
+                //评审费录入页面
+                .state('financialManager', {
+                    url: '/financialManager/:businessId',
+                    templateUrl: rootPath + '/financialManager/html/add.html',
+                    controller: 'financialManagerCtrl',
+                    controllerAs: 'vm'
+                })
+                //协审费录入
+                .state('financialAssistManager', {
+                    url: '/financialAssistManager/:businessId',
+                    templateUrl: rootPath + '/financialManager/html/assistCostAdd.html',
+                    controller: 'assistCostEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //协审费录入列表页面
+                .state('assistCostlist', {
+                    url: '/assistCostlist/:costType',
+                    templateUrl: rootPath + '/financialManager/html/assistCostList.html',
+                    controller: 'assistCostCountEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //协审费统计列表
+                .state('assistCostCountList', {
+                    url: '/assistCostCountList',
+                    templateUrl: rootPath + '/financialManager/html/assistCostCount.html',
+                    controller: 'assistCostCountListCtrl',
+                    controllerAs: 'vm'
+                })
+                //评审费录入列表
+                .state('financialManagerList', {
+                    url: '/financialManagerList/:costType',
+                    templateUrl: rootPath + '/financialManager/html/list.html',
+                    controller: 'financialManagerEditCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //专家缴费统计列表
-            .state('expertPaymentCountList', {
-                url: '/expertPaymentCountList/:beginTime',
-                templateUrl: rootPath + '/financialManager/html/expertPaymentCount.html',
-                controller: 'expertPaymentCountCtrl',
-                controllerAs: 'vm'
-            })
-            //专家缴费明细统计列表
-            .state('expertPaymentDetailCountList', {
-                url: '/expertPaymentDetailCountList/:beginTime',
-                templateUrl: rootPath + '/financialManager/html/expertPaymentDetailCount.html',
-                controller: 'expertPaymentDetailCountCtrl',
-                controllerAs: 'vm'
-            })
-            //专家费统计列表
-             .state('exportCountList', {
-                url: '/exportCountList',
-                templateUrl: rootPath + '/financialManager/html/expertCount.html',
-                controller: 'exportCountCtrl',
-                controllerAs: 'vm'
-            })
-             //专家评审情况统计列表
-            .state('expertRevCondCountList', {
-                url: '/expertRevCondCountList',
-                templateUrl: rootPath + '/signView/html/expertReviewCondCount.html',
-                controller: 'expertRevConCountCtrl',
-                controllerAs: 'vm'
-            })
-             //项目评审费统计列表
-            .state('projectCostCountList', {
-                url: '/projectCostCountList',
-                templateUrl: rootPath + '/financialManager/html/projectCostCount.html',
-                controller: 'projectCostCountCtrl',
-                controllerAs: 'vm'
-            })
-            //项目评审费分类统计列表
-            .state('proCostClassifyCountList', {
-                url: '/proCostClassifyCountList',
-                templateUrl: rootPath + '/financialManager/html/proCostClassifyCount.html',
-                controller: 'proCostClassifyCountCtrl',
-                controllerAs: 'vm'
-            })
-            //项目评审情况统计
-            .state('proReviewConCountList', {
-                url: '/proReviewConCountList',
-                templateUrl: rootPath + '/signView/html/proReviewConCount.html',
-                controller: 'proReviewConditionCtrl',
-                controllerAs: 'vm'
-            })
-             //E 项目费用管理
+                //专家缴费统计列表
+                .state('expertPaymentCountList', {
+                    url: '/expertPaymentCountList/:beginTime',
+                    templateUrl: rootPath + '/financialManager/html/expertPaymentCount.html',
+                    controller: 'expertPaymentCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //专家缴费明细统计列表
+                .state('expertPaymentDetailCountList', {
+                    url: '/expertPaymentDetailCountList/:beginTime',
+                    templateUrl: rootPath + '/financialManager/html/expertPaymentDetailCount.html',
+                    controller: 'expertPaymentDetailCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //专家费统计列表
+                .state('exportCountList', {
+                    url: '/exportCountList',
+                    templateUrl: rootPath + '/financialManager/html/expertCount.html',
+                    controller: 'exportCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //专家评审情况统计列表
+                .state('expertRevCondCountList', {
+                    url: '/expertRevCondCountList',
+                    templateUrl: rootPath + '/signView/html/expertReviewCondCount.html',
+                    controller: 'expertRevConCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //项目评审费统计列表
+                .state('projectCostCountList', {
+                    url: '/projectCostCountList',
+                    templateUrl: rootPath + '/financialManager/html/projectCostCount.html',
+                    controller: 'projectCostCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //项目评审费分类统计列表
+                .state('proCostClassifyCountList', {
+                    url: '/proCostClassifyCountList',
+                    templateUrl: rootPath + '/financialManager/html/proCostClassifyCount.html',
+                    controller: 'proCostClassifyCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //项目评审情况统计
+                .state('proReviewConCountList', {
+                    url: '/proReviewConCountList',
+                    templateUrl: rootPath + '/signView/html/proReviewConCount.html',
+                    controller: 'proReviewConditionCtrl',
+                    controllerAs: 'vm'
+                })
+                //E 项目费用管理
 
-             //S 月报简报管理
-             //月报简报管理列表
-             .state('monthlyNewsletterList', {
-                url: '/monthlyNewsletterList',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyNewsletterList.html',
-                controller: 'monthlyNewsletterCtrl',
-                controllerAs: 'vm'
-            })
-            //新建月报简报管理
-            .state('monthlyEdit', {
-                url: '/monthlyEdit/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyNewsletterEdit.html',
-                controller: 'monthlyNewsletterEditCtrl',
-                controllerAs: 'vm'
-            })
+                //S 月报简报管理
+                //月报简报管理列表
+                .state('monthlyNewsletterList', {
+                    url: '/monthlyNewsletterList',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyNewsletterList.html',
+                    controller: 'monthlyNewsletterCtrl',
+                    controllerAs: 'vm'
+                })
+                //新建月报简报管理
+                .state('monthlyEdit', {
+                    url: '/monthlyEdit/:id',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyNewsletterEdit.html',
+                    controller: 'monthlyNewsletterEditCtrl',
+                    controllerAs: 'vm'
+                })
 
-             //年度月报简报
-             .state('theMonthsList', {
-                url: '/theMonthsList',
-                templateUrl: rootPath + '/monthlyNewsletter/html/theMonthsList.html',
-                controller: 'yearMonthlyNewsletterCtrl',
-                controllerAs: 'vm'
-            })
+                //年度月报简报
+                .state('theMonthsList', {
+                    url: '/theMonthsList',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/theMonthsList.html',
+                    controller: 'yearMonthlyNewsletterCtrl',
+                    controllerAs: 'vm'
+                })
 
-             //年度月报简报列表理页面
-             .state('monthlyFindByMultiyear', {
-                url: '/monthlyFindByMultiyear/:year',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearList.html',
-                controller: 'monthlyMultiyearCtrl',
-                controllerAs: 'vm'
-            })
+                //年度月报简报列表理页面
+                .state('monthlyFindByMultiyear', {
+                    url: '/monthlyFindByMultiyear/:year',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearList.html',
+                    controller: 'monthlyMultiyearCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //编辑新建年度月报简报页面
-             .state('monthlyMultiyearEdit', {
-                url: '/monthlyMultiyearEdit/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearAdd.html',
-                controller: 'monthlyMultiyearEditCtrl',
-                controllerAs: 'vm'
-            })
+                //编辑新建年度月报简报页面
+                .state('monthlyMultiyearEdit', {
+                    url: '/monthlyMultiyearEdit/:id',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearAdd.html',
+                    controller: 'monthlyMultiyearEditCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //月报简报查询页面
-             .state('monthlyMultiyFileList', {
-                url: '/monthlyMultiyFileList',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyFileList.html',
-                controller: 'monthlyMultiFileCtrl',
-                controllerAs: 'vm'
-            })
+                //月报简报查询页面
+                .state('monthlyMultiyFileList', {
+                    url: '/monthlyMultiyFileList',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyFileList.html',
+                    controller: 'monthlyMultiFileCtrl',
+                    controllerAs: 'vm'
+                })
 
-             //年度(中心文件)月报简报详细页面
-             .state('monthlyMultiyView', {
-                url: '/monthlyMultiyView/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyView.html',
-                controller: 'monthlyMultiyViewCtrl',
-                controllerAs: 'vm'
-            })
+                //年度(中心文件)月报简报详细页面
+                .state('monthlyMultiyView', {
+                    url: '/monthlyMultiyView/:id',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyView.html',
+                    controller: 'monthlyMultiyViewCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //月报简报历史数据列表
-             .state('monthlyHistoryList', {
-                url: '/monthlyHistoryList',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyHistoryList.html',
-                controller: 'monthlyHistoryCtrl',
-                controllerAs: 'vm'
-            })
-             //新建月报简报历史数据
-            .state('monthlyHistoryEdit', {
-                url: '/monthlyHistoryEdit/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyHistoryAdd.html',
-                controller: 'monthlyHistoryEditCtrl',
-                controllerAs: 'vm'
-            })
-            //优秀评审报告填报
-            .state('approveWindow', {
-                url: '/approveWindow/:signId',
-                templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
-                controller: 'approveWindowCtrl',
-                controllerAs: 'vm'
-            })
-            //优秀评审报告编辑
-            .state('approveWindowEdit', {
-                url: '/approveWindowEdit/:id',
-                templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
-                controller: 'approveWindowEditCtrl',
-                controllerAs: 'vm'
-            })
+                //月报简报历史数据列表
+                .state('monthlyHistoryList', {
+                    url: '/monthlyHistoryList',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyHistoryList.html',
+                    controller: 'monthlyHistoryCtrl',
+                    controllerAs: 'vm'
+                })
+                //新建月报简报历史数据
+                .state('monthlyHistoryEdit', {
+                    url: '/monthlyHistoryEdit/:id',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyHistoryAdd.html',
+                    controller: 'monthlyHistoryEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //优秀评审报告填报
+                .state('approveWindow', {
+                    url: '/approveWindow/:signId',
+                    templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
+                    controller: 'approveWindowCtrl',
+                    controllerAs: 'vm'
+                })
+                //优秀评审报告编辑
+                .state('approveWindowEdit', {
+                    url: '/approveWindowEdit/:id',
+                    templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
+                    controller: 'approveWindowEditCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //优秀评审报告列表
-            .state('reviewProjectAppraiseList', {
-                url: '/reviewProjectAppraiseList/:id',
-                templateUrl: rootPath + '/signView/html/list.html',
-                controller: 'reviewProjectAppraiseCtrl',
-                controllerAs: 'vm'
-            })
-            //评审项目评优列表
-            .state('reviewProjectAppraiseEdit', {
-                url: '/reviewProjectAppraiseEdit',
-                templateUrl: rootPath + '/reviewProjectAppraise/html/edit.html',
-                controller: 'reviewProjectAppraiseEditCtrl',
-                controllerAs: 'vm'
-            })
-            //优秀评审报告审批列表
-            .state('approveList', {
-                url: '/approveList',
-                templateUrl: rootPath + '/reviewProjectAppraise/html/approveList.html',
-                controller: 'approveListCtrl',
-                controllerAs: 'vm'
-            })
-            //E 月报简报管理
+                //优秀评审报告列表
+                .state('reviewProjectAppraiseList', {
+                    url: '/reviewProjectAppraiseList/:id',
+                    templateUrl: rootPath + '/signView/html/list.html',
+                    controller: 'reviewProjectAppraiseCtrl',
+                    controllerAs: 'vm'
+                })
+                //评审项目评优列表
+                .state('reviewProjectAppraiseEdit', {
+                    url: '/reviewProjectAppraiseEdit',
+                    templateUrl: rootPath + '/reviewProjectAppraise/html/edit.html',
+                    controller: 'reviewProjectAppraiseEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //优秀评审报告审批列表
+                .state('approveList', {
+                    url: '/approveList',
+                    templateUrl: rootPath + '/reviewProjectAppraise/html/approveList.html',
+                    controller: 'approveListCtrl',
+                    controllerAs: 'vm'
+                })
+                //E 月报简报管理
 
-            //S 档案借阅管理
-            //项目档案借阅录入页面
-             .state('libraryAdd', {
-                url: '/libraryAdd/:id',
-                templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryAdd.html',
-                controller: 'archivesLibraryCtrl',
-                controllerAs: 'vm'
-            })
-            //档案借阅查询
-            .state('archivesLibraryList', {
-                url: '/archivesLibraryList/:id',
-                templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryList.html',
-                controller: 'archivesLibraryListCtrl',
-                controllerAs: 'vm'
-            })
-            //档案借阅查看详情页
-            .state('archivesLibraryView', {
-                url: '/archivesLibraryView/:id',
-                templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryView.html',
-                controller: 'archivesLibraryViewCtrl',
-                controllerAs: 'vm'
-            })
-            //E 档案借阅管理
+                //S 档案借阅管理
+                //项目档案借阅录入页面
+                .state('libraryAdd', {
+                    url: '/libraryAdd/:id',
+                    templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryAdd.html',
+                    controller: 'archivesLibraryCtrl',
+                    controllerAs: 'vm'
+                })
+                //档案借阅查询
+                .state('archivesLibraryList', {
+                    url: '/archivesLibraryList/:id',
+                    templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryList.html',
+                    controller: 'archivesLibraryListCtrl',
+                    controllerAs: 'vm'
+                })
+                //档案借阅查看详情页
+                .state('archivesLibraryView', {
+                    url: '/archivesLibraryView/:id',
+                    templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryView.html',
+                    controller: 'archivesLibraryViewCtrl',
+                    controllerAs: 'vm'
+                })
+                //E 档案借阅管理
 
-              //begin#dispatch
-           /* .state('financialEdit', {
-                url: '/financialEdit/:signid',
-                templateUrl: rootPath + '/financialManager/html/addFinancial.html',
-                controller: 'financialManagerEditCtrl',
-                controllerAs: 'vm'
-            })*///end#财务管理
-            //end#financial
-            //系统安装包管理
-            .state('pluginfile',{
-                url: '/pluginfile',
-                templateUrl: rootPath + '/file/html/pluginfile.html',
-                controller: 'pluginfileCtrl',
-                controllerAs: 'vm'
-            })
-            //个人中心
-            .state('takeUser',{
-                url:'/takeUser',
-                templateUrl: rootPath + '/personalCenter/html/takeUser.html',
-                controller: 'takeUserCtrl',
-                controllerAs: 'vm'
-            })
-            //质量管理文件库
-            .state('fileLibrary',{
-                url : '/fileLibrary',
-                templateUrl : rootPath + '/fileLibrary/html/fileLibrary.html',
-                controller : 'qualityCtrl',
-                controllerAs : 'vm'
-            })
-            .state('fileLibrary.fileList',{ //文件列表
-                url : '/fileList/:parentId',
-                templateUrl : rootPath + '/fileLibrary/html/fileList.html',
-                controller : 'qualityListCtrl',
-                controllerAs : 'vm'
-            })
-            .state('fileLibrary.fileEdit',{//新建文件
-                url : '/fileEdit/:parentId/:fileId',
-                templateUrl : rootPath + '/fileLibrary/html/fileEdit.html',
-                controller : 'qualityEditCtrl',
-                controllerAs : 'vm'
-            })
-            //政策标准库
-            .state('policyLibrary',{
-                url : '/policyLibrary',
-                templateUrl : rootPath + '/fileLibrary/html/policyLibrary.html',
-                controller : 'policyCtrl',
-                controllerAs : 'vm'
-            })
-            .state('policyLibrary.policyList',{ //文件列表
-                url : '/policyList/:parentId',
-                templateUrl : rootPath + '/fileLibrary/html/policyList.html',
-                controller : 'policyListCtrl',
-                controllerAs : 'vm'
-            })
-            .state('policyLibrary.policyEdit',{//新建文件
-                url : '/policyEdit/:parentId/:fileId',
-                templateUrl : rootPath + '/fileLibrary/html/policyEdit.html',
-                controller : 'policyEditCtrl',
-                controllerAs : 'vm'
-            })
-            //图书采购流程
-            .state('bookBuyBusinessEdit', {
-                url: '/bookBuyBusinessEdit/:businessId/:viewDetail',
-                templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessEdit.html',
-                controller: 'bookBuyBusinessEditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('myBookBuyBusiness',{
-                url : '/myBookBuyBusiness',
-                templateUrl : rootPath + '/bookBuyBusiness/html/bookBuyBusinessList.html',
-                controller : 'bookBuyBusinessCtrl',
-                controllerAs : 'vm'
-            })
-            //图书查询
-            .state('bookDetailList',{
-                url : '/bookDetailList',
-                templateUrl : rootPath + '/bookBuyBusiness/html/bookBuyList.html',
-                controller : 'bookBuyCtrl',
-                controllerAs : 'vm'
-            })
-            //借书查询
-            .state('bookBorrowList',{
-                url : '/bookBorrowList',
-                templateUrl : rootPath + '/bookBuyBusiness/html/bookBorrowList.html',
-                controller : 'bookBorrowCtrl',
-                controllerAs : 'vm'
-            })
-            //固定资产申购流程
-            .state('assertStorageBusinessEdit', {
-                url: '/assertStorageBusinessEdit/:businessId',
-                templateUrl: rootPath + '/assertStorageBusiness/html/assertStorageBusinessEdit.html',
-                controller: 'assertStorageBusinessEditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('myAssertStorageBusiness',{
-            url : '/myAssertStorageBusiness',
-            templateUrl : rootPath + '/assertStorageBusiness/html/assertStorageBusinessList.html',
-            controller : 'assertStorageBusinessCtrl',
-            controllerAs : 'vm'
-        })
-            .state('assertApplyUse',{
-                url : '/assertApplyUse',
-                templateUrl : rootPath + '/userAssertDetail/html/userAssertDetailAdd.html',
-                controller : 'userAssertDetailAddCtrl',
-                controllerAs : 'vm'
-            })
-            //课题研究流程
-            .state('addTopic',{
-                url : '/topicInfo/:id',
-                templateUrl : rootPath + '/topicInfo/html/add.html',
-                controller : 'topicAddCtrl',
-                controllerAs : 'vm'
-            })
-            .state('myTopic',{
-                url : '/myTopic',
-                templateUrl : rootPath + '/topicInfo/html/myList.html',
-                controller : 'myTopicCtrl',
-                controllerAs : 'vm'
-            })
+                //begin#dispatch
+                /* .state('financialEdit', {
+                 url: '/financialEdit/:signid',
+                 templateUrl: rootPath + '/financialManager/html/addFinancial.html',
+                 controller: 'financialManagerEditCtrl',
+                 controllerAs: 'vm'
+                 })*///end#财务管理
+                //end#financial
+                //系统安装包管理
+                .state('pluginfile', {
+                    url: '/pluginfile',
+                    templateUrl: rootPath + '/file/html/pluginfile.html',
+                    controller: 'pluginfileCtrl',
+                    controllerAs: 'vm'
+                })
+                //个人中心
+                .state('takeUser', {
+                    url: '/takeUser',
+                    templateUrl: rootPath + '/personalCenter/html/takeUser.html',
+                    controller: 'takeUserCtrl',
+                    controllerAs: 'vm'
+                })
+                //质量管理文件库
+                .state('fileLibrary', {
+                    url: '/fileLibrary',
+                    templateUrl: rootPath + '/fileLibrary/html/fileLibrary.html',
+                    controller: 'qualityCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('fileLibrary.fileList', { //文件列表
+                    url: '/fileList/:parentId',
+                    templateUrl: rootPath + '/fileLibrary/html/fileList.html',
+                    controller: 'qualityListCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('fileLibrary.fileEdit', {//新建文件
+                    url: '/fileEdit/:parentId/:fileId',
+                    templateUrl: rootPath + '/fileLibrary/html/fileEdit.html',
+                    controller: 'qualityEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //政策标准库
+                .state('policyLibrary', {
+                    url: '/policyLibrary',
+                    templateUrl: rootPath + '/fileLibrary/html/policyLibrary.html',
+                    controller: 'policyCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('policyLibrary.policyList', { //文件列表
+                    url: '/policyList/:parentId',
+                    templateUrl: rootPath + '/fileLibrary/html/policyList.html',
+                    controller: 'policyListCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('policyLibrary.policyEdit', {//新建文件
+                    url: '/policyEdit/:parentId/:fileId',
+                    templateUrl: rootPath + '/fileLibrary/html/policyEdit.html',
+                    controller: 'policyEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //图书采购流程
+                .state('bookBuyBusinessEdit', {
+                    url: '/bookBuyBusinessEdit/:businessId/:viewDetail',
+                    templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessEdit.html',
+                    controller: 'bookBuyBusinessEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('myBookBuyBusiness', {
+                    url: '/myBookBuyBusiness',
+                    templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessList.html',
+                    controller: 'bookBuyBusinessCtrl',
+                    controllerAs: 'vm'
+                })
+                //图书查询
+                .state('bookDetailList', {
+                    url: '/bookDetailList',
+                    templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyList.html',
+                    controller: 'bookBuyCtrl',
+                    controllerAs: 'vm'
+                })
+                //借书查询
+                .state('bookBorrowList', {
+                    url: '/bookBorrowList',
+                    templateUrl: rootPath + '/bookBuyBusiness/html/bookBorrowList.html',
+                    controller: 'bookBorrowCtrl',
+                    controllerAs: 'vm'
+                })
+                //固定资产申购流程
+                .state('assertStorageBusinessEdit', {
+                    url: '/assertStorageBusinessEdit/:businessId',
+                    templateUrl: rootPath + '/assertStorageBusiness/html/assertStorageBusinessEdit.html',
+                    controller: 'assertStorageBusinessEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('myAssertStorageBusiness', {
+                    url: '/myAssertStorageBusiness',
+                    templateUrl: rootPath + '/assertStorageBusiness/html/assertStorageBusinessList.html',
+                    controller: 'assertStorageBusinessCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('assertApplyUse', {
+                    url: '/assertApplyUse',
+                    templateUrl: rootPath + '/userAssertDetail/html/userAssertDetailAdd.html',
+                    controller: 'userAssertDetailAddCtrl',
+                    controllerAs: 'vm'
+                })
+                //课题研究流程
+                .state('addTopic', {
+                    url: '/topicInfo/:id',
+                    templateUrl: rootPath + '/topicInfo/html/add.html',
+                    controller: 'topicAddCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('myTopic', {
+                    url: '/myTopic',
+                    templateUrl: rootPath + '/topicInfo/html/myList.html',
+                    controller: 'myTopicCtrl',
+                    controllerAs: 'vm'
+                })
                 //表头设置
-            .state('header',{
-                url : '/header',
-                templateUrl : rootPath + '/header/html/list.html',
-                controller : 'headerCtrl',
-                controllerAs: 'vm'
-            })
-            .state('headerEdit',{
-                url : '/headerEdit/:headerType',
-                templateUrl : rootPath + '/header/html/selectHeader.html',
-                controller : 'headerEditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('statisticalList',{
-                url : '/statisticalList/:headerType',
-                templateUrl : rootPath + '/header/html/statisticalList.html',
-                controller : 'statisticalListCtrl',
-                controllerAs: 'vm'
-            })
-            //统计图表
-            .state('statistical',{
-                url : '/statistical',
-                templateUrl : rootPath + "/statistical/html/list.html",
-                controller : 'statisticalCtrl',
-                controllerAs : 'vm'
-            })
-            .state('editWorkPlan',{
-                url : '/editWorkPlan/:topicId',
-                templateUrl : rootPath + '/workPlan/html/edit.html',
-                controller : 'workPlanEditCtrl',
-                controllerAs : 'vm'
-            })
-            .state('editFiling',{
-                url : '/editFiling/:topicId',
-                templateUrl : rootPath + '/filing/html/edit.html',
-                controller : 'filingEditCtrl',
-                controllerAs : 'vm'
-            })
-            //系统管理员业务
-            //评审费发放
-            .state('reviewFee',{
-                url : '/reviewFee',
-                templateUrl : rootPath + "/reviewFee/html/list.html",
-                controller : 'reviewFeeCtrl',
-                controllerAs : 'vm'
-            })
-            //待办的附件右边列表页
-            .state('signFlowDeal.fileList',{ //文件列表
-                url : '/fileList/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
-            //在办的附件右边列表页
-            .state('signFlowDetail.fileList',{ //文件列表
-                url : '/fileList/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
-            //已办结的附件右边列表页
-            .state('endSignDetail.fileList',{ //文件列表
-                url : '/fileList/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
-            //详细信息的附件右边列表页
-            .state('signDetails.fileList',{ //文件列表
-                url : '/fileList/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
+                .state('header', {
+                    url: '/header',
+                    templateUrl: rootPath + '/header/html/list.html',
+                    controller: 'headerCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('headerEdit', {
+                    url: '/headerEdit/:headerType',
+                    templateUrl: rootPath + '/header/html/selectHeader.html',
+                    controller: 'headerEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('statisticalList', {
+                    url: '/statisticalList/:headerType',
+                    templateUrl: rootPath + '/header/html/statisticalList.html',
+                    controller: 'statisticalListCtrl',
+                    controllerAs: 'vm'
+                })
+                //统计图表
+                .state('statistical', {
+                    url: '/statistical',
+                    templateUrl: rootPath + "/statistical/html/list.html",
+                    controller: 'statisticalCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('editWorkPlan', {
+                    url: '/editWorkPlan/:topicId',
+                    templateUrl: rootPath + '/workPlan/html/edit.html',
+                    controller: 'workPlanEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('editFiling', {
+                    url: '/editFiling/:topicId',
+                    templateUrl: rootPath + '/filing/html/edit.html',
+                    controller: 'filingEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //系统管理员业务
+                //评审费发放
+                .state('reviewFee', {
+                    url: '/reviewFee',
+                    templateUrl: rootPath + "/reviewFee/html/list.html",
+                    controller: 'reviewFeeCtrl',
+                    controllerAs: 'vm'
+                })
+                //待办的附件右边列表页
+                .state('signFlowDeal.fileList', { //文件列表
+                    url: '/fileList/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
+                //在办的附件右边列表页
+                .state('signFlowDetail.fileList', { //文件列表
+                    url: '/fileList/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
+                //已办结的附件右边列表页
+                .state('endSignDetail.fileList', { //文件列表
+                    url: '/fileList/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
+                //详细信息的附件右边列表页
+                .state('signDetails.fileList', { //文件列表
+                    url: '/fileList/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //课题研究的附件右边列表页
-            .state('flowDeal.fileList',{ //文件列表
-                url : '/flowDeal/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
+                //课题研究的附件右边列表页
+                .state('flowDeal.fileList', { //文件列表
+                    url: '/flowDeal/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //项目查询统计图表分析
-            .state('signChart',{
-                url : '/signChart',
-                templateUrl : rootPath + "/signView/html/signChart.html",
-                controller : 'signChartCtrl',
-                controllerAs : 'vm'
-            })
+                //项目查询统计图表分析
+                .state('signChart', {
+                    url: '/signChart',
+                    templateUrl: rootPath + "/signView/html/signChart.html",
+                    controller: 'signChartCtrl',
+                    controllerAs: 'vm'
+                })
 
 
-    }]).run(function ($rootScope, $http, $state, $stateParams,bsWin) {
+        }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
         $rootScope.rootPath = rootPath;
         //获取表头名称
-        $rootScope.getTBHeadName = function(stageName,isAdvanced,type){
+        $rootScope.getTBHeadName = function (stageName, isAdvanced, type) {
             //项目建议书、可行性  提前介入称为评估论证
-            if(isAdvanced && isAdvanced == '9' && (stageName == '项目建议书' || stageName == '可行性研究报告')){
+            if (isAdvanced && isAdvanced == '9' && (stageName == '项目建议书' || stageName == '可行性研究报告')) {
                 return "评估论证" + type;
-            }else{
-                if(stageName){
-                    if(stageName == '项目概算'){
-                        return "概算审核"+type;
+            } else {
+                if (stageName) {
+                    if (stageName == '项目概算') {
+                        return "概算审核" + type;
                     }
                     return stageName + type;
-                }else{
+                } else {
                     return type;
                 }
 
@@ -1075,60 +1081,60 @@
         $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
             $rootScope.previousState_name = fromState.name;
             $rootScope.previousState_params = fromParams;
-            if(fromState.name == 'signFlowDeal' || fromState.name == 'flowDeal'){
+            if (fromState.name == 'signFlowDeal' || fromState.name == 'flowDeal') {
                 $rootScope.$flowUrl = fromState.name;
                 $rootScope.$flowParams = fromParams;
             }
         });
 
         $rootScope.back = function () {
-        	if($rootScope.previousState_name ){
-        		$state.go($rootScope.previousState_name, $rootScope.previousState_params);
-        	}else{
+            if ($rootScope.previousState_name) {
+                $state.go($rootScope.previousState_name, $rootScope.previousState_params);
+            } else {
                 $state.go('welcome');
-        	}
+            }
         };
         $rootScope.backtoflow = function () {
-            if($rootScope.$flowUrl ){
+            if ($rootScope.$flowUrl) {
                 $state.go($rootScope.$flowUrl, $rootScope.$flowParams);
-            }else{
+            } else {
                 $state.go('gtasks');
             }
         };
 
-        $rootScope.topSelectChange = function (dictKey, dicts , type) {
-        	if(dicts !=undefined){
-	            for (var i = 0; i < dicts.length; i++) {
-	            	//根据code查询
-	            	if(type && type == "code"){
+        $rootScope.topSelectChange = function (dictKey, dicts, type) {
+            if (dicts != undefined) {
+                for (var i = 0; i < dicts.length; i++) {
+                    //根据code查询
+                    if (type && type == "code") {
 
-	            		if (dicts[i].dictCode == dictKey) {
-	                        return dicts[i].dicts;
-	                    }
-	            	//默认根据name查询
-	            	}else{
-	            		if (dicts[i].dictName == dictKey) {
-	                        return dicts[i].dicts;
-	                    }
-	            	}
-	            }
-        	}
+                        if (dicts[i].dictCode == dictKey) {
+                            return dicts[i].dicts;
+                        }
+                        //默认根据name查询
+                    } else {
+                        if (dicts[i].dictName == dictKey) {
+                            return dicts[i].dicts;
+                        }
+                    }
+                }
+            }
         }
 
         //S_初始化input框的值
-        $rootScope.initInputValue = function($event,defaultValue){
+        $rootScope.initInputValue = function ($event, defaultValue) {
             var checkbox = $event.target;
             var checked = checkbox.checked;
             if (checked && !defaultValue) {
                 return 1;
-            }else{
+            } else {
                 return defaultValue;
             }
         }//E_initInputValue
 
         //用于循环数字用
-        $rootScope.range = function(n) {
-            if(n){
+        $rootScope.range = function (n) {
+            if (n) {
                 return new Array(n);
             }
         }
@@ -1140,40 +1146,40 @@
          * @param msgId
          * @returns {*}
          */
-        $rootScope.countCharacter = function(key,maxnumber,msgId) {
-            var writeNum = key?key.length:0;
-            var resultMsg = "<span style='font-size:12px;'>（最多允许输入"+maxnumber+"个字";
-            if(writeNum > 0){
-                var lessNum = (maxnumber - writeNum)>0?(maxnumber - writeNum):0;
-                resultMsg += ",还能输入<font color='red'>"+lessNum+"</font>个字";
-                if(lessNum == 0){
-                    key = key.substr(0,maxnumber);
+        $rootScope.countCharacter = function (key, maxnumber, msgId) {
+            var writeNum = key ? key.length : 0;
+            var resultMsg = "<span style='font-size:12px;'>（最多允许输入" + maxnumber + "个字";
+            if (writeNum > 0) {
+                var lessNum = (maxnumber - writeNum) > 0 ? (maxnumber - writeNum) : 0;
+                resultMsg += ",还能输入<font color='red'>" + lessNum + "</font>个字";
+                if (lessNum == 0) {
+                    key = key.substr(0, maxnumber);
                 }
             }
             resultMsg += "</span>)";
-            $("#"+msgId).html(resultMsg);
+            $("#" + msgId).html(resultMsg);
             return key;
         }
 
         //文件预览
-        $rootScope.previewFile = function(sysFileId,fileType) {
-            var url,width,height;
+        $rootScope.previewFile = function (sysFileId, fileType) {
+            var url, width, height;
 
-            if("office" == fileType){
-                url = rootPath+"/file/editFile?sysFileId="+sysFileId;
+            if ("office" == fileType) {
+                url = rootPath + "/file/editFile?sysFileId=" + sysFileId;
                 width = "82%";
                 height = "830px";
-            }else if("pdf" == fileType){
-                url =  rootPath+"/contents/libs/pdfjs-dist/web/viewer.html?file="+rootPath+"/file/preview/" + sysFileId;
+            } else if ("pdf" == fileType) {
+                url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId;
                 width = "82%";
                 height = "830px";
 
-            }else if("image" == fileType){
-                url = rootPath+"/file/preview/" + sysFileId;
+            } else if ("image" == fileType) {
+                url = rootPath + "/file/preview/" + sysFileId;
                 width = "75%";
                 height = "auto";
             }
-            if(url){
+            if (url) {
                 $("#iframePreview").attr("src", url);
                 $("#previewModal").kendoWindow({
                     width: width,
@@ -1184,15 +1190,36 @@
                     closable: true,
                     actions: ["Pin", "Minimize", "Maximize", "Close"]
                 }).data("kendoWindow").center().open();
-            }else{
+            } else {
                 bsWin.alert("该文件不支持在线预览");
             }
-}
+        }
+
+        //打印预览，生成word模板直接预览
+        $rootScope.printFile = function (businessId, businessType) {
+            console.log(businessId);
+            console.log((!businessId || !businessType));
+            if(!businessId || !businessType){
+                bsWin.alert("打印预览失败，参数不正确！");
+            }else {
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/printPreview/" + businessId+"/"+businessType;
+                $("#iframePreview").attr("src", url);
+                $("#previewModal").kendoWindow({
+                    width : "80%",
+                    height : "830px",
+                    title: "",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }
+        }
 
         //kendo 语言
         kendo.culture("zh-CN");
         common.getTaskCount({$http: $http});
-    	common.initDictData({$http: $http, scope: $rootScope});
+        common.initDictData({$http: $http, scope: $rootScope});
     });
 
 })();
@@ -15744,84 +15771,6 @@
 })();
 (function () {
     'use strict';
-
-    angular.module('app').factory('expertConditionSvc', expertCondition);
-
-    expertCondition.$inject = ['$http'];
-
-    function expertCondition($http) {
-        var service = {
-        	saveCondition:saveCondition,	    //保存抽取条件
-            deleteSelConditions:deleteSelConditions,    //删除抽取条件
-            isUnsignedInteger : isUnsignedInteger,  //验证是否是正整数
-        };
-        return service;
-
-        //S_saveCondition
-		function saveCondition(businessId,minBusinessId,businessType,reviewId,conditions,callBack) {
-            var httpOptions = {
-                method : 'post',
-                url : rootPath + "/expertSelCondition/saveConditionList",
-                headers:{
-                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
-                },
-                traditional: true,
-                dataType : "json",
-                data : angular.toJson(conditions),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
-                params:{
-                    businessId:businessId,
-                    minBusinessId:minBusinessId,
-                    reviewId:reviewId,
-                    businessType : businessType,
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http : $http,
-                httpOptions : httpOptions,
-                success : httpSuccess
-            });
-        }//E_saveCondition
-
-        //检查是否为正整数
-        function isUnsignedInteger(value){
-            if((/^(\+|-)?\d+$/.test(value)) && value>0 ){
-                return true;
-            }else{
-                return false;
-            }
-        }
-
-        //S_deleteSelConditions
-        function deleteSelConditions(delIds,isCommit,callBack){
-            isCommit = true;
-            var httpOptions = {
-                method : 'delete',
-                url : rootPath + "/expertSelCondition",
-                params:{
-                    ids : delIds
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http : $http,
-                httpOptions : httpOptions,
-                success : httpSuccess,
-                onError: function(response){isCommit = false;}
-            });
-        }//E_deleteSelConditions
-    }
-})();
-(function () {
-    'use strict';
     angular.module('app').factory('fileLibrarySvc', fileLibrary);
 
     fileLibrary.$inject = ['$http', '$state', '$location', 'sysfileSvc'];
@@ -17148,6 +17097,84 @@
 
     }
 
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').factory('expertConditionSvc', expertCondition);
+
+    expertCondition.$inject = ['$http'];
+
+    function expertCondition($http) {
+        var service = {
+        	saveCondition:saveCondition,	    //保存抽取条件
+            deleteSelConditions:deleteSelConditions,    //删除抽取条件
+            isUnsignedInteger : isUnsignedInteger,  //验证是否是正整数
+        };
+        return service;
+
+        //S_saveCondition
+		function saveCondition(businessId,minBusinessId,businessType,reviewId,conditions,callBack) {
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/expertSelCondition/saveConditionList",
+                headers:{
+                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType : "json",
+                data : angular.toJson(conditions),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+                params:{
+                    businessId:businessId,
+                    minBusinessId:minBusinessId,
+                    reviewId:reviewId,
+                    businessType : businessType,
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }//E_saveCondition
+
+        //检查是否为正整数
+        function isUnsignedInteger(value){
+            if((/^(\+|-)?\d+$/.test(value)) && value>0 ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        //S_deleteSelConditions
+        function deleteSelConditions(delIds,isCommit,callBack){
+            isCommit = true;
+            var httpOptions = {
+                method : 'delete',
+                url : rootPath + "/expertSelCondition",
+                params:{
+                    ids : delIds
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess,
+                onError: function(response){isCommit = false;}
+            });
+        }//E_deleteSelConditions
+    }
 })();
 (function () {
     'use strict';
@@ -31459,12 +31486,12 @@
 
     angular.module('app').controller('signFlowDealCtrl', sign);
 
-    sign.$inject = ['sysfileSvc', 'signSvc','workprogramSvc', '$state', 'flowSvc', 'signFlowSvc','ideaSvc',
-      'addRegisterFileSvc','expertReviewSvc', '$scope','bsWin' , 'financialManagerSvc' , 'assistCostCountSvc' ,
-        'addCostSvc','templatePrintSvc'];
+    sign.$inject = ['sysfileSvc', 'signSvc', 'workprogramSvc', '$state', 'flowSvc', 'signFlowSvc', 'ideaSvc',
+        'addRegisterFileSvc', 'expertReviewSvc', '$scope', 'bsWin', 'financialManagerSvc', 'assistCostCountSvc',
+        'addCostSvc', 'templatePrintSvc'];
 
-    function sign(sysfileSvc, signSvc,workprogramSvc, $state, flowSvc, signFlowSvc,ideaSvc,addRegisterFileSvc,
-                  expertReviewSvc, $scope,bsWin , financialManagerSvc , assistCostCountSvc , addCostSvc,templatePrintSvc) {
+    function sign(sysfileSvc, signSvc, workprogramSvc, $state, flowSvc, signFlowSvc, ideaSvc, addRegisterFileSvc,
+                  expertReviewSvc, $scope, bsWin, financialManagerSvc, assistCostCountSvc, addCostSvc, templatePrintSvc) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -31475,56 +31502,56 @@
         vm.fileRecord = {};     //归档
         vm.expertReview = {};   //评审方案
         vm.work = {};
-        vm.expertList =  new Array(15); //用于打印页面的专家列表，控制行数
+        vm.expertList = new Array(15); //用于打印页面的专家列表，控制行数
         //按钮显示控制，全部归为这个对象控制
         vm.showFlag = {
-            businessTr:false,          //显示业务办理tr
-            businessDis:false,         //显示直接发文复选框
-            businessNext:false,        //显示下一环节处理人或者部门
+            businessTr: false,          //显示业务办理tr
+            businessDis: false,         //显示直接发文复选框
+            businessNext: false,        //显示下一环节处理人或者部门
 
-            nodeNext : true,           //下一环节名称
-            nodeSelViceMgr:false,      // 选择分管副主任环节
-            nodeSelOrgs:false,         // 选择分管部门
-            nodeSelPrincipal:false,    // 选择项目负责人
-            isMainBranch:false,        // 选择第一负责人
-            nodeSign:false,            // 项目签收
-            nodeWorkProgram:false,     // 工作方案
-            nodeDispatch:false,        // 发文
-            nodeConfirmDis:false,      // 确认发文
-            nodeCreateDisNum:false,    // 生成发文编号
-            nodeFileRecord:false,      // 归档
-            nodeXSWorkProgram:false,   // 协审工作方案
+            nodeNext: true,           //下一环节名称
+            nodeSelViceMgr: false,      // 选择分管副主任环节
+            nodeSelOrgs: false,         // 选择分管部门
+            nodeSelPrincipal: false,    // 选择项目负责人
+            isMainBranch: false,        // 选择第一负责人
+            nodeSign: false,            // 项目签收
+            nodeWorkProgram: false,     // 工作方案
+            nodeDispatch: false,        // 发文
+            nodeConfirmDis: false,      // 确认发文
+            nodeCreateDisNum: false,    // 生成发文编号
+            nodeFileRecord: false,      // 归档
+            nodeXSWorkProgram: false,   // 协审工作方案
 
-            tabWorkProgram:false,       // 显示工作方案标签tab
-            tabBaseWP:false,            // 项目基本信息tab
-            tabDispatch:false,          // 发文信息tab
-            tabFilerecord:false,        // 归档信息tab
-            tabExpert:false,            // 专家信息tab
-            tabSysFile:false,           // 附件信息tab
+            tabWorkProgram: false,       // 显示工作方案标签tab
+            tabBaseWP: false,            // 项目基本信息tab
+            tabDispatch: false,          // 发文信息tab
+            tabFilerecord: false,        // 归档信息tab
+            tabExpert: false,            // 专家信息tab
+            tabSysFile: false,           // 附件信息tab
 
-            buttBack:false,             // 回退按钮
-            expertRemark:false,         // 专家评分弹窗内容显示
-            expertpayment:false,        // 专家费用弹窗内容显示
-            expertEdit:false,            // 专家评分费用编辑权限
-            isMainPrinUser:false        // 是否是第一负责人
+            buttBack: false,             // 回退按钮
+            expertRemark: false,         // 专家评分弹窗内容显示
+            expertpayment: false,        // 专家费用弹窗内容显示
+            expertEdit: false,            // 专家评分费用编辑权限
+            isMainPrinUser: false        // 是否是第一负责人
         };
 
         //业务控制对象
         vm.businessFlag = {
-            isLoadSign : false,         // 是否加载收文信息
-            isLoadFlow : false,         // 是否加载流程信息
-            isGotoDis : false,          // 是否直接发文
-            isMakeDisNum : false,       // 是否生成发文编号
-            principalUsers : [],         // 负责人列表
-            isSelMainPriUser:false,     // 是否已经设置主要负责人
-            editExpertSC : false,       // 编辑专家评审费和评分,只有专家评审方案环节才能编辑
-            expertScore:{},              // 专家评分对象
-            isNeedWP : 9,                // 是否需要工作方案
-            isMainBranch : false,       // 是否是主分支流程
-            isFinishWP : false,         // 是否完成了工作方案
-            passDis:false,              // 发文是否通过
-            curBranchId:"",              // 当前流程分支
-            editEPReviewId:"",           // 可以编辑的评审方案ID
+            isLoadSign: false,         // 是否加载收文信息
+            isLoadFlow: false,         // 是否加载流程信息
+            isGotoDis: false,          // 是否直接发文
+            isMakeDisNum: false,       // 是否生成发文编号
+            principalUsers: [],         // 负责人列表
+            isSelMainPriUser: false,     // 是否已经设置主要负责人
+            editExpertSC: false,       // 编辑专家评审费和评分,只有专家评审方案环节才能编辑
+            expertScore: {},              // 专家评分对象
+            isNeedWP: 9,                // 是否需要工作方案
+            isMainBranch: false,       // 是否是主分支流程
+            isFinishWP: false,         // 是否完成了工作方案
+            passDis: false,              // 发文是否通过
+            curBranchId: "",              // 当前流程分支
+            editEPReviewId: "",           // 可以编辑的评审方案ID
         }
 
         vm.model.signid = $state.params.signid;
@@ -31533,10 +31560,10 @@
         vm.flow.processInstanceId = $state.params.processInstanceId; // 流程实例ID
 
         vm.signId = vm.model.signid;
-        vm.expertList =  new Array(10); //用于打印页面的专家列表，控制行数
+        vm.expertList = new Array(10); //用于打印页面的专家列表，控制行数
 
         //用于打印发文，项目概况控制
-        vm.workProgramXmjys ={};//项目建议书
+        vm.workProgramXmjys = {};//项目建议书
         vm.workProgramKxxyj = {};//可行性研究
         vm.workProgramXmgs = {};//项目概算
         vm.workProgramTg = {}; //调概
@@ -31553,7 +31580,7 @@
             })
 
             // 初始化业务信息
-            signSvc.initFlowPageData(vm.model.signid,function(data){
+            signSvc.initFlowPageData(vm.model.signid, function (data) {
                 vm.model = data;
                 var deActive = $("#myTab .active");
                 var deObj = $("a", deActive);
@@ -31563,10 +31590,10 @@
                     vm.showFlag.tabDispatch = true;
                     vm.dispatchDoc = vm.model.dispatchDocDto;
                     //如果是合并发文次项目，则不用生成发文编号
-                    if((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
-                        || vm.dispatchDoc.fileNum){
+                    if ((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
+                        || vm.dispatchDoc.fileNum) {
                         vm.businessFlag.isCreateDisFileNum = true;
-                    }else{
+                    } else {
                         vm.showFlag.buttDisFileNum = true;
                     }
                 }
@@ -31577,63 +31604,62 @@
                 }
 
                 //判断是否有多个分支，用于控制是否显示总投资字段 和 分开获取关联的项目信息（主要用于项目概算阶段）
-                if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length >0){
+                if (vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0) {
                     vm.showTotalInvestment = true;
-                    for( var i=0 ; i< vm.model.workProgramDtoList.lengt ; i++ ){
+                    for (var i = 0; i < vm.model.workProgramDtoList.lengt; i++) {
                         var reviewStage = vm.model.workProgramDtoList[i].reviewstage;
-                        if(reviewStage && reviewStage == '项目建议书'){
-                            vm.workProgramXmjys =vm.model.workProgramDtoList[i];
+                        if (reviewStage && reviewStage == '项目建议书') {
+                            vm.workProgramXmjys = vm.model.workProgramDtoList[i];
                         }
-                        if(reviewStage && reviewStage == '可行性研究报告'){
+                        if (reviewStage && reviewStage == '可行性研究报告') {
                             vm.workProgramKxxyj = vm.model.workProgramDtoList[i];
                         }
-                        if(reviewStage && reviewStage == '项目概算' &&
-                            (!vm.model.ischangeEstimate || vm.model.ischangeEstimate != 9 || vm.model.ischangeEstimate != '9')){
-                            vm.workProgramXmgs =vm.model.workProgramDtoList[i];
+                        if (reviewStage && reviewStage == '项目概算' &&
+                            (!vm.model.ischangeEstimate || vm.model.ischangeEstimate != 9 || vm.model.ischangeEstimate != '9')) {
+                            vm.workProgramXmgs = vm.model.workProgramDtoList[i];
                         }
-                        if(reviewStage && reviewStage == '项目概算' &&
-                            vm.model.ischangeEstimate && (vm.model.ischangeEstimate == 9 || vm.model.ischangeEstimate == '9')){
-                            vm.workProgramTg =vm.model.workProgramDtoList[i];
+                        if (reviewStage && reviewStage == '项目概算' &&
+                            vm.model.ischangeEstimate && (vm.model.ischangeEstimate == 9 || vm.model.ischangeEstimate == '9')) {
+                            vm.workProgramTg = vm.model.workProgramDtoList[i];
                         }
                     }
 
                 }
 
 
-
                 //更改状态,并初始化业务参数
                 vm.businessFlag.isLoadSign = true;
-                if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){
+                if (vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow) {
                     signFlowSvc.initBusinessParams(vm);
                 }
 
                 //显示拟补充资料函
-                if(vm.model.suppLetterDtoList){
+                if (vm.model.suppLetterDtoList) {
                     vm.showSupperIndex = 0;
                 }
             });
 
             // 初始化流程数据
-            flowSvc.getFlowInfo(vm.flow.taskId,vm.flow.processInstanceId,function(data){
+            flowSvc.getFlowInfo(vm.flow.taskId, vm.flow.processInstanceId, function (data) {
                 vm.flow = data;
-               /* if(vm.flow.businessMap && vm.flow.businessMap.resultMsg){
-                    if(!vm.flow.businessMap.resultMsg.flag){
-                        bsWin.alert(vm.flow.businessMap.resultMsg.reMsg);
-                    }
-                }*/
+                /* if(vm.flow.businessMap && vm.flow.businessMap.resultMsg){
+                 if(!vm.flow.businessMap.resultMsg.flag){
+                 bsWin.alert(vm.flow.businessMap.resultMsg.reMsg);
+                 }
+                 }*/
                 //如果任务ID为空，说明任务已经被处理
-                if(vm.flow.taskId){
+                if (vm.flow.taskId) {
                     //如果是结束环节，则不显示下一环节信息
                     if (vm.flow.end) {
                         vm.showFlag.nodeNext = false;
                     }
                     //更改状态,并初始化业务参数
                     vm.businessFlag.isLoadFlow = true;
-                    if(vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow){
+                    if (vm.businessFlag.isLoadSign && vm.businessFlag.isLoadFlow) {
                         signFlowSvc.initBusinessParams(vm);
                     }
-                }else{
-                    bsWin.alert("该任务已处理！",function(){
+                } else {
+                    bsWin.alert("该任务已处理！", function () {
                         $state.go('gtasks');
                     });
                 }
@@ -31642,11 +31668,11 @@
             flowSvc.initFlowData(vm);
 
             // 初始化上传附件
-            sysfileSvc.findByMianId(vm.model.signid,function(data){
-                if(data && data.length > 0){
+            sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                if (data && data.length > 0) {
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
-                    sysfileSvc.initZtreeClient(vm,$scope);//树形图
+                    sysfileSvc.initZtreeClient(vm, $scope);//树形图
                 }
             });
             //初始化个人常用意见
@@ -31656,14 +31682,14 @@
         /***************  S_评审意见管理  ***************/
         // begin 管理个人意见
         vm.ideaEdit = function (options) {
-            if(!angular.isObject(options)){
+            if (!angular.isObject(options)) {
                 options = {};
             }
-            ideaSvc.initIdeaData(vm,options);
+            ideaSvc.initIdeaData(vm, options);
         }
 
         //选择个人常用意见
-        vm.selectedIdea = function(){
+        vm.selectedIdea = function () {
             vm.flow.dealOption = vm.chooseIdea;
         }
         /***************  E_评审意见管理  ***************/
@@ -31672,17 +31698,17 @@
         // 编辑专家评分
         vm.editSelectExpert = function (id) {
             vm.scoreExpert = {};
-            $.each(vm.model.expertReviewDto.expertSelectedDtoList,function (i,scopeEP) {
-                if(scopeEP.id == id){
+            $.each(vm.model.expertReviewDto.expertSelectedDtoList, function (i, scopeEP) {
+                if (scopeEP.id == id) {
                     vm.scoreExpert = angular.copy(scopeEP);
-                    return ;
+                    return;
                 }
             })
 
-            $("#star_"+vm.scoreExpert.id).raty({
-                number:5,
+            $("#star_" + vm.scoreExpert.id).raty({
+                number: 5,
                 score: function () {
-                    $(this).attr("data-num", angular.isUndefined(vm.scoreExpert.score)?0:vm.scoreExpert.score);
+                    $(this).attr("data-num", angular.isUndefined(vm.scoreExpert.score) ? 0 : vm.scoreExpert.score);
                     return $(this).attr("data-num");
                 },
                 starOn: '../contents/libs/raty/lib/images/star-on.png',
@@ -31714,23 +31740,23 @@
 
         // 保存专家评分
         vm.saveMark = function () {
-            if(!vm.scoreExpert.score || vm.scoreExpert.score == 0){
+            if (!vm.scoreExpert.score || vm.scoreExpert.score == 0) {
                 bsWin.alert("请对专家进行评分！");
-            }else if(!vm.scoreExpert.describes){
+            } else if (!vm.scoreExpert.describes) {
                 bsWin.alert("请对专家进行评分描述！");
-            }else{
-                expertReviewSvc.saveMark(vm.scoreExpert,function(data){
-                    if(data.flag || data.reCode == 'ok'){
-                        angular.forEach(vm.model.expertReviewDto.expertSelectedDtoList,function (scopeEP,index) {
-                            if(scopeEP.id == vm.scoreExpert.id){
+            } else {
+                expertReviewSvc.saveMark(vm.scoreExpert, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        angular.forEach(vm.model.expertReviewDto.expertSelectedDtoList, function (scopeEP, index) {
+                            if (scopeEP.id == vm.scoreExpert.id) {
                                 scopeEP.score = vm.scoreExpert.score;
                                 scopeEP.describes = vm.scoreExpert.describes;
                             }
                         })
-                        bsWin.success("保存成功！",function(){
+                        bsWin.success("保存成功！", function () {
                             vm.closeEditMark();
                         });
-                    }else{
+                    } else {
                         bsWin.alert(data.reMsg);
                     }
 
@@ -31740,17 +31766,17 @@
 
         // 计算应纳税额
         vm.countTaxes = function (expertReview) {
-            if(expertReview == undefined){
-                return ;
+            if (expertReview == undefined) {
+                return;
             }
-            if(expertReview.payDate == undefined){
+            if (expertReview.payDate == undefined) {
                 bsWin.alert("请选择评审费发放日期");
-                return ;
+                return;
             }
             var reg = /^(\d{4}-\d{1,2}-\d{1,2})$/;
-            if(!reg.exec(expertReview.payDate)){
+            if (!reg.exec(expertReview.payDate)) {
                 bsWin.alert("请输入正确的日期格式");
-                return ;
+                return;
             }
             if (expertReview.expertSelectedDtoList == undefined || expertReview.expertSelectedDtoList.length == 0) {
                 bsWin.alert("该方案还没评审专家");
@@ -31758,9 +31784,9 @@
             }
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
-            if(isValid){
+            if (isValid) {
                 var len = expertReview.expertSelectedDtoList.length, ids = '', month;
-                $.each(expertReview.expertSelectedDtoList,function (i,v) {
+                $.each(expertReview.expertSelectedDtoList, function (i, v) {
                     ids += "'" + v.id + "'";
                     if (i != (len - 1)) {
                         ids += ",";
@@ -31768,15 +31794,15 @@
                 })
                 var payDate = expertReview.payDate;
                 month = payDate.substring(0, payDate.lastIndexOf('-'));
-                expertReviewSvc.countTaxes(ids,month,function (data) {
+                expertReviewSvc.countTaxes(ids, month, function (data) {
                     var allExpertCost = data;
                     expertReview.reviewCost = 0;
                     expertReview.reviewTaxes = 0;
                     expertReview.totalCost = 0;
 
-                    $.each(expertReview.expertSelectedDtoList,function(i,v){
+                    $.each(expertReview.expertSelectedDtoList, function (i, v) {
                         //已经确认并确定参加的，才计算
-                        if((v.isConfrim=='9' || v.isConfrim == 9) && (v.isJoin=='9' || v.isJoin==9)){
+                        if ((v.isConfrim == '9' || v.isConfrim == 9) && (v.isJoin == '9' || v.isJoin == 9)) {
                             var expertId = v.EXPERTID;
                             var expertSelectedId = v.id;
                             var totalCost = 0;
@@ -31809,10 +31835,10 @@
 
         // S_countNum
         /**
-         	800<X≤4000时：（所得额-800）*20%——如果是1000元，就是缴税40
-         	4000<X≤20000时:所得额*(1-20%)*20%
-         	20000＜X≤50000时：所得额*（1-20%）*30%-2000
-         	超过50000忘记是多少了，我再问财务找一个那个文件
+             800<X≤4000时：（所得额-800）*20%——如果是1000元，就是缴税40
+             4000<X≤20000时:所得额*(1-20%)*20%
+             20000＜X≤50000时：所得额*（1-20%）*30%-2000
+             超过50000忘记是多少了，我再问财务找一个那个文件
          * @param reviewCost
          * @returns {number}
          */
@@ -31841,20 +31867,20 @@
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
             if (isValid) {
-                if(expertReview.reviewCost){
-                expertReviewSvc.savePayment(expertReview,vm.isCommit,function(data){
-                    if(data.flag || data.reCode == "ok"){
-                        bsWin.alert("操作成功！",function(){
-                            vm.isCommit = false;
-                        });
-                    }else{
-                        bsWin.alert(data.reMsg);
-                    }
-                });
-                }else{
+                if (expertReview.reviewCost) {
+                    expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
+                        if (data.flag || data.reCode == "ok") {
+                            bsWin.alert("操作成功！", function () {
+                                vm.isCommit = false;
+                            });
+                        } else {
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                } else {
                     bsWin.alert("请计算税率，再保存！");
                 }
-            }else{
+            } else {
                 bsWin.alert("请正确填写专家评审费信息！");
             }
         }
@@ -31863,18 +31889,18 @@
         /***************  S_流程处理 ***************/
         //流程提交
         vm.commitNextStep = function () {
-            if(vm.flow.isSuspended){
+            if (vm.flow.isSuspended) {
                 bsWin.error("该流程目前为暂停状态，不能进行流转操作！");
-                return ;
-            }else{
+                return;
+            } else {
                 var checkResult = signFlowSvc.checkBusinessFill(vm);
                 if (checkResult.resultTag) {
-                    flowSvc.commit(vm.isCommit,vm.flow,function(data){
+                    flowSvc.commit(vm.isCommit, vm.flow, function (data) {
                         if (data.flag || data.reCode == "ok") {
-                            bsWin.success("操作成功！",function(){
+                            bsWin.success("操作成功！", function () {
                                 $state.go('gtasks');
                             })
-                        }else{
+                        } else {
                             bsWin.alert(data.reMsg);
                         }
                     });
@@ -31888,15 +31914,15 @@
         vm.commitBack = function () {
             common.initJqValidation($("#flow_form"));
             var isValid = $("#flow_form").valid();
-            if(isValid){
+            if (isValid) {
                 bsWin.confirm({
                     title: "询问提示",
                     message: "确认回退吗？",
                     onOk: function () {
-                        flowSvc.rollBackToLast(vm.flow,vm.isCommit,function(data){
+                        flowSvc.rollBackToLast(vm.flow, vm.isCommit, function (data) {
                             if (data.flag || data.reCode == "ok") {
                                 vm.isCommit = false;
-                                bsWin.alert("回退成功！",function(){
+                                bsWin.alert("回退成功！", function () {
                                     $state.go('gtasks');
                                 });
                             } else {
@@ -31921,54 +31947,54 @@
         /***************  E_流程处理 ***************/
 
         //编辑审批登记表
-        vm.editSign = function(){
-            $state.go('fillSign', {signid: vm.model.signid });
+        vm.editSign = function () {
+            $state.go('fillSign', {signid: vm.model.signid});
         }
         // S_跳转到 工作方案 编辑页面
-        vm.addWorkProgram = function () {  
+        vm.addWorkProgram = function () {
             $state.go('workprogramEdit', {signid: vm.model.signid});
         }// E_跳转到 工作方案 编辑页面
-        
+
         //S_链接到拟补充资料函
         vm.addSuppLetter = function () {
-            $state.go('addSupp', {businessId: vm.model.signid,businessType:"SIGN"});
+            $state.go('addSupp', {businessId: vm.model.signid, businessType: "SIGN"});
         }// E_跳转到 拟补充资料函 编辑页面
-        
+
         //S 拟补充资料函列表
-        vm.addSuppLetterList = function(){
-        	$state.go('addSuppletterList',{businessId: vm.model.signid});
+        vm.addSuppLetterList = function () {
+            $state.go('addSuppletterList', {businessId: vm.model.signid});
         }
-      //E 拟补充资料函列表
-        
+        //E 拟补充资料函列表
+
         //S_工作方案  --链接到  登记表补充资料 
         vm.addRegisterFile = function () {
             $state.go('registerFile', {businessId: vm.model.signid});
         }// E_工作方案  --链接到  登记表补充资料
-        
+
         //S_跳转到 工作方案 基本信息
-        vm.addBaseWP = function(){
-            $state.go('workprogramBaseEdit', {signid: vm.model.signid });
+        vm.addBaseWP = function () {
+            $state.go('workprogramBaseEdit', {signid: vm.model.signid});
         }
 
         // S_跳转到 发文 编辑页面
         vm.addDisPatch = function () {
             //如果是未关联，并且是可研或者概算阶段，提醒是否要关联
-            if((!vm.model.isAssociate || vm.model.isAssociate == 0) &&
-                (signcommon.getReviewStage().STAGE_STUDY == vm.model.reviewstage || signcommon.getReviewStage().STAGE_BUDGET == vm.model.reviewstage)){
+            if ((!vm.model.isAssociate || vm.model.isAssociate == 0) &&
+                (signcommon.getReviewStage().STAGE_STUDY == vm.model.reviewstage || signcommon.getReviewStage().STAGE_BUDGET == vm.model.reviewstage)) {
                 bsWin.confirm({
                     title: "询问提示",
                     message: "该项目还没进行项目关联，是否需要进行关联设置？",
                     onOk: function () {
                         //根据项目名称，查询要关联阶段的项目
-                        if(!vm.searchAssociateSign){
+                        if (!vm.searchAssociateSign) {
                             vm.searchAssociateSign = {
-                                signid : vm.model.signid,
-                                projectname : vm.model.projectname,
+                                signid: vm.model.signid,
+                                projectname: vm.model.projectname,
                             };
                         }
-                        signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
+                        signSvc.getAssociateSign(vm.searchAssociateSign, function (data) {
                             vm.associateSignList = [];
-                            if(data){
+                            if (data) {
                                 vm.associateSignList = data;
                             }
                             //选中要关联的项目
@@ -31983,33 +32009,33 @@
                             }).data("kendoWindow").center().open();
                         });
                     },
-                    onCancel : function(){
+                    onCancel: function () {
                         $state.go('dispatchEdit', {signid: vm.model.signid});
                     }
                 });
-            }else{
+            } else {
                 $state.go('dispatchEdit', {signid: vm.model.signid});
             }
         }// E_跳转到 发文 编辑页面
 
         //关联项目条件查询
-        vm.associateQuerySign = function(){
-            signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
+        vm.associateQuerySign = function () {
+            signSvc.getAssociateSign(vm.searchAssociateSign, function (data) {
                 vm.associateSignList = [];
-                if(data){
+                if (data) {
                     vm.associateSignList = data;
                 }
             });
         }
 
         //start 保存项目关联
-        vm.saveAssociateSign = function(associateSignId){
-            if(vm.model.signid == associateSignId){
+        vm.saveAssociateSign = function (associateSignId) {
+            if (vm.model.signid == associateSignId) {
                 bsWin.alert("不能关联自身项目");
-                return ;
+                return;
             }
-            signSvc.saveAssociateSign(vm.model.signid,associateSignId,function(){
-                if(associateSignId){
+            signSvc.saveAssociateSign(vm.model.signid, associateSignId, function () {
+                if (associateSignId) {
                     vm.model.isAssociate = 1;
                 }
                 bsWin.alert(associateSignId != undefined ? "项目关联成功" : "项目解除关联成功");
@@ -32019,16 +32045,16 @@
         //end 保存项目关联
 
         // S_财务办理
-        vm.addFinancialApply = function(id){
-            if("9"==vm.model.isassistflow || 9 == vm.model.isassistflow){
+        vm.addFinancialApply = function (id) {
+            if ("9" == vm.model.isassistflow || 9 == vm.model.isassistflow) {
                 vm.costType = "ASSIST";
-            }else{
+            } else {
                 vm.costType = "REVIEW";
             }
             /**
              * 初始化费用录入
              */
-            addCostSvc.initAddCost(vm,vm.costType,vm.model,id);
+            addCostSvc.initAddCost(vm, vm.costType, vm.model, id);
         }
         //E_财务办理
 
@@ -32037,16 +32063,16 @@
                 signid: vm.model.signid
             });
         }
-        
+
         //S_归档登记表补充资料
         vm.addRegisterFileRecord = function () {
-        	if(!vm.fileRecord.fileRecordId){
-        		bsWin.alert("请保存归档再操作！");
-        	}else{
-        		$state.go('registerFile', {signid: vm.fileRecord.fileRecordId});
-        	}
+            if (!vm.fileRecord.fileRecordId) {
+                bsWin.alert("请保存归档再操作！");
+            } else {
+                $state.go('registerFile', {signid: vm.fileRecord.fileRecordId});
+            }
         }// E_归档到登记表补充资料
-        
+
 
         // 业务判断
         vm.mainOrg = function ($event) {
@@ -32057,10 +32083,10 @@
                 $('.seleteTable input[selectType="main"]').each(
                     function () {
                         var value = $(this).attr("value");
-                        if(value != checkboxValue){
+                        if (value != checkboxValue) {
                             $(this).removeAttr("checked");
                             $("#assist_" + value).removeAttr("disabled");
-                        }else{
+                        } else {
                             $("#assist_" + checkboxValue).removeAttr("checked");
                             $("#assist_" + checkboxValue).attr("disabled", "disabled");
                         }
@@ -32072,7 +32098,7 @@
             vm.initOption();
         }
 
-        vm.initOption = function(){
+        vm.initOption = function () {
             var selOrg = [];
             $('.seleteTable input[selectType="main"]:checked').each(function () {
                 selOrg.push($(this).attr("tit"));
@@ -32080,15 +32106,15 @@
             $('.seleteTable input[selectType="assist"]:checked').each(function () {
                 selOrg.push($(this).attr("tit"));
             });
-            if(selOrg.length > 0){
-                vm.flow.dealOption = "请（"+selOrg.join('，')+"）组织评审";
+            if (selOrg.length > 0) {
+                vm.flow.dealOption = "请（" + selOrg.join('，') + "）组织评审";
             }
         }
 
         //检查项目负责人
-        vm.checkPrincipal = function(){
+        vm.checkPrincipal = function () {
             var selUserId = $("#selPrincipalMainUser").val();
-            if(selUserId){
+            if (selUserId) {
                 $('#principalAssistUser input[selectType="assistUser"]').each(
                     function () {
                         var value = $(this).attr("value");
@@ -32104,13 +32130,13 @@
             vm.initUserOption();
         }
         //部门领导分办，选择用户的默认处理意见
-        vm.initUserOption = function(){
+        vm.initUserOption = function () {
             var selUserId = $("#selPrincipalMainUser").val();
             var isSelMainUser = false;
             var defaultOption = "请（"
-            if(selUserId){
-                $.each(vm.users,function(i,u){
-                    if(u.id == selUserId){
+            if (selUserId) {
+                $.each(vm.users, function (i, u) {
+                    if (u.id == selUserId) {
                         defaultOption += u.displayName;
                         isSelMainUser = true;
                     }
@@ -32121,8 +32147,8 @@
                 selUser.push($(this).attr("tit"));
             });
 
-            if(selUser.length > 0){
-                if(isSelMainUser){
+            if (selUser.length > 0) {
+                if (isSelMainUser) {
                     defaultOption += ', ';
                 }
                 defaultOption += selUser.join(', ');
@@ -32168,49 +32194,49 @@
                 });
             }
         }
-        
+
         //选择负责人
         vm.addPriUser = function () {
             var isCheck = $("#xs_bmfb input[name='unSelPriUser']:checked");
             if (isCheck.length < 1) {
                 bsWin.alert("请选择负责人");
-            }else{
-                if(vm.businessFlag.isMainBranch){
-                    if(vm.isMainPriUser == 9 && isCheck.length > 1){
+            } else {
+                if (vm.businessFlag.isMainBranch) {
+                    if (vm.isMainPriUser == 9 && isCheck.length > 1) {
                         bsWin.alert("总负责人只能选一个");
-                        return ;
+                        return;
                     }
-                    if(vm.businessFlag.isSelMainPriUser == false && (angular.isUndefined(vm.isMainPriUser) || vm.isMainPriUser == 0)){
+                    if (vm.businessFlag.isSelMainPriUser == false && (angular.isUndefined(vm.isMainPriUser) || vm.isMainPriUser == 0)) {
                         bsWin.alert("请先选择总负责人");
-                        return ;
+                        return;
                     }
-                    if(vm.businessFlag.isSelMainPriUser == true && vm.isMainPriUser == 9){
+                    if (vm.businessFlag.isSelMainPriUser == true && vm.isMainPriUser == 9) {
                         bsWin.alert("你已经选择了一个总负责人！");
-                        return ;
+                        return;
                     }
                 }
-               /* if(vm.businessFlag.principalUsers && (vm.businessFlag.principalUsers.length + isCheck.length) > 3){
-                    bsWin.alert("最多只能选择3个负责人，请重新选择！");
-                    return ;
-                }*/
+                /* if(vm.businessFlag.principalUsers && (vm.businessFlag.principalUsers.length + isCheck.length) > 3){
+                 bsWin.alert("最多只能选择3个负责人，请重新选择！");
+                 return ;
+                 }*/
 
                 for (var i = 0; i < isCheck.length; i++) {
                     var priUser = {};
                     priUser.userId = isCheck[i].value;
                     priUser.userType = $("#userType").val();
-                    if(vm.isMainPriUser == 9){
+                    if (vm.isMainPriUser == 9) {
                         vm.businessFlag.isSelMainPriUser = true;
                         priUser.isMainUser = 9;
                         vm.isMainPriUser = 0;
-                    }else{
+                    } else {
                         priUser.isMainUser = 0;
                     }
-                    vm.users.forEach(function(u,index){
-                       if(u.id == isCheck[i].value){
-                           u.isSelected = true;
-                           priUser.userId = u.id;
-                           priUser.userName = u.displayName;
-                       }
+                    vm.users.forEach(function (u, index) {
+                        if (u.id == isCheck[i].value) {
+                            u.isSelected = true;
+                            priUser.userId = u.id;
+                            priUser.userName = u.displayName;
+                        }
                     });
                     vm.businessFlag.principalUsers.push(priUser);
                     //初始化处理人
@@ -32224,19 +32250,19 @@
             var isCheck = $("#xs_bmfb input[name='selPriUser']:checked");
             if (isCheck.length < 1) {
                 bsWin.alert("请选择取消的负责人");
-            }else{
+            } else {
                 for (var i = 0; i < isCheck.length; i++) {
-                    vm.users.forEach(function(u,index){
-                        if(u.id == isCheck[i].value){
+                    vm.users.forEach(function (u, index) {
+                        if (u.id == isCheck[i].value) {
                             u.isSelected = false;
                         }
                     });
-                    vm.businessFlag.principalUsers.forEach(function(pu,index){
-                        if(pu.userId == isCheck[i].value){
-                            if(pu.isMainUser == 9){
+                    vm.businessFlag.principalUsers.forEach(function (pu, index) {
+                        if (pu.userId == isCheck[i].value) {
+                            if (pu.isMainUser == 9) {
                                 vm.businessFlag.isSelMainPriUser = false;
                             }
-                            vm.businessFlag.principalUsers.splice(index,1);
+                            vm.businessFlag.principalUsers.splice(index, 1);
                         }
                     });
                 }
@@ -32245,34 +32271,32 @@
             }
         }//E_删除负责人
 
-        vm.initDealUserName = function(userList){
-            if(userList && userList.length > 0){
-                var defaultOption="请（";
-                angular.forEach(userList,function(u,i){
-                    if(i > 0){
+        vm.initDealUserName = function (userList) {
+            if (userList && userList.length > 0) {
+                var defaultOption = "请（";
+                angular.forEach(userList, function (u, i) {
+                    if (i > 0) {
                         defaultOption += ","
                     }
                     defaultOption += u.userName;
                 })
                 defaultOption += " )组织办理。";
                 vm.flow.dealOption = defaultOption;
-            }else{
+            } else {
                 vm.flow.dealOption = "";
             }
         }
 
 
-
-
         //S_判断是否需要工作方案
-        vm.checkNeedWP = function($event){
+        vm.checkNeedWP = function ($event) {
             var checkbox = $event.target;
             var checked = checkbox.checked;
-            if(checked){
+            if (checked) {
                 vm.businessFlag.isNeedWP = 9;
-            }else{
+            } else {
                 //如果已经完成了工作方案，则询问是否要删除
-                if(vm.businessFlag.isFinishWP){
+                if (vm.businessFlag.isFinishWP) {
                     bsWin.confirm({
                         title: "询问提示",
                         message: "不做工作方案系统将会删除工作方案数据，确认不做工作方案么？",
@@ -32281,54 +32305,54 @@
                             vm.businessFlag.isNeedWP = 0;
                             signSvc.removeWP(vm);
                         },
-                        onClose:function(){
+                        onClose: function () {
                             checkbox.checked = !checked;
                             vm.businessFlag.isNeedWP = 9;
                         }
                     });
-                }else{
+                } else {
                     vm.businessFlag.isNeedWP = 0;
                 }
             }
         }//E_判断是否需要工作方案
 
         //生产会前准备材料
-        vm.meetingDoc = function(){
+        vm.meetingDoc = function () {
             common.confirm({
-                vm:vm,
-                title:"",
-                msg:"如果之前已经生成会前准备材料，则本次生成的文档会覆盖之前产生的文档，确定执行操作么？",
-                fn:function () {
+                vm: vm,
+                title: "",
+                msg: "如果之前已经生成会前准备材料，则本次生成的文档会覆盖之前产生的文档，确定执行操作么？",
+                fn: function () {
                     $('.confirmDialog').modal('hide');
                     // signSvc.findWorkProgramBySignId(vm,function(){
-                        signSvc.meetingDoc(vm,function(data){
-                            if(data.flag || data.reCode == 'ok'){
-                                bsWin.success("操作成功");
-                                sysfileSvc.findByMianId(vm.model.signid,function(data){
-                                    if(data || data.length > 0){
-                                        vm.showFlag.tabSysFile = true;
-                                        vm.sysFileList = data;
-                                        sysfileSvc.initZtreeClient(vm,$scope);//树形图
+                    signSvc.meetingDoc(vm, function (data) {
+                        if (data.flag || data.reCode == 'ok') {
+                            bsWin.success("操作成功");
+                            sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                                if (data || data.length > 0) {
+                                    vm.showFlag.tabSysFile = true;
+                                    vm.sysFileList = data;
+                                    sysfileSvc.initZtreeClient(vm, $scope);//树形图
 
-                                    }
-                                });
-                            }else{
-                                bsWin.alert(data.reMsg);
-                            }
-                        });
+                                }
+                            });
+                        } else {
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
                     // });
                 }
             })
         }
 
         //附件下载
-        vm.commonDownloadSysFile = function(sysFileId){
+        vm.commonDownloadSysFile = function (sysFileId) {
             sysfileSvc.downloadFile(sysFileId);
         }
 
         //生成发文字号
-        vm.createDispatchFileNum = function(){
-            signSvc.createDispatchFileNum(vm.model.signid,vm.dispatchDoc.id,function(data){
+        vm.createDispatchFileNum = function () {
+            signSvc.createDispatchFileNum(vm.model.signid, vm.dispatchDoc.id, function (data) {
                 if (data.flag || data.reCode == "ok") {
                     vm.dispatchDoc.fileNum = data.reObj;
                 }
@@ -32337,17 +32361,17 @@
         }
 
         //生成发文模板
-        vm.dispatchTemplate = function(){
+        vm.dispatchTemplate = function () {
             signSvc.createDispatchTemplate(vm);
         }
 
         //监听是否通过
-        vm.watchPassDis = function(){
+        vm.watchPassDis = function () {
             //监听是否关联事件
-            $scope.$watch("vm.businessFlag.passDis",function (newValue, oldValue) {
-                if(newValue == 9){
+            $scope.$watch("vm.businessFlag.passDis", function (newValue, oldValue) {
+                if (newValue == 9) {
                     vm.flow.dealOption = "通过";
-                }else{
+                } else {
                     vm.flow.dealOption = "不通过";
                 }
 
@@ -32356,7 +32380,7 @@
 
         //确定实际参加会议的专家
         vm.affirmJoinExpert = function () {
-            if(vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList){
+            if (vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList) {
                 vm.confirmEPList = vm.model.expertReviewDto.expertSelectedDtoList;
                 $("#confirmJoinExpert").kendoWindow({
                     width: "75%",
@@ -32367,7 +32391,7 @@
                     closable: true,
                     actions: ["Pin", "Minimize", "Maximize", "Close"]
                 }).data("kendoWindow").center().open();
-            }else{
+            } else {
                 bsWin.alert("该项目没有评审专家！");
             }
         }
@@ -32382,8 +32406,8 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState("","", ids.join(','), '9',vm.isCommit,function(data){
-                    vm.reFleshJoinState(ids,'9');
+                expertReviewSvc.updateJoinState("", "", ids.join(','), '9', vm.isCommit, function (data) {
+                    vm.reFleshJoinState(ids, '9');
                     bsWin.success("操作成功！");
                 });
             }
@@ -32399,9 +32423,9 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState("","", ids.join(','), '0',vm.isCommit,function(data){
+                expertReviewSvc.updateJoinState("", "", ids.join(','), '0', vm.isCommit, function (data) {
                     //1、更改专家评分和评审费发放的专家
-                    vm.reFleshJoinState(ids,'0');
+                    vm.reFleshJoinState(ids, '0');
                     //2、
                     bsWin.success("操作成功！");
                 });
@@ -32409,18 +32433,18 @@
         }
 
         //更新参加未参加状态
-        vm.reFleshJoinState = function(ids,state){
-            $.each(ids,function(i, obj){
+        vm.reFleshJoinState = function (ids, state) {
+            $.each(ids, function (i, obj) {
                 //1、删除已确认的专家
-                $.each(vm.confirmEPList,function(index, epObj){
-                    if(obj == epObj.id){
+                $.each(vm.confirmEPList, function (index, epObj) {
+                    if (obj == epObj.id) {
                         epObj.isJoin = state;
                     }
                 })
             })
             //刷新工作方案的专家信息
-            $.each(vm.model.workProgramDtoList,function(i, wpObj){
-                expertReviewSvc.refleshBusinessEP(wpObj.id,function(data){
+            $.each(vm.model.workProgramDtoList, function (i, wpObj) {
+                expertReviewSvc.refleshBusinessEP(wpObj.id, function (data) {
                     wpObj.expertDtoList = data;
                 });
             })
@@ -32428,18 +32452,18 @@
 
         //工作方案模板打印
         vm.printpage = function ($event) {
-            var id =  $($event.target).attr("id");
+            var id = $($event.target).attr("id");
             signSvc.workProgramPrint(id);
         }
 
         /**
          * 生成评审报告
          */
-        vm.reviewReportDoc = function(){
-            signSvc.createDispatchTemplate(vm , function(data){
-                if(data.flag || data.reCode == 'ok'){
+        vm.reviewReportDoc = function () {
+            signSvc.createDispatchTemplate(vm, function (data) {
+                if (data.flag || data.reCode == 'ok') {
                     bsWin.success("操作成功！");
-                }else{
+                } else {
                     bsWin.alert(data.reMsg);
                 }
             });
@@ -32448,7 +32472,7 @@
         /**
          * 打印功能 -分页
          */
-        vm.templatePage = function(id){
+        vm.templatePage = function (id) {
             templatePrintSvc.templatePage(id);
         }
 
@@ -32897,50 +32921,50 @@
 
     angular.module('app').controller('signDetailsCtrl', sign);
 
-    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','$scope','templatePrintSvc' , 'assistSvc'];
+    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'templatePrintSvc', 'assistSvc'];
 
-    function sign(sysfileSvc, signSvc,$state,flowSvc,$scope,templatePrintSvc , assistSvc) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, $scope, templatePrintSvc, assistSvc) {
         var vm = this;
-    	vm.model = {};							    //创建一个form对象
+        vm.model = {};							    //创建一个form对象
         vm.flow = {};                               //收文对象
         vm.model.signid = $state.params.signid;	    //收文ID
         vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
         //按钮显示控制，全部归为这个对象控制
         vm.showFlag = {
-            tabWorkProgram:false,       // 显示工作方案标签tab
-            tabBaseWP:false,            // 项目基本信息tab
-            tabDispatch:false,          // 发文信息tab
-            tabFilerecord:false,        // 归档信息tab
-            tabExpert:false,            // 专家信息tab
-            tabSysFile:false,           // 附件信息tab
-            tabAssociateSigns:false,    // 关联项目tab
+            tabWorkProgram: false,       // 显示工作方案标签tab
+            tabBaseWP: false,            // 项目基本信息tab
+            tabDispatch: false,          // 发文信息tab
+            tabFilerecord: false,        // 归档信息tab
+            tabExpert: false,            // 专家信息tab
+            tabSysFile: false,           // 附件信息tab
+            tabAssociateSigns: false,    // 关联项目tab
         };
         //业务控制对象
         vm.businessFlag = {
-            expertReviews : [],         // 专家评审方案
+            expertReviews: [],         // 专家评审方案
         }
 
-        vm.expertList =  new Array(15); //用于打印页面的专家列表，控制行数
+        vm.expertList = new Array(15); //用于打印页面的专家列表，控制行数
 
         active();
-        function active(){
+        function active() {
             $('#myTab li').click(function (e) {
-                var aObj = $("a",this);
+                var aObj = $("a", this);
                 e.preventDefault();
                 aObj.tab('show');
                 var showDiv = aObj.attr("for-div");
                 $(".tab-pane").removeClass("active").removeClass("in");
-                $("#"+showDiv).addClass("active").addClass("in").show(500);
+                $("#" + showDiv).addClass("active").addClass("in").show(500);
                 vm.model.showDiv = showDiv;
             })
 
             //流程图和流程处理记录信息
-            if($state.params.processInstanceId){
+            if ($state.params.processInstanceId) {
                 flowSvc.initFlowData(vm);
             }
 
             //初始化业务信息
-            signSvc.initFlowPageData(vm.model.signid,function(data){
+            signSvc.initFlowPageData(vm.model.signid, function (data) {
                 vm.model = data;
                 var deActive = $("#myTab .active");
                 var deObj = $("a", deActive);
@@ -32949,7 +32973,7 @@
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
                     vm.dispatchDoc = vm.model.dispatchDocDto;
-                    assistSvc.findAssistPlanSignById(vm.model.signid , function(data){
+                    assistSvc.findAssistPlanSignById(vm.model.signid, function (data) {
                         vm.assistPlanSign = data;
                     })
                 }
@@ -32961,44 +32985,44 @@
 
                 //初始化专家评分
                 if (vm.model.processState > 1) {
-                    vm.showFlag.tabWorkProgram=true;        //显示工作方案
+                    vm.showFlag.tabWorkProgram = true;        //显示工作方案
                 }
 
                 //显示拟补充资料函
-                if(vm.model.suppLetterDtoList){
+                if (vm.model.suppLetterDtoList) {
                     vm.showSupperIndex = 0;
                 }
             });
 
             // 初始化上传附件
-            sysfileSvc.findByMianId(vm.model.signid,function(data){
-                if(data && data.length > 0){
+            sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                if (data && data.length > 0) {
                     vm.showFlag.tabSysFile = true;
                     vm.sysFileList = data;
-                    sysfileSvc.initZtreeClient(vm,$scope);//树形图
+                    sysfileSvc.initZtreeClient(vm, $scope);//树形图
                 }
             });
 
         }
+
         //签收模板打印
         vm.printpage = function ($event) {
-            var id =  $($event.target).attr("id");
+            var id = $($event.target).attr("id");
             signSvc.workProgramPrint(id);
         }
 
         /**
          * 打印功能 - 分页
          */
-        vm.templatePage = function(id){
+        vm.templatePage = function (id) {
             templatePrintSvc.templatePage(id);
         }
 
         /**
          * 报审登记表导出
          */
-        vm.printSign = function(){
-            console.log(vm.model.signid);
-            console.log(vm.model.reviewstage);
+        vm.printSign = function () {
+
             var reviewstage = escape(encodeURIComponent(vm.model.reviewstage));
             window.open(rootPath + "/sign/printSign?signId=" + vm.model.signid + "&reviewStage=" + reviewstage);
         }
@@ -37968,611 +37992,6 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('assertStorageBusinessCtrl', assertStorageBusiness);
-
-    assertStorageBusiness.$inject = ['$location', 'assertStorageBusinessSvc'];
-
-    function assertStorageBusiness($location, assertStorageBusinessSvc) {
-        var vm = this;
-        vm.title = '固定资产申购流程';
-
-        vm.del = function (id) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    assertStorageBusinessSvc.deleteAssertStorageBusiness(vm, id);
-                }
-            });
-        }
-        vm.dels = function () {
-            var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.del(idStr);
-            }
-        };
-
-        activate();
-        function activate() {
-            assertStorageBusinessSvc.grid(vm);
-        }
-
-        //表单查询
-        vm.searchForm = function(){
-            vm.gridOptions.dataSource.read();
-        }
-
-        //重置查询表单
-        vm.formReset = function(){
-            vm.searchModel = {};
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('assertStorageBusinessEditCtrl', assertStorageBusiness);
-
-    assertStorageBusiness.$inject = ['$location', 'assertStorageBusinessSvc', '$state','bsWin'];
-
-    function assertStorageBusiness($location, assertStorageBusinessSvc, $state,bsWin) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.model = {};
-        vm.conMaxIndex = 0;                   //条件号
-        vm.conditions = new Array();         //条件列表
-        vm.title = '添加固定资产申购流程';
-        vm.isuserExist = false;
-        vm.businessId = $state.params.businessId;
-        vm.showFlag={
-            addBooksDeatail:true,
-            modBooksDetail:true,
-            bookBuyApplyTr:false,
-            bookBuyBzTr:true,
-            bookBuyFgzrTr:true,
-            bookBuyZrTr:true,
-            bookBuyYsrk:true
-        }
-        if (vm.businessId) {
-            vm.isUpdate = true;
-            vm.showFlag.modBooksDetail=true;
-            vm.showFlag.addBooksDeatail=false;
-            vm.title = '更新图书采购申请业务信息';
-            $("#businessId").val(vm.businessId);
-        }
-
-        vm.create = function () {
-            assertStorageBusinessSvc.createAssertStorageBusiness(vm);
-        };
-        vm.update = function () {
-            assertStorageBusinessSvc.updateAssertStorageBusiness(vm);
-        };
-        //添加资产详细信息
-        vm.addCondition = function () {
-            vm.condition = {};
-            if(vm.showFlag.addBooksDeatail){
-                vm.condition.sort = vm.conMaxIndex+1;
-            }else{
-                vm.conMaxIndex = vm.conditions.length;
-                vm.condition.sort = vm.conditions.length+1;
-            }
-            vm.conditions.push(vm.condition);
-            vm.conMaxIndex++;
-        }
-        //删除资产详细信息
-        vm.removeCondition = function () {
-            var isCheck = $("#conditionTable input[name='epConditionSort']:checked");
-            if (isCheck.length > 0) {
-                bsWin.confirm({
-                    title: "询问提示",
-                    message: "删除数据不可恢复，确定删除么？",
-                    onOk: function () {
-                        $('.confirmDialog').modal('hide');
-                        var ids = [];
-                        for (var i = 0; i < isCheck.length; i++) {
-                            $.each(vm.conditions,function(c,con){
-                                if (isCheck[i].value == con.sort) {
-                                    if (con.id) {
-                                        ids.push(con.id);
-                                    }else{
-                                        vm.conditions.splice(c, 1);
-                                    }
-                                }
-                            })
-                        }
-                        if(ids.length > 0){
-                            assertStorageBusinessSvc.deleteSelConditions(ids.join(","),vm.isCommit,function(data){
-                                if(data.flag || data.reCode == 'ok'){
-                                    bsWin.success("操作成功！");
-                                    $.each(ids,function(i,id){
-                                        $.each(vm.conditions,function(c,con){
-                                            if (id == con.sort) {
-                                                vm.conditions.splice(c, 1);     //没有保存抽取条件的直接删除
-                                            }
-                                        })
-                                    })
-                                }else{
-                                    bsWin.error(data.reMsg);
-                                }
-                            });
-                        }else{
-                            bsWin.success("操作成功！");
-                        }
-                    },
-                });
-            }else{
-                bsWin.alert("请选择要删除的抽取条件！");
-            }
-
-        }
-
-        vm.saveCondition = function () {
-            if (buildCondition(false)) {
-                assertStorageBusinessSvc.saveGoodsDetailBusinessDetail(vm.conditions,function(data){
-                    if(data.flag || data.reCode == 'ok'){
-                        $("#businessId").val(data.reObj.businessId);
-                        bsWin.success("保存成功！");
-                    }else{
-                        bsWin.error(data.reMsg);
-                    }
-                });
-            } else {
-                bsWin.error("请添加后再保存");
-            }
-        }
-
-        function buildCondition(checkId) {
-            //TODO:表单参数校验待核实
-            if (vm.conditions.length > 0) {
-                var validateResult = true;
-                vm.conditions.forEach(function (p, number) {
-                    p.goodsName = $("#goodsName" + p.sort).val();
-                    p.specifications = $("#specifications" + p.sort).val();
-                    p.models = $("#models" + p.sort).val();
-                    p.orgCompany = $("#orgCompany" + p.sort).val();
-                    p.evaluate = $("#evaluate" + p.sort).val();
-                    p.goodsNumber = $("#goodsNumber" + p.sort).val();
-                    p.applyDept= vm.model.applyDept;
-                    p.operator= vm.model.operator;
-                    p.businessId= $("#businessId").val();
-                });
-                return validateResult;
-            } else {
-                return false;
-            }
-        }
-        //发起流程
-        vm.startFlow = function(){
-            /*  common.initJqValidation($('#topicform'));
-             var isValid = $('#topicform').valid();*/
-            bsWin.confirm({
-                title: "询问提示",
-                message: "发起流程后，当前页面数据将不能再修改！确认发起流程么？",
-                onOk: function () {
-                    if (buildCondition(false)) {
-                        assertStorageBusinessSvc.startFlow(vm.conditions,vm.isCommit,function(data){
-                            if(data.flag || data.reCode == 'ok'){
-                                bsWin.alert("保存成功！",function(){
-                                    $state.go('myAssertStorageBusiness');
-                                });
-                            }else{
-                                bsWin.alert(data.reMsg);
-                            }
-                        });
-                    }else{
-                        bsWin.error("请添加图书信息后再发起流程！");
-                    }
-                }
-            });
-        }
-
-        //校验数量
-        vm.checkBookNum = function (sort){
-            var bookNumber = "bookNumber"+sort;
-            if(!isUnsignedInteger($("#"+bookNumber).val())){
-                $("span[data-valmsg-for='"+bookNumber+"']").html("图书数量只能输入正整数！");
-                return ;
-            }
-            $("span[data-valmsg-for='"+bookNumber+"']").html("");
-        }
-
-        //校验价格
-        vm.checkPrice = function(sort){
-            var pc = /^(-)?(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,4})?$/;    //保留4个小数点
-            var priceId = "booksPrice"+sort;
-            var bookNumberId = "bookNumber"+sort;
-            if(!pc.test( $("#"+priceId).val())){
-                $("#"+priceId).val("");
-                $("span[data-valmsg-for='"+priceId+"']").html("价格只能输入数字！");
-                return ;
-            }
-            $("span[data-valmsg-for='"+priceId+"']").html("");
-            var price = $("#"+priceId).val();
-            var num = $("#"+bookNumberId).val();
-            $("#total"+sort).val(parseFloat(price)*num);
-        }
-
-        //检查是否为正整数
-        function isUnsignedInteger(value) {
-            if ((/^(\+|-)?\d+$/.test(value)) && value > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                assertStorageBusinessSvc.getAssertStorageBusinessById(vm);
-            }
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('assertStorageBusinessSvc', assertStorageBusiness);
-
-    assertStorageBusiness.$inject = ['$http'];
-
-    function assertStorageBusiness($http) {
-        var url_assertStorageBusiness = rootPath + "/assertStorageBusiness", url_back = '#/assertStorageBusinessList';
-        var service = {
-            grid: grid,
-            getAssertStorageBusinessById: getAssertStorageBusinessById,
-            createAssertStorageBusiness: createAssertStorageBusiness,
-            deleteAssertStorageBusiness: deleteAssertStorageBusiness,
-            updateAssertStorageBusiness: updateAssertStorageBusiness,
-            saveGoodsDetailBusinessDetail:saveGoodsDetailBusinessDetail,
-            startFlow:startFlow,
-            initFlowDeal:initFlowDeal
-        };
-
-        return service;
-
-        // begin#updateAssertStorageBusiness
-        function updateAssertStorageBusiness(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-
-                var httpOptions = {
-                    method: 'put',
-                    url: url_assertStorageBusiness,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
-        }
-
-        // begin#deleteAssertStorageBusiness
-        function deleteAssertStorageBusiness(vm, id) {
-            vm.isSubmit = true;
-            var httpOptions = {
-                method: 'delete',
-                url: url_assertStorageBusiness,
-                data: id
-            };
-
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                    	common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                            	vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#createAssertStorageBusiness
-        function createAssertStorageBusiness(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
-                var httpOptions = {
-                    method: 'post',
-                    url: url_assertStorageBusiness,
-                    data: vm.model
-                };
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    location.href = url_back;
-                                }
-                            });
-                        }
-                    });
-                };
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            }
-        }
-
-        function saveGoodsDetailBusinessDetail(conditions,callBack){
-            //console.log(conditions);
-            var httpOptions = {
-                method : 'post',
-                url : rootPath + "/assertStorageBusiness/saveGoodsDetailList",
-                headers:{
-                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
-                },
-                traditional: true,
-                dataType : "json",
-                data : angular.toJson(conditions)//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http : $http,
-                httpOptions : httpOptions,
-                success : httpSuccess
-            });
-        }
-
-        //S_启动流程
-        function startFlow(conditions,isCommit,callBack){
-            isCommit = true;
-            var httpOptions = {
-                method : 'post',
-                url : rootPath + "/assertStorageBusiness/startFlow",
-                headers:{
-                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
-                },
-                traditional: true,
-                dataType : "json",
-                data : angular.toJson(conditions)//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
-            }
-            var httpSuccess = function success(response) {
-                isCommit = false;
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess,
-                onError : function(){isCommit = false;}
-            });
-        }//E_startFlow
-
-        //S_初始化资产采购流程信息
-        function initFlowDeal(vm){
-            //vm.businessKey,vm.taskId,vm.instanceId
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/assertStorageBusiness/html/findById",
-                params : {
-                    id:vm.businessKey
-                }
-            };
-            var httpSuccess = function success(response) {
-                vm.model = response.data;
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess,
-                onError : function(){}
-            });
-        }//E_initFlowDeal
-
-        // begin#getAssertStorageBusinessById
-        function getAssertStorageBusinessById(vm) {
-        	var httpOptions = {
-                method: 'get',
-                url: rootPath + "/assertStorageBusiness/html/findById",
-                params:{id:vm.businessId}
-            };
-            var httpSuccess = function success(response) {
-                vm.model = response.data;
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });                       
-        }
-
-        // begin#grid
-        function grid(vm) {
-            // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/assertStorageBusiness/findByOData", $("#myTopicForm"),{filter: "createdBy eq ${CURRENT_USER.id}"}),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-            // End:dataSource
-
-            //S_序号
-            var  dataBound=function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            }
-            //S_序号
-
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-                },
-                {
-                    field: "rowNumber",
-                    title: "序号",
-                    width: 50,
-                    filterable : false,
-                    template: "<span class='row-number'></span>"
-                },
-                {
-                    field: "businessName",
-                    title: "业务流程名称",
-                    width: "20%",
-                    filterable: false
-                },
-                {
-                    field: "createdDate",
-                    title: "创建日期",
-                    width: "15%",
-                    filterable: false,
-                    format: "{0:yyyy/MM/dd HH:mm:ss}"
-                },
-                {
-                    field: "",
-                    title: "已发起流程",
-                    width: "15%",
-                    filterable: false,
-                    template: function (item) {
-                        if(item.processInstanceId){
-                            return "是";
-                        }else{
-                            return "否";
-                        }
-                    }
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 140,
-                    template: function (item) {
-                        var isStartFlow = item.processInstanceId?true:false;
-                        return common.format($('#columnBtns').html(), item.businessId, isStartFlow);
-                    }
-                }
-            ];
-            // End:column
-
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                dataBound:dataBound,
-                resizable: true
-            };
-        }// end fun grid
-
-    }
-})();
-(function () {
-    'use strict';
-
     angular.module('app').controller('goodsDetailCtrl', goodsDetail);
 
     goodsDetail.$inject = ['$location', 'goodsDetailSvc'];
@@ -39333,6 +38752,611 @@
                 resizable: true
             };
 
+        }// end fun grid
+
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('assertStorageBusinessCtrl', assertStorageBusiness);
+
+    assertStorageBusiness.$inject = ['$location', 'assertStorageBusinessSvc'];
+
+    function assertStorageBusiness($location, assertStorageBusinessSvc) {
+        var vm = this;
+        vm.title = '固定资产申购流程';
+
+        vm.del = function (id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    assertStorageBusinessSvc.deleteAssertStorageBusiness(vm, id);
+                }
+            });
+        }
+        vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+
+        activate();
+        function activate() {
+            assertStorageBusinessSvc.grid(vm);
+        }
+
+        //表单查询
+        vm.searchForm = function(){
+            vm.gridOptions.dataSource.read();
+        }
+
+        //重置查询表单
+        vm.formReset = function(){
+            vm.searchModel = {};
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('assertStorageBusinessEditCtrl', assertStorageBusiness);
+
+    assertStorageBusiness.$inject = ['$location', 'assertStorageBusinessSvc', '$state','bsWin'];
+
+    function assertStorageBusiness($location, assertStorageBusinessSvc, $state,bsWin) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.model = {};
+        vm.conMaxIndex = 0;                   //条件号
+        vm.conditions = new Array();         //条件列表
+        vm.title = '添加固定资产申购流程';
+        vm.isuserExist = false;
+        vm.businessId = $state.params.businessId;
+        vm.showFlag={
+            addBooksDeatail:true,
+            modBooksDetail:true,
+            bookBuyApplyTr:false,
+            bookBuyBzTr:true,
+            bookBuyFgzrTr:true,
+            bookBuyZrTr:true,
+            bookBuyYsrk:true
+        }
+        if (vm.businessId) {
+            vm.isUpdate = true;
+            vm.showFlag.modBooksDetail=true;
+            vm.showFlag.addBooksDeatail=false;
+            vm.title = '更新图书采购申请业务信息';
+            $("#businessId").val(vm.businessId);
+        }
+
+        vm.create = function () {
+            assertStorageBusinessSvc.createAssertStorageBusiness(vm);
+        };
+        vm.update = function () {
+            assertStorageBusinessSvc.updateAssertStorageBusiness(vm);
+        };
+        //添加资产详细信息
+        vm.addCondition = function () {
+            vm.condition = {};
+            if(vm.showFlag.addBooksDeatail){
+                vm.condition.sort = vm.conMaxIndex+1;
+            }else{
+                vm.conMaxIndex = vm.conditions.length;
+                vm.condition.sort = vm.conditions.length+1;
+            }
+            vm.conditions.push(vm.condition);
+            vm.conMaxIndex++;
+        }
+        //删除资产详细信息
+        vm.removeCondition = function () {
+            var isCheck = $("#conditionTable input[name='epConditionSort']:checked");
+            if (isCheck.length > 0) {
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "删除数据不可恢复，确定删除么？",
+                    onOk: function () {
+                        $('.confirmDialog').modal('hide');
+                        var ids = [];
+                        for (var i = 0; i < isCheck.length; i++) {
+                            $.each(vm.conditions,function(c,con){
+                                if (isCheck[i].value == con.sort) {
+                                    if (con.id) {
+                                        ids.push(con.id);
+                                    }else{
+                                        vm.conditions.splice(c, 1);
+                                    }
+                                }
+                            })
+                        }
+                        if(ids.length > 0){
+                            assertStorageBusinessSvc.deleteSelConditions(ids.join(","),vm.isCommit,function(data){
+                                if(data.flag || data.reCode == 'ok'){
+                                    bsWin.success("操作成功！");
+                                    $.each(ids,function(i,id){
+                                        $.each(vm.conditions,function(c,con){
+                                            if (id == con.sort) {
+                                                vm.conditions.splice(c, 1);     //没有保存抽取条件的直接删除
+                                            }
+                                        })
+                                    })
+                                }else{
+                                    bsWin.error(data.reMsg);
+                                }
+                            });
+                        }else{
+                            bsWin.success("操作成功！");
+                        }
+                    },
+                });
+            }else{
+                bsWin.alert("请选择要删除的抽取条件！");
+            }
+
+        }
+
+        vm.saveCondition = function () {
+            if (buildCondition(false)) {
+                assertStorageBusinessSvc.saveGoodsDetailBusinessDetail(vm.conditions,function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        $("#businessId").val(data.reObj.businessId);
+                        bsWin.success("保存成功！");
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                });
+            } else {
+                bsWin.error("请添加后再保存");
+            }
+        }
+
+        function buildCondition(checkId) {
+            //TODO:表单参数校验待核实
+            if (vm.conditions.length > 0) {
+                var validateResult = true;
+                vm.conditions.forEach(function (p, number) {
+                    p.goodsName = $("#goodsName" + p.sort).val();
+                    p.specifications = $("#specifications" + p.sort).val();
+                    p.models = $("#models" + p.sort).val();
+                    p.orgCompany = $("#orgCompany" + p.sort).val();
+                    p.evaluate = $("#evaluate" + p.sort).val();
+                    p.goodsNumber = $("#goodsNumber" + p.sort).val();
+                    p.applyDept= vm.model.applyDept;
+                    p.operator= vm.model.operator;
+                    p.businessId= $("#businessId").val();
+                });
+                return validateResult;
+            } else {
+                return false;
+            }
+        }
+        //发起流程
+        vm.startFlow = function(){
+            /*  common.initJqValidation($('#topicform'));
+             var isValid = $('#topicform').valid();*/
+            bsWin.confirm({
+                title: "询问提示",
+                message: "发起流程后，当前页面数据将不能再修改！确认发起流程么？",
+                onOk: function () {
+                    if (buildCondition(false)) {
+                        assertStorageBusinessSvc.startFlow(vm.conditions,vm.isCommit,function(data){
+                            if(data.flag || data.reCode == 'ok'){
+                                bsWin.alert("保存成功！",function(){
+                                    $state.go('myAssertStorageBusiness');
+                                });
+                            }else{
+                                bsWin.alert(data.reMsg);
+                            }
+                        });
+                    }else{
+                        bsWin.error("请添加图书信息后再发起流程！");
+                    }
+                }
+            });
+        }
+
+        //校验数量
+        vm.checkBookNum = function (sort){
+            var bookNumber = "bookNumber"+sort;
+            if(!isUnsignedInteger($("#"+bookNumber).val())){
+                $("span[data-valmsg-for='"+bookNumber+"']").html("图书数量只能输入正整数！");
+                return ;
+            }
+            $("span[data-valmsg-for='"+bookNumber+"']").html("");
+        }
+
+        //校验价格
+        vm.checkPrice = function(sort){
+            var pc = /^(-)?(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,4})?$/;    //保留4个小数点
+            var priceId = "booksPrice"+sort;
+            var bookNumberId = "bookNumber"+sort;
+            if(!pc.test( $("#"+priceId).val())){
+                $("#"+priceId).val("");
+                $("span[data-valmsg-for='"+priceId+"']").html("价格只能输入数字！");
+                return ;
+            }
+            $("span[data-valmsg-for='"+priceId+"']").html("");
+            var price = $("#"+priceId).val();
+            var num = $("#"+bookNumberId).val();
+            $("#total"+sort).val(parseFloat(price)*num);
+        }
+
+        //检查是否为正整数
+        function isUnsignedInteger(value) {
+            if ((/^(\+|-)?\d+$/.test(value)) && value > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                assertStorageBusinessSvc.getAssertStorageBusinessById(vm);
+            }
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('assertStorageBusinessSvc', assertStorageBusiness);
+
+    assertStorageBusiness.$inject = ['$http'];
+
+    function assertStorageBusiness($http) {
+        var url_assertStorageBusiness = rootPath + "/assertStorageBusiness", url_back = '#/assertStorageBusinessList';
+        var service = {
+            grid: grid,
+            getAssertStorageBusinessById: getAssertStorageBusinessById,
+            createAssertStorageBusiness: createAssertStorageBusiness,
+            deleteAssertStorageBusiness: deleteAssertStorageBusiness,
+            updateAssertStorageBusiness: updateAssertStorageBusiness,
+            saveGoodsDetailBusinessDetail:saveGoodsDetailBusinessDetail,
+            startFlow:startFlow,
+            initFlowDeal:initFlowDeal
+        };
+
+        return service;
+
+        // begin#updateAssertStorageBusiness
+        function updateAssertStorageBusiness(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                vm.model.id = vm.id;// id
+
+                var httpOptions = {
+                    method: 'put',
+                    url: url_assertStorageBusiness,
+                    data: vm.model
+                }
+
+                var httpSuccess = function success(response) {
+
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
+
+        }
+
+        // begin#deleteAssertStorageBusiness
+        function deleteAssertStorageBusiness(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: url_assertStorageBusiness,
+                data: id
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                    	common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog :true,
+                            fn: function () {
+                            	vm.isSubmit = false;
+                                vm.gridOptions.dataSource.read();
+                            }
+                        })
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#createAssertStorageBusiness
+        function createAssertStorageBusiness(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+
+                var httpOptions = {
+                    method: 'post',
+                    url: url_assertStorageBusiness,
+                    data: vm.model
+                };
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                closeDialog :true,
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    location.href = url_back;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            }
+        }
+
+        function saveGoodsDetailBusinessDetail(conditions,callBack){
+            //console.log(conditions);
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/assertStorageBusiness/saveGoodsDetailList",
+                headers:{
+                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType : "json",
+                data : angular.toJson(conditions)//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+
+        //S_启动流程
+        function startFlow(conditions,isCommit,callBack){
+            isCommit = true;
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/assertStorageBusiness/startFlow",
+                headers:{
+                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType : "json",
+                data : angular.toJson(conditions)//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+            }
+            var httpSuccess = function success(response) {
+                isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError : function(){isCommit = false;}
+            });
+        }//E_startFlow
+
+        //S_初始化资产采购流程信息
+        function initFlowDeal(vm){
+            //vm.businessKey,vm.taskId,vm.instanceId
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/assertStorageBusiness/html/findById",
+                params : {
+                    id:vm.businessKey
+                }
+            };
+            var httpSuccess = function success(response) {
+                vm.model = response.data;
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError : function(){}
+            });
+        }//E_initFlowDeal
+
+        // begin#getAssertStorageBusinessById
+        function getAssertStorageBusinessById(vm) {
+        	var httpOptions = {
+                method: 'get',
+                url: rootPath + "/assertStorageBusiness/html/findById",
+                params:{id:vm.businessId}
+            };
+            var httpSuccess = function success(response) {
+                vm.model = response.data;
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });                       
+        }
+
+        // begin#grid
+        function grid(vm) {
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/assertStorageBusiness/findByOData", $("#myTopicForm"),{filter: "createdBy eq ${CURRENT_USER.id}"}),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+
+            //S_序号
+            var  dataBound=function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+
+                },
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    filterable : false,
+                    template: "<span class='row-number'></span>"
+                },
+                {
+                    field: "businessName",
+                    title: "业务流程名称",
+                    width: "20%",
+                    filterable: false
+                },
+                {
+                    field: "createdDate",
+                    title: "创建日期",
+                    width: "15%",
+                    filterable: false,
+                    format: "{0:yyyy/MM/dd HH:mm:ss}"
+                },
+                {
+                    field: "",
+                    title: "已发起流程",
+                    width: "15%",
+                    filterable: false,
+                    template: function (item) {
+                        if(item.processInstanceId){
+                            return "是";
+                        }else{
+                            return "否";
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        var isStartFlow = item.processInstanceId?true:false;
+                        return common.format($('#columnBtns').html(), item.businessId, isStartFlow);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound:dataBound,
+                resizable: true
+            };
         }// end fun grid
 
     }

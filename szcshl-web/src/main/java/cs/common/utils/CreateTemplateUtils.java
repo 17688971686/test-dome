@@ -45,7 +45,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_OPINION.getKey(), Constant.Template.STUDY_OPINION.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
 
         return sysFile;
     }
@@ -94,7 +94,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_ROSTER.getKey(), Constant.Template.STUDY_ROSTER.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
 
         return sysFile;
     }
@@ -115,7 +115,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_ESTIMATE.getKey(), Constant.Template.STUDY_ESTIMATE.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX_XLS.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -143,7 +143,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_OPINION.getKey(), Constant.Template.BUDGET_OPINION.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -162,7 +162,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_PROJECTCOST.getKey(), Constant.Template.BUDGET_PROJECTCOST.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -181,7 +181,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_ESTIMATE.getKey(), Constant.Template.BUDGET_ESTIMATE.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX_XLS.getKey(), dataMap);
+                Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -225,7 +225,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_ROSTER.getKey(), Constant.Template.BUDGET_ROSTER.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -253,7 +253,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
                 Constant.Template.SUG_OPINION.getKey(), Constant.Template.SUG_OPINION.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -271,7 +271,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
                 Constant.Template.SUG_ESTIMATE.getKey(), Constant.Template.SUG_ESTIMATE.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX_XLS.getKey(), dataMap);
+                Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -316,7 +316,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
                 Constant.Template.BUDGET_ROSTER.getKey(), Constant.Template.SUG_ROSTER.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -343,7 +343,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_OPINION.getKey(), Constant.Template.REPORT_OPINION.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -360,7 +360,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_ESTIMATE.getKey(), Constant.Template.REPORT_ESTIMATE.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX_XLS.getKey(), dataMap);
+                Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -405,7 +405,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_ROSTER.getKey(), Constant.Template.REPORT_ROSTER.getValue().split("_")[1],
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -431,7 +431,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.SIGN_IN.getKey(), Constant.Template.SIGN_IN.getValue(),
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
 
         return sysFile;
     }
@@ -479,7 +479,7 @@ public class CreateTemplateUtils {
             sysFile = TemplateUtil.createTemplate(sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
                     Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                     Constant.Template.UNIT_NOTICE.getKey(), Constant.Template.UNIT_NOTICE.getValue(),
-                    Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                    Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         }
         return sysFile;
     }
@@ -512,7 +512,7 @@ public class CreateTemplateUtils {
                     sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                             Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                             Constant.Template.MEETING_AM.getKey(), Constant.Template.MEETING_AM.getValue(),
-                            Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                            Constant.Template.WORD_SUFFIX.getKey(), dataMap);
                     sysFileList.add(sysFile);
 
                 } else {
@@ -520,7 +520,7 @@ public class CreateTemplateUtils {
                     sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                             Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                             Constant.Template.MEETING_PM.getKey(), Constant.Template.MEETING_PM.getValue(),
-                            Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                            Constant.Template.WORD_SUFFIX.getKey(), dataMap);
                     sysFileList.add(sysFile);
                 }
             }
@@ -568,7 +568,7 @@ public class CreateTemplateUtils {
             sysFile = TemplateUtil.createTemplate(sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
                     Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                     Constant.Template.INVITATION.getKey(), Constant.Template.INVITATION.getValue(),
-                    Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                    Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         }
 
         return sysFile;
@@ -632,7 +632,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.COMPERE.getKey(), Constant.Template.COMPERE.getValue(),
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -681,7 +681,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.ASSIST.getKey(), Constant.Template.ASSIST.getValue(),
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
 
     }
@@ -731,7 +731,7 @@ public class CreateTemplateUtils {
             sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                     Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                     Constant.Template.SUBJECT_STUDY_NOVICE.getKey(), Constant.Template.SUBJECT_STUDY_NOVICE.getValue(),
-                    Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                    Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         }
         return sysFile;
 
@@ -751,7 +751,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                 Constant.Template.SUBJECT_STUDY_SIGNIN.getKey(), Constant.Template.SUBJECT_STUDY_SIGNIN.getValue(),
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
@@ -769,7 +769,7 @@ public class CreateTemplateUtils {
         SysFile sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                 Constant.Template.SUBJECT_STUDY_EXPERTAIGNATURE.getKey(), Constant.Template.SUBJECT_STUDY_EXPERTAIGNATURE.getValue(),
-                Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
 
     }
@@ -814,7 +814,7 @@ public class CreateTemplateUtils {
             sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                     Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                     Constant.Template.SUBJECT_STUDY_INVITATION.getKey(), Constant.Template.SUBJECT_STUDY_INVITATION.getValue(),
-                    Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                    Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         }
         return sysFile;
     }
@@ -842,7 +842,7 @@ public class CreateTemplateUtils {
                     sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                             Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                             Constant.Template.SUBJECT_STUDY_MEETINGAM.getKey(), Constant.Template.SUBJECT_STUDY_MEETINGAM.getValue(),
-                            Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                            Constant.Template.WORD_SUFFIX.getKey(), dataMap);
                     sysFileList.add(sysFile);
 
                 } else {
@@ -850,7 +850,7 @@ public class CreateTemplateUtils {
                     sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                             Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                             Constant.Template.SUBJECT_STUDY_MEETINGPM.getKey(), Constant.Template.SUBJECT_STUDY_MEETINGPM.getValue(),
-                            Constant.Template.OUTPUT_SUFFIX.getKey(), dataMap);
+                            Constant.Template.WORD_SUFFIX.getKey(), dataMap);
                     sysFileList.add(sysFile);
                 }
             }
@@ -1038,7 +1038,7 @@ public class CreateTemplateUtils {
                 dataMap.put("proCountCent"+(i+1),0+"%");
             }
         }
-        String  showName = Constant.Template.MONTH_REPORT.getValue() +  Constant.Template.OUTPUT_SUFFIX.getKey();
+        String  showName = Constant.Template.MONTH_REPORT.getValue() +  Constant.Template.WORD_SUFFIX.getKey();
         String path = SysFileUtil.getUploadPath();
         String relativeFileUrl = SysFileUtil.generatRelativeUrl(path ,  Constant.Template.MONTH_REPORT.getValue() ,null , null , showName);
 

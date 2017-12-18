@@ -5,11 +5,12 @@ import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertReviewDto;
 
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class SignDto extends BaseDto{
+public class SignDto extends BaseDto {
 
     private String signid;
 
@@ -64,25 +65,19 @@ public class SignDto extends BaseDto{
     private String reviewstage;
 
     private String ispresign;
-    
-   /* //评审费录入状态 :9表示已办理,0表示未办理
-    private String financiaStatus; 
-    
-    //协审费录入状态 :9表示已办理,0表示未办理
-    private String assistStatus;*/
-    
+
     //是否有登记补充资料:9表示是,0表示否
     private String isSupplementary;
-    
+
     //是否有拟补充资料函:9表示是,0表示否
     private String isHaveSuppLetter;
-    
+
     //拟补充资料函发文日期
     @JSONField(format = "yyyy-MM-dd")
     private Date suppLetterDate;
     //审定投资
     private BigDecimal authorizeValue;
-    
+
     private String projectname;
 
     private String ischangeEstimate;
@@ -608,6 +603,11 @@ public class SignDto extends BaseDto{
     private List<AssistPlanSignDto> planSignDtoList;
 
     /**
+     * 是否已经回传给发改委（9：是，其它：否）
+     */
+    private String isSendFGW;
+
+    /**
      * 拟补充资料函列表
      */
     private List<AddSuppLetterDto> suppLetterDtoList;
@@ -624,23 +624,23 @@ public class SignDto extends BaseDto{
      * 专家评审方案信息
      */
     private ExpertReviewDto expertReviewDto;
-    
+
     /**
      * 资料存放位置
      */
     private String palceStorage;
-    
+
     /**
      * 送来存放时间
      */
     @JSONField(format = "yyyy-MM-dd")
     private Date palceTime;
-    
+
     /**
      * 联系人
      */
     private String contacts;
-    
+
     /**
      * 联系电话
      */
@@ -2038,14 +2038,14 @@ public class SignDto extends BaseDto{
 
     
    /* public String getFinanciaStatus() {
-		return financiaStatus;
+        return financiaStatus;
 	}
 
 	public void setFinanciaStatus(String financiaStatus) {
 		this.financiaStatus = financiaStatus;
 	}*/
 
-	public String getLeaderhandlesug() {
+    public String getLeaderhandlesug() {
         return leaderhandlesug;
     }
 
@@ -2197,13 +2197,13 @@ public class SignDto extends BaseDto{
         this.planSignDtoList = planSignDtoList;
     }
 
-	public String getIsProjectState() {
-		return isProjectState;
-	}
+    public String getIsProjectState() {
+        return isProjectState;
+    }
 
-	public void setIsProjectState(String isProjectState) {
-		this.isProjectState = isProjectState;
-	}
+    public void setIsProjectState(String isProjectState) {
+        this.isProjectState = isProjectState;
+    }
 
     public String getSignNum() {
         return signNum;
@@ -2237,29 +2237,29 @@ public class SignDto extends BaseDto{
 		this.assistStatus = assistStatus;
 	}*/
 
-	public BigDecimal getAuthorizeValue() {
-		return authorizeValue;
-	}
+    public BigDecimal getAuthorizeValue() {
+        return authorizeValue;
+    }
 
-	public void setAuthorizeValue(BigDecimal authorizeValue) {
-		this.authorizeValue = authorizeValue;
-	}
+    public void setAuthorizeValue(BigDecimal authorizeValue) {
+        this.authorizeValue = authorizeValue;
+    }
 
-	public String getIsHaveSuppLetter() {
-		return isHaveSuppLetter;
-	}
+    public String getIsHaveSuppLetter() {
+        return isHaveSuppLetter;
+    }
 
-	public void setIsHaveSuppLetter(String isHaveSuppLetter) {
-		this.isHaveSuppLetter = isHaveSuppLetter;
-	}
+    public void setIsHaveSuppLetter(String isHaveSuppLetter) {
+        this.isHaveSuppLetter = isHaveSuppLetter;
+    }
 
-	public Date getSuppLetterDate() {
-		return suppLetterDate;
-	}
+    public Date getSuppLetterDate() {
+        return suppLetterDate;
+    }
 
-	public void setSuppLetterDate(Date suppLetterDate) {
-		this.suppLetterDate = suppLetterDate;
-	}
+    public void setSuppLetterDate(Date suppLetterDate) {
+        this.suppLetterDate = suppLetterDate;
+    }
 
     public ExpertReviewDto getExpertReviewDto() {
         return expertReviewDto;
@@ -2301,36 +2301,43 @@ public class SignDto extends BaseDto{
         this.oldProjectId = oldProjectId;
     }
 
-	public String getPalceStorage() {
-		return palceStorage;
-	}
+    public String getPalceStorage() {
+        return palceStorage;
+    }
 
-	public void setPalceStorage(String palceStorage) {
-		this.palceStorage = palceStorage;
-	}
+    public void setPalceStorage(String palceStorage) {
+        this.palceStorage = palceStorage;
+    }
 
-	public Date getPalceTime() {
-		return palceTime;
-	}
+    public Date getPalceTime() {
+        return palceTime;
+    }
 
-	public void setPalceTime(Date palceTime) {
-		this.palceTime = palceTime;
-	}
+    public void setPalceTime(Date palceTime) {
+        this.palceTime = palceTime;
+    }
 
-	public String getContacts() {
-		return contacts;
-	}
+    public String getContacts() {
+        return contacts;
+    }
 
-	public void setContacts(String contacts) {
-		this.contacts = contacts;
-	}
+    public void setContacts(String contacts) {
+        this.contacts = contacts;
+    }
 
-	public String getContactsPhone() {
-		return contactsPhone;
-	}
+    public String getContactsPhone() {
+        return contactsPhone;
+    }
 
-	public void setContactsPhone(String contactsPhone) {
-		this.contactsPhone = contactsPhone;
-	}
-    
+    public void setContactsPhone(String contactsPhone) {
+        this.contactsPhone = contactsPhone;
+    }
+
+    public String getIsSendFGW() {
+        return isSendFGW;
+    }
+
+    public void setIsSendFGW(String isSendFGW) {
+        this.isSendFGW = isSendFGW;
+    }
 }

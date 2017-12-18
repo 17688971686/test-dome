@@ -309,7 +309,9 @@ public class Constant {
      */
     public static enum Template {
         EXPORTROOM("exportRoom", "导出会议室安排"),
-        OUTPUT_SUFFIX(".doc", "work文档"),        //生成work文档
+        EXCEL_SUFFIX(".xls", "xls表格"),
+        WORD_SUFFIX(".doc", "work文档"),
+        PDF_SUFFIX(".pdf", "pdf文档"),
         COMPERE("compere", "主持人"),
         MEETING_AM("meetingAM", "会议议程（上午）"),
         MEETING_PM("meetingPM", "会议议程（下午）"),
@@ -319,7 +321,7 @@ public class Constant {
         UNIT_NOTICE("notice", "项目单位会议通知"),
         THIS_STAGE_MEETING("thisStageMeeing", "本周评审会议安排"),
         NEXT_STAGE_MEETING("nextStageMeeting", "下周评审会议安排"),
-        OUTPUT_SUFFIX_XLS(".xls", "xls表格"),//生成xls表格
+
 
         //可行性研究报告
         STUDY_OPINION("study/opinion", "可行性研究报告_评审意见"),
@@ -354,7 +356,7 @@ public class Constant {
 
         /*************以下是ISO模板*************/
         //项目建议书
-                SUG_SIGN("print/sign/xmjys" , "项目建议书_报审登记表");
+        SUG_SIGN("print/sign/xmjys" , "项目建议书_报审登记表");
 
         private String key;
         private String value;

@@ -421,7 +421,7 @@ public class SignController {
     }
 
     /***************报审登记表导出***************/
-    @RequiresAuthentication
+   /* @RequiresAuthentication
     @RequestMapping(name="报审登记表导出" , path = "printSign" , method = RequestMethod.GET)
     @ResponseStatus(value=HttpStatus.NO_CONTENT)
     public void printSign(HttpServletResponse resp, @RequestParam String signId , @RequestParam String reviewStage){
@@ -451,6 +451,6 @@ public class SignController {
         }
 
 
-    }
+    }*/
 
 }

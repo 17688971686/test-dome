@@ -853,7 +853,13 @@ public class Sign extends DomainBase {
     //是否提前介入
     @Column(columnDefinition = "VARCHAR(2)")
     private String isAdvanced;
-    
+
+    /**
+     * 是否已经回传给发改委（9：是，其它：否）
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isSendFGW;
+    /**************************  状态字段放这里  ****************************/
     /**
      * 存放位置
      */
@@ -878,8 +884,6 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(40)")
     private String contactsPhone;
     
-
-    /**************************  状态字段放这里  ****************************/
 
     public List<ProjectStop> getProjectStopList() {
         return projectStopList;
@@ -2530,6 +2534,12 @@ public class Sign extends DomainBase {
 	public void setContactsPhone(String contactsPhone) {
 		this.contactsPhone = contactsPhone;
 	}
-    
-    
+
+    public String getIsSendFGW() {
+        return isSendFGW;
+    }
+
+    public void setIsSendFGW(String isSendFGW) {
+        this.isSendFGW = isSendFGW;
+    }
 }

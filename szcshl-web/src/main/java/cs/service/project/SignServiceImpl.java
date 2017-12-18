@@ -1,32 +1,43 @@
 package cs.service.project;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import com.alibaba.fastjson.JSON;
 import cs.common.*;
+import cs.common.Constant.EnumFlowNodeGroupName;
+import cs.common.Constant.EnumState;
+import cs.common.Constant.MsgCode;
 import cs.common.utils.*;
+import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelected;
+import cs.domain.external.Dept;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.*;
+import cs.model.PageModelDto;
+import cs.model.expert.ExpertReviewDto;
+import cs.model.external.DeptDto;
+import cs.model.external.OfficeUserDto;
+import cs.model.flow.FlowDto;
 import cs.model.project.*;
+import cs.model.sys.OrgDto;
 import cs.model.sys.SysConfigDto;
+import cs.model.sys.UserDto;
 import cs.quartz.unit.QuartzUnit;
+import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
+import cs.repository.repositoryImpl.external.DeptRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.*;
+import cs.service.external.OfficeUserService;
+import cs.service.flow.FlowService;
+import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.WorkdayService;
 import org.activiti.engine.ProcessEngine;
@@ -36,31 +47,14 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alibaba.fastjson.JSON;
-
-import cs.common.Constant.EnumFlowNodeGroupName;
-import cs.common.Constant.EnumState;
-import cs.common.Constant.MsgCode;
-import cs.domain.expert.ExpertReview;
-import cs.domain.external.Dept;
-import cs.model.PageModelDto;
-import cs.model.expert.ExpertReviewDto;
-import cs.model.external.DeptDto;
-import cs.model.external.OfficeUserDto;
-import cs.model.flow.FlowDto;
-import cs.model.sys.OrgDto;
-import cs.model.sys.UserDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.external.DeptRepo;
-import cs.service.external.OfficeUserService;
-import cs.service.flow.FlowService;
-import cs.service.rtx.RTXSendMsgPool;
+import java.util.*;
 
 @Service
 public class SignServiceImpl implements SignService {
@@ -2125,7 +2119,7 @@ public class SignServiceImpl implements SignService {
      * @param reviewStage
      * @return
      */
-    @Override
+    /*@Override
     public File printSign(String signId, String reviewStage) {
 
         Map<String , Object> dataMap = new HashMap<>();
@@ -2195,7 +2189,7 @@ public class SignServiceImpl implements SignService {
 
 
         return file;
-    }
+    }*/
 
     /**
      * 更新是否已生成模板状态

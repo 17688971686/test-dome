@@ -1,26 +1,24 @@
 package cs.controller.sys;
 
 import cs.ahelper.MudoleAnnotation;
-import cs.ahelper.OpenOfficePdfConvert;
 import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
+import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.sys.SysFileService;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static cs.common.Constant.*;
 
@@ -55,9 +51,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     @Autowired
     private SysFileService fileService;
-
     @Autowired
     private RealPathResolver realPathResolver;
+    @Autowired
+    private SignRepo signRepo;
 
     private ServletContext servletContext;
 
@@ -390,23 +387,27 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     public void preview(@PathVariable String sysFileId, HttpServletResponse response) {
         SysFile sysFile = fileService.findFileById(sysFileId);
         //文件路径
-        String filePath = SysFileUtil.getUploadPath() + File.separator + sysFile.getShowName();
+        File downFile = null;
         File file = null;
         InputStream inputStream = null;
         try {
+            String filePath = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + sysFile.getShowName();
             filePath = filePath.replaceAll("\\\\", "/");
+
             //下载ftp服务器附件到本地
             Boolean flag = FtpUtil.downloadFile(sysFile.getFtpIp(), sysFile.getPort() != null ? Integer.parseInt(sysFile.getPort()) : 0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
                     sysFile.getShowName(), SysFileUtil.getUploadPath());
-            File downFile = new File(filePath);
+            downFile = new File(filePath);
             if (!downFile.exists()) {
                 file = new File(realPathResolver.get(Constant.plugin_file_path) + File.separator + "nofile.png");
                 sysFile.setFileType(".png");
             } else {
-                if (!".pdf".equals(sysFile.getFileType())) {
-                    filePath = filePath.substring(0, filePath.lastIndexOf(".")) + ".pdf";
+                if (!Template.PDF_SUFFIX.getKey().equals(sysFile.getFileType())) {
+                    filePath = filePath.substring(0, filePath.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
+                    if (file != null) {
+                        OfficeConverterUtil.convert2PDF(downFile.getAbsolutePath(), filePath);
+                    }
                     file = new File(filePath);
-                    OpenOfficePdfConvert.convert2PDF(downFile, file);
                     inputStream = new BufferedInputStream(new FileInputStream(file));
                 } else {
                     file = downFile;
@@ -441,10 +442,145 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (file != null) {
+                    Tools.deleteFile(file);
+                }
+                if (downFile != null) {
+                    Tools.deleteFile(downFile);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
     }
+
+    /**
+     * 打印预览
+     *
+     * @param businessId
+     * @param businessType
+     * @param response
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "打印预览", path = "printPreview/{businessId}/{businessType}", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void printPreview(@PathVariable String businessId, @PathVariable String businessType, HttpServletResponse response) {
+        InputStream inputStream = null;
+        File file = null;
+        File printFile = null;
+        try {
+            String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Template.WORD_SUFFIX.getKey();
+            String filePath = path.substring(0, path.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
+            String fileName = "";
+            switch (businessType) {
+                case "SIGN":
+                    Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
+                    Map<String, Object> dataMap = new HashMap<>();
+                    dataMap.put("signdate", DateUtils.converToString(sign.getSigndate(), "yyyy年MM月dd日"));
+                    dataMap.put("projectname", sign.getProjectname());
+                    dataMap.put("signNum", sign.getSignNum());
+                    dataMap.put("builtcompanyName", sign.getBuiltcompanyName());
+                    dataMap.put("designcompanyName", sign.getDesigncompanyName());
+                    dataMap.put("maindeptName", sign.getMaindeptName());
+                    dataMap.put("mainDeptUserName", sign.getMainDeptUserName());
+                    dataMap.put("assistdeptName", sign.getAssistdeptName());
+                    dataMap.put("assistDeptUserName", sign.getAssistDeptUserName());
+                    dataMap.put("urgencydegree", sign.getUrgencydegree());
+                    dataMap.put("projectcode", sign.getProjectcode());
+                    dataMap.put("secrectlevel", sign.getSecrectlevel());
+                    dataMap.put("sugProDealOriginal", sign.getSugProDealOriginal());
+                    dataMap.put("sugProDealCount", sign.getSugProDealCount());
+                    dataMap.put("sugProAdviseOriginal", sign.getSugProAdviseOriginal());
+                    dataMap.put("sugProAdviseCount", sign.getSugProAdviseCount());
+                    dataMap.put("sugFileDealOriginal", sign.getSugFileDealOriginal());
+                    dataMap.put("sugFileDealCount", sign.getSugFileDealCount());
+                    dataMap.put("proSugEledocCount", sign.getProSugEledocCount());
+                    dataMap.put("sugOrgApplyOriginal", sign.getSugOrgApplyOriginal());
+                    dataMap.put("sugOrgApplyCount", sign.getSugOrgApplyCount());
+                    dataMap.put("sugMeetOriginal", sign.getSugMeetOriginal());
+                    dataMap.put("sugMeetCount", sign.getSugMeetCount());
+                    dataMap.put("sugOrgReqOriginal", sign.getSugOrgReqOriginal());
+                    dataMap.put("sugOrgReqCount", sign.getSugOrgReqCount());
+                    dataMap.put("studyPealOriginal", sign.getStudyPealOriginal());
+                    dataMap.put("studyProDealCount", sign.getStudyProDealCount());
+                    dataMap.put("envproReplyCopy", sign.getEnvproReplyCopy());
+                    dataMap.put("envproReplyCount", sign.getEnvproReplyCount());
+                    dataMap.put("studyFileDealOriginal", sign.getStudyFileDealOriginal());
+                    dataMap.put("studyFileDealCount", sign.getStudyFileDealCount());
+                    dataMap.put("planAddrCopy", sign.getPlanAddrCopy());
+                    dataMap.put("planAddrCount", sign.getPlanAddrCount());
+                    dataMap.put("studyOrgApplyOriginal", sign.getStudyOrgApplyOriginal());
+                    dataMap.put("studyOrgApplyCount", sign.getStudyOrgApplyCount());
+                    dataMap.put("reportOrigin", sign.getReportOrigin());
+                    dataMap.put("reportCopy", sign.getReportCopy());
+                    dataMap.put("reportCount", sign.getReportCount());
+                    dataMap.put("studyOrgReqOriginal", sign.getStudyOrgReqOriginal());
+                    dataMap.put("studyOrgReqCount", sign.getStudyOrgReqCount());
+                    dataMap.put("eledocCount", sign.getEledocCount());
+                    dataMap.put("studyProSugOriginal", sign.getStudyProSugOriginal());
+                    dataMap.put("studyProSugCount", sign.getStudyProSugCount());
+                    dataMap.put("energyOriginal", sign.getEnergyOriginal());
+                    dataMap.put("energyCopy", sign.getEnergyCopy());
+                    dataMap.put("energyCount", sign.getEnergyCount());
+                    dataMap.put("studyMeetOriginal", sign.getStudyMeetOriginal());
+                    dataMap.put("studyMeetCount", sign.getStudyMeetCount());
+                    dataMap.put("comprehensivehandlesug", sign.getComprehensivehandlesug());
+                    dataMap.put("comprehensiveDate", DateUtils.converToString(sign.getComprehensiveDate(), "yyyy年MM月dd日"));
+                    dataMap.put("leaderhandlesug", sign.getLeaderhandlesug());
+                    dataMap.put("leaderDate", DateUtils.converToString(sign.getLeaderDate(), "yyyy年MM月dd日"));
+                    dataMap.put("ministerhandlesug", sign.getMinisterhandlesug());
+                    dataMap.put("ministerDate", DateUtils.converToString(sign.getMinisterDate(), "yyyy年MM月dd日"));
+                    dataMap.put("sendusersign", sign.getSendusersign());
+                    file = TemplateUtil.createDoc(dataMap, Constant.Template.SUG_SIGN.getKey(), path);
+                    break;
+                default:
+                    ;
+            }
+
+            if (file != null) {
+                OfficeConverterUtil.convert2PDF(path, filePath);
+            }
+
+            printFile = new File(filePath);
+            inputStream = new BufferedInputStream(new FileInputStream(printFile));
+
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);  //读取文件流
+            inputStream.close();
+
+            response.reset();  //重置结果集
+            response.setContentType("application/pdf");
+            response.addHeader("Content-Length", "" + printFile.length());  //返回头 文件大小
+            response.setHeader("Content-Disposition", "inline;filename=" + new String(fileName.getBytes(), "ISO-8859-1"));
+
+            //获取返回体输出权
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            os.write(buffer); // 输出文件
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (file != null) {
+                    Tools.deleteFile(file);
+                }
+                if (printFile != null) {
+                    Tools.deleteFile(printFile);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     @RequiresAuthentication
     @RequestMapping(name = "下载服务器Word", path = "html/download", method = RequestMethod.GET)

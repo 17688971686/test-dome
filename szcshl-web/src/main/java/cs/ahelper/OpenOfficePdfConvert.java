@@ -1,17 +1,18 @@
 package cs.ahelper;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
 import cs.common.Constant;
 import cs.common.utils.PropertyUtil;
 import org.artofsolving.jodconverter.OfficeDocumentConverter;
-import org.artofsolving.jodconverter.document.DocumentFormat;
 import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
 import org.artofsolving.jodconverter.office.OfficeManager;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 
-//转换文档为pdf
+
+/**
+ * 用openoffice把word转pdf
+ */
 public class OpenOfficePdfConvert {
 
     /**
@@ -77,9 +78,26 @@ public class OpenOfficePdfConvert {
     }
 
     public static void main(String[] args) throws Exception {
-        String path = "D:/szec_uploadfile/";
-        OpenOfficePdfConvert opc = new OpenOfficePdfConvert();
-        opc.convert2PDF(path+"ddd.txt", path+"ddd.pdf");
+        /*int wdFormatPDF = 17;// word转PDF 格式
+        String path = "D:/szec_uploadfile/2017_12_18_12_377764303.doc";
+        String path2 = "D:/szec_uploadfile/2017_12_18_12_377764303_2.pdf";
+        ActiveXComponent _app = new ActiveXComponent("Word.Application");
+        _app.setProperty("Visible", Variant.VT_FALSE);
+
+        Dispatch documents = _app.getProperty("Documents").toDispatch();
+        File file = new File(path);
+        // 打开FreeMarker生成的Word文档
+        Dispatch doc = Dispatch.call(documents, "Open", file.getAbsolutePath(), Variant.VT_FALSE, Variant.VT_TRUE).toDispatch();
+        // 另存为新的Word文档
+        Dispatch.call(doc, "SaveAs", path2, wdFormatPDF);
+
+        Dispatch.call(doc, "Close", Variant.VT_FALSE);
+        _app.invoke("Quit", new Variant[] {});
+        ComThread.Release();*/
+       /* File file2 = new File(path2);
+        String filePath = path.substring(0, path.lastIndexOf(".")) + ".pdf";
+        File printFile = new File(filePath);
+        OpenOfficePdfConvert.convert2PDF(file2, printFile);*/
     }
 
 }

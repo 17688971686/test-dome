@@ -120,14 +120,14 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		dataMap.put("FRIDAT",FRIDAT);
 		dataMap.put("rbNamelist",roomDtos);
 
-		showName = Constant.Template.THIS_STAGE_MEETING.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+		showName = Constant.Template.THIS_STAGE_MEETING.getValue()+Constant.Template.WORD_SUFFIX.getKey();
 		//String fileLocation,String mainType,String mainId, String sysBusiType, String fileName
 		relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
 		String pathFile = path + File.separator + relativeFileUrl;
 		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.THIS_STAGE_MEETING.getKey(),pathFile);
 		if(docFile != null){
 			sysfile.add(new SysFile(UUID.randomUUID().toString(),UUID.randomUUID().toString(),relativeFileUrl,showName,
-					Integer.valueOf(String.valueOf(docFile.length())),Constant.Template.OUTPUT_SUFFIX.getKey(),
+					Integer.valueOf(String.valueOf(docFile.length())),Constant.Template.WORD_SUFFIX.getKey(),
 					null,roomId,Constant.SysFileType.STAGEMEETING.getValue(), Constant.SysFileType.MEETING.getValue()));
 		}
 		if(sysfile.size() > 0){
@@ -206,13 +206,13 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		dataMap.put("FRIDAY",FRIDAY);
 		dataMap.put("roomlist",room);
 
-		showName = Constant.Template.NEXT_STAGE_MEETING.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+		showName = Constant.Template.NEXT_STAGE_MEETING.getValue()+Constant.Template.WORD_SUFFIX.getKey();
 		relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
 		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.NEXT_STAGE_MEETING.getKey(), path+File.separator +relativeFileUrl);
 
 		if(docFile !=null){
 			sysfile.add(new SysFile(UUID.randomUUID().toString(),roomId,relativeFileUrl,showName,
-					Integer.valueOf(String.valueOf(docFile.length())),Constant.Template.OUTPUT_SUFFIX.getKey(),
+					Integer.valueOf(String.valueOf(docFile.length())),Constant.Template.WORD_SUFFIX.getKey(),
 					null,roomId,Constant.SysFileType.STAGEMEETING.getValue(), Constant.SysFileType.MEETING.getValue()));
 		}
 
@@ -492,7 +492,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		dataMap.put("START",start);
 		dataMap.put("END",end);
 		dataMap.put("contentList",rbNameList);
-		showName = Constant.Template.EXPORTROOM.getValue()+Constant.Template.OUTPUT_SUFFIX.getKey();
+		showName = Constant.Template.EXPORTROOM.getValue()+Constant.Template.WORD_SUFFIX.getKey();
 		relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
 		String pathFile = path + File.separator + relativeFileUrl;
 		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.EXPORTROOM.getKey(),pathFile);
