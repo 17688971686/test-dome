@@ -50,7 +50,7 @@ public class Sign extends DomainBase {
     private String filecode;
 
     /**
-     * 收文编号(年份+收文类型+序号[序号保留3位数])
+     * 评审中心收文编号(年份+收文类型+序号[序号保留3位数])
      */
     @Column(columnDefinition = "VARCHAR(16)")
     private String signNum;

@@ -2,11 +2,9 @@ package cs.repository.repositoryImpl.project;
 
 import cs.common.ResultMsg;
 import cs.domain.project.SignDispaWork;
-import cs.model.PageModelDto;
 import cs.repository.IRepository;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Description: 项目统计视图 数据操作实现接口
@@ -44,4 +42,10 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
      * @return
      */
     SignDispaWork findSDPBySignId(String signId);
+
+    /**
+     * 获取未发送给委里的项目信息
+     * @return
+     */
+    List<SignDispaWork> findUnSendFGWList();
 }

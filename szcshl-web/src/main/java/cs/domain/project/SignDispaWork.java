@@ -30,6 +30,16 @@ public class SignDispaWork {
     private String isAppraising;
 
     /**
+     * 是否确认签收(9:是，其他 否)
+     */
+    private String issign;
+
+    /**
+     * 委内收文编号
+     */
+    @Column
+    private String filecode;
+    /**
      * 项目签收日期
      */
     @Temporal(TemporalType.TIMESTAMP)
@@ -37,7 +47,7 @@ public class SignDispaWork {
     private Date signdate;
 
     /**
-     * 收文编号
+     * 评审中心收文编号(年份+收文类型+序号[序号保留3位数])
      */
     @Column
     private String signnum;
@@ -277,9 +287,23 @@ public class SignDispaWork {
     @Column
     private String isassistproc;
 
+    /**
+     * 警示灯状态
+     */
     @Column
     private String lightState;
 
+    /**
+     * 是否已经发送发改委
+     */
+    @Column
+    private String isSendFGW;
+
+    /**
+     * 旧项目ID
+     */
+    @Column(columnDefinition = "INTEGER")
+    private Integer oldProjectId;
 
     public String getLeaderName() {
         return leaderName;
@@ -647,5 +671,37 @@ public class SignDispaWork {
 
     public void setLightState(String lightState) {
         this.lightState = lightState;
+    }
+
+    public String getIsSendFGW() {
+        return isSendFGW;
+    }
+
+    public void setIsSendFGW(String isSendFGW) {
+        this.isSendFGW = isSendFGW;
+    }
+
+    public Integer getOldProjectId() {
+        return oldProjectId;
+    }
+
+    public void setOldProjectId(Integer oldProjectId) {
+        this.oldProjectId = oldProjectId;
+    }
+
+    public String getIssign() {
+        return issign;
+    }
+
+    public void setIssign(String issign) {
+        this.issign = issign;
+    }
+
+    public String getFilecode() {
+        return filecode;
+    }
+
+    public void setFilecode(String filecode) {
+        this.filecode = filecode;
     }
 }

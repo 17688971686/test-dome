@@ -86,7 +86,10 @@ public class UserController {
     @ResponseBody
     public List<UserDto> findChargeUsers() {
         User curUser = SessionUtil.getUserInfo();
-        return userService.findUserByOrgId(curUser.getOrg().getId());
+        if(curUser.getOrg() != null){
+            return userService.findUserByOrgId(curUser.getOrg().getId());
+        }
+        return null;
     }
 
     //@RequiresPermissions("user#findByOrgUserName#get")

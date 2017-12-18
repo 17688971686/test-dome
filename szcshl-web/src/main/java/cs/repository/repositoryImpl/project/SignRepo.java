@@ -7,7 +7,14 @@ import java.util.List;
 
 public interface SignRepo extends IRepository<Sign, String> {
 
-    boolean updateSignState(String signId,String state);
+    /**
+     * 修改项目状态
+     * @param signId
+     * @param stateProperty 状态属性
+     * @param stateValue 值
+     * @return
+     */
+    boolean updateSignState(String signId,String stateProperty,String stateValue);
 
     boolean updateSignProcessState(String signId,Integer processState);
 

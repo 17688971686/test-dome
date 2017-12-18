@@ -506,7 +506,7 @@ public class SignServiceImpl implements SignService {
      */
     @Override
     public ResultMsg endFlow(String signid) {
-        if (signRepo.updateSignState(signid, EnumState.FORCE.getValue())) {
+        if (signRepo.updateSignState(signid,Sign_.signState.getName(), EnumState.FORCE.getValue())) {
             return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
         }
         return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败！");
@@ -1774,15 +1774,15 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 更改项目状态
-     *
+     * 修改项目状态
      * @param signId
-     * @param state
+     * @param stateProperty 状态属性
+     * @param stateValue 值
      * @return
      */
     @Override
-    public boolean updateSignState(String signId, String state) {
-        return signRepo.updateSignState(signId, state);
+    public boolean updateSignState(String signId,String stateProperty,String stateValue) {
+        return signRepo.updateSignState(signId,stateProperty,stateValue);
     }
 
     /**

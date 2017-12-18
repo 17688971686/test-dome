@@ -63,6 +63,16 @@ public class IFResultCode {
         public String getValue() {
             return value;
         }
+
+        public static String getCodeByValue(String value){
+            PSFS[] enums = PSFS.values();
+            for (int i = 0; i < enums.length; i++) {
+                if (enums[i].getValue().equals(value)) {
+                    return enums[i].getCode();
+                }
+            }
+            return null;
+        }
     }
 
     /**

@@ -8,7 +8,6 @@ import cs.domain.project.ProjectStop;
 import cs.domain.project.Sign;
 import cs.domain.sys.Workday;
 import cs.quartz.unit.QuartzUnit;
-import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.flow.FlowService;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
@@ -18,12 +17,10 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

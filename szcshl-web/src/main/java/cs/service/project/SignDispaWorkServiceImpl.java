@@ -481,5 +481,14 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         return signDispaWorkRepo.findByTypeAndReview(startTime, endTime);
     }
 
+    /**
+     * 获取没有发送给发改委的项目信息
+     * @return
+     */
+    @Override
+    public List<SignDispaWork> findUnSendFGWList() {
+        return signDispaWorkRepo.findUnSendFGWList();
+    }
+
 
 }

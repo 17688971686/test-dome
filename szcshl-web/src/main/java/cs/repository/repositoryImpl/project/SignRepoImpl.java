@@ -3,7 +3,6 @@ package cs.repository.repositoryImpl.project;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
-import cs.domain.expert.ExpertSelected_;
 import cs.domain.project.Sign;
 import cs.domain.project.SignMerge;
 import cs.domain.project.SignMerge_;
@@ -18,16 +17,17 @@ import java.util.List;
 public class SignRepoImpl extends AbstractRepository<Sign, String> implements SignRepo {
 
     /**
-     * 更改流程状态
-     *
-     * @param state
+     * 修改项目状态
+     * @param signId
+     * @param stateProperty 状态属性
+     * @param stateValue 值
      * @return
      */
     @Override
-    public boolean updateSignState(String signId, String state) {
+    public boolean updateSignState(String signId,String stateProperty,String stateValue) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" update " + Sign.class.getSimpleName() + " set " + Sign_.signState.getName() + " =:state ");
-        hqlBuilder.setParam("state", state);
+        hqlBuilder.append(" update " + Sign.class.getSimpleName() + " set " + stateProperty + " =:state ");
+        hqlBuilder.setParam("state", stateValue);
         hqlBuilder.append(" where " + Sign_.signid.getName() + " =:signid ");
         hqlBuilder.setParam("signid", signId);
 

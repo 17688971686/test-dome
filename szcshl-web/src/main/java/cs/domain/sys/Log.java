@@ -51,7 +51,7 @@ public class Log {
     /**
      * 信息
      */
-    @Column(columnDefinition = "varchar(1000)")
+    @Column(columnDefinition = "CLOB")
 	private String message;
 
     /**

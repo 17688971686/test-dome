@@ -97,4 +97,9 @@ public interface SignDispaWorkService {
      */
     ResultMsg findByTypeAndReview(String startTime , String endTime);
 
+    /**
+     * 获取未发送给委里的项目
+     * @return
+     */
+    List<SignDispaWork> findUnSendFGWList();
 }
