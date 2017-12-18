@@ -283,7 +283,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_user + "/fingByOData?$orderby=userSort", $("#usersform")),
+                transport: common.kendoGridConfig().transport(url_user + "/fingByOData?$orderby=jobState desc", $("#usersform")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -388,6 +388,21 @@
                             return " ";
                         }
                     }
+                },
+                {
+                    field: "",
+                    title: "在职情况",
+                    width: 160,
+                    filterable: false,
+                    template: function (item) {
+                     if(item.jobState=="t"){
+                         return "在职";
+                     }else{
+                         return "不在职";
+                     }
+
+                    }
+
                 },
                 {
                     field: "",
