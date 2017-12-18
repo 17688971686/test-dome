@@ -7,12 +7,18 @@ import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
+import cs.model.expert.ExpertDto;
+import cs.model.meeting.RoomBookingDto;
+import cs.model.project.WorkProgramDto;
 import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.service.project.WorkProgramService;
 import cs.service.sys.SysFileService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -55,6 +61,12 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     private RealPathResolver realPathResolver;
     @Autowired
     private SignRepo signRepo;
+
+    @Autowired
+    private WorkProgramService workProgramService ;
+
+    @Autowired
+    private SignBranchRepo signBranchRepo;
 
     private ServletContext servletContext;
 
@@ -479,63 +491,38 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             switch (businessType) {
                 case "SIGN":
                     Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
-                    Map<String, Object> dataMap = new HashMap<>();
-                    dataMap.put("signdate", DateUtils.converToString(sign.getSigndate(), "yyyy年MM月dd日"));
-                    dataMap.put("projectname", sign.getProjectname());
-                    dataMap.put("signNum", sign.getSignNum());
-                    dataMap.put("builtcompanyName", sign.getBuiltcompanyName());
-                    dataMap.put("designcompanyName", sign.getDesigncompanyName());
-                    dataMap.put("maindeptName", sign.getMaindeptName());
-                    dataMap.put("mainDeptUserName", sign.getMainDeptUserName());
-                    dataMap.put("assistdeptName", sign.getAssistdeptName());
-                    dataMap.put("assistDeptUserName", sign.getAssistDeptUserName());
-                    dataMap.put("urgencydegree", sign.getUrgencydegree());
-                    dataMap.put("projectcode", sign.getProjectcode());
-                    dataMap.put("secrectlevel", sign.getSecrectlevel());
-                    dataMap.put("sugProDealOriginal", sign.getSugProDealOriginal());
-                    dataMap.put("sugProDealCount", sign.getSugProDealCount());
-                    dataMap.put("sugProAdviseOriginal", sign.getSugProAdviseOriginal());
-                    dataMap.put("sugProAdviseCount", sign.getSugProAdviseCount());
-                    dataMap.put("sugFileDealOriginal", sign.getSugFileDealOriginal());
-                    dataMap.put("sugFileDealCount", sign.getSugFileDealCount());
-                    dataMap.put("proSugEledocCount", sign.getProSugEledocCount());
-                    dataMap.put("sugOrgApplyOriginal", sign.getSugOrgApplyOriginal());
-                    dataMap.put("sugOrgApplyCount", sign.getSugOrgApplyCount());
-                    dataMap.put("sugMeetOriginal", sign.getSugMeetOriginal());
-                    dataMap.put("sugMeetCount", sign.getSugMeetCount());
-                    dataMap.put("sugOrgReqOriginal", sign.getSugOrgReqOriginal());
-                    dataMap.put("sugOrgReqCount", sign.getSugOrgReqCount());
-                    dataMap.put("studyPealOriginal", sign.getStudyPealOriginal());
-                    dataMap.put("studyProDealCount", sign.getStudyProDealCount());
-                    dataMap.put("envproReplyCopy", sign.getEnvproReplyCopy());
-                    dataMap.put("envproReplyCount", sign.getEnvproReplyCount());
-                    dataMap.put("studyFileDealOriginal", sign.getStudyFileDealOriginal());
-                    dataMap.put("studyFileDealCount", sign.getStudyFileDealCount());
-                    dataMap.put("planAddrCopy", sign.getPlanAddrCopy());
-                    dataMap.put("planAddrCount", sign.getPlanAddrCount());
-                    dataMap.put("studyOrgApplyOriginal", sign.getStudyOrgApplyOriginal());
-                    dataMap.put("studyOrgApplyCount", sign.getStudyOrgApplyCount());
-                    dataMap.put("reportOrigin", sign.getReportOrigin());
-                    dataMap.put("reportCopy", sign.getReportCopy());
-                    dataMap.put("reportCount", sign.getReportCount());
-                    dataMap.put("studyOrgReqOriginal", sign.getStudyOrgReqOriginal());
-                    dataMap.put("studyOrgReqCount", sign.getStudyOrgReqCount());
-                    dataMap.put("eledocCount", sign.getEledocCount());
-                    dataMap.put("studyProSugOriginal", sign.getStudyProSugOriginal());
-                    dataMap.put("studyProSugCount", sign.getStudyProSugCount());
-                    dataMap.put("energyOriginal", sign.getEnergyOriginal());
-                    dataMap.put("energyCopy", sign.getEnergyCopy());
-                    dataMap.put("energyCount", sign.getEnergyCount());
-                    dataMap.put("studyMeetOriginal", sign.getStudyMeetOriginal());
-                    dataMap.put("studyMeetCount", sign.getStudyMeetCount());
-                    dataMap.put("comprehensivehandlesug", sign.getComprehensivehandlesug());
-                    dataMap.put("comprehensiveDate", DateUtils.converToString(sign.getComprehensiveDate(), "yyyy年MM月dd日"));
-                    dataMap.put("leaderhandlesug", sign.getLeaderhandlesug());
-                    dataMap.put("leaderDate", DateUtils.converToString(sign.getLeaderDate(), "yyyy年MM月dd日"));
-                    dataMap.put("ministerhandlesug", sign.getMinisterhandlesug());
-                    dataMap.put("ministerDate", DateUtils.converToString(sign.getMinisterDate(), "yyyy年MM月dd日"));
-                    dataMap.put("sendusersign", sign.getSendusersign());
-                    file = TemplateUtil.createDoc(dataMap, Constant.Template.SUG_SIGN.getKey(), path);
+                    Map<String, Object> dataMap = TemplateUtil.entryAddMap(sign);
+                    file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
+                    break;
+
+                case "WORKPROGRAM":
+                    WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
+                    WorkProgram workProgram  = new WorkProgram();
+                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto , workProgram);
+                    Map<String , Object> workData = TemplateUtil.entryAddMap(workProgram);
+                    List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
+                    ExpertDto[] expertDtos = new ExpertDto[10];
+                    if(expertDtoList!=null && expertDtoList.size()>0) {
+                        for (int i = 0; i < expertDtoList.size(); i++) {
+                            expertDtos[i] = expertDtoList.get(i);
+                        }
+                    }
+                    String addressName = "";
+                    String rbDate = "";
+                    List<RoomBookingDto> roomBookingDtoList =  workProgramDto.getRoomBookingDtos();
+                    if(roomBookingDtoList!= null && roomBookingDtoList.size()>0){
+                        addressName = workProgramDto.getRoomBookingDtos().get(0).getAddressName();
+                        rbDate = workProgramDto.getRoomBookingDtos().get(0).getRbDate();
+                    }
+
+                    int count = signBranchRepo.countBranch(workProgramDto.getSignId());
+                    workData.put("expertList" , expertDtos);//聘请专家
+                    workData.put("works" , count);//控制是否多个分支
+                    workData.put("addressName" ,addressName );//会议室名称
+                    workData.put("rbDate" , rbDate);//评审会时间
+                    workData.put("studyBeginTimeStr" , DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
+                    workData.put("studyEndTimeStr" , DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
+                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                     break;
                 default:
                     ;

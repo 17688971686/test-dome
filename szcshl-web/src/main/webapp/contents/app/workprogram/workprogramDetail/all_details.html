@@ -201,7 +201,8 @@
             </tr>
         </table>
     </div>
-    <button id="wp_{{w.branchId}}_{{w.isMainProject}}" class="form-control btn-sm btn-primary" style="width: 200px; margin: 20px auto;" ng-click="vm.printpage($event)">打印</button>
+   <!-- <button id="wp_{{w.branchId}}_{{w.isMainProject}}" class="form-control btn-sm btn-primary" style="width: 200px; margin: 20px auto;" ng-click="vm.printpage($event)">打印</button>-->
+    <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(w.id,'WORKPROGRAM')">打印预览</button>
 </div>
 <!-- end 主项目 -->
 
@@ -395,5 +396,6 @@
             </tr>
         </table>
     </div>
-    <button id="wp_{{w.branchId}}_{{w.isMainProject}}"  class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="vm.printpage($event)">打印</button>
+   <!-- <button id="wp_{{w.branchId}}_{{w.isMainProject}}"  class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="vm.printpage($event)">打印</button>-->
+    <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(w.id,'WORKPROGRAM')">打印预览</button>
 </div>
