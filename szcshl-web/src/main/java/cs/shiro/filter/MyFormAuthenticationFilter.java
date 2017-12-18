@@ -11,6 +11,7 @@ import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -58,10 +59,11 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         User user = userService.findByName(username);
         if(user != null){
             //用户停用，未激活等判断
-            /*if(isDisabled(user)){
-                return onLoginFailure(token,failureUrl,adminLogin,new DisabledException(),request, response);
+            if(user.getUseState().equals("停用")){
+               /* throw new DisabledAccountException();*/
+                return onLoginFailure(token,new DisabledAccountException(),request, response);
             }
-            if(!isActive(user)){
+/*            if(!isActive(user)){
                 return onLoginFailure(token,failureUrl,adminLogin,new InactiveException(),request, response);
             }*/
         }
