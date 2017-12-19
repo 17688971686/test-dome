@@ -11,13 +11,13 @@ public interface RoomBookingRepo extends IRepository<RoomBooking, String> {
 
     List<RoomBooking> findByHql(String hql);
 
-    List<RoomBooking> findWeekBook();
+   /* List<RoomBooking> findWeekBook();
 
     List<RoomBooking> thisWeekRoomStage();
 
     List<RoomBookingDto> findStageNextWeek();
 
-    List<RoomBookingDto> findNextWeek();
+    List<RoomBookingDto> findNextWeek();*/
 
     /**
      * 根据业务ID查询最先预定的会议室日期

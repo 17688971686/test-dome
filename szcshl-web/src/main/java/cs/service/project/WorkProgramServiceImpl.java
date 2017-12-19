@@ -20,6 +20,7 @@ import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.service.sys.SysFileService;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -41,6 +42,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     private SignRepo signRepo;
     @Autowired
     private SysFileRepo sysFileRepo;
+    @Autowired
+    private SysFileService sysFileService;
     @Autowired
     private AssistPlanSignRepo assistPlanSignRepo;
     @Autowired
@@ -413,7 +416,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     public ResultMsg createMeetingDoc(String signId) {
         Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
         if (sign == null || StringUtil.isEmpty(sign.getSignid())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法收文信息");
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该项目已被删除");
         }
 //        WorkProgram workProgram = workProgramRepo.findById(WorkProgram_.id.getName(),workprogramId);
         WorkProgram workProgram = workProgramRepo.findByPrincipalUser(signId);
@@ -434,11 +437,15 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             queryHql.setParam("sysBusiType", Constant.SysFileType.MEETING.getValue());        //业务类型
 
             List<SysFile> fileList = sysFileRepo.findByHql(queryHql);
-            if (fileList != null && fileList.size() > 0) {
-                fileList.forEach(f -> {
-                    sysFileRepo.delete(f);
-                    SysFileUtil.deleteFile(path + f.getFileUrl());
-                });
+            if (Validate.isList(fileList)) {
+                String deleteId = "";
+                for(int i=0,l=fileList.size();i<l;i++){
+                    if(i>0){
+                        deleteId += ",";
+                    }
+                    deleteId += fileList.get(i).getSysFileId();
+                }
+                sysFileService.deleteById(deleteId);
             }
         }
         //2、生成会前准备材料

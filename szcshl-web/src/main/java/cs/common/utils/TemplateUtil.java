@@ -13,6 +13,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import static cs.common.Constant.*;
+
 /**
  * 模板工具类
  */
@@ -68,7 +70,7 @@ public class TemplateUtil {
         return f;
     }
 
-    public static void nextWeekMeeting() {
+    /*public static void nextWeekMeeting() {
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -109,14 +111,14 @@ public class TemplateUtil {
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         Date nextSunday = cal.getTime();
 
-        /*System.out.println(nextMonday);
+        *//*System.out.println(nextMonday);
         System.out.println(nextTuesday);
         System.out.println(nextWednesday);
         System.out.println(nextThursday);
         System.out.println(nextFriday);
-        System.out.println(nextSunday);*/
+        System.out.println(nextSunday);*//*
 
-    }
+    }*/
 
     /**
      * 生成模板并且同时生成附件
@@ -136,26 +138,35 @@ public class TemplateUtil {
         SysFile sysFile = null;
         String showName = fileName + fileType;
         String path = SysFileUtil.getUploadPath();
-        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, mainType, signId, businessType, showName);
-        File docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl);
-        fileType = fileType.toLowerCase();//统一转成小写
-
+        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, mainType, signId, businessType, null);
         try {
-           /* PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName); //系统业务属性文件名
-            boolean result = FtpUtil.uploadFile(propertyUtil.readProperty(Constant.FTP_IP1), Integer.parseInt(propertyUtil.readProperty(Constant.FTP_PORT1)),
-                    propertyUtil.readProperty(Constant.FTP_USER), propertyUtil.readProperty(Constant.FTP_PWD), propertyUtil.readProperty(Constant.FTP_BASE_PATH),
-                    "", new String(showName.getBytes("GBK"), "ISO-8859-1"), new FileInputStream(docFile));
-            if (result) {
-                sysFile = new SysFile();
-                sysFile = new SysFile(UUID.randomUUID().toString(), signId, relativeFileUrl, showName,
-                        Integer.valueOf(String.valueOf(docFile.length())), fileType, signId, mainType, reviewStage, businessType);
-                sysFile.setFtpIp(propertyUtil.readProperty(Constant.FTP_IP1));
-                sysFile.setPort(propertyUtil.readProperty(Constant.FTP_PORT1));
-                sysFile.setFtpUser(propertyUtil.readProperty(Constant.FTP_USER));
-                sysFile.setFtpPwd(propertyUtil.readProperty(Constant.FTP_PWD));
-                sysFile.setFtpBasePath(propertyUtil.readProperty(Constant.FTP_BASE_PATH));
-                sysFile.setFtpFilePath("");
-            }*/
+            File docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl);
+            fileType = fileType.toLowerCase();//统一转成小写
+            //连接ftp
+            Ftp f = new Ftp();
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
+            f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
+            f.setUserName(propertyUtil.readProperty(FTP_USER));
+            f.setPwd(propertyUtil.readProperty(FTP_PWD));
+            boolean linkSucess = FtpUtil.connectFtp(f);
+            if(linkSucess){
+                //上传到ftp,
+                String uploadFileName = Tools.generateRandomFilename().concat(fileType);
+                linkSucess = FtpUtil.uploadFile(relativeFileUrl, uploadFileName, new FileInputStream(docFile));
+                if (linkSucess) {
+                    Tools.deleteFile(docFile);
+                    sysFile = new SysFile();
+                    sysFile = new SysFile(UUID.randomUUID().toString(), signId, relativeFileUrl+ File.separator +uploadFileName, showName,
+                            docFile.length(), fileType, signId, mainType, reviewStage, businessType);
+                    sysFile.setFtpIp(f.getIpAddr());
+                    sysFile.setPort(String.valueOf(f.getPort()));
+                    sysFile.setFtpUser(f.getUserName());
+                    sysFile.setFtpPwd(f.getPwd());
+                    sysFile.setFtpBasePath(f.getPath());
+                    sysFile.setFtpFilePath("");
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

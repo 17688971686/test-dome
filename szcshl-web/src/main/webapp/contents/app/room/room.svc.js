@@ -14,8 +14,8 @@
             setSCDataSource: setSCDataSource,           //设置数据源
             showMeeting: showMeeting,                   //查询所有系统会议
             exportThisWeekStage: exportThisWeekStage,   //导出本周评审会会议安排
-            exportNextWeekStage: exportNextWeekStage,   //下周评审会议安排
-            exportThisWeek: exportThisWeek,
+            //exportNextWeekStage: exportNextWeekStage,   //下周评审会议安排
+            //exportThisWeek: exportThisWeek,
             initDefaultValue: initDefaultValue,         //初始化会议信息
             saveBookRoom: saveBookRoom,                 //保存会议预定信息
             deleteRoom : deleteRoom ,                //删除会议室
@@ -235,33 +235,10 @@
             var fileName = escape(encodeURIComponent(vm.reportName));
             window.open(url_room + "/exportThisWeekStage?currentDate=" + vm.currentDate + "&rbType="
                 + vm.rbType + "&mrId=" + vm.mrID + "&fileName=" + fileName);
-
-            /* var httpOptions = {
-             method: 'get',
-             url: url_room + "/exportThisWeekStage",
-             params: {
-             currentDate: vm.currentDate,
-             rbType: vm.rbType,
-             mrId: vm.mrID,
-             fileName :vm.reportName
-             }
-             }
-             var httpSuccess = function success(response) {
-             var fileName =vm.reportName + ".doc";
-             var fileType ="msword";
-             common.downloadReport(response.data , fileName , fileType);
-
-             }
-             common.http({
-             vm: vm,
-             $http: $http,
-             httpOptions: httpOptions,
-             success: httpSuccess
-             });*/
         }
 
         //S 下周评审会议
-        function exportNextWeekStage(vm) {
+        /*function exportNextWeekStage(vm) {
             var httpOptions = {
                 method: 'get',
                 url: url_room + "/exportThisWeekStage",
@@ -303,7 +280,7 @@
         //下周全部会议
         function exportNextWeek() {
             window.open(url_room + "/exportNextWeek");
-        }
+        }*/
 
         //end#exportWeek
 

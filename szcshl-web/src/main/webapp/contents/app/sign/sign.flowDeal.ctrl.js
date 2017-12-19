@@ -850,7 +850,6 @@
                                     vm.showFlag.tabSysFile = true;
                                     vm.sysFileList = data;
                                     sysfileSvc.initZtreeClient(vm, $scope);//树形图
-
                                 }
                             });
                         } else {
