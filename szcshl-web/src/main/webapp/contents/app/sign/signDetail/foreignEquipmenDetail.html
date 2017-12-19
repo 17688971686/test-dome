@@ -183,7 +183,7 @@
                         <span data-valmsg-for="expertArgumentCount" data-valmsg-replace="true" class="errors"></span>
                     </td>
 
-                    <td style="border-top:none;text-align:right;">进品产品目录</td>
+                    <td style="border-top:none;text-align:right;">进口产品目录</td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" style="width:50px;" ng-disabled="true"
                                ng-model="vm.model.importProductOriginal"
@@ -330,5 +330,6 @@
     </tr>
 </table>
 -->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
-</button>
+<!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
+</button>-->
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'SIGN' , 'STAGEDEVICE')">打印预览</button>

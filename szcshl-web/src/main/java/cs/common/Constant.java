@@ -359,7 +359,22 @@ public class Constant {
         STAGE_SUG_SIGN("print/sign/xmjys" , "项目建议书_报审登记表"),
         STAGE_SUG_WORKPROGRAM("print/workProgram/xmjys" , "项目建议书_工作方案"),
         STAGE_SUG_FILERECORD("print/filerecord/fileXmjys" , "项目建议书_归档"),
-        STAGE_SUG_DISPATCHDOC("print/dispatchDoc/dispatchXmjys" , "项目建议书_发文");
+        STAGE_SUG_DISPATCHDOC("print/dispatchDoc/dispatchXmjys" , "项目建议书_发文"),
+
+        //可行性研究
+        STAGE_STUDY_FILERECORD("print/filerecord/fileKxxyj" , "可行性研究_归档"),
+
+        //项目概算
+        STAGE_BUDGET_SIGN("print/sign/signXmgs" , "项目概算_报审登记表"),
+
+        //进口设备
+        IMPORT_DEVICE_SIGN("print/sign/signJksb" , "进口设备_报审登记表"),
+
+        //设备清单
+        DEVICE_BILL_SIGN("print/sign/signSbqd" , "设备清单_报审登记表"),
+
+        //资金申请报告
+        APPLY_REPORT_SIGN("print/sign/signZjsq" , "资金申请_报审登记表");
 
         private String key;
         private String value;

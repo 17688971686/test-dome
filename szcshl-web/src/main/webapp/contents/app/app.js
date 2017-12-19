@@ -1214,7 +1214,6 @@
             }else{
                 bsWin.alert("参数不正确，无法在线预览");
             }
-
         }
 
         //打印预览，生成word模板直接预览
@@ -1222,7 +1221,7 @@
             if(!businessId || !businessType){
                 bsWin.alert("打印预览失败，参数不正确！");
             }else {
-                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/printPreview/" + businessId+"/"+businessType;
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/printPreview/" + businessId+"/"+businessType + "/" + stageType;
                 $("#iframePreview").attr("src", url);
                 $("#previewModal").kendoWindow({
                     width : "80%",

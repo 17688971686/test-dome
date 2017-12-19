@@ -5,24 +5,21 @@ import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
-import cs.domain.project.*;
+import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.meeting.RoomBookingDto;
-import cs.model.project.FileRecordDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.project.DispatchDocRepo;
-import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.project.WorkProgramService;
 import cs.service.sys.SysFileService;
-import org.apache.commons.net.ftp.FTPClientConfig;
-import org.apache.commons.net.ftp.FTPFile;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -66,7 +63,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     private SignRepo signRepo;
 
     @Autowired
-    private WorkProgramService workProgramService;
+    private WorkProgramService workProgramService ;
 
     @Autowired
     private SignBranchRepo signBranchRepo;
@@ -218,7 +215,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             fileType = fileType.toLowerCase();      //统一转成小写
 
             if (!multipartFile.isEmpty()) {
-                resultMsg = fileService.save(multipartFile, fileName, businessId, fileType, mainId, mainType, sysfileType, sysBusiType);
+                resultMsg = fileService.save(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType, sysfileType, sysBusiType);
             } else {
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件上传失败，无法获取文件信息！");
             }
@@ -614,9 +611,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
      * @param response
      */
     @RequiresAuthentication
-    @RequestMapping(name = "打印预览", path = "printPreview/{businessId}/{businessType}", method = RequestMethod.GET)
+    @RequestMapping(name = "打印预览", path = "printPreview/{businessId}/{businessType}/{stageType}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    public void printPreview(@PathVariable String businessId, @PathVariable String businessType, HttpServletResponse response) {
+    public void printPreview(@PathVariable String businessId, @PathVariable String businessType , @PathVariable String stageType, HttpServletResponse response) {
         InputStream inputStream = null;
         File file = null;
         File printFile = null;
@@ -628,50 +625,117 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 case "SIGN":
                     Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
                     Map<String, Object> dataMap = TemplateUtil.entryAddMap(sign);
-                    file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
+                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_STUDY.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())){
+                        //建议书、可研、其他
+                        file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
+                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                        //概算
+                        file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_BUDGET_SIGN.getKey(), path);
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                        //资金
+                        file = TemplateUtil.createDoc(dataMap, Constant.Template.APPLY_REPORT_SIGN.getKey(), path);
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                        //进口
+                        file = TemplateUtil.createDoc(dataMap, Constant.Template.IMPORT_DEVICE_SIGN.getKey(), path);
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                        //设备清单（国产、进口）
+                        file = TemplateUtil.createDoc(dataMap, Constant.Template.DEVICE_BILL_SIGN.getKey(), path);
+
+                    }
                     break;
 
                 case "WORKPROGRAM":
                     WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
-                    WorkProgram workProgram = new WorkProgram();
-                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
-                    Map<String, Object> workData = TemplateUtil.entryAddMap(workProgram);
+                    WorkProgram workProgram  = new WorkProgram();
+                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto , workProgram);
+                    Map<String , Object> workData = TemplateUtil.entryAddMap(workProgram);
                     List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                     ExpertDto[] expertDtos = new ExpertDto[10];
-                    if (expertDtoList != null && expertDtoList.size() > 0) {
+                    if(expertDtoList!=null && expertDtoList.size()>0) {
                         for (int i = 0; i < expertDtoList.size(); i++) {
                             expertDtos[i] = expertDtoList.get(i);
                         }
                     }
                     String addressName = "";
                     String rbDate = "";
-                    List<RoomBookingDto> roomBookingDtoList = workProgramDto.getRoomBookingDtos();
-                    if (roomBookingDtoList != null && roomBookingDtoList.size() > 0) {
+                    List<RoomBookingDto> roomBookingDtoList =  workProgramDto.getRoomBookingDtos();
+                    if(roomBookingDtoList!= null && roomBookingDtoList.size()>0){
                         addressName = workProgramDto.getRoomBookingDtos().get(0).getAddressName();
                         rbDate = workProgramDto.getRoomBookingDtos().get(0).getRbDate();
                     }
 
                     int count = signBranchRepo.countBranch(workProgramDto.getSignId());
-                    workData.put("expertList", expertDtos);//聘请专家
-                    workData.put("works", count);//控制是否多个分支
-                    workData.put("addressName", addressName);//会议室名称
-                    workData.put("rbDate", rbDate);//评审会时间
-                    workData.put("studyBeginTimeStr", DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
-                    workData.put("studyEndTimeStr", DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
+                    workData.put("expertList" , expertDtos);//聘请专家
+                    workData.put("works" , count);//控制是否多个分支
+                    workData.put("addressName" ,addressName );//会议室名称
+                    workData.put("rbDate" , rbDate);//评审会时间
+                    workData.put("studyBeginTimeStr" , DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
+                    workData.put("studyEndTimeStr" , DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
+
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                     break;
                 case "FILERECORD" :
                     FileRecord fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName() , businessId);
                     Map<String , Object> fileData = TemplateUtil.entryAddMap(fileRecord);
-                    file = TemplateUtil.createDoc(fileData, Template.STAGE_SUG_FILERECORD.getKey(), path);
+                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())){
+                        //建议书
+                        file = TemplateUtil.createDoc(fileData, Template.STAGE_SUG_FILERECORD.getKey(), path);
+                    }else if(stageType.equals(RevireStageKey.KEY_STUDY.getValue())){
+                        //可研
+                        file = TemplateUtil.createDoc(fileData, Template.STAGE_STUDY_FILERECORD.getKey(), path);
 
+                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                        //概算
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                        //资金
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                        //进口
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                        //设备清单（国产、进口）
+
+                    }
                     break;
                 case "DISPATCHDOC":
                     DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName() , businessId);
                     Map<String , Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
-                    file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
-                    break;
 
+                    String mianChargeSuggest = dispatchDoc.getMianChargeSuggest();
+                    String secondChargeSuggest = dispatchDoc.getSecondChargeSuggest();
+                    String main = mianChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
+                    String second = secondChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
+                    dispatchData.put("mianChargeSuggest" , main) ;
+                    dispatchData.put("secondChargeSuggest" , second);
+
+                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())){
+                        //建议书
+                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
+                    }else if(stageType.equals(RevireStageKey.KEY_STUDY.getValue())){
+                        //可研
+
+                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                        //概算
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                        //资金
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                        //进口
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                        //设备清单（国产、进口）
+
+                    }
+
+                    break;
                 default:
                     ;
             }
@@ -698,7 +762,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             os.flush();
             os.close();
         } catch (Exception e) {
-           e.printStackTrace();
+            e.printStackTrace();
         } finally {
             try {
                 if (inputStream != null) {
