@@ -1,6 +1,5 @@
 package cs.common.utils;
 
-import com.ibm.icu.text.SimpleDateFormat;
 import cs.common.Constant;
 import cs.domain.sys.SysFile;
 import freemarker.template.Configuration;

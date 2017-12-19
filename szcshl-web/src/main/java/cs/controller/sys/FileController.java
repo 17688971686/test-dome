@@ -5,9 +5,7 @@ import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
-import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
-import cs.domain.project.WorkProgram;
+import cs.domain.project.*;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
@@ -16,10 +14,14 @@ import cs.model.project.WorkProgramDto;
 import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.project.WorkProgramService;
 import cs.service.sys.SysFileService;
+import org.apache.commons.net.ftp.FTPClientConfig;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -215,7 +217,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             fileType = fileType.toLowerCase();      //统一转成小写
 
             if (!multipartFile.isEmpty()) {
-                resultMsg = fileService.save(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType, sysfileType, sysBusiType);
+                resultMsg = fileService.save(multipartFile, fileName, businessId, fileType, mainId, mainType, sysfileType, sysBusiType);
             } else {
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件上传失败，无法获取文件信息！");
             }
@@ -534,7 +536,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     FTPFile f = files[i];
                     if (storeFileName.equals(f.getName())) {
                         //如果是pdf文件，直接输出流，否则要先转为pdf
-                        if(isFtpFile){
+                        if(isFtpFile || sysFile.getFileType().equals(".png") || sysFile.getFileType().equals(".jpg")|| sysFile.getFileType().equals(".gif")){
                             out = response.getOutputStream();
                             FtpUtil.getFtp().retrieveFile(f.getName(), out);
                         }else{
