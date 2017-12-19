@@ -1640,16 +1640,16 @@
                                         <w:t xml:space="preserve">       项目建议书      </w:t>
                                     </w:r>
                                     <w:r>
-                                    <w:rPr>
-                                        <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                        <w:sz w:val="24"/>
-                                    </w:rPr>
-                                <#if procsugFileOriginal?? && procsugFileOriginal=="9">
-                                    <w:sym w:font="Wingdings 2" w:char="F052" />
-                                <#else>
-                                    <w:t xml:space="preserve">□</w:t>
-                                </#if>
-                                </w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    <#if procsugFileOriginal?? && procsugFileOriginal=="9">
+                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                    <#else>
+                                        <w:t xml:space="preserve">□</w:t>
+                                    </#if>
+                                    </w:r>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
