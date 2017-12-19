@@ -26,8 +26,8 @@ public class BookBuyDto extends BaseDto {
     private String bookNo;
     private String author;
     private Date publishingTime;
-    private String bookNumber;
-    private String storeConfirm;
+    private Integer bookNumber;
+    private Integer storeConfirm;
     private String applyDept;
     private String businessId;
     private String operator;
@@ -128,20 +128,7 @@ public class BookBuyDto extends BaseDto {
     public void setPublishingTime(Date publishingTime) {
         this.publishingTime = publishingTime;
     }
-    public String getBookNumber() {
-        return bookNumber;
-    }
 
-    public void setBookNumber(String bookNumber) {
-        this.bookNumber = bookNumber;
-    }
-    public String getStoreConfirm() {
-        return storeConfirm;
-    }
-
-    public void setStoreConfirm(String storeConfirm) {
-        this.storeConfirm = storeConfirm;
-    }
     public BookBuyBusiness getBookBuyBusiness() {
         return bookBuyBusiness;
     }
@@ -180,5 +167,21 @@ public class BookBuyDto extends BaseDto {
 
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
+    }
+
+    public Integer getBookNumber() {
+        return bookNumber;
+    }
+
+    public void setBookNumber(Integer bookNumber) {
+        this.bookNumber = bookNumber;
+    }
+
+    public Integer getStoreConfirm() {
+        return storeConfirm;
+    }
+
+    public void setStoreConfirm(Integer storeConfirm) {
+        this.storeConfirm = storeConfirm;
     }
 }

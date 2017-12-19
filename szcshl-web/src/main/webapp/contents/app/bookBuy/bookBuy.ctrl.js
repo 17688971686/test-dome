@@ -60,6 +60,9 @@
             // 获取行对象
             var data = grid.dataItem(grid.select());
             vm.model = data;
+            vm.model.borrowNum = "";
+            vm.model.borrowDate = "";
+            vm.model.returnDate = "";
            $("#borrowBookWindow").kendoWindow({
                 width: "38%",
                 height: "300px",
@@ -82,8 +85,9 @@
          * 返回图书信息列表
          */
         vm.returnBookList = function () {
-            window.parent.$("#borrowBookWindow").data("kendoWindow").close()
-            $state.go("bookDetailList");
+            window.parent.$("#borrowBookWindow").data("kendoWindow").close();
+            vm.searchForm();
+           // $state.go("bookDetailList");
         }
     }
 })();
