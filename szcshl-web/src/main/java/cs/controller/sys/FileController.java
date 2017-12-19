@@ -5,17 +5,18 @@ import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
-import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
-import cs.domain.project.WorkProgram;
+import cs.domain.project.*;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.meeting.RoomBookingDto;
+import cs.model.project.FileRecordDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.project.WorkProgramService;
@@ -69,6 +70,12 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     @Autowired
     private SignBranchRepo signBranchRepo;
+
+    @Autowired
+    private FileRecordRepo fileRecordRepo;
+
+    @Autowired
+    private DispatchDocRepo dispatchDocRepo;
 
     private ServletContext servletContext;
 
@@ -653,6 +660,18 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     workData.put("studyEndTimeStr", DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                     break;
+                case "FILERECORD" :
+                    FileRecord fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName() , businessId);
+                    Map<String , Object> fileData = TemplateUtil.entryAddMap(fileRecord);
+                    file = TemplateUtil.createDoc(fileData, Template.STAGE_SUG_FILERECORD.getKey(), path);
+
+                    break;
+                case "DISPATCHDOC":
+                    DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName() , businessId);
+                    Map<String , Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
+                    file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
+                    break;
+
                 default:
                     ;
             }
@@ -679,7 +698,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             os.flush();
             os.close();
         } catch (Exception e) {
-            e.printStackTrace();
+           e.printStackTrace();
         } finally {
             try {
                 if (inputStream != null) {

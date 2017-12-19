@@ -209,6 +209,6 @@ public class TemplateUtil {
         dataMap.put("sugProDealCount" , 23);
 //        dataMap.put("sugProAdviseOriginal" , "0");
 //        TemplateUtil.createDoc(dataMap, "report/roster", "G:\\test\\建议书报审.doc");
-        TemplateUtil.createDoc(dataMap, "print/sign/xmjys", "G:\\test\\申报登记最终.doc");
+        TemplateUtil.createDoc(dataMap, "print/dispatchDoc/dispatchXmjys", "G:\\test\\发文测试.doc");
     }
 }
