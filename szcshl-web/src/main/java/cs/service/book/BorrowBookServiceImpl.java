@@ -1,5 +1,7 @@
 package cs.service.book;
 
+import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.domain.book.BorrowBookInfo;
 import cs.model.PageModelDto;
@@ -10,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Description: 图书信息 业务操作实现类
@@ -43,12 +44,45 @@ public class BorrowBookServiceImpl implements BorrowBookService {
 		return pageModelDto;
 	}
 
+	/**
+	 * 保存借书详细信息
+	 * @param record
+	 */
 	@Override
 	@Transactional
 	public void save(BookBorrowInfoDto record) {
 		BorrowBookInfo domain = new BorrowBookInfo();
 		BeanCopierUtils.copyProperties(record, domain);
+		domain.setId(UUID.randomUUID().toString());
 		borrowBookRepo.save(domain);
+	}
+
+	/**
+	 *获取借书列表
+	 * @return
+	 */
+	@Override
+	public ResultMsg getBookBorrowList(BookBorrowInfoDto bookBorrowInfoDto) {
+		try{
+			List<BookBorrowInfoDto> bookBorrowDetailList = borrowBookRepo.getBookBorrowList(bookBorrowInfoDto);
+			List<BookBorrowInfoDto> bookBorrowSumDtoList = borrowBookRepo.getBookBorrowSum(bookBorrowInfoDto);
+			Map<String,Object> resultMap = new HashMap<String,Object>();
+			resultMap.put("bookBorrowDetailList",bookBorrowDetailList);
+			resultMap.put("bookBorrowSumDtoList",bookBorrowSumDtoList);
+			return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+		}catch (Exception e){
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "查询失败");
+		}
+	}
+
+	/**
+	 * 获取个人借书总数
+	 * @param bookBorrowInfoDto
+	 * @return
+	 */
+	@Override
+	public BookBorrowInfoDto getBookBorrowSum(BookBorrowInfoDto bookBorrowInfoDto) {
+		return null;
 	}
 
 }

@@ -1,5 +1,6 @@
 package cs.service.book;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.book.BookBorrowInfoDto;
 import cs.repository.odata.ODataObj;
@@ -14,6 +15,18 @@ public interface BorrowBookService {
     PageModelDto<BookBorrowInfoDto> get(ODataObj odataObj);
 
 	void save(BookBorrowInfoDto record);
+
+    /**
+     * 借书列表
+     * @return
+     */
+	ResultMsg getBookBorrowList(BookBorrowInfoDto bookBorrowInfoDto);
+
+    /**
+     * 获取个人借书总数
+     * @return
+     */
+    BookBorrowInfoDto  getBookBorrowSum(BookBorrowInfoDto bookBorrowInfoDto);
 
 /*	void update(BorrowBookInfo record);*/
 

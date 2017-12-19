@@ -21,6 +21,7 @@ public class BookBorrowInfoDto extends BaseDto {
     private Date borrowDate;
     private Date returnDate;
     private Date realReturnDate;
+    private Integer totalCount;//个人借书总数
 
     private BookBuyBusiness bookBuyBusiness;
 
@@ -97,5 +98,13 @@ public class BookBorrowInfoDto extends BaseDto {
 
     public void setBookBuyBusiness(BookBuyBusiness bookBuyBusiness) {
         this.bookBuyBusiness = bookBuyBusiness;
+    }
+
+    public Integer getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
     }
 }

@@ -12,7 +12,12 @@
 
         activate();
         function activate() {
-            bookBuySvc.bookBorrowGrid(vm);
+            bookBuySvc.bookBorrowGrid(vm,function(data){
+                console.log( data.reObj.bookBorrowDetailList);
+                vm.bookBorrowDetailList = data.reObj.bookBorrowDetailList;
+                vm.bookBorrowSumDtoList = data.reObj.bookBorrowSumDtoList;
+
+            });
         }
         //表单查询
         vm.searchForm = function(){

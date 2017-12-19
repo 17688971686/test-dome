@@ -56,6 +56,7 @@ public class BookBuyController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public void saveBorrowDetail(@RequestBody BookBorrowInfoDto bookBorrowInfoDto) {
         borrowBookService.save(bookBorrowInfoDto);
+        bookBuyService.updateBookInfo(bookBorrowInfoDto.getId(),bookBorrowInfoDto.getBorrowNum());
     }
     @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)

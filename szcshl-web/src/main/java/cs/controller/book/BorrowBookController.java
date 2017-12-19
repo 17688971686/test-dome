@@ -1,12 +1,15 @@
 package cs.controller.book;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.book.BookBorrowInfoDto;
 import cs.repository.odata.ODataObj;
 import cs.service.book.BorrowBookService;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,6 +31,7 @@ public class BorrowBookController {
     @Autowired
     private BorrowBookService borrowBookService;
 
+    @RequiresAuthentication
     @RequestMapping(name = "获取数据", path = "findByOData", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<BookBorrowInfoDto> get(HttpServletRequest request) throws ParseException {
@@ -36,5 +40,13 @@ public class BorrowBookController {
         return bookBorrowInfoDto;
     }
 
+
+    @RequiresAuthentication
+    //@RequiresPermissions("expertSelected#expertCostDetailTotal#post")
+    @RequestMapping(name = "借书列表", path = "expertCostDetailTotal", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg getBookBorrowList(@RequestBody BookBorrowInfoDto bookBorrowInfoDto){
+        return  borrowBookService.getBookBorrowList(bookBorrowInfoDto);
+    }
 
 }
