@@ -68,7 +68,7 @@
     </tr>
 
     <tr>
-        <td class="text-center" rowspan="2" style="vertical-align: middle;">项目建议书申报资料</td>
+        <td class="text-center" rowspan="2" style="vertical-align: middle;">可研报告报审资料</td>
         <td colspan="3">
             <table class="table" style="border: 0px solid transparent !important;margin-bottom: 0px;">
                 <tr>
@@ -230,7 +230,7 @@
                                                         ng-model="vm.fileRecord.sugproComletterScan"
                                                         name="sugproComletterScan" ng-true-value="9" ng-false-value="0">
                     </td>
-                    <td style="border-top:none;text-align:right;">电子光盘份数</td>
+                    <td style="border-top:none;text-align:right;">项目电子光盘</td>
                     <td style="border-top:none;">
                          <input ng-disabled="true"  type="text" style="width:50px;" class="form-control input-sm "
                                data-val="true" data-val-digits="只能输入数字"
@@ -541,6 +541,7 @@
     </tr>
     </tbody>
 </table>    <!--  end table		-->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
-</button>
+<!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
+</button>-->
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.fileRecord.fileRecordId,'FILERECORD' , 'STAGESTUDY')">打印预览</button>
 <!-- E 可行性研究 报告-->

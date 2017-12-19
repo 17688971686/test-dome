@@ -5,9 +5,7 @@ import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
-import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
-import cs.domain.project.WorkProgram;
+import cs.domain.project.*;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
@@ -16,6 +14,8 @@ import cs.model.project.WorkProgramDto;
 import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.project.WorkProgramService;
@@ -67,6 +67,12 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     @Autowired
     private SignBranchRepo signBranchRepo;
+
+    @Autowired
+    private FileRecordRepo fileRecordRepo;
+
+    @Autowired
+    private DispatchDocRepo dispatchDocRepo;
 
     private ServletContext servletContext;
 
@@ -478,9 +484,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
      * @param response
      */
     @RequiresAuthentication
-    @RequestMapping(name = "打印预览", path = "printPreview/{businessId}/{businessType}", method = RequestMethod.GET)
+    @RequestMapping(name = "打印预览", path = "printPreview/{businessId}/{businessType}/{stageType}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    public void printPreview(@PathVariable String businessId, @PathVariable String businessType, HttpServletResponse response) {
+    public void printPreview(@PathVariable String businessId, @PathVariable String businessType , @PathVariable String stageType, HttpServletResponse response) {
         InputStream inputStream = null;
         File file = null;
         File printFile = null;
@@ -492,7 +498,28 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 case "SIGN":
                     Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
                     Map<String, Object> dataMap = TemplateUtil.entryAddMap(sign);
-                    file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
+                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_STUDY.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())){
+                        //建议书、可研、其他
+                        file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
+                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                        //概算
+                        file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_BUDGET_SIGN.getKey(), path);
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                        //资金
+                        file = TemplateUtil.createDoc(dataMap, Constant.Template.APPLY_REPORT_SIGN.getKey(), path);
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                        //进口
+                        file = TemplateUtil.createDoc(dataMap, Constant.Template.IMPORT_DEVICE_SIGN.getKey(), path);
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                        //设备清单（国产、进口）
+                        file = TemplateUtil.createDoc(dataMap, Constant.Template.DEVICE_BILL_SIGN.getKey(), path);
+
+                    }
                     break;
 
                 case "WORKPROGRAM":
@@ -522,7 +549,65 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     workData.put("rbDate" , rbDate);//评审会时间
                     workData.put("studyBeginTimeStr" , DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
                     workData.put("studyEndTimeStr" , DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
+
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
+                    break;
+                case "FILERECORD" :
+                    FileRecord fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName() , businessId);
+                    Map<String , Object> fileData = TemplateUtil.entryAddMap(fileRecord);
+                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())){
+                        //建议书
+                        file = TemplateUtil.createDoc(fileData, Template.STAGE_SUG_FILERECORD.getKey(), path);
+                    }else if(stageType.equals(RevireStageKey.KEY_STUDY.getValue())){
+                        //可研
+                        file = TemplateUtil.createDoc(fileData, Template.STAGE_STUDY_FILERECORD.getKey(), path);
+
+                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                        //概算
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                        //资金
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                        //进口
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                        //设备清单（国产、进口）
+
+                    }
+                    break;
+                case "DISPATCHDOC":
+                    DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName() , businessId);
+                    Map<String , Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
+
+                    String mianChargeSuggest = dispatchDoc.getMianChargeSuggest();
+                    String secondChargeSuggest = dispatchDoc.getSecondChargeSuggest();
+                    String main = mianChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
+                    String second = secondChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
+                    dispatchData.put("mianChargeSuggest" , main) ;
+                    dispatchData.put("secondChargeSuggest" , second);
+
+                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())){
+                        //建议书
+                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
+                    }else if(stageType.equals(RevireStageKey.KEY_STUDY.getValue())){
+                        //可研
+
+                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                        //概算
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                        //资金
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                        //进口
+
+                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                        //设备清单（国产、进口）
+
+                    }
+
                     break;
                 default:
                     ;
