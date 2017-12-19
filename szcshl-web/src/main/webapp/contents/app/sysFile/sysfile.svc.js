@@ -148,8 +148,12 @@
                 }
             }
             var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
+                if(response.data.flag || response.data.reCode == 'ok'){
+                    if (callBack != undefined && typeof callBack == 'function') {
+                        callBack(response.data);
+                    }
+                }else{
+                    bsWin.alert(response.data.reMsg);
                 }
             };
             common.http({

@@ -27,8 +27,8 @@ public class SysFile extends DomainBase {
     @Column(columnDefinition = "varchar(256) NOT NULL")
     private String showName;
 
-    @Column(columnDefinition = "INTEGER")
-    private Integer fileSize;
+    @Column(columnDefinition = "NUMBER")
+    private Long fileSize;
 
     @Column(columnDefinition = "varchar(5)")
     private String fileType;
@@ -110,13 +110,6 @@ public class SysFile extends DomainBase {
         this.showName = showName;
     }
 
-    public Integer getFileSize() {
-        return fileSize;
-    }
-
-    public void setFileSize(Integer fileSize) {
-        this.fileSize = fileSize;
-    }
 
     public String getFileType() {
         return fileType;
@@ -206,7 +199,7 @@ public class SysFile extends DomainBase {
         this.ftpFilePath = ftpFilePath;
     }
 
-    public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Integer fileSize, String fileType,
+    public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Long fileSize, String fileType,
                    String mainId, String mainType, String sysfileType, String sysBusiType) {
         this.sysFileId = sysFileId;
         this.businessId = businessId;
@@ -220,7 +213,7 @@ public class SysFile extends DomainBase {
         this.sysBusiType = sysBusiType;
     }
 
-    public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Integer fileSize, String fileType, String mainId, String mainType, String sysfileType, String sysBusiType, String ftpIp, String port, String ftpUser, String ftpPwd, String ftpBasePath, String ftpFilePath) {
+    public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Long fileSize, String fileType, String mainId, String mainType, String sysfileType, String sysBusiType, String ftpIp, String port, String ftpUser, String ftpPwd, String ftpBasePath, String ftpFilePath) {
         this.sysFileId = sysFileId;
         this.businessId = businessId;
         this.fileUrl = fileUrl;
@@ -241,5 +234,13 @@ public class SysFile extends DomainBase {
 
     public SysFile() {
         super();
+    }
+
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
     }
 }

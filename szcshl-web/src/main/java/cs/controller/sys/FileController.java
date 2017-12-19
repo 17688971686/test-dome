@@ -20,6 +20,8 @@ import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.project.WorkProgramService;
 import cs.service.sys.SysFileService;
+import org.apache.commons.net.ftp.FTPClientConfig;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -63,7 +65,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     private SignRepo signRepo;
 
     @Autowired
-    private WorkProgramService workProgramService ;
+    private WorkProgramService workProgramService;
 
     @Autowired
     private SignBranchRepo signBranchRepo;
@@ -145,25 +147,40 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         try {
             String fileName = multipartFile.getOriginalFilename();
             String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-            fileType = fileType.toLowerCase();      //统一转成小写
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            //统一转成小写
+            fileType = fileType.toLowerCase();
             if (Validate.isString(sysBusiType)) {
-                boolean result = FtpUtil.uploadFile(propertyUtil.readProperty(FTP_IP1), Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)),
-                        propertyUtil.readProperty(FTP_USER), propertyUtil.readProperty(FTP_PWD), propertyUtil.readProperty(FTP_BASE_PATH), "",
-                        new String(fileName.getBytes("GBK"), "ISO-8859-1"), multipartFile.getInputStream());
-
-                if (result) {
-                    resultMsg = fileService.saveToFtp(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType, sysfileType, sysBusiType, propertyUtil.readProperty(FTP_IP1), propertyUtil.readProperty(FTP_PORT1), propertyUtil.readProperty(FTP_USER), propertyUtil.readProperty(FTP_PWD), propertyUtil.readProperty(FTP_BASE_PATH), "");
+                String fileUploadPath = SysFileUtil.getUploadPath();
+                String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
+                //连接ftp
+                Ftp f = new Ftp();
+                PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+                f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
+                f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
+                f.setUserName(propertyUtil.readProperty(FTP_USER));
+                f.setPwd(propertyUtil.readProperty(FTP_PWD));
+                boolean linkSucess = FtpUtil.connectFtp(f);
+                if (linkSucess) {
+                    //上传到ftp,
+                    String uploadFileName = Tools.generateRandomFilename().concat(fileType);
+                    linkSucess = FtpUtil.uploadFile(relativeFileUrl, uploadFileName, multipartFile.getInputStream());
+                    if (linkSucess) {
+                        //保存数据库记录
+                        resultMsg = fileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
+                                relativeFileUrl + File.separator + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
+                    } else {
+                        resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，无法上传到文件服务器！");
+                    }
                 } else {
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，连接ftp服务失败，请核查！");
                 }
             } else {
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，请选择文件类型！");
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            FtpUtil.closeFtp();
         }
         return resultMsg;
     }
@@ -194,7 +211,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             fileType = fileType.toLowerCase();      //统一转成小写
 
             if (!multipartFile.isEmpty()) {
-                resultMsg = fileService.save(multipartFile.getBytes(), fileName, businessId, fileType, mainId, mainType, sysfileType, sysBusiType);
+                resultMsg = fileService.save(multipartFile, fileName, businessId, fileType, mainId, mainType, sysfileType, sysBusiType);
             } else {
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件上传失败，无法获取文件信息！");
             }
@@ -216,28 +233,33 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         logger.debug("==================ftp文件同步==================");
         ResultMsg resultMsg = null;
         try {
-            SysFile sysFile = fileService.findFileById(sysFileId);
-            //文件路径
-            String filePath = SysFileUtil.getUploadPath() + File.separator + sysFile.getShowName();
-            filePath = filePath.replaceAll("\\\\", "/");
-            File file = new File(filePath);
-            FileInputStream fileInputStream = new FileInputStream(file);
-
-            boolean result = FtpUtil.uploadFile(sysFile.getFtpIp(), Integer.parseInt(sysFile.getPort()),
-                    sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(), "",
-                    new String(sysFile.getShowName().getBytes("GBK"), "ISO-8859-1"), fileInputStream);
-            if (result) {
-                SysFileDto sysFileDto = new SysFileDto();
-                sysFile.setModifiedBy(SessionUtil.getDisplayName());
-                sysFile.setModifiedDate(new Date());
-                fileService.update(sysFile);
-                BeanCopierUtils.copyProperties(sysFile, sysFileDto);
-                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "文件同步成功！", sysFileDto);
-            } else {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件同步失败！");
+            //连接ftp
+            Ftp f = new Ftp();
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
+            f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
+            f.setUserName(propertyUtil.readProperty(FTP_USER));
+            f.setPwd(propertyUtil.readProperty(FTP_PWD));
+            boolean linkSucess = FtpUtil.connectFtp(f);
+            if (linkSucess) {
+                SysFile sysFile = fileService.findFileById(sysFileId);
+                //文件路径
+                String filePath = SysFileUtil.getUploadPath() + File.separator + sysFile.getShowName();
+                File file = new File(filePath);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                //待处理
+                boolean result = FtpUtil.uploadFile("", sysFile.getShowName(), fileInputStream);
+                if (result) {
+                    SysFileDto sysFileDto = new SysFileDto();
+                    sysFile.setModifiedBy(SessionUtil.getDisplayName());
+                    sysFile.setModifiedDate(new Date());
+                    fileService.update(sysFile);
+                    BeanCopierUtils.copyProperties(sysFile, sysFileDto);
+                    resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "文件同步成功！", sysFileDto);
+                } else {
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件同步失败！");
+                }
             }
-            //删除本地附件
-            //SysFileUtil.delete(filePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -248,123 +270,207 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequestMapping(name = "ftp文件校验", path = "fileSysCheck", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg checkFtpFile(@RequestParam(required = true) String sysFileId) {
-        logger.debug("==================ftp文件校验==================");
-        ResultMsg resultMsg = null;
+        ResultMsg resultMsg;
         try {
-            SysFile sysFile = fileService.findFileById(sysFileId);
-            //下载ftp服务器附件到本地
-            Boolean flag = FtpUtil.downloadFile(sysFile.getFtpIp(), sysFile.getPort() != null ? Integer.parseInt(sysFile.getPort()) : 0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
-                    sysFile.getShowName(), SysFileUtil.getUploadPath());
-            if (flag) {
-                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "", "");
+            //连接ftp
+            Ftp f = new Ftp();
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
+            f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
+            f.setUserName(propertyUtil.readProperty(FTP_USER));
+            f.setPwd(propertyUtil.readProperty(FTP_PWD));
+            boolean linkSucess = FtpUtil.connectFtp(f);
+            if (linkSucess) {
+                SysFile sysFile = fileService.findFileById(sysFileId);
+                //获取相对路径
+                String fileUrl = sysFile.getFileUrl();
+                String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+                String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+                if (FtpUtil.checkFileExist(removeRelativeUrl, storeFileName)) {
+                    resultMsg = new ResultMsg(true, MsgCode.OK.getValue(), "附件存在，可以进行下载操作！");
+                } else {
+                    resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "没有该附件！");
+                }
             } else {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "ftp服务器上不存在该文件，请核查！");
+                resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "文件下载失败，无法连接文件服务器！");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "文件下载失败，请联系管理员查看！");
         }
+
         return resultMsg;
     }
 
-    /*@RequiresAuthentication
-    @RequestMapping(name = "文件下载", path = "fileDownload/{sysfileId}", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<byte[]> download(@PathVariable("sysfileId") String sysfileId,
-                                           Model model,HttpServletRequest request) throws Exception {
-        SysFile sysFile = fileService.findFileById(sysfileId);
-        //文件路径
-        String filePath = SysFileUtil.getUploadPath() + File.separator + sysFile.getShowName();
-        //下载ftp服务器附件到本地
-        *//*Boolean flag = FtpUtil.downloadFile(sysFile.getFtpIp(), sysFile.getPort() != null ? Integer.parseInt(sysFile.getPort()) : 0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
-                sysFile.getShowName(), SysFileUtil.getUploadPath());
-*//*
-        File file = new File("D:\\评审中心文档\\ISO9001.rar");
-        //下载显示的文件名，解决中文名称乱码问题
-        String downloadFielName = new String(sysFile.getShowName().getBytes("UTF-8"), "iso-8859-1");
-        //通知浏览器以attachment（下载方式）打开图片
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", "ISO9001.rar");
-        //application/octet-stream ： 二进制流数据（最常见的文件下载）。
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);
-    }*/
-
+    /**
+     * 用于其他项目下载附件
+     * @param sysfileId
+     * @param model
+     * @param response
+     * @throws Exception
+     */
     @RequiresAuthentication
-    @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.GET)
-    public @ResponseBody
-    void fileDownload(@RequestParam(required = true) String sysfileId, HttpServletResponse response) {
-        logger.debug("==================附件下载==================");
-        FileInputStream in = null;
+    @RequestMapping(name = "外链文件下载", path = "remoteDownload/{sysfileId}", method = RequestMethod.GET)
+    @ResponseBody
+    public void remoteDownload(@PathVariable("sysfileId") String sysfileId, Model model, HttpServletResponse response) throws Exception {
         OutputStream out = null;
         try {
-            SysFile sysFile = fileService.findFileById(sysfileId);
-            //文件路径
-            String filePath = SysFileUtil.getUploadPath() + File.separator + sysFile.getShowName();
-            // filePath = filePath.replaceAll("\\\\", "/");
-            //下载ftp服务器附件到本地
-            Boolean flag = FtpUtil.downloadFile(sysFile.getFtpIp(), sysFile.getPort() != null ? Integer.parseInt(sysFile.getPort()) : 0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
-                    sysFile.getShowName(), SysFileUtil.getUploadPath());
-            String fileType = sysFile.getFileType().toLowerCase(); //最小化
-            String filename = sysFile.getShowName();
-            filename = URLDecoder.decode(filename, "UTF-8");
-            String reg = ".*\\\\(.*)";
-            //文件名
-            String fileNames = filePath.replaceAll(reg, "$1");
-            if (fileNames == null || fileNames.equals(" ")) {
-                return;
-            }
-            //调用输出流
-            File f = new File(filePath);
-            if (!f.exists()) {
-                return;
-            }
-            in = new FileInputStream(f);
             out = response.getOutputStream();
+            //连接ftp
+            Ftp f = new Ftp();
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
+            f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
+            f.setUserName(propertyUtil.readProperty(FTP_USER));
+            f.setPwd(propertyUtil.readProperty(FTP_PWD));
+            boolean linkSucess = FtpUtil.connectFtp(f);
+            if(linkSucess){
+                SysFile sysFile = fileService.findFileById(sysfileId);
+                //获取相对路径
+                String fileUrl = sysFile.getFileUrl();
+                String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+                String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+                //涉及到中文问题 根据系统实际编码改变
+                removeRelativeUrl = new String(removeRelativeUrl.getBytes("GBK"), "iso-8859-1");
+                storeFileName = new String(storeFileName.getBytes("GBK"), "iso-8859-1");
+                //切换工作路径
+                boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
+                if (changedir) {
+                    switch (sysFile.getFileType()) {
+                        case ".jpg":
+                            response.setHeader("Content-type", "application/.jpg");
+                            break;
+                        case ".png":
+                            response.setHeader("Content-type", "application/.png");
+                            break;
+                        case ".gif":
+                            response.setHeader("Content-type", "application/.gif");
+                            break;
+                        case ".docx":
+                            response.setHeader("Content-type", "application/.docx");
+                            break;
+                        case ".doc":
+                            response.setHeader("Content-type", "application/.doc");
+                            break;
+                        case ".xlsx":
+                            response.setHeader("Content-type", "application/.xlsx");
+                            break;
+                        case ".xls":
+                            response.setHeader("Content-type", "application/.xls");
+                            break;
+                        case ".pdf":
+                            response.setHeader("Content-type", "application/.pdf");
+                            break;
+                        default:
+                            response.setContentType("application/octet-stream");
+                    }
 
-            switch (fileType) {
-                case ".jpg":
-                    response.setHeader("Content-type", "application/.jpg");
-                    break;
-                case ".png":
-                    response.setHeader("Content-type", "application/.png");
-                    break;
-                case ".gif":
-                    response.setHeader("Content-type", "application/.gif");
-                    break;
-                case ".docx":
-                    response.setHeader("Content-type", "application/.docx");
-                    break;
-                case ".doc":
-                    response.setHeader("Content-type", "application/.doc");
-                    break;
-                case ".xlsx":
-                    response.setHeader("Content-type", "application/.xlsx");
-                    break;
-                case ".xls":
-                    response.setHeader("Content-type", "application/.xls");
-                    break;
-                case ".pdf":
-                    response.setHeader("Content-type", "application/.pdf");
-                    break;
-                default:
-                    response.setContentType("application/octet-stream");
+                    response.setHeader("Content-Disposition", "attachment; filename="
+                            + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
 
+                    FTPClientConfig conf = new FTPClientConfig(FTPClientConfig.SYST_UNIX);
+                    //中文
+                    conf.setServerLanguageCode("zh");
+                    FTPFile[] files = FtpUtil.getFtp().listFiles();
+                    for (int i = 0; i < files.length; i++) {
+                        FTPFile ff = files[i];
+                        if (storeFileName.equals(ff.getName())) {
+                            FtpUtil.getFtp().retrieveFile(ff.getName(), out);
+                            break;
+                        }
+                    }
+                }
+            }else{
+                String resultMsg = "连接文件服务器失败！";
+                out.write(resultMsg.getBytes());
             }
 
-            response.setHeader("Content-Disposition", "attachment; filename="
-                    + new String(filename.getBytes("GB2312"), "ISO8859-1"));
-
-            byte b[] = new byte[1024];
-            int len = -1;
-            while ((len = in.read(b)) != -1) {
-                out.write(b, 0, len);
-            }
+            out.flush();
+            out.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
-                in.close();
-                out.close();
+                FtpUtil.closeFtp();
+                if(out != null){
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.GET)
+    public void fileDownload(@RequestParam(required = true) String sysfileId, HttpServletResponse response) {
+        OutputStream out = null;
+        try {
+            out = response.getOutputStream();
+            SysFile sysFile = fileService.findFileById(sysfileId);
+            //获取相对路径
+            String fileUrl = sysFile.getFileUrl();
+            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+            String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+            //涉及到中文问题 根据系统实际编码改变
+            removeRelativeUrl = new String(removeRelativeUrl.getBytes("GBK"), "iso-8859-1");
+            storeFileName = new String(storeFileName.getBytes("GBK"), "iso-8859-1");
+            //切换工作路径
+            boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
+            if (changedir) {
+                switch (sysFile.getFileType()) {
+                    case ".jpg":
+                        response.setHeader("Content-type", "application/.jpg");
+                        break;
+                    case ".png":
+                        response.setHeader("Content-type", "application/.png");
+                        break;
+                    case ".gif":
+                        response.setHeader("Content-type", "application/.gif");
+                        break;
+                    case ".docx":
+                        response.setHeader("Content-type", "application/.docx");
+                        break;
+                    case ".doc":
+                        response.setHeader("Content-type", "application/.doc");
+                        break;
+                    case ".xlsx":
+                        response.setHeader("Content-type", "application/.xlsx");
+                        break;
+                    case ".xls":
+                        response.setHeader("Content-type", "application/.xls");
+                        break;
+                    case ".pdf":
+                        response.setHeader("Content-type", "application/.pdf");
+                        break;
+                    default:
+                        response.setContentType("application/octet-stream");
+                }
+
+                response.setHeader("Content-Disposition", "attachment; filename="
+                        + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
+
+                FTPClientConfig conf = new FTPClientConfig(FTPClientConfig.SYST_UNIX);
+                //中文
+                conf.setServerLanguageCode("zh");
+                FTPFile[] files = FtpUtil.getFtp().listFiles();
+                for (int i = 0; i < files.length; i++) {
+                    FTPFile f = files[i];
+                    if (storeFileName.equals(f.getName())) {
+                        FtpUtil.getFtp().retrieveFile(f.getName(), out);
+                        break;
+                    }
+                }
+            }
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                FtpUtil.closeFtp();
+                if(out != null){
+                    out.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -374,17 +480,17 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     //@RequiresPermissions("file#deleteSysFile#delete")
     @RequiresAuthentication
     @RequestMapping(name = "删除系统文件", path = "deleteSysFile", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteSysFile(@RequestParam String id) {
-        fileService.deleteById(id);
+    @ResponseBody
+    public ResultMsg deleteSysFile(@RequestParam String id) {
+       return fileService.deleteById(id);
     }
 
-    @RequiresAuthentication
+   /* @RequiresAuthentication
     @RequestMapping(name = "文件删除", path = "delete", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestParam(required = true) String sysFileId) {
         fileService.deleteById(sysFileId);
-    }
+    }*/
 
     /**
      * 针对pdf和图片文件
@@ -397,40 +503,61 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequestMapping(name = "预览附件", path = "preview/{sysFileId}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public void preview(@PathVariable String sysFileId, HttpServletResponse response) {
-        SysFile sysFile = fileService.findFileById(sysFileId);
         //文件路径
         File downFile = null;
         File file = null;
         InputStream inputStream = null;
+        OutputStream out = null;
         try {
-            String filePath = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + sysFile.getShowName();
-            filePath = filePath.replaceAll("\\\\", "/");
+            SysFile sysFile = fileService.findFileById(sysFileId);
+            //获取相对路径
+            String fileUrl = sysFile.getFileUrl();
+            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+            String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+            //涉及到中文问题 根据系统实际编码改变
+            removeRelativeUrl = new String(removeRelativeUrl.getBytes("GBK"), "iso-8859-1");
+            storeFileName = new String(storeFileName.getBytes("GBK"), "iso-8859-1");
+            //切换工作路径
+            boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
+            if (changedir) {
+                //下载ftp服务器附件到本地
+                FTPClientConfig conf = new FTPClientConfig(FTPClientConfig.SYST_UNIX);
+                //中文
+                conf.setServerLanguageCode("zh");
+                FTPFile[] files = FtpUtil.getFtp().listFiles();
+                boolean isFtpFile = Template.PDF_SUFFIX.getKey().equals(sysFile.getFileType());
+                for (int i = 0; i < files.length; i++) {
+                    FTPFile f = files[i];
+                    if (storeFileName.equals(f.getName())) {
+                        //如果是pdf文件，直接输出流，否则要先转为pdf
+                        if(isFtpFile){
+                            out = response.getOutputStream();
+                            FtpUtil.getFtp().retrieveFile(f.getName(), out);
+                        }else{
+                            downFile = new File(SysFileUtil.getUploadPath() + File.separator + storeFileName);
+                            out = new FileOutputStream(downFile);
+                            FtpUtil.getFtp().retrieveFile(f.getName(), out);
+                            String filePath = downFile.getAbsolutePath();
+                            filePath = filePath.substring(0, filePath.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
+                            if (downFile != null) {
+                                OfficeConverterUtil.convert2PDF(downFile.getAbsolutePath(), filePath);
+                            }
+                            file = new File(filePath);
+                            inputStream = new BufferedInputStream(new FileInputStream(file));
+                            byte[] buffer = new byte[inputStream.available()];
+                            inputStream.read(buffer);  //读取文件流
+                            inputStream.close();
+                            out = new BufferedOutputStream(response.getOutputStream());
+                            out.write(buffer); // 输出文件
+                        }
 
-            //下载ftp服务器附件到本地
-            Boolean flag = FtpUtil.downloadFile(sysFile.getFtpIp(), sysFile.getPort() != null ? Integer.parseInt(sysFile.getPort()) : 0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
-                    sysFile.getShowName(), SysFileUtil.getUploadPath());
-            downFile = new File(filePath);
-            if (!downFile.exists()) {
+                        break;
+                    }
+                }
+            }else{
                 file = new File(realPathResolver.get(Constant.plugin_file_path) + File.separator + "nofile.png");
                 sysFile.setFileType(".png");
-            } else {
-                if (!Template.PDF_SUFFIX.getKey().equals(sysFile.getFileType())) {
-                    filePath = filePath.substring(0, filePath.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
-                    if (file != null) {
-                        OfficeConverterUtil.convert2PDF(downFile.getAbsolutePath(), filePath);
-                    }
-                    file = new File(filePath);
-                    inputStream = new BufferedInputStream(new FileInputStream(file));
-                } else {
-                    file = downFile;
-                    inputStream = new BufferedInputStream(new FileInputStream(file));
-                }
             }
-
-            byte[] buffer = new byte[inputStream.available()];
-            inputStream.read(buffer);  //读取文件流
-            inputStream.close();
-
             response.reset();  //重置结果集
             switch (sysFile.getFileType()) {
                 case ".pdf":
@@ -442,21 +569,23 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     response.setContentType("text/html; charset=UTF-8");
                     response.setContentType("image/jpeg");
                     break;
+                default:
+                    ;
             }
             response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
             response.setHeader("Content-Disposition", "inline;filename=" + new String(sysFile.getShowName().getBytes(), "ISO-8859-1"));
 
-            //获取返回体输出权
-            OutputStream os = new BufferedOutputStream(response.getOutputStream());
-            os.write(buffer); // 输出文件
-            os.flush();
-            os.close();
+            out.flush();
+            out.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
                 if (inputStream != null) {
                     inputStream.close();
+                }
+                if (out != null) {
+                    out.close();
                 }
                 if (file != null) {
                     Tools.deleteFile(file);
@@ -497,31 +626,31 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 case "WORKPROGRAM":
                     WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
-                    WorkProgram workProgram  = new WorkProgram();
-                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto , workProgram);
-                    Map<String , Object> workData = TemplateUtil.entryAddMap(workProgram);
+                    WorkProgram workProgram = new WorkProgram();
+                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+                    Map<String, Object> workData = TemplateUtil.entryAddMap(workProgram);
                     List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                     ExpertDto[] expertDtos = new ExpertDto[10];
-                    if(expertDtoList!=null && expertDtoList.size()>0) {
+                    if (expertDtoList != null && expertDtoList.size() > 0) {
                         for (int i = 0; i < expertDtoList.size(); i++) {
                             expertDtos[i] = expertDtoList.get(i);
                         }
                     }
                     String addressName = "";
                     String rbDate = "";
-                    List<RoomBookingDto> roomBookingDtoList =  workProgramDto.getRoomBookingDtos();
-                    if(roomBookingDtoList!= null && roomBookingDtoList.size()>0){
+                    List<RoomBookingDto> roomBookingDtoList = workProgramDto.getRoomBookingDtos();
+                    if (roomBookingDtoList != null && roomBookingDtoList.size() > 0) {
                         addressName = workProgramDto.getRoomBookingDtos().get(0).getAddressName();
                         rbDate = workProgramDto.getRoomBookingDtos().get(0).getRbDate();
                     }
 
                     int count = signBranchRepo.countBranch(workProgramDto.getSignId());
-                    workData.put("expertList" , expertDtos);//聘请专家
-                    workData.put("works" , count);//控制是否多个分支
-                    workData.put("addressName" ,addressName );//会议室名称
-                    workData.put("rbDate" , rbDate);//评审会时间
-                    workData.put("studyBeginTimeStr" , DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
-                    workData.put("studyEndTimeStr" , DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
+                    workData.put("expertList", expertDtos);//聘请专家
+                    workData.put("works", count);//控制是否多个分支
+                    workData.put("addressName", addressName);//会议室名称
+                    workData.put("rbDate", rbDate);//评审会时间
+                    workData.put("studyBeginTimeStr", DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
+                    workData.put("studyEndTimeStr", DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                     break;
                 default:

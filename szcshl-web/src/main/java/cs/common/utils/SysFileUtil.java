@@ -74,14 +74,16 @@ public class SysFileUtil {
         } else {
             isFileExists.mkdirs();
         }
-        String extendName = fileName;
-        //若是文件夹，则不需要切割
-        if(fileName.indexOf(".") >0){
-            extendName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+        //如果有文件名，则加上文件名
+        if(Validate.isString(fileName)){
+            String extendName = fileName;
+            //若是文件夹，则不需要切割
+            if(fileName.indexOf(".") >0){
+                extendName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+            }
+            String distFileName = Tools.generateRandomFilename().concat(extendName);
+            relativeUrl += File.separator + distFileName;
         }
-        String distFileName = UUID.randomUUID().toString().replaceAll("-", "").concat(extendName);
-        relativeUrl += File.separator + distFileName;
-
         return relativeUrl;
     }
 

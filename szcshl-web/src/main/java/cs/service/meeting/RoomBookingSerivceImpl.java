@@ -125,11 +125,11 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
 		String pathFile = path + File.separator + relativeFileUrl;
 		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.THIS_STAGE_MEETING.getKey(),pathFile);
-		if(docFile != null){
+		/*if(docFile != null){
 			sysfile.add(new SysFile(UUID.randomUUID().toString(),UUID.randomUUID().toString(),relativeFileUrl,showName,
 					Integer.valueOf(String.valueOf(docFile.length())),Constant.Template.WORD_SUFFIX.getKey(),
 					null,roomId,Constant.SysFileType.STAGEMEETING.getValue(), Constant.SysFileType.MEETING.getValue()));
-		}
+		}*/
 		if(sysfile.size() > 0){
 
 			Date now = new Date();
@@ -210,11 +210,11 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce{
 		relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), roomId,null,showName);
 		docFile =  TemplateUtil.createDoc(dataMap, Constant.Template.NEXT_STAGE_MEETING.getKey(), path+File.separator +relativeFileUrl);
 
-		if(docFile !=null){
+		/*if(docFile !=null){
 			sysfile.add(new SysFile(UUID.randomUUID().toString(),roomId,relativeFileUrl,showName,
 					Integer.valueOf(String.valueOf(docFile.length())),Constant.Template.WORD_SUFFIX.getKey(),
 					null,roomId,Constant.SysFileType.STAGEMEETING.getValue(), Constant.SysFileType.MEETING.getValue()));
-		}
+		}*/
 
 		if(saveFile.size() >0){
 			Date now = new Date();

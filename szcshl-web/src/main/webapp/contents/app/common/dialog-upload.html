@@ -31,6 +31,7 @@
                 <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
                 <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
                 <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                <!--<a href="{{rootPath}}/file/remoteDownload/{{x.sysFileId}}">{{ x.showName }}</a>-->
                 <a ng-click="vm.commonDownloadSysFile(x.sysFileId)">{{ x.showName }}</a>
             </td>
             <td style="text-align: center;">{{ x.sysfileType }}</td>

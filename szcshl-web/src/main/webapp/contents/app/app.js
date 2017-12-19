@@ -1163,42 +1163,62 @@
 
         //文件预览
         $rootScope.previewFile = function (sysFileId, fileType) {
-            var url, width, height;
+            if(sysFileId){
+                var url, width, height;
+                if ("office" == fileType) {
+                    url = rootPath + "/file/editFile?sysFileId=" + sysFileId;
+                    width = "82%";
+                    height = "830px";
+                } else if ("pdf" == fileType) {
+                    url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId;
+                    width = "82%";
+                    height = "830px";
 
-            if ("office" == fileType) {
-                url = rootPath + "/file/editFile?sysFileId=" + sysFileId;
-                width = "82%";
-                height = "830px";
-            } else if ("pdf" == fileType) {
-                url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId;
-                width = "82%";
-                height = "830px";
+                } else if ("image" == fileType) {
+                    url = rootPath + "/file/preview/" + sysFileId;
+                    width = "75%";
+                    height = "auto";
+                }
+                if (url) {
+                    var httpOptions = {
+                        method: 'post',
+                        url: rootPath + "/file/fileSysCheck",
+                        params: {
+                            sysFileId: sysFileId
+                        }
+                    }
+                    var httpSuccess = function success(response) {
+                        if (response.data.flag || response.data.reCode == 'ok') {
+                            $("#iframePreview").attr("src", url);
+                            $("#previewModal").kendoWindow({
+                                width: width,
+                                height: height,
+                                title: "",
+                                visible: false,
+                                modal: true,
+                                closable: true,
+                                actions: ["Pin", "Minimize", "Maximize", "Close"]
+                            }).data("kendoWindow").center().open();
+                        } else {
+                            bsWin.error(response.data.reMsg);
+                        }
+                    };
+                    common.http({
+                        $http: $http,
+                        httpOptions: httpOptions,
+                        success: httpSuccess
+                    });
+                } else {
+                    bsWin.alert("该文件不支持在线预览和在线编辑");
+                }
+            }else{
+                bsWin.alert("参数不正确，无法在线预览");
+            }
 
-            } else if ("image" == fileType) {
-                url = rootPath + "/file/preview/" + sysFileId;
-                width = "75%";
-                height = "auto";
-            }
-            if (url) {
-                $("#iframePreview").attr("src", url);
-                $("#previewModal").kendoWindow({
-                    width: width,
-                    height: height,
-                    title: "",
-                    visible: false,
-                    modal: true,
-                    closable: true,
-                    actions: ["Pin", "Minimize", "Maximize", "Close"]
-                }).data("kendoWindow").center().open();
-            } else {
-                bsWin.alert("该文件不支持在线预览");
-            }
         }
 
         //打印预览，生成word模板直接预览
         $rootScope.printFile = function (businessId, businessType) {
-            console.log(businessId);
-            console.log((!businessId || !businessType));
             if(!businessId || !businessType){
                 bsWin.alert("打印预览失败，参数不正确！");
             }else {

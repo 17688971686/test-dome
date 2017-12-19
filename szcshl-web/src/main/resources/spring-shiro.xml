@@ -136,7 +136,7 @@
                 <!--接口-->
                 /intfc/** =anon
                 <!--附件下载-->
-                /file/fileDownload/** =anon
+                /file/remoteDownload/** =anon
                 /account/login =authc
                 /account/logout =logout
                 <!-- ** = authc 所有url都必须认证通过才可以访问 -->

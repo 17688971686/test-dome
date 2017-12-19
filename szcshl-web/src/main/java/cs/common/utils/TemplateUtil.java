@@ -141,7 +141,7 @@ public class TemplateUtil {
         fileType = fileType.toLowerCase();//统一转成小写
 
         try {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName); //系统业务属性文件名
+           /* PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName); //系统业务属性文件名
             boolean result = FtpUtil.uploadFile(propertyUtil.readProperty(Constant.FTP_IP1), Integer.parseInt(propertyUtil.readProperty(Constant.FTP_PORT1)),
                     propertyUtil.readProperty(Constant.FTP_USER), propertyUtil.readProperty(Constant.FTP_PWD), propertyUtil.readProperty(Constant.FTP_BASE_PATH),
                     "", new String(showName.getBytes("GBK"), "ISO-8859-1"), new FileInputStream(docFile));
@@ -155,7 +155,7 @@ public class TemplateUtil {
                 sysFile.setFtpPwd(propertyUtil.readProperty(Constant.FTP_PWD));
                 sysFile.setFtpBasePath(propertyUtil.readProperty(Constant.FTP_BASE_PATH));
                 sysFile.setFtpFilePath("");
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }

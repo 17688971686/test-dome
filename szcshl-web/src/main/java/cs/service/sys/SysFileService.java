@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import cs.common.ResultMsg;
+import cs.common.utils.Ftp;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author lqs
@@ -15,16 +17,15 @@ import cs.repository.odata.ODataObj;
  */
 public interface SysFileService {
 
-    ResultMsg save(byte[] bytes, String fileName, String businessId, String fileType,
-                   String mainId,String mainType, String sysfileType, String sysBusiType);
+    ResultMsg save(MultipartFile multipartFile, String fileName, String businessId, String fileType,
+                   String mainId, String mainType, String sysfileType, String sysBusiType);
 
     public void update(SysFile sysFile);
 
-    ResultMsg saveToFtp(byte[] bytes, String fileName, String businessId, String fileType,
-                   String mainId,String mainType, String sysfileType, String sysBusiType, String ftpIp,
-                   String port,String ftpUser, String ftpPwd, String ftpBasePath, String  ftpFilePath);
+    ResultMsg saveToFtp(long size, String fileName, String businessId, String fileType,String relativeFileUrl,
+                        String mainId, String mainType, String sysfileType, String sysBusiType, Ftp ftp);
 
-    void deleteById(String sysFileId);
+    ResultMsg deleteById(String sysFileId);
 
     PageModelDto<SysFileDto> get(ODataObj odataObj);
 
