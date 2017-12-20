@@ -16,6 +16,7 @@ import cs.domain.sys.Log;
 import cs.model.project.SignDto;
 import cs.model.topic.TopicInfoDto;
 import cs.service.project.SignService;
+import cs.service.restService.SignRestService;
 import cs.service.sys.LogService;
 import cs.service.topic.TopicInfoService;
 import org.apache.http.NameValuePair;
@@ -40,7 +41,7 @@ import java.util.*;
 public class SysRestController {
     private static Logger logger = Logger.getLogger(SysRestController.class);
     @Autowired
-    private SignService signService;
+    private SignRestService signRestService;
     @Autowired
     private TopicInfoService topicInfoService;
     @Autowired
@@ -56,10 +57,10 @@ public class SysRestController {
      */
     @RequestMapping(name = "项目签收信息", value = "/pushProject", method = RequestMethod.POST)
     @Transactional
-    public ResultMsg pushProject(@RequestParam String signDtoJson) {
+    public synchronized ResultMsg pushProject(@RequestParam String signDtoJson) {
         //json转出对象
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
-        ResultMsg resultMsg = signService.pushProject(signDto);
+        ResultMsg resultMsg = signRestService.pushProject(signDto);
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());

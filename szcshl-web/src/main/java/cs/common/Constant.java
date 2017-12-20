@@ -418,7 +418,8 @@ public class Constant {
         FILELIBRARY("质量管理文件库"),
         POLICYLIBRARY("政策标准库"),
         SUBJECT_STUDY("课题研究"),
-        TEMOLATE("评审报告");
+        TEMOLATE("评审报告"),
+        FGW_FILE("委附件");
 
         private String value;
 

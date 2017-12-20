@@ -18,7 +18,7 @@ public class SysFileDto extends BaseDto {
 
     private String showName;
 
-    private Integer fileSize;
+    private Long fileSize;
 
     private String fileType;
 
@@ -82,11 +82,11 @@ public class SysFileDto extends BaseDto {
         this.showName = showName;
     }
 
-    public Integer getFileSize() {
+    public Long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(Integer fileSize) {
+    public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 

@@ -4,6 +4,7 @@ package cs.model.project;
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertReviewDto;
+import cs.model.sys.SysFileDto;
 
 import javax.persistence.Column;
 import java.math.BigDecimal;
@@ -645,6 +646,11 @@ public class SignDto extends BaseDto {
      * 联系电话
      */
     private String contactsPhone;
+
+    /**
+     * 附件列表（目前用于接收附件）
+     */
+    private List<SysFileDto> sysFileDtoList;
 
     public SignDto() {
     }
@@ -2339,5 +2345,13 @@ public class SignDto extends BaseDto {
 
     public void setIsSendFGW(String isSendFGW) {
         this.isSendFGW = isSendFGW;
+    }
+
+    public List<SysFileDto> getSysFileDtoList() {
+        return sysFileDtoList;
+    }
+
+    public void setSysFileDtoList(List<SysFileDto> sysFileDtoList) {
+        this.sysFileDtoList = sysFileDtoList;
     }
 }

@@ -150,9 +150,6 @@ public interface SignService {
      */
     Float getReviewDays(String reviewstage);
 
-    /***********************   以下是对接接口部分  ****************************/
-    ResultMsg pushProject(SignDto signDto);
-
     /************************以下是报审登记表导出***********************/
    /* File printSign(String signId);*/
 }

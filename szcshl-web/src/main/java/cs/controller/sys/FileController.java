@@ -156,8 +156,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             //统一转成小写
             fileType = fileType.toLowerCase();
             if (Validate.isString(sysBusiType)) {
-                String fileUploadPath = SysFileUtil.getUploadPath();
-                String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
+                String relativeFileUrl = SysFileUtil.generatRelativeUrl("", mainType, mainId, sysBusiType, null);
                 //连接ftp
                 Ftp f = new Ftp();
                 PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);

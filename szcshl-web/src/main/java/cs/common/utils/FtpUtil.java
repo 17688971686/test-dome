@@ -200,11 +200,11 @@ public class FtpUtil {
      * Description: 向FTP服务器上传文件
      *
      * @param remoteBaseDir FTP服务器文件存放路径。例如分日期存放：/2015/01/01。文件的路径为basePath+filePath
-     * @param filename 上传到FTP服务器上的文件名
-     * @param input    输入流
+     * @param filename      上传到FTP服务器上的文件名
+     * @param input         输入流
      * @return 成功返回true，否则返回false
      */
-    public static boolean uploadFile(String remoteBaseDir,String filename, InputStream input) {
+    public static boolean uploadFile(String remoteBaseDir, String filename, InputStream input) {
         boolean result = false;
         //切换到上传目录
         try {
@@ -236,8 +236,16 @@ public class FtpUtil {
             closeFtp();
             result = true;
         } catch (IOException e) {
-            logger.error("附件上传异常："+e.getMessage());
+            logger.error("附件上传异常：" + e.getMessage());
             e.printStackTrace();
+        } finally {
+            try {
+                if (input != null) {
+                    input.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -324,13 +332,14 @@ public class FtpUtil {
 
     /**
      * 确认附件是否存在
+     *
      * @param remoteBaseDir
      * @param filename
      * @return
      */
     public static boolean checkFileExist(String remoteBaseDir, String filename) {
         boolean result = false;
-        try{
+        try {
             //涉及到中文问题 根据系统实际编码改变
             remoteBaseDir = new String(remoteBaseDir.getBytes("GBK"), "iso-8859-1");
             filename = new String(filename.getBytes("GBK"), "iso-8859-1");
@@ -342,7 +351,7 @@ public class FtpUtil {
                     break;
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             result = false;
         }
         return result;
@@ -350,6 +359,7 @@ public class FtpUtil {
 
     /**
      * 对ftp的路径进行格式化处理
+     *
      * @param fdir
      * @return
      */
@@ -370,8 +380,8 @@ public class FtpUtil {
         f.setUserName("ftptest");
         f.setPwd("123456");
         FtpUtil.connectFtp(f);
-        String remote="/通知公告/无归类文件/tomcat.rar";
-       //
+        String remote = "/通知公告/无归类文件/tomcat.rar";
+        //
         //FtpUtil.upload(file);//把文件上传在ftp上
         //FtpUtil.startDown(f, "d:/", remoteUrl);//下载ftp文件测试
         /*File file = new File("D:/鹏微公司服务器.txt");
