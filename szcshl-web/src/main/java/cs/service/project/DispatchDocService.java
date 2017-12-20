@@ -15,6 +15,12 @@ public interface DispatchDocService {
 
     Map<String, Object> initDispatchData(String signId);
 
+    /**
+     * 生成发文编号
+     * @param signId
+     * @param dispatchId
+     * @return
+     */
     ResultMsg fileNum(String signId,String dispatchId);
 
     DispatchDocDto initDispatchBySignId(String signId);

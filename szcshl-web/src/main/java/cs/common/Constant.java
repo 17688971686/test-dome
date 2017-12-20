@@ -613,8 +613,8 @@ public class Constant {
         KEY_HOMELAND("STAGEHOMELAND"), //设备清单（国产）
         KEY_IMPORT("STAGEIMPORT"),     //设备清单（进口）
         KEY_DEVICE("STAGEDEVICE"),     //进口设备
-        KEY_OTHER("STAGEOTHER");       //其他
-
+        KEY_OTHER("STAGEOTHER"),       //其他
+        KEY_CHECKFILE("CHECKFILE");   //要检测的文件名名称
         private String value;
 
         RevireStageKey(String value) {

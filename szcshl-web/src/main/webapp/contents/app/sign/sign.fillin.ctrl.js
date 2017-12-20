@@ -37,11 +37,10 @@
                     mainId: vm.model.signid,
                     mainType: sysfileSvc.mainTypeValue().SIGN,
                     sysfileType: sysfileSvc.mainTypeValue().FILLSIGN,
-                    sysBusiType: sysfileSvc.mainTypeValue().FILLSIGN,
                 };
                 sysfileSvc.initUploadOptions({
                     inputId: "sysfileinput",
-                    vm: vm
+                     vm: vm
                 });
             });
         }

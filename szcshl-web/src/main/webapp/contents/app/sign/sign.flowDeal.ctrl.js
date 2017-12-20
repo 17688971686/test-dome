@@ -96,6 +96,26 @@
                 vm.model.showDiv = showDiv;
             })
 
+            //初始化附件控件
+            vm.sysFile = {
+                businessId: $state.params.signid,
+                mainId: $state.params.signid,
+                mainType: sysfileSvc.mainTypeValue().SIGN,
+                sysfileType: sysfileSvc.mainTypeValue().FILLSIGN,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm,
+                uploadSuccess:function(){
+                    sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                        if (data && data.length > 0) {
+                            vm.showFlag.tabSysFile = true;
+                            vm.sysFileList = data;
+                            sysfileSvc.initZtreeClient(vm, $scope);//树形图
+                        }
+                    });
+                }
+            });
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid, function (data) {
                 vm.model = data;
@@ -159,11 +179,6 @@
             // 初始化流程数据
             flowSvc.getFlowInfo(vm.flow.taskId, vm.flow.processInstanceId, function (data) {
                 vm.flow = data;
-                /* if(vm.flow.businessMap && vm.flow.businessMap.resultMsg){
-                 if(!vm.flow.businessMap.resultMsg.flag){
-                 bsWin.alert(vm.flow.businessMap.resultMsg.reMsg);
-                 }
-                 }*/
                 //如果任务ID为空，说明任务已经被处理
                 if (vm.flow.taskId) {
                     //如果是结束环节，则不显示下一环节信息

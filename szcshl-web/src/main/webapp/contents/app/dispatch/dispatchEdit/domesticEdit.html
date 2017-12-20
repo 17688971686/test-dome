@@ -8,27 +8,35 @@
         <span>QR-4.9-09-A0</span>
     </caption>
     <caption>
-                <span>
-                    	发文方式：
-                    <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
-                            ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
-                        <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false"
-                                value="{{x.dictKey}}"
-                                ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
-                    </select>
-                </span>
+        <span>
+            发文方式：
+            <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
+                    ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
+                <option value="1">单个发文</option>
+            </select>
+        </span>
+        <!--
+        <span>
+            发文方式：
+            <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
+                    ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
+                <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false"
+                        value="{{x.dictKey}}"
+                        ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
+            </select>
+        </span>
         <span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
-					<input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="vm.showFlag.isReveiwDS"
-                           ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
+            <input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="vm.showFlag.isReveiwDS"
+                   ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
 
-					<input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="vm.showFlag.isReveiwDS"
-                           ng-value="0" ng-checked="vm.dispatchDoc.isMainProject==0">次项目
+            <input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="vm.showFlag.isReveiwDS"
+                   ng-value="0" ng-checked="vm.dispatchDoc.isMainProject==0">次项目
 
-					<button class="btn btn-xs btn-default" ng-click="vm.gotoMergePage()" ng-disabled="vm.isCommit"
-                            ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
-                            ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
-				</span>
-
+            <button class="btn btn-xs btn-default" ng-click="vm.gotoMergePage()" ng-disabled="vm.isCommit"
+                    ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
+                    ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
+        </span>
+        -->
         <span style="float:right;">发文类型： <span class="required">*</span>
 		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true"
                         data-val-required="必填">
@@ -75,8 +83,9 @@
     <tr>
         <td class="text-center">文件标题 <span class="required">*</span></td>
         <td colspan="5">
-            <input type="text" maxlength="256" class="form-control input-sm " ng-disabled="vm.isnotEdit"
-                   ng-model="vm.dispatchDoc.fileTitle" id="fileTitle" name="fileTitle" data-val="true"
+            <input type="text" class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                   ng-model="vm.dispatchDoc.fileTitle" id="fileTitle" name="fileTitle"
+                   maxlength="200" data-val-length-max="200" data-val="true"
                    data-val-required="必填" placeholder="《项目名称+阶段》+评审意见">
             <span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>
         </td>

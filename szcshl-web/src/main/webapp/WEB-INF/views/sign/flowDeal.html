@@ -11,6 +11,8 @@
 <#include "/expertReview/expert_confirm.html"/>
 <!--查看专家评审费页面-->
 <#include "/expertReview/expert_confirm.html"/>
+
+
 <style>
     .rating {
         unicode-bidi: bidi-override;
@@ -37,6 +39,21 @@
         color: gold;
     }
 </style>
+<!--S 上传附件弹窗 -->
+<div id="commonUploadWindow" style="margin:0px 20px 0px 10px;background:white;display:none;">
+    <input type="file" id="sysfileinput" name="file" multiple="multiple" class="file-loading"/>
+    <div ng-show="vm.sysFile.showBusiType">
+        <span >文件类型：</span>
+        <span >
+           <select id="sysBusiType" name="sysBusiType" ng-model="vm.sysFile.sysBusiType" style="min-width:200px;margin-top:10px;">
+               <option value="">请选择</option>
+               <option  ng-repeat="x in DICT.SYS_MIN_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+           </select>
+       </span>
+    </div>
+</div>
+<!--E 上传附件弹窗 -->
+
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/listSign">项目签收管理</a></li>

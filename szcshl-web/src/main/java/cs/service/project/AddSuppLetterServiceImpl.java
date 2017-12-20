@@ -277,7 +277,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 //如果是月报简报年度列表，则不分页
                 if("monthLetterYearName".equals(item.getField())){
                     //不统计分页
-                    odataObj.setCount(false);
+                    //odataObj.setCount(false);
                     criteria.add(Restrictions.gt(AddSuppLetter_.createdDate.getName(),DateUtils.converToDate(value.toString()+"-01-01 00:00:00","yyyy-MM-dd HH:mm:ss")));
                     criteria.add(Restrictions.lt(AddSuppLetter_.createdDate.getName(),DateUtils.converToDate(value.toString()+"-12-31 24:00:00","yyyy-MM-dd HH:mm:ss")));
                     continue;

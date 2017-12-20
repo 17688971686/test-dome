@@ -218,6 +218,10 @@
                         }
                     }
                 }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: false,
+                pageSize: 10,
                 sort : {
                     field : "createdDate",
                     dir : "desc"

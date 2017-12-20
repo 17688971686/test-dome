@@ -1,38 +1,33 @@
 package cs.service.project;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import cs.common.Constant;
+import cs.common.Constant.EnumState;
+import cs.common.FlowConstant;
+import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
+import cs.common.utils.*;
+import cs.domain.expert.Expert;
 import cs.domain.project.*;
-import cs.repository.repositoryImpl.project.*;
+import cs.domain.sys.SysFile;
+import cs.model.project.DispatchDocDto;
+import cs.model.project.SignDto;
+import cs.model.sys.SysConfigDto;
+import cs.repository.repositoryImpl.expert.ExpertRepo;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
+import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.service.sys.SysConfigService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.Constant;
-import cs.common.Constant.EnumState;
-import cs.common.FlowConstant;
-import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.CreateTemplateUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.Validate;
-import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.Expert_;
-import cs.domain.sys.SysFile;
-import cs.model.project.DispatchDocDto;
-import cs.model.project.SignDto;
-import cs.repository.repositoryImpl.expert.ExpertRepo;
-import cs.repository.repositoryImpl.sys.SysFileRepo;
+import java.util.*;
+
+import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
 
 @Service
 public class DispatchDocServiceImpl implements DispatchDocService {
@@ -45,20 +40,21 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     private SignService signService;
     @Autowired
     private SignMergeRepo signMergeRepo;
-
-    @Autowired
-    private WorkProgramRepo workProgramRepo;
-
     @Autowired
     private ExpertRepo expertRepo;
-
     @Autowired
     private SysFileRepo sysFileRepo;
-
     @Autowired
     private SignDispaWorkRepo signDispaWorkRepo;
+    @Autowired
+    private SysConfigService sysConfigService;
 
-    // 生成文件字号
+    /**
+     * 生成发文编号，生成发文编号之前，要先上传项目评审意见
+     * @param signId
+     * @param dispatchId
+     * @return
+     */
     @Override
     @Transactional
     public ResultMsg fileNum(String signId,String dispatchId) {
@@ -74,11 +70,42 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         if(Validate.isString(dispatchDoc.getFileNum())){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该发文已经生成了发文编号！");
         }
+        //1、获取附件列表
+        boolean isUploadMainFile = false;
+        List<SysFile> fileList = sysFileRepo.findByMainId(signId);
+        if(Validate.isList(fileList)){
+            SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
+            if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())){
+                isUploadMainFile = true;
+            }else{
+                String checFileName = sysConfigDto.getConfigValue();
+                if(checFileName.indexOf("，") > -1){
+                    checFileName = checFileName.replace("，",",");
+                }
+                List<String> checkNameArr = StringUtil.getSplit(checFileName,",");
+                for(int i=0,l=fileList.size();i<l;i++){
+                    String showName = fileList.get(i).getShowName();
+                    for(String checkName : checkNameArr){
+                        if(showName.indexOf(checkName) > -1){
+                            isUploadMainFile = true;
+                            break;
+                        }
+                    }
+                    if(isUploadMainFile){
+                        break;
+                    }
+                }
+            }
+        }
+        if(!isUploadMainFile){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传【审核意见】或者【评审意见】附件信息！");
+        }
         //获取发文最大编号
         int curYearMaxSeq = findCurMaxSeq(dispatchDoc.getDispatchDate());
-        String fileNum = Constant.DISPATCH_PREFIX+"["+ DateUtils.converToString(dispatchDoc.getDispatchDate(),"yyyy")+"]"+(curYearMaxSeq + 1);
+        curYearMaxSeq = curYearMaxSeq + 1;
+        String fileNum = Constant.DISPATCH_PREFIX+"["+ DateUtils.converToString(dispatchDoc.getDispatchDate(),"yyyy")+"]"+curYearMaxSeq;
         dispatchDoc.setFileNum(fileNum);
-        dispatchDoc.setFileSeq((curYearMaxSeq + 1));
+        dispatchDoc.setFileSeq(curYearMaxSeq);
         dispatchDocRepo.save(dispatchDoc);
         //如果是合并发文，则更新所有关联的发文编号
         if(Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDoc.getDispatchWay())){

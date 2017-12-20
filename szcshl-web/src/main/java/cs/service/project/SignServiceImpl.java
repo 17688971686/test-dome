@@ -1363,11 +1363,14 @@ public class SignServiceImpl implements SignService {
                 if (!Validate.isString(fileRecord.getFileNo())) {
                     String fileNumValue = "";
                     int maxSeq =fileRecordService.findCurMaxSeq(fileRecord.getFileDate());
+                    maxSeq = maxSeq + 1;
                     if(maxSeq < 1000){
-                        fileNumValue = String.format("%03d", Integer.valueOf(maxSeq+1));
+                        fileNumValue = String.format("%03d", maxSeq);
                     }else{
-                        fileNumValue = (maxSeq+1)+"";
+                        fileNumValue = String.valueOf(maxSeq);
                     }
+                    //设置本次的发文序号
+                    fileRecord.setFileSeq(maxSeq);
                     //归档编号=发文年份+档案类型+存档年份+存档顺序号
                     fileNumValue = DateUtils.converToString(sign.getExpectdispatchdate(),"yyyy")+ ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
                             +DateUtils.converToString(fileRecord.getFileDate(),"yy")+fileNumValue;
@@ -1375,9 +1378,6 @@ public class SignServiceImpl implements SignService {
                 }
                 fileRecord.setPageDate(new Date());
                 fileRecordRepo.save(fileRecord);
-
-
-
 
                 //更改项目状态
                 sign.setSignState(EnumState.YES.getValue());

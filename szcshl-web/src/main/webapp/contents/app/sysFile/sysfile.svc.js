@@ -148,11 +148,11 @@
                 }
             }
             var httpSuccess = function success(response) {
-                if(response.data.flag || response.data.reCode == 'ok'){
+                if (response.data.flag || response.data.reCode == 'ok') {
                     if (callBack != undefined && typeof callBack == 'function') {
                         callBack(response.data);
                     }
-                }else{
+                } else {
                     bsWin.alert(response.data.reMsg);
                 }
             };
@@ -245,7 +245,7 @@
                         options.vm.sysFilelists = [];
                         options.vm.sysFilelists = data;
                         $("#commonQueryWindow").kendoWindow({
-                            width: "800px",
+                            width: "75%",
                             height: "500px",
                             title: "附件上传列表",
                             visible: false,
@@ -262,8 +262,10 @@
                     language: 'zh',
                     allowedPreviewTypes: ['image'],
                     allowedFileExtensions: ['sql', 'exe', 'lnk'],//修改过，改为了不支持了。比如不支持.sql的
-                    maxFileSize: 5000,
+                    maxFileSize: 0,     //文件大小不做限制
                     showRemove: false,
+                    previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                    uploadAsync: false, //同步上传
                     uploadUrl: rootPath + "/file/fileUpload",// 默认上传ftp服务器 /file/fileUploadLocal 为上传到本地服务
                     uploadExtraData: function (previewId, index) {
                         var result = {};
@@ -278,20 +280,45 @@
 
                 var filesCount = 0;
                 $("#" + options.inputId || sysFileDefaults.inputId).fileinput(projectfileoptions)
+                    //附件选择
                     .on("filebatchselected", function (event, files) {
                         filesCount = files.length;
-                    }).on("fileuploaded", function (event, data, previewId, index) {
-                    projectfileoptions.sysBusiType = options.vm.sysFile.sysBusiType;
-                    if (filesCount == (index + 1)) {
+                        //console.log("附件选择:" + filesCount);
+                    })
+                    //上传前
+                    .on('filepreupload', function (event, data, previewId, index) {
+                        var form = data.form, files = data.files, extra = data.extra,
+                            response = data.response, reader = data.reader;
+                        //console.log("附件上传前:" + files);
+                    })
+                    //异步上传返回结果处理
+                    .on("fileuploaded", function (event, data, previewId, index) {
+                        projectfileoptions.sysBusiType = options.vm.sysFile.sysBusiType;
+                        if (filesCount == (index + 1)) {
+                            if (options.uploadSuccess != undefined && typeof options.uploadSuccess == 'function') {
+                                options.uploadSuccess(event, data, previewId, index);
+                            }
+                        }
+                    })
+                    //同步上传错误处理
+                    .on('filebatchuploaderror', function(event, data, msg) {
+                        //console.log("同步上传错误");
+                        // get message
+                        //alert(msg);
+                    })
+                    //同步上传返回结果处理
+                    .on("filebatchuploadsuccess", function (event, data, previewId, index) {
+                        //console.log("同步上传成功");
                         if (options.uploadSuccess != undefined && typeof options.uploadSuccess == 'function') {
                             options.uploadSuccess(event, data, previewId, index);
                         }
-                    }
-                });
+                    });
+
                 //表示初始化控件成功
                 options.vm.initUploadOptionSuccess = true;
             }
         }
+
         // E 初始化上传附件控件
 
         // S 系统安装包管理
@@ -351,11 +378,11 @@
                     enable: false
                 },
                 callback: {
-                    onClick: function(event, treeId, treeNode){
+                    onClick: function (event, treeId, treeNode) {
                         //点击文件夹
                         if (treeNode.check_Child_State == 0) {
                             vm.sysFileList = [];
-                            if(treeNode.children){
+                            if (treeNode.children) {
                                 vm.sysFileList = treeNode.children;
                             }
                             $scope.$apply();
@@ -370,7 +397,7 @@
             var data = [];
             //循环数据取出父类和相对应的子类
             for (var i = 0, l = array.length; i < l; i++) {
-                if(!array[i].sysBusiType){
+                if (!array[i].sysBusiType) {
                     array[i].sysBusiType = "其他文件";
                 }
                 var s = new Object();
@@ -378,7 +405,7 @@
                 s.name = array[i].showName;
                 s.id = array[i].sysFileId;
 
-                if(!data[array[i].sysBusiType]) {
+                if (!data[array[i].sysBusiType]) {
                     var node = new Object();//定义父类的对象
                     node.id = (new Date()).getTime();
                     node.name = array[i].sysBusiType;
@@ -386,17 +413,17 @@
                     var arr = [];
                     arr.push(s);
                     data[array[i].sysBusiType] = arr;
-                }else {
+                } else {
                     data[array[i].sysBusiType].push(s)
                 }
             }
-            for(var i=0,l=vm.zNodes.length;i<l;i++){
-                for(var key in data){
-                    if(vm.zNodes[i].name == key){
+            for (var i = 0, l = vm.zNodes.length; i < l; i++) {
+                for (var key in data) {
+                    if (vm.zNodes[i].name == key) {
                         vm.zNodes[i].children = data[key];
                     }
                 }
-                if(i==(l-1)){
+                if (i == (l - 1)) {
                     vm.initFileTreeSucess = true;
                 }
             }

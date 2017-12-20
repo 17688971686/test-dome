@@ -7,6 +7,7 @@
             ng-show="vm.showFlag.buttBack"><span class="glyphicon glyphicon-step-backward"></span>回退
     </button>
     <button class="btn btn-sm btn-success" ng-click="vm.ideaEdit({targetId:'dealOption'})">管理个人常用意见</button>
+    <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
     <span style="margin-left:20px;padding:3px 5px; color:#F39C12" ng-if="vm.model.ispresign == 0 && vm.model.palceStorage && (vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4') ">
         <i class="fa fa-bullhorn" aria-hidden="true" ></i>  资料存放位置：{{vm.model.palceStorage}}
     </span>

@@ -135,6 +135,7 @@ public class SysFileServiceImpl implements SysFileService {
             sysFileDto.setFileUrl(item.getFileUrl());
             sysFileDto.setShowName(item.getShowName());
             sysFileDto.setFileType(item.getFileType());
+            sysFileDto.setFileSizeStr(SysFileUtil.getFileSize(item.getFileSize()));
             sysFileDtoList.add(sysFileDto);
         }
         PageModelDto<SysFileDto> pageModelDto = new PageModelDto<>();
@@ -206,16 +207,6 @@ public class SysFileServiceImpl implements SysFileService {
         return sysFile;
     }
 
-    /**
-     * 根据ID获取附件信息
-     * @param sysfileId
-     * @return
-     */
-    @Override
-    public SysFile findFileByIdGet(String sysfileId) {
-        SysFile sysFile = sysFileRepo.findByIdGet(sysfileId);
-        return sysFile;
-    }
 
     /**
      * 根据主业务ID获取附件信息
@@ -224,14 +215,13 @@ public class SysFileServiceImpl implements SysFileService {
      */
     @Override
     public List<SysFileDto> findByMainId(String mainId) {
-        Criteria criteria = sysFileRepo.getExecutableCriteria();
-        criteria.add(Restrictions.eq(SysFile_.mainId.getName(),mainId));
-        List<SysFile> sysFiles = criteria.list();
+        List<SysFile> sysFiles = sysFileRepo.findByMainId(mainId);
         List<SysFileDto> sysFileDtoList = new ArrayList<SysFileDto>(sysFiles == null ? 0 : sysFiles.size());
-        if (sysFiles != null) {
+        if (Validate.isList(sysFiles)) {
             sysFiles.forEach(sf -> {
                 SysFileDto sysFileDto = new SysFileDto();
                 BeanCopierUtils.copyProperties(sf, sysFileDto);
+                sysFileDto.setFileSizeStr(SysFileUtil.getFileSize(sf.getFileSize()));
                 sysFileDtoList.add(sysFileDto);
             });
         }
@@ -275,6 +265,7 @@ public class SysFileServiceImpl implements SysFileService {
             sysFiles.forEach(sf -> {
                 SysFileDto sysFileDto = new SysFileDto();
                 BeanCopierUtils.copyProperties(sf, sysFileDto);
+                sysFileDto.setFileSizeStr(SysFileUtil.getFileSize(sf.getFileSize()));
                 sysFileDtoList.add(sysFileDto);
             });
         }

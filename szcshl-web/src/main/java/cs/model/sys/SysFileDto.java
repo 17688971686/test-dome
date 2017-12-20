@@ -42,6 +42,10 @@ public class SysFileDto extends BaseDto {
      */
     private String sysBusiType;
 
+    /**
+     * 文件大小，主要用于显示
+     */
+    private String fileSizeStr;
 
     public SysFileDto() {
     }
@@ -124,5 +128,13 @@ public class SysFileDto extends BaseDto {
 
     public void setMainType(String mainType) {
         this.mainType = mainType;
+    }
+
+    public String getFileSizeStr() {
+        return fileSizeStr;
+    }
+
+    public void setFileSizeStr(String fileSizeStr) {
+        this.fileSizeStr = fileSizeStr;
     }
 }

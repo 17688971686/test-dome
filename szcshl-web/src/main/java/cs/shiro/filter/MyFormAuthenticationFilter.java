@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static cs.common.Constant.UNUSER;
+
 /**
  * Description: 自定义表单过滤器
  * Author: tzg
@@ -59,11 +61,11 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         User user = userService.findByName(username);
         if(user != null){
             //用户停用，未激活等判断
-            if(user.getUseState().equals("停用")){
+            if(UNUSER.equals(user.getUseState())){
                /* throw new DisabledAccountException();*/
                 return onLoginFailure(token,new DisabledAccountException(),request, response);
             }
-/*            if(!isActive(user)){
+            /* if(!isActive(user)){
                 return onLoginFailure(token,failureUrl,adminLogin,new InactiveException(),request, response);
             }*/
         }

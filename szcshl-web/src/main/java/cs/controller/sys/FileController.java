@@ -65,7 +65,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     private SignRepo signRepo;
 
     @Autowired
-    private WorkProgramService workProgramService ;
+    private WorkProgramService workProgramService;
 
     @Autowired
     private SignBranchRepo signBranchRepo;
@@ -185,7 +185,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             FtpUtil.closeFtp();
         }
         return resultMsg;
@@ -309,6 +309,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     /**
      * 用于其他项目下载附件
+     *
      * @param sysfileId
      * @param model
      * @param response
@@ -329,7 +330,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             f.setUserName(propertyUtil.readProperty(FTP_USER));
             f.setPwd(propertyUtil.readProperty(FTP_PWD));
             boolean linkSucess = FtpUtil.connectFtp(f);
-            if(linkSucess){
+            if (linkSucess) {
                 SysFile sysFile = fileService.findFileById(sysfileId);
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
@@ -385,7 +386,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         }
                     }
                 }
-            }else{
+            } else {
                 String resultMsg = "连接文件服务器失败！";
                 out.write(resultMsg.getBytes());
             }
@@ -397,7 +398,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         } finally {
             try {
                 FtpUtil.closeFtp();
-                if(out != null){
+                if (out != null) {
                     out.close();
                 }
             } catch (IOException e) {
@@ -474,7 +475,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         } finally {
             try {
                 FtpUtil.closeFtp();
-                if(out != null){
+                if (out != null) {
                     out.close();
                 }
             } catch (IOException e) {
@@ -488,7 +489,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequestMapping(name = "删除系统文件", path = "deleteSysFile", method = RequestMethod.DELETE)
     @ResponseBody
     public ResultMsg deleteSysFile(@RequestParam String id) {
-       return fileService.deleteById(id);
+        return fileService.deleteById(id);
     }
 
    /* @RequiresAuthentication
@@ -514,6 +515,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         File file = null;
         InputStream inputStream = null;
         OutputStream out = null;
+        response.reset();  //重置结果集
         try {
             SysFile sysFile = fileService.findFileById(sysFileId);
             //获取相对路径
@@ -536,10 +538,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     FTPFile f = files[i];
                     if (storeFileName.equals(f.getName())) {
                         //如果是pdf文件，直接输出流，否则要先转为pdf
-                        if(isFtpFile || sysFile.getFileType().equals(".png") || sysFile.getFileType().equals(".jpg")|| sysFile.getFileType().equals(".gif")){
+                        if (isFtpFile || sysFile.getFileType().equals(".png") || sysFile.getFileType().equals(".jpg") || sysFile.getFileType().equals(".gif")) {
                             out = response.getOutputStream();
                             FtpUtil.getFtp().retrieveFile(f.getName(), out);
-                        }else{
+                        } else {
                             downFile = new File(SysFileUtil.getUploadPath() + File.separator + storeFileName);
                             out = new FileOutputStream(downFile);
                             FtpUtil.getFtp().retrieveFile(f.getName(), out);
@@ -560,11 +562,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         break;
                     }
                 }
-            }else{
+            } else {
                 file = new File(realPathResolver.get(Constant.plugin_file_path) + File.separator + "nofile.png");
                 sysFile.setFileType(".png");
             }
-            response.reset();  //重置结果集
+
             switch (sysFile.getFileType()) {
                 case ".pdf":
                     response.setContentType("application/pdf");
@@ -575,10 +577,12 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     response.setContentType("text/html; charset=UTF-8");
                     response.setContentType("image/jpeg");
                     break;
+                default:
+                    ;
             }
-            response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
+            /*response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
             response.setHeader("Content-Disposition", "inline;filename=" + new String(sysFile.getShowName().getBytes(), "ISO-8859-1"));
-
+*/
             out.flush();
             out.close();
         } catch (Exception e) {
@@ -613,7 +617,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequiresAuthentication
     @RequestMapping(name = "打印预览", path = "printPreview/{businessId}/{businessType}/{stageType}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    public void printPreview(@PathVariable String businessId, @PathVariable String businessType , @PathVariable String stageType, HttpServletResponse response) {
+    public void printPreview(@PathVariable String businessId, @PathVariable String businessType, @PathVariable String stageType, HttpServletResponse response) {
         InputStream inputStream = null;
         File file = null;
         File printFile = null;
@@ -625,24 +629,24 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 case "SIGN":
                     Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
                     Map<String, Object> dataMap = TemplateUtil.entryAddMap(sign);
-                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())
+                    if (stageType.equals(RevireStageKey.KEY_SUG.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_STUDY.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())){
+                            || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())) {
                         //建议书、可研、其他
                         file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
-                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
                         //概算
                         file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_BUDGET_SIGN.getKey(), path);
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
                         //资金
                         file = TemplateUtil.createDoc(dataMap, Constant.Template.APPLY_REPORT_SIGN.getKey(), path);
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
                         //进口
                         file = TemplateUtil.createDoc(dataMap, Constant.Template.IMPORT_DEVICE_SIGN.getKey(), path);
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
                         //设备清单（国产、进口）
                         file = TemplateUtil.createDoc(dataMap, Constant.Template.DEVICE_BILL_SIGN.getKey(), path);
 
@@ -651,114 +655,114 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 case "WORKPROGRAM":
                     WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
-                    WorkProgram workProgram  = new WorkProgram();
-                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto , workProgram);
-                    if(!Validate.isString(workProgram.getIsHaveEIA())){
+                    WorkProgram workProgram = new WorkProgram();
+                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+                    if (!Validate.isString(workProgram.getIsHaveEIA())) {
                         workProgram.setIsHaveEIA("0");
                     }
-                    Map<String , Object> workData = TemplateUtil.entryAddMap(workProgram);
+                    Map<String, Object> workData = TemplateUtil.entryAddMap(workProgram);
                     List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                     ExpertDto[] expertDtos = new ExpertDto[10];
-                    if(expertDtoList!=null && expertDtoList.size()>0) {
+                    if (expertDtoList != null && expertDtoList.size() > 0) {
                         for (int i = 0; i < expertDtoList.size(); i++) {
                             expertDtos[i] = expertDtoList.get(i);
                         }
                     }
                     String addressName = "";
                     String rbDate = "";
-                    List<RoomBookingDto> roomBookingDtoList =  workProgramDto.getRoomBookingDtos();
-                    if(roomBookingDtoList!= null && roomBookingDtoList.size()>0){
+                    List<RoomBookingDto> roomBookingDtoList = workProgramDto.getRoomBookingDtos();
+                    if (roomBookingDtoList != null && roomBookingDtoList.size() > 0) {
                         addressName = workProgramDto.getRoomBookingDtos().get(0).getAddressName();
                         rbDate = workProgramDto.getRoomBookingDtos().get(0).getRbDate();
                     }
 
                     int count = signBranchRepo.countBranch(workProgramDto.getSignId());
-                    workData.put("expertList" , expertDtos);//聘请专家
-                    workData.put("works" , count);//控制是否多个分支
-                    workData.put("addressName" ,addressName );//会议室名称
-                    workData.put("rbDate" , rbDate);//评审会时间
-                    workData.put("studyBeginTimeStr" , DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
-                    workData.put("studyEndTimeStr" , DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
-                    if(null!=stageType && (stageType.equals("STAGESUG") || stageType.equals("STAGESTUDY")|| stageType.equals("STAGEBUDGET")|| stageType.equals("STAGEOTHER") )){
-                        if(stageType.equals("STAGESUG") ){
-                            workData.put("wpTile","项目建议书评审工作方案");
-                            workData.put("wpCode"," QR-4.3-02-A3");
-                        }else if(stageType.equals("STAGESTUDY") ){
-                            workData.put("wpTile","可行性研究报告评审工作方案");
-                            workData.put("wpCode"," QR-4.4-01-A3");
-                        }else if(stageType.equals("STAGEBUDGET") ){
-                            workData.put("wpTile","项目概算评审工作方案");
-                            workData.put("wpCode"," QR-4.7-01-A2");
+                    workData.put("expertList", expertDtos);//聘请专家
+                    workData.put("works", count);//控制是否多个分支
+                    workData.put("addressName", addressName);//会议室名称
+                    workData.put("rbDate", rbDate);//评审会时间
+                    workData.put("studyBeginTimeStr", DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
+                    workData.put("studyEndTimeStr", DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
+                    if (null != stageType && (stageType.equals("STAGESUG") || stageType.equals("STAGESTUDY") || stageType.equals("STAGEBUDGET") || stageType.equals("STAGEOTHER"))) {
+                        if (stageType.equals("STAGESUG")) {
+                            workData.put("wpTile", "项目建议书评审工作方案");
+                            workData.put("wpCode", " QR-4.3-02-A3");
+                        } else if (stageType.equals("STAGESTUDY")) {
+                            workData.put("wpTile", "可行性研究报告评审工作方案");
+                            workData.put("wpCode", " QR-4.4-01-A3");
+                        } else if (stageType.equals("STAGEBUDGET")) {
+                            workData.put("wpTile", "项目概算评审工作方案");
+                            workData.put("wpCode", " QR-4.7-01-A2");
                         }
                         file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
-                    }else if(null!=stageType && stageType.equals("STAGEREPORT")){
-                        workData.put("wpTile","资金申请报告工作方案");
-                        workData.put("wpCode","QR-4.9-02-A0");
+                    } else if (null != stageType && stageType.equals("STAGEREPORT")) {
+                        workData.put("wpTile", "资金申请报告工作方案");
+                        workData.put("wpCode", "QR-4.9-02-A0");
                         file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_REPORT_WORKPROGRAM.getKey(), path);
-                    }else if(null!=stageType && stageType.equals("STAGEDEVICE")){
-                        workData.put("wpTile","进口设备工作方案");
-                        workData.put("wpCode","QR-4.9-02-A0");
+                    } else if (null != stageType && stageType.equals("STAGEDEVICE")) {
+                        workData.put("wpTile", "进口设备工作方案");
+                        workData.put("wpCode", "QR-4.9-02-A0");
                         file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_DEVICE_WORKPROGRAM.getKey(), path);
-                    }else if(null!=stageType && stageType.equals("STAGEIMPORT")){
-                        workData.put("wpTile","设备清单工作方案");
-                        workData.put("wpCode","QR-4.9-02-A0");
+                    } else if (null != stageType && stageType.equals("STAGEIMPORT")) {
+                        workData.put("wpTile", "设备清单工作方案");
+                        workData.put("wpCode", "QR-4.9-02-A0");
                         file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_HOMELAND_WORKPROGRAM.getKey(), path);
                     }
 
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                     break;
-                case "FILERECORD" :
-                    FileRecord fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName() , businessId);
-                    Map<String , Object> fileData = TemplateUtil.entryAddMap(fileRecord);
-                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())){
+                case "FILERECORD":
+                    FileRecord fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName(), businessId);
+                    Map<String, Object> fileData = TemplateUtil.entryAddMap(fileRecord);
+                    if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
                         //建议书
                         file = TemplateUtil.createDoc(fileData, Template.STAGE_SUG_FILERECORD.getKey(), path);
-                    }else if(stageType.equals(RevireStageKey.KEY_STUDY.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
                         //可研
                         file = TemplateUtil.createDoc(fileData, Template.STAGE_STUDY_FILERECORD.getKey(), path);
 
-                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
                         //概算
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
                         //资金
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
                         //进口
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
                         //设备清单（国产、进口）
 
                     }
                     break;
                 case "DISPATCHDOC":
-                    DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName() , businessId);
-                    Map<String , Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
+                    DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
+                    Map<String, Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
 
                     String mianChargeSuggest = dispatchDoc.getMianChargeSuggest();
                     String secondChargeSuggest = dispatchDoc.getSecondChargeSuggest();
-                    String main = mianChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
-                    String second = secondChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
-                    dispatchData.put("mianChargeSuggest" , main) ;
-                    dispatchData.put("secondChargeSuggest" , second);
+                    String main = mianChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
+                    String second = secondChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
+                    dispatchData.put("mianChargeSuggest", main);
+                    dispatchData.put("secondChargeSuggest", second);
 
-                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())){
+                    if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
                         //建议书
                         file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
-                    }else if(stageType.equals(RevireStageKey.KEY_STUDY.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
                         //可研
 
-                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
                         //概算
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
                         //资金
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
                         //进口
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
                         //设备清单（国产、进口）
 
                     }

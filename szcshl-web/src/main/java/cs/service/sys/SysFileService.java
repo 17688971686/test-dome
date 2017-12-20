@@ -31,8 +31,6 @@ public interface SysFileService {
 
     SysFile findFileById(String sysfileId);
 
-    SysFile findFileByIdGet(String sysfileId);
-
     List<SysFileDto> findByBusinessId(String businessId);
 
     List<SysFileDto> findByMainId(String mainId);
