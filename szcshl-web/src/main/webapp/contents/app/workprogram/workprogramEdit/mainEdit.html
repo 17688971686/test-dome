@@ -88,8 +88,8 @@
         </td>
         <td class="text-center">是否有环评</td>
         <td colspan="3">
-            <input type="radio" ng-value="9" ng-model="vm.work.isHaveEIA" name="isHaveEIA" ng-checked="vm.work.isHaveEIA == '9' || vm.work.isHaveEIA == 9" />是
-            <input type="radio" ng-value="0" ng-model="vm.work.isHaveEIA"  name="isHaveEIA" ng-checked="!vm.work.isHaveEIA || vm.work.isHaveEIA != '9' || vm.work.isHaveEIA != 9" />否
+            <input type="checkbox" ng-value="9" ng-disabled="true" name="isHaveEIA" ng-checked="vm.work.mainWorkProgramDto.isHaveEIA == 9 || vm.work.mainWorkProgramDto.isHaveEIA == '9'">是
+            <input type="checkbox" ng-value="0" ng-disabled="true" name="isHaveEIA" ng-checked="!vm.work.mainWorkProgramDto.isHaveEIA || vm.work.mainWorkProgramDto.isHaveEIA == 0 || vm.work.mainWorkProgramDto.isHaveEIA == '0'">否
         </td>
     </tr>
     <tr>
