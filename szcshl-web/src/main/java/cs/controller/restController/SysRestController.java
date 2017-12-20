@@ -1,7 +1,6 @@
 package cs.controller.restController;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.JSONSerializer;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
 import cs.ahelper.IgnoreAnnotation;
@@ -9,25 +8,23 @@ import cs.common.Constant;
 import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
-import cs.common.utils.PropertyUtil;
 import cs.common.utils.Validate;
-import cs.controller.project.SignController;
 import cs.domain.sys.Log;
 import cs.model.project.SignDto;
 import cs.model.topic.TopicInfoDto;
-import cs.service.project.SignService;
 import cs.service.restService.SignRestService;
 import cs.service.sys.LogService;
 import cs.service.topic.TopicInfoService;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 系统接口controller

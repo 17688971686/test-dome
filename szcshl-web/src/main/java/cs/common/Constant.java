@@ -70,7 +70,7 @@ public class Constant {
     /**
      * 初始化用户密码
      */
-    public static final String PASSWORD = "123456";
+    public static final String PASSWORD = "1";
 
     /**
      * 插件默认地址
@@ -628,8 +628,8 @@ public class Constant {
         KEY_HOMELAND("STAGEHOMELAND"), //设备清单（国产）
         KEY_IMPORT("STAGEIMPORT"),     //设备清单（进口）
         KEY_DEVICE("STAGEDEVICE"),     //进口设备
-        KEY_OTHER("STAGEOTHER"),       //其他
-        KEY_CHECKFILE("CHECKFILE");   //要检测的文件名名称
+        KEY_OTHER("STAGEOTHER");       //其他
+
         private String value;
 
         RevireStageKey(String value) {
