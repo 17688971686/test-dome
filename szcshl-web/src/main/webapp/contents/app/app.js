@@ -1217,8 +1217,8 @@
         }
 
         //打印预览，生成word模板直接预览
-        $rootScope.printFile = function (businessId, businessType) {
-            if(!businessId || !businessType){
+        $rootScope.printFile = function (businessId, businessType , stageType) {
+            if(!businessId || !businessType || !stageType){
                 bsWin.alert("打印预览失败，参数不正确！");
             }else {
                 var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/printPreview/" + businessId+"/"+businessType + "/" + stageType;

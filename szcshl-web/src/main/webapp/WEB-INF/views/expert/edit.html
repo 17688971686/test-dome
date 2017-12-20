@@ -728,7 +728,9 @@
         <button ng-if="vm.model.expertID" class="btn btn-sm btn-success" ng-click="vm.selReviewProject()">
             <span class="glyphicon glyphicon-search"></span>专家评审项目列表
         </button>
-        <input id="btnPrint" class="btn btn-sm btn-primary" type="button" value="打印"  ng-click="vm.editPrint()" />
+        <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.expertID,'EXPERT' , 'EXPERT')">打印预览</button>
+
+        <!--<input id="btnPrint" class="btn btn-sm btn-primary" type="button" value="打印"  ng-click="vm.editPrint()" />-->
     </div>
 </div>
 </div>

@@ -370,15 +370,29 @@ public class Constant {
 
         //项目概算
         STAGE_BUDGET_SIGN("print/sign/signXmgs" , "项目概算_报审登记表"),
+        STAGE_BUDGET_FILERECORD("print/filerecord/fileXmgs" , "项目概算_归档"),
+        STAGE_BUDGET_XS_FILERECORD("print/filerecord/fileXmgsXS" , "项目概算协审_归档"),
 
         //进口设备
         IMPORT_DEVICE_SIGN("print/sign/signJksb" , "进口设备_报审登记表"),
+        IMPORT_DEVICE_FILERECORD("print/filerecord/fileJksb" , "进口设备_归档"),
 
         //设备清单
         DEVICE_BILL_SIGN("print/sign/signSbqd" , "设备清单_报审登记表"),
+        DEVICE_BILL_FILERECORD("print/filerecord/fileSbqd" , "设备清单_归档"),
 
         //资金申请报告
-        APPLY_REPORT_SIGN("print/sign/signZjsq" , "资金申请_报审登记表");
+        APPLY_REPORT_FILERECORD("print/filerecord/fileZjsq" , "资金申请_归档"),
+        APPLY_REPORT_SIGN("print/sign/signZjsq" , "资金申请_报审登记表"),
+
+        //拟补充资料函
+        ADDSUPPLETER("print/common" , "拟补充资料函"),
+
+        //专家申请表
+        EXPERT("print/expert" , "专家申请表"),
+
+        //专家评审费
+        EXPERT_PAYMENT("print/expert_payment" , "专家评审费");
 
         private String key;
         private String value;

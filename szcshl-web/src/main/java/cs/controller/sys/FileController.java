@@ -5,19 +5,21 @@ import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
+import cs.domain.expert.*;
 import cs.domain.project.*;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
-import cs.model.expert.ExpertDto;
+import cs.model.expert.*;
 import cs.model.meeting.RoomBookingDto;
+import cs.model.project.AddSuppLetterDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.project.DispatchDocRepo;
-import cs.repository.repositoryImpl.project.FileRecordRepo;
-import cs.repository.repositoryImpl.project.SignBranchRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.expert.ExpertRepo;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
+import cs.repository.repositoryImpl.project.*;
+import cs.service.expert.ExpertService;
 import cs.service.project.WorkProgramService;
 import cs.service.sys.SysFileService;
 import org.apache.commons.net.ftp.FTPClientConfig;
@@ -75,6 +77,15 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
+
+    @Autowired
+    private ExpertReviewRepo expertReviewRepo;
+
+    @Autowired
+    private AddSuppLetterRepo addSuppLetterRepo;
+
+    @Autowired
+    private ExpertService expertService;
 
     private ServletContext servletContext;
 
@@ -660,7 +671,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                     ExpertDto[] expertDtos = new ExpertDto[10];
                     if(expertDtoList!=null && expertDtoList.size()>0) {
-                        for (int i = 0; i < expertDtoList.size(); i++) {
+                        for (int i = 0; i < expertDtoList.size() && i<10; i++) {
                             expertDtos[i] = expertDtoList.get(i);
                         }
                     }
@@ -719,15 +730,24 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                     }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
                         //概算
+                        file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_FILERECORD.getKey(), path);
+
+                    }else if("STAGEBUDGET_XS".equals(stageType)){
+                        //概算协审
+                        file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_XS_FILERECORD.getKey(), path);
+
                     }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
                         //资金
+                        file = TemplateUtil.createDoc(fileData, Template.APPLY_REPORT_FILERECORD.getKey(), path);
 
                     }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
                         //进口
+                        file = TemplateUtil.createDoc(fileData, Template.IMPORT_DEVICE_FILERECORD.getKey(), path);
 
                     }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
                         //设备清单（国产、进口）
+                        file = TemplateUtil.createDoc(fileData, Template.DEVICE_BILL_FILERECORD.getKey(), path);
 
                     }
                     break;
@@ -762,6 +782,67 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         //设备清单（国产、进口）
 
                     }
+
+                    break;
+
+                case "EXPERT_PAY":
+                    //专家评审费
+                    Map<String , Object> expertData = new HashMap<>();
+                    ExpertReview expertReview = expertReviewRepo.findByBusinessId(businessId);
+                    List<ExpertSelectedDto> expertSelectedList = new ArrayList<>();
+                    if (Validate.isObject(expertReview)) {
+                        ExpertReviewDto expertReviewDto = expertReviewRepo.formatReview(expertReview);
+                        List<ExpertSelectedDto> expertSelectedDtoList = expertReviewDto.getExpertSelectedDtoList();
+                        if(expertSelectedDtoList != null && expertSelectedDtoList.size() >0){
+                            for(ExpertSelectedDto expertSelectedDto : expertSelectedDtoList){
+                                ExpertSelectedDto expertSelected = new ExpertSelectedDto();
+                                if(EnumState.YES.getValue().equals(expertSelectedDto.getIsJoin())
+                                        && EnumState.YES.getValue().equals(expertSelectedDto.getIsConfrim())){
+                                    BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected);
+                                    expertSelectedList.add(expertSelected);
+                                }
+                            }
+                        }
+                        expertData.put("projectName" , expertReview.getReviewTitle().substring(1,expertReview.getReviewTitle().length()-1));
+                        expertData.put("expertList" , expertSelectedList);
+                    }
+                    file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
+                    break;
+                case  "ADDSUPPLETER":
+                    //拟补充资料函
+                    AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName() , businessId);
+                    Map<String , Object> addsuppletterData = TemplateUtil.entryAddMap(addSuppLetter);
+                    String leaderSignIdea = addSuppLetter.getLeaderSignIdeaContent().replaceAll("<br>" , "").replaceAll("&nbsp;" , "");
+                    addsuppletterData.put("leaderSignIdea" , leaderSignIdea);
+                    file = TemplateUtil.createDoc(addsuppletterData, Template.ADDSUPPLETER.getKey(), path);
+                    break;
+
+                case "EXPERT" :
+                    //专家申请表
+                    ExpertDto expertDto = expertService.findById( businessId);
+                    Expert expert = new Expert();
+                    BeanCopierUtils.copyPropertiesIgnoreNull(expertDto , expert);
+                    Map<String , Object> expertDataMap = TemplateUtil.entryAddMap(expert);
+                    WorkExpeDto[] workExpes = new WorkExpeDto[4];
+                    ProjectExpeDto[] projectExpes = new ProjectExpeDto[4];
+
+                    if(expertDto.getWorkDtoList()!=null && expertDto.getWorkDtoList().size()>0){
+                        for(int i=0 ; i<expertDto.getWorkDtoList().size() && i<4 ; i++){
+                            WorkExpeDto workExpeDto = expertDto.getWorkDtoList().get(i);
+                            workExpeDto.setBeginTimeStr(DateUtils.converToString(workExpeDto.getBeginTime() , "yyyyMMdd"));
+                           workExpeDto.setEndTimeStr(DateUtils.converToString(workExpeDto.getEndTime() , "yyyyMmdd"));
+                            workExpes[i] = workExpeDto;
+                        }
+                    }
+                    if(expertDto.getProjectDtoList()!=null && expertDto.getProjectDtoList().size()>0){
+                        for(int i=0 ; i<expertDto.getProjectDtoList().size() && i<4 ; i++){
+                            projectExpes[i] = expertDto.getProjectDtoList().get(i);
+                        }
+                    }
+                    expertDataMap.put("workList" , workExpes);
+                    expertDataMap.put("projectList" , projectExpes);
+
+                    file = TemplateUtil.createDoc(expertDataMap, Template.EXPERT.getKey(), path);
 
                     break;
                 default:
