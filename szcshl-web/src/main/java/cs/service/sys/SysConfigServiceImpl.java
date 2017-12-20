@@ -162,4 +162,19 @@ public class SysConfigServiceImpl implements SysConfigService {
         return modelDto;
     }
 
+    /**
+     * 根据key值从数据库查询
+     * @param key
+     * @return
+     */
+    @Override
+    public SysConfigDto findByDataKey(String key) {
+        SysConfigDto sysConfigDto = new SysConfigDto();
+        SysConfig sysConfig = sysConfigRepo.findByDataKey(key);
+        if(sysConfig != null && Validate.isString(sysConfig.getConfigValue())){
+            BeanCopierUtils.copyProperties(sysConfig,sysConfigDto);
+        }
+        return sysConfigDto;
+    }
+
 }

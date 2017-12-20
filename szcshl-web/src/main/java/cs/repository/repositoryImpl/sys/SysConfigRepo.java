@@ -1,6 +1,7 @@
 package cs.repository.repositoryImpl.sys;
 
 import cs.domain.sys.SysConfig;
+import cs.model.sys.SysConfigDto;
 import cs.repository.IRepository;
 
 /**
@@ -24,4 +25,10 @@ public interface SysConfigRepo extends IRepository<SysConfig, String> {
      */
     SysConfig findByConfigName(String configName);
 
+    /**
+     * 根据key值从数据库查询
+     * @param key
+     * @return
+     */
+    SysConfig findByDataKey(String key);
 }

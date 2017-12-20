@@ -30,4 +30,11 @@ public interface SysConfigService {
      * @return
      */
     SysConfigDto findByKey(String key);
+
+    /**
+     * 从数据库查询
+     * @param value
+     * @return
+     */
+    SysConfigDto findByDataKey(String value);
 }

@@ -167,7 +167,7 @@ public class AssistUnitServiceImpl implements AssistUnitService {
          */
         if (number > 0) {
             //2、取出前一次抽签的最大序号
-            sysConfig = sysConfigService.findByKey(Constant.EnumConfigKey.LAST_UNIT_MAXSORT.getValue());
+            sysConfig = sysConfigService.findByDataKey(Constant.EnumConfigKey.LAST_UNIT_MAXSORT.getValue());
             if (sysConfig == null || !Validate.isString(sysConfig.getId())) {
                 sysConfig = new SysConfigDto();
                 sysConfig.setConfigName(Constant.DRAW_ASSIST_UNITNAME);
@@ -212,6 +212,7 @@ public class AssistUnitServiceImpl implements AssistUnitService {
 
             sysConfig.setConfigValue(String.valueOf(saveList.get(saveList.size() - 1).getUnitSort()));
             sysConfigService.save(sysConfig);
+            //刷新缓存
         }
 
         return resultList;
