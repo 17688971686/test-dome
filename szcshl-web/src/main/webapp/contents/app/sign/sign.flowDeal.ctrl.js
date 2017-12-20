@@ -123,7 +123,7 @@
                 //判断是否有多个分支，用于控制是否显示总投资字段 和 分开获取关联的项目信息（主要用于项目概算阶段）
                 if (vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0) {
                     vm.showTotalInvestment = true;
-                    for (var i = 0; i < vm.model.workProgramDtoList.lengt; i++) {
+                    for (var i = 0; i < vm.model.workProgramDtoList.length; i++) {
                         var reviewStage = vm.model.workProgramDtoList[i].reviewstage;
                         if (reviewStage && reviewStage == '项目建议书') {
                             vm.workProgramXmjys = vm.model.workProgramDtoList[i];

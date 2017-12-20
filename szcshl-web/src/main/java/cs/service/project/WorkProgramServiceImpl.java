@@ -568,6 +568,27 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         WorkProgramDto workDto = new WorkProgramDto();
         workDto.setSignId(work.getSign().getSignid());
         BeanCopierUtils.copyProperties(work, workDto);
+        if(Validate.isString(work.getBranchId()) && !work.getBranchId().equals("1")){
+            WorkProgram mainWork =  workProgramRepo.findBySignIdAndBranchId(work.getSign().getSignid(),"1");
+            workDto.setProjectName(mainWork.getProjectName());
+            workDto.setTotalInvestment(mainWork.getTotalInvestment());
+            workDto.setSendFileUnit(mainWork.getSendFileUnit());
+            workDto.setSendFileUser(mainWork.getSendFileUser());
+            workDto.setBuildCompany(mainWork.getBuildCompany());
+            workDto.setDesignCompany(mainWork.getDesignCompany());
+            workDto.setMainDeptName(mainWork.getMainDeptName());
+            workDto.setIsHaveEIA(mainWork.getIsHaveEIA());
+            workDto.setProjectType(mainWork.getProjectType());
+            workDto.setProjectSubType(mainWork.getProjectSubType());
+            workDto.setIndustryType(mainWork.getIndustryType());
+            workDto.setContactPerson(mainWork.getContactPerson());
+            workDto.setContactPersonPhone(mainWork.getContactPersonPhone());
+            workDto.setContactPersonTel(mainWork.getContactPersonTel());
+            workDto.setContactPersonFax(mainWork.getContactPersonFax());
+            workDto.setReviewOrgName(mainWork.getReviewOrgName());
+            workDto.setMianChargeUserName(mainWork.getMianChargeUserName());
+            workDto.setSecondChargeUserName(mainWork.getSecondChargeUserName());
+        }
         workProgramRepo.initWPMeetingExp(workDto, work);
         return workDto;
     }
