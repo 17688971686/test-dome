@@ -575,8 +575,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     response.setContentType("text/html; charset=UTF-8");
                     response.setContentType("image/jpeg");
                     break;
-                default:
-                    ;
             }
             response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
             response.setHeader("Content-Disposition", "inline;filename=" + new String(sysFile.getShowName().getBytes(), "ISO-8859-1"));
@@ -655,6 +653,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
                     WorkProgram workProgram  = new WorkProgram();
                     BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto , workProgram);
+                    if(!Validate.isString(workProgram.getIsHaveEIA())){
+                        workProgram.setIsHaveEIA("0");
+                    }
                     Map<String , Object> workData = TemplateUtil.entryAddMap(workProgram);
                     List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                     ExpertDto[] expertDtos = new ExpertDto[10];
@@ -678,6 +679,31 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     workData.put("rbDate" , rbDate);//评审会时间
                     workData.put("studyBeginTimeStr" , DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
                     workData.put("studyEndTimeStr" , DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
+                    if(null!=stageType && (stageType.equals("STAGESUG") || stageType.equals("STAGESTUDY")|| stageType.equals("STAGEBUDGET")|| stageType.equals("STAGEOTHER") )){
+                        if(stageType.equals("STAGESUG") ){
+                            workData.put("wpTile","项目建议书评审工作方案");
+                            workData.put("wpCode"," QR-4.3-02-A3");
+                        }else if(stageType.equals("STAGESTUDY") ){
+                            workData.put("wpTile","可行性研究报告评审工作方案");
+                            workData.put("wpCode"," QR-4.4-01-A3");
+                        }else if(stageType.equals("STAGEBUDGET") ){
+                            workData.put("wpTile","项目概算评审工作方案");
+                            workData.put("wpCode"," QR-4.7-01-A2");
+                        }
+                        file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
+                    }else if(null!=stageType && stageType.equals("STAGEREPORT")){
+                        workData.put("wpTile","资金申请报告工作方案");
+                        workData.put("wpCode","QR-4.9-02-A0");
+                        file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_REPORT_WORKPROGRAM.getKey(), path);
+                    }else if(null!=stageType && stageType.equals("STAGEDEVICE")){
+                        workData.put("wpTile","进口设备工作方案");
+                        workData.put("wpCode","QR-4.9-02-A0");
+                        file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_DEVICE_WORKPROGRAM.getKey(), path);
+                    }else if(null!=stageType && stageType.equals("STAGEIMPORT")){
+                        workData.put("wpTile","设备清单工作方案");
+                        workData.put("wpCode","QR-4.9-02-A0");
+                        file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_HOMELAND_WORKPROGRAM.getKey(), path);
+                    }
 
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                     break;

@@ -750,7 +750,7 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="ו" w:hAnsi="ו"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if isHaveEIA?? && isHaveEIA=="9">
@@ -768,7 +768,7 @@
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="ו" w:hAnsi="ו"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if isHaveEIA?? && isHaveEIA=="0">
@@ -1895,7 +1895,7 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="ו" w:hAnsi="ו"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if isHaveSuppLetter?? && isHaveSuppLetter=="9">
@@ -1913,7 +1913,7 @@
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="ו" w:hAnsi="ו"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if isHaveSuppLetter?? && isHaveSuppLetter=="0">
