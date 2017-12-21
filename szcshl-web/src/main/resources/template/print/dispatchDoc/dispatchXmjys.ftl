@@ -121,7 +121,7 @@
                                 <w:sz w:val="44"/>
                                 <w:szCs w:val="44"/>
                             </w:rPr>
-                            <w:t>项目建议书发文审批表</w:t>
+                            <w:t>${wpTile}</w:t>
                         </w:r>
                         <w:bookmarkEnd w:id="0"/>
                     </w:p>

@@ -142,7 +142,7 @@
                                 <w:sz w:val="44"/>
                                 <w:szCs w:val="44"/>
                             </w:rPr>
-                            <w:t>项目建议书发文审批表</w:t>
+                            <w:t>可行性研究报告发文审批表</w:t>
                         </w:r>
                         <w:bookmarkEnd w:id="1"/>
                     </w:p>
@@ -1278,7 +1278,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>项目建议书</w:t>
+                                        <w:t>项目建议书阶段</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1438,209 +1438,6 @@
                             </w:tc>
                         </w:tr>
                     <#list dispatchList as dispatch>
-                        <#if (dispatch_index)!=0>
-                            <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
-                                <w:trPr>
-                                    <w:cantSplit/>
-                                    <w:trHeight w:hRule="exact" w:val="728"/>
-                                    <w:jc w:val="center"/>
-                                </w:trPr>
-                                <w:tc>
-                                    <w:tcPr>
-                                        <w:tcW w:w="1252" w:type="dxa"/>
-                                        <w:vMerge/>
-                                        <w:vAlign w:val="center"/>
-                                    </w:tcPr>
-                                    <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
-                                        <w:pPr>
-                                            <w:jc w:val="center"/>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                        </w:pPr>
-                                        <w:bookmarkStart w:id="3" w:name="_Hlk501610304"/>
-                                        <w:bookmarkEnd w:id="2"/>
-                                    </w:p>
-                                </w:tc>
-                                <w:tc>
-                                    <w:tcPr>
-                                        <w:tcW w:w="1417" w:type="dxa"/>
-                                        <w:vAlign w:val="center"/>
-                                    </w:tcPr>
-                                    <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
-                                        <w:pPr>
-                                            <w:jc w:val="center"/>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                        </w:pPr>
-                                        <w:r>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                            <w:t>可行性研究</w:t>
-                                        </w:r>
-                                    </w:p>
-                                </w:tc>
-                                <w:tc>
-                                    <w:tcPr>
-                                        <w:tcW w:w="1276" w:type="dxa"/>
-                                        <w:gridSpan w:val="2"/>
-                                        <w:vAlign w:val="center"/>
-                                    </w:tcPr>
-                                    <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
-                                        <w:pPr>
-                                            <w:jc w:val="center"/>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                        </w:pPr>
-                                        <w:r>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                            <w:t>申报</w:t>
-                                        </w:r>
-                                    </w:p>
-                                </w:tc>
-                                <w:tc>
-                                    <w:tcPr>
-                                        <w:tcW w:w="1276" w:type="dxa"/>
-                                        <w:gridSpan w:val="2"/>
-                                        <w:vAlign w:val="center"/>
-                                    </w:tcPr>
-                                    <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
-                                        <w:pPr>
-                                            <w:jc w:val="center"/>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                        </w:pPr>
-                                        <w:r>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                            <w:t>审定</w:t>
-                                        </w:r>
-                                    </w:p>
-                                </w:tc>
-                                <w:tc>
-                                    <w:tcPr>
-                                        <w:tcW w:w="1121" w:type="dxa"/>
-                                        <w:gridSpan w:val="2"/>
-                                        <w:vAlign w:val="center"/>
-                                    </w:tcPr>
-                                    <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
-                                        <w:pPr>
-                                            <w:jc w:val="center"/>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                        </w:pPr>
-                                        <w:r>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                            <w:t>核减（增）</w:t>
-                                        </w:r>
-                                    </w:p>
-                                </w:tc>
-                                <w:tc>
-                                    <w:tcPr>
-                                        <w:tcW w:w="1140" w:type="dxa"/>
-                                        <w:gridSpan w:val="3"/>
-                                        <w:vAlign w:val="center"/>
-                                    </w:tcPr>
-                                    <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
-                                        <w:pPr>
-                                            <w:jc w:val="center"/>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                        </w:pPr>
-                                        <w:r>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                            <w:t>核减</w:t>
-                                        </w:r>
-                                    </w:p>
-                                    <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
-                                        <w:pPr>
-                                            <w:jc w:val="center"/>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                        </w:pPr>
-                                        <w:r>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                            <w:t>（增）率</w:t>
-                                        </w:r>
-                                    </w:p>
-                                </w:tc>
-                                <w:tc>
-                                    <w:tcPr>
-                                        <w:tcW w:w="1141" w:type="dxa"/>
-                                        <w:gridSpan w:val="2"/>
-                                        <w:vAlign w:val="center"/>
-                                    </w:tcPr>
-                                    <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
-                                        <w:pPr>
-                                            <w:jc w:val="center"/>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                        </w:pPr>
-                                        <w:r>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                            <w:t>批复 金额</w:t>
-                                        </w:r>
-                                    </w:p>
-                                </w:tc>
-                                <w:tc>
-                                    <w:tcPr>
-                                        <w:tcW w:w="1251" w:type="dxa"/>
-                                        <w:gridSpan w:val="2"/>
-                                        <w:vAlign w:val="center"/>
-                                    </w:tcPr>
-                                    <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
-                                        <w:pPr>
-                                            <w:jc w:val="center"/>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                        </w:pPr>
-                                        <w:r>
-                                            <w:rPr>
-                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                                <w:sz w:val="24"/>
-                                            </w:rPr>
-                                            <w:t>备注</w:t>
-                                        </w:r>
-                                    </w:p>
-                                </w:tc>
-                            </w:tr>
-                        </#if>
                         <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                             <w:trPr>
                                 <w:cantSplit/>
@@ -1853,7 +1650,7 @@
                         <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:hRule="exact" w:val="720"/>
+                                <w:trHeight w:hRule="exact" w:val="860"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -1947,7 +1744,7 @@
                         <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:hRule="exact" w:val="991"/>
+                                <w:trHeight w:hRule="exact" w:val="1121"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2085,7 +1882,7 @@
                         <w:tr w:rsidR="00A57520" w:rsidTr="00DB400F">
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:hRule="exact" w:val="709"/>
+                                <w:trHeight w:hRule="exact" w:val="790"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2202,6 +1999,767 @@
                             </w:tc>
                         </w:tr>
                     </#list>
+                        <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
+                            <w:trPr>
+                                <w:cantSplit/>
+                                <w:trHeight w:hRule="exact" w:val="728"/>
+                                <w:jc w:val="center"/>
+                            </w:trPr>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1252" w:type="dxa"/>
+                                    <w:vMerge/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:bookmarkStart w:id="3" w:name="_Hlk501610304"/>
+                                    <w:bookmarkEnd w:id="2"/>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1417" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>可行性研究报告阶段</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1276" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>申报</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1276" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>审定</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1121" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>核减（增）</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1140" w:type="dxa"/>
+                                    <w:gridSpan w:val="3"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>核减</w:t>
+                                    </w:r>
+                                </w:p>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>（增）率</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1141" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>批复 金额</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1251" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>备注</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                        </w:tr>
+                        <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
+                            <w:trPr>
+                                <w:cantSplit/>
+                                <w:trHeight w:hRule="exact" w:val="696"/>
+                                <w:jc w:val="center"/>
+                            </w:trPr>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1252" w:type="dxa"/>
+                                    <w:vMerge/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:bookmarkStart w:id="3" w:name="_Hlk501610304"/>
+                                    <w:bookmarkEnd w:id="2"/>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1417" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>投资额</w:t>
+                                    </w:r>
+                                </w:p>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>（万元）</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1276" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${declareValue}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1276" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${authorizeValue}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1121" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${extraValue}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1140" w:type="dxa"/>
+                                    <w:gridSpan w:val="3"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t xml:space="preserve">   ${extraRate}</w:t>
+                                    </w:r>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>%</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1141" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${approveValue}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1251" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t><#if remark??>${remark}</#if></w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                        </w:tr>
+                        <w:bookmarkEnd w:id="2"/>
+                        <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
+                            <w:trPr>
+                                <w:cantSplit/>
+                                <w:trHeight w:hRule="exact" w:val="860"/>
+                                <w:jc w:val="center"/>
+                            </w:trPr>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1252" w:type="dxa"/>
+                                    <w:vMerge/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1417" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:bookmarkStart w:id="4" w:name="OLE_LINK10"/>
+                                    <w:bookmarkStart w:id="5" w:name="OLE_LINK11"/>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>项目建设</w:t>
+                                    </w:r>
+                                </w:p>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>必要性</w:t>
+                                    </w:r>
+                                    <w:bookmarkEnd w:id="4"/>
+                                    <w:bookmarkEnd w:id="5"/>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="7205" w:type="dxa"/>
+                                    <w:gridSpan w:val="13"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="left"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:bookmarkStart w:id="6" w:name="OLE_LINK12"/>
+                                    <w:bookmarkStart w:id="7" w:name="OLE_LINK13"/>
+                                    <w:bookmarkStart w:id="8" w:name="OLE_LINK14"/>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${projectBuildNecess}</w:t>
+                                    </w:r>
+                                    <w:bookmarkEnd w:id="6"/>
+                                    <w:bookmarkEnd w:id="7"/>
+                                    <w:bookmarkEnd w:id="8"/>
+                                </w:p>
+                            </w:tc>
+                        </w:tr>
+                        <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
+                            <w:trPr>
+                                <w:cantSplit/>
+                                <w:trHeight w:hRule="exact" w:val="1121"/>
+                                <w:jc w:val="center"/>
+                            </w:trPr>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1252" w:type="dxa"/>
+                                    <w:vMerge/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:bookmarkStart w:id="9" w:name="_Hlk501610438"/>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1417" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>审定建设规模及内容</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="7205" w:type="dxa"/>
+                                    <w:gridSpan w:val="13"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="left"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${buildSizeContent}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                        </w:tr>
+                        <w:tr w:rsidR="00A57520" w:rsidTr="00DB400F">
+                            <w:trPr>
+                                <w:cantSplit/>
+                                <w:trHeight w:hRule="exact" w:val="699"/>
+                                <w:jc w:val="center"/>
+                            </w:trPr>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1252" w:type="dxa"/>
+                                    <w:vMerge/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:bookmarkStart w:id="10" w:name="_Hlk501610448"/>
+                                    <w:bookmarkEnd w:id="9"/>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1417" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>投资匡算及资金来源</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="7205" w:type="dxa"/>
+                                    <w:gridSpan w:val="13"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="left"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${fundTotalOrigin}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                        </w:tr>
+                        <w:tr w:rsidR="00A57520" w:rsidTr="00DB400F">
+                            <w:trPr>
+                                <w:cantSplit/>
+                                <w:trHeight w:hRule="exact" w:val="790"/>
+                                <w:jc w:val="center"/>
+                            </w:trPr>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1252" w:type="dxa"/>
+                                    <w:vMerge/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:bookmarkStart w:id="11" w:name="_Hlk501610473"/>
+                                    <w:bookmarkEnd w:id="10"/>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1417" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:bookmarkStart w:id="12" w:name="OLE_LINK20"/>
+                                    <w:bookmarkStart w:id="13" w:name="OLE_LINK21"/>
+                                    <w:bookmarkStart w:id="14" w:name="OLE_LINK22"/>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>下一阶段</w:t>
+                                    </w:r>
+                                </w:p>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>工作要求</w:t>
+                                    </w:r>
+                                    <w:bookmarkEnd w:id="12"/>
+                                    <w:bookmarkEnd w:id="13"/>
+                                    <w:bookmarkEnd w:id="14"/>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="7205" w:type="dxa"/>
+                                    <w:gridSpan w:val="13"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="left"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${nextWorkPlan}</w:t>
+                                    </w:r>
+                                </w:p>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
+                            </w:tc>
+                        </w:tr>
                     </w:tbl>
                     <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B"/>
                     <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B"/>
