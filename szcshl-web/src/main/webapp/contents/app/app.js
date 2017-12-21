@@ -1217,7 +1217,7 @@
         }
 
         //打印预览，生成word模板直接预览
-        $rootScope.printFile = function (businessId, businessType , stageType) {
+        $rootScope.printFile = function (businessId, businessType,stageType) {
             if(!businessId || !businessType || !stageType){
                 bsWin.alert("打印预览失败，参数不正确！");
             }else {

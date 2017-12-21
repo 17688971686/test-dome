@@ -12,6 +12,8 @@ import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.AddSuppLetterDto;
+import cs.model.project.DispatchDocDto;
+import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
@@ -20,6 +22,11 @@ import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.service.expert.ExpertService;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.FileRecordRepo;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.service.project.SignService;
 import cs.service.project.WorkProgramService;
 import cs.service.sys.SysFileService;
 import org.apache.commons.net.ftp.FTPClientConfig;
@@ -40,8 +47,8 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.Dispatch;
 import java.io.*;
-import java.net.URLDecoder;
 import java.util.*;
 
 import static cs.common.Constant.*;
@@ -65,6 +72,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     private RealPathResolver realPathResolver;
     @Autowired
     private SignRepo signRepo;
+    @Autowired
+    private SignService signService;
 
     @Autowired
     private WorkProgramService workProgramService;
@@ -753,12 +762,18 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     break;
                 case "DISPATCHDOC":
                     DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName() , businessId);
+                    SignDto signDto = signService.findById(dispatchDoc.getSign().getSignid(),true);
                     Map<String , Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
-
                     String mianChargeSuggest = dispatchDoc.getMianChargeSuggest();
+                    String main = null;
+                    String second = null;
+                    if(Validate.isString(mianChargeSuggest)){
+                         main = mianChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
+                    }
                     String secondChargeSuggest = dispatchDoc.getSecondChargeSuggest();
-                    String main = mianChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
-                    String second = secondChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
+                    if(Validate.isString(secondChargeSuggest)){
+                         second = secondChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
+                    }
                     dispatchData.put("mianChargeSuggest" , main) ;
                     dispatchData.put("secondChargeSuggest" , second);
 
@@ -768,8 +783,17 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }else if(stageType.equals(RevireStageKey.KEY_STUDY.getValue())){
                         //可研
 
+
                     }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
                         //概算
+                        List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
+                       List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
+                       for(int i=0;i<signDtoList.size();i++){
+                           dispatchList.add(signDtoList.get(i).getDispatchDocDto());
+                       }
+                        dispatchData.put("dispatchList",dispatchList);
+                        //建议书
+                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_BUDGET_DISPATCHDOC.getKey(), path);
 
                     }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
                         //资金

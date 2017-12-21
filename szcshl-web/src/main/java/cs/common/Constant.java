@@ -360,6 +360,7 @@ public class Constant {
         STAGE_SUG_WORKPROGRAM("print/workProgram/xmjys" , "项目建议书_工作方案"),
         STAGE_SUG_FILERECORD("print/filerecord/fileXmjys" , "项目建议书_归档"),
         STAGE_SUG_DISPATCHDOC("print/dispatchDoc/dispatchXmjys" , "项目建议书_发文"),
+        STAGE_BUDGET_DISPATCHDOC("print/dispatchDoc/dispatchXmgs" , "项目概算_发文"),
 
         STAGE_REPORT_WORKPROGRAM("print/workProgram/zjsq" , "资金申请_工作方案"),
         STAGE_DEVICE_WORKPROGRAM("print/workProgram/jksb" , "进口设备_工作方案"),
