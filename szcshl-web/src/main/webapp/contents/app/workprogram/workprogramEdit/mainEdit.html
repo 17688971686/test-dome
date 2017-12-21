@@ -86,10 +86,10 @@
             </select>
             <input type="text" ng-model="vm.work.mainDeptName" name="mainDeptName" id="mainDeptName" style="width:200px;height:26px;margin-left:-224px;">
         </td>
-        <td class="text-center">是否有环评</td>
+        <td class="text-center">是否有环评{{vm.work.isHaveEIA}}</td>
         <td colspan="3">
-            <input type="checkbox" ng-value="9" ng-disabled="true" name="isHaveEIA" ng-checked="vm.work.mainWorkProgramDto.isHaveEIA == 9 || vm.work.mainWorkProgramDto.isHaveEIA == '9'">是
-            <input type="checkbox" ng-value="0" ng-disabled="true" name="isHaveEIA" ng-checked="!vm.work.mainWorkProgramDto.isHaveEIA || vm.work.mainWorkProgramDto.isHaveEIA == 0 || vm.work.mainWorkProgramDto.isHaveEIA == '0'">否
+            <input type="checkbox" ng-true-value="9" ng-model="vm.work.isHaveEIA"  name="isHaveEIA" ng-checked="vm.work.isHaveEIA == 9 || vm.work.isHaveEIA == '9'">是
+            <input type="checkbox" ng-true-value="0"  ng-model="vm.work.isHaveEIA"  name="isHaveEIA" ng-checked="!vm.work.isHaveEIA || vm.work.isHaveEIA == 0 || vm.work.isHaveEIA == '0'">否
         </td>
     </tr>
     <tr>

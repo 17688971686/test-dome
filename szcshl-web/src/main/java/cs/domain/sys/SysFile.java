@@ -30,7 +30,7 @@ public class SysFile extends DomainBase {
     @Column(columnDefinition = "NUMBER")
     private Long fileSize;
 
-    @Column(columnDefinition = "varchar(5)")
+    @Column(columnDefinition = "varchar(16)")
     private String fileType;
 
     /**
