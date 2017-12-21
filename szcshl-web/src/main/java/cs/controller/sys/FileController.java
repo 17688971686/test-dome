@@ -11,12 +11,12 @@ import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.model.meeting.RoomBookingDto;
-import cs.model.project.AddSuppLetterDto;
-import cs.model.project.DispatchDocDto;
-import cs.model.project.SignDto;
-import cs.model.project.WorkProgramDto;
+import cs.model.project.*;
 import cs.model.sys.PluginFileDto;
 import cs.model.sys.SysFileDto;
+import cs.model.topic.FilingDto;
+import cs.model.topic.TopicInfoDto;
+import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
@@ -26,9 +26,11 @@ import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.service.project.AddSuppLetterService;
 import cs.service.project.SignService;
 import cs.service.project.WorkProgramService;
 import cs.service.sys.SysFileService;
+import cs.service.topic.TopicInfoService;
 import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.log4j.Logger;
@@ -95,6 +97,12 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     @Autowired
     private ExpertService expertService;
+
+    @Autowired
+    private TopicInfoService topicInfoService;
+
+    @Autowired
+    private AddSuppLetterService addSuppLetterService;
 
     private ServletContext servletContext;
 
@@ -807,8 +815,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                     break;
 
-                case "EXPERT_PAY":
-                    //专家评审费
+                case "SIGN_EXPERT":
+                    //项目环节的专家评分和专家评审费
                     Map<String , Object> expertData = new HashMap<>();
                     ExpertReview expertReview = expertReviewRepo.findByBusinessId(businessId);
                     List<ExpertSelectedDto> expertSelectedList = new ArrayList<>();
@@ -828,7 +836,15 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         expertData.put("projectName" , expertReview.getReviewTitle().substring(1,expertReview.getReviewTitle().length()-1));
                         expertData.put("expertList" , expertSelectedList);
                     }
-                    file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
+                    //专家评审费发放表
+                    if("SIGN_EXPERT_PAY".equals(stageType)){
+
+                        file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
+                    }
+                    //专家评分
+                    if("SIGN_EXPERT_SCORE".equals(stageType)){
+                        file = TemplateUtil.createDoc(expertData, Template.EXPERT_SCORD.getKey(), path);
+                    }
                     break;
                 case  "ADDSUPPLETER":
                     //拟补充资料函
@@ -867,6 +883,61 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     file = TemplateUtil.createDoc(expertDataMap, Template.EXPERT.getKey(), path);
 
                     break;
+
+                case "TOPICINFO":
+                    //课题研究
+                    TopicInfoDto topicInfoDto = topicInfoService.findById(businessId);
+                    //归档
+                    if("TOPICINFO_FILERECORD".equals(stageType)){
+                        if(topicInfoDto!=null){
+                            FilingDto filingDto= topicInfoDto.getFilingDto();
+                            Map<String , Object> filingData = TemplateUtil.entryAddMap(filingDto);
+                            AddRegisterFileDto[] registerFileDto = new AddRegisterFileDto[5];
+                            if(filingDto!=null && filingDto.getRegisterFileDto() !=null && filingDto.getRegisterFileDto().size()>0) {
+                                for (int i = 0; i < filingDto.getRegisterFileDto().size() && i < 5; i++) {
+                                    registerFileDto[i] = filingDto.getRegisterFileDto().get(i);
+                                }
+                            }
+                            filingData.put("registerFileList", registerFileDto);
+                            file = TemplateUtil.createDoc(filingData, Template.TOPICINFO_FILERECORD.getKey(), path);
+                        }
+                    }
+
+                    //工作方案
+                    if("TOPICINFO_WORKPROGRAM".equals(stageType)){
+                        if(topicInfoDto!=null){
+                            WorkPlanDto workPlanDto = topicInfoDto.getWorkPlanDto();
+                            Map<String , Object> workPlanData = TemplateUtil.entryAddMap(workPlanDto);
+                            workPlanData.put("createdDate" , DateUtils.converToString(workPlanDto.getCreatedDate() , "yyyy年MM月dd日"));
+                            String rbDateStr = "";
+                            String address = "";
+                            if(workPlanDto!=null && workPlanDto.getRoomDtoList()!=null && workPlanDto.getRoomDtoList().size()>0){
+                                rbDateStr = workPlanDto.getRoomDtoList().get(0).getRbDate();
+                                address = workPlanDto.getRoomDtoList().get(0).getAddressName();
+                            }
+                            workPlanData.put("rbDateStr", rbDateStr);
+                            workPlanData.put("addRess", address);
+                            ExpertDto[] expeDtos = new ExpertDto[10];
+                            if(workPlanDto!=null && workPlanDto.getExpertDtoList()!=null && workPlanDto.getExpertDtoList().size()>0){
+                                for(int i=0; i<workPlanDto.getExpertDtoList().size() && i<10 ; i++){
+                                    expeDtos[i] = workPlanDto.getExpertDtoList().get(i);
+                                }
+                            }
+                            workPlanData.put("expertList", expeDtos);
+                            file = TemplateUtil.createDoc(workPlanData, Template.TOPICINFO_WORKPROGRAM.getKey(), path);
+                        }
+                    }
+
+                    break;
+
+                case "MONTHLY" :
+                    //月报简报
+                    AddSuppLetterDto addSuppLetterDto = addSuppLetterService.findById(businessId);
+                    Map<String , Object> addSuppleterData = TemplateUtil.entryAddMap(addSuppLetterDto);
+                    file = TemplateUtil.createDoc(addSuppleterData, Template.MONTHLY.getKey(), path);
+                    break;
+
+
                 default:
                     ;
             }

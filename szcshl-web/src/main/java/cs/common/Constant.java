@@ -393,7 +393,17 @@ public class Constant {
         EXPERT("print/expert" , "专家申请表"),
 
         //专家评审费
-        EXPERT_PAYMENT("print/expert_payment" , "专家评审费");
+        EXPERT_PAYMENT("print/expert_payment" , "专家评审费"),
+
+        //专家评分
+        EXPERT_SCORD("print/expert_score" , "专家评分"),
+
+        //月报简报
+        MONTHLY("print/monthly/monthly" , "月报简报"),
+
+        //课题研究
+        TOPICINFO_WORKPROGRAM("print/topicInfo/workProgramTopic" , "课题研究_工作方案"),
+        TOPICINFO_FILERECORD("print/topicInfo/fileTopic" , "课题研究_归档");
 
         private String key;
         private String value;
@@ -680,7 +690,6 @@ public class Constant {
         }
 
     }
-
 
     /**
      * 存档编号KEY值
