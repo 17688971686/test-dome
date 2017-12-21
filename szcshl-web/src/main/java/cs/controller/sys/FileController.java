@@ -335,7 +335,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
      * @throws Exception
      */
     @RequestMapping(name = "外链文件下载", path = "remoteDownload/{sysfileId}", method = RequestMethod.GET)
-    @ResponseBody
     public void remoteDownload(@PathVariable("sysfileId") String sysfileId, Model model, HttpServletResponse response) throws Exception {
         OutputStream out = null;
         try {

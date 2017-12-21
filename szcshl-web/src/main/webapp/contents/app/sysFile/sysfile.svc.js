@@ -61,9 +61,16 @@
                 }
             }
             var httpSuccess = function success(response) {
+                var downForm = $("#szecSysFileDownLoadForm");
+                downForm.attr("target","");
+                downForm.attr("method","get");
                 if (response.data.flag || response.data.reCode == 'ok') {
-                    window.open(rootPath + "/file/fileDownload?sysfileId=" + id);
+                    downForm.attr("action",rootPath + "/file/fileDownload");
+                    downForm.find("input[name='sysfileId']").val(id);
+                    downForm.submit();//表单提交
                 } else {
+                    downForm.attr("action","");
+                    $("#szecSysFileDownLoadForm input[name='sysfileId']").val("")
                     bsWin.error(response.data.reMsg);
                 }
             };
