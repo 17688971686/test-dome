@@ -131,9 +131,21 @@
 							         ng-click="vm.fileRecord.expertAmanCount = initInputValue($event,vm.fileRecord.expertAmanCount)"
 							        ng-true-value="9" ng-false-value="0"></td>
 							        <td style="border-top:none;"> <span data-valmsg-for="expertAmanCount" data-valmsg-replace="true" class="errors"></span></td>
-							      </tr>	
-							      
-							       <tr>
+							      </tr>
+                                  <tr>
+
+                                      <td style="border-top:none;">
+                                          <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.planCount" name="planCount" id="planCount">
+                                      </td>
+                                      <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.planOriginal"
+                                                                          ng-click="vm.fileRecord.planCount = initInputValue($event,vm.fileRecord.planCount)"
+                                                                          ng-true-value="9" ng-false-value="0" ></td>
+                                      <td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.planCopy"
+                                                                          ng-click="vm.fileRecord.planCount = initInputValue($event,vm.fileRecord.planCount)"
+                                                                          ng-true-value="9" ng-false-value="0"></td>
+                                      <td style="border-top:none;"> <span data-valmsg-for="planCount" data-valmsg-replace="true" class="errors"></span></td>
+                                  </tr>
+                                  <tr>
 							       
 							        <td style="border-top:none;">
                                         <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.meetingSignCount" name="meetingSignCount" id="meetingSignCount">
@@ -370,6 +382,7 @@
 		  </tbody>			  		  	  
 		</table>	<!-- end table -->
 
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
-	
+<!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.fileRecord.fileRecordId,'FILERECORD' , 'STAGEHOMELAND')">打印预览</button>
+
 <!-- E 进口设备存档表 -->

@@ -393,7 +393,17 @@ public class Constant {
         EXPERT("print/expert" , "专家申请表"),
 
         //专家评审费
-        EXPERT_PAYMENT("print/expert_payment" , "专家评审费");
+        EXPERT_PAYMENT("print/expert_payment" , "专家评审费"),
+
+        //专家评分
+        EXPERT_SCORD("print/expert_score" , "专家评分"),
+
+        //月报简报
+        MONTHLY("print/monthly/monthly" , "月报简报"),
+
+        //课题研究
+        TOPICINFO_WORKPROGRAM("print/topicInfo/workProgramTopic" , "课题研究_工作方案"),
+        TOPICINFO_FILERECORD("print/topicInfo/fileTopic" , "课题研究_归档");
 
         private String key;
         private String value;
@@ -629,8 +639,8 @@ public class Constant {
         KEY_HOMELAND("STAGEHOMELAND"), //设备清单（国产）
         KEY_IMPORT("STAGEIMPORT"),     //设备清单（进口）
         KEY_DEVICE("STAGEDEVICE"),     //进口设备
-        KEY_OTHER("STAGEOTHER");       //其他
-
+        KEY_OTHER("STAGEOTHER"),       //其他
+        KEY_CHECKFILE("CHECKFILE");   //要检测的文件名名称
         private String value;
 
         RevireStageKey(String value) {
@@ -680,7 +690,6 @@ public class Constant {
         }
 
     }
-
 
     /**
      * 存档编号KEY值

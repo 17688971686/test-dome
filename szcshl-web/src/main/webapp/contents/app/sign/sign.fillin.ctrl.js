@@ -42,6 +42,23 @@
                     inputId: "sysfileinput",
                      vm: vm
                 });
+
+                //初始化，打印预览的stageType
+                if(vm.model.reviewstage == "项目建议书" || vm.model.reviewstage == "可行性研究报告"){
+                    vm.stageType = "STAGESUG";
+                }
+                else if(vm.model.reviewstage == "资金申请报告"){
+                    vm.stageType = "STAGEREPORT";
+                }
+                else if(vm.model.reviewstage == "设备清单（国产）" || vm.model.reviewstage == "设备清单（进口）"){
+                    vm.stageType = "STAGEHOMELAND";
+                }
+                else if(vm.model.reviewstage == "进口设备"){
+                    vm.stageType = "STAGEDEVICE";
+                }
+                else if(vm.model.reviewstage == "项目概算"){
+                    vm.stageType = "STAGEBUDGET";
+                }
             });
         }
 
