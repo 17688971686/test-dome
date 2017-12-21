@@ -755,34 +755,57 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                     if(stageType.equals(RevireStageKey.KEY_SUG.getValue())){
                         //建议书
+                        dispatchData.put("wpTile","项目建议书发文审批表");
                         file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
                     }else if(stageType.equals(RevireStageKey.KEY_STUDY.getValue())){
                         //可研
-
+                        List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
+                        List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
+                        List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
+                        if(null != signDtoList){
+                            for(int i=0;i<signDtoList.size();i++){
+                                if(null != signDtoList.get(i).getDispatchDocDto()){
+                                    dispatchList.add(signDtoList.get(i).getDispatchDocDto());
+                                }
+                            }
+                        }
+                        dispatchViewList.add(getDispatchStage("项目建议书",dispatchList));
+                        dispatchData.put("dispatchList",dispatchViewList);
+                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_STUDY_DISPATCHDOC.getKey(), path);
 
                     }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
                         //概算
                         List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
-                       List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
-                       for(int i=0;i<signDtoList.size();i++){
-                           dispatchList.add(signDtoList.get(i).getDispatchDocDto());
-                       }
-                        dispatchData.put("dispatchList",dispatchList);
-                        //建议书
+                        List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
+                        List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
+                        if(null != signDtoList){
+                            for(int i=0;i<signDtoList.size();i++){
+                                if(null != signDtoList.get(i).getDispatchDocDto()){
+                                    dispatchList.add(signDtoList.get(i).getDispatchDocDto());
+                                }
+                            }
+                        }
+                            dispatchViewList.add(getDispatchStage("项目建议书",dispatchList));
+                            dispatchViewList.add(getDispatchStage("可行性研究报告",dispatchList));
+                            dispatchData.put("dispatchList",dispatchViewList);
                         file = TemplateUtil.createDoc(dispatchData, Template.STAGE_BUDGET_DISPATCHDOC.getKey(), path);
 
                     }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
                         //资金
+                        dispatchData.put("wpTile","资金申请报告发文审批表");
+                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
 
                     }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
                         //进口
+                        dispatchData.put("wpTile","进口设备发文审批表");
+                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
 
                     }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
                         //设备清单（国产、进口）
-
+                        dispatchData.put("wpTile","设备清单发文审批表");
+                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
                     }
-
                     break;
                 default:
                     ;
@@ -826,6 +849,31 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     *
+     * @param stageName
+     * @param dispatchDocDtoList
+     * @return
+     */
+    private DispatchDocDto getDispatchStage(String stageName,List<DispatchDocDto> dispatchDocDtoList){
+        DispatchDocDto dispatchDocDto = new DispatchDocDto();
+           if(dispatchDocDtoList.size()>0){
+               for(int i = 0;i < dispatchDocDtoList.size();i++){
+                   if(stageName.equals(dispatchDocDtoList.get(i).getDispatchStage())){
+                       return dispatchDocDtoList.get(i);
+                   }
+                   if(i == (dispatchDocDtoList.size()-1)){
+                       dispatchDocDto.setDispatchStage(stageName);
+                       break;
+                   }
+               }
+           }else{
+               dispatchDocDto.setDispatchStage(stageName);
+           }
+
+        return dispatchDocDto;
     }
 
 

@@ -115,7 +115,6 @@
           <!-- S 可行性研究报告 -->
         <div  ng-if="vm.model.reviewstage =='可行性研究报告'">
             <div id="sign_dispatch_kxxyj" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/feasibilityDeatil.html'"></div>
-            <div id="sign_dispatch_kxxyj_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailKxxyjbg.html"/></div>
         </div>
          <!-- E 可行性研究报告 -->
          
@@ -129,21 +128,18 @@
           <!-- S 项目概算 -->
         <div  ng-if="vm.model.reviewstage =='项目概算'">
             <div id="sign_dispatch_xmgs" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/projectBudgetDetail.html'"></div>
-            <div id="sign_dispatch_xmgs_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmgs.html"/></div>
         </div>
          <!-- E 项目概算 -->
          
        	 <!-- S 进口设备 -->
         <div  ng-if="vm.model.reviewstage =='进口设备'">
             <div id="sign_dispatch_jksb" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/foreignDetail.html'"></div>
-            <div id="sign_dispatch_jksb_templ" style="display: none;" ><#include "/templatePrint/dispatch/projectDetailJksb.html"/></div>
         </div>
          <!-- E 进口设备 -->
          
          <!-- S 设备清单（进口）/设备清单（国产） -->
         <div  ng-if="vm.model.reviewstage =='设备清单（国产）' || vm.model.reviewstage =='设备清单（进口）' ">
             <div id="sign_dispatch_sbqd" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/domesticDetail.html'"></div>
-            <div id="sign_dispatch_sbqd_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailSbqd.html"/></div>
         </div>
          <!-- E 设备清单（进口）/设备清单（国产） -->
 
