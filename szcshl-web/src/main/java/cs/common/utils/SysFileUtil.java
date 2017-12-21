@@ -58,19 +58,19 @@ public class SysFileUtil {
             mainType = "NO_MAIN_TYPE_FILE";
         }
         //文件存放的格式,根目录/主业务ID/业务模块/文件名
-        relativeUrl += (File.separator + mainType);
+        relativeUrl += ("/" + mainType);
         //如果有主业务ID ，则加上
         if(Validate.isString(mainId)){
-            relativeUrl += (File.separator+mainId);
+            relativeUrl += ("/"+mainId);
         }
         //如果有业务模块，则加上业务模块
         if(Validate.isString(sysBusiType)){
-            relativeUrl += (File.separator+sysBusiType);
+            relativeUrl += ("/"+sysBusiType);
         }
         //如果是本地
         if(Validate.isString(fileLocation)){
             String url = fileLocation;
-           File isFileExists = new File(url + File.separator + relativeUrl);
+           File isFileExists = new File(url + "/" + relativeUrl);
 
             if (isFileExists.exists()) {
                 if (!isFileExists.isDirectory()) {
@@ -89,7 +89,7 @@ public class SysFileUtil {
                 extendName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
             }
             String distFileName = Tools.generateRandomFilename().concat(extendName);
-            relativeUrl += File.separator + distFileName;
+            relativeUrl += "/" + distFileName;
         }
         return relativeUrl;
     }
@@ -141,8 +141,8 @@ public class SysFileUtil {
      */
     public static boolean deleteDirectory(String dir) {
         // 如果dir不以文件分隔符结尾，自动添加文件分隔符
-        if (!dir.endsWith(File.separator)) {
-            dir = dir + File.separator;
+        if (!dir.endsWith("/")) {
+            dir = dir + "/";
         }
         File dirFile = new File(dir);
         // 如果dir对应的文件不存在，或者不是一个目录，则退出
@@ -191,7 +191,7 @@ public class SysFileUtil {
         URL url = new URL(urlStr);
         HttpURLConnection conn = (HttpURLConnection)url.openConnection();
         //设置超时间为3秒
-        conn.setConnectTimeout(3*1000);
+        conn.setConnectTimeout(60*1000);
         //防止屏蔽程序抓取而返回403错误
         conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
 
@@ -205,7 +205,7 @@ public class SysFileUtil {
         if(!saveDir.exists()){
             saveDir.mkdir();
         }
-        File file = new File(saveDir+File.separator+fileName);
+        File file = new File(saveDir+"/"+fileName);
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(getData);
         if(fos!=null){
@@ -241,9 +241,10 @@ public class SysFileUtil {
 
     public static void main(String[] args) {
         try{
-            downLoadFromUrl("http://101.95.48.97:8005/res/upload/interface/apptutorials/manualstypeico/6f83ce8f-0da5-49b3-bac8-fd5fc67d2725.png",
-                    "百度.jpg","d:/resource/images/diaodiao/country/");
+            downLoadFromUrl("http://dlsw.baidu.com/sw-search-sp/soft/39/15453/zuiqiangwubishurufa.1403771155.rar",
+                    "baidu.rar","D:/szec_uploadfile/");
         }catch (Exception e) {
+            System.out.print(e.getMessage());
             // TODO: handle exception
         }
     }

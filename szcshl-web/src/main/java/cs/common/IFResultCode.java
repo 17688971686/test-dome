@@ -18,6 +18,7 @@ public class IFResultCode {
         SZEC_SIGN_02("SIGN_02","收文编号为空！"),
         SZEC_SIGN_03("SIGN_03","评审阶段标识为空！"),
         SZEC_SIGN_04("SIGN_04","评审阶段标识不正确！"),
+        SZEC_SIGN_05("SIGN_05","项目数据保存成功，但是附件保存有错误！"),
         //以下是课题研究的返回码
         SZEC_TOPIC_01("TOPIC_01","对象为空！"),
         SZEC_TOPIC_02("TOPIC_02","流程实例ID为空！"),

@@ -1,5 +1,6 @@
 package cs.common.utils;
 
+import cs.common.Constant;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
@@ -233,7 +234,6 @@ public class FtpUtil {
             if (!ftp.storeFile(filename, input)) {
                 return result;
             }
-            closeFtp();
             result = true;
         } catch (IOException e) {
             logger.error("附件上传异常：" + e.getMessage());
@@ -380,15 +380,15 @@ public class FtpUtil {
         f.setUserName("ftptest");
         f.setPwd("123456");
         FtpUtil.connectFtp(f);
-        String remote = "/通知公告/无归类文件/tomcat.rar";
+        String remote = "/"+ Constant.SysFileType.SIGN.getValue()+"/08dc1b2a-37e1-4df3-8c7f-88fb7708f30c/"+Constant.SysFileType.FGW_FILE.getValue();
         //
         //FtpUtil.upload(file);//把文件上传在ftp上
         //FtpUtil.startDown(f, "d:/", remoteUrl);//下载ftp文件测试
-        /*File file = new File("D:/鹏微公司服务器.txt");
-        FtpUtil.uploadFile(remote, "鹏微公司服务器.txt", new FileInputStream(file));*/
+        File file = new File("D:/鹏微公司服务器.txt");
+        FtpUtil.uploadFile(remote, "鹏微公司服务器.txt", new FileInputStream(file));
 
         //System.out.println(FtpUtil.checkFileExist(remote,"tomcat.rar"));
-        System.out.println(FtpUtil.removeFile(remote));
+        //System.out.println(FtpUtil.removeFile(remote));
     }
 
 }

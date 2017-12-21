@@ -248,6 +248,15 @@ public class SysFileServiceImpl implements SysFileService {
     }
 
     /**
+     * 批量更新
+     * @param saveFileList
+     */
+    @Override
+    public void bathSave(List<SysFile> saveFileList) {
+        sysFileRepo.bathUpdate(saveFileList);
+    }
+
+    /**
      * 根据业务ID获取附件信息
      */
     /**

@@ -25,6 +25,11 @@ public interface SysFileService {
     ResultMsg saveToFtp(long size, String fileName, String businessId, String fileType,String relativeFileUrl,
                         String mainId, String mainType, String sysfileType, String sysBusiType, Ftp ftp);
 
+    /**
+     * 删除附件
+     * @param sysFileId
+     * @return
+     */
     ResultMsg deleteById(String sysFileId);
 
     PageModelDto<SysFileDto> get(ODataObj odataObj);
@@ -36,4 +41,10 @@ public interface SysFileService {
     List<SysFileDto> findByMainId(String mainId);
 
     List<SysFileDto> queryFile(String mainId,String sysBusiType);
+
+    /**
+     * 批量保存
+     * @param saveFileList
+     */
+    void bathSave(List<SysFile> saveFileList);
 }

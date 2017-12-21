@@ -11,6 +11,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.Validate;
 import cs.domain.sys.Log;
 import cs.model.project.SignDto;
+import cs.model.sys.SysFileDto;
 import cs.model.topic.TopicInfoDto;
 import cs.service.restService.SignRestService;
 import cs.service.sys.LogService;
@@ -21,10 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static cs.common.Constant.SUPER_USER;
 
 /**
  * 系统接口controller
@@ -53,17 +53,25 @@ public class SysRestController {
      * @return
      */
     @RequestMapping(name = "项目签收信息", value = "/pushProject", method = RequestMethod.POST)
-    @Transactional
     public synchronized ResultMsg pushProject(@RequestParam String signDtoJson) {
-        //json转出对象
+        ResultMsg resultMsg = null;
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
-        ResultMsg resultMsg = signRestService.pushProject(signDto);
+        String msg = "项目【"+signDto.getProjectname()+"("+signDto.getFilecode()+")】，";
+        try{
+            //json转出对象
+            resultMsg = signRestService.pushProject(signDto);
+        }catch (Exception e){
+            resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
+            e.printStackTrace();
+        }
+
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
+        log.setUserName(SUPER_USER);
         log.setLogCode(resultMsg.getReCode());
         log.setModule(Constant.LOG_MODULE.INTERFACE.getValue() + "【获取项目信息接口】");
-        log.setMessage(resultMsg.getReMsg());
+        log.setMessage(msg+resultMsg.getReMsg());
         log.setBuninessId(Validate.isObject(resultMsg.getReObj()) ? resultMsg.getReObj().toString() : "");
         log.setBuninessType(Constant.BusinessType.SIGN.getValue());
         log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
@@ -214,13 +222,30 @@ public class SysRestController {
 
     @RequestMapping(name = "项目签收信息", value = "/testJson")
     public void testJson() throws IOException {
-        String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/";
+        String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/pushProject";
         SignDto signDto = new SignDto();
-        signDto.setSignid("122");
-        signDto.setCreatedBy("系统管理员");
+        //委里收文编号
+        signDto.setFilecode("C20171221");
+        //项目建议书阶段
+        signDto.setReviewstage("STAGESUG");
+        //项目名称
+        signDto.setProjectname("深圳市政府投资教育项目");
+        //附件列表
+        List<SysFileDto> fileDtoList = new ArrayList<>();
+        SysFileDto sysFileDto = new SysFileDto();
+        //显示名称，后缀名也要
+        sysFileDto.setShowName("测试附件.rar");
+        //附件大小，Long类型
+        sysFileDto.setFileSize(626L);
+        //附件下载地址
+        sysFileDto.setFileUrl("http://dlsw.baidu.com/sw-search-sp/soft/39/15453/zuiqiangwubishurufa.1403771155.rar");
+        fileDtoList.add(sysFileDto);
+        //项目添加附件列表
+        signDto.setSysFileDtoList(fileDtoList);
+
         Map<String, String> params = new HashMap<>();
         params.put("signDtoJson", JSON.toJSONString(signDto));
-        HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI + "/pushProject", params);
+        HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params);
         System.out.println(hst.toString());
     }
 }

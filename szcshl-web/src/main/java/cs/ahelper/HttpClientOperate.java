@@ -5,6 +5,8 @@ package cs.ahelper;
  */
 
 import cs.common.utils.Validate;
+import org.apache.http.Consts;
+import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
@@ -53,7 +55,8 @@ public class HttpClientOperate implements BeanFactoryAware{
     private RequestConfig requestConfig;
 
     private CloseableHttpClient getHttpClient(){
-        return this.beanFactory.getBean(CloseableHttpClient.class);
+        CloseableHttpClient httpClient = this.beanFactory.getBean(CloseableHttpClient.class);
+        return httpClient;
     }
 
     /**
@@ -126,7 +129,7 @@ public class HttpClientOperate implements BeanFactoryAware{
                 parameters.add(new BasicNameValuePair(key, params.get(key)));
             }
             // 构造一个form表单式的实体
-            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(parameters);
+            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(parameters, Consts.UTF_8);
             // 将请求实体设置到httpPost对象中
             httpPost.setEntity(formEntity);
         }
@@ -134,12 +137,7 @@ public class HttpClientOperate implements BeanFactoryAware{
         try {
             // 执行请求
             response = this.getHttpClient().execute(httpPost);
-            // 判断返回状态是否为200
-            /*if (response.getStatusLine().getStatusCode() == 200) {
-                String content = EntityUtils.toString(response.getEntity(), "UTF-8");
-                System.out.println(content);
-            }*/
-            return new HttpResult(response.getStatusLine().getStatusCode(),EntityUtils.toString(response.getEntity(), "UTF-8"));
+            return new HttpResult(response.getStatusLine().getStatusCode(),EntityUtils.toString(response.getEntity(), Consts.UTF_8));
         } finally {
             if (response != null) {
                 response.close();
@@ -171,11 +169,6 @@ public class HttpClientOperate implements BeanFactoryAware{
         try {
             // 执行请求
             response = this.getHttpClient().execute(httpPost);
-            // 判断返回状态是否为200
-            /*if (response.getStatusLine().getStatusCode() == 200) {
-                String content = EntityUtils.toString(response.getEntity(), "UTF-8");
-                System.out.println(content);
-            }*/
             return new HttpResult(response.getStatusLine().getStatusCode(),EntityUtils.toString(response.getEntity(), "UTF-8"));
         } finally {
             if (response != null) {

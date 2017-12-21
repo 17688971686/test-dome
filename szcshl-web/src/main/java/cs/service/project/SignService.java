@@ -14,6 +14,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +111,11 @@ public interface SignService {
 
     boolean updateSignProcessState(String signId,Integer processState);
 
+    /**
+     * 获取签收项目（正式签收未发起流程或者已经发起流程未正式签收的项目）
+     * @param odataObj
+     * @return
+     */
     PageModelDto<SignDto> findBySignUser(ODataObj odataObj);
 
     List<SignDispaWork> findAssociateSign(SignDispaWork signDispaWork);
@@ -150,6 +156,13 @@ public interface SignService {
      */
     Float getReviewDays(String reviewstage);
 
+    /**
+     * 获取项目编号
+     * @param signType
+     * @param signdate
+     * @return
+     */
+    int findSignMaxSeqByType(String signType, Date signdate);
     /************************以下是报审登记表导出***********************/
    /* File printSign(String signId);*/
 }

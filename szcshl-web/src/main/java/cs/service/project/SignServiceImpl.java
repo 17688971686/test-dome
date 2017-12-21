@@ -1798,8 +1798,7 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 签收人获取项目列表
-     *
+     * 获取签收项目（正式签收未发起流程或者已经发起流程未正式签收的项目）
      * @param odataObj
      * @return
      */
@@ -1811,12 +1810,14 @@ public class SignServiceImpl implements SignService {
         //1、排除旧项目
         criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
         //2、排除已终止、已完成
-        criteria.add(Restrictions.ne(Sign_.signState.getName(), EnumState.YES.getValue()));
-        criteria.add(Restrictions.ne(Sign_.signState.getName(), EnumState.FORCE.getValue()));
+        criteria.add(Restrictions.or(Restrictions.isNull(Sign_.signState.getName()),
+                Restrictions.ne(Sign_.signState.getName(), EnumState.YES.getValue()),
+                Restrictions.ne(Sign_.signState.getName(), EnumState.FORCE.getValue())));
+
         //3、已签收，但是未发起流程的项目 或者已发起流程，但是未签收的项目
         StringBuffer sb = new StringBuffer();
         sb.append("( (" + Sign_.issign.getName() + " is null or " + Sign_.issign.getName() + " = '" + EnumState.NO.getValue() + "' ");
-        sb.append(" and " + Sign_.processInstanceId.getName() + " = '" + EnumState.YES.getValue() + "') ");
+        sb.append(" and " + Sign_.processInstanceId.getName() + " is not null ) ");
         sb.append("  or ( " + Sign_.issign.getName() + " = '" + EnumState.YES.getValue() + "' and " + Sign_.processInstanceId.getName() + " is null ))");
         criteria.add(Restrictions.sqlRestriction(sb.toString()));
 
@@ -2000,7 +2001,8 @@ public class SignServiceImpl implements SignService {
      * @param signType
      * @return
      */
-    private int findSignMaxSeqByType(String signType, Date signdate) {
+    @Override
+    public int findSignMaxSeqByType(String signType, Date signdate) {
         if (signdate == null) {
             signdate = new Date();
         }
@@ -2011,7 +2013,7 @@ public class SignServiceImpl implements SignService {
         sqlBuilder.setParam("signType", signType);
         sqlBuilder.setParam("beginTime", DateUtils.converToString(signdate, "yyyy") + "-01-01 00:00:00");
         sqlBuilder.setParam("endTime", DateUtils.converToString(signdate, "yyyy") + "-12-31 23:59:59");
-        return dispatchDocRepo.returnIntBySql(sqlBuilder);
+        return signRepo.returnIntBySql(sqlBuilder);
     }
 
     /**
