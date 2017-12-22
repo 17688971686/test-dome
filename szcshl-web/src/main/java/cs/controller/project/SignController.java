@@ -391,7 +391,7 @@ public class SignController {
         return ctrlName + "/hiProcessTask";
     }
 
-    @RequiresPermissions("sign#html/getBack#get")
+    @RequiresPermissions("sign#html/signGetBack#get")
     @RequestMapping(name = "项目重新分办", path = "html/signGetBack", method = RequestMethod.GET)
     public String getBack() {
 

@@ -202,7 +202,7 @@ public class SignDto extends BaseDto {
     private String proSugEledocCopy;
 
     //申报投资
-    private BigDecimal appalyInvestment;
+    private Double appalyInvestment;
 
     //建议书相关会议纪要份数
     private Integer sugMeetCount;
@@ -1178,11 +1178,11 @@ public class SignDto extends BaseDto {
         this.proSugEledocCopy = proSugEledocCopy;
     }
 
-    public BigDecimal getAppalyInvestment() {
+    public Double getAppalyInvestment() {
         return appalyInvestment;
     }
 
-    public void setAppalyInvestment(BigDecimal appalyInvestment) {
+    public void setAppalyInvestment(Double appalyInvestment) {
         this.appalyInvestment = appalyInvestment;
     }
 

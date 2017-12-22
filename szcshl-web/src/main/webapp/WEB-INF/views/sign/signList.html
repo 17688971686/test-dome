@@ -26,22 +26,22 @@
         <form id="searchform" name="searchform" >
             <table style="width:100%">
                 <tr>
-                    <td  class="text-right" style="width:10%;">项目名称</td>
-                    <td style="width:15%;">
+                    <td  class="text-right" style="width:7%;">项目名称</td>
+                    <td style="width:18%;">
                         <input name="projectname" type="text" operator="like" ng-model="vm.project.projectname" class="form-control input-sm "/>
                     </td>
-                    <td  class="text-right" style="width:10%;">建设单位</td>
-                    <td style="width:15%;">
+                    <td  class="text-right" style="width:7%;">建设单位</td>
+                    <td style="width:18%;">
                         <input name="builtcompanyName" type="text" operator="like" ng-model="vm.project.builtcompanyName" class="form-control input-sm "/>
                     </td>
 
-                    <td  class="text-right" style="width:10%;">是否有环评</td>
-                    <td style="width:15%;">
+                    <td  class="text-right" style="width:7%;">是否有环评</td>
+                    <td style="width:18%;">
                         <input type="checkbox" name="ishaveeia" operator="eq" ng-model="vm.project.ishaveeia" value="9" ng-true-value="9">
                     </td>
 
-                    <td  class="text-right" style="width:10%;">是否有其他关联</td>
-                    <td style="width:15%;">
+                    <td  class="text-right" style="width:7%;">是否有其他关联</td>
+                    <td style="width:18%;">
                         <input type="checkbox" name="isRelated"  operator="eq" ng-model="vm.project.isRelated"  value="9" ng-true-value="9">
                     </td>
                 </tr>
@@ -111,18 +111,27 @@
                     </td>
                     <td  class="text-right" style="width:150px;">收文日期</td>
                     <td>
-                        <input type="text" name="signdate" class="form-control input" style="width: 100%"  operator="ge" ng-model="vm.project.signdate"
+                        <input type="text" name="signdate" class="form-control input" style="width: 47%"  operator="ge"
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
+                        -
+                        <input type="text" name="signdate" class="form-control input" style="width: 47%"  operator="le"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
                     </td>
 
                     <td  class="text-right">发文日期</td>
                     <td>
-                        <input type="text" name="dispatchDate" class="form-control input-sm " style="width: 100%" operator="ge" ng-model="vm.project.dispatchDate"
+                        <input type="text" name="dispatchDate" class="form-control input-sm " style="width: 47%" operator="ge"
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
+                        -
+                        <input type="text" name="dispatchDate" class="form-control input-sm " style="width: 47%" operator="le"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
                     </td>
                     <td  class="text-right">归档日期</td>
                     <td>
-                        <input type="text" name="fileDate" class="form-control input-sm " style="width: 100%" operator="ge" ng-model="vm.project.fileDate"
+                        <input type="text" name="fileDate" class="form-control input-sm " style="width: 47%" operator="ge"
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                        -
+                        <input type="text" name="fileDate" class="form-control input-sm " style="width: 47%" operator="le"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                 </tr>
@@ -138,7 +147,10 @@
 
                     <td  class="text-right">申报投资</td>
                     <td>
-                        <input name="appalyInvestment" type="text" operator="like" ng-model="vm.project.appalyInvestment" class="form-control input-sm "/>
+                        <!--   <input name="appalyInvestment" style="width: 100%" type="text" operator="like"/>-->
+                      <input name="appalyInvestment" style="width: 47%" type="text" operator="ge" data-type="Integer"   />
+                        -
+                        <input name="appalyInvestment" style="width: 47%" type="text" operator="le"  data-type="Integer" />
                     </td>
                     <td  class="text-right">行业类型</td>
                     <td>
