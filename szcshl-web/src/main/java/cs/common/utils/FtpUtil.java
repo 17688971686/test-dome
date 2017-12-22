@@ -364,30 +364,30 @@ public class FtpUtil {
      * @return
      */
     public static String processDir(String fdir) {
-        fdir = fdir.replace("/", "\\").replace("\\\\", "\\");
-        if (fdir.startsWith("\\")) {
+        fdir = fdir.replace("\\\\", "\\").replace("\\", "/");
+        /*if (fdir.startsWith("\\")) {
             fdir = fdir.substring(fdir.indexOf("\\") + 1);
         }
         if (fdir.endsWith("\\")) {
             fdir = fdir.substring(0, fdir.lastIndexOf("\\"));
-        }
+        }*/
         return fdir;
     }
 
     public static void main(String[] args) throws Exception {
         Ftp f = new Ftp();
-        f.setIpAddr("172.16.13.146");
-        f.setUserName("ftptest");
-        f.setPwd("123456");
+        f.setIpAddr("172.30.36.214");
+        f.setUserName("szec");
+        f.setPwd("863305");
         FtpUtil.connectFtp(f);
-        String remote = "/"+ Constant.SysFileType.SIGN.getValue()+"/08dc1b2a-37e1-4df3-8c7f-88fb7708f30c/"+Constant.SysFileType.FGW_FILE.getValue();
+        String remote = "/项目资料/光明新区污水支管网（二期）项目（甲子塘、红星、塘家社区）/报审工程概算书";
         //
         //FtpUtil.upload(file);//把文件上传在ftp上
         //FtpUtil.startDown(f, "d:/", remoteUrl);//下载ftp文件测试
-        File file = new File("D:/鹏微公司服务器.txt");
-        FtpUtil.uploadFile(remote, "鹏微公司服务器.txt", new FileInputStream(file));
+        //File file = new File("D:/鹏微公司服务器.txt");
+        //FtpUtil.uploadFile(remote, "鹏微公司服务器.txt", new FileInputStream(file));
 
-        //System.out.println(FtpUtil.checkFileExist(remote,"tomcat.rar"));
+        System.out.println(FtpUtil.checkFileExist(remote,"深圳市光明新区污水支管网（二期）建设工程-甲子塘社区支管网建设工程1.Qdy"));
         //System.out.println(FtpUtil.removeFile(remote));
     }
 

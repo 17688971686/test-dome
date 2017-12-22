@@ -1168,16 +1168,12 @@
                 if ("office" == fileType) {
                     url = rootPath + "/file/editFile?sysFileId=" + sysFileId;
                     width = "82%";
-                    height = "830px";
                 } else if ("pdf" == fileType) {
                     url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId;
                     width = "82%";
-                    height = "830px";
-
                 } else if ("image" == fileType) {
                     url = rootPath + "/file/preview/" + sysFileId;
                     width = "75%";
-                    height = "auto";
                 }
                 if (url) {
                     var httpOptions = {
@@ -1191,8 +1187,8 @@
                         if (response.data.flag || response.data.reCode == 'ok') {
                             $("#iframePreview").attr("src", url);
                             $("#previewModal").kendoWindow({
-                                width: width,
-                                height: height,
+                                width: "1050px",
+                                height: "730px",
                                 title: "",
                                 visible: false,
                                 modal: true,
@@ -3155,14 +3151,14 @@
         vm.filters ={};
         activate();
         function activate() {
+            adminSvc.getSignList(vm);
             //初始化查询参数
             adminSvc.initSignList(function(data){
                 if(data.flag || data.reCode == 'ok'){
                     vm.orgDeptList = data.reObj;
                 }
             });
-            adminSvc.getSignList(vm);
-            adminSvc.statisticalGrid(vm);
+            /*adminSvc.statisticalGrid(vm);*/
         }
 
         //重置
@@ -3184,7 +3180,7 @@
         /**
          * 统计表
          */
-        vm.statistical = function(){
+        /*vm.statistical = function(){
             var num = 1;
             vm.columns = [
                 {
@@ -3228,6 +3224,10 @@
                 }).data("kendoWindow").center().open();
             });
 
+        }*/
+
+        vm.statistical = function(){
+            
         }
 
         /**
@@ -3966,7 +3966,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#searchform")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -3980,7 +3980,7 @@
                 serverFiltering: true,
                 pageSize: 10,
                 sort: {
-                    field: "createdDate",
+                    field: "receivedate",
                     dir: "desc"
                 }
             });
@@ -4016,7 +4016,7 @@
                 },
                 {
                     field: "signdate",
-                    title: "收文日期",
+                    title: "签收日期",
                     width: 100,
                     filterable: false
                 },
@@ -9458,8 +9458,9 @@
                     return false;
                 }
                 var dataType = $me.attr("data-type") || "String";
-                if (!("Integer" == dataType)) {
-                    val = "'" + val + "'";
+                val = "'" + val + "'";
+                if ("String" != dataType) {
+                    val = dataType + val;
                 }
                 var operator = $me.attr("operator") || "eq",
                     dataRole = $me.attr("data-role") || ""; // data-role="datepicker"
@@ -32954,6 +32955,10 @@
             templatePrintSvc.templatePage(id);
         }
 
+        //附件下载
+        vm.commonDownloadSysFile = function (sysFileId) {
+            sysfileSvc.downloadFile(sysFileId);
+        }
         /**
          * 报审登记表导出
          */
@@ -34980,7 +34985,6 @@
                     downForm.find("input[name='sysfileId']").val(id);
                     downForm.submit();//表单提交
                 } else {
-
                     bsWin.error(response.data.reMsg);
                 }
             };

@@ -22,8 +22,11 @@ public class SysFileUtil {
 
     private static String FILE_UPLOAD_PATH = "file_upload_path";
 
-    public static String getFileSize(long fileS){
+    public static String getFileSize(Long fileS){
         String size = "";
+        if(fileS == null){
+            return size;
+        }
         DecimalFormat df = new DecimalFormat("#.00");
         if (fileS < 1024) {
             size = df.format((double) fileS) + "BT";

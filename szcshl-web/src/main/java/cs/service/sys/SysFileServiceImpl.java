@@ -221,7 +221,9 @@ public class SysFileServiceImpl implements SysFileService {
             sysFiles.forEach(sf -> {
                 SysFileDto sysFileDto = new SysFileDto();
                 BeanCopierUtils.copyProperties(sf, sysFileDto);
-                sysFileDto.setFileSizeStr(SysFileUtil.getFileSize(sf.getFileSize()));
+                if(null != sf.getFileSize()){
+                    sysFileDto.setFileSizeStr(SysFileUtil.getFileSize(sf.getFileSize()));
+                }
                 sysFileDtoList.add(sysFileDto);
             });
         }

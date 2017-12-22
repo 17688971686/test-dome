@@ -100,6 +100,10 @@
             templatePrintSvc.templatePage(id);
         }
 
+        //附件下载
+        vm.commonDownloadSysFile = function (sysFileId) {
+            sysfileSvc.downloadFile(sysFileId);
+        }
         /**
          * 报审登记表导出
          */

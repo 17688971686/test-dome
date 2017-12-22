@@ -79,8 +79,8 @@ public class SignDispaWork {
     /**
      * 投资申报
      */
-    @Column
-    private BigDecimal appalyinvestment;
+    @Column(columnDefinition="NUMBER")
+    private BigDecimal appalyInvestment;
 
     /**
      * 是否有其他关联
@@ -100,7 +100,7 @@ public class SignDispaWork {
     private String processState;
 
     /**
-     * 送来日期
+     * 收文日期
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
@@ -391,14 +391,6 @@ public class SignDispaWork {
 
     public void setBuiltcompanyname(String builtcompanyname) {
         this.builtcompanyname = builtcompanyname;
-    }
-
-    public BigDecimal getAppalyinvestment() {
-        return appalyinvestment;
-    }
-
-    public void setAppalyinvestment(BigDecimal appalyinvestment) {
-        this.appalyinvestment = appalyinvestment;
     }
 
     public String getIsRelated() {
@@ -703,5 +695,13 @@ public class SignDispaWork {
 
     public void setFilecode(String filecode) {
         this.filecode = filecode;
+    }
+
+    public BigDecimal getAppalyInvestment() {
+        return appalyInvestment;
+    }
+
+    public void setAppalyInvestment(BigDecimal appalyInvestment) {
+        this.appalyInvestment = appalyInvestment;
     }
 }

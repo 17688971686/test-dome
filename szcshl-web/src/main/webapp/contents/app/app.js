@@ -1168,16 +1168,12 @@
                 if ("office" == fileType) {
                     url = rootPath + "/file/editFile?sysFileId=" + sysFileId;
                     width = "82%";
-                    height = "830px";
                 } else if ("pdf" == fileType) {
                     url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId;
                     width = "82%";
-                    height = "830px";
-
                 } else if ("image" == fileType) {
                     url = rootPath + "/file/preview/" + sysFileId;
                     width = "75%";
-                    height = "auto";
                 }
                 if (url) {
                     var httpOptions = {
@@ -1191,8 +1187,8 @@
                         if (response.data.flag || response.data.reCode == 'ok') {
                             $("#iframePreview").attr("src", url);
                             $("#previewModal").kendoWindow({
-                                width: width,
-                                height: height,
+                                width: "1050px",
+                                height: "730px",
                                 title: "",
                                 visible: false,
                                 modal: true,

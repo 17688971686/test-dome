@@ -713,7 +713,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#searchform")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -727,7 +727,7 @@
                 serverFiltering: true,
                 pageSize: 10,
                 sort: {
-                    field: "createdDate",
+                    field: "receivedate",
                     dir: "desc"
                 }
             });
@@ -763,7 +763,7 @@
                 },
                 {
                     field: "signdate",
-                    title: "收文日期",
+                    title: "签收日期",
                     width: 100,
                     filterable: false
                 },

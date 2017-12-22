@@ -15,11 +15,11 @@
     <table class="table table-bordered" >
         <tr class="active">
             <td  align="center">文件名称</td>
-            <td style="width: 80px;" align="center" bgcolor="#eeeeee">文件大小</td>
-            <td style="width: 120px;" align="center">附件类型</td>
-            <td style="width: 100px;" align="center">上传人</td>
-            <td style="width: 200px;" align="center">时间</td>
-            <td style="width: 200px;" align="center">操作</td>
+            <td style="width: 10%;" align="center" bgcolor="#eeeeee">文件大小</td>
+            <td style="width: 15%;;" align="center">附件类型</td>
+            <td style="width: 10%;" align="center">上传人</td>
+            <td style="width: 15%;" align="center">时间</td>
+            <td style="width: 20%;" align="center">操作</td>
         </tr>
         <tr ng-repeat="x in vm.sysFileList ">
             <td style="text-align: center;">
@@ -34,7 +34,7 @@
             <td style="text-align: center;">{{ x.sysBusiType }}</td>
             <td style="text-align: center;">{{ x.createdBy }}</td>
             <td style="text-align: center;">{{ x.createdDate }}</td>
-            <td style="text-align: center;">
+            <td style="text-align: left;line-height: 25px;">
                 <button ng-click="vm.commonDownloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i
                         class="fa fa-cloud-download" aria-hidden="true"></i>下载
                 </button>

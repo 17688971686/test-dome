@@ -306,18 +306,18 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     public ResultMsg checkFtpFile(@RequestParam(required = true) String sysFileId) {
         ResultMsg resultMsg;
         try {
+            SysFile sysFile = fileService.findFileById(sysFileId);
             //连接ftp
             Ftp f = new Ftp();
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
-            f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
-            f.setUserName(propertyUtil.readProperty(FTP_USER));
-            f.setPwd(propertyUtil.readProperty(FTP_PWD));
+            f.setIpAddr(sysFile.getFtpIp());
+            f.setPort(Integer.valueOf(sysFile.getPort()));
+            f.setUserName(sysFile.getFtpUser());
+            f.setPwd(sysFile.getFtpPwd());
             boolean linkSucess = FtpUtil.connectFtp(f);
             if (linkSucess) {
-                SysFile sysFile = fileService.findFileById(sysFileId);
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
+                fileUrl = FtpUtil.processDir(fileUrl);
                 String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
                 String storeFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
                 if (FtpUtil.checkFileExist(removeRelativeUrl, storeFileName)) {
@@ -348,17 +348,18 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         try {
             out = response.getOutputStream();
             //连接ftp
+            SysFile sysFile = fileService.findFileById(sysfileId);
+            //连接ftp
             Ftp f = new Ftp();
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
-            f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
-            f.setUserName(propertyUtil.readProperty(FTP_USER));
-            f.setPwd(propertyUtil.readProperty(FTP_PWD));
+            f.setIpAddr(sysFile.getFtpIp());
+            f.setPort(Integer.valueOf(sysFile.getPort()));
+            f.setUserName(sysFile.getFtpUser());
+            f.setPwd(sysFile.getFtpPwd());
             boolean linkSucess = FtpUtil.connectFtp(f);
             if(linkSucess){
-                SysFile sysFile = fileService.findFileById(sysfileId);
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
+                fileUrl = FtpUtil.processDir(fileUrl);
                 String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
                 String storeFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
                 //涉及到中文问题 根据系统实际编码改变
@@ -441,6 +442,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             SysFile sysFile = fileService.findFileById(sysfileId);
             //获取相对路径
             String fileUrl = sysFile.getFileUrl();
+            fileUrl = FtpUtil.processDir(fileUrl);
             String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
             String storeFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
             //涉及到中文问题 根据系统实际编码改变
@@ -590,7 +592,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 file = new File(realPathResolver.get(Constant.plugin_file_path) + "/" + "nofile.png");
                 sysFile.setFileType(".png");
             }
-            response.reset();  //重置结果集
+
             switch (sysFile.getFileType()) {
                 case ".pdf":
                     response.setContentType("application/pdf");

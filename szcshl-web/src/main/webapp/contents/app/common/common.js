@@ -409,8 +409,9 @@
                     return false;
                 }
                 var dataType = $me.attr("data-type") || "String";
-                if (!("Integer" == dataType)) {
-                    val = "'" + val + "'";
+                val = "'" + val + "'";
+                if ("String" != dataType) {
+                    val = dataType + val;
                 }
                 var operator = $me.attr("operator") || "eq",
                     dataRole = $me.attr("data-role") || ""; // data-role="datepicker"

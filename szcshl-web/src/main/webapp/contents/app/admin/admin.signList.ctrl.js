@@ -18,14 +18,14 @@
         vm.filters ={};
         activate();
         function activate() {
+            adminSvc.getSignList(vm);
             //初始化查询参数
             adminSvc.initSignList(function(data){
                 if(data.flag || data.reCode == 'ok'){
                     vm.orgDeptList = data.reObj;
                 }
             });
-            adminSvc.getSignList(vm);
-            adminSvc.statisticalGrid(vm);
+            /*adminSvc.statisticalGrid(vm);*/
         }
 
         //重置
@@ -47,7 +47,7 @@
         /**
          * 统计表
          */
-        vm.statistical = function(){
+        /*vm.statistical = function(){
             var num = 1;
             vm.columns = [
                 {
@@ -91,6 +91,10 @@
                 }).data("kendoWindow").center().open();
             });
 
+        }*/
+
+        vm.statistical = function(){
+            
         }
 
         /**
