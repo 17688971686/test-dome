@@ -6,6 +6,7 @@ import cs.model.BaseDto;
 
 import javax.persistence.Column;
 import java.util.Date;
+import java.util.List;
 
 public class FileRecordDto extends BaseDto {
 
@@ -616,6 +617,19 @@ public class FileRecordDto extends BaseDto {
      * @return
      */
     private String isassistproc;
+
+    /**
+     * 拟补充资料函列表
+     */
+    private List<AddRegisterFileDto> registerFileDto;
+
+    public List<AddRegisterFileDto> getRegisterFileDto() {
+        return registerFileDto;
+    }
+
+    public void setRegisterFileDto(List<AddRegisterFileDto> registerFileDto) {
+        this.registerFileDto = registerFileDto;
+    }
 
     public String getAssistPlanOriginal() {
         return assistPlanOriginal;

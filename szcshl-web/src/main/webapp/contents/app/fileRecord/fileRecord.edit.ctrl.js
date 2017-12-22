@@ -3,9 +3,9 @@
 
     angular.module('app').controller('fileRecordEditCtrl', fileRecord);
 
-    fileRecord.$inject = ['fileRecordSvc','$state','sysfileSvc', 'bsWin','$scope' , 'templatePrintSvc'];
+    fileRecord.$inject = ['fileRecordSvc','$state','sysfileSvc', 'bsWin','$scope' , 'templatePrintSvc' , 'addRegisterFileSvc'];
 
-    function fileRecord(fileRecordSvc,$state,sysfileSvc,bsWin,$scope , templatePrintSvc) {
+    function fileRecord(fileRecordSvc,$state,sysfileSvc,bsWin,$scope , templatePrintSvc , addRegisterFileSvc) {
         var vm = this;
         vm.title = '项目归档编辑';
 
@@ -55,6 +55,39 @@
             templatePrintSvc.templatePage(id);
         }
 
+        //S_新增资料
+        vm.addOtherFile = function(){
+            if(!vm.fileRecord.registerFileDto){
+                vm.fileRecord.registerFileDto = [];
+            }
+            var newFile = {};
+            newFile.id = common.uuid();
+            vm.fileRecord.registerFileDto.push(newFile);
+        }//E_addZL
 
+        //S_删除资料
+        vm.delOtherFile = function(){
+            var isCheck = $("#fileRecord_form input:checked");
+            if (isCheck.length < 1) {
+                bsWin.alert("请选择要删除的意见！");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    if(isCheck[i].value){
+                        ids.push(isCheck[i].value);
+                    }
+                    $.each(vm.fileRecord.registerFileDto,function(c,obj){
+                        if(obj.id == isCheck[i].value ){
+                            vm.fileRecord.registerFileDto.splice(c, 1);
+                        }
+                    })
+                }
+                if(ids.length > 0){
+                    addRegisterFileSvc.deleteByIds(ids.join(","),function(data){
+                        bsWin.alert("删除成功！");
+                    });
+                }
+            }
+        }//E_delZL
     }
 })();
