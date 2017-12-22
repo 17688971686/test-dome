@@ -1,0 +1,89 @@
+@charset "UTF-8";
+html,body{
+    height: 100%;
+}
+body{
+    background: url(../images/loginpage-bg.jpg) no-repeat;
+    background-size:100% 100%;
+    padding-top:50px;
+}
+.logo{
+    text-align: center;
+}
+.logo img{
+    width: 90%;
+    max-width: 1110px;
+}
+.loginform{
+    width: 450px;
+    position: absolute;
+    background-color:#fff;
+    right: 8%;
+    top: 25%;
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.2);
+    border-radius:10px;
+}
+.loginform form{
+    padding:40px;
+}
+.loginform h3{
+    color:#00447a;
+    font-size:24px;
+    letter-spacing:2px;
+    margin-bottom:30px;
+}
+.loginform .input-container{
+    position: relative;
+    text-align: center;
+    margin:30px 0;
+}
+.loginform .input-container input{
+    background:#fafafa;
+    height:40px;
+    width: 100%;
+    padding-left:40px;
+}
+.loginform .input-container input:focus{
+    border: 1px solid #128471;
+    box-shadow: 0 0 10px #128471;
+}
+.loginform .input-container span{
+    position: absolute;
+    left: 0;
+    top:-15px;
+    width: 100px;
+    height: 40px;
+    line-height:40px;
+    color:red;
+}
+.loginform .input-container span.glyphicon{
+    width: 40px;
+    top:0;
+    font-size:16px;
+    color:#128471;
+}
+.loginform-footer{
+    height:100px;
+    background: #eee;
+    padding:20px 40px 0;
+    border-radius:0 0 10px 10px;
+}
+.loginform-footer .btn{
+    width: 100%;
+    height: 40px;
+    border-radius:10px;
+    background: #03a98e;
+}
+.loginform-footer .btn:hover{
+    background: #128471;
+    border:none;
+}
+.footer{
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    color: #fff;
+}
