@@ -2155,7 +2155,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${studyAllDay}<#if !studyQuantum??>,</#if>${studyQuantum}<#if !studyBeginTimeStr??> ,</#if>${studyBeginTimeStr}<#if !studyEndTimeStr??>至</#if>${studyEndTimeStr}</w:t>
+                                        <w:t xml:space="preserve">${studyAllDay} <#if studyQuantum?? && studyQuantum=="AM">上午</#if><#if studyQuantum?? && studyQuantum=="PM">下午</#if><#if studyQuantum?? && studyQuantum=="DAY">全天</#if>${studyQuantum}<#if studyBeginTimeStr??> </#if>${studyBeginTimeStr}<#if studyEndTimeStr?? && studyEndTimeStr!="" >至</#if>${studyEndTimeStr}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2542,7 +2542,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.job}/${ExpertDto.post}</w:t>
+                                        <w:t>${ExpertDto.job}<#if ExpertDto.post?? && ExpertDto.post!="">/</#if>${ExpertDto.post}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2564,7 +2564,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.majorStudy}、${ExpertDto.majorWork}</w:t>
+                                        <w:t>${ExpertDto.majorStudy}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

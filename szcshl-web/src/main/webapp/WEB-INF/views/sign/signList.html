@@ -17,31 +17,31 @@
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
             <span class="glyphicon glyphicon-repeat"></span>重置</button>
-
+        <!--<a class="btn btn-sm btn-primary" href="#/statisticalList/{{vm.headerType}}"> 统计</a>-->
         <button class="btn btn-sm btn-primary" ng-click="vm.statistical()">
-            <span class="glyphicon glyphicon-check"></span>统计</button>
-        <!--<a class="btn btn-sm btn-primary" href="#/headerEdit/{{vm.headerType}}"> 表字段设置</a>-->
+            统计</button>
+        <a class="btn btn-sm btn-primary" href="#/headerEdit/{{vm.headerType}}"> 表字段设置</a>
     </div>
     <div class="well well-sm">
         <form id="searchform" name="searchform" >
             <table style="width:100%">
                 <tr>
-                    <td  class="text-right" style="width:10%;">项目名称</td>
-                    <td style="width:15%;">
+                    <td  class="text-right" style="width:7%;">项目名称</td>
+                    <td style="width:18%;">
                         <input name="projectname" type="text" operator="like" ng-model="vm.project.projectname" class="form-control input-sm "/>
                     </td>
-                    <td  class="text-right" style="width:10%;">建设单位</td>
-                    <td style="width:15%;">
+                    <td  class="text-right" style="width:7%;">建设单位</td>
+                    <td style="width:18%;">
                         <input name="builtcompanyName" type="text" operator="like" ng-model="vm.project.builtcompanyName" class="form-control input-sm "/>
                     </td>
 
-                    <td  class="text-right" style="width:10%;">是否有环评</td>
-                    <td style="width:15%;">
+                    <td  class="text-right" style="width:7%;">是否有环评</td>
+                    <td style="width:18%;">
                         <input type="checkbox" name="ishaveeia" operator="eq" ng-model="vm.project.ishaveeia" value="9" ng-true-value="9">
                     </td>
 
-                    <td  class="text-right" style="width:10%;">是否有其他关联</td>
-                    <td style="width:15%;">
+                    <td  class="text-right" style="width:7%;">是否有其他关联</td>
+                    <td style="width:18%;">
                         <input type="checkbox" name="isRelated"  operator="eq" ng-model="vm.project.isRelated"  value="9" ng-true-value="9">
                     </td>
                 </tr>
@@ -111,18 +111,27 @@
                     </td>
                     <td  class="text-right" style="width:150px;">收文日期</td>
                     <td>
-                        <input type="text" name="signdate" class="form-control input" style="width: 100%"  operator="ge" ng-model="vm.project.signdate"
+                        <input type="text" name="signdate" class="form-control input" style="width: 47%"  operator="ge"
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
+                        -
+                        <input type="text" name="signdate" class="form-control input" style="width: 47%"  operator="le"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
                     </td>
 
                     <td  class="text-right">发文日期</td>
                     <td>
-                        <input type="text" name="dispatchDate" class="form-control input-sm " style="width: 100%" operator="ge" ng-model="vm.project.dispatchDate"
+                        <input type="text" name="dispatchDate" class="form-control input-sm " style="width: 47%" operator="ge"
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
+                        -
+                        <input type="text" name="dispatchDate" class="form-control input-sm " style="width: 47%" operator="le"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
                     </td>
                     <td  class="text-right">归档日期</td>
                     <td>
-                        <input type="text" name="fileDate" class="form-control input-sm " style="width: 100%" operator="ge" ng-model="vm.project.fileDate"
+                        <input type="text" name="fileDate" class="form-control input-sm " style="width: 47%" operator="ge"
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                        -
+                        <input type="text" name="fileDate" class="form-control input-sm " style="width: 47%" operator="le"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                 </tr>
@@ -138,7 +147,10 @@
 
                     <td  class="text-right">申报投资</td>
                     <td>
-                        <input name="appalyInvestment" type="text" data-type='bigDecimal' operator="ge" ng-model="vm.project.appalyInvestment" class="form-control input-sm "/>
+                        <!--   <input name="appalyInvestment" style="width: 100%" type="text" operator="like"/>-->
+                      <input name="appalyInvestment" data-type='bigDecimal' style="width: 47%" type="text" operator="ge" />
+                        -
+                        <input name="appalyInvestment" data-type='bigDecimal' style="width: 47%" type="text" operator="le" />
                     </td>
                     <td  class="text-right">行业类型</td>
                     <td>
@@ -182,28 +194,7 @@
 </script>
 
 
-<!-- 以下是项目查询统计部分 -->
-<div id="projectStatistics_div" style="display: none;">
-    <div class="toolbar">
-        <button class="btn btn-sm btn-primary" ng-click="" ng-disabled="vm.isSubmit"><span
-                class="glyphicon glyphicon-search"></span>自定义报表
-        </button>
-        <!--<a class="btn btn-sm btn-primary" href="#/headerEdit/{{vm.headerType}}"> 表字段设置</a>-->
-    </div>
-    <table class="table table-bordered">
-        <tr class="active">
-            <td style="width: 50px; text-align: center;">序号</td>
-            <td style="width: 50px; text-align: center;">选中</td>
-            <td style="width: 100px; text-align: center;">收文编号</td>
-            <td style="width: 200px; text-align: center;">项目名称</td>
-            <td style="width: 100px; text-align: center;">建设单位</td>
-            <td style="width: 100px; text-align: center;">收文日期</td>
-            <td style="width: 100px; text-align: center;">发文日期</td>
-            <td style="width: 80px; text-align: center;">评审天数</td>
-            <td style="width: 80px; text-align: center;">是否协审</td>
-        </tr>
-    </table>
-</div>
+
 
 
 
