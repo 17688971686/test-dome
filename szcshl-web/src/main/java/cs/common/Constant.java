@@ -381,7 +381,7 @@ public class Constant {
 
         //设备清单
         DEVICE_BILL_SIGN("print/sign/signSbqd" , "设备清单_报审登记表"),
-        DEVICE_BILL_FILERECORD("print/filerecord/fileSbqd" , "设备清单_归档"),
+        DEVICE_BILL_FILERECORD("print/filerecord/fileSbqd2" , "设备清单_归档"),
 
         //资金申请报告
         APPLY_REPORT_FILERECORD("print/filerecord/fileZjsq" , "资金申请_归档"),

@@ -27,6 +27,7 @@ import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.project.AddSuppLetterService;
+import cs.service.project.FileRecordService;
 import cs.service.project.SignService;
 import cs.service.project.WorkProgramService;
 import cs.service.sys.SysFileService;
@@ -84,7 +85,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     private SignBranchRepo signBranchRepo;
 
     @Autowired
-    private FileRecordRepo fileRecordRepo;
+    private FileRecordService fileRecordService;
 
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
@@ -736,8 +737,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                     break;
                 case "FILERECORD" :
-                    FileRecord fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName() , businessId);
-                    Map<String , Object> fileData = TemplateUtil.entryAddMap(fileRecord);
+                    FileRecordDto fileRecordDto = fileRecordService.initBySignId( businessId);
+                    Map<String , Object> fileData = TemplateUtil.entryAddMap(fileRecordDto);
                     if(stageType.equals(RevireStageKey.KEY_SUG.getValue())){
                         //建议书
                         file = TemplateUtil.createDoc(fileData, Template.STAGE_SUG_FILERECORD.getKey(), path);
@@ -764,6 +765,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
                         //设备清单（国产、进口）
+                        AddRegisterFileDto[] registerFileDto = new AddRegisterFileDto[5];
+                        if(fileRecordDto!=null && fileRecordDto.getRegisterFileDto() !=null && fileRecordDto.getRegisterFileDto().size()>0) {
+                            for (int i = 0; i < fileRecordDto.getRegisterFileDto().size() && i < 5; i++) {
+                                registerFileDto[i] = fileRecordDto.getRegisterFileDto().get(i);
+                            }
+                        }
+                        fileData.put("registerFileList", registerFileDto);
                         file = TemplateUtil.createDoc(fileData, Template.DEVICE_BILL_FILERECORD.getKey(), path);
 
                     }

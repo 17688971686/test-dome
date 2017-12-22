@@ -49,6 +49,34 @@ public class AddRegisterFile extends DomainBase {
 	@Column(columnDefinition = "VARCHAR(64)")
 	private String businessId;
 
+	/**
+	 * 是否拟补充资料函
+	 */
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String isSupplement;
+
+	/**
+	 * 业务类型：图纸：DRAWING_FILE  ,  其它：ORTHER_FILE ,
+	 */
+	@Column(columnDefinition = "VARCHAR(64)")
+	private String businessType;
+
+	public String getIsSupplement() {
+		return isSupplement;
+	}
+
+	public void setIsSupplement(String isSupplement) {
+		this.isSupplement = isSupplement;
+	}
+
+	public String getBusinessType() {
+		return businessType;
+	}
+
+	public void setBusinessType(String businessType) {
+		this.businessType = businessType;
+	}
+
 	public String getId() {
 		return id;
 	}
