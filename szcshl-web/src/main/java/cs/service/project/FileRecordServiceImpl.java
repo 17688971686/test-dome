@@ -120,10 +120,23 @@ public class FileRecordServiceImpl implements FileRecordService {
     @Override
     public FileRecordDto initBySignId(String signid) {
         FileRecordDto fileRecordDto = new FileRecordDto();
+        List<AddRegisterFileDto> dtoList = new ArrayList<>();
         //根据属性查找ID
         FileRecord fileRecord = fileRecordRepo.findById("signid",signid);
         if (fileRecord != null && Validate.isString(fileRecord.getFileRecordId())) {
             BeanCopierUtils.copyProperties(fileRecord, fileRecordDto);
+
+            //查询补充资料函信息
+            List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(),fileRecord.getFileRecordId(),null);
+            if(Validate.isList(registerFileList)){
+
+                registerFileList.forEach(rgf -> {
+                    AddRegisterFileDto dto = new AddRegisterFileDto();
+                    BeanCopierUtils.copyProperties(rgf,dto);
+                    dtoList.add(dto);
+                });
+
+            }
         } else {
             //如果是新增，则要初始化
             User priUser = signPrincipalService.getMainPriUser(signid);
@@ -150,18 +163,10 @@ public class FileRecordServiceImpl implements FileRecordService {
             //是否协审
             fileRecordDto.setIsassistproc(sign.getIsassistproc());
 
-            //查询补充资料函信息
-            List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(),fileRecord.getFileRecordId(),null);
-            if(Validate.isList(registerFileList)){
-                List<AddRegisterFileDto> dtoList = new ArrayList<>(registerFileList.size());
-                registerFileList.forEach(rgf -> {
-                    AddRegisterFileDto dto = new AddRegisterFileDto();
-                    BeanCopierUtils.copyProperties(rgf,dto);
-                    dtoList.add(dto);
-                });
-                fileRecordDto.setRegisterFileDto(dtoList);
-            }
+
         }
+
+        fileRecordDto.setRegisterFileDto(dtoList);
         return fileRecordDto;
     }
 

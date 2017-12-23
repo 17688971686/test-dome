@@ -1,21 +1,6 @@
 
 <meta charset="UTF-8">
 
-<style>
-    #fileRecord_form ul li{
-        width: 48%;
-        float: left;
-        list-style:none;
-        display:inline;
-        word-wrap: break-word;
-        word-break: normal;
-    }
-    #fileRecord_form ul li span{
-        float:left;
-        width: 30%;
-        min-width: 50px;
-    }
-</style>
 <!-- S 设备清单（国产,进口） 存档表 -->
 
 <table class="table table-bordered" >
@@ -448,57 +433,12 @@
             </table>
         </td>
     </tr>
-  <!--<tr>
-        <td colspan="4">三、其他资料
-            <button class="btn btn-xs btn-primary" ng-click="vm.addOtherFile()">新增</button>
-            <button class="btn btn-xs btn-danger" ng-click="vm.delOtherFile()">删除</button>
-        </td>
-    </tr>
     <tr>
-        <td colspan="4">
-            <ul>
-                <li style="width: 75%">
-                                <span style="width: 60px;">
-                                    选择
-                                </span>
-                    <span  style="width: 90%">
-                                    名称
-                                </span>
-                </li>
-                <li style="width: 25%">
-                    <span >份数</span>
-                    <span>原件</span>
-                    <span>复印件</span>
-                </li>
-            </ul>
+        <td class="text-center">其它资料</td>
+        <td colspan="3">
+            <button ng-click="vm.addOtherFile(vm.fileRecord.fileRecordId , 'OTHER_FILE')" class="btn btn-sm btn-primary">添加</button>
         </td>
     </tr>
-    <tr ng-repeat="f in vm.fileRecord.registerFileDto">
-        <td colspan="4">
-            <ul>
-                <li style="width: 75%">
-                                <span style="width: 60px;">
-                                    <input type="checkbox"  name="{{$index}}" value="{{f.id}}"/>
-                                </span>
-                    <span style="width: 90%">
-                                    <input type="text" ng-model="vm.fileRecord.registerFileDto[$index].fileName"  style="width: 90%"/>
-                                </span>
-                </li>
-                <li style="width: 25%">
-                            <span >
-                                <input type="text" style="width:50px;" class="form-control input-sm "  data-val="true" data-val-digits="只能输入数字"
-                                       ng-model="vm.fileRecord.registerFileDto[$index].totalNum" id="{{f.id}}">
-                            </span>
-                    <span>
-                                <input type="checkbox" ng-click="vm.fileRecord.registerFileDto[$index].totalNum = initInputValue($event,vm.fileRecord.registerFileDto[$index].totalNum)" name="{{f.id}}" ng-model="vm.fileRecord.registerFileDto[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" />
-                            </span>
-                    <span>
-                                <input type="checkbox" ng-click="vm.fileRecord.registerFileDto[$index].totalNum = initInputValue($event,vm.fileRecord.registerFileDto[$index].totalNum)" name="{{f.id}}" ng-model="vm.fileRecord.registerFileDto[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" />
-                            </span>
-                </li>
-            </ul>
-        </td>
-    </tr>-->
     <tr>
         <td width="15%" class="text-center">项目第一负责人签名</td>
         <td>

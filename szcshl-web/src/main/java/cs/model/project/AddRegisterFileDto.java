@@ -33,7 +33,33 @@ public class AddRegisterFileDto extends BaseDto {
      */
     private String businessId;
 
-	public AddRegisterFileDto() {
+    /**
+     * 是否拟补充资料函
+     */
+    private String isSupplement;
+
+    /**
+     * 业务类型：图纸：DRAWING_FILE  ,  其它：OTHER_FILE ,
+     */
+    private String businessType;
+
+    public String getIsSupplement() {
+        return isSupplement;
+    }
+
+    public void setIsSupplement(String isSupplement) {
+        this.isSupplement = isSupplement;
+    }
+
+    public String getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
+    }
+
+    public AddRegisterFileDto() {
     }
    
     public String getId() {
