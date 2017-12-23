@@ -297,12 +297,16 @@
 				<tr>
 					<td style="border-top:none;text-align:right;">其他重要资料</td>
 					<td style="border-top:none;text-align:left;">（备注）</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-disabled="true"
+					<td style="border-top:none;">
+						<!--<input type="checkbox" style="width:50px;" ng-disabled="true"
 														ng-model="vm.fileRecord.otherImportFileOriginal"
-														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:50px;" ng-disabled="true"
+														ng-true-value="9" ng-false-value="0">-->
+					</td>
+					<td style="border-top:none;">
+						<!--<input type="checkbox" style="width:50px;" ng-disabled="true"
 														ng-model="vm.fileRecord.otherImportFileCopy"
-														ng-true-value="9" ng-false-value="0"></td>
+														ng-true-value="9" ng-false-value="0">-->
+					</td>
 					<td style="border-top:none;text-align:right;">补充资料</td>
 					<td style="border-top:none;">
 						<input type="text" style="width:50px;" class="form-control input-sm " ng-disabled="true"
@@ -530,7 +534,7 @@
 
 <!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
 </button>-->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.fileRecord.fileRecordId,'FILERECORD' , 'STAGESUG')">打印预览</button>
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'FILERECORD' , 'STAGESUG')">打印预览</button>
 
 
 <!-- E 项目建议书-->

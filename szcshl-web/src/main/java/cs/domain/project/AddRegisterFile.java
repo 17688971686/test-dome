@@ -56,7 +56,7 @@ public class AddRegisterFile extends DomainBase {
 	private String isSupplement;
 
 	/**
-	 * 业务类型：图纸：DRAWING_FILE  ,  其它：ORTHER_FILE ,
+	 * 业务类型：图纸：DRAWING_FILE  ,  其它：OTHER_FILE ,
 	 */
 	@Column(columnDefinition = "VARCHAR(64)")
 	private String businessType;

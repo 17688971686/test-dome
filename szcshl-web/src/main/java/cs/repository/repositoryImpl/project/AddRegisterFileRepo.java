@@ -13,4 +13,11 @@ import java.util.List;
  */
 public interface AddRegisterFileRepo extends IRepository<AddRegisterFile, String> {
     List<AddRegisterFile> findByBusinessId(String businessId);
+
+    /**
+     * 通过业务id 和业务类型 进行删除
+     * @param businessId
+     * @param businessType
+     */
+    void deleteByBusIdAndBusType(String businessId , String businessType);
 }

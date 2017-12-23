@@ -802,9 +802,9 @@
                                                name="combustiblegasCount" id="combustiblegasCount">
         </td>
         <td style="text-align: center;">
-            <input ng-disabled="true" type="text" style="width:50px;" data-val="true" data-val-digits="只能输入数字"
+            <!--<input ng-disabled="true" type="text" style="width:50px;" data-val="true" data-val-digits="只能输入数字"
              ng-model="vm.fileRecord.fieOtherCount" name="fieOtherCount" id="fieOtherCount"
-             ng-disabled="true">
+             ng-disabled="true">-->
         </td>
     </tr>
     <tr>
@@ -870,5 +870,5 @@
 </table>  <!--  end table		-->
 
 <!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="vm.templatePage('sign_filerecord_xmgs')">打印</button>-->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.fileRecord.fileRecordId,'FILERECORD' , 'STAGEBUDGET')">打印预览</button>
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'FILERECORD' , 'STAGEBUDGET')">打印预览</button>
 <!-- 项目概算 -->

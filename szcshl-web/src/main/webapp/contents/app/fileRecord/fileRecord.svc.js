@@ -27,6 +27,17 @@
                     vm.signUserList = response.data.sign_user_List;
                     //是否协审
                     vm.isassistproc = (vm.fileRecord.isassistproc == '9')?true:false;
+                    //其它资料信息
+                    vm.fileRecord.registerFileDto.forEach(function(registerFile  , x){
+                        if(registerFile.businessType == "OTHER_FILE"){
+                            vm.otherFile.push(registerFile);
+                        }else if(registerFile.businessType == "DRAWING_FILE"){
+                            vm.drawingFile.push(registerFile);
+                        }else if(registerFile.businessType == "XMJYS_DECLARE_FILE"){
+                            vm.declareFile.push(registerFile);
+                        }
+                    })
+
                     //初始化附件上传
                     vm.initFileUpload();
                 }

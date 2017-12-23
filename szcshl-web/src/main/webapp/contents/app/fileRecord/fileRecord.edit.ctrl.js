@@ -15,79 +15,124 @@
         vm.signId = $state.params.signid;
         //是否协审归档（默认不是）
         vm.isassistproc = false;
-      
+        vm.drawingFile = [];//图纸资料
+        vm.otherFile = [];//其它资料
+        vm.declareFile = [];//建议书申报资料
         //初始化附件上传控件
-        vm.initFileUpload = function(){
-            if(!vm.fileRecord.fileRecordId){
+        vm.initFileUpload = function () {
+            if (!vm.fileRecord.fileRecordId) {
                 //监听ID，如果有新值，则自动初始化上传控件
-                $scope.$watch("vm.fileRecord.fileRecordId",function (newValue, oldValue) {
-                    if(newValue && newValue != oldValue && !vm.initUploadOptionSuccess){
+                $scope.$watch("vm.fileRecord.fileRecordId", function (newValue, oldValue) {
+                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
                         vm.initFileUpload();
                     }
                 });
             }
             vm.sysFile = {
-                businessId : vm.fileRecord.fileRecordId,
-                mainId : vm.signId,
-                mainType : sysfileSvc.mainTypeValue().SIGN,
-                sysfileType:sysfileSvc.mainTypeValue().DOFILE,
-                sysBusiType:sysfileSvc.mainTypeValue().DOFILE,
+                businessId: vm.fileRecord.fileRecordId,
+                mainId: vm.signId,
+                mainType: sysfileSvc.mainTypeValue().SIGN,
+                sysfileType: sysfileSvc.mainTypeValue().DOFILE,
+                sysBusiType: sysfileSvc.mainTypeValue().DOFILE,
             };
             sysfileSvc.initUploadOptions({
-                inputId:"sysfileinput",
-                vm:vm
+                inputId: "sysfileinput",
+                vm: vm
             });
         }
 
         activate();
-        function activate(){
+        function activate() {
             fileRecordSvc.initFileRecordData(vm);
         }
 
-        vm.create = function(){
+        vm.create = function () {
             fileRecordSvc.saveFileRecord(vm);
         }
 
         /**
          * 打印功能 -分页
          */
-        vm.templatePage = function(id){
+        vm.templatePage = function (id) {
             templatePrintSvc.templatePage(id);
         }
 
-        //S_新增资料
-        vm.addOtherFile = function(){
-            if(!vm.fileRecord.registerFileDto){
-                vm.fileRecord.registerFileDto = [];
-            }
-            var newFile = {};
-            newFile.id = common.uuid();
-            vm.fileRecord.registerFileDto.push(newFile);
-        }//E_addZL
+        /******以下是其它资料添加*****/
 
-        //S_删除资料
-        vm.delOtherFile = function(){
-            var isCheck = $("#fileRecord_form input:checked");
-            if (isCheck.length < 1) {
-                bsWin.alert("请选择要删除的意见！");
+        vm.addOtherFile = function (businessId, businessType) {
+            if(businessType == "OTHER_FILE"){
+                vm.addRegisters = vm.otherFile;
+            }
+            if(businessType == "DRAWING_FILE"){
+                vm.addRegisters = vm.drawingFile;
+            }
+            if(businessType == "XMJYS_DECLARE_FILE"){
+                vm.addRegisters = vm.declareFile;
+            }
+            if(!vm.addRegisters){
+                vm.addRegisters = [];
+            }
+            if (!businessId) {
+                bsWin.alert("请先保存数据！");
+            } else {
+                vm.businessId = businessId;
+                vm.businessType = businessType;
+
+                $("#addOtherFile").kendoWindow({
+                    width: "50%",
+                    height: "600px",
+                    title: "其它资料编辑页",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }
+
+        }
+
+        //新建其它资料
+        vm.addRegisterFile = function () {
+            vm.addRegister = {};
+            vm.addRegister.businessId = vm.businessId;
+            vm.addRegister.businessType = vm.businessType;
+            vm.addRegister.id = common.uuid();
+            vm.addRegisters.push(vm.addRegister);
+        }
+
+        //保存其它资料
+        vm.saveRegisterFile = function () {
+            addRegisterFileSvc.saveRegisterFile(vm.addRegisters, function (data) {
+                if (data.flag || data.reCode == 'ok') {
+                    bsWin.alert("操作成功");
+                    vm.addRegisters = data.reObj;
+                } else {
+                    bsWin.alert(data.reMsg);
+                }
+            });
+        }
+        //删除其它资料
+        vm.deleteRegisterFile = function () {
+            var isCheked = $("#addOtherFile input[name='addRegistersCheck']:checked")
+            if (isCheked.length < 1) {
+                bsWin.alert("请选择要删除的记录！");
             } else {
                 var ids = [];
-                for (var i = 0; i < isCheck.length; i++) {
-                    if(isCheck[i].value){
-                        ids.push(isCheck[i].value);
-                    }
-                    $.each(vm.fileRecord.registerFileDto,function(c,obj){
-                        if(obj.id == isCheck[i].value ){
-                            vm.fileRecord.registerFileDto.splice(c, 1);
+                for (var i = 0; i < isCheked.length; i++) {
+                    vm.addRegisters.forEach(function (f, number) {
+                        if (f.id && isCheked[i].value == f.id) {
+                            ids.push(isCheked[i].value);
+                            vm.addRegisters.splice(number, 1);
                         }
-                    })
+                    });
                 }
-                if(ids.length > 0){
-                    addRegisterFileSvc.deleteByIds(ids.join(","),function(data){
+                if (ids.length > 0) {
+                    addRegisterFileSvc.deleteByIds(ids.join(","), function (data) {
                         bsWin.alert("删除成功！");
                     });
                 }
             }
-        }//E_delZL
+        }
+
     }
 })();

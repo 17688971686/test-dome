@@ -87,9 +87,25 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
     @Transactional
     public ResultMsg bathSave(AddRegisterFileDto[] addRegisterFileDtos) {
         if (addRegisterFileDtos != null && addRegisterFileDtos.length > 0) {
+
+            //更改收文状态
+            Sign sign = signRepo.findById(Sign_.signid.getName(), addRegisterFileDtos[0].getBusinessId());
+            if (sign != null && (!Validate.isString(sign.getIsSupplementary()) || Constant.EnumState.NO.getValue().equals(sign.getIsSupplementary()))) {
+                sign.setIsSupplementary(Constant.EnumState.YES.getValue());
+                signRepo.save(sign);
+            }
+            //更新归档拟补充资料信息
+            FileRecord fileRecord = fileRecordRepo.findById(Sign_.signid.getName(), addRegisterFileDtos[0].getBusinessId());
+            if (fileRecord != null && (!Validate.isString(fileRecord.getIsSupplementary()) ||
+                    Constant.EnumState.NO.getValue().equals(fileRecord.getIsSupplementary()))) {
+                fileRecord.setIsSupplementary(Constant.EnumState.YES.getValue());
+                fileRecordRepo.save(fileRecord);
+            }
+
             List<AddRegisterFileDto> resultList = new ArrayList<>(addRegisterFileDtos.length);
             List<AddRegisterFile> saveList = new ArrayList<>(addRegisterFileDtos.length);
-            addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(), addRegisterFileDtos[0].getBusinessId());
+            addRegisterFileRepo.deleteByBusIdAndBusType(addRegisterFileDtos[0].getBusinessId() , addRegisterFileDtos[0].getBusinessType());
+//            addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(), addRegisterFileDtos[0].getBusinessId());
             Date now = new Date();
             for (AddRegisterFileDto addRegisterFileDto : addRegisterFileDtos) {
                 AddRegisterFile addRegisterFile = new AddRegisterFile();
@@ -98,6 +114,12 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
                 addRegisterFile.setCreatedBy(SessionUtil.getDisplayName());
                 addRegisterFile.setModifiedDate(now);
                 addRegisterFile.setModifiedBy(SessionUtil.getDisplayName());
+
+                if(sign !=null || fileRecord != null){
+                    addRegisterFile.setIsSupplement(Constant.EnumState.YES.getValue());
+                }else{
+                    addRegisterFile.setIsSupplement(Constant.EnumState.NO.getValue());
+                }
                 saveList.add(addRegisterFile);
             }
             addRegisterFileRepo.bathUpdate(saveList);
@@ -106,19 +128,7 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
                 BeanCopierUtils.copyProperties(sl, dto);
                 resultList.add(dto);
             });
-            //更改收文状态
-            Sign sign = signRepo.findById(Sign_.signid.getName(), saveList.get(0).getBusinessId());
-            if (!Validate.isString(sign.getIsSupplementary()) || Constant.EnumState.NO.getValue().equals(sign.getIsSupplementary())) {
-                sign.setIsSupplementary(Constant.EnumState.YES.getValue());
-                signRepo.save(sign);
-            }
-            //更新归档拟补充资料信息
-            FileRecord fileRecord = fileRecordRepo.findById(Sign_.signid.getName(), saveList.get(0).getBusinessId());
-            if (fileRecord != null && (!Validate.isString(fileRecord.getIsSupplementary()) ||
-                    Constant.EnumState.NO.getValue().equals(fileRecord.getIsSupplementary()))) {
-                fileRecord.setIsSupplementary(Constant.EnumState.YES.getValue());
-                fileRecordRepo.save(fileRecord);
-            }
+
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", resultList);
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先填写补充资料！");
