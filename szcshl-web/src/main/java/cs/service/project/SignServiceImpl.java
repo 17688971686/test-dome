@@ -437,6 +437,18 @@ public class SignServiceImpl implements SignService {
             if (sign.getFileRecord() != null && Validate.isString(sign.getFileRecord().getFileRecordId())) {
                 FileRecordDto fileRecordDto = new FileRecordDto();
                 BeanCopierUtils.copyProperties(sign.getFileRecord(), fileRecordDto);
+                //补充资料
+                List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(), sign.getFileRecord().getFileRecordId(), null);
+                if (Validate.isList(registerFileList)) {
+                    List<AddRegisterFileDto> registerFileDtoList = new ArrayList<>(registerFileList.size());
+                    registerFileList.forEach(rl -> {
+                        AddRegisterFileDto dto = new AddRegisterFileDto();
+                        BeanCopierUtils.copyProperties(rl, dto);
+                        registerFileDtoList.add(dto);
+                    });
+                    fileRecordDto.setRegisterFileDto(registerFileDtoList);
+                }
+
                 signDto.setFileRecordDto(fileRecordDto);
             }
 
@@ -475,7 +487,7 @@ public class SignServiceImpl implements SignService {
                 signDto.setSuppLetterDtoList(suppLetterDtoList);
             }
 
-            //拟补充资料
+            //补充资料
             List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(), signid, null);
             if (Validate.isList(registerFileList)) {
                 List<AddRegisterFileDto> registerFileDtoList = new ArrayList<>(registerFileList.size());

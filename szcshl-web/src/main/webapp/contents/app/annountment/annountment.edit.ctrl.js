@@ -29,7 +29,8 @@
             vm.sysFile = {
                 businessId: vm.annountment.anId,
                 mainId: vm.annountment.anId,
-                mainType: sysfileSvc.mainTypeValue().NOTICE,
+                mainType: "通知公告",
+                sysBusiType:"通知公告",
             };
             sysfileSvc.initUploadOptions({
                 inputId: "sysfileinput",

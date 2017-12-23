@@ -4,10 +4,15 @@
     <input type="file" id="sysfileinput" name="file" multiple="multiple" class="file-loading"/>
     <div ng-show="vm.sysFile.showBusiType">
         <span >文件类型：</span>
-        <span >
+        <span ng-if="vm.sysFile.mainType!='通知公告'" >
            <select id="sysBusiType" name="sysBusiType" ng-model="vm.sysFile.sysBusiType" style="min-width:200px;margin-top:10px;">
                <option value="">请选择</option>
                <option  ng-repeat="x in DICT.SYS_MIN_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+           </select>
+       </span>
+        <span ng-if="vm.sysFile.mainType=='通知公告'" >
+           <select id="sysBusiType" name="sysBusiType" ng-model="vm.sysFile.sysBusiType"  style="min-width:200px;margin-top:10px;">
+               <option value="通知公告">通知公告</option>
            </select>
        </span>
     </div>

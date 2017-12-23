@@ -619,7 +619,7 @@ public class FileRecordDto extends BaseDto {
     private String isassistproc;
 
     /**
-     * 拟补充资料函列表
+     * 补充资料函列表
      */
     private List<AddRegisterFileDto> registerFileDto;
 
