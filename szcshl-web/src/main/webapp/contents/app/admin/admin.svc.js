@@ -799,7 +799,7 @@
                     filterable: false
                 },
                 {
-                    field: "aUserName",
+                    field: "allPriUser",
                     title: "项目负责人",
                     width: 110,
                     filterable: false

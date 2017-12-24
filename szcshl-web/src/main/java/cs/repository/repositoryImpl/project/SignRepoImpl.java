@@ -130,6 +130,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         criteria.add(Restrictions.isNotNull(Sign_.filecode.getName()));
         //排除旧项目
         criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
+        criteria.add(Restrictions.isNotNull(Sign_.processInstanceId.getName()));
         //正在进行或者正常结束
         criteria.add(Restrictions.or(Restrictions.eq(Sign_.signdate.getName(), Constant.EnumState.PROCESS.getValue()),
                 Restrictions.eq(Sign_.signdate.getName(), Constant.EnumState.YES.getValue())));

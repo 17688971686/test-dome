@@ -188,6 +188,11 @@ public class SignDispaWork {
      */
     @Column
     private String aUserName;
+    /**
+     * 所有负责人
+     */
+    @Column
+    private String allPriUser;
 
     /**
      * 中心领导名称
@@ -703,5 +708,13 @@ public class SignDispaWork {
 
     public void setAppalyInvestment(BigDecimal appalyInvestment) {
         this.appalyInvestment = appalyInvestment;
+    }
+
+    public String getAllPriUser() {
+        return allPriUser;
+    }
+
+    public void setAllPriUser(String allPriUser) {
+        this.allPriUser = allPriUser;
     }
 }
