@@ -1,6 +1,7 @@
 package cs.repository.repositoryImpl.project;
 
 import cs.domain.project.Sign;
+import cs.domain.project.SignDispaWork;
 import cs.repository.IRepository;
 
 import java.util.List;
@@ -40,4 +41,10 @@ public interface SignRepo extends IRepository<Sign, String> {
      * @return
      */
     boolean isMergeSignEndWP(String signid);
+
+    /**
+     * 获取未发送给委里的项目信息
+     * @return
+     */
+    List<Sign> findUnSendFGWList();
 }

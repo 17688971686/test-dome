@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertCtrl', expert);
 
-    expert.$inject = ['$location', 'expertSvc', '$state','templatePrintSvc'];
+    expert.$inject = ['$scope', 'expertSvc', '$state','templatePrintSvc'];
 
-    function expert($location, expertSvc, $state,templatePrintSvc) {
+    function expert($scope, expertSvc, $state,templatePrintSvc) {
         var vm = this;
         vm.data = {};
         vm.title = '专家列表';
@@ -70,7 +70,7 @@
                 vm.model = data;
                 $("#queryExportDetail").kendoWindow({
                     width: "80%",
-                    height: "auto",
+                    height: "620px",
                     title: "专家详细信息",
                     visible: false,
                     modal: true,

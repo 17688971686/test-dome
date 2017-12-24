@@ -163,6 +163,9 @@ public interface SignService {
      * @return
      */
     int findSignMaxSeqByType(String signType, Date signdate);
-    /************************以下是报审登记表导出***********************/
-   /* File printSign(String signId);*/
+    /**
+     * 获取未发送给委里的项目
+     * @return
+     */
+    List<Sign> findUnSendFGWList();
 }

@@ -1,36 +1,38 @@
 package cs.service.restService;
 
-import cs.common.Constant;
-import cs.common.IFResultCode;
-import cs.common.ResultMsg;
+import com.alibaba.fastjson.JSON;
+import cs.ahelper.HttpClientOperate;
+import cs.ahelper.HttpResult;
+import cs.common.*;
 import cs.common.utils.*;
+import cs.domain.flow.HiProcessTask;
+import cs.domain.project.DispatchDoc;
 import cs.domain.project.Sign;
+import cs.domain.project.WorkProgram;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.model.project.SignDto;
 import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.flow.FlowService;
 import cs.service.project.SignService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static cs.common.Constant.*;
+import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
 
 /**
  * 项目接口实现类
@@ -46,9 +48,19 @@ public class SignRestServiceImpl implements SignRestService {
     @Autowired
     private SignRepo signRepo;
     @Autowired
+    private WorkProgramRepo workProgramRepo;
+    @Autowired
+    private DispatchDocRepo dispatchDocRepo;
+    @Autowired
     private SignService signService;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private HttpClientOperate httpClientOperate;
+    @Autowired
+    private SysFileRepo sysFileRepo;
+    @Autowired
+    private FlowService flowService;
     /**
      * 项目推送
      *
@@ -269,5 +281,154 @@ public class SignRestServiceImpl implements SignRestService {
         }
 
         return resultMsg;
+    }
+
+    /**
+     * 回调数据给发改委
+     * @param sign
+     * @return
+     */
+    @Override
+    public ResultMsg setToFGW(Sign sign,String url,String loaclUrl) {
+        String sendUrl = url;
+        if(!Validate.isString(sendUrl)){
+            // 接口地址
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            sendUrl = propertyUtil.readProperty(IFResultCode.FGW_PROJECT_IFS);
+        }
+        if(!Validate.isString(sendUrl)){
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_01.getCode(),IFResultCode.IFMsgCode.SZEC_SFGW_01.getValue());
+        }
+        if(!Validate.isString(loaclUrl)){
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            loaclUrl = propertyUtil.readProperty(IFResultCode.LOCAL_URL);
+            if(Validate.isString(loaclUrl) && loaclUrl.endsWith("/")){
+                loaclUrl = loaclUrl.substring(0,loaclUrl.length()-1);
+            }
+        }
+        //主工作方案
+        WorkProgram mainWP = null;
+        //发文
+        DispatchDoc dispatchDoc = null;
+        Map<String, String> params = new HashMap<>();
+        try {
+            //1、评审意见对象
+            Map<String, Object> dataMap = new HashMap<>();
+            // dataMap.put("xmmc", "HLT备案11201644");// 项目名称
+            // dataMap.put("jsdw", "测试建设单位");// 建设单位
+            // dataMap.put("swrq", sdf.parse("2017/11/20").getTime());// 收文日期
+            // dataMap.put("xmbm", "S-2017-A01-500046-11-01");// 项目编码
+            dataMap.put("swbh", sign.getFilecode());// 收文编号
+            if(Validate.isList(sign.getWorkProgramList())){
+                for(WorkProgram wp : sign.getWorkProgramList()){
+                    if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                        mainWP = wp;
+                        break;
+                    }
+                }
+            }else{
+                mainWP = workProgramRepo.findBySignIdAndBranchId(sign.getSignid(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+            }
+            if(mainWP != null){
+                dataMap.put("psfs", IFResultCode.PSFS.getCodeByValue(mainWP.getReviewType()));// 评审方式
+                dataMap.put("sssj", (new Date()).getTime());// 送审日期
+                dataMap.put("psjssj", (new Date()).getTime());// 评审结束时间
+            }
+
+            if(Validate.isObject(sign.getDispatchDoc())){
+                dispatchDoc = sign.getDispatchDoc();
+            }else{
+                dispatchDoc = dispatchDocRepo.findById("signid",sign.getSignid());
+            }
+            if(!Validate.isObject(dispatchDoc)){
+                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_03.getCode(),IFResultCode.IFMsgCode.SZEC_SFGW_03.getValue());
+            }
+            dataMap.put("xmpsyd", dispatchDoc.getReviewAbstract());// 项目评审要点
+            dataMap.put("sb", dispatchDoc.getDeclareValue());// 申报投资额（万元）
+            dataMap.put("sd", dispatchDoc.getAuthorizeValue());// 审定投资额（万元）
+            dataMap.put("hjz", dispatchDoc.getExtraValue());// 核减（增）投资额（万元）
+            dataMap.put("hjzl", dispatchDoc.getExtraRate());// 核减（增）率
+            dataMap.put("psbz", dispatchDoc.getRemark());// 备注
+            dataMap.put("xmjsbyx", dispatchDoc.getProjectBuildNecess());// 项目建设必要性
+            dataMap.put("jsnrjgm", dispatchDoc.getBuildSizeContent());// 建设内容及规模
+            dataMap.put("tzksjzjly", dispatchDoc.getFundTotalOrigin());// 投资估算及资金来源
+            dataMap.put("xyjdgzyq", dispatchDoc.getNextWorkPlan());// 下一阶段工作要求
+
+            params.put("dataMap", JSON.toJSONString(dataMap));
+
+            //3、办理意见(取生成发文编号环节的办理意见)
+            List<HiProcessTask> list = flowService.getProcessHistory(sign.getProcessInstanceId());
+            HiProcessTask fwDealInfo = null;
+            if(Validate.isList(list)){
+                for(HiProcessTask hi:list){
+                    if(FlowConstant.FLOW_SIGN_FWBH.equals(hi.getNodeKeyValue())){
+                        fwDealInfo = hi;
+                        break;
+                    }
+                }
+            }
+            if(fwDealInfo != null){
+                ArrayList<HashMap<String, Object>> dataList = new ArrayList<HashMap<String, Object>>();
+                HashMap<String, Object> psgcMap = new HashMap<String, Object>();
+                psgcMap.put("blhj", IFResultCode.PSGCBLHJ.getCodeByValue(fwDealInfo.getNodeKeyValue()));// 办理环节
+                psgcMap.put("psblyj", fwDealInfo.getMessage());// 办理意见
+                psgcMap.put("blr", fwDealInfo.getDisplayName());// 办理人
+                psgcMap.put("blsj", fwDealInfo.getEndTime());// 办理时间
+
+
+                //2、附件列表(回传评审意见或者审核意见附件即可)
+                ArrayList<HashMap<String, Object>> fjList = new ArrayList<>();
+                List<SysFile> fileList = sysFileRepo.findByMainId(sign.getSignid());
+                List<String> checkNameArr = new ArrayList<>();
+                SysFile sysFile = null;
+                if(Validate.isList(fileList)){
+                    SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
+                    if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())){
+                        checkNameArr.add("评审意见");
+                        checkNameArr.add("审核意见");
+                    }else{
+                        String checFileName = sysConfigDto.getConfigValue();
+                        if(checFileName.indexOf("，") > -1){
+                            checFileName = checFileName.replace("，",",");
+                        }
+                        checkNameArr = StringUtil.getSplit(checFileName,",");
+                    }
+
+                    for(int i=0,l=fileList.size();i<l;i++){
+                        String showName = fileList.get(i).getShowName().toLowerCase();
+                        String fileType = fileList.get(i).getFileType().toLowerCase();
+                        for(String checkName : checkNameArr){
+                            if(showName.equals(checkName+fileType)){
+                                sysFile = fileList.get(i);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if(sysFile != null){
+                    HashMap<String, Object> fjMap = new HashMap<String, Object>();
+                    fjMap.put("url", loaclUrl+"/file/remoteDownload/"+sysFile.getSysFileId());
+                    fjMap.put("filename", sysFile.getShowName());
+                    fjMap.put("tempName", sysFile.getCreatedBy());
+                    fjList.add(fjMap);
+                }
+                psgcMap.put("cl", fjList);// 材料（附件）
+                dataList.add(psgcMap);
+                params.put("dataList", JSON.toJSONString(dataList));
+            }
+
+            HttpResult hst = httpClientOperate.doPost(sendUrl, params);
+            FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
+            //成功
+            if(Constant.EnumState.PROCESS.getValue().equals(fGWResponse.getRestate())){
+                return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(),"项目【"+sign.getProjectname()+"("+sign.getFilecode()+")】回传数据给发改委成功！");
+            }else{
+                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
+                        "项目【"+sign.getProjectname()+"("+sign.getFilecode()+")】回传数据给发改委失败！"+fGWResponse.getRedes());
+            }
+        } catch (Exception e) {
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
+                    "项目【"+sign.getProjectname()+"("+sign.getFilecode()+")】回传数据给发改委异常！"+e.getMessage());
+        }
     }
 }

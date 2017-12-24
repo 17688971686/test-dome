@@ -2346,4 +2346,13 @@ public class SignServiceImpl implements SignService {
     public void save(Sign sign) {
         signRepo.save(sign);
     }
+
+    /**
+     * 获取没有发送给发改委的项目信息
+     * @return
+     */
+    @Override
+    public List<Sign> findUnSendFGWList() {
+        return signRepo.findUnSendFGWList();
+    }
 }

@@ -5,7 +5,8 @@ package cs.common;
  * Created by ldm on 2017/12/8.
  */
 public class IFResultCode {
-
+    public static final String FGW_PROJECT_IFS = "FGW_PROJECT_IFS";
+    public static final String LOCAL_URL = "LOCAL_URL";
     /**
      * 以下主要用于接口对接
      */
@@ -13,6 +14,8 @@ public class IFResultCode {
         SZEC_SAVE_OK("SAVE_OK","保存成功！"),
         SZEC_SAVE_ERROR("SAVE_ERROR","保存异常！"),
         SZEC_DEAL_ERROR("DEAL_ERROR","处理异常！"),
+        SZEC_SEND_OK("SEND_OK","发送成功！"),
+        SZEC_SEND_ERROR("SEND_ERROR","发送失败！"),
         //以下是收文阶段的返回码
         SZEC_SIGN_01("SIGN_01","对象为空！"),
         SZEC_SIGN_02("SIGN_02","收文编号为空！"),
@@ -23,7 +26,13 @@ public class IFResultCode {
         SZEC_TOPIC_01("TOPIC_01","对象为空！"),
         SZEC_TOPIC_02("TOPIC_02","流程实例ID为空！"),
         SZEC_TOPIC_03("TOPIC_03","流程实例ID不正确！"),
-        SZEC_TOPIC_04("TOPIC_04","评审阶段标识不正确！"),;
+        SZEC_TOPIC_04("TOPIC_04","评审阶段标识不正确！"),
+        //以下是项目信息回调吗
+        SZEC_SFGW_01("SFGW_01","回调url为空！"),
+        SZEC_SFGW_02("SFGW_02","项目编号为空！"),
+        SZEC_SFGW_03("SFGW_03","发文信息为空！"),
+        SZEC_SFGW_04("SFGW_04","项目编号为空！"),
+        SZEC_SFGW_05("SFGW_05","项目编号为空！");
 
         private String code;
         private String value;
@@ -93,7 +102,8 @@ public class IFResultCode {
         SIGN_XMFZR2("3",FlowConstant.FLOW_SIGN_XMFZR2),
         SIGN_XMFZR3("3",FlowConstant.FLOW_SIGN_XMFZR3),
         SIGN_XMFZR4("3",FlowConstant.FLOW_SIGN_XMFZR4),
-        SIGN_FW("4",FlowConstant.FLOW_SIGN_FW);
+        SIGN_FW("4",FlowConstant.FLOW_SIGN_FW),
+        SIGN_FWBH("4",FlowConstant.FLOW_SIGN_FWBH);
 
         private String code;
         private String value;

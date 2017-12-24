@@ -353,29 +353,4 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         }
     }
 
-    /**
-     * 获取未发送给委里的项目信息
-     * @return
-     */
-    @Override
-    public List<SignDispaWork> findUnSendFGWList() {
-        Criteria criteria = getExecutableCriteria();
-        //未发送给发改委的项目
-        criteria.add(Restrictions.ne(SignDispaWork_.isSendFGW.getName(), Constant.EnumState.YES.getValue()));
-        //正式签收
-        criteria.add(Restrictions.eq(SignDispaWork_.issign.getName(), Constant.EnumState.YES.getValue()));
-        criteria.add(Restrictions.isNotNull(SignDispaWork_.filecode.getName()));
-        //排除旧项目
-        criteria.add(Restrictions.isNull(SignDispaWork_.oldProjectId.getName()));
-        //正在进行或者正常结束
-        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.signdate.getName(), Constant.EnumState.PROCESS.getValue()),
-                Restrictions.eq(SignDispaWork_.signdate.getName(), Constant.EnumState.YES.getValue())));
-        //已经生成发文编号
-        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));
-
-        List<SignDispaWork> resultList = criteria.list();
-
-        return resultList;
-    }
-
 }

@@ -73,27 +73,30 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         //1、获取附件列表
         boolean isUploadMainFile = false;
         List<SysFile> fileList = sysFileRepo.findByMainId(signId);
+        List<String> checkNameArr = new ArrayList<>();
         if(Validate.isList(fileList)){
             SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
             if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())){
-                isUploadMainFile = true;
+                checkNameArr.add("评审意见");
+                checkNameArr.add("审核意见");
             }else{
                 String checFileName = sysConfigDto.getConfigValue();
                 if(checFileName.indexOf("，") > -1){
                     checFileName = checFileName.replace("，",",");
                 }
-                List<String> checkNameArr = StringUtil.getSplit(checFileName,",");
-                for(int i=0,l=fileList.size();i<l;i++){
-                    String showName = fileList.get(i).getShowName();
-                    for(String checkName : checkNameArr){
-                        if(showName.indexOf(checkName) > -1){
-                            isUploadMainFile = true;
-                            break;
-                        }
-                    }
-                    if(isUploadMainFile){
+               checkNameArr = StringUtil.getSplit(checFileName,",");
+            }
+            for(int i=0,l=fileList.size();i<l;i++){
+                String showName = fileList.get(i).getShowName().toLowerCase();
+                String fileType = fileList.get(i).getFileType().toLowerCase();
+                for(String checkName : checkNameArr){
+                    if(showName.equals(checkName+fileType)){
+                        isUploadMainFile = true;
                         break;
                     }
+                }
+                if(isUploadMainFile){
+                    break;
                 }
             }
         }

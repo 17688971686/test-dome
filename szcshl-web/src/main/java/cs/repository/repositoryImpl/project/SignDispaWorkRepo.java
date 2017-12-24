@@ -43,9 +43,5 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
      */
     SignDispaWork findSDPBySignId(String signId);
 
-    /**
-     * 获取未发送给委里的项目信息
-     * @return
-     */
-    List<SignDispaWork> findUnSendFGWList();
+
 }

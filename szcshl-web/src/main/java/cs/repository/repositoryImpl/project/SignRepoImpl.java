@@ -3,11 +3,10 @@ package cs.repository.repositoryImpl.project;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
-import cs.domain.project.Sign;
-import cs.domain.project.SignMerge;
-import cs.domain.project.SignMerge_;
-import cs.domain.project.Sign_;
+import cs.domain.project.*;
 import cs.repository.AbstractRepository;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.IntegerType;
 import org.springframework.stereotype.Repository;
 
@@ -117,4 +116,28 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         return returnIntBySql(sqlBuilder)>0?false:true;
     }
 
+    /**
+     * 获取未发送给委里的项目信息
+     * @return
+     */
+    @Override
+    public List<Sign> findUnSendFGWList() {
+        Criteria criteria = getExecutableCriteria();
+        //未发送给发改委的项目
+        criteria.add(Restrictions.ne(Sign_.isSendFGW.getName(), Constant.EnumState.YES.getValue()));
+        //正式签收
+        criteria.add(Restrictions.eq(Sign_.issign.getName(), Constant.EnumState.YES.getValue()));
+        criteria.add(Restrictions.isNotNull(Sign_.filecode.getName()));
+        //排除旧项目
+        criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
+        //正在进行或者正常结束
+        criteria.add(Restrictions.or(Restrictions.eq(Sign_.signdate.getName(), Constant.EnumState.PROCESS.getValue()),
+                Restrictions.eq(Sign_.signdate.getName(), Constant.EnumState.YES.getValue())));
+        //已经生成发文编号
+        criteria.add(Restrictions.ge(Sign_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));
+
+        List<Sign> resultList = criteria.list();
+
+        return resultList;
+    }
 }
