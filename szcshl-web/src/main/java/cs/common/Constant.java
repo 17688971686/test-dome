@@ -378,14 +378,17 @@ public class Constant {
         //进口设备
         IMPORT_DEVICE_SIGN("print/sign/signJksb" , "进口设备_报审登记表"),
         IMPORT_DEVICE_FILERECORD("print/filerecord/fileJksb" , "进口设备_归档"),
+        IMPORT_DEVICE_DISPATCHDOC("print/dispatchDoc/dispatchJksb" , "进口设备_发文"),
 
         //设备清单
         DEVICE_BILL_SIGN("print/sign/signSbqd" , "设备清单_报审登记表"),
         DEVICE_BILL_FILERECORD("print/filerecord/fileSbqd2" , "设备清单_归档"),
+        DEVICE_BILL_DISPATCHDOC("print/dispatchDoc/dispatchSbqd" , "设备清单_发文"),
 
         //资金申请报告
         APPLY_REPORT_FILERECORD("print/filerecord/fileZjsq" , "资金申请_归档"),
         APPLY_REPORT_SIGN("print/sign/signZjsq" , "资金申请_报审登记表"),
+        APPLY_REPORT_DISPATCHDOC("print/dispatchDoc/dispatchZjsq" , "资金申请单_发文"),
 
         //拟补充资料函
         ADDSUPPLETER("print/common" , "拟补充资料函"),
@@ -402,6 +405,8 @@ public class Constant {
         //月报简报
         MONTHLY("print/monthly/monthly" , "月报简报"),
 
+        //借阅档案
+        ARCHIVES_DETAIL("print/archives/archivesDetail" , "借阅档案"),
         //课题研究
         TOPICINFO_WORKPROGRAM("print/topicInfo/workProgramTopic" , "课题研究_工作方案"),
         TOPICINFO_FILERECORD("print/topicInfo/fileTopic" , "课题研究_归档");
