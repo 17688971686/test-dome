@@ -109,7 +109,7 @@
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t>3</w:t>
+                            <w:t></w:t>
                         </w:r>
                     </w:p>
                     <w:p>
@@ -125,7 +125,7 @@
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t xml:space="preserve">${reviewType}  ${isSigle}  <#if isSigle=="合并评审" && isMainProject == "9">主项目</#if><#if isSigle=="合并评审" && isMainProject == "0">次项目</#if>                  </w:t>
+                            <w:t xml:space="preserve">${reviewType}  ${isSigle}  <#if isSigle=="合并评审" && isMainProject == "9">主项目</#if><#if isSigle=="合并评审" && isMainProject == "0">次项目</#if><#if !isSigle?? || isSigle!="合并评审" || isMainProject != "9">        </#if>                  </w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -141,33 +141,13 @@
                             </w:rPr>
                             <w:tab/>
                         </w:r>
+
                         <w:r>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:tab/>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia"/>
-                                <w:sz w:val="24"/>
-                            </w:rPr>
-                            <w:tab/>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia"/>
-                                <w:sz w:val="24"/>
-                            </w:rPr>
-                            <w:tab/>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia"/>
-                                <w:sz w:val="24"/>
-                            </w:rPr>
-                            <w:t xml:space="preserve">${titleDate}</w:t>
+                            <w:t xml:space="preserve">            ${titleDate}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>

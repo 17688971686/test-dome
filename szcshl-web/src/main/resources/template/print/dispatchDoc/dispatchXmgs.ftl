@@ -1099,7 +1099,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                                ${viceDirectorDate}</w:t>
+                                        <w:t xml:space="preserve">                                                 ${viceDirectorDate}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1791,7 +1791,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">   ${dispatch.extraRate}</w:t>
+                                        <w:t xml:space="preserve">${dispatch.extraRate}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2615,7 +2615,7 @@
                         <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:hRule="exact" w:val="720"/>
+                                <w:trHeight w:hRule="exact" w:val="696"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2709,7 +2709,7 @@
                         <w:tr w:rsidR="00A57520" w:rsidTr="00B94C8B">
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:hRule="exact" w:val="991"/>
+                                <w:trHeight w:hRule="exact" w:val="860"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -2847,7 +2847,7 @@
                         <w:tr w:rsidR="00A57520" w:rsidTr="00DB400F">
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:hRule="exact" w:val="709"/>
+                                <w:trHeight w:hRule="exact" w:val="696"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>

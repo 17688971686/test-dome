@@ -9,6 +9,7 @@ import cs.domain.expert.*;
 import cs.domain.project.*;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
+import cs.model.archives.ArchivesLibraryDto;
 import cs.model.expert.*;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.*;
@@ -21,6 +22,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.project.*;
+import cs.service.archives.ArchivesLibraryService;
 import cs.service.expert.ExpertService;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.FileRecordRepo;
@@ -104,6 +106,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     @Autowired
     private AddSuppLetterService addSuppLetterService;
+
+    @Autowired
+    private ArchivesLibraryService archivesLibraryService ;
 
     private ServletContext servletContext;
 
@@ -734,7 +739,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_HOMELAND_WORKPROGRAM.getKey(), path);
                     }
 
-                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
+//                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                     break;
                 case "FILERECORD" :
                     FileRecordDto fileRecordDto = fileRecordService.initBySignId( businessId);
@@ -833,18 +838,18 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
                         //资金
                         dispatchData.put("wpTile","资金申请报告发文审批表");
-                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
+                        file = TemplateUtil.createDoc(dispatchData, Template.APPLY_REPORT_DISPATCHDOC.getKey(), path);
 
                     }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
                         //进口
                         dispatchData.put("wpTile","进口设备发文审批表");
-                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
+                        file = TemplateUtil.createDoc(dispatchData, Template.IMPORT_DEVICE_DISPATCHDOC.getKey(), path);
 
                     }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
                         //设备清单（国产、进口）
                         dispatchData.put("wpTile","设备清单发文审批表");
-                        file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
+                        file = TemplateUtil.createDoc(dispatchData, Template.DEVICE_BILL_DISPATCHDOC.getKey(), path);
                     }
                     break;
 
@@ -968,6 +973,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     AddSuppLetterDto addSuppLetterDto = addSuppLetterService.findById(businessId);
                     Map<String , Object> addSuppleterData = TemplateUtil.entryAddMap(addSuppLetterDto);
                     file = TemplateUtil.createDoc(addSuppleterData, Template.MONTHLY.getKey(), path);
+                    break;
+
+                case "ARCHIVES":
+                    //借阅档案
+                    ArchivesLibraryDto archivesLibraryDto = archivesLibraryService.findById(businessId);
+                    Map<String , Object> archivesData = TemplateUtil.entryAddMap(archivesLibraryDto);
+                    file = TemplateUtil.createDoc(archivesData, Template.ARCHIVES_DETAIL.getKey(), path);
                     break;
 
 
