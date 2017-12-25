@@ -168,4 +168,13 @@ public interface SignService {
      * @return
      */
     List<Sign> findUnSendFGWList();
+
+    /**
+     * 恢复项目
+     * @param signId
+     * @param stateProperty 状态属性
+     * @param stateValue 值
+     * @return
+     */
+    ResultMsg editSignState(String signId,String stateProperty,String stateValue);
 }

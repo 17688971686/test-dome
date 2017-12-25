@@ -3,16 +3,17 @@
 
     angular.module('app').controller('signFillinCtrl', sign);
 
-    sign.$inject = ['signSvc', 'sysfileSvc', '$state', '$http', 'bsWin', '$scope'];
+    sign.$inject = ['signSvc', 'sysfileSvc', '$state', '$http', 'bsWin', '$scope','addRegisterFileSvc'];
 
-    function sign(signSvc, sysfileSvc, $state, $http, bsWin, $scope) {
+    function sign(signSvc, sysfileSvc, $state, $http, bsWin, $scope,addRegisterFileSvc) {
         var vm = this;
         vm.model = {};		//创建一个form对象
         vm.title = '填写报审登记表';        		//标题
         vm.model.signid = $state.params.signid;	//收文ID
         vm.flowDeal = false;		//是否是流程处理标记
-
         vm.busiObj = {};             //业务对象，用于记录页面操作对象等信息
+        vm.xmjysDeclareFile = [];//建议书申报资料
+        vm.kyjxDeclareFile = [];//可研究性申报资料
 
         active();
         function active() {
@@ -59,6 +60,21 @@
                 else if(vm.model.reviewstage == "项目概算"){
                     vm.stageType = "STAGEBUDGET";
                 }
+                //其它资料信息
+                if(data.reObj.registerFileDtoDtoList!=undefined){
+                    data.reObj.registerFileDtoDtoList.forEach(function(registerFile  , x){
+                        if(registerFile.businessType == "OTHER_FILE"){
+                            vm.otherFile.push(registerFile);
+                        }else if(registerFile.businessType == "DRAWING_FILE"){
+                            vm.drawingFile.push(registerFile);
+                        }else if(registerFile.businessType == "XMJYS_DECLARE_FILE"){
+                            vm.xmjysDeclareFile.push(registerFile);
+                        }else if(registerFile.businessType == "KYJX_DECLARE_FILE"){
+                            vm.kyjxDeclareFile.push(registerFile);
+                        }
+                    })
+                }
+
             });
         }
 
@@ -229,6 +245,88 @@
             });
         }
 
+        /******以下是其它资料添加*****/
+
+        vm.addOtherFile = function (businessId, businessType) {
+            if(businessType == "OTHER_FILE"){
+                vm.addRegisters = vm.otherFile;
+            }
+            if(businessType == "DRAWING_FILE"){
+                vm.addRegisters = vm.drawingFile;
+            }
+            if(businessType == "XMJYS_DECLARE_FILE"){
+                vm.addRegisters = vm.xmjysDeclareFile;
+            }
+            if(businessType == "KYJX_DECLARE_FILE"){
+                vm.addRegisters = vm.kyjxDeclareFile;
+            }
+            if(!vm.addRegisters){
+                vm.addRegisters = [];
+            }
+            if (!businessId) {
+                bsWin.alert("请先保存数据！");
+            } else {
+                vm.businessId = businessId;
+                vm.businessType = businessType;
+
+                $("#addOtherFile").kendoWindow({
+                    width: "50%",
+                    height: "600px",
+                    title: "其它资料编辑页",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }
+
+        }
+
+
+        //新建其它资料
+        vm.addRegisterFile = function () {
+            vm.addRegister = {};
+            vm.addRegister.businessId = vm.businessId;
+            vm.addRegister.businessType = vm.businessType;
+            vm.addRegister.id = common.uuid();
+            vm.addRegisters.push(vm.addRegister);
+        }
+
+        //保存其它资料
+        vm.saveRegisterFile = function () {
+            addRegisterFileSvc.saveRegisterFile(vm.addRegisters, function (data) {
+                if (data.flag || data.reCode == 'ok') {
+                    bsWin.alert("操作成功");
+                    vm.addRegisters = data.reObj;
+                } else {
+                    bsWin.alert(data.reMsg);
+                }
+            });
+        }
+        //删除其它资料
+        vm.deleteRegisterFile = function () {
+            var isCheked = $("#addOtherFile input[name='addRegistersCheck']:checked")
+            if (isCheked.length < 1) {
+                bsWin.alert("请选择要删除的记录！");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheked.length; i++) {
+                    vm.addRegisters.forEach(function (f, number) {
+                        if (f.id && isCheked[i].value == f.id) {
+                            ids.push(isCheked[i].value);
+                            vm.addRegisters.splice(number, 1);
+                        }
+                    });
+                }
+                if (ids.length > 0) {
+                    addRegisterFileSvc.deleteByIds(ids.join(","), function (data) {
+                        bsWin.alert("删除成功！");
+                    });
+                }
+            }
+        }
+
+        /******以下是其它资料添加END*****/
         //项目签收编辑模板打印
         vm.editPrint = function () {
             signSvc.editTemplatePrint(vm);

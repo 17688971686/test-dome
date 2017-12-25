@@ -261,6 +261,21 @@ public class SignController {
         return signService.findByPlanId(planId,isOnlySign);
     }
 
+    /**
+     * 恢复项目
+     *
+     * @param signId      项目ID
+     * @param stateProperty 项目状态字段
+     * @param stateValue 状态值
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "恢复项目", path = "editSignState", method = RequestMethod.POST)
+    public @ResponseBody
+    ResultMsg editSignState(@RequestParam(required = true) String signId, String stateProperty,String stateValue) {
+        return signService.editSignState(signId, stateProperty,stateValue);
+    }
+
+
     @RequiresAuthentication
     //@RequiresPermissions("sign#html/fillin#get")
     @RequestMapping(name = "填写表格页面", path = "html/fillin", method = RequestMethod.GET)
@@ -418,6 +433,13 @@ public class SignController {
     public String etasks(Model model) {
 
         return "admin/etasks";
+    }
+
+    @RequiresPermissions("sign#html/deletList#get")
+    @RequestMapping(name = "作废项目", path = "html/deletList", method = RequestMethod.GET)
+    public String deletList() {
+
+        return ctrlName + "/deletList";
     }
 
     /***************报审登记表导出***************/
