@@ -133,13 +133,14 @@ public class TemplateUtil {
      * @return
      */
     public static SysFile createTemplate(String signId, String mainType, String businessType, String reviewStage,
-                                         String templateUrl, String fileName, String fileType, Map<String, Object> dataMap) {
+                                         String templateUrl, String fileName, String fileType, Map<String, Object> dataMap){
         SysFile sysFile = null;
         String showName = fileName + fileType;
         String path = SysFileUtil.getUploadPath();
-        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, mainType, signId, businessType, null);
+        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, mainType, signId, businessType, showName);
+        File docFile = null;
         try {
-            File docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl);
+            docFile = createDoc(dataMap, templateUrl, path + "/" + relativeFileUrl);
             fileType = fileType.toLowerCase();//统一转成小写
             //连接ftp
             Ftp f = new Ftp();
@@ -156,7 +157,7 @@ public class TemplateUtil {
                 if (linkSucess) {
                     Tools.deleteFile(docFile);
                     sysFile = new SysFile();
-                    sysFile = new SysFile(UUID.randomUUID().toString(), signId, relativeFileUrl+ File.separator +uploadFileName, showName,
+                    sysFile = new SysFile(UUID.randomUUID().toString(), signId, relativeFileUrl+ "/" +uploadFileName, showName,
                             docFile.length(), fileType, signId, mainType, reviewStage, businessType);
                     sysFile.setFtpIp(f.getIpAddr());
                     sysFile.setPort(String.valueOf(f.getPort()));
@@ -168,6 +169,14 @@ public class TemplateUtil {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            if(docFile != null){
+                try {
+                    Tools.deleteFile(docFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return sysFile;

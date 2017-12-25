@@ -466,6 +466,7 @@ public class FlowServiceImpl implements FlowService {
         Criteria criteria = hiProcessTaskRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(HiProcessTask_.procInstId.getName(), processInstanceId));
         criteria.addOrder(Order.asc(HiProcessTask_.startTime.getName()));
+        criteria.addOrder(Order.asc(HiProcessTask_.endTime.getName()));
         List<HiProcessTask> resultList = criteria.list();
         return resultList;
     }

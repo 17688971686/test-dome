@@ -305,6 +305,12 @@ public class SignDispaWork {
     private String isSendFGW;
 
     /**
+     * 项目是否暂停
+     */
+    @Column
+    private String isProjectStop;
+
+    /**
      * 旧项目ID
      */
     @Column(columnDefinition = "INTEGER")
@@ -716,5 +722,13 @@ public class SignDispaWork {
 
     public void setAllPriUser(String allPriUser) {
         this.allPriUser = allPriUser;
+    }
+
+    public String getIsProjectStop() {
+        return isProjectStop;
+    }
+
+    public void setIsProjectStop(String isProjectStop) {
+        this.isProjectStop = isProjectStop;
     }
 }

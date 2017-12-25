@@ -93,6 +93,11 @@
                 common.initJqValidation($("#fnFrom"));
                 var isValid = $("#fnFrom").valid();
                 if (isValid) {
+                    //更新付款日期
+                    angular.forEach(vm.financials,function(f,index){
+                        f.paymentData = vm.financial.paymentData;
+                    })
+                    //保存
                     financialManagerSvc.savefinancial(vm.financials, function (data) {
                         if (data.flag || data.reCode == 'ok') {
                             vm.financials = data.reObj;
@@ -185,7 +190,7 @@
                     vm.signAssistCostCounList = {};
                 },
                 refresh: function () {
-                    alert(2);
+
                 },
                 actions: ["Pin", "Minimize", "Maximize", "close"]
             }).data("kendoWindow").center().open();
