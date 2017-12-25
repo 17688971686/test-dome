@@ -305,6 +305,18 @@ public class SignServiceImpl implements SignService {
             });
             map.put("leaderList", leaderList);
         }
+        //补充资料
+        List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(), sign.getSignid(), null);
+        if (Validate.isList(registerFileList)) {
+            List<AddRegisterFileDto> registerFileDtoList = new ArrayList<>(registerFileList.size());
+            registerFileList.forEach(rl -> {
+                AddRegisterFileDto dto = new AddRegisterFileDto();
+                BeanCopierUtils.copyProperties(rl, dto);
+                registerFileDtoList.add(dto);
+            });
+            map.put("registerFileDtoDtoList", registerFileDtoList);
+        }
+
         return new ResultMsg(true, MsgCode.OK.getValue(), "查询数据成功", map);
     }
 
@@ -334,15 +346,19 @@ public class SignServiceImpl implements SignService {
     @Override
     @Transactional
     public ResultMsg deleteSign(String signid) {
-        Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
+/*        Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
         if (Validate.isString(sign.getProcessInstanceId())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "该项目已经发起流程，不能删除！");
         }
         if (sign.getSigndate() != null || EnumState.YES.getValue().equals(sign.getIssign())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "该项目已经正式签收，不能删除！");
         }
-        signRepo.deleteById(Sign_.signid.getName(), signid);
-        return new ResultMsg(true, MsgCode.OK.getValue(), "删除成功！");
+        signRepo.deleteById(Sign_.signid.getName(), signid);*/
+        if (signRepo.updateSignState(signid,Sign_.signState.getName(), EnumState.DELETE.getValue())) {
+            return new ResultMsg(true, MsgCode.OK.getValue(), "删除成功！");
+        }else{
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "删除失败！");
+        }
     }
 
     @Override
@@ -2354,5 +2370,20 @@ public class SignServiceImpl implements SignService {
     @Override
     public List<Sign> findUnSendFGWList() {
         return signRepo.findUnSendFGWList();
+    }
+
+    /**
+     * 恢复项目
+     * @param signId
+     * @param stateProperty
+     * @param stateValue
+     * @return
+     */
+    @Override
+    public ResultMsg editSignState(String signId,String stateProperty,String stateValue) {
+        if (signRepo.updateSignState(signId,stateProperty, stateValue)) {
+            return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+        }
+        return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败！");
     }
 }

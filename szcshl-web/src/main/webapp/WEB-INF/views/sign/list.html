@@ -11,6 +11,7 @@
 
     <div class="well well-sm">
     <form id="searchform" name="searchform">
+        <input name="signState" operator="ne" value="7" hidden="hidden">
         <span class="help-inline">项目名称：</span>
         <input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">
         <span class="help-inline">项目编号：</span>

@@ -27,7 +27,9 @@
             signGetBackGrid :signGetBackGrid,                //项目取回列表
             getBack:getBack,                            //项目取回
             editTemplatePrint:editTemplatePrint,      //编辑模板打印
-            workProgramPrint:workProgramPrint        //工作方案模板打印
+            workProgramPrint:workProgramPrint,       //工作方案模板打印
+            signDeletGrid:signDeletGrid,              //作废项目
+            editSignState:editSignState              //恢复项目
 
         };
         return service;
@@ -811,5 +813,129 @@
                 LODOP.PREVIEW();
             }
         }
+
+        //begin_signDeletGrid
+        //作废项目
+        function signDeletGrid(vm) {
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#deletform")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "receivedate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number text-center'></span>",
+                    width: 50
+                },
+                {
+                    field: "",
+                    title: "项目名称",
+                    width: 160,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.processInstanceId) {
+                            return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                        } else {
+                            return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                        }
+
+                    }
+                },
+                {
+                    field: "reviewstage",
+                    title: "项目阶段",
+                    width: 110,
+                    filterable: false,
+                },
+                {
+                    field: "projectcode",
+                    title: "项目代码",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "signdate",
+                    title: "签收日期",
+                    width: 100,
+                    filterable: false,
+                    format: "{0:yyyy/MM/dd HH:mm:ss}"
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 90,
+                    filterable: false,
+                    template: function (item) {
+                            return common.format($('#columnBtns').html(), "vm.editSignState('" + item.signid + "')");
+
+                    }
+                }
+            ];
+
+            // End:column
+            vm.signListOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                }
+            };
+        }//signDeletGrid
+
+
+        //negin editSignState
+        function editSignState(vm , callBack){
+            var httpOptions = {
+                method : "post" ,
+                url : rootPath + "/sign/editSignState",
+                params : {signId : vm.signid,stateProperty: "signState",stateValue: "5" }
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
+        }
+        //end editSignState
     }
 })();

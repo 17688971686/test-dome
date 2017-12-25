@@ -476,6 +476,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="log#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="log">日志记录</a></li>
                             </@shiro.hasPermission>
+                            <@shiro.hasPermission name="sign#html/deletList#get">
+                                <li><a href="javascript:void(0)" ui-sref="deletList">作废项目</a></li>
+                            </@shiro.hasPermission>
+
                         </ul>
                     </li>
                 </@shiro.hasPermission>

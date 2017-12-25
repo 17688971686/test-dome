@@ -466,13 +466,18 @@
                 templateUrl: rootPath + '/sign/html/reserveList.html',
                 controller: 'signReserveCtrl',
                 controllerAs: 'vm'
+            }).state('deletList', {	//作废项目列表
+                url: '/deletList',
+                templateUrl: rootPath + '/sign/html/deletList.html',
+                controller: 'signDeletCtrl',
+                controllerAs: 'vm'
             })
             //end#signList
 
             //begin#workprogram
                 .state('workprogramEdit', {
-                    url: '/workprogramEdit/:signid',
-                    templateUrl: rootPath + '/workprogram/html/edit.html',
+                    url: '/workprogramEdit',
+                    templateUrl: rootPath + '/workprogram/html/list.html',
                     controller: 'workprogramEditCtrl',
                     controllerAs: 'vm'
                 })

@@ -25,7 +25,7 @@
         vm.del = function (signid) {
             bsWin.confirm({
                 title: "询问提示",
-                message: "确认删除该条项目数据吗？删除数据不可恢复，请慎重！",
+                message: "确认删除该条项目数据吗？",
                 onOk: function () {
                     $('.confirmDialog').modal('hide');
                     signSvc.deleteSign(signid,function(data){

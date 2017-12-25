@@ -694,7 +694,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>（印 份）</w:t>
+                                        <w:t>（印 ${printCount} 份）</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
