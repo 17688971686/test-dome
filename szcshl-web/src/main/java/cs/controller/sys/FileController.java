@@ -110,6 +110,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @Autowired
     private AddRegisterFileService addRegisterFileService;
 
+    @Autowired
+    private FileRecordRepo fileRecordRepo;
+
+
     private ServletContext servletContext;
 
     @Override
@@ -784,12 +788,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 case "FILERECOED_OTHERFILE" :
                     //项目归档的其它资料
-                    FileRecordDto fileRecordDto2 = fileRecordService.initBySignId( businessId);
+//                    FileRecordDto fileRecordDto2 = fileRecordService.initBySignId( businessId);
+                    FileRecord fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName() , businessId);
                     Map<String , Object> otherFileData = new HashMap<>();
-                    otherFileData.put("fileNo" , fileRecordDto2.getFileNo());
-                    otherFileData.put("projectName" , fileRecordDto2.getProjectName());
-                    otherFileData.put("projectCompany" , fileRecordDto2.getProjectCompany());
-                    otherFileData.put("projectCode" , fileRecordDto2.getProjectCode());
+                    otherFileData.put("fileNo" , fileRecord.getFileNo());
+                    otherFileData.put("projectName" , fileRecord.getProjectName());
+                    otherFileData.put("projectCompany" , fileRecord.getProjectCompany());
+                    otherFileData.put("projectCode" , fileRecord.getProjectCode());
                     otherFileData.put("OtherTitle" , "归档表");
                     List<AddRegisterFile> addRegisterFileList = new ArrayList<>();
                     //其它资料

@@ -776,7 +776,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <#if isHasCopyfile?? && isHasCopyfile=="9">
+                                        <#if otherFile.isHasOriginfile?? && otherFile.isHasOriginfile=="9">
                                         <w:sym w:font="Wingdings 2" w:char="F052" />
                                         <#else>
                                         <w:t xml:space="preserve">□</w:t>
@@ -815,7 +815,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                    <#if isHasOriginfile?? && isHasOriginfile=="9">
+                                    <#if otherFile.isHasCopyfile?? && otherFile.isHasCopyfile=="9">
                                         <w:sym w:font="Wingdings 2" w:char="F052" />
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
@@ -892,7 +892,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${totalNum}</w:instrText>
+                                        <w:instrText xml:space="preserve">${otherFile.totalNum}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>

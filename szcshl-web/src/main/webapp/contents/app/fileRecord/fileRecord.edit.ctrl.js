@@ -60,15 +60,15 @@
         /******以下是其它资料添加*****/
 
         vm.addOtherFile = function (businessId, businessType) {
-            if(businessType == "OTHER_FILE"){
+            if(businessType == "4"){
                 vm.addRegisters = vm.otherFile;
             }
-            if(businessType == "DRAWING_FILE"){
+            if(businessType == "2"){
                 vm.addRegisters = vm.drawingFile;
             }
-            if(businessType == "XMJYS_DECLARE_FILE"){
+            /*if(businessType == "XMJYS_DECLARE_FILE"){
                 vm.addRegisters = vm.declareFile;
-            }
+            }*/
             if(!vm.addRegisters){
                 vm.addRegisters = [];
             }

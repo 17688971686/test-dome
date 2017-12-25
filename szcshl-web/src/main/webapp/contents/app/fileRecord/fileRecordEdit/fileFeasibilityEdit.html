@@ -351,8 +351,8 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">其他重要资料（备注）</td>
                     <td style="border-top:none;">
-                   <!--     <input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.otherImportFileCopy" ng-true-value="9" ng-false-value="0">-->
-                        <button ng-click="vm.addOtherFile(vm.fileRecord.fileRecordId , 'XMJYS_DECLARE_FILE')" class="btn btn-sm btn-primary">添加</button>
+                   <input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.otherImportFileCopy" ng-true-value="9" ng-false-value="0">
+                        <!--<button ng-click="vm.addOtherFile(vm.fileRecord.fileRecordId , 'XMJYS_DECLARE_FILE')" class="btn btn-sm btn-primary">添加</button>-->
                     </td>
                     <td style="border-top:none;"></td>
                     <td style="border-top:none;"></td>
@@ -499,6 +499,12 @@
             </table>
         </td>
     </tr>
+    <tr>
+        <td class="text-center" style="vertical-align: middle;">其它资料</td>
+        <td colspan="3">
+            <button ng-click="vm.addOtherFile(vm.fileRecord.fileRecordId , '4')" class="btn btn-sm btn-primary">添加</button>
+        </td>
+    </tr>
 
     <tr>
         <td class="text-center">项目第一负责人签名</td>
@@ -541,7 +547,8 @@
 <!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
 </button>-->
 
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGESTUDY')">打印预览</button>
+<button class="btn btn-sm btn-primary" style="width: 100px; margin-left: 50%;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGESTUDY')">打印预览</button>
+<button class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="printFile(vm.fileRecord.fileRecordId,'FILERECOED_OTHERFILE' , 'OTHER_FILE')">打印其它资料</button>
 
 
 <!-- E 可行性研究 报告-->
