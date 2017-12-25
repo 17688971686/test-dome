@@ -54,7 +54,7 @@ public class AddRegisterFileRepoImpl extends AbstractRepository<AddRegisterFile,
      * @return
      */
     @Override
-    public List<AddRegisterFile> findByBusIdAndBusType(String businessId, String businessType) {
+    public List<AddRegisterFile> findByBusIdAndBusType(String businessId, Integer businessType) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " +AddRegisterFile.class.getSimpleName() + " where " + AddRegisterFile_.businessId.getName() + "=:businessId");
         hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + "=:businessType");

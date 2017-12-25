@@ -41,5 +41,5 @@ public interface AddRegisterFileService {
      * @param businessType
      * @return
      */
-    List<AddRegisterFile> findByBusIdAndBusType(String businessId , String businessType);
+    List<AddRegisterFile> findByBusIdAndBusType(String businessId , Integer businessType);
 }

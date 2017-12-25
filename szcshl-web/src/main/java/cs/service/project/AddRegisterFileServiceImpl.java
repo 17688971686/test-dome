@@ -143,7 +143,7 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
      * @return
      */
     @Override
-    public List<AddRegisterFile> findByBusIdAndBusType(String businessId, String businessType) {
+    public List<AddRegisterFile> findByBusIdAndBusType(String businessId, Integer businessType) {
         return addRegisterFileRepo.findByBusIdAndBusType(businessId , businessType);
     }
 

@@ -795,12 +795,12 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     //其它资料
                     if("OTHER_FILE".equals(stageType)){
                         otherFileData.put("otherFileType" , "其它资料");
-                        addRegisterFileList = addRegisterFileService.findByBusIdAndBusType(businessId , "OTHER_FILE");
+                        addRegisterFileList = addRegisterFileService.findByBusIdAndBusType(businessId , 4);
                     }
                     //图纸资料
                     if("DRAWING_FILE".equals(stageType)){
                         otherFileData.put("otherFileType" , "图纸资料");
-                        addRegisterFileList = addRegisterFileService.findByBusIdAndBusType(businessId , "DRAWING_FILE");
+                        addRegisterFileList = addRegisterFileService.findByBusIdAndBusType(businessId , 2);
 
                     }
                     otherFileData.put("otherFileList" , addRegisterFileList);
