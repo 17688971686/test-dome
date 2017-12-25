@@ -390,6 +390,9 @@ public class Constant {
         APPLY_REPORT_SIGN("print/sign/signZjsq" , "资金申请_报审登记表"),
         APPLY_REPORT_DISPATCHDOC("print/dispatchDoc/dispatchZjsq" , "资金申请单_发文"),
 
+        //其它资料
+        OTHER_FILE("print/other" , "其它资料"),
+
         //拟补充资料函
         ADDSUPPLETER("print/common" , "拟补充资料函"),
 
