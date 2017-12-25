@@ -29,13 +29,14 @@
                     vm.isassistproc = (vm.fileRecord.isassistproc == '9')?true:false;
                     //其它资料信息
                     vm.fileRecord.registerFileDto.forEach(function(registerFile  , x){
-                        if(registerFile.businessType == "OTHER_FILE"){
+                        if(registerFile.businessType == 4){
                             vm.otherFile.push(registerFile);
-                        }else if(registerFile.businessType == "DRAWING_FILE"){
+                        }else if(registerFile.businessType == 2){
                             vm.drawingFile.push(registerFile);
-                        }else if(registerFile.businessType == "XMJYS_DECLARE_FILE"){
-                            vm.declareFile.push(registerFile);
                         }
+                        /*else if(registerFile.businessType == "XMJYS_DECLARE_FILE"){
+                            vm.declareFile.push(registerFile);
+                        }*/
                     })
 
                     //初始化附件上传

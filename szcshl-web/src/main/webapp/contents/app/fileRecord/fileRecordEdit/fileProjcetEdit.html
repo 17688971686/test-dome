@@ -552,7 +552,7 @@
     <tr>
         <td class="text-center">其它资料</td>
         <td colspan="8">
-            <button ng-click="vm.addOtherFile(vm.fileRecord.fileRecordId , 'OTHER_FILE')" class="btn btn-sm btn-primary">添加</button>
+            <button ng-click="vm.addOtherFile(vm.fileRecord.fileRecordId , '4')" class="btn btn-sm btn-primary">添加</button>
         </td>
     </tr>
 
@@ -814,7 +814,7 @@
                                                ng-model="vm.fileRecord.fieOtherCount"
                                                name="fieOtherCount" id="fieOtherCount"></td>-->
         <td style="text-align: center;">
-            <button ng-click="vm.addOtherFile(vm.fileRecord.fileRecordId , 'DRAWING_FILE')" class="btn btn-sm btn-primary">添加</button>
+            <button ng-click="vm.addOtherFile(vm.fileRecord.fileRecordId , '2')" class="btn btn-sm btn-primary">添加</button>
         </td>
     </tr>
     <tr>
@@ -855,6 +855,8 @@
 <!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
         ng-click="vm.templatePage('sign_filerecord_xmgs')">打印
 </button>-->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEBUDGET')">打印预览</button>
+<button class="btn btn-sm btn-primary" style="width: 100px; margin-left: 50%;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEBUDGET')">打印预览</button>
+<button class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="printFile(vm.fileRecord.fileRecordId ,'FILERECOED_OTHERFILE' , 'OTHER_FILE')">打印其它资料</button>
+<button class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="printFile(vm.fileRecord.fileRecordId ,'FILERECOED_OTHERFILE' , 'DRAWING_FILE')">打印图纸备注</button>
 
 <!-- 项目概算 -->
