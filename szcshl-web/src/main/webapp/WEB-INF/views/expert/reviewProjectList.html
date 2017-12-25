@@ -24,7 +24,7 @@
             <td>{{s.authorizeValue}}</td>
             <td>{{s.reviewType}}</td>
         </tr>
-        <tr ng-show="vm.noData">
+        <tr ng-show="vm.noData" ng-hide="!vm.noData">
             <td colspan="8">
                 没有记录
             </td>

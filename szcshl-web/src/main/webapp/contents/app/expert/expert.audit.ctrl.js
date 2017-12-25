@@ -54,6 +54,8 @@
 
         //S 查看专家详细
         vm.findExportDetail = function (id) {
+            vm.model = {};
+            vm.reviewProjectList = [];
             expertSvc.getExpertById(id, function (data) {
                 vm.model = data;
                 $("#auditExportDetail").kendoWindow({
