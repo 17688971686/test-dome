@@ -1221,7 +1221,7 @@
                 $("#iframePreview").attr("src", url);
                 $("#previewModal").kendoWindow({
                     width : "80%",
-                    height : "830px",
+                    height : "730px",
                     title: "",
                     visible: false,
                     modal: true,

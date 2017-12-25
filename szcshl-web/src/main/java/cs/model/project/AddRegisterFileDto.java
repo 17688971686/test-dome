@@ -39,9 +39,13 @@ public class AddRegisterFileDto extends BaseDto {
     private String isSupplement;
 
     /**
-     * 业务类型：图纸：DRAWING_FILE  ,  其它：OTHER_FILE ,
+     * 业务类型：
+     * 1为报审文件，2为归档图纸，3为补充材料，4其他资料，
+     * 5为归档中的报审登记表中的其它资料，
+     * 6为归档项目审核中的补充资料，
+     * 7为归档其它特殊文件
      */
-    private String businessType;
+    private Integer businessType;
 
     public String getIsSupplement() {
         return isSupplement;
@@ -51,11 +55,11 @@ public class AddRegisterFileDto extends BaseDto {
         this.isSupplement = isSupplement;
     }
 
-    public String getBusinessType() {
+    public Integer getBusinessType() {
         return businessType;
     }
 
-    public void setBusinessType(String businessType) {
+    public void setBusinessType(Integer businessType) {
         this.businessType = businessType;
     }
 
