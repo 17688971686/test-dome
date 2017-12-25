@@ -12,9 +12,8 @@
         vm.model.signid = $state.params.signid;	//收文ID
         vm.flowDeal = false;		//是否是流程处理标记
         vm.busiObj = {};             //业务对象，用于记录页面操作对象等信息
-        vm.xmjysDeclareFile = [];//建议书申报资料
-        vm.kyjxDeclareFile = [];//可研究性申报资料
-
+        vm.otherFile = [];//其他申报资料
+        vm.supply={};    //拟补充资料
         active();
         function active() {
             signSvc.initFillData(vm.model.signid, function (data) {
@@ -63,14 +62,12 @@
                 //其它资料信息
                 if(data.reObj.registerFileDtoDtoList!=undefined){
                     data.reObj.registerFileDtoDtoList.forEach(function(registerFile  , x){
-                        if(registerFile.businessType == "OTHER_FILE"){
+                        if(registerFile.businessType == "4"){
                             vm.otherFile.push(registerFile);
-                        }else if(registerFile.businessType == "DRAWING_FILE"){
+                        }else if(registerFile.businessType == "2"){
                             vm.drawingFile.push(registerFile);
-                        }else if(registerFile.businessType == "XMJYS_DECLARE_FILE"){
-                            vm.xmjysDeclareFile.push(registerFile);
-                        }else if(registerFile.businessType == "KYJX_DECLARE_FILE"){
-                            vm.kyjxDeclareFile.push(registerFile);
+                        }else if(registerFile.businessType == "3"){
+                            vm.supply.push(registerFile);
                         }
                     })
                 }
@@ -248,17 +245,11 @@
         /******以下是其它资料添加*****/
 
         vm.addOtherFile = function (businessId, businessType) {
-            if(businessType == "OTHER_FILE"){
+            if(businessType == "4"){
                 vm.addRegisters = vm.otherFile;
             }
-            if(businessType == "DRAWING_FILE"){
+            if(businessType == "2"){
                 vm.addRegisters = vm.drawingFile;
-            }
-            if(businessType == "XMJYS_DECLARE_FILE"){
-                vm.addRegisters = vm.xmjysDeclareFile;
-            }
-            if(businessType == "KYJX_DECLARE_FILE"){
-                vm.addRegisters = vm.kyjxDeclareFile;
             }
             if(!vm.addRegisters){
                 vm.addRegisters = [];

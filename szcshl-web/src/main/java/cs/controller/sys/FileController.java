@@ -806,6 +806,30 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     otherFileData.put("otherFileList" , addRegisterFileList);
                     file = TemplateUtil.createDoc(otherFileData, Template.OTHER_FILE.getKey(), path);
                     break;
+                case "SIGN_OTHERFILE" :
+                    //项目申报的其它资料
+                    Sign signs = signRepo.findById(Sign_.signid.getName(), businessId);
+                    Map<String , Object> otherFileDatas = new HashMap<>();
+                    otherFileDatas.put("fileNo" , signs.getSignNum());
+                    otherFileDatas.put("projectName" , signs.getProjectname());
+                    otherFileDatas.put("projectCompany" , signs.getBuiltcompanyName());
+                    otherFileDatas.put("projectCode" , signs.getProjectcode());
+                    otherFileDatas.put("OtherTitle" , "报审登记");
+                    List<AddRegisterFile> addRegisterFileLists = new ArrayList<>();
+                    //其它资料
+                    if("OTHER_FILE".equals(stageType)){
+                        otherFileDatas.put("otherFileType" , "其它资料");
+                        addRegisterFileLists = addRegisterFileService.findByBusIdAndBusType(businessId , 4);
+                    }
+                    //图纸资料
+                    if("DRAWING_FILE".equals(stageType)){
+                        otherFileDatas.put("otherFileType" , "图纸资料");
+                        addRegisterFileLists = addRegisterFileService.findByBusIdAndBusType(businessId , 2);
+
+                    }
+                    otherFileDatas.put("otherFileList" , addRegisterFileLists);
+                    file = TemplateUtil.createDoc(otherFileDatas, Template.OTHER_FILE.getKey(), path);
+                    break;
 
                 case "DISPATCHDOC":
                     DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName() , businessId);
