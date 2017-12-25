@@ -28,10 +28,7 @@ import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
-import cs.service.project.AddSuppLetterService;
-import cs.service.project.FileRecordService;
-import cs.service.project.SignService;
-import cs.service.project.WorkProgramService;
+import cs.service.project.*;
 import cs.service.sys.SysFileService;
 import cs.service.topic.TopicInfoService;
 import org.apache.commons.net.ftp.FTPClientConfig;
@@ -109,6 +106,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     @Autowired
     private ArchivesLibraryService archivesLibraryService ;
+
+    @Autowired
+    private AddRegisterFileService addRegisterFileService;
 
     private ServletContext servletContext;
 
@@ -781,6 +781,32 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                     }
                     break;
+
+                case "FILERECOED_OTHERFILE" :
+                    //项目归档的其它资料
+                    FileRecordDto fileRecordDto2 = fileRecordService.initBySignId( businessId);
+                    Map<String , Object> otherFileData = new HashMap<>();
+                    otherFileData.put("fileNo" , fileRecordDto2.getFileNo());
+                    otherFileData.put("projectName" , fileRecordDto2.getProjectName());
+                    otherFileData.put("projectCompany" , fileRecordDto2.getProjectCompany());
+                    otherFileData.put("projectCode" , fileRecordDto2.getProjectCode());
+                    otherFileData.put("OtherTitle" , "归档表");
+                    List<AddRegisterFile> addRegisterFileList = new ArrayList<>();
+                    //其它资料
+                    if("OTHER_FILE".equals(stageType)){
+                        otherFileData.put("otherFileType" , "其它资料");
+                        addRegisterFileList = addRegisterFileService.findByBusIdAndBusType(businessId , "OTHER_FILE");
+                    }
+                    //图纸资料
+                    if("DRAWING_FILE".equals(stageType)){
+                        otherFileData.put("otherFileType" , "图纸资料");
+                        addRegisterFileList = addRegisterFileService.findByBusIdAndBusType(businessId , "DRAWING_FILE");
+
+                    }
+                    otherFileData.put("otherFileList" , addRegisterFileList);
+                    file = TemplateUtil.createDoc(otherFileData, Template.OTHER_FILE.getKey(), path);
+                    break;
+
                 case "DISPATCHDOC":
                     DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName() , businessId);
                     SignDto signDto = signService.findById(dispatchDoc.getSign().getSignid(),true);
@@ -981,8 +1007,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     Map<String , Object> archivesData = TemplateUtil.entryAddMap(archivesLibraryDto);
                     file = TemplateUtil.createDoc(archivesData, Template.ARCHIVES_DETAIL.getKey(), path);
                     break;
-
-
                 default:
                     ;
             }

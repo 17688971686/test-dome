@@ -6,6 +6,7 @@ import cs.domain.project.AddRegisterFile;
 import cs.domain.project.AddRegisterFile_;
 import cs.model.project.AddRegisterFileDto;
 import cs.repository.AbstractRepository;
+import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -44,5 +45,22 @@ public class AddRegisterFileRepoImpl extends AbstractRepository<AddRegisterFile,
 
        executeSql(hqlBuilder);
 
+    }
+
+    /**
+     * 通过业务ID和业务类型查询
+     * @param businessId
+     * @param businessType
+     * @return
+     */
+    @Override
+    public List<AddRegisterFile> findByBusIdAndBusType(String businessId, String businessType) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" from " +AddRegisterFile.class.getSimpleName() + " where " + AddRegisterFile_.businessId.getName() + "=:businessId");
+        hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + "=:businessType");
+        hqlBuilder.setParam("businessId" , businessId);
+        hqlBuilder.setParam("businessType" , businessType);
+        List<AddRegisterFile> addRegisterFileList = findByHql(hqlBuilder);
+        return addRegisterFileList;
     }
 }

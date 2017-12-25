@@ -34,4 +34,12 @@ public interface AddRegisterFileService {
     List<AddRegisterFileDto> initRegisterFileData(ODataObj odataObj);
 
     ResultMsg bathSave(AddRegisterFileDto[] addRegisterFileDtos);
+
+    /**
+     * 通过业务id 和 业务类型查询
+     * @param businessId
+     * @param businessType
+     * @return
+     */
+    List<AddRegisterFile> findByBusIdAndBusType(String businessId , String businessType);
 }

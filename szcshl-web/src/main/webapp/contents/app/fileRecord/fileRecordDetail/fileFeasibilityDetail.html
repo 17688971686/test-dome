@@ -358,9 +358,9 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">其他重要资料（备注）</td>
                     <td style="border-top:none;">
-                        <!--<input ng-disabled="true"  type="checkbox" style="width:50px;"
+                        <input ng-disabled="true"  type="checkbox" style="width:50px;"
                                                         ng-model="vm.fileRecord.otherImportFileCopy" ng-true-value="9"
-                                                        ng-false-value="0">-->
+                                                        ng-false-value="0">
                     </td>
                     <td style="border-top:none;"></td>
                     <td style="border-top:none;"></td>
@@ -573,5 +573,8 @@
 </table>    <!--  end table		-->
 <!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
 </button>-->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'FILERECORD' , 'STAGESTUDY')">打印预览</button>
+<button class="btn btn-sm btn-primary" style="width: 100px; margin-left: 50%;" ng-click="printFile(vm.model.signid,'FILERECORD' , 'STAGESTUDY')">打印预览</button>
+<button class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="printFile(vm.model.signid,'FILERECOED_OTHERFILE' , 'OTHER_FILE')">打印其它资料</button>
+
+
 <!-- E 可行性研究 报告-->

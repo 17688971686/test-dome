@@ -227,13 +227,14 @@
 							       <tr>
 							        <td style="border-top:none;text-align:right;">其他资料</td>
 							        <td style="border-top:none;">
-                                        <!--<input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.otherImportFileCount" name="otherImportFileCount" id="otherImportFileCount" ng-readonly="true">-->
+                                       <input type="text" style="width:50px;" class="form-control input-sm " data-val="true" data-val-digits="只能输入数字"
+											  ng-model="vm.fileRecord.otherImportFileCount" name="otherImportFileCount" id="otherImportFileCount" ng-readonly="true">
                                     </td>
 							        <td style="border-top:none;">
-										<!--<input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.otherImportFileOriginal" ng-true-value="9" ng-false-value="0" ng-disabled="true">-->
+										<input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.otherImportFileOriginal" ng-true-value="9" ng-false-value="0" ng-disabled="true">
 									</td>
 							        <td style="border-top:none;">
-										<!--<input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.otherImportFileCopy" ng-true-value="9" ng-false-value="0" ng-disabled="true">-->
+										<input type="checkbox" style="width:50px;" ng-model="vm.fileRecord.otherImportFileCopy" ng-true-value="9" ng-false-value="0" ng-disabled="true">
 									</td>
 							        <td style="border-top:none;"> <span data-valmsg-for="otherImportFileCount" data-valmsg-replace="true" class="errors"></span></td>
 							      </tr>
@@ -360,6 +361,7 @@
 		  </tbody>			  		  	  
 		</table>	<!-- end table -->
 <!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'FILERECORD' , 'STAGEHOMELAND')">打印预览</button>
+<button class="btn btn-sm btn-primary" style="width: 100px; margin-left: 50%;" ng-click="printFile(vm.model.signid,'FILERECORD' , 'STAGEHOMELAND')">打印预览</button>
+<button class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="printFile(vm.model.signid,'FILERECOED_OTHERFILE' , 'OTHER_FILE')">打印其它资料</button>
 
 <!-- E 进口设备 -->
