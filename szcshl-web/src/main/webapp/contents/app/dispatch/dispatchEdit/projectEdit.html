@@ -123,17 +123,15 @@
         </td>
     </tr>
 
-    <tr>
+    <tr >
         <td class="text-center" style="vertical-align: middle;">项目负责人<br>拟稿意见</td>
-        <td colspan="3">
-            <textarea maxlength="2000" class="form-control input-sm " rows="3" ng-disabled="true"
-                      ng-model="vm.dispatchDoc.mianChargeSuggest" id="mianChargeSuggest"
-                      name="mianChargeSuggest" placeholder="第一负责人"/>
+        <td colspan="3" style="min-height: 50px;">
+            第一负责人意见:
+            <div ng-bind-html="vm.dispatchDoc.mianChargeSuggest | trust2Html"></div>
         </td>
-        <td colspan="2">
-            <textarea maxlength="2000" class="form-control input-sm " rows="3"
-                      ng-model="vm.dispatchDoc.secondChargeSuggest" id="secondChargeSuggest"
-                      name="secondChargeSuggest" placeholder="第二负责人" ng-disabled="true"/>
+        <td colspan="2" style="min-height: 50px;">
+            第二负责人意见:
+            <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
         </td>
     </tr>
 
