@@ -36,7 +36,7 @@ public class AddRegisterFileDto extends BaseDto {
     /**
      * 是否拟补充资料函
      */
-    private String isSupplement;
+//    private String isSupplement;
 
     /**
      * 业务类型：
@@ -47,13 +47,13 @@ public class AddRegisterFileDto extends BaseDto {
      */
     private Integer businessType;
 
-    public String getIsSupplement() {
-        return isSupplement;
-    }
-
-    public void setIsSupplement(String isSupplement) {
-        this.isSupplement = isSupplement;
-    }
+//    public String getIsSupplement() {
+//        return isSupplement;
+//    }
+//
+//    public void setIsSupplement(String isSupplement) {
+//        this.isSupplement = isSupplement;
+//    }
 
     public Integer getBusinessType() {
         return businessType;

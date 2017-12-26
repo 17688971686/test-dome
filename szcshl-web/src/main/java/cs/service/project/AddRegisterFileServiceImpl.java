@@ -115,11 +115,11 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
                 addRegisterFile.setModifiedDate(now);
                 addRegisterFile.setModifiedBy(SessionUtil.getDisplayName());
 
-                if(sign !=null || fileRecord != null){
-                    addRegisterFile.setIsSupplement(Constant.EnumState.YES.getValue());
-                }else{
-                    addRegisterFile.setIsSupplement(Constant.EnumState.NO.getValue());
-                }
+//                if(sign !=null || fileRecord != null){
+//                    addRegisterFile.setIsSupplement(Constant.EnumState.YES.getValue());
+//                }else{
+//                    addRegisterFile.setIsSupplement(Constant.EnumState.NO.getValue());
+//                }
                 saveList.add(addRegisterFile);
             }
             addRegisterFileRepo.bathUpdate(saveList);
