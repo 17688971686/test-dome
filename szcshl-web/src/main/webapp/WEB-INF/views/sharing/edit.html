@@ -2,10 +2,11 @@
 <meta charset="UTF-8">
 
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 <link href="${path}/contents/libs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
 <script src="${path}/contents/libs/zTree/js/jquery.ztree.all.min.js"></script>
 
+<!-- 附件 -->
+<#include "/file/common.html"/>
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/sharingPlatlformList">共享平台</a></li>
