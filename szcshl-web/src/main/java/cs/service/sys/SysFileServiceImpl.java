@@ -9,6 +9,7 @@ import cs.model.PageModelDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -17,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
+import cs.domain.sys.Ftp;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import static cs.common.Constant.*;
 
 @Service
@@ -36,6 +36,9 @@ public class SysFileServiceImpl implements SysFileService {
 
     @Autowired
     private SignRepo signRepo;
+
+    @Autowired
+    private FtpRepo ftpRepo;
 
     @Override
     @Transactional
@@ -106,12 +109,7 @@ public class SysFileServiceImpl implements SysFileService {
             sysFile.setModifiedBy(SessionUtil.getLoginName());
             sysFile.setCreatedDate(now);
             sysFile.setModifiedDate(now);
-            sysFile.setFtpIp(ftp.getIpAddr());
-            sysFile.setPort(ftp.getPort().toString());
-            sysFile.setFtpUser(ftp.getUserName());
-            sysFile.setFtpPwd(ftp.getPwd());
-            sysFile.setFtpBasePath(ftp.getPath());
-
+            sysFile.setFtp(ftp);
             sysFileRepo.save(sysFile);
 
             //先保存成功，
@@ -156,12 +154,8 @@ public class SysFileServiceImpl implements SysFileService {
         ResultMsg resultMsg = null;
         try{
             //连接ftp
-            Ftp f = new Ftp();
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
-            f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
-            f.setUserName(propertyUtil.readProperty(FTP_USER));
-            f.setPwd(propertyUtil.readProperty(FTP_PWD));
+            Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
             boolean linkSucess = FtpUtil.connectFtp(f);
             if(linkSucess){
                 List<SysFile> fileList = sysFileRepo.findByIds(SysFile_.sysFileId.getName(), sysFileId, null);

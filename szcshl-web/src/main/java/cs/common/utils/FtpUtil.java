@@ -1,11 +1,13 @@
 package cs.common.utils;
-
-import cs.common.Constant;
+import cs.domain.sys.SysFile;
+import cs.service.sys.SysFileService;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.log4j.Logger;
+import cs.domain.sys.Ftp;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
 
@@ -286,7 +288,6 @@ public class FtpUtil {
                 String localFileName = new String(ff.getName().getBytes("ISO-8859-1"), "GBK");
                 if (localFileName.equals(fileName)) {
                     File localFile = new File(localPath + "/" + localFileName);
-
                     OutputStream is = new FileOutputStream(localFile);
                     ftp.retrieveFile(ff.getName(), is);
                     is.close();

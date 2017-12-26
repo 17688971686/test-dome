@@ -21,6 +21,7 @@ import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
+import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.sys.SysFileService;
@@ -32,6 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static cs.common.Constant.FTP_IP1;
 
 @Service
 public class WorkProgramServiceImpl implements WorkProgramService {
@@ -68,6 +71,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     private ExpertSelectedRepo expertSelectedRepo;
     @Autowired
     private SignDispaWorkService signDispaWorkService;
+    @Autowired
+    private FtpRepo ftpRepo;
 
     @Override
     @Transactional
@@ -467,9 +472,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
         //获得会议信息
         List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(), workProgram.getId(), null);
-
+        PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+        Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
         //2.1 生成签到表
-        SysFile sysFile1 = CreateTemplateUtils.createtTemplateSignIn(sign, workProgram);
+        SysFile sysFile1 = CreateTemplateUtils.createtTemplateSignIn(f,sign, workProgram);
         if(sysFile1 != null){
             saveFile.add(sysFile1);
         }else{
@@ -478,7 +484,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
 
         //2.2 生成主持人表
-        SysFile sysFile2 = CreateTemplateUtils.createTemplateCompere(sign, workProgram, expertList);
+        SysFile sysFile2 = CreateTemplateUtils.createTemplateCompere(f,sign, workProgram, expertList);
         if(sysFile2 != null){
             saveFile.add(sysFile2);
         }else{
@@ -486,7 +492,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         }
 
         //2.3 会议议程
-        List<SysFile> sList = CreateTemplateUtils.createTemplateMeeting(sign, workProgram, roomBookings);
+        List<SysFile> sList = CreateTemplateUtils.createTemplateMeeting(f,sign, workProgram, roomBookings);
         if (sList != null && sList.size() > 0) {
             for (SysFile sysFile : sList) {
                 if(saveFile !=null){
@@ -500,7 +506,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
         //2.4 邀请函
         for (Expert expert : expertList) {
-            SysFile invitation = CreateTemplateUtils.createTemplateInvitation(sign, workProgram, expert, user, roomBookings);
+            SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f,sign, workProgram, expert, user, roomBookings);
             if (invitation != null) {
                 saveFile.add(invitation);
             }else{
@@ -510,7 +516,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
         //2.5 会议通知
 
-        SysFile notice = CreateTemplateUtils.createTemplateNotice(sign, workProgram, user, roomBookings);
+        SysFile notice = CreateTemplateUtils.createTemplateNotice(f,sign, workProgram, user, roomBookings);
         if (notice != null) {
             saveFile.add(notice);
         }else{
@@ -532,7 +538,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
             org = orgRepo.findById(sign.getMaindepetid());//甲方
         }
-        SysFile sysFile3 = CreateTemplateUtils.createTemplateAssist(sign, workProgram, apsList, assistUnit, org);
+        SysFile sysFile3 = CreateTemplateUtils.createTemplateAssist(f,sign, workProgram, apsList, assistUnit, org);
         if(sysFile3 != null){
 
             saveFile.add(sysFile3);

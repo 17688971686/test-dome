@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import cs.common.ResultMsg;
-import cs.common.utils.Ftp;
+import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.sys.SysFileDto;

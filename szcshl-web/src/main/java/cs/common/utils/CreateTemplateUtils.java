@@ -5,6 +5,7 @@ import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertType;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.project.*;
+import cs.domain.sys.Ftp;
 import cs.domain.sys.Org;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
@@ -31,7 +32,7 @@ public class CreateTemplateUtils {
      *
      * @param signDispaWork
      */
-    public static SysFile createStudyTemplateOpinion(SignDispaWork signDispaWork) {
+    public static SysFile createStudyTemplateOpinion(Ftp f,SignDispaWork signDispaWork) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", signDispaWork.getProjectname());
         dataMap.put("docNum", signDispaWork.getSignnum());
@@ -42,7 +43,7 @@ public class CreateTemplateUtils {
         dataMap.put("content2", "xxxxx");
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_OPINION.getKey(), Constant.Template.STUDY_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -57,7 +58,7 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createStudyTemplateRoster(SignDispaWork signDispaWork, List<Expert> expertList) {
+    public static SysFile createStudyTemplateRoster(Ftp f,SignDispaWork signDispaWork, List<Expert> expertList) {
         Map<String, Object> dataMap = new HashMap<>();
 
         dataMap.put("mdnum", "3");
@@ -91,7 +92,7 @@ public class CreateTemplateUtils {
         dataMap.put("reviewGroup", reviewGroup);
 
 
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_ROSTER.getKey(), Constant.Template.STUDY_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -106,13 +107,13 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createStudyTemplateEstimate(SignDispaWork signDispaWork) {
+    public static SysFile createStudyTemplateEstimate(Ftp f,SignDispaWork signDispaWork) {
         Map<String, Object> dataMap = new HashMap<>();
 
         dataMap.put("gsnum", "2");
         dataMap.put("projectName", signDispaWork.getProjectname());
 
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_ESTIMATE.getKey(), Constant.Template.STUDY_ESTIMATE.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -128,7 +129,7 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createBudgetTemplateOpinion(SignDispaWork signDispaWork) {
+    public static SysFile createBudgetTemplateOpinion(Ftp f,SignDispaWork signDispaWork) {
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", signDispaWork.getProjectname());
@@ -140,7 +141,7 @@ public class CreateTemplateUtils {
         dataMap.put("content2", "xxxxx");
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_OPINION.getKey(), Constant.Template.BUDGET_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -154,12 +155,12 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createBudgetTemplateProjectCost(SignDispaWork signDispaWork) {
+    public static SysFile createBudgetTemplateProjectCost(Ftp f,SignDispaWork signDispaWork) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("jagcfynum", "4");
         dataMap.put("projectName", signDispaWork.getProjectname());
 
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_PROJECTCOST.getKey(), Constant.Template.BUDGET_PROJECTCOST.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -172,13 +173,13 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createBudgetTemplateEstimate(SignDispaWork signDispaWork) {
+    public static SysFile createBudgetTemplateEstimate(Ftp f,SignDispaWork signDispaWork) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("gsnum1", "1");
         dataMap.put("projectName", signDispaWork.getProjectname());
         dataMap.put("gsnum2", "2");
 
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_ESTIMATE.getKey(), Constant.Template.BUDGET_ESTIMATE.getValue().split("_")[1],
                 Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
@@ -191,7 +192,7 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createBudgetTemplateRoster(SignDispaWork signDispaWork,  List<Expert> expertList) {
+    public static SysFile createBudgetTemplateRoster(Ftp f,SignDispaWork signDispaWork,  List<Expert> expertList) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("mdnum", "3");
         dataMap.put("projectName", signDispaWork.getProjectname());
@@ -222,7 +223,7 @@ public class CreateTemplateUtils {
         }
         dataMap.put("reviewGroup", reviewGroup);
 
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_ROSTER.getKey(), Constant.Template.BUDGET_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -238,7 +239,7 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createSugTemplateOpinion(SignDispaWork signDispaWork) {
+    public static SysFile createSugTemplateOpinion(Ftp f,SignDispaWork signDispaWork) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", signDispaWork.getProjectname());
         dataMap.put("docNum", signDispaWork.getSignnum());
@@ -250,7 +251,7 @@ public class CreateTemplateUtils {
         System.out.print(DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
                 Constant.Template.SUG_OPINION.getKey(), Constant.Template.SUG_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -263,12 +264,12 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createSugTemplateEstime(SignDispaWork signDispaWork) {
+    public static SysFile createSugTemplateEstime(Ftp f,SignDispaWork signDispaWork) {
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("ksnum", "2");
         dataMap.put("projectName", signDispaWork.getProjectname());
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
                 Constant.Template.SUG_ESTIMATE.getKey(), Constant.Template.SUG_ESTIMATE.getValue().split("_")[1],
                 Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
@@ -281,7 +282,7 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createSugTemplateRoster(SignDispaWork signDispaWork,  List<Expert> expertList) {
+    public static SysFile createSugTemplateRoster(Ftp f,SignDispaWork signDispaWork,  List<Expert> expertList) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("psnum", "3");
         dataMap.put("projectName", signDispaWork.getProjectname());
@@ -313,7 +314,7 @@ public class CreateTemplateUtils {
 
         dataMap.put("reviewGroup", reviewGroup);
 
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
                 Constant.Template.BUDGET_ROSTER.getKey(), Constant.Template.SUG_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -329,7 +330,7 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createReportTemplateOpinion(SignDispaWork signDispaWork) {
+    public static SysFile createReportTemplateOpinion(Ftp f,SignDispaWork signDispaWork) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", signDispaWork.getProjectname());
         dataMap.put("docNum", signDispaWork.getSignnum());
@@ -340,7 +341,7 @@ public class CreateTemplateUtils {
         dataMap.put("content2", "xxxxx");
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_OPINION.getKey(), Constant.Template.REPORT_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -353,11 +354,11 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createReportTemplateEstimate(SignDispaWork signDispaWork) {
+    public static SysFile createReportTemplateEstimate(Ftp f,SignDispaWork signDispaWork) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("gsnum", "2");
         dataMap.put("projectName", signDispaWork.getProjectname());
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_ESTIMATE.getKey(), Constant.Template.REPORT_ESTIMATE.getValue().split("_")[1],
                 Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
@@ -370,7 +371,7 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createReportTemplateRoster(SignDispaWork signDispaWork,  List<Expert> expertList) {
+    public static SysFile createReportTemplateRoster(Ftp f,SignDispaWork signDispaWork,  List<Expert> expertList) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("psnum", "3");
         dataMap.put("projectName", signDispaWork.getProjectname());
@@ -402,7 +403,7 @@ public class CreateTemplateUtils {
 
         dataMap.put("reviewGroup", reviewGroup);
 
-        SysFile sysFile = TemplateUtil.createTemplate(signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_ROSTER.getKey(), Constant.Template.REPORT_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -422,13 +423,13 @@ public class CreateTemplateUtils {
      * @param workProgram
      * @return
      */
-    public static SysFile createtTemplateSignIn(Sign sign, WorkProgram workProgram) {
+    public static SysFile createtTemplateSignIn(Ftp f,Sign sign, WorkProgram workProgram) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
         dataMap.put("reviewStage", sign.getReviewstage());
 
-        SysFile sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.SIGN_IN.getKey(), Constant.Template.SIGN_IN.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -444,7 +445,7 @@ public class CreateTemplateUtils {
      * @param workProgram
      * @return
      */
-    public static SysFile createTemplateNotice(Sign sign, WorkProgram workProgram, User user,List<RoomBooking> rbList) {
+    public static SysFile createTemplateNotice(Ftp f,Sign sign, WorkProgram workProgram, User user,List<RoomBooking> rbList) {
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
@@ -476,7 +477,7 @@ public class CreateTemplateUtils {
                 }
             }
 
-            sysFile = TemplateUtil.createTemplate(sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+            sysFile = TemplateUtil.createTemplate(f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
                     Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                     Constant.Template.UNIT_NOTICE.getKey(), Constant.Template.UNIT_NOTICE.getValue(),
                     Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -492,7 +493,7 @@ public class CreateTemplateUtils {
      * @param workProgram
      * @return
      */
-    public static List<SysFile> createTemplateMeeting(Sign sign, WorkProgram workProgram,List<RoomBooking> rbList) {
+    public static List<SysFile> createTemplateMeeting(Ftp f,Sign sign, WorkProgram workProgram,List<RoomBooking> rbList) {
         List<SysFile> sysFileList = new ArrayList<>();
         SysFile sysFile = null;
 
@@ -509,7 +510,7 @@ public class CreateTemplateUtils {
                 dataMap.put("endTime", DateUtils.converToString(roomBooking.getEndTime(), "HH:mm"));//会议结束时间
                 dataMap.put("meetingAddress", roomBooking.getAddressName());
                 if (DateUtils.compareIgnoreSecond(roomBooking.getBeginTime(), compareDate) == 1) {
-                    sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                    sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                             Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                             Constant.Template.MEETING_AM.getKey(), Constant.Template.MEETING_AM.getValue(),
                             Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -517,7 +518,7 @@ public class CreateTemplateUtils {
 
                 } else {
 
-                    sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                    sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                             Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                             Constant.Template.MEETING_PM.getKey(), Constant.Template.MEETING_PM.getValue(),
                             Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -536,7 +537,7 @@ public class CreateTemplateUtils {
      * @param expert
      * @return
      */
-    public static SysFile createTemplateInvitation(Sign sign, WorkProgram workProgram, Expert expert, User user,List<RoomBooking> rbList) {
+    public static SysFile createTemplateInvitation(Ftp f,Sign sign, WorkProgram workProgram, Expert expert, User user,List<RoomBooking> rbList) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("expertName", expert.getName());
         dataMap.put("projectName", sign.getProjectname());
@@ -565,7 +566,7 @@ public class CreateTemplateUtils {
                     dataMap.put("lastTime", "半");//天数
                 }
             }
-            sysFile = TemplateUtil.createTemplate(sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+            sysFile = TemplateUtil.createTemplate(f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
                     Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                     Constant.Template.INVITATION.getKey(), Constant.Template.INVITATION.getValue(),
                     Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -583,7 +584,7 @@ public class CreateTemplateUtils {
      * @param expertList
      * @return
      */
-    public static SysFile createTemplateCompere(Sign sign, WorkProgram workProgram, List<Expert> expertList) {
+    public static SysFile createTemplateCompere(Ftp f,Sign sign, WorkProgram workProgram, List<Expert> expertList) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
         String expertName = "";
@@ -629,7 +630,7 @@ public class CreateTemplateUtils {
         dataMap.put("appalyInvestment", workProgram.getAppalyInvestment());//申报金额
         dataMap.put("mainPoint", workProgram.getMainPoint());//拟评审重点问题
 
-        SysFile sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.COMPERE.getKey(), Constant.Template.COMPERE.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -647,7 +648,7 @@ public class CreateTemplateUtils {
      * @param org
      * @return
      */
-    public static SysFile createTemplateAssist(Sign sign, WorkProgram workProgram, List<AssistPlanSign> apsList, AssistUnit assistUnit, Org org) {
+    public static SysFile createTemplateAssist(Ftp f,Sign sign, WorkProgram workProgram, List<AssistPlanSign> apsList, AssistUnit assistUnit, Org org) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("workreviveStage", "");
         if (org != null) {
@@ -678,7 +679,7 @@ public class CreateTemplateUtils {
         dataMap.put("assistDeptUserName", sign.getAssistdeptName()); //协办事处联系人
         dataMap.put("mainDeptUserName", sign.getMainDeptUserName()); //主办事处联系人
 
-        SysFile sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.ASSIST.getKey(), Constant.Template.ASSIST.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -698,7 +699,7 @@ public class CreateTemplateUtils {
      * @param workProgram
      * @return
      */
-    public static SysFile subjectStudyNovice(Sign sign, WorkProgram workProgram, User user,List<RoomBooking> rbList) {
+    public static SysFile subjectStudyNovice(Ftp f,Sign sign, WorkProgram workProgram, User user,List<RoomBooking> rbList) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
         dataMap.put("reviewStage", sign.getReviewstage());
@@ -728,7 +729,7 @@ public class CreateTemplateUtils {
                     dataMap.put("lastTime", "半");//天数
                 }
             }
-            sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+            sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                     Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                     Constant.Template.SUBJECT_STUDY_NOVICE.getKey(), Constant.Template.SUBJECT_STUDY_NOVICE.getValue(),
                     Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -745,10 +746,10 @@ public class CreateTemplateUtils {
      * @param workProgram
      * @return
      */
-    public static SysFile subjectStudySignIn(Sign sign, WorkProgram workProgram) {
+    public static SysFile subjectStudySignIn(Ftp f,Sign sign, WorkProgram workProgram) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-        SysFile sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                 Constant.Template.SUBJECT_STUDY_SIGNIN.getKey(), Constant.Template.SUBJECT_STUDY_SIGNIN.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -763,10 +764,10 @@ public class CreateTemplateUtils {
      * @param workProgram
      * @return
      */
-    public static SysFile subjectStudySignature(Sign sign, WorkProgram workProgram) {
+    public static SysFile subjectStudySignature(Ftp f,Sign sign, WorkProgram workProgram) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
-        SysFile sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                 Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                 Constant.Template.SUBJECT_STUDY_EXPERTAIGNATURE.getKey(), Constant.Template.SUBJECT_STUDY_EXPERTAIGNATURE.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -784,7 +785,7 @@ public class CreateTemplateUtils {
      * @param user
      * @return
      */
-    public static SysFile subjectStudyInvitation(Sign sign, WorkProgram workProgram, Expert expert, User user,List<RoomBooking> rbList) {
+    public static SysFile subjectStudyInvitation(Ftp f,Sign sign, WorkProgram workProgram, Expert expert, User user,List<RoomBooking> rbList) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("expertName", expert.getName());
         dataMap.put("projectName", sign.getProjectname());
@@ -811,7 +812,7 @@ public class CreateTemplateUtils {
                     dataMap.put("lastTime", "半");//天数
                 }
             }
-            sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+            sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                     Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                     Constant.Template.SUBJECT_STUDY_INVITATION.getKey(), Constant.Template.SUBJECT_STUDY_INVITATION.getValue(),
                     Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -827,7 +828,7 @@ public class CreateTemplateUtils {
      * @param workProgram
      * @return
      */
-    public static List<SysFile> subjectStudyMeeting(Sign sign, WorkProgram workProgram,List<RoomBooking> rbList) {
+    public static List<SysFile> subjectStudyMeeting(Ftp f,Sign sign, WorkProgram workProgram,List<RoomBooking> rbList) {
         List<SysFile> sysFileList = new ArrayList<>();
         SysFile sysFile = null;
         Map<String, Object> dataMap = new HashMap<>();
@@ -839,7 +840,7 @@ public class CreateTemplateUtils {
                 dataMap.put("endTime", DateUtils.converToString(roomBooking.getEndTime(), "HH:mm"));//会议结束时间
                 dataMap.put("addressName", roomBooking.getAddressName());
                 if (DateUtils.compareIgnoreSecond(roomBooking.getBeginTime(), compareDate) == 1) {
-                    sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                    sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                             Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                             Constant.Template.SUBJECT_STUDY_MEETINGAM.getKey(), Constant.Template.SUBJECT_STUDY_MEETINGAM.getValue(),
                             Constant.Template.WORD_SUFFIX.getKey(), dataMap);
@@ -847,7 +848,7 @@ public class CreateTemplateUtils {
 
                 } else {
 
-                    sysFile = TemplateUtil.createTemplate(sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                    sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
                             Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                             Constant.Template.SUBJECT_STUDY_MEETINGPM.getKey(), Constant.Template.SUBJECT_STUDY_MEETINGPM.getValue(),
                             Constant.Template.WORD_SUFFIX.getKey(), dataMap);
