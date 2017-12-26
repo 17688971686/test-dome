@@ -177,7 +177,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     /**
      * @param request
-     * @param multipartFile
+     * @param multipartFileList
      * @param businessId    业务ID
      * @param mainId        主ID
      * @param sysfileType   附件模块类型
@@ -188,23 +188,33 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequiresAuthentication
     @RequestMapping(name = "文件上传", path = "fileUpload", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg upload(HttpServletRequest request, @RequestParam("file") MultipartFile multipartFile,
+    public ResultMsg upload(HttpServletRequest request,@RequestParam(name="file") MultipartFile[] multipartFileList,
                             @RequestParam(required = true) String businessId, String mainId, String mainType,
                             String sysfileType, String sysBusiType) {
         ResultMsg resultMsg = null;
+        if(multipartFileList == null || multipartFileList.length == 0){
+            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"请选择要上传的附件");
+            return resultMsg;
+        }
+        if (!Validate.isString(sysBusiType)) {
+            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，请选择文件类型！");
+            return resultMsg;
+        }
+
+        StringBuffer errorMsg = new StringBuffer();
         try {
-            String fileName = multipartFile.getOriginalFilename();
-            String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-            //统一转成小写
-            fileType = fileType.toLowerCase();
-            if (Validate.isString(sysBusiType)) {
-                String fileUploadPath = SysFileUtil.getUploadPath();
-                String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
-                //连接ftp
-                PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-                Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
-                boolean linkSucess = FtpUtil.connectFtp(f);
-                if (linkSucess) {
+            String fileUploadPath = SysFileUtil.getUploadPath();
+            String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
+            //连接ftp
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
+            boolean linkSucess = FtpUtil.connectFtp(f);
+            if (linkSucess) {
+                for(MultipartFile multipartFile : multipartFileList){
+                    String fileName = multipartFile.getOriginalFilename();
+                    String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+                    //统一转成小写
+                    fileType = fileType.toLowerCase();
                     //上传到ftp,
                     String uploadFileName = Tools.generateRandomFilename().concat(fileType);
                     linkSucess = FtpUtil.uploadFile(relativeFileUrl, uploadFileName, multipartFile.getInputStream());
@@ -213,13 +223,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         resultMsg = fileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
                                 relativeFileUrl + "/" + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
                     } else {
-                        resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，无法上传到文件服务器！");
+                        errorMsg.append(fileName+"附件上传失败，无法上传到文件服务器！");
                     }
-                } else {
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，连接ftp服务失败，请核查！");
                 }
             } else {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，请选择文件类型！");
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，连接ftp服务失败，请核查！");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -227,6 +235,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         }finally {
             FtpUtil.closeFtp();
         }
+        resultMsg.setReMsg(resultMsg.getReMsg()+errorMsg.toString());
         return resultMsg;
     }
 

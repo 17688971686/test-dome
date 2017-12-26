@@ -245,7 +245,7 @@ public class SysRestController {
 
         Map<String, String> params = new HashMap<>();
         params.put("signDtoJson", JSON.toJSONString(signDto));
-        HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params);
-        System.out.println(hst.toString());
+        //HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params);
+        System.out.println(params.get("signDtoJson"));
     }
 }

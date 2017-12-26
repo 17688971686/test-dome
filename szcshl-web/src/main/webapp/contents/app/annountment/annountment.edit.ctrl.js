@@ -31,6 +31,7 @@
                 mainId: vm.annountment.anId,
                 mainType: "通知公告",
                 sysBusiType:"通知公告",
+                showBusiType:false,
             };
             sysfileSvc.initUploadOptions({
                 inputId: "sysfileinput",

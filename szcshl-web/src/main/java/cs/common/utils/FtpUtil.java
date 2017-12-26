@@ -145,7 +145,7 @@ public class FtpUtil {
     private static void downloadFile(FTPFile ftpFile, String relativeLocalPath, String relativeRemotePath) {
         try {
             if (ftpFile.isFile()) {
-                String filename = new String(ftpFile.getName().getBytes("GBK"), "utf-8");//涉及到中文文件
+                String filename = new String(ftpFile.getName().getBytes("iso-8859-1"), "utf-8");//涉及到中文文件
                 if (ftpFile.getName().indexOf("?") == -1) {
                     OutputStream outputStream = null;
                     try {
@@ -381,14 +381,15 @@ public class FtpUtil {
         f.setUserName("szec");
         f.setPwd("863305");
         FtpUtil.connectFtp(f);
-        String remote = "/项目资料/光明新区污水支管网（二期）项目（甲子塘、红星、塘家社区）/报审工程概算书";
-        //
+        String remote = "/ftp01/1000/工程概算书";
+        String remoteurl = new String(remote.getBytes("GBK"), "iso-8859-1");//涉及到中文文件
+
         //FtpUtil.upload(file);//把文件上传在ftp上
-        //FtpUtil.startDown(f, "d:/", remoteUrl);//下载ftp文件测试
+        FtpUtil.startDown(f, "D:\\szec_uploadfile\\", remoteurl);//下载ftp文件测试
         //File file = new File("D:/鹏微公司服务器.txt");
         //FtpUtil.uploadFile(remote, "鹏微公司服务器.txt", new FileInputStream(file));
 
-        System.out.println(FtpUtil.checkFileExist(remote,"深圳市光明新区污水支管网（二期）建设工程-甲子塘社区支管网建设工程1.Qdy"));
+        //System.out.println(FtpUtil.checkFileExist(remote,"园博园边坡整治工程.spj"));
         //System.out.println(FtpUtil.removeFile(remote));
     }
 

@@ -273,13 +273,24 @@
                     showRemove: false,
                     previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
                     uploadAsync: false, //同步上传
+                    enctype : 'multipart/form-data',
                     uploadUrl: rootPath + "/file/fileUpload",// 默认上传ftp服务器 /file/fileUploadLocal 为上传到本地服务
+                    previewFileIconSettings: {
+                        'doc': '<i class="fa fa-file-word-o text-primary"></i>',
+                        'xls': '<i class="fa fa-file-excel-o text-success"></i>',
+                        'ppt': '<i class="fa fa-file-powerpoint-o text-danger"></i>',
+                        'docx': '<i class="fa fa-file-word-o text-primary"></i>',
+                        'xlsx': '<i class="fa fa-file-excel-o text-success"></i>',
+                        'pptx': '<i class="fa fa-file-powerpoint-o text-danger"></i>',
+                        'pdf': '<i class="fa fa-file-pdf-o text-danger"></i>',
+                        'zip': '<i class="fa fa-file-archive-o text-muted"></i>',
+                    },
                     uploadExtraData: function (previewId, index) {
                         var result = {};
                         result.businessId = options.vm.sysFile.businessId;
                         result.mainId = options.vm.sysFile.mainId;
                         result.mainType = options.vm.sysFile.mainType || sysFileDefaults.mainType;
-                        result.sysfileType = options.vm.sysFile.sysfileType;
+                        result.sysfileType = options.vm.sysFile.sysfileType || "";
                         result.sysBusiType = options.vm.sysFile.sysBusiType || sysFileDefaults.sysBusiType;
                         return result;
                     }
@@ -298,7 +309,7 @@
                             response = data.response, reader = data.reader;
                         //console.log("附件上传前:" + files);
                     })
-                    //异步上传返回结果处理
+                    /*//异步上传返回结果处理
                     .on("fileuploaded", function (event, data, previewId, index) {
                         projectfileoptions.sysBusiType = options.vm.sysFile.sysBusiType;
                         if (filesCount == (index + 1)) {
@@ -306,7 +317,7 @@
                                 options.uploadSuccess(event, data, previewId, index);
                             }
                         }
-                    })
+                    })*/
                     //同步上传错误处理
                     .on('filebatchuploaderror', function(event, data, msg) {
                         //console.log("同步上传错误");
@@ -315,7 +326,8 @@
                     })
                     //同步上传返回结果处理
                     .on("filebatchuploadsuccess", function (event, data, previewId, index) {
-                        //console.log("同步上传成功");
+                        console.log("同步上传成功");
+                        console.log(data);
                         if (options.uploadSuccess != undefined && typeof options.uploadSuccess == 'function') {
                             options.uploadSuccess(event, data, previewId, index);
                         }

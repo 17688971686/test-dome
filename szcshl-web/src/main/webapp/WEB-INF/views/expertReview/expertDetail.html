@@ -114,7 +114,9 @@
 
             <td class="text-center">区域类别</td>
             <td colspan="3">
-                {{vm.model.expertField}}
+                <span ng-show="vm.model.expertField == 2">境外专家</span>
+                <span ng-show="vm.model.expertField == 1">市外专家</span>
+                <span ng-show="vm.model.expertField == 0">市内专家</span>
             </td>
         </tr>
 
