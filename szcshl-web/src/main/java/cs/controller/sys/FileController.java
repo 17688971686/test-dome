@@ -7,7 +7,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.*;
 import cs.domain.project.*;
-import cs.domain.sys.SysFile;
+import cs.domain.sys.*;
 import cs.model.PageModelDto;
 import cs.model.archives.ArchivesLibraryDto;
 import cs.model.expert.*;
@@ -22,6 +22,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.project.*;
+import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.service.archives.ArchivesLibraryService;
 import cs.service.expert.ExpertService;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
@@ -55,7 +56,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.Dispatch;
 import java.io.*;
 import java.util.*;
-
+import cs.domain.sys.Ftp;
 import static cs.common.Constant.*;
 
 
@@ -97,6 +98,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     @Autowired
     private AddSuppLetterRepo addSuppLetterRepo;
+
+    @Autowired
+    private FtpRepo ftpRepo;
 
     @Autowired
     private ExpertService expertService;
@@ -193,12 +197,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 String fileUploadPath = SysFileUtil.getUploadPath();
                 String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
                 //连接ftp
-                Ftp f = new Ftp();
                 PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-                f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
-                f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
-                f.setUserName(propertyUtil.readProperty(FTP_USER));
-                f.setPwd(propertyUtil.readProperty(FTP_PWD));
+                Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
                 boolean linkSucess = FtpUtil.connectFtp(f);
                 if (linkSucess) {
                     //上传到ftp,
@@ -219,6 +219,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，连接ftp服务失败，请核查！");
         }finally {
             FtpUtil.closeFtp();
         }
@@ -274,21 +275,21 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         ResultMsg resultMsg = null;
         try {
             //连接ftp
-            Ftp f = new Ftp();
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
-            f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
-            f.setUserName(propertyUtil.readProperty(FTP_USER));
-            f.setPwd(propertyUtil.readProperty(FTP_PWD));
+            Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
             boolean linkSucess = FtpUtil.connectFtp(f);
             if (linkSucess) {
                 SysFile sysFile = fileService.findFileById(sysFileId);
+                //获取相对路径
+                String fileUrl = sysFile.getFileUrl();
+                fileUrl = FtpUtil.processDir(fileUrl);
+                String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
+                String storeFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
                 //文件路径
-                String filePath = SysFileUtil.getUploadPath() + "/" + sysFile.getShowName();
+                String filePath = SysFileUtil.getUploadPath() + "/" + storeFileName;
                 File file = new File(filePath);
                 FileInputStream fileInputStream = new FileInputStream(file);
-                //待处理
-                boolean result = FtpUtil.uploadFile("", sysFile.getShowName(), fileInputStream);
+                boolean result = FtpUtil.uploadFile(removeRelativeUrl, storeFileName, fileInputStream);
                 if (result) {
                     SysFileDto sysFileDto = new SysFileDto();
                     sysFile.setModifiedBy(SessionUtil.getDisplayName());
@@ -314,11 +315,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         try {
             SysFile sysFile = fileService.findFileById(sysFileId);
             //连接ftp
-            Ftp f = new Ftp();
-            f.setIpAddr(sysFile.getFtpIp());
-            f.setPort(Integer.valueOf(sysFile.getPort()));
-            f.setUserName(sysFile.getFtpUser());
-            f.setPwd(sysFile.getFtpPwd());
+            Ftp f = sysFile.getFtp();
             boolean linkSucess = FtpUtil.connectFtp(f);
             if (linkSucess) {
                 //获取相对路径
@@ -356,11 +353,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             //连接ftp
             SysFile sysFile = fileService.findFileById(sysfileId);
             //连接ftp
-            Ftp f = new Ftp();
-            f.setIpAddr(sysFile.getFtpIp());
-            f.setPort(Integer.valueOf(sysFile.getPort()));
-            f.setUserName(sysFile.getFtpUser());
-            f.setPwd(sysFile.getFtpPwd());
+            Ftp f = sysFile.getFtp();
             boolean linkSucess = FtpUtil.connectFtp(f);
             if(linkSucess){
                 //获取相对路径
@@ -1114,12 +1107,22 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequestMapping(name = "附件编辑", path = "editFile", method = RequestMethod.GET)
     public String editFile(Model model, @RequestParam(required = true) String sysFileId, HttpServletRequest request) {
         SysFile sysFile = fileService.findFileById(sysFileId);
-        //文件路径
-        String filePath = SysFileUtil.getUploadPath();
-        filePath = filePath.replaceAll("\\\\", "/");
+        //获取相对路径
+        String fileUrl = sysFile.getFileUrl();
+        fileUrl = FtpUtil.processDir(fileUrl);
+        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
+        String storeFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+        //涉及到中文问题 根据系统实际编码改变
+        try{
+            removeRelativeUrl = new String(removeRelativeUrl.getBytes("GBK"), "iso-8859-1");
+            storeFileName = new String(storeFileName.getBytes("GBK"), "iso-8859-1");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         //下载ftp服务器附件到本地服務
-        Boolean flag = FtpUtil.downloadFile(sysFile.getFtpIp(), sysFile.getPort() != null ? Integer.parseInt(sysFile.getPort()) : 0, sysFile.getFtpUser(), sysFile.getFtpPwd(), sysFile.getFtpBasePath(),
-                sysFile.getShowName(), SysFileUtil.getUploadPath());
+        Boolean flag = FtpUtil.downloadFile(sysFile.getFtp().getIpAddr(), sysFile.getFtp().getPort() != null ? sysFile.getFtp().getPort() : 0, sysFile.getFtp().getUserName(), sysFile.getFtp().getPwd(), removeRelativeUrl,
+                storeFileName, SysFileUtil.getUploadPath());
         String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
         model.addAttribute("filePath", basePath + "/file/html/download");
         model.addAttribute("uploadFile", basePath + "/contents/uploadFile.jsp");

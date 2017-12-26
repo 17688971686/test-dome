@@ -2,10 +2,7 @@ package cs.domain.sys;
 
 import cs.domain.DomainBase;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author ldm
@@ -55,27 +52,9 @@ public class SysFile extends DomainBase {
     @Column(columnDefinition = "varchar(255)")
     private String sysBusiType;
 
-
-    @Column(columnDefinition = "varchar(30)")
-    private String ftpIp;
-
-
-    @Column(columnDefinition = "varchar(10)")
-    private String port;
-
-
-    @Column(columnDefinition = "varchar(30)")
-    private String ftpUser;
-
-
-    @Column(columnDefinition = "varchar(50)")
-    private String ftpPwd;
-
-    @Column(columnDefinition = "varchar(50)")
-    private String ftpBasePath;
-
-    @Column(columnDefinition = "varchar(50)")
-    private String ftpFilePath;
+    @ManyToOne
+    @JoinColumn(name = "ftpId")
+    private Ftp ftp;
 
 
     public String getSysFileId() {
@@ -151,53 +130,6 @@ public class SysFile extends DomainBase {
         this.mainType = mainType;
     }
 
-    public String getFtpIp() {
-        return ftpIp;
-    }
-
-    public void setFtpIp(String ftpIp) {
-        this.ftpIp = ftpIp;
-    }
-
-    public String getPort() {
-        return port;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
-    }
-
-    public String getFtpUser() {
-        return ftpUser;
-    }
-
-    public void setFtpUser(String ftpUser) {
-        this.ftpUser = ftpUser;
-    }
-
-    public String getFtpPwd() {
-        return ftpPwd;
-    }
-
-    public void setFtpPwd(String ftpPwd) {
-        this.ftpPwd = ftpPwd;
-    }
-
-    public String getFtpBasePath() {
-        return ftpBasePath;
-    }
-
-    public void setFtpBasePath(String ftpBasePath) {
-        this.ftpBasePath = ftpBasePath;
-    }
-
-    public String getFtpFilePath() {
-        return ftpFilePath;
-    }
-
-    public void setFtpFilePath(String ftpFilePath) {
-        this.ftpFilePath = ftpFilePath;
-    }
 
     public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Long fileSize, String fileType,
                    String mainId, String mainType, String sysfileType, String sysBusiType) {
@@ -213,7 +145,7 @@ public class SysFile extends DomainBase {
         this.sysBusiType = sysBusiType;
     }
 
-    public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Long fileSize, String fileType, String mainId, String mainType, String sysfileType, String sysBusiType, String ftpIp, String port, String ftpUser, String ftpPwd, String ftpBasePath, String ftpFilePath) {
+    public SysFile(String sysFileId, String businessId, String fileUrl, String showName, Long fileSize, String fileType, String mainId, String mainType, String sysfileType, String sysBusiType,Ftp ftp) {
         this.sysFileId = sysFileId;
         this.businessId = businessId;
         this.fileUrl = fileUrl;
@@ -224,12 +156,8 @@ public class SysFile extends DomainBase {
         this.mainType = mainType;
         this.sysfileType = sysfileType;
         this.sysBusiType = sysBusiType;
-        this.ftpIp = ftpIp;
-        this.port = port;
-        this.ftpUser = ftpUser;
-        this.ftpPwd = ftpPwd;
-        this.ftpBasePath = ftpBasePath;
-        this.ftpFilePath = ftpFilePath;
+        this.ftp = ftp;
+
     }
 
     public SysFile() {
@@ -242,5 +170,13 @@ public class SysFile extends DomainBase {
 
     public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
+    }
+
+    public Ftp getFtp() {
+        return ftp;
+    }
+
+    public void setFtp(Ftp ftp) {
+        this.ftp = ftp;
     }
 }

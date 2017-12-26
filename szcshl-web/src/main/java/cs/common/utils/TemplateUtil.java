@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import static cs.common.Constant.*;
+import cs.domain.sys.Ftp;
 
 /**
  * 模板工具类
@@ -132,7 +133,7 @@ public class TemplateUtil {
      * @param dataMap      数据
      * @return
      */
-    public static SysFile createTemplate(String signId, String mainType, String businessType, String reviewStage,
+    public static SysFile createTemplate(Ftp f, String signId, String mainType, String businessType, String reviewStage,
                                          String templateUrl, String fileName, String fileType, Map<String, Object> dataMap) {
         SysFile sysFile = null;
         String showName = fileName + fileType;
@@ -141,13 +142,6 @@ public class TemplateUtil {
         try {
             File docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl);
             fileType = fileType.toLowerCase();//统一转成小写
-            //连接ftp
-            Ftp f = new Ftp();
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
-            f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
-            f.setUserName(propertyUtil.readProperty(FTP_USER));
-            f.setPwd(propertyUtil.readProperty(FTP_PWD));
             boolean linkSucess = FtpUtil.connectFtp(f);
             if(linkSucess){
                 //上传到ftp,
@@ -158,12 +152,7 @@ public class TemplateUtil {
                     sysFile = new SysFile();
                     sysFile = new SysFile(UUID.randomUUID().toString(), signId, relativeFileUrl+ File.separator +uploadFileName, showName,
                             docFile.length(), fileType, signId, mainType, reviewStage, businessType);
-                    sysFile.setFtpIp(f.getIpAddr());
-                    sysFile.setPort(String.valueOf(f.getPort()));
-                    sysFile.setFtpUser(f.getUserName());
-                    sysFile.setFtpPwd(f.getPwd());
-                    sysFile.setFtpBasePath(f.getPath());
-                    sysFile.setFtpFilePath("");
+                    sysFile.setFtp(f);
                 }
             }
         } catch (Exception e) {

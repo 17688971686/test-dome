@@ -17,6 +17,7 @@ import cs.model.sys.SysFileDto;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.flow.FlowService;
@@ -33,6 +34,7 @@ import java.util.*;
 
 import static cs.common.Constant.*;
 import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
+import cs.domain.sys.Ftp;
 
 /**
  * 项目接口实现类
@@ -61,6 +63,8 @@ public class SignRestServiceImpl implements SignRestService {
     private SysFileRepo sysFileRepo;
     @Autowired
     private FlowService flowService;
+    @Autowired
+    private FtpRepo ftpRepo;
     /**
      * 项目推送
      *
@@ -193,12 +197,8 @@ public class SignRestServiceImpl implements SignRestService {
             if(Validate.isList(signDto.getSysFileDtoList())){
                 isHaveFile = true;
                 //连接ftp
-                Ftp f = new Ftp();
                 PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-                f.setIpAddr(propertyUtil.readProperty(FTP_IP1));
-                f.setPort(Integer.parseInt(propertyUtil.readProperty(FTP_PORT1)));
-                f.setUserName(propertyUtil.readProperty(FTP_USER));
-                f.setPwd(propertyUtil.readProperty(FTP_PWD));
+                Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
                 boolean linkSucess = FtpUtil.connectFtp(f);
                 if(linkSucess){
                     StringBuffer fileBuffer = new StringBuffer();
@@ -238,11 +238,7 @@ public class SignRestServiceImpl implements SignRestService {
                             sysFile.setModifiedBy(SUPER_USER);
                             sysFile.setCreatedDate(now);
                             sysFile.setModifiedDate(now);
-                            sysFile.setFtpIp(f.getIpAddr());
-                            sysFile.setPort(f.getPort().toString());
-                            sysFile.setFtpUser(f.getUserName());
-                            sysFile.setFtpPwd(f.getPwd());
-                            sysFile.setFtpBasePath(f.getPath());
+                            sysFile.setFtp(f);
                             sysFile.setSysFileId(UUID.randomUUID().toString());
                             sysFile.setBusinessId(sign.getSignid());
                             saveFileList.add(sysFile);
