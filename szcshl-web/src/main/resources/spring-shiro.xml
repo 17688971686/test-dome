@@ -9,7 +9,7 @@
     <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
 
     <!-- 会话Cookie模板 -->
-    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+    <bean id="simpleSessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <constructor-arg name="name" value="szec.session.id"/>
         <property name="httpOnly" value="true"/>
         <property name="maxAge" value="-1"/>
@@ -49,7 +49,7 @@
         <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
         <property name="sessionDAO" ref="sessionDAO"/>
         <property name="sessionIdCookieEnabled" value="true"/>
-        <property name="sessionIdCookie" ref="sessionIdCookie"/>
+        <property name="sessionIdCookie" ref="simpleSessionIdCookie"/>
         <property name="sessionListeners" ref="sessionListener"/>
     </bean>
     <!-- 监听会话 -->
