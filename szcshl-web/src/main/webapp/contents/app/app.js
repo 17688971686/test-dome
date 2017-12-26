@@ -476,8 +476,8 @@
 
             //begin#workprogram
                 .state('workprogramEdit', {
-                    url: '/workprogramEdit',
-                    templateUrl: rootPath + '/workprogram/html/list.html',
+                    url: '/workprogramEdit/:signid',
+                    templateUrl: rootPath + '/workprogram/html/edit.html',
                     controller: 'workprogramEditCtrl',
                     controllerAs: 'vm'
                 })
