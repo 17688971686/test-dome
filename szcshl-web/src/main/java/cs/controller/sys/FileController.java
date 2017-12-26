@@ -616,7 +616,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     response.setContentType("image/jpeg");
                     break;
             }
-            response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
+            //response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
             response.setHeader("Content-Disposition", "inline;filename=" + new String(sysFile.getShowName().getBytes(), "ISO-8859-1"));
 
             out.flush();

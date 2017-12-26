@@ -13,6 +13,7 @@ import cs.domain.expert.ExpertSelected;
 import cs.domain.external.Dept;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
+import cs.domain.flow.RuTask_;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.*;
@@ -47,6 +48,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -1838,9 +1840,10 @@ public class SignServiceImpl implements SignService {
         //1、排除旧项目
         criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
         //2、排除已终止、已完成
-        criteria.add(Restrictions.or(Restrictions.isNull(Sign_.signState.getName()),
-                Restrictions.ne(Sign_.signState.getName(), EnumState.YES.getValue()),
-                Restrictions.ne(Sign_.signState.getName(), EnumState.FORCE.getValue())));
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.isNull(Sign_.signState.getName()));
+        dis.add(Restrictions.sqlRestriction( " "+Sign_.signState.getName()+" != '"+EnumState.YES.getValue()+"' and "+Sign_.signState.getName()+" != '"+EnumState.FORCE.getValue()+"' and "+Sign_.signState.getName()+" != '"+EnumState.DELETE.getValue()+"' "));
+        criteria.add(dis);
 
         //3、已签收，但是未发起流程的项目 或者已发起流程，但是未签收的项目
         StringBuffer sb = new StringBuffer();
