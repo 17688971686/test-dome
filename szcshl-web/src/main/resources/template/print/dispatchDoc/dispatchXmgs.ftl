@@ -594,10 +594,14 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:ascii="Wingdings 2" w:hAnsi="Wingdings 2" w:cs="Wingdings 2"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t></w:t>
+                                    <#if isRelated?? && isRelated=="9">
+                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                    <#else>
+                                        <w:t xml:space="preserve">□</w:t>
+                                    </#if>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -608,10 +612,14 @@
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:ascii="Wingdings 2" w:hAnsi="Wingdings 2" w:cs="Wingdings 2"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t></w:t>
+                                    <#if isRelated?? && isRelated=="0">
+                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                    <#else>
+                                        <w:t xml:space="preserve">□</w:t>
+                                    </#if>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
