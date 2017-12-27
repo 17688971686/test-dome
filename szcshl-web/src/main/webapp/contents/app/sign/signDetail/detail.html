@@ -375,21 +375,21 @@
             </ul>
         </td>
     </tr>
-    <tr ng-repeat="f in vm.model.registerFileDtoDtoList">
+    <tr ng-repeat="f in vm.registerFile">
         <td colspan="4">
                         <span  >
-                        {{vm.model.registerFileDtoDtoList[$index].fileName}}
+                        {{vm.registerFile[$index].fileName}}
                         </span>
             <span style="float: right; margin-right: 4%">
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.registerFileDtoDtoList[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.registerFile[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" />
                             </span>
 
             <span style="float: right; margin-right: 3%">
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.model.registerFileDtoDtoList[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.registerFile[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" />
                             </span>
             <span style="float: right; margin-right: 3%" >
                                 <input type="text" style="width:50px;"  ng-disabled="true"
-                                       ng-model="vm.model.registerFileDtoDtoList[$index].totalNum" >
+                                       ng-model="vm.registerFile[$index].totalNum" >
                             </span>
         </td>
     </tr>

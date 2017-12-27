@@ -28,4 +28,12 @@ public interface AddRegisterFileRepo extends IRepository<AddRegisterFile, String
      * @return
      */
     List<AddRegisterFile> findByBusIdAndBusType(String businessId , Integer businessType);
+
+    /**
+     * 通过业务ID过滤不为图纸和拟补充的材料
+     * @param businessId
+     * @return
+     */
+    List<AddRegisterFile> findByBusIdNoAndBusType(String businessId);
+
 }

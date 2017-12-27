@@ -95,6 +95,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     @Autowired
     private AddSuppLetterRepo addSuppLetterRepo;
+    @Autowired
+    private AddRegisterFileRepo addRegisterFileRepo;
 
     @Autowired
     private FtpRepo ftpRepo;
@@ -816,6 +818,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 case "SIGN_OTHERFILE" :
                     //项目申报的其它资料
                     Sign signs = signRepo.findById(Sign_.signid.getName(), businessId);
+                    /*List<AddRegisterFile> addRegisterFile=addRegisterFileRepo*/
+
                     Map<String , Object> otherFileDatas = new HashMap<>();
                     otherFileDatas.put("fileNo" , signs.getSignNum());
                     otherFileDatas.put("projectName" , signs.getProjectname());
@@ -826,14 +830,15 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     //其它资料
                     if("OTHER_FILE".equals(stageType)){
                         otherFileDatas.put("otherFileType" , "其它资料");
-                        addRegisterFileLists = addRegisterFileService.findByBusIdAndBusType(businessId , 4);
+                        //查询不等于拟补充材料和图纸的其他材料
+                        addRegisterFileLists = addRegisterFileRepo.findByBusIdNoAndBusType(businessId);
                     }
-                    //图纸资料
+          /*          //图纸资料
                     if("DRAWING_FILE".equals(stageType)){
                         otherFileDatas.put("otherFileType" , "图纸资料");
                         addRegisterFileLists = addRegisterFileService.findByBusIdAndBusType(businessId , 2);
 
-                    }
+                    }*/
                     otherFileDatas.put("otherFileList" , addRegisterFileLists);
                     file = TemplateUtil.createDoc(otherFileDatas, Template.OTHER_FILE.getKey(), path);
                     break;

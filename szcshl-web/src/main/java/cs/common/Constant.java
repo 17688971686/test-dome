@@ -174,6 +174,28 @@ public class Constant {
             return value;
         }
     }
+    /**
+     * 业务类型：
+     * 1为报审文件，2为归档图纸，3为补充材料，4其他资料，
+     * 5为归档中的报审登记表中的其它资料，
+     * 6为归档项目审核中的补充资料，
+     * 7为归档其它特殊文件
+     */
+
+    public static enum AddRegisterFileType {
+       BSWJ(1),GDTZ(2),BCZL(3),QTZL(4),
+        GBQT(5),GXBZ(6),GQTW(7);
+
+        private Integer value;
+
+        AddRegisterFileType(Integer value) {
+            this.value = value;
+        }
+
+        public Integer getValue() {
+            return value;
+        }
+    }
 
     /**
      * 专家状态

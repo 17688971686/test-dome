@@ -63,4 +63,20 @@ public class AddRegisterFileRepoImpl extends AbstractRepository<AddRegisterFile,
         List<AddRegisterFile> addRegisterFileList = findByHql(hqlBuilder);
         return addRegisterFileList;
     }
+
+    /**
+     * 通过业务ID过滤不为图纸和拟补充的材料
+     * @param businessId
+     * @return
+     */
+    @Override
+    public List<AddRegisterFile> findByBusIdNoAndBusType(String businessId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" from " +AddRegisterFile.class.getSimpleName() + " where " + AddRegisterFile_.businessId.getName() + "=:businessId");
+        hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + "!=3");
+        hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + "!=2");
+        hqlBuilder.setParam("businessId" , businessId);
+        List<AddRegisterFile> addRegisterFileList = findByHql(hqlBuilder);
+        return addRegisterFileList;
+    }
 }

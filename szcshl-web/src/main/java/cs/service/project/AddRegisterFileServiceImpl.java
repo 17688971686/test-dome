@@ -110,16 +110,15 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
             for (AddRegisterFileDto addRegisterFileDto : addRegisterFileDtos) {
                 AddRegisterFile addRegisterFile = new AddRegisterFile();
                 BeanCopierUtils.copyProperties(addRegisterFileDto, addRegisterFile);
+
                 addRegisterFile.setCreatedDate(now);
                 addRegisterFile.setCreatedBy(SessionUtil.getDisplayName());
                 addRegisterFile.setModifiedDate(now);
                 addRegisterFile.setModifiedBy(SessionUtil.getDisplayName());
 
-//                if(sign !=null || fileRecord != null){
-//                    addRegisterFile.setIsSupplement(Constant.EnumState.YES.getValue());
-//                }else{
-//                    addRegisterFile.setIsSupplement(Constant.EnumState.NO.getValue());
-//                }
+                if(addRegisterFileDto.getBusinessType()==null){
+                    addRegisterFile.setBusinessType(Constant.AddRegisterFileType.BCZL.getValue());
+                }
                 saveList.add(addRegisterFile);
             }
             addRegisterFileRepo.bathUpdate(saveList);

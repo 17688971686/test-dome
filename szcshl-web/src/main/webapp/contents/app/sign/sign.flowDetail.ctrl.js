@@ -13,7 +13,6 @@
         vm.work = {};
         vm.dispatchDoc = {};
         vm.fileRecord = {};
-        
         vm.model.signid = $state.params.signid;	
         vm.flow.taskId = $state.params.taskId;			//流程任务ID
         vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
@@ -107,6 +106,21 @@
                 if(vm.model.suppLetterDtoList){
                     vm.showSupperIndex = 0;
                 }
+                //拟补充资料信息
+                if(vm.model.registerFileDtoDtoList!=undefined){
+                    vm.supply=[];//拟补充资料
+                    vm.registerFile=[];//其他资料
+                    vm.drawingFile=[];//图纸资料
+                    vm.model.registerFileDtoDtoList.forEach(function(registerFile  , x){
+                        if(registerFile.businessType ==3){
+                            vm.supply.push(registerFile);
+                        }else if(registerFile.businessType ==2){
+                            vm.drawingFile.push(registerFile);
+                        }else{
+                            vm.registerFile.push(registerFile);
+                        }
+                    })
+                }
             });
 
             // 初始化上传附件
@@ -129,6 +143,7 @@
             var id =  $($event.target).attr("id");
             signSvc.workProgramPrint(id);
         }
+
         /**
          * 打印功能 -分页
          */
