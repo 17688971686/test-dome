@@ -234,18 +234,19 @@ public class SysRestController {
         List<SysFileDto> fileDtoList = new ArrayList<>();
         SysFileDto sysFileDto = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto.setShowName("测试附件.rar");
+        sysFileDto.setShowName("gdzctz.xlsx");
         //附件大小，Long类型
-        sysFileDto.setFileSize(626L);
+        sysFileDto.setFileSize(11213L);
         //附件下载地址
-        sysFileDto.setFileUrl("http://dlsw.baidu.com/sw-search-sp/soft/39/15453/zuiqiangwubishurufa.1403771155.rar");
+        sysFileDto.setFileUrl("http://203.91.46.83:8030/SZFGWAPP/LEAP/SZFGWOA/datastatistics/sz-invest/gdzctz.xlsx");
         fileDtoList.add(sysFileDto);
         //项目添加附件列表
         signDto.setSysFileDtoList(fileDtoList);
 
         Map<String, String> params = new HashMap<>();
         params.put("signDtoJson", JSON.toJSONString(signDto));
-        //HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params);
-        System.out.println(params.get("signDtoJson"));
+        HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params);
+        //System.out.println(params.get("signDtoJson"));
+        System.out.println(hst.toString());
     }
 }

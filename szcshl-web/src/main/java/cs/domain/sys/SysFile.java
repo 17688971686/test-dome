@@ -24,7 +24,7 @@ public class SysFile extends DomainBase {
     @Column(columnDefinition = "varchar(256) NOT NULL")
     private String showName;
 
-    @Column(columnDefinition = "Long")
+    @Column(columnDefinition = "number")
     private Long fileSize;
 
     @Column(columnDefinition = "varchar(16)")
