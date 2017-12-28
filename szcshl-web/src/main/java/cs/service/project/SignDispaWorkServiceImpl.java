@@ -507,4 +507,15 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         return signDispaWorkRepo.findByTypeAndReview(startTime, endTime);
     }
 
+    /**
+     * 通过条件查询统计
+     * @param signDispaWork
+     * @param page
+     * @return
+     */
+    @Override
+    public List<SignDispaWork> queryStatistics(SignDispaWork signDispaWork, int page) {
+        return signDispaWorkRepo.queryStatistics(signDispaWork , page);
+    }
+
 }

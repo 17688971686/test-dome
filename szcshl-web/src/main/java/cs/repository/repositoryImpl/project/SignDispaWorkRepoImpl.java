@@ -353,4 +353,21 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         }
     }
 
+    /**
+     * 通过条件查询统计
+     * @param signDispaWork
+     * @param page
+     * @return
+     */
+    @Override
+    public List<SignDispaWork> queryStatistics(SignDispaWork signDispaWork, int page) {
+//        select * from(select a.*,rownum rn from (select * from t_articles) a where rownum < 11) where rn>5
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select * from (select a.* , rownum rn from (");
+        hqlBuilder.append("select * from V_SIGN_DISP_WORK" );
+        hqlBuilder.append(" ) a ) where rn >" + (page * 50) + " and rn <" + ((page+1)*50+1));
+        List<SignDispaWork> signDispaWorkList = findBySql(hqlBuilder);
+        return signDispaWorkList;
+    }
+
 }

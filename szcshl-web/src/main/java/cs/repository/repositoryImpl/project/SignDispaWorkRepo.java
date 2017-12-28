@@ -43,5 +43,13 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
      */
     SignDispaWork findSDPBySignId(String signId);
 
+    /**
+     * 通过条件查询统计
+     * @param signDispaWork
+     * @param page
+     * @return
+     */
+    List<SignDispaWork> queryStatistics(SignDispaWork signDispaWork , int page);
+
 
 }
