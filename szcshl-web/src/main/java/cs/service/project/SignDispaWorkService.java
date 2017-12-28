@@ -97,5 +97,13 @@ public interface SignDispaWorkService {
      */
     ResultMsg findByTypeAndReview(String startTime , String endTime);
 
+    /**
+     * 通过条件查询统计
+     * @param signDispaWork
+     * @param page
+     * @return
+     */
+    List<SignDispaWork> queryStatistics(SignDispaWork signDispaWork , int page);
+
 
 }

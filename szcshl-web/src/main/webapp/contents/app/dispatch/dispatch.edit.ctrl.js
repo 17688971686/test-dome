@@ -177,6 +177,9 @@
             var isValid = $('#dispatch_form').valid();
             if(isValid){
                 dispatchSvc.saveDispatch(vm);
+                if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
+                    $scope.$apply();
+                }
             }else{
                 bsWin.alert("提交失败，有红色标识的是必填项，请确认是否填写！");
             }

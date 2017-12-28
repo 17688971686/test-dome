@@ -119,6 +119,13 @@ public class SignDispaWorkController {
     }
 
     @RequiresAuthentication
+    @RequestMapping(name = "通过条件查询进行统计分析" , path = "QueryStatistics" , method = RequestMethod.POST)
+    @ResponseBody
+    public List<SignDispaWork> queryStatistics(@RequestBody SignDispaWork signDispaWork , @RequestParam int page){
+        return signDispaWorkService.queryStatistics(signDispaWork , page);
+    }
+
+    @RequiresAuthentication
     @RequestMapping(name = "项目统计导出", path = "excelExport", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void excelExport(HttpServletResponse resp, @RequestParam String filterData, @RequestParam String fileName) {

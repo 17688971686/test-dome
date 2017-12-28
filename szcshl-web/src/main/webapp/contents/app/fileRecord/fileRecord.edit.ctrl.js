@@ -48,6 +48,9 @@
 
         vm.create = function () {
             fileRecordSvc.saveFileRecord(vm);
+            if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
+                $scope.$apply();
+            }
         }
 
         /**

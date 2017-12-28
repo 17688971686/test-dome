@@ -115,5 +115,35 @@
         vm.ProjectStopInfo = function(signId){
             $state.go('projectStopInfo' , {signId : signId});
         }
+
+        vm.signList = [];
+        vm.page = 0;
+        //以下是项目查询统计（最新版-2017-12-28）
+        vm.QueryStatistics = function(){
+                adminSvc.QueryStatistics(vm , function(data){
+                    console.log(data.length);
+                    data.forEach(function(obj , x){
+                        vm.signList.push(obj);
+                    });
+                    if(data==undefined || data.length ==0){
+                        $("#queryStatisticsWindow").kendoWindow({
+                            width: "70%",
+                            height: "70%",
+                            title: "项目查询统计",
+                            visible: false,
+                            modal: true,
+                            closable: true,
+                            actions: ["Pin", "Minimize", "Maximize", "close"]
+                        }).data("kendoWindow").center().open();
+                    }else{
+                        vm.page++;
+                        vm.QueryStatistics();
+                    }
+
+                });
+
+
+
+        }
     }
 })();

@@ -26,8 +26,11 @@
              findtasks: findtasks,                      //待办项目列表
              findHomePluginFile :findHomePluginFile,    //获取首页安装文件*/
             excelExport: excelExport,                   //项目统计导出
-            statisticalGrid: statisticalGrid,
+            statisticalGrid: statisticalGrid,    //(停用)
             workName: workName,  //获取流程列表
+            QueryStatistics : QueryStatistics , //通过条件，对项目进行查询统计
+
+
         }
         return service;
 
@@ -785,8 +788,8 @@
                     width: 100,
                     filterable: false,
                     template: function (item) {
-                        if (item.surplusDays != undefined) {
-                            return (item.surplusDays > 0) ? item.surplusDays : 0;
+                        if (item.surplusdays != undefined) {
+                            return (item.surplusdays > 0) ? item.surplusdays : 0;
                         } else {
                             return "";
                         }
@@ -1435,6 +1438,36 @@
             });
 
         }//end countWorakday
+
+        /**
+         * 通过条件对项目进行查询统计分析
+         * @param vm
+         */
+        function QueryStatistics(vm , callBack){
+
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/signView/QueryStatistics",
+                data : vm.project,
+                params : { page : vm.page}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+
+            }
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
+
+        }
 
     }
 })();
