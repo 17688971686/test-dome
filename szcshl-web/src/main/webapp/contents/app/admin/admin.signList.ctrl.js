@@ -121,7 +121,6 @@
         //以下是项目查询统计（最新版-2017-12-28）
         vm.QueryStatistics = function(){
                 adminSvc.QueryStatistics(vm , function(data){
-                    console.log(data.length);
                     data.forEach(function(obj , x){
                         vm.signList.push(obj);
                     });
@@ -130,11 +129,73 @@
                             width: "70%",
                             height: "70%",
                             title: "项目查询统计",
+
                             visible: false,
                             modal: true,
                             closable: true,
-                            actions: ["Pin", "Minimize", "Maximize", "close"]
+                            actions: ["Pin", "Minimize", "Maximize", "close"],
+                            open: function () {
+                                vm.daySum=0;//定义勾选的评审天数总和
+                                vm.WorkSum=0;//定义勾选的工作日总和
+                                vm.days=0;//定义勾选的数量
+                                //全选
+                                vm.all= function (m) {
+                                        for(var i=0;i<vm.signList.length;i++){
+                                            if(m===true){
+                                                //没勾上的
+                                                vm.signList[i].state=true;
+                                                vm.daySum=0;
+                                                vm.WorkSum=0;
+                                                vm.days=0;
+                                            }else{
+                                                //勾上的
+                                                vm.signList[i].state=false;
+                                                if(vm.signList[i].reviewdays!=undefined){
+                                                    vm.daySum+=vm.signList[i].reviewdays;
+                                                    vm.WorkSum+=vm.signList[i].reviewdays-vm.signList[i].surplusdays;
+                                                }
+                                                vm.days++;
+                                            }
+                                        }
+                                };
+                                //单勾选
+                                vm.checks=function (reviewdays,surplusdays,id) {
+                                    if(reviewdays!=undefined){
+                                        if($("#"+id+"").is(':checked')){//勾选
+                                            vm.daySum+=reviewdays; //评审天数相加
+                                            vm.WorkSum+=reviewdays-surplusdays;//工作日相加;
+                                            vm.days++;  //数量相加
+                                        }else{//没勾选
+                                            console.log(vm.days);
+                                            vm.daySum-=reviewdays;
+                                            vm.WorkSum-=reviewdays-surplusdays;
+                                            vm.days--;
+                                        }
+                                    }
+                                }
+                                //统计平均天数
+                                vm.countDay=function () {
+                                    vm.isopens=true;//显示div
+                                    vm.isDay=true;//显示统计天数
+                                    vm.isopens=true;
+                                    vm.averageDay=0;
+                                    if(vm.days!=0){
+                                        vm.averageDay=vm.daySum/vm.days;
+                                    }
+                                }
+                                //统计工作日
+                                vm.countWork=function () {
+                                    vm.isopens=true;//显示div
+                                    vm.isDay=false;//显示统计工作日
+                                    vm.averageDay=0;
+                                    if(vm.days!=0){
+                                        vm.averageDay=vm.WorkSum/vm.days;
+                                    }
+                                }
+
+                            },
                         }).data("kendoWindow").center().open();
+
                     }else{
                         vm.page++;
                         vm.QueryStatistics();
