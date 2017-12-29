@@ -509,13 +509,13 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
     /**
      * 通过条件查询统计
-     * @param signDispaWork
+     * @param queryData
      * @param page
      * @return
      */
     @Override
-    public List<SignDispaWork> queryStatistics(SignDispaWork signDispaWork, int page) {
-        return signDispaWorkRepo.queryStatistics(signDispaWork , page);
+    public List<SignDispaWork> queryStatistics(String  queryData, int page) {
+        return signDispaWorkRepo.queryStatistics(queryData , page);
     }
 
 }

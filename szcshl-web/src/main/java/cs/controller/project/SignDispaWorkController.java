@@ -25,6 +25,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -121,8 +122,8 @@ public class SignDispaWorkController {
     @RequiresAuthentication
     @RequestMapping(name = "通过条件查询进行统计分析" , path = "QueryStatistics" , method = RequestMethod.POST)
     @ResponseBody
-    public List<SignDispaWork> queryStatistics(@RequestBody SignDispaWork signDispaWork , @RequestParam int page){
-        return signDispaWorkService.queryStatistics(signDispaWork , page);
+    public List<SignDispaWork> queryStatistics(@RequestParam String queryData , @RequestParam int page){
+        return signDispaWorkService.queryStatistics(queryData , page);
     }
 
     @RequiresAuthentication
@@ -131,18 +132,29 @@ public class SignDispaWorkController {
     public void excelExport(HttpServletResponse resp, @RequestParam String filterData, @RequestParam String fileName) {
 
         ExcelTools excelTools = new ExcelTools();
-//        List<SignDispaWork> signDispaWorkList = new ArrayList<>();
-
-//        for (SignDispaWork sdw : signDispaWorks) {
-//            signDispaWorkList.add(sdw);
-//        }
         try {
             String title = java.net.URLDecoder.decode(fileName,"UTF-8");
             String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
             ServletOutputStream sos = resp.getOutputStream();
             List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("项目类型");//选中的表字段
             List<Header> headerList = headerService.findHeaderByType("项目类型");//所有 表字段
-            List<SignDispaWork> signDispaWorkList = signDispaWorkService.getSignDispaWork(filters);
+            List<SignDispaWork> signDispaWorkList = new ArrayList<>();
+            Boolean flag = true;
+            int page = 0;
+            while (flag){
+                List<SignDispaWork> slist = signDispaWorkService.queryStatistics(filters , page);
+                if(slist !=null && slist.size()>0){
+                    for(SignDispaWork signDispaWork : slist){
+                        signDispaWorkList.add(signDispaWork);
+                    }
+                }
+                if(slist ==null  || slist.size()<50 ){
+                    flag = false;
+                }else{
+                    page++;
+                }
+            }
+//            List<SignDispaWork> signDispaWorkList = signDispaWorkService.getSignDispaWork(filters);
             String[] headerPair ;
             if(headerDtoList.size()>0) {
                 headerPair = new String[headerDtoList.size()];

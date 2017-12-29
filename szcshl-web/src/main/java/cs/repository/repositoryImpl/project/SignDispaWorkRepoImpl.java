@@ -5,6 +5,7 @@ import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.expert.*;
 import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
@@ -355,16 +356,61 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
     /**
      * 通过条件查询统计
-     * @param signDispaWork
+     * @param queryData
      * @param page
      * @return
      */
     @Override
-    public List<SignDispaWork> queryStatistics(SignDispaWork signDispaWork, int page) {
-//        select * from(select a.*,rownum rn from (select * from t_articles) a where rownum < 11) where rn>5
+    public List<SignDispaWork> queryStatistics(String queryData, int page) {
+        String[]  queryArr = null ;
+        if(Validate.isString(queryData)){
+
+            queryArr = queryData.split(",");
+        }
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select * from (select a.* , rownum rn from (");
-        hqlBuilder.append("select * from V_SIGN_DISP_WORK" );
+        hqlBuilder.append("select * from V_SIGN_DISP_WORK " );
+        if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
+            hqlBuilder.append(" where ");
+            for (int i = 0; i < queryArr.length; i++) {
+                String filter = queryArr[i];
+                String[] params = filter.split(":");
+                //项目签收日期
+                if("signDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                    hqlBuilder.append("signdate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                }else if("signDateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                    hqlBuilder.append("signdate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                }
+                //发文日期
+                else if("dispatchDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                    hqlBuilder.append("dispatchDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                }else if("dispatchdateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                    hqlBuilder.append("dispatchDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+
+                }
+                //归档日期
+                else if("fileDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                    hqlBuilder.append("fileDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                }else if("fileDateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                    hqlBuilder.append("fileDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+
+                }
+                //申报投资
+                else if("appalyInvestmentMin".equals(params[0].substring(1, params[0].length() - 1))){
+                    hqlBuilder.append("appalyInvestment>=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
+                }else if("appalyInvestmentMax".equals(params[0].substring(1, params[0].length() - 1))){
+                    hqlBuilder.append("appalyInvestment<=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
+
+                }else{
+
+                    hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + "=:" + params[0].substring(1, params[0].length() - 1));
+                    hqlBuilder.setParam(params[0].substring(1, params[0].length() - 1), params[1].substring(1, params[1].length() - 1));
+                }
+                if (i < queryArr.length - 1) {
+                    hqlBuilder.append(" and ");
+                }
+            }
+        }
         hqlBuilder.append(" ) a ) where rn >" + (page * 50) + " and rn <" + ((page+1)*50+1));
         List<SignDispaWork> signDispaWorkList = findBySql(hqlBuilder);
         return signDispaWorkList;

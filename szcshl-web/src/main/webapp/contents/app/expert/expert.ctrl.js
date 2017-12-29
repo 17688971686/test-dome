@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertCtrl', expert);
 
-    expert.$inject = ['$scope', 'expertSvc', '$state','templatePrintSvc'];
+    expert.$inject = ['$scope', 'expertSvc', '$state','templatePrintSvc', 'headerSvc'];
 
-    function expert($scope, expertSvc, $state,templatePrintSvc) {
+    function expert($scope, expertSvc, $state,templatePrintSvc , headerSvc) {
         var vm = this;
         vm.data = {};
         vm.title = '专家列表';
@@ -115,6 +115,13 @@
          */
         vm.exportToExcel = function () {
             expertSvc.exportToExcel(vm);
+        }
+
+        /**
+         * 自定义报表
+         */
+        vm.selectHeader = function(){
+            headerSvc.selectHeaderWindow(vm,vm.headerType);
         }
     }
 })();

@@ -3,10 +3,15 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
+<!--引入查询统计弹框--->
 <div  style="background:white;display: none;">
 <#include "/sign/statisticsList.html"/>
 </div>
 
+<!--引入自定义表字段--->
+<div  style="background:white;display: none;">
+<#include "/header/selectHeader.html"/>
+</div>
 <!-- 项目综合查询页面 -->
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -47,7 +52,7 @@
                 <tr>
                     <td class="text-right">项目状态</td>
                     <td width="15%">
-                        <select name="signState" ng-model="vm.sign.signState" operator="eq"
+                        <select name="signState" ng-model="vm.project.signState" operator="eq"
                                 class="form-control select-sm ">
                             <option value="">请选择</option>
                             <option value="1">进行中</option>
@@ -149,37 +154,37 @@
                 <tr>
                     <td class="text-right">签收日期</td>
                     <td colspan="3">
-                        <input type="text" name="signdate" style="width:45%;min-width: 115px;max-width: 150px;" operator="ge"
+                        <input type="text" name="signdate" style="width:45%;min-width: 115px;max-width: 150px;" operator="ge" ng-model="vm.project.signDateBegin"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                         至
-                        <input type="text" name="signdate" style="width:45%;min-width: 115px;max-width: 150px;" operator="le"
+                        <input type="text" name="signdate" style="width:45%;min-width: 115px;max-width: 150px;" operator="le" ng-model="vm.project.signDateEnd"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                     <td class="text-right">发文日期</td>
                     <td colspan="3">
-                        <input type="text" name="dispatchDate"  style="width:45%;min-width: 115px;max-width: 150px;"
+                        <input type="text" name="dispatchDate"  style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.dispatchDateBegin"
                                operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                         至
-                        <input type="text" name="dispatchDate" style="width:45%;min-width: 115px;max-width: 150px;"
+                        <input type="text" name="dispatchDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.dispatchdateEnd"
                                operator="le" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                 </tr>
                 <tr>
                     <td class="text-right">归档日期</td>
                     <td colspan="3">
-                        <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;"
+                        <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateBegin"
                                operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                         至
-                        <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;"
+                        <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateEnd"
                                operator="le"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                     <td class="text-right">申报投资</td>
                     <td>
-                        <input name="appalyInvestment" data-type='bigDecimal'
+                        <input name="appalyInvestment" data-type='bigDecimal' ng-model="vm.project.appalyInvestmentMin"
                                style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="ge"/>
                         -
-                        <input name="appalyInvestment" data-type='bigDecimal'
+                        <input name="appalyInvestment" data-type='bigDecimal' ng-model="vm.project.appalyInvestmentMax"
                                style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="le"/>
                     </td>
                     <td class="text-right">是否有关联</td>

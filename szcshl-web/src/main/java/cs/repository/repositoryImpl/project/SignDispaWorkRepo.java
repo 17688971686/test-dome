@@ -45,11 +45,11 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
 
     /**
      * 通过条件查询统计
-     * @param signDispaWork
+     * @param queryData
      * @param page
      * @return
      */
-    List<SignDispaWork> queryStatistics(SignDispaWork signDispaWork , int page);
+    List<SignDispaWork> queryStatistics(String  queryData , int page);
 
 
 }

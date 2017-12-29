@@ -1,7 +1,6 @@
 <meta charset="UTF-8">
-<div class="well well-sm" style="background:white;">
+<div id="selectHeaderWindow" class="well well-sm" style="background:white; display: none;">
     <div class="toolbar">
-        <go-back></go-back>
         <button class="btn btn-sm btn-primary" ng-click="vm.allChecked()">全选</button>
         <button class="btn btn-sm btn-danger" ng-click="vm.allCancel()">全取消</button>
     <#-- <button class="btn btn-sm btn-success" ng-click="vm.createTable()">确定</button>-->
@@ -22,7 +21,7 @@
                                 <option ng-repeat="x in DICT.HEADER_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                             </select>-->
                         </p>
-                        <table class="table table-bordered scrolltable" >
+                        <table class="table table-bordered" >
                             <thead style="display:block;">
                             <tr>
                                 <th style="width: 60px;">选择</th>
@@ -61,7 +60,7 @@
                 <td width="10%">
                     <p> <strong>已选表字段</strong></p>
                     <form id="cancelHeaderForm">
-                        <table class="table table-bordered scrolltable" >
+                        <table class="table table-bordered" >
                             <thead style="display:block;">
                             <tr>
                                 <th style="width: 60px;">选择</th>

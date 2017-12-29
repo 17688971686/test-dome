@@ -1448,8 +1448,8 @@
             var httpOptions = {
                 method : 'post',
                 url : rootPath + "/signView/QueryStatistics",
-                data : vm.project,
-                params : { page : vm.page}
+                // data : vm.project,
+                params : {queryData : vm.filters ,  page : vm.page}
             }
 
             var httpSuccess = function success(response){
