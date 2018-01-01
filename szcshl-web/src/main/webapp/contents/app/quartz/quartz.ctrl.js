@@ -59,7 +59,7 @@
             common.initJqValidation($("#quartz_form"));
             var isValid = $("#quartz_form").valid();
             if (isValid) {
-                vm.isSubmit = true;
+                // vm.isSubmit = true;
                 quartzSvc.saveQuartz(vm.quartz, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         bsWin.alert("操作成功！", function () {

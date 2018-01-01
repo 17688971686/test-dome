@@ -15,7 +15,9 @@
         vm.project = {};
         vm.headerType = "项目类型";
         vm.fileName ="项目统计报表";//报表标题，初始化
-        vm.filters ={};
+        // vm.filters ={};
+        vm.signList = [];
+        vm.page = 0;
         activate();
         function activate() {
             adminSvc.getSignList(vm);
@@ -35,12 +37,20 @@
                 $('input:checkbox').attr('checked', false);
                 obj.value = "";
             });
+            vm.project = {};
+
         }
 
         //項目查詢統計
         vm.searchSignList = function () {
             vm.signListOptions.dataSource.read();
             vm.filters  = vm.project;
+            if(vm.filters && vm.filters !=undefined){
+                var queryData = JSON.stringify(vm.filters);
+                vm.filters = queryData.substring(1 , queryData.length-1);
+            }
+            vm.signList = [];
+            vm.page = 0;
 
         }
 
@@ -105,6 +115,8 @@
             if(vm.filters && vm.filters !=undefined){
                 var filters = JSON.stringify(vm.filters);
                 var filterDate = filters.substring(1,filters.length-1);
+            }else{
+                filterDate ="";
             }
             window.open(rootPath + "/signView/excelExport?filterData=" + escape(encodeURIComponent(filterDate)) + "&fileName=" +fileName);
         }
@@ -120,16 +132,22 @@
         vm.page = 0;
         //以下是项目查询统计（最新版-2017-12-28）
         vm.QueryStatistics = function(){
+            //判断条件是否为空
+            if(!vm.filters || vm.filters == undefined){
+                vm.filters="";
+            }
                 adminSvc.QueryStatistics(vm , function(data){
-                    data.forEach(function(obj , x){
-                        vm.signList.push(obj);
-                    });
-                    if(data==undefined || data.length ==0){
+                    if(data !=undefined){
+                        data.forEach(function(obj , x){
+                            vm.signList.push(obj);
+                        });
+                    }
+
+                    if(data==undefined || data.length <50){
                         $("#queryStatisticsWindow").kendoWindow({
                             width: "70%",
                             height: "70%",
                             title: "项目查询统计",
-
                             visible: false,
                             modal: true,
                             closable: true,
@@ -195,7 +213,6 @@
 
                             },
                         }).data("kendoWindow").center().open();
-
                     }else{
                         vm.page++;
                         vm.QueryStatistics();
@@ -205,6 +222,13 @@
 
 
 
+        }
+
+        /**
+         * 自定义报表
+         */
+        vm.selectHeader = function(){
+            headerSvc.selectHeaderWindow(vm,vm.headerType);
         }
     }
 })();
