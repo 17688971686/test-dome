@@ -164,7 +164,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName());
         //已经完成工作方案，但是未评审的项目
-        hqlBuilder.append(" where " + SignDispaWork_.processState.getName() + " >=:processState1 and " + SignDispaWork_.processState.getName() + " <=:processState2 ");
+        hqlBuilder.append(" where " + SignDispaWork_.processState.getName() + " >=:processState1 and " + SignDispaWork_.processState.getName() + " <:processState2 ");
         hqlBuilder.setParam("processState1", Constant.SignProcessState.DO_WP.getValue(), IntegerType.INSTANCE);
         hqlBuilder.setParam("processState2", Constant.SignProcessState.END_WP.getValue(), IntegerType.INSTANCE);
         //只能关联同部门的项目

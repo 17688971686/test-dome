@@ -1225,10 +1225,13 @@
                     width: 50
                 },
                 {
-                    field: "instanceName",
+                    field: "",
                     title: "流程名称",
                     filterable: false,
-                    width: "25%"
+                    width: "25%",
+                    template:function (item) {
+                        return '<a href="#/flowDeal/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/'+item.instanceId+'" >' + item.instanceName + '</a>';
+                    }
                 },
                 {
                     field: "nodeNameValue",
