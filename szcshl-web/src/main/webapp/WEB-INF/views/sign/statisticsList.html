@@ -5,8 +5,8 @@
             <span >标题：</span>
             <input type="text" ng-model="vm.fileName"/>
             <button class="btn btn-sm btn-success" ng-click="vm.selectHeader()">自定义报表</button>
-            <button class="btn btn-sm btn-success" >统计项目平均天数</button>
-            <button class="btn btn-sm btn-success" >统计工作日</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.countDay()">统计项目平均天数</button>
+            <button class="btn btn-sm btn-success" ng-click="vm.countWork()">统计工作日</button>
             <button class="btn btn-sm btn-primary" ng-click="vm.excelExport()">导出</button>
         </div>
         <div ng-show="vm.isopens" class="well">

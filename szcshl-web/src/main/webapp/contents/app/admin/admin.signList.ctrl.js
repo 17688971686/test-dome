@@ -184,7 +184,6 @@
                                             vm.WorkSum+=reviewdays-surplusdays;//工作日相加;
                                             vm.days++;  //数量相加
                                         }else{//没勾选
-                                            console.log(vm.days);
                                             vm.daySum-=reviewdays;
                                             vm.WorkSum-=reviewdays-surplusdays;
                                             vm.days--;

@@ -53,11 +53,11 @@ public class QuartzUnit {
             if (betweenDay > startSatOffset) {
                 result = (betweenDay - startSatOffset) / 7;
                 result = result * 5;      //计算完整的工作日
+                result += (startSatOffset > 5) ? 5 : startSatOffset;           //加上离第一个周六最近工作日
+                //计算当前日期里周日有几天
+                startSatOffset = weekDay2 - Calendar.SUNDAY;
+                result += (startSatOffset > 5) ? 5 : startSatOffset;           //加上离最后一个周日的工作日
             }
-            result += (startSatOffset > 5) ? 5 : startSatOffset;           //加上离第一个周六最近工作日
-            //计算当前日期里周日有几天
-            startSatOffset = weekDay2 - Calendar.SUNDAY;
-            result += (startSatOffset > 5) ? 5 : startSatOffset;           //加上离最后一个周日的工作日
 
             //2、是否计算当前日期
             if (Validate.isList(workdayList)) {
@@ -79,14 +79,17 @@ public class QuartzUnit {
 
                 //过滤工作日，只要从签收日期之后的即可
                 workdayList = filterWorkDay(workdayList, signDate);
-                for (int i = 0; i < l; i++) {
-                    //1表示将工作日改为休息日，则日期减1，否则日期加1
-                    if ("1".equals(workdayList.get(i).getStatus())) {
-                        result--;
-                    } else {
-                        result++;
+                if(workdayList != null && workdayList.size()>0){
+                    for (int i = 0;  i < workdayList.size(); i++) {
+                        //1表示将工作日改为休息日，则日期减1，否则日期加1
+                        if ("1".equals(workdayList.get(i).getStatus())) {
+                            result--;
+                        } else {
+                            result++;
+                        }
                     }
                 }
+
             }
         }
         return result;

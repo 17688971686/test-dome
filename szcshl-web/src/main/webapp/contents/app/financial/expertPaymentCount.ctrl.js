@@ -160,10 +160,10 @@
                  var expertCostDetailTr="";
                  expertCostDetailTr += "<tr id='option"+rowIndex+"'>";
                  expertCostDetailTr += "<td class='text-center' colspan='2'>";
-                 expertCostDetailTr += expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewTitle;
+                 expertCostDetailTr += expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewTitle == undefined ? "" : expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewTitle;
                  expertCostDetailTr += "</td>"
                  expertCostDetailTr += "<td class='text-center'>";
-                 expertCostDetailTr += expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewType;
+                 expertCostDetailTr += expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewType == undefined ? "" : expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewType;
                  expertCostDetailTr += "</td>"
                  expertCostDetailTr += "<td class='text-center'>";
                  if(expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewDate!=undefined){
