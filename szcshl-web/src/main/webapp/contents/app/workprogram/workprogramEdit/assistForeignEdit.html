@@ -100,21 +100,22 @@
         </td>
     </tr>
     <tr>
-        <td class="text-center">调研时间</td>
+        <td class="text-center" >调研时间</td>
         <td colspan="7">
-            <input name="studyAllDay" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.work.studyAllDay"  style="width:140px;"id="studyAllDay"value="" type="text"/>
+            <input name="studyAllDay" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:140px;" ng-model="vm.work.studyAllDay"  id="studyAllDay"value="" type="text"/>
             <select name="studyQuantum" ng-model ="vm.work.studyQuantum" style="width: 70px;height:30px">
                 <option value="上午" ng-selected="(vm.work.studyQuantum == '上午' || !vm.work.studyQuantum)">上午</option>   <!--默认选中上午-->
                 <option value="下午" ng-selected="vm.work.studyQuantum == '下午'">下午</option>
                 <option value="全天" ng-selected="vm.work.studyQuantum == '全天'">全天</option>
             </select>
-            <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime" style="width:100px;"
+            <input ng-show="vm.work.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
                    data-bind="value:start,invisible:isAllDay" name="studyBeginTime"
-                   id="studyBeginTime" ng-model="vm.work.studyBeginTimeStr" />
-            至
-            <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime" style="width:100px;"
+                   id="studyBeginTime" ng-change="vm.compare()" ng-model="vm.work.studyBeginTimeStr" />
+            <span ng-show="vm.work.studyQuantum!='全天'" > 至 </span>
+            <input ng-show="vm.work.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
                    data-bind="value:end,invisible:isAllDay" name="studyEndTime" id="studyEndTime"
-                   ng-model="vm.work.studyEndTimeStr" data-datecompare-msg="结束时间必须大于开始时间！"/>
+                   ng-model="vm.work.studyEndTimeStr" ng-change="vm.compare()" data-datecompare-msg="结束时间必须大于开始时间！"/>
+            <span ng-show="vm.isTime" style="color: red">结束时间必须大于开始时间！</span>
         </td>
     </tr>
     <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="vm.work.reviewType == '自评' ">

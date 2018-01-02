@@ -230,13 +230,14 @@
                  <option value="下午" ng-selected="vm.work.studyQuantum == '下午'">下午</option>
                  <option value="全天" ng-selected="vm.work.studyQuantum == '全天'">全天</option>
              </select>
-            	  <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
+            	  <input ng-show="vm.work.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
 					data-bind="value:start,invisible:isAllDay" name="studyBeginTime"
-					id="studyBeginTime" ng-model="vm.work.studyBeginTimeStr" />
-					 至
-				 <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
+					id="studyBeginTime" ng-change="vm.compare()" ng-model="vm.work.studyBeginTimeStr" />
+             <span ng-show="vm.work.studyQuantum!='全天'" > 至 </span>
+				 <input ng-show="vm.work.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
                                data-bind="value:end,invisible:isAllDay" name="studyEndTime" id="studyEndTime"
-                               ng-model="vm.work.studyEndTimeStr" data-datecompare-msg="结束时间必须大于开始时间！"/>
+                               ng-model="vm.work.studyEndTimeStr" ng-change="vm.compare()" data-datecompare-msg="结束时间必须大于开始时间！"/>
+             <span ng-show="vm.isTime" style="color: red">结束时间必须大于开始时间！</span>
          </td>
      </tr>
   
