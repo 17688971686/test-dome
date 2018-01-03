@@ -360,7 +360,7 @@
             </table>
         </td>
     </tr>
-    <tr>
+    <tr ng-if="vm.registerFile">
         <td colspan="4">其他资料
 
             <ul>
@@ -375,7 +375,7 @@
             </ul>
         </td>
     </tr>
-    <tr ng-repeat="f in vm.registerFile">
+    <tr ng-if="vm.registerFile" ng-repeat="f in vm.registerFile">
         <td colspan="4">
                         <span  >
                         {{vm.registerFile[$index].fileName}}

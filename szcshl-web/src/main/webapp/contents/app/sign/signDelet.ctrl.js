@@ -2,13 +2,22 @@
     'use strict';
     angular.module('app').controller('signDeletCtrl', signDelet);
 
-    signDelet.$inject = ['signSvc', 'flowSvc', 'signFlowSvc', 'bsWin'];
+    signDelet.$inject = ['signSvc', 'flowSvc', 'signFlowSvc', 'bsWin','$scope'];
 
-    function signDelet(signSvc, flowSvc, signFlowSvc, bsWin) {
+    function signDelet(signSvc, flowSvc, signFlowSvc, bsWin,$scope) {
         var vm = this;
         vm.title="作废项目列表";
         vm.query=function () {//查找
             vm.signListOptions.dataSource.read();
+        }
+        //重置
+        vm.formReset=function () {
+            vm.project={};
+            //先清空。在刷新
+            $scope.$watch("vm.project",function(newValue,oldValue, scope) {
+                vm.signListOptions.dataSource.read();
+        }, true);
+
         }
         
          //恢复项目
