@@ -44,13 +44,20 @@
         activate();
         function activate() {
             fileRecordSvc.initFileRecordData(vm);
+
         }
 
         vm.create = function () {
-            fileRecordSvc.saveFileRecord(vm);
-            if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
-                $scope.$apply();
-            }
+            fileRecordSvc.saveFileRecord(vm,function(data){
+                vm.isCommit = false;
+                if(data.flag || data.reCode == 'ok'){
+                    vm.fileRecord = data.reObj;
+                    vm.fileRecord.signId = vm.signId;
+                    bsWin.success("操作成功！");
+                }else{
+                    bsWin.error(response.data.reMsg);
+                }
+            });
         }
 
         /**

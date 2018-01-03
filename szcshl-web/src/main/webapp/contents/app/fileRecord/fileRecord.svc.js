@@ -52,7 +52,7 @@
         }//E_初始化
 
         //S_保存
-        function saveFileRecord(vm) {
+        function saveFileRecord(vm,callBack) {
             common.initJqValidation($("#fileRecord_form"));
             var isValid = $("#fileRecord_form").valid();
             if (isValid) {
@@ -69,13 +69,8 @@
                     data: vm.fileRecord
                 }
                 var httpSuccess = function success(response) {
-                    vm.isCommit = false;
-                    if(response.data.flag || response.data.reCode == 'ok'){
-                        vm.fileRecord = response.data.reObj;
-                        vm.fileRecord.signId = vm.signId;
-                        bsWin.success("操作成功！")
-                    }else{
-                        bsWin.error(response.data.reMsg);
+                    if (callBack != undefined && typeof callBack == 'function') {
+                        callBack(response.data);
                     }
                 }
                 common.http({

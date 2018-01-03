@@ -20,12 +20,13 @@
                 title: "询问提示",
                 message: "确认要恢复项目吗？",
                 onOk: function () {
-                    signSvc.editSignState(vm, function (data) {
-                        if (data.flag || data.reCode == 'ok') {
-                            bsWin.alert("恢复成功！", function () {
+                    signSvc.editSignState(vm,function (data) {
+                        console.log(data);
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert("恢复成功！",function(){
                                 vm.signListOptions.dataSource.read();
                             })
-                        } else {
+                        }else{
                             bsWin.alert(data.reMsg);
                         }
 
