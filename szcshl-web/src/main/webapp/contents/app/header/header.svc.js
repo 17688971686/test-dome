@@ -196,10 +196,13 @@
 
         //begin getHeaderList
         function findHeaderListNoSelected(vm){
+            vm.header = {};
+            vm.header.headerType = vm.headerType;
             var httpOptions ={
                 method : 'post',
                 url : rootPath + '/header/findHeaderListNoSelected',
-                params : {headerType : vm.headerType}
+                data : vm.header.headerType
+                // params : {headerType : vm.headerType}
             }
             var httpSuccess = function success(response){
                 vm.allHeaderList = response.data;
@@ -361,7 +364,11 @@
             vm.addHeader = function(){
                 var ids =[];
                 for(var i=0 ; i<vm.allHeaderList.length ; i++){
-                    var s = vm.allHeaderList[i];
+                    var s = {};
+                    if(vm.allHeaderList[0].checkbox){
+                        i=0;
+                    }
+                    s = vm.allHeaderList[i];
                     if(s.checkbox){
                         ids.push(s.id);
                         vm.selectedHeaderList.push(s);
@@ -382,7 +389,11 @@
             vm.cancelHeader = function (){
                 var ids =[];
                 for(var i=0 ; i< vm.selectedHeaderList.length ; i++){
-                    var s = vm.selectedHeaderList[i];
+                    var s = {};
+                    if(vm.allHeaderList[0].checkbox){
+                        i=0;
+                    }
+                     s = vm.selectedHeaderList[i];
                     if(s.checkbox){
                         ids.push(s.id);
                         vm.allHeaderList.push(s);

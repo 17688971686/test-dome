@@ -368,6 +368,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             queryArr = queryData.split(",");
         }
         HqlBuilder hqlBuilder = HqlBuilder.create();
+        try{
         hqlBuilder.append("select * from (select a.* , rownum rn from (");
         hqlBuilder.append("select * from V_SIGN_DISP_WORK " );
         if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
@@ -375,6 +376,14 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             for (int i = 0; i < queryArr.length; i++) {
                 String filter = queryArr[i];
                 String[] params = filter.split(":");
+
+                //对中文乱码进行处理
+                String value = params[1].substring(1, params[1].length() - 1);
+                if(value.equals(new String(value.getBytes("iso8859-1"), "iso8859-1"))){
+
+                    value =  new String((params[1].substring(1, params[1].length() - 1) ).getBytes("iso8859-1"), "UTF-8");
+                }
+
                 //项目签收日期
                 if("signDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
                     hqlBuilder.append("signdate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
@@ -404,7 +413,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                 }else{
 
                     hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + "=:" + params[0].substring(1, params[0].length() - 1));
-                    hqlBuilder.setParam(params[0].substring(1, params[0].length() - 1), params[1].substring(1, params[1].length() - 1));
+                    hqlBuilder.setParam(params[0].substring(1, params[0].length() - 1), value);
                 }
                 if (i < queryArr.length - 1) {
                     hqlBuilder.append(" and ");
@@ -412,6 +421,9 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             }
         }
         hqlBuilder.append(" ) a ) where rn >" + (page * 50) + " and rn <" + ((page+1)*50+1));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         List<SignDispaWork> signDispaWorkList = findBySql(hqlBuilder);
         return signDispaWorkList;
     }
