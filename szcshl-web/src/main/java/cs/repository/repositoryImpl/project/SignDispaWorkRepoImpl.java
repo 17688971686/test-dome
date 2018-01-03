@@ -35,9 +35,9 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         hqlBuilder.append(" " + ExpertSelected_.isConfrim.getName() + "=:isConfrim");
         hqlBuilder.append(" and " + ExpertSelected_.isJoin.getName() + "=:isJoin");
         hqlBuilder.append(" and " + ExpertSelected_.expert.getName() + "." + Expert_.expertID.getName() + "=:expertId))");
-        hqlBuilder.setParam("isConfrim" , Constant.EnumState.YES.getValue());
-        hqlBuilder.setParam("isJoin" , Constant.EnumState.YES.getValue());
-        hqlBuilder.setParam("expertId" , expertId);
+        hqlBuilder.setParam("isConfrim", Constant.EnumState.YES.getValue());
+        hqlBuilder.setParam("isJoin", Constant.EnumState.YES.getValue());
+        hqlBuilder.setParam("expertId", expertId);
 
         List<SignDispaWork> signDispaWorkList = this.findByHql(hqlBuilder);
       /*  PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
@@ -48,6 +48,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
     /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
+     *
      * @param startTime
      * @param endTime
      * @return
@@ -55,51 +56,51 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
     @Override
     public ResultMsg findByTime(String startTime, String endTime) {
 
-        Date start = DateUtils.converToDate(startTime , "yyyy-MM-dd");
-        Date end = DateUtils.converToDate(endTime , "yyyy-MM-dd");
-        List<Map<String , Object[]>> resultList = new ArrayList<>();
-        if(DateUtils.daysBetween(start , end) >0){
+        Date start = DateUtils.converToDate(startTime, "yyyy-MM-dd");
+        Date end = DateUtils.converToDate(endTime, "yyyy-MM-dd");
+        List<Map<String, Object[]>> resultList = new ArrayList<>();
+        if (DateUtils.daysBetween(start, end) > 0) {
             HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , count(projectcode) projectCount from v_sign_disp_work" );
+            hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , count(projectcode) projectCount from v_sign_disp_work");
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >:start and " + SignDispaWork_.signdate.getName() + "<:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
             hqlBuilder.append(" group by " + SignDispaWork_.reviewstage.getName());
-            hqlBuilder.append(" order by " +  SignDispaWork_.reviewstage.getName() + " desc");
-            hqlBuilder.setParam("start" , start);
-            hqlBuilder.setParam("end" , end);
-            hqlBuilder.setParam("processState" , Constant.SignProcessState.END_DIS_NUM.getValue());//已发文
+            hqlBuilder.append(" order by " + SignDispaWork_.reviewstage.getName() + " desc");
+            hqlBuilder.setParam("start", start);
+            hqlBuilder.setParam("end", end);
+            hqlBuilder.setParam("processState", Constant.SignProcessState.END_DIS_NUM.getValue());//已发文
             List<Object[]> objctList = this.getObjectArray(hqlBuilder);
 
-            if(objctList != null && objctList.size()>0){
-                for(int i = 0 ; i<objctList.size() ; i++){
+            if (objctList != null && objctList.size() > 0) {
+                for (int i = 0; i < objctList.size(); i++) {
                     Object[] obj = objctList.get(i);
-                    Map< String , Object[]> map = new HashMap<>();
-                    Object[] value = {((BigDecimal) obj[1] ) == null ? 0 : ((BigDecimal) obj[1]).divide(new BigDecimal(10000)) ,
-                            ((BigDecimal) obj[2] ) == null ? 0 : ((BigDecimal) obj[2]).divide(new BigDecimal(10000)) ,
+                    Map<String, Object[]> map = new HashMap<>();
+                    Object[] value = {((BigDecimal) obj[1]) == null ? 0 : ((BigDecimal) obj[1]).divide(new BigDecimal(10000)),
+                            ((BigDecimal) obj[2]) == null ? 0 : ((BigDecimal) obj[2]).divide(new BigDecimal(10000)),
                             obj[3] == null ? 0 : obj[3]}; //[申报金额，审定金额，数目]
-                    if((Constant.STAGE_SUG).equals((String)obj[0])){
-                        map.put( Constant.STAGE_SUG , value);
-                    }else if((Constant.STAGE_STUDY).equals((String)obj[0])){
-                        map.put(Constant.STAGE_STUDY , value);
-                    }else if((Constant.STAGE_BUDGET).equals((String)obj[0])){
+                    if ((Constant.STAGE_SUG).equals((String) obj[0])) {
+                        map.put(Constant.STAGE_SUG, value);
+                    } else if ((Constant.STAGE_STUDY).equals((String) obj[0])) {
+                        map.put(Constant.STAGE_STUDY, value);
+                    } else if ((Constant.STAGE_BUDGET).equals((String) obj[0])) {
                         map.put(Constant.STAGE_BUDGET, value);
-                    }else if((Constant.APPLY_REPORT).equals((String)obj[0])){
+                    } else if ((Constant.APPLY_REPORT).equals((String) obj[0])) {
                         map.put(Constant.APPLY_REPORT, value);
-                    }else if((Constant.DEVICE_BILL_HOMELAND).equals((String)obj[0])){
+                    } else if ((Constant.DEVICE_BILL_HOMELAND).equals((String) obj[0])) {
                         map.put(Constant.DEVICE_BILL_HOMELAND, value);
-                    }else if((Constant.DEVICE_BILL_IMPORT).equals((String)obj[0])){
+                    } else if ((Constant.DEVICE_BILL_IMPORT).equals((String) obj[0])) {
                         map.put(Constant.DEVICE_BILL_IMPORT, value);
-                    }else if((Constant.IMPORT_DEVICE).equals((String)obj[0])){
+                    } else if ((Constant.IMPORT_DEVICE).equals((String) obj[0])) {
                         map.put(Constant.IMPORT_DEVICE, value);
-                    }else if((Constant.OTHERS).equals((String)obj[0])){
+                    } else if ((Constant.OTHERS).equals((String) obj[0])) {
                         map.put(Constant.OTHERS, value);
                     }
                     resultList.add(map);
                 }
             }
-            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询数据成功" , resultList);
-        }else{
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "结束日期必须大于开始日期！" , null);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultList);
+        } else {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "结束日期必须大于开始日期！", null);
         }
 
 
@@ -107,42 +108,43 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
     /**
      * 通过评审阶段，项目类别，统计项目信息
+     *
      * @param startTime
      * @param endTime
      * @return
      */
     @Override
     public ResultMsg findByTypeAndReview(String startTime, String endTime) {
-        List<Map<String ,Object[]>> resultList = new ArrayList<>();
+        List<Map<String, Object[]>> resultList = new ArrayList<>();
         //map("评审阶段" , [市政工程，房建工程，信息工程，设备采购，其他])
-        Object[] sugs = new Object[]{0,0,0,0,0};//建议书
-        Object[] studys = new Object[]{0,0,0,0,0};//可行性研究报告
-        Object[] budgets = new Object[]{0,0,0,0,0};//项目概算
-        Object[] reports = new Object[]{0,0,0,0,0};//资金申请报告
-        Object[] homelands = new Object[]{0,0,0,0,0};//设备清单（国产）
-        Object[] imports = new Object[]{0,0,0,0,0};//设备清单（进口）
-        Object[] devices = new Object[]{0,0,0,0,0};//进口设备
-        Object[] others = new Object[]{0,0,0,0,0};//其它
+        Object[] sugs = new Object[]{0, 0, 0, 0, 0};//建议书
+        Object[] studys = new Object[]{0, 0, 0, 0, 0};//可行性研究报告
+        Object[] budgets = new Object[]{0, 0, 0, 0, 0};//项目概算
+        Object[] reports = new Object[]{0, 0, 0, 0, 0};//资金申请报告
+        Object[] homelands = new Object[]{0, 0, 0, 0, 0};//设备清单（国产）
+        Object[] imports = new Object[]{0, 0, 0, 0, 0};//设备清单（进口）
+        Object[] devices = new Object[]{0, 0, 0, 0, 0};//进口设备
+        Object[] others = new Object[]{0, 0, 0, 0, 0};//其它
 
-        Date start = DateUtils.converToDate(startTime , "yyyy-MM-dd");
-        Date end = DateUtils.converToDate(endTime , "yyyy-MM-dd");
-        if(DateUtils.daysBetween(start , end) >0){
+        Date start = DateUtils.converToDate(startTime, "yyyy-MM-dd");
+        Date end = DateUtils.converToDate(endTime, "yyyy-MM-dd");
+        if (DateUtils.daysBetween(start, end) > 0) {
             HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append("select " + SignDispaWork_.reviewstage.getName() + "," + SignDispaWork_.projectType.getName() + ",count("+ SignDispaWork_.projectcode.getName() + ") projectNum from v_sign_disp_work ");
+            hqlBuilder.append("select " + SignDispaWork_.reviewstage.getName() + "," + SignDispaWork_.projectType.getName() + ",count(" + SignDispaWork_.projectcode.getName() + ") projectNum from v_sign_disp_work ");
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >:start and " + SignDispaWork_.signdate.getName() + "<:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
-            hqlBuilder.append(" group by " + SignDispaWork_.projectType.getName() + " ," + SignDispaWork_.reviewstage.getName() );
-            hqlBuilder.append(" having " + SignDispaWork_.projectType.getName() + " is not null ") ;
-            hqlBuilder.append(" order by " + SignDispaWork_.reviewstage.getName() +" desc , " + SignDispaWork_.projectType.getName() );
-            hqlBuilder.setParam("start" , start);
-            hqlBuilder.setParam("end" , end);
-            hqlBuilder.setParam("processState" , Constant.SignProcessState.END_DIS_NUM.getValue()); //已发文
+            hqlBuilder.append(" group by " + SignDispaWork_.projectType.getName() + " ," + SignDispaWork_.reviewstage.getName());
+            hqlBuilder.append(" having " + SignDispaWork_.projectType.getName() + " is not null ");
+            hqlBuilder.append(" order by " + SignDispaWork_.reviewstage.getName() + " desc , " + SignDispaWork_.projectType.getName());
+            hqlBuilder.setParam("start", start);
+            hqlBuilder.setParam("end", end);
+            hqlBuilder.setParam("processState", Constant.SignProcessState.END_DIS_NUM.getValue()); //已发文
             List<Object[]> objctList = this.getObjectArray(hqlBuilder);
-            if(objctList != null && objctList.size()>0){
-                for(int i=0 ; i<objctList.size() ; i++){
-                    Object[] objects =objctList.get(i);
-                    if((Constant.STAGE_SUG).equals((String)objects[0])){
-                        switch ((String)objects[1]){
+            if (objctList != null && objctList.size() > 0) {
+                for (int i = 0; i < objctList.size(); i++) {
+                    Object[] objects = objctList.get(i);
+                    if ((Constant.STAGE_SUG).equals((String) objects[0])) {
+                        switch ((String) objects[1]) {
                             case "市政工程":
                                 sugs[0] = Integer.parseInt((objects[2]).toString());
                                 break;
@@ -161,8 +163,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.STAGE_STUDY).equals((String)objects[0])){
-                        switch ((String)objects[1]){
+                    } else if ((Constant.STAGE_STUDY).equals((String) objects[0])) {
+                        switch ((String) objects[1]) {
                             case "市政工程":
                                 studys[0] = Integer.parseInt((objects[2]).toString());
                                 break;
@@ -181,8 +183,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.STAGE_BUDGET).equals((String)objects[0])){
-                        switch ((String)objects[1]){
+                    } else if ((Constant.STAGE_BUDGET).equals((String) objects[0])) {
+                        switch ((String) objects[1]) {
                             case "市政工程":
                                 budgets[0] = Integer.parseInt((objects[2]).toString());
                                 break;
@@ -196,13 +198,13 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                                 budgets[3] = Integer.parseInt(objects[2].toString());
                                 break;
                             case "其他":
-                                budgets[4] = Integer.parseInt((String)objects[2]);
+                                budgets[4] = Integer.parseInt((String) objects[2]);
                                 break;
                             default:
                                 break;
                         }
-                    }else if((Constant.APPLY_REPORT).equals((String)objects[0])){
-                        switch ((String)objects[1]){
+                    } else if ((Constant.APPLY_REPORT).equals((String) objects[0])) {
+                        switch ((String) objects[1]) {
                             case "市政工程":
                                 reports[0] = Integer.parseInt(objects[2].toString());
                                 break;
@@ -221,8 +223,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.DEVICE_BILL_HOMELAND).equals((String)objects[0])){
-                        switch ((String)objects[1]){
+                    } else if ((Constant.DEVICE_BILL_HOMELAND).equals((String) objects[0])) {
+                        switch ((String) objects[1]) {
                             case "市政工程":
                                 homelands[0] = Integer.parseInt(objects[2].toString());
                                 break;
@@ -241,8 +243,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.DEVICE_BILL_IMPORT).equals((String)objects[0])){
-                        switch ((String)objects[1]){
+                    } else if ((Constant.DEVICE_BILL_IMPORT).equals((String) objects[0])) {
+                        switch ((String) objects[1]) {
                             case "市政工程":
                                 imports[0] = Integer.parseInt(objects[2].toString());
                                 break;
@@ -261,8 +263,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.IMPORT_DEVICE).equals((String)objects[0])){
-                        switch ((String)objects[1]){
+                    } else if ((Constant.IMPORT_DEVICE).equals((String) objects[0])) {
+                        switch ((String) objects[1]) {
                             case "市政工程":
                                 devices[0] = Integer.parseInt(objects[2].toString());
                                 break;
@@ -281,8 +283,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             default:
                                 break;
                         }
-                    }else if((Constant.OTHERS).equals((String)objects[0])){
-                        switch ((String)objects[1]){
+                    } else if ((Constant.OTHERS).equals((String) objects[0])) {
+                        switch ((String) objects[1]) {
                             case "市政工程":
                                 others[0] = Integer.parseInt(objects[2].toString());
                                 break;
@@ -304,21 +306,21 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                     }
                 }
             }
-            Map<String ,Object[]> sugMap = new HashMap<>();
+            Map<String, Object[]> sugMap = new HashMap<>();
             sugMap.put(Constant.STAGE_SUG, sugs);
-            Map<String , Object[]> studyMap = new HashMap<>();
+            Map<String, Object[]> studyMap = new HashMap<>();
             studyMap.put(Constant.STAGE_STUDY, studys);
-            Map<String , Object[]> budgetMap = new HashMap<>();
+            Map<String, Object[]> budgetMap = new HashMap<>();
             budgetMap.put(Constant.STAGE_BUDGET, budgets);
-            Map<String , Object[]> reportMap = new HashMap<>();
+            Map<String, Object[]> reportMap = new HashMap<>();
             reportMap.put(Constant.APPLY_REPORT, reports);
-            Map<String , Object[]> homeLandMap = new HashMap<>();
+            Map<String, Object[]> homeLandMap = new HashMap<>();
             homeLandMap.put(Constant.DEVICE_BILL_HOMELAND, homelands);
-            Map<String , Object[]> importMap = new HashMap<>();
+            Map<String, Object[]> importMap = new HashMap<>();
             importMap.put(Constant.DEVICE_BILL_IMPORT, imports);
-            Map<String , Object[]> deviceMap = new HashMap<>();
+            Map<String, Object[]> deviceMap = new HashMap<>();
             deviceMap.put(Constant.IMPORT_DEVICE, devices);
-            Map<String ,Object[]> otherMap = new HashMap<>();
+            Map<String, Object[]> otherMap = new HashMap<>();
             otherMap.put(Constant.OTHERS, others);
             resultList.add(sugMap);
             resultList.add(studyMap);
@@ -330,8 +332,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             resultList.add(otherMap);
 
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultList);
-        }else{
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "结束日期必须大于开始日期" , null) ;
+        } else {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "结束日期必须大于开始日期", null);
         }
 
     }
@@ -339,69 +341,70 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
     /**
      * 通过收文id获取项目信息
+     *
      * @param signId
      * @return
      */
     @Override
     public SignDispaWork findSDPBySignId(String signId) {
         Criteria criteria = getExecutableCriteria();
-        criteria.add(Restrictions.eq(SignDispaWork_.signid.getName() , signId));
+        criteria.add(Restrictions.eq(SignDispaWork_.signid.getName(), signId));
         List<SignDispaWork> signDispaWorkList = criteria.list();
-        if(signDispaWorkList!=null && signDispaWorkList.size()>0){
+        if (signDispaWorkList != null && signDispaWorkList.size() > 0) {
             return signDispaWorkList.get(0);
-        }else{
+        } else {
             return null;
         }
     }
 
     /**
      * 通过条件查询统计
+     *
      * @param queryData
      * @param page
      * @return
      */
     @Override
     public List<SignDispaWork> queryStatistics(String queryData, int page) {
-        String[]  queryArr = null ;
-        if(Validate.isString(queryData)){
-
+        String[] queryArr = null;
+        if (Validate.isString(queryData)) {
             queryArr = queryData.split(",");
         }
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select * from (select a.* , rownum rn from (");
-        hqlBuilder.append("select * from V_SIGN_DISP_WORK " );
+        hqlBuilder.append("select * from V_SIGN_DISP_WORK ");
         if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
             hqlBuilder.append(" where ");
             for (int i = 0; i < queryArr.length; i++) {
                 String filter = queryArr[i];
                 String[] params = filter.split(":");
                 //项目签收日期
-                if("signDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                if ("signDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
                     hqlBuilder.append("signdate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
-                }else if("signDateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                } else if ("signDateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
                     hqlBuilder.append("signdate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
                 }
                 //发文日期
-                else if("dispatchDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                else if ("dispatchDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
                     hqlBuilder.append("dispatchDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
-                }else if("dispatchdateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                } else if ("dispatchdateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
                     hqlBuilder.append("dispatchDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
 
                 }
                 //归档日期
-                else if("fileDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                else if ("fileDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
                     hqlBuilder.append("fileDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
-                }else if("fileDateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                } else if ("fileDateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
                     hqlBuilder.append("fileDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
 
                 }
                 //申报投资
-                else if("appalyInvestmentMin".equals(params[0].substring(1, params[0].length() - 1))){
+                else if ("appalyInvestmentMin".equals(params[0].substring(1, params[0].length() - 1))) {
                     hqlBuilder.append("appalyInvestment>=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
-                }else if("appalyInvestmentMax".equals(params[0].substring(1, params[0].length() - 1))){
+                } else if ("appalyInvestmentMax".equals(params[0].substring(1, params[0].length() - 1))) {
                     hqlBuilder.append("appalyInvestment<=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
 
-                }else{
+                } else {
 
                     hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + "=:" + params[0].substring(1, params[0].length() - 1));
                     hqlBuilder.setParam(params[0].substring(1, params[0].length() - 1), params[1].substring(1, params[1].length() - 1));
@@ -411,7 +414,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                 }
             }
         }
-        hqlBuilder.append(" ) a ) where rn >" + (page * 50) + " and rn <" + ((page+1)*50+1));
+        hqlBuilder.append(" ) a ) where rn >" + (page * 50) + " and rn <" + ((page + 1) * 50 + 1));
         List<SignDispaWork> signDispaWorkList = findBySql(hqlBuilder);
         return signDispaWorkList;
     }

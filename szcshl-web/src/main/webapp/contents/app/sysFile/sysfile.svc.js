@@ -53,6 +53,7 @@
 
         // 系统文件下载
         function downloadFile(id) {
+
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/file/fileSysCheck",
@@ -63,14 +64,14 @@
             var httpSuccess = function success(response) {
                 var downForm = $("#szecSysFileDownLoadForm");
                 downForm.attr("target","");
-                downForm.attr("method","get");
-                downForm.attr("action","");
-                downForm.find("input[name='sysfileId']").val("");
+                downForm.attr("method","post");
                 if (response.data.flag || response.data.reCode == 'ok') {
                     downForm.attr("action",rootPath + "/file/fileDownload");
                     downForm.find("input[name='sysfileId']").val(id);
                     downForm.submit();//表单提交
                 } else {
+                    downForm.attr("action","");
+                    downForm.find("input[name='sysfileId']").val("");
                     bsWin.error(response.data.reMsg);
                 }
             };

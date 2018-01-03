@@ -3,6 +3,7 @@ package cs.service.sys;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
+import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
@@ -18,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import cs.domain.sys.Ftp;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +27,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import static cs.common.Constant.*;
+
+import static cs.common.Constant.FTP_IP1;
+import static cs.common.Constant.MsgCode;
 
 @Service
 public class SysFileServiceImpl implements SysFileService {

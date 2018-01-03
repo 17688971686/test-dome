@@ -223,7 +223,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     if (linkSucess) {
                         //保存数据库记录
                         resultMsg = fileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
-                                relativeFileUrl + "/" + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
+                                relativeFileUrl + File.separator + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
                     } else {
                         errorMsg.append(fileName+"附件上传失败，无法上传到文件服务器！");
                     }
@@ -298,10 +298,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
                 fileUrl = FtpUtil.processDir(fileUrl);
-                String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
-                String storeFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+                String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+                String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
                 //文件路径
-                String filePath = SysFileUtil.getUploadPath() + "/" + storeFileName;
+                String filePath = SysFileUtil.getUploadPath() + File.separator + storeFileName;
                 File file = new File(filePath);
                 FileInputStream fileInputStream = new FileInputStream(file);
                 boolean result = FtpUtil.uploadFile(removeRelativeUrl, storeFileName, fileInputStream);
@@ -335,9 +335,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             if (linkSucess) {
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
-                fileUrl = FtpUtil.processDir(fileUrl);
-                String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
-                String storeFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+                String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+                String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
                 if (FtpUtil.checkFileExist(removeRelativeUrl, storeFileName)) {
                     resultMsg = new ResultMsg(true, MsgCode.OK.getValue(), "附件存在，可以进行下载操作！");
                 } else {
@@ -373,12 +372,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             if(linkSucess){
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
-                fileUrl = FtpUtil.processDir(fileUrl);
-                String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
-                String storeFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+                String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+                String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
                 //涉及到中文问题 根据系统实际编码改变
-                removeRelativeUrl = new String(removeRelativeUrl.getBytes("GBK"), "iso-8859-1");
-                storeFileName = new String(storeFileName.getBytes("GBK"), "iso-8859-1");
+                removeRelativeUrl = new String(removeRelativeUrl.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
+                storeFileName = new String(storeFileName.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
                 //切换工作路径
                 boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
                 if (changedir) {
@@ -414,9 +412,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     response.setHeader("Content-Disposition", "attachment; filename="
                             + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
 
-                    FTPClientConfig conf = new FTPClientConfig(FTPClientConfig.SYST_UNIX);
-                    //中文
-                    conf.setServerLanguageCode("zh");
                     FTPFile[] files = FtpUtil.getFtp().listFiles();
                     for (int i = 0; i < files.length; i++) {
                         FTPFile ff = files[i];
@@ -448,7 +443,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.GET)
+    @RequestMapping(name = "文件下载", path = "fileDownload", method = RequestMethod.POST)
     public void fileDownload(@RequestParam(required = true) String sysfileId, HttpServletResponse response) {
         OutputStream out = null;
         try {
@@ -456,12 +451,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             SysFile sysFile = fileService.findFileById(sysfileId);
             //获取相对路径
             String fileUrl = sysFile.getFileUrl();
-            fileUrl = FtpUtil.processDir(fileUrl);
-            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
-            String storeFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+            String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
             //涉及到中文问题 根据系统实际编码改变
-            removeRelativeUrl = new String(removeRelativeUrl.getBytes("GBK"), "iso-8859-1");
-            storeFileName = new String(storeFileName.getBytes("GBK"), "iso-8859-1");
+            removeRelativeUrl = new String(removeRelativeUrl.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
+            storeFileName = new String(storeFileName.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
             //切换工作路径
             boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
             if (changedir) {
@@ -497,9 +491,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 response.setHeader("Content-Disposition", "attachment; filename="
                         + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
 
-                FTPClientConfig conf = new FTPClientConfig(FTPClientConfig.SYST_UNIX);
-                //中文
-                conf.setServerLanguageCode("zh");
                 FTPFile[] files = FtpUtil.getFtp().listFiles();
                 for (int i = 0; i < files.length; i++) {
                     FTPFile f = files[i];
@@ -510,7 +501,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 }
             }
             out.flush();
-            out.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -560,18 +550,14 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             SysFile sysFile = fileService.findFileById(sysFileId);
             //获取相对路径
             String fileUrl = sysFile.getFileUrl();
-            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
-            String storeFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+            String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
             //涉及到中文问题 根据系统实际编码改变
-            removeRelativeUrl = new String(removeRelativeUrl.getBytes("GBK"), "iso-8859-1");
-            storeFileName = new String(storeFileName.getBytes("GBK"), "iso-8859-1");
+            removeRelativeUrl = new String(removeRelativeUrl.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
+            storeFileName = new String(storeFileName.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
             //切换工作路径
             boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
             if (changedir) {
-                //下载ftp服务器附件到本地
-                FTPClientConfig conf = new FTPClientConfig(FTPClientConfig.SYST_UNIX);
-                //中文
-                conf.setServerLanguageCode("zh");
                 FTPFile[] files = FtpUtil.getFtp().listFiles();
                 boolean isFtpFile = Template.PDF_SUFFIX.getKey().equals(sysFile.getFileType());
                 for (int i = 0; i < files.length; i++) {
@@ -582,7 +568,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                             out = response.getOutputStream();
                             FtpUtil.getFtp().retrieveFile(f.getName(), out);
                         }else{
-                            downFile = new File(SysFileUtil.getUploadPath() + "/" + storeFileName);
+                            downFile = new File(SysFileUtil.getUploadPath() + File.separator + storeFileName);
                             out = new FileOutputStream(downFile);
                             FtpUtil.getFtp().retrieveFile(f.getName(), out);
                             String filePath = downFile.getAbsolutePath();
@@ -603,7 +589,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }
                 }
             }else{
-                file = new File(realPathResolver.get(Constant.plugin_file_path) + "/" + "nofile.png");
+                file = new File(realPathResolver.get(Constant.plugin_file_path) + File.separator + "nofile.png");
                 sysFile.setFileType(".png");
             }
 
@@ -660,7 +646,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         File file = null;
         File printFile = null;
         try {
-            String path = SysFileUtil.getUploadPath() + "/" + Tools.generateRandomFilename() + Template.WORD_SUFFIX.getKey();
+            String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Template.WORD_SUFFIX.getKey();
             String filePath = path.substring(0, path.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
             String fileName = "";
             switch (businessType) {
@@ -1177,8 +1163,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         //获取相对路径
         String fileUrl = sysFile.getFileUrl();
         fileUrl = FtpUtil.processDir(fileUrl);
-        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
-        String storeFileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1, fileUrl.length());
+        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+        String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
         //涉及到中文问题 根据系统实际编码改变
         try{
             removeRelativeUrl = new String(removeRelativeUrl.getBytes("GBK"), "iso-8859-1");

@@ -261,9 +261,9 @@
                 vm.businessType = businessType;
 
                 $("#addOtherFile").kendoWindow({
-                    width: "50%",
-                    height: "600px",
-                    title: "其它资料编辑页",
+                    width: "70%",
+                    height: "400px",
+                    title: "其它资料",
                     visible: false,
                     modal: true,
                     closable: true,

@@ -768,13 +768,15 @@
                     field: "signdate",
                     title: "签收日期",
                     width: 100,
-                    filterable: false
+                    filterable: false,
+                    format: "{0:yyyy-MM-dd}"
                 },
                 {
                     field: "dispatchDate",
                     title: "发文日期",
                     width: 100,
-                    filterable: false
+                    filterable: false,
+                    format: "{0:yyyy-MM-dd}"
                 },
                 {
                     field: "reviewdays",
@@ -1459,7 +1461,6 @@
                 if(callBack != undefined && typeof  callBack == 'function'){
                     callBack(response.data);
                 }
-
             }
 
             common.http({

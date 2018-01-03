@@ -27,7 +27,7 @@
             signGetBackGrid :signGetBackGrid,                //项目取回列表
             getBack:getBack,                            //项目取回
             editTemplatePrint:editTemplatePrint,      //编辑模板打印
-            workProgramPrint:workProgramPrint,       //工作方案模板打印
+            /*workProgramPrint:workProgramPrint,       //工作方案模板打印*/
             signDeletGrid:signDeletGrid,              //作废项目
             editSignState:editSignState              //恢复项目
 
@@ -777,7 +777,7 @@
             }
         }
 
-        //工作方案详细打印
+        /*//工作方案详细打印
         function workProgramPrint(id){
             var tempStr1;
             var tempStr2;
@@ -812,7 +812,7 @@
                 LODOP.ADD_PRINT_HTML(50,20,"100%","100%",strFormHtml2);
                 LODOP.PREVIEW();
             }
-        }
+        }*/
 
         //begin_signDeletGrid
         //作废项目
@@ -846,7 +846,7 @@
                     field: "",
                     title: "序号",
                     template: "<span class='row-number text-center'></span>",
-                    width: 50
+                    width: 40
                 },
                 {
                     field: "",

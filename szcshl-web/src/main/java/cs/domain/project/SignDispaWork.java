@@ -1,6 +1,8 @@
 package cs.domain.project;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -44,6 +46,7 @@ public class SignDispaWork {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date signdate;
 
     /**
@@ -104,6 +107,7 @@ public class SignDispaWork {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date receivedate;
 
     /**
@@ -253,6 +257,7 @@ public class SignDispaWork {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date dispatchDate;
 
     /**

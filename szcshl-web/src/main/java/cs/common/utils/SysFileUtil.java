@@ -61,19 +61,19 @@ public class SysFileUtil {
             mainType = "NO_MAIN_TYPE_FILE";
         }
         //文件存放的格式,根目录/主业务ID/业务模块/文件名
-        relativeUrl += ("/" + mainType);
+        relativeUrl += (File.separator + mainType);
         //如果有主业务ID ，则加上
         if(Validate.isString(mainId)){
-            relativeUrl += ("/"+mainId);
+            relativeUrl += (File.separator+mainId);
         }
         //如果有业务模块，则加上业务模块
         if(Validate.isString(sysBusiType)){
-            relativeUrl += ("/"+sysBusiType);
+            relativeUrl += (File.separator+sysBusiType);
         }
         //如果是本地
         if(Validate.isString(fileLocation)){
             String url = fileLocation;
-           File isFileExists = new File(url + "/" + relativeUrl);
+           File isFileExists = new File(url + File.separator + relativeUrl);
 
             if (isFileExists.exists()) {
                 if (!isFileExists.isDirectory()) {
@@ -92,7 +92,7 @@ public class SysFileUtil {
                 extendName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
             }
             String distFileName = Tools.generateRandomFilename().concat(extendName);
-            relativeUrl += "/" + distFileName;
+            relativeUrl += File.separator + distFileName;
         }
         return relativeUrl;
     }
@@ -144,8 +144,8 @@ public class SysFileUtil {
      */
     public static boolean deleteDirectory(String dir) {
         // 如果dir不以文件分隔符结尾，自动添加文件分隔符
-        if (!dir.endsWith("/")) {
-            dir = dir + "/";
+        if (!dir.endsWith(File.separator)) {
+            dir = dir + File.separator;
         }
         File dirFile = new File(dir);
         // 如果dir对应的文件不存在，或者不是一个目录，则退出
@@ -208,7 +208,7 @@ public class SysFileUtil {
         if(!saveDir.exists()){
             saveDir.mkdir();
         }
-        File file = new File(saveDir+"/"+fileName);
+        File file = new File(saveDir+File.separator+fileName);
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(getData);
         if(fos!=null){

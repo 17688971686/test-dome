@@ -103,10 +103,10 @@
         }
 
         //签收模板打印
-        vm.printpage = function ($event) {
+        /*vm.printpage = function ($event) {
             var id = $($event.target).attr("id");
             signSvc.workProgramPrint(id);
-        }
+        }*/
 
         /**
          * 打印功能 - 分页

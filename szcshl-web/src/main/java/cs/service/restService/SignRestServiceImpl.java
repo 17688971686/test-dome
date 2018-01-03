@@ -169,7 +169,7 @@ public class SignRestServiceImpl implements SignRestService {
                 }
             }
 
-            if(Validate.isString(sign.getLeaderId())){
+            if(!Validate.isString(sign.getLeaderId())){
                 //5、综合部、分管副主任默认办理信息
                 List<User> roleList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
                 for (User user : roleList) {

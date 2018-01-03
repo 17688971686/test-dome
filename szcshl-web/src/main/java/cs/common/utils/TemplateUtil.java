@@ -1,6 +1,6 @@
 package cs.common.utils;
 
-import cs.common.Constant;
+import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -11,9 +11,6 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-
-import static cs.common.Constant.*;
-import cs.domain.sys.Ftp;
 
 /**
  * 模板工具类
@@ -141,7 +138,7 @@ public class TemplateUtil {
         String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, mainType, signId, businessType, showName);
         File docFile = null;
         try {
-            docFile = createDoc(dataMap, templateUrl, path + "/" + relativeFileUrl);
+            docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl);
             fileType = fileType.toLowerCase();//统一转成小写
             boolean linkSucess = FtpUtil.connectFtp(f);
             if(linkSucess){
