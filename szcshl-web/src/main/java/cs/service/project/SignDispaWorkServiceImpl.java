@@ -111,15 +111,16 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
+        //排除已经作废的项目
+        criteria.add(Restrictions.ne(SignDispaWork_.signState.getName(), Constant.EnumState.DELETE.getValue()));
 
-        //以下对秘密项目进行限制查看，只有项目负责人、主负责人的部门领导，分管领导、主任可查看
+       /* //以下对秘密项目进行限制查看，只有项目负责人、主负责人的部门领导，分管领导、主任可查看
        List<ODataFilterItem> oDataFilterItemList = odataObj.getFilter();
        if(oDataFilterItemList != null &&oDataFilterItemList.size() > 0){
            for(ODataFilterItem oDataFilterItem : oDataFilterItemList){
                if("secrectlevel".equals(oDataFilterItem.getField()) && "秘密".equals(oDataFilterItem.getValue().toString())){
                    //部门负责人
                    if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
-
                        criteria.add(Restrictions.eq(SignDispaWork_.ministerName.getName() , SessionUtil.getDisplayName()));
                    }
                    //分管领导
@@ -135,7 +136,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                    }
                }
            }
-       }
+       }*/
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);

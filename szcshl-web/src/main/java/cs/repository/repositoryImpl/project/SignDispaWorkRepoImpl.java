@@ -54,7 +54,6 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
      */
     @Override
     public ResultMsg findByTime(String startTime, String endTime) {
-
         Date start = DateUtils.converToDate(startTime , "yyyy-MM-dd");
         Date end = DateUtils.converToDate(endTime , "yyyy-MM-dd");
         List<Map<String , Object[]>> resultList = new ArrayList<>();

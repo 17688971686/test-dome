@@ -18,6 +18,11 @@ public interface SignDispaWorkService {
      */
     PageModelDto<SignDispaWork> findMyDoProject(ODataObj odataObj,boolean isMianUser);
 
+    /**
+     * 项目综合查询
+     * @param odataObj
+     * @return
+     */
     PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj);
 
     /**
