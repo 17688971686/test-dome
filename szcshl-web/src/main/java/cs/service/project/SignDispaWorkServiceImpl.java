@@ -113,7 +113,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         criteria = odataObj.buildFilterToCriteria(criteria);
 
         //以下对秘密项目进行限制查看，只有项目负责人、主负责人的部门领导，分管领导、主任可查看
-       List<ODataFilterItem> oDataFilterItemList = odataObj.getFilter();
+      /* List<ODataFilterItem> oDataFilterItemList = odataObj.getFilter();
        if(oDataFilterItemList != null &&oDataFilterItemList.size() > 0){
            for(ODataFilterItem oDataFilterItem : oDataFilterItemList){
                if("secrectlevel".equals(oDataFilterItem.getField()) && "秘密".equals(oDataFilterItem.getValue().toString())){
@@ -135,7 +135,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                    }
                }
            }
-       }
+       }*/
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);
@@ -516,6 +516,15 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     @Override
     public List<SignDispaWork> queryStatistics(String  queryData, int page) {
         return signDispaWorkRepo.queryStatistics(queryData , page);
+    }
+    /**
+     * 通过业务id，判断当前用户是否有权限查看项目详情----用于秘密项目
+     * @param signId
+     * @return
+     */
+    @Override
+    public ResultMsg findSecretProPermission(String signId) {
+        return signDispaWorkRepo.findSecretProPermission(signId);
     }
 
 }

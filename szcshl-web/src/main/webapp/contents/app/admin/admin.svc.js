@@ -29,10 +29,29 @@
             statisticalGrid: statisticalGrid,    //(停用)
             workName: workName,  //获取流程列表
             QueryStatistics : QueryStatistics , //通过条件，对项目进行查询统计
+            signDetails : signDetails ,
 
 
         }
         return service;
+        function signDetails(signId , callBack ){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/signView/findSecretProPermission",
+                params : {signId : signId}
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         //begin excelExport
         function excelExport(vm, fileName, project) {
@@ -750,11 +769,20 @@
                     width: 160,
                     filterable: false,
                     template: function (item) {
-                        if (item.processInstanceId) {
-                            return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
-                        } else {
-                            return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                        if(item.secrectlevel == "秘密"){
+                            if (item.processInstanceId) {
+                                return '<a ng-click="vm.signDetails('+"'"+item.signid+"'," +"'" +item.processInstanceId +"'"+ ')" >' + item.projectname + '</a>';
+                            } else {
+                                return '<a ng-click="vm.signDetails('+"'"+item.signid+"' , " +"'" +"'"+')" >' + item.projectname + '</a>';
+                            }
+                        }else{
+                            if (item.processInstanceId) {
+                                return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                            } else {
+                                return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                            }
                         }
+
 
                     }
                 },

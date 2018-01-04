@@ -18,6 +18,7 @@
         // vm.filters ={};
         vm.signList = [];
         vm.page = 0;
+
         activate();
         function activate() {
             adminSvc.getSignList(vm);
@@ -31,10 +32,11 @@
 
         //重置
         vm.formReset = function () {
+            console.log(235);
             var tab = $("#searchform").find('input,select');
             $.each(tab, function (i, obj) {
                 $('input:checkbox').attr('checked', false);
-                obj.value = "";
+                // obj.value = "";
             });
             vm.project = {};
 
@@ -224,6 +226,20 @@
          */
         vm.selectHeader = function () {
             headerSvc.selectHeaderWindow(vm, vm.headerType);
+        }
+        /**
+         * 对秘密项目查看执行权限限制
+         * @param signid
+         * @param processInstanceId
+         */
+        vm.signDetails = function(signid , processInstanceId){
+            adminSvc.signDetails(signid , function(data){
+                if(data.flag ){
+                    $state.go("signDetails" , {signid : signid} , {processInstanceId : processInstanceId});
+                }else{
+                    bsWin.alert(data.reMsg);
+                }
+            });
         }
     }
 })();

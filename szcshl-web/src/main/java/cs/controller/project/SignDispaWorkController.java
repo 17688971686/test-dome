@@ -272,6 +272,14 @@ public class SignDispaWorkController {
         return calendar.getTime();
 
     }
+
+    @RequiresAuthentication
+    @RequestMapping(name="对秘密项目进行权限限制" , path="findSecretProPermission" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg findSecretProPermission(@RequestParam String signId){
+        return signDispaWorkService.findSecretProPermission(signId);
+    }
+
     @RequiresPermissions("signView#html/signChart#get")
     @RequestMapping(name="项目统计分析" , path = "html/signChart" , method = RequestMethod.GET)
     public String signChart(){
