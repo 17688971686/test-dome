@@ -9,8 +9,6 @@
         	approveGrid: approveGrid,//补充资料函审批列表
         	addQueryGrid:addQueryGrid,//补充资料函查询列表
         	createaddSuppLetterQuery: createaddSuppLetterQuery,   //部长审批处理
-        	
-        	
         	deleteaddSuppLetterQuery: deleteaddSuppLetterQuery,
             updateaddSuppLetterQuery: updateaddSuppLetterQuery,
             getaddSuppLetterQueryById: getaddSuppLetterQueryById, //根据ID查看拟补充资料函
@@ -218,7 +216,7 @@
         	// Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_addSuppLetterQuery+"/addsuppListData" , $('#supQueryForm')),
+                transport: common.kendoGridConfig().transport(rootPath + "/addSuppLetter/addsuppListData" , $('#supQueryForm')),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -261,27 +259,29 @@
                     template: "<span class='row-number'></span>"
                 },
                 {
-                    field: "title",
+                    field: "",
                     title: "文件标题",
-                    width: 180,
-                    filterable: false
+                    filterable: false,
+                    template: function (item) {
+                        return "<a ng-click='vm.showSuppLetterDetail("+JSON.stringify(item)+")'>"+item.title+"</a>";
+                    }
                 },
                 {
                     field: "orgName",
                     title: "拟稿部门",
-                    width: 100,
+                    width: 120,
                     filterable: false
                 },
                 {
                     field: "userName",
                     title: "拟稿人",
-                    width: 100,
+                    width: 120,
                     filterable: false
                 },
                 {
                     field: "suppLetterTime",
                     title: "拟稿时间",
-                    width: 100,
+                    width: 120,
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
@@ -289,18 +289,8 @@
                 {
                     field: "filenum",
                     title: "文件字号",
-                    width: 100,
+                    width: 120,
                     filterable: false
-                },
-              
-                {
-                    field: "",
-                    title: "操作",
-                    width: 100,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            item.id);
-                    }
                 }
             ];
             // End:column

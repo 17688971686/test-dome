@@ -30,8 +30,6 @@ public interface AddSuppLetterService {
     ResultMsg saveSupp(AddSuppLetterDto addSuppLetterDto);
     
 	void delete(String id);
-	
-    ResultMsg fileNum(String id);
 
 	/**
 	 * 新增初始化

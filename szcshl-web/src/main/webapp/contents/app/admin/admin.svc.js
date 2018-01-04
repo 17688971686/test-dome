@@ -716,7 +716,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#searchform"),{filter: "signState ne 7"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -747,7 +747,7 @@
                 {
                     field: "",
                     title: "项目名称",
-                    width: 160,
+                    width: 280,
                     filterable: false,
                     template: function (item) {
                         if (item.processInstanceId) {
@@ -818,7 +818,7 @@
                 {
                     field: "dfilenum",
                     title: "文件字号",
-                    width: 125,
+                    width: 130,
                     filterable: false
                 },
                 {
@@ -867,12 +867,13 @@
                     field: "fileDate",
                     title: "归档日期",
                     width: 100,
-                    filterable: false
+                    filterable: false,
+                    format: "{0:yyyy-MM-dd}"
                 },
                 {
                     field: "builtcompanyname",
                     title: "建设单位",
-                    width: 140,
+                    width: 260,
                     filterable: false
                 },
                 {
@@ -891,7 +892,7 @@
                 {
                     field: "daysafterdispatch",
                     title: "发文后工作日",
-                    width: 100,
+                    width: 120,
                     filterable: false
                 },
                 {
@@ -903,7 +904,6 @@
                         if (item.signState == '2') {
                             return common.format($('#columnBtns').html(),
                                 "vm.ProjectStopInfo('" + item.signid + "')");
-
                         } else {
                             return "";
                         }

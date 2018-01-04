@@ -74,6 +74,12 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Autowired
     private FtpRepo ftpRepo;
 
+    /**
+     * 保存工作方案
+     * @param workProgramDto
+     * @param isNeedWorkProgram
+     * @return
+     */
     @Override
     @Transactional
     public ResultMsg save(WorkProgramDto workProgramDto, Boolean isNeedWorkProgram) {
@@ -108,6 +114,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workProgram.setCreatedDate(now);
                 workProgram.setStudyQuantum(workProgramDto.getStudyQuantum());//调研时间段
             }
+
             workProgram.setModifiedBy(SessionUtil.getUserInfo().getId());
             workProgram.setModifiedDate(now);
             //设置关联对象

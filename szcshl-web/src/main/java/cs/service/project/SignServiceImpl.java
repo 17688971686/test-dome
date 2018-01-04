@@ -864,7 +864,8 @@ public class SignServiceImpl implements SignService {
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
                         //如果是专家评审会，则一定要选会议室(单个评审或者合并评审主项目要判断，合并评审次项目不用判断)
                         if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) && !roomBookingRepo.isHaveBookMeeting(wk.getId())
-                                && (Constant.MergeType.REVIEW_SIGNLE.equals(wk.getIsSigle()) || (Constant.MergeType.REVIEW_MERGE.equals(wk.getIsSigle()) && !EnumState.YES.getValue().equals(wk.getIsMainProject())))) {
+                                && (Constant.MergeType.REVIEW_SIGNLE.equals(wk.getIsSigle()) || (Constant.MergeType.REVIEW_MERGE.equals(wk.getIsSigle())
+                                && !EnumState.YES.getValue().equals(wk.getIsMainProject())))) {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【专家评审会】，但是还没有选择会议室，请先预定会议室！");
                         }
                         //如果是合并评审主项目，

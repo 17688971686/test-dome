@@ -10,8 +10,8 @@
                 {{vm.suppletter.userName}}
             </td>
 
-            <td style="width:150px;" class="text-center">拟稿时间</td>
-            <td >
+            <td style="width:150px;vertical-align: middle;" class="text-center">拟稿时间</td>
+            <td style="vertical-align: middle;">
                 {{vm.suppletter.suppLetterTime}}
             </td>
         </tr>
@@ -37,13 +37,13 @@
         </tr>
 
         <tr>
-            <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
+            <td style="width:150px;" class="text-center">文件标题</td>
             <td colspan="3">
                 {{vm.suppletter.title}}
             </td>
         </tr>
         <tr>
-            <td style="width:150px;" class="text-center">发行范围<span class="required">*</span></td>
+            <td style="width:150px;" class="text-center">发行范围</td>
             <td colspan="3">
                 <div style="min-height: 50px;">
                     {{vm.suppletter.dispaRange}}
@@ -56,7 +56,7 @@
 
 
         <tr>
-            <td style="width:150px;" class="text-center">核稿意见</td>
+            <td style="width:150px;vertical-align: middle;" class="text-center">核稿意见</td>
             <td colspan="3">
                 <p> {{vm.suppletter.deptMinisterIdeaContent}}</p>
                 <p class="text-right" ng-if="vm.suppletter.deptMinisterName">签名：{{vm.suppletter.deptMinisterName}}</p>
@@ -65,17 +65,19 @@
         </tr>
 
         <tr>
-            <td style="width:150px;" class="text-center">会签意见</td>
+            <td style="width:150px;vertical-align: middle;" class="text-center">会签意见</td>
             <td colspan="3">
                 <div class="text-right" style="min-height: 50px;" ng-bind-html="vm.suppletter.leaderSignIdeaContent | trust2Html"></div>
             </td>
         </tr>
         <tr>
-            <td style="width:150px;" class="text-center">领导意见</td>
+            <td style="width:150px;vertical-align: middle;" class="text-center">领导意见</td>
             <td colspan="3">
-                <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
-                <p class="text-right" ng-if="vm.suppletter.deptSLeaderName">签名：{{vm.suppletter.deptSLeaderName}}</p>
-                <p class="text-right" ng-if="vm.suppletter.deptSleaderDate">日期：{{vm.suppletter.deptSleaderDate}}</p>
+                <div style="min-height: 50px;">
+                    <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
+                    <p class="text-right" ng-if="vm.suppletter.deptSLeaderName">签名：{{vm.suppletter.deptSLeaderName}}</p>
+                    <p class="text-right" ng-if="vm.suppletter.deptSleaderDate">日期：{{vm.suppletter.deptSleaderDate}}</p>
+                </div>
             </td>
         </tr>
         </tbody>

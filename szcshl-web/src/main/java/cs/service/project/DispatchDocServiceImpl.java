@@ -111,8 +111,14 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         //获取发文最大编号
         int curYearMaxSeq = findCurMaxSeq(dispatchDoc.getDispatchDate());
         curYearMaxSeq = curYearMaxSeq + 1;
-        String fileNum = Constant.DISPATCH_PREFIX+"["+ DateUtils.converToString(dispatchDoc.getDispatchDate(),"yyyy")+"]"+curYearMaxSeq;
-        dispatchDoc.setFileNum(fileNum);
+        String fileNumValue = "";
+        if(curYearMaxSeq < 1000){
+            fileNumValue = String.format("%03d", Integer.valueOf(curYearMaxSeq));
+        }else{
+            fileNumValue = curYearMaxSeq+"";
+        }
+        fileNumValue = Constant.DISPATCH_PREFIX+"["+ DateUtils.converToString(dispatchDoc.getDispatchDate(),"yyyy")+"]"+fileNumValue;
+        dispatchDoc.setFileNum(fileNumValue);
         dispatchDoc.setFileSeq(curYearMaxSeq);
         dispatchDocRepo.save(dispatchDoc);
         //如果是合并发文，则更新所有关联的发文编号
@@ -132,12 +138,12 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         sign.setProcessState( Constant.SignProcessState.END_DIS_NUM.getValue());
         //2、发文日期等修改
         sign.setExpectdispatchdate(new Date());
-        sign.setDocnum(fileNum);
+        sign.setDocnum(fileNumValue);
         //3、发文后剩余工作日
         sign.setDaysafterdispatch(sign.getSurplusdays());
         signRepo.save(sign);
 
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileNum);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileNumValue);
 
     }
 

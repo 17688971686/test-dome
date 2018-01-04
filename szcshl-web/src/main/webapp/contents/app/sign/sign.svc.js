@@ -820,7 +820,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#deletform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#deletform"),{filter: "signState eq 7"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {

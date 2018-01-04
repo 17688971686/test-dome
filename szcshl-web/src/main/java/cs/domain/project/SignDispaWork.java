@@ -277,6 +277,7 @@ public class SignDispaWork {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date fileDate;
 
     //项目状态

@@ -3,11 +3,9 @@ package cs.controller.project;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
-import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.AddSuppLetterService;
-
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,12 +88,12 @@ public class AddSuppLetterController {
         return addSuppLetterService.findById(id);
     }
 
-    @RequiresAuthentication
+    /*@RequiresAuthentication
     //@RequiresPermissions("dispatch#createFileNum#post")
     @RequestMapping(name = "生成文件字号", path = "createFileNum", method = RequestMethod.POST)
     public @ResponseBody ResultMsg createFileNum(@RequestParam String id) throws Exception {
         return addSuppLetterService.fileNum(id);
-    }
+    }*/
 
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#html/edit#get")

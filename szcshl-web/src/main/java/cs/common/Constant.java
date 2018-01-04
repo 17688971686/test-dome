@@ -49,6 +49,10 @@ public class Constant {
     public static String DISPATCH_PREFIX = "深投审";
 
     /**
+     * 拟补充资料函文件字号
+     */
+    public static String ADDSUPPER_PREFIX = "深投审函";
+    /**
      * 默认收文工作日
      */
     public static Float WORK_DAY_15 = 15f;
@@ -161,8 +165,13 @@ public class Constant {
      * @author ldm
      */
     public static enum EnumState {
-        NO("0"), PROCESS("1"), STOP("2"), NORMAL("5"),
-        DELETE("7"), FORCE("8"), YES("9");
+        NO("0"),
+        PROCESS("1"),
+        STOP("2"),
+        NORMAL("5"),
+        DELETE("7"),
+        FORCE("8"),
+        YES("9");
 
         private String value;
 

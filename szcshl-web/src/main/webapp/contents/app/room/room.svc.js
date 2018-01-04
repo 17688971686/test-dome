@@ -29,10 +29,10 @@
                 startTime: new Date("2005/6/1 08:00"),
                 endTime: new Date("2030/6/1 21:00"),
                 views: [
-                    {   type: "week",
+                    {
+                        type: "week",
                         selected: true,
                         allDaySlot: false,
-                        selectedDateFormat: "{0:yyyy-MM-dd}"
                     },
                 ],
                 editable: {

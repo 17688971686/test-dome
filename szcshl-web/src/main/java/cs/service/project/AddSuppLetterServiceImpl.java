@@ -161,48 +161,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     }
 
     /**
-     * 生成文件字号
-     */
-    @Override
-    @Transactional
-    public ResultMsg fileNum(String id) {
-        AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), id);
-        if (Validate.isString(addSuppLetter.getFilenum())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该补充资料函已经生成过发文字号，不能重复生成！");
-        }
-        //获取拟稿最大编号
-        int curYearMaxSeq = findCurMaxSeq(addSuppLetter.getSuppLetterTime());
-        String filenum = Constant.DISPATCH_PREFIX + "[" + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yyyy") + "]" + (curYearMaxSeq + 1);
-        addSuppLetter.setFilenum(filenum);
-        addSuppLetter.setFileSeq((curYearMaxSeq + 1));
-        addSuppLetterRepo.save(addSuppLetter);
-
-        //如果是收文，则要更新对应的资料信息(如果生成了文件字号，工作方案的是否补充资料函则显示为是，并且显示最新的日期。如果没有，则显示为否)
-        if (Constant.BusinessType.SIGN.getValue().equals(addSuppLetter.getBusinessType())) {
-            Date now = new Date();
-            Sign sign = signRepo.findById(Sign_.signid.getName(), addSuppLetter.getBusinessId());
-            if (!Validate.isString(sign.getIsHaveSuppLetter()) || Constant.EnumState.NO.getValue().equals(sign.getIsHaveSuppLetter())) {
-                sign.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
-                sign.setSuppLetterDate(now);
-                signRepo.save(sign);
-            }
-            List<WorkProgram> wpList = workProgramRepo.findByIds(Sign_.signid.getName(), addSuppLetter.getBusinessId(), null);
-            if (Validate.isList(wpList)) {
-                List<WorkProgram> saveList = new ArrayList<>();
-                for (WorkProgram wp : wpList) {
-                    if (!Validate.isString(wp.getIsHaveSuppLetter()) || Constant.EnumState.NO.getValue().equals(wp.getIsHaveSuppLetter())) {
-                        wp.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
-                        wp.setSuppLetterDate(now);
-                        saveList.add(wp);
-                    }
-                }
-                workProgramRepo.bathUpdate(saveList);
-            }
-        }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", addSuppLetter);
-    }
-
-    /**
      * 根据业务ID查询拟补充资料函
      *
      * @param businessId
@@ -577,11 +535,25 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 
             //分管领导审批
             case FlowConstant.FLOW_SPL_FGLD_SP:
-                //生成发文字号失败，则
-                   rturnReuslt = fileNum(addSuppLetter.getId());
-                if (!rturnReuslt.isFlag()) {
-                    return rturnReuslt;
-                }
+                //如果没有生成文件字号或者生成错的文件字号，则重新生成
+               if (!Validate.isString(addSuppLetter.getFilenum()) && !addSuppLetter.getFilenum().contains(Constant.ADDSUPPER_PREFIX)) {
+                   //获取拟稿最大编号
+                   int curYearMaxSeq = findCurMaxSeq(addSuppLetter.getSuppLetterTime());
+                   curYearMaxSeq = (curYearMaxSeq + 1);
+                   String fileNumValue = "";
+                   if(curYearMaxSeq < 1000){
+                       fileNumValue = String.format("%03d", Integer.valueOf(curYearMaxSeq));
+                   }else{
+                       fileNumValue = curYearMaxSeq+"";
+                   }
+                   fileNumValue = Constant.ADDSUPPER_PREFIX + "[" + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yyyy") + "]" + fileNumValue;
+                   addSuppLetter.setFilenum(fileNumValue);
+                   addSuppLetter.setFileSeq(curYearMaxSeq);
+               }
+               if(!Validate.isString(addSuppLetter.getFilenum())){
+                   new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
+               }
+
                 addSuppLetter.setDeptSLeaderId(SessionUtil.getUserId());
                 addSuppLetter.setDeptSLeaderName(SessionUtil.getDisplayName());
                 addSuppLetter.setDeptSleaderDate(new Date());
