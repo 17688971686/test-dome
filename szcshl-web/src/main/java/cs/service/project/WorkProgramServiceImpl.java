@@ -103,6 +103,25 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前评审方式为合并评审次项目，请在主工作方案中挑选此工作方案为次工作方案再保存！");
                     }
                 }
+                //4、专家函评
+                if(Constant.MergeType.REVIEW_LEETER.getValue().equals(workProgramDto.getReviewType())){
+                    if (!Validate.isList(workProgramDto.getExpertDtoList())) {
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前评审方式为专家评审会，请添加拟聘请的专家！");
+                    }
+                }
+
+                //5、专家评审会
+                if(Constant.MergeType.REVIEW_MEETING.getValue().equals(workProgramDto.getReviewType())){
+                    if(Validate.isList(workProgramDto.getRoomBookingDtos())) {
+                        if (!Validate.isList(workProgramDto.getExpertDtoList())) {
+                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前评审方式为专家评审会，请添加拟聘请的专家！");
+                        }
+                    }else{
+                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前评审方式为专家评审会，请先添加评审会时间！");
+
+                    }
+                }
+
                 workProgram = workProgramRepo.findById(workProgramDto.getId());
                 BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
 
