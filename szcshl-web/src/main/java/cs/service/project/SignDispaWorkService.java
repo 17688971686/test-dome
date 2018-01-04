@@ -110,5 +110,12 @@ public interface SignDispaWorkService {
      */
     List<SignDispaWork> queryStatistics(String  queryData , int page);
 
+    /**
+     * 通过业务id，判断当前用户是否有权限查看项目详情----用于秘密项目
+     * @param signId
+     * @return
+     */
+    ResultMsg findSecretProPermission(String signId);
+
 
 }

@@ -368,63 +368,102 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         }
         HqlBuilder hqlBuilder = HqlBuilder.create();
         try{
-        hqlBuilder.append("select * from (select a.* , rownum rn from (");
-        hqlBuilder.append("select * from V_SIGN_DISP_WORK " );
-        if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
-            hqlBuilder.append(" where ");
-            for (int i = 0; i < queryArr.length; i++) {
-                String filter = queryArr[i];
-                String[] params = filter.split(":");
+            hqlBuilder.append("select * from (select a.* , rownum rn from (");
+            hqlBuilder.append("select * from V_SIGN_DISP_WORK " );
+            if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
+                hqlBuilder.append(" where ");
+                for (int i = 0; i < queryArr.length; i++) {
+                    String filter = queryArr[i];
+                    String[] params = filter.split(":");
 
-                //对中文乱码进行处理
-                String value = params[1].substring(1, params[1].length() - 1);
-                if(value.equals(new String(value.getBytes("iso8859-1"), "iso8859-1"))){
+                    //对中文乱码进行处理
+                    String value = params[1].substring(1, params[1].length() - 1);
+                    if(value.equals(new String(value.getBytes("iso8859-1"), "iso8859-1"))){
 
-                    value =  new String((params[1].substring(1, params[1].length() - 1) ).getBytes("iso8859-1"), "UTF-8");
-                }
+                        value =  new String((params[1].substring(1, params[1].length() - 1) ).getBytes("iso8859-1"), "UTF-8");
+                    }
 
-                //项目签收日期
-                if("signDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
-                    hqlBuilder.append("signdate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
-                }else if("signDateEnd".equals(params[0].substring(1, params[0].length() - 1))){
-                    hqlBuilder.append("signdate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
-                }
-                //发文日期
-                else if("dispatchDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
-                    hqlBuilder.append("dispatchDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
-                }else if("dispatchdateEnd".equals(params[0].substring(1, params[0].length() - 1))){
-                    hqlBuilder.append("dispatchDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                    //项目签收日期
+                    if("signDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("signdate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                    }else if("signDateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("signdate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                    }
+                    //发文日期
+                    else if("dispatchDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("dispatchDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                    }else if("dispatchdateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("dispatchDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
 
-                }
-                //归档日期
-                else if("fileDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
-                    hqlBuilder.append("fileDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
-                }else if("fileDateEnd".equals(params[0].substring(1, params[0].length() - 1))){
-                    hqlBuilder.append("fileDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                    }
+                    //归档日期
+                    else if("fileDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("fileDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                    }else if("fileDateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("fileDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
 
-                }
-                //申报投资
-                else if("appalyInvestmentMin".equals(params[0].substring(1, params[0].length() - 1))){
-                    hqlBuilder.append("appalyInvestment>=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
-                }else if("appalyInvestmentMax".equals(params[0].substring(1, params[0].length() - 1))){
-                    hqlBuilder.append("appalyInvestment<=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
+                    }
+                    //申报投资
+                    else if("appalyInvestmentMin".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("appalyInvestment>=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
+                    }else if("appalyInvestmentMax".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("appalyInvestment<=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
 
-                }else{
+                    }else{
 
-                    hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + "=:" + params[0].substring(1, params[0].length() - 1));
-                    hqlBuilder.setParam(params[0].substring(1, params[0].length() - 1), value);
-                }
-                if (i < queryArr.length - 1) {
-                    hqlBuilder.append(" and ");
+                        hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + " like '%" + value + "%'");
+//                        hqlBuilder.setParam(params[0].substring(1, params[0].length() - 1), value);
+                    }
+                    if (i < queryArr.length - 1) {
+                        hqlBuilder.append(" and ");
+                    }
                 }
             }
-        }
-        hqlBuilder.append(" ) a ) where rn >" + (page * 50) + " and rn <" + ((page+1)*50+1));
+            hqlBuilder.append(" ) a ) where rn >" + (page * 50) + " and rn <" + ((page+1)*50+1));
         }catch (Exception e){
             e.printStackTrace();
         }
         List<SignDispaWork> signDispaWorkList = findBySql(hqlBuilder);
         return signDispaWorkList;
+    }
+
+
+    /**
+     * 通过业务id，判断当前用户是否有权限查看项目详情----用于秘密项目
+     * @param signId
+     * @return
+     */
+    @Override
+    public ResultMsg findSecretProPermission(String signId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select " + SignDispaWork_.signid.getName() + " from V_SIGN_DISP_WORK where " + SignDispaWork_.signid.getName() + "=:signId" );
+        hqlBuilder.setParam("signId" , signId);
+
+        //部门负责人
+        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
+            hqlBuilder.append(" and " + SignDispaWork_.ministerName.getName() + "=:ministerName").setParam("ministerName" , SessionUtil.getDisplayName());
+        }
+        //分管领导
+        else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+            hqlBuilder.append(" and " + SignDispaWork_.leaderName.getName() + "=:leaderName").setParam("leaderName" , SessionUtil.getDisplayName());
+        }
+        //主任
+        else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
+
+        }else{
+            //项目负责人
+            hqlBuilder.append(" and " + SignDispaWork_.allPriUser.getName() + " like '%" + SessionUtil.getDisplayName() + "%'");
+        }
+
+        List<Object[]> objList =  getObjectArray(hqlBuilder);
+
+        if(objList!=null && objList.size()>0){
+            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , null);
+
+        }else{
+
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您无权限查看此项目信息！");
+        }
     }
 
 }

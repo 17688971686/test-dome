@@ -119,6 +119,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                if("secrectlevel".equals(oDataFilterItem.getField()) && "秘密".equals(oDataFilterItem.getValue().toString())){
                    //部门负责人
                    if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
+
                        criteria.add(Restrictions.eq(SignDispaWork_.ministerName.getName() , SessionUtil.getDisplayName()));
                    }
                    //分管领导
@@ -515,6 +516,15 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     @Override
     public List<SignDispaWork> queryStatistics(String  queryData, int page) {
         return signDispaWorkRepo.queryStatistics(queryData , page);
+    }
+    /**
+     * 通过业务id，判断当前用户是否有权限查看项目详情----用于秘密项目
+     * @param signId
+     * @return
+     */
+    @Override
+    public ResultMsg findSecretProPermission(String signId) {
+        return signDispaWorkRepo.findSecretProPermission(signId);
     }
 
 }
