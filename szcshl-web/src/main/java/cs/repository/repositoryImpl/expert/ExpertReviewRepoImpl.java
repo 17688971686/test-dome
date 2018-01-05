@@ -179,10 +179,10 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
     public void initReviewTitle(ExpertReview expertReview, String businessId, String businessType) {
         if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
             Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
-            expertReview.setReviewTitle("《" + sign.getProjectname() + sign.getReviewstage() + "》");//专家评审费
+            expertReview.setReviewTitle("《" + sign.getProjectname() + sign.getReviewstage() +"项目"+ "》专家评审费发放表");//专家评审费
         } else if (Constant.BusinessType.TOPIC.getValue().equals(businessType)) {
             TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
-            expertReview.setReviewTitle("《" + topicInfo.getTopicName() + "》");
+            expertReview.setReviewTitle("《" + topicInfo.getTopicName() +"项目"+ "》专家评审费发放表");
         }
     }
 

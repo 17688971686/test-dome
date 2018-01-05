@@ -784,8 +784,10 @@
     <tr>
         <td width="15%" class="text-center">档案员签收</td>
         <td colspan="3">
-            <select ng-model="vm.signUser" id="signUserid" ng-options="o as o.displayName for o in vm.signUserList">
-                <option value="">请选择</option>
+            <select ng-model="vm.fileRecord.signUserid" id="signUserid">
+                <option ng-repeat="x in vm.signUserList" value="{{x.id}}"
+                        ng-selected="vm.fileRecord.signUserid == x.id">{{x.displayName}}
+                </option>
             </select>
         </td>
         <td width="15%" class="text-center" colspan="2">存档日期</td>

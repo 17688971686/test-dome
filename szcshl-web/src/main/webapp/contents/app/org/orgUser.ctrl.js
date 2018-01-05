@@ -47,6 +47,17 @@
                 vm.remove(idStr);
             }   
        }
+       //查询
+       vm.query=function () {
+           vm.gridOptions.dataSource.read();
+       }
+       //重置
+        vm.formReset=function () {
+            var tab = $("#form").find('input,select').not(":submit, :reset, :image, :disabled,:hidden");
+            $.each(tab, function (i, obj) {
+                obj.value = "";
+            });
+        }
 
         activate();
         function activate() {

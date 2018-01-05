@@ -919,16 +919,16 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                                 }
                             }
                         }
-                        expertData.put("projectName" , expertReview.getReviewTitle().substring(1,expertReview.getReviewTitle().length()-1));
+                        expertData.put("projectName" , expertReview.getReviewTitle());
                         expertData.put("expertList" , expertSelectedList);
                     }
                     //专家评审费发放表
                     if("SIGN_EXPERT_PAY".equals(stageType)){
-
                         file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
                     }
                     //专家评分
                     if("SIGN_EXPERT_SCORE".equals(stageType)){
+                       /* expertData.put("projectName" , expertReview.getReviewTitle().substring(1,expertReview.getReviewTitle().length()-1));*/
                         file = TemplateUtil.createDoc(expertData, Template.EXPERT_SCORD.getKey(), path);
                     }
                     break;
@@ -936,8 +936,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     //拟补充资料函
                     AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName() , businessId);
                     Map<String , Object> addsuppletterData = TemplateUtil.entryAddMap(addSuppLetter);
-                    String leaderSignIdea = addSuppLetter.getLeaderSignIdeaContent().replaceAll("<br>" , "").replaceAll("&nbsp;" , "");
-                    addsuppletterData.put("leaderSignIdea" , leaderSignIdea);
+                    if(Validate.isString(addSuppLetter.getLeaderSignIdeaContent())){
+                        String leaderSignIdea = addSuppLetter.getLeaderSignIdeaContent().replaceAll("<br>" , "").replaceAll("&nbsp;" , "");
+                        addsuppletterData.put("leaderSignIdea" , leaderSignIdea);
+
+                    }
                     file = TemplateUtil.createDoc(addsuppletterData, Template.ADDSUPPLETER.getKey(), path);
                     break;
 

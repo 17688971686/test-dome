@@ -532,7 +532,7 @@
                                             <w:sz w:val="24"/>
                                             <w:szCs w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">   号</w:t>
+                                        <w:t xml:space="preserve"><#if filenum??>号</#if></w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
