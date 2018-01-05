@@ -81,30 +81,32 @@
                     expertReview.totalCost = 0;
 
                     $.each(expertReview.expertSelectedDtoList,function(i,v){
-                        var expertId = v.EXPERTID;
-                        var expertSelectedId = v.id;
-                        var totalCost = 0;
-                        //console.log("计算专家:"+expertDto.name);
-                        if (allExpertCost != undefined && allExpertCost.length > 0) {
-                            //累加专家改月的评审费用
-                            allExpertCost.forEach(function (v, i) {
-                                if (v.EXPERTID == expertId && v.ESID != expertSelectedId) {
-                                    v.REVIEWCOST = v.REVIEWCOST == undefined ? 0 : v.REVIEWCOST;
-                                    v.REVIEWCOST = parseFloat(v.REVIEWCOST);
-                                    totalCost = parseFloat(totalCost) + v.REVIEWCOST;
-                                }
-                            });
-                        }
-                        //console.log("专家当月累加:" + totalCost);
-                        //计算评审费用
-                        v.reviewCost = v.reviewCost == undefined ? 0 : v.reviewCost;
-                        var reviewTaxesTotal = totalCost + parseFloat(v.reviewCost);
-                        //console.log("专家当月累加加上本次:" + reviewTaxesTotal);
-                        v.reviewTaxes = countNum(reviewTaxesTotal).toFixed(2);
-                        v.totalCost = (parseFloat(v.reviewCost) + parseFloat(v.reviewTaxes)).toFixed(2);
-                        expertReview.reviewCost = (parseFloat(expertReview.reviewCost) + parseFloat(v.reviewCost)).toFixed(2);
-                        expertReview.reviewTaxes = (parseFloat(expertReview.reviewTaxes) + parseFloat(v.reviewTaxes)).toFixed(2);
-                        expertReview.totalCost = (parseFloat(expertReview.reviewCost) + parseFloat(expertReview.reviewTaxes)).toFixed(2);
+                       if(v.isConfrim=="9" && v.isJoin=="9") {
+                           var expertId = v.EXPERTID;
+                           var expertSelectedId = v.id;
+                           var totalCost = 0;
+                           //console.log("计算专家:"+expertDto.name);
+                           if (allExpertCost != undefined && allExpertCost.length > 0) {
+                               //累加专家改月的评审费用
+                               allExpertCost.forEach(function (v, i) {
+                                   if (v.EXPERTID == expertId && v.ESID != expertSelectedId) {
+                                       v.REVIEWCOST = v.REVIEWCOST == undefined ? 0 : v.REVIEWCOST;
+                                       v.REVIEWCOST = parseFloat(v.REVIEWCOST);
+                                       totalCost = parseFloat(totalCost) + v.REVIEWCOST;
+                                   }
+                               });
+                           }
+                           //console.log("专家当月累加:" + totalCost);
+                           //计算评审费用
+                           v.reviewCost = v.reviewCost == undefined ? 0 : v.reviewCost;
+                           var reviewTaxesTotal = totalCost + parseFloat(v.reviewCost);
+                           //console.log("专家当月累加加上本次:" + reviewTaxesTotal);
+                           v.reviewTaxes = countNum(reviewTaxesTotal).toFixed(2);
+                           v.totalCost = (parseFloat(v.reviewCost) + parseFloat(v.reviewTaxes)).toFixed(2);
+                           expertReview.reviewCost = (parseFloat(expertReview.reviewCost) + parseFloat(v.reviewCost)).toFixed(2);
+                           expertReview.reviewTaxes = (parseFloat(expertReview.reviewTaxes) + parseFloat(v.reviewTaxes)).toFixed(2);
+                           expertReview.totalCost = (parseFloat(expertReview.reviewCost) + parseFloat(expertReview.reviewTaxes)).toFixed(2);
+                       }
                     });
                 });
             }

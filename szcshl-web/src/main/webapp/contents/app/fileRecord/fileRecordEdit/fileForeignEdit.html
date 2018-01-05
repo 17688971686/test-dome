@@ -375,17 +375,21 @@
     </tr>
     <tr>
         <td width="15%" class="text-center">项目第二负责人签名</td>
-        <td>
 
+        <td>
+            <input maxlength="64" type="text" style="width:30%;"class="form-control input-sm " ng-model="vm.fileRecord.projectTwoUser" name="projectTwoUser">
         </td>
+
 
     </tr>
 
     <tr>
         <td width="15%" class="text-center">档案员签收</td>
         <td>
-            <select ng-model="vm.signUser" id="signUserid"  ng-options="o as o.displayName for o in vm.signUserList">
-                <option value="">请选择</option>
+            <select ng-model="vm.fileRecord.signUserid" id="signUserid">
+                <option ng-repeat="x in vm.signUserList" value="{{x.id}}"
+                        ng-selected="vm.fileRecord.signUserid == x.id">{{x.displayName}}
+                </option>
             </select>
         </td>
         <td width="15%" class="text-center">纸质文件接受日期</td>

@@ -157,19 +157,36 @@ public class OrgServiceImpl implements OrgService {
 
     @Override
     @Transactional
-    public PageModelDto<UserDto> getOrgUsers(String id) {
+    public PageModelDto<UserDto> getOrgUsers(String id,ODataObj odataObj) {
         PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
         List<UserDto> userDtos = new ArrayList<>();
         Org org = orgRepo.findById(id);
         if (org != null) {
-            org.getUsers().forEach(x -> {
-                UserDto userDto = new UserDto();
-                userDto.setId(x.getId());
-                userDto.setRemark(x.getRemark());
-                userDto.setLoginName(x.getLoginName());
-                userDto.setDisplayName(x.getDisplayName());
-                userDtos.add(userDto);
-            });
+            String ss="";
+            if(odataObj.getFilter()!=null){
+                ss=odataObj.getFilter().get(0).getValue().toString();
+            }
+            List<User> user=org.getUsers();
+            for(int i=0;i<user.size();i++){
+                if(odataObj.getFilter()!=null){
+                    if (user.get(i).getLoginName().indexOf(ss) != -1 || user.get(i).getDisplayName().indexOf(ss) != -1){
+                        UserDto userDto = new UserDto();
+                        userDto.setId(user.get(i).getId());
+                        userDto.setRemark(user.get(i).getRemark());
+                        userDto.setLoginName(user.get(i).getLoginName());
+                        userDto.setDisplayName(user.get(i).getDisplayName());
+                        userDtos.add(userDto);
+
+                    }
+                }else{
+                    UserDto userDto = new UserDto();
+                    userDto.setId(user.get(i).getId());
+                    userDto.setRemark(user.get(i).getRemark());
+                    userDto.setLoginName(user.get(i).getLoginName());
+                    userDto.setDisplayName(user.get(i).getDisplayName());
+                    userDtos.add(userDto);
+                }
+            }
             pageModelDto.setValue(userDtos);
             pageModelDto.setCount(userDtos.size());
             logger.info(String.format("查找部门用户，部门%s", org.getOrgIdentity()));

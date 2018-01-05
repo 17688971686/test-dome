@@ -199,6 +199,7 @@
                 starHalf: '../contents/libs/raty/lib/images/star-half.png',
                 readOnly: false,
                 halfShow: true,
+                hints   : ['不合格','合格','中等','良好','优秀'],
                 size: 34,
                 click: function (score, evt) {
                     vm.scoreExpert.score = score;

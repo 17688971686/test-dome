@@ -99,9 +99,9 @@ public class OrgController {
     @RequiresAuthentication
     @RequestMapping(name = "部门用户", path = "users", method = RequestMethod.POST)
     public @ResponseBody
-    PageModelDto<UserDto> orgUsers(@RequestParam String orgId) {
-
-        return orgService.getOrgUsers(orgId);
+    PageModelDto<UserDto> orgUsers(@RequestParam String orgId,HttpServletRequest request)throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        return orgService.getOrgUsers(orgId,odataObj);
     }
 
     //@RequiresPermissions("org#userNotIn#post")

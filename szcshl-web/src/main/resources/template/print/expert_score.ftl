@@ -80,33 +80,7 @@
                                 <w:lang w:eastAsia="zh-CN"/>
                             </w:rPr>
                         </w:pPr>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:hAnsi="宋体" w:eastAsia="黑体"/>
-                                <w:sz w:val="44"/>
-                                <w:szCs w:val="44"/>
-                                <w:lang w:eastAsia="zh-CN"/>
-                            </w:rPr>
-                            <w:t>《</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:hAnsi="宋体" w:eastAsia="黑体"/>
-                                <w:sz w:val="44"/>
-                                <w:szCs w:val="44"/>
-                                <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                            </w:rPr>
-                            <w:t>${projectName}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:hAnsi="宋体" w:eastAsia="黑体"/>
-                                <w:sz w:val="44"/>
-                                <w:szCs w:val="44"/>
-                                <w:lang w:eastAsia="zh-CN"/>
-                            </w:rPr>
-                            <w:t>》项目</w:t>
-                        </w:r>
+
                     </w:p>
                     <w:p>
                         <w:pPr>

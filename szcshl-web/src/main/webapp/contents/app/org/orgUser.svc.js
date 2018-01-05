@@ -152,7 +152,8 @@
 			// Begin:dataSource
 			var dataSource = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(url_orgUsers+"?orgId="+vm.id),
+				transport : common.kendoGridConfig().transport(url_orgUsers+"?orgId="+vm.id, $("#form")),
+					/*url_orgUsers+"?orgId="+vm.id),*/
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {

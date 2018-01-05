@@ -719,7 +719,7 @@
 <div class="navbar navbar-default navbar-fixed-bottom" style="padding: 0;margin: 0;">
     <div class="text-center" style="line-height: 50px;">
 
-        <button class="btn btn-sm btn-success" ng-if="vm.model.createdBy=='${CURRENT_USER.userNo}'|| '${CURRENT_USER.loginName}'=='admin' " ng-click="vm.saveEP()" ng-disabled="vm.isSubmit" >
+        <button class="btn btn-sm btn-success"  ng-click="vm.saveEP()" ng-disabled="vm.isSubmit" >
             <span class="glyphicon glyphicon-ok"></span>保存专家信息
         </button>
         <button ng-if="vm.model.expertID" class="btn btn-sm btn-success" ng-click="vm.selReviewProject()">
