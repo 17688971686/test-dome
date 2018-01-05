@@ -880,12 +880,6 @@
                     filterable: false
                 },
                 {
-                    field: "receivedate",
-                    title: "批复来文时间",
-                    width: 110,
-                    filterable: false
-                },
-                {
                     field: "dispatchType",
                     title: "发文类型",
                     width: 100,

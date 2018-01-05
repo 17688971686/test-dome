@@ -50,12 +50,6 @@ public class AddRegisterFile extends DomainBase {
 	private String businessId;
 
 	/**
-	 * 是否拟补充资料
-	 */
-//	@Column(columnDefinition = "VARCHAR(2)")
-//	private String isSupplement;
-
-	/**
 	 * 业务类型：
 	 * 1为报审文件，2为归档图纸，3为补充材料，4其他资料，
 	 * 5为归档中的报审登记表中的其它资料，
@@ -65,13 +59,6 @@ public class AddRegisterFile extends DomainBase {
 	@Column(columnDefinition = "INTEGER")
 	private Integer businessType;
 
-//	public String getIsSupplement() {
-//		return isSupplement;
-//	}
-//
-//	public void setIsSupplement(String isSupplement) {
-//		this.isSupplement = isSupplement;
-//	}
 
     public Integer getBusinessType() {
         return businessType;

@@ -246,12 +246,6 @@
                     filterable: false
                 },
                 {
-                    field: "receivedate",
-                    title: "批复来文时间",
-                    width: 140,
-                    filterable: false
-                },
-                {
                     field: "dispatchtype",
                     title: "发文类型",
                     width: 140,
