@@ -116,7 +116,7 @@ public class AddSuppLetterDto extends BaseDto {
     private String fileCode;
 
     //月报的序号
-    private Integer MonthlySeq;
+    private Integer monthlySeq;
     /**
      * 业务ID
      */
@@ -429,11 +429,11 @@ public class AddSuppLetterDto extends BaseDto {
     }
 
     public Integer getMonthlySeq() {
-        return MonthlySeq;
+        return monthlySeq;
     }
 
     public void setMonthlySeq(Integer monthlySeq) {
-        MonthlySeq = monthlySeq;
+        this.monthlySeq = monthlySeq;
     }
 
     public String getMonthLetterYearName() {

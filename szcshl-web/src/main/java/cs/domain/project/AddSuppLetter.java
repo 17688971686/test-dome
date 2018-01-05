@@ -143,7 +143,7 @@ public class AddSuppLetter extends DomainBase {
 
 	//月报的文字序号
 	@Column(columnDefinition = "INTEGER")
-	private Integer MonthlySeq;
+	private Integer monthlySeq;
 
     /**
      * 业务ID
@@ -456,10 +456,10 @@ public class AddSuppLetter extends DomainBase {
     }
 
 	public Integer getMonthlySeq() {
-		return MonthlySeq;
+		return monthlySeq;
 	}
 
 	public void setMonthlySeq(Integer monthlySeq) {
-		MonthlySeq = monthlySeq;
+		this.monthlySeq = monthlySeq;
 	}
 }
