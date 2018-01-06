@@ -15,6 +15,7 @@
 
         //S_初始化
         function initFileRecordData(vm) {
+            vm.otherFile=[];//定义归档其他资料的包含分类5、6、7
             var httpOptions = {
                 method: 'get',
                 url: rootPath + "/fileRecord/initFillPage",
@@ -29,7 +30,7 @@
                     vm.isassistproc = (vm.fileRecord.isassistproc == '9')?true:false;
                     //其它资料信息
                     vm.fileRecord.registerFileDto.forEach(function(registerFile  , x){
-                        if(registerFile.businessType == 4){
+                        if(registerFile.businessType == 5 ||registerFile.businessType == 6 ||registerFile.businessType == 7){
                             vm.otherFile.push(registerFile);
                         }else if(registerFile.businessType == 2){
                             vm.drawingFile.push(registerFile);

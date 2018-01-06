@@ -23,7 +23,7 @@
             <td style="width:15%;">复印件</td>
             <td width="25%">资料类型</td>
         </tr>
-        <tr ng-repeat="x in vm.addRegisters | filter : {businessType : vm.businessType}">
+        <tr ng-repeat="x in vm.addRegisters ">
             <td class="text-center">
                 <input type="checkbox" ng-checked="addRegistersCheck" name="addRegistersCheck"
                        value="{{vm.addRegisters[$index].id}}"/>
@@ -49,9 +49,10 @@
                        name="isHasCopyfile" ng-click="vm.addRegisters[$index].totalNum = initInputValue($event,vm.addRegisters[$index].totalNum)" ng-true-value="9" ng-false-value="0">
             </td>
             <td>
-                <select ng-model="vm.addRegisters[$index].businessType" class="form-control input-sm " disabled="disabled" style="width: 80%;">
-                    <option ng-repeat="d in DICT.BUSINESS_TYPE.dicts" value="{{d.dictKey}}"
-                            ng-selected="vm.businessType == d.dictKey">{{d.dictName}}
+                <select ng-model="vm.addRegisters[$index].businessType" class="form-control input-sm "  style="width: 80%;">
+                    <option value="">请选择</option>
+                    <option ng-repeat="d in DICT.BUSINESS_TYPE.dicts " value="{{d.dictKey}}"
+                            ng-selected="x.businessType == d.dictKey">{{d.dictName}}
                     </option>
                 </select>
             </td>

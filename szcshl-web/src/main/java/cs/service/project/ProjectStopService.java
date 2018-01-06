@@ -21,6 +21,7 @@ public interface ProjectStopService {
 
     ResultMsg savePauseProject(ProjectStopDto projectStopDto);
 
+    ResultMsg saveProjectStop(ProjectStopDto projectStopDto);
     PageModelDto<ProjectStopDto> findProjectStopByStopId(ODataObj oDataObj);
 
     /**

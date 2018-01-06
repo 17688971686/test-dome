@@ -47,6 +47,15 @@ public class ProjectStopController {
 		return projectStopService.findSignBySignId(signId);
 	}
 
+	@RequiresAuthentication
+	//@RequiresPermissions("projectStop#initProjectBySignId#get")
+	@RequestMapping(name="通过项目id获取暂停项目信息",path="getProjectStopBySignId" ,method=RequestMethod.POST)
+	@ResponseBody
+	public List<ProjectStop>  getProjectStopBySignId(@RequestParam  String signId){
+		List<ProjectStop> projectStopList = projectStopService.findProjectStopBySign(signId);
+		return projectStopList;
+	}
+
    /* @RequiresAuthentication
     //@RequiresPermissions("projectStop#countUsedWorkday#get")
 	@RequestMapping(name="计算已用工作日",path="countUsedWorkday",method = RequestMethod.GET)
@@ -56,11 +65,19 @@ public class ProjectStopController {
 	}*/
 
     @RequiresAuthentication
-	@RequestMapping(name="保存信息", path="savePauseProject" ,method=RequestMethod.POST)
+	@RequestMapping(name="发起流程", path="savePauseProject" ,method=RequestMethod.POST)
 	@ResponseBody
 	public ResultMsg pauseProject(@RequestBody  ProjectStopDto projectStopDto){
 		return projectStopService.savePauseProject(projectStopDto);
 	}
+
+	@RequiresAuthentication
+	@RequestMapping(name="保存信息", path="saveProjectStop" ,method=RequestMethod.POST)
+	@ResponseBody
+	public ResultMsg saveProjectStop(@RequestBody  ProjectStopDto projectStopDto){
+		return projectStopService.saveProjectStop(projectStopDto);
+	}
+
 
     @RequiresAuthentication
     //@RequiresPermissions("projectStop#getProjectStopByStopId#get")

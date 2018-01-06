@@ -773,7 +773,7 @@
                      ng-click="vm.fileRecord.combustiblegasCount = initInputValue($event,vm.fileRecord.combustiblegasCount)"
                      ng-true-value="9" ng-false-value="0"></td>
         <td style="text-align: center;">
-            其他<input ng-disabled="true" type="checkbox" style="width:30px;" ng-model="vm.fileRecord.fieOther" ng-disabled="true"
+            其它<input ng-disabled="true" type="checkbox" style="width:30px;" ng-model="vm.fileRecord.fieOther" ng-disabled="true"
                      ng-click="vm.fileRecord.fieOtherCount = initInputValue($event,vm.fileRecord.fieOtherCount)"
                      ng-true-value="9" ng-false-value="0">
         </td>
@@ -807,8 +807,42 @@
              ng-disabled="true">-->
         </td>
     </tr>
-    <tr ng-if="vm.fileRecord.registerFileDto">
-        <td colspan="9">其他资料
+    <tr ng-if="vm.otherFile">
+        <td colspan="9">其它资料
+
+        <ul>
+            <li style="width: 85%">
+                <span  style="width: 90%">&nbsp;</span>
+            </li>
+            <li style="width: 15%;float: right">
+                <span style="margin-right: 22%" >份数</span>
+                <span  style="margin-right: 10%">原件</span>
+                <span>复印件</span>
+            </li>
+        </ul>
+    </td>
+    </tr>
+    <tr ng-if="vm.otherFile" ng-repeat="f in vm.otherFile">
+        <td colspan="9">
+                        <span  >
+                        {{vm.otherFile[$index].fileName}}
+                        </span>
+            <span style="float: right; margin-right: 4%">
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.otherFile[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" />
+                            </span>
+
+            <span style="float: right; margin-right: 3%">
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.otherFile[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" />
+                            </span>
+            <span style="float: right; margin-right: 3%" >
+                                <input type="text" style="width:50px;"  ng-disabled="true"
+                                       ng-model="vm.otherFile[$index].totalNum" >
+                            </span>
+        </td>
+    </tr>
+
+    <tr ng-if="vm.drawingFile">
+        <td colspan="9">图纸资料
 
             <ul>
                 <li style="width: 85%">
@@ -822,21 +856,21 @@
             </ul>
         </td>
     </tr>
-    <tr ng-if="vm.fileRecord.registerFileDto" ng-repeat="f in vm.fileRecord.registerFileDto">
+    <tr ng-if="vm.drawingFile" ng-repeat="f in vm.drawingFile">
         <td colspan="9">
                         <span  >
-                        {{vm.fileRecord.registerFileDto[$index].fileName}}
+                        {{vm.drawingFile[$index].fileName}}
                         </span>
             <span style="float: right; margin-right: 4%">
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.fileRecord.registerFileDto[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.drawingFile[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" />
                             </span>
 
             <span style="float: right; margin-right: 3%">
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.fileRecord.registerFileDto[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.drawingFile[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" />
                             </span>
             <span style="float: right; margin-right: 3%" >
                                 <input type="text" style="width:50px;"  ng-disabled="true"
-                                       ng-model="vm.fileRecord.registerFileDto[$index].totalNum" >
+                                       ng-model="vm.drawingFile[$index].totalNum" >
                             </span>
         </td>
     </tr>

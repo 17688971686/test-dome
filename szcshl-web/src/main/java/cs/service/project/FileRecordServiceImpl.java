@@ -127,7 +127,7 @@ public class FileRecordServiceImpl implements FileRecordService {
             BeanCopierUtils.copyProperties(fileRecord, fileRecordDto);
 
             //查询补充资料函信息
-            List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(),fileRecord.getFileRecordId(),null);
+            List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(),signid,null);
             if(Validate.isList(registerFileList)){
 
                 registerFileList.forEach(rgf -> {

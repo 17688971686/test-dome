@@ -2,14 +2,85 @@
 
     <div class="toolbar">
         <button ng-hide="vm.projectStop.processInstanceId" class="btn btn-sm btn-success" ng-click="vm.commitProjectStop()">
-            <span class="glyphicon glyphicon-ok"></span>确定</button>
+            <span class="glyphicon glyphicon-ok"></span>发起流程</button>
         <go-back ng-hide="vm.projectStop.processInstanceId"></go-back>
         <!--退回时的处理,判断是否有流程实例ID-->
-        <button  ng-show="vm.projectStop.processInstanceId" class="btn btn-sm btn-success" ng-click="vm.saveProjectStop()">
+        <button  class="btn btn-sm btn-success" ng-click="vm.saveProjectStop()">
             <span class="glyphicon glyphicon-ok"></span>保存</button>
+        <button ng-if="vm.projectStop.isSupplementMaterial==9 ||vm.projectStop.isPuaseApprove==9" class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
+        <button  ng-if="vm.projectStop.isSupplementMaterial==9 ||vm.projectStop.isPuaseApprove==9" class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
         <a  ng-show="vm.projectStop.processInstanceId" class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
 
     </div>
+
+    <!--S 上传附件弹窗 -->
+    <div id="commonUploadWindow" style="margin:0px 20px 0px 10px;background:white;display:none;">
+        <input type="file" id="sysfileinput" name="file" multiple="multiple" class="file-loading"/>
+        <div>
+            <span >文件类型：</span>
+            <span >
+           <select id="sysBusiType" name="sysBusiType" ng-model="vm.sysFile.sysBusiType" style="min-width:200px;margin-top:10px;">
+               <option value="中心发补充材料函" selected="selected">中心发补充材料函</option>
+               <option value="申报单位要求暂停审核函">申报单位要求暂停审核函</option>
+           </select>
+       </span>
+        </div>
+    </div>
+    <!--E 上传附件弹窗 -->
+
+
+    <!-- S 附件上传列表 -->
+    <div id="commonQueryWindow" class="well well-sm" style="background:white;display:none;">
+        <p>
+    <span class="attentionDiv" style="padding:5px;font-size: 12px;">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
+        温馨提示：文件较大的附件，建议先下载再查看，不建议在线预览！
+    </span>
+        </p>
+        <table class="table table-bordered">
+            <tr>
+                <td align="center" bgcolor="#eeeeee">文件名称</td>
+                <td style="width: 80px;" align="center" bgcolor="#eeeeee">文件大小</td>
+                <td style="width: 120px;" align="center" bgcolor="#eeeeee">附件类型</td>
+                <td style="width: 100px;" align="center" bgcolor="#eeeeee">上传人</td>
+                <td style="width: 150px;" align="center" bgcolor="#eeeeee">时间</td>
+                <td style="width: 250px;" align="center" bgcolor="#eeeeee">操作</td>
+            </tr>
+            <tr ng-repeat="x in vm.sysFilelists ">
+                <td >
+                    <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                    <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                    <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                    <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                    <a ng-click="vm.commonDownloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+                </td>
+                <td style="text-align: center;">{{ x.fileSizeStr }}</td>
+                <td style="text-align: center;">{{ x.sysBusiType }}</td>
+                <td style="text-align: center;">{{ x.createdBy }}</td>
+                <td style="text-align: center;">{{ x.createdDate }}</td>
+                <td style="text-align: center;">
+                    <button ng-click="vm.downloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i class="fa fa-cloud-download" aria-hidden="true"></i>下载</button>
+                    <!-- word 类型，在线编辑&ndash;&gt;-->
+                    <span ng-if="x.fileType =='.docx' || x.fileType =='.doc' || x.fileType =='.xlsx' || x.fileType =='.xls' || x.fileType =='.ppt' || x.fileType =='.pptx'">
+                <button ng-click="previewFile(x.sysFileId,'office')" class="btn btn-xs btn-primary"><span
+                        class="glyphicon glyphicon-pencil"></span>编辑</button>
+            </span>
+                    <!-- pdf 文件&ndash;&gt;-->
+                    <span ng-if="x.fileType =='.pdf' || x.fileType =='.docx' || x.fileType =='.doc' || x.fileType =='.xlsx' || x.fileType =='.xls' || x.fileType =='.ppt' || x.fileType =='.pptx'">
+                <button ng-click="previewFile(x.sysFileId,'pdf');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>预览</button>
+            </span>
+                    <!-- image 文件&ndash;&gt;-->
+                    <span ng-if="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'">
+                <button ng-click="previewFile(x.sysFileId,'image');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>预览</button>
+            </span>
+                    <button class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- E 附件上传列表 -->
+
+
     <form id="form" name="form">
         <table class="table table-bordered">
             <caption class="text-center h3"><strong>项目暂停审批表</strong></caption>
