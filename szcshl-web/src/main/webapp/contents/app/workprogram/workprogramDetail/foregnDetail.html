@@ -31,12 +31,12 @@
             </tr>
             <tr>
                 <td class="text-center" colspan="2">建设单位</td>
-                <td colspan="3">{{w.buildCompany}}</td>
-                <td class="text-center">编制单位</td>
-                <td colspan="3">{{w.designCompany}}</td>
+                <td colspan="7">{{w.buildCompany}}</td>
+               <!-- <td class="text-center">编制单位</td>
+                <td colspan="3">{{w.designCompany}}</td>-->
             </tr>
 
-            <tr>
+            <!--<tr>
                 <td class="text-center" colspan="2">主管部门</td>
                 <td colspan="3">{{w.mainDeptName}}</td>
                 <td class="text-center">是否有环评</td>
@@ -52,7 +52,7 @@
                 <td style="width:15%;">{{w.projectSubType}}</td>
                 <td class="text-center">行业类别</td>
                 <td colspan="3">{{w.industryType}}</td>
-            </tr>
+            </tr>-->
             <tr>
                 <td class="text-center" colspan="2">联系人</td>
                 <td colspan="3">{{w.contactPerson}}</td>
@@ -66,16 +66,18 @@
                 <td colspan="3">{{w.contactPersonFax}}</td>
             </tr>
             <tr>
+                <td style="width:10%;height: 80px;" colspan="2" class="text-center">项目概况</td>
+                <td colspan="7">{{w.projectBackGround}}</td>
+            </tr>
+            <tr>
+                <td style="width:10%;height: 80px;" colspan="2" class="text-center">拟评审重点问题</td>
+                <td colspan="7">{{w.mainPoint}}</td>
+            </tr>
+            <!--<tr>
                 <td rowspan="3" style="width:5%;" class="text-center" style="vertical-align:middle;">项目概况</td>
-                <!--<td class="text-center" style="width:10%;">申报投资</td>
-                <td colspan="7">{{w.appalyInvestment}} 万元</td>-->
                 <td class="text-center" style="height: 80px;">申报建设规模</td>
                 <td colspan="7">{{w.buildSize}}</td>
             </tr>
-            <!--<tr>
-                <td class="text-center" style="height: 80px;">申报建设规模</td>
-                <td colspan="7">{{w.buildSize}}</td>
-            </tr>-->
             <tr>
                 <td class="text-center" style="height: 80px;">申报建设内容</td>
                 <td colspan="7">{{w.buildContent}}</td>
@@ -83,7 +85,7 @@
             <tr>
                 <td class="text-center" style="height: 80px;">项目背景</td>
                 <td colspan="7">{{w.projectBackGround}}</td>
-            </tr>
+            </tr>-->
             <tr>
                 <td rowspan="2" colspan="2" class="text-center">评估部门</td>
                 <td rowspan="2" colspan="3">
@@ -220,6 +222,10 @@
                 <td colspan="3">{{w.mainWorkProgramDto.sendFileUser}}</td>
             </tr>
             <tr>
+                <td style="width:10%;" colspan="2" class="text-center">采购单位</td>
+                <td colspan="7">{{w.mainWorkProgramDto.buildCompany}}</td>
+            </tr>
+            <!--<tr>
                 <td class="text-center" colspan="2">建设单位</td>
                 <td colspan="3">{{w.mainWorkProgramDto.buildCompany}}</td>
                 <td class="text-center">编制单位</td>
@@ -242,7 +248,7 @@
                 <td style="width:15%;">{{w.mainWorkProgramDto.projectSubType}}</td>
                 <td class="text-center">行业类别</td>
                 <td colspan="3">{{w.mainWorkProgramDto.industryType}}</td>
-            </tr>
+            </tr>-->
             <tr>
                 <td class="text-center" colspan="2">联系人</td>
                 <td colspan="3">{{w.mainWorkProgramDto.contactPerson}}</td>
@@ -255,7 +261,7 @@
                 <td class="text-center">传真</td>
                 <td colspan="3">{{w.mainWorkProgramDto.contactPersonFax}}</td>
             </tr>
-            <tr>
+            <!--<tr>
                 <td rowspan="4" style="width:5%;vertical-align:middle;" class="text-center" >项目概况</td>
                 <td class="text-center" style="width:10%;">申报投资</td>
                 <td colspan="7">{{w.appalyInvestment}} 万元</td>
@@ -271,6 +277,14 @@
             <tr>
                 <td class="text-center" style="height: 80px;">项目背景</td>
                 <td colspan="7">{{w.projectBackGround}}</td>
+            </tr>-->
+            <tr>
+                <td style="width:10%;height: 80px;" colspan="2" class="text-center">项目概况</td>
+                <td colspan="7">{{w.projectBackGround}}</td>
+            </tr>
+            <tr>
+                <td style="width:10%;height: 80px;" colspan="2" class="text-center">拟评审重点问题</td>
+                <td colspan="7">{{w.mainPoint}}</td>
             </tr>
             <tr>
                 <td rowspan="2" colspan="2" class="text-center" style="vertical-align: middle;">评估部门</td>
