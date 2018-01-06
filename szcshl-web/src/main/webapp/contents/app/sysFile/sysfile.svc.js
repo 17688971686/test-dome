@@ -220,10 +220,10 @@
             }
             //附件删除方法
             options.vm.delSysFile = function (id) {
-                delSysFile(id, function () {
-                    bsWin.alert("删除成功！");
+                delSysFile(id, function (data) {
+                    bsWin.alert(data.reMsg || "删除成功！");
                     $.each(options.vm.sysFilelists, function (i, sf) {
-                        if (sf.sysFileId == id) {
+                        if (!angular.isUndefined(sf) && sf.sysFileId == id) {
                             options.vm.sysFilelists.splice(i, 1);
                         }
                     })

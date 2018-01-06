@@ -57,9 +57,8 @@ public class AnnountmentController {
     @RequiresAuthentication
     @RequestMapping(name = "新增通知公告", path = "", method = RequestMethod.POST)
     @ResponseBody
-    public AnnountmentDto create(@RequestBody AnnountmentDto annountmentDto) {
-        annService.createAnnountment(annountmentDto);
-        return annountmentDto;
+    public ResultMsg create(@RequestBody AnnountmentDto annountmentDto) {
+        return annService.createAnnountment(annountmentDto);
     }
 
     //@RequiresPermissions("annountment#initAnOrg#get")

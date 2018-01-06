@@ -43,8 +43,9 @@ public class CreateTemplateUtils {
         dataMap.put("content2", "xxxxx");
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_OPINION.getKey(), Constant.Template.STUDY_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
 
@@ -92,8 +93,9 @@ public class CreateTemplateUtils {
         dataMap.put("reviewGroup", reviewGroup);
 
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_ROSTER.getKey(), Constant.Template.STUDY_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
 
@@ -113,8 +115,9 @@ public class CreateTemplateUtils {
         dataMap.put("gsnum", "2");
         dataMap.put("projectName", signDispaWork.getProjectname());
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_ESTIMATE.getKey(), Constant.Template.STUDY_ESTIMATE.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -141,8 +144,9 @@ public class CreateTemplateUtils {
         dataMap.put("content2", "xxxxx");
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_OPINION.getKey(), Constant.Template.BUDGET_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -160,8 +164,9 @@ public class CreateTemplateUtils {
         dataMap.put("jagcfynum", "4");
         dataMap.put("projectName", signDispaWork.getProjectname());
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_PROJECTCOST.getKey(), Constant.Template.BUDGET_PROJECTCOST.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -179,8 +184,9 @@ public class CreateTemplateUtils {
         dataMap.put("projectName", signDispaWork.getProjectname());
         dataMap.put("gsnum2", "2");
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_ESTIMATE.getKey(), Constant.Template.BUDGET_ESTIMATE.getValue().split("_")[1],
                 Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -223,8 +229,9 @@ public class CreateTemplateUtils {
         }
         dataMap.put("reviewGroup", reviewGroup);
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_ROSTER.getKey(), Constant.Template.BUDGET_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -251,8 +258,9 @@ public class CreateTemplateUtils {
         System.out.print(DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
                 Constant.Template.SUG_OPINION.getKey(), Constant.Template.SUG_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -269,8 +277,9 @@ public class CreateTemplateUtils {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("ksnum", "2");
         dataMap.put("projectName", signDispaWork.getProjectname());
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
                 Constant.Template.SUG_ESTIMATE.getKey(), Constant.Template.SUG_ESTIMATE.getValue().split("_")[1],
                 Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -314,8 +323,9 @@ public class CreateTemplateUtils {
 
         dataMap.put("reviewGroup", reviewGroup);
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
                 Constant.Template.BUDGET_ROSTER.getKey(), Constant.Template.SUG_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -341,8 +351,9 @@ public class CreateTemplateUtils {
         dataMap.put("content2", "xxxxx");
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_OPINION.getKey(), Constant.Template.REPORT_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -358,8 +369,9 @@ public class CreateTemplateUtils {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("gsnum", "2");
         dataMap.put("projectName", signDispaWork.getProjectname());
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_ESTIMATE.getKey(), Constant.Template.REPORT_ESTIMATE.getValue().split("_")[1],
                 Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -403,8 +415,9 @@ public class CreateTemplateUtils {
 
         dataMap.put("reviewGroup", reviewGroup);
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_ROSTER.getKey(), Constant.Template.REPORT_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -429,8 +442,9 @@ public class CreateTemplateUtils {
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
         dataMap.put("reviewStage", sign.getReviewstage());
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.SIGN_IN.getKey(), Constant.Template.SIGN_IN.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
 
@@ -477,8 +491,9 @@ public class CreateTemplateUtils {
                 }
             }
 
-            sysFile = TemplateUtil.createTemplate(f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                    Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+            sysFile = TemplateUtil.createTemplate(
+                    f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                    workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                     Constant.Template.UNIT_NOTICE.getKey(), Constant.Template.UNIT_NOTICE.getValue(),
                     Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         }
@@ -510,16 +525,18 @@ public class CreateTemplateUtils {
                 dataMap.put("endTime", DateUtils.converToString(roomBooking.getEndTime(), "HH:mm"));//会议结束时间
                 dataMap.put("meetingAddress", roomBooking.getAddressName());
                 if (DateUtils.compareIgnoreSecond(roomBooking.getBeginTime(), compareDate) == 1) {
-                    sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                            Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+                    sysFile = TemplateUtil.createTemplate(
+                            f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                            workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                             Constant.Template.MEETING_AM.getKey(), Constant.Template.MEETING_AM.getValue(),
                             Constant.Template.WORD_SUFFIX.getKey(), dataMap);
                     sysFileList.add(sysFile);
 
                 } else {
 
-                    sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                            Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+                    sysFile = TemplateUtil.createTemplate(
+                            f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                            workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                             Constant.Template.MEETING_PM.getKey(), Constant.Template.MEETING_PM.getValue(),
                             Constant.Template.WORD_SUFFIX.getKey(), dataMap);
                     sysFileList.add(sysFile);
@@ -566,8 +583,9 @@ public class CreateTemplateUtils {
                     dataMap.put("lastTime", "半");//天数
                 }
             }
-            sysFile = TemplateUtil.createTemplate(f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                    Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+            sysFile = TemplateUtil.createTemplate(
+                    f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                    workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                     Constant.Template.INVITATION.getKey(), Constant.Template.INVITATION.getValue(),
                     Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         }
@@ -630,8 +648,9 @@ public class CreateTemplateUtils {
         dataMap.put("appalyInvestment", workProgram.getAppalyInvestment());//申报金额
         dataMap.put("mainPoint", workProgram.getMainPoint());//拟评审重点问题
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.COMPERE.getKey(), Constant.Template.COMPERE.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -679,8 +698,9 @@ public class CreateTemplateUtils {
         dataMap.put("assistDeptUserName", sign.getAssistdeptName()); //协办事处联系人
         dataMap.put("mainDeptUserName", sign.getMainDeptUserName()); //主办事处联系人
 
-        SysFile sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.ASSIST.getKey(), Constant.Template.ASSIST.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -729,8 +749,9 @@ public class CreateTemplateUtils {
                     dataMap.put("lastTime", "半");//天数
                 }
             }
-            sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                    Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
+            sysFile = TemplateUtil.createTemplate(
+                    f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                    workProgram.getId(),Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                     Constant.Template.SUBJECT_STUDY_NOVICE.getKey(), Constant.Template.SUBJECT_STUDY_NOVICE.getValue(),
                     Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         }
@@ -749,8 +770,9 @@ public class CreateTemplateUtils {
     public static SysFile subjectStudySignIn(Ftp f,Sign sign, WorkProgram workProgram) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-        SysFile sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                workProgram.getId(),Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                 Constant.Template.SUBJECT_STUDY_SIGNIN.getKey(), Constant.Template.SUBJECT_STUDY_SIGNIN.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -767,8 +789,9 @@ public class CreateTemplateUtils {
     public static SysFile subjectStudySignature(Ftp f,Sign sign, WorkProgram workProgram) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
-        SysFile sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                workProgram.getId(),Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                 Constant.Template.SUBJECT_STUDY_EXPERTAIGNATURE.getKey(), Constant.Template.SUBJECT_STUDY_EXPERTAIGNATURE.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -812,8 +835,9 @@ public class CreateTemplateUtils {
                     dataMap.put("lastTime", "半");//天数
                 }
             }
-            sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                    Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
+            sysFile = TemplateUtil.createTemplate(
+                    f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                    workProgram.getId(),Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                     Constant.Template.SUBJECT_STUDY_INVITATION.getKey(), Constant.Template.SUBJECT_STUDY_INVITATION.getValue(),
                     Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         }
@@ -840,16 +864,18 @@ public class CreateTemplateUtils {
                 dataMap.put("endTime", DateUtils.converToString(roomBooking.getEndTime(), "HH:mm"));//会议结束时间
                 dataMap.put("addressName", roomBooking.getAddressName());
                 if (DateUtils.compareIgnoreSecond(roomBooking.getBeginTime(), compareDate) == 1) {
-                    sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                            Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
+                    sysFile = TemplateUtil.createTemplate(
+                            f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                            workProgram.getId(),Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                             Constant.Template.SUBJECT_STUDY_MEETINGAM.getKey(), Constant.Template.SUBJECT_STUDY_MEETINGAM.getValue(),
                             Constant.Template.WORD_SUFFIX.getKey(), dataMap);
                     sysFileList.add(sysFile);
 
                 } else {
 
-                    sysFile = TemplateUtil.createTemplate(f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                            Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
+                    sysFile = TemplateUtil.createTemplate(
+                            f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                            workProgram.getId(),Constant.SysFileType.SUBJECT_STUDY.getValue(), Constant.SysFileType.SUBJECT_STUDY.getValue(),
                             Constant.Template.SUBJECT_STUDY_MEETINGPM.getKey(), Constant.Template.SUBJECT_STUDY_MEETINGPM.getValue(),
                             Constant.Template.WORD_SUFFIX.getKey(), dataMap);
                     sysFileList.add(sysFile);
@@ -909,11 +935,11 @@ public class CreateTemplateUtils {
         dataMap.put("beginMonth",monthlyNewsletterDto.getStaerTheMonths());
         dataMap.put("curYear",curYear);
         String[] reviewStage = {"xmjys-项目建议书","kxxyj-可行性研究报告","xmgs-项目概算","zjsq-资金申请报告","qt-其它","jksb-进口设备","sbqdgc-设备清单(国产)","sbqdjk-设备清单(进口)"};
-        String[] reviewStageTemp = {"xmjys-项 目 建 议 书 ","kxxyj-可 行 性 研 究 报 告 ","xmgs-项 目 概 算 ","zjsq-资 金 申 请 报 告 ","qt-其 它 ","jksb-进 口 设 备 ","sbqdgc-设 备 清 单 ( 国 产 ) ","sbqdjk-设 备 清 单 ( 进 口 ) "};
+        String[] reviewStageTemp = {"xmjys-项目建议书 ","kxxyj-可行性研究报告","xmgs-项目概算 ","zjsq-资金申请报告","qt-其它 ","jksb-进口设备 ","sbqdgc-设备清单(国产)","sbqdjk-设备清单(进口)"};
         String[] reviewStageTotal = {"xmjysTotal-项目建议书","kxxyjTotal-可行性研究报告","xmgsTotal-项目概算","zjsqTotal-资金申请报告","qtTotal-其它","jksbTotal-进口设备","sbqdgcTotal-设备清单(国产)","sbqdjkTotal-设备清单(进口)"};
-        String[] reviewStageTotalTemp = {"xmjysTotal-项 目 建 议 书 ","kxxyjTotal-可 行 性 研 究 报 告 ","xmgsTotal-项 目 概 算 ","zjsqTotal-资 金 申 请 报 告 ","qtTotal-其 它 ","jksbTotal-进 口 设 备 ","sbqdgcTotal-设 备 清 单 ( 国 产 ) ","sbqdjkTotal-设 备 清 单 ( 进 口 ) "};
+        String[] reviewStageTotalTemp = {"xmjysTotal-项目建议书 ","kxxyjTotal-可行性研究报告","xmgsTotal-项目概算 ","zjsqTotal-资金申请报告 ","qtTotal-其它 ","jksbTotal-进口设备 ","sbqdgcTotal-设备清单(国产)","sbqdjkTotal-设备清单(进口)"};
         String[] projectType = {"projectTypeA-市政工程","projectTypeHouse-房建工程","projectTypeInfo-信息工程","projectTypeBuy-设备采购","projectTypeOther-其他"};
-        String[] projectTypeTemp = {"projectTypeA-市 政 工 程 ","projectTypeHouse-房 建 工 程 ","projectTypeInfo-信 息 工 程 ","projectTypeBuy-设 备 采 购 ","projectTypeOther-其 他 "};
+        String[] projectTypeTemp = {"projectTypeA-市政工程 ","projectTypeHouse-房建工程 ","projectTypeInfo-信息工程 ","projectTypeBuy-设备采购 ","projectTypeOther-其他 "};
         boolean flag = true;
         //当月月报
         if (proReviewConditionDtoList.size()>0){
@@ -922,16 +948,16 @@ public class CreateTemplateUtils {
                 flag = true;
                 String [] tempArr = reviewStage[i].split("-");
                 String [] tempArrTemp = reviewStageTemp[i].split("-");
-                    if(tempArr[1].contains(proReviewConditionDtoList.get(j).getReviewStage()) || proReviewConditionDtoList.get(j).getReviewStage().contains("提前介入")){
+                    //tempArr[1].contains(proReviewConditionDtoList.get(j).getReviewStage()) || proReviewConditionDtoList.get(j).getReviewStage().contains("提前介入")
+                    if(tempArr[1].contains(proReviewConditionDtoList.get(j).getReviewStage()) || Constant.EnumState.YES.getValue().equals(proReviewConditionDtoList.get(j).getIsadvanced())){
                         flag = false;
                         if(!proReviewConditionDtoList.get(j).getIsadvanced().equals("9")){
-                            dataMap.put(tempArrTemp[0], " 完 成 "+tempArrTemp[1]+" 评 审 "+proReviewConditionDtoList.get(j).getProCount()+" 项 ， 申 报 总 投 资 "+proReviewConditionDtoList.get(j).getDeclareValue()
-                                    +" 亿 元 ， 审 核 后 总 投 资 "+proReviewConditionDtoList.get(j).getAuthorizeValue()+" 亿 元 ， 累 计 净 核 减 投 资 "+proReviewConditionDtoList.get(j).getLjhj()+" 亿 元 ,核 减 率 "+proReviewConditionDtoList.get(j).getHjl()+" % ");
+                            dataMap.put(tempArrTemp[0], "完成"+tempArrTemp[1]+"评审"+proReviewConditionDtoList.get(j).getProCount()+"项，申报总投资"+proReviewConditionDtoList.get(j).getDeclareValue()
+                                    +"亿元，审核后总投资 "+proReviewConditionDtoList.get(j).getAuthorizeValue()+"亿元，累计净核减投资 "+proReviewConditionDtoList.get(j).getLjhj()+"亿元，核减率"+proReviewConditionDtoList.get(j).getHjl()+" % ");
                         }else{
-                            dataMap.put(tempArrTemp[0], " 完 成 "+tempArrTemp[1]+" （ 提 前 介 入 ）评 审 "+proReviewConditionDtoList.get(j).getProCount()+" 项 ， 申 报 总 投 资 "+proReviewConditionDtoList.get(j).getDeclareValue()
-                                    +" 亿 元 ， 审 核 后 总 投 资 "+proReviewConditionDtoList.get(j).getAuthorizeValue()+" 亿 元 ， 累 计 净 核 减 投 资 "+proReviewConditionDtoList.get(j).getLjhj()+" 亿 元 , 核 减 率 "+proReviewConditionDtoList.get(j).getHjl()+" % ");
+                            dataMap.put(tempArrTemp[0], "完成"+tempArrTemp[1]+"（提前介入）评审"+proReviewConditionDtoList.get(j).getProCount()+"项 ，申报总投资"+proReviewConditionDtoList.get(j).getDeclareValue()
+                                    +"亿元，审核后总投资"+proReviewConditionDtoList.get(j).getAuthorizeValue()+"亿元，累计净核减投资"+proReviewConditionDtoList.get(j).getLjhj()+"亿元，核减率"+proReviewConditionDtoList.get(j).getHjl()+" % ");
                         }
-
                         break;
                     }
                   if((j+1) == proReviewConditionDtoList.size()){
@@ -977,13 +1003,11 @@ public class CreateTemplateUtils {
                     if(tempArr[1].contains(proReviewConditionDtoAllList.get(j).getReviewStage()) || proReviewConditionDtoAllList.get(j).getReviewStage().contains("提前介入")){
                         flag = false;
                         if(!proReviewConditionDtoAllList.get(j).getIsadvanced().equals("9")){
-
                             if(reviewTotal !=0 ){
                                 proCent = String.format("%.2f",(proReviewConditionDtoAllList.get(j).getProCount().floatValue()/(float) reviewTotal)*100)+"%";
                             }
-
-                            dataMap.put(tempArrTemp[0], " 完 成 "+tempArrTemp[1]+" 评 审 "+proReviewConditionDtoAllList.get(j).getProCount()+" 项，占 评 审 项 目 数 的 "+proCent+" 申 报 总 投 资 "+proReviewConditionDtoAllList.get(j).getDeclareValue()
-                                    +" 亿 元 ，审 核 后 总 投 资 "+proReviewConditionDtoAllList.get(j).getAuthorizeValue()+" 亿 元， 累 计 净 核 减 投 资 "+proReviewConditionDtoAllList.get(j).getLjhj()+" 亿 元 ,核 减 率 "+proReviewConditionDtoAllList.get(j).getHjl()+" %");
+                            dataMap.put(tempArrTemp[0], "完成"+tempArrTemp[1]+"评审"+proReviewConditionDtoAllList.get(j).getProCount()+"项，占评审项目数的"+proCent+"申报总投资"+proReviewConditionDtoAllList.get(j).getDeclareValue()
+                                    +"亿元，审核后总投资 "+proReviewConditionDtoAllList.get(j).getAuthorizeValue()+"亿元，累计净核减投资"+proReviewConditionDtoAllList.get(j).getLjhj()+"亿元，核减率"+proReviewConditionDtoAllList.get(j).getHjl()+" %");
                             break;
                         }else{//提前介入
                             advancedPoCount = advancedPoCount.add(proReviewConditionDtoAllList.get(j).getProCount());
@@ -1003,12 +1027,12 @@ public class CreateTemplateUtils {
             if (isAdvanced){//提前介入
                 BigDecimal diffNum = new BigDecimal (advanceDecVal.subtract(advanceAuthorizeVal).toString());
                 double temp = diffNum.divide(advanceDecVal,3,BigDecimal.ROUND_HALF_UP).doubleValue()*100;
-                dataMap.put("tqjrTotal", "另 ， 完 成 提 前 介 入 项 目 评 审 "+advancedPoCount+" 项，申 报 总 投 资 "+advanceDecVal
-                        +" 亿 元 ， 审 核 后 总 投 资 "+advanceAuthorizeVal+" 亿 元 ， 累 计 净 核 减 投 资 "+advanceljhjTotalVal+" 亿 元 ,核 减 率 "+temp+"%");
+                dataMap.put("tqjrTotal", "另，完成提前介入项目评审 "+advancedPoCount+"项，申报总投资"+advanceDecVal
+                        +"亿元，审核后总投资"+advanceAuthorizeVal+"亿元，累计净核减投资"+advanceljhjTotalVal+"亿元，核减率"+temp+"%");
             }
         }
         //项目类别
-        String projectTypeItem = monthlyNewsletterDto.getStaerTheMonths()+"至"+monthlyNewsletterDto.getTheMonths()+" 月 评 审 的 项 目 中,";
+        String projectTypeItem = monthlyNewsletterDto.getStaerTheMonths()+"至"+monthlyNewsletterDto.getTheMonths()+"月评审的项目中，";
         if(proReviewConditionByTypeList.size()>0){
             for(int i=0;i<proReviewConditionByTypeList.size();i++){
               for(int j=0;j<projectType.length;j++){
@@ -1018,9 +1042,9 @@ public class CreateTemplateUtils {
                         proCent = String.format("%.2f",(proReviewConditionByTypeList.get(i).getProjectTypeCount().floatValue()/totalNum.floatValue()*100))+"%";
 
                         if(i!=(proReviewConditionByTypeList.size()-1)){
-                            projectTypeItem += tempArrTemp[1]+"类 项 目 "+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占 项 目 总 数 的 "+proCent+";";
+                            projectTypeItem += tempArrTemp[1]+"类项目"+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占项目总数的"+proCent+";";
                         }else{
-                            projectTypeItem += tempArrTemp[1]+"类 项 目 "+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项 ，占 项 目 总 数 的 "+proCent+"。";
+                            projectTypeItem += tempArrTemp[1]+"类项目"+proReviewConditionByTypeList.get(i).getProjectTypeCount()+"项，占项目总数的"+proCent+"。";
                         }
                         break;
                     }

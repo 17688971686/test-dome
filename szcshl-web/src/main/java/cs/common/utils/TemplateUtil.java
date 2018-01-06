@@ -120,25 +120,26 @@ public class TemplateUtil {
     /**
      * 生成模板并且同时生成附件
      *
-     * @param signId       收文ID
+     * @param mainId       主模块ID，如项目ID，通知公告ID
      * @param mainType     附件模块
+     * @param businessId   业务ID，如果工作方案ID，发文ID
      * @param businessType 附件业务
-     * @param reviewStage  评审阶段(项目阶段)
+     * @param sysfileType  附件模块（哪个环节生成,工作方案，发文等）
      * @param templateUrl  模板路径
      * @param fileName     文件名称
-     * @param fileType     文件类型
+     * @param fileType     文件类型（.doc,.txt....）
      * @param dataMap      数据
      * @return
      */
-    public static SysFile createTemplate(Ftp f, String signId, String mainType, String businessType, String reviewStage,
+    public static SysFile createTemplate(Ftp f, String mainId, String mainType,String businessId, String businessType, String sysfileType,
                                          String templateUrl, String fileName, String fileType, Map<String, Object> dataMap) {
         SysFile sysFile = null;
         String showName = fileName + fileType;
         String path = SysFileUtil.getUploadPath();
-        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, mainType, signId, businessType, showName);
+        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, mainType, mainId, businessType,null);
         File docFile = null;
         try {
-            docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl);
+            docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl+ File.separator+showName);
             fileType = fileType.toLowerCase();//统一转成小写
             boolean linkSucess = FtpUtil.connectFtp(f);
             if(linkSucess){
@@ -147,9 +148,8 @@ public class TemplateUtil {
                 linkSucess = FtpUtil.uploadFile(relativeFileUrl, uploadFileName, new FileInputStream(docFile));
                 if (linkSucess) {
                     Tools.deleteFile(docFile);
-                    sysFile = new SysFile();
-                    sysFile = new SysFile(UUID.randomUUID().toString(), signId, relativeFileUrl+ File.separator +uploadFileName, showName,
-                            docFile.length(), fileType, signId, mainType, reviewStage, businessType);
+                    sysFile = new SysFile(UUID.randomUUID().toString(), businessId, relativeFileUrl+ File.separator +uploadFileName, showName,
+                            docFile.length(), fileType, mainId, mainType, sysfileType, businessType);
                     sysFile.setFtp(f);
                 }
             }

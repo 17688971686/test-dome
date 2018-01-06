@@ -1,11 +1,20 @@
 package cs.service.sys;
 
-import java.util.*;
-
+import cs.common.Constant;
 import cs.common.FlowConstant;
+import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.*;
+import cs.common.utils.ActivitiUtil;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
+import cs.domain.sys.*;
+import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
+import cs.model.sys.AnnountmentDto;
+import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.sys.AnnountmentRepo;
+import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.rtx.RTXSendMsgPool;
 import org.activiti.engine.ProcessEngine;
@@ -13,6 +22,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -21,23 +31,11 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import cs.common.Constant;
-import cs.common.HqlBuilder;
-import cs.domain.sys.Annountment;
-import cs.domain.sys.Annountment_;
-import cs.domain.sys.Org;
-import cs.domain.sys.Org_;
-import cs.domain.sys.User;
-import cs.domain.sys.User_;
-import cs.model.PageModelDto;
-import cs.model.sys.AnnountmentDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.sys.AnnountmentRepo;
-import cs.repository.repositoryImpl.sys.OrgRepo;
+import java.util.*;
 
 @Service
 public class AnnountmentServiceImpl implements AnnountmentService {
+    private static Logger logger = Logger.getLogger(AnnountmentServiceImpl.class);
 
     @Autowired
     private AnnountmentRepo annountmentRepo;
@@ -145,35 +143,42 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     
     @Override
     @Transactional
-    public void createAnnountment(AnnountmentDto annountmentDto) {
-        Annountment annountment = new Annountment();
-        BeanCopierUtils.copyProperties(annountmentDto, annountment);
-        Date now = new Date();
-        //默认不排序和不置顶
-        if(!Validate.isString(annountment.getIssue())){
-            annountment.setIssue(Constant.EnumState.NO.getValue());
-        }
-        if(!Validate.isObject(annountment.getIsStick())){
-            annountment.setIsStick(Integer.valueOf(Constant.EnumState.NO.getValue()));
-        }else{
-            if(Constant.EnumState.YES.getValue().equals(annountment.getIsStick())){
-                annountment.setIssueDate(now);
+    public ResultMsg createAnnountment(AnnountmentDto annountmentDto) {
+	    try{
+            Annountment annountment = new Annountment();
+            BeanCopierUtils.copyProperties(annountmentDto, annountment);
+            Date now = new Date();
+            //默认不排序和不置顶
+            if(!Validate.isString(annountment.getIssue())){
+                annountment.setIssue(Constant.EnumState.NO.getValue());
             }
+            if(!Validate.isObject(annountment.getIsStick())){
+                annountment.setIsStick(Integer.valueOf(Constant.EnumState.NO.getValue()));
+            }else{
+                if(Constant.EnumState.YES.getValue().equals(annountment.getIsStick())){
+                    annountment.setIssueDate(now);
+                }
+            }
+            if(!Validate.isString(annountment.getAnId())){
+                annountment.setAnId(null);
+            }
+            //已发布的要加上发布人和发布时间
+            if(Constant.EnumState.YES.getValue().equals(annountment.getIssue())){
+                annountment.setIssueDate(now);
+                annountment.setIssueUser(SessionUtil.getLoginName());
+            }
+            annountment.setCreatedBy(SessionUtil.getUserId());
+            annountment.setCreatedDate(now);
+            annountment.setModifiedBy(SessionUtil.getUserId());
+            annountment.setModifiedDate(now);
+            annountmentRepo.save(annountment);
+            BeanCopierUtils.copyProperties(annountment,annountmentDto);
+
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"保存成功！",annountmentDto);
+        }catch (Exception e){
+            logger.info("保存通知公告异常："+e.getMessage());
+	        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存异常，错误信息已记录，请联系管理员处理！");
         }
-        if(!Validate.isString(annountment.getAnId())){
-            annountment.setAnId(null);
-        }
-        //已发布的要加上发布人和发布时间
-        if(Constant.EnumState.YES.getValue().equals(annountment.getIssue())){
-            annountment.setIssueDate(now);
-            annountment.setIssueUser(SessionUtil.getLoginName());
-        }
-        annountment.setCreatedBy(SessionUtil.getUserId());
-        annountment.setCreatedDate(now);
-        annountment.setModifiedBy(SessionUtil.getUserId());
-        annountment.setModifiedDate(now);
-        annountmentRepo.save(annountment);
-        annountmentDto.setAnId(annountment.getAnId());
     }
 
     @Override

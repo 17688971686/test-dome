@@ -619,6 +619,22 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
    }
 
     /**
+     * 根据业务ID，更改抽取专家的评审方式
+     * @param businessId
+     * @param propertyname
+     * @param value
+     */
+    @Override
+    public void updateExpertSelectState(String businessId, String propertyname, String value) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" update "+ExpertSelected.class.getSimpleName()+" set "+propertyname+ " =:pvalue ");
+        hqlBuilder.setParam("pvalue",value);
+        hqlBuilder.append(" where "+ExpertSelected_.businessId.getName()+" =:businessId ");
+        hqlBuilder.setParam("businessId",businessId);
+        executeHql(hqlBuilder);
+    }
+
+    /**
      * 项目评审情况明细
      * @param projectReviewConditionDto
      * @return

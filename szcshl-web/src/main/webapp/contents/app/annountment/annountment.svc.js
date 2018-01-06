@@ -80,10 +80,11 @@
                 vm.isSubmit = true;
                 var httpOptions = {
                     method: "post",
-                    url: url_annountment,
+                    url: rootPath + "/annountment",
                     data: vm.annountment
                 }
                 var httpSuccess = function success(response) {
+                    vm.isSubmit = false;
                     if (callBack != undefined && typeof callBack == 'function') {
                         callBack(response.data);
                     }

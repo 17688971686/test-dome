@@ -1007,13 +1007,28 @@
          * 生成评审报告
          */
         vm.reviewReportDoc = function () {
-            signSvc.createDispatchTemplate(vm, function (data) {
-                if (data.flag || data.reCode == 'ok') {
-                    bsWin.success("操作成功！");
-                } else {
-                    bsWin.alert(data.reMsg);
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "如果之前已经生成评审报告，则本次操作会覆盖之前生成的文档，确定执行操作么？",
+                fn: function () {
+                    signSvc.createDispatchTemplate(vm, function (data) {
+                        if (data.flag || data.reCode == 'ok') {
+                            bsWin.success("操作成功！",function(){
+                                sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                                    if (data || data.length > 0) {
+                                        vm.showFlag.tabSysFile = true;
+                                        vm.sysFileList = data;
+                                        sysfileSvc.initZtreeClient(vm, $scope);//树形图
+                                    }
+                                })
+                            });
+                        } else {
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
                 }
-            });
+            })
         }
 
         /**

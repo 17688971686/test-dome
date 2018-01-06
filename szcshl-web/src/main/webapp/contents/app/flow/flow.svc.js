@@ -106,7 +106,7 @@
                     id: "hctId"
                 }),
                 rowNumber: true,
-                headerCenter: true
+                headerCenter: true,
             });
             var columns = [{
                 field: "",

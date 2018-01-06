@@ -119,4 +119,11 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
     Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto);
 
 
+    /**
+     * 更改抽取专家的属性值
+     * @param businessId
+     * @param propertyname
+     * @param value
+     */
+    void updateExpertSelectState(String businessId, String propertyname, String value);
 }

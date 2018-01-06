@@ -13,9 +13,9 @@ import org.activiti.engine.task.Task;
 public interface AnnountmentService {
 	
 	PageModelDto<AnnountmentDto> findByCurUser(ODataObj odataobj);
-	
-	
-	void createAnnountment(AnnountmentDto annountmentDto);
+
+
+	ResultMsg createAnnountment(AnnountmentDto annountmentDto);
 	
 	String findAnOrg();
 	

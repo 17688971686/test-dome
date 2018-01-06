@@ -154,43 +154,7 @@ public class SysFileServiceImpl implements SysFileService {
     @Override
     @Transactional
     public ResultMsg deleteById(String sysFileId) {
-        ResultMsg resultMsg = null;
-        try{
-            //连接ftp
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
-            boolean linkSucess = FtpUtil.connectFtp(f);
-            if(linkSucess){
-                List<SysFile> fileList = sysFileRepo.findByIds(SysFile_.sysFileId.getName(), sysFileId, null);
-                if (Validate.isList(fileList)) {
-                    for(int i=0,l=fileList.size();i<l;i++){
-                        SysFile fl = fileList.get(i);
-                        if(SessionUtil.getLoginName().equals(fl.getCreatedBy())){
-                            //先删除ftp上的附件，
-                            String remoteFilePath = new String(fl.getFileUrl().getBytes("GBK"), "iso-8859-1");
-                            //再删除本地附件
-                            FtpUtil.getFtp().deleteFile(remoteFilePath);
-                            sysFileRepo.delete(fl);
-                        }else{
-                            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"您没有权限删除【"+fl.getShowName()+"】文件！");
-                            break;
-                        }
-                    }
-                }else{
-                    resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，该文件已被删除！");
-                }
-            }else{
-                resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，无法连接文件服务器！");
-            }
-        }catch (Exception e){
-            resultMsg  = new ResultMsg(false,MsgCode.ERROR.getValue(),"操作失败，连接文件服务器异常！");
-        }finally {
-            FtpUtil.closeFtp();
-        }
-        if(resultMsg == null){
-            resultMsg = new ResultMsg(true,MsgCode.OK.getValue(),"删除成功！");
-        }
-        return resultMsg;
+        return sysFileRepo.deleteByFileId(sysFileId);
     }
 
     /**

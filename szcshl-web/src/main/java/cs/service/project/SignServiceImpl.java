@@ -6,10 +6,7 @@ import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.Constant.EnumState;
 import cs.common.Constant.MsgCode;
 import cs.common.utils.*;
-import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelCondition;
-import cs.domain.expert.ExpertSelected;
+import cs.domain.expert.*;
 import cs.domain.external.Dept;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
@@ -1092,12 +1089,13 @@ public class SignServiceImpl implements SignService {
                     //以主工作方案为准，工作方案不做工作方案，则任选一个
                     if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)
                             || expertReview.getReviewDate() == null){
+                        //如果是专家评审会，获取评审会日期
                         if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType())) {
-                            //获取评审会日期
                             expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(wk.getId()));
+                        //如果是专家函评，取函评日期并修改专家默认评审方式为函评
                         } else {
-                            //函评日期
                             expertReview.setReviewDate(wk.getLetterDate());
+                            expertSelectedRepo.updateExpertSelectState(wk.getId(), ExpertSelected_.isLetterRw.getName(),EnumState.YES.getValue());
                         }
                         expertReviewRepo.save(expertReview);
                     }

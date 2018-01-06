@@ -198,7 +198,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"请选择要上传的附件");
             return resultMsg;
         }
-        if (!Validate.isString(sysBusiType)) {
+        //项目附件才需要类型
+        if (SysFileType.SIGN.getValue().equals(mainType) && !Validate.isString(sysBusiType)) {
             resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，请选择文件类型！");
             return resultMsg;
         }

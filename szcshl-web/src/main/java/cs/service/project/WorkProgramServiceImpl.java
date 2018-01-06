@@ -432,50 +432,19 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         if (sign == null || StringUtil.isEmpty(sign.getSignid())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该项目已被删除");
         }
-//        WorkProgram workProgram = workProgramRepo.findById(WorkProgram_.id.getName(),workprogramId);
+
         WorkProgram workProgram = workProgramRepo.findByPrincipalUser(signId);
         if (workProgram == null || StringUtil.isEmpty(workProgram.getId())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，请先填写工作方案");
         }
-        String path = SysFileUtil.getUploadPath();
-        //1、如果已经生成会前准备材料，则先删除之前的文件
-        if (EnumState.YES.getValue().equals(workProgram.getIsCreateDoc())) {
-            HqlBuilder queryHql = HqlBuilder.create();
-            queryHql.append(" from " + SysFile.class.getSimpleName() + " where " + SysFile_.mainId.getName() + " =:signId ");
-            queryHql.setParam("signId", signId);
-            queryHql.append(" and " + SysFile_.businessId.getName() + " =:businessId ");
-            queryHql.setParam("businessId", signId);
-            queryHql.append(" and " + SysFile_.sysfileType.getName() + " =:sysfileType ");
-            queryHql.setParam("sysfileType", Constant.SysFileType.WORKPROGRAM.getValue());   //模块类型
-            queryHql.append(" and " + SysFile_.sysBusiType.getName() + " =:sysBusiType ");
-            queryHql.setParam("sysBusiType", Constant.SysFileType.MEETING.getValue());        //业务类型
 
-            List<SysFile> fileList = sysFileRepo.findByHql(queryHql);
-            if (Validate.isList(fileList)) {
-                String deleteId = "";
-                for(int i=0,l=fileList.size();i<l;i++){
-                    if(i>0){
-                        deleteId += ",";
-                    }
-                    deleteId += fileList.get(i).getSysFileId();
-                }
-                sysFileService.deleteById(deleteId);
-            }
-        }
         //2、生成会前准备材料
         List<SysFile> saveFile = new ArrayList<>();
 
         //获得拟聘专家信息
-//        HqlBuilder sqlBuilder = HqlBuilder.create();
-//        sqlBuilder.append(" select  e.* from cs_expert_review er,cs_work_program wp,cs_expert_selected es,cs_expert e");
-//        sqlBuilder.append(" where er."+ExpertReview_.id.getName()+" = wp.expertreviewid");
-//        sqlBuilder.append(" and er."+ExpertReview_.id.getName()+" =es.expertreviewid");
-//        sqlBuilder.append(" and es.expertid =e."+Expert_.expertID.getName());
-//        sqlBuilder.append(" and wp." +WorkProgram_.id.getName()+" =:workProgramId");
-//        sqlBuilder.setParam("workProgramId", workprogramId);
         List<Expert> expertList = expertRepo.findByBusinessId(signId);
-
-        User user = signPrincipalService.getMainPriUser(signId);//获取项目第一负责人
+        //获取项目第一负责人
+        User user = signPrincipalService.getMainPriUser(signId);
 
         //获得会议信息
         List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(), workProgram.getId(), null);
@@ -503,7 +472,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         if (sList != null && sList.size() > 0) {
             for (SysFile sysFile : sList) {
                 if(saveFile !=null){
-
                     saveFile.add(sysFile);
                 }else{
                     return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
@@ -522,14 +490,12 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         }
 
         //2.5 会议通知
-
         SysFile notice = CreateTemplateUtils.createTemplateNotice(f,sign, workProgram, user, roomBookings);
         if (notice != null) {
             saveFile.add(notice);
         }else{
             return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
         }
-
 
         //协审协议书
         HqlBuilder queryaps = HqlBuilder.create();
@@ -561,6 +527,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 sf.setModifiedDate(now);
                 sf.setModifiedBy(SessionUtil.getLoginName());
                 sf.setCreatedBy(SessionUtil.getLoginName());
+                //先删除旧数据
+                sysFileRepo.delete(sf.getMainId(),sf.getBusinessId(),sf.getSysBusiType(),sf.getShowName());
             });
             sysFileRepo.bathUpdate(saveFile);
         }

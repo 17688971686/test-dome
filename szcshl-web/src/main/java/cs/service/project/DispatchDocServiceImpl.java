@@ -9,6 +9,7 @@ import cs.common.utils.*;
 import cs.domain.expert.Expert;
 import cs.domain.project.*;
 import cs.domain.sys.Ftp;
+import cs.domain.sys.Ftp_;
 import cs.domain.sys.SysFile;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
@@ -346,8 +347,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
         List<SysFile> sysFileList = new ArrayList<>();
         PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-        Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
-        if(Constant.STAGE_STUDY.equals(signDispaWork.getReviewstage())){//可行性研究报告
+        Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
+        //可行性研究报告
+        if(Constant.STAGE_STUDY.equals(signDispaWork.getReviewstage())){
             SysFile studyOpinion = CreateTemplateUtils.createStudyTemplateOpinion(f,signDispaWork );
             if(studyOpinion != null){
                 sysFileList.add(studyOpinion);
@@ -449,6 +451,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 sf.setModifiedDate(now);
                 sf.setModifiedBy(SessionUtil.getLoginName());
                 sf.setCreatedBy(SessionUtil.getLoginName());
+                //先删除旧数据
+                sysFileRepo.delete(sf.getMainId(),sf.getBusinessId(),sf.getSysBusiType(),sf.getShowName());
             });
             sysFileRepo.bathUpdate(sysFileList);
             signService.updateSignTemplate(signId);//修改是否生成发文模板状态
