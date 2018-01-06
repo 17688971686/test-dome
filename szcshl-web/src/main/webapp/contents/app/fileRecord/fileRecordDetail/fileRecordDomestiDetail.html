@@ -348,11 +348,11 @@
             </table>
         </td>
     </tr>
-    <tr ng-if="vm.fileRecord.registerFileDto" >
+    <tr ng-if="  vm.otherFile" >
         <td colspan="4">三、其他资料
         </td>
     </tr>
-    <tr ng-if="vm.fileRecord.registerFileDto">
+    <tr ng-if="  vm.otherFile">
         <td colspan="4" >
             <ul>
                 <li style="width: 75%">
@@ -366,24 +366,24 @@
             </ul>
         </td>
     </tr>
-    <tr ng-if="vm.fileRecord.registerFileDto" ng-repeat="f in vm.fileRecord.registerFileDto">
+    <tr ng-if="  vm.otherFile" ng-repeat="f in   vm.otherFile">
         <td colspan="4">
             <ul>
                 <li style="width: 75%">
                         <span style="width: 90%">
-                        {{vm.fileRecord.registerFileDto[$index].fileName}}
+                        {{  vm.otherFile[$index].fileName}}
                         </span>
                 </li>
                 <li style="width: 25%;float: right;">
                             <span >
                                 <input type="text" style="width:50px;" class="form-control input-sm "  ng-disabled="true"
-                                       ng-model="vm.fileRecord.registerFileDto[$index].totalNum" >
+                                       ng-model="  vm.otherFile[$index].totalNum" >
                             </span>
                     <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.fileRecord.registerFileDto[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.otherFile[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" />
                             </span>
                     <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.fileRecord.registerFileDto[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" />
+                                <input type="checkbox" ng-disabled="true" ng-model="vm.otherFile[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" />
                             </span>
                 </li>
             </ul>

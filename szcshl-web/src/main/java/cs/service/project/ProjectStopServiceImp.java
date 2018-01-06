@@ -103,7 +103,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
     }*/
 
     /**
-     * 保存项目暂停信息
+     * 保存发起项目暂停信息
      * @param projectStopDto
      * @return
      */
@@ -112,12 +112,12 @@ public class ProjectStopServiceImp implements ProjectStopService {
     public ResultMsg savePauseProject(ProjectStopDto projectStopDto) {
         try{
             ProjectStop projectStop = new ProjectStop();
-            //判断是否是更新(这步基本没用到)
+ /*           //判断是否是更新(这步基本没用到)
             if(Validate.isString(projectStopDto.getStopid())){
                 projectStop = projectStopRepo.findById(projectStopDto.getStopid());
                 BeanCopierUtils.copyPropertiesIgnoreNull(projectStopDto, projectStop);
                 projectStopRepo.save(projectStop);
-            }else{
+            }*/
                 Sign sign = signRepo.findById(projectStopDto.getSignid());
                 //1、判断项目当前的状态
                 if(Constant.EnumState.STOP.getValue().equals(sign.getSignState())){
@@ -170,13 +170,53 @@ public class ProjectStopServiceImp implements ProjectStopService {
                 projectStop.setProcessInstanceId(processInstance.getId());
                 projectStop.setSign(sign);
                 projectStopRepo.save(projectStop);
-            }
+
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
         }catch(Exception e){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，错误信息已记录，请联系管理员处理！");
         }
 
     }
+
+    /**
+     * 保存项目暂停信息
+     * @param projectStopDto
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg saveProjectStop(ProjectStopDto projectStopDto) {
+
+
+            ProjectStop projectStop = new ProjectStop();
+            //判断是否是更新(这步基本没用到)
+            if(Validate.isString(projectStopDto.getStopid())){
+                projectStop = projectStopRepo.findById(projectStopDto.getStopid());
+                BeanCopierUtils.copyPropertiesIgnoreNull(projectStopDto, projectStop);
+                projectStopRepo.save(projectStop);
+            }else{
+                Sign sign = signRepo.findById(projectStopDto.getSignid());
+                BeanCopierUtils.copyProperties(projectStopDto, projectStop);
+                if(!Validate.isObject(projectStop.getExpectpausedays())){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，没填写预计暂停天数！");
+                }
+                Date now = new Date();
+                projectStop.setCreatedBy(SessionUtil.getDisplayName());
+                projectStop.setCreatedDate(now);
+                projectStop.setModifiedBy(SessionUtil.getDisplayName());
+                projectStop.setModifiedDate(now);
+                projectStop.setStopid(UUID.randomUUID().toString());
+                //设置默认值
+                projectStop.setIsactive(Constant.EnumState.NO.getValue());
+                projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
+                projectStop.setSign(sign);
+                projectStopRepo.save(projectStop);
+            }
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",projectStop);
+
+    }
+
+
 
     @Override
     public PageModelDto<ProjectStopDto> findProjectStopByStopId(ODataObj oDataObj) {

@@ -70,11 +70,10 @@
         /******以下是其它资料添加*****/
 
         vm.addOtherFile = function (businessId, businessType) {
-            if(businessType == "4"){
-                vm.addRegisters = vm.otherFile;
-            }
             if(businessType == "2"){
                 vm.addRegisters = vm.drawingFile;
+            }else{
+                vm.addRegisters = vm.otherFile;
             }
             /*if(businessType == "XMJYS_DECLARE_FILE"){
                 vm.addRegisters = vm.declareFile;
@@ -105,7 +104,6 @@
         vm.addRegisterFile = function () {
             vm.addRegister = {};
             vm.addRegister.businessId = vm.businessId;
-            vm.addRegister.businessType = vm.businessType;
             vm.addRegister.id = common.uuid();
             vm.addRegisters.push(vm.addRegister);
         }
