@@ -23,7 +23,7 @@
                 mainId: vm.projectStop.stopid,
                 mainType: "暂停项目",
                 sysBusiType: vm.projectStop.sysBusiType,
-                showBusiType:false,
+                showBusiType:true,      //是否显示业务类型
             };
             sysfileSvc.initUploadOptions({
                 inputId: "sysfileinput",
