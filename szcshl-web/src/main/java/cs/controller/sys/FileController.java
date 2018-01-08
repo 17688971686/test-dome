@@ -450,58 +450,62 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         try {
             out = response.getOutputStream();
             SysFile sysFile = fileService.findFileById(sysfileId);
-            //获取相对路径
-            String fileUrl = sysFile.getFileUrl();
-            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
-            String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
-            //涉及到中文问题 根据系统实际编码改变
-            removeRelativeUrl = new String(removeRelativeUrl.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
-            storeFileName = new String(storeFileName.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
-            //切换工作路径
-            boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
-            if (changedir) {
-                switch (sysFile.getFileType()) {
-                    case ".jpg":
-                        response.setHeader("Content-type", "application/.jpg");
-                        break;
-                    case ".png":
-                        response.setHeader("Content-type", "application/.png");
-                        break;
-                    case ".gif":
-                        response.setHeader("Content-type", "application/.gif");
-                        break;
-                    case ".docx":
-                        response.setHeader("Content-type", "application/.docx");
-                        break;
-                    case ".doc":
-                        response.setHeader("Content-type", "application/.doc");
-                        break;
-                    case ".xlsx":
-                        response.setHeader("Content-type", "application/.xlsx");
-                        break;
-                    case ".xls":
-                        response.setHeader("Content-type", "application/.xls");
-                        break;
-                    case ".pdf":
-                        response.setHeader("Content-type", "application/.pdf");
-                        break;
-                    default:
-                        response.setContentType("application/octet-stream");
-                }
+            Ftp ftp = sysFile.getFtp();
+            boolean linkSucess = FtpUtil.connectFtp(ftp);
+            if(linkSucess){
+                //获取相对路径
+                String fileUrl = sysFile.getFileUrl();
+                String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+                String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+                //涉及到中文问题 根据系统实际编码改变
+                removeRelativeUrl = new String(removeRelativeUrl.getBytes(FtpUtil.LOCAL_CHARSET), FtpUtil.ISO_CHARSET);
+                storeFileName = new String(storeFileName.getBytes(FtpUtil.LOCAL_CHARSET), FtpUtil.ISO_CHARSET);
+                //切换工作路径
+                boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
+                if (changedir) {
+                    switch (sysFile.getFileType()) {
+                        case ".jpg":
+                            response.setHeader("Content-type", "application/.jpg");
+                            break;
+                        case ".png":
+                            response.setHeader("Content-type", "application/.png");
+                            break;
+                        case ".gif":
+                            response.setHeader("Content-type", "application/.gif");
+                            break;
+                        case ".docx":
+                            response.setHeader("Content-type", "application/.docx");
+                            break;
+                        case ".doc":
+                            response.setHeader("Content-type", "application/.doc");
+                            break;
+                        case ".xlsx":
+                            response.setHeader("Content-type", "application/.xlsx");
+                            break;
+                        case ".xls":
+                            response.setHeader("Content-type", "application/.xls");
+                            break;
+                        case ".pdf":
+                            response.setHeader("Content-type", "application/.pdf");
+                            break;
+                        default:
+                            response.setContentType("application/octet-stream");
+                    }
 
-                response.setHeader("Content-Disposition", "attachment; filename="
-                        + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
+                    response.setHeader("Content-Disposition", "attachment; filename="
+                            + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
 
-                FTPFile[] files = FtpUtil.getFtp().listFiles();
-                for (int i = 0; i < files.length; i++) {
-                    FTPFile f = files[i];
-                    if (storeFileName.equals(f.getName())) {
-                        FtpUtil.getFtp().retrieveFile(f.getName(), out);
-                        break;
+                    FTPFile[] files = FtpUtil.getFtp().listFiles();
+                    for (int i = 0; i < files.length; i++) {
+                        FTPFile f = files[i];
+                        if (storeFileName.equals(f.getName())) {
+                            FtpUtil.getFtp().retrieveFile(f.getName(), out);
+                            break;
+                        }
                     }
                 }
+                out.flush();
             }
-            out.flush();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
