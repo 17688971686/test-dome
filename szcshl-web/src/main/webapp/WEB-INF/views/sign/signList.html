@@ -4,6 +4,13 @@
     .hidetr{
         display: none;
     }
+    .less,.more{
+        width: 40px;
+        color: #e08e0b;
+        font-size: 12px;
+        padding:2px;
+        cursor:pointer;
+    }
 </style>
 
 <!--引入查询统计弹框--->
@@ -35,21 +42,26 @@
         <span class="attentionDiv" style="padding:5px;font-size: 12px;">
         <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
         温馨提示：统计查询耗时较长，统计时，尽量不要进行大数据量的项目统计！
-    </span>
+        </span>
     </div>
     <div class="well well-sm">
         <form id="searchform" name="searchform">
             <table style="width:100%" id="searchTable">
                 <tr>
-                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">项目名称</td>
+                    <td class="text-right" style="width:10%;min-width: 80px;max-width-width:120px;">项目名称</td>
                     <td colspan="3" style="width: 40%;">
                         <input name="projectname" type="text" operator="like" ng-model="vm.project.projectname"
                                class="form-control input-sm "/>
                     </td>
-                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">建设单位</td>
+                    <td class="text-right" style="width:10%;min-width: 80px;max-width-width:120px;">建设单位</td>
                     <td colspan="3" style="width: 40%;">
                         <input name="builtcompanyName" type="text" operator="like"
                                ng-model="vm.project.builtcompanyName" class="form-control input-sm "/>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <div class="more">
+                           <span >展开</span><i class="fa fa-angle-double-down" aria-hidden="true"></i>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -89,7 +101,7 @@
                         </select>
                     </td>
                 </tr>
-                <tr class="hidetr">
+                <tr class="hidetr changeTr">
                     <td class="text-right">项目负责人</td>
                     <td>
                         <input name="allPriUser" type="text" operator="like" ng-model="vm.project.allPriUser"
@@ -115,7 +127,7 @@
                                ng-model="vm.project.dfilenum"/>
                     </td>
                 </tr>
-                <tr class="hidetr">
+                <tr class="hidetr changeTr">
                     <td class="text-right">评审阶段</td>
                     <td>
                         <select name="reviewstage" operator="eq" class="form-control select "
@@ -154,7 +166,7 @@
                     </td>
                 </tr>
 
-                <tr class="hidetr">
+                <tr class="hidetr changeTr">
                     <td class="text-right">签收日期</td>
                     <td colspan="3">
                         <input type="text" name="signdate" style="width:45%;min-width: 115px;max-width: 150px;" operator="ge" ng-model="vm.project.signDateBegin"
@@ -172,7 +184,7 @@
                                operator="le" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                 </tr>
-                <tr class="hidetr">
+                <tr class="hidetr changeTr">
                     <td class="text-right">归档日期</td>
                     <td colspan="3">
                         <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateBegin"
@@ -196,7 +208,7 @@
                                ng-true-value="9">
                     </td>
                 </tr>
-                <tr class="hidetr">
+                <tr class="hidetr changeTr">
                     <td class="text-right">是否暂停</td>
                     <td>
                         <input type="checkbox" operator="eq" name="isProjectStop" value="9" ng-model="vm.project.isProjectStop"
@@ -218,7 +230,11 @@
                         <input type="checkbox" name="ishaveeia" operator="eq" ng-model="vm.project.ishaveeia" value="9"
                                ng-true-value="9">
                     </td>
-
+                    <td style="vertical-align: top;">
+                        <div class="less">
+                            <span >收起</span><i class="fa fa-angle-double-up" aria-hidden="true"></i>
+                        </div>
+                    </td>
                 </tr>
             </table>
         </form>
@@ -231,7 +247,18 @@
     </button>
     </@shiro.hasPermission>
 </script>
-
+<script>
+    $(function(){
+        $('.more').on('click',function(){
+            $("#searchTable .changeTr").removeClass("hidetr");
+            $("#searchTable .more").addClass("hidetr");
+        })
+        $('.less').on('click',function(){
+           $("#searchTable .changeTr").addClass("hidetr");
+            $("#searchTable .more").removeClass("hidetr");
+        })
+    })
+</script>
 
 
 

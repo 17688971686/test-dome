@@ -536,7 +536,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                //分管领导审批
                case FlowConstant.FLOW_SPL_FGLD_SP:
                    //如果没有生成文件字号或者生成错的文件字号，则重新生成
-                   if (!Validate.isString(addSuppLetter.getFilenum()) && !addSuppLetter.getFilenum().contains(Constant.ADDSUPPER_PREFIX)) {
+                   if (!Validate.isString(addSuppLetter.getFilenum()) || !addSuppLetter.getFilenum().contains(Constant.ADDSUPPER_PREFIX)) {
                        //获取拟稿最大编号
                        int curYearMaxSeq = findCurMaxSeq(addSuppLetter.getSuppLetterTime());
                        curYearMaxSeq = (curYearMaxSeq + 1);
