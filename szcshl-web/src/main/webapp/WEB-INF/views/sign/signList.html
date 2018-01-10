@@ -1,7 +1,10 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<style>
+    .hidetr{
+        display: none;
+    }
+</style>
 
 <!--引入查询统计弹框--->
 <div  style="background:white;display: none;">
@@ -36,7 +39,7 @@
     </div>
     <div class="well well-sm">
         <form id="searchform" name="searchform">
-            <table style="width:100%">
+            <table style="width:100%" id="searchTable">
                 <tr>
                     <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">项目名称</td>
                     <td colspan="3" style="width: 40%;">
@@ -86,7 +89,7 @@
                         </select>
                     </td>
                 </tr>
-                <tr>
+                <tr class="hidetr">
                     <td class="text-right">项目负责人</td>
                     <td>
                         <input name="allPriUser" type="text" operator="like" ng-model="vm.project.allPriUser"
@@ -112,7 +115,7 @@
                                ng-model="vm.project.dfilenum"/>
                     </td>
                 </tr>
-                <tr>
+                <tr class="hidetr">
                     <td class="text-right">评审阶段</td>
                     <td>
                         <select name="reviewstage" operator="eq" class="form-control select "
@@ -151,7 +154,7 @@
                     </td>
                 </tr>
 
-                <tr>
+                <tr class="hidetr">
                     <td class="text-right">签收日期</td>
                     <td colspan="3">
                         <input type="text" name="signdate" style="width:45%;min-width: 115px;max-width: 150px;" operator="ge" ng-model="vm.project.signDateBegin"
@@ -169,7 +172,7 @@
                                operator="le" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                 </tr>
-                <tr>
+                <tr class="hidetr">
                     <td class="text-right">归档日期</td>
                     <td colspan="3">
                         <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateBegin"
@@ -193,7 +196,7 @@
                                ng-true-value="9">
                     </td>
                 </tr>
-                <tr>
+                <tr class="hidetr">
                     <td class="text-right">是否暂停</td>
                     <td>
                         <input type="checkbox" operator="eq" name="isProjectStop" value="9" ng-model="vm.project.isProjectStop"
