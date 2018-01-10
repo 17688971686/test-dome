@@ -4,19 +4,26 @@
 <form id="dispatch_form" name="dispatch_form">
     <!-- s table -->
     <table class="table table-bordered">
-        <caption>
-            <span>QR-4.11-03-A0</span>
-        </caption>
-        <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
-        <caption>
+        <caption class="text-center">
+            <p style="padding: 5px 10px;">
+                <span style="float: left;">QR-4.11-03-A0</span>
+            </p>
+            <p class="text-center h3">
+                <strong >
+                    <span>深圳市政府投资项目评审中心</span><br/>
+                    <span>项目发文审批表</span>
+                </strong>
+            </p>
+            <p>
+                <span style="padding: 5px 10px;float: left;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
+                <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9"
+                      style="padding: 5px 10px;float: left;">主项目</span>
+                <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0"
+                      style="padding: 5px 10px;float: left;">次项目</span>
 
-            <span style="margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
-            <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9"
-                  style="margin-left:10px;">主项目</span>
-            <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0"
-                  style="margin-left:10px;">次项目</span>
+                <span style="padding: 5px 10px;float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
+            </p>
 
-            <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
         </caption>
         <tbody>
 

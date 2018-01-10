@@ -14,7 +14,8 @@
             createBookBuy: createBookBuy,
             deleteBookBuy: deleteBookBuy,
             updateBookBuy: updateBookBuy,
-            saveBorrowBookDetail: saveBorrowBookDetail  //保存借书信息
+            saveBorrowBookDetail: saveBorrowBookDetail,  //保存借书信息
+            saveReturnBookDetail: saveReturnBookDetail  //保存还书信息
         };
 
         return service;
@@ -27,23 +28,10 @@
                 data : vm.model
             }
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: "保存成功",
-                            closeDialog: true,
-                            fn: function () {
-                                vm.isSubmit = false;
-                                $('.alertDialog').modal('hide');
-                            }
-                        })
-                    }
-
-                })
-            };
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
             common.http({
                 $http : $http,
                 httpOptions : httpOptions,
@@ -51,6 +39,24 @@
             });
         }
 
+        //保存还书详细信息
+        function saveReturnBookDetail(vm,callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/bookBuy/saveReturnDetail",
+                data : vm.model
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
 
         // begin#updateBookBuy
         function updateBookBuy(vm) {
@@ -204,7 +210,7 @@
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/bookBorrow/expertCostDetailTotal",
-                data: vm.model
+                data: vm.searchModel
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -276,8 +282,8 @@
                     template: "<span class='row-number'></span>"
                 },
                 {
-                    field: "booksCode",
-                    title: "图书编号",
+                    field: "bookNo",
+                    title: "图书号",
                     width: 100,
                     filterable: false
                 },

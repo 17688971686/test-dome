@@ -26,7 +26,7 @@ public interface BookBuyBusinessService {
 
 	BookBuyBusinessDto findById(String deptId);
 
-	void delete(String id);
+	ResultMsg delete(String id);
 
 	void deleteByBusinessId(String businessId);
 

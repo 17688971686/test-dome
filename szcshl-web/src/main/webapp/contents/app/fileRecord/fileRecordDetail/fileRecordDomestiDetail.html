@@ -10,11 +10,15 @@
 <!-- S 设备清单（国产,进口） 存档表 -->
 
 <table class="table table-bordered" id="fileSBQDtable">
-    <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>({{vm.fileRecord.fileReviewstage}})项目存档表</strong></caption>
-    <caption>
-        <span style="width: 200px;float: left;padding: 5px 10px;">QR-4.9-10-A0</span>
-        <span style="width: 200px;float: right;padding: 5px 10px;">档案编号：{{vm.fileRecord.fileNo}}</span>
-    </caption>
+    <caption class="text-center">
+        <p class="h3">
+            <strong>深圳市政府投资项目评审中心<br>({{vm.fileRecord.fileReviewstage}})项目存档表</strong>
+        </p>
+        <p>
+            <span style="width: 200px;float: left;padding: 5px 10px;">QR-4.9-10-A0</span>
+            <span style="width: 200px;float: right;padding: 5px 10px;">档案编号：{{vm.fileRecord.fileNo}}</span>
+        </p>
+        </caption>
     <tbody>
 
     <tr>
@@ -348,45 +352,37 @@
             </table>
         </td>
     </tr>
-    <tr ng-if="  vm.otherFile" >
-        <td colspan="4">三、其他资料
-        </td>
-    </tr>
-    <tr ng-if="  vm.otherFile">
-        <td colspan="4" >
-            <ul>
-                <li style="width: 75%">
-                    <span  style="width: 90%">&nbsp;</span>
-                </li>
-                <li style="width: 25%;float: right">
-                    <span >份数</span>
-                    <span>原件</span>
-                    <span>复印件</span>
-                </li>
-            </ul>
-        </td>
-    </tr>
-    <tr ng-if="  vm.otherFile" ng-repeat="f in   vm.otherFile">
+    <tr ng-if="vm.otherFile">
         <td colspan="4">
-            <ul>
-                <li style="width: 75%">
-                        <span style="width: 90%">
-                        {{  vm.otherFile[$index].fileName}}
-                        </span>
-                </li>
-                <li style="width: 25%;float: right;">
-                            <span >
-                                <input type="text" style="width:50px;" class="form-control input-sm "  ng-disabled="true"
-                                       ng-model="  vm.otherFile[$index].totalNum" >
-                            </span>
-                    <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.otherFile[$index].isHasOriginfile" ng-true-value="9" ng-false-value="0" />
-                            </span>
-                    <span>
-                                <input type="checkbox" ng-disabled="true" ng-model="vm.otherFile[$index].isHasCopyfile"  ng-true-value="9" ng-false-value="0" />
-                            </span>
-                </li>
-            </ul>
+            <table class="table">
+                <tr>
+                    <td style="border-top: none;">其它资料</td>
+                    <td style="width: 100px;border-top: none;">原件</td>
+                    <td style="width: 100px;border-top: none;">复印件</td>
+                    <td style="width: 100px;border-top: none;">份数</td>
+                    <td style="width: 10%;border-top: none;">&nbsp;</td>
+                </tr>
+                <tr ng-repeat="f in vm.otherFile">
+                    <td style="border-top: none;">{{$index+1}}、{{vm.otherFile[$index].fileName}}</td>
+                    <td style="border-top: none;">
+                        <input type="checkbox" ng-disabled="true"
+                               ng-model="vm.otherFile[$index].isHasCopyfile"
+                               ng-checked="vm.otherFile[$index].isHasCopyfile == '9'"
+                               ng-true-value="9" ng-false-value="0"/>
+                    </td>
+                    <td style="border-top: none;">
+                        <input type="checkbox" ng-disabled="true"
+                               ng-model="vm.otherFile[$index].isHasOriginfile"
+                               ng-checked="vm.otherFile[$index].isHasOriginfile == '9'"
+                               ng-true-value="9" ng-false-value="0"/>
+                    </td>
+                    <td style="border-top: none;">
+                        <input type="text" style="width:50px;" ng-disabled="true"
+                               ng-model="vm.otherFile[$index].totalNum">
+                    </td>
+                    <td style="border-top: none;"></td>
+                </tr>
+            </table>
         </td>
     </tr>
 

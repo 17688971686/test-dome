@@ -2,13 +2,17 @@
 <meta charset="UTF-8">
 		
 		<table class="table table-bordered"  >
-		  <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>
-		    {{getTBHeadName(vm.fileRecord.fileReviewstage,vm.fileRecord.isAdvanced,'项目归档审批表')}}
-		  </strong></caption>
-			<caption>
-				<span style="width: 200px;float: left;padding: 5px 10px;">QR-4.11-04-A6</span>
-				<span style="width: 200px;float: right;padding: 5px 10px;">档案编号：{{vm.fileRecord.fileNo}}</span>
-			</caption>
+		  <caption class="text-center">
+			  <p class="h3">
+                  <strong>深圳市政府投资项目评审中心<br>
+                      {{getTBHeadName(vm.fileRecord.fileReviewstage,vm.fileRecord.isAdvanced,'项目归档审批表')}}
+                  </strong>
+			  </p>
+			  <p>
+                  <span style="width: 200px;float: left;padding: 5px 10px;">QR-4.11-04-A6</span>
+                  <span style="width: 200px;float: right;padding: 5px 10px;">档案编号：{{vm.fileRecord.fileNo}}</span>
+			  </p>
+			  </caption>
 		    <tbody>
 
 		    <tr>

@@ -1,15 +1,17 @@
 <meta charset="UTF-8">
 <!-- S_设备清单（进口） -->
 <table class="table table-bordered">
-
-    <caption class="text-center h3">
-        <strong>
-            深圳市政府投资项目评审中心 <br>
-            {{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}
-
-        </strong>
+    <caption class="text-center">
+        <p class="h3">
+            <strong>
+                深圳市政府投资项目评审中心 </br>
+                {{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}
+            </strong>
+        </p>
+        <p>
+            <span style="width: 200px;float: right;padding: 5px 10px;">收文日期：{{vm.model.signdate | date:'yyyy年MM月dd日'}}</span>
+        </p>
     </caption>
-    <caption class="text-right">收文日期:{{vm.model.signdate | date:'yyyy年MM月dd日'}}</caption>
     <tbody>
     <!--
     <tr ng-if="vm.model.ispresign == 0">
@@ -372,12 +374,6 @@
                                 <td style="border-top:none;"><span data-valmsg-for="reportCount"
                                                                    data-valmsg-replace="true"
                                                                    class="errors"></span></td>
-                            </tr>
-                            <tr>
-                                <td style="border-top:none;text-align:right;">其他（名称需要备注）</td>
-                                <td style="border-top:none;">
-                                    <button type="button" class="btn btn-primary">备注</button>
-                                </td>
                             </tr>
                             </tbody>
                         </table>

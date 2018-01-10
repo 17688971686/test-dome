@@ -426,6 +426,10 @@ public class Constant {
         APPLY_REPORT_SIGN("print/sign/signZjsq" , "资金申请_报审登记表"),
         APPLY_REPORT_DISPATCHDOC("print/dispatchDoc/dispatchZjsq" , "资金申请单_发文"),
 
+        //其它
+        OTHERS_DISPATCHDOC("print/dispatchDoc/dispatchOther" , "其它阶段_发文"),
+        OTHERS_FILERECORD("print/filerecord/fileOther" , "其它阶段_归档"),
+
         //其它资料
         OTHER_FILE("print/other" , "其它资料"),
 

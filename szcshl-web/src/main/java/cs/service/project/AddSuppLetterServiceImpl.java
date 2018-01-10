@@ -31,6 +31,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -50,13 +51,12 @@ import java.util.*;
  */
 @Service
 public class AddSuppLetterServiceImpl implements AddSuppLetterService {
+    private static Logger logger = Logger.getLogger(AddSuppLetterServiceImpl.class);
 
     @Autowired
     private AddSuppLetterRepo addSuppLetterRepo;
     @Autowired
     private SignRepo signRepo;
-    @Autowired
-    private WorkProgramRepo workProgramRepo;
     @Autowired
     private RuntimeService runtimeService;
     @Autowired
@@ -453,7 +453,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Override
     @Transactional
     public ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
-        ResultMsg rturnReuslt = null;
         String businessId = processInstance.getBusinessKey(),
                 assigneeValue = "";                            //流程处理人
         Map<String, Object> variables = new HashMap<>();       //流程参数
@@ -461,131 +460,139 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         List<User> dealUserList = null;                        //用户列表
         boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
         String nextNodeKey = "";                    //下一环节名称
-        AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), businessId);
-        //环节处理人设定
-        switch (task.getTaskDefinitionKey()) {
-            //项目负责人填报
-            case FlowConstant.FLOW_SPL_FZR:
-                OrgDept orgDept = orgDeptRepo.queryBySignBranchId(addSuppLetter.getBusinessId(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
-                if (orgDept == null) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "主办部门已被删除，请联系管理员进行处理！");
-                }
-                if (!Validate.isString(orgDept.getDirectorID())) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
-                }
-                dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
-                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
-
-                addSuppLetter.setAppoveStatus(Constant.EnumState.NO.getValue());
-                addSuppLetterRepo.save(addSuppLetter);
-                break;
-            //部长审批
-            case FlowConstant.FLOW_SPL_BZ_SP:
-                //没有分支，则直接跳转到分管领导环节
-                if (signBranchRepo.allAssistCount(addSuppLetter.getBusinessId()) == 0) {
-                    dealUser = signBranchRepo.findMainSLeader(addSuppLetter.getBusinessId());
-                    assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
-                    variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);  //设置分管领导
-                    variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), true);             //设置分支条件
-                    //2表示到分管领导会签
-                    addSuppLetter.setAppoveStatus(EnumState.STOP.getValue());
-                    //下一环节还是自己处理
-                    if(assigneeValue.equals(SessionUtil.getUserId())){
-                        isNextUser = true;
-                        nextNodeKey = FlowConstant.FLOW_SPL_FGLD_SP;
-                    }
-                    //有分支，则跳转到领导会签环节
-                } else {
-                    dealUserList = signBranchRepo.findAssistOrgDirector(addSuppLetter.getBusinessId());
-                    assigneeValue = buildUser(dealUserList);
-                    variables.put(FlowConstant.SignFlowParams.USER_HQ_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
-                    variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), false);            //设置分支条件
-                    //1表示到领导会签
-                    addSuppLetter.setAppoveStatus(EnumState.PROCESS.getValue());
-                }
-                addSuppLetter.setDeptMinisterId(SessionUtil.getUserId());
-                addSuppLetter.setDeptMinisterName(SessionUtil.getDisplayName());
-                addSuppLetter.setDeptMinisterDate(new Date());
-                addSuppLetter.setDeptMinisterIdeaContent(flowDto.getDealOption());
-
-                addSuppLetterRepo.save(addSuppLetter);
-                break;
-            //领导会签
-            case FlowConstant.FLOW_SPL_LD_HQ:
-                dealUser = signBranchRepo.findMainSLeader(addSuppLetter.getBusinessId());
-                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
-                variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);
-
-                //下一环节还是自己处理
-                if(assigneeValue.equals(SessionUtil.getUserId())){
-                    isNextUser = true;
-                    nextNodeKey = FlowConstant.FLOW_SPL_FGLD_SP;
-                }
-                String signString = "";
-                //旧的会签记录
-                String oldMsg = addSuppLetter.getLeaderSignIdeaContent();
-                if (Validate.isString(oldMsg) && !"null".equals(oldMsg)) {
-                    signString += oldMsg+"<br>";
-                }
-                signString += "<span style='float: left'>"+flowDto.getDealOption()+"</span>" + "<br>" + SessionUtil.getDisplayName() + "<br>" + DateUtils.converToString(new Date(), null);
-                addSuppLetter.setLeaderSignIdeaContent(signString);
-                //2表示到分管领导会签
-                addSuppLetterRepo.save(addSuppLetter);
-                break;
-
-            //分管领导审批
-            case FlowConstant.FLOW_SPL_FGLD_SP:
-                //如果没有生成文件字号或者生成错的文件字号，则重新生成
-               if (!Validate.isString(addSuppLetter.getFilenum()) && !addSuppLetter.getFilenum().contains(Constant.ADDSUPPER_PREFIX)) {
-                   //获取拟稿最大编号
-                   int curYearMaxSeq = findCurMaxSeq(addSuppLetter.getSuppLetterTime());
-                   curYearMaxSeq = (curYearMaxSeq + 1);
-                   String fileNumValue = "";
-                   if(curYearMaxSeq < 1000){
-                       fileNumValue = String.format("%03d", Integer.valueOf(curYearMaxSeq));
-                   }else{
-                       fileNumValue = curYearMaxSeq+"";
+       try{
+           AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), businessId);
+           //环节处理人设定
+           switch (task.getTaskDefinitionKey()) {
+               //项目负责人填报
+               case FlowConstant.FLOW_SPL_FZR:
+                   OrgDept orgDept = orgDeptRepo.queryBySignBranchId(addSuppLetter.getBusinessId(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+                   if (orgDept == null) {
+                       return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "主办部门已被删除，请联系管理员进行处理！");
                    }
-                   fileNumValue = Constant.ADDSUPPER_PREFIX + "[" + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yyyy") + "]" + fileNumValue;
-                   addSuppLetter.setFilenum(fileNumValue);
-                   addSuppLetter.setFileSeq(curYearMaxSeq);
-               }
-               if(!Validate.isString(addSuppLetter.getFilenum())){
-                   new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
-               }
+                   if (!Validate.isString(orgDept.getDirectorID())) {
+                       return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
+                   }
+                   dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
+                   assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
 
-                addSuppLetter.setDeptSLeaderId(SessionUtil.getUserId());
-                addSuppLetter.setDeptSLeaderName(SessionUtil.getDisplayName());
-                addSuppLetter.setDeptSleaderDate(new Date());
-                addSuppLetter.setDeptSLeaderIdeaContent(flowDto.getDealOption());
-                addSuppLetter.setAppoveStatus(EnumState.YES.getValue());
-                addSuppLetterRepo.save(addSuppLetter);
+                   addSuppLetter.setAppoveStatus(Constant.EnumState.NO.getValue());
+                   addSuppLetterRepo.save(addSuppLetter);
+                   break;
+               //部长审批
+               case FlowConstant.FLOW_SPL_BZ_SP:
+                   //没有分支，则直接跳转到分管领导环节
+                   if (signBranchRepo.allAssistCount(addSuppLetter.getBusinessId()) == 0) {
+                       dealUser = signBranchRepo.findMainSLeader(addSuppLetter.getBusinessId());
+                       assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                       variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);  //设置分管领导
+                       variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), true);             //设置分支条件
+                       //2表示到分管领导会签
+                       addSuppLetter.setAppoveStatus(EnumState.STOP.getValue());
+                       //下一环节还是自己处理
+                       if(assigneeValue.equals(SessionUtil.getUserId())){
+                           isNextUser = true;
+                           nextNodeKey = FlowConstant.FLOW_SPL_FGLD_SP;
+                       }
+                       //有分支，则跳转到领导会签环节
+                   } else {
+                       dealUserList = signBranchRepo.findAssistOrgDirector(addSuppLetter.getBusinessId());
+                       assigneeValue = buildUser(dealUserList);
+                       variables.put(FlowConstant.SignFlowParams.USER_HQ_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
+                       variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), false);            //设置分支条件
+                       //1表示到领导会签
+                       addSuppLetter.setAppoveStatus(EnumState.PROCESS.getValue());
+                   }
+                   addSuppLetter.setDeptMinisterId(SessionUtil.getUserId());
+                   addSuppLetter.setDeptMinisterName(SessionUtil.getDisplayName());
+                   addSuppLetter.setDeptMinisterDate(new Date());
+                   addSuppLetter.setDeptMinisterIdeaContent(flowDto.getDealOption());
 
-                break;
-            default:
-                break;
-        }
-        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
-        if (flowDto.isEnd()) {
-            taskService.complete(task.getId());
-        } else {
-            taskService.complete(task.getId(), variables);
-            //如果下一环节还是自己
-            if(isNextUser){
-                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
-                for(Task t:nextTaskList){
-                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
-                        ResultMsg returnMsg = dealSignSupperFlow(processInstance,t,flowDto);
-                        if(returnMsg.isFlag() == false){
-                            return returnMsg;
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        //放入腾讯通消息缓冲池
-        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+                   addSuppLetterRepo.save(addSuppLetter);
+                   break;
+               //领导会签
+               case FlowConstant.FLOW_SPL_LD_HQ:
+                   dealUser = signBranchRepo.findMainSLeader(addSuppLetter.getBusinessId());
+                   assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                   variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);
+
+                   //下一环节还是自己处理
+                   if(assigneeValue.equals(SessionUtil.getUserId())){
+                       isNextUser = true;
+                       nextNodeKey = FlowConstant.FLOW_SPL_FGLD_SP;
+                   }
+                   String signString = "";
+                   //旧的会签记录
+                   String oldMsg = addSuppLetter.getLeaderSignIdeaContent();
+                   if (Validate.isString(oldMsg) && !"null".equals(oldMsg)) {
+                       signString += oldMsg+"<br>";
+                   }
+                   signString += "<span style='float: left'>"+flowDto.getDealOption()+"</span>" + "<br>" + SessionUtil.getDisplayName() + "<br>" + DateUtils.converToString(new Date(), null);
+                   addSuppLetter.setLeaderSignIdeaContent(signString);
+                   //2表示到分管领导会签
+                   addSuppLetterRepo.save(addSuppLetter);
+                   break;
+
+               //分管领导审批
+               case FlowConstant.FLOW_SPL_FGLD_SP:
+                   //如果没有生成文件字号或者生成错的文件字号，则重新生成
+                   if (!Validate.isString(addSuppLetter.getFilenum()) && !addSuppLetter.getFilenum().contains(Constant.ADDSUPPER_PREFIX)) {
+                       //获取拟稿最大编号
+                       int curYearMaxSeq = findCurMaxSeq(addSuppLetter.getSuppLetterTime());
+                       curYearMaxSeq = (curYearMaxSeq + 1);
+                       String fileNumValue = "";
+                       if(curYearMaxSeq < 1000){
+                           fileNumValue = String.format("%03d", Integer.valueOf(curYearMaxSeq));
+                       }else{
+                           fileNumValue = curYearMaxSeq+"";
+                       }
+                       fileNumValue = Constant.ADDSUPPER_PREFIX + "[" + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yyyy") + "]" + fileNumValue;
+                       addSuppLetter.setFilenum(fileNumValue);
+                       addSuppLetter.setFileSeq(curYearMaxSeq);
+                       //补充资料函的发文日期
+                       addSuppLetter.setDeptDirectorDate(new Date());
+                   }
+                   if(!Validate.isString(addSuppLetter.getFilenum())){
+                       new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
+                   }
+
+                   addSuppLetter.setDeptSLeaderId(SessionUtil.getUserId());
+                   addSuppLetter.setDeptSLeaderName(SessionUtil.getDisplayName());
+                   addSuppLetter.setDeptSleaderDate(new Date());
+                   addSuppLetter.setDeptSLeaderIdeaContent(flowDto.getDealOption());
+                   addSuppLetter.setAppoveStatus(EnumState.YES.getValue());
+                   addSuppLetterRepo.save(addSuppLetter);
+
+                   break;
+               default:
+                   break;
+           }
+           taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
+           if (flowDto.isEnd()) {
+               taskService.complete(task.getId());
+           } else {
+               taskService.complete(task.getId(), variables);
+               //如果下一环节还是自己
+               if(isNextUser){
+                   List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                   for(Task t:nextTaskList){
+                       if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+                           ResultMsg returnMsg = dealSignSupperFlow(processInstance,t,flowDto);
+                           if(returnMsg.isFlag() == false){
+                               return returnMsg;
+                           }
+                           break;
+                       }
+                   }
+               }
+           }
+           //放入腾讯通消息缓冲池
+           RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+       }catch (Exception e){
+           logger.info("拟补充资料函流程处理异常："+e.getMessage());
+          return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败！错误信息已记录，请联系管理员查看！");
+       }
+
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 

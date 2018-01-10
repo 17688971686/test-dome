@@ -12,10 +12,10 @@
         <table class="table table-bordered">
             <tr>
                 <input type="hidden"  name="id" ng-model="vm.model.id"/>
-                <td class="formAlignRight" style="width: 15%">图书编号</td>
+                <td class="formAlignRight" style="width: 15%">图书号</td>
                 <td>
-                    <input type="hidden" name="booksCode"  ng-model="vm.model.booksCode"/>
-                    {{vm.model.booksCode}}
+                    <input type="hidden" name="bookNo"  ng-model="vm.model.bookNo"/>
+                    {{vm.model.bookNo}}
                 </td>
                 <td class="formAlignRight">图书名称</td>
                 <td>
@@ -27,7 +27,7 @@
                 <td class="formAlignRight" width="10%">借书人</td>
                 <td>
                     <input type="hidden" name="bookBorrower"  ng-model="vm.model.bookBorrower"/>
-                    {{vm.model.createdBy}}
+                    {{vm.model.bookBorrower}}
                 </td>
                 <td class="formAlignRight" width="10%">借书数量</td>
                 <td>

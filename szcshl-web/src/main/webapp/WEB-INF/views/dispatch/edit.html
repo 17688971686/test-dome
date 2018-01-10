@@ -68,6 +68,12 @@
         </div>
         <!-- E 设备清单（国产）/设备清单（进口） -->
 
+        <!-- S 其他 -->
+        <div ng-show="vm.dispatchDoc.dispatchStage=='其它'">
+            <div  id="otherEdit_qt" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/otherEdit.html'"></div>
+        <#--<div id="domesticEdit_sbqd_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailSbqd.html"/></div>-->
+        </div>
+        <!-- E 设备清单（国产）/设备清单（进口） -->
         <!---S 发文打印模板 引入-->
 
         <!---E 发文打印模板 引入-->

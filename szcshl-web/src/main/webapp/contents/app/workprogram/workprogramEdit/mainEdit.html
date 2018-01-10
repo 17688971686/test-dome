@@ -3,15 +3,18 @@
 <!--S 项目建议书/可行性研究报告/项目概算/其他 -->
 <!--  s table-->
 <table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
-    <caption>
-    <span ng-show="vm.work.workreviveStage=='项目建议书'">QR-4.3-02-A3</span>
-    <span ng-show="vm.work.workreviveStage=='可行性研究报告'">QR-4.4-01-A3</span>
-    <span ng-show="vm.work.workreviveStage=='资金申请报告'">QR-4.11-02-A0</span>
-    <span ng-show="vm.work.workreviveStage=='项目概算'">QR-4.7-03-A1</span>
-    </caption>
-    <caption class="text-center h3"><strong><p>{{vm.work.titleName}}</p></strong></caption>
-    <caption style="width:100%;color: #333;">
-            <span style="float: left;padding: 0px 20px;">
+    <caption class="text-center">
+        <p style="float:left;">
+            <span ng-show="vm.work.workreviveStage=='项目建议书'">QR-4.3-02-A3</span>
+            <span ng-show="vm.work.workreviveStage=='可行性研究报告'">QR-4.4-01-A3</span>
+            <span ng-show="vm.work.workreviveStage=='资金申请报告'">QR-4.11-02-A0</span>
+            <span ng-show="vm.work.workreviveStage=='项目概算'">QR-4.7-01-A2</span>
+        </p>
+        <p class="h3">
+            <strong>{{vm.work.titleName}}</strong>
+        </p>
+        <p style="margin-top: 50px;"">
+        <span style="float: left;padding: 0px 20px;">
                 评审方式：
                 <select ng-model="vm.work.reviewType" name="reviewType" ng-change="vm.reviewTypeChange()" id="reviewType" ng-disabled="vm.businessFlag.isReveiwAWP">
                     <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == vm.work.reviewType"
@@ -34,7 +37,8 @@
                 <button class="btn btn-xs btn-default" ng-click="vm.initMergeWP()"
                         ng-show="(vm.work.isMainProject==9 || vm.work.isMainProject=='9') && vm.work.isSigle=='合并评审'">关联项目</button>
             </span>
-            <span style="float: right;padding: 0px 20px;">{{vm.work.titleDate | date:'yyyy年MM月dd日'}}</span>
+        <span style="float: right;padding: 0px 20px;">{{vm.work.titleDate | date:'yyyy年MM月dd日'}}</span>
+        </p>
     </caption>
     
     <tbody>
@@ -86,7 +90,7 @@
             </select>
             <input type="text" ng-model="vm.work.mainDeptName" name="mainDeptName" id="mainDeptName" style="width:200px;height:26px;margin-left:-224px;">
         </td>
-        <td class="text-center">是否有环评{{vm.work.isHaveEIA}}</td>
+        <td class="text-center">是否有环评</td>
         <td colspan="3">
             <input type="checkbox" ng-true-value="9" ng-model="vm.work.isHaveEIA"  name="isHaveEIA" ng-checked="vm.work.isHaveEIA == 9 || vm.work.isHaveEIA == '9'">是
             <input type="checkbox" ng-true-value="0"  ng-model="vm.work.isHaveEIA"  name="isHaveEIA" ng-checked="!vm.work.isHaveEIA || vm.work.isHaveEIA == 0 || vm.work.isHaveEIA == '0'">否

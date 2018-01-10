@@ -70,27 +70,30 @@
         /******以下是其它资料添加*****/
 
         vm.addOtherFile = function (businessId, businessType) {
-            if(businessType == "2"){
-                vm.addRegisters = vm.drawingFile;
-            }else{
-                vm.addRegisters = vm.otherFile;
-            }
-            /*if(businessType == "XMJYS_DECLARE_FILE"){
-                vm.addRegisters = vm.declareFile;
-            }*/
             if(!vm.addRegisters){
                 vm.addRegisters = [];
             }
             if (!businessId) {
                 bsWin.alert("请先保存数据！");
             } else {
+                if(businessType == "2"){
+                    vm.addRegisters = vm.drawingFile;
+                    vm.showFilePage = true;
+                    vm.showFileOther = false;
+                    vm.showSignOther = false;
+                }else{
+                    vm.addRegisters = vm.otherFile;
+                    vm.showFileOther = true;
+                    vm.showFilePage = false;
+                    vm.showSignOther = false;
+                }
                 vm.businessId = businessId;
                 vm.businessType = businessType;
 
                 $("#addOtherFile").kendoWindow({
-                    width: "50%",
-                    height: "600px",
-                    title: "其它资料编辑页",
+                    width: "840px",
+                    height: "480px",
+                    title: "补充资料编辑",
                     visible: false,
                     modal: true,
                     closable: true,

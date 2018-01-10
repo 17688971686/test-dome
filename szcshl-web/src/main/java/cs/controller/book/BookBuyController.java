@@ -1,6 +1,7 @@
 package cs.controller.book;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.book.BookBorrowInfoDto;
 import cs.model.book.BookBuyDto;
@@ -53,11 +54,18 @@ public class BookBuyController {
 
     @RequiresAuthentication
     @RequestMapping(name = "保存借书信息", path = "saveBorrowDetail", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public void saveBorrowDetail(@RequestBody BookBorrowInfoDto bookBorrowInfoDto) {
-        borrowBookService.save(bookBorrowInfoDto);
-        bookBuyService.updateBookInfo(bookBorrowInfoDto.getId(),bookBorrowInfoDto.getBorrowNum());
+    @ResponseBody
+    public ResultMsg saveBorrowDetail(@RequestBody BookBorrowInfoDto bookBorrowInfoDto) {
+        return  borrowBookService.saveBooksDetail(bookBorrowInfoDto);
     }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "保存还书信息", path = "saveReturnDetail", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveReturnDetail(@RequestBody BookBorrowInfoDto bookBorrowInfoDto) {
+        return borrowBookService.saveReturnDetail(bookBorrowInfoDto);
+    }
+
     @RequiresAuthentication
 	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody BookBuyDto findById(@RequestParam(required = true)String id){		

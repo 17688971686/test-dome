@@ -3,24 +3,28 @@
 <!-- S 设备清单（国产）  /设备清单（进口）-->
 <!--  s table-->
 <table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
-    <caption>
-        <span >QR-4.9-02-A0</span>
-    </caption>
-    <caption class="text-center h3"><strong>{{vm.work.titleName}}</strong></caption>
-    <caption style="width:100%;color: #333;">
-            <span style="float: left;padding: 0px 20px;">
+    <caption class="text-center">
+        <p style="float:left;">
+            <span>QR-4.9-02-A0</span>
+        </p>
+        <p class="h3">
+            <strong>{{vm.work.titleName}}</strong>
+        </p>
+        <p style="margin-top: 50px;"">
+        <span style="float: left;padding: 0px 20px;">
                 评审方式：
                 <select ng-model="vm.work.reviewType" name="reviewType" ng-change="vm.reviewTypeChange()" id="reviewType" ng-disabled="vm.businessFlag.isReveiwAWP">
                     <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == vm.work.reviewType"
                             value="{{x.dictName}}">{{x.dictName}}</option>
                 </select>
-                 <select ng-if="vm.work.reviewType!='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
-                        <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == vm.work.isSigle"
-                                value="{{x.dictName}}">{{x.dictName}}</option>
-                 </select>
-                 <select ng-if="vm.work.reviewType=='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
-                        <option value="单个评审">单个评审</option>
-                 </select>
+
+                 <select ng-show="vm.work.reviewType!='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
+                         <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == vm.work.isSigle"
+                                 value="{{x.dictName}}">{{x.dictName}}</option>
+                  </select>
+                  <select ng-show="vm.work.reviewType=='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
+                         <option value="单个评审">单个评审</option>
+                  </select>
             </span>
             <span ng-show="vm.work.isSigle=='合并评审'" style="float: left;">
                 <input type="checkbox" name="isMainProject" ng-model="vm.work.isMainProject" ng-true-value="9" ng-false-value="0"
@@ -31,6 +35,7 @@
                         ng-show="(vm.work.isMainProject==9 || vm.work.isMainProject=='9') && vm.work.isSigle=='合并评审'">关联项目</button>
             </span>
         <span style="float: right;padding: 0px 20px;">{{vm.work.titleDate | date:'yyyy年MM月dd日'}}</span>
+        </p>
     </caption>
     
     <tbody>

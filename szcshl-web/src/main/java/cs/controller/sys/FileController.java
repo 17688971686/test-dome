@@ -211,7 +211,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             //连接ftp
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
-            boolean linkSucess = FtpUtil.connectFtp(f);
+            boolean linkSucess = FtpUtil.connectFtp(f,true);
             if (linkSucess) {
                 for(MultipartFile multipartFile : multipartFileList){
                     String fileName = multipartFile.getOriginalFilename();
@@ -293,7 +293,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             //连接ftp
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
-            boolean linkSucess = FtpUtil.connectFtp(f);
+            boolean linkSucess = FtpUtil.connectFtp(f,true);
             if (linkSucess) {
                 SysFile sysFile = fileService.findFileById(sysFileId);
                 //获取相对路径
@@ -332,7 +332,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             SysFile sysFile = fileService.findFileById(sysFileId);
             //连接ftp
             Ftp f = sysFile.getFtp();
-            boolean linkSucess = FtpUtil.connectFtp(f);
+            boolean linkSucess = FtpUtil.connectFtp(f,false);
             if (linkSucess) {
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
@@ -369,7 +369,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             SysFile sysFile = fileService.findFileById(sysfileId);
             //连接ftp
             Ftp f = sysFile.getFtp();
-            boolean linkSucess = FtpUtil.connectFtp(f);
+            boolean linkSucess = FtpUtil.connectFtp(f,false);
             if(linkSucess){
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
@@ -451,18 +451,18 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             out = response.getOutputStream();
             SysFile sysFile = fileService.findFileById(sysfileId);
             Ftp ftp = sysFile.getFtp();
-            boolean linkSucess = FtpUtil.connectFtp(ftp);
+            boolean linkSucess = FtpUtil.connectFtp(ftp,false);
             if(linkSucess){
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
                 String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
                 String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
                 //涉及到中文问题 根据系统实际编码改变
-                removeRelativeUrl = new String(removeRelativeUrl.getBytes(FtpUtil.LOCAL_CHARSET), FtpUtil.ISO_CHARSET);
-                storeFileName = new String(storeFileName.getBytes(FtpUtil.LOCAL_CHARSET), FtpUtil.ISO_CHARSET);
+                removeRelativeUrl = new String(removeRelativeUrl.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
+                storeFileName = new String(storeFileName.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
                 //切换工作路径
-                boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
-                if (changedir) {
+                linkSucess = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
+                if (linkSucess) {
                     switch (sysFile.getFileType()) {
                         case ".jpg":
                             response.setHeader("Content-type", "application/.jpg");
@@ -492,8 +492,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                             response.setContentType("application/octet-stream");
                     }
 
-                    response.setHeader("Content-Disposition", "attachment; filename="
-                            + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
+                response.setHeader("Content-Disposition", "attachment; filename="
+                        + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
 
                     FTPFile[] files = FtpUtil.getFtp().listFiles();
                     for (int i = 0; i < files.length; i++) {
@@ -509,8 +509,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            FtpUtil.closeFtp();
             try {
-                FtpUtil.closeFtp();
                 if(out != null){
                     out.close();
                 }
@@ -778,6 +778,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         fileData.put("registerFileList", registerFileDto);
                         file = TemplateUtil.createDoc(fileData, Template.DEVICE_BILL_FILERECORD.getKey(), path);
 
+                    }else if(stageType.equals(RevireStageKey.KEY_OTHER.getValue())){
+                        //其他阶段
+                        Sign s = signRepo.getById(businessId);
+                        fileData.put("secrectlevel", s.getSecrectlevel());
+                        file = TemplateUtil.createDoc(fileData, Template.OTHERS_FILERECORD.getKey(), path);
                     }
                     break;
 
@@ -903,6 +908,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         //设备清单（国产、进口）
                         dispatchData.put("wpTile","设备清单发文审批表");
                         file = TemplateUtil.createDoc(dispatchData, Template.DEVICE_BILL_DISPATCHDOC.getKey(), path);
+                    }else if(stageType.equals(RevireStageKey.KEY_OTHER.getValue())){
+                        //其他阶段
+                        file = TemplateUtil.createDoc(dispatchData, Template.OTHERS_DISPATCHDOC.getKey(), path);
                     }
                     break;
 
@@ -1187,7 +1195,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
         model.addAttribute("filePath", basePath + "/file/html/download");
         model.addAttribute("uploadFile", basePath + "/contents/uploadFile.jsp");
-        model.addAttribute("fileName", sysFile.getShowName());
+        model.addAttribute("fileName", storeFileName);
         model.addAttribute("sysFileId", sysFileId);
         //文件类型
         String fileTyp;

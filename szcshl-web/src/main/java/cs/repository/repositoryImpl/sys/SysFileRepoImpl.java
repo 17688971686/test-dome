@@ -64,7 +64,7 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
                     try {
                         //删除ftp上的文件
                         Ftp f = sysFile.getFtp();
-                        if (f != null && FtpUtil.connectFtp(f)) {
+                        if (f != null && FtpUtil.connectFtp(f,false)) {
                             if (FtpUtil.removeFile(sysFile.getFileUrl())) {
                                 //如果删除成功，则删除本地
                                 if (deleteIds.length() > 0) {
@@ -101,7 +101,7 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
                 try {
                     //删除ftp上的文件
                     Ftp f = fl.getFtp();
-                    if (f == null || !FtpUtil.connectFtp(f) || !FtpUtil.removeFile(fl.getFileUrl())) {
+                    if (f == null || !FtpUtil.connectFtp(f,false) || !FtpUtil.removeFile(fl.getFileUrl())) {
                         resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！无法连接文件服务器，请联系管理员查看！");
                     } else {
                         delete(fl);

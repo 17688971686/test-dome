@@ -30,10 +30,11 @@ public class FtpUtil {
      * 获取ftp连接
      *
      * @param f
+     * @param isUpload 是否上传
      * @return
      * @throws Exception
      */
-    public static boolean connectFtp(Ftp f) throws Exception {
+    public static boolean connectFtp(Ftp f,boolean isUpload) throws Exception {
         ftp = new FTPClient();
         boolean flag = false;
         int reply;
@@ -42,33 +43,36 @@ public class FtpUtil {
         } else {
             ftp.connect(f.getIpAddr(), f.getPort());
         }
-        if (ftp.login(f.getUserName(), f.getPwd())) {
-            // 开启服务器对UTF-8的支持，如果服务器支持就用UTF-8编码，否则就使用本地编码（GBK）.
-            if (FTPReply.isPositiveCompletion(ftp.sendCommand("OPTS UTF8", "ON"))) {
-                LOCAL_CHARSET = "UTF-8";
-                System.out.println("ftp支持utf-8文件编码！");
-            } else {
+        reply = ftp.getReplyCode();
+        if (FTPReply.isPositiveCompletion(reply)) {
+            if (ftp.login(f.getUserName(), f.getPwd())) {
                 LOCAL_CHARSET = "GBK";
-                System.out.println("ftp不支持utf-8文件编码！");
-            }
+                if(isUpload){
+                    // 开启服务器对UTF-8的支持，如果服务器支持就用UTF-8编码，否则就使用本地编码（GBK）.
+                    if (FTPReply.isPositiveCompletion(ftp.sendCommand("OPTS UTF8", "ON"))) {
+                        LOCAL_CHARSET = "UTF-8";
+                        System.out.println("ftp支持utf-8文件编码！");
+                    } else {
+                        LOCAL_CHARSET = "GBK";
+                        System.out.println("ftp不支持utf-8文件编码！");
+                    }
+                    //设置编码格式
+                    ftp.setControlEncoding(LOCAL_CHARSET);
+                }
+                //设置缓冲为3M
+                ftp.setBufferSize(3 * 1024);
+                //文件类型为二进制文件
+                ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
+                ftp.enterLocalPassiveMode();
 
-            //设置编码格式
-            ftp.setControlEncoding(LOCAL_CHARSET);
-            // 设置被动模式
-            ftp.enterLocalPassiveMode();
-            //设置缓冲为3M
-            ftp.setBufferSize(3 * 1024);
-            //文件类型为二进制文件
-            ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
-            reply = ftp.getReplyCode();
-            if (!FTPReply.isPositiveCompletion(reply)) {
-                ftp.disconnect();
-                return flag;
+                ftp.changeWorkingDirectory(f.getPath());
             }
-            ftp.changeWorkingDirectory(f.getPath());
+            flag = true;
+        }else{
+            ftp.disconnect();
+            return flag;
         }
 
-        flag = true;
         return flag;
     }
 
@@ -113,7 +117,7 @@ public class FtpUtil {
             filename = new String(filename.getBytes(LOCAL_CHARSET), ISO_CHARSET);
             if (!ftp.changeWorkingDirectory(remoteBaseDir)) {
                 //如果目录不存在创建目录
-                String[] dirs = remoteBaseDir.replace(File.separator, "-").split("-");
+                String[] dirs = remoteBaseDir.replace(File.separator, "$").split("$");
                 String tempPath = "";
                 for (String dir : dirs) {
                     if (null == dir || "".equals(dir)) {
@@ -239,17 +243,14 @@ public class FtpUtil {
         boolean result = false;
         try {
             //涉及到中文问题 根据系统实际编码改变
-            remoteBaseDir = new String(remoteBaseDir.getBytes(LOCAL_CHARSET), ISO_CHARSET);
+            remoteBaseDir = new String(remoteBaseDir.getBytes(GBK_CHARSET), ISO_CHARSET);
             result = ftp.changeWorkingDirectory(remoteBaseDir);// 转移到FTP服务器目录
             if(result){
                 result = false;
+                filename = new String(filename.getBytes(GBK_CHARSET), ISO_CHARSET);
                 FTPFile[] fs = ftp.listFiles();
                 for (FTPFile f : fs) {
                     if (filename.equals(f.getName())) {
-                        OutputStream outputStream = new FileOutputStream("D:"+File.separator+f.getName());
-                        ftp.retrieveFile(f.getName(), outputStream);
-                        outputStream.flush();
-                        outputStream.close();
                         result = true;
                         break;
                     }
@@ -382,21 +383,21 @@ public class FtpUtil {
 
     public static void main(String[] args) throws Exception {
         Ftp f = new Ftp();
-        /*f.setIpAddr("172.30.36.117");
+        f.setIpAddr("172.30.36.117");
         f.setUserName("ftptest");
-        f.setPwd("123456");*/
-        f.setIpAddr("172.30.36.214");
+        f.setPwd("123456");
+        /*f.setIpAddr("172.30.36.214");
         f.setUserName("szec");
-        f.setPwd("863305");
-        FtpUtil.connectFtp(f);
-        String remote = File.separator + "ftp01" + File.separator + "1003" + File.separator + "评审报告";
+        f.setPwd("863305");*/
+        FtpUtil.connectFtp(f,false);
+        String remote = File.separator + "ftp03" + File.separator + "2000" + File.separator + "工程概算书"+ File.separator+"鹏微公司服务器.txt";
         //附件上传测试
         //File file = new File("D:/鹏微公司服务器.txt");
         //FtpUtil.uploadFile(remote, "鹏微公司服务器.txt", new FileInputStream(file));
 
-        System.out.println(FtpUtil.checkFileExist(remote,"深投审[2006]73号.doc"));
-        //System.out.println(FtpUtil.removeFile(remote));
-        //System.out.println(new String("评审报告".getBytes(GBK_CHARSET), ISO_CHARSET));
+        //System.out.println(FtpUtil.checkFileExist(remote,"深投审[2006]73号.doc"));
+        System.out.println(FtpUtil.removeFile(remote));
+        //System.out.println(new String("深投审[2006]73号.doc".getBytes(GBK_CHARSET), ISO_CHARSET));
 
     }
 

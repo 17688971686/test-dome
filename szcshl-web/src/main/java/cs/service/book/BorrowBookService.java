@@ -16,6 +16,10 @@ public interface BorrowBookService {
 
 	void save(BookBorrowInfoDto record);
 
+    ResultMsg saveReturnDetail (BookBorrowInfoDto bookBorrowInfoDto);
+
+    ResultMsg saveBooksDetail (BookBorrowInfoDto bookBorrowInfoDto);
+
     /**
      * 借书列表
      * @return

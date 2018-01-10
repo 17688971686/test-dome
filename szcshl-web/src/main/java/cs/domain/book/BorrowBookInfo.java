@@ -16,6 +16,9 @@ public class BorrowBookInfo extends DomainBase {
     //图书编号（图书分类号+顺序号）
     @Column(columnDefinition = "varchar(64) ")
     private String booksCode;
+    //书号/刊号
+    @Column(columnDefinition="varchar(128)")
+    private String bookNo;
     //图书名称
     @Column(columnDefinition = "varchar(255) ")
     private String booksName;
@@ -119,5 +122,13 @@ public class BorrowBookInfo extends DomainBase {
 
     public void setBookBuyBusiness(BookBuyBusiness bookBuyBusiness) {
         this.bookBuyBusiness = bookBuyBusiness;
+    }
+
+    public String getBookNo() {
+        return bookNo;
+    }
+
+    public void setBookNo(String bookNo) {
+        this.bookNo = bookNo;
     }
 }

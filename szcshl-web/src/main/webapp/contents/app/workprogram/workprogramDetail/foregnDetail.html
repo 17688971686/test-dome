@@ -1,23 +1,29 @@
 <meta charset="UTF-8">
 <!-- start  主项目 （ 进口设备） -->
-<div ng-repeat="w in vm.model.workProgramDtoList"  ng-if="(w.workreviveStage=='进口设备' )&&(w.branchId == '1' || w.branchId == 1)">
-    <a  data-toggle="collapse" data-target="#wp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
+<div ng-repeat="w in vm.model.workProgramDtoList"
+     ng-if="(w.workreviveStage=='进口设备' )&&(w.branchId == '1' || w.branchId == 1)">
+    <a data-toggle="collapse" data-target="#wp_{{$index}}"
+       ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [{{w.titleName}}]
     </a>
-    <div id="wp_{{$index}}" class="collapse in" >
-        <table  class="table table-bordered" style="margin-bottom: 0px;" >
-            <caption>
-                 <span style="float:left;">QR-4.9-02-A0</span>
-            </caption>
-            <caption class="text-center h3"><strong><p>{{w.titleName}}</p></strong></caption>
-            <caption style="width:100%;">
-        <span style="float:left;">
-            <span>评审方式: {{w.reviewType}}</span>
-            <span style="margin:0px 10px;">{{w.isSigle}}</span>
-            <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 9" > 主项目 </span>
-            <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 0" > 次项目 </span>
-        </span>
-                <span style="float: right;padding: 0px 20px;">{{w.titleDate | date:'yyyy年MM月dd日'}}</span>
+    <div id="wp_{{$index}}" class="collapse in">
+        <table class="table table-bordered" style="margin-bottom: 0px;">
+            <caption class="text-center">
+                <p style="float:left;">
+                    <span>QR-4.10-05-A0</span>
+                </p>
+                <p class="h3">
+                    <strong>{{w.titleName}}</strong>
+                </p>
+                <p style="margin-top: 50px;"">
+                <span style="float:left;">
+		            <span>评审方式: {{w.reviewType}}</span>
+		            <span style="margin:0px 10px;">{{w.isSigle}}</span>
+		            <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 9"> 主项目 </span>
+		            <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 0"> 次项目 </span>
+		        </span>
+                <span style="float:right;">{{w.titleDate | date:'yyyy年MM月dd日' }}</span>
+                </p>
             </caption>
             <tr>
                 <td style="width:10%;" colspan="2" class="text-center">项目名称</td>
@@ -106,10 +112,13 @@
                 <td class="text-center" colspan="2">是否有补充资料函</td>
                 <td colspan="3">
                      <span>
-                        <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="w.isHaveSuppLetter==9" ng-true-value="9" >是
+                        <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter"
+                               name="isHaveSuppLetter" ng-checked="w.isHaveSuppLetter==9" ng-true-value="9">是
                     </span>
-                            <span style="margin-left: 10px;">
-                        <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="!w.isHaveSuppLetter || w.isHaveSuppLetter==0"  ng-true-value="0">否
+                    <span style="margin-left: 10px;">
+                        <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter"
+                               name="isHaveSuppLetter" ng-checked="!w.isHaveSuppLetter || w.isHaveSuppLetter==0"
+                               ng-true-value="0">否
                     </span>
                 </td>
                 <td class="text-center">补充资料函发文日期</td>
@@ -118,7 +127,9 @@
             <tr>
                 <td class="text-center" colspan="2">调研时间</td>
                 <td colspan="7">
-                    {{w.studyAllDay}}<span ng-if="w.studyQuantum">,</span>{{w.studyQuantum}}<span ng-if="w.studyBeginTimeStr">,</span>{{w.studyBeginTimeStr}}<span ng-if="w.studyEndTimeStr">至</span>{{w.studyEndTimeStr}}
+                    {{w.studyAllDay}}<span ng-if="w.studyQuantum">,</span>{{w.studyQuantum}}<span
+                        ng-if="w.studyBeginTimeStr">,</span>{{w.studyBeginTimeStr}}<span
+                        ng-if="w.studyEndTimeStr">至</span>{{w.studyEndTimeStr}}
                 </td>
             </tr>
             <tr  ng-if="w.isSigle=='单个评审' || (w.isSigle=='合并评审' && w.isMainProject == 9)" >
@@ -137,7 +148,8 @@
                 <td class="text-center" style="width:10%;">主持人</td>
                 <td class="text-center" colspan="3">会议内容</td>
             </tr>
-            <tr ng-repeat="r in w.roomBookingDtos track by $index" ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
+            <tr ng-repeat="r in w.roomBookingDtos track by $index"
+                ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
                 <td class="text-center" colspan="2">{{r.rbDate}}</td>
                 <td class="text-center">{{r.addressName}}</td>
                 <td class="text-center">{{r.beginTimeStr}}</td>
@@ -155,7 +167,8 @@
                 <td class="text-center" style="width:10%;">专家类别</td>
                 <td class="text-center" style="width:15%;">备注</td>
             </tr>
-            <tr ng-repeat="x in w.expertDtoList track by $index" ng-show="w.expertDtoList && w.expertDtoList.length > 0">
+            <tr ng-repeat="x in w.expertDtoList track by $index"
+                ng-show="w.expertDtoList && w.expertDtoList.length > 0">
                 <td class="text-center" colspan="2">{{x.name}}</td>
                 <td class="text-center">{{x.comPany}}</td>
                 <td class="text-center">{{x.job}}</td>
@@ -195,14 +208,17 @@
             </tr>
         </table>
     </div>
-    <button  class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览</button>
+    <button class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;"
+            ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览
+    </button>
 </div>
 <!-- end 主项目 -->
 
 <!-- start 协办项目（进口设备） -->
 <div ng-repeat="w in vm.model.workProgramDtoList | orderBy:w.branchId"  style="margin-top:10px;"
      ng-if="(w.workreviveStage=='进口设备') && (w.branchId != '1' && w.branchId != 1)">
-    <a  data-toggle="collapse" data-target="#aswp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
+    <a data-toggle="collapse" data-target="#aswp_{{$index}}"
+       ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
         [协办分支_{{w.branchId}}_工作方案]
     </a>
     <div id="aswp_{{$index}}" class="collapse in" >
@@ -306,10 +322,13 @@
                 <td class="text-center" colspan="2">是否有补充资料函</td>
                 <td colspan="3">
                      <span>
-                        <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="w.isHaveSuppLetter==9" ng-true-value="9" >是
+                        <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter"
+                               name="isHaveSuppLetter" ng-checked="w.isHaveSuppLetter==9" ng-true-value="9">是
                     </span>
                     <span style="margin-left: 10px;">
-                        <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="!w.isHaveSuppLetter || w.isHaveSuppLetter==0"  ng-true-value="0">否
+                        <input type="checkbox" ng-disabled="true" ng-model="vm.work.isHaveSuppLetter"
+                               name="isHaveSuppLetter" ng-checked="!w.isHaveSuppLetter || w.isHaveSuppLetter==0"
+                               ng-true-value="0">否
                     </span>
                 </td>
                 <td class="text-center">补充资料函发文日期</td>
@@ -318,7 +337,9 @@
             <tr>
                 <td class="text-center" colspan="2">调研时间</td>
                 <td colspan="7">
-                    {{w.studyAllDay}}<span ng-if="w.studyQuantum">,</span>{{w.studyQuantum}}<span ng-if="w.studyBeginTimeStr">,</span>{{w.studyBeginTimeStr}}<span ng-if="w.studyEndTimeStr">至</span>{{w.studyEndTimeStr}}
+                    {{w.studyAllDay}}<span ng-if="w.studyQuantum">,</span>{{w.studyQuantum}}<span
+                        ng-if="w.studyBeginTimeStr">,</span>{{w.studyBeginTimeStr}}<span
+                        ng-if="w.studyEndTimeStr">至</span>{{w.studyEndTimeStr}}
                 </td>
             </tr>
             <tr  ng-if="w.isSigle=='单个评审' || (w.isSigle=='合并评审' && w.isMainProject == 9)" >
@@ -337,7 +358,8 @@
                 <td class="text-center" style="width:10%;">主持人</td>
                 <td class="text-center" colspan="3">会议内容</td>
             </tr>
-            <tr ng-repeat="r in w.roomBookingDtos track by $index" ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
+            <tr ng-repeat="r in w.roomBookingDtos track by $index"
+                ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
                 <td class="text-center" colspan="2">{{r.rbDate}}</td>
                 <td class="text-center">{{r.addressName}}</td>
                 <td class="text-center">{{r.beginTimeStr}}</td>
@@ -355,7 +377,8 @@
                 <td class="text-center" style="width:10%;">专家类别</td>
                 <td class="text-center" style="width:15%;">备注</td>
             </tr>
-            <tr ng-repeat="x in w.expertDtoList track by $index" ng-show="w.expertDtoList && w.expertDtoList.length > 0">
+            <tr ng-repeat="x in w.expertDtoList track by $index"
+                ng-show="w.expertDtoList && w.expertDtoList.length > 0">
                 <td class="text-center" colspan="2">{{x.name}}</td>
                 <td class="text-center">{{x.comPany}}</td>
                 <td class="text-center">{{x.job}}</td>
@@ -396,5 +419,7 @@
 
         </table>
     </div>
-    <button  class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览</button>
+    <button class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;"
+            ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览
+    </button>
 </div>

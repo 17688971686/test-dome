@@ -109,6 +109,18 @@ public class FileRecord extends DomainBase{
 	
 	//委文件处理表份数
 	@Column(columnDefinition="INTEGER")
+	private Integer feasibilityFormCount;
+
+	//项目处理表是否有原件(可行性研究)
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityFormOriginal;
+
+	//项目处理表是否有复印件(可行性研究)
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityFormCopy;
+	
+	//委文件处理表份数
+	@Column(columnDefinition="INTEGER")
 	private Integer sugfileHandleFormCount;
 	
 	//委文件处理表是否有原件
@@ -238,6 +250,10 @@ public class FileRecord extends DomainBase{
 	//项目建议书是否有原件
 	@Column(columnDefinition="VARCHAR(2)")
 	private String procsugFileOriginal;
+
+	//项目建议书是否有复印件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String procsugFileFileCopy;
 	
 	//项目建议书数量
 	@Column(columnDefinition="INTEGER")
@@ -364,6 +380,19 @@ public class FileRecord extends DomainBase{
 	@Column
 	private Date fileDate;
 
+	//项目立项批文是否有分数(可行性研究)
+	@Column(columnDefinition="INTEGER")
+	private Integer feasibilityProjectCount;
+
+	//项目立项批文是否有原件(可行性研究)
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityProjectOriginal;
+
+	//项目立项批文是否有复印件(可行性研究)
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityProjectCopy;
+
+
 	/**
 	 * 发送存档日期为第二负责人审批意见后的日期
 	 */
@@ -429,6 +458,19 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String officialDisposeCopy;
 
+	//文件处理表份数(可行性研究)
+	@Column(columnDefinition="INTEGER")
+	private Integer feasibilityDisposeCount;
+
+	//文件处理表是否有原件(可行性研究)
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityDisposeOriginal;
+
+	//文件处理表是否复印件(可行性研究)
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityDisposeCopy;
+
+
 	//主管部门意见分数
 	@Column(columnDefinition="INTEGER")
 	private Integer managerDeptCount;
@@ -479,6 +521,18 @@ public class FileRecord extends DomainBase{
 	@Column(columnDefinition="VARCHAR(2)")
 	private String projectDeclareCopy;
 
+	//项目申报表是否有分数(可行性研究)
+	@Column(columnDefinition="INTEGER")
+	private Integer feasibilityDeclareCount;
+
+	//项目申报表是否有原件(可行性研究)
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityDeclareOriginal;
+
+	//项目申报表是否有复印件(可行性研究)
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityDeclareCopy;
+
 	//可研报告分数
 	@Column(columnDefinition="INTEGER")
 	private Integer feasibilityReportCount;
@@ -502,6 +556,18 @@ public class FileRecord extends DomainBase{
 	//电子文档是否有复印件
 	@Column(columnDefinition="VARCHAR(2)")
 	private String electronicDocumentCopy;
+
+	//电子文档分数(可研究性)
+	@Column(columnDefinition="INTEGER")
+	private Integer feasibilityDocumentCount;
+
+	//电子文档是否有原件(可研究性)
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityDocumentOriginal;
+
+	//电子文档是否有复印件(可研究性)
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityDocumentCopy;
 
 	//项目申请报告分数
 	@Column(columnDefinition="INTEGER")
@@ -596,6 +662,51 @@ public class FileRecord extends DomainBase{
 	//用地规划许可证是否有复印件
 	@Column(columnDefinition="VARCHAR(2)")
 	private String landPlanningLicenseCopy;
+
+	//用地规划许可证是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String landPlanningLicenseOriginal;
+
+	//用地规划许可证份数
+	@Column(columnDefinition="INTEGER")
+	private Integer landPlanningLicenseCount;
+
+	//环保批文是否有复印件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String approvalCopy;
+
+	//环保批文是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String approvalOriginal;
+
+	//环保批文份数
+	@Column(columnDefinition="INTEGER")
+	private Integer approvalCount;
+
+	//项目建议书批复是否有复印件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String projectProposalCopy;
+
+	//项目建议书批复是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String projectProposalOriginal;
+
+	//项目建议书批复份数
+	@Column(columnDefinition="INTEGER")
+	private Integer projectProposalCount;
+
+	//可行性研究报告批复是否有复印件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityReplyCopy;
+
+	//可行性研究报告批复是否有原件
+	@Column(columnDefinition="VARCHAR(2)")
+	private String feasibilityReplyOriginal;
+
+	//可行性研究报告批复份数
+	@Column(columnDefinition="INTEGER")
+	private Integer feasibilityReplyCount;
+
 	
 	//项目审核明细表是否有原件
 	@Column(columnDefinition="VARCHAR(2)")
@@ -2776,4 +2887,220 @@ public class FileRecord extends DomainBase{
     public void setFieOtherCount(Integer fieOtherCount) {
         this.fieOtherCount = fieOtherCount;
     }
+
+	public Integer getFeasibilityFormCount() {
+		return feasibilityFormCount;
+	}
+
+	public void setFeasibilityFormCount(Integer feasibilityFormCount) {
+		this.feasibilityFormCount = feasibilityFormCount;
+	}
+
+	public String getFeasibilityFormOriginal() {
+		return feasibilityFormOriginal;
+	}
+
+	public void setFeasibilityFormOriginal(String feasibilityFormOriginal) {
+		this.feasibilityFormOriginal = feasibilityFormOriginal;
+	}
+
+	public String getFeasibilityFormCopy() {
+		return feasibilityFormCopy;
+	}
+
+	public void setFeasibilityFormCopy(String feasibilityFormCopy) {
+		this.feasibilityFormCopy = feasibilityFormCopy;
+	}
+
+	public String getProcsugFileFileCopy() {
+		return procsugFileFileCopy;
+	}
+
+	public void setProcsugFileFileCopy(String procsugFileFileCopy) {
+		this.procsugFileFileCopy = procsugFileFileCopy;
+	}
+
+	public Integer getFeasibilityProjectCount() {
+		return feasibilityProjectCount;
+	}
+
+	public void setFeasibilityProjectCount(Integer feasibilityProjectCount) {
+		this.feasibilityProjectCount = feasibilityProjectCount;
+	}
+
+	public String getFeasibilityProjectOriginal() {
+		return feasibilityProjectOriginal;
+	}
+
+	public void setFeasibilityProjectOriginal(String feasibilityProjectOriginal) {
+		this.feasibilityProjectOriginal = feasibilityProjectOriginal;
+	}
+
+	public String getFeasibilityProjectCopy() {
+		return feasibilityProjectCopy;
+	}
+
+	public void setFeasibilityProjectCopy(String feasibilityProjectCopy) {
+		this.feasibilityProjectCopy = feasibilityProjectCopy;
+	}
+
+	public Integer getFeasibilityDisposeCount() {
+		return feasibilityDisposeCount;
+	}
+
+	public void setFeasibilityDisposeCount(Integer feasibilityDisposeCount) {
+		this.feasibilityDisposeCount = feasibilityDisposeCount;
+	}
+
+	public String getFeasibilityDisposeOriginal() {
+		return feasibilityDisposeOriginal;
+	}
+
+	public void setFeasibilityDisposeOriginal(String feasibilityDisposeOriginal) {
+		this.feasibilityDisposeOriginal = feasibilityDisposeOriginal;
+	}
+
+	public String getFeasibilityDisposeCopy() {
+		return feasibilityDisposeCopy;
+	}
+
+	public void setFeasibilityDisposeCopy(String feasibilityDisposeCopy) {
+		this.feasibilityDisposeCopy = feasibilityDisposeCopy;
+	}
+
+	public Integer getFeasibilityDeclareCount() {
+		return feasibilityDeclareCount;
+	}
+
+	public void setFeasibilityDeclareCount(Integer feasibilityDeclareCount) {
+		this.feasibilityDeclareCount = feasibilityDeclareCount;
+	}
+
+	public String getFeasibilityDeclareOriginal() {
+		return feasibilityDeclareOriginal;
+	}
+
+	public void setFeasibilityDeclareOriginal(String feasibilityDeclareOriginal) {
+		this.feasibilityDeclareOriginal = feasibilityDeclareOriginal;
+	}
+
+	public String getFeasibilityDeclareCopy() {
+		return feasibilityDeclareCopy;
+	}
+
+	public void setFeasibilityDeclareCopy(String feasibilityDeclareCopy) {
+		this.feasibilityDeclareCopy = feasibilityDeclareCopy;
+	}
+
+	public Integer getFeasibilityDocumentCount() {
+		return feasibilityDocumentCount;
+	}
+
+	public void setFeasibilityDocumentCount(Integer feasibilityDocumentCount) {
+		this.feasibilityDocumentCount = feasibilityDocumentCount;
+	}
+
+	public String getFeasibilityDocumentOriginal() {
+		return feasibilityDocumentOriginal;
+	}
+
+	public void setFeasibilityDocumentOriginal(String feasibilityDocumentOriginal) {
+		this.feasibilityDocumentOriginal = feasibilityDocumentOriginal;
+	}
+
+	public String getFeasibilityDocumentCopy() {
+		return feasibilityDocumentCopy;
+	}
+
+	public void setFeasibilityDocumentCopy(String feasibilityDocumentCopy) {
+		this.feasibilityDocumentCopy = feasibilityDocumentCopy;
+	}
+
+	public String getLandPlanningLicenseOriginal() {
+		return landPlanningLicenseOriginal;
+	}
+
+	public void setLandPlanningLicenseOriginal(String landPlanningLicenseOriginal) {
+		this.landPlanningLicenseOriginal = landPlanningLicenseOriginal;
+	}
+
+	public Integer getLandPlanningLicenseCount() {
+		return landPlanningLicenseCount;
+	}
+
+	public void setLandPlanningLicenseCount(Integer landPlanningLicenseCount) {
+		this.landPlanningLicenseCount = landPlanningLicenseCount;
+	}
+
+	public String getApprovalCopy() {
+		return approvalCopy;
+	}
+
+	public void setApprovalCopy(String approvalCopy) {
+		this.approvalCopy = approvalCopy;
+	}
+
+	public String getApprovalOriginal() {
+		return approvalOriginal;
+	}
+
+	public void setApprovalOriginal(String approvalOriginal) {
+		this.approvalOriginal = approvalOriginal;
+	}
+
+	public Integer getApprovalCount() {
+		return approvalCount;
+	}
+
+	public void setApprovalCount(Integer approvalCount) {
+		this.approvalCount = approvalCount;
+	}
+
+	public String getProjectProposalCopy() {
+		return projectProposalCopy;
+	}
+
+	public void setProjectProposalCopy(String projectProposalCopy) {
+		this.projectProposalCopy = projectProposalCopy;
+	}
+
+	public String getProjectProposalOriginal() {
+		return projectProposalOriginal;
+	}
+
+	public void setProjectProposalOriginal(String projectProposalOriginal) {
+		this.projectProposalOriginal = projectProposalOriginal;
+	}
+
+	public Integer getProjectProposalCount() {
+		return projectProposalCount;
+	}
+
+	public void setProjectProposalCount(Integer projectProposalCount) {
+		this.projectProposalCount = projectProposalCount;
+	}
+
+	public String getFeasibilityReplyCopy() {
+		return feasibilityReplyCopy;
+	}
+
+	public void setFeasibilityReplyCopy(String feasibilityReplyCopy) {
+		this.feasibilityReplyCopy = feasibilityReplyCopy;
+	}
+
+	public String getFeasibilityReplyOriginal() {
+		return feasibilityReplyOriginal;
+	}
+
+	public void setFeasibilityReplyOriginal(String feasibilityReplyOriginal) {
+		this.feasibilityReplyOriginal = feasibilityReplyOriginal;
+	}
+
+	public Integer getFeasibilityReplyCount() {
+		return feasibilityReplyCount;
+	}
+
+	public void setFeasibilityReplyCount(Integer feasibilityReplyCount) {
+		this.feasibilityReplyCount = feasibilityReplyCount;
+	}
 }

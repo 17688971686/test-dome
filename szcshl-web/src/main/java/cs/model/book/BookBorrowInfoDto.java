@@ -7,7 +7,7 @@ import java.util.Date;
 
 
 /**
- * Description: 图书详细信息 页面数据模型
+ * Description: 图书借阅详细信息 页面数据模型
  * author: zsl
  * Date: 2017-9-8 14:16:17
  */
@@ -15,13 +15,18 @@ public class BookBorrowInfoDto extends BaseDto {
 
     private String id;
     private String booksCode;
+    private String bookNo;
     private String booksName;
     private String bookBorrower;
     private Integer borrowNum;
+    private Integer returnNum; //还书数量
     private Date borrowDate;
     private Date returnDate;
-    private Date realReturnDate;
+    private Date realReturnDate;  //实际还书日期
     private Integer totalCount;//个人借书总数
+    private String bTime;
+    private String endTime;
+
 
     private BookBuyBusiness bookBuyBusiness;
 
@@ -106,5 +111,37 @@ public class BookBorrowInfoDto extends BaseDto {
 
     public void setTotalCount(Integer totalCount) {
         this.totalCount = totalCount;
+    }
+
+    public Integer getReturnNum() {
+        return returnNum;
+    }
+
+    public void setReturnNum(Integer returnNum) {
+        this.returnNum = returnNum;
+    }
+
+    public String getbTime() {
+        return bTime;
+    }
+
+    public void setbTime(String bTime) {
+        this.bTime = bTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getBookNo() {
+        return bookNo;
+    }
+
+    public void setBookNo(String bookNo) {
+        this.bookNo = bookNo;
     }
 }

@@ -6,18 +6,22 @@
     </a>
     <div id="wp_{{$index}}" class="collapse in" >
         <table  class="table table-bordered" style="margin-bottom: 0px;" >
-            <caption>
-                 <span style="float:left;">QR-4.9-02-A0</span>
-            </caption>
-            <caption class="text-center h3"><strong><p>{{w.titleName}}</p></strong></caption>
-            <caption style="width:100%;">
-        <span style="float:left;">
-            <span>评审方式: {{w.reviewType}}</span>
-            <span style="margin:0px 10px;">{{w.isSigle}}</span>
-            <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 9" > 主项目 </span>
-            <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 0" > 次项目 </span>
-        </span>
+            <caption class="text-center">
+                <p style="float:left;">
+                    <span style="float:left;">QR-4.11-02-A0</span>
+                </p>
+                <p class="h3">
+                    <strong>{{w.titleName}}</strong>
+                </p>
+                <p style="margin-top: 50px;"">
+                <span style="float:left;">
+		            <span>评审方式: {{w.reviewType}}</span>
+		            <span style="margin:0px 10px;">{{w.isSigle}}</span>
+		            <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 9" > 主项目 </span>
+		            <span ng-if="w.isSigle=='合并评审' && w.isMainProject == 0" > 次项目 </span>
+		        </span>
                 <span style="float:right;">{{w.titleDate | date:'yyyy年MM月dd日' }}</span>
+                </p>
             </caption>
             <tr>
                 <td style="width:10%;" colspan="2" class="text-center">项目名称</td>

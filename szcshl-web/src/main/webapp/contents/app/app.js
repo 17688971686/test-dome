@@ -11,7 +11,26 @@
         return function (val) {
             return $sce.trustAsHtml(val);
         };
-    }])
+    }]).filter('myFilter', function () {
+        return function (collection, keyname, value) {
+            var output = [];
+            var valueArr = [];
+            if (value instanceof Array) {
+                valueArr = value;
+            }else{
+                valueArr.push(value);
+            }
+            angular.forEach(collection, function (item) {
+                angular.forEach(valueArr,function(checkValue){
+                    //过滤数组中值与指定值相同的元素
+                    if (item[keyname] == checkValue) {
+                        output.push(item);
+                    }
+                })
+            });
+            return output;
+        }
+    })
         .config(['cfpLoadingBarProvider', function (cfpLoadingBarProvider) {
             cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
             cfpLoadingBarProvider.spinnerTemplate = '<div style="position:fixed;width:100%;height:100%;left:0;top:0; z-index:10001;background:rgba(0, 0, 0, 0.3);overflow: hidden;"><div style="position: absolute;top:30%; width: 400px;height:40px;left:50%;"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>数据加载中...</div></div>';
@@ -1168,7 +1187,7 @@
 
         //文件预览
         $rootScope.previewFile = function (sysFileId, fileType) {
-            if(sysFileId){
+            if (sysFileId) {
                 var url, width, height;
                 if ("office" == fileType) {
                     url = rootPath + "/file/editFile?sysFileId=" + sysFileId;
@@ -1212,21 +1231,21 @@
                 } else {
                     bsWin.alert("该文件不支持在线预览和在线编辑");
                 }
-            }else{
+            } else {
                 bsWin.alert("参数不正确，无法在线预览");
             }
         }
 
         //打印预览，生成word模板直接预览
-        $rootScope.printFile = function (businessId, businessType,stageType) {
-            if(!businessId || !businessType || !stageType){
+        $rootScope.printFile = function (businessId, businessType, stageType) {
+            if (!businessId || !businessType || !stageType) {
                 bsWin.alert("打印预览失败，参数不正确！");
-            }else {
-                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/printPreview/" + businessId+"/"+businessType + "/" + stageType;
+            } else {
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/printPreview/" + businessId + "/" + businessType + "/" + stageType;
                 $("#iframePreview").attr("src", url);
                 $("#previewModal").kendoWindow({
-                    width : "80%",
-                    height : "730px",
+                    width: "80%",
+                    height: "730px",
                     title: "",
                     visible: false,
                     modal: true,

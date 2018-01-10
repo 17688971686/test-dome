@@ -4,13 +4,11 @@ import cs.common.Constant;
 import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.ActivitiUtil;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.book.BookBuy;
 import cs.domain.book.BookBuyBusiness;
 import cs.domain.book.BookBuyBusiness_;
+import cs.domain.book.BookBuy_;
 import cs.domain.sys.Org;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
@@ -21,7 +19,6 @@ import cs.model.project.ProjectStopDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.book.BookBuyBusinessRepo;
 import cs.repository.repositoryImpl.book.BookBuyRepo;
-import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -54,8 +51,7 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 	private TaskService taskService;
 	@Autowired
 	private UserRepo userRepo;
-	@Autowired
-	private OrgDeptRepo orgDeptRepo;
+
 	@Override
 	public PageModelDto<BookBuyBusinessDto> get(ODataObj odataObj) {
 		PageModelDto<BookBuyBusinessDto> pageModelDto = new PageModelDto<BookBuyBusinessDto>();
@@ -110,8 +106,33 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 
 	@Override
 	@Transactional
-	public void delete(String id) {
+	public ResultMsg delete(String ids) {
+		try{
+			if(Validate.isString(ids)){
+				if(ids.contains(",")){
+					String idsArr[] = ids.split(",");
+					for(String id : idsArr){
+						delExistBookInfo(id);
+					}
+				}else{
+					delExistBookInfo(ids);
+				}
+			}
 
+		}catch (Exception e){
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，数据异常");
+		}
+		return new ResultMsg(false, Constant.MsgCode.OK.getValue(),"操作成功！");
+	}
+
+	private boolean delExistBookInfo(String id){
+		boolean flag = false;
+		BookBuy bookBuy = bookBuyRepoRepo.findById(BookBuy_.id.getName(), id);
+		if (null != bookBuy){
+			bookBuyRepoRepo.delete(bookBuy);
+			flag = true;
+		}
+		return  flag;
 	}
 
 	@Override
@@ -324,7 +345,7 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setFilerHandlesug(flowDto.getDealOption());
 				List<BookBuy> booksList = bookBuyBusiness.getBookBuyList();
 				flowEndUpdateBooks(booksList);
-				bookBuyBusiness.getBookBuyList().clear();
+				//bookBuyBusiness.getBookBuyList().clear();
 				bookBuyBusiness.setBookBuyList(booksList);
 				bookBuyBusinessRepo.save(bookBuyBusiness);
 				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();

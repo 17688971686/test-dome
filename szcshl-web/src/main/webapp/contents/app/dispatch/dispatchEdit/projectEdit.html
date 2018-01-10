@@ -2,12 +2,17 @@
 <!--  S 项目建议书-->
 <!-- s table -->
 <table class="table table-bordered">
-    <caption>
-        <span>QR-4.3-10-A3</span>
-    </caption>
-    <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
-    <caption>
-        <span>
+    <caption class="text-center">
+        <p style="padding: 5px 10px;">
+            <span style="float: left;">QR-4.3-10-A3</span>
+        </p>
+        <p class="h3">
+            <strong>
+                深圳市政府投资项目评审中心<br/>项目发文审批表
+            </strong>
+        </p>
+        <p>
+           <span style="padding: 5px 10px;float: left;">
             发文方式：
             <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
                     ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
@@ -37,13 +42,14 @@
         </span>
         -->
 
-        <span style="float:right;">发文类型：
+        <span style="padding: 5px 10px;float:right;">发文类型：
             <select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true"
                     data-val-required="必填">
                 <option ng-repeat="x in DICT.DISPATCH_TYPE.dicts | orderBy:'dictSort':false" value="{{x.dictName}}"
                         ng-selected="vm.dispatchDoc.dispatchType==x.dictName">{{x.dictName}}</option>
             </select>
         </span>
+        </p>
     </caption>
     <tbody>
     <tr>
@@ -99,10 +105,11 @@
     <tr>
         <td class="text-center" style="vertical-align: middle;">发行范围</td>
         <td colspan="5">
-            <textarea  maxlength="250"  data-val-length-max="250"
-                       ng-change="vm.dispatchDoc.dispatchScope=countCharacter(vm.dispatchDoc.dispatchScope,250,'dispatchScopeCountx')"    class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
-                       ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
-                       data-val="true" data-val-required="必填"></textarea>
+            <textarea maxlength="250" data-val-length-max="250"
+                      ng-change="vm.dispatchDoc.dispatchScope=countCharacter(vm.dispatchDoc.dispatchScope,250,'dispatchScopeCountx')"
+                      class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
+                      ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
+                      data-val="true" data-val-required="必填"></textarea>
             <span style="float: right;">
                         (印<input type="text" name="printCount" ng-model="vm.dispatchDoc.printCount" style="width: 50px">份)
                     </span>
@@ -364,7 +371,9 @@
 <!--
 <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="vm.templatePage('sign_dispatch_xmjys')">打印</button>
 -->
-<button class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">打印预览</button>
+<button class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;"
+        ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">打印预览
+</button>
 
 
 <!--  E 项目建议书-->

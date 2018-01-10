@@ -85,6 +85,14 @@
             <#include "/templatePrint/filerecord/fileProjectDetailSbqd.html"/>
         </div>-->
     </div>
+    <div ng-if="vm.fileRecord.fileReviewstage=='其它' ">
+        <form id="fileRecord_form" name="fileRecord_form">
+            <div id="fileRecordEdit_qt" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileOtherEdit.html?version=${.now}'"></div>
+        </form> <!--  end form -->
+    <#--<div id="fileRecordEdit_sbqd_templ" style="display: none;">
+        <#include "/templatePrint/filerecord/fileProjectDetailSbqd.html"/>
+    </div>-->
+    </div>
     <!--  <div ng-show="vm.fileRecord.fileReviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>  -->
 
     <!--引入 添加其它资料 弹出框-->

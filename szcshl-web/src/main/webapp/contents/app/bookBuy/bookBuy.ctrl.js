@@ -3,9 +3,9 @@
 
     angular.module('app').controller('bookBuyCtrl', bookBuy);
 
-    bookBuy.$inject = ['$location', 'bookBuySvc','$state'];
+    bookBuy.$inject = ['$location', 'bookBuySvc','$state','bsWin'];
 
-    function bookBuy($location, bookBuySvc,$state) {
+    function bookBuy($location, bookBuySvc,$state,bsWin) {
         var vm = this;
         vm.title = '图书管理';
         vm.model = {};
@@ -60,9 +60,11 @@
             // 获取行对象
             var data = grid.dataItem(grid.select());
             vm.model = data;
+            console.log(vm.model);
             vm.model.borrowNum = "";
             vm.model.borrowDate = "";
             vm.model.returnDate = "";
+            vm.model.bookBorrower =$("#curName").val();
            $("#borrowBookWindow").kendoWindow({
                 width: "38%",
                 height: "300px",
@@ -78,7 +80,17 @@
          * 保存借书信息
          */
         vm.saveBooksDetail = function() {
-            bookBuySvc.saveBorrowBookDetail(vm);
+            bookBuySvc.saveBorrowBookDetail(vm,function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    //保存成功重新跳转，要不然路径不对
+                    bsWin.alert("保存成功！",function(){
+                        window.parent.$("#borrowBookWindow").data("kendoWindow").close();
+                        vm.searchForm();
+                    });
+                }else{
+                    bsWin.alert(data.reMsg);
+                }
+            });
         }
 
         /**
@@ -86,7 +98,7 @@
          */
         vm.returnBookList = function () {
             window.parent.$("#borrowBookWindow").data("kendoWindow").close();
-            vm.searchForm();
+             vm.searchForm();
            // $state.go("bookDetailList");
         }
     }

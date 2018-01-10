@@ -199,7 +199,7 @@ public class SignRestServiceImpl implements SignRestService {
                 //连接ftp
                 PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
                 Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
-                boolean linkSucess = FtpUtil.connectFtp(f);
+                boolean linkSucess = FtpUtil.connectFtp(f,true);
                 if(linkSucess){
                     StringBuffer fileBuffer = new StringBuffer();
                     int totalFileCount = signDto.getSysFileDtoList().size();

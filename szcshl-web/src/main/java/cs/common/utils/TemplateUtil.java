@@ -141,7 +141,7 @@ public class TemplateUtil {
         try {
             docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl+ File.separator+showName);
             fileType = fileType.toLowerCase();//统一转成小写
-            boolean linkSucess = FtpUtil.connectFtp(f);
+            boolean linkSucess = FtpUtil.connectFtp(f,true);
             if(linkSucess){
                 //上传到ftp,
                 String uploadFileName = Tools.generateRandomFilename().concat(fileType);

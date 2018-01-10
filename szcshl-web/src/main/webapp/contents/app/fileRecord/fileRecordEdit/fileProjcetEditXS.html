@@ -3,12 +3,15 @@
 
 <!--  s 概算审核项目存档表 -->
 <table class="table table-bordered">
-    <caption class="text-center h3">
-        <strong>深圳市政府投资项目评审中心<br>概算协审项目存档表</strong>
-    </caption>
-    <caption>
-        <span style="width: 200px;float: left;padding: 5px 10px;">QR-4.7-21-A5</span>
-        <span style="width: 200px;float: right;padding: 5px 10px;">档案编号：{{vm.fileRecord.fileNo}}</span>
+    <caption class="text-center">
+        <p class="h3">
+            <strong>深圳市政府投资项目评审中心<br>概算协审项目存档表</strong>
+        </p>
+        <p>
+            <span style="width: 200px;float: left;padding: 5px 10px;">QR-4.7-21-A5</span>
+            <span style="width: 200px;float: right;padding: 5px 10px;">档案编号：{{vm.fileRecord.fileNo}}</span>
+        </p>
+
     </caption>
 
     <tbody>
@@ -498,7 +501,7 @@
     <tr>
         <td class="text-center">其它资料</td>
         <td colspan="8">
-            <button ng-click="vm.addOtherFile(vm.fileRecord.fileRecordId , 'OTHER_FILE')" class="btn btn-sm btn-primary">添加</button>
+            <button ng-click="vm.addOtherFile(vm.fileRecord.signId , '4')" class="btn btn-sm btn-primary">添加</button>
         </td>
     </tr>
 
@@ -759,7 +762,7 @@
                                                ng-model="vm.fileRecord.fieOtherCount"
                                                name="fieOtherCount" id="fieOtherCount"></td>-->
         <td style="text-align: center;">
-            <button ng-click="vm.addOtherFile(vm.fileRecord.fileRecordId , 'DRAWING_FILE')" class="btn btn-sm btn-primary">添加</button>
+            <button ng-click="vm.addOtherFile(vm.fileRecord.signId , '2')" class="btn btn-sm btn-primary">添加</button>
         </td>
     </tr>
     <tr>

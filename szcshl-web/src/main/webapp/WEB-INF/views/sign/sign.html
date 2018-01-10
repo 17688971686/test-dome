@@ -146,7 +146,12 @@
             <#--<div id="sign_dispatch_sbqd_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailSbqd.html"/></div>-->
         </div>
          <!-- E 设备清单（进口）/设备清单（国产） -->
-
+        <!-- S 其他 -->
+        <div   ng-if="vm.model.reviewstage=='其它'">
+            <div id="sign_dispatch_qt" ng-include src="'${path}/contents/app/dispatch/dispatchDetail/otherDetail.html'"></div>
+        <#--<div id="sign_dispatch_xmjys_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmjys.html"/></div>-->
+        </div>
+        <!-- E 其他 -->
         <!-- 项目发文模板-->
 
     </div>
@@ -193,7 +198,12 @@
             <div id="sign_filerecord_sbqd" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordDomestiDetail.html'"></div>
             <#--<div id="sign_filerecord_sbqd_templ" style="display: none;" > <#include "/templatePrint/filerecord/fileProjectDetailSbqd.html"/></div>-->
         </div>
-
+        <!-- S 其他 -->
+        <div   ng-if="vm.model.reviewstage=='其它'">
+            <div id="sign_filerecord_qt" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordOtherDetail.html'"></div>
+        <#--<div id="sign_dispatch_xmjys_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmjys.html"/></div>-->
+        </div>
+        <!-- E 其他 -->
         <!-- 设备清单（进口） -->
         <!-- <div ng-if="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/fileRecord/fileRecordDetail/fileRecordImportDetail.html'"></div> -->
         <!-- 引入归档模板-->

@@ -31,6 +31,7 @@ import cs.model.sys.UserDto;
 import cs.service.sys.UserService;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import rtx.RTXSvrApi;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
@@ -40,7 +41,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(name = "管理界面", path = "admin")
-@MudoleAnnotation(name = "我的工作台",value = "permission#workbench")
+@MudoleAnnotation(name = "我的工作台", value = "permission#workbench")
 public class AdminController {
     private String ctrlName = "admin";
     private static Logger logger = Logger.getLogger(AdminController.class.getName());
@@ -62,21 +63,21 @@ public class AdminController {
     //@RequiresPermissions("admin#index#get")
     @RequiresAuthentication
     @RequestMapping(name = "首页", path = "index")
-    public String index(HttpServletRequest request , HttpServletRequest response,Model model) {
+    public String index(HttpServletRequest request, HttpServletRequest response, Model model) {
         model.addAttribute("user", SessionUtil.getLoginName());
         model.addAttribute("DICT_ITEMS", JSON.toJSONString(dictService.getDictItemByCode(null)));
-        String agent = request.getHeader("User-Agent").toLowerCase();
         //登录时候提醒一次就行了
-        if(SessionUtil.getSession().getAttribute(Constant.NOTICE_KEY) != null){
+        if (SessionUtil.getSession().getAttribute(Constant.NOTICE_KEY) != null) {
             List<String> noticeList = (List<String>) SessionUtil.getSession().getAttribute(Constant.NOTICE_KEY);
             model.addAttribute("NOTICE_LIST", JSON.toJSONString(noticeList));
             SessionUtil.getSession().removeAttribute(Constant.NOTICE_KEY);
         }
-        //如果是IE浏览器，则登录
-        if(Tools.getBrowserName(agent).contains("ie")){
-            String userState = rtxService.queryUserState(null,SessionUtil.getLoginName());
-            if("0".equals(userState) || "2".equals(userState)){
-                model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null,SessionUtil.getLoginName()));
+        String agent = request.getHeader("User-Agent").toLowerCase();
+        //如果是IE浏览器，则登录腾讯通
+        if (Tools.getBrowserName(agent).contains("ie")) {
+            String userState = rtxService.queryUserState(null, SessionUtil.getLoginName());
+            if (("0".equals(userState) || "2".equals(userState)) ) {
+                model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null, SessionUtil.getLoginName()));
                 PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
                 model.addAttribute("RTX_IP", propertyUtil.readProperty("RTX_IP"));
             }
@@ -97,14 +98,14 @@ public class AdminController {
         return ctrlName + "/welcome";
     }
 
-    //@RequiresPermissions("admin#myCountInfo#get")
+    //@RequiresPermissions("admin#myCountInfo#get")是否
     @RequiresAuthentication
     @RequestMapping(name = "个人待办信息查询", path = "myCountInfo", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String,Object> tasksCount(HttpServletRequest request) throws ParseException {
-        Map<String,Object> resultMap = new HashMap<String,Object>();
-        resultMap.put("DO_SIGN_COUNT",ruProcessTaskRepo.findMyDoingTask());
-        resultMap.put("DO_TASK_COUNT",ruTaskRepo.findMyDoingTask());
+    public Map<String, Object> tasksCount(HttpServletRequest request) throws ParseException {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("DO_SIGN_COUNT", ruProcessTaskRepo.findMyDoingTask());
+        resultMap.put("DO_TASK_COUNT", ruTaskRepo.findMyDoingTask());
 
         return resultMap;
     }
@@ -112,23 +113,23 @@ public class AdminController {
     @RequiresAuthentication
     @RequestMapping(name = "初始化个人首页", path = "initWelComePage", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String,Object> initWelComePage(HttpServletRequest request) throws ParseException {
-        Map<String,Object> resultMap = new HashMap<String,Object>();
+    public Map<String, Object> initWelComePage(HttpServletRequest request) throws ParseException {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
         //根据不同的角色，初始化不同的页面（待实现）
-        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+        /*if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
             logger.info("副主任登录系统");
         }else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
             logger.info("主任登录系统");
-        }
+        }*/
         /*******************   以下是普通用户的首页   ********************/
         //1、查询个人待办项目
-        resultMap.put("proTaskList",flowService.queryMyRunProcessTasks(6));
+        resultMap.put("proTaskList", flowService.queryMyRunProcessTasks(6));
         //2、查询个人待办任务
-        resultMap.put("comTaskList",flowService.queryMyHomeAgendaTask());
+        resultMap.put("comTaskList", flowService.queryMyHomeAgendaTask());
         //3、查询通知公告
-        resultMap.put("annountmentList",annService.getHomePageAnnountment());
+        resultMap.put("annountmentList", annService.getHomePageAnnountment());
         //4、查询办结任务
-        resultMap.put("endTaskList",flowService.queryMyEndTasks());
+        resultMap.put("endTaskList", flowService.queryMyEndTasks());
         return resultMap;
     }
 
@@ -155,7 +156,7 @@ public class AdminController {
         return ctrlName + "/agendaTasks";
     }
 
-//    @RequiresAuthentication
+    //    @RequiresAuthentication
     @RequiresPermissions("admin#doingTasks#get")
     @RequestMapping(name = "在办任务", path = "doingTasks")
     public String doingTasks(Model model) {
@@ -165,9 +166,9 @@ public class AdminController {
 
     @RequiresAuthentication
     //@RequiresPermissions("admin#edit#get")
-    @RequestMapping(name = "拟补充资料函",  path = "edit")
+    @RequestMapping(name = "拟补充资料函", path = "edit")
     public String eidt(Model model) {
-    	
-    	return ctrlName + "/edit";
+
+        return ctrlName + "/edit";
     }
 }

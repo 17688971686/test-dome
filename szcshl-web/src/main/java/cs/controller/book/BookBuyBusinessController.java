@@ -57,11 +57,10 @@ public class BookBuyBusinessController {
 	}
 
     @RequiresAuthentication
-   // @RequiresPermissions("bookBuyBusiness##delete")
-    @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String id) {
-    	bookBuyBusinessService.delete(id);      
+    @RequestMapping(name = "删除记录", path = "bookDel", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResultMsg delete(@RequestParam(required = true)String ids) {
+        return bookBuyBusinessService.delete(ids);
     }
 
     @RequiresAuthentication
