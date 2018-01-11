@@ -20,9 +20,13 @@
         <td colspan="3">
             {{vm.fileRecord.projectName}}
         </td>
-        <td width="15%" class="text-center" colspan="2"></td>
-        <td colspan="3">
+        <td width="15%" class="text-center" colspan="2">
             是否曾经暂停 :
+            </br>
+            是否有补充资料:
+        </td>
+        <td colspan="3">
+
             <span>
                 <input ng-disabled="true" type="checkbox" ng-model="vm.fileRecord.isStachProject" name="isStachProject"
                        ng-checked="vm.fileRecord.isStachProject==9" ng-true-value="9">是
@@ -33,7 +37,7 @@
                      ng-true-value="0">否
            </span>
             </br>
-            是否有补充资料:
+
             <span>
               <input ng-disabled="true" type="checkbox" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary"
                      ng-checked="vm.fileRecord.isSupplementary==9" ng-true-value="9">是
@@ -811,7 +815,7 @@
         </td>
     </tr>
     <tr ng-if="vm.otherFile">
-        <td colspan="4">
+        <td colspan="9">
             <table class="table">
                 <tr>
                     <td style="border-top: none;">其它资料</td>
@@ -845,7 +849,7 @@
     </tr>
 
     <tr ng-if="vm.drawingFile">
-        <td colspan="4">
+        <td colspan="9">
             <table class="table">
                 <tr>
                     <td style="border-top: none;">图纸资料</td>

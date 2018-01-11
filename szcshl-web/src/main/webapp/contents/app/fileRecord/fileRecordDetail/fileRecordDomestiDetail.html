@@ -26,9 +26,13 @@
         <td>
             {{vm.fileRecord.projectName}}
         </td>
-        <td width="15%" class="text-center"></td>
-        <td>
+        <td width="15%" class="text-center">
             是否曾经暂停 :
+            </br>
+            是否有补充资料:
+        </td>
+        <td>
+
             <span>
 					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isStachProject" name="isStachProject" ng-checked="vm.fileRecord.isStachProject==9"  ng-true-value="9" >是
 				  </span>
@@ -36,7 +40,6 @@
 					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isStachProject" name="isStachProject" ng-checked="!vm.fileRecord.isStachProject || vm.fileRecord.isStachProject==0" ng-true-value="0" >否
 				  </span>
             </br>
-            是否有补充资料:
             <span>
 					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary" ng-checked="vm.fileRecord.isSupplementary==9" ng-true-value="9" >是
 				  </span>
