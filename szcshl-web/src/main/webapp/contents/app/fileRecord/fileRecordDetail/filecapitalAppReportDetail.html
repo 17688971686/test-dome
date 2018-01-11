@@ -21,9 +21,12 @@
             {{vm.fileRecord.projectName}}
 
         </td>
-        <td width="15%" class="text-center"></td>
-        <td>
+        <td width="15%" class="text-center">
             是否曾经暂停 :
+            </br>
+            是否有补充资料:
+        </td>
+        <td>
             <span>
 					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isStachProject"
                              name="isStachProject" ng-checked="vm.fileRecord.isStachProject==9" ng-true-value="9">是
@@ -35,7 +38,6 @@
                              ng-true-value="0">否
 				  </span>
             </br>
-            是否有补充资料:
             <span>
 					  <input type="checkbox" disabled="true" ng-model="vm.fileRecord.isSupplementary"
                              name="isSupplementary" ng-checked="vm.fileRecord.isSupplementary==9" ng-true-value="9">是
@@ -544,11 +546,45 @@
                         </table>
                     </td>
                 </tr>
+
                 </tbody>
             </table>
         </td>
     </tr>
 
+    <tr ng-if="vm.otherFile">
+        <td colspan="9">
+            <table class="table">
+                <tr>
+                    <td style="border-top: none;">其它资料</td>
+                    <td style="width: 100px;border-top: none;">原件</td>
+                    <td style="width: 100px;border-top: none;">复印件</td>
+                    <td style="width: 100px;border-top: none;">份数</td>
+                    <td style="width: 10%;border-top: none;">&nbsp;</td>
+                </tr>
+                <tr ng-repeat="f in vm.otherFile">
+                    <td style="border-top: none;">{{$index+1}}、{{vm.otherFile[$index].fileName}}</td>
+                    <td style="border-top: none;">
+                        <input type="checkbox" ng-disabled="true"
+                               ng-model="vm.otherFile[$index].isHasCopyfile"
+                               ng-checked="vm.otherFile[$index].isHasCopyfile == '9'"
+                               ng-true-value="9" ng-false-value="0"/>
+                    </td>
+                    <td style="border-top: none;">
+                        <input type="checkbox" ng-disabled="true"
+                               ng-model="vm.otherFile[$index].isHasOriginfile"
+                               ng-checked="vm.otherFile[$index].isHasOriginfile == '9'"
+                               ng-true-value="9" ng-false-value="0"/>
+                    </td>
+                    <td style="border-top: none;">
+                        <input type="text" style="width:50px;" ng-disabled="true"
+                               ng-model="vm.otherFile[$index].totalNum">
+                    </td>
+                    <td style="border-top: none;"></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
     <tr>
         <td width="15%" class="text-center">项目第一负责人签名</td>
         <td>
