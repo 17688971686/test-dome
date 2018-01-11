@@ -20,6 +20,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.book.BookBuyBusinessRepo;
 import cs.repository.repositoryImpl.book.BookBuyRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.rtx.RTXSendMsgPool;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -372,6 +373,8 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				}
 			}
 		}
+		//放入腾讯通消息缓冲池
+		RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(),assigneeValue);
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
 	}
 
