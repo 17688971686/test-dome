@@ -546,3 +546,22 @@ div.k-window{
 .attentionDiv{
     border: 1px solid #e08e0b; border-radius: 3px;padding:3px 5px;color:#e08e0b;
 }
+
+input[disabled],input:disabled{
+    border:1px solid #989898;
+    background-color:white;
+    color:#1a1600;
+}
+input[type=checkbox] {
+    border:1px solid #989898;
+    background-color:white;
+    color:#1a1600;
+    width: 30px;
+}
+
+/*IE6 Using Javascript to add CSS class "disabled"*/
+* html input.disabled{
+    border:1px solid #989898;
+    background-color:white;
+    color:#1a1600;
+}
