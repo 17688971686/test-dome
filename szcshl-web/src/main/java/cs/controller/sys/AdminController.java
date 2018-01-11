@@ -74,7 +74,7 @@ public class AdminController {
         }
         String agent = request.getHeader("User-Agent").toLowerCase();
         //如果是IE浏览器，则登录腾讯通
-        if (Tools.getBrowserName(agent).contains("ie")) {
+        if (Tools.getBrowserName(agent).contains("ie") && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
             String userState = rtxService.queryUserState(null, SessionUtil.getLoginName());
             if (("0".equals(userState) || "2".equals(userState)) ) {
                 model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null, SessionUtil.getLoginName()));

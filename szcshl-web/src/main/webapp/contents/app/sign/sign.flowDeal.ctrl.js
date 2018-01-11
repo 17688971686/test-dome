@@ -869,13 +869,10 @@
 
         //生产会前准备材料
         vm.meetingDoc = function () {
-            common.confirm({
-                vm: vm,
+            bsWin.confirm({
                 title: "",
-                msg: "如果之前已经生成会前准备材料，则本次生成的文档会覆盖之前产生的文档，确定执行操作么？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    // signSvc.findWorkProgramBySignId(vm,function(){
+                message: "如果之前已经生成会前准备材料，则本次生成的文档会覆盖之前产生的文档，确定执行操作么？",
+                onOk: function () {
                     signSvc.meetingDoc(vm, function (data) {
                         if (data.flag || data.reCode == 'ok') {
                             bsWin.success("操作成功");
@@ -1010,11 +1007,10 @@
          * 生成评审报告
          */
         vm.reviewReportDoc = function () {
-            common.confirm({
-                vm: vm,
+            bsWin.confirm({
                 title: "",
-                msg: "如果之前已经生成评审报告，则本次操作会覆盖之前生成的文档，确定执行操作么？",
-                fn: function () {
+                message: "如果之前已经生成评审报告，则本次操作会覆盖之前生成的文档，确定执行操作么？",
+                onOk: function () {
                     signSvc.createDispatchTemplate(vm, function (data) {
                         if (data.flag || data.reCode == 'ok') {
                             bsWin.success("操作成功！",function(){
