@@ -16,9 +16,19 @@ public interface ExpertService {
 
     ResultMsg saveExpert(ExpertDto expertDto);
 
-    void deleteExpert(String id);
+    /**
+     * 逻辑删除专家
+     * @param id
+     * @return
+     */
+    ResultMsg deleteExpert(String id);
 
-    void deleteExpert(String[] ids);
+    /**
+     * 物理删除专家
+     * @param id
+     * @return
+     */
+    ResultMsg deleteExpertData(String id);
 
     void updateAudit(String ids, String flag);
 

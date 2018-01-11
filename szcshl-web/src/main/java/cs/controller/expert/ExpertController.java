@@ -1,11 +1,9 @@
 package cs.controller.expert;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.ExcelTools;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.expert.Expert;
 import cs.domain.project.SignDispaWork;
 import cs.domain.sys.Header;
@@ -19,6 +17,7 @@ import cs.service.sys.HeaderService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -148,16 +147,34 @@ public class ExpertController {
         return expertService.saveExpert(expert);
     }
 
+
+    /**
+     * 逻辑删除
+     * @param id
+     * @return
+     */
     @RequiresAuthentication
     //@RequiresPermissions("expert##delete")
     @RequestMapping(name = "删除专家", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String id) {
-        String[] ids = id.split(",");
-        if (ids.length > 1) {
-            expertService.deleteExpert(ids);
-        } else {
-            expertService.deleteExpert(id);
+    @ResponseBody
+    public ResultMsg delete(@RequestParam(required = true) String id) {
+        return expertService.deleteExpert(id);
+    }
+
+    /**
+     * 物理删除
+     * @param id
+     * @return
+     */
+    @RequiresAuthentication
+    //@RequiresPermissions("expert##delete")
+    @RequestMapping(name = "删除专家", path = "deleteExpertData", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResultMsg deleteExpertData(@RequestParam(required = true) String id) {
+        if(SessionUtil.hashRole(Constant.SUPER_ROLE)){
+            return expertService.deleteExpertData(id);
+        }else{
+            return new ResultMsg(false,Constant.MsgCode.ERROR.getValue(),"您没有权限进行删除操作！");
         }
     }
 

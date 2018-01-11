@@ -114,20 +114,36 @@ public class ExpertServiceImpl implements ExpertService {
      */
     @Override
     @Transactional
-    public void deleteExpert(String id) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("update " + Expert.class.getSimpleName() + " set " + Expert_.state.getName() + "=:state where " + Expert_.expertID.getName() + "=:id");
-        hqlBuilder.setParam("state", EnumExpertState.REMOVE.getValue()).setParam("id", id);
-        expertRepo.executeHql(hqlBuilder);
+    public ResultMsg deleteExpert(String id) {
+        try{
+            HqlBuilder hqlBuilder = HqlBuilder.create();
+            hqlBuilder.append("update " + Expert.class.getSimpleName() + " set " + Expert_.state.getName() + "=:state ");
+            hqlBuilder.setParam("state", EnumExpertState.REMOVE.getValue());
+            hqlBuilder.bulidPropotyString("where",Expert_.expertID.getName(),id);
+            expertRepo.executeHql(hqlBuilder);
+
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        }catch (Exception e){
+            logger.info("逻辑删除专家异常："+e.getMessage());
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！");
+        }
     }
 
+    /**
+     * 物理删除专家
+     * @param id
+     * @return
+     */
     @Override
     @Transactional
-    public void deleteExpert(String[] ids) {
-        for (String id : ids) {
-            this.deleteExpert(id);
-        }
-        logger.info("删除专家");
+    public ResultMsg deleteExpertData(String id) {
+       try{
+           expertRepo.deleteById(Expert_.expertID.getName(),id);
+           return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+       }catch (Exception e){
+           logger.info("物理删除专家异常："+e.getMessage());
+           return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！");
+       }
     }
 
     /**

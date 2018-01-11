@@ -12,7 +12,8 @@
 			auditGrid : auditGrid,				//初始化审核页面的所有grid
 			getExpertById : getExpertById,		//通过ID查询专家信息详情
 			saveExpert : saveExpert,            //保存专家信息
-			deleteExpert : deleteExpert,        //删除专家信息
+			deleteExpert : deleteExpert,        //删除专家信息(逻辑删除)
+            deleteExpertData:deleteExpertData,	//删除专家信息(物理删除)
 			searchMuti : searchMuti,		    //综合查询
 			searchAudit : searchAudit,		    //审核查询
 			repeatGrid : repeatGrid,		    //重复专家查询
@@ -46,21 +47,15 @@
 			var httpOptions = {
 				method : 'delete',
 				url : url_expert,
-				data : id
-
+                params:{
+                    id : id
+                }
 			}
 			var httpSuccess = function success(response) {
+                vm.isSubmit = false;
 				if(callBack != undefined && typeof  callBack == 'function'){
 					callBack(response.data);
 				}
-				/*common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						vm.isSubmit = false;
-						vm.gridOptions.dataSource.read();
-					}
-				});*/
 			}
 			common.http({
 				vm : vm,
@@ -70,6 +65,31 @@
 			});
 		}
 		// end#deleteUser
+
+		//begin_deleteExpertData
+		function deleteExpertData(vm, id , callBack){
+            vm.isSubmit = true;
+            var httpOptions = {
+                method : 'delete',
+                url : rootPath + "/expert/deleteExpertData",
+                params:{
+                    id : id
+                }
+
+            }
+            var httpSuccess = function success(response) {
+                vm.isSubmit = false;
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                vm : vm,
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+		}//end_deleteExpertData
 		
 		// begin#search
 		function searchMuti(vm) {

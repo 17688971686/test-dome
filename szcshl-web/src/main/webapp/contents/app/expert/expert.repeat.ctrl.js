@@ -38,9 +38,8 @@
          * @param expertId
          */
         vm.del = function(expertId){
-            bsWin.confirm("确认删除数据吗？" , function(){
-                expertSvc.deleteExpert(vm, expertId , function(data){
-
+            bsWin.confirm("删除数据不可恢复，确认删除数据吗？" , function(){
+                expertSvc.deleteExpertData(vm, expertId , function(data){
                     bsWin.alert("操作成功", function(){
                         vm.repeatGridOptions.dataSource.read();
                     });

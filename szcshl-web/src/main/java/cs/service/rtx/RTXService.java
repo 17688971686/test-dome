@@ -99,7 +99,8 @@ public class RTXService {
                     rtxNames += u.getLoginName();
                 }
                 if(Validate.isString(rtxNames)){
-                    sendRTXMsg(null,"您有待办任务待处理！",rtxNames);
+                    //正式启动再去掉注释
+                    //sendRTXMsg(null,"您有待办任务待处理！",rtxNames);
                     RTXSendMsgPool.getInstance().removeCache(taskId);
                     return true;
                 }

@@ -12,6 +12,7 @@ public class Constant {
      * 超级管理员账号
      */
     public static final String SUPER_USER = "admin";
+    public static final String SUPER_ROLE = "超级管理员";
     /**
      * 企业名称
      */
