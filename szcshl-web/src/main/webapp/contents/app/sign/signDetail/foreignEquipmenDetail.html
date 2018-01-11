@@ -77,13 +77,11 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">项目处理表</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.sugProDealOriginal" ng-disabled="true"
-                               ng-click="vm.model.sugProDealCount = initInputValue($event,vm.model.sugProDealCount)"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugProDealOriginal" ng-disabled="true"
                                name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0">
                     </td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.sugProDealCopy" ng-disabled="true"
-                               ng-click="vm.model.sugProDealCount = initInputValue($event,vm.model.sugProDealCount)"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugProDealCopy" ng-disabled="true"
                                name="sugProDealCopy" id="addCopy" ng-true-value="9" ng-false-value="0">
                     </td>
                     <td style="border-top:none;">
@@ -96,14 +94,12 @@
                     <td style="border-top:none;text-align:right;">文件处理表</td>
 
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;"
+                        <input type="checkbox" class="newcheckbox"
                                ng-model="vm.model.officialDisposeOriginal" ng-disabled="true"
-                               ng-click="vm.model.officialDisposeCount = initInputValue($event,vm.model.officialDisposeCount)"
                                id="officialDisposeOriginal" ng-true-value="9"
                                ng-false-value="0"></td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.officialDisposeCopy" ng-disabled="true"
-                               ng-click="vm.model.officialDisposeCount = initInputValue($event,vm.model.officialDisposeCount)"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.officialDisposeCopy" ng-disabled="true"
                                id="officialDisposeCopy" ng-true-value="9" ng-false-value="0"></td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;" class=" input-sm " ng-disabled="true"
@@ -117,17 +113,15 @@
                         政府采购进口产品申请表
                     </td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;"
+                        <input type="checkbox" class="newcheckbox"
                                ng-model="vm.model.governmentPurchasOriginal"
                                id="governmentPurchasOriginal" ng-disabled="true"
-                               ng-click="vm.model.governmentPurchasCount = initInputValue($event,vm.model.governmentPurchasCount)"
                                ng-true-value="9" ng-false-value="0">
                     </td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.governmentPurchasCopy"
                                id="governmentPurchasCopy" ng-true-value="9"
-                               ng-click="vm.model.governmentPurchasCount = initInputValue($event,vm.model.governmentPurchasCount)"
                                ng-false-value="0"></td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;" class=" input-sm" ng-disabled="true"
@@ -138,15 +132,13 @@
 
                     <td style="border-top:none;text-align:right;">主管部门意见</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;"
+                        <input type="checkbox" class="newcheckbox"
                                ng-model="vm.model.managerDeptOriginal" ng-disabled="true"
-                               ng-click="vm.model.managerDeptCount = initInputValue($event,vm.model.managerDeptCount)"
                                id="managerDeptOriginal" ng-true-value="9"
                                ng-false-value="0"></td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.managerDeptCopy"
-                               ng-click="vm.model.managerDeptCount = initInputValue($event,vm.model.managerDeptCount)"
                                id="managerDeptCopy" ng-true-value="9"
                                ng-false-value="0"></td>
                     <td style="border-top:none;">
@@ -162,16 +154,14 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">专家论证意见</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.expertArgumentOriginal"
                                id="expertArgumentOriginal"
-                               ng-click="vm.model.expertArgumentCount = initInputValue($event,vm.model.expertArgumentCount)"
                                ng-true-value="9" ng-false-value="0">
                     </td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.expertArgumentCopy"
-                               ng-click="vm.model.expertArgumentCount = initInputValue($event,vm.model.expertArgumentCount)"
                                id="expertArgumentCopy" ng-true-value="9"
                                ng-false-value="0"></td>
                     <td style="border-top:none;">
@@ -186,15 +176,13 @@
 
                     <td style="border-top:none;text-align:right;">进口产品目录</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.importProductOriginal"
-                               ng-click="vm.model.importProductCount = initInputValue($event,vm.model.importProductCount)"
                                id="importProductOriginal" ng-true-value="9"
                                ng-false-value="0"></td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.importProductCopy"
-                               ng-click="vm.model.importProductCount = initInputValue($event,vm.model.importProductCount)"
                                id="importProductCopy" ng-true-value="9"
                                ng-false-value="0"></td>
                     <td style="border-top:none;">
@@ -210,15 +198,13 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">发改委意见</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.developementOriginal"
-                               ng-click="vm.model.developmentCount = initInputValue($event,vm.model.developmentCount)"
                                id="developementOriginal" ng-true-value="9"
                                ng-false-value="0"></td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;"
+                        <input type="checkbox" class="newcheckbox"
                                ng-model="vm.model.developementCopy" ng-disabled="true"
-                               ng-click="vm.model.developmentCount = initInputValue($event,vm.model.developmentCount)"
                                id="developementCopy" ng-true-value="9"
                                ng-false-value="0"></td>
                     <td style="border-top:none;">
@@ -233,16 +219,14 @@
 
                     <td style="border-top:none;text-align:right;">设备说明书</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.sprcialDevicesOriginal"
-                               ng-click="vm.model.sprcialDevicesCount = initInputValue($event,vm.model.sprcialDevicesCount)"
                                id="sprcialDevicesOriginal" ng-true-value="9"
                                ng-false-value="0">
                     </td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.sprcialDevicesCopy"
-                               ng-click="vm.model.sprcialDevicesCount = initInputValue($event,vm.model.sprcialDevicesCount)"
                                id="sprcialDevicesCopy" ng-true-value="9"
                                ng-false-value="0">
                     </td>
@@ -259,17 +243,15 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">其它</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.ortherProjectOriginal"
                                id="ortherProjectOriginal"
-                               ng-click="vm.model.ortherProjectCount = initInputValue($event,vm.model.ortherProjectCount)"
                                ng-true-value="9" ng-false-value="0">
                     </td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.ortherProjectCopy"
                                id="ortherProjectCopy" ng-true-value="9"
-                               ng-click="vm.model.ortherProjectCount = initInputValue($event,vm.model.ortherProjectCount)"
                                ng-false-value="0"></td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;"

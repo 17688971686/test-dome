@@ -64,7 +64,6 @@ public class SignDispaWorkController {
     @RequestMapping(name = "待选合并评审项目", path = "unMergeWPSign", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> unMergeWPSign(@RequestParam(required = true) String signId) {
-        System.out.println(signId);
         return signDispaWorkService.unMergeWPSign(signId);
     }
 

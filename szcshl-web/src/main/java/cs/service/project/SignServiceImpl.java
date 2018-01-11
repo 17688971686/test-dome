@@ -25,6 +25,7 @@ import cs.model.sys.SysConfigDto;
 import cs.model.sys.UserDto;
 import cs.quartz.unit.QuartzUnit;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
@@ -82,7 +83,7 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private OfficeUserService officeUserService;
     @Autowired
-    private  FileRecordService fileRecordService;
+    private FileRecordService fileRecordService;
     @Autowired
     private CompanyRepo companyRepo;
     @Autowired
@@ -128,6 +129,8 @@ public class SignServiceImpl implements SignService {
     private WorkdayService workdayService;
     @Autowired
     private ProjectStopService projectStopService;
+    @Autowired
+    private ExpertRepo expertRepo;
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -353,9 +356,9 @@ public class SignServiceImpl implements SignService {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "该项目已经正式签收，不能删除！");
         }
         signRepo.deleteById(Sign_.signid.getName(), signid);*/
-        if (signRepo.updateSignState(signid,Sign_.signState.getName(), EnumState.DELETE.getValue())) {
+        if (signRepo.updateSignState(signid, Sign_.signState.getName(), EnumState.DELETE.getValue())) {
             return new ResultMsg(true, MsgCode.OK.getValue(), "删除成功！");
-        }else{
+        } else {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "删除失败！");
         }
     }
@@ -409,31 +412,31 @@ public class SignServiceImpl implements SignService {
                     List<WorkProgramDto> workProgramDtoList = new ArrayList<>(totalL);
                     //由于工作方案不是按主次顺便排序，则遍历工作方案，获取主工作方案
                     WorkProgram mainW = new WorkProgram();
-                    if(totalL > 1){
+                    if (totalL > 1) {
                         //遍历第一遍，先找出主分支工作方案
-                        for (int i=0;i<totalL;i++) {
+                        for (int i = 0; i < totalL; i++) {
                             WorkProgram wp = sign.getWorkProgramList().get(i);
-                            if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                            if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
                                 mainW = wp;
                                 break;
                             }
                         }
                     }
 
-                    for (int i=0;i<totalL;i++) {
+                    for (int i = 0; i < totalL; i++) {
                         WorkProgram workProgram = sign.getWorkProgramList().get(i);
                         WorkProgramDto workProgramDto = new WorkProgramDto();
                         BeanCopierUtils.copyProperties(workProgram, workProgramDto);
                         workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
                         workProgramDto.setSignId(signid);
-                        if(!FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())){
+                        if (!FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())) {
                             WorkProgramDto mainWPDto = new WorkProgramDto();
                             //如果已经填报了主工作方案，则从主工作方案中获取
-                            if(Validate.isString(mainW.getId())){
-                                BeanCopierUtils.copyProperties(mainW,mainWPDto);
-                            //否则从项目中初始化
-                            }else{
-                                workProgramService.copySignCommonInfo(mainWPDto,sign);
+                            if (Validate.isString(mainW.getId())) {
+                                BeanCopierUtils.copyProperties(mainW, mainWPDto);
+                                //否则从项目中初始化
+                            } else {
+                                workProgramService.copySignCommonInfo(mainWPDto, sign);
                             }
                             workProgramDto.setMainWorkProgramDto(mainWPDto);
                         }
@@ -471,11 +474,11 @@ public class SignServiceImpl implements SignService {
             if (EnumState.YES.getValue().equals(sign.getIsassistproc())) {
                 List<AssistPlanSignDto> planSignDtoList = assistPlanSignService.findBySignId(sign.getSignid());
                 //设置项目名称之类的信息
-                planSignDtoList.forEach(ps ->{
-                    if(!Validate.isString(ps.getProjectName())){
+                planSignDtoList.forEach(ps -> {
+                    if (!Validate.isString(ps.getProjectName())) {
                         String newProjectName = signDto.getProjectname();
-                        if(ps.getSplitNum() > 1){
-                            newProjectName += "（"+ps.getSplitNum()+"）";
+                        if (ps.getSplitNum() > 1) {
+                            newProjectName += "（" + ps.getSplitNum() + "）";
                         }
                         ps.setProjectName(newProjectName);
                     }
@@ -533,7 +536,7 @@ public class SignServiceImpl implements SignService {
      */
     @Override
     public ResultMsg endFlow(String signid) {
-        if (signRepo.updateSignState(signid,Sign_.signState.getName(), EnumState.FORCE.getValue())) {
+        if (signRepo.updateSignState(signid, Sign_.signState.getName(), EnumState.FORCE.getValue())) {
             return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
         }
         return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败！");
@@ -857,25 +860,33 @@ public class SignServiceImpl implements SignService {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没有完成工作方案，不能进行下一步操作！");
                     }
 
-                    //如果是主项目
-                    if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
-                        //如果是专家评审会，则一定要选会议室(单个评审或者合并评审主项目要判断，合并评审次项目不用判断)
-                        if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) && !roomBookingRepo.isHaveBookMeeting(wk.getId())
-                                && (Constant.MergeType.REVIEW_SIGNLE.equals(wk.getIsSigle()) || (Constant.MergeType.REVIEW_MERGE.equals(wk.getIsSigle())
-                                && !EnumState.YES.getValue().equals(wk.getIsMainProject())))) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【专家评审会】，但是还没有选择会议室，请先预定会议室！");
+                    //是否专家评审
+                    boolean isExpertReview = Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) || Constant.MergeType.REVIEW_LEETER.getValue().equals(wk.getReviewType());
+                    //是否单个评审
+                    boolean isSigle = Constant.MergeType.REVIEW_SIGNLE.equals(wk.getIsSigle());
+                    //是否合并评审主项目
+                    boolean isMergeMain = (Constant.MergeType.REVIEW_MERGE.equals(wk.getIsSigle()) && EnumState.YES.getValue().equals(wk.getIsMainProject()));
+                    //是否主分支
+                    boolean isMainBranch = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex);
+
+                    //判断是否预定了会议室和选择了专家（只对主分支判断，因为协办分支以主分支为准，当然也可以自己选，但是不是强制要求）
+                    if (isMainBranch) {
+                        //单个评审或者合并评审主项目；如果是专家评审会，则要选择专家和会议室
+                        if(isExpertReview && (isSigle || isMergeMain)){
+                            if(expertRepo.countByBusinessId(wk.getId()) == 0){
+                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【"+wk.getReviewType()+"】，但是还没有选择专家，请先选择专家！");
+                            }
+                            if(Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) && !roomBookingRepo.isHaveBookMeeting(wk.getId())){
+                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【"+wk.getReviewType()+"】，但是还没有选择会议室，请先预定会议室！");
+                            }
                         }
-                        //如果是合并评审主项目，
-                        if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle())
-                                && EnumState.YES.getValue().equals(wk.getIsMainProject())) {
-                            //如果没有合并其他项目，则不准提交
-                            if (!signMergeRepo.isHaveMerge(signid, Constant.MergeType.WORK_PROGRAM.getValue())) {
-                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "工作方案您选择的是合并评审主项目，您还没有设置关联项目，不能提交到下一步！");
-                            }
-                            //如果合并评审次项目没提交，不能进行下一步操作
-                            if (!signRepo.isMergeSignEndWP(signid)) {
-                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还未提交审批，主项目不能提交审批！");
-                            }
+                        //如果没有合并其他项目，则不准提交
+                        if (isMergeMain && !signMergeRepo.isHaveMerge(signid, Constant.MergeType.WORK_PROGRAM.getValue())) {
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "工作方案您选择的是合并评审主项目，您还没有设置关联项目，不能提交到下一步！");
+                        }
+                        //如果合并评审次项目没提交，不能进行下一步操作
+                        if (!signRepo.isMergeSignEndWP(signid)) {
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还未提交审批，主项目不能提交审批！");
                         }
                     }
 
@@ -902,10 +913,10 @@ public class SignServiceImpl implements SignService {
                         variables.put(FlowConstant.SignFlowParams.USER_BZ4.getValue(), assigneeValue);
                     }
                     //更改预定会议室状态
-                    roomBookingRepo.updateStateByBusinessId(wk.getId(),EnumState.PROCESS.getValue());
+                    roomBookingRepo.updateStateByBusinessId(wk.getId(), EnumState.PROCESS.getValue());
                     //完成分支工作方案
                     signBranchRepo.finishWP(signid, wk.getBranchId());
-                //不做工作方案
+                    //不做工作方案
                 } else {
                     dealUser = signPrincipalService.getMainPriUser(signid);
                     if (dealUser == null) {
@@ -1082,20 +1093,20 @@ public class SignServiceImpl implements SignService {
                 //完成分支的工作方案
                 signBranchRepo.finishBranch(signid, branchIndex);
                 //更改预定会议室状态
-                roomBookingRepo.updateStateByBusinessId(wk.getId(),EnumState.YES.getValue());
+                roomBookingRepo.updateStateByBusinessId(wk.getId(), EnumState.YES.getValue());
                 //更新评审会时间
                 ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.businessId.getName(), signid);
                 if (expertReview != null) {
                     //以主工作方案为准，工作方案不做工作方案，则任选一个
-                    if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)
-                            || expertReview.getReviewDate() == null){
+                    if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)
+                            || expertReview.getReviewDate() == null) {
                         //如果是专家评审会，获取评审会日期
                         if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType())) {
                             expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(wk.getId()));
-                        //如果是专家函评，取函评日期并修改专家默认评审方式为函评
+                            //如果是专家函评，取函评日期并修改专家默认评审方式为函评
                         } else {
                             expertReview.setReviewDate(wk.getLetterDate());
-                            expertSelectedRepo.updateExpertSelectState(wk.getId(), ExpertSelected_.isLetterRw.getName(),EnumState.YES.getValue());
+                            expertSelectedRepo.updateExpertSelectState(wk.getId(), ExpertSelected_.isLetterRw.getName(), EnumState.YES.getValue());
                         }
                         expertReviewRepo.save(expertReview);
                     }
@@ -1391,18 +1402,18 @@ public class SignServiceImpl implements SignService {
                 //设置归档编号
                 if (!Validate.isString(fileRecord.getFileNo())) {
                     String fileNumValue = "";
-                    int maxSeq =fileRecordService.findCurMaxSeq(fileRecord.getFileDate());
+                    int maxSeq = fileRecordService.findCurMaxSeq(fileRecord.getFileDate());
                     maxSeq = maxSeq + 1;
-                    if(maxSeq < 1000){
+                    if (maxSeq < 1000) {
                         fileNumValue = String.format("%03d", maxSeq);
-                    }else{
+                    } else {
                         fileNumValue = String.valueOf(maxSeq);
                     }
                     //设置本次的发文序号
                     fileRecord.setFileSeq(maxSeq);
                     //归档编号=发文年份+档案类型+存档年份+存档顺序号
-                    fileNumValue = DateUtils.converToString(sign.getExpectdispatchdate(),"yyyy")+ ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
-                            +DateUtils.converToString(fileRecord.getFileDate(),"yy")+fileNumValue;
+                    fileNumValue = DateUtils.converToString(sign.getExpectdispatchdate(), "yyyy") + ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
+                            + DateUtils.converToString(fileRecord.getFileDate(), "yy") + fileNumValue;
                     fileRecord.setFileNo(fileNumValue);
                 }
                 fileRecord.setPageDate(new Date());
@@ -1521,8 +1532,8 @@ public class SignServiceImpl implements SignService {
      * @return
      */
     @Override
-    public Map<String,Object> findByPlanId(String planId,String isOnlySign) {
-        Map<String,Object> resultMap = new HashMap<>();
+    public Map<String, Object> findByPlanId(String planId, String isOnlySign) {
+        Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" select distinct sign from " + Sign.class.getSimpleName() + " as sign,AssistPlanSign as psign ");
         sqlBuilder.append(" where sign." + Sign_.signid.getName() + " = psign." + AssistPlanSign_.signId.getName());
@@ -1536,13 +1547,13 @@ public class SignServiceImpl implements SignService {
             BeanCopierUtils.copyProperties(s, signDto);
             resultList.add(signDto);
         });
-        resultMap.put("signList",resultList);
+        resultMap.put("signList", resultList);
 
-        if(EnumState.NO.getValue().equals(isOnlySign)){
+        if (EnumState.NO.getValue().equals(isOnlySign)) {
             //协审计划信息
             AssistPlan assistPlan = assistPlanRepo.findById(planId);
             AssistPlanDto planDto = new AssistPlanDto();
-            BeanCopierUtils.copyProperties(assistPlan,planDto);
+            BeanCopierUtils.copyProperties(assistPlan, planDto);
 
             //获取项目信息
             if (Validate.isList(assistPlan.getAssistPlanSignList())) {
@@ -1554,7 +1565,7 @@ public class SignServiceImpl implements SignService {
                 }
                 planDto.setAssistPlanSignDtoList(planSignDtoList);
             }
-            resultMap.put("planDto",planDto);
+            resultMap.put("planDto", planDto);
         }
         return resultMap;
     }
@@ -1693,9 +1704,9 @@ public class SignServiceImpl implements SignService {
     public List<Sign> selectSignNotFinish() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" SELECT s FROM " + Sign.class.getSimpleName() + " s LEFT JOIN ");
-        hqlBuilder.append( RuProcessTask.class.getSimpleName()+" pt ON s."+Sign_.signid.getName()+" = pt."+RuProcessTask_.businessKey.getName());
-        hqlBuilder.append(" WHERE pt."+RuProcessTask_.taskId.getName()+" is not null AND pt."+RuProcessTask_.taskState.getName()+ "=:taskState " );
-        hqlBuilder.setParam("taskState",EnumState.PROCESS.getValue());
+        hqlBuilder.append(RuProcessTask.class.getSimpleName() + " pt ON s." + Sign_.signid.getName() + " = pt." + RuProcessTask_.businessKey.getName());
+        hqlBuilder.append(" WHERE pt." + RuProcessTask_.taskId.getName() + " is not null AND pt." + RuProcessTask_.taskState.getName() + "=:taskState ");
+        hqlBuilder.setParam("taskState", EnumState.PROCESS.getValue());
         List<Sign> signList = signRepo.findByHql(hqlBuilder);
         return signList;
     }
@@ -1804,14 +1815,15 @@ public class SignServiceImpl implements SignService {
 
     /**
      * 修改项目状态
+     *
      * @param signId
      * @param stateProperty 状态属性
-     * @param stateValue 值
+     * @param stateValue    值
      * @return
      */
     @Override
-    public boolean updateSignState(String signId,String stateProperty,String stateValue) {
-        return signRepo.updateSignState(signId,stateProperty,stateValue);
+    public boolean updateSignState(String signId, String stateProperty, String stateValue) {
+        return signRepo.updateSignState(signId, stateProperty, stateValue);
     }
 
     /**
@@ -1828,6 +1840,7 @@ public class SignServiceImpl implements SignService {
 
     /**
      * 获取签收项目（正式签收未发起流程或者已经发起流程未正式签收的项目）
+     *
      * @param odataObj
      * @return
      */
@@ -1841,7 +1854,7 @@ public class SignServiceImpl implements SignService {
         //2、排除已终止、已完成
         Disjunction dis = Restrictions.disjunction();
         dis.add(Restrictions.isNull(Sign_.signState.getName()));
-        dis.add(Restrictions.sqlRestriction( " "+Sign_.signState.getName()+" != '"+EnumState.YES.getValue()+"' and "+Sign_.signState.getName()+" != '"+EnumState.FORCE.getValue()+"' and "+Sign_.signState.getName()+" != '"+EnumState.DELETE.getValue()+"' "));
+        dis.add(Restrictions.sqlRestriction(" " + Sign_.signState.getName() + " != '" + EnumState.YES.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.FORCE.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.DELETE.getValue() + "' "));
         criteria.add(dis);
 
         //3、已签收，但是未发起流程的项目 或者已发起流程，但是未签收的项目
@@ -2252,7 +2265,7 @@ public class SignServiceImpl implements SignService {
             for (int i = 0, l = workProgramList.size(); i < l; i++) {
                 WorkProgram wp = workProgramList.get(i);
                 if (deleteBranchId) {
-                    if(branchId.equals(wp.getBranchId())){
+                    if (branchId.equals(wp.getBranchId())) {
                         deleteWPId = wp.getId();
                         deleteWPList.add(wp);
                         break;
@@ -2298,7 +2311,7 @@ public class SignServiceImpl implements SignService {
                 }
             }
             //最后删除工作方案信息
-            for(WorkProgram wp : deleteWPList){
+            for (WorkProgram wp : deleteWPList) {
                 sign.getWorkProgramList().remove(wp);
                 signRepo.save(sign);
                 wp.setSign(null);
@@ -2321,19 +2334,19 @@ public class SignServiceImpl implements SignService {
         boolean isLoadWorkDay = false;
         Sign sign = signRepo.findById(businessKey);
         //如果有项目暂停列表，则要更新对应的状态信息
-        if(Validate.isList(sign.getProjectStopList())){
+        if (Validate.isList(sign.getProjectStopList())) {
             List<Workday> workdayList = null;
             List<ProjectStop> updateList = null;
-            for(int i=0,l=sign.getProjectStopList().size();i<l;i++){
+            for (int i = 0, l = sign.getProjectStopList().size(); i < l; i++) {
                 ProjectStop pl = sign.getProjectStopList().get(i);
                 //审批通过，又没执行完的（正常情况下，只有一条记录）
-                if(EnumState.YES.getValue().equals(pl.getIsactive()) && !EnumState.YES.getValue().equals(pl.getIsOverTime())){
-                    if(!isLoadWorkDay){
+                if (EnumState.YES.getValue().equals(pl.getIsactive()) && !EnumState.YES.getValue().equals(pl.getIsOverTime())) {
+                    if (!isLoadWorkDay) {
                         workdayList = workdayService.findWorkDayByNow();
                         updateList = new ArrayList<>();
                         isLoadWorkDay = true;
                     }
-                    int countDay = QuartzUnit.countWorkday(workdayList,(pl.getPausetime()==null?pl.getCreatedDate():pl.getPausetime()));
+                    int countDay = QuartzUnit.countWorkday(workdayList, (pl.getPausetime() == null ? pl.getCreatedDate() : pl.getPausetime()));
                     pl.setIsOverTime(Constant.EnumState.YES.getValue());
                     //实际启动日期
                     pl.setStartTime(new Date());
@@ -2343,7 +2356,7 @@ public class SignServiceImpl implements SignService {
                     updateList.add(pl);
                 }
             }
-            if(Validate.isList(updateList)){
+            if (Validate.isList(updateList)) {
                 projectStopService.updateProjectStopStatus(updateList);
             }
         }
@@ -2352,11 +2365,12 @@ public class SignServiceImpl implements SignService {
         sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
         signRepo.save(sign);
 
-        return new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
+        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
     }
 
     /**
      * 保存项目信息，这个在定时器中用到，请不要删除
+     *
      * @param sign
      */
     @Override
@@ -2367,6 +2381,7 @@ public class SignServiceImpl implements SignService {
 
     /**
      * 获取没有发送给发改委的项目信息
+     *
      * @return
      */
     @Override
@@ -2376,14 +2391,15 @@ public class SignServiceImpl implements SignService {
 
     /**
      * 恢复项目
+     *
      * @param signId
      * @param stateProperty
      * @param stateValue
      * @return
      */
     @Override
-    public ResultMsg editSignState(String signId,String stateProperty,String stateValue) {
-        if (signRepo.updateSignState(signId,stateProperty, stateValue)) {
+    public ResultMsg editSignState(String signId, String stateProperty, String stateValue) {
+        if (signRepo.updateSignState(signId, stateProperty, stateValue)) {
             return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
         }
         return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败！");

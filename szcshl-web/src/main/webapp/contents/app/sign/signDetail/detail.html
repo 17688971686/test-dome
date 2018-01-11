@@ -95,7 +95,7 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">委项目处理表</td>
                     <td style="border-top:none;text-align:center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.sugProDealOriginal"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugProDealOriginal"
                                ng-disabled="true"
                                ng-click="vm.model.sugProDealCount = initInputValue($event,vm.model.sugProDealCount)"
                                name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0">
@@ -110,7 +110,7 @@
 
                     <td style="border-top:none;text-align:right;">项目建议书</td>
                     <td style="border-top:none;text-align:center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.sugProAdviseOriginal"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugProAdviseOriginal"
                                ng-disabled="true"
                                ng-click="vm.model.sugProAdviseCount = initInputValue($event,vm.model.sugProAdviseCount)"
                                id="sugProAdviseOriginal" ng-true-value="9" ng-false-value="0">
@@ -126,7 +126,7 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">委文件处理表</td>
                     <td style="border-top:none;text-align:center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.sugFileDealOriginal"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugFileDealOriginal"
                                ng-disabled="true"
                                ng-click="vm.model.sugFileDealCount = initInputValue($event,vm.model.sugFileDealCount)"
                                id="sugFileDealOriginal"
@@ -151,7 +151,7 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">项目单位申报表</td>
                     <td style="border-top:none;text-align:center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.sugOrgApplyOriginal"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugOrgApplyOriginal"
                                ng-click="vm.model.sugOrgApplyCount = initInputValue($event,vm.model.sugOrgApplyCount)"
                                ng-disabled="true" id="sugOrgApplyOriginal" ng-true-value="9" ng-false-value="0">
                     </td>
@@ -163,7 +163,7 @@
                     </td>
                     <td style="border-top:none;text-align:right;">相关会议纪要</td>
                     <td style="border-top:none;text-align:center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.sugMeetOriginal"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugMeetOriginal"
                                ng-disabled="true"
                                ng-click="vm.model.sugMeetCount = initInputValue($event,vm.model.sugMeetCount)"
                                id="sugMeetOriginal" ng-true-value="9" ng-false-value="0" >
@@ -179,7 +179,7 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">项目单位请示报告</td>
                     <td style="border-top:none;text-align:center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.sugOrgReqOriginal"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugOrgReqOriginal"
                                ng-disabled="true"
                                ng-click="vm.model.sugOrgReqCount = initInputValue($event,vm.model.sugOrgReqCount)"
                                id="sugOrgReqOriginal"ng-true-value="9" ng-false-value="0">
@@ -214,7 +214,7 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">委项目处理表</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;"ng-model="vm.model.studyPealOriginal"
+                        <input type="checkbox" class="newcheckbox"ng-model="vm.model.studyPealOriginal"
                                ng-click="vm.model.studyProDealCount = initInputValue($event,vm.model.studyProDealCount)"
                                ng-disabled="true" id="studyPealOriginal"ng-true-value="9" ng-false-value="0">
                     </td>
@@ -229,7 +229,7 @@
 
                     </td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.envproReplyCopy"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.envproReplyCopy"
                                ng-disabled="true"
                                ng-click="vm.model.envproReplyCount = initInputValue($event,vm.model.envproReplyCount)"
                                id="envproReplyCopy"ng-true-value="9" ng-false-value="0">
@@ -244,7 +244,7 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">委文件处理表</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.studyFileDealOriginal"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.studyFileDealOriginal"
                                ng-disabled="true"
                                ng-click="vm.model.studyFileDealCount = initInputValue($event,vm.model.studyFileDealCount)"
                                id="studyFileDealOriginal" ng-true-value="9" ng-false-value="0">
@@ -259,7 +259,7 @@
                     <td style="border-top:none;text-align:right;">规划选址批文</td>
                     <td style="border-top:none;text-align:center;"></td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.planAddrCopy" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.planAddrCopy" ng-disabled="true"
                                ng-click="vm.model.planAddrCount = initInputValue($event,vm.model.planAddrCount)"
                                id="planAddrCopy"ng-true-value="9" ng-false-value="0">
                     </td>
@@ -273,7 +273,7 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">项目单位申报表</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.studyOrgApplyOriginal"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.studyOrgApplyOriginal"
                                ng-disabled="true"
                                ng-click="vm.model.studyOrgApplyCount = initInputValue($event,vm.model.studyOrgApplyCount)"
                                id="studyOrgApplyOriginal"ng-true-value="9" ng-false-value="0">
@@ -287,12 +287,12 @@
 
                     <td style="border-top:none;text-align:right;">可研报告</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.reportOrigin" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.reportOrigin" ng-disabled="true"
                                ng-click="vm.model.reportCount = initInputValue($event,vm.model.reportCount)"
                                id="reportOrigin" ng-true-value="9" ng-false-value="0">
                     </td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.reportCopy" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.reportCopy" ng-disabled="true"
                                ng-click="vm.model.reportCount = initInputValue($event,vm.model.reportCount)"
                                id="reportCopy" ng-true-value="9" ng-false-value="0">
                     </td>
@@ -306,7 +306,7 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">项目单位请示报告</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.studyOrgReqOriginal"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.studyOrgReqOriginal"
                                ng-disabled="true"
                                ng-click="vm.model.studyOrgReqCount = initInputValue($event,vm.model.studyOrgReqCount)"
                                id="studyOrgReqOriginal"ng-true-value="9" ng-false-value="0">
@@ -332,7 +332,7 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">项目建议书批复</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.studyProSugOriginal"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.studyProSugOriginal"
                                ng-disabled="true"
                                ng-click="vm.model.studyProSugCount = initInputValue($event,vm.model.studyProSugCount)"
                                id="studyProSugOriginal" ng-true-value="9" ng-false-value="0">
@@ -347,12 +347,12 @@
 
                     <td style="border-top:none;text-align:right;">节能报告</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.energyOriginal" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.energyOriginal" ng-disabled="true"
                                ng-click="vm.model.energyCount = initInputValue($event,vm.model.energyCount)"
                                id="energyOriginal"ng-true-value="9" ng-false-value="0">
                     </td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.energyCopy" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.energyCopy" ng-disabled="true"
                                ng-click="vm.model.energyCount = initInputValue($event,vm.model.energyCount)"
                                id="energyCopy" ng-true-value="9" ng-false-value="0">
                     </td>
@@ -366,7 +366,7 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">相关会议纪要</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-model="vm.model.studyMeetOriginal"
+                        <input type="checkbox" class="newcheckbox" ng-model="vm.model.studyMeetOriginal"
                                ng-disabled="true"
                                ng-click="vm.model.studyMeetCount = initInputValue($event,vm.model.studyMeetCount)"
                                id="studyMeetOriginal"ng-true-value="9" ng-false-value="0">

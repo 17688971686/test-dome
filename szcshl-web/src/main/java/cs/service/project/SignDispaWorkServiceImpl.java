@@ -162,26 +162,25 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     public List<SignDispaWork> unMergeWPSign(String signId) {
         SignDispaWork mergeSign = signDispaWorkRepo.findById(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName());
+        hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " sd ");
         //已经完成工作方案，但是未评审的项目
-        hqlBuilder.append(" where " + SignDispaWork_.processState.getName() + " >=:processState1 and " + SignDispaWork_.processState.getName() + " <:processState2 ");
+        hqlBuilder.append(" where sd." + SignDispaWork_.processState.getName() + " >=:processState1 and sd." + SignDispaWork_.processState.getName() + " <:processState2 ");
         hqlBuilder.setParam("processState1", Constant.SignProcessState.DO_WP.getValue(), IntegerType.INSTANCE);
         hqlBuilder.setParam("processState2", Constant.SignProcessState.END_WP.getValue(), IntegerType.INSTANCE);
         //只能关联同部门的项目
-        hqlBuilder.append(" and " + SignDispaWork_.mOrgId.getName() + " = :mainOrgId ");
+        hqlBuilder.append(" and sd." + SignDispaWork_.mOrgId.getName() + " = :mainOrgId ");
         hqlBuilder.setParam("mainOrgId", mergeSign.getmOrgId());
         //排除自身
-        hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " != :self ").setParam("self", signId);
+        hqlBuilder.append(" and sd." + SignDispaWork_.signid.getName() + " != :self ").setParam("self", signId);
         //排除已关联的项目(不管是主项目还是次项目)
-        hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " not in ( select " + SignMerge_.mergeId.getName() );
+        hqlBuilder.append(" and sd." + SignDispaWork_.signid.getName() + " not in ( select " + SignMerge_.mergeId.getName() );
         hqlBuilder.append(" from " + SignMerge.class.getSimpleName() +" where  " + SignMerge_.mergeType.getName() + " =:mergeType ) ");
         hqlBuilder.setParam("mergeType", Constant.MergeType.WORK_PROGRAM.getValue());
-        hqlBuilder.append(" and " + SignDispaWork_.signid.getName() + " not in ( select distinct " + SignMerge_.signId.getName() );
+        hqlBuilder.append(" and sd." + SignDispaWork_.signid.getName() + " not in ( select distinct " + SignMerge_.signId.getName() );
         hqlBuilder.append(" from " + SignMerge.class.getSimpleName() +" where  " + SignMerge_.mergeType.getName() + " =:mergeType2 )");
         hqlBuilder.setParam("mergeType2", Constant.MergeType.WORK_PROGRAM.getValue());
         //排除有分支的项目(合并评审的项目一般只有一个分支)
-        hqlBuilder.append(" and (select count(" + SignBranch_.signId.getName() + ") from " + SignBranch.class.getSimpleName() + " where " + SignBranch_.signId.getName() + " =:signId ) = 1");
-        hqlBuilder.setParam("signId", signId);
+        hqlBuilder.append(" and (select count(sh." + SignBranch_.signId.getName() + ") from " + SignBranch.class.getSimpleName() + " sh where sh." + SignBranch_.signId.getName() + " = sd."+SignDispaWork_.signid.getName()+") = 1");
 
         return signDispaWorkRepo.findByHql(hqlBuilder);
     }

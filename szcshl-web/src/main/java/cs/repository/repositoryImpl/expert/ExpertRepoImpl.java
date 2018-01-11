@@ -78,6 +78,19 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
     }
 
     @Override
+    public int countByBusinessId(String businessId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select count(e.expertID) from cs_expert e where e.expertID in (select expertID from cs_expert_selected ");
+        sqlBuilder.append("  where "+ExpertSelected_.businessId.getName()+" = :businessId ");
+        sqlBuilder.setParam("businessId",businessId);
+        sqlBuilder.append(" and "+ ExpertSelected_.isConfrim.getName()+" = :isConfirm ");
+        sqlBuilder.setParam("isConfirm",Constant.EnumState.YES.getValue());
+        sqlBuilder.append(" and "+ ExpertSelected_.isJoin.getName()+" = :isJoin )");
+        sqlBuilder.setParam("isJoin",Constant.EnumState.YES.getValue());
+        return returnIntBySql(sqlBuilder);
+    }
+
+    @Override
     public List<Expert> get(ODataObj odataObj) {
         String maJorBigParam = "",maJorSamllParam="",expertTypeParam="";
         //Criteria 查询

@@ -21,6 +21,13 @@ public interface ExpertRepo extends IRepository<Expert, String> {
      */
     List<Expert> findByBusinessId(String businessId);
 
+    /**
+     * 根据业务ID统计抽取的专家
+     * @param businessId
+     * @return
+     */
+    int countByBusinessId(String businessId);
+
     List<Expert> get(ODataObj odataObj);
 
     /**
