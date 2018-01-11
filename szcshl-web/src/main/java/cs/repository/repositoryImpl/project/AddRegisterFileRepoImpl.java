@@ -65,16 +65,26 @@ public class AddRegisterFileRepoImpl extends AbstractRepository<AddRegisterFile,
     }
 
     /**
-     * 通过业务ID过滤不为图纸和拟补充的材料
+     * 通过业务ID过滤不为图纸和拟补充的材料(补充：并且通过类型对报审和归档的其他资料进行区别)
      * @param businessId
+     * @param type
      * @return
      */
     @Override
-    public List<AddRegisterFile> findByBusIdNoAndBusType(String businessId) {
+    public List<AddRegisterFile> findByBusIdNoAndBusType(String businessId , String type) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " +AddRegisterFile.class.getSimpleName() + " where " + AddRegisterFile_.businessId.getName() + "=:businessId");
-        hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + "!=3");
-        hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + "!=2");
+//        hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + "!=3");
+//        hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + "!=2");
+        //报审阶段
+        if(Validate.isString(type) && "SIGN".equals(type)){
+            hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + " in( 1,4)");
+
+        }
+        //归档阶段
+        else if(Validate.isString(type) && "FILERECORD".equals(type)){
+            hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + " in(5,6,7)");
+        }
         hqlBuilder.setParam("businessId" , businessId);
         List<AddRegisterFile> addRegisterFileList = findByHql(hqlBuilder);
         return addRegisterFileList;
