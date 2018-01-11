@@ -788,19 +788,18 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 case "FILERECOED_OTHERFILE" :
                     //项目归档的其它资料
-//                    FileRecordDto fileRecordDto2 = fileRecordService.initBySignId( businessId);
-                    FileRecord fileRecord = fileRecordRepo.findById(FileRecord_.fileRecordId.getName() , businessId);
+                    FileRecordDto FileRecordDto = fileRecordService.initBySignId( businessId);
                     Map<String , Object> otherFileData = new HashMap<>();
-                    otherFileData.put("fileNo" , fileRecord.getFileNo());
-                    otherFileData.put("projectName" , fileRecord.getProjectName());
-                    otherFileData.put("projectCompany" , fileRecord.getProjectCompany());
-                    otherFileData.put("projectCode" , fileRecord.getProjectCode());
+                    otherFileData.put("fileNo" , FileRecordDto.getFileNo());
+                    otherFileData.put("projectName" , FileRecordDto.getProjectName());
+                    otherFileData.put("projectCompany" , FileRecordDto.getProjectCompany());
+                    otherFileData.put("projectCode" , FileRecordDto.getProjectCode());
                     otherFileData.put("OtherTitle" , "归档表");
                     List<AddRegisterFile> addRegisterFileList = new ArrayList<>();
                     //其它资料
                     if("OTHER_FILE".equals(stageType)){
                         otherFileData.put("otherFileType" , "其它资料");
-                        addRegisterFileList = addRegisterFileService.findByBusIdAndBusType(businessId , 4);
+                        addRegisterFileList = addRegisterFileRepo.findByBusIdNoAndBusType(businessId , "FILERECORD");
                     }
                     //图纸资料
                     if("DRAWING_FILE".equals(stageType)){
@@ -827,14 +826,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     if("OTHER_FILE".equals(stageType)){
                         otherFileDatas.put("otherFileType" , "其它资料");
                         //查询不等于拟补充材料和图纸的其他材料
-                        addRegisterFileLists = addRegisterFileRepo.findByBusIdNoAndBusType(businessId);
+                        addRegisterFileLists = addRegisterFileRepo.findByBusIdNoAndBusType(businessId , "SIGN");
                     }
-          /*          //图纸资料
-                    if("DRAWING_FILE".equals(stageType)){
-                        otherFileDatas.put("otherFileType" , "图纸资料");
-                        addRegisterFileLists = addRegisterFileService.findByBusIdAndBusType(businessId , 2);
-
-                    }*/
                     otherFileDatas.put("otherFileList" , addRegisterFileLists);
                     file = TemplateUtil.createDoc(otherFileDatas, Template.OTHER_FILE.getKey(), path);
                     break;
