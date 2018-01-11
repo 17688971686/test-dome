@@ -63,7 +63,7 @@
             common.initJqValidation();
             var isValid = $('#form').valid();
             if (isValid) {
-                pauseProjectSvc.pauseProject(vm.projectStop,function(data){
+                pauseProjectSvc.saveProjectStop(vm.projectStop,function(data){
                     if(data.flag || data.reCode=="ok"){
                         bsWin.alert("操作成功！")
                     }else{
