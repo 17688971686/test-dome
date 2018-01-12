@@ -6,11 +6,13 @@ import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
 import cs.domain.project.ProjectStop;
 import cs.domain.project.Sign;
+import cs.domain.sys.Log;
 import cs.domain.sys.Workday;
 import cs.quartz.unit.QuartzUnit;
 import cs.service.flow.FlowService;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
+import cs.service.sys.LogService;
 import cs.service.sys.WorkdayService;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
@@ -40,11 +42,22 @@ public class ProjectStartQuartzExecute implements Job{
     private FlowService flowService;
     @Autowired
     private SignService signService;
+    @Autowired
+    private LogService logService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
         logger.info("---------------------- 自动启动暂停的项目定时器开始 ----------------------");
+        //添加日记记录
+        Log log = new Log();
+        log.setCreatedDate(new Date());
+        log.setUserName(Constant.SUPER_USER);
+        log.setBuninessId("");
+        log.setModule(Constant.LOG_MODULE.QUARTZ.getValue()+"【项目暂停】" );
+        //优先级别中等
+        log.setLogLevel(Constant.EnumState.STOP.getValue());
+        log.setLogger(this.getClass().getName()+".execute");
         try{
             List<Workday> workdayList = null;
             List<ProjectStop> projectStopList = projectStopService.findPauseProjectSuccess();
@@ -109,10 +122,17 @@ public class ProjectStartQuartzExecute implements Job{
             if(Validate.isList(updateList)){
                 projectStopService.updateProjectStopStatus(updateList);
             }
+            log.setMessage("完成项目暂停定时器处理！");
+            log.setLogCode(Constant.MsgCode.OK.getValue());
+            log.setResult(Constant.EnumState.YES.getValue());
             logger.info("---------------------- 自动启动暂停的项目定时器结束 ----------------------");
         }catch (Exception e){
+            log.setMessage("处理异常："+e.getMessage());
+            log.setLogCode(Constant.MsgCode.ERROR.getValue());
+            log.setResult(Constant.EnumState.NO.getValue());
             logger.info("自动启动暂停的项目定时器异常："+e.getMessage());
         }
+        logService.save(log);
     }
 
 }

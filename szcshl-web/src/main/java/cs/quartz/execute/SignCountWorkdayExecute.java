@@ -4,10 +4,12 @@ import cs.common.Constant;
 import cs.common.utils.Validate;
 import cs.domain.project.ProjectStop;
 import cs.domain.project.Sign;
+import cs.domain.sys.Log;
 import cs.domain.sys.Workday;
 import cs.quartz.unit.QuartzUnit;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
+import cs.service.sys.LogService;
 import cs.service.sys.WorkdayService;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,12 +33,12 @@ public class SignCountWorkdayExecute implements Job {
     private static Logger logger = Logger.getLogger(SignCountWorkdayExecute.class);
     @Autowired
     private SignService signService;
-
     @Autowired
     private ProjectStopService projectStopService;
-
     @Autowired
     private WorkdayService workdayService;
+    @Autowired
+    private LogService logService;
 
     /*警示灯状态如下：
      * PROCESS("1"),	//在办
@@ -50,6 +53,15 @@ public class SignCountWorkdayExecute implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+        //添加日记记录
+        Log log = new Log();
+        log.setCreatedDate(new Date());
+        log.setUserName(Constant.SUPER_USER);
+        log.setBuninessId("");
+        log.setModule(Constant.LOG_MODULE.QUARTZ.getValue()+"【工作日计算】" );
+        //优先级别中等
+        log.setLogLevel(Constant.EnumState.STOP.getValue());
+        log.setLogger(this.getClass().getName()+".execute");
         try{
             logger.info("------------------ 工作日计算定时器 开始 ------------------");
             List<Workday> workdayList = null;
@@ -110,10 +122,17 @@ public class SignCountWorkdayExecute implements Job {
                 sign.setSignState(Constant.signEnumState.PROCESS.getValue());
             }
             signService.bathUpdate(signList);
+            log.setMessage("完成项目工作日计算！");
+            log.setLogCode(Constant.MsgCode.OK.getValue());
+            log.setResult(Constant.EnumState.YES.getValue());
             logger.info("------------------ 工作日计算定时器 结束 ------------------");
         }catch (Exception e){
+            log.setMessage("工作日计算异常："+e.getMessage());
+            log.setLogCode(Constant.MsgCode.ERROR.getValue());
+            log.setResult(Constant.EnumState.NO.getValue());
             logger.info("工作日计算定时器异常："+e.getMessage());
         }
+        logService.save(log);
 
     }
 

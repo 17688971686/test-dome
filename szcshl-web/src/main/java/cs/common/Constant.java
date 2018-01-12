@@ -13,6 +13,11 @@ public class Constant {
      */
     public static final String SUPER_USER = "admin";
     public static final String SUPER_ROLE = "超级管理员";
+
+    /**
+     * 默认需要上传的文件
+     */
+    public static final String DEFAULT_CHECK_FILE = "投资估算表,投资匡算表;评审意见,审核意见";
     /**
      * 企业名称
      */
@@ -771,7 +776,8 @@ public class Constant {
         FLOWCOMMIT("流程提交"),
         FLOWBACK("流程回退"),
         FLOWACTIVE("流程激活"),
-        FLOWSTOP("流程暂停");
+        FLOWSTOP("流程暂停"),
+        QUARTZ("定时器");
         private String value;
 
         LOG_MODULE(String value) {

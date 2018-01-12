@@ -28,12 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
 import static cs.common.Constant.*;
 import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
+
 import cs.domain.sys.Ftp;
 
 /**
@@ -65,6 +67,7 @@ public class SignRestServiceImpl implements SignRestService {
     private FlowService flowService;
     @Autowired
     private FtpRepo ftpRepo;
+
     /**
      * 项目推送
      *
@@ -159,7 +162,7 @@ public class SignRestServiceImpl implements SignRestService {
             }
 
             //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
-            if(!Validate.isString(sign.getDealOrgType())){
+            if (!Validate.isString(sign.getDealOrgType())) {
                 if (Constant.STAGE_BUDGET.equals(sign.getReviewstage())) {
                     sign.setDealOrgType(Constant.BusinessType.GX.getValue());
                     sign.setLeaderhandlesug("请（概算一部 概算二部）组织评审。");
@@ -169,7 +172,7 @@ public class SignRestServiceImpl implements SignRestService {
                 }
             }
 
-            if(!Validate.isString(sign.getLeaderId())){
+            if (!Validate.isString(sign.getLeaderId())) {
                 //5、综合部、分管副主任默认办理信息
                 List<User> roleList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
                 for (User user : roleList) {
@@ -194,27 +197,27 @@ public class SignRestServiceImpl implements SignRestService {
             signRepo.save(sign);
 
             //获取传送过来的附件
-            if(Validate.isList(signDto.getSysFileDtoList())){
+            if (Validate.isList(signDto.getSysFileDtoList())) {
                 isHaveFile = true;
                 //连接ftp
                 PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-                Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
-                boolean linkSucess = FtpUtil.connectFtp(f,true);
-                if(linkSucess){
+                Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(), propertyUtil.readProperty(FTP_IP1));
+                boolean linkSucess = FtpUtil.connectFtp(f, true);
+                if (linkSucess) {
                     StringBuffer fileBuffer = new StringBuffer();
                     int totalFileCount = signDto.getSysFileDtoList().size();
                     List<SysFile> saveFileList = new ArrayList<>(totalFileCount);
                     //读取附件
-                    for(int i=0,l=totalFileCount;i<l;i++){
+                    for (int i = 0, l = totalFileCount; i < l; i++) {
                         SysFileDto sysFileDto = signDto.getSysFileDtoList().get(i);
                         String showName = sysFileDto.getShowName();
-                        if(!Validate.isString(sysFileDto.getFileUrl())){
-                            fileBuffer.append("【"+showName+"】附件接收失败，没有url!\r\n");
+                        if (!Validate.isString(sysFileDto.getFileUrl())) {
+                            fileBuffer.append("【" + showName + "】附件接收失败，没有url!\r\n");
                             continue;
                         }
                         SysFile sysFile = new SysFile();
                         URL url = new URL(sysFileDto.getFileUrl());
-                        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                         //设置超时间为3秒
                         conn.setConnectTimeout(600000);
                         //防止屏蔽程序抓取而返回403错误
@@ -224,11 +227,11 @@ public class SignRestServiceImpl implements SignRestService {
                         sysFile.setMainId(sign.getSignid());
                         sysFile.setBusinessId(sign.getSignid());
                         sysFile.setMainType(SysFileType.SIGN.getValue());
-                        sysFile.setSysBusiType( SysFileType.FGW_FILE.getValue());
+                        sysFile.setSysBusiType(SysFileType.FGW_FILE.getValue());
                         sysFile.setFileSize(sysFileDto.getFileSize());
                         sysFile.setShowName(sysFileDto.getShowName());
-                        sysFile.setFileType(showName.substring(showName.lastIndexOf("."),showName.length()));
-                        String relativeFileUrl = "/"+ Constant.SysFileType.SIGN.getValue()+"/"+sign.getSignid()+"/"+Constant.SysFileType.FGW_FILE.getValue();
+                        sysFile.setFileType(showName.substring(showName.lastIndexOf("."), showName.length()));
+                        String relativeFileUrl = "/" + Constant.SysFileType.SIGN.getValue() + "/" + sign.getSignid() + "/" + Constant.SysFileType.FGW_FILE.getValue();
 
                         String uploadFileName = Tools.generateRandomFilename().concat(sysFile.getFileType());
                         boolean uploadResult = FtpUtil.uploadFile(relativeFileUrl, uploadFileName, conn.getInputStream());
@@ -245,33 +248,33 @@ public class SignRestServiceImpl implements SignRestService {
 
                         } else {
                             sysFile = null;
-                            fileBuffer.append("【"+showName+"】附件存储到文件服务器失败!\r\n");
+                            fileBuffer.append("【" + showName + "】附件存储到文件服务器失败!\r\n");
                         }
                     }
                     //保存附件
-                    if(Validate.isList(saveFileList)){
+                    if (Validate.isList(saveFileList)) {
                         sysFileService.bathSave(saveFileList);
                     }
-                    if(Validate.isString(fileBuffer.toString())){
+                    if (Validate.isString(fileBuffer.toString())) {
                         resultMsg.setReMsg(fileBuffer.toString());
                     }
-                }else{
+                } else {
                     resultMsg.setReMsg("附件存储失败，无法连接文件服务器！");
                 }
             }
             resultMsg.setFlag(true);
-            if(Validate.isString(resultMsg.getReMsg())){
+            if (Validate.isString(resultMsg.getReMsg())) {
                 //附件保存有错误
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SIGN_05.getCode());
-                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue()+resultMsg.getReMsg());
-            }else{
+                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue() + resultMsg.getReMsg());
+            } else {
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
             }
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
-        }finally {
-            if(isHaveFile){
+        } finally {
+            if (isHaveFile) {
                 FtpUtil.closeFtp();
             }
         }
@@ -281,25 +284,26 @@ public class SignRestServiceImpl implements SignRestService {
 
     /**
      * 回调数据给发改委
+     *
      * @param sign
      * @return
      */
     @Override
-    public ResultMsg setToFGW(Sign sign,String url,String loaclUrl) {
+    public ResultMsg setToFGW(Sign sign, String url, String loaclUrl) {
         String sendUrl = url;
-        if(!Validate.isString(sendUrl)){
+        if (!Validate.isString(sendUrl)) {
             // 接口地址
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             sendUrl = propertyUtil.readProperty(IFResultCode.FGW_PROJECT_IFS);
         }
-        if(!Validate.isString(sendUrl)){
-            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_01.getCode(),IFResultCode.IFMsgCode.SZEC_SFGW_01.getValue());
+        if (!Validate.isString(sendUrl)) {
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_01.getCode(), IFResultCode.IFMsgCode.SZEC_SFGW_01.getValue());
         }
-        if(!Validate.isString(loaclUrl)){
+        if (!Validate.isString(loaclUrl)) {
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             loaclUrl = propertyUtil.readProperty(IFResultCode.LOCAL_URL);
-            if(Validate.isString(loaclUrl) && loaclUrl.endsWith("/")){
-                loaclUrl = loaclUrl.substring(0,loaclUrl.length()-1);
+            if (Validate.isString(loaclUrl) && loaclUrl.endsWith("/")) {
+                loaclUrl = loaclUrl.substring(0, loaclUrl.length() - 1);
             }
         }
         //主工作方案
@@ -310,121 +314,143 @@ public class SignRestServiceImpl implements SignRestService {
         try {
             //1、评审意见对象
             Map<String, Object> dataMap = new HashMap<>();
-            // dataMap.put("xmmc", "HLT备案11201644");// 项目名称
-            // dataMap.put("jsdw", "测试建设单位");// 建设单位
-            // dataMap.put("swrq", sdf.parse("2017/11/20").getTime());// 收文日期
-            // dataMap.put("xmbm", "S-2017-A01-500046-11-01");// 项目编码
+            //2、办理意见
+            /**
+             * 评审过程办理环节接口对照码
+             * 1：收文
+             * 2：分办
+             * 3：评审方案
+             * 4：发文
+             */
+            ArrayList<HashMap<String, Object>> dataList = new ArrayList<HashMap<String, Object>>();
+            //2.1 收文的办理意见
+            HashMap<String, Object> psgcMap = new HashMap<String, Object>();
+            psgcMap.put("blhj", "1");// 办理环节
+            psgcMap.put("psblyj",sign.getLeaderhandlesug());// 办理意见
+            psgcMap.put("blr", sign.getLeaderName());// 办理人
+            psgcMap.put("blsj", sign.getLeaderDate().getTime());// 办理时间
+            dataList.add(psgcMap);
+
+            sign.setFilecode("Z201800001");
             dataMap.put("swbh", sign.getFilecode());// 收文编号
-            if(Validate.isList(sign.getWorkProgramList())){
-                for(WorkProgram wp : sign.getWorkProgramList()){
-                    if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+            if (Validate.isList(sign.getWorkProgramList())) {
+                for (WorkProgram wp : sign.getWorkProgramList()) {
+                    if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
                         mainWP = wp;
                         break;
                     }
                 }
-            }else{
+            } else {
                 mainWP = workProgramRepo.findBySignIdAndBranchId(sign.getSignid(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
             }
-            if(mainWP != null){
+            if (mainWP != null) {
                 dataMap.put("psfs", IFResultCode.PSFS.getCodeByValue(mainWP.getReviewType()));// 评审方式
-                dataMap.put("sssj", (new Date()).getTime());// 送审日期
-                dataMap.put("psjssj", (new Date()).getTime());// 评审结束时间
+                /**
+                 * 2018-01-12
+                 * 送审日期和送审结束时间不用传了。
+                 * 送审日期我默认为调用你们接口成功的时间，结束时间默认为你调用我们接口成功的时间
+                 */
+                /*dataMap.put("sssj", (new Date()).getTime());// 送审日期
+                dataMap.put("psjssj", (new Date()).getTime());// 评审结束时间*/
+
+                //2.2工作方案环节处理意见
+                psgcMap = new HashMap<String, Object>();
+                psgcMap.put("blhj", "3");// 办理环节
+                psgcMap.put("psblyj",mainWP.getLeaderSuggesttion());// 办理意见
+                psgcMap.put("blr", mainWP.getLeaderName());// 办理人
+                psgcMap.put("blsj", mainWP.getLeaderDate().getTime());// 办理时间
+                dataList.add(psgcMap);
             }
 
-            if(Validate.isObject(sign.getDispatchDoc())){
+            if (Validate.isObject(sign.getDispatchDoc())) {
                 dispatchDoc = sign.getDispatchDoc();
-            }else{
-                dispatchDoc = dispatchDocRepo.findById("signid",sign.getSignid());
+            } else {
+                dispatchDoc = dispatchDocRepo.findById("signid", sign.getSignid());
             }
-            if(!Validate.isObject(dispatchDoc)){
-                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_03.getCode(),IFResultCode.IFMsgCode.SZEC_SFGW_03.getValue());
+            if (!Validate.isObject(dispatchDoc)) {
+                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_03.getCode(), IFResultCode.IFMsgCode.SZEC_SFGW_03.getValue());
             }
             dataMap.put("xmpsyd", dispatchDoc.getReviewAbstract());// 项目评审要点
-            dataMap.put("sb", dispatchDoc.getDeclareValue());// 申报投资额（万元）
-            dataMap.put("sd", dispatchDoc.getAuthorizeValue());// 审定投资额（万元）
-            dataMap.put("hjz", dispatchDoc.getExtraValue());// 核减（增）投资额（万元）
-            dataMap.put("hjzl", dispatchDoc.getExtraRate());// 核减（增）率
+            dataMap.put("sb", (dispatchDoc.getDeclareValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 申报投资额（万元）
+            dataMap.put("sd", (dispatchDoc.getAuthorizeValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 审定投资额（万元）
+            dataMap.put("hjz", (dispatchDoc.getExtraValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 核减（增）投资额（万元）
+            dataMap.put("hjzl", (dispatchDoc.getExtraRate()).setScale(2, BigDecimal.ROUND_HALF_UP));// 核减（增）率
             dataMap.put("psbz", dispatchDoc.getRemark());// 备注
             dataMap.put("xmjsbyx", dispatchDoc.getProjectBuildNecess());// 项目建设必要性
             dataMap.put("jsnrjgm", dispatchDoc.getBuildSizeContent());// 建设内容及规模
             dataMap.put("tzksjzjly", dispatchDoc.getFundTotalOrigin());// 投资估算及资金来源
             dataMap.put("xyjdgzyq", dispatchDoc.getNextWorkPlan());// 下一阶段工作要求
 
-            params.put("dataMap", JSON.toJSONString(dataMap));
+            //2.3 发文环节处理意见
+            psgcMap = new HashMap<String, Object>();
+            psgcMap.put("blhj", "4");// 办理环节
+            psgcMap.put("psblyj",dispatchDoc.getViceDirectorSuggesttion());// 办理意见
+            psgcMap.put("blr", dispatchDoc.getViceDirectorName());// 办理人
+            psgcMap.put("blsj", dispatchDoc.getViceDirectorDate().getTime());// 办理时间
+            dataList.add(psgcMap);
 
-            //3、办理意见(取生成发文编号环节的办理意见)
-            List<HiProcessTask> list = flowService.getProcessHistory(sign.getProcessInstanceId());
-            HiProcessTask fwDealInfo = null;
-            if(Validate.isList(list)){
-                for(HiProcessTask hi:list){
-                    if(FlowConstant.FLOW_SIGN_FWBH.equals(hi.getNodeKeyValue())){
-                        fwDealInfo = hi;
-                        break;
-                    }
-                }
-            }
-            if(fwDealInfo != null){
-                ArrayList<HashMap<String, Object>> dataList = new ArrayList<HashMap<String, Object>>();
-                HashMap<String, Object> psgcMap = new HashMap<String, Object>();
-                psgcMap.put("blhj", IFResultCode.PSGCBLHJ.getCodeByValue(fwDealInfo.getNodeKeyValue()));// 办理环节
-                psgcMap.put("psblyj", fwDealInfo.getMessage());// 办理意见
-                psgcMap.put("blr", fwDealInfo.getDisplayName());// 办理人
-                psgcMap.put("blsj", fwDealInfo.getEndTime());// 办理时间
-
-
-                //2、附件列表(回传评审意见或者审核意见附件即可)
-                ArrayList<HashMap<String, Object>> fjList = new ArrayList<>();
-                List<SysFile> fileList = sysFileRepo.findByMainId(sign.getSignid());
+            //2、评审报告和投资匡算附件是必须上传的
+            ArrayList<HashMap<String, Object>> fjList = new ArrayList<HashMap<String, Object>>();
+            List<SysFile> fileList = sysFileRepo.findByMainId(sign.getSignid());
+            if (Validate.isList(fileList)) {
                 List<String> checkNameArr = new ArrayList<>();
-                SysFile sysFile = null;
-                if(Validate.isList(fileList)){
-                    SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
-                    if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())){
-                        checkNameArr.add("评审意见");
-                        checkNameArr.add("审核意见");
-                    }else{
-                        String checFileName = sysConfigDto.getConfigValue();
-                        if(checFileName.indexOf("，") > -1){
-                            checFileName = checFileName.replace("，",",");
-                        }
-                        checkNameArr = StringUtil.getSplit(checFileName,",");
-                    }
-
-                    for(int i=0,l=fileList.size();i<l;i++){
-                        String showName = fileList.get(i).getShowName().toLowerCase();
-                        String fileType = fileList.get(i).getFileType().toLowerCase();
-                        for(String checkName : checkNameArr){
-                            if(showName.equals(checkName+fileType)){
-                                sysFile = fileList.get(i);
-                                break;
-                            }
-                        }
-                    }
+                //评审报告附件
+                checkNameArr.add("评审意见");
+                checkNameArr.add("审核意见");
+                fjList = checkFile(fileList,checkNameArr,loaclUrl);
+                if(Validate.isList(fjList)){
+                    dataMap.put("psbg", fjList);
                 }
-                if(sysFile != null){
-                    HashMap<String, Object> fjMap = new HashMap<String, Object>();
-                    fjMap.put("url", loaclUrl+"/file/remoteDownload/"+sysFile.getSysFileId());
-                    fjMap.put("filename", sysFile.getShowName());
-                    fjMap.put("tempName", sysFile.getCreatedBy());
-                    fjList.add(fjMap);
+                //投资匡算附件
+                fjList = new ArrayList<HashMap<String, Object>>();
+                checkNameArr = new ArrayList<>();
+                checkNameArr.add("投资估算表");
+                checkNameArr.add("投资匡算表");
+                fjList = checkFile(fileList,checkNameArr,loaclUrl);
+                if(Validate.isList(fjList)){
+                    dataMap.put("tzgsshb", fjList);
                 }
-                psgcMap.put("cl", fjList);// 材料（附件）
-                dataList.add(psgcMap);
-                params.put("dataList", JSON.toJSONString(dataList));
             }
+            params.put("dataMap", JSON.toJSONString(dataMap));
+            params.put("dataList", JSON.toJSONString(dataList));
 
             HttpResult hst = httpClientOperate.doPost(sendUrl, params);
             FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
             //成功
-            if(Constant.EnumState.PROCESS.getValue().equals(fGWResponse.getRestate())){
-                return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(),"项目【"+sign.getProjectname()+"("+sign.getFilecode()+")】回传数据给发改委成功！");
-            }else{
+            if (Constant.EnumState.PROCESS.getValue().equals(fGWResponse.getRestate())) {
+                return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SEND_OK.getCode(), "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委成功！");
+            } else {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SEND_ERROR.getCode(),
-                        "项目【"+sign.getProjectname()+"("+sign.getFilecode()+")】回传数据给发改委失败！"+fGWResponse.getRedes());
+                        "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委失败！" + fGWResponse.getRedes());
             }
         } catch (Exception e) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
-                    "项目【"+sign.getProjectname()+"("+sign.getFilecode()+")】回传数据给发改委异常！"+e.getMessage());
+                    "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委异常！" + e.getMessage());
         }
+    }
+
+    private ArrayList<HashMap<String, Object>> checkFile(List<SysFile> fileList,List<String> checkNameArr,String loaclUrl){
+        ArrayList<HashMap<String, Object>> fjList = new ArrayList<HashMap<String, Object>>();
+        List<SysFile> sendList = new ArrayList<>();
+        for (int i = 0, l = fileList.size(); i < l; i++) {
+            SysFile sendFile = fileList.get(i);
+            String showName = sendFile.getShowName().toLowerCase();
+            String fileType = sendFile.getFileType().toLowerCase();
+            for (String checkName : checkNameArr) {
+                if (showName.equals(checkName + fileType)) {
+                    sendList.add(sendFile);
+                }
+            }
+        }
+        if (Validate.isList(sendList)) {
+            for (SysFile sf : sendList) {
+                HashMap<String, Object> fjMap = new HashMap<String, Object>();
+                fjMap.put("url", loaclUrl + "/file/remoteDownload/" + sf.getSysFileId());
+                fjMap.put("filename", sf.getShowName());
+                fjMap.put("tempName", sf.getCreatedBy());
+                fjList.add(fjMap);
+            }
+        }
+        return fjList;
     }
 }

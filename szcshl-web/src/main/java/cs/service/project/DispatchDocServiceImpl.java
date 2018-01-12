@@ -79,35 +79,57 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         //1、获取附件列表
         boolean isUploadMainFile = false;
         List<SysFile> fileList = sysFileRepo.findByMainId(signId);
-        List<String> checkNameArr = new ArrayList<>();
+        //默认每个类型都没检测
+        Map<String,Boolean> checkTypeMap = new HashMap<>();
         if(Validate.isList(fileList)){
+            String checFileName = "";
             SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
             if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())){
-                checkNameArr.add("评审意见");
-                checkNameArr.add("审核意见");
+                checFileName = Constant.DEFAULT_CHECK_FILE;
             }else{
-                String checFileName = sysConfigDto.getConfigValue();
+                checFileName = sysConfigDto.getConfigValue();
+                if(checFileName.indexOf("；") > -1){
+                    checFileName = checFileName.replace("；",";");
+                }
                 if(checFileName.indexOf("，") > -1){
                     checFileName = checFileName.replace("，",",");
                 }
-               checkNameArr = StringUtil.getSplit(checFileName,",");
             }
+
+            //需要检测的文件类型
+            List<String> typeFileList = StringUtil.getSplit(checFileName,";");
+            int checkCount = typeFileList.size(),successCount = 0;
+
+            for(String fileType : typeFileList){
+                checkTypeMap.put(fileType,false);
+            }
+
             for(int i=0,l=fileList.size();i<l;i++){
-                String showName = fileList.get(i).getShowName().toLowerCase();
-                String fileType = fileList.get(i).getFileType().toLowerCase();
-                for(String checkName : checkNameArr){
-                    if(showName.equals(checkName+fileType)){
-                        isUploadMainFile = true;
-                        break;
+                SysFile sysFile = fileList.get(i);
+                String showName = sysFile.getShowName().substring(0,sysFile.getShowName().lastIndexOf("."));
+                for (Map.Entry<String,Boolean> entry : checkTypeMap.entrySet()) {
+                    if(entry.getValue() == false){
+                        if(entry.getKey().contains(showName)){
+                            entry.setValue(true);
+                            successCount++;
+                        }
                     }
+                    //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
                 }
-                if(isUploadMainFile){
+                if(successCount == checkCount){
+                    isUploadMainFile = true;
                     break;
                 }
             }
         }
         if(!isUploadMainFile){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传【审核意见】或者【评审意见】附件信息！");
+            StringBuffer errorBuffer = new StringBuffer();
+            for (Map.Entry<String,Boolean> entry : checkTypeMap.entrySet()) {
+                if(entry.getValue() == false){
+                    errorBuffer.append(entry.getKey().replaceAll(",","或者")+";");
+                }
+            }
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传"+errorBuffer.toString()+"附件信息！");
         }
         //获取发文最大编号
         int curYearMaxSeq = findCurMaxSeq(dispatchDoc.getDispatchDate());

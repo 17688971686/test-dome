@@ -4,12 +4,15 @@ import cs.common.Constant;
 import cs.common.FlowConstant;
 import cs.common.utils.Arith;
 import cs.common.utils.DateUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.ExpertSelected;
+import cs.domain.sys.Log;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.service.expert.ExpertReviewService;
+import cs.service.sys.LogService;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -37,6 +40,8 @@ public class CountExpertCost implements Job {
     private static Logger logger = Logger.getLogger(CountExpertCost.class);
 
     @Autowired
+    private LogService logService;
+    @Autowired
     private ExpertReviewService expertReviewService;
     /*
      以下语句是查询超期未办理专家评审费发放的语句，只限制于项目发文环节和课题归档环节
@@ -60,6 +65,15 @@ public class CountExpertCost implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
         List<ExpertReview> expertReviewList = null;
+        //添加日记记录
+        Log log = new Log();
+        log.setCreatedDate(new Date());
+        log.setUserName(Constant.SUPER_USER);
+        log.setBuninessId("");
+        log.setModule(Constant.LOG_MODULE.QUARTZ.getValue()+"【专家评审费】" );
+        //优先级别中等
+        log.setLogLevel(Constant.EnumState.STOP.getValue());
+        log.setLogger(this.getClass().getName()+".execute");
         try{
             expertReviewList = expertReviewService.queryUndealReview();
             if(Validate.isList(expertReviewList)){
@@ -116,10 +130,18 @@ public class CountExpertCost implements Job {
                     expertReviewService.save(expertReview);
                 }
                 logger.info("完成处理专家评审费发放："+ DateUtils.converToString(new Date(),"yyyy-MM-dd HH:mm:ss"));
+                log.setMessage("完成专家评审费发放");
+            }else{
+                log.setMessage("没有需要处理的评审费信息！");
             }
+            log.setLogCode(Constant.MsgCode.OK.getValue());
+            log.setResult(Constant.EnumState.YES.getValue());
         }catch (Exception e){
+            log.setLogCode(Constant.MsgCode.ERROR.getValue());
+            log.setResult(Constant.EnumState.NO.getValue());
+            log.setMessage(e.getMessage());
             logger.info("专家评审费统计异常："+ e.getMessage());
         }
-
+        logService.save(log);
     }
 }
