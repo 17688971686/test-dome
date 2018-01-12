@@ -398,16 +398,17 @@
                 </tr>
                 <tr ng-repeat="f in vm.registerFile">
                     <td style="border-top: none;">{{$index+1}}、{{vm.registerFile[$index].fileName}}</td>
-                    <td style="border-top: none;">
-                        <input type="checkbox" ng-disabled="true"
-                               ng-model="vm.registerFile[$index].isHasCopyfile"
-                               ng-checked="vm.registerFile[$index].isHasCopyfile == '9'"
-                               ng-true-value="9" ng-false-value="0"/>
-                    </td>
+
                     <td style="border-top: none;">
                         <input type="checkbox" ng-disabled="true"
                                ng-model="vm.registerFile[$index].isHasOriginfile"
                                ng-checked="vm.registerFile[$index].isHasOriginfile == '9'"
+                               ng-true-value="9" ng-false-value="0"/>
+                    </td>
+                    <td style="border-top: none;">
+                        <input type="checkbox" ng-disabled="true"
+                               ng-model="vm.registerFile[$index].isHasCopyfile"
+                               ng-checked="vm.registerFile[$index].isHasCopyfile == '9'"
                                ng-true-value="9" ng-false-value="0"/>
                     </td>
                     <td style="border-top: none;">

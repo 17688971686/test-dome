@@ -5678,7 +5678,7 @@
                                 <w:tcPr>
                                     <w:tcW w:w="3015" w:type="dxa"/>
                                     <w:gridSpan w:val="5"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
@@ -5686,10 +5686,19 @@
                                             <w:tab w:val="left" w:pos="7050"/>
                                         </w:tabs>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                             <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>${projectChargeUser}</w:t>
+                                    </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
@@ -5764,6 +5773,7 @@
                                 <w:tcPr>
                                     <w:tcW w:w="3015" w:type="dxa"/>
                                     <w:gridSpan w:val="5"/>
+                                    <w:tcBorders/>
                                     <w:vAlign w:val="top"/>
                                 </w:tcPr>
                                 <w:p>
@@ -5772,10 +5782,19 @@
                                             <w:tab w:val="left" w:pos="7050"/>
                                         </w:tabs>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                             <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>${projectTwoUser}</w:t>
+                                    </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>

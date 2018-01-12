@@ -584,7 +584,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${secretLevel}</w:t>
+                                        <w:t>${secrectlevel}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

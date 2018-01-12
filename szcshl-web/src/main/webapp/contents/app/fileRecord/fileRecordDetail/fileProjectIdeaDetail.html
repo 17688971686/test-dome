@@ -25,21 +25,21 @@
         <td>
             是否曾经暂停 :
             <span>
-                <input type="checkbox" ng-model="vm.fileRecord.isStachProject" name="isStachProject"
+                <input type="checkbox" class="newcheckbox" ng-model="vm.fileRecord.isStachProject" name="isStachProject"
                 ng-checked="vm.fileRecord.isStachProject==9" ng-true-value="9">是
             </span>
             <span style="margin-left: 10px;">
-                <input type="checkbox" ng-model="vm.fileRecord.isStachProject" name="isStachProject"
+                <input type="checkbox" class="newcheckbox" ng-model="vm.fileRecord.isStachProject" name="isStachProject"
                 ng-checked="!vm.fileRecord.isStachProject || vm.fileRecord.isStachProject==0" ng-true-value="0">否
             </span>
             </br>
             是否有补充资料:
             <span>
-                <input type="checkbox" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary"
+                <input type="checkbox" class="newcheckbox" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary"
                 ng-checked="vm.fileRecord.isSupplementary==9" ng-true-value="9">是
             </span>
             <span style="margin-left: 10px;">
-                <input type="checkbox" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary"
+                <input type="checkbox" class="newcheckbox" ng-model="vm.fileRecord.isSupplementary" name="isSupplementary"
                 ng-checked="!vm.fileRecord.isSupplementary || vm.fileRecord.isSupplementary==0" ng-true-value="0">否
             </span>
         </td>
@@ -73,53 +73,53 @@
 			<table class="table" style="border: 0px solid transparent !important;margin-bottom: 0px;">
 				<tr>
 					<td style="border-top:none;width:18%;">&nbsp;</td>
-                    <td style="border-top:none;width:9%; "><span style="margin-left: 10px;">原件</span></td>
+                    <td style="border-top:none;width:9%; ">原件</td>
 					<td style="border-top:none;width:9%;">复印件</td>
 					<td style="border-top:none;width:9%;">扫描件</td>
 					<td style="border-top:none;width:18%;">&nbsp;</td>
-                    <td style="border-top:none;width:10%; "><span style="margin-left: 10px;">份数</span></td>
-                    <td style="border-top:none;width:9%; "><span style="margin-left: 10px;">原件</span></td>
+                    <td style="border-top:none;width:10%; ">份数</td>
+                    <td style="border-top:none;width:9%; ">原件</td>
 					<td style="border-top:none;width:9%;">复印件</td>
 					<td style="border-top:none;width:9%;">扫描件</td>
 				</tr>
 				<tr>
 					<td style="border-top:none;text-align:right;">报审登记表</td>
 					<td style="border-top:none;">
-						<input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+						<input type="checkbox" class="newcheckbox"  ng-disabled="true"
 							   ng-model="vm.fileRecord.recordFormOriginal"
 							   name="recordFormOriginal" ng-true-value="9"
 							   ng-false-value="0">
 					</td>
 					<td style="border-top:none;">
-						<input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+						<input type="checkbox" class="newcheckbox"  ng-disabled="true"
 							   ng-model="vm.fileRecord.recordFormCopy"
 							   name="recordFormCopy" ng-true-value="9"
 							   ng-false-value="0">
 					</td>
 					<td style="border-top:none;">
-						<input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+						<input type="checkbox" class="newcheckbox"  ng-disabled="true"
 							   ng-model="vm.fileRecord.recordFormCopyScan"
 							   name="recordFormCopyScan" ng-true-value="9"
 							   ng-false-value="0">
 					</td>
 					<td style="border-top:none;text-align:right;">暂停申请表</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm "
-							   data-val="true" data-val-digits="只能输入数字" ng-disabled="true"
+						<input type="text"  class="input-sm "
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;" ng-disabled="true"
 							   ng-model="vm.fileRecord.pauseFormCount" name="pauseFormCount"
 							   id="pauseFormCount">
 						<span data-valmsg-for="pauseFormCount" data-valmsg-replace="true" class="errors"></span>
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.pauseFormOriginal"
 														ng-click="vm.fileRecord.pauseFormCount = initInputValue($event,vm.fileRecord.pauseFormCount)"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.pauseFormCount = initInputValue($event,vm.fileRecord.pauseFormCount)"
 														ng-model="vm.fileRecord.pauseFormCopy"
 														ng-true-value="9" ng-false-value="0">
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.pauseFormCount = initInputValue($event,vm.fileRecord.pauseFormCount)"
 														ng-model="vm.fileRecord.pauseFormScan"
 														ng-true-value="9" ng-false-value="0"></td>
@@ -127,33 +127,33 @@
 				</tr>
 				<tr>
 					<td style="border-top:none;text-align:right;">项目处理表</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugproHandleFormOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugproHandleFormCopy"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugproHandleFormScan"
 														ng-true-value="9" ng-false-value="0"></td>
 					<td style="border-top:none;text-align:right;">补充资料函</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm "
-							   data-val="true" data-val-digits="只能输入数字" ng-disabled="true"
+						<input type="text"  class="input-sm "
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;" ng-disabled="true"
 							   ng-model="vm.fileRecord.supplyFileLetterCount" name="supplyFileLetterCount"
 							   id="supplyFileLetterCount">
 						<span data-valmsg-for="supplyFileLetterCount"
 							  data-valmsg-replace="true" class="errors">
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.supplyFileLetterCount = initInputValue($event,vm.fileRecord.supplyFileLetterCount)"
 														ng-model="vm.fileRecord.supplyFileLetterOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.supplyFileLetterCount = initInputValue($event,vm.fileRecord.supplyFileLetterCount)"
 														ng-model="vm.fileRecord.supplyFileLetterCopy"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.supplyFileLetterCount = initInputValue($event,vm.fileRecord.supplyFileLetterCount)"
 														ng-model="vm.fileRecord.supplyFileLetterScan"
 														ng-true-value="9" ng-false-value="0"></td>
@@ -161,88 +161,88 @@
 				</tr>
 				<tr>
 					<td style="border-top:none;text-align:right;">委文件处理表</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugfileHandleFormOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugfileHandleFormCopy"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugfileHandleFormScan"
 														ng-true-value="9" ng-false-value="0"></td>
 					<td style="border-top:none;text-align:right;">暂缓审核函</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm "
-							   data-val="true" data-val-digits="只能输入数字" ng-disabled="true"
+						<input type="text"  class="input-sm "
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;" ng-disabled="true"
 							   ng-model="vm.fileRecord.slowReviewCount" name="slowReviewCount"
 							   id="slowReviewCount">
 						<span data-valmsg-for="slowReviewCount" ng-disabled="true"
 							  data-valmsg-replace="true" class="errors"></span>
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.slowReviewCount = initInputValue($event,vm.fileRecord.slowReviewCount)"
 														ng-model="vm.fileRecord.slowReviewOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.slowReviewCount = initInputValue($event,vm.fileRecord.slowReviewCount)"
 														ng-model="vm.fileRecord.slowReviewCopy"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.slowReviewCount = initInputValue($event,vm.fileRecord.slowReviewCount)"
 														ng-model="vm.fileRecord.slowReviewScan"
 														ng-true-value="9" ng-false-value="0"></td>
 				</tr>
 				<tr>
 					<td style="border-top:none;text-align:right;">项目单位申报表</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugproCompanyFormOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugproCompanyFormCopy"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugproCompanyFormScan"
 														ng-true-value="9" ng-false-value="0"></td>
 					<td style="border-top:none;text-align:right;">补充资料清单</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm "
-							   data-val="true" data-val-digits="只能输入数字" ng-disabled="true"
+						<input type="text"  class="input-sm "
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;" ng-disabled="true"
 							   ng-model="vm.fileRecord.supplyFileListCount" name="supplyFileListCount"
 							   id="supplyFileListCount">
 						<span data-valmsg-for="supplyFileListCount"
 							  data-valmsg-replace="true" class="errors"></span>
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.supplyFileListCount = initInputValue($event,vm.fileRecord.supplyFileListCount)"
 														ng-model="vm.fileRecord.supplyFileListOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.supplyFileListCount = initInputValue($event,vm.fileRecord.supplyFileListCount)"
 														ng-model="vm.fileRecord.supplyFileListCopy"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.supplyFileListCount = initInputValue($event,vm.fileRecord.supplyFileListCount)"
 														ng-model="vm.fileRecord.supplyFileListScan"
 														ng-true-value="9" ng-false-value="0"></td>
 				</tr>
 				<tr>
 					<td style="border-top:none;text-align:right;">项目单位申报函</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugproComletterOriginal"
 														ng-true-value="9" ng-false-value="0"
 					></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugproComletterCopy"
 														name="sugproComletterCopy" ng-true-value="9"
 														ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.sugproComletterScan"
 														name="sugproComletterScan" ng-true-value="9"
 														ng-false-value="0"></td>
 					<td style="border-top:none;text-align:right;">电子光盘份数</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm "
-							   data-val="true" data-val-digits="只能输入数字" ng-disabled="true"
+						<input type="text"  class="input-sm "
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;" ng-disabled="true"
 							   ng-model="vm.fileRecord.electronicDiskCount" name="electronicDiskCount"
 							   id="electronicDiskCount">
 						<span data-valmsg-for="electronicDiskCount"
@@ -264,7 +264,7 @@
 					<td style="border-top:none;width:9%;">复印件</td>
 					<td style="border-top:none;width:9%;">扫描件</td>
 					<td style="border-top:none;width:18%;">&nbsp;</td>
-					<td style="border-top:none;width:10%;"><span style="margin-left: 10px;">份数</span></td>
+					<td style="border-top:none;width:10%;">份数</td>
 					<td style="border-top:none;width:9%;">复印件</td>
 					<td style="border-top:none;width:9%;">电子版</td>
 					<td style="border-top:none;width:9%;">&nbsp;</td>
@@ -272,26 +272,26 @@
 				<tr>
 					<td style="border-top:none;text-align:right;">相关会议要纪</td>
 					<td style="border-top:none;"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.meetingSummaryOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.meetingSummaryScan"
 														ng-true-value="9" ng-false-value="0"></td>
 					<td style="border-top:none;text-align:right;">项目建议书</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm "
-							   data-val="true" data-val-digits="只能输入数字" ng-disabled="true"
+						<input type="text"  class="input-sm "
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;" ng-disabled="true"
 							   ng-model="vm.fileRecord.procsugFileCount" name="procsugFileCount"
 							   id="procsugFileCount">
 						<span data-valmsg-for="procsugFileCount"
 							  data-valmsg-replace="true" class="errors"></span>
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.procsugFileCount = initInputValue($event,vm.fileRecord.procsugFileCount)"
 														ng-model="vm.fileRecord.procsugFileOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.procsugFileCount = initInputValue($event,vm.fileRecord.procsugFileCount)"
 														ng-model="vm.fileRecord.procsugFileEl"
 														ng-true-value="9" ng-false-value="0"></td>
@@ -301,29 +301,29 @@
 					<td style="border-top:none;text-align:right;">其他重要资料</td>
 					<td style="border-top:none;text-align:left;">（备注）</td>
 					<td style="border-top:none;">
-						<input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+						<input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.otherImportFileOriginal"
 														ng-true-value="9" ng-false-value="0">
 					</td>
 					<td style="border-top:none;">
-						<input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+						<input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-model="vm.fileRecord.otherImportFileCopy"
 														ng-true-value="9" ng-false-value="0">
 					</td>
 					<td style="border-top:none;text-align:right;">补充资料</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm " ng-disabled="true"
-							   data-val="true" data-val-digits="只能输入数字"
+						<input type="text"  class="input-sm " ng-disabled="true"
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;"
 							   ng-model="vm.fileRecord.supplyFileCount" name="supplyFileCount"
 							   id="supplyFileCount">
 						<span data-valmsg-for="supplyFileCount"
 							  data-valmsg-replace="true" class="errors"></span>
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.supplyFileCount = initInputValue($event,vm.fileRecord.supplyFileCount)"
 														ng-model="vm.fileRecord.supplyFileOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.supplyFileCount = initInputValue($event,vm.fileRecord.supplyFileCount)"
 														ng-model="vm.fileRecord.supplyFileEl"
 														ng-true-value="9" ng-false-value="0"></td>
@@ -339,55 +339,55 @@
 			<table class="table" style="border: 0px solid transparent !important;margin-bottom: 0px;">
 				<tr>
 					<td style="border-top:none;width:18%;">&nbsp;</td>
-					<td style="border-top:none;width:8%;"><span style="margin-left: 10px;">份数</span></td>
-					<td style="border-top:none;width:8%; "><span style="margin-left: 10px;">原件</span></td>
+					<td style="border-top:none;width:8%;">份数</td>
+					<td style="border-top:none;width:8%; ">原件</td>
 					<td style="border-top:none;width:8%;">复印件</td>
 					<td style="border-top:none;width:8%;">扫描件</td>
 					<td style="border-top:none;width:18%;">&nbsp;</td>
-                    <td style="border-top:none;width:8%;"><span style="margin-left: 10px;">份数</span></td>
-                    <td style="border-top:none;width:8%; "><span style="margin-left: 10px;">原件</span></td>
+                    <td style="border-top:none;width:8%;">份数</td>
+                    <td style="border-top:none;width:8%; ">原件</td>
 					<td style="border-top:none;width:8%;">复印件</td>
 					<td style="border-top:none;width:8%;">扫描件</td>
 				</tr>
 				<tr>
 					<td style="border-top:none;text-align:right;">评审工作方案</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm " ng-disabled="true"
-							   data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.planCount"
+						<input type="text"  class="input-sm " ng-disabled="true"
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;" ng-model="vm.fileRecord.planCount"
 							   name="planCount" id="planCount">
 						<span data-valmsg-for="planCount"
 							  data-valmsg-replace="true" class="errors"></span>
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.planCount = initInputValue($event,vm.fileRecord.planCount)"
 														ng-model="vm.fileRecord.planOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.planCount = initInputValue($event,vm.fileRecord.planCount)"
 														ng-model="vm.fileRecord.planCopy" ng-true-value="9"
 														ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.planCount = initInputValue($event,vm.fileRecord.planCount)"
 														ng-model="vm.fileRecord.planScan" ng-true-value="9"
 														ng-false-value="0"></td>
 					<td style="border-top:none;text-align:right;">会议签到表</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm "
-							   data-val="true" data-val-digits="只能输入数字" ng-disabled="true"
+						<input type="text"  class="input-sm "
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;" ng-disabled="true"
 							   ng-model="vm.fileRecord.meetingSignCount" name="meetingSignCount"
 							   id="meetingSignCount">
 						<span data-valmsg-for="meetingSignCount"
 							  data-valmsg-replace="true" class="errors"></span>
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.meetingSignCount = initInputValue($event,vm.fileRecord.meetingSignCount)"
 														ng-model="vm.fileRecord.meetingSignOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.meetingSignCount = initInputValue($event,vm.fileRecord.meetingSignCount)"
 														ng-model="vm.fileRecord.meetingSignCopy"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.meetingSignCount = initInputValue($event,vm.fileRecord.meetingSignCount)"
 														ng-model="vm.fileRecord.meetingScan"
 														ng-true-value="9" ng-false-value="0"></td>
@@ -395,42 +395,42 @@
 				<tr>
 					<td style="border-top:none;text-align:right;">专家评审会意见</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm " ng-disabled="true"
-							   data-val="true" data-val-digits="只能输入数字" ng-model="vm.fileRecord.expertCount"
+						<input type="text"  class="input-sm " ng-disabled="true"
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;" ng-model="vm.fileRecord.expertCount"
 							   name="expertCount" id="expertCount">
 						<span data-valmsg-for="expertCount"
 							  data-valmsg-replace="true" class="errors"></span>
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.expertCount = initInputValue($event,vm.fileRecord.expertCount)"
 														ng-model="vm.fileRecord.expertOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.expertCount = initInputValue($event,vm.fileRecord.expertCount)"
 														ng-model="vm.fileRecord.expertCopy"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.expertCount = initInputValue($event,vm.fileRecord.expertCount)"
 														ng-model="vm.fileRecord.expertScan"
 														ng-true-value="9" ng-false-value="0"></td>
 					<td style="border-top:none;text-align:right;">评审费发放表</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm " ng-disabled="true"
-							   data-val="true" data-val-digits="只能输入数字"
+						<input type="text"  class="input-sm " ng-disabled="true"
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;"
 							   ng-model="vm.fileRecord.stageCostCount" name="stageCostCount"
 							   id="stageCostCount">
 						<span data-valmsg-for="stageCostCount"
 							  data-valmsg-replace="true" class="errors"></span>
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.stageCostCount = initInputValue($event,vm.fileRecord.stageCostCount)"
 														ng-model="vm.fileRecord.stageCostOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.stageCostCount = initInputValue($event,vm.fileRecord.stageCostCount)"
 														ng-model="vm.fileRecord.stageCostCopy"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.stageCostCount = initInputValue($event,vm.fileRecord.stageCostCount)"
 														ng-model="vm.fileRecord.stageCostScan"
 														ng-true-value="9" ng-false-value="0"></td>
@@ -439,22 +439,22 @@
 				<tr>
 					<td style="border-top:none;text-align:right;">专家个人意见书</td>
 					<td style="border-top:none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm "
-							   data-val="true" data-val-digits="只能输入数字" ng-disabled="true"
+						<input type="text"  class="input-sm "
+							   data-val="true" data-val-digits="只能输入数字" style="width:40px;text-align:center;" ng-disabled="true"
 							   ng-model="vm.fileRecord.expertAmanCount" name="expertAmanCount"
 							   id="expertAmanCount">
 						<span data-valmsg-for="expertAmanCount"
 							  data-valmsg-replace="true" class="errors"></span>
 					</td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.expertAmanCount = initInputValue($event,vm.fileRecord.expertAmanCount)"
 														ng-model="vm.fileRecord.expertAmanOriginal"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.expertAmanCount = initInputValue($event,vm.fileRecord.expertAmanCount)"
 														ng-model="vm.fileRecord.expertAmanCopy"
 														ng-true-value="9" ng-false-value="0"></td>
-					<td style="border-top:none;"><input type="checkbox" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+					<td style="border-top:none;"><input type="checkbox" class="newcheckbox"  ng-disabled="true"
 														ng-click="vm.fileRecord.expertAmanCount = initInputValue($event,vm.fileRecord.expertAmanCount)"
 														ng-model="vm.fileRecord.expertAmanScan"
 														ng-true-value="9" ng-false-value="0"></td>
@@ -480,20 +480,21 @@
 				</tr>
 				<tr ng-repeat="f in vm.otherFile">
 					<td style="border-top: none;">{{$index+1}}、{{vm.otherFile[$index].fileName}}</td>
+
 					<td style="border-top: none;">
-						<input type="checkbox" ng-disabled="true"
-							   ng-model="vm.otherFile[$index].isHasCopyfile"
-							   ng-checked="vm.otherFile[$index].isHasCopyfile == '9'"
-							   ng-true-value="9" ng-false-value="0"/>
-					</td>
-					<td style="border-top: none;">
-						<input type="checkbox" ng-disabled="true"
+						<input type="checkbox" class="newcheckbox" ng-disabled="true"
 							   ng-model="vm.otherFile[$index].isHasOriginfile"
 							   ng-checked="vm.otherFile[$index].isHasOriginfile == '9'"
 							   ng-true-value="9" ng-false-value="0"/>
 					</td>
+                    <td style="border-top: none;">
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
+                               ng-model="vm.otherFile[$index].isHasCopyfile"
+                               ng-checked="vm.otherFile[$index].isHasCopyfile == '9'"
+                               ng-true-value="9" ng-false-value="0"/>
+                    </td>
 					<td style="border-top: none;">
-						<input type="text" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+						<input type="text"  ng-disabled="true"
 							   ng-model="vm.otherFile[$index].totalNum">
 					</td>
 					<td style="border-top: none;"></td>
