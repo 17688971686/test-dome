@@ -7,7 +7,7 @@
 
     function bookBuy($location, bookBuySvc,$state,bsWin) {
         var vm = this;
-        vm.title = '图书管理';
+        vm.title = '图书查询';
         vm.model = {};
         vm.del = function (id) {
             common.confirm({
@@ -60,7 +60,6 @@
             // 获取行对象
             var data = grid.dataItem(grid.select());
             vm.model = data;
-            console.log(vm.model);
             vm.model.borrowNum = "";
             vm.model.borrowDate = "";
             vm.model.returnDate = "";
@@ -100,6 +99,15 @@
             window.parent.$("#borrowBookWindow").data("kendoWindow").close();
              vm.searchForm();
            // $state.go("bookDetailList");
+        }
+        /**
+         *限制借书的数量
+         */
+        vm.comparisonSize=function () {
+            if (vm.model.borrowNum> vm.model.storeConfirm) {
+                vm.model.borrowNum = vm.model.storeConfirm;
+            }
+
         }
     }
 })();

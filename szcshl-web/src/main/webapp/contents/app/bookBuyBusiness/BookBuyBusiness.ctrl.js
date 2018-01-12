@@ -7,7 +7,7 @@
 
     function bookBuyBusiness($location, bookBuyBusinessSvc) {
         var vm = this;
-        vm.title = '图书采购申请业务信息';
+        vm.title = '图书采购流程查询';
 
         vm.del = function (id) {
             common.confirm({
