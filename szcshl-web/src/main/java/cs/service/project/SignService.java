@@ -98,8 +98,19 @@ public interface SignService {
 
 	void deleteReserveSign(String signid);
 
+    /**
+     * 获取合并评审次项目
+     * @param signid
+     * @return
+     */
     List<SignDto> findReviewSign(String signid);
 
+    /**
+     * 根据合并评审次项目，查询主项目
+     * @param signid
+     * @return
+     */
+    List<SignDto> findMainReviewSign(String signid);
     /**
      * 修改项目状态
      * @param signId

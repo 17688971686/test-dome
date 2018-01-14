@@ -863,16 +863,17 @@ public class SignServiceImpl implements SignService {
                     //是否专家评审
                     boolean isExpertReview = Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) || Constant.MergeType.REVIEW_LEETER.getValue().equals(wk.getReviewType());
                     //是否单个评审
-                    boolean isSigle = Constant.MergeType.REVIEW_SIGNLE.equals(wk.getIsSigle());
+                    boolean isSigle = Constant.MergeType.REVIEW_SIGNLE.getValue().equals(wk.getIsSigle());
                     //是否合并评审主项目
-                    boolean isMergeMain = (Constant.MergeType.REVIEW_MERGE.equals(wk.getIsSigle()) && EnumState.YES.getValue().equals(wk.getIsMainProject()));
+                    boolean isMergeMain = (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && EnumState.YES.getValue().equals(wk.getIsMainProject()));
                     //是否主分支
                     boolean isMainBranch = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex);
 
                     //判断是否预定了会议室和选择了专家（只对主分支判断，因为协办分支以主分支为准，当然也可以自己选，但是不是强制要求）
                     if (isMainBranch) {
                         //单个评审或者合并评审主项目；如果是专家评审会，则要选择专家和会议室
-                        if(isExpertReview && (isSigle || isMergeMain)){
+                        boolean needCheck = isExpertReview && (isSigle || isMergeMain);
+                        if(needCheck){
                             if(expertRepo.countByBusinessId(wk.getId()) == 0){
                                 return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【"+wk.getReviewType()+"】，但是还没有选择专家，请先选择专家！");
                             }
@@ -2017,7 +2018,7 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 获取合并评审项目
+     * 获取合并评审次项目
      *
      * @param signid
      * @return
@@ -2025,6 +2026,28 @@ public class SignServiceImpl implements SignService {
     @Override
     public List<SignDto> findReviewSign(String signid) {
         List<Sign> signList = signRepo.findReviewSign(signid);
+        if (Validate.isList(signList)) {
+            List<SignDto> resultList = new ArrayList<>(signList.size());
+            signList.forEach(sl -> {
+                SignDto signDto = new SignDto();
+                BeanCopierUtils.copyProperties(sl, signDto);
+                resultList.add(signDto);
+            });
+
+            return resultList;
+        }
+        return null;
+    }
+
+    /**
+     * 获取合并评审主项目
+     *
+     * @param signid
+     * @return
+     */
+    @Override
+    public List<SignDto> findMainReviewSign(String signid) {
+        List<Sign> signList = signRepo.findMainReviewSign(signid);
         if (Validate.isList(signList)) {
             List<SignDto> resultList = new ArrayList<>(signList.size());
             signList.forEach(sl -> {

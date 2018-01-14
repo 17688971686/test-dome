@@ -445,8 +445,11 @@ public class FlowServiceImpl implements FlowService {
         List<RuProcessTask> runProcessList = criteria.list();
         //合并评审项目处理
         runProcessList.forEach(rl -> {
+            //如果是合并评审主项目，则查询次项目，如果是合并评审次项目，则查询主项目
             if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
                 rl.setReviewSignDtoList(signService.findReviewSign(rl.getBusinessKey()));
+            }else if (Constant.EnumState.NO.getValue().equals(rl.getReviewType())) {
+                rl.setReviewSignDtoList(signService.findMainReviewSign(rl.getBusinessKey()));
             }
         });
 

@@ -100,6 +100,22 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
     }
 
     /**
+     * 根据合并评审次项目ID，查找合并评审主项目
+     * @param signId
+     * @return
+     */
+    @Override
+    public List<Sign> findMainReviewSign(String signId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select s from " + Sign.class.getSimpleName() + " s where s." + Sign_.signid.getName() + " = ");
+        hqlBuilder.append(" ( select m."+ SignMerge_.signId.getName() +" from "+SignMerge.class.getSimpleName()+" m where " +
+                "m."+SignMerge_.mergeId.getName()+" =:signId and m."+SignMerge_.mergeType.getName()+" =:mergeType )");
+        hqlBuilder.setParam("signId",signId).setParam("mergeType", Constant.MergeType.WORK_PROGRAM.getValue());
+        List<Sign> signList = findByHql(hqlBuilder);
+        return signList;
+    }
+
+    /**
      * 根据合并评审主项目ID，判断合并评审次项目是否完成工作方案环节提交
      * @param signid
      * @return

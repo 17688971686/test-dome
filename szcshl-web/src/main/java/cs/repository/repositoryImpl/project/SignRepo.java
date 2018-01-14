@@ -36,6 +36,12 @@ public interface SignRepo extends IRepository<Sign, String> {
     List<Sign> findReviewSign(String signId);
 
     /**
+     * 根据合并评审次项目ID，查找合并评审主项目
+     * @param signId
+     * @return
+     */
+    List<Sign> findMainReviewSign(String signId);
+    /**
      * 根据合并评审主项目ID，判断合并评审次项目是否完成工作方案环节提交
      * @param signid
      * @return
@@ -47,4 +53,6 @@ public interface SignRepo extends IRepository<Sign, String> {
      * @return
      */
     List<Sign> findUnSendFGWList();
+
+
 }

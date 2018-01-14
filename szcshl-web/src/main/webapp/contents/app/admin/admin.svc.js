@@ -363,7 +363,7 @@
                                 if (index > 0) {
                                     projectName += ",";
                                 }
-                                projectName += data.projectname;
+                                projectName += '<a href="#/signDetails/' + data.signid + '/'+ data.processInstanceId + '" >' + data.projectname + '</a>';
                             });
                             return projectName;
                         } else {
