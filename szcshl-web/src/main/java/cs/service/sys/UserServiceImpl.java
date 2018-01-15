@@ -19,6 +19,9 @@ import cs.repository.repositoryImpl.sys.UserRepo;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,37 +43,46 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public PageModelDto<UserDto> get(ODataObj odataObj) {
-        List<User> listUser = userRepo.findByOdata(odataObj);
-        List<UserDto> userDtoList = new ArrayList<>();
-
-        for (User item : listUser) {
-            UserDto userDto = new UserDto();
-            BeanCopierUtils.copyProperties(item, userDto);
-
-            // 查询相关角色
-            List<RoleDto> roleDtoList = new ArrayList<>();
-            for (Role role : item.getRoles()) {
-                RoleDto roleDto = new RoleDto();
-                roleDto.setRemark(role.getRemark());
-                roleDto.setRoleName(role.getRoleName());
-                roleDto.setCreatedDate(role.getCreatedDate());
-                roleDto.setId(role.getId());
-
-                roleDtoList.add(roleDto);
-            }
-            userDto.setRoleDtoList(roleDtoList);
-
-            OrgDto orgDto = new OrgDto();
-            if (item.getOrg() != null) {
-                orgDto.setId(item.getOrg().getId());
-                orgDto.setName(item.getOrg().getName());
-            }
-            userDto.setOrgDto(orgDto);
-
-            userDtoList.add(userDto);
-        }
         PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
-        pageModelDto.setCount(odataObj.getCount());
+        Criteria criteria = userRepo.getExecutableCriteria();
+        odataObj.buildFilterToCriteria(criteria);
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        pageModelDto.setCount(totalResult);
+        criteria.setProjection(null);
+        //criteria.addOrder(Order.desc(User_.jobState.getName()));
+        criteria.setFirstResult(odataObj.getSkip());
+        criteria.setMaxResults(odataObj.getTop());
+
+        List<User> listUser = criteria.list();
+        List<UserDto> userDtoList = new ArrayList<>();
+        if(Validate.isList(listUser)){
+            for (int i=0,l=listUser.size();i<l;i++) {
+                User item = listUser.get(i);
+                UserDto userDto = new UserDto();
+                BeanCopierUtils.copyProperties(item, userDto);
+                // 查询相关角色
+                List<RoleDto> roleDtoList = new ArrayList<>();
+                for (Role role : item.getRoles()) {
+                    RoleDto roleDto = new RoleDto();
+                    roleDto.setRemark(role.getRemark());
+                    roleDto.setRoleName(role.getRoleName());
+                    roleDto.setCreatedDate(role.getCreatedDate());
+                    roleDto.setId(role.getId());
+
+                    roleDtoList.add(roleDto);
+                }
+                userDto.setRoleDtoList(roleDtoList);
+
+                OrgDto orgDto = new OrgDto();
+                if (item.getOrg() != null) {
+                    orgDto.setId(item.getOrg().getId());
+                    orgDto.setName(item.getOrg().getName());
+                }
+                userDto.setOrgDto(orgDto);
+                userDtoList.add(userDto);
+            }
+        }
+
         pageModelDto.setValue(userDtoList);
 
         logger.info("查询用户数据");

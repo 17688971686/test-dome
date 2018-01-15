@@ -108,7 +108,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @SuppressWarnings({"unchecked", "deprecation"})
     public List<T> findByOdata(ODataObj oDataObj) {
         logger.debug("findByOdata");
-        Criteria crit = this.getSession().createCriteria(this.getPersistentClass());
+        Criteria crit = getExecutableCriteria();
         List<T> list = oDataObj.buildQuery(crit).list();
         return list;
     }

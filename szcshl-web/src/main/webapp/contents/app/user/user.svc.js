@@ -3,9 +3,9 @@
 
     angular.module('app').factory('userSvc', user);
 
-    user.$inject = ['$http' , 'bsWin'];
+    user.$inject = ['$http', 'bsWin'];
 
-    function user($http , bsWin) {
+    function user($http, bsWin) {
         var url_user = rootPath + "/user", url_back = '#/user', url_role = rootPath + "/role/fingByOData",
             url_dictgroup = rootPath + "/dict";
         var service = {
@@ -17,57 +17,58 @@
             updateUser: updateUser,
             getOrg: getOrg,
             queryUser: queryUser,
-            getZtreeChecked :getZtreeChecked ,
+            getZtreeChecked: getZtreeChecked,
             //initUserNo : initUserNo//初始化 员工工号
-            resetPwd : resetPwd , //重置密码
+            resetPwd: resetPwd, //重置密码
         };
 
         return service;
 
 
         //begin resetPwd
-        function resetPwd(vm , ids ){
+        function resetPwd(vm, ids) {
             var httpOptions = {
-                method : 'put',
-                url : url_user + '/resetPwd' ,
-                params : {ids : ids}
+                method: 'put',
+                url: url_user + '/resetPwd',
+                params: {ids: ids}
             }
-            var httpSuccess = function success(response){
+            var httpSuccess = function success(response) {
                 bsWin.success("重置密码成功！");
                 vm.gridOptions.dataSource.read();
             }
             common.http({
-                vm : vm ,
-                httpOptions : httpOptions ,
-                success : httpSuccess ,
-                $http : $http
+                vm: vm,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                $http: $http
             });
         }
+
         //end resetPwd
 
 
         //begin initUserNo
         /*function initUserNo(vm){
-        
-        	var httpOptions={
-        		method : "get",
-        		url : url_user +"/createUserNo"
-        	}
-        	
-        	var httpSuccess=function success(response){
-        	
-        		vm.model={};
-        		var userNo=response.data;
-        		vm.model.userNo=userNo.substring(1,userNo.length-1);
-        	}
+
+         var httpOptions={
+         method : "get",
+         url : url_user +"/createUserNo"
+         }
+
+         var httpSuccess=function success(response){
+
+         vm.model={};
+         var userNo=response.data;
+         vm.model.userNo=userNo.substring(1,userNo.length-1);
+         }
          common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-        	
-        }*///end initUserNo
+         vm: vm,
+         $http: $http,
+         httpOptions: httpOptions,
+         success: httpSuccess
+         });
+
+         }*///end initUserNo
 
         // begin#updateUser
         function updateUser(vm) {
@@ -162,7 +163,7 @@
         }
 
         // begin#createUser
-        function createUser(userModel,isSubmit,callBack) {
+        function createUser(userModel, isSubmit, callBack) {
             isSubmit = true;
             var httpOptions = {
                 method: 'post',
@@ -180,7 +181,7 @@
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess,
-                onError:function(){
+                onError: function () {
                     isSubmit = false;
                 }
             });
@@ -283,14 +284,11 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_user + "/fingByOData?$orderby=jobState desc", $("#usersform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/user/fingByOData", $("#usersform")),
                 schema: common.kendoGridConfig().schema({
-                    id: "id",
+                    id: "userNo",
                     fields: {
                         createdDate: {
-                            type: "date"
-                        },
-                        modifiedDate: {
                             type: "date"
                         }
                     }
@@ -300,13 +298,11 @@
                 serverFiltering: true,
                 pageSize: 10,
                 sort: {
-                    field: "createdDate",
+                    field: "jobState",
                     dir: "desc"
                 }
             });
-
             // End:dataSource
-
             //S_序号
             var dataBound = function () {
                 var rows = this.items();
@@ -323,14 +319,14 @@
             var columns = [
                 {
                     template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",item.id)
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
                     },
                     filterable: false,
                     width: 40,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox' />"
                 },
                 {
-                    field: "rowNumber",
+                    field: "",
                     title: "序号",
                     width: 50,
                     filterable: false,
@@ -392,17 +388,15 @@
                 {
                     field: "",
                     title: "在职情况",
-                    width: 160,
+                    width: 80,
                     filterable: false,
                     template: function (item) {
-                     if(item.jobState=="t"){
-                         return "在职";
-                     }else{
-                         return "不在职";
-                     }
-
+                        if (item.jobState && item.jobState == "t") {
+                            return "在职";
+                        } else {
+                            return "已撤销";
+                        }
                     }
-
                 },
                 {
                     field: "",
@@ -431,6 +425,7 @@
 
         //查询
         function queryUser(vm) {
+            vm.gridOptions.dataSource._skip = 0;
             vm.gridOptions.dataSource.read();
         }
 

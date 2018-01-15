@@ -11,8 +11,7 @@
         /* jshint validthis:true */
         var vm = this;
         vm.id = $state.params.id;
-       
-        
+
         vm.showAddUserDialog = function () {
         	$('.addUser').modal({
                 backdrop: 'static',
@@ -61,8 +60,6 @@
 
         activate();
         function activate() {
-        	
-        	// orgSvc.getOrgById(vm);
         	orgUserSvc.orgUserGrid(vm);
         	orgUserSvc.allUserGrid(vm);
         }

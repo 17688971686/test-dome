@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -223,12 +224,12 @@ public class SignRestServiceImpl implements SignRestService {
                         sysFile.setFileSize(sysFileDto.getFileSize());
                         sysFile.setShowName(sysFileDto.getShowName());
                         sysFile.setFileType(showName.substring(showName.lastIndexOf("."), showName.length()));
-                        String relativeFileUrl = "/" + Constant.SysFileType.SIGN.getValue() + "/" + sign.getSignid() + "/" + Constant.SysFileType.FGW_FILE.getValue();
+                        String relativeFileUrl = File.separator + Constant.SysFileType.SIGN.getValue() + File.separator + sign.getSignid() + File.separator + Constant.SysFileType.FGW_FILE.getValue();
 
                         String uploadFileName = Tools.generateRandomFilename().concat(sysFile.getFileType());
                         boolean uploadResult = FtpUtil.uploadFile(relativeFileUrl, uploadFileName, conn.getInputStream());
                         if (uploadResult) {
-                            sysFile.setFileUrl(relativeFileUrl + "/" + uploadFileName);
+                            sysFile.setFileUrl(relativeFileUrl + File.separator + uploadFileName);
                             sysFile.setCreatedBy(SUPER_USER);
                             sysFile.setModifiedBy(SUPER_USER);
                             sysFile.setCreatedDate(now);

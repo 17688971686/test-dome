@@ -66,7 +66,7 @@ public class AssistPlanRepoImpl extends AbstractRepository<AssistPlan, String> i
             }
         }
 
-        sqlBuilder.append(" ORDER BY CP.PLANNAME,CPS.MAINSIGNID DESC, CPS.SPLITNUM ");
+        sqlBuilder.append(" ORDER BY CP.PLANNAME,CPS.ISMAIN DESC, CPS.SPLITNUM ");
 
         return getObjectArray(sqlBuilder);
     }
