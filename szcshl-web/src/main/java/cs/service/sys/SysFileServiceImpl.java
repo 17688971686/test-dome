@@ -7,10 +7,9 @@ import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
+import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -28,8 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static cs.common.Constant.FTP_IP1;
-import static cs.common.Constant.MsgCode;
+import static cs.common.Constant.FTP_IP;
+import static cs.common.Constant.RevireStageKey.KEY_FTPIP;
 
 @Service
 public class SysFileServiceImpl implements SysFileService {
@@ -38,10 +37,7 @@ public class SysFileServiceImpl implements SysFileService {
     private SysFileRepo sysFileRepo;
 
     @Autowired
-    private SignRepo signRepo;
-
-    @Autowired
-    private FtpRepo ftpRepo;
+    private SysConfigService sysConfigService;
 
     @Override
     @Transactional
@@ -217,6 +213,21 @@ public class SysFileServiceImpl implements SysFileService {
     @Override
     public void bathSave(List<SysFile> saveFileList) {
         sysFileRepo.bathUpdate(saveFileList);
+    }
+
+    /**
+     * 获取默认的ftpId
+     * @return
+     */
+    @Override
+    public String findFtpId() {
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_FTPIP.getValue());
+        if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())) {
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            return propertyUtil.readProperty(FTP_IP);
+        }else{
+            return sysConfigDto.getConfigValue();
+        }
     }
 
     /**

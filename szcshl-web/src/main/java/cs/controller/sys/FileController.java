@@ -5,34 +5,33 @@ import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
-import cs.domain.expert.*;
+import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertReview;
 import cs.domain.project.*;
-import cs.domain.sys.*;
+import cs.domain.sys.Ftp;
+import cs.domain.sys.Ftp_;
+import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.archives.ArchivesLibraryDto;
 import cs.model.expert.*;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.*;
 import cs.model.sys.PluginFileDto;
+import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
 import cs.model.topic.FilingDto;
 import cs.model.topic.TopicInfoDto;
 import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.service.archives.ArchivesLibraryService;
 import cs.service.expert.ExpertService;
-import cs.repository.repositoryImpl.project.DispatchDocRepo;
-import cs.repository.repositoryImpl.project.FileRecordRepo;
-import cs.repository.repositoryImpl.project.SignBranchRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.project.*;
+import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
 import cs.service.topic.TopicInfoService;
-import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -50,11 +49,12 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Dispatch;
 import java.io.*;
 import java.util.*;
-import cs.domain.sys.Ftp;
+
 import static cs.common.Constant.*;
+import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
+import static cs.common.Constant.RevireStageKey.KEY_FTPIP;
 
 
 /**
@@ -111,13 +111,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     private AddSuppLetterService addSuppLetterService;
 
     @Autowired
-    private ArchivesLibraryService archivesLibraryService ;
+    private ArchivesLibraryService archivesLibraryService;
 
     @Autowired
     private AddRegisterFileService addRegisterFileService;
-
-    @Autowired
-    private FileRecordRepo fileRecordRepo;
 
 
     private ServletContext servletContext;
@@ -180,22 +177,22 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     /**
      * @param request
      * @param multipartFileList
-     * @param businessId    业务ID
-     * @param mainId        主ID
-     * @param sysfileType   附件模块类型
-     * @param sysBusiType   附件业务类型
+     * @param businessId        业务ID
+     * @param mainId            主ID
+     * @param sysfileType       附件模块类型
+     * @param sysBusiType       附件业务类型
      * @return
      * @throws IOException
      */
     @RequiresAuthentication
     @RequestMapping(name = "文件上传", path = "fileUpload", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg upload(HttpServletRequest request,@RequestParam(name="file") MultipartFile[] multipartFileList,
+    public ResultMsg upload(HttpServletRequest request, @RequestParam(name = "file") MultipartFile[] multipartFileList,
                             @RequestParam(required = true) String businessId, String mainId, String mainType,
                             String sysfileType, String sysBusiType) {
         ResultMsg resultMsg = null;
-        if(multipartFileList == null || multipartFileList.length == 0){
-            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"请选择要上传的附件");
+        if (multipartFileList == null || multipartFileList.length == 0) {
+            resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择要上传的附件");
             return resultMsg;
         }
         //项目附件才需要类型
@@ -209,11 +206,12 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             String fileUploadPath = SysFileUtil.getUploadPath();
             String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
             //连接ftp
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
-            boolean linkSucess = FtpUtil.connectFtp(f,true);
+            String ftpId = "";
+
+            Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), ftpId);
+            boolean linkSucess = FtpUtil.connectFtp(f, true);
             if (linkSucess) {
-                for(MultipartFile multipartFile : multipartFileList){
+                for (MultipartFile multipartFile : multipartFileList) {
                     String fileName = multipartFile.getOriginalFilename();
                     String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
                     //统一转成小写
@@ -226,7 +224,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         resultMsg = fileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
                                 relativeFileUrl + File.separator + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
                     } else {
-                        errorMsg.append(fileName+"附件上传失败，无法上传到文件服务器！");
+                        errorMsg.append(fileName + "附件上传失败，无法上传到文件服务器！");
                     }
                 }
             } else {
@@ -235,10 +233,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         } catch (Exception e) {
             e.printStackTrace();
             resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "附件上传失败，连接ftp服务失败，请核查！");
-        }finally {
+        } finally {
             FtpUtil.closeFtp();
         }
-        resultMsg.setReMsg(resultMsg.getReMsg()+errorMsg.toString());
+        resultMsg.setReMsg(resultMsg.getReMsg() + errorMsg.toString());
         return resultMsg;
     }
 
@@ -290,15 +288,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         logger.debug("==================ftp文件同步==================");
         ResultMsg resultMsg = null;
         try {
-            //连接ftp
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
-            boolean linkSucess = FtpUtil.connectFtp(f,true);
+            SysFile sysFile = fileService.findFileById(sysFileId);
+            boolean linkSucess = FtpUtil.connectFtp(sysFile.getFtp(), true);
             if (linkSucess) {
-                SysFile sysFile = fileService.findFileById(sysFileId);
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
-                fileUrl = FtpUtil.processDir(fileUrl);
                 String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
                 String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
                 //文件路径
@@ -332,7 +326,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             SysFile sysFile = fileService.findFileById(sysFileId);
             //连接ftp
             Ftp f = sysFile.getFtp();
-            boolean linkSucess = FtpUtil.connectFtp(f,false);
+            boolean linkSucess = FtpUtil.connectFtp(f, false);
             if (linkSucess) {
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
@@ -355,6 +349,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     /**
      * 用于其他项目下载附件
+     *
      * @param sysfileId
      * @param model
      * @param response
@@ -369,8 +364,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             SysFile sysFile = fileService.findFileById(sysfileId);
             //连接ftp
             Ftp f = sysFile.getFtp();
-            boolean linkSucess = FtpUtil.connectFtp(f,false);
-            if(linkSucess){
+            boolean linkSucess = FtpUtil.connectFtp(f, false);
+            if (linkSucess) {
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
                 String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
@@ -381,34 +376,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 //切换工作路径
                 boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
                 if (changedir) {
-                    switch (sysFile.getFileType()) {
-                        case ".jpg":
-                            response.setHeader("Content-type", "application/.jpg");
-                            break;
-                        case ".png":
-                            response.setHeader("Content-type", "application/.png");
-                            break;
-                        case ".gif":
-                            response.setHeader("Content-type", "application/.gif");
-                            break;
-                        case ".docx":
-                            response.setHeader("Content-type", "application/.docx");
-                            break;
-                        case ".doc":
-                            response.setHeader("Content-type", "application/.doc");
-                            break;
-                        case ".xlsx":
-                            response.setHeader("Content-type", "application/.xlsx");
-                            break;
-                        case ".xls":
-                            response.setHeader("Content-type", "application/.xls");
-                            break;
-                        case ".pdf":
-                            response.setHeader("Content-type", "application/.pdf");
-                            break;
-                        default:
-                            response.setContentType("application/octet-stream");
-                    }
+                    ResponseUtils.setResponeseHead(sysFile.getFileType(), response);
 
                     response.setHeader("Content-Disposition", "attachment; filename="
                             + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
@@ -422,7 +390,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         }
                     }
                 }
-            }else{
+            } else {
                 String resultMsg = "连接文件服务器失败！";
                 out.write(resultMsg.getBytes());
             }
@@ -434,7 +402,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         } finally {
             try {
                 FtpUtil.closeFtp();
-                if(out != null){
+                if (out != null) {
                     out.close();
                 }
             } catch (IOException e) {
@@ -451,8 +419,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             out = response.getOutputStream();
             SysFile sysFile = fileService.findFileById(sysfileId);
             Ftp ftp = sysFile.getFtp();
-            boolean linkSucess = FtpUtil.connectFtp(ftp,false);
-            if(linkSucess){
+            boolean linkSucess = FtpUtil.connectFtp(ftp, false);
+            if (linkSucess) {
                 //获取相对路径
                 String fileUrl = sysFile.getFileUrl();
                 String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
@@ -463,37 +431,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 //切换工作路径
                 linkSucess = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
                 if (linkSucess) {
-                    switch (sysFile.getFileType()) {
-                        case ".jpg":
-                            response.setHeader("Content-type", "application/.jpg");
-                            break;
-                        case ".png":
-                            response.setHeader("Content-type", "application/.png");
-                            break;
-                        case ".gif":
-                            response.setHeader("Content-type", "application/.gif");
-                            break;
-                        case ".docx":
-                            response.setHeader("Content-type", "application/.docx");
-                            break;
-                        case ".doc":
-                            response.setHeader("Content-type", "application/.doc");
-                            break;
-                        case ".xlsx":
-                            response.setHeader("Content-type", "application/.xlsx");
-                            break;
-                        case ".xls":
-                            response.setHeader("Content-type", "application/.xls");
-                            break;
-                        case ".pdf":
-                            response.setHeader("Content-type", "application/.pdf");
-                            break;
-                        default:
-                            response.setContentType("application/octet-stream");
-                    }
+                    ResponseUtils.setResponeseHead(sysFile.getFileType(), response);
 
-                response.setHeader("Content-Disposition", "attachment; filename="
-                        + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
+                    response.setHeader("Content-Disposition", "attachment; filename="
+                            + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
 
                     FTPFile[] files = FtpUtil.getFtp().listFiles();
                     for (int i = 0; i < files.length; i++) {
@@ -511,7 +452,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         } finally {
             FtpUtil.closeFtp();
             try {
-                if(out != null){
+                if (out != null) {
                     out.close();
                 }
             } catch (IOException e) {
@@ -525,7 +466,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequestMapping(name = "删除系统文件", path = "deleteSysFile", method = RequestMethod.DELETE)
     @ResponseBody
     public ResultMsg deleteSysFile(@RequestParam String id) {
-       return fileService.deleteById(id);
+        return fileService.deleteById(id);
     }
 
    /* @RequiresAuthentication
@@ -569,10 +510,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     FTPFile f = files[i];
                     if (storeFileName.equals(f.getName())) {
                         //如果是pdf文件，直接输出流，否则要先转为pdf
-                        if(isFtpFile || sysFile.getFileType().equals(".png") || sysFile.getFileType().equals(".jpg")|| sysFile.getFileType().equals(".gif")){
+                        if (isFtpFile || sysFile.getFileType().equals(".png") || sysFile.getFileType().equals(".jpg") || sysFile.getFileType().equals(".gif")) {
                             out = response.getOutputStream();
                             FtpUtil.getFtp().retrieveFile(f.getName(), out);
-                        }else{
+                        } else {
                             downFile = new File(SysFileUtil.getUploadPath() + File.separator + storeFileName);
                             out = new FileOutputStream(downFile);
                             FtpUtil.getFtp().retrieveFile(f.getName(), out);
@@ -593,7 +534,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         break;
                     }
                 }
-            }else{
+            } else {
                 file = new File(realPathResolver.get(Constant.plugin_file_path) + File.separator + "nofile.png");
                 sysFile.setFileType(".png");
             }
@@ -608,6 +549,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     response.setContentType("text/html; charset=UTF-8");
                     response.setContentType("image/jpeg");
                     break;
+                default:
+                    ;
             }
             //response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
             response.setHeader("Content-Disposition", "inline;filename=" + new String(sysFile.getShowName().getBytes(), "ISO-8859-1"));
@@ -646,7 +589,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequiresAuthentication
     @RequestMapping(name = "打印预览", path = "printPreview/{businessId}/{businessType}/{stageType}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    public void printPreview(@PathVariable String businessId, @PathVariable String businessType , @PathVariable String stageType, HttpServletResponse response) {
+    public void printPreview(@PathVariable String businessId, @PathVariable String businessType, @PathVariable String stageType, HttpServletResponse response) {
         InputStream inputStream = null;
         File file = null;
         File printFile = null;
@@ -658,24 +601,24 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 case "SIGN":
                     Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
                     Map<String, Object> dataMap = TemplateUtil.entryAddMap(sign);
-                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())
+                    if (stageType.equals(RevireStageKey.KEY_SUG.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_STUDY.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())){
+                            || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())) {
                         //建议书、可研、其他
                         file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_SUG_SIGN.getKey(), path);
-                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
                         //概算
                         file = TemplateUtil.createDoc(dataMap, Constant.Template.STAGE_BUDGET_SIGN.getKey(), path);
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
                         //资金
                         file = TemplateUtil.createDoc(dataMap, Constant.Template.APPLY_REPORT_SIGN.getKey(), path);
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
                         //进口
                         file = TemplateUtil.createDoc(dataMap, Constant.Template.IMPORT_DEVICE_SIGN.getKey(), path);
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
                         //设备清单（国产、进口）
                         file = TemplateUtil.createDoc(dataMap, Constant.Template.DEVICE_BILL_SIGN.getKey(), path);
 
@@ -684,93 +627,92 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 case "WORKPROGRAM":
                     WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
-                    WorkProgram workProgram  = new WorkProgram();
-                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto , workProgram);
-                    if(!Validate.isString(workProgram.getIsHaveEIA())){
+                    WorkProgram workProgram = new WorkProgram();
+                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+                    if (!Validate.isString(workProgram.getIsHaveEIA())) {
                         workProgram.setIsHaveEIA("0");
                     }
-                    Map<String , Object> workData = TemplateUtil.entryAddMap(workProgram);
+                    Map<String, Object> workData = TemplateUtil.entryAddMap(workProgram);
                     List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                     ExpertDto[] expertDtos = new ExpertDto[10];
-                    if(expertDtoList!=null && expertDtoList.size()>0) {
-                        for (int i = 0; i < expertDtoList.size() && i<10; i++) {
+                    if (expertDtoList != null && expertDtoList.size() > 0) {
+                        for (int i = 0; i < expertDtoList.size() && i < 10; i++) {
                             expertDtos[i] = expertDtoList.get(i);
                         }
                     }
                     String addressName = "";
                     String rbDate = "";
-                    List<RoomBookingDto> roomBookingDtoList =  workProgramDto.getRoomBookingDtos();
-                    if(roomBookingDtoList!= null && roomBookingDtoList.size()>0){
+                    List<RoomBookingDto> roomBookingDtoList = workProgramDto.getRoomBookingDtos();
+                    if (roomBookingDtoList != null && roomBookingDtoList.size() > 0) {
                         addressName = workProgramDto.getRoomBookingDtos().get(0).getAddressName();
                         rbDate = workProgramDto.getRoomBookingDtos().get(0).getRbDate();
                     }
 
                     int count = signBranchRepo.countBranch(workProgramDto.getSignId());
-                    workData.put("expertList" , expertDtos);//聘请专家
-                    workData.put("works" , count);//控制是否多个分支
-                    workData.put("addressName" ,addressName );//会议室名称
-                    workData.put("rbDate" , rbDate);//评审会时间
-                    workData.put("studyBeginTimeStr" , DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
-                    workData.put("studyEndTimeStr" , DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
-                    if(null!=stageType && (stageType.equals("STAGESUG") || stageType.equals("STAGESTUDY")|| stageType.equals("STAGEBUDGET")|| stageType.equals("STAGEOTHER") )){
-                        if(stageType.equals("STAGESUG") ){
-                            workData.put("wpTile","项目建议书评审工作方案");
-                            workData.put("wpCode"," QR-4.3-02-A3");
-                        }else if(stageType.equals("STAGESTUDY") ){
-                            workData.put("wpTile","可行性研究报告评审工作方案");
-                            workData.put("wpCode"," QR-4.4-01-A3");
-                        }else if(stageType.equals("STAGEBUDGET") ){
-                            workData.put("wpTile","项目概算评审工作方案");
-                            workData.put("wpCode"," QR-4.7-01-A2");
+                    workData.put("expertList", expertDtos);//聘请专家
+                    workData.put("works", count);//控制是否多个分支
+                    workData.put("addressName", addressName);//会议室名称
+                    workData.put("rbDate", rbDate);//评审会时间
+                    workData.put("studyBeginTimeStr", DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
+                    workData.put("studyEndTimeStr", DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
+                    if (null != stageType && (stageType.equals("STAGESUG") || stageType.equals("STAGESTUDY") || stageType.equals("STAGEBUDGET") || stageType.equals("STAGEOTHER"))) {
+                        if (stageType.equals("STAGESUG")) {
+                            workData.put("wpTile", "项目建议书评审工作方案");
+                            workData.put("wpCode", " QR-4.3-02-A3");
+                        } else if (stageType.equals("STAGESTUDY")) {
+                            workData.put("wpTile", "可行性研究报告评审工作方案");
+                            workData.put("wpCode", " QR-4.4-01-A3");
+                        } else if (stageType.equals("STAGEBUDGET")) {
+                            workData.put("wpTile", "项目概算评审工作方案");
+                            workData.put("wpCode", " QR-4.7-01-A2");
                         }
                         file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
-                    }else if(null!=stageType && stageType.equals("STAGEREPORT")){
-                        workData.put("wpTile","资金申请报告工作方案");
-                        workData.put("wpCode","QR-4.9-02-A0");
+                    } else if (null != stageType && stageType.equals("STAGEREPORT")) {
+                        workData.put("wpTile", "资金申请报告工作方案");
+                        workData.put("wpCode", "QR-4.9-02-A0");
                         file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_REPORT_WORKPROGRAM.getKey(), path);
-                    }else if(null!=stageType && stageType.equals("STAGEDEVICE")){
-                        workData.put("wpTile","进口设备工作方案");
-                        workData.put("wpCode","QR-4.9-02-A0");
+                    } else if (null != stageType && stageType.equals("STAGEDEVICE")) {
+                        workData.put("wpTile", "进口设备工作方案");
+                        workData.put("wpCode", "QR-4.9-02-A0");
                         file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_DEVICE_WORKPROGRAM.getKey(), path);
-                    }else if(null!=stageType && stageType.equals("STAGEIMPORT")){
-                        workData.put("wpTile","设备清单工作方案");
-                        workData.put("wpCode","QR-4.9-02-A0");
+                    } else if (null != stageType && stageType.equals("STAGEIMPORT")) {
+                        workData.put("wpTile", "设备清单工作方案");
+                        workData.put("wpCode", "QR-4.9-02-A0");
                         file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_HOMELAND_WORKPROGRAM.getKey(), path);
                     }
-
 //                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                     break;
-                case "FILERECORD" :
-                    FileRecordDto fileRecordDto = fileRecordService.initBySignId( businessId);
-                    Map<String , Object> fileData = TemplateUtil.entryAddMap(fileRecordDto);
-                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())){
+                case "FILERECORD":
+                    FileRecordDto fileRecordDto = fileRecordService.initBySignId(businessId);
+                    Map<String, Object> fileData = TemplateUtil.entryAddMap(fileRecordDto);
+                    if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
                         //建议书
                         file = TemplateUtil.createDoc(fileData, Template.STAGE_SUG_FILERECORD.getKey(), path);
-                    }else if(stageType.equals(RevireStageKey.KEY_STUDY.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
                         //可研
                         file = TemplateUtil.createDoc(fileData, Template.STAGE_STUDY_FILERECORD.getKey(), path);
 
-                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
                         //概算
                         file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_FILERECORD.getKey(), path);
 
-                    }else if("STAGEBUDGET_XS".equals(stageType)){
+                    } else if ("STAGEBUDGET_XS".equals(stageType)) {
                         //概算协审
                         file = TemplateUtil.createDoc(fileData, Template.STAGE_BUDGET_XS_FILERECORD.getKey(), path);
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
                         //资金
                         file = TemplateUtil.createDoc(fileData, Template.APPLY_REPORT_FILERECORD.getKey(), path);
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
                         //进口
                         file = TemplateUtil.createDoc(fileData, Template.IMPORT_DEVICE_FILERECORD.getKey(), path);
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
                         //设备清单（国产、进口）
                         AddRegisterFileDto[] registerFileDto = new AddRegisterFileDto[5];
-                        if(fileRecordDto!=null && fileRecordDto.getRegisterFileDto() !=null && fileRecordDto.getRegisterFileDto().size()>0) {
+                        if (fileRecordDto != null && fileRecordDto.getRegisterFileDto() != null && fileRecordDto.getRegisterFileDto().size() > 0) {
                             for (int i = 0; i < fileRecordDto.getRegisterFileDto().size() && i < 5; i++) {
                                 registerFileDto[i] = fileRecordDto.getRegisterFileDto().get(i);
                             }
@@ -778,7 +720,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         fileData.put("registerFileList", registerFileDto);
                         file = TemplateUtil.createDoc(fileData, Template.DEVICE_BILL_FILERECORD.getKey(), path);
 
-                    }else if(stageType.equals(RevireStageKey.KEY_OTHER.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_OTHER.getValue())) {
                         //其他阶段
                         Sign s = signRepo.getById(businessId);
                         fileData.put("secrectlevel", s.getSecrectlevel());
@@ -786,122 +728,122 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }
                     break;
 
-                case "FILERECOED_OTHERFILE" :
+                case "FILERECOED_OTHERFILE":
                     //项目归档的其它资料
-                    FileRecordDto FileRecordDto = fileRecordService.initBySignId( businessId);
-                    Map<String , Object> otherFileData = new HashMap<>();
-                    otherFileData.put("fileNo" , FileRecordDto.getFileNo());
-                    otherFileData.put("projectName" , FileRecordDto.getProjectName());
-                    otherFileData.put("projectCompany" , FileRecordDto.getProjectCompany());
-                    otherFileData.put("projectCode" , FileRecordDto.getProjectCode());
-                    otherFileData.put("OtherTitle" , "归档表");
+                    FileRecordDto FileRecordDto = fileRecordService.initBySignId(businessId);
+                    Map<String, Object> otherFileData = new HashMap<>();
+                    otherFileData.put("fileNo", FileRecordDto.getFileNo());
+                    otherFileData.put("projectName", FileRecordDto.getProjectName());
+                    otherFileData.put("projectCompany", FileRecordDto.getProjectCompany());
+                    otherFileData.put("projectCode", FileRecordDto.getProjectCode());
+                    otherFileData.put("OtherTitle", "归档表");
                     List<AddRegisterFile> addRegisterFileList = new ArrayList<>();
                     //其它资料
-                    if("OTHER_FILE".equals(stageType)){
-                        otherFileData.put("otherFileType" , "其它资料");
-                        addRegisterFileList = addRegisterFileRepo.findByBusIdNoAndBusType(businessId , "FILERECORD");
+                    if ("OTHER_FILE".equals(stageType)) {
+                        otherFileData.put("otherFileType", "其它资料");
+                        addRegisterFileList = addRegisterFileRepo.findByBusIdNoAndBusType(businessId, "FILERECORD");
                     }
                     //图纸资料
-                    if("DRAWING_FILE".equals(stageType)){
-                        otherFileData.put("otherFileType" , "图纸资料");
-                        addRegisterFileList = addRegisterFileService.findByBusIdAndBusType(businessId , 2);
+                    if ("DRAWING_FILE".equals(stageType)) {
+                        otherFileData.put("otherFileType", "图纸资料");
+                        addRegisterFileList = addRegisterFileService.findByBusIdAndBusType(businessId, 2);
 
                     }
-                    otherFileData.put("otherFileList" , addRegisterFileList);
+                    otherFileData.put("otherFileList", addRegisterFileList);
                     file = TemplateUtil.createDoc(otherFileData, Template.OTHER_FILE.getKey(), path);
                     break;
-                case "SIGN_OTHERFILE" :
+                case "SIGN_OTHERFILE":
                     //项目申报的其它资料
                     Sign signs = signRepo.findById(Sign_.signid.getName(), businessId);
                     /*List<AddRegisterFile> addRegisterFile=addRegisterFileRepo*/
 
-                    Map<String , Object> otherFileDatas = new HashMap<>();
-                    otherFileDatas.put("fileNo" , signs.getSignNum());
-                    otherFileDatas.put("projectName" , signs.getProjectname());
-                    otherFileDatas.put("projectCompany" , signs.getBuiltcompanyName());
-                    otherFileDatas.put("projectCode" , signs.getProjectcode());
-                    otherFileDatas.put("OtherTitle" , "报审登记");
+                    Map<String, Object> otherFileDatas = new HashMap<>();
+                    otherFileDatas.put("fileNo", signs.getSignNum());
+                    otherFileDatas.put("projectName", signs.getProjectname());
+                    otherFileDatas.put("projectCompany", signs.getBuiltcompanyName());
+                    otherFileDatas.put("projectCode", signs.getProjectcode());
+                    otherFileDatas.put("OtherTitle", "报审登记");
                     List<AddRegisterFile> addRegisterFileLists = new ArrayList<>();
                     //其它资料
-                    if("OTHER_FILE".equals(stageType)){
-                        otherFileDatas.put("otherFileType" , "其它资料");
+                    if ("OTHER_FILE".equals(stageType)) {
+                        otherFileDatas.put("otherFileType", "其它资料");
                         //查询不等于拟补充材料和图纸的其他材料
-                        addRegisterFileLists = addRegisterFileRepo.findByBusIdNoAndBusType(businessId , "SIGN");
+                        addRegisterFileLists = addRegisterFileRepo.findByBusIdNoAndBusType(businessId, "SIGN");
                     }
-                    otherFileDatas.put("otherFileList" , addRegisterFileLists);
+                    otherFileDatas.put("otherFileList", addRegisterFileLists);
                     file = TemplateUtil.createDoc(otherFileDatas, Template.OTHER_FILE.getKey(), path);
                     break;
 
                 case "DISPATCHDOC":
-                    DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName() , businessId);
-                    SignDto signDto = signService.findById(dispatchDoc.getSign().getSignid(),true);
-                    Map<String , Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
+                    DispatchDoc dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
+                    SignDto signDto = signService.findById(dispatchDoc.getSign().getSignid(), true);
+                    Map<String, Object> dispatchData = TemplateUtil.entryAddMap(dispatchDoc);
                     String mianChargeSuggest = dispatchDoc.getMianChargeSuggest();
                     String main = null;
                     String second = null;
-                    if(Validate.isString(mianChargeSuggest)){
-                         main = mianChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
+                    if (Validate.isString(mianChargeSuggest)) {
+                        main = mianChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
                     }
                     String secondChargeSuggest = dispatchDoc.getSecondChargeSuggest();
-                    if(Validate.isString(secondChargeSuggest)){
-                         second = secondChargeSuggest.replaceAll("<br>" , "<w:br />").replaceAll("&nbsp;" , "").replaceAll(" " , "");
+                    if (Validate.isString(secondChargeSuggest)) {
+                        second = secondChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
                     }
-                    dispatchData.put("mianChargeSuggest" , main) ;
-                    dispatchData.put("secondChargeSuggest" , second);
+                    dispatchData.put("mianChargeSuggest", main);
+                    dispatchData.put("secondChargeSuggest", second);
 
-                    if(stageType.equals(RevireStageKey.KEY_SUG.getValue())){
+                    if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
                         //建议书
-                        dispatchData.put("wpTile","项目建议书发文审批表");
+                        dispatchData.put("wpTile", "项目建议书发文审批表");
                         file = TemplateUtil.createDoc(dispatchData, Template.STAGE_SUG_DISPATCHDOC.getKey(), path);
-                    }else if(stageType.equals(RevireStageKey.KEY_STUDY.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_STUDY.getValue())) {
                         //可研
                         List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
                         List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
                         List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
-                        if(null != signDtoList){
-                            for(int i=0;i<signDtoList.size();i++){
-                                if(null != signDtoList.get(i).getDispatchDocDto()){
+                        if (null != signDtoList) {
+                            for (int i = 0; i < signDtoList.size(); i++) {
+                                if (null != signDtoList.get(i).getDispatchDocDto()) {
                                     dispatchList.add(signDtoList.get(i).getDispatchDocDto());
                                 }
                             }
                         }
-                        dispatchViewList.add(getDispatchStage("项目建议书",dispatchList));
-                        dispatchData.put("dispatchList",dispatchViewList);
+                        dispatchViewList.add(getDispatchStage("项目建议书", dispatchList));
+                        dispatchData.put("dispatchList", dispatchViewList);
                         file = TemplateUtil.createDoc(dispatchData, Template.STAGE_STUDY_DISPATCHDOC.getKey(), path);
 
-                    }else if(stageType.equals(RevireStageKey.KEY_BUDGET.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_BUDGET.getValue())) {
                         //概算
                         List<SignDto> signDtoList = signDto.getAssociateSignDtoList();
                         List<DispatchDocDto> dispatchList = new ArrayList<DispatchDocDto>();
                         List<DispatchDocDto> dispatchViewList = new ArrayList<DispatchDocDto>();
-                        if(null != signDtoList){
-                            for(int i=0;i<signDtoList.size();i++){
-                                if(null != signDtoList.get(i).getDispatchDocDto()){
+                        if (null != signDtoList) {
+                            for (int i = 0; i < signDtoList.size(); i++) {
+                                if (null != signDtoList.get(i).getDispatchDocDto()) {
                                     dispatchList.add(signDtoList.get(i).getDispatchDocDto());
                                 }
                             }
                         }
-                            dispatchViewList.add(getDispatchStage("项目建议书",dispatchList));
-                            dispatchViewList.add(getDispatchStage("可行性研究报告",dispatchList));
-                            dispatchData.put("dispatchList",dispatchViewList);
+                        dispatchViewList.add(getDispatchStage("项目建议书", dispatchList));
+                        dispatchViewList.add(getDispatchStage("可行性研究报告", dispatchList));
+                        dispatchData.put("dispatchList", dispatchViewList);
                         file = TemplateUtil.createDoc(dispatchData, Template.STAGE_BUDGET_DISPATCHDOC.getKey(), path);
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_REPORT.getValue())) {
                         //资金
-                        dispatchData.put("wpTile","资金申请报告发文审批表");
+                        dispatchData.put("wpTile", "资金申请报告发文审批表");
                         file = TemplateUtil.createDoc(dispatchData, Template.APPLY_REPORT_DISPATCHDOC.getKey(), path);
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_DEVICE.getValue())) {
                         //进口
-                        dispatchData.put("wpTile","进口设备发文审批表");
+                        dispatchData.put("wpTile", "进口设备发文审批表");
                         file = TemplateUtil.createDoc(dispatchData, Template.IMPORT_DEVICE_DISPATCHDOC.getKey(), path);
 
-                    }else if(stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
-                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())){
+                    } else if (stageType.equals(Constant.RevireStageKey.KEY_HOMELAND.getValue())
+                            || stageType.equals(Constant.RevireStageKey.KEY_IMPORT.getValue())) {
                         //设备清单（国产、进口）
-                        dispatchData.put("wpTile","设备清单发文审批表");
+                        dispatchData.put("wpTile", "设备清单发文审批表");
                         file = TemplateUtil.createDoc(dispatchData, Template.DEVICE_BILL_DISPATCHDOC.getKey(), path);
-                    }else if(stageType.equals(RevireStageKey.KEY_OTHER.getValue())){
+                    } else if (stageType.equals(RevireStageKey.KEY_OTHER.getValue())) {
                         //其他阶段
                         file = TemplateUtil.createDoc(dispatchData, Template.OTHERS_DISPATCHDOC.getKey(), path);
                     }
@@ -909,71 +851,71 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 case "SIGN_EXPERT":
                     //项目环节的专家评分和专家评审费
-                    Map<String , Object> expertData = new HashMap<>();
+                    Map<String, Object> expertData = new HashMap<>();
                     ExpertReview expertReview = expertReviewRepo.findByBusinessId(businessId);
                     List<ExpertSelectedDto> expertSelectedList = new ArrayList<>();
                     if (Validate.isObject(expertReview)) {
                         ExpertReviewDto expertReviewDto = expertReviewRepo.formatReview(expertReview);
                         List<ExpertSelectedDto> expertSelectedDtoList = expertReviewDto.getExpertSelectedDtoList();
-                        if(expertSelectedDtoList != null && expertSelectedDtoList.size() >0){
-                            for(ExpertSelectedDto expertSelectedDto : expertSelectedDtoList){
+                        if (expertSelectedDtoList != null && expertSelectedDtoList.size() > 0) {
+                            for (ExpertSelectedDto expertSelectedDto : expertSelectedDtoList) {
                                 ExpertSelectedDto expertSelected = new ExpertSelectedDto();
-                                if(EnumState.YES.getValue().equals(expertSelectedDto.getIsJoin())
-                                        && EnumState.YES.getValue().equals(expertSelectedDto.getIsConfrim())){
+                                if (EnumState.YES.getValue().equals(expertSelectedDto.getIsJoin())
+                                        && EnumState.YES.getValue().equals(expertSelectedDto.getIsConfrim())) {
                                     BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected);
                                     expertSelectedList.add(expertSelected);
                                 }
                             }
                         }
-                        expertData.put("projectName" , expertReview.getReviewTitle());
-                        expertData.put("expertList" , expertSelectedList);
+                        expertData.put("projectName", expertReview.getReviewTitle());
+                        expertData.put("expertList", expertSelectedList);
                     }
                     //专家评审费发放表
-                    if("SIGN_EXPERT_PAY".equals(stageType)){
+                    if ("SIGN_EXPERT_PAY".equals(stageType)) {
                         file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
                     }
                     //专家评分
-                    if("SIGN_EXPERT_SCORE".equals(stageType)){
+                    if ("SIGN_EXPERT_SCORE".equals(stageType)) {
                        /* expertData.put("projectName" , expertReview.getReviewTitle().substring(1,expertReview.getReviewTitle().length()-1));*/
                         file = TemplateUtil.createDoc(expertData, Template.EXPERT_SCORD.getKey(), path);
                     }
                     break;
-                case  "ADDSUPPLETER":
+                case "ADDSUPPLETER":
                     //拟补充资料函
-                    AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName() , businessId);
-                    Map<String , Object> addsuppletterData = TemplateUtil.entryAddMap(addSuppLetter);
-                    if(Validate.isString(addSuppLetter.getLeaderSignIdeaContent())){
-                        String leaderSignIdea = addSuppLetter.getLeaderSignIdeaContent().replaceAll("<br>" , "").replaceAll("&nbsp;" , "");
-                        addsuppletterData.put("leaderSignIdea" , leaderSignIdea);
+                    AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), businessId);
+                    Map<String, Object> addsuppletterData = TemplateUtil.entryAddMap(addSuppLetter);
+                    if (Validate.isString(addSuppLetter.getLeaderSignIdeaContent())) {
+                        String leaderSignIdea = addSuppLetter.getLeaderSignIdeaContent().replaceAll("<br>", "").replaceAll("&nbsp;", "");
+                        addsuppletterData.put("leaderSignIdea", leaderSignIdea);
 
                     }
                     file = TemplateUtil.createDoc(addsuppletterData, Template.ADDSUPPLETER.getKey(), path);
                     break;
 
-                case "EXPERT" :
+                case "EXPERT":
                     //专家申请表
-                    ExpertDto expertDto = expertService.findById( businessId);
+                    ExpertDto expertDto = expertService.findById(businessId);
                     Expert expert = new Expert();
-                    BeanCopierUtils.copyPropertiesIgnoreNull(expertDto , expert);
-                    Map<String , Object> expertDataMap = TemplateUtil.entryAddMap(expert);
+                    BeanCopierUtils.copyPropertiesIgnoreNull(expertDto, expert);
+                    Map<String, Object> expertDataMap = TemplateUtil.entryAddMap(expert);
                     WorkExpeDto[] workExpes = new WorkExpeDto[4];
                     ProjectExpeDto[] projectExpes = new ProjectExpeDto[4];
 
-                    if(expertDto.getWorkDtoList()!=null && expertDto.getWorkDtoList().size()>0){
-                        for(int i=0 ; i<expertDto.getWorkDtoList().size() && i<4 ; i++){
+                    if (expertDto.getWorkDtoList() != null && expertDto.getWorkDtoList().size() > 0) {
+                        for (int i = 0; i < expertDto.getWorkDtoList().size() && i < 4; i++) {
                             WorkExpeDto workExpeDto = expertDto.getWorkDtoList().get(i);
-                            workExpeDto.setBeginTimeStr(DateUtils.converToString(workExpeDto.getBeginTime() , "yyyyMMdd"));
-                           workExpeDto.setEndTimeStr(DateUtils.converToString(workExpeDto.getEndTime() , "yyyyMmdd"));
+                            workExpeDto.setBeginTimeStr(DateUtils.converToString(workExpeDto.getBeginTime(), "yyyyMMdd"));
+                            workExpeDto.setEndTimeStr(DateUtils.converToString(workExpeDto.getEndTime(), "yyyyMmdd"));
                             workExpes[i] = workExpeDto;
                         }
                     }
-                    if(expertDto.getProjectDtoList()!=null && expertDto.getProjectDtoList().size()>0){
-                        for(int i=0 ; i<expertDto.getProjectDtoList().size() && i<4 ; i++){
+                    if (expertDto.getProjectDtoList() != null && expertDto.getProjectDtoList().size() > 0) {
+                        for (int i = 0; i < expertDto.getProjectDtoList().size() && i < 4; i++) {
                             projectExpes[i] = expertDto.getProjectDtoList().get(i);
                         }
                     }
-                    expertDataMap.put("workList" , workExpes);
-                    expertDataMap.put("projectList" , projectExpes);
+                    expertDataMap.put("workList", workExpes);
+                    expertDataMap.put("projectList", projectExpes);
 
                     file = TemplateUtil.createDoc(expertDataMap, Template.EXPERT.getKey(), path);
 
@@ -983,12 +925,12 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     //课题研究
                     TopicInfoDto topicInfoDto = topicInfoService.findById(businessId);
                     //归档
-                    if("TOPICINFO_FILERECORD".equals(stageType)){
-                        if(topicInfoDto!=null){
-                            FilingDto filingDto= topicInfoDto.getFilingDto();
-                            Map<String , Object> filingData = TemplateUtil.entryAddMap(filingDto);
+                    if ("TOPICINFO_FILERECORD".equals(stageType)) {
+                        if (topicInfoDto != null) {
+                            FilingDto filingDto = topicInfoDto.getFilingDto();
+                            Map<String, Object> filingData = TemplateUtil.entryAddMap(filingDto);
                             AddRegisterFileDto[] registerFileDto = new AddRegisterFileDto[5];
-                            if(filingDto!=null && filingDto.getRegisterFileDto() !=null && filingDto.getRegisterFileDto().size()>0) {
+                            if (filingDto != null && filingDto.getRegisterFileDto() != null && filingDto.getRegisterFileDto().size() > 0) {
                                 for (int i = 0; i < filingDto.getRegisterFileDto().size() && i < 5; i++) {
                                     registerFileDto[i] = filingDto.getRegisterFileDto().get(i);
                                 }
@@ -999,22 +941,22 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }
 
                     //工作方案
-                    if("TOPICINFO_WORKPROGRAM".equals(stageType)){
-                        if(topicInfoDto!=null){
+                    if ("TOPICINFO_WORKPROGRAM".equals(stageType)) {
+                        if (topicInfoDto != null) {
                             WorkPlanDto workPlanDto = topicInfoDto.getWorkPlanDto();
-                            Map<String , Object> workPlanData = TemplateUtil.entryAddMap(workPlanDto);
-                            workPlanData.put("createdDate" , DateUtils.converToString(workPlanDto.getCreatedDate() , "yyyy年MM月dd日"));
+                            Map<String, Object> workPlanData = TemplateUtil.entryAddMap(workPlanDto);
+                            workPlanData.put("createdDate", DateUtils.converToString(workPlanDto.getCreatedDate(), "yyyy年MM月dd日"));
                             String rbDateStr = "";
                             String address = "";
-                            if(workPlanDto!=null && workPlanDto.getRoomDtoList()!=null && workPlanDto.getRoomDtoList().size()>0){
+                            if (workPlanDto != null && workPlanDto.getRoomDtoList() != null && workPlanDto.getRoomDtoList().size() > 0) {
                                 rbDateStr = workPlanDto.getRoomDtoList().get(0).getRbDate();
                                 address = workPlanDto.getRoomDtoList().get(0).getAddressName();
                             }
                             workPlanData.put("rbDateStr", rbDateStr);
                             workPlanData.put("addRess", address);
                             ExpertDto[] expeDtos = new ExpertDto[10];
-                            if(workPlanDto!=null && workPlanDto.getExpertDtoList()!=null && workPlanDto.getExpertDtoList().size()>0){
-                                for(int i=0; i<workPlanDto.getExpertDtoList().size() && i<10 ; i++){
+                            if (workPlanDto != null && workPlanDto.getExpertDtoList() != null && workPlanDto.getExpertDtoList().size() > 0) {
+                                for (int i = 0; i < workPlanDto.getExpertDtoList().size() && i < 10; i++) {
                                     expeDtos[i] = workPlanDto.getExpertDtoList().get(i);
                                 }
                             }
@@ -1025,17 +967,17 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                     break;
 
-                case "MONTHLY" :
+                case "MONTHLY":
                     //月报简报
                     AddSuppLetterDto addSuppLetterDto = addSuppLetterService.findById(businessId);
-                    Map<String , Object> addSuppleterData = TemplateUtil.entryAddMap(addSuppLetterDto);
+                    Map<String, Object> addSuppleterData = TemplateUtil.entryAddMap(addSuppLetterDto);
                     file = TemplateUtil.createDoc(addSuppleterData, Template.MONTHLY.getKey(), path);
                     break;
 
                 case "ARCHIVES":
                     //借阅档案
                     ArchivesLibraryDto archivesLibraryDto = archivesLibraryService.findById(businessId);
-                    Map<String , Object> archivesData = TemplateUtil.entryAddMap(archivesLibraryDto);
+                    Map<String, Object> archivesData = TemplateUtil.entryAddMap(archivesLibraryDto);
                     file = TemplateUtil.createDoc(archivesData, Template.ARCHIVES_DETAIL.getKey(), path);
                     break;
                 default:
@@ -1083,26 +1025,25 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     }
 
     /**
-     *
      * @param stageName
      * @param dispatchDocDtoList
      * @return
      */
-    private DispatchDocDto getDispatchStage(String stageName,List<DispatchDocDto> dispatchDocDtoList){
+    private DispatchDocDto getDispatchStage(String stageName, List<DispatchDocDto> dispatchDocDtoList) {
         DispatchDocDto dispatchDocDto = new DispatchDocDto();
-           if(dispatchDocDtoList.size()>0){
-               for(int i = 0;i < dispatchDocDtoList.size();i++){
-                   if(stageName.equals(dispatchDocDtoList.get(i).getDispatchStage())){
-                       return dispatchDocDtoList.get(i);
-                   }
-                   if(i == (dispatchDocDtoList.size()-1)){
-                       dispatchDocDto.setDispatchStage(stageName);
-                       break;
-                   }
-               }
-           }else{
-               dispatchDocDto.setDispatchStage(stageName);
-           }
+        if (dispatchDocDtoList.size() > 0) {
+            for (int i = 0; i < dispatchDocDtoList.size(); i++) {
+                if (stageName.equals(dispatchDocDtoList.get(i).getDispatchStage())) {
+                    return dispatchDocDtoList.get(i);
+                }
+                if (i == (dispatchDocDtoList.size() - 1)) {
+                    dispatchDocDto.setDispatchStage(stageName);
+                    break;
+                }
+            }
+        } else {
+            dispatchDocDto.setDispatchStage(stageName);
+        }
 
         return dispatchDocDto;
     }
@@ -1175,10 +1116,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
         String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
         //涉及到中文问题 根据系统实际编码改变
-        try{
+        try {
             removeRelativeUrl = new String(removeRelativeUrl.getBytes("GBK"), "iso-8859-1");
             storeFileName = new String(storeFileName.getBytes("GBK"), "iso-8859-1");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

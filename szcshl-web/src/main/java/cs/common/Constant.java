@@ -104,12 +104,7 @@ public class Constant {
      * 文件存到ftp的
      * Ip地址、服务端口、用户名、密码、基础路径、文件存放路径
      */
-    public static final String FTP_IP1 = "FTP_IP1";
-    public static final String FTP_PORT1 = "FTP_PORT1";
-    public static final String FTP_USER = "FTP_USER";
-    public static final String FTP_PWD = "FTP_PWD";
-    public static final String FTP_BASE_PATH = "FTP_BASE_PATH";
-    public static final String FTP_FILE_PATH = "FTP_FILE_PATH";
+    public static final String FTP_IP = "FTP_IP1";
 
 
     /**
@@ -695,7 +690,8 @@ public class Constant {
         KEY_IMPORT("STAGEIMPORT"),     //设备清单（进口）
         KEY_DEVICE("STAGEDEVICE"),     //进口设备
         KEY_OTHER("STAGEOTHER"),       //其他
-        KEY_CHECKFILE("CHECKFILE");   //要检测的文件名名称
+        KEY_CHECKFILE("CHECKFILE"),    //要检测的文件名名称
+        KEY_FTPIP("FTPIP");            //文件服务器IP地址
         private String value;
 
         RevireStageKey(String value) {

@@ -5,10 +5,10 @@ import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
 import cs.common.*;
 import cs.common.utils.*;
-import cs.domain.flow.HiProcessTask;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
+import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.model.project.SignDto;
@@ -20,7 +20,6 @@ import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
-import cs.service.flow.FlowService;
 import cs.service.project.SignService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
@@ -34,9 +33,6 @@ import java.net.URL;
 import java.util.*;
 
 import static cs.common.Constant.*;
-import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
-
-import cs.domain.sys.Ftp;
 
 /**
  * 项目接口实现类
@@ -44,9 +40,6 @@ import cs.domain.sys.Ftp;
  */
 @Service
 public class SignRestServiceImpl implements SignRestService {
-
-    @Autowired
-    private SysFileService sysFileService;
     @Autowired
     private SysConfigService sysConfigService;
     @Autowired
@@ -64,7 +57,7 @@ public class SignRestServiceImpl implements SignRestService {
     @Autowired
     private SysFileRepo sysFileRepo;
     @Autowired
-    private FlowService flowService;
+    private SysFileService sysFileService;
     @Autowired
     private FtpRepo ftpRepo;
 
@@ -200,8 +193,7 @@ public class SignRestServiceImpl implements SignRestService {
             if (Validate.isList(signDto.getSysFileDtoList())) {
                 isHaveFile = true;
                 //连接ftp
-                PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-                Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(), propertyUtil.readProperty(FTP_IP1));
+                Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(), sysFileService.findFtpId());
                 boolean linkSucess = FtpUtil.connectFtp(f, true);
                 if (linkSucess) {
                     StringBuffer fileBuffer = new StringBuffer();
@@ -331,7 +323,7 @@ public class SignRestServiceImpl implements SignRestService {
             psgcMap.put("blsj", sign.getLeaderDate().getTime());// 办理时间
             dataList.add(psgcMap);
 
-            sign.setFilecode("Z201800001");
+         /*   sign.setFilecode("Z201800001");*/
             dataMap.put("swbh", sign.getFilecode());// 收文编号
             if (Validate.isList(sign.getWorkProgramList())) {
                 for (WorkProgram wp : sign.getWorkProgramList()) {
@@ -350,8 +342,8 @@ public class SignRestServiceImpl implements SignRestService {
                  * 送审日期和送审结束时间不用传了。
                  * 送审日期我默认为调用你们接口成功的时间，结束时间默认为你调用我们接口成功的时间
                  */
-                /*dataMap.put("sssj", (new Date()).getTime());// 送审日期
-                dataMap.put("psjssj", (new Date()).getTime());// 评审结束时间*/
+                dataMap.put("sssj", (new Date()).getTime());// 送审日期
+                dataMap.put("psjssj", (new Date()).getTime());// 评审结束时间
 
                 //2.2工作方案环节处理意见
                 psgcMap = new HashMap<String, Object>();

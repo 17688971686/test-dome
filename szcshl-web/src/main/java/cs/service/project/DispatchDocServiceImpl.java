@@ -22,15 +22,13 @@ import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.sys.SysConfigService;
+import cs.service.sys.SysFileService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
-
-import static cs.common.Constant.FTP_IP1;
 import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
 
 @Service
@@ -54,7 +52,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     private SysConfigService sysConfigService;
     @Autowired
     private FtpRepo ftpRepo;
-
+    @Autowired
+    private SysFileService sysFileService;
     /**
      * 生成发文编号，生成发文编号之前，要先上传项目评审意见
      * @param signId
@@ -80,30 +79,28 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         boolean isUploadMainFile = false;
         List<SysFile> fileList = sysFileRepo.findByMainId(signId);
         //默认每个类型都没检测
+        String checFileName = "";
         Map<String,Boolean> checkTypeMap = new HashMap<>();
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
+        if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())){
+            checFileName = Constant.DEFAULT_CHECK_FILE;
+        }else{
+            checFileName = sysConfigDto.getConfigValue();
+            if(checFileName.indexOf("；") > -1){
+                checFileName = checFileName.replace("；",";");
+            }
+            if(checFileName.indexOf("，") > -1){
+                checFileName = checFileName.replace("，",",");
+            }
+        }
+        //需要检测的文件类型
+        List<String> typeFileList = StringUtil.getSplit(checFileName,";");
+        for(String fileType : typeFileList){
+            checkTypeMap.put(fileType,false);
+        }
+
         if(Validate.isList(fileList)){
-            String checFileName = "";
-            SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
-            if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())){
-                checFileName = Constant.DEFAULT_CHECK_FILE;
-            }else{
-                checFileName = sysConfigDto.getConfigValue();
-                if(checFileName.indexOf("；") > -1){
-                    checFileName = checFileName.replace("；",";");
-                }
-                if(checFileName.indexOf("，") > -1){
-                    checFileName = checFileName.replace("，",",");
-                }
-            }
-
-            //需要检测的文件类型
-            List<String> typeFileList = StringUtil.getSplit(checFileName,";");
             int checkCount = typeFileList.size(),successCount = 0;
-
-            for(String fileType : typeFileList){
-                checkTypeMap.put(fileType,false);
-            }
-
             for(int i=0,l=fileList.size();i<l;i++){
                 SysFile sysFile = fileList.get(i);
                 String showName = sysFile.getShowName().substring(0,sysFile.getShowName().lastIndexOf("."));
@@ -114,7 +111,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                             successCount++;
                         }
                     }
-                    //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
                 }
                 if(successCount == checkCount){
                     isUploadMainFile = true;
@@ -368,8 +364,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         List<Expert> expertList=expertRepo.findByBusinessId(signId);
 
         List<SysFile> sysFileList = new ArrayList<>();
-        PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-        Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
+        Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),sysFileService.findFtpId());
         //可行性研究报告
         if(Constant.STAGE_STUDY.equals(signDispaWork.getReviewstage())){
             SysFile studyOpinion = CreateTemplateUtils.createStudyTemplateOpinion(f,signDispaWork );

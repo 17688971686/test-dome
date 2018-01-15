@@ -139,7 +139,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
     @Override
     public List<Sign> findUnSendFGWList() {
         Criteria criteria = getExecutableCriteria();
-        /*//未发送给发改委的项目
+        //未发送给发改委的项目
         criteria.add(Restrictions.ne(Sign_.isSendFGW.getName(), Constant.EnumState.YES.getValue()));
         //正式签收
         criteria.add(Restrictions.eq(Sign_.issign.getName(), Constant.EnumState.YES.getValue()));
@@ -151,11 +151,11 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         criteria.add(Restrictions.or(Restrictions.eq(Sign_.signdate.getName(), Constant.EnumState.PROCESS.getValue()),
                 Restrictions.eq(Sign_.signdate.getName(), Constant.EnumState.YES.getValue())));
         //已经生成发文编号
-        criteria.add(Restrictions.ge(Sign_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));*/
+        criteria.add(Restrictions.ge(Sign_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));
 
-        //以下是测试用
+       /* //以下是测试用
         criteria.add(Restrictions.eq(Sign_.signid.getName(), "4a2271a6-5908-4d05-b609-c48ed49d6e3f"));
-
+        */
         List<Sign> resultList = criteria.list();
 
         return resultList;

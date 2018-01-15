@@ -18,16 +18,16 @@
     </div>
 
     <table class="table table-bordered">
-        <tr>
-            <th style="width: 60px;">序号</th>
+        <tr class="active">
+            <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 180px;">参数名</th>
             <th style="width: 180px;">参数Key</th>
             <th style="width: 180px;">参数值</th>
             <th style="">描述</th>
-            <th style="width: 260px;">操作</th>
+            <th style="width: 80px;">操作</th>
         </tr>
         <tr ng-repeat="c in vm.configList">
-            <td>{{ $index + 1}}</td>
+            <td style="width: 50px; text-align: center;">{{ $index + 1}}</td>
             <td>{{c.configName}}</td>
             <td>{{c.configKey}}</td>
             <td>{{c.configValue}}</td>

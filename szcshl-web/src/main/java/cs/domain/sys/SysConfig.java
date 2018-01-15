@@ -28,7 +28,7 @@ public class SysConfig extends DomainBase {
     /**
      * 参数值
      */
-    @Column(columnDefinition = "VARCHAR(32)")
+    @Column(columnDefinition = "VARCHAR(256)")
     private String configValue;
 
     /**

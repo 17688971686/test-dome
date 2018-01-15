@@ -31,10 +31,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
-
-import static cs.common.Constant.FTP_IP1;
 
 @Service
 public class WorkProgramServiceImpl implements WorkProgramService {
@@ -448,8 +445,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
         //获得会议信息
         List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(), workProgram.getId(), null);
-        PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-        Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),propertyUtil.readProperty(FTP_IP1));
+        Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),sysFileService.findFtpId());
         //2.1 生成签到表
         SysFile sysFile1 = CreateTemplateUtils.createtTemplateSignIn(f,sign, workProgram);
         if(sysFile1 != null){

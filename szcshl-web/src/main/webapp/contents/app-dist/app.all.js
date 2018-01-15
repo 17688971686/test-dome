@@ -8024,7 +8024,7 @@
 
     function bookBuy($location, bookBuySvc,$state,bsWin) {
         var vm = this;
-        vm.title = '图书管理';
+        vm.title = '图书查询';
         vm.model = {};
         vm.del = function (id) {
             common.confirm({
@@ -8077,7 +8077,6 @@
             // 获取行对象
             var data = grid.dataItem(grid.select());
             vm.model = data;
-            console.log(vm.model);
             vm.model.borrowNum = "";
             vm.model.borrowDate = "";
             vm.model.returnDate = "";
@@ -8117,6 +8116,15 @@
             window.parent.$("#borrowBookWindow").data("kendoWindow").close();
              vm.searchForm();
            // $state.go("bookDetailList");
+        }
+        /**
+         *限制借书的数量
+         */
+        vm.comparisonSize=function () {
+            if (vm.model.borrowNum> vm.model.storeConfirm) {
+                vm.model.borrowNum = vm.model.storeConfirm;
+            }
+
         }
     }
 })();
@@ -8522,7 +8530,7 @@
 
     function bookBuyBusiness($location, bookBuyBusinessSvc) {
         var vm = this;
-        vm.title = '图书采购申请业务信息';
+        vm.title = '图书采购流程查询';
 
         vm.del = function (id) {
             common.confirm({
@@ -21666,7 +21674,7 @@
                 template: "<span class='row-number'></span>",
                 width: 50
             }, {
-                field: "nodeName",
+                field: "nodeNameValue",
                 title: "环节名称",
                 width: "20%",
                 filterable: false

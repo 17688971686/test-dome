@@ -47,4 +47,10 @@ public interface SysFileService {
      * @param saveFileList
      */
     void bathSave(List<SysFile> saveFileList);
+
+    /**
+     * 获取默认的ftpId
+     * @return
+     */
+    String findFtpId();
 }
