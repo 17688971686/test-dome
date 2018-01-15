@@ -35,14 +35,16 @@
                            ng-model="vm.model.operator" ng-init="vm.model.operator = '${CURRENT_USER.loginName}'" id="operator" name="operator">
                 </td>
 
-                <td class="formAlignRight" width="10%">购买渠道</td>
-         <td>
-                    <select id="buyChannel" class="form-control select-sm " ng-model="vm.model.buyChannel" ng-disabled="vm.showFlag.buyChannel">
+                <td class="formAlignRight" width="10%">购买渠道 <span class="required">*</span></td>
+                 <td>
+                    <select id="buyChannel" name="buyChannel" class="form-control select-sm " ng-model="vm.model.buyChannel" ng-disabled="vm.showFlag.buyChannel"  data-val="true" data-val-required="必填">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.BUY_CHANNEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                     </select>
                 </td>
-
+                <td>
+                    <span data-valmsg-for="buyChannel" data-valmsg-replace="true" class="errors"></span>
+                </td>
             </tr>
             <tr>
                 <td class="formAlignRight" width="10%">申请事由及发放范围</td>
