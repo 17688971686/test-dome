@@ -5,14 +5,15 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/officeUser">处室人员管理</a></li>
+        <li><a >系统管理</a></li>
+        <li><span>处室人员管理</span></li>
     </ol>
      <form id="formOffice" name="formOffice" class="well well-sm">
-         <span class="help-inline">处室名称：</span>
+         <span class="help-inline">	所在办事处：</span>
          <input type="text" ng-model="vm.model.deptName" operator="like"
                 name="deptName" id="deptName" placeholder="请输入">
-         <span class="help-inline"  style="margin-left: 10px;">联系人：</span>
-         <input type="text" ng-model="vm.model.officeUserName" operator="eq" name="officeUserName"
+         <span class="help-inline"  style="margin-left: 10px;">办事处联系人：</span>
+         <input type="text" ng-model="vm.model.officeUserName" operator="like" name="officeUserName"
             id="deptOfficeId" placeholder="请输入">
 
          <button class="btn btn-sm btn-primary" style="margin-left: 10px;" ng-click="vm.queryOffice()">

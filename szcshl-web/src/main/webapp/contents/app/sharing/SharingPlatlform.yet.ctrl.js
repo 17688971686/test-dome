@@ -17,6 +17,7 @@
         
         //查询
         vm.findSharing = function(){
+            vm.gridOptions.dataSource._skip="";
         	vm.gridOptions.dataSource.read();
         }
         //重置

@@ -77,6 +77,7 @@
 
         //查询
         vm.queryAnnountment = function () {
+            vm.gridOptions.dataSource._skip="";
             vm.gridOptions.dataSource.read();
         }
 

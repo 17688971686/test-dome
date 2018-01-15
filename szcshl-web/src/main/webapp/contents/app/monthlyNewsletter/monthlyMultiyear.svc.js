@@ -68,6 +68,7 @@
 
         //查询
         function addSuppQuery(vm) {
+            vm.monthlyYearGrid.dataSource._skip="";
             vm.monthlyYearGrid.dataSource.read();
         }
 

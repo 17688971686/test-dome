@@ -43,32 +43,31 @@
                 $http: $http
             });
         }
-
         //end resetPwd
 
 
         //begin initUserNo
         /*function initUserNo(vm){
-
-         var httpOptions={
-         method : "get",
-         url : url_user +"/createUserNo"
-         }
-
-         var httpSuccess=function success(response){
-
-         vm.model={};
-         var userNo=response.data;
-         vm.model.userNo=userNo.substring(1,userNo.length-1);
-         }
+        
+        	var httpOptions={
+        		method : "get",
+        		url : url_user +"/createUserNo"
+        	}
+        	
+        	var httpSuccess=function success(response){
+        	
+        		vm.model={};
+        		var userNo=response.data;
+        		vm.model.userNo=userNo.substring(1,userNo.length-1);
+        	}
          common.http({
-         vm: vm,
-         $http: $http,
-         httpOptions: httpOptions,
-         success: httpSuccess
-         });
-
-         }*///end initUserNo
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        	
+        }*///end initUserNo
 
         // begin#updateUser
         function updateUser(vm) {
@@ -181,7 +180,7 @@
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess,
-                onError: function () {
+                onError:function(){
                     isSubmit = false;
                 }
             });
@@ -326,7 +325,7 @@
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox' />"
                 },
                 {
-                    field: "",
+                    field: "rowNumber",
                     title: "序号",
                     width: 50,
                     filterable: false,

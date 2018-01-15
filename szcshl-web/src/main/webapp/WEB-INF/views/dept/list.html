@@ -5,7 +5,7 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/sysDept">处室管理</a></li>
+        <li><a >系统管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
 
@@ -15,7 +15,7 @@
                id="deptName" placeholder="请输入">
 
         <span class="help-inline"  style="margin-left: 10px;">联系人：</span>
-        <input type="text" ng-model="vm.model.deptUserName" operator="eq" name="deptUserName"
+        <input type="text" ng-model="vm.model.deptUserName" operator="like" name="deptUserName"
                id="deptUserName" placeholder="请输入">
 
         <button class="btn btn-sm btn-primary" style="margin-left: 10px;" ng-click="vm.queryDept()">

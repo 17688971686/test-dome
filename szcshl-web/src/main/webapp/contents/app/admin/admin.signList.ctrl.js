@@ -44,6 +44,7 @@
 
         //項目查詢統計
         vm.searchSignList = function () {
+            vm.signListOptions.dataSource._skip="";
             vm.signListOptions.dataSource.read();
             vm.filters = vm.project;
             if (vm.filters && vm.filters != undefined) {

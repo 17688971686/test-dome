@@ -15,6 +15,7 @@
         }
         //表单查询
         vm.searchForm = function(){
+            vm.myTopicOptions.dataSource._skip="";
             vm.myTopicOptions.dataSource.read();
         }
 

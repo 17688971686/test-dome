@@ -22,6 +22,7 @@
 
         //查询
         vm.findAnnountment = function(){
+            vm.gridOptions.dataSource._skip="";
         	vm.gridOptions.dataSource.read();
         }
 
