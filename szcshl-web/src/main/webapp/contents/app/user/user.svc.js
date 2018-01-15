@@ -33,8 +33,9 @@
                 params: {ids: ids}
             }
             var httpSuccess = function success(response) {
-                bsWin.success("重置密码成功！");
-                vm.gridOptions.dataSource.read();
+                bsWin.success("重置密码成功！",function(){
+                    vm.gridOptions.dataSource.read();
+                });
             }
             common.http({
                 vm: vm,

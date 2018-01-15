@@ -32,7 +32,7 @@
         }
 
         vm.query=function () {//查找
-         vm.signGetBackGrid.dataSource._skip="";
+         vm.signGetBackGrid.dataSource._skip=0;
          vm.signGetBackGrid.dataSource.read();
         }
 

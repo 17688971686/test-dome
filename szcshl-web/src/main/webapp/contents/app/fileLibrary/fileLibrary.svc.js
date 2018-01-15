@@ -46,6 +46,7 @@
         //end getFileUrlById
         //查询
         function queryUser(vm) {
+            vm.gridOptions.dataSource._skip=0;
             vm.gridOptions.dataSource.read();
         }
 

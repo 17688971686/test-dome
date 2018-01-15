@@ -127,6 +127,7 @@
 
         //弹出自选专家框
         vm.showSelfExpertGrid = function () {
+            vm.selfExpertOptions.dataSource._skip=0;
             vm.selfExpertOptions.dataSource.read();
             $("#selfExpertDiv").kendoWindow({
                 width: "80%",
@@ -201,11 +202,13 @@
 
         //自选专家查询
         vm.querySelfExpert = function(){
+            vm.selfExpertOptions.dataSource._skip=0;
             vm.selfExpertOptions.dataSource.read();
         }
 
         //境外专家
         vm.showOutExpertGrid = function () {
+            vm.outExpertOptions.dataSource._skip=0;
             vm.outExpertOptions.dataSource.read();
             $("#outExpertDiv").kendoWindow({
                 width: "70%",
@@ -274,6 +277,7 @@
 
         //境外专家查询
         vm.queryOutExpert = function(){
+            vm.outExpertOptions.dataSource._skip=0;
             vm.outExpertOptions.dataSource.read();
         }
 

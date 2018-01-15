@@ -19,7 +19,7 @@
          * 查询
          */
         vm.query = function(){
-            vm.gridOptions.dataSource._skip="";
+            vm.gridOptions.dataSource._skip=0;
             vm.gridOptions.dataSource.read();
         }
 

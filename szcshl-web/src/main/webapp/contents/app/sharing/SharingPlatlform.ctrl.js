@@ -59,7 +59,7 @@
 
         //查询
         vm.querySharing = function () {
-            vm.gridOptions.dataSource._skip="";
+            vm.gridOptions.dataSource._skip=0;
             vm.gridOptions.dataSource.read();
         }
 

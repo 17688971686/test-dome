@@ -34,9 +34,10 @@
 
                 var httpSuccess = function success(response) {
                     if (response.data.flag || response.data.reCode == 'ok') {
-                        bsWin.success("修改成功!");
-                        window.parent.$("#addHeaderWindow").data("kendoWindow").close();
-                        vm.gridOptions.dataSource.read();
+                        bsWin.success("修改成功!",function () {
+                            window.parent.$("#addHeaderWindow").data("kendoWindow").close();
+                            vm.gridOptions.dataSource.read();
+                        });
                     } else {
                         bsWin.error(response.data.reMsg);
                     }
@@ -173,9 +174,10 @@
                 }
                 var httpSuccess = function success(response) {
                     if(response.data.flag || response.data.reCode == 'ok'){
-                        bsWin.success("操作成功！");
-                        window.parent.$("#addHeaderWindow").data("kendoWindow").close();
-                        vm.gridOptions.dataSource.read();
+                        bsWin.success("操作成功！",function(){
+                            window.parent.$("#addHeaderWindow").data("kendoWindow").close();
+                            vm.gridOptions.dataSource.read();
+                        });
                     }else{
                         bsWin.error(response.data.reMsg);
                     }

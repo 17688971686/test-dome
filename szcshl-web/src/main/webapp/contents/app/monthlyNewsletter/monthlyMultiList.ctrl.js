@@ -16,7 +16,7 @@
 
         //查询
          vm.addSuppQuery = function(){
-             vm.multiyearGrid.dataSource._skip="";
+             vm.multiyearGrid.dataSource._skip=0;
              vm.multiyearGrid.dataSource.read();
          }
          //重置
@@ -24,7 +24,6 @@
         	 var tab = $("#form").find('input,select');
  			$.each(tab, function(i, obj) {
  				obj.value = "";
-                vm.multiyearGrid.dataSource.read();
  			});
          }
     }

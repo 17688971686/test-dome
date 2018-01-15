@@ -10,7 +10,7 @@
 
         //查找
         vm.query = function () {
-            vm.signListOptions.dataSource._skip="";
+            vm.signListOptions.dataSource._skip=0;
             vm.signListOptions.dataSource.read();
         }
 

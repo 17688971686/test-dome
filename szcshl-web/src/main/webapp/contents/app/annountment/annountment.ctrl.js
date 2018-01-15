@@ -57,8 +57,9 @@
                         var idStr = ids.join(',');
                         annountmentSvc.deleteAnnountment(idStr, function (data) {
                             if (data.flag || data.reCode == 'ok') {
-                                vm.gridOptions.dataSource.read();
-                                bsWin.alert("操作成功！");
+                                bsWin.alert("操作成功！",function(){
+                                    vm.gridOptions.dataSource.read();
+                                });
                             } else {
                                 bsWin.alert(data.reMsg);
                             }
