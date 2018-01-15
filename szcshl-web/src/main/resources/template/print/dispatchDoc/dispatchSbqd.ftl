@@ -121,7 +121,7 @@
                                 <w:sz w:val="44"/>
                                 <w:szCs w:val="44"/>
                             </w:rPr>
-                            <w:t>${wpTile}</w:t>
+                            <w:t>${wpTile!}</w:t>
                         </w:r>
                         <w:bookmarkEnd w:id="0"/>
                     </w:p>
@@ -245,7 +245,7 @@
                                 <w:sz w:val="24"/>
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t>${dispatchType}</w:t>
+                            <w:t>${dispatchType!}</w:t>
                         </w:r>
                     </w:p>
                     <w:tbl>
@@ -349,7 +349,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${fileTitle}</w:t>
+                                        <w:t>${fileTitle!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -419,7 +419,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${orgName}</w:t>
+                                        <w:t>${orgName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -467,7 +467,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${dispatchDate}</w:t>
+                                        <w:t>${dispatchDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -514,7 +514,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${fileNum}</w:t>
+                                        <w:t>${fileNum!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -584,7 +584,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${secrectlevel}</w:t>
+                                        <w:t>${secrectlevel!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -632,7 +632,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${urgentLevel}</w:t>
+                                        <w:t>${urgentLevel!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -782,7 +782,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${dispatchScope}</w:t>
+                                        <w:t>${dispatchScope!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -877,7 +877,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${description}</w:t>
+                                        <w:t>${description!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -963,7 +963,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${reviewAbstract}</w:t>
+                                        <w:t>${reviewAbstract!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1054,7 +1054,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${mianChargeSuggest}</w:t>
+                                        <w:t>${mianChargeSuggest!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1104,7 +1104,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${secondChargeSuggest}</w:t>
+                                        <w:t>${secondChargeSuggest!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1174,7 +1174,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${ministerSuggesttion}</w:t>
+                                        <w:t>${ministerSuggesttion!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1231,7 +1231,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${ministerDate}</w:t>
+                                        <w:t>${ministerDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1300,7 +1300,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${viceDirectorSuggesttion}</w:t>
+                                        <w:t>${viceDirectorSuggesttion!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1356,7 +1356,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${viceDirectorDate}</w:t>
+                                        <w:t>${viceDirectorDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1441,7 +1441,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${directorSuggesttion}</w:t>
+                                        <w:t>${directorSuggesttion!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1497,7 +1497,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${directorDate}</w:t>
+                                        <w:t>${directorDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

@@ -145,7 +145,7 @@ public class AssistUnitServiceImpl implements AssistUnitService {
     public List<AssistUnitDto> findDrawUnit(String planId, Integer number,String drawType) {
         List<AssistUnitDto> resultList = new ArrayList<>();
         List<AssistUnit> saveList = new ArrayList<>();
-        SysConfigDto sysConfig = null;
+        SysConfigDto sysConfig = new SysConfigDto();
         Integer maxSort = 0;
         //1、先查询轮空的单位
         AssistUnitDto assistUnitDto = new AssistUnitDto();

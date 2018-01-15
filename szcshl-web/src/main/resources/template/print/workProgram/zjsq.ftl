@@ -86,7 +86,7 @@
                                 <w:sz w:val="44"/>
                                 <w:szCs w:val="44"/>
                             </w:rPr>
-                            <w:t>${wpTile}</w:t>
+                            <w:t>${wpTile!}</w:t>
                         </w:r>
                         <w:bookmarkEnd w:id="0"/>
                     </w:p>
@@ -102,7 +102,7 @@
                             <w:rPr>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t>${wpCode}</w:t>
+                            <w:t>${wpCode!}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -125,7 +125,7 @@
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t xml:space="preserve">${reviewType}  ${isSigle}  <#if isSigle=="合并评审" && isMainProject == "9">主项目</#if><#if isSigle=="合并评审" && isMainProject == "0">次项目</#if><#if !isSigle?? || isSigle!="合并评审" || isMainProject != "9">        </#if>                  </w:t>
+                            <w:t xml:space="preserve">${reviewType!}  ${isSigle!}  <#if isSigle=="合并评审" && isMainProject == "9">主项目</#if><#if isSigle=="合并评审" && isMainProject == "0">次项目</#if><#if !isSigle?? || isSigle=="单个评审">        </#if>                  </w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -147,7 +147,7 @@
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t xml:space="preserve">            ${titleDate}</w:t>
+                            <w:t xml:space="preserve">            ${titleDate!}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -258,7 +258,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${projectName}</w:t>
+                                        <w:t>${projectName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -306,7 +306,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${totalInvestment}</w:t>
+                                        <w:t>${totalInvestment!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -375,7 +375,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${projectName}</w:t>
+                                        <w:t>${projectName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -444,7 +444,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${sendFileUnit}</w:t>
+                                        <w:t>${sendFileUnit!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -490,7 +490,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${sendFileUser}</w:t>
+                                        <w:t>${sendFileUser!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -558,7 +558,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${buildCompany}</w:t>
+                                        <w:t>${buildCompany!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -604,7 +604,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${designCompany}</w:t>
+                                        <w:t>${designCompany!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -672,7 +672,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${mainDeptName}</w:t>
+                                        <w:t>${mainDeptName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -829,7 +829,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${projectType}</w:t>
+                                        <w:t>${projectType!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -874,7 +874,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${projectSubType}</w:t>
+                                        <w:t>${projectSubType!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -920,7 +920,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${industryType}</w:t>
+                                        <w:t>${industryType!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -991,7 +991,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${contactPerson}</w:t>
+                                        <w:t>${contactPerson!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1037,7 +1037,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${contactPersonPhone}</w:t>
+                                        <w:t>${contactPersonPhone!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1140,7 +1140,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${contactPersonTel}</w:t>
+                                        <w:t>${contactPersonTel!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1243,7 +1243,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${contactPersonFax}</w:t>
+                                        <w:t>${contactPersonFax!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1336,7 +1336,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${appalyInvestment} 万元</w:t>
+                                        <w:t>${appalyInvestment!} 万元</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1422,7 +1422,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${buildSize}</w:t>
+                                        <w:t>${buildSize!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1506,7 +1506,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${buildContent}</w:t>
+                                        <w:t>${buildContent!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1590,7 +1590,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${projectBackGround}</w:t>
+                                        <w:t>${projectBackGround!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1661,7 +1661,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${reviewOrgName}</w:t>
+                                        <w:t>${reviewOrgName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1707,7 +1707,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${mianChargeUserName}</w:t>
+                                        <w:t>${mianChargeUserName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1810,7 +1810,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${secondChargeUserName}</w:t>
+                                        <w:t>${secondChargeUserName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1953,7 +1953,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${suppLetterDate}</w:t>
+                                        <w:t>${suppLetterDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2021,7 +2021,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${rbDate}</w:t>
+                                        <w:t>${rbDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2067,7 +2067,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${addressName}</w:t>
+                                        <w:t>${addressName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2135,7 +2135,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">${studyAllDay} <#if studyQuantum?? && studyQuantum=="AM">上午</#if><#if studyQuantum?? && studyQuantum=="PM">下午</#if><#if studyQuantum?? && studyQuantum=="DAY">全天</#if>${studyQuantum}<#if studyBeginTimeStr??> </#if>${studyBeginTimeStr}<#if studyEndTimeStr?? && studyEndTimeStr!="" >至</#if>${studyEndTimeStr}</w:t>
+                                        <w:t xml:space="preserve">${studyAllDay!} <#if studyQuantum?? && studyQuantum=="AM">上午</#if><#if studyQuantum?? && studyQuantum=="PM">下午</#if><#if studyQuantum?? && studyQuantum=="DAY">全天</#if>${studyQuantum!}<#if studyBeginTimeStr??> </#if>${studyBeginTimeStr}<#if studyEndTimeStr?? && studyEndTimeStr!="" >至</#if>${studyEndTimeStr!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2181,7 +2181,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${expertCost}</w:t>
+                                        <w:t>${expertCost!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2476,7 +2476,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.name}</w:t>
+                                        <w:t>${(ExpertDto.name)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2499,7 +2499,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.comPany}</w:t>
+                                        <w:t>${(ExpertDto.comPany)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2522,7 +2522,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.job}<#if ExpertDto.post?? && ExpertDto.post!="">/</#if>${ExpertDto.post}</w:t>
+                                        <w:t>${(ExpertDto.job)!}<#if (ExpertDto.post)?? && (ExpertDto.post)!="">/</#if>${(ExpertDto.post)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2544,7 +2544,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.majorStudy}</w:t>
+                                        <w:t>${(ExpertDto.majorStudy)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2569,7 +2569,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.userPhone}</w:t>
+                                        <w:t>${(ExpertDto.userPhone)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2591,7 +2591,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.expeRttype}</w:t>
+                                        <w:t>${(ExpertDto.expeRttype)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2676,7 +2676,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${inviteUnitLeader}</w:t>
+                                        <w:t>${inviteUnitLeader!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2760,7 +2760,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${mainPoint}</w:t>
+                                        <w:t>${mainPoint!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2828,7 +2828,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">${ministerSuggesttion}          </w:t>
+                                        <w:t xml:space="preserve">${ministerSuggesttion!}          </w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -2860,7 +2860,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                            ${ministerDate}    </w:t>
+                                        <w:t xml:space="preserve">                                            ${ministerDate!}    </w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2944,7 +2944,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">${leaderSuggesttion}   </w:t>
+                                        <w:t xml:space="preserve">${leaderSuggesttion!}   </w:t>
                                     </w:r>
                                     <w:bookmarkStart w:id="1" w:name="_GoBack"/>
                                     <w:bookmarkEnd w:id="1"/>
@@ -2985,7 +2985,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                            ${leaderDate}    </w:t>
+                                        <w:t xml:space="preserve">                                            ${leaderDate!}    </w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

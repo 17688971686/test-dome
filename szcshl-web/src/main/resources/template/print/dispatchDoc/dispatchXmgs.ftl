@@ -159,7 +159,7 @@
                                 <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t>发文方式：单个发文</w:t>
+                            <w:t>发文方式：<#if dispatchWay?? && dispatchWay == "1">单个发文<#else>合并发文</#if></w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -167,21 +167,8 @@
                                 <w:sz w:val="24"/>
                             </w:rPr>
                             <w:tab/>
-                            <w:t>主项目</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                <w:sz w:val="24"/>
-                            </w:rPr>
-                            <w:tab/>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                <w:sz w:val="24"/>
-                            </w:rPr>
-                            <w:tab/>
+                            <w:t><#if dispatchWay =="2" && isMainProject == "9">主项目</#if>
+                            <#if dispatchWay =="2" && isMainProject == "0">次项目</#if></w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -231,7 +218,21 @@
                                 <w:sz w:val="24"/>
                             </w:rPr>
                             <w:tab/>
-                            <w:t>发文类型：${dispatchType}</w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                <w:sz w:val="24"/>
+                            </w:rPr>
+                            <w:tab/>
+                            <w:t>发文类型：${dispatchType!}</w:t>
                         </w:r>
                     </w:p>
                     <w:tbl>
@@ -313,7 +314,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${fileTitle}</w:t>
+                                        <w:t>${fileTitle!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -364,7 +365,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${orgName}</w:t>
+                                        <w:t>${orgName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -410,7 +411,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${dispatchDate}</w:t>
+                                        <w:t>${dispatchDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -455,7 +456,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t><#if fileNum??>${fileNum}</#if></w:t>
+                                        <w:t>${fileNum!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -506,7 +507,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${secretLevel}</w:t>
+                                        <w:t>${secretLevel!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -552,7 +553,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${urgentLevel}</w:t>
+                                        <w:t>${urgentLevel!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -677,7 +678,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${dispatchScope}</w:t>
+                                        <w:t>${dispatchScope!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
@@ -702,7 +703,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>（印 ${printCount} 份）</w:t>
+                                        <w:t>（印 ${printCount!} 份）</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -753,7 +754,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${description}</w:t>
+                                        <w:t>${description!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -820,7 +821,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t><#if reviewAbstract??>${reviewAbstract}</#if></w:t>
+                                        <w:t>${reviewAbstract!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -885,7 +886,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">${mianChargeSuggest}                     </w:t>
+                                        <w:t xml:space="preserve">${mianChargeSuggest!}                     </w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -924,7 +925,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t><#if secondChargeSuggest??>${secondChargeSuggest}</#if></w:t>
+                                        <w:t>${secondChargeSuggest!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -974,7 +975,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t><#if ministerSuggesttion??>${ministerSuggesttion}</#if></w:t>
+                                        <w:t>${ministerSuggesttion!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
@@ -1015,7 +1016,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                                 ${ministerDate}</w:t>
+                                        <w:t xml:space="preserve">                                                 ${ministerDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1066,7 +1067,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve"><#if viceDirectorSuggesttion??>${viceDirectorSuggesttion}</#if>          </w:t>
+                                        <w:t xml:space="preserve">${viceDirectorSuggesttion!}          </w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
@@ -1107,7 +1108,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                                 ${viceDirectorDate}</w:t>
+                                        <w:t xml:space="preserve">                                                 ${viceDirectorDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1174,7 +1175,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve"><#if directorSuggesttion??>${directorSuggesttion}</#if>          </w:t>
+                                        <w:t xml:space="preserve">${directorSuggesttion!}          </w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
@@ -1215,7 +1216,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                                 ${directorDate}</w:t>
+                                        <w:t xml:space="preserve">                                                 ${directorDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1730,7 +1731,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${dispatch.declareValue}</w:t>
+                                        <w:t>${(dispatch.declareValue)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1753,7 +1754,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${dispatch.authorizeValue}</w:t>
+                                        <w:t>${(dispatch.authorizeValue)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1776,7 +1777,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${dispatch.extraValue}</w:t>
+                                        <w:t>${(dispatch.extraValue)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1799,7 +1800,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">${dispatch.extraRate}</w:t>
+                                        <w:t xml:space="preserve">${(dispatch.extraRate)!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1829,7 +1830,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${dispatch.approveValue}</w:t>
+                                        <w:t>${(dispatch.approveValue)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1852,7 +1853,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t><#if dispatch.remark??>${dispatch.remark}</#if></w:t>
+                                        <w:t>${(dispatch.remark)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1944,7 +1945,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${dispatch.projectBuildNecess}</w:t>
+                                        <w:t>${(dispatch.projectBuildNecess)!}</w:t>
                                     </w:r>
                                     <w:bookmarkEnd w:id="6"/>
                                     <w:bookmarkEnd w:id="7"/>
@@ -2016,7 +2017,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${dispatch.buildSizeContent}</w:t>
+                                        <w:t>${(dispatch.buildSizeContent)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2085,7 +2086,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${dispatch.fundTotalOrigin}</w:t>
+                                        <w:t>${(dispatch.fundTotalOrigin)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2186,7 +2187,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${dispatch.nextWorkPlan}</w:t>
+                                        <w:t>${(dispatch.nextWorkPlan)!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
@@ -2492,7 +2493,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${declareValue}</w:t>
+                                        <w:t>${declareValue!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2515,7 +2516,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${authorizeValue}</w:t>
+                                        <w:t>${authorizeValue!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2538,7 +2539,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${extraValue}</w:t>
+                                        <w:t>${extraValue!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2561,7 +2562,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">   ${extraRate}</w:t>
+                                        <w:t xml:space="preserve">   ${extraRate!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2591,7 +2592,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${approveValue}</w:t>
+                                        <w:t>${approveValue!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2614,7 +2615,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t><#if remark??>${remark}</#if></w:t>
+                                        <w:t>${remark!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2706,7 +2707,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${projectBuildNecess}</w:t>
+                                        <w:t>${projectBuildNecess!}</w:t>
                                     </w:r>
                                     <w:bookmarkEnd w:id="6"/>
                                     <w:bookmarkEnd w:id="7"/>
@@ -2778,7 +2779,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${buildSizeContent}</w:t>
+                                        <w:t>${buildSizeContent!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2847,7 +2848,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${fundTotalOrigin}</w:t>
+                                        <w:t>${fundTotalOrigin!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2948,7 +2949,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${nextWorkPlan}</w:t>
+                                        <w:t>${nextWorkPlan!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">

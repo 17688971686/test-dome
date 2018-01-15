@@ -31,7 +31,7 @@
         	orgUserSvc.remove(vm,userId);
         };
         vm.removes = function () {     
-        	var selectIds = common.getKendoCheckId('.orgUserGrid');
+        	var selectIds = common.getKendoCheckId('.gird');
             if (selectIds.length == 0) {
                 common.alert({
                 	vm:vm,

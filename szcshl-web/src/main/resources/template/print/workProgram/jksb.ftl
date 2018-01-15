@@ -125,7 +125,7 @@
                                 <w:rFonts w:hint="eastAsia"/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t xml:space="preserve">${reviewType!}  ${isSigle!}  <#if isSigle=="合并评审" && isMainProject == "9">主项目</#if><#if isSigle=="合并评审" && isMainProject == "0">次项目</#if><#if !isSigle?? || isSigle!="合并评审" || isMainProject != "9">        </#if>                  </w:t>
+                            <w:t xml:space="preserve">${reviewType!}  ${isSigle!}  <#if isSigle=="合并评审" && isMainProject == "9">主项目</#if><#if isSigle=="合并评审" && isMainProject == "0">次项目</#if><#if !isSigle?? || isSigle=="单个评审">        </#if>                  </w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -1923,7 +1923,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.name!}</w:t>
+                                        <w:t>${(ExpertDto.name)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1946,7 +1946,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.comPany!}</w:t>
+                                        <w:t>${(ExpertDto.comPany)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1969,7 +1969,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.job!}<#if ExpertDto.post?? && ExpertDto.post!="">/</#if>${ExpertDto.post!}</w:t>
+                                        <w:t>${(ExpertDto.job)!}<#if (ExpertDto.post)?? && (ExpertDto.post)!="">/</#if>${(ExpertDto.post)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1991,7 +1991,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.majorStudy!}</w:t>
+                                        <w:t>${(ExpertDto.majorStudy)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2016,7 +2016,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.userPhone!}</w:t>
+                                        <w:t>${(ExpertDto.userPhone)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2038,7 +2038,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${ExpertDto.expeRttype!}</w:t>
+                                        <w:t>${(ExpertDto.expeRttype)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
