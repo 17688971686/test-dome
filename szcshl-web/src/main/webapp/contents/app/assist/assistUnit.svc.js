@@ -142,6 +142,7 @@
         }//end
         
         function queryAssistUnit(vm){
+             vm.gridOptions.dataSource._skip="";
         	 vm.gridOptions.dataSource.read();
         }
 

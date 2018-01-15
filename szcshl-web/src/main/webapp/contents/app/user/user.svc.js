@@ -431,6 +431,7 @@
 
         //查询
         function queryUser(vm) {
+          vm.gridOptions.dataSource._skip="";
             vm.gridOptions.dataSource.read();
         }
 

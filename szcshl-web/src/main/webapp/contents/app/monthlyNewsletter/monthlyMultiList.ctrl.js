@@ -16,6 +16,7 @@
 
         //查询
          vm.addSuppQuery = function(){
+             vm.multiyearGrid.dataSource._skip="";
              vm.multiyearGrid.dataSource.read();
          }
          //重置

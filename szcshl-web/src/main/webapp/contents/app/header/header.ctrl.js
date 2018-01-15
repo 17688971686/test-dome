@@ -32,6 +32,7 @@
 
 
         vm.queryUser = function(){
+            vm.gridOptions.dataSource._skip="";
             vm.gridOptions.dataSource.read();
         }
 

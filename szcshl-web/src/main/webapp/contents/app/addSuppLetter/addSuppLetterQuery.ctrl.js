@@ -24,6 +24,7 @@
          * 查询
          */
         vm.quarySuppContent = function () {
+            vm.queryGridOptions.dataSource._skip="";
             vm.queryGridOptions.dataSource.read();
         }
 

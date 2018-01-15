@@ -72,6 +72,7 @@
 
         //会议室查询
         vm.queryMeeting = function () {
+            vm.gridOptions.dataSource._skip="";
             vm.gridOptions.dataSource.read();
         }
 

@@ -44,6 +44,7 @@
 
         //表单查询
         vm.searchForm = function(){
+            vm.gridOptions.dataSource._skip="";
             vm.gridOptions.dataSource.read();
         }
 

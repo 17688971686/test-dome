@@ -93,6 +93,7 @@
 		
 		// begin#search
 		function searchMuti(vm) {
+            vm.gridOptions.dataSource._skip="";
 			vm.gridOptions.dataSource.read();	
 		}
 		// end#searchMuti									
@@ -483,6 +484,11 @@
 		
 		//S_searchAudit
 		function searchAudit(vm){
+            vm.gridOptions1.dataSource._skip="";
+            vm.gridOptions2.dataSource._skip="";
+            vm.gridOptions3.dataSource._skip="";
+            vm.gridOptions4.dataSource._skip="";
+            vm.gridOptions5.dataSource._skip="";
 			vm.gridOptions1.dataSource.read();	
 			vm.gridOptions2.dataSource.read();
 			vm.gridOptions3.dataSource.read();

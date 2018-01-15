@@ -20,6 +20,7 @@
         return service;
         
         function queryOffice(vm){
+            vm.gridOptions.dataSource._skip="";
         	vm.gridOptions.dataSource.read();	
         }
         //start 获取所有办事处

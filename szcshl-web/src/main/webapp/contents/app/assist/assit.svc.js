@@ -327,6 +327,7 @@
 
         //S_queryPlan
         function queryPlan(vm) {
+            vm.gridOptions.dataSource._skip="";
             vm.gridOptions.dataSource.read();
         }//E_queryPlan
 

@@ -140,6 +140,7 @@
 		
 		//Start 模糊查询
 		function queryConpany(vm){
+            vm.gridOptions.dataSource._skip="";
 			vm.gridOptions.dataSource.read();	
 		}
 		// end 模糊查询

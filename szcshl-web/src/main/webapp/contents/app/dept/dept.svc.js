@@ -18,6 +18,7 @@
 
         return service;
         function queryDept(vm){
+            vm.gridOptions.dataSource._skip="";
         	vm.gridOptions.dataSource.read();	
         }
         // begin#updateDept
