@@ -210,7 +210,7 @@
                                 <w:sz w:val="24"/>
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t>${signdate}</w:t>
+                            <w:t>${signdate!}</w:t>
                         </w:r>
                     </w:p>
                     <w:tbl>
@@ -308,7 +308,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${projectname}</w:t>
+                                        <w:t>${projectname!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -355,7 +355,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${signNum}</w:t>
+                                        <w:t>${signNum!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -425,7 +425,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${builtcompanyName}</w:t>
+                                        <w:t>${builtcompanyName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -472,7 +472,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${designcompanyName}</w:t>
+                                        <w:t>${designcompanyName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -542,7 +542,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${maindeptName}</w:t>
+                                        <w:t>${maindeptName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -605,7 +605,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${mainDeptUserName}</w:t>
+                                        <w:t>${mainDeptUserName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -676,7 +676,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${assistdeptName}</w:t>
+                                        <w:t>${assistdeptName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -739,7 +739,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${assistDeptUserName}</w:t>
+                                        <w:t>${assistDeptUserName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -808,7 +808,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${urgencydegree}</w:t>
+                                        <w:t>${urgencydegree!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -854,7 +854,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${projectcode}</w:t>
+                                        <w:t>${projectcode!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -900,7 +900,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${secrectlevel}</w:t>
+                                        <w:t>${secrectlevel!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1068,7 +1068,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${sugProDealCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${sugProDealCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1200,7 +1200,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${capitalAppReportCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${capitalAppReportCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1303,7 +1303,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${sugFileDealCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${sugFileDealCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1388,7 +1388,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${proSugEledocCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${proSugEledocCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1484,7 +1484,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${sugOrgApplyCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${sugOrgApplyCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1595,7 +1595,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${sugMeetCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${sugMeetCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1698,7 +1698,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${sugOrgReqCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${sugOrgReqCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1823,7 +1823,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${comprehensivehandlesug}</w:t>
+                                        <w:t>${comprehensivehandlesug!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1871,7 +1871,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${comprehensiveDate}</w:t>
+                                        <w:t>${comprehensiveDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1958,7 +1958,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${leaderhandlesug}</w:t>
+                                        <w:t>${leaderhandlesug!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -2028,7 +2028,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${leaderDate}</w:t>
+                                        <w:t>${leaderDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2117,7 +2117,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${ministerhandlesug}</w:t>
+                                        <w:t>${ministerhandlesug!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2197,7 +2197,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${ministerDate}</w:t>
+                                        <w:t>${ministerDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2216,7 +2216,7 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t>送件人签名：${sendusersign}</w:t>
+                            <w:t>送件人签名：${sendusersign!}</w:t>
                         </w:r>
                     </w:p>
                     <w:sectPr>

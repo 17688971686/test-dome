@@ -455,12 +455,13 @@
          * 抽取协审单位
          */
         vm.chooseAssistUnit = function () {
-            vm.number = vm.assistPlan.assistPlanSignDtoList.length;
+            vm.number = vm.assistPlan.assistPlanSignDtoList == undefined ? 0 : vm.assistPlan.assistPlanSignDtoList.length;
             if (vm.assistPlan.drawType == '1') {
                 vm.number = vm.number + 1;
             }
             //抽取协审单位
             assistSvc.chooseAssistUnit(vm.assistPlan.id, vm.number, vm.assistPlan.drawType, function (data) {
+                console.log(data);
                 if (data.flag || data.reCode == 'ok') {
                     vm.assistPlan.assistUnitDtoList = data.reObj;
                 } else {

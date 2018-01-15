@@ -452,8 +452,18 @@ public class AssistPlanServiceImpl implements AssistPlanService {
     @Override
     @Transactional
     public ResultMsg savePlanAndSign(AssistPlanDto record) {
-        AssistPlan assistPlan = assistPlanRepo.findById(record.getId());
+        AssistPlan assistPlan = assistPlanRepo.findById(AssistPlan_.id.getName() , record.getId());
         BeanCopierUtils.copyPropertiesIgnoreNull(record, assistPlan);
+        List<AssistUnit> assistUnitList = new ArrayList<>();
+        if(record.getAssistUnitDtoList()!=null && record.getAssistUnitDtoList().size() > 0){
+            for(AssistUnitDto assistUnitDto : record.getAssistUnitDtoList()){
+                AssistUnit assistUnit = new AssistUnit();
+                BeanCopierUtils.copyPropertiesIgnoreNull(assistUnitDto , assistUnit);
+                assistUnitList.add(assistUnit);
+            }
+            assistPlan.setAssistUnitList(assistUnitList);
+
+        }
         assistPlanRepo.save(assistPlan);
         if (Validate.isList(record.getAssistPlanSignDtoList())) {
             List<AssistPlanSign> planSignList = new ArrayList<>();
