@@ -105,8 +105,6 @@
     注：本单位员工查阅非本人负责的项目档案需部长批准，外单位人员查阅档案需分管副主任批准，如外借档案，需中心主任审批，审批表由档案室存档。
 </div>
 
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto; margin-top: 20px;" onclick="printpage(this)">打印</button>
+    <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.id,'ARCHIVES' , 'ARCHIVES')">打印预览</button>
 </div>
 
-<!--项目档案借阅审批表-->
-<div id="busi_baseinfo_templ" style="display: none;"> <#include "/templatePrint/archives/detail.html"/></div>
