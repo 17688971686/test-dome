@@ -307,7 +307,7 @@
                                id="proSugEledocOriginal" ng-true-value="9" ng-false-value="0">
                     </td>
                     <td style="border-top:none;text-align:left;">
-                        <input type="text" style="width:40px;text-align:center;border-radius:0px;"  class="input-sm " ng-disabled="true"
+                        <input type="text" style="width:40px;text-align:center;border-radius:0px;"  class="input-sm " ng-disabled="true" class="input-sm "
                                ng-model="vm.model.proSugEledocCount" name="proSugEledocCount"
                                id="proSugEledocCount" data-val="true" data-val-digits="只能输入数字">
                     </td>
@@ -331,19 +331,19 @@
                     <td style="border-top: none;">{{$index+1}}、{{vm.registerFile[$index].fileName}}</td>
 
                     <td style="border-top: none;">
-                        <input type="checkbox" ng-disabled="true"
+                        <input type="checkbox" ng-disabled="true" class="newcheckbox"
                                ng-model="vm.registerFile[$index].isHasOriginfile"
                                ng-checked="vm.registerFile[$index].isHasOriginfile == '9'"
                                ng-true-value="9" ng-false-value="0"/>
                     </td>
                     <td style="border-top: none;">
-                        <input type="checkbox" ng-disabled="true"
+                        <input type="checkbox" ng-disabled="true" class="newcheckbox"
                                ng-model="vm.registerFile[$index].isHasCopyfile"
                                ng-checked="vm.registerFile[$index].isHasCopyfile == '9'"
                                ng-true-value="9" ng-false-value="0"/>
                     </td>
                     <td style="border-top: none;">
-                        <input type="text" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
+                        <input type="text" style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true" class="input-sm "
                                ng-model="vm.registerFile[$index].totalNum">
                     </td>
                     <td style="border-top: none;"></td>
