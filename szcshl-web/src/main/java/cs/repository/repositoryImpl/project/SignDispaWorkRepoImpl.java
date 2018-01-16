@@ -60,7 +60,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         if(DateUtils.daysBetween(start , end) >0){
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , count(projectcode) projectCount from v_sign_disp_work" );
-            hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >:start and " + SignDispaWork_.signdate.getName() + "<:end");
+            hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
             hqlBuilder.append(" group by " + SignDispaWork_.reviewstage.getName());
             hqlBuilder.append(" order by " +  SignDispaWork_.reviewstage.getName() + " desc");
@@ -128,7 +128,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         if(DateUtils.daysBetween(start , end) >0){
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append("select " + SignDispaWork_.reviewstage.getName() + "," + SignDispaWork_.projectType.getName() + ",count("+ SignDispaWork_.projectcode.getName() + ") projectNum from v_sign_disp_work ");
-            hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >:start and " + SignDispaWork_.signdate.getName() + "<:end");
+            hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
             hqlBuilder.append(" group by " + SignDispaWork_.projectType.getName() + " ," + SignDispaWork_.reviewstage.getName() );
             hqlBuilder.append(" having " + SignDispaWork_.projectType.getName() + " is not null ") ;
@@ -319,13 +319,13 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             deviceMap.put(Constant.IMPORT_DEVICE, devices);
             Map<String ,Object[]> otherMap = new HashMap<>();
             otherMap.put(Constant.OTHERS, others);
-            resultList.add(sugMap);
-            resultList.add(studyMap);
             resultList.add(budgetMap);
-            resultList.add(reportMap);
-            resultList.add(homeLandMap);
-            resultList.add(importMap);
+            resultList.add(sugMap);
             resultList.add(deviceMap);
+            resultList.add(reportMap);
+            resultList.add(importMap);
+            resultList.add(homeLandMap);
+            resultList.add(studyMap);
             resultList.add(otherMap);
 
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultList);

@@ -245,7 +245,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${readCompany}</w:t>
+                                        <w:t>${readCompany!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -316,7 +316,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${readUsername}</w:t>
+                                        <w:t>${readUsername!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -387,7 +387,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${readProjectName}</w:t>
+                                        <w:t>${readProjectName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -458,7 +458,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${readArchivesCode}</w:t>
+                                        <w:t>${readArchivesCode!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -569,6 +569,13 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>主任</w:t>
+                                    </w:r>
                                 </w:p>
                             </w:tc>
                         </w:tr>
@@ -592,7 +599,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="1134" w:hRule="exact"/>
+                                <w:trHeight w:val="2500" w:hRule="exact"/>
                             </w:trPr>
                             <w:tc>
                                 <w:tcPr>
@@ -632,7 +639,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${deptMinister}</w:t>
+                                        <w:t>${deptMinisterIdeaContent!}<w:br />${deptMinister!}<w:br />${deptMinisterDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -657,7 +664,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${deptSLeader}</w:t>
+                                        <w:t>${deptSLeaderIdeaContent!}<w:br />${deptSLeader!}<w:br />${deptSleaderDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -675,6 +682,15 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>${deptDirectorIdeaContent!}<w:br />${deptDirector!}<w:br />${deptDirectorDate}</w:t>
+                                    </w:r>
+
                                 </w:p>
                             </w:tc>
                         </w:tr>
@@ -743,7 +759,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${readDate}</w:t>
+                                        <w:t>${readDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -791,7 +807,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${resotoreDate}</w:t>
+                                        <w:t>${resotoreDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -862,7 +878,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${archivesUserName}</w:t>
+                                        <w:t>${archivesUserName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

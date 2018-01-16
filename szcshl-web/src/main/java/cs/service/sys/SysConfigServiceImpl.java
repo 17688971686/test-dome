@@ -153,7 +153,7 @@ public class SysConfigServiceImpl implements SysConfigService {
         List<SysConfigDto> resultList = queryAll();
         if (resultList != null && resultList.size() >= 0) {
             for (SysConfigDto sc : resultList) {
-                if (sc.getConfigKey().equals(key)) {
+                if (sc.getConfigKey() != null && sc.getConfigKey().equals(key)) {
                     modelDto = sc;
                     break;
                 }
