@@ -45,9 +45,14 @@ public class User extends DomainBase {
     private String loginName;
 
     /**
-     * 登录名
+     * 腾讯通账号
      */
-    @Column(columnDefinition = "varchar(20) NOT NULL")
+    @Column(columnDefinition = "varchar(64)")
+    private String rtxName;
+    /**
+     * 密码
+     */
+    @Column(columnDefinition = "varchar(64) NOT NULL")
     private String password;
 
     /**
@@ -69,10 +74,10 @@ public class User extends DomainBase {
     private String userPhone;
 
     /**
-     * 联系电话
+     * 联系手机
      */
     @Column(columnDefinition = "varchar(20) ")
-    private String userMPhone; //联系手机
+    private String userMPhone;
 
     /**
      * 电子邮件
@@ -436,5 +441,13 @@ public class User extends DomainBase {
 
     public void setSysDeptList(List<SysDept> sysDeptList) {
         this.sysDeptList = sysDeptList;
+    }
+
+    public String getRtxName() {
+        return rtxName;
+    }
+
+    public void setRtxName(String rtxName) {
+        this.rtxName = rtxName;
     }
 }

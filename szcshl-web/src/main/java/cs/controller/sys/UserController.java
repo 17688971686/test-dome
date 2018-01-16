@@ -124,9 +124,9 @@ public class UserController {
     //@RequiresPermissions("user##delete")
     @RequiresAuthentication
     @RequestMapping(name = "删除用户", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String id) {
-        userService.deleteUser(id);
+    @ResponseBody
+    public ResultMsg delete(@RequestBody String id) {
+        return userService.deleteUser(id);
     }
 
     //@RequiresPermissions("user##put")

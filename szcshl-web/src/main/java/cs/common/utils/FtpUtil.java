@@ -117,7 +117,7 @@ public class FtpUtil {
             filename = new String(filename.getBytes(LOCAL_CHARSET), ISO_CHARSET);
             if (!ftp.changeWorkingDirectory(remoteBaseDir)) {
                 //如果目录不存在创建目录
-                String[] dirs = remoteBaseDir.replace(File.separator, "$").split("$");
+                String[] dirs = remoteBaseDir.replace(File.separator, "@").split("@");
                 String tempPath = "";
                 for (String dir : dirs) {
                     if (null == dir || "".equals(dir)) {
@@ -135,6 +135,7 @@ public class FtpUtil {
             }
             //上传文件
             if (!ftp.storeFile(filename, input)) {
+                logger.error("附件上传失败！" );
                 return result;
             }
             result = true;
@@ -194,7 +195,6 @@ public class FtpUtil {
                     is.close();
                 }
             }
-
             ftp.logout();
             result = true;
         } catch (Exception e) {
@@ -383,20 +383,20 @@ public class FtpUtil {
 
     public static void main(String[] args) throws Exception {
         Ftp f = new Ftp();
-        f.setIpAddr("172.30.36.117");
+        f.setIpAddr("172.30.36.217");
         f.setUserName("ftptest");
         f.setPwd("123456");
         /*f.setIpAddr("172.30.36.214");
         f.setUserName("szec");
         f.setPwd("863305");*/
-        FtpUtil.connectFtp(f,false);
-        String remote = File.separator + "ftp03" + File.separator + "2000" + File.separator + "工程概算书"+ File.separator+"鹏微公司服务器.txt";
+        FtpUtil.connectFtp(f,true);
+        String remote = File.separator + "ftp03" + File.separator + "1000" + File.separator + "工程概算书2"+ File.separator+"鹏微公司服务器.txt";
         //附件上传测试
-        //File file = new File("D:/鹏微公司服务器.txt");
-        //FtpUtil.uploadFile(remote, "鹏微公司服务器.txt", new FileInputStream(file));
+        File file = new File("D:/鹏微公司服务器.txt");
+        FtpUtil.uploadFile(remote, "鹏微公司服务器.txt", new FileInputStream(file));
 
         //System.out.println(FtpUtil.checkFileExist(remote,"深投审[2006]73号.doc"));
-        System.out.println(FtpUtil.removeFile(remote));
+        //System.out.println(FtpUtil.removeFile(remote));
         //System.out.println(new String("深投审[2006]73号.doc".getBytes(GBK_CHARSET), ISO_CHARSET));
 
     }

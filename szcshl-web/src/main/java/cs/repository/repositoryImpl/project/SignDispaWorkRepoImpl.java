@@ -19,6 +19,8 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static cs.common.Constant.SUPER_ROLE;
+
 /**
  * Description: 项目统计视图 数据操作实现类
  * author: ldm
@@ -447,8 +449,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
             hqlBuilder.append(" and " + SignDispaWork_.leaderName.getName() + "=:leaderName").setParam("leaderName" , SessionUtil.getDisplayName());
         }
-        //主任
-        else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
+        //主任或者超级管理员
+        else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue()) || SessionUtil.hashRole(SUPER_ROLE)){
 
         }else{
             //项目负责人

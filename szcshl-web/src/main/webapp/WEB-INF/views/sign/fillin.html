@@ -95,8 +95,8 @@
             <button class="btn btn-sm btn-default" ng-click="vm.updateFillin()">保存</button>
             <button class="btn btn-sm btn-default" ng-click="backtoflow();" ng-if="vm.model.processInstanceId"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
           <!--  <button id="linksbtn" class="btn btn-sm btn-default"  ng-click="vm.signPreview()" >打印预览</button>-->
-            <button id="btnPrint" class="btn btn-sm btn-default" type="button"   ng-click="printFile(vm.model.signid,'SIGN' , vm.stageType)" >打印预览</button>
-            <button id="btnPrint" class="btn btn-sm btn-default" type="button"   ng-click="printFile(vm.model.signid,'SIGN_OTHERFILE' , 'OTHER_FILE')" >打印其他资料</button>
+            <button class="btn btn-sm btn-default" type="button"   ng-click="printFile(vm.model.signid,'SIGN' , vm.stageType)" >打印预览</button>
+            <button class="btn btn-sm btn-default" type="button"   ng-click="printFile(vm.model.signid,'SIGN_OTHERFILE' , 'OTHER_FILE')" >打印其他资料</button>
             <button class="btn btn-sm btn-default" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
             <button class="btn btn-sm btn-default" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
            <!--  <button class="btn btn-sm btn-default"  ng-click="vm.startNewFlow()" >发起流程</button> -->

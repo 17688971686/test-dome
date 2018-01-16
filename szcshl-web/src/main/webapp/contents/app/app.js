@@ -17,11 +17,11 @@
             var valueArr = [];
             if (value instanceof Array) {
                 valueArr = value;
-            }else{
+            } else {
                 valueArr.push(value);
             }
             angular.forEach(collection, function (item) {
-                angular.forEach(valueArr,function(checkValue){
+                angular.forEach(valueArr, function (checkValue) {
                     //过滤数组中值与指定值相同的元素
                     if (item[keyname] == checkValue) {
                         output.push(item);
@@ -199,52 +199,52 @@
                     controller: 'userCtrl',
                     controllerAs: 'vm'
                 }).state('userEdit', {
-                url: '/userEdit/:id',
-                templateUrl: rootPath + '/user/html/edit.html',
-                controller: 'userEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#user
+                    url: '/userEdit/:id',
+                    templateUrl: rootPath + '/user/html/edit.html',
+                    controller: 'userEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#user
 
-            //begin#org
+                //begin#org
                 .state('org', {
                     url: '/org',
                     templateUrl: rootPath + '/org/html/list.html',
                     controller: 'orgCtrl',
                     controllerAs: 'vm'
                 }).state('orgEdit', {
-                url: '/orgEdit/:id',
-                templateUrl: rootPath + '/org/html/edit.html',
-                controller: 'orgEditCtrl',
-                controllerAs: 'vm'
-            }).state('orgUser', {
-                url: '/orgUser/:id',
-                templateUrl: rootPath + '/org/html/orgUser.html',
-                controller: 'orgUserCtrl',
-                controllerAs: 'vm'
-            })
-            //end#org
+                    url: '/orgEdit/:id',
+                    templateUrl: rootPath + '/org/html/edit.html',
+                    controller: 'orgEditCtrl',
+                    controllerAs: 'vm'
+                }).state('orgUser', {
+                    url: '/orgUser/:id',
+                    templateUrl: rootPath + '/org/html/orgUser.html',
+                    controller: 'orgUserCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#org
 
-            //begin#sysdept
+                //begin#sysdept
                 .state('sysdept', {
                     url: '/sysdept',
                     templateUrl: rootPath + '/sysdept/html/list.html',
                     controller: 'sysdeptCtrl',
                     controllerAs: 'vm'
                 }).state('sysdeptEdit', {
-                url: '/sysdeptEdit/:id',
-                templateUrl: rootPath + '/sysdept/html/edit.html',
-                controller: 'sysdeptEditCtrl',
-                controllerAs: 'vm'
-            }).state('sysdeptUser', {
-                url: '/sysdeptUser/:id',
-                templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
-                controller: 'sysdeptUserCtrl',
-                controllerAs: 'vm'
-            })
-            //end#sysdept
+                    url: '/sysdeptEdit/:id',
+                    templateUrl: rootPath + '/sysdept/html/edit.html',
+                    controller: 'sysdeptEditCtrl',
+                    controllerAs: 'vm'
+                }).state('sysdeptUser', {
+                    url: '/sysdeptUser/:id',
+                    templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
+                    controller: 'sysdeptUserCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#sysdept
 
-            //begin#log
+                //begin#log
                 .state('log', {
                     url: '/log',
                     templateUrl: rootPath + '/log/html/list.html',
@@ -278,42 +278,42 @@
                     controller: 'meetingCtrl',
                     controllerAs: 'vm'
                 }).state('meetingEdit', {
-                url: '/meetingEdit/:id',
-                templateUrl: rootPath + '/meeting/html/edit.html',
-                controller: 'meetingEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#meeting
+                    url: '/meetingEdit/:id',
+                    templateUrl: rootPath + '/meeting/html/edit.html',
+                    controller: 'meetingEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#meeting
 
-            //begin#room
+                //begin#room
                 .state('room', {
                     url: '/room/:businessId/:businessType',
                     templateUrl: rootPath + '/room/html/roomlist.html',
                     controller: 'roomCtrl',
                     controllerAs: 'vm'
                 }).state('roomCount', {
-                url: '/roomCount/:id',
-                templateUrl: rootPath + '/room/html/countlist.html',
-                controller: 'roomCountCtrl',
-                controllerAs: 'vm'
-            })
-            //end#room
+                    url: '/roomCount/:id',
+                    templateUrl: rootPath + '/room/html/countlist.html',
+                    controller: 'roomCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#room
 
-            //begin#company
+                //begin#company
                 .state('company', {
                     url: '/company',
                     templateUrl: rootPath + '/company/html/list.html',
                     controller: 'companyCtrl',
                     controllerAs: 'vm'
                 }).state('companyEdit', {
-                url: '/companyEdit/:id',
-                templateUrl: rootPath + '/company/html/edit.html',
-                controller: 'companyEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#company
+                    url: '/companyEdit/:id',
+                    templateUrl: rootPath + '/company/html/edit.html',
+                    controller: 'companyEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#company
 
-            //begin#home
+                //begin#home
                 .state('accountPwd', {
                     url: '/accountPwd',
                     templateUrl: rootPath + '/account/html/changePwd.html',
@@ -1191,13 +1191,10 @@
                 var url, width, height;
                 if ("office" == fileType) {
                     url = rootPath + "/file/editFile?sysFileId=" + sysFileId;
-                    width = "82%";
                 } else if ("pdf" == fileType) {
                     url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId;
-                    width = "82%";
                 } else if ("image" == fileType) {
                     url = rootPath + "/file/preview/" + sysFileId;
-                    width = "75%";
                 }
                 if (url) {
                     var httpOptions = {
@@ -1241,7 +1238,7 @@
             if (!businessId || !businessType || !stageType) {
                 bsWin.alert("打印预览失败，参数不正确！");
             } else {
-                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/printPreview/" + businessId + "/" + businessType + "/" + stageType;
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version="+(new Date()).getTime()+"&file=" + rootPath + "/file/printPreview/" + businessId + "/" + businessType + "/" + stageType;
                 $("#iframePreview").attr("src", url);
                 $("#previewModal").kendoWindow({
                     width: "80%",

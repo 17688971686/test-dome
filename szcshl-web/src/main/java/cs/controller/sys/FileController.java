@@ -205,10 +205,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         try {
             String fileUploadPath = SysFileUtil.getUploadPath();
             String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
-            //连接ftp
-            String ftpId = "";
 
-            Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), ftpId);
+            Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), fileService.findFtpId());
             boolean linkSucess = FtpUtil.connectFtp(f, true);
             if (linkSucess) {
                 for (MultipartFile multipartFile : multipartFileList) {

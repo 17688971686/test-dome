@@ -11,23 +11,27 @@
         vm.title = '用户列表';
 
         vm.del = function (id) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    userSvc.deleteUser(vm, id);
+            bsWin.confirm({
+                    title: '温馨提示',
+                    message: "确认删除数据吗？",
+                    onOk: function () {
+                        userSvc.deleteUser(vm, id, function (data) {
+                            if (data.flag || data.reCode == 'ok') {
+                                bsWin.success("操作成功！", function () {
+                                    vm.gridOptions.dataSource.read();
+                                });
+                            } else {
+                                bsWin.error(data.reMsg);
+                            }
+                        });
+                    }
                 }
-            });
+            );
         }
         vm.dels = function () {
             var selectIds = common.getKendoCheckId('.grid');
             if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
+                bsWin.alert("请选择要删除数据！");
             } else {
                 var ids = [];
                 for (var i = 0; i < selectIds.length; i++) {

@@ -65,7 +65,7 @@ public class FinancialManagerController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "协审费录入", path = "findSingAssistCostCount", method = RequestMethod.POST)
+    @RequestMapping(name = "协审费统计", path = "findSingAssistCostCount", method = RequestMethod.POST)
     @ResponseBody
     public List<SignAssistCostDto> findSingAssistCostCount(@RequestBody SignAssistCostDto signAssistCost) {
         return financialManagerService.signAssistCostList(signAssistCost, true);

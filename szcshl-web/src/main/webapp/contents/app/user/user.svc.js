@@ -129,36 +129,28 @@
                 // msg:"您填写的信息不正确,请核对后提交!"
                 // })
             }
-
         }
 
         // begin#deleteUser
-        function deleteUser(vm, id) {
+        function deleteUser(vm, id,callBack) {
             vm.isSubmit = true;
             var httpOptions = {
                 method: 'delete',
                 url: url_user,
                 data: id
-
             }
             var httpSuccess = function success(response) {
-
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.isSubmit = false;
-                        vm.gridOptions.dataSource.read();
-                    }
-
-                });
-
+                vm.isSubmit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
                 vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
-                success: httpSuccess
+                success: httpSuccess,
+                onError : function(){vm.isSubmit = false;}
             });
         }
 
@@ -286,7 +278,7 @@
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/user/fingByOData", $("#usersform")),
                 schema: common.kendoGridConfig().schema({
-                    id: "userNo",
+                    id: "id",
                     fields: {
                         createdDate: {
                             type: "date"
@@ -403,8 +395,7 @@
                     title: "操作",
                     width: 140,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
+                        return common.format($('#columnBtns').html(),"vm.del('" + item.id + "')", item.id);
 
                     }
                 }

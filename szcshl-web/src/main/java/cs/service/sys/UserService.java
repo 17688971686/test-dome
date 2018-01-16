@@ -17,7 +17,12 @@ public interface UserService {
 
     ResultMsg createUser(UserDto userDto);
 
-    void deleteUser(String id);
+    /**
+     * 根据ID删除用户信息
+     * @param id
+     * @return
+     */
+    ResultMsg deleteUser(String id);
 
     ResultMsg updateUser(UserDto userDto);
 

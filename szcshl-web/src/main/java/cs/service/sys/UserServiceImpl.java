@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,10 +47,12 @@ public class UserServiceImpl implements UserService {
         PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
         Criteria criteria = userRepo.getExecutableCriteria();
         odataObj.buildFilterToCriteria(criteria);
+        //排除掉超级管理员
+        criteria.add(Restrictions.ne(User_.loginName.getName(),Constant.SUPER_USER));
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         pageModelDto.setCount(totalResult);
         criteria.setProjection(null);
-        //criteria.addOrder(Order.desc(User_.jobState.getName()));
+        criteria.addOrder(Order.desc(User_.jobState.getName())).addOrder(Order.asc(User_.userSort.getName()));
         criteria.setFirstResult(odataObj.getSkip());
         criteria.setMaxResults(odataObj.getTop());
 
@@ -156,9 +159,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String id) {
-        userRepo.deleteById(User_.id.getName(), id);
-        fleshPostUserCache();
+    @Transactional
+    public ResultMsg deleteUser(String id) {
+        try {
+            userRepo.deleteById(User_.id.getName(), id);
+            fleshPostUserCache();
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
+        }catch (Exception e){
+            logger.info("删除用户异常："+e.getMessage());
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除异常："+e.getMessage());
+        }
     }
 
     @Override
