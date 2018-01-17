@@ -119,16 +119,29 @@ public class AssistPlanRepoImpl extends AbstractRepository<AssistPlan, String> i
     @Override
     public List<SignAssistCostDto> findSignCostBySignId(String signIdParam) {
         /**
-         * SELECT CS.SIGNID,CP.PROJECTNAME,CU.UNITNAME,CSP.USERNAME,CP.ASSISTCOST,CDD.DECLAREVALUE,CDD.AUTHORIZEVALUE
+         *
+         SELECT CS.SIGNID,
+         CASE CP.PROJECTNAME WHEN null THEN CS.PROJECTNAME || CP.SPLITNUM WHEN '' THEN CS.PROJECTNAME || CP.SPLITNUM ELSE CP.PROJECTNAME END PROJECTNAME,
+         CU.UNITNAME,
+         CSP.USERNAME,
+         CP.ASSISTCOST,
+         CDD.DECLAREVALUE,
+         CDD.AUTHORIZEVALUE
          FROM CS_AS_PLANSIGN CP
          LEFT JOIN CS_AS_UNIT CU ON CU.ID = CP.ASSISTUNITID
-         LEFT JOIN CS_SIGN cs ON CS.SIGNID = CP.SIGNID
+         LEFT JOIN CS_SIGN CS ON CS.SIGNID = CP.SIGNID
          LEFT JOIN CS_DISPATCH_DOC CDD ON CDD.SIGNID = CP.SIGNID
-         LEFT JOIN ( SELECT wm_concat (u.displayname) userName, csp1.signid csignid FROM CS_USER u, CS_SIGN_PRINCIPAL2 csp1 WHERE csp1.userid = u.id GROUP BY csp1.signid) csp ON csp.csignid = CP.signid
+         LEFT JOIN
+         (  SELECT wm_concat (u.displayname) userName, csp1.signid csignid
+         FROM CS_USER u, CS_SIGN_PRINCIPAL2 csp1
+         WHERE csp1.userid = u.id
+         GROUP BY csp1.signid) csp
+         ON csp.csignid = CP.signid
          WHERE CP.SIGNID = '6ccc3697-a151-45c0-8910-0f8c369cd594'
          */
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" SELECT CS.SIGNID,CP.PROJECTNAME,CU.UNITNAME,CSP.USERNAME,CP.ASSISTCOST,CDD.DECLAREVALUE,CDD.AUTHORIZEVALUE ");
+        sqlBuilder.append(" SELECT CS.SIGNID,CASE CP.PROJECTNAME WHEN null THEN CS.PROJECTNAME || CP.SPLITNUM WHEN '' THEN CS.PROJECTNAME || CP.SPLITNUM ELSE CP.PROJECTNAME END PROJECTNAME,");
+        sqlBuilder.append(" CU.UNITNAME,CSP.USERNAME,CP.ASSISTCOST,CDD.DECLAREVALUE,CDD.AUTHORIZEVALUE ");
         sqlBuilder.append(" FROM CS_AS_PLANSIGN CP ");
         sqlBuilder.append(" LEFT JOIN CS_AS_UNIT CU ON CU.ID = CP.ASSISTUNITID ");
         sqlBuilder.append(" LEFT JOIN CS_SIGN cs ON CS.SIGNID = CP.SIGNID ");
