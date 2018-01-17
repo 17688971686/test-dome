@@ -103,7 +103,7 @@
                                 <w:szCs w:val="44"/>
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t>${projectName}</w:t>
+                            <w:t>${projectName!}</w:t>
                         </w:r>
 
                         <w:bookmarkStart w:id="0" w:name="_Toc199925865"/>
@@ -582,7 +582,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.expertDto.name}</w:t>
+                                        <w:t>${(expert.expertDto.name)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -608,7 +608,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.expertDto.idCard}</w:t>
+                                        <w:t>${(expert.expertDto.idCard)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -632,7 +632,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.expertDto.bankAccount}</w:t>
+                                        <w:t>${(expert.expertDto.bankAccount)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -657,7 +657,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.reviewCost}</w:t>
+                                        <w:t>${(expert.reviewCost)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -682,7 +682,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.reviewTaxes}</w:t>
+                                        <w:t>${(expert.reviewTaxes)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -707,7 +707,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.totalCost}</w:t>
+                                        <w:t>${(expert.totalCost)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -819,7 +819,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.openingBank}</w:t>
+                                        <w:t>${(expert.openingBank)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -927,7 +927,7 @@
                                 <w:sz w:val="24"/>
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t>${payDate}</w:t>
+                            <w:t>${payDate!}</w:t>
                         </w:r>
                     </w:p>
                     <w:p>

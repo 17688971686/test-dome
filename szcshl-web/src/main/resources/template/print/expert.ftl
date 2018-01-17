@@ -224,7 +224,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${name}</w:t>
+                                        <w:t>${name!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -302,7 +302,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${sex}</w:t>
+                                        <w:t>${sex!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -380,7 +380,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${birthDay}</w:t>
+                                        <w:t>${birthDay!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -525,7 +525,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${idCard}</w:t>
+                                        <w:t>${idCard!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -589,7 +589,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${qualifiCations}</w:t>
+                                        <w:t>${qualifiCations!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -693,7 +693,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${acaDemy}</w:t>
+                                        <w:t>${acaDemy!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -757,7 +757,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${degRee}</w:t>
+                                        <w:t>${degRee!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -861,7 +861,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${userPhone}</w:t>
+                                        <w:t>${userPhone!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -925,7 +925,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${graduateDate}</w:t>
+                                        <w:t>${graduateDate!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1028,7 +1028,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${comPany}</w:t>
+                                        <w:t>${comPany!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1092,7 +1092,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${job}</w:t>
+                                        <w:t>${job!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1156,7 +1156,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${post}</w:t>
+                                        <w:t>${post!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1244,7 +1244,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${phone}</w:t>
+                                        <w:t>${phone!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1324,7 +1324,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${fax}</w:t>
+                                        <w:t>${fax!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1389,7 +1389,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${email}</w:t>
+                                        <w:t>${email!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1470,7 +1470,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${addRess}</w:t>
+                                        <w:t>${addRess!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1533,7 +1533,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${zipCode}　</w:t>
+                                        <w:t>${zipCode!}　</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1615,7 +1615,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${majorStudy}</w:t>
+                                        <w:t>${majorStudy!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1697,7 +1697,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${majorWork}</w:t>
+                                        <w:t>${majorWork!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2214,7 +2214,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${work.beginTimeStr}-${work.endTimeStr}</w:t>
+                                        <w:t>${(work.beginTimeStr)!}-${(work.endTimeStr)!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2251,7 +2251,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${work.companyName}</w:t>
+                                        <w:t>${(work.companyName)!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2287,7 +2287,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${work.workJob}</w:t>
+                                        <w:t>${(work.workJob)!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2548,7 +2548,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${project.projectName}</w:t>
+                                        <w:t>${(project.projectName)!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2585,7 +2585,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${project.projectType}</w:t>
+                                        <w:t>${(project.projectType)!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>

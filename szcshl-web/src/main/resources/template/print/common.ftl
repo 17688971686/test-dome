@@ -217,7 +217,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${orgName}</w:t>
+                                        <w:t>${orgName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -242,7 +242,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${userName}</w:t>
+                                        <w:t>${userName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -301,7 +301,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${suppLetterTime}</w:t>
+                                        <w:t>${suppLetterTime!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -383,7 +383,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${secretLevel}</w:t>
+                                        <w:t>${secretLevel!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -442,7 +442,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${mergencyLevel}</w:t>
+                                        <w:t>${mergencyLevel!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -523,7 +523,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${filenum}</w:t>
+                                        <w:t>${filenum!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -615,7 +615,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${title}</w:t>
+                                        <w:t>${title!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -701,7 +701,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${dispaRange}</w:t>
+                                        <w:t>${dispaRange!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -747,7 +747,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${printnum}</w:t>
+                                        <w:t>${printnum!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -839,7 +839,7 @@
                                             <w:sz w:val="24"/>
                                             <w:szCs w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">  ${deptSLeaderIdeaContent}         </w:t>
+                                        <w:t xml:space="preserve">  ${deptSLeaderIdeaContent!}         </w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -934,7 +934,7 @@
                                             <w:sz w:val="24"/>
                                             <w:szCs w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">  ${deptSleaderDate}</w:t>
+                                        <w:t xml:space="preserve">  ${deptSleaderDate!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1033,7 +1033,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${leaderSignIdea}</w:t>
+                                        <w:t>${leaderSignIdea!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1126,7 +1126,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${deptSLeaderIdeaContent}</w:t>
+                                        <w:t>${deptSLeaderIdeaContent!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1213,7 +1213,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${deptSleaderDate}</w:t>
+                                        <w:t>${deptSleaderDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
