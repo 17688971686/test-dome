@@ -702,7 +702,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     try {
                         var ip = "${RTX_IP}";
                         var objProp = RTXAX.GetObject("Property");
-                        objProp.value("RTXUsername") = "${user}";
+                        objProp.value("RTXUsername") = "${RTX_NAME}";
                         objProp.value("LoginSessionKey") = rtxSessionKey;
                         objProp.value("ServerAddress") = ip; //RTX Server IP地址
                         objProp.value("ServerPort") = 8000;

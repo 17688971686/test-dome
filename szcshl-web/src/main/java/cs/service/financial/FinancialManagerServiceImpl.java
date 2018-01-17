@@ -126,11 +126,11 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
                 if (Validate.isObject(expertReview) && Validate.isObject(expertReview.getPayDate()) && Validate.isList(expertReview.getExpertSelectedList())) {
                     BigDecimal expertExpense = BigDecimal.ZERO;
                     BigDecimal expertTaxes = BigDecimal.ZERO;
-                    for(int i=0,l=expertReview.getExpertSelectedList().size();i<l;i++){
+                    for (int i = 0, l = expertReview.getExpertSelectedList().size(); i < l; i++) {
                         ExpertSelected expertSelected = expertReview.getExpertSelectedList().get(i);
-                        if(Constant.EnumState.YES.getValue().equals(expertSelected.getIsConfrim()) && Constant.EnumState.YES.getValue().equals(expertSelected.getIsJoin())){
-                            expertExpense = Arith.safeAdd(expertExpense,expertSelected.getReviewCost());
-                            expertTaxes = Arith.safeAdd(expertTaxes,expertSelected.getReviewTaxes());
+                        if (Constant.EnumState.YES.getValue().equals(expertSelected.getIsConfrim()) && Constant.EnumState.YES.getValue().equals(expertSelected.getIsJoin())) {
+                            expertExpense = Arith.safeAdd(expertExpense, expertSelected.getReviewCost());
+                            expertTaxes = Arith.safeAdd(expertTaxes, expertSelected.getReviewTaxes());
                         }
                     }
                     Date now = new Date();
@@ -162,10 +162,10 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
                 }
             }
         }
-        if(Validate.isList(financiallist)){
-            financiallist.forEach(fl->{
+        if (Validate.isList(financiallist)) {
+            financiallist.forEach(fl -> {
                 FinancialManagerDto financialManagerDto = new FinancialManagerDto();
-                BeanCopierUtils.copyProperties(fl,financialManagerDto);
+                BeanCopierUtils.copyProperties(fl, financialManagerDto);
                 financialDtolist.add(financialManagerDto);
             });
         }
@@ -214,33 +214,62 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
      */
     @Override
     public List<SignAssistCostDto> signAssistCostList(SignAssistCostDto signAssistCostDto, boolean isShowDetail) {
-        List<Object[]> signAssistList = assistPlanRepo.signAssistCostList(signAssistCostDto, (isShowDetail == true ? Constant.EnumState.YES.getValue() : null));
+        List<Object[]> signAssistList = assistPlanRepo.signAssistCostList(signAssistCostDto, isShowDetail);
         if (Validate.isList(signAssistList)) {
-            List<SignAssistCostDto> resultList = new ArrayList<>(signAssistList.size());
-            for (int i = 0, l = signAssistList.size(); i < l; i++) {
-                SignAssistCostDto saDto = new SignAssistCostDto();
-                Object[] obj = signAssistList.get(i);
-                String signId = obj[0] == null ? "" : obj[0].toString();
-                String projectName = obj[1] == null ? "" : obj[1].toString();
-                String assistUnit = obj[2] == null ? "" : obj[2].toString();
-                String assistPlanNo = obj[3] == null ? "" : obj[3].toString();
-                BigDecimal planCost = obj[4] == null ? null : ObjectUtils.getBigDecimal(obj[4]);
-                BigDecimal factCost = obj[5] == null ? null : ObjectUtils.getBigDecimal(obj[5]);
-                Date payDate = DateUtils.converToDate(obj[6] == null ? "" : obj[6].toString(), null);
-                BigDecimal applyCost = obj[7] == null ? null : ObjectUtils.getBigDecimal(obj[7]);
-                String lightState = obj[8] == null ? "" : obj[8].toString();
-                Integer processState = obj[9] == null ? null : Integer.parseInt(obj[9].toString());
+            if (isShowDetail) {
+                return initSignAssistCostDetailList(signAssistList);
+            } else {
+                return initSignAssistCostList(signAssistList);
+            }
+        }
+        return null;
+    }
 
-                String changeUserName = "";
-                List<User> priUserList = signPrincipalService.getSignPriUser(signId, null);
-                if (Validate.isList(priUserList)) {
-                    for (int n = 0, m = priUserList.size(); n < m; n++) {
-                        if (n > 0) {
-                            changeUserName += ",";
-                        }
-                        changeUserName += priUserList.get(n).getDisplayName();
-                    }
+    private List<SignAssistCostDto> initSignAssistCostDetailList(List<Object[]> signAssistList) {
+        List<SignAssistCostDto> resultList = new ArrayList<>(signAssistList.size());
+        SignAssistCostDto saDto = null;
+        List<FinancialManagerDto> financialManagerDtoList = null;
+        String oldSignId = "";
+        for (int i = 0, l = signAssistList.size(); i < l; i++) {
+            boolean isSame = false;
+            Object[] obj = signAssistList.get(i);
+            //项目ID
+            String signId = obj[0] == null ? "" : obj[0].toString();
+            if(!Validate.isString(oldSignId) || !signId.equals(oldSignId)){
+                if(Validate.isList(financialManagerDtoList)){
+                    saDto.setCostList(financialManagerDtoList);
+                    resultList.add(saDto);
                 }
+                oldSignId = signId;
+                saDto = new SignAssistCostDto();
+                financialManagerDtoList = new ArrayList<>();
+            }else{
+                isSame = true;
+            }
+
+            if(!isSame){
+                //项目名称
+                String projectName = obj[1] == null ? "" : obj[1].toString();
+                //协审计划编号
+                String assistPlanNo = obj[2] == null ? "" : obj[2].toString();
+                //协审单位
+                String assistUnit = obj[3] == null ? "" : obj[3].toString();
+                //项目负责人
+                String changeUserName = obj[4] == null ? "" : obj[4].toString();
+                //协审计划费用
+                BigDecimal planCost = obj[5] == null ? null : ObjectUtils.getBigDecimal(obj[5]);
+                //协审实际费用
+                BigDecimal factCost = obj[6] == null ? null : ObjectUtils.getBigDecimal(obj[6]);
+                //申报金额
+                BigDecimal declareValue = obj[7] == null ? null : ObjectUtils.getBigDecimal(obj[7]);
+                //审定金额
+                BigDecimal authorizeValue = obj[8] == null ? null : ObjectUtils.getBigDecimal(obj[8]);
+                //警示灯状态
+                String lightState = obj[9] == null ? "" : obj[9].toString();
+                //项目流程状态
+                Integer processState = obj[10] == null ? null : Integer.parseInt(obj[10].toString());
+                //付款日期
+                Date payDate = DateUtils.converToDate(obj[11] == null ? "" : obj[11].toString(), null);
 
                 saDto.setSignId(signId);
                 saDto.setProjectName(projectName);
@@ -249,28 +278,78 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
                 saDto.setChangeUserName(changeUserName);
                 saDto.setPlanCost(planCost);
                 saDto.setFactCost(factCost);
-                saDto.setPayDate(payDate);
-                saDto.setApplyCost(applyCost);
+                saDto.setDeclareValue(declareValue);
+                saDto.setAuthorizeValue(authorizeValue);
                 saDto.setIsLightUp(lightState);
                 saDto.setProcessState(processState);
+                saDto.setPayDate(payDate);
+            }
 
-                if (isShowDetail) {
-                    List<FinancialManager> fmList = financialManagerRepo.findByIds(FinancialManager_.businessId.getName(), signId, null);
-                    if (Validate.isList(fmList)) {
-                        List<FinancialManagerDto> fmDtoList = new ArrayList<>(fmList.size());
-                        fmList.forEach(fl -> {
-                            FinancialManagerDto fmDto = new FinancialManagerDto();
-                            BeanCopierUtils.copyProperties(fl, fmDto);
-                            fmDtoList.add(fmDto);
-                        });
-                        saDto.setCostList(fmDtoList);
-                    }
-                }
+            //细项
+            FinancialManagerDto financialManagerDto = new FinancialManagerDto();
+            BigDecimal chargeCost = obj[12] == null ? null : ObjectUtils.getBigDecimal(obj[12]);
+            financialManagerDto.setCharge(chargeCost);
+            String chargeName = obj[13] == null ? "" : obj[13].toString();
+            financialManagerDto.setChargeName(chargeName);
+            //付款日期
+            Date chargeDate = DateUtils.converToDate(obj[14] == null ? "" : obj[14].toString(), null);
+            financialManagerDto.setPaymentData(chargeDate);
+            financialManagerDtoList.add(financialManagerDto);
+            //最后一个元素
+            if( i == l-1){
+                saDto.setCostList(financialManagerDtoList);
                 resultList.add(saDto);
             }
-            return resultList;
         }
-        return null;
+        return resultList;
+    }
+
+    private List<SignAssistCostDto> initSignAssistCostList(List<Object[]> signAssistList) {
+        List<SignAssistCostDto> resultList = new ArrayList<>(signAssistList.size());
+        for (int i = 0, l = signAssistList.size(); i < l; i++) {
+            Object[] obj = signAssistList.get(i);
+            SignAssistCostDto saDto = new SignAssistCostDto();
+            //项目ID
+            String signId = obj[0] == null ? "" : obj[0].toString();
+            //项目名称
+            String projectName = obj[1] == null ? "" : obj[1].toString();
+            //协审计划编号
+            String assistPlanNo = obj[2] == null ? "" : obj[2].toString();
+            //协审单位
+            String assistUnit = obj[3] == null ? "" : obj[3].toString();
+            //项目负责人
+            String changeUserName = obj[4] == null ? "" : obj[4].toString();
+            //协审计划费用
+            BigDecimal planCost = obj[5] == null ? null : ObjectUtils.getBigDecimal(obj[5]);
+            //协审实际费用
+            BigDecimal factCost = obj[6] == null ? null : ObjectUtils.getBigDecimal(obj[6]);
+            //申报金额
+            BigDecimal declareValue = obj[7] == null ? null : ObjectUtils.getBigDecimal(obj[7]);
+            //审定金额
+            BigDecimal authorizeValue = obj[8] == null ? null : ObjectUtils.getBigDecimal(obj[8]);
+            //警示灯状态
+            String lightState = obj[9] == null ? "" : obj[9].toString();
+            //项目流程状态
+            Integer processState = obj[10] == null ? null : Integer.parseInt(obj[10].toString());
+            //付款日期
+            Date payDate = DateUtils.converToDate(obj[11] == null ? "" : obj[11].toString(), null);
+
+
+            saDto.setSignId(signId);
+            saDto.setProjectName(projectName);
+            saDto.setAssistUnit(assistUnit);
+            saDto.setAssistPlanNo(assistPlanNo);
+            saDto.setChangeUserName(changeUserName);
+            saDto.setPlanCost(planCost);
+            saDto.setFactCost(factCost);
+            saDto.setDeclareValue(declareValue);
+            saDto.setAuthorizeValue(authorizeValue);
+            saDto.setIsLightUp(lightState);
+            saDto.setProcessState(processState);
+            saDto.setPayDate(payDate);
+            resultList.add(saDto);
+        }
+        return resultList;
     }
 
     /**
@@ -333,6 +412,17 @@ public class FinancialManagerServiceImpl implements FinancialManagerService {
         });
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", resultList);
 
+    }
+
+    /**
+     * 根据项目ID查询出对应的协审费用
+     *
+     * @param signId
+     * @return
+     */
+    @Override
+    public List<SignAssistCostDto> findSignCostBySignId(String signId) {
+        return assistPlanRepo.findSignCostBySignId(signId);
     }
 
 }

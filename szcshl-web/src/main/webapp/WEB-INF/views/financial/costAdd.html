@@ -117,26 +117,22 @@
     <table class="table table-bordered" ng-if="vm.signAssistCostCounList && vm.signAssistCostCounList.length > 0">
         <caption>项目协审费</caption>
         <tr >
-            <td class="text-center" style="width:70px">序号</td>
-            <td class="text-center" style="width:18%">项目名称</td>
-            <td class="text-center" style="width:12%">协审单位</td>
-            <td class="text-center" style="width:13%">项目负责人</td>
-            <td class="text-center" style="width:10%">协审登记号</td>
-            <td class="text-center" style="width:10%">计划协审费用</td>
-            <td class="text-center" style="width:10%;">实际协审费用</td>
-            <td class="text-center" style="width:10%;">付款日期</td>
-            <td class="text-center" style="width:8%;">申报金额</td>
+            <td class="text-center" style="width:40px">序号</td>
+            <td class="text-center" style="width:25%">项目名称</td>
+            <td class="text-center" style="width:15%">协审单位</td>
+            <td class="text-center" style="width:15%">项目负责人</td>
+            <td class="text-center" style="width:15%">计划协审费用</td>
+            <td class="text-center" style="width:15%">申报金额</td>
+            <td class="text-center" style="width:15%">审定金额</td>
         </tr>
         <tr ng-repeat="s in vm.signAssistCostCounList">
             <td class="text-center">{{$index + 1}}</td>
             <td class="text-center">{{s.projectName}}</td>
             <td class="text-center">{{s.assistUnit}}</td>
             <td class="text-center">{{s.changeUserName}}</td>
-            <td class="text-center">{{s.assistPlanNo}}</td>
             <td class="text-center">{{s.planCost}}</td>
-            <td class="text-center">{{s.factCost}}</td>
-            <td class="text-center">{{s.payDate}}</td>
-            <td class="text-center">{{s.applyCost}}</td>
+            <td class="text-center">{{s.declareValue}}</td>
+            <td class="text-center">{{s.authorizeValue}}</td>
         </tr>
     </table>
 </div>

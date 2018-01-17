@@ -38,22 +38,23 @@
         </table>
     </div>
 
-    <div class="table-responsive" style="margin-top:10px;max-height: 800px; overflow-y: scroll;">
+    <div class="table-responsive">
         <table class="table table-bordered">
             <tr class="active">
-                <th class="text-center" style="width:70px">序号</th>
-                <th class="text-center" style="width:18%">项目名称</th>
-                <th class="text-center" style="width:12%">协审单位</th>
+                <th class="text-center" style="width:50px">序号</th>
+                <th class="text-center" >项目名称</th>
+                <th class="text-center" style="width:10%">协审单位</th>
                 <th class="text-center" style="width:10%">协审登记号</th>
-                <th class="text-center" style="width:13%">项目负责人</th>
+                <th class="text-center" style="width:12%">项目负责人</th>
                 <th class="text-center" style="width:10%;">
-                    实际协审费用<br>（元）
+                    实际协审<br>费用（元）
                 </th>
                 <th class="text-center" style="width:10%">
-                    计划协审费用<br>（元）
+                    计划协审<br>费用（元）
                 </th>
                 <th class="text-center" style="width:10%;">付款日期</th>
-                <th class="text-center" style="width:8%;">申报金额</th>
+                <th class="text-center" style="width:8%;">申报投资<br>(万元)</th>
+                <th class="text-center" style="width:8%;">审定投资<br>(万元)</th>
             </tr>
             <tbody ng-repeat="s in vm.signAssistCostCounList">
             <tr>
@@ -65,13 +66,14 @@
                 <td class="text-center">{{s.factCost}}</td>
                 <td class="text-center">{{s.planCost}}</td>
                 <td class="text-center">{{s.payDate}}</td>
-                <td class="text-center">{{s.applyCost}}</td>
+                <td class="text-center">{{s.declareValue}}</td>
+                <td class="text-center">{{s.authorizeValue}}</td>
             </tr>
             <tr ng-repeat="f in s.costList" ng-if="s.costList && s.costList.length > 0">
                 <td class="text-center">{{$index + 1}}</td>
                 <td class="text-center">{{f.chargeName}}</td>
                 <td class="text-center">{{f.charge}}</td>
-                <td class="text-center" colspan="3"></td>
+                <td class="text-center" colspan="4"></td>
             </tr>
             </tbody>
             <tr ng-show="vm.nodata">

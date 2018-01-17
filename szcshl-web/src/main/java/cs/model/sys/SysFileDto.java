@@ -47,6 +47,8 @@ public class SysFileDto extends BaseDto {
      */
     private String fileSizeStr;
 
+    private Integer sort;
+
     public SysFileDto() {
     }
 
@@ -136,5 +138,13 @@ public class SysFileDto extends BaseDto {
 
     public void setFileSizeStr(String fileSizeStr) {
         this.fileSizeStr = fileSizeStr;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

@@ -65,6 +65,13 @@ public class FinancialManagerController {
     }
 
     @RequiresAuthentication
+    @RequestMapping(name = "根据项目ID查询出对应的协审费用", path = "findSignCostBySignId", method = RequestMethod.POST)
+    @ResponseBody
+    public List<SignAssistCostDto> findSignCostBySignId(@RequestParam String signId) {
+        return financialManagerService.findSignCostBySignId(signId);
+    }
+
+    @RequiresAuthentication
     @RequestMapping(name = "协审费统计", path = "findSingAssistCostCount", method = RequestMethod.POST)
     @ResponseBody
     public List<SignAssistCostDto> findSingAssistCostCount(@RequestBody SignAssistCostDto signAssistCost) {

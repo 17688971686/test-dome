@@ -52,6 +52,12 @@ public class SysFile extends DomainBase {
     @Column(columnDefinition = "varchar(255)")
     private String sysBusiType;
 
+    /**
+     * 附件排序
+     */
+    @Column(columnDefinition = "integer")
+    private Integer sort;
+
     @ManyToOne
     @JoinColumn(name = "ftpId")
     private Ftp ftp;
@@ -178,5 +184,13 @@ public class SysFile extends DomainBase {
 
     public void setFtp(Ftp ftp) {
         this.ftp = ftp;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

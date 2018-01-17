@@ -3,10 +3,7 @@ package cs.controller.sys;
 import com.alibaba.fastjson.JSON;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
-import cs.common.utils.DateUtils;
-import cs.common.utils.PropertyUtil;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.Tools;
+import cs.common.utils.*;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
 import cs.service.flow.FlowService;
@@ -76,10 +73,12 @@ public class AdminController {
         //如果是IE浏览器，则登录腾讯通
         if (Tools.getBrowserName(agent).contains("ie") && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
             String userState = rtxService.queryUserState(null, SessionUtil.getLoginName());
-            if (("0".equals(userState) || "2".equals(userState)) ) {
+            if ("0".equals(userState) || "2".equals(userState) ) {
                 model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null, SessionUtil.getLoginName()));
                 PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
                 model.addAttribute("RTX_IP", propertyUtil.readProperty("RTX_IP"));
+                String rtxName = Validate.isString(SessionUtil.getUserInfo().getRtxName())?SessionUtil.getUserInfo().getRtxName():SessionUtil.getLoginName();
+                model.addAttribute("RTX_NAME", rtxName);
             }
         }
 

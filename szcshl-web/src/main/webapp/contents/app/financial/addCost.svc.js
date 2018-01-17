@@ -175,9 +175,7 @@
 
                         //项目才有协审费，不是项目，没有协审费
                         if (costType == "ASSIST") {
-                            vm.searchCost = {};
-                            vm.searchCost.signId = vm.financial.businessId;
-                            assistCostCountSvc.findSingAssistCostCount(vm.searchCost, function (data) {
+                            assistCostCountSvc.findSignCostBySignId(vm.financial.businessId, function (data) {
                                 vm.signAssistCostCounList = data;
                             });
                         }

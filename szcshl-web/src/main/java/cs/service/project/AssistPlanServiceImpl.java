@@ -116,6 +116,7 @@ public class AssistPlanServiceImpl implements AssistPlanService {
                     AssistPlanSign assistPlanSign = new AssistPlanSign();
                     assistPlanSign.setSignId(record.getSignId());
                     assistPlanSign.setSplitNum(i);
+                    assistPlanSign.setAssistType(record.getAssistType());
                     assistPlanSign.setAssistPlan(assistPlan);
                     assistPlanSign.setIsMain(i == 1 ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue()); //主要为了方便显示
                     saveList.add(assistPlanSign);
@@ -126,6 +127,7 @@ public class AssistPlanServiceImpl implements AssistPlanService {
                 //合并协审，保存的只有主项目
                 AssistPlanSign assistPlanSign = new AssistPlanSign();
                 assistPlanSign.setSignId(record.getSignId());
+                assistPlanSign.setAssistType(record.getAssistType());
                 assistPlanSign.setAssistPlan(assistPlan);
                 assistPlanSign.setIsMain(Constant.EnumState.YES.getValue());
                 assistPlanSignRepo.save(assistPlanSign);

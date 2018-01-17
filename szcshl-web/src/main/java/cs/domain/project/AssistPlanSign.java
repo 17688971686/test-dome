@@ -45,6 +45,12 @@ public class AssistPlanSign {
     private Float assistDays;
 
     /**
+     * 协审类型
+     */
+    @Column(columnDefinition="VARCHAR(32)")
+    private String assistType;
+
+    /**
      * 是否主项目（9代表是，0代表否）
      */
     @Column(columnDefinition="VARCHAR(2)")
@@ -141,5 +147,13 @@ public class AssistPlanSign {
 
     public void setSplitNum(Integer splitNum) {
         this.splitNum = splitNum;
+    }
+
+    public String getAssistType() {
+        return assistType;
+    }
+
+    public void setAssistType(String assistType) {
+        this.assistType = assistType;
     }
 }
