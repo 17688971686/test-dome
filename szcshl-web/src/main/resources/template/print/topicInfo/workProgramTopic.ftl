@@ -163,7 +163,7 @@
                                 <w:sz w:val="24"/>
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t>${createdDate}</w:t>
+                            <w:t>${createdDate!}</w:t>
                         </w:r>
                     </w:p>
                     <w:tbl>
@@ -270,7 +270,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${topicName}</w:t>
+                                        <w:t>${topicName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -343,7 +343,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${cooperator}</w:t>
+                                        <w:t>${cooperator!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -415,7 +415,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${contactName}</w:t>
+                                        <w:t>${contactName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -465,7 +465,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${tellPhone}</w:t>
+                                        <w:t>${tellPhone!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -515,7 +515,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${fax}</w:t>
+                                        <w:t>${fax!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -622,7 +622,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${topicContent}</w:t>
+                                        <w:t>${topicContent!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -705,7 +705,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${rbDateStr}</w:t>
+                                        <w:t>${rbDateStr!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -819,7 +819,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${address}</w:t>
+                                        <w:t>${address!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -869,7 +869,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${cost}(单位：元)</w:t>
+                                        <w:t>${cost!}(单位：元)</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -943,7 +943,7 @@
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                         <w:t>
-                                        <#if !studyQuantum?? || studyQuantum == "am">上午</#if>
+                                        <#if studyQuantum?? || studyQuantum == "am">上午</#if>
                                         <#if studyQuantum?? || studyQuantum == "pm">下午</#if>
                                         <#if studyQuantum?? || studyQuantum == "day">全天</#if></w:t>
                                     </w:r>
@@ -1232,7 +1232,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.name}</w:t>
+                                        <w:t>${(expert.name)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1257,7 +1257,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.comPany}</w:t>
+                                        <w:t>${(expert.comPany)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1283,7 +1283,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.job}/${expert.post}</w:t>
+                                        <w:t>${(expert.job)!}<#if (expert.post)??>/</#if>${(expert.post)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1309,7 +1309,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.majorStudy}</w:t>
+                                        <w:t>${(expert.majorStudy)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1335,7 +1335,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.userPhone}</w:t>
+                                        <w:t>${(expert.userPhone)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1361,7 +1361,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${epxert.expeRttype}</w:t>
+                                        <w:t>${(epxert.expeRttype)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1386,7 +1386,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expert.remark}</w:t>
+                                        <w:t>${(expert.remark)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1461,7 +1461,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${unitAndLeader}</w:t>
+                                        <w:t>${unitAndLeader!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1551,7 +1551,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${directorOption}</w:t>
+                                        <w:t>${directorOption!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1627,7 +1627,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">      ${directorDate}</w:t>
+                                        <w:t xml:space="preserve">      ${directorDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1699,7 +1699,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${leaderOption}</w:t>
+                                        <w:t>${leaderOption!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1780,7 +1780,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${leaderDate}</w:t>
+                                        <w:t>${leaderDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

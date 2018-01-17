@@ -379,7 +379,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${fileNo}</w:t>
+                                        <w:t>${fileNo!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -471,7 +471,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${topicName}</w:t>
+                                        <w:t>${topicName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -563,7 +563,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${cooperator}</w:t>
+                                        <w:t>${cooperator!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -605,7 +605,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${topicCode}</w:t>
+                                        <w:t>${topicCode!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1086,7 +1086,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${planCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${planCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1321,7 +1321,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${eleDocCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${eleDocCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1538,7 +1538,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${contract}</w:instrText>
+                                        <w:instrText xml:space="preserve">${contract!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2349,7 +2349,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${wplanCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${wplanCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2584,7 +2584,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${studyCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${studyCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2801,7 +2801,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${studyIdeaCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${studyIdeaCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -3036,7 +3036,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${studyEleCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${studyEleCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -3253,7 +3253,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${signinCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${signinCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -3488,7 +3488,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${reportCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${reportCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -3849,7 +3849,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${epCostCount}</w:instrText>
+                                        <w:instrText xml:space="preserve">${epCostCount!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -4270,7 +4270,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${registerFile.fileName}</w:t>
+                                        <w:t>${(registerFile.fileName)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -4376,7 +4376,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve">${registerFile.totalNum}</w:instrText>
+                                        <w:instrText xml:space="preserve">${(registerFile.totalNum)!}</w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -4429,7 +4429,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <#if registerFile?? && registerFile.isHasOriginfile?? && registerFile.isHasOriginfile=="9">
+                                        <#if registerFile?? && (registerFile.isHasOriginfile)?? && (registerFile.isHasOriginfile)=="9">
                                             <w:sym w:font="Wingdings 2" w:char="F052" />
                                         <#else>
                                             <w:t xml:space="preserve">□</w:t>
@@ -4468,7 +4468,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <#if registerFile?? && registerFile.isHasCopyfile?? && registerFile.isHasCopyfile=="9">
+                                        <#if registerFile?? && (registerFile.isHasCopyfile)?? && (registerFile.isHasCopyfile)=="9">
                                             <w:sym w:font="Wingdings 2" w:char="F052" />
                                         <#else>
                                             <w:t xml:space="preserve">□</w:t>
@@ -4532,7 +4532,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${principal}</w:t>
+                                        <w:t>${principal!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -4562,7 +4562,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${director}</w:t>
+                                        <w:t>${director!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -4619,7 +4619,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${filingUser}</w:t>
+                                        <w:t>${filingUser!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -4662,7 +4662,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${filingDate}</w:t>
+                                        <w:t>${filingDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

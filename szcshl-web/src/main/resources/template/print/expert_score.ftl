@@ -510,7 +510,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expertSelect.expertDto.name}</w:t>
+                                        <w:t>${(expertSelect.expertDto.name)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -534,7 +534,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expertSelect.expertDto.comPany}</w:t>
+                                        <w:t>${(expertSelect.expertDto.comPany)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -558,7 +558,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expertSelect.expertDto.job}/${expertSelect.expertDto.post}</w:t>
+                                        <w:t>${(expertSelect.expertDto.job)!}<#if expertSelect.expertDto.post??>/</#if>${(expertSelect.expertDto.post)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -582,7 +582,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expertSelect.expertDto.majorStudy}</w:t>
+                                        <w:t>${(expertSelect.expertDto.majorStudy)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -606,7 +606,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expertSelect.score}</w:t>
+                                        <w:t>${(expertSelect.score)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -630,7 +630,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${expertSelect.compositeScore}</w:t>
+                                        <w:t>${(expertSelect.compositeScore)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
