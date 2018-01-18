@@ -15,6 +15,7 @@
         vm.id = $state.params.id;
         vm.type = $state.params.type;
         vm.suppletter.id = $state.params.id;
+        vm.suppletter.fileYear = $state.params.year;
 
         if (vm.id) {
             vm.isUpdate = true;
@@ -36,6 +37,7 @@
             }else{
                 monthlyMultiyearSvc.initMonthlyMultiyear(function(data){
                     vm.suppletter = data;
+                    vm.suppletter.fileYear = $state.params.year;
                     vm.initFileUpload();
                 });
             }

@@ -139,17 +139,17 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
     @Override
     public List<Sign> findUnSendFGWList() {
         Criteria criteria = getExecutableCriteria();
-        //未发送给发改委的项目
-        criteria.add(Restrictions.ne(Sign_.isSendFGW.getName(), Constant.EnumState.YES.getValue()));
         //正式签收
         criteria.add(Restrictions.eq(Sign_.issign.getName(), Constant.EnumState.YES.getValue()));
         criteria.add(Restrictions.isNotNull(Sign_.filecode.getName()));
+        //未发送给发改委的项目
+        criteria.add(Restrictions.or(Restrictions.isNull(Sign_.isSendFGW.getName()),Restrictions.ne(Sign_.isSendFGW.getName(), Constant.EnumState.YES.getValue())));
         //排除旧项目
         criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
         criteria.add(Restrictions.isNotNull(Sign_.processInstanceId.getName()));
         //正在进行或者正常结束
-        criteria.add(Restrictions.or(Restrictions.eq(Sign_.signdate.getName(), Constant.EnumState.PROCESS.getValue()),
-                Restrictions.eq(Sign_.signdate.getName(), Constant.EnumState.YES.getValue())));
+        criteria.add(Restrictions.or(Restrictions.eq(Sign_.signState.getName(), Constant.EnumState.PROCESS.getValue()),
+                Restrictions.eq(Sign_.signState.getName(), Constant.EnumState.YES.getValue())));
         //已经生成发文编号
         criteria.add(Restrictions.ge(Sign_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));
 

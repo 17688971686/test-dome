@@ -222,7 +222,7 @@ public class Constant {
         OFFICIAL("2"),              //正式
         ALTERNATIVE("3"),           //备选
         STOP("4"),                  //停用
-        REMOVE("5");                //已删除
+        REMOVE("0");                //已删除
 
         private String value;
 

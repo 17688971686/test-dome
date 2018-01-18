@@ -770,7 +770,7 @@
 
                 //编辑新建年度月报简报页面
                 .state('monthlyMultiyearEdit', {
-                    url: '/monthlyMultiyearEdit/:id',
+                    url: '/monthlyMultiyearEdit/:year/:id',
                     templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearAdd.html',
                     controller: 'monthlyMultiyearEditCtrl',
                     controllerAs: 'vm'

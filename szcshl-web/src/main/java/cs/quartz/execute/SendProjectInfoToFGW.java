@@ -16,6 +16,8 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +36,9 @@ public class SendProjectInfoToFGW implements Job {
     private SignRestService signRestService;
 
     @Override
+    @Transactional
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());

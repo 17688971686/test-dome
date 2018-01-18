@@ -95,7 +95,7 @@
         function initMonthlyMultiyear(callBack) {
             var httpOptions = {
                 method: 'post',
-                url: url_monthlyMultiyear + "/initMonthlyMultiyear",
+                url: rootPath + "/monthlyNewsletter/initMonthlyMultiyear",
             };
 
             var httpSuccess = function success(response) {
@@ -210,7 +210,7 @@
         function monthlyYearGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type : 'odata',
-                transport : common.kendoGridConfig().transport(rootPath + "/addSuppLetter/monthlyMultiyearList", $("#form_monthly"), {filter:"monthLetterYearName lt '"+vm.suppletter.monthLetterYearName+"' and fileType eq '2' and monthlyType eq '月报简报'"}),
+                transport : common.kendoGridConfig().transport(rootPath + "/addSuppLetter/monthlyMultiyearList", $("#form_monthly"), {filter:"fileYear eq '"+vm.suppletter.fileYear+"' and fileType eq '2' and monthlyType eq '月报简报'"}),
                 schema : common.kendoGridConfig().schema({
                     id : "id",
                     fields : {
@@ -254,7 +254,7 @@
                     filterable: false,
                     template: function (item) {
                         if(!item.processInstanceId){
-                            return '<a href="#/monthlyMultiyearEdit/' + item.id + '" >' + item.title + '</a>';
+                            return '<a href="#/monthlyMultiyearEdit/'+vm.suppletter.fileYear+'/' + item.id + '" >' + item.title + '</a>';
                         }else{
                             return '<a href="#/monthlyMultiyView/' + item.id + '" >' + item.title + '</a>';
                         }
@@ -296,7 +296,7 @@
                         if(angular.isUndefined(item.processInstanceId) || item.processInstanceId == ''){
                             isStartFlow = false;
                         }
-                        return common.format($('#columnBtns').html(), item.id, isStartFlow,item.id);
+                        return common.format($('#columnBtns').html(),vm.suppletter.fileYear, item.id, isStartFlow,item.id);
                     }
                 }
             ];

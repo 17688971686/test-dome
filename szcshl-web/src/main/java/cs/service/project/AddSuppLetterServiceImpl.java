@@ -15,6 +15,7 @@ import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
+import cs.model.project.AssistPlanDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
@@ -224,47 +225,17 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      */
     @Override
     public PageModelDto<AddSuppLetterDto> monthlyMultiyearListData(ODataObj odataObj) {
-        Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
-        if (Validate.isList(odataObj.getFilter())) {
-            Object value;
-            for (ODataFilterItem item : odataObj.getFilter()) {
-                value = item.getValue();
-                if (null == value) {
-                    continue;
-                }
-                //如果是月报简报年度列表，则不分页
-                if("monthLetterYearName".equals(item.getField())){
-                    //不统计分页
-                    //odataObj.setCount(false);
-                    criteria.add(Restrictions.gt(AddSuppLetter_.createdDate.getName(),DateUtils.converToDate(value.toString()+"-01-01 00:00:00","yyyy-MM-dd HH:mm:ss")));
-                    criteria.add(Restrictions.lt(AddSuppLetter_.createdDate.getName(),DateUtils.converToDate(value.toString()+"-12-31 24:00:00","yyyy-MM-dd HH:mm:ss")));
-                    continue;
-                }
-                criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value));
-            }
-        }
-        //如果统计分页
-        if(odataObj.isCount()){
-            Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-            criteria.setProjection(null);
-            odataObj.setCount(totalResult);
-            if (odataObj.getTop() != 0) {
-                criteria.setFirstResult(odataObj.getSkip());
-                criteria.setMaxResults(odataObj.getTop());
-            }
-        }
-        List<AddSuppLetter> suppLetterList = criteria.list();
-        List<AddSuppLetterDto> suppLetterDtoList = new ArrayList<AddSuppLetterDto>();
-        if (Validate.isList(suppLetterList)) {
-            suppLetterList.forEach(x -> {
-                AddSuppLetterDto addDto = new AddSuppLetterDto();
-                BeanCopierUtils.copyProperties(x, addDto);
-                suppLetterDtoList.add(addDto);
+        PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
+        List<AddSuppLetter> resultList = addSuppLetterRepo.findByOdata(odataObj);
+        List<AddSuppLetterDto> resultDtoList = new ArrayList<AddSuppLetterDto>(resultList==null?0:resultList.size());
+        if (Validate.isList(resultList)) {
+            resultList.forEach(x -> {
+                AddSuppLetterDto modelDto = new AddSuppLetterDto();
+                BeanCopierUtils.copyProperties(x, modelDto);
+                resultDtoList.add(modelDto);
             });
         }
-
-        PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
-        pageModelDto.setValue(suppLetterDtoList);
+        pageModelDto.setValue(resultDtoList);
         pageModelDto.setCount(odataObj.getCount());
 
         return pageModelDto;

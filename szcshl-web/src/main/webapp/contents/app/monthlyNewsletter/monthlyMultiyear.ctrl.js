@@ -9,7 +9,7 @@
         var vm = this;
         vm.title = '年度月报简报';
         vm.suppletter = {};
-        vm.suppletter.monthLetterYearName = $state.params.year;
+        vm.suppletter.fileYear = $state.params.year;
 
         activate();
         function activate() {

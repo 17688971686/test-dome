@@ -10,7 +10,7 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <div class="toolbar">
-        <a class="btn btn-sm btn-primary" ui-sref="monthlyMultiyearEdit({id:null})"><span
+        <a class="btn btn-sm btn-primary" ui-sref="monthlyMultiyearEdit({year:$state.params.year,id:null})"><span
                 class="glyphicon glyphicon-plus"></span>新建月报简报</a>
         <button class="btn btn-sm btn-primary" ng-click="vm.addSuppQuery()"><span
                 class="glyphicon glyphicon-search"></span>查询
@@ -48,7 +48,7 @@
 </div>
 <!--E 年度月报简报列表  -->
 <script type="text/template" id="columnBtns">
-    <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{0}" ng-hide="{1}"><span
+    <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{0}/{1}" ng-hide="{2}"><span
             class="glyphicon glyphicon-pencil"></span>编辑</a>
-    <a class="btn btn-xs btn-info" href="#/monthlyMultiyView/{2}"><span class="glyphicon glyphicon-search"></span>查看</a>
+    <a class="btn btn-xs btn-info" href="#/monthlyMultiyView/{3}"><span class="glyphicon glyphicon-search"></span>查看</a>
 </script>

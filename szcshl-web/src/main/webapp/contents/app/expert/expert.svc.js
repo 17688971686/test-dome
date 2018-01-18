@@ -147,7 +147,29 @@
 		
 		// begin#grid
 		function grid(vm) {
-			var  dataSource = common.kendoGridDataSource(rootPath+"/expert/findByOData",$("#searchform"));
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#searchform"),{filter: "state ne 0"}),
+                schema: common.kendoGridConfig().schema({
+                    id: "expertID",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "applyDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+
 			var  dataBound = function () {  
                 var rows = this.items();  
                 var page = this.pager.page() - 1;  
@@ -317,7 +339,7 @@
 		function auditGrid(vm){
 			var dataSource1 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '1' and unable ne '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '1'"}),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -338,7 +360,7 @@
 			
 			var dataSource2 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '2' and unable ne '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '2'"}),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -359,7 +381,7 @@
 			
 			var dataSource3 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '3' and unable ne '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '3'"}),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -380,7 +402,7 @@
 			
 			var dataSource4 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '4' and unable ne '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '4'"}),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -401,7 +423,7 @@
 			
 			var dataSource5 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '5' and unable ne '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '0'"}),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {

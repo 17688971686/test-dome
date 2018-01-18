@@ -20,6 +20,12 @@ public class AddSuppLetter extends DomainBase {
 	private String id;
 
 	/**
+	 * 文件年度（月报简报用）
+	 */
+	@Column(columnDefinition="VARCHAR(4)")
+	private String fileYear;
+
+	/**
 	 * 拟稿部门
 	 */
 	@Column(columnDefinition="VARCHAR(64)")
@@ -462,4 +468,12 @@ public class AddSuppLetter extends DomainBase {
 	public void setMonthlySeq(Integer monthlySeq) {
 		this.monthlySeq = monthlySeq;
 	}
+
+    public String getFileYear() {
+        return fileYear;
+    }
+
+    public void setFileYear(String fileYear) {
+        this.fileYear = fileYear;
+    }
 }
