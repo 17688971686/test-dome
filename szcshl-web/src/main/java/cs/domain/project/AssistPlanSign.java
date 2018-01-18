@@ -45,10 +45,16 @@ public class AssistPlanSign {
     private Float assistDays;
 
     /**
-     * 协审类型
+     * 协审类型，这个类型是必须的
      */
     @Column(columnDefinition="VARCHAR(32)")
     private String assistType;
+
+    /**
+     * 项目名称（旧系统有，保留）
+     */
+    @Column(columnDefinition="VARCHAR(256)")
+    private String projectName;
 
     /**
      * 是否主项目（9代表是，0代表否）
@@ -155,5 +161,13 @@ public class AssistPlanSign {
 
     public void setAssistType(String assistType) {
         this.assistType = assistType;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 }
