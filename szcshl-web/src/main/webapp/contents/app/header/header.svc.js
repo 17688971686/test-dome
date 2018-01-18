@@ -199,12 +199,12 @@
         //begin getHeaderList
         function findHeaderListNoSelected(vm){
             vm.header = {};
-            vm.header.headerType = vm.headerType;
+            // vm.header.headerType = vm.headerType;
             var httpOptions ={
                 method : 'post',
                 url : rootPath + '/header/findHeaderListNoSelected',
-                data : vm.header.headerType
-                // params : {headerType : vm.headerType}
+                // data : vm.header.headerType
+                params : {headerType : vm.headerType}
             }
             var httpSuccess = function success(response){
                 vm.allHeaderList = response.data;

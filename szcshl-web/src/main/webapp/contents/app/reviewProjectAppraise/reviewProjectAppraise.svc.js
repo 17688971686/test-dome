@@ -186,7 +186,7 @@
                     filterable: false
                 },
                 {
-                    field: "dispatchtype",
+                    field: "dispatchDate",
                     title: "发文日期",
                     width: 160,
                     filterable: false
@@ -216,49 +216,49 @@
                     filterable: false
                 },
                 {
-                    field: "appalyinvestment",
+                    field: "appalyInvestment",
                     title: "申报投资",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "authorizevalue",
+                    field: "authorizeValue",
                     title: "审定投资",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "extravalue",
+                    field: "extraValue",
                     title: "核减（增）投资",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "extrarate",
+                    field: "extraRate",
                     title: "核减率",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "approvevalue",
+                    field: "approveValue",
                     title: "批复金额",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "dispatchtype",
+                    field: "dispatchType",
                     title: "发文类型",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "ffiledate",
+                    field: "fileDate",
                     title: "归档日期",
                     width: 140,
                     filterable: false
                 },
                 {
-                    field: "builtcompanyName",
+                    field: "builtcompanyname",
                     title: "建设单位",
                     width: 140,
                     filterable: false

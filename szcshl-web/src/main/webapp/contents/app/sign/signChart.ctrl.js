@@ -229,6 +229,30 @@
                         dataView: {show: true, readOnly: true},//数据统计
                         restore: {show: true},//还原
                         saveAsImage: {show: true}//下载
+                    },
+                    optionToContent : function(opt){
+                        var axisData = opt.xAxis[0].data;
+                        var series = opt.series;
+                        var table ='<table id="test" class="table-bordered table-striped" style="width:100%;text-align:center">';
+                        table += '<tbody><tr>';
+
+                        //遍历表头
+                        table += '<th style="text-align: center;">评审阶段</th>';
+                        for(var i=0 ; i<series.length; i++){
+                            table += '<th style="text-align: center;">' + series[i].name + '(亿元)' + '</th>';
+                        }
+                        table  += '</tr>';
+
+                        //遍历行
+                        for (var i = 0, l = axisData.length; i < l; i++) {
+                            table += '<tr>' + '<td>' + axisData[i] + '</td>';
+                            for(var j = 0 ; j < series.length ; j++){
+                                table += '<td>' + series[j].data[i] + '</td>';
+                            }
+                        }
+                        table += '</tbody>';
+                        return table;
+
                     }
                 },
 
@@ -309,6 +333,30 @@
                         dataView: {show: true, readOnly: true},//数据统计
                         restore: {show: true},//还原
                         saveAsImage: {show: true}//下载
+                    },
+                    optionToContent : function(opt){
+                        var axisData = opt.xAxis[0].data;
+                        var series = opt.series;
+                        var table ='<table id="test" class="table-bordered table-striped" style="width:100%;text-align:center">';
+                        table += '<tbody><tr>';
+
+                        //遍历表头
+                        table +=  '<th style="text-align: center;">评审阶段</th>';
+                        for(var i=0 ; i<series.length; i++){
+                            table +=  '<th style="text-align: center;">' + series[i].name + '</th>';
+                        }
+                        table  +=  '</tr>';
+
+                        //遍历行
+                        for (var i = 0, l = axisData.length; i < l; i++) {
+                            table += '<tr>' + '<td>' + axisData[i] + '</td>';
+                            for(var j = 0 ; j < series.length ; j++){
+                                table += '<td>' + series[j].data[i] + '</td>';
+                            }
+                        }
+                        table += '</tbody>';
+                        return table;
+
                     }
                 },
                 legend: {
@@ -391,6 +439,24 @@
                         dataView: {show: true, readOnly: true},//数据统计
                         restore: {show: true},//还原
                         saveAsImage: {show: true}//下载
+                    },
+                    optionToContent : function(opt){
+                        var series = opt.series[0].data;
+                        var table ='<table id="test" class="table-bordered table-striped" style="width:100%;text-align:center">';
+                        table += '<tbody><tr>';
+
+                        //遍历表头
+                        table += '<th style="text-align: center;">申报金额范围</th>';
+                        table += '<th style="text-align: center;">' + '占百分比(%)' + '</th>';
+                        table  += '</tr>';
+
+                        //遍历行
+                        for (var i = 0, l = series.length; i < l; i++) {
+                            table += '<tr>' + '<td>' + series[i].name + '</td>';
+                            table += '<td>' + series[i].value + '</td>';
+                        }
+                        table += '</tbody>';
+                        return table;
                     }
                 },
                 legend: {

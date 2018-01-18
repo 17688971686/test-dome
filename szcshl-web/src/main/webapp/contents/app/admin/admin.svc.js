@@ -850,7 +850,7 @@
                     filterable: false
                 },
                 {
-                    field: "appalyinvestment",
+                    field: "appalyInvestment",
                     title: "申报投资",
                     width: 100,
                     filterable: false
