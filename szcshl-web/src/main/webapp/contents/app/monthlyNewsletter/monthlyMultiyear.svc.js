@@ -296,7 +296,7 @@
                         if(angular.isUndefined(item.processInstanceId) || item.processInstanceId == ''){
                             isStartFlow = false;
                         }
-                        return common.format($('#columnBtns').html(),vm.suppletter.fileYear, item.id, isStartFlow,item.id);
+                        return common.format($('#columnBtns').html(),vm.suppletter.fileYear, item.id, isStartFlow,item.createdBy,item.id);
                     }
                 }
             ];
