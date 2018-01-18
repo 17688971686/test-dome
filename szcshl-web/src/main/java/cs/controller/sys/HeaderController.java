@@ -57,8 +57,8 @@ public class HeaderController {
     @RequiresAuthentication
     @RequestMapping(name="获取未选中表头列表" , path="findHeaderListNoSelected" , method = RequestMethod.POST)
     @ResponseBody
-    public List<HeaderDto> findHeaderListNoSelected(@RequestBody  HeaderDto headerDto){
-        return headerService.findHeaderListNoSelected(headerDto.getHeaderType());
+    public List<HeaderDto> findHeaderListNoSelected(@RequestParam  String headerType){
+        return headerService.findHeaderListNoSelected(headerType);
     }
 
     //@RequiresPermissions("header#findHeaderListSelected#post")

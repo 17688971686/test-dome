@@ -155,7 +155,7 @@ public class SignServiceImpl implements SignService {
             if (sign.getReceivedate() == null) {
                 sign.setReceivedate(now);
             }
-            BeanCopierUtils.copyProperties(signDto, sign);
+            BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
             sign.setSignid(UUID.randomUUID().toString());
             sign.setSignState(EnumState.NORMAL.getValue());
             sign.setSigndate(now);
