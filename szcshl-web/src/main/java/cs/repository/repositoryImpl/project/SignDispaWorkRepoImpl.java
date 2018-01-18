@@ -371,9 +371,9 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         HqlBuilder hqlBuilder = HqlBuilder.create();
         try{
             hqlBuilder.append("select * from (select a.* , rownum rn from (");
-            hqlBuilder.append("select * from V_SIGN_DISP_WORK " );
+            hqlBuilder.append("select * from V_SIGN_DISP_WORK where signstate != '7' " );
             if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
-                hqlBuilder.append(" where ");
+                hqlBuilder.append(" and ");
                 for (int i = 0; i < queryArr.length; i++) {
                     String filter = queryArr[i];
                     String[] params = filter.split(":");
@@ -421,7 +421,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                     }
                 }
             }
-            hqlBuilder.append(" ) a ) where rn >" + (page * 50) + " and rn <" + ((page+1)*50+1));
+            hqlBuilder.append(" ) a ) where rn >" + (page * 100) + " and rn <" + ((page+1)*100+1));
         }catch (Exception e){
             e.printStackTrace();
         }

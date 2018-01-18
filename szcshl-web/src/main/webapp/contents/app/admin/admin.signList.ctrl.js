@@ -129,21 +129,34 @@
             $state.go('projectStopInfo', {signId: signId});
         }
 
-
-        //以下是项目查询统计（最新版-2017-12-28）
-        vm.QueryStatistics = function () {
-            //判断条件是否为空
-            if (!vm.filters || vm.filters == undefined) {
-                vm.filters = "";
-            }
+        vm.statistics=function () {
             adminSvc.QueryStatistics(vm, function (data) {
                 if (data != undefined) {
                     data.forEach(function (obj, x) {
                         vm.signList.push(obj);
                     });
                 }
+                if(vm.isContinue){
+                if (data != undefined && data.length !=0) {
+                    vm.page++;
+                    vm.statistics();
+                } else {
 
-                if (data == undefined || data.length < 50) {
+                }
+                }
+            });
+
+        }
+
+
+        //以下是项目查询统计（最新版-2017-12-28）
+        vm.QueryStatistics = function () {
+            vm.isContinue=true;
+            //判断条件是否为空
+            if (!vm.filters || vm.filters == undefined) {
+                vm.filters = "";
+            }
+                vm.statistics();
                     $("#queryStatisticsWindow").kendoWindow({
                         width: "80%",
                         height: "700px",
@@ -192,32 +205,39 @@
                             }
                             //统计平均天数
                             vm.countDay = function () {
-                                vm.isopens = true;//显示div
-                                vm.isDay = true;//显示统计天数
-                                vm.isopens = true;
+
                                 vm.averageDay = 0;
                                 if (vm.days != 0) {
+                                    vm.isopens = true;//显示div
+                                    vm.isDay = true;//显示统计天数
                                     vm.averageDay = vm.daySum / vm.days;
+                                }else{
+                                    vm.isDay = false;//显示统计天数
+                                    bsWin.alert("请选择要统计的数据");
                                 }
                             }
                             //统计工作日
                             vm.countWork = function () {
-                                vm.isopens = true;//显示div
-                                vm.isDay = false;//显示统计工作日
                                 vm.averageDay = 0;
                                 if (vm.days != 0) {
+                                    vm.isopens = true;//显示div
+                                    vm.isDay = false;//显示统计工作日
                                     vm.averageDay = vm.WorkSum / vm.days;
+                                }else{
+                                    vm.isDay = true;//显示统计工作日
+                                    bsWin.alert("请选择要统计的数据");
                                 }
                             }
 
                         },
+                        close:function () {
+                            vm.isContinue=false;
+                            vm.signList=[];
+                            vm.page=0;
+                        }
                     }).data("kendoWindow").center().open();
-                } else {
-                    vm.page++;
-                    vm.QueryStatistics();
-                }
 
-            });
+
 
 
         }
