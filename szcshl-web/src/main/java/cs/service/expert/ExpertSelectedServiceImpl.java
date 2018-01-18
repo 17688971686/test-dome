@@ -562,10 +562,11 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
      * @return
      */
     @Override
-    public ResultMsg proReviewClassifyCount(ProjectReviewCostDto projectReviewCostDto) {
+    public ResultMsg proReviewClassifyCount(ProjectReviewCostDto projectReviewCostDto,int page) {
         Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         HqlBuilder sqlBuilder1 = HqlBuilder.create();
+        sqlBuilder.append("select * from (select a.* , rownum rn from (");
         sqlBuilder.append("select s.projectcode,s.projectname,s.builtcompanyname,s.reviewstage,r.totalcost,r.paydate,d.declarevalue,d.authorizevalue,s.signdate,r.businessid,f.chargename,f.charge from cs_sign s  ");
         sqlBuilder.append(" left join cs_expert_review r  ");
         sqlBuilder.append("on s.signid = r.businessid  ");
@@ -627,6 +628,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             }
 
         }
+        sqlBuilder.append(" ) a ) where rn >" + (page * 200) + " and rn <" + ((page+1)*200+1));
         sqlBuilder1.append("group by f.chargename  ");
         List<Object[]> projectReviewCostList = expertCostCountRepo.getObjectArray(sqlBuilder);
         List<Object[]> projectClassifytList = expertCostCountRepo.getObjectArray(sqlBuilder1);
@@ -693,7 +695,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
 
         if (projectClassifytList.size() > 0) {
             for (int i = 0; i < projectClassifytList.size(); i++) {
-                Object obj = projectClassifytList.get(i);
+                Object obj =                                                                                                projectClassifytList.get(i);
                 Object[] projectClassifyCost = (Object[]) obj;
                 ProReviewClassifyCountDto proReviewClassifyCountDto = new ProReviewClassifyCountDto();
                 if (null != projectClassifyCost[0]) {

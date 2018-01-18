@@ -108,6 +108,9 @@
             if (vm.model.borrowNum> vm.model.storeConfirm) {
                 vm.model.borrowNum = vm.model.storeConfirm;
             }
+            if(vm.model.borrowNum<0){
+                vm.model.borrowNum=0;
+            }
 
         }
     }

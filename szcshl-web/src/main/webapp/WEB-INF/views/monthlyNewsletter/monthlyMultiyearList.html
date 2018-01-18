@@ -48,7 +48,7 @@
 </div>
 <!--E 年度月报简报列表  -->
 <script type="text/template" id="columnBtns">
-    <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{0}/{1}" ng-hide="{2}"><span
+    <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{0}/{1}" ng-if="'${CURRENT_USER.id}'=='{2}'"><span
             class="glyphicon glyphicon-pencil"></span>编辑</a>
     <a class="btn btn-xs btn-info" href="#/monthlyMultiyView/{3}"><span class="glyphicon glyphicon-search"></span>查看</a>
 </script>
