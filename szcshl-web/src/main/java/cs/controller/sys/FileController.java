@@ -492,69 +492,75 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         OutputStream out = null;
         try {
             SysFile sysFile = fileService.findFileById(sysFileId);
-            //获取相对路径
-            String fileUrl = sysFile.getFileUrl();
-            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
-            String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
-            //涉及到中文问题 根据系统实际编码改变
-            removeRelativeUrl = new String(removeRelativeUrl.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
-            storeFileName = new String(storeFileName.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
-            //切换工作路径
-            boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
-            if (changedir) {
-                FTPFile[] files = FtpUtil.getFtp().listFiles();
-                boolean isFtpFile = Template.PDF_SUFFIX.getKey().equals(sysFile.getFileType());
-                for (int i = 0; i < files.length; i++) {
-                    FTPFile f = files[i];
-                    if (storeFileName.equals(f.getName())) {
-                        //如果是pdf文件，直接输出流，否则要先转为pdf
-                        if (isFtpFile || sysFile.getFileType().equals(".png") || sysFile.getFileType().equals(".jpg") || sysFile.getFileType().equals(".gif")) {
-                            out = response.getOutputStream();
-                            FtpUtil.getFtp().retrieveFile(f.getName(), out);
-                        } else {
-                            downFile = new File(SysFileUtil.getUploadPath() + File.separator + storeFileName);
-                            out = new FileOutputStream(downFile);
-                            FtpUtil.getFtp().retrieveFile(f.getName(), out);
-                            String filePath = downFile.getAbsolutePath();
-                            filePath = filePath.substring(0, filePath.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
-                            if (downFile != null) {
-                                OfficeConverterUtil.convert2PDF(downFile.getAbsolutePath(), filePath);
+            //连接ftp
+            Ftp ftp = sysFile.getFtp();
+            boolean linkSucess = FtpUtil.connectFtp(ftp, false);
+            if(linkSucess){
+                //获取相对路径
+                String fileUrl = sysFile.getFileUrl();
+                String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+                String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+                //涉及到中文问题 根据系统实际编码改变
+                removeRelativeUrl = new String(removeRelativeUrl.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
+                storeFileName = new String(storeFileName.getBytes(FtpUtil.GBK_CHARSET), FtpUtil.ISO_CHARSET);
+                //切换工作路径
+                boolean changedir = FtpUtil.getFtp().changeWorkingDirectory(removeRelativeUrl);
+                if (changedir) {
+                    FTPFile[] files = FtpUtil.getFtp().listFiles();
+                    boolean isFtpFile = Template.PDF_SUFFIX.getKey().equals(sysFile.getFileType());
+                    for (int i = 0; i < files.length; i++) {
+                        FTPFile f = files[i];
+                        if (storeFileName.equals(f.getName())) {
+                            //如果是pdf文件，直接输出流，否则要先转为pdf
+                            if (isFtpFile || sysFile.getFileType().equals(".png") || sysFile.getFileType().equals(".jpg") || sysFile.getFileType().equals(".gif")) {
+                                out = response.getOutputStream();
+                                FtpUtil.getFtp().retrieveFile(f.getName(), out);
+                            } else {
+                                downFile = new File(SysFileUtil.getUploadPath() + File.separator + storeFileName);
+                                out = new FileOutputStream(downFile);
+                                FtpUtil.getFtp().retrieveFile(f.getName(), out);
+                                String filePath = downFile.getAbsolutePath();
+                                filePath = filePath.substring(0, filePath.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
+                                if (downFile != null) {
+                                    OfficeConverterUtil.convert2PDF(downFile.getAbsolutePath(), filePath);
+                                }
+                                file = new File(filePath);
+                                inputStream = new BufferedInputStream(new FileInputStream(file));
+                                byte[] buffer = new byte[inputStream.available()];
+                                inputStream.read(buffer);  //读取文件流
+                                inputStream.close();
+                                out = new BufferedOutputStream(response.getOutputStream());
+                                out.write(buffer); // 输出文件
                             }
-                            file = new File(filePath);
-                            inputStream = new BufferedInputStream(new FileInputStream(file));
-                            byte[] buffer = new byte[inputStream.available()];
-                            inputStream.read(buffer);  //读取文件流
-                            inputStream.close();
-                            out = new BufferedOutputStream(response.getOutputStream());
-                            out.write(buffer); // 输出文件
+
+                            break;
                         }
-
-                        break;
                     }
+                } else {
+                    file = new File(realPathResolver.get(Constant.plugin_file_path) + File.separator + "nofile.png");
+                    sysFile.setFileType(".png");
                 }
-            } else {
-                file = new File(realPathResolver.get(Constant.plugin_file_path) + File.separator + "nofile.png");
-                sysFile.setFileType(".png");
+
+                switch (sysFile.getFileType()) {
+                    case ".pdf":
+                        response.setContentType("application/pdf");
+                        break;
+                    case ".png":
+                    case ".jpg":
+                    case ".gif":
+                        response.setContentType("text/html; charset=UTF-8");
+                        response.setContentType("image/jpeg");
+                        break;
+                    default:
+                        ;
+                }
+                //response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
+                response.setHeader("Content-Disposition", "inline;filename=" + new String(sysFile.getShowName().getBytes(), "ISO-8859-1"));
+
+                out.flush();
+                out.close();
             }
 
-            switch (sysFile.getFileType()) {
-                case ".pdf":
-                    response.setContentType("application/pdf");
-                    break;
-                case ".png":
-                case ".jpg":
-                case ".gif":
-                    response.setContentType("text/html; charset=UTF-8");
-                    response.setContentType("image/jpeg");
-                    break;
-                default:
-                    ;
-            }
-            //response.addHeader("Content-Length", "" + file.length());  //返回头 文件大小
-            response.setHeader("Content-Disposition", "inline;filename=" + new String(sysFile.getShowName().getBytes(), "ISO-8859-1"));
-
-            out.flush();
-            out.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

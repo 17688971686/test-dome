@@ -3,21 +3,25 @@ package cs.controller.expert;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
 import cs.common.ResultMsg;
-import cs.common.utils.*;
-import cs.domain.expert.Expert;
-import cs.domain.project.SignDispaWork;
+import cs.common.utils.ExcelTools;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
+import cs.domain.expert.ExpertSign;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
-import cs.model.expert.*;
+import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertSelConditionDto;
+import cs.model.expert.ExpertSelectHis;
+import cs.model.expert.ExpertSignDto;
 import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertService;
+import cs.service.expert.ExpertSignService;
 import cs.service.project.SignDispaWorkService;
 import cs.service.sys.HeaderService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -42,12 +46,12 @@ public class ExpertController {
     private String ctrlName = "expert";
     @Autowired
     private ExpertService expertService;
-
     @Autowired
     private SignDispaWorkService signDispaWorkService;
-
     @Autowired
     private HeaderService headerService;
+    @Autowired
+    private ExpertSignService expertSignService;
 
     @RequiresAuthentication
     //@RequiresPermissions("expert#findByOData#post")
@@ -242,10 +246,10 @@ public class ExpertController {
     @RequiresAuthentication
     @RequestMapping(name="查询专家评审的项目信息" , path = "reviewProject" , method =  RequestMethod.POST)
     @ResponseBody
-    public List<SignDispaWork> reviewProject(@RequestParam String expertId){
-        List<SignDispaWork> resultList = new ArrayList<>();
+    public List<ExpertSignDto> reviewProject(@RequestParam String expertId){
+        List<ExpertSignDto> resultList = new ArrayList<>();
         if(Validate.isString(expertId)){
-            resultList = signDispaWorkService.reviewProject(expertId);
+            resultList = expertSignService.reviewProject(expertId);
         }
         return resultList;
     }

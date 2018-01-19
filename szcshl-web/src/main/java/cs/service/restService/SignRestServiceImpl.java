@@ -119,6 +119,8 @@ public class SignRestServiceImpl implements SignRestService {
                 sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
                 sign.setCreatedDate(now);
                 sign.setCreatedBy(SUPER_USER);
+                //这里的送件人，默认为流程发起人，而不是委里项目的送件人
+                sign.setSendusersign("");
             } else {
                 BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
             }

@@ -14,13 +14,6 @@ import java.util.List;
 public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
 
     /**
-     * 通过专家id获取评审过的项目信息
-     * @param expertId
-     * @return
-     */
-    List<SignDispaWork> reviewProject(String expertId);
-
-    /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
      * @param startTime
      * @param endTime

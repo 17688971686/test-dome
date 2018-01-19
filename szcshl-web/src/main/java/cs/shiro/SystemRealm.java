@@ -9,6 +9,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.log4j.Logger;
 
@@ -20,7 +21,7 @@ public class SystemRealm extends AuthorizingRealm {
     private UserService userService;
 
     /**
-     * 登录认证
+     * 提供用户信息返回权限信息
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
@@ -33,23 +34,24 @@ public class SystemRealm extends AuthorizingRealm {
     }
 
     /**
-     * 授权,只有成功通过doGetAuthenticationInfo方法的认证后才会执行。
+     * 提供账户信息返回认证信息
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         // 得到用户名
         String userName = (String) token.getPrincipal();
-        SimplePrincipalCollection principals = new SimplePrincipalCollection(userName, getName());
-        super.doClearCache(principals);
-
         User user = userService.findByName(userName);
         if (null == user) {
             throw new UnknownAccountException();
         }
-       /* if("停用".equals(user.getUseState())||user.getUseState()==null){
+        //停用或者离职的，不能登录系统
+       if("停用".equals(user.getUseState()) || "f".equals(user.getJobState())){
             throw new DisabledAccountException();
-        }*/
+        }
+       /* 加密的情况下使用
+       SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userName,
+                user.getPassword(), ByteSource.Util.bytes(user.getUserSalt()), getName());*/
         // 如果身份认证验证成功，返回一个AuthenticationInfo实现；
         return new SimpleAuthenticationInfo(userName, user.getPassword(), getName());
     }

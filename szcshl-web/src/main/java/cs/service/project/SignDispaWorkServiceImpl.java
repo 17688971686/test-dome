@@ -477,11 +477,6 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         return pageModelDto;
     }
 
-    @Override
-    public List<SignDispaWork> reviewProject(String expertId) {
-        return signDispaWorkRepo.reviewProject(expertId);
-    }
-
     /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
      *

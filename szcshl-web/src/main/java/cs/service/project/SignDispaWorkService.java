@@ -80,13 +80,6 @@ public interface SignDispaWorkService {
     PageModelDto<SignDispaWork> findOverSignDispaWork();
 
     /**
-     * 通过专家id 获取专家评审过的项目信息
-     * @param expertId
-     * @return
-     */
-    List<SignDispaWork> reviewProject(String expertId);
-
-    /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
      * @param startTime
      * @param endTime

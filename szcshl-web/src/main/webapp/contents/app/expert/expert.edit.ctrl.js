@@ -50,6 +50,7 @@
                     visible: false,
                     open:function(){
                         vm.isLoading = true;
+                        vm.reviewProjectList = [];
                         expertSvc.reviewProjectGrid(vm.model.expertID,function(data){
                             vm.isLoading = false;
                             if(data && data.length > 0){

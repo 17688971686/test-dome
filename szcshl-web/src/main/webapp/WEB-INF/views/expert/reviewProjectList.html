@@ -5,32 +5,30 @@
 
     <table class="table table-bordered" style="border-top:1px solid #989898">
         <tr class="active">
-            <th style="width: 50px;">序号</th>
-            <th style="width: 25%;">项目名称</th>
-            <th style="width: 10%;">项目阶段</th>
-            <th style="width: 10%;">项目类型</th>
-            <th style="width: 20%;">建设单位</th>
-            <th style="width: 10%;">申报金额</th>
-            <th style="width: 10%;">审定金额</th>
-            <th style="width: 10%;">评审方式</th>
+            <th style="width:30px;text-align: center;">序号</th>
+            <th style="width:80px;text-align: center;">姓名</th>
+            <th >项目名称</th>
+            <th style="width: 15%;">评审阶段</th>
+            <th style="width: 25%;">建设单位</th>
+            <th style="width: 15%;">评审时间</th>
+            <th style="width: 15%;">签收时间</th>
         </tr>
         <tr ng-repeat="s in vm.reviewProjectList">
-            <td>{{$index+1}}</td>
+            <td class="text-center">{{$index+1}}</td>
+            <td class="text-center">{{s.expertName}}</td>
             <td><a ng-click="vm.queryDetail(s.signid,s.processInstanceId)">{{s.projectname}}</a></td>
             <td>{{s.reviewstage}}</td>
-            <td>{{s.projectType}}</td>
             <td>{{s.builtcompanyname}}</td>
-            <td>{{s.appalyinvestment}}</td>
-            <td>{{s.authorizeValue}}</td>
-            <td>{{s.reviewType}}</td>
+            <td>{{s.reviewDate}}</td>
+            <td>{{s.signdate}}</td>
         </tr>
         <tr ng-show="vm.noData" ng-hide="!vm.noData">
-            <td colspan="8">
+            <td colspan="7">
                 没有记录
             </td>
         </tr>
         <tr ng-show="vm.isLoading">
-            <td colspan="8" class="text-center">
+            <td colspan="7" class="text-center">
                 <i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>正在加载数据，请耐心等待...
             </td>
         </tr>

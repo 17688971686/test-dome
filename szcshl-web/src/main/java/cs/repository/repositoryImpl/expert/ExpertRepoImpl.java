@@ -14,11 +14,12 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Repository
 public class ExpertRepoImpl extends AbstractRepository<Expert, String> implements ExpertRepo {
 
     /**

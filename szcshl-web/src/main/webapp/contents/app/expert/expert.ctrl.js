@@ -90,6 +90,7 @@
                             templatePrintSvc.templatePrint("expertApply_templ");
                         }
                         //评审过项目
+                        vm.reviewProjectList = [];
                         expertSvc.reviewProjectGrid(vm.model.expertID,function(data){
                             vm.isLoading = false;
                             if(data && data.length > 0){

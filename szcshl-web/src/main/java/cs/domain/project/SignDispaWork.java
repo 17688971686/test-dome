@@ -100,6 +100,7 @@ public class SignDispaWork {
     /**
      * 项目进程状态
      */
+    @Column
     private String processState;
 
     /**

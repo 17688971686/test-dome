@@ -575,6 +575,10 @@ public class SignServiceImpl implements SignService {
             sign.setProcessInstanceId(processInstance.getId());
             sign.setSignState(EnumState.PROCESS.getValue());
             sign.setProcessState(Constant.SignProcessState.IS_START.getValue());
+            //送件人,默认为流程发起人
+            if(Validate.isString(sign.getSendusersign())){
+                sign.setSendusersign(SessionUtil.getLoginName());
+            }
             signRepo.save(sign);
 
             //4、跳过第一环节（主任审核）

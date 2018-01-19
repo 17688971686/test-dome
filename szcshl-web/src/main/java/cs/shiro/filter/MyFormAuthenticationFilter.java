@@ -61,7 +61,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         User user = userService.findByName(username);
         if(user != null){
             //用户停用，未激活等判断
-            if(UNUSER.equals(user.getUseState())){
+            if(UNUSER.equals(user.getUseState()) || "f".equals(user.getJobState())){
                /* throw new DisabledAccountException();*/
                 return onLoginFailure(token,new DisabledAccountException(),request, response);
             }
@@ -157,7 +157,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
                 //之前登陆的用户
                 String username  = (String) subject.getPrincipal();
                 //如果两次登陆的用户不一样，则先退出之前登陆的用户(之前有登录用户，则退出)
-                if (username != null ){
+                if (Validate.isString(username)){
                     subject.logout();
                 }
             }

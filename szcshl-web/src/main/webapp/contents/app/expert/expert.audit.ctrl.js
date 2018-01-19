@@ -75,6 +75,7 @@
                             $(".tab-pane").removeClass("active").removeClass("in");
                             $("#" + showDiv).addClass("active").addClass("in").show(500);
                         })
+                        vm.reviewProjectList = [];
                         //评审过项目
                         expertSvc.reviewProjectGrid(vm.model.expertID,function(data){
                             vm.isLoading = false;
