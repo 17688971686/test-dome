@@ -819,7 +819,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${(expert.openingBank)!}</w:t>
+                                        <w:t>${(expert.expertDto.openingBank)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -889,6 +889,139 @@
                             </w:tc>
                         </w:tr>
                         </#list>
+                        <w:tr>
+                            <w:tblPrEx>
+                                <w:tblBorders>
+                                    <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:bottom w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:right w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:insideH w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:insideV w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                </w:tblBorders>
+                                <w:tblLayout w:type="fixed"/>
+                                <w:tblCellMar>
+                                    <w:top w:w="0" w:type="dxa"/>
+                                    <w:left w:w="108" w:type="dxa"/>
+                                    <w:bottom w:w="0" w:type="dxa"/>
+                                    <w:right w:w="108" w:type="dxa"/>
+                                </w:tblCellMar>
+                            </w:tblPrEx>
+                            <w:trPr>
+                                <w:cantSplit/>
+                                <w:trHeight w:val="442" w:hRule="atLeast"/>
+                            </w:trPr>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="6345" w:type="dxa"/>
+                                    <w:gridSpan w:val="4"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>总计</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1116" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>${reviewCostSum!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1152" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>${reviewTaxesSum!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1134" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${totalCostSum!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1276" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
+                            </w:tc>
+                        </w:tr>
                     </w:tbl>
                     <w:p>
                         <w:pPr>

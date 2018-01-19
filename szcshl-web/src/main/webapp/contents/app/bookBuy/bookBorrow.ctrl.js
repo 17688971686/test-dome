@@ -13,7 +13,6 @@
         activate();
         function activate() {
             bookBuySvc.bookBorrowGrid(vm,function(data){
-                console.log(data.reObj.bookBorrowDetailList);
                 vm.bookBorrowDetailList = data.reObj.bookBorrowDetailList;
                 vm.bookBorrowSumDtoList = data.reObj.bookBorrowSumDtoList;
             });
@@ -37,7 +36,7 @@
             vm.model.bookNo = bookNo;
             vm.model.booksName = booksName;
             vm.model.bookBorrower = bookBorrower;
-            vm.model.returnDate = returnDate;
+            vm.model.returnDate = new Date(returnDate).Format("yyyy-MM-dd");
             vm.model.returnBorrower = $("#curName").val();
             $("#returnBookWindow").kendoWindow({
                 width: "38%",
