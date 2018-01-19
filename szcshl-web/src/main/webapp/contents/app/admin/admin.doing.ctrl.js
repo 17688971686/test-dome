@@ -3,9 +3,9 @@
 
     angular.module('app').controller('adminDoingCtrl', admin);
 
-    admin.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc'];
+    admin.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc','bsWin','signSvc'];
 
-    function admin($location, adminSvc, flowSvc,pauseProjectSvc) {
+    function admin($location, adminSvc, flowSvc,pauseProjectSvc,bsWin,signSvc) {
         var vm = this;
         vm.title = '在办项目';
         vm.model = {};
@@ -74,6 +74,28 @@
                     flowSvc.activeFlow(vm, signid);
                 }
             })
+        }
+        /**
+         * 删除项目（作废项目）
+         * @param signid
+         */
+        vm.deletProject= function (signid) {
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确认删除该条项目吗？",
+                onOk: function () {
+                    $('.confirmDialog').modal('hide');
+                    signSvc.deleteSign(signid,function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert("删除成功！",function(){
+                                vm.gridOptions.dataSource.read();
+                            })
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                }
+            });
         }
     }
 })();

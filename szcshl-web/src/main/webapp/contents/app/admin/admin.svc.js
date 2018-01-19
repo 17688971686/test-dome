@@ -228,7 +228,7 @@
         function gtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks", $("#searchform"),{filter: "signState ne 7"}),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -570,7 +570,7 @@
         function dtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform"),{filter: "signState ne 7"}),
                 schema: {
                     data: "value",
                     total: function (data) {

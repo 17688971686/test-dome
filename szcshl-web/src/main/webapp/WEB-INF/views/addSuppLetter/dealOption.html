@@ -7,6 +7,7 @@
             ng-show="vm.flow.curNode.activitiId=='SPL_FGLD_SP'||vm.flow.curNode.activitiId=='SPL_BZ_SP'"><span class="glyphicon glyphicon-step-backward"></span>回退
     </button>
     <button class="btn btn-sm btn-success" ng-click="vm.ideaEdit({targetId:'dealOption'})">管理个人常用意见</button>
+    <button  class="btn btn-sm btn-primary" style="width: 70px; " ng-click="printFile(vm.suppletter.id,'ADDSUPPLETER' ,'ADDSUPPLETER')">打印预览</button>
     <flow-file-button ng-if="vm.showFlag.showUploadBT"></flow-file-button>   <!--附件上传按钮-->
 </div>
 
