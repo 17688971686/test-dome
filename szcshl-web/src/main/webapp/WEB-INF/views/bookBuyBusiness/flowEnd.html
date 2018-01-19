@@ -4,8 +4,8 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/agendaTasks">任务待办</a></li>
-        <li class="active">{{vm.title}}</li>
+        <li><a href="#/agendaTasks">办结任务</a></li>
+        <li class="active">已办结</li>
     </ol>
 
 
@@ -16,7 +16,7 @@
 
     <div class="tab-content" style="background:white;">
         <div class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
-            <#include "/bookBuyBusiness/flowDetail.html"/>
+            <#include "/bookBuyBusiness/detail.html"/>
         </div><!-- end tab -->
         <div class="well well-sm tab-pane fade" style="background:white;" id="sign_history">
             <div class="grid" kendo-grid="grid" k-options="vm.historygrid" k-data-source="vm.historygrid.dataSource"></div>

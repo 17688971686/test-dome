@@ -35,6 +35,7 @@
             vm.model.id = id;
             vm.model.bookNo = bookNo;
             vm.model.booksName = booksName;
+            vm.model.borrowNum=borrowNum;
             vm.model.bookBorrower = bookBorrower;
             vm.model.returnDate = new Date(returnDate).Format("yyyy-MM-dd");
             vm.model.returnBorrower = $("#curName").val();
@@ -73,5 +74,18 @@
             window.parent.$("#returnBookWindow").data("kendoWindow").close();
             $state.go('bookBorrowList');
         }
+        /**
+         *限制还书的数量
+         */
+        vm.comparisonStill=function () {
+            if (vm.model.returnNum>  vm.model.borrowNum) {
+                vm.model.returnNum =  vm.model.borrowNum;
+            }
+            if(vm.model.returnNum<0){
+                vm.model.returnNum=0;
+            }
+
+        }
+
     }
 })();

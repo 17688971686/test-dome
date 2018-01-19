@@ -17,7 +17,7 @@
                     <input type="hidden" name="bookNo"  ng-model="vm.model.bookNo"/>
                     {{vm.model.bookNo}}
                 </td>
-                <td class="formAlignRight">图书名称</td>
+                <td class="formAlignRight" style="width: 15%">图书名称</td>
                 <td>
                     <input type="hidden" name="booksName"  ng-model="vm.model.booksName"/>
                     {{vm.model.booksName}}
@@ -29,9 +29,9 @@
                     <input type="hidden" name="returnBorrower"  ng-model="vm.model.returnBorrower" />
                     {{vm.model.returnBorrower}}
                 </td>
-                <td class="formAlignRight" width="10%">还书数量</td>
+                <td class="formAlignRight" style="width: 15%">还书数量</td>
                 <td>
-                    <input name="borrowNum" type="text"  ng-model="vm.model.returnNum"/>
+                    <input ng-change="vm.comparisonStill()" name="borrowNum" type="text"  ng-model="vm.model.returnNum"/>
                 </td>
             </tr>
             <tr>
@@ -39,7 +39,7 @@
                 <td>
                     <input name="borrowDate" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.realReturnDate"  />
                 </td>
-                <td class="formAlignRight" width="10%">应还日期</td>
+                <td class="formAlignRight" style="width: 15%">应还日期</td>
                 <td>
                     <input name="returnDate"  style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.returnDate"  />
                 </td>

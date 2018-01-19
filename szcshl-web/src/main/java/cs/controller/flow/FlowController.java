@@ -647,6 +647,9 @@ public class FlowController {
             case FlowConstant.ANNOUNT_MENT_FLOW:
                 resultPage = "annountMent/flow/flowDeal";
                 break;
+            case FlowConstant.BOOKS_BUY_FLOW:
+                resultPage = "bookBuyBusiness/flowEnd";
+                break;
             default:
                 ;
         }

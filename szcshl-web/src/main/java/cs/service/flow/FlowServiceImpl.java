@@ -486,6 +486,7 @@ public class FlowServiceImpl implements FlowService {
         Disjunction dis = Restrictions.disjunction();
         dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
         dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
+        criteria.add(Restrictions.ne(RuProcessTask_.signState.getName(), Constant.EnumState.DELETE.getValue()));
         criteria.add(dis);
         //排除合并评审阶段的次项目数据
         Disjunction dis2 = Restrictions.disjunction();
