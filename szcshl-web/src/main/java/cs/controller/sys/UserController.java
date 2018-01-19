@@ -42,6 +42,13 @@ public class UserController {
 
 
     //@RequiresPermissions("user#fingByOData#post")
+
+    /**
+     * 因排序有问题，直接在页面排序
+     * @param request
+     * @return
+     * @throws ParseException
+     */
     @RequiresAuthentication
     @RequestMapping(name = "获取用户数据", path = "fingByOData", method = RequestMethod.POST)
     @ResponseBody

@@ -12,9 +12,12 @@
         <span class="help-inline">登录名：</span>
         <input type="text" ng-model="vm.model.loginName" operator="like" name="loginName" id="loginName"
                placeholder="请输入">
-        <span class="help-inline" style="margin-left:10px;">电话：</span>
-        <input type="text" ng-model="vm.model.userPhone" operator="like" name="userPhone" id="userPhone"
-               placeholder="请输入">
+        <span class="help-inline" style="margin-left:10px;">在职情况：</span>
+        <select name="jobState" ng-model="vm.model.jobState" >
+            <option value="t">在职</option>
+            <option value="f">已撤职</option>
+            <option value="">所有</option>
+        </select>
         <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.queryUser()">
             <span class="glyphicon glyphicon-search"></span>查询</button>
 

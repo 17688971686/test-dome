@@ -41,7 +41,7 @@ public class User extends DomainBase {
     /**
      * 登录名
      */
-    @Column(columnDefinition = "varchar(64) NOT NULL")
+    @Column(columnDefinition = "varchar(255) NOT NULL")
     private String loginName;
 
     /**
@@ -52,7 +52,7 @@ public class User extends DomainBase {
     /**
      * 密码
      */
-    @Column(columnDefinition = "varchar(64) NOT NULL")
+    @Column(columnDefinition = "varchar(255) NOT NULL")
     private String password;
 
     /**
@@ -64,7 +64,7 @@ public class User extends DomainBase {
     /**
      * 性别
      */
-    @Column(columnDefinition = "varchar(2) ")
+    @Column(columnDefinition = "varchar(10) ")
     private String userSex;
 
     /**
@@ -76,7 +76,7 @@ public class User extends DomainBase {
     /**
      * 联系手机
      */
-    @Column(columnDefinition = "varchar(20) ")
+    @Column(columnDefinition = "varchar(255) ")
     private String userMPhone;
 
     /**
@@ -88,13 +88,13 @@ public class User extends DomainBase {
     /**
      * 在职情况(t表示在职，f表示不在)
      */
-    @Column(columnDefinition = "varchar(2) ")
+    @Column(columnDefinition = "varchar(255) ")
     private String jobState;
 
     /**
      * 是否停用
      */
-    @Column(columnDefinition = "varchar(2) ")
+    @Column(columnDefinition = "varchar(255) ")
     private String useState;
 
     /**
@@ -136,8 +136,8 @@ public class User extends DomainBase {
     /**
      * 登录次数
      */
-    @Column(columnDefinition = "integer")
-    private int loginFailCount;
+    @Column(columnDefinition = "INTEGER")
+    private Integer loginFailCount;
 
     /**
      * 最后登录成功日期
@@ -251,11 +251,11 @@ public class User extends DomainBase {
     }
 
 
-    public int getLoginFailCount() {
+    public Integer getLoginFailCount() {
         return loginFailCount;
     }
 
-    public void setLoginFailCount(int loginFailCount) {
+    public void setLoginFailCount(Integer loginFailCount) {
         this.loginFailCount = loginFailCount;
     }
 

@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,19 +46,21 @@ public class UserServiceImpl implements UserService {
         PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
         Criteria criteria = userRepo.getExecutableCriteria();
         odataObj.buildFilterToCriteria(criteria);
+        criteria.addOrder(Order.desc(User_.jobState.getName())).addOrder(Order.asc(User_.userSort.getName()));
         //排除掉超级管理员
-        criteria.add(Restrictions.ne(User_.loginName.getName(),Constant.SUPER_USER));
-        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        /*Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         pageModelDto.setCount(totalResult);
         criteria.setProjection(null);
         criteria.addOrder(Order.desc(User_.jobState.getName())).addOrder(Order.asc(User_.userSort.getName()));
         criteria.setFirstResult(odataObj.getSkip());
-        criteria.setMaxResults(odataObj.getTop());
+        criteria.setMaxResults(odataObj.getTop());*/
 
         List<User> listUser = criteria.list();
         List<UserDto> userDtoList = new ArrayList<>();
         if(Validate.isList(listUser)){
-            for (int i=0,l=listUser.size();i<l;i++) {
+            int totalCount = listUser.size();
+            pageModelDto.setCount(totalCount);
+            for (int i=0,l=totalCount;i<l;i++) {
                 User item = listUser.get(i);
                 UserDto userDto = new UserDto();
                 BeanCopierUtils.copyProperties(item, userDto);

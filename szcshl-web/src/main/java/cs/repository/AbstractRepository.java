@@ -40,6 +40,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         this.persistentClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
+    @Override
     public Criteria getExecutableCriteria() {
         return DetachedCriteria.forClass(this.getPersistentClass()).getExecutableCriteria(getSession());
     }

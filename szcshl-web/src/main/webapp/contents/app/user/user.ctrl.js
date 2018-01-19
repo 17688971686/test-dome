@@ -72,6 +72,13 @@
 
         activate();
         function activate() {
+            //默认查询在职用户
+            if(!vm.model){
+                vm.model = {};
+            }
+            if(!vm.model.jobState){
+                vm.model.jobState = "t";
+            }
             userSvc.grid(vm);
         }
     }

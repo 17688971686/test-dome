@@ -116,7 +116,7 @@ public class UserDto extends BaseDto {
     /**
      * 登录次数
      */
-    private int loginFailCount;
+    private Integer loginFailCount;
 
     /**
      * 最后登录成功日期
@@ -320,11 +320,11 @@ public class UserDto extends BaseDto {
         this.remark = remark;
     }
 
-    public int getLoginFailCount() {
+    public Integer getLoginFailCount() {
         return loginFailCount;
     }
 
-    public void setLoginFailCount(int loginFailCount) {
+    public void setLoginFailCount(Integer loginFailCount) {
         this.loginFailCount = loginFailCount;
     }
 
