@@ -876,6 +876,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }
                     //专家评审费发放表
                     if ("SIGN_EXPERT_PAY".equals(stageType)) {
+                        expertData.put("reviewCostSum", expertReview.getReviewCost());
+                        expertData.put("reviewTaxesSum", expertReview.getReviewTaxes());
+                        expertData.put("totalCostSum", expertReview.getTotalCost());
                         file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
                     }
                     //专家评分
