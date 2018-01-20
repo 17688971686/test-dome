@@ -370,7 +370,7 @@
                     controller: 'expertEditCtrl',
                     controllerAs: 'vm'
                 })
-                .state('expertReviewEdit', {
+                .state('expertReview', {
                     url: '/expertReview/:businessId/:minBusinessId/:businessType',
                     templateUrl: rootPath + '/expertReview/html/selectExpert.html',
                     controller: 'expertSelectCtrl',
@@ -1031,6 +1031,13 @@
                     url: '/reviewFee',
                     templateUrl: rootPath + "/reviewFee/html/list.html",
                     controller: 'reviewFeeCtrl',
+                    controllerAs: 'vm'
+                })
+                //项目专家抽取修改
+                .state('signwork', {
+                    url: '/signwork',
+                    templateUrl: rootPath + "/signwork/html/list.html",
+                    controller: 'signworkCtrl',
                     controllerAs: 'vm'
                 })
                 //待办的附件右边列表页

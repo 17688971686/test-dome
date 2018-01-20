@@ -102,7 +102,7 @@
                         return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.signid)
                     },
                     filterable: false,
-                    width: 40,
+                    width: 30,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
 
                 },
@@ -116,7 +116,7 @@
                 {
                     field: "",
                     title: "项目名称",
-                    width: 120,
+                    width: 280,
                     filterable: false,
                     template: function (item) {
                         return '<a href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';
@@ -125,19 +125,19 @@
                 {
                     field: "filecode",
                     title: "收文编号",
-                    width: 80,
+                    width: 120,
                     filterable: false,
                 },
                 {
                     field: "designcompanyName",
                     title: "项目单位",
-                    width: 100,
+                    width: 260,
                     filterable: false,
                 },
                 {
                     field: "reviewstage",
-                    title: "项目阶段",
-                    width: 80,
+                    title: "评审阶段",
+                    width: 100,
                     filterable: false,
                 },
                 {
@@ -186,11 +186,18 @@
                     title: "操作",
                     width: 180,
                     template: function (item) {
-                        var isStartFlow = angular.isString(item.processInstanceId);  //如果已经发起流程，则不能编辑
-                        var isRealSign = (item.issign && item.issign == 9)?true:false;
-
+                        var isStartFlow = false;
+                        if(item.processInstanceId){
+                            alert(item.processInstanceId);
+                            isStartFlow = true;
+                        }
+                        var isRealSign = false;
+                        if(item.issign && (item.issign == 9 || item.issign == '9' )){
+                            isRealSign = true;
+                        }
                         //如果已经发起流程，则只能查看
-                        return common.format($('#columnBtns').html(), item.signid, isStartFlow,
+                        return common.format($('#columnBtns').html(),
+                            item.signid, isStartFlow,
                             item.signid + "/" + item.processInstanceId,
                             "vm.del('" + item.signid + "')", isStartFlow,
                             "vm.startNewFlow('" + item.signid + "')", isStartFlow,

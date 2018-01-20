@@ -304,7 +304,7 @@
             vm.matchExpertList = [];
             vm.matchExpertList = vm.matchEPMap[sortIndex];
             $("#matchExpertDiv").kendoWindow({
-                width: "70%",
+                width: "80%",
                 height: "600px",
                 title: "统计专家信息列表",
                 visible: false,
@@ -451,7 +451,7 @@
         //（整体方案抽取）开始随机抽取
         vm.startAutoExpertWin = function () {
             if(!vm.expertReview.id){
-                bsWin.alert("请先进行整体！");
+                bsWin.alert("请先进行整体专家抽取条件设置并保存！");
                 return ;
             }
             if (vm.expertReview.state == 9 || vm.expertReview.state == '9') {
@@ -554,25 +554,39 @@
         vm.affirmAutoExpert = function () {
             var isCheck = $("#allAutoEPTable input[name='autoEPCheck']:checked");
             if(isCheck.length < 1){
-                bsWin.alert("请选择要确认的抽取专家！");
-                return ;
-            }
-            var ids = [];
-            for (var i = 0; i < isCheck.length; i++) {
-                ids.push(isCheck[i].value);
-            }
-            expertReviewSvc.affirmAutoExpert(vm.minBusinessId,vm.businessType,ids.join(","),'9',function(data){
-                if(data.flag || data.reCode=='ok'){
-                    vm.reFleshConfirmState(ids,"9");
-                    vm.checkAutoOfficeExpert = false;
-                    vm.checkAutoAntiExpert = false;
-                    bsWin.success(data.reMsg);
-                }else{
-                    bsWin.error(data.reMsg);
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "您还没选择专家，确定没有合适的专家么？",
+                    onOk: function () {
+                        var conditionList = vm.expertReview.expertSelConditionDtoList
+                        //每个抽取条件的抽取次数加1
+                        $.each(conditionList, function (c, con) {
+                            if(!con.selectIndex || con.selectIndex < 1){
+                                con.selectIndex = 1;
+                            }else{
+                                con.selectIndex = con.selectIndex + 1;
+                            }
+                        })
+                        vm.expertReview.expertSelConditionDtoList = conditionList;
+                        window.parent.$("#aotuExpertDiv").data("kendoWindow").close();
+                    }
+                });
+            }else{
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
                 }
-
-            })
-
+                expertReviewSvc.affirmAutoExpert(vm.minBusinessId,vm.businessType,ids.join(","),'9',function(data){
+                    if(data.flag || data.reCode=='ok'){
+                        vm.reFleshConfirmState(ids,"9");
+                        vm.checkAutoOfficeExpert = false;
+                        vm.checkAutoAntiExpert = false;
+                        bsWin.success(data.reMsg);
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                })
+            }
         }
 
         //确定实际参加会议的专家

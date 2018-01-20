@@ -28,7 +28,6 @@
                 title: "询问提示",
                 message: "确认删除该条项目数据吗？",
                 onOk: function () {
-                    $('.confirmDialog').modal('hide');
                     signSvc.deleteSign(signid,function(data){
                         if(data.flag || data.reCode == 'ok'){
                             bsWin.alert("删除成功！",function(){

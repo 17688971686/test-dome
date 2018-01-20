@@ -188,4 +188,18 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
 
         return findByHql(hqlBuilder);
     }
+
+    /**
+     * 根据ID判断是否是想验证的评审方式
+     * @param reviewType
+     * @param workProgramId
+     * @return
+     */
+    @Override
+    public boolean checkReviewType(String reviewType, String workProgramId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select count(wp.id) from CS_WORK_PROGRAM wp where WP.ID = :workProgramId and WP.REVIEWTYPE = :reviewType ");
+        sqlBuilder.setParam("workProgramId",workProgramId).setParam("reviewType",reviewType);
+        return (returnIntBySql(sqlBuilder)>0);
+    }
 }

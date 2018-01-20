@@ -3,6 +3,8 @@ package cs.repository.repositoryImpl.expert;
 import java.util.List;
 
 import cs.domain.expert.Expert;
+import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertSelConditionDto;
 import cs.repository.IRepository;
 import cs.repository.odata.ODataObj;
 
@@ -42,4 +44,13 @@ public interface ExpertRepo extends IRepository<Expert, String> {
      * @param expertID
      */
     void updateExpertCompositeScore(String expertID);
+
+    /**
+     * 根据抽取条件，获取抽取的专家
+     * @param minBusinessId
+     * @param reviewId
+     * @param epSelCondition
+     * @return
+     */
+    List<ExpertDto> fingDrafExpert(String minBusinessId, String reviewId, ExpertSelConditionDto epSelCondition);
 }

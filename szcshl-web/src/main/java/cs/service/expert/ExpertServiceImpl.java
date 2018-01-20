@@ -315,60 +315,7 @@ public class ExpertServiceImpl implements ExpertService {
      */
     @Override
     public List<ExpertDto> countExpert(String minBusinessId, String reviewId, ExpertSelConditionDto epSelCondition) {
-
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select ep.* FROM CS_EXPERT ep ");
-        //1、关联本周未满2次，本季度不超过12次的专家
-        hqlBuilder.append(" LEFT JOIN (  SELECT er.EXPERTID, COUNT (er.EXPERTID)  FROM ( ");
-        hqlBuilder.append(" SELECT EP_SEL.EXPERTID, EP_REV.ID, EP_REV.REVIEWDATE FROM CS_EXPERT_SELECTED ep_sel , CS_EXPERT_REVIEW ep_rev ");
-        hqlBuilder.append(" WHERE EP_SEL.EXPERTREVIEWID = EP_REV.ID AND TO_CHAR (ep_rev.REVIEWDATE, 'q') = TO_CHAR (SYSDATE, 'q') ");
-        hqlBuilder.append(" AND EP_SEL.ISCONFRIM =:isConfrim AND EP_SEL.ISJOIN =:isJoin ) er GROUP BY er.EXPERTID ");
-        hqlBuilder.setParam("isConfrim", Constant.EnumState.YES.getValue()).setParam("isJoin", Constant.EnumState.YES.getValue());
-        hqlBuilder.append(" HAVING COUNT (TO_CHAR (er.REVIEWDATE, 'q')) > 12 OR COUNT (TO_CHAR (er.REVIEWDATE, 'yyyy-iw')) > 2) fep ");
-        hqlBuilder.append(" ON fep.EXPERTID = EP.EXPERTID ");
-        //2、排除跟工作方案单位的专家(保留，不影响)
-        hqlBuilder.append(" LEFT JOIN (SELECT WP.ID ID, WP.BUILDCOMPANY bcp, WP.DESIGNCOMPANY dcp ");
-        hqlBuilder.append(" FROM CS_WORK_PROGRAM wp WHERE WP.ID = :wpid ) lwp ").setParam("wpid", minBusinessId);
-        hqlBuilder.append(" ON (lwp.bcp = ep.COMPANY OR lwp.dcp = ep.COMPANY) ");
-        //3、排除本次已经选择的专家
-        hqlBuilder.append(" LEFT JOIN CS_EXPERT_SELECTED cursel ON CURSEL.EXPERTID = EP.EXPERTID AND CURSEL.EXPERTREVIEWID =:reviewId ");
-        hqlBuilder.setParam("reviewId", reviewId);
-        //4、抽取专家只能是正式专家
-        hqlBuilder.append(" WHERE ep.STATE = :state ");
-        hqlBuilder.setParam("state", EnumExpertState.OFFICIAL.getValue());
-        hqlBuilder.append(" AND fep.EXPERTID IS NULL ");
-        hqlBuilder.append(" AND lwp.ID IS NULL ");
-        hqlBuilder.append(" AND CURSEL.ID IS NULL ");
-
-
-        //加上选择的条件
-        if (Validate.isString(epSelCondition.getMaJorBig()) || Validate.isString(epSelCondition.getMaJorSmall()) || Validate.isString(epSelCondition.getExpeRttype()) || epSelCondition.getCompositeScore() != null) {
-            hqlBuilder.append(" AND (select count(ept.ID) from CS_EXPERT_TYPE ept where ept.expertid = ep.expertid ");
-            buildCondition(hqlBuilder, "ept", epSelCondition);
-            hqlBuilder.append(" ) > 0 ");
-        }
-
-        //综合评分条件筛选
-        if (epSelCondition.getCompositeScore() != null && epSelCondition.getCompositeScore() > 0) {
-            hqlBuilder.append(" and  ep.compositeScore >= :compositeScore");
-            hqlBuilder.setParam("compositeScore", epSelCondition.getCompositeScore());
-        }
-        if (epSelCondition.getCompositeScoreEnd() != null && epSelCondition.getCompositeScoreEnd() > 0) {
-            hqlBuilder.append(" and  ep.compositeScore <= :compositeScoreEnd");
-            hqlBuilder.setParam("compositeScoreEnd", epSelCondition.getCompositeScoreEnd());
-        }
-        List<Expert> listExpert = expertRepo.findBySql(hqlBuilder);
-        List<ExpertDto> listExpertDto = new ArrayList<>();
-        if (Validate.isList(listExpert)) {
-            listExpert.forEach(el -> {
-                //把图片设置为空
-                el.setPhoto(null);
-                ExpertDto epDto = new ExpertDto();
-                BeanCopierUtils.copyProperties(el, epDto);
-                listExpertDto.add(epDto);
-            });
-        }
-        return listExpertDto;
+        return  expertRepo.fingDrafExpert(minBusinessId,reviewId,epSelCondition);
     }
 
     /**
@@ -438,18 +385,15 @@ public class ExpertServiceImpl implements ExpertService {
         ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.id.getName(), reviewId);
         //如果是项目，则判断是否是专家函评
         if (Constant.BusinessType.SIGN.getValue().equals(expertReview.getBusinessType())) {
-            WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(), minBusinessId);
-            if ("专家函评".equals(wp.getReviewType())) {
-                isLetterRw = true;
-            }
+            isLetterRw = workProgramRepo.checkReviewType(Constant.MergeType.REVIEW_LEETER.getValue(),minBusinessId);
         }
 
         //如果是再次抽取(再次抽取是单个条件抽取)，要判断选定的专家是否已经满足条件，如已经满足，则不允许再次抽取
         if (paramArrary.length == 1 && Validate.isString(paramArrary[0].getId())) {
             ExpertSelCondition expertSelCondition = expertSelConditionRepo.findById(ExpertSelCondition_.id.getName(), paramArrary[0].getId());
             if (expertSelCondition != null && expertSelCondition.getSelectIndex() > 0) {
-                if (expertSelCondition.getSelectIndex() == 3) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您已经进行3次专家抽取，不能再进行抽取操作！");
+                if (expertSelCondition.getSelectIndex() > 2) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该条件已经进行3次专家抽取，不能再进行专家抽取！");
                 }
                 notFirstTime = true;
             }
@@ -582,7 +526,8 @@ public class ExpertServiceImpl implements ExpertService {
             aExpertSelected.setExpert(aEP);                 //保存专家映射
             aExpertSelected.setExpertReview(expertReview);  //保存抽取条件映射
             aExpertSelected.setBusinessId(minBusinessId);   //专家抽取业务ID
-            if (isLetterRw) {                                 //是否专家函评
+            //是否专家函评
+            if (isLetterRw) {
                 aExpertSelected.setIsLetterRw(Constant.EnumState.YES.getValue());
             } else {
                 aExpertSelected.setIsLetterRw(Constant.EnumState.NO.getValue());

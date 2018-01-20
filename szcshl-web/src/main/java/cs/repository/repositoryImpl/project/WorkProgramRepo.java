@@ -44,4 +44,12 @@ public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
      * @return
      */
     List<WorkProgram> findMergeWP(String signid);
+
+    /**
+     * 根据ID判断是否是想验证的评审方式
+     * @param reviewType
+     * @param workProgramId
+     * @return
+     */
+    boolean checkReviewType(String reviewType, String workProgramId);
 }
