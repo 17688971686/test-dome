@@ -466,13 +466,13 @@ public class CreateTemplateUtils {
         dataMap.put("reviewStage", sign.getReviewstage());
         dataMap.put("sendFileUnit", "深圳市人民检察院");
         dataMap.put("studyBeginTime", DateUtils.converToString(workProgram.getStudyBeginTime(), "yyyy年MM月dd日"));
-        dataMap.put("contactPerson", user.getDisplayName());//联系人
-        dataMap.put("contactPersonTel", user.getUserPhone());//联系电话
+        dataMap.put("contactPerson", user.getDisplayName() == null ? "" : user.getDisplayName());//联系人
+        dataMap.put("contactPersonTel", user.getUserPhone() == null ? "" : user.getUserPhone());//联系电话
         dataMap.put("contactPersonFax", "83642081");//传真
         dataMap.put("contactPersonAddress", "深圳市政府投资项目评审中心");
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
         //获得会议信息
-        SysFile sysFile = null;
+        SysFile sysFile = new SysFile();
         if (rbList != null && rbList.size() > 0) {
             Date compareDate = DateUtils.converToDate("12:00", "HH:MM");
             for (RoomBooking roomBooking : rbList) {
@@ -510,7 +510,7 @@ public class CreateTemplateUtils {
      */
     public static List<SysFile> createTemplateMeeting(Ftp f,Sign sign, WorkProgram workProgram,List<RoomBooking> rbList) {
         List<SysFile> sysFileList = new ArrayList<>();
-        SysFile sysFile = null;
+        SysFile sysFile = new SysFile();
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
@@ -559,13 +559,13 @@ public class CreateTemplateUtils {
         dataMap.put("expertName", expert.getName());
         dataMap.put("projectName", sign.getProjectname());
         dataMap.put("studyBeginTime", DateUtils.converToString(workProgram.getStudyBeginTime(), "yyyy年MM月dd日"));
-        dataMap.put("contactPerson", user.getDisplayName());//联系人
-        dataMap.put("contactPersonTel", user.getUserPhone());//联系电话
+        dataMap.put("contactPerson", user.getDisplayName() == null ? "" : user.getDisplayName());//联系人
+        dataMap.put("contactPersonTel", user.getUserPhone() == null ? "" : user.getUserPhone());//联系电话
         dataMap.put("contactPersonFax", "83642081");//传真
         dataMap.put("contactPersonAddress", "深圳市政府投资项目评审中心");
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
         //获得会议信息
-        SysFile sysFile = null;
+        SysFile sysFile = new SysFile();
         if (rbList != null && rbList.size() > 0) {
             Date compareDate = DateUtils.converToDate("12:00", "HH:mm");
             for (RoomBooking roomBooking : rbList) {
@@ -625,11 +625,11 @@ public class CreateTemplateUtils {
         }
         dataMap.put("expertName", expertName);
         dataMap.put("expertType", expertType);
-        dataMap.put("maindeptName", sign.getMaindeptName());//主办事处名称
-        dataMap.put("assistdeptName", sign.getAssistdeptName());//协办事处名称
-        dataMap.put("mainDeptName", sign.getMaindeptName());//主管部门名称
-        dataMap.put("builtcompanyName", sign.getBuiltcompanyName());//建设单位
-        dataMap.put("designcompanyName", sign.getDesigncompanyName());//编制单位
+        dataMap.put("maindeptName", sign.getMaindeptName() == null ? "" : sign.getMaindeptName());//主办事处名称
+        dataMap.put("assistdeptName", sign.getAssistdeptName() == null ? "" : sign.getAssistdeptName());//协办事处名称
+        dataMap.put("mainDeptName", sign.getMaindeptName() == null ? "" : sign.getMaindeptName());//主管部门名称
+        dataMap.put("builtcompanyName", sign.getBuiltcompanyName() == null ? "" : sign.getBuiltcompanyName());//建设单位
+        dataMap.put("designcompanyName", sign.getDesigncompanyName() == null ? "" : sign.getDesigncompanyName());//编制单位
 
         String reviewGroupmembers = "";
         reviewGroupmembers += sign.getLeaderName() == null ? "" : sign.getLeaderName()
@@ -642,11 +642,11 @@ public class CreateTemplateUtils {
 //        dataMap.put("ministerName", workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName());//部长名
 //        dataMap.put("mianChargeUserName", workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName()); //第一负责人
 //        dataMap.put("secondChargeUserName", workProgram.getSecondChargeUserName() == null ? "" : workProgram.getSecondChargeUserName()); //第二负责人
-        dataMap.put("projectBackGround", workProgram.getProjectBackGround());
-        dataMap.put("buildSize", workProgram.getBuildSize());
-        dataMap.put("buildContent", workProgram.getBuildContent());
-        dataMap.put("appalyInvestment", workProgram.getAppalyInvestment());//申报金额
-        dataMap.put("mainPoint", workProgram.getMainPoint());//拟评审重点问题
+        dataMap.put("projectBackGround", workProgram.getProjectBackGround() == null ? "" : workProgram.getProjectBackGround());
+        dataMap.put("buildSize", workProgram.getBuildSize() == null ? "" : workProgram.getBuildSize());
+        dataMap.put("buildContent", workProgram.getBuildContent() == null ? "" : workProgram.getBuildContent());
+        dataMap.put("appalyInvestment", workProgram.getAppalyInvestment() == null ? 0 : workProgram.getAppalyInvestment());//申报金额
+        dataMap.put("mainPoint", workProgram.getMainPoint() == null ? "" : workProgram.getMainPoint());//拟评审重点问题
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
@@ -671,20 +671,20 @@ public class CreateTemplateUtils {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("workreviveStage", "");
         if (org != null) {
-            dataMap.put("orgName", org.getName());
-            dataMap.put("orgAddress", org.getOrgAddress());
-            dataMap.put("orgMLeader", org.getOrgMLeader());
-            dataMap.put("orgPhone", org.getOrgPhone());
-            dataMap.put("orgFax", org.getOrgFax());
+            dataMap.put("orgName", org.getName() == null ? "" : org.getName());
+            dataMap.put("orgAddress", org.getOrgAddress() == null ? "" : org.getOrgAddress());
+            dataMap.put("orgMLeader", org.getOrgMLeader() == null ? "" : org.getOrgMLeader());
+            dataMap.put("orgPhone", org.getOrgPhone() == null ? "" : org.getOrgPhone());
+            dataMap.put("orgFax", org.getOrgFax() == null ? "" : org.getOrgFax());
         }
         if (assistUnit != null) {
-            dataMap.put("unitName", assistUnit.getUnitName());
-            dataMap.put("address", assistUnit.getAddress());
-            dataMap.put("phoneNum", assistUnit.getPhoneNum());
-            dataMap.put("principalName", assistUnit.getPrincipalName());
-            dataMap.put("contactFax", assistUnit.getContactFax());
+            dataMap.put("unitName", assistUnit.getUnitName() == null ? "" : assistUnit.getUnitName());
+            dataMap.put("address", assistUnit.getAddress() == null ? "" : assistUnit.getAddress());
+            dataMap.put("phoneNum", assistUnit.getPhoneNum() == null ? "" : assistUnit.getPhoneNum());
+            dataMap.put("principalName", assistUnit.getPrincipalName() == null ? "" : assistUnit.getPrincipalName());
+            dataMap.put("contactFax", assistUnit.getContactFax() == null ? "" : assistUnit.getContactFax());
         }
-        dataMap.put("projectName", sign.getProjectname());
+        dataMap.put("projectName", sign.getProjectname() == null ? "" : sign.getProjectname());
         if (!apsList.isEmpty()) {
             AssistPlanSign assistPlanSign = apsList.get(0);
             AssistPlan assistPlan = assistPlanSign.getAssistPlan();
@@ -692,11 +692,11 @@ public class CreateTemplateUtils {
             Date reportTime = assistPlan.getReportTime();
             Date finishTime = DateUtils.addDay(reportTime, (int) assistDays);
             dataMap.put("finishTime", DateUtils.converToString(finishTime, "yyyy年MM月dd日")); //建设规模
-            dataMap.put("estimateCost", assistPlanSign.getEstimateCost()); //建设规模
-            dataMap.put("assistCost", assistPlanSign.getAssistCost()); //协审费用
+            dataMap.put("estimateCost", assistPlanSign.getEstimateCost() == null ? "" : assistPlanSign.getEstimateCost()); //建设规模
+            dataMap.put("assistCost", assistPlanSign.getAssistCost() == null ? 0 : assistPlanSign.getAssistCost()); //协审费用
         }
-        dataMap.put("assistDeptUserName", sign.getAssistdeptName()); //协办事处联系人
-        dataMap.put("mainDeptUserName", sign.getMainDeptUserName()); //主办事处联系人
+        dataMap.put("assistDeptUserName", sign.getAssistdeptName() == null ? "" : sign.getAssistdeptName()); //协办事处联系人
+        dataMap.put("mainDeptUserName", sign.getMainDeptUserName() == null ? "" : sign.getMainDeptUserName()); //主办事处联系人
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
@@ -731,7 +731,7 @@ public class CreateTemplateUtils {
         dataMap.put("contactPersonAddress", "深圳市政府投资项目评审中心");
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
         //获得会议信息
-        SysFile sysFile = null;
+        SysFile sysFile = new SysFile();
         if (rbList != null && rbList.size() > 0) {
             Date compareDate = DateUtils.converToDate("12:00", "HH:MM");
             for (RoomBooking roomBooking : rbList) {
@@ -819,7 +819,7 @@ public class CreateTemplateUtils {
         dataMap.put("contactPersonAddress", "深圳市政府投资项目评审中心");
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
         //获得会议信息
-        SysFile sysFile = null;
+        SysFile sysFile = new SysFile();
         if (rbList != null && rbList.size() > 0) {
             Date compareDate = DateUtils.converToDate("12:00", "HH:mm");
             for (RoomBooking roomBooking : rbList) {
@@ -854,7 +854,7 @@ public class CreateTemplateUtils {
      */
     public static List<SysFile> subjectStudyMeeting(Ftp f,Sign sign, WorkProgram workProgram,List<RoomBooking> rbList) {
         List<SysFile> sysFileList = new ArrayList<>();
-        SysFile sysFile = null;
+        SysFile sysFile = new SysFile();
         Map<String, Object> dataMap = new HashMap<>();
         Date compareDate = DateUtils.converToDate("12:00", "HH:mm");
         if (!rbList.isEmpty()) {

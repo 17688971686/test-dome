@@ -15,7 +15,7 @@
     <table class="table table-bordered" >
         <tr class="active">
             <td>文件名称</td>
-            <td style="width: 10%;" align="center" bgcolor="#eeeeee">文件大小</td>
+           <!-- <td style="width: 10%;" align="center" bgcolor="#eeeeee">文件大小</td>-->
             <td style="width: 15%;;" align="center">附件类型</td>
             <td style="width: 10%;" align="center">上传人</td>
             <td style="width: 15%;" align="center">时间</td>
@@ -30,7 +30,7 @@
                 <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
                 <a ng-click="vm.commonDownloadSysFile(x.sysFileId)">{{ x.showName }}</a>
             </td>
-            <td style="text-align: center;">{{ x.fileSizeStr }}</td>
+            <!--<td style="text-align: center;">{{ x.fileSizeStr }}</td>-->
             <td style="text-align: center;">{{ x.sysBusiType }}</td>
             <td style="text-align: center;">{{ x.createdBy }}</td>
             <td style="text-align: center;">{{ x.createdDate }}</td>
