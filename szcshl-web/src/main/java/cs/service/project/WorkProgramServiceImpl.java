@@ -448,29 +448,23 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),sysFileService.findFtpId());
         //2.1 生成签到表
         SysFile sysFile1 = CreateTemplateUtils.createtTemplateSignIn(f,sign, workProgram);
-        if(sysFile1 != null){
+        if(sysFile1 != null && Validate.isString(sysFile1.getSysFileId())){
             saveFile.add(sysFile1);
-        }else{
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理" , null);
         }
 
 
         //2.2 生成主持人表
         SysFile sysFile2 = CreateTemplateUtils.createTemplateCompere(f,sign, workProgram, expertList);
-        if(sysFile2 != null){
+        if(sysFile2 != null && Validate.isString(sysFile2.getSysFileId())){
             saveFile.add(sysFile2);
-        }else{
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
         }
 
         //2.3 会议议程
         List<SysFile> sList = CreateTemplateUtils.createTemplateMeeting(f,sign, workProgram, roomBookings);
         if (sList != null && sList.size() > 0) {
             for (SysFile sysFile : sList) {
-                if(saveFile !=null){
+                if(saveFile !=null && Validate.isString(sysFile.getSysFileId())){
                     saveFile.add(sysFile);
-                }else{
-                    return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
                 }
             }
         }
@@ -478,22 +472,18 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         //2.4 邀请函
         for (Expert expert : expertList) {
             SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f,sign, workProgram, expert, user, roomBookings);
-            if (invitation != null) {
+            if (invitation != null && Validate.isString(invitation.getSysFileId())) {
                 saveFile.add(invitation);
-            }else{
-                return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
             }
         }
 
         //2.5 会议通知
         SysFile notice = CreateTemplateUtils.createTemplateNotice(f,sign, workProgram, user, roomBookings);
-        if (notice != null) {
+        if (notice != null && Validate.isString(notice.getSysFileId())) {
             saveFile.add(notice);
-        }else{
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
         }
 
-        //协审协议书
+        //2.6协审协议书
         HqlBuilder queryaps = HqlBuilder.create();
         queryaps.append(" from " + AssistPlanSign.class.getSimpleName() + " where " + AssistPlanSign_.signId.getName() + " =:signID");
         queryaps.setParam("signID", signId);
@@ -508,11 +498,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             org = orgRepo.findById(sign.getMaindepetid());//甲方
         }
         SysFile sysFile3 = CreateTemplateUtils.createTemplateAssist(f,sign, workProgram, apsList, assistUnit, org);
-        if(sysFile3 != null){
+        if(sysFile3 != null  && Validate.isString(sysFile3.getSysFileId())){
 
             saveFile.add(sysFile3);
-        }else{
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
         }
 
         //3、保存文件信息
@@ -527,6 +515,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 sysFileRepo.delete(sf.getMainId(),sf.getBusinessId(),sf.getSysBusiType(),sf.getShowName());
             });
             sysFileRepo.bathUpdate(saveFile);
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
         }
         //4、更改工作方案状态
         workProgram.setIsCreateDoc(EnumState.YES.getValue());
@@ -568,7 +558,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             workDto.setMianChargeUserName(mainWork.getMianChargeUserName());
             workDto.setSecondChargeUserName(mainWork.getSecondChargeUserName());
         }
-        if(Constant.EnumState.NO.getValue().equals(workDto.getIsMainProject()) ){//次项目
+        if(Constant.EnumState.NO.getValue().equals(workDto.getIsMainProject()) && EnumState.NO.equals(workDto.getIsSigle())){//次项目
             //查找主项目信息，并且获取主项目的会议室信息和专家信息
             WorkProgram wp = workProgramRepo.findMainReviewWP(workDto.getSignId());
             workProgramRepo.initWPMeetingExp(workDto, wp);
