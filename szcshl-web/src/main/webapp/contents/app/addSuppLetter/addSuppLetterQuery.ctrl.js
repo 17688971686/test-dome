@@ -44,6 +44,7 @@
          */
         vm.showSuppLetterDetail = function(item){
             vm.suppletter = item || {};
+            vm.isDisplay=true;
             $("#suppLetterDetailDiv").kendoWindow({
                 width: "70%",
                 height: "620px",
