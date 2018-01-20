@@ -54,7 +54,7 @@
         <td class="text-center" ng-show="vm.showTotalInvestment">总投资<span class="required">*</span></td>
         <td colspan="3" ng-show="vm.showTotalInvestment">
             <input type="text" ng-model="vm.work.totalInvestment" name="totalInvestment"
-                   id="totalInvestment" data-val-digits="只能为数字" data-val="true" data-val-required="必填">
+                   id="totalInvestment" data-val-number="只能为数字" data-val="true" data-val-required="必填">
             万元
             <span data-valmsg-for="totalInvestment" data-valmsg-replace="true" class="errors"></span>
         </td>
@@ -245,7 +245,7 @@
     <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="vm.work.reviewType == '自评' ">
         <td class="text-center">专家费用（元）</td>
         <td colspan="7">
-            <input type="text"  ng-model="vm.work.expertCost" ng-value="0" name="expertCost" data-val-digits="只能为数字">
+            <input type="text"  ng-model="vm.work.expertCost" ng-value="0" name="expertCost" data-val-number="只能为数字">
             <span data-valmsg-for="expertCost" data-valmsg-replace="true" class="errors"></span>
         </td>
     </tr>
