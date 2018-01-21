@@ -121,4 +121,21 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
         }
         return resultMsg;
     }
+
+    /**
+     * 是否存在同名文件
+     * @param fileUrl
+     * @param fileName
+     * @return
+     */
+    @Override
+    public SysFile isExistFile(String fileUrl, String fileName) {
+        SysFile sysFile = null;
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.like(SysFile_.fileUrl.getName(), "" + fileUrl + "%"));
+        criteria.add(Restrictions.eq(SysFile_.showName.getName(), fileName));
+        List<SysFile> sysFiles = criteria.list();
+        if(sysFiles.size()>0) sysFile = sysFiles.get(0);
+        return sysFile;
+    }
 }
