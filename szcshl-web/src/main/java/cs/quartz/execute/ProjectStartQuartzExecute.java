@@ -98,7 +98,7 @@ public class ProjectStartQuartzExecute implements Job{
                 }else{
                     int countDay = QuartzUnit.countWorkday(workdayList,(projectStop.getPausetime()==null?projectStop.getCreatedDate():projectStop.getPausetime()));
                     //判断暂定天数是否大于或等于填写的天数，并修改状态，并且记录启动时间
-                    if(countDay > projectStop.getExpectpausedays()){
+                    if(projectStop.getExpectpausedays() != null && countDay > projectStop.getExpectpausedays()){
                         projectStop.setIsOverTime(Constant.EnumState.YES.getValue());
                         //实际启动日期
                         projectStop.setStartTime(new Date());
