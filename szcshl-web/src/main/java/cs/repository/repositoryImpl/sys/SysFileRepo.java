@@ -31,4 +31,13 @@ public interface SysFileRepo extends IRepository<SysFile, String> {
      * @return
      */
     ResultMsg deleteByFileId(String sysFileId);
+
+
+	/**
+	 * 是否存在同名文件
+	 * @param FileUrl
+	 * @param fileName
+	 * @return
+	 */
+	SysFile isExistFile(String fileUrl,String fileName);
 }

@@ -26,10 +26,10 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.FtpRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.archives.ArchivesLibraryService;
 import cs.service.expert.ExpertService;
 import cs.service.project.*;
-import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
 import cs.service.topic.TopicInfoService;
 import org.apache.commons.net.ftp.FTPFile;
@@ -51,10 +51,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
-
 import static cs.common.Constant.*;
-import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
-import static cs.common.Constant.RevireStageKey.KEY_FTPIP;
+
 
 
 /**
@@ -97,6 +95,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     private AddSuppLetterRepo addSuppLetterRepo;
     @Autowired
     private AddRegisterFileRepo addRegisterFileRepo;
+
+    @Autowired
+    private SysFileRepo sysFileRepo;
 
     @Autowired
     private FtpRepo ftpRepo;
@@ -205,22 +206,39 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         try {
             String fileUploadPath = SysFileUtil.getUploadPath();
             String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
-
             Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), fileService.findFtpId());
             boolean linkSucess = FtpUtil.connectFtp(f, true);
             if (linkSucess) {
                 for (MultipartFile multipartFile : multipartFileList) {
                     String fileName = multipartFile.getOriginalFilename();
                     String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+                    SysFile sysFile =  sysFileRepo.isExistFile(relativeFileUrl,fileName);
                     //统一转成小写
                     fileType = fileType.toLowerCase();
+                    String uploadFileName = "";
+                    if(null != sysFile){
+                        String fileUrl = sysFile.getFileUrl();
+                        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+                        if(relativeFileUrl.equals(removeRelativeUrl)){
+                            uploadFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator)+1,fileUrl.length());
+                        }
+                    }else{
+                         uploadFileName = Tools.generateRandomFilename().concat(fileType);
+                    }
                     //上传到ftp,
-                    String uploadFileName = Tools.generateRandomFilename().concat(fileType);
                     linkSucess = FtpUtil.uploadFile(relativeFileUrl, uploadFileName, multipartFile.getInputStream());
                     if (linkSucess) {
                         //保存数据库记录
-                        resultMsg = fileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
-                                relativeFileUrl + File.separator + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
+                        if(null != sysFile){
+                            sysFile.setModifiedBy(SessionUtil.getDisplayName());
+                            sysFile.setModifiedDate(new Date());
+                            fileService.update(sysFile);
+                            resultMsg =  new ResultMsg(true, Constant.MsgCode.OK.getValue(),"文件上传成功！");
+                        }else{
+                            resultMsg = fileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
+                                    relativeFileUrl + File.separator + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
+                        }
+
                     } else {
                         errorMsg.append(fileName + "附件上传失败，无法上传到文件服务器！");
                     }
@@ -238,6 +256,16 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         return resultMsg;
     }
 
+    /**
+     * 上传文件判断是否存在同名文件
+     * @param fileUrl
+     * @param fileName
+     * @return
+     */
+    private boolean isExistFile(String fileUrl,String fileName){
+
+        return true;
+    }
 
     /**
      * 文件上传保留本地（预留）
