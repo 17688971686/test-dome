@@ -151,7 +151,7 @@
         function grid(vm) {
 
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+  /*          var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(url_assistUnit+"/fingByOData",$("#assistUnitform")),
                 schema: common.kendoGridConfig().schema({
@@ -181,7 +181,8 @@
 	                }
                 ]
 	               
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(url_assistUnit+"/fingByOData?$orderby=unitSort",$("#assistUnitform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
             // End:dataSource
 
             // Begin:column
@@ -275,9 +276,9 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
                 resizable: true
             };
 

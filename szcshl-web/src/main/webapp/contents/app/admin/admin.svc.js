@@ -568,7 +568,7 @@
 
         //S_在办项目
         function dtasksGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
+    /*        var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform"),{filter: "signState ne 7"}),
                 schema: {
@@ -588,7 +588,8 @@
                     field: "createdDate",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/flow/html/doingtasks",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
             var columns = [
                 {
                     field: "",
@@ -638,7 +639,7 @@
                     filterable: false,
                     width: "18%",
                     template: function (item) {
-                        return '<a href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
+                        return '<a ng-click="vm.saveView()" href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                     }
                 },
                 {
@@ -712,20 +713,11 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
 
             };
         }//E_dtasksGrid
@@ -733,7 +725,7 @@
         //begin_getSignList
         function getSignList(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+     /*       var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#searchform"),{filter: "signState ne 7"}),
                 schema: common.kendoGridConfig().schema({
@@ -752,7 +744,9 @@
                     field: "receivedate",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+
             // End:dataSource
 
             // Begin:column
@@ -777,9 +771,9 @@
                             }
                         }else{
                             if (item.processInstanceId) {
-                                return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                                return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
                             } else {
-                                return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                                return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
                             }
                         }
 
@@ -938,11 +932,14 @@
             vm.signListOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
+                /*  pageable: common.kendoGridConfig().pageable,*/
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound /*function () {
+
+                 /*                dataBound: function () {
                     var rows = this.items();
                     var page = this.pager.page() - 1;
                     var pagesize = this.pager.pageSize();
@@ -951,7 +948,7 @@
                         var rowLabel = $(this).find(".row-number");
                         $(rowLabel).html(index);
                     });
-                }
+                }*/
             };
         }//end_getSignList
 
@@ -975,7 +972,7 @@
 
         //begin persontasksGrid
         function personMainTasksGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
+/*            var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks", $("#searchform")),
                 schema: {
@@ -995,7 +992,8 @@
                     field: "signdate",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/html/personMainTasks?$orderby=signdate desc",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
             var columns = [
                 {
                     field: "",
@@ -1055,9 +1053,9 @@
                     filterable: false,
                     template: function (item) {
                         if (item.processInstanceId) {
-                            return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
                         } else {
-                            return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
                         }
 
                     }
@@ -1173,42 +1171,14 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
             };
 
             // End:column
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
-
-            };
         }
 
         //end persontasksGrid
@@ -1321,7 +1291,7 @@
 
         //S_所有在办任务
         function doingTaskGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
+      /*      var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask", $('#doingTaskForm')),
                 schema: {
@@ -1341,7 +1311,8 @@
                     field: "createTime",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask?$orderby=createTime desc",$("#doingTaskForm"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
             var columns = [
                 {
                     field: "",
@@ -1355,7 +1326,7 @@
                     filterable: false,
                     width: "30%",
                     template: function (item) {
-                        return '<a href="#/flowDetail/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/' + item.instanceId + '" >' + item.instanceName + '</a>';
+                        return '<a ng-click="vm.saveView()" href="#/flowDetail/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/' + item.instanceId + '" >' + item.instanceName + '</a>';
                     }
                 },
                 {
@@ -1402,20 +1373,11 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
 
             };
         }//S_doingTaskGrid

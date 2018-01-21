@@ -47,6 +47,7 @@
     <div class="well well-sm">
         <form id="searchform" name="searchform">
             <table style="width:100%" id="searchTable">
+                <input type="text"  name="signState" operator="ne" value="7" hidden="hidden">
                 <tr>
                     <td class="text-right" style="width:10%;min-width: 80px;max-width-width:120px;">项目名称</td>
                     <td colspan="3" style="width: 40%;">
@@ -78,9 +79,9 @@
                     <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">项目类型</td>
                     <td width="15%">
                         <select name="projectType" operator="eq" class="form-control select-sm"
-                                ng-model="vm.project.projecttype">
+                                ng-model="vm.project.projectType" >
                             <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
+                            <option  ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.projectType==x.dictName" >{{x.dictName}}
                             </option>
                         </select>
                     </td>
@@ -89,7 +90,7 @@
                         <select name="mOrgId" class="form-control select-sm " operator="eq"
                                 ng-model="vm.project.mOrgId">
                             <option value="">请选择</option>
-                            <option ng-repeat="x in vm.orgDeptList" value="{{x.id}}">{{x.name}}</option>
+                            <option ng-repeat="x in vm.orgDeptList" value="{{x.id}}" ng-selected="vm.project.mOrgId==x.id" >{{x.name}}</option>
                         </select>
                     </td>
                     <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">缓急程度</td>
@@ -97,7 +98,7 @@
                         <select operator="eq" name="urgencydegree" class="form-control select-sm "
                                 ng-model="vm.project.urgencydegree">
                             <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                            <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}" ng-selected="vm.project.urgencydegree==x.dictName" >{{x.dictName}}</option>
                         </select>
                     </td>
                 </tr>
@@ -112,7 +113,7 @@
                         <select operator="eq" name="secrectlevel" ng-model="vm.project.secrectlevel"
                                 class="form-control select-sm">
                             <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}
+                            <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}" ng-selected="vm.project.secrectlevel==x.dictName">{{x.dictName}}
                             </option>
                         </select>
                     </td>
@@ -133,7 +134,7 @@
                         <select name="reviewstage" operator="eq" class="form-control select "
                                 ng-model="vm.project.reviewstage">
                             <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                            <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}" ng-selected="vm.project.reviewstage==x.dictName">{{x.dictName}}</option>
                         </select>
                     </td>
 
@@ -142,7 +143,7 @@
                         <select operator="eq" name="reviewType" class="form-control select-sm "
                                 ng-model="vm.project.reviewType">
                             <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
+                            <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.reviewType==x.dictName">{{x.dictName}}
                             </option>
                         </select>
                     </td>
@@ -151,7 +152,7 @@
                         <select operator="eq" name="dispatchType" class="form-control select-sm "
                                 ng-model="vm.project.dispatchType">
                             <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
+                            <option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.dispatchType==x.dictName">{{x.dictName}}
                             </option>
                         </select>
                     </td>
@@ -160,7 +161,7 @@
                         <select operator="eq" name="industryType" ng-model="vm.project.industryType"
                                 class="form-control select-sm">
                             <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
+                            <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.industryType==x.dictName">{{x.dictName}}
                             </option>
                         </select>
                     </td>

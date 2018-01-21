@@ -147,10 +147,10 @@
             return qs[1];
     }//end
 
-    function kendoGridDataSource(url, searchForm) {
+    function kendoGridDataSource(url, searchForm,page,pageSize,queryParams) {
         var dataSource = new kendo.data.DataSource({
             type: 'odata',
-            transport: kendoGridConfig().transport(url, searchForm),
+            transport: kendoGridConfig().transport(url, searchForm,queryParams),
             schema: kendoGridConfig().schema({
                 id: "id",
                 fields: {
@@ -162,7 +162,8 @@
             serverPaging: true,
             serverSorting: true,
             serverFiltering: true,
-            pageSize: 10,
+            pageSize : pageSize||10,
+            page:page||1,
             sort: {
                 field: "createdDate",
                 dir: "desc"
@@ -171,7 +172,7 @@
         return dataSource;
     }//end
 
-    function kendoGridConfig() {
+    function kendoGridConfig(scope) {
         return {
             filterable: {
                 extra: false,
@@ -197,7 +198,22 @@
                 previousNext: true,
                 buttonCount: 5,
                 refresh: true,
-                pageSizes: true
+                pageSizes: true,
+                change:function(){
+                    scope.page = this.dataSource.page();
+                }
+            },
+            dataBound:function(e){
+                // this.dataSource.page(2);
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+                scope.pageSize = e.sender.dataSource.pageSize();
             },
             schema: function (model) {
                 return {
@@ -222,27 +238,26 @@
                             if (form) {
                                 var filterParam = common.buildOdataFilter(form);
                                 if (filterParam) {
-                                    if (paramObj && paramObj.filter) {
-                                        return {
-                                            "$filter": filterParam + " and "
-                                            + paramObj.filter
-                                        };
+                                    if (paramObj && paramObj.$filter) {
+                                        var extendFilter = paramObj.$filter;
+                                        paramObj = undefined;
+                                        return {"$filter":filterParam+" and "+extendFilter};
                                     } else {
                                         return {
                                             "$filter": filterParam
                                         };
                                     }
                                 } else {
-                                    if (paramObj && paramObj.filter) {
+                                    if (paramObj && paramObj.$filter) {
                                         return {
-                                            "$filter": paramObj.filter
+                                            "$filter": paramObj.$filter
                                         };
                                     } else {
                                         return {};
                                     }
                                 }
                             } else {
-                                return {};
+                                return paramObj||{};
                             }
                         }
                     }

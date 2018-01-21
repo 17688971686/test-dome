@@ -98,7 +98,7 @@
         // begin#grid
         function grid(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+      /*      var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(url_sign + "/reserveListSign", $("#reserveFrom")),
                 schema: common.kendoGridConfig().schema({
@@ -117,22 +117,10 @@
                     field: "createdDate",
                     dir: "desc"
                 }
-            });
-
+            });*/
+            var dataSource = common.kendoGridDataSource(url_sign + "/reserveListSign",$("#reserveFrom"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
             // End:dataSourc
 
-            //S_序号
-            var dataBound = function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            }
-            //S_序号
 
             // Begin:column
             var columns = [
@@ -220,10 +208,10 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                dataBound: dataBound,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 resizable: true
             };
         }// end fun grid
