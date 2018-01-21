@@ -1264,6 +1264,17 @@
                 }).data("kendoWindow").center().open();
             }
         }
+
+        /**
+         * 返回时列表状态不改变。
+         * @type {{}}
+         */
+        //状态
+        $rootScope.view = {};
+        //保存查询条件
+        $rootScope.storeView = function (storeName,params){
+            $rootScope.view[storeName] = params;
+        }
     });
 
 })();

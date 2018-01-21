@@ -199,52 +199,52 @@
                     controller: 'userCtrl',
                     controllerAs: 'vm'
                 }).state('userEdit', {
-                url: '/userEdit/:id',
-                templateUrl: rootPath + '/user/html/edit.html',
-                controller: 'userEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#user
+                    url: '/userEdit/:id',
+                    templateUrl: rootPath + '/user/html/edit.html',
+                    controller: 'userEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#user
 
-            //begin#org
+                //begin#org
                 .state('org', {
                     url: '/org',
                     templateUrl: rootPath + '/org/html/list.html',
                     controller: 'orgCtrl',
                     controllerAs: 'vm'
                 }).state('orgEdit', {
-                url: '/orgEdit/:id',
-                templateUrl: rootPath + '/org/html/edit.html',
-                controller: 'orgEditCtrl',
-                controllerAs: 'vm'
-            }).state('orgUser', {
-                url: '/orgUser/:id',
-                templateUrl: rootPath + '/org/html/orgUser.html',
-                controller: 'orgUserCtrl',
-                controllerAs: 'vm'
-            })
-            //end#org
+                    url: '/orgEdit/:id',
+                    templateUrl: rootPath + '/org/html/edit.html',
+                    controller: 'orgEditCtrl',
+                    controllerAs: 'vm'
+                }).state('orgUser', {
+                    url: '/orgUser/:id',
+                    templateUrl: rootPath + '/org/html/orgUser.html',
+                    controller: 'orgUserCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#org
 
-            //begin#sysdept
+                //begin#sysdept
                 .state('sysdept', {
                     url: '/sysdept',
                     templateUrl: rootPath + '/sysdept/html/list.html',
                     controller: 'sysdeptCtrl',
                     controllerAs: 'vm'
                 }).state('sysdeptEdit', {
-                url: '/sysdeptEdit/:id',
-                templateUrl: rootPath + '/sysdept/html/edit.html',
-                controller: 'sysdeptEditCtrl',
-                controllerAs: 'vm'
-            }).state('sysdeptUser', {
-                url: '/sysdeptUser/:id',
-                templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
-                controller: 'sysdeptUserCtrl',
-                controllerAs: 'vm'
-            })
-            //end#sysdept
+                    url: '/sysdeptEdit/:id',
+                    templateUrl: rootPath + '/sysdept/html/edit.html',
+                    controller: 'sysdeptEditCtrl',
+                    controllerAs: 'vm'
+                }).state('sysdeptUser', {
+                    url: '/sysdeptUser/:id',
+                    templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
+                    controller: 'sysdeptUserCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#sysdept
 
-            //begin#log
+                //begin#log
                 .state('log', {
                     url: '/log',
                     templateUrl: rootPath + '/log/html/list.html',
@@ -278,42 +278,42 @@
                     controller: 'meetingCtrl',
                     controllerAs: 'vm'
                 }).state('meetingEdit', {
-                url: '/meetingEdit/:id',
-                templateUrl: rootPath + '/meeting/html/edit.html',
-                controller: 'meetingEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#meeting
+                    url: '/meetingEdit/:id',
+                    templateUrl: rootPath + '/meeting/html/edit.html',
+                    controller: 'meetingEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#meeting
 
-            //begin#room
+                //begin#room
                 .state('room', {
                     url: '/room/:businessId/:businessType',
                     templateUrl: rootPath + '/room/html/roomlist.html',
                     controller: 'roomCtrl',
                     controllerAs: 'vm'
                 }).state('roomCount', {
-                url: '/roomCount/:id',
-                templateUrl: rootPath + '/room/html/countlist.html',
-                controller: 'roomCountCtrl',
-                controllerAs: 'vm'
-            })
-            //end#room
+                    url: '/roomCount/:id',
+                    templateUrl: rootPath + '/room/html/countlist.html',
+                    controller: 'roomCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#room
 
-            //begin#company
+                //begin#company
                 .state('company', {
                     url: '/company',
                     templateUrl: rootPath + '/company/html/list.html',
                     controller: 'companyCtrl',
                     controllerAs: 'vm'
                 }).state('companyEdit', {
-                url: '/companyEdit/:id',
-                templateUrl: rootPath + '/company/html/edit.html',
-                controller: 'companyEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#company
+                    url: '/companyEdit/:id',
+                    templateUrl: rootPath + '/company/html/edit.html',
+                    controller: 'companyEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#company
 
-            //begin#home
+                //begin#home
                 .state('accountPwd', {
                     url: '/accountPwd',
                     templateUrl: rootPath + '/account/html/changePwd.html',
@@ -1138,11 +1138,13 @@
                 $state.go('gtasks');
             }
         };
+
         $rootScope.topSelectChange = function (dictKey, dicts, type) {
             if (dicts != undefined) {
                 for (var i = 0; i < dicts.length; i++) {
                     //根据code查询
                     if (type && type == "code") {
+
                         if (dicts[i].dictCode == dictKey) {
                             return dicts[i].dicts;
                         }
@@ -1249,7 +1251,7 @@
             if (!businessId || !businessType || !stageType) {
                 bsWin.alert("打印预览失败，参数不正确！");
             } else {
-                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/file/printPreview/" + businessId + "/" + businessType + "/" + stageType;
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version="+(new Date()).getTime()+"&file=" + rootPath + "/file/printPreview/" + businessId + "/" + businessType + "/" + stageType;
                 $("#iframePreview").attr("src", url);
                 $("#previewModal").kendoWindow({
                     width: "80%",
@@ -1261,6 +1263,17 @@
                     actions: ["Pin", "Minimize", "Maximize", "Close"]
                 }).data("kendoWindow").center().open();
             }
+        }
+
+        /**
+         * 返回时列表状态不改变。
+         * @type {{}}
+         */
+        //状态
+        $rootScope.view = {};
+        //保存查询条件
+        $rootScope.storeView = function (storeName,params){
+            $rootScope.view[storeName] = params;
         }
     });
 
@@ -2946,16 +2959,49 @@
 
     angular.module('app').controller('adminDoingCtrl', admin);
 
-    admin.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc','bsWin','signSvc'];
+    admin.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc','bsWin','signSvc','$state','$rootScope'];
 
-    function admin($location, adminSvc, flowSvc,pauseProjectSvc,bsWin,signSvc) {
+    function admin($location, adminSvc, flowSvc,pauseProjectSvc,bsWin,signSvc,$state,$rootScope) {
         var vm = this;
         vm.title = '在办项目';
         vm.model = {};
+        vm.page = 0;
+        //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.gridOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
+
+        }
         activate();
         function activate() {
             vm.showwin = false;
-            adminSvc.dtasksGrid(vm);
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.model = preView.data.model;
+                }
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                adminSvc.dtasksGrid(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+                /*$scope.$apply()*/
+            }else {
+                adminSvc.dtasksGrid(vm);
+            }
+
         }
 
         /**
@@ -3048,11 +3094,21 @@
 
     angular.module('app').controller('adminDoTaskCtrl', allDoTask);
 
-    allDoTask.$inject = ['adminSvc'];
+    allDoTask.$inject = ['adminSvc','$state','$rootScope'];
 
-    function allDoTask(adminSvc) {
+    function allDoTask(adminSvc,$state,$rootScope) {
         var vm = this;
         vm.title = '在办任务';
+
+        //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.gridOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
+
+        }
            //查询
         vm.query=function () {
             vm.gridOptions.dataSource._skip="";
@@ -3061,7 +3117,31 @@
 
         activate();
         function activate() {
-            adminSvc.doingTaskGrid(vm);
+
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.model = preView.data.model;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+
+                adminSvc.doingTaskGrid(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+            }else {
+                adminSvc.doingTaskGrid(vm);
+            }
+
             adminSvc.workName(vm);
         }
     }
@@ -3090,16 +3170,48 @@
 
     angular.module('app').controller('adminPersonAssistCtrl', personAssist);
 
-    personAssist.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc'];
+    personAssist.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc','$state','$rootScope'];
 
-    function personAssist($location, adminSvc, flowSvc,pauseProjectSvc) {
+    function personAssist($location, adminSvc, flowSvc,pauseProjectSvc,$state,$rootScope) {
         var vm = this;
         vm.title = '个人经办项目';
         vm.model = {};
+        //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.gridOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
+
+        }
         activate();
         function activate() {
             vm.showwin = false;
-            adminSvc.personMainTasksGrid(vm);
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.model = preView.data.model;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+
+                adminSvc.personMainTasksGrid(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+            }else {
+                adminSvc.personMainTasksGrid(vm);
+            }
+
         }
 
     }
@@ -3110,15 +3222,47 @@
 
     angular.module('app').controller('adminPersonDoingCtrl', adminPersonDoing);
 
-    adminPersonDoing.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc'];
+    adminPersonDoing.$inject = ['$location', 'adminSvc', 'flowSvc','pauseProjectSvc','$state','$rootScope'];
 
-    function adminPersonDoing($location, adminSvc, flowSvc,pauseProjectSvc) {
+    function adminPersonDoing($location, adminSvc, flowSvc,pauseProjectSvc,$state,$rootScope) {
         var vm = this;
         vm.title = '个人经办项目';
+        //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.gridOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
+
+        }
 
         activate();
         function activate() {
-            adminSvc.personMainTasksGrid(vm);
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.model = preView.data.model;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+
+                adminSvc.personMainTasksGrid(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+            }else {
+                adminSvc.personMainTasksGrid(vm);
+            }
+
         }
 
         /**
@@ -3167,9 +3311,9 @@
 
     angular.module('app').controller('adminSignListCtrl', admin);
 
-    admin.$inject = ['signSvc', 'adminSvc', 'bsWin', '$state', 'headerSvc', 'pauseProjectSvc'];
+    admin.$inject = ['signSvc', 'adminSvc', 'bsWin', '$state', 'headerSvc', 'pauseProjectSvc','$rootScope','$scope'];
 
-    function admin(signSvc, adminSvc, bsWin, $state, headerSvc, pauseProjectSvc) {
+    function admin(signSvc, adminSvc, bsWin, $state, headerSvc, pauseProjectSvc,$rootScope,$scope) {
         var vm = this;
         vm.title = '项目查询统计';
         vm.currentAssociateSign = {};
@@ -3182,10 +3326,41 @@
         // vm.filters ={};
         vm.signList = [];
         vm.page = 0;
+         //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.signListOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
+
+        }
 
         activate();
         function activate() {
-            adminSvc.getSignList(vm);
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.project = preView.data.project;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+
+                adminSvc.getSignList(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+            }else {
+                adminSvc.getSignList(vm);
+            }
             //初始化查询参数
             adminSvc.initSignList(function (data) {
                 if (data.flag || data.reCode == 'ok') {
@@ -3418,6 +3593,7 @@
          * @param processInstanceId
          */
         vm.signDetails = function(signid , processInstanceId){
+            vm.saveView();
             adminSvc.signDetails(signid , function(data){
                 if(data.flag ){
                     $state.go("signDetails" , {signid : signid} , {processInstanceId : processInstanceId});
@@ -3999,7 +4175,7 @@
 
         //S_在办项目
         function dtasksGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
+    /*        var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform"),{filter: "signState ne 7"}),
                 schema: {
@@ -4019,7 +4195,8 @@
                     field: "createdDate",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/flow/html/doingtasks",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
             var columns = [
                 {
                     field: "",
@@ -4069,7 +4246,7 @@
                     filterable: false,
                     width: "18%",
                     template: function (item) {
-                        return '<a href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
+                        return '<a ng-click="vm.saveView()" href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                     }
                 },
                 {
@@ -4143,20 +4320,11 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
 
             };
         }//E_dtasksGrid
@@ -4164,7 +4332,7 @@
         //begin_getSignList
         function getSignList(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+     /*       var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#searchform"),{filter: "signState ne 7"}),
                 schema: common.kendoGridConfig().schema({
@@ -4183,7 +4351,9 @@
                     field: "receivedate",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+
             // End:dataSource
 
             // Begin:column
@@ -4208,9 +4378,9 @@
                             }
                         }else{
                             if (item.processInstanceId) {
-                                return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                                return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
                             } else {
-                                return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                                return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
                             }
                         }
 
@@ -4369,11 +4539,14 @@
             vm.signListOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
+                /*  pageable: common.kendoGridConfig().pageable,*/
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound /*function () {
+
+                 /*                dataBound: function () {
                     var rows = this.items();
                     var page = this.pager.page() - 1;
                     var pagesize = this.pager.pageSize();
@@ -4382,7 +4555,7 @@
                         var rowLabel = $(this).find(".row-number");
                         $(rowLabel).html(index);
                     });
-                }
+                }*/
             };
         }//end_getSignList
 
@@ -4406,7 +4579,7 @@
 
         //begin persontasksGrid
         function personMainTasksGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
+/*            var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks", $("#searchform")),
                 schema: {
@@ -4426,7 +4599,8 @@
                     field: "signdate",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/html/personMainTasks?$orderby=signdate desc",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
             var columns = [
                 {
                     field: "",
@@ -4486,9 +4660,9 @@
                     filterable: false,
                     template: function (item) {
                         if (item.processInstanceId) {
-                            return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
                         } else {
-                            return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
                         }
 
                     }
@@ -4604,42 +4778,14 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
             };
 
             // End:column
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
-
-            };
         }
 
         //end persontasksGrid
@@ -4752,7 +4898,7 @@
 
         //S_所有在办任务
         function doingTaskGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
+      /*      var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask", $('#doingTaskForm')),
                 schema: {
@@ -4772,7 +4918,8 @@
                     field: "createTime",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask?$orderby=createTime desc",$("#doingTaskForm"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
             var columns = [
                 {
                     field: "",
@@ -4786,7 +4933,7 @@
                     filterable: false,
                     width: "30%",
                     template: function (item) {
-                        return '<a href="#/flowDetail/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/' + item.instanceId + '" >' + item.instanceName + '</a>';
+                        return '<a ng-click="vm.saveView()" href="#/flowDetail/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/' + item.instanceId + '" >' + item.instanceName + '</a>';
                     }
                 },
                 {
@@ -4833,20 +4980,11 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
 
             };
         }//S_doingTaskGrid
@@ -4977,6 +5115,433 @@
                     alert("点击取消！");
                 }
             });
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('archivesLibraryCtrl', archivesLibrary);
+
+    archivesLibrary.$inject = ['archivesLibrarySvc', 'bsWin', '$state'];
+
+    function archivesLibrary(archivesLibrarySvc, bsWin, $state) {
+        var vm = this;
+        vm.model = {};
+        vm.title = '项目档案借阅管理';
+        vm.id = $state.params.id;
+
+        activate();
+        function activate() {
+            if ($state.params.id) {
+                archivesLibrarySvc.initArchivesLibrary($state.params.id, function (data) {
+                    vm.model = data;
+                });
+            }
+        }
+
+        //保存中心档案借阅
+        vm.createLibrary = function () {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                archivesLibrarySvc.createArchivesLibrary(vm.model, function (data) {
+                    if (data.flag || data.reCode == "ok") {
+                        vm.model = data.reObj;
+                        bsWin.alert("操作成功！");
+                    } else {
+                        bsWin.error(data.reMsg);
+                    }
+                });
+            }
+        };
+
+        vm.startFlow = function () {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                archivesLibrarySvc.createArchivesLibrary(vm.model, function (data) {
+                    if (data.flag || data.reCode == "ok") {
+                        vm.model = data.reObj;
+                        archivesLibrarySvc.startFlow(vm.model.id, function (data) {
+                            if (data.flag || data.reCode == "ok") {
+                                bsWin.alert("操作成功！", function () {
+                                    $state.go("archivesLibraryList");
+                                });
+                            } else {
+                                bsWin.error(data.reMsg);
+                            }
+                        })
+                    } else {
+                        bsWin.error(data.reMsg);
+                    }
+                });
+            }
+        }
+
+        vm.del = function (id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    archivesLibrarySvc.deleteArchivesLibrary(vm, id);
+                }
+            });
+        }
+        vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('archivesLibraryListCtrl', archivesLibrary);
+
+    archivesLibrary.$inject = ['$location', 'archivesLibrarySvc', '$state','bsWin'];
+
+    function archivesLibrary($location, archivesLibrarySvc, $state,bsWin) {
+        var vm = this;
+        vm.title = '档案借阅管理';
+
+        activate();
+        function activate() {
+            archivesLibrarySvc.grid(vm);
+        }
+
+        //查询
+        vm.search = function(){
+            vm.gridOptions.dataSource._skip=0;
+            vm.gridOptions.dataSource.read();
+        }
+
+        //重置
+        vm.formReset = function(){
+            $("#searchform")[0].reset();
+        }
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('archivesLibrarySvc', archivesLibrary);
+
+    archivesLibrary.$inject = ['$http', 'bsWin'];
+
+    function archivesLibrary($http, bsWin) {
+        var url_archivesLibrary = rootPath + "/archivesLibrary", url_back = '#/archivesLibraryList';
+        var service = {
+            initArchivesLibrary: initArchivesLibrary,   //初始化档案借阅信息
+            startFlow : startFlow,                      //发起流程
+            initFlowDeal : initFlowDeal,                //初始化流程信息
+            grid: grid,									 //项目借阅审批列表
+            createArchivesLibrary: createArchivesLibrary,//保存中心档案借阅
+            createCityLibrary: createCityLibrary, 		 //保存市档案借阅
+            getArchivesUserName: getArchivesUserName,	 //获取归档员
+            deleteArchivesLibrary: deleteArchivesLibrary,
+        };
+
+        return service;
+
+        //S_初始化档案借阅信息
+        function initArchivesLibrary(id, callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/archivesLibrary/findById",
+                params:{
+                    id : id
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_initArchivesLibrary
+
+        //S_发起流程
+        function startFlow(id,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/archivesLibrary/startFlow",
+                params:{
+                    id : id
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_startFlow
+
+        //S_初始化流程信息
+        function initFlowDeal(vm){
+            initArchivesLibrary(vm.businessKey,function(data){
+                vm.model = data;
+            });
+        }//E_initFlowDeal
+
+        //S 获取归档员
+        function getArchivesUserName(vm) {
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/archivesLibrary/findByArchivesUser",
+            };
+            var httpSuccess = function success(response) {
+                vm.userlist = response.data;
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }// E 获取归档员
+        // begin#保存市档案借阅
+        function createCityLibrary(model, callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: url_archivesLibrary + "/saveCity",
+                data: model
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#deleteArchivesLibrary
+        function deleteArchivesLibrary(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: url_archivesLibrary,
+                data: id
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog: true,
+                            fn: function () {
+                                vm.isSubmit = false;
+                                vm.gridOptions.dataSource.read();
+                            }
+                        })
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#保存中心档案借阅
+        function createArchivesLibrary(model, callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: url_archivesLibrary + "/savaLibrary",
+                data: model
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#grid
+        function grid(vm) {
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/archivesLibrary/findByOData",$("#searchform")),
+                schema: {
+                    data: "value",
+                    total: function (data) {
+                        return data['count'];
+                    },
+                    model: {
+                        id: "id",
+                        fields: {
+                            createdDate: {
+                                type: "date"
+                            },
+                            modifiedDate: {
+                                type: "date"
+                            }
+                        }
+                    }
+                },
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                            item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {
+                    field: "",
+                    title: "序号",
+                    width: 50,
+                    filterable: false,
+                    template: "<span class='row-number'></span>",
+                },
+
+                {
+                    field: "readCompany",
+                    title: "项目单位",
+                    width: 140,
+                    filterable: false
+                },
+
+                {
+                    field: "readProjectName",
+                    title: "查阅项目",
+                    width: 140,
+                    filterable: false
+                },
+                {
+                    field: "readUsername",
+                    title: "借阅人",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "readArchivesCode",
+                    title: "归档编号",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "readDate",
+                    title: "借阅时间",
+                    width: 100,
+                    filterable: false,
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 100,
+                    template: function (item) {
+                            return common.format($('#columnBtns').html(),"archivesLibraryView/"+item.id);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound: function () {
+                    var rows = this.items();
+                    var page = this.pager.page() - 1;
+                    var pagesize = this.pager.pageSize();
+                    $(rows).each(function () {
+                        var index = $(this).index() + 1 + page * pagesize;
+                        var rowLabel = $(this).find(".row-number");
+                        $(rowLabel).html(index);
+                    });
+                },
+                resizable: true
+            };
+
+        }// end fun grid
+
+
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('archivesLibraryViewCtrl', archivesLibraryView);
+
+    archivesLibraryView.$inject = ['archivesLibrarySvc', 'bsWin', '$state'];
+
+    function archivesLibraryView(archivesLibrarySvc, bsWin, $state) {
+
+        var vm = this;
+        vm.model = {};
+        vm.title = '项目档案借阅查看详情';
+        vm.id = $state.params.id;
+
+        activate();
+        function activate() {
+            if (vm.id) {
+                archivesLibrarySvc.initArchivesLibrary(vm.id, function (data) {
+                    vm.model = data;
+                });
+            }
         }
     }
 })();
@@ -5878,433 +6443,6 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('archivesLibraryCtrl', archivesLibrary);
-
-    archivesLibrary.$inject = ['archivesLibrarySvc', 'bsWin', '$state'];
-
-    function archivesLibrary(archivesLibrarySvc, bsWin, $state) {
-        var vm = this;
-        vm.model = {};
-        vm.title = '项目档案借阅管理';
-        vm.id = $state.params.id;
-
-        activate();
-        function activate() {
-            if ($state.params.id) {
-                archivesLibrarySvc.initArchivesLibrary($state.params.id, function (data) {
-                    vm.model = data;
-                });
-            }
-        }
-
-        //保存中心档案借阅
-        vm.createLibrary = function () {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                archivesLibrarySvc.createArchivesLibrary(vm.model, function (data) {
-                    if (data.flag || data.reCode == "ok") {
-                        vm.model = data.reObj;
-                        bsWin.alert("操作成功！");
-                    } else {
-                        bsWin.error(data.reMsg);
-                    }
-                });
-            }
-        };
-
-        vm.startFlow = function () {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                archivesLibrarySvc.createArchivesLibrary(vm.model, function (data) {
-                    if (data.flag || data.reCode == "ok") {
-                        vm.model = data.reObj;
-                        archivesLibrarySvc.startFlow(vm.model.id, function (data) {
-                            if (data.flag || data.reCode == "ok") {
-                                bsWin.alert("操作成功！", function () {
-                                    $state.go("archivesLibraryList");
-                                });
-                            } else {
-                                bsWin.error(data.reMsg);
-                            }
-                        })
-                    } else {
-                        bsWin.error(data.reMsg);
-                    }
-                });
-            }
-        }
-
-        vm.del = function (id) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    archivesLibrarySvc.deleteArchivesLibrary(vm, id);
-                }
-            });
-        }
-        vm.dels = function () {
-            var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.del(idStr);
-            }
-        };
-
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('archivesLibraryListCtrl', archivesLibrary);
-
-    archivesLibrary.$inject = ['$location', 'archivesLibrarySvc', '$state','bsWin'];
-
-    function archivesLibrary($location, archivesLibrarySvc, $state,bsWin) {
-        var vm = this;
-        vm.title = '档案借阅管理';
-
-        activate();
-        function activate() {
-            archivesLibrarySvc.grid(vm);
-        }
-
-        //查询
-        vm.search = function(){
-            vm.gridOptions.dataSource._skip=0;
-            vm.gridOptions.dataSource.read();
-        }
-
-        //重置
-        vm.formReset = function(){
-            $("#searchform")[0].reset();
-        }
-
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('archivesLibrarySvc', archivesLibrary);
-
-    archivesLibrary.$inject = ['$http', 'bsWin'];
-
-    function archivesLibrary($http, bsWin) {
-        var url_archivesLibrary = rootPath + "/archivesLibrary", url_back = '#/archivesLibraryList';
-        var service = {
-            initArchivesLibrary: initArchivesLibrary,   //初始化档案借阅信息
-            startFlow : startFlow,                      //发起流程
-            initFlowDeal : initFlowDeal,                //初始化流程信息
-            grid: grid,									 //项目借阅审批列表
-            createArchivesLibrary: createArchivesLibrary,//保存中心档案借阅
-            createCityLibrary: createCityLibrary, 		 //保存市档案借阅
-            getArchivesUserName: getArchivesUserName,	 //获取归档员
-            deleteArchivesLibrary: deleteArchivesLibrary,
-        };
-
-        return service;
-
-        //S_初始化档案借阅信息
-        function initArchivesLibrary(id, callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/archivesLibrary/findById",
-                params:{
-                    id : id
-                }
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_initArchivesLibrary
-
-        //S_发起流程
-        function startFlow(id,callBack){
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/archivesLibrary/startFlow",
-                params:{
-                    id : id
-                }
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_startFlow
-
-        //S_初始化流程信息
-        function initFlowDeal(vm){
-            initArchivesLibrary(vm.businessKey,function(data){
-                vm.model = data;
-            });
-        }//E_initFlowDeal
-
-        //S 获取归档员
-        function getArchivesUserName(vm) {
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/archivesLibrary/findByArchivesUser",
-            };
-            var httpSuccess = function success(response) {
-                vm.userlist = response.data;
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }// E 获取归档员
-        // begin#保存市档案借阅
-        function createCityLibrary(model, callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: url_archivesLibrary + "/saveCity",
-                data: model
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#deleteArchivesLibrary
-        function deleteArchivesLibrary(vm, id) {
-            vm.isSubmit = true;
-            var httpOptions = {
-                method: 'delete',
-                url: url_archivesLibrary,
-                data: id
-            };
-
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog: true,
-                            fn: function () {
-                                vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#保存中心档案借阅
-        function createArchivesLibrary(model, callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: url_archivesLibrary + "/savaLibrary",
-                data: model
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#grid
-        function grid(vm) {
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/archivesLibrary/findByOData",$("#searchform")),
-                schema: {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model: {
-                        id: "id",
-                        fields: {
-                            createdDate: {
-                                type: "date"
-                            },
-                            modifiedDate: {
-                                type: "date"
-                            }
-                        }
-                    }
-                },
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-            // End:dataSource
-
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-                {
-                    field: "",
-                    title: "序号",
-                    width: 50,
-                    filterable: false,
-                    template: "<span class='row-number'></span>",
-                },
-
-                {
-                    field: "readCompany",
-                    title: "项目单位",
-                    width: 140,
-                    filterable: false
-                },
-
-                {
-                    field: "readProjectName",
-                    title: "查阅项目",
-                    width: 140,
-                    filterable: false
-                },
-                {
-                    field: "readUsername",
-                    title: "借阅人",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "readArchivesCode",
-                    title: "归档编号",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "readDate",
-                    title: "借阅时间",
-                    width: 100,
-                    filterable: false,
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 100,
-                    template: function (item) {
-                            return common.format($('#columnBtns').html(),"archivesLibraryView/"+item.id);
-                    }
-                }
-            ];
-            // End:column
-
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                },
-                resizable: true
-            };
-
-        }// end fun grid
-
-
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('archivesLibraryViewCtrl', archivesLibraryView);
-
-    archivesLibraryView.$inject = ['archivesLibrarySvc', 'bsWin', '$state'];
-
-    function archivesLibraryView(archivesLibrarySvc, bsWin, $state) {
-
-        var vm = this;
-        vm.model = {};
-        vm.title = '项目档案借阅查看详情';
-        vm.id = $state.params.id;
-
-        activate();
-        function activate() {
-            if (vm.id) {
-                archivesLibrarySvc.initArchivesLibrary(vm.id, function (data) {
-                    vm.model = data;
-                });
-            }
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
     angular.module('app').controller('assistPlanCtrl', assistPlan);
 
     assistPlan.$inject = ['$location', '$state', 'assistSvc', '$interval', 'bsWin', 'ideaSvc'];
@@ -7011,16 +7149,48 @@
 
     angular.module('app').controller('assistUnitCtrl', assistUnit);
 
-    assistUnit.$inject = ['$location', 'assistUnitSvc'];
+    assistUnit.$inject = ['$location', 'assistUnitSvc','$state','$rootScope'];
 
-    function assistUnit($location, assistUnitSvc) {
+    function assistUnit($location, assistUnitSvc,$state,$rootScope) {
         var vm = this;
         vm.title = '协审单位';
+        vm.model={};
         vm.resource = {};
+        //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.gridOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
 
+        }
         activate();
         function activate() {
-            assistUnitSvc.grid(vm);
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.model = preView.data.model;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+
+                assistUnitSvc.grid(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+            }else {
+                assistUnitSvc.grid(vm);
+            }
+
         }
 
         vm.del = function (id) {
@@ -7223,7 +7393,7 @@
         function grid(vm) {
 
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+  /*          var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(url_assistUnit+"/fingByOData",$("#assistUnitform")),
                 schema: common.kendoGridConfig().schema({
@@ -7253,7 +7423,8 @@
 	                }
                 ]
 	               
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(url_assistUnit+"/fingByOData?$orderby=unitSort",$("#assistUnitform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
             // End:dataSource
 
             // Begin:column
@@ -7347,9 +7518,9 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
                 resizable: true
             };
 
@@ -8598,6 +8769,917 @@
         }// end fun grid
     }
 })();
+/**
+ * 自定义弹窗窗口（在对应的方法中注入bsWin对象）
+ * 提示窗口使用方法：
+ *  bsWin.alert("消息提示", "操作成功！", function () { console.log("This's close!"); } );
+ * 或者
+ *  bsWin.alert({
+ *      title: "消息提示",
+ *      message: "操作成功！",
+ *      onClose: function () { console.log("This's close!"); }
+ *  });
+ * 询问窗口使用方法：
+ *  bsWin.confirm("询问提示", "是否进行该操作！", function () { console.log("This's ok!"); }, function () { console.log("This's close!"); },function(){console.log("This's onCancel!");} );
+ * 或者
+ *  bsWin.confirm({
+ *      title: "询问提示",
+ *      message: "是否进行该操作！",
+ *      onOk: function () { console.log("This's ok!"); },
+ *      onClose: function () { console.log("This's close!"); },
+ *      onCancel:function(){console.log("This's onCancel!");}
+ *  });
+ */
+(function () {
+    'use strict';
+
+    var app = angular.module('app');
+    angular.module('app').factory('bsWin', bsWinFactory);
+
+    function bsWinFactory(){
+        return {
+            success: function (message, onClose) {
+                return this.alert({
+                    message: message,
+                    type: "success",
+                    onClose: onClose,
+                    icon: 1,
+                });
+            },
+            warning:  function (message, onClose) {
+                return this.alert({
+                    message: message,
+                    type: "warning",
+                    onClose: onClose,
+                    icon: 5,
+                });
+            },
+            error: function (message, onClose) {
+                return this.alert({
+                    message: message,
+                    type: "error",
+                    onClose: onClose,
+                    icon: 2,
+                });
+            },
+            alert: function (options, message, onClose) {
+                if (!angular.isObject(options)) {
+                    var title;
+                    if (!message || angular.isFunction(message)) {
+                        onClose = message;
+                        message = options;
+                    } else {
+                        title = options;
+                    }
+                    options = {
+                        message: message,
+                        onClose: onClose || function () {
+                        }
+                    };
+                    if (title) {
+                        options.title = title;
+                    }
+                }
+                options.onClose = options.onClose || function(){};
+                layer.alert(
+                    options.message,
+                    {
+                        title:(options.title)?options.title:"系统消息",
+                        icon: (!options.icon) ? 6 : options.icon,
+                        skin: 'layui-layer-lan',
+                    },
+                    function(index){
+                        layer.close(index);
+                        options.onClose();
+                    }
+                );
+            },
+            confirm: function (options, message, onOk, onClose,onCancel) {
+                if (!angular.isObject(options)) {
+                    var title;
+                    if (!message || angular.isFunction(message)) {
+                        onCancel = onClose || function(){
+                            };
+                        onClose = onOk || function () {
+                            };
+                        onOk = message || function () {
+                            };
+                        message = options;
+                    } else {
+                        title = options;
+                    }
+
+                    options = {
+                        message: message,
+                        onOk: onOk,
+                        onClose: onClose,
+                        onCancel: onCancel
+                    };
+                    if (title) {
+                        options.title = title;
+                    }
+                }
+                options.onClose = options.onClose || function(){};
+                //询问框
+                layer.confirm(
+                    options.message,
+                    {
+                        title:(options.title)?options.title:"询问提示",
+                        icon: 3,
+                        skin: 'layui-layer-lan',
+                        btn: ['确认','取消'],
+                        end : options.onClose
+                    },
+                    function(index){
+                        layer.close(index);
+                        if ((options.onOk) != undefined && typeof (options.onOk) == 'function') {
+                            options.onOk();
+                        }
+                    },
+                    function(index){
+                        layer.close(index);
+                        if ((options.onCancel) != undefined && typeof (options.onCancel) == 'function') {
+                            options.onCancel();
+                        }
+                    }
+                );
+            }
+
+        };
+    }
+
+})();
+(function () {
+    'use strict';
+
+    var service = {
+        initJqValidation: initJqValidation,         // 重置form验证
+        requestSuccess: requestSuccess,             // 请求成功时执行
+        format: format,                             // string格式化
+        blockNonNumber: blockNonNumber,             // 只允许输入数字
+        floatNumberInput: floatNumberInput,
+        adminContentHeight: adminContentHeight,     // 当前Content高度
+        alert: alertDialog,                         // 显示alert窗口
+        confirm: confirmDialog,                     // 显示Confirm窗口
+        getQuerystring: getQuerystring,             // 取得Url参数
+        kendoGridConfig: kendoGridConfig,           // kendo grid配置
+        getKendoCheckId: getKendoCheckId,           // 获得kendo grid的第一列checkId
+        cookie: cookie,                             // cookie操作
+        getToken: getToken,                         // 获得令牌
+        http: http,                                 // http请求
+        gridDataSource: gridDataSource,             // gridDataSource
+        buildOdataFilter: buildOdataFilter,         // 创建多条件查询的filter
+        //initDictData: initDictData,                 // 初始化数字字典
+        kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
+        getTaskCount: getTaskCount,                 // 用户待办总数
+        uuid : uuid,                                // js
+        downloadReport : downloadReport,            //报表下载
+    };
+    window.common = service;
+
+    /**
+     *
+     * @param data 数据
+     * @param fileName 文件名
+     * @param fileType 文件类型
+     * 使用{type: "application/vnd.ms-excel"}的写法，可以保存为xls格式的excel文件
+     * 而使用“application/vnd.openxmlformats-officedocument.spreadsheetml.sheet”则会保存为xlsx
+     */
+    function downloadReport(data , fileName , fileType){
+        var blob = new Blob([data] , {type : "application/" + fileType});
+        var objectUrl = URL.createObjectURL(blob);
+        var aForExcel = $("<a><span class='forExcel'>下载</span></a>").attr("href", objectUrl).attr("download", fileName);
+        $("body").append(aForExcel);
+        $(".forExcel").click();
+        aForExcel.remove();
+    }
+
+    function initJqValidation(formObj) {
+        if (formObj) {
+            formObj.removeData("validator");
+            formObj.removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse(formObj);
+        } else {
+            $("form").removeData("validator");
+            $("form").removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse("form");
+        }
+    }//end
+
+    function requestSuccess(options) {
+        var showError = function (msg) {
+            service.alert({
+                vm: options.vm,
+                msg: msg,
+                fn: function () {
+                    options.vm.isSubmit = false;
+                    $('.alertDialog').modal('hide');
+                }
+            });
+        };
+        if (options.response.status > 400) {
+            showError("发生错误！");
+        } else {
+            var data = options.response.data;
+            if (data && data.reCode == 555) {
+                showError(data.message);
+            } else if (options.fn) {
+                options.fn(data);
+            }
+        }
+    }//end
+
+    function format() {
+        var theString = arguments[0];
+        for (var i = 1; i < arguments.length; i++) {
+            var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
+            theString = theString.replace(regEx, arguments[i]);
+        }
+        return theString;
+    }//end
+
+    function blockNonNumber(val) {
+        var str = val.toString().replace(/[^0-9]/g, '');
+        return parseInt(str, 10);
+    }//end
+
+    function floatNumberInput(val) {
+        return isNaN(parseFloat(val, 10)) ? 0 : parseFloat(val, 10);
+    }//end
+
+    function adminContentHeight() {
+        return $(window).height() - 180;
+    }//end
+
+    function alertDialog(options) {
+        options.vm.alertDialogMessage = options.msg;
+        options.vm.alertDialogFn = function () {
+            if (options.closeDialog && options.closeDialog == true) {
+                $('.alertDialog').modal('hide');
+                $('.modal-backdrop').remove();
+            }
+            if (options.fn) {
+                options.fn();
+            } else {
+                $('.alertDialog').modal('hide');
+            }
+        };
+        $('.alertDialog').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }//end
+
+    function confirmDialog(options) {
+        options.vm.dialogConfirmTitle = options.title;
+        options.vm.dialogConfirmMessage = options.msg;
+        $('.confirmDialog').modal({
+            backdrop: 'static'
+        });
+        options.vm.dialogConfirmSubmit = options.fn;
+        if (options.cancel) {
+            options.vm.dialogConfirmCancel = options.cancel;
+        } else {
+            options.vm.dialogConfirmCancel = function () {
+                $('.confirmDialog').modal('hide');
+            }
+        }
+    }//end
+
+    function getQuerystring(key, default_) {
+        if (default_ == null)
+            default_ = "";
+        key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+        var regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
+        var qs = regex.exec(window.location.href);
+        if (qs == null)
+            return default_;
+        else
+            return qs[1];
+    }//end
+
+    function kendoGridDataSource(url, searchForm,page,pageSize,queryParams) {
+        var dataSource = new kendo.data.DataSource({
+            type: 'odata',
+            transport: kendoGridConfig().transport(url, searchForm,queryParams),
+            schema: kendoGridConfig().schema({
+                id: "id",
+                fields: {
+                    createdDate: {
+                        type: "date"
+                    }
+                }
+            }),
+            serverPaging: true,
+            serverSorting: true,
+            serverFiltering: true,
+            pageSize : pageSize||10,
+            page:page||1,
+            sort: {
+                field: "createdDate",
+                dir: "desc"
+            }
+        });
+        return dataSource;
+    }//end
+
+    function kendoGridConfig(scope) {
+        return {
+            filterable: {
+                extra: false,
+                operators: {
+                    string: {
+                        "contains": "包含",
+                        "eq": "等于"
+                    },
+                    number: {
+                        "eq": "等于",
+                        "neq": "不等于",
+                        gt: "大于",
+                        lt: "小于"
+                    },
+                    date: {
+                        gt: "大于",
+                        lt: "小于"
+                    }
+                }
+            },
+            pageable: {
+                pageSize: 10,
+                previousNext: true,
+                buttonCount: 5,
+                refresh: true,
+                pageSizes: true,
+                change:function(){
+                    if(scope && scope.page){
+                        scope.page = this.dataSource.page();
+                    }
+                }
+            },
+            dataBound:function(e){
+                // this.dataSource.page(2);
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+                scope.pageSize = e.sender.dataSource.pageSize();
+            },
+            schema: function (model) {
+                return {
+                    data: "value",
+                    total: function (data) {
+                        return data['count'];
+                    },
+                    model: model
+                };
+            },
+            transport: function (url, form, paramObj) {
+                return {
+                    read: {
+                        url: url,
+                        dataType: "json",
+                        type: "post",
+                        cache : false ,
+                        beforeSend: function (req) {
+                            req.setRequestHeader('Token', service.getToken());
+                        },
+                        data: function () {
+                            if (form) {
+                                var filterParam = common.buildOdataFilter(form);
+                                if (filterParam) {
+                                    if (paramObj && paramObj.$filter) {
+                                        var extendFilter = paramObj.$filter;
+                                        paramObj = undefined;
+                                        return {"$filter":filterParam+" and "+extendFilter};
+                                    } else {
+                                        return {
+                                            "$filter": filterParam
+                                        };
+                                    }
+                                } else {
+                                    if (paramObj && paramObj.$filter) {
+                                        return {
+                                            "$filter": paramObj.$filter
+                                        };
+                                    } else {
+                                        return {};
+                                    }
+                                }
+                            } else {
+                                return paramObj||{};
+                            }
+                        }
+                    }
+                }
+            },
+            noRecordMessage: {
+                template: '暂时没有数据.'
+            }
+        }
+    }//end
+
+    function getKendoCheckId($id) {
+        var checkbox = $($id).find('tr td:nth-child(1)').find('input:checked')
+        var data = [];
+        checkbox.each(function () {
+            var id = $(this).attr('relId');
+            data.push({
+                name: 'id',
+                value: id
+            });
+        });
+        return data;
+    }//end
+
+    function http(options) {
+        options.headers = {
+            Token: service.getToken()
+        };
+        options.$http(options.httpOptions).then(options.success,
+            function (response) {
+                if (options.onError) {
+                    options.onError(response);
+                }
+            });
+    }//end
+
+    // begin:cookie
+    function cookie() {
+        var cookieUtil = {
+            get: function (name, subName) {
+                var subCookies = this.getAll(name);
+                if (subCookies) {
+                    return subCookies[subName];
+                } else {
+                    return null;
+                }
+            },
+            getAll: function (name) {
+                var cookieName = encodeURIComponent(name) + "=", cookieStart = document.cookie
+                    .indexOf(cookieName), cookieValue = null, result = {};
+                if (cookieStart > -1) {
+                    var cookieEnd = document.cookie.indexOf(";", cookieStart)
+                    if (cookieEnd == -1) {
+                        cookieEnd = document.cookie.length;
+                    }
+                    cookieValue = document.cookie.substring(cookieStart
+                        + cookieName.length, cookieEnd);
+                    if (cookieValue.length > 0) {
+                        var subCookies = cookieValue.split("&");
+                        for (var i = 0, len = subCookies.length; i < len; i++) {
+                            var parts = subCookies[i].split("=");
+                            result[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+                        }
+                        return result;
+                    }
+                }
+                return null;
+            },
+            set: function (name, subName, value, expires, path, domain, secure) {
+                var subcookies = this.getAll(name) || {};
+                subcookies[subName] = value;
+                this.setAll(name, subcookies, expires, path, domain, secure);
+            },
+            setAll: function (name, subcookies, expires, path, domain, secure) {
+                var cookieText = encodeURIComponent(name) + "=";
+                var subcookieParts = new Array();
+                for (var subName in subcookies) {
+                    if (subName.length > 0
+                        && subcookies.hasOwnProperty(subName)) {
+                        subcookieParts.push(encodeURIComponent(subName) + "="
+                            + encodeURIComponent(subcookies[subName]));
+                    }
+                }
+                if (subcookieParts.length > 0) {
+                    cookieText += subcookieParts.join("&");
+                    if (expires instanceof Date) {
+
+                        cookieText += ";expires=" + expires.toGMTString();
+                    }
+                    if (path) {
+                        cookieText += ";path=" + path;
+                    }
+                    if (domain) {
+                        cookieText += ";domain=" + domain;
+                    }
+                    if (secure) {
+                        cookieText += ";secure";
+                    }
+                } else {
+
+                    cookieText += ";expires=" + (new Date(0)).toGMTString();
+                }
+                document.cookie = cookieText;
+            },
+            unset: function (name, subName, path, domain, secure) {
+                var subcookies = this.getAll(name);
+                if (subcookies) {
+                    delete subcookies[subName];
+                    this.setAll(name, subcookies, null, path, domain, secure);
+                }
+            },
+            unsetAll: function (name, path, domain, secure) {
+                this.setAll(name, null, new Date(0), path, domain, secure);
+            }
+        };
+        return cookieUtil;
+    }
+    // end:cookie
+
+    function getToken() {
+        var data = cookie().getAll("data");
+        return data != null ? data.token : "";
+    }//end
+
+    function gridDataSource(dataSource) {
+        dataSource.error = function (e) {
+            if (e.status == 401) {
+                location.href = window.rootPath + '/home/login';
+            } else {
+
+            }
+        };
+        return dataSource;
+    }//end
+
+    // S_封装filer的参数
+    function buildOdataFilter(from) {
+        var manipulation_rcheckableType = /^(?:checkbox|radio)$/i,
+            rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
+            rsubmittable = /^(?:input|select|textarea|keygen)/i;
+
+        return $(from).map(function () {
+            var elements = jQuery.prop(this, "elements");
+            return elements ? jQuery.makeArray(elements) : this;
+        }).filter(
+            function () {
+                var type = this.type;
+                return this.value
+                    && this.name
+                    && !$(this).is(":disabled")
+                    && rsubmittable.test(this.nodeName)
+                    && !rsubmitterTypes.test(type)
+                    && (this.checked || !manipulation_rcheckableType
+                        .test(type));
+            }).map(
+            function (i, elem) {
+                var $me = $(this), val = $me.val();
+                if (!val) {
+                    return false;
+                }
+                var dataType = $me.attr("data-type") || "String";
+                val = "'" + val + "'";
+                if ("String" != dataType) {
+                    val = dataType + val;
+                }
+                var operator = $me.attr("operator") || "eq",
+                    dataRole = $me.attr("data-role") || ""; // data-role="datepicker"
+                if (dataRole == "datepicker") {
+                    val = "date" + val;
+                } else if (dataRole == "datetimepicker") {
+                    val = "datetime" + val;
+                }
+
+                return operator == "like" ? ("substringof(" + val + ", "
+                + elem.name + ")") : (elem.name + " " + operator
+                + " " + val);
+            }).get().join(" and ");
+    }// E_封装filer的参数
+
+    /*function initDictData(options) {
+        if (!DICT_ITEMS) {
+            options.$http({
+                method: 'get',
+                url: rootPath + '/dict/dictItems'
+            }).then(function (response) {
+                options.scope.dictMetaData = response.data;
+                var dictsObj = {};
+                reduceDict(dictsObj, response.data);
+                options.scope.DICT = dictsObj;
+            }, function (response) {
+                alert('初始化数据字典失败');
+            });
+        } else {
+            options.scope.dictMetaData = DICT_ITEMS;
+            var dictsObj = {};
+            reduceDict(dictsObj, options.scope.dictMetaData);
+            options.scope.DICT = dictsObj;
+        }
+    }//end*/
+
+    /*function reduceDict(dictsObj, dicts, parentId) {
+        if (!dicts || dicts.length == 0) {
+            return;
+        }
+        if (!parentId) {
+            for (var i = 0; i < dicts.length; i++) {
+                var dict = dicts[i];
+                if (!dict.parentId) {
+                    dictsObj[dict.dictCode] = {};
+                    dictsObj[dict.dictCode].dictId = dict.dictId;
+                    dictsObj[dict.dictCode].dictCode = dict.dictCode;
+                    dictsObj[dict.dictCode].dictName = dict.dictName;
+                    dictsObj[dict.dictCode].dictKey = dict.dictKey;
+                    dictsObj[dict.dictCode].dictSort = dict.dictSort;
+                    reduceDict(dictsObj[dict.dictCode], dicts, dict.dictId);
+                }
+            }
+        } else {
+            for (var i = 0; i < dicts.length; i++) {
+                var dict = dicts[i];
+                if (dict.parentId && dict.parentId == parentId) {
+                    if (!dictsObj.dicts) {
+                        dictsObj.dicts = new Array();
+                    }
+                    var subDict = {};
+                    subDict.dictId = dict.dictId;
+                    subDict.dictName = dict.dictName;
+                    subDict.dictCode = dict.dictCode;
+                    subDict.dictKey = dict.dictKey;
+                    subDict.dictSort = dict.dictSort;
+                    dictsObj.dicts.push(subDict);
+                    reduceDict(subDict, dicts, dict.dictId);
+                }
+            }
+        }
+    }//end*/
+
+    // S_获取项目待办总数
+    function getTaskCount(options) {
+        options.$http({
+            method: 'get',
+            url: rootPath + '/admin/myCountInfo'
+        }).then(function (response) {
+            if(response.data.DO_SIGN_COUNT){
+                $('#DO_SIGN_COUNT').html(response.data.DO_SIGN_COUNT);
+            }
+            if(response.data.DO_TASK_COUNT){
+                $('#DO_TASK_COUNT').html(response.data.DO_TASK_COUNT);
+            }
+        });
+    }// E_获取待办总数
+
+    function uuid(){
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+            var r=Math.random()*16|0,
+                v=c=='x'?r:(r&0x3|0x8);
+            return v.toString(16)
+        }).toUpperCase()
+    }
+
+    //init
+    init();
+    function init() {
+        //begin#grid 处理
+        //全选
+        $(document).on('click', '#checkboxAll', function () {
+            var isSelected = $(this).is(':checked');
+            $('.grid').find('tr td:nth-child(1)').find('input:checkbox[ng-disabled!="true"]').prop('checked', isSelected);
+        });
+    }
+
+})();
+/**
+ * 全局angular $http拦截器
+ */
+(function () {
+    'use strict';
+    var app = angular.module('app');
+    app.factory("commonHttpInterceptor", ["$injector", "bsWin", commonHttpInterceptor]);
+
+    function commonHttpInterceptor($q, bsWin) {  //  anguler $http全局请求拦截器
+        return {
+            request: function (config) {
+                config.headers["Token"] = common.getToken();
+                config.headers["X-Requested-With"] = "XMLHttpRequest";  // 用于后台ajax请求的判断
+                return config;
+            },
+            responseError: function (response) {
+                // console.log("responseError", response);
+                if (!response.config.headers.commonHttp) { // 过滤掉用common.http发起的请求
+                    errorHandle(bsWin, response.status, response.data);
+                }
+                return $q.reject(response);
+            }
+        };
+
+    }
+
+    /**
+     * 统一错误状态处理
+     * @param bsWin     提示窗口对象
+     * @param status    响应状态码
+     * @param data      响应数据
+     */
+    function errorHandle(bsWin, status, data) {
+        // debugger;
+        switch (status) {
+            case 500:
+                bsWin.error("系统内部错误!");
+                break;
+            case 401:
+                bsWin.warning("登录信息失效或您没有权限,请重新登录!",function(){
+                    window.location.href = rootPath+"/";
+                });
+                break;
+            case 403:
+                bsWin.warning("您无权限执行此操作！");
+                break;
+            case 404:
+                bsWin.error("未找到相应的操作！");
+                break;
+            case 408:
+                bsWin.warning("请求超时");
+                break;
+            case 412:
+                bsWin.warning(data.message || "操作失败");
+                break;
+            case 499:
+                bsWin.warning(data.message || "您的账号已在别的地方登录，请确认密码是否被修改！");
+                break;
+            default:
+                bsWin.error("发生错误,系统已记录,我们会尽快处理！");
+        }
+    }
+
+    app.config(['$httpProvider', function ($httpProvider) { // 添加拦截器
+        $httpProvider.interceptors.push(commonHttpInterceptor);
+
+        //ie下angular的缓存问题
+            // Initialize get if not there
+           if (!$httpProvider.defaults.headers.get) {
+                   $httpProvider.defaults.headers.get = {};
+             }
+
+          // Enables Request.IsAjaxRequest() in ASP.NET MVC
+           $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+
+           //禁用IE对ajax的缓存
+           $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
+           $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
+    }]);
+
+    if (jQuery) {  // 设置jQuery的ajax全局默认配置
+        jQuery(document).ajaxSend(function (event, request, settings) {
+            request.setRequestHeader('Token', common.getToken());
+        }).ajaxError(function (event, jqXHR, settings, thrownError) {
+            var _body = angular.element("body"),
+                scope = _body.scope(),
+                bsWin = _body.injector().get("bsWin"),
+                data = angular.isString(jqXHR.responseText) ? JSON.parse(jqXHR.responseText || "{}") : jqXHR.responseText;
+
+            scope.$apply(function () {
+                errorHandle(bsWin, jqXHR.status, data || {});
+            });
+        });
+    }
+})();
+/**
+ * Created by ldm on 2017/8/22.
+ */
+(function () {
+    'use strict';
+    angular.module('app').factory('ideaSvc', idea);
+
+    idea.$inject = ['$http','bsWin'];
+
+    function idea($http, bsWin) {
+        var service = {
+            initIdeaData: initIdeaData,                 // 初始化选择意见窗口数据
+            initIdea : initIdea //初始化个人常用意见
+        };
+        return service;
+
+        // 初始化常用意见
+        function initIdeaData(vm,options) {
+            vm.ideaContent = '';// 初始化当前意见
+            $("#ideaWindow").kendoWindow({
+                width: "70%",
+                height: "660px",
+                title: "意见选择",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"]
+            }).data("kendoWindow").center().open();
+
+            //如果没有加载，则加载个人意见信息
+            if(!vm.ideas){
+                $http({
+                    method: 'post',
+                    url: rootPath + "/idea/findMyIdea"
+                }).then(function (response) {
+                    vm.ideas = response.data;
+                });
+            }
+
+            //删除常用意见
+            vm.deleteCommonIdea = function () {
+                var isCheck = $("#commonIdeaTable input[type='checkbox']:checked");
+                if (isCheck.length < 1) {
+                    bsWin.alert("请选择要删除的意见！");
+                } else {
+                    var ids = [];
+                    for (var i = 0; i < isCheck.length; i++) {
+                        if(isCheck[i].value){
+                            ids.push(isCheck[i].value);
+                        }
+                        $.each(vm.ideas,function(c,ideaObj){
+                            if(c == isCheck[i].name ){
+                                vm.ideas.splice(c, 1);
+                            }
+                        })
+                    }
+                    if(ids.length > 0){
+                        var idsStr = ids.join(",");
+                        $http({
+                            method: 'delete',
+                            url: rootPath + '/idea',
+                            params: {
+                                ideas: idsStr
+                            }
+                        }).then(function (response) {
+                            bsWin.alert("删除成功！",function () {
+                                $http({
+                                    method: 'post',
+                                    url: rootPath + "/idea/findMyIdea"
+                                }).then(function (response) {
+                                    vm.ideas = response.data;
+                                });
+                            });
+                        });
+                    }
+                }
+            };
+
+            //拼接评审意见
+            vm.addCorrentIdea = function (content) {
+                vm.ideaContent += content;
+            };
+
+            vm.addCommonIdea = function () {// 添加常用意见
+                if(!vm.ideas){
+                    vm.ideas = [];
+                }
+                vm.newIdea = {};
+                vm.newIdea.ideaType = "1";     //1、表示个人常用意见
+                vm.ideas.push(vm.newIdea);
+            }
+
+            vm.saveCommonIdea = function () {// 保存常用意见
+                if(vm.ideas.length == 0){
+                    bsWin.alert("请编辑你要保存的意见信息！");
+                    return ;
+                }
+                $http({
+                    method: 'post',
+                    url: rootPath + "/idea",
+                    headers: {
+                        "contentType": "application/json;charset=utf-8" // 设置请求头信息
+                    },
+                    dataType: "json",
+                    data: angular.toJson(vm.ideas)
+                }).then(function (response) {
+                    if(response.data.flag || response.data.reCode == "ok"){
+                        vm.ideas = response.data.reObj;
+                        bsWin.alert("添加成功！");
+                    }else{
+                        bsWin.alert(response.data.reMsg);
+                    }
+                });
+            }
+
+            vm.saveCurrentIdea = function () {
+                var targetObj = $("#" + options.targetId);
+                targetObj.val(targetObj.val() + vm.ideaContent);
+                window.parent.$("#ideaWindow").data("kendoWindow").close();
+                targetObj.focus();
+            }
+        }//end
+
+        //初始化个人常用意见
+        function initIdea(vm){
+            var httpOptions={
+                method: 'post',
+                url: rootPath + "/idea/findMyIdea"
+            }
+
+            var httpSuccess=function success(response){
+                vm.ideas = response.data;
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+    }
+})();
 (function () {
     'use strict';
 
@@ -9308,900 +10390,6 @@
 
         }// end fun grid
 
-    }
-})();
-/**
- * 自定义弹窗窗口（在对应的方法中注入bsWin对象）
- * 提示窗口使用方法：
- *  bsWin.alert("消息提示", "操作成功！", function () { console.log("This's close!"); } );
- * 或者
- *  bsWin.alert({
- *      title: "消息提示",
- *      message: "操作成功！",
- *      onClose: function () { console.log("This's close!"); }
- *  });
- * 询问窗口使用方法：
- *  bsWin.confirm("询问提示", "是否进行该操作！", function () { console.log("This's ok!"); }, function () { console.log("This's close!"); },function(){console.log("This's onCancel!");} );
- * 或者
- *  bsWin.confirm({
- *      title: "询问提示",
- *      message: "是否进行该操作！",
- *      onOk: function () { console.log("This's ok!"); },
- *      onClose: function () { console.log("This's close!"); },
- *      onCancel:function(){console.log("This's onCancel!");}
- *  });
- */
-(function () {
-    'use strict';
-
-    var app = angular.module('app');
-    angular.module('app').factory('bsWin', bsWinFactory);
-
-    function bsWinFactory(){
-        return {
-            success: function (message, onClose) {
-                return this.alert({
-                    message: message,
-                    type: "success",
-                    onClose: onClose,
-                    icon: 1,
-                });
-            },
-            warning:  function (message, onClose) {
-                return this.alert({
-                    message: message,
-                    type: "warning",
-                    onClose: onClose,
-                    icon: 5,
-                });
-            },
-            error: function (message, onClose) {
-                return this.alert({
-                    message: message,
-                    type: "error",
-                    onClose: onClose,
-                    icon: 2,
-                });
-            },
-            alert: function (options, message, onClose) {
-                if (!angular.isObject(options)) {
-                    var title;
-                    if (!message || angular.isFunction(message)) {
-                        onClose = message;
-                        message = options;
-                    } else {
-                        title = options;
-                    }
-                    options = {
-                        message: message,
-                        onClose: onClose || function () {
-                        }
-                    };
-                    if (title) {
-                        options.title = title;
-                    }
-                }
-                options.onClose = options.onClose || function(){};
-                layer.alert(
-                    options.message,
-                    {
-                        title:(options.title)?options.title:"系统消息",
-                        icon: (!options.icon) ? 6 : options.icon,
-                        skin: 'layui-layer-lan',
-                    },
-                    function(index){
-                        layer.close(index);
-                        options.onClose();
-                    }
-                );
-            },
-            confirm: function (options, message, onOk, onClose,onCancel) {
-                if (!angular.isObject(options)) {
-                    var title;
-                    if (!message || angular.isFunction(message)) {
-                        onCancel = onClose || function(){
-                            };
-                        onClose = onOk || function () {
-                            };
-                        onOk = message || function () {
-                            };
-                        message = options;
-                    } else {
-                        title = options;
-                    }
-
-                    options = {
-                        message: message,
-                        onOk: onOk,
-                        onClose: onClose,
-                        onCancel: onCancel
-                    };
-                    if (title) {
-                        options.title = title;
-                    }
-                }
-                options.onClose = options.onClose || function(){};
-                //询问框
-                layer.confirm(
-                    options.message,
-                    {
-                        title:(options.title)?options.title:"询问提示",
-                        icon: 3,
-                        skin: 'layui-layer-lan',
-                        btn: ['确认','取消'],
-                        end : options.onClose
-                    },
-                    function(index){
-                        layer.close(index);
-                        if ((options.onOk) != undefined && typeof (options.onOk) == 'function') {
-                            options.onOk();
-                        }
-                    },
-                    function(index){
-                        layer.close(index);
-                        if ((options.onCancel) != undefined && typeof (options.onCancel) == 'function') {
-                            options.onCancel();
-                        }
-                    }
-                );
-            }
-
-        };
-    }
-
-})();
-(function () {
-    'use strict';
-
-    var service = {
-        initJqValidation: initJqValidation,         // 重置form验证
-        requestSuccess: requestSuccess,             // 请求成功时执行
-        format: format,                             // string格式化
-        blockNonNumber: blockNonNumber,             // 只允许输入数字
-        floatNumberInput: floatNumberInput,
-        adminContentHeight: adminContentHeight,     // 当前Content高度
-        alert: alertDialog,                         // 显示alert窗口
-        confirm: confirmDialog,                     // 显示Confirm窗口
-        getQuerystring: getQuerystring,             // 取得Url参数
-        kendoGridConfig: kendoGridConfig,           // kendo grid配置
-        getKendoCheckId: getKendoCheckId,           // 获得kendo grid的第一列checkId
-        cookie: cookie,                             // cookie操作
-        getToken: getToken,                         // 获得令牌
-        http: http,                                 // http请求
-        gridDataSource: gridDataSource,             // gridDataSource
-        buildOdataFilter: buildOdataFilter,         // 创建多条件查询的filter
-        //initDictData: initDictData,                 // 初始化数字字典
-        kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
-        getTaskCount: getTaskCount,                 // 用户待办总数
-        uuid : uuid,                                // js
-        downloadReport : downloadReport,            //报表下载
-    };
-    window.common = service;
-
-    /**
-     *
-     * @param data 数据
-     * @param fileName 文件名
-     * @param fileType 文件类型
-     * 使用{type: "application/vnd.ms-excel"}的写法，可以保存为xls格式的excel文件
-     * 而使用“application/vnd.openxmlformats-officedocument.spreadsheetml.sheet”则会保存为xlsx
-     */
-    function downloadReport(data , fileName , fileType){
-        var blob = new Blob([data] , {type : "application/" + fileType});
-        var objectUrl = URL.createObjectURL(blob);
-        var aForExcel = $("<a><span class='forExcel'>下载</span></a>").attr("href", objectUrl).attr("download", fileName);
-        $("body").append(aForExcel);
-        $(".forExcel").click();
-        aForExcel.remove();
-    }
-
-    function initJqValidation(formObj) {
-        if (formObj) {
-            formObj.removeData("validator");
-            formObj.removeData("unobtrusiveValidation");
-            $.validator.unobtrusive.parse(formObj);
-        } else {
-            $("form").removeData("validator");
-            $("form").removeData("unobtrusiveValidation");
-            $.validator.unobtrusive.parse("form");
-        }
-    }//end
-
-    function requestSuccess(options) {
-        var showError = function (msg) {
-            service.alert({
-                vm: options.vm,
-                msg: msg,
-                fn: function () {
-                    options.vm.isSubmit = false;
-                    $('.alertDialog').modal('hide');
-                }
-            });
-        };
-        if (options.response.status > 400) {
-            showError("发生错误！");
-        } else {
-            var data = options.response.data;
-            if (data && data.reCode == 555) {
-                showError(data.message);
-            } else if (options.fn) {
-                options.fn(data);
-            }
-        }
-    }//end
-
-    function format() {
-        var theString = arguments[0];
-        for (var i = 1; i < arguments.length; i++) {
-            var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
-            theString = theString.replace(regEx, arguments[i]);
-        }
-        return theString;
-    }//end
-
-    function blockNonNumber(val) {
-        var str = val.toString().replace(/[^0-9]/g, '');
-        return parseInt(str, 10);
-    }//end
-
-    function floatNumberInput(val) {
-        return isNaN(parseFloat(val, 10)) ? 0 : parseFloat(val, 10);
-    }//end
-
-    function adminContentHeight() {
-        return $(window).height() - 180;
-    }//end
-
-    function alertDialog(options) {
-        options.vm.alertDialogMessage = options.msg;
-        options.vm.alertDialogFn = function () {
-            if (options.closeDialog && options.closeDialog == true) {
-                $('.alertDialog').modal('hide');
-                $('.modal-backdrop').remove();
-            }
-            if (options.fn) {
-                options.fn();
-            } else {
-                $('.alertDialog').modal('hide');
-            }
-        };
-        $('.alertDialog').modal({
-            backdrop: 'static',
-            keyboard: false
-        });
-    }//end
-
-    function confirmDialog(options) {
-        options.vm.dialogConfirmTitle = options.title;
-        options.vm.dialogConfirmMessage = options.msg;
-        $('.confirmDialog').modal({
-            backdrop: 'static'
-        });
-        options.vm.dialogConfirmSubmit = options.fn;
-        if (options.cancel) {
-            options.vm.dialogConfirmCancel = options.cancel;
-        } else {
-            options.vm.dialogConfirmCancel = function () {
-                $('.confirmDialog').modal('hide');
-            }
-        }
-    }//end
-
-    function getQuerystring(key, default_) {
-        if (default_ == null)
-            default_ = "";
-        key = key.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-        var regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
-        var qs = regex.exec(window.location.href);
-        if (qs == null)
-            return default_;
-        else
-            return qs[1];
-    }//end
-
-    function kendoGridDataSource(url, searchForm) {
-        var dataSource = new kendo.data.DataSource({
-            type: 'odata',
-            transport: kendoGridConfig().transport(url, searchForm),
-            schema: kendoGridConfig().schema({
-                id: "id",
-                fields: {
-                    createdDate: {
-                        type: "date"
-                    }
-                }
-            }),
-            serverPaging: true,
-            serverSorting: true,
-            serverFiltering: true,
-            pageSize: 10,
-            sort: {
-                field: "createdDate",
-                dir: "desc"
-            }
-        });
-        return dataSource;
-    }//end
-
-    function kendoGridConfig() {
-        return {
-            filterable: {
-                extra: false,
-                operators: {
-                    string: {
-                        "contains": "包含",
-                        "eq": "等于"
-                    },
-                    number: {
-                        "eq": "等于",
-                        "neq": "不等于",
-                        gt: "大于",
-                        lt: "小于"
-                    },
-                    date: {
-                        gt: "大于",
-                        lt: "小于"
-                    }
-                }
-            },
-            pageable: {
-                pageSize: 10,
-                previousNext: true,
-                buttonCount: 5,
-                refresh: true,
-                pageSizes: true
-            },
-            schema: function (model) {
-                return {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model: model
-                };
-            },
-            transport: function (url, form, paramObj) {
-                return {
-                    read: {
-                        url: url,
-                        dataType: "json",
-                        type: "post",
-                        cache : false ,
-                        beforeSend: function (req) {
-                            req.setRequestHeader('Token', service.getToken());
-                        },
-                        data: function () {
-                            if (form) {
-                                var filterParam = common.buildOdataFilter(form);
-                                if (filterParam) {
-                                    if (paramObj && paramObj.filter) {
-                                        return {
-                                            "$filter": filterParam + " and "
-                                            + paramObj.filter
-                                        };
-                                    } else {
-                                        return {
-                                            "$filter": filterParam
-                                        };
-                                    }
-                                } else {
-                                    if (paramObj && paramObj.filter) {
-                                        return {
-                                            "$filter": paramObj.filter
-                                        };
-                                    } else {
-                                        return {};
-                                    }
-                                }
-                            } else {
-                                return {};
-                            }
-                        }
-                    }
-                }
-            },
-            noRecordMessage: {
-                template: '暂时没有数据.'
-            }
-        }
-    }//end
-
-    function getKendoCheckId($id) {
-        var checkbox = $($id).find('tr td:nth-child(1)').find('input:checked')
-        var data = [];
-        checkbox.each(function () {
-            var id = $(this).attr('relId');
-            data.push({
-                name: 'id',
-                value: id
-            });
-        });
-        return data;
-    }//end
-
-    function http(options) {
-        options.headers = {
-            Token: service.getToken()
-        };
-        options.$http(options.httpOptions).then(options.success,
-            function (response) {
-                if (options.onError) {
-                    options.onError(response);
-                }
-            });
-    }//end
-
-    // begin:cookie
-    function cookie() {
-        var cookieUtil = {
-            get: function (name, subName) {
-                var subCookies = this.getAll(name);
-                if (subCookies) {
-                    return subCookies[subName];
-                } else {
-                    return null;
-                }
-            },
-            getAll: function (name) {
-                var cookieName = encodeURIComponent(name) + "=", cookieStart = document.cookie
-                    .indexOf(cookieName), cookieValue = null, result = {};
-                if (cookieStart > -1) {
-                    var cookieEnd = document.cookie.indexOf(";", cookieStart)
-                    if (cookieEnd == -1) {
-                        cookieEnd = document.cookie.length;
-                    }
-                    cookieValue = document.cookie.substring(cookieStart
-                        + cookieName.length, cookieEnd);
-                    if (cookieValue.length > 0) {
-                        var subCookies = cookieValue.split("&");
-                        for (var i = 0, len = subCookies.length; i < len; i++) {
-                            var parts = subCookies[i].split("=");
-                            result[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
-                        }
-                        return result;
-                    }
-                }
-                return null;
-            },
-            set: function (name, subName, value, expires, path, domain, secure) {
-                var subcookies = this.getAll(name) || {};
-                subcookies[subName] = value;
-                this.setAll(name, subcookies, expires, path, domain, secure);
-            },
-            setAll: function (name, subcookies, expires, path, domain, secure) {
-                var cookieText = encodeURIComponent(name) + "=";
-                var subcookieParts = new Array();
-                for (var subName in subcookies) {
-                    if (subName.length > 0
-                        && subcookies.hasOwnProperty(subName)) {
-                        subcookieParts.push(encodeURIComponent(subName) + "="
-                            + encodeURIComponent(subcookies[subName]));
-                    }
-                }
-                if (subcookieParts.length > 0) {
-                    cookieText += subcookieParts.join("&");
-                    if (expires instanceof Date) {
-
-                        cookieText += ";expires=" + expires.toGMTString();
-                    }
-                    if (path) {
-                        cookieText += ";path=" + path;
-                    }
-                    if (domain) {
-                        cookieText += ";domain=" + domain;
-                    }
-                    if (secure) {
-                        cookieText += ";secure";
-                    }
-                } else {
-
-                    cookieText += ";expires=" + (new Date(0)).toGMTString();
-                }
-                document.cookie = cookieText;
-            },
-            unset: function (name, subName, path, domain, secure) {
-                var subcookies = this.getAll(name);
-                if (subcookies) {
-                    delete subcookies[subName];
-                    this.setAll(name, subcookies, null, path, domain, secure);
-                }
-            },
-            unsetAll: function (name, path, domain, secure) {
-                this.setAll(name, null, new Date(0), path, domain, secure);
-            }
-        };
-        return cookieUtil;
-    }
-    // end:cookie
-
-    function getToken() {
-        var data = cookie().getAll("data");
-        return data != null ? data.token : "";
-    }//end
-
-    function gridDataSource(dataSource) {
-        dataSource.error = function (e) {
-            if (e.status == 401) {
-                location.href = window.rootPath + '/home/login';
-            } else {
-
-            }
-        };
-        return dataSource;
-    }//end
-
-    // S_封装filer的参数
-    function buildOdataFilter(from) {
-        var manipulation_rcheckableType = /^(?:checkbox|radio)$/i,
-            rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
-            rsubmittable = /^(?:input|select|textarea|keygen)/i;
-
-        return $(from).map(function () {
-            var elements = jQuery.prop(this, "elements");
-            return elements ? jQuery.makeArray(elements) : this;
-        }).filter(
-            function () {
-                var type = this.type;
-                return this.value
-                    && this.name
-                    && !$(this).is(":disabled")
-                    && rsubmittable.test(this.nodeName)
-                    && !rsubmitterTypes.test(type)
-                    && (this.checked || !manipulation_rcheckableType
-                        .test(type));
-            }).map(
-            function (i, elem) {
-                var $me = $(this), val = $me.val();
-                if (!val) {
-                    return false;
-                }
-                var dataType = $me.attr("data-type") || "String";
-                val = "'" + val + "'";
-                if ("String" != dataType) {
-                    val = dataType + val;
-                }
-                var operator = $me.attr("operator") || "eq",
-                    dataRole = $me.attr("data-role") || ""; // data-role="datepicker"
-                if (dataRole == "datepicker") {
-                    val = "date" + val;
-                } else if (dataRole == "datetimepicker") {
-                    val = "datetime" + val;
-                }
-
-                return operator == "like" ? ("substringof(" + val + ", "
-                + elem.name + ")") : (elem.name + " " + operator
-                + " " + val);
-            }).get().join(" and ");
-    }// E_封装filer的参数
-
-    /*function initDictData(options) {
-        if (!DICT_ITEMS) {
-            options.$http({
-                method: 'get',
-                url: rootPath + '/dict/dictItems'
-            }).then(function (response) {
-                options.scope.dictMetaData = response.data;
-                var dictsObj = {};
-                reduceDict(dictsObj, response.data);
-                options.scope.DICT = dictsObj;
-            }, function (response) {
-                alert('初始化数据字典失败');
-            });
-        } else {
-            options.scope.dictMetaData = DICT_ITEMS;
-            var dictsObj = {};
-            reduceDict(dictsObj, options.scope.dictMetaData);
-            options.scope.DICT = dictsObj;
-        }
-    }//end*/
-
-    /*function reduceDict(dictsObj, dicts, parentId) {
-        if (!dicts || dicts.length == 0) {
-            return;
-        }
-        if (!parentId) {
-            for (var i = 0; i < dicts.length; i++) {
-                var dict = dicts[i];
-                if (!dict.parentId) {
-                    dictsObj[dict.dictCode] = {};
-                    dictsObj[dict.dictCode].dictId = dict.dictId;
-                    dictsObj[dict.dictCode].dictCode = dict.dictCode;
-                    dictsObj[dict.dictCode].dictName = dict.dictName;
-                    dictsObj[dict.dictCode].dictKey = dict.dictKey;
-                    dictsObj[dict.dictCode].dictSort = dict.dictSort;
-                    reduceDict(dictsObj[dict.dictCode], dicts, dict.dictId);
-                }
-            }
-        } else {
-            for (var i = 0; i < dicts.length; i++) {
-                var dict = dicts[i];
-                if (dict.parentId && dict.parentId == parentId) {
-                    if (!dictsObj.dicts) {
-                        dictsObj.dicts = new Array();
-                    }
-                    var subDict = {};
-                    subDict.dictId = dict.dictId;
-                    subDict.dictName = dict.dictName;
-                    subDict.dictCode = dict.dictCode;
-                    subDict.dictKey = dict.dictKey;
-                    subDict.dictSort = dict.dictSort;
-                    dictsObj.dicts.push(subDict);
-                    reduceDict(subDict, dicts, dict.dictId);
-                }
-            }
-        }
-    }//end*/
-
-    // S_获取项目待办总数
-    function getTaskCount(options) {
-        options.$http({
-            method: 'get',
-            url: rootPath + '/admin/myCountInfo'
-        }).then(function (response) {
-            if(response.data.DO_SIGN_COUNT){
-                $('#DO_SIGN_COUNT').html(response.data.DO_SIGN_COUNT);
-            }
-            if(response.data.DO_TASK_COUNT){
-                $('#DO_TASK_COUNT').html(response.data.DO_TASK_COUNT);
-            }
-        });
-    }// E_获取待办总数
-
-    function uuid(){
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
-            var r=Math.random()*16|0,
-                v=c=='x'?r:(r&0x3|0x8);
-            return v.toString(16)
-        }).toUpperCase()
-    }
-
-    //init
-    init();
-    function init() {
-        //begin#grid 处理
-        //全选
-        $(document).on('click', '#checkboxAll', function () {
-            var isSelected = $(this).is(':checked');
-            $('.grid').find('tr td:nth-child(1)').find('input:checkbox[ng-disabled!="true"]').prop('checked', isSelected);
-        });
-    }
-
-})();
-/**
- * 全局angular $http拦截器
- */
-(function () {
-    'use strict';
-    var app = angular.module('app');
-    app.factory("commonHttpInterceptor", ["$injector", "bsWin", commonHttpInterceptor]);
-
-    function commonHttpInterceptor($q, bsWin) {  //  anguler $http全局请求拦截器
-        return {
-            request: function (config) {
-                config.headers["Token"] = common.getToken();
-                config.headers["X-Requested-With"] = "XMLHttpRequest";  // 用于后台ajax请求的判断
-                return config;
-            },
-            responseError: function (response) {
-                // console.log("responseError", response);
-                if (!response.config.headers.commonHttp) { // 过滤掉用common.http发起的请求
-                    errorHandle(bsWin, response.status, response.data);
-                }
-                return $q.reject(response);
-            }
-        };
-
-    }
-
-    /**
-     * 统一错误状态处理
-     * @param bsWin     提示窗口对象
-     * @param status    响应状态码
-     * @param data      响应数据
-     */
-    function errorHandle(bsWin, status, data) {
-        // debugger;
-        switch (status) {
-            case 500:
-                bsWin.error("系统内部错误!");
-                break;
-            case 401:
-                bsWin.warning("登录信息失效或您没有权限,请重新登录!",function(){
-                    window.location.href = rootPath+"/";
-                });
-                break;
-            case 403:
-                bsWin.warning("您无权限执行此操作！");
-                break;
-            case 404:
-                bsWin.error("未找到相应的操作！");
-                break;
-            case 408:
-                bsWin.warning("请求超时");
-                break;
-            case 412:
-                bsWin.warning(data.message || "操作失败");
-                break;
-            case 499:
-                bsWin.warning(data.message || "您的账号已在别的地方登录，请确认密码是否被修改！");
-                break;
-            default:
-                bsWin.error("发生错误,系统已记录,我们会尽快处理！");
-        }
-    }
-
-    app.config(['$httpProvider', function ($httpProvider) { // 添加拦截器
-        $httpProvider.interceptors.push(commonHttpInterceptor);
-
-        //ie下angular的缓存问题
-            // Initialize get if not there
-           if (!$httpProvider.defaults.headers.get) {
-                   $httpProvider.defaults.headers.get = {};
-             }
-
-          // Enables Request.IsAjaxRequest() in ASP.NET MVC
-           $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
-
-           //禁用IE对ajax的缓存
-           $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
-           $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
-    }]);
-
-    if (jQuery) {  // 设置jQuery的ajax全局默认配置
-        jQuery(document).ajaxSend(function (event, request, settings) {
-            request.setRequestHeader('Token', common.getToken());
-        }).ajaxError(function (event, jqXHR, settings, thrownError) {
-            var _body = angular.element("body"),
-                scope = _body.scope(),
-                bsWin = _body.injector().get("bsWin"),
-                data = angular.isString(jqXHR.responseText) ? JSON.parse(jqXHR.responseText || "{}") : jqXHR.responseText;
-
-            scope.$apply(function () {
-                errorHandle(bsWin, jqXHR.status, data || {});
-            });
-        });
-    }
-})();
-/**
- * Created by ldm on 2017/8/22.
- */
-(function () {
-    'use strict';
-    angular.module('app').factory('ideaSvc', idea);
-
-    idea.$inject = ['$http','bsWin'];
-
-    function idea($http, bsWin) {
-        var service = {
-            initIdeaData: initIdeaData,                 // 初始化选择意见窗口数据
-            initIdea : initIdea //初始化个人常用意见
-        };
-        return service;
-
-        // 初始化常用意见
-        function initIdeaData(vm,options) {
-            vm.ideaContent = '';// 初始化当前意见
-            $("#ideaWindow").kendoWindow({
-                width: "70%",
-                height: "660px",
-                title: "意见选择",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
-
-            //如果没有加载，则加载个人意见信息
-            if(!vm.ideas){
-                $http({
-                    method: 'post',
-                    url: rootPath + "/idea/findMyIdea"
-                }).then(function (response) {
-                    vm.ideas = response.data;
-                });
-            }
-
-            //删除常用意见
-            vm.deleteCommonIdea = function () {
-                var isCheck = $("#commonIdeaTable input[type='checkbox']:checked");
-                if (isCheck.length < 1) {
-                    bsWin.alert("请选择要删除的意见！");
-                } else {
-                    var ids = [];
-                    for (var i = 0; i < isCheck.length; i++) {
-                        if(isCheck[i].value){
-                            ids.push(isCheck[i].value);
-                        }
-                        $.each(vm.ideas,function(c,ideaObj){
-                            if(c == isCheck[i].name ){
-                                vm.ideas.splice(c, 1);
-                            }
-                        })
-                    }
-                    if(ids.length > 0){
-                        var idsStr = ids.join(",");
-                        $http({
-                            method: 'delete',
-                            url: rootPath + '/idea',
-                            params: {
-                                ideas: idsStr
-                            }
-                        }).then(function (response) {
-                            bsWin.alert("删除成功！",function () {
-                                $http({
-                                    method: 'post',
-                                    url: rootPath + "/idea/findMyIdea"
-                                }).then(function (response) {
-                                    vm.ideas = response.data;
-                                });
-                            });
-                        });
-                    }
-                }
-            };
-
-            //拼接评审意见
-            vm.addCorrentIdea = function (content) {
-                vm.ideaContent += content;
-            };
-
-            vm.addCommonIdea = function () {// 添加常用意见
-                if(!vm.ideas){
-                    vm.ideas = [];
-                }
-                vm.newIdea = {};
-                vm.newIdea.ideaType = "1";     //1、表示个人常用意见
-                vm.ideas.push(vm.newIdea);
-            }
-
-            vm.saveCommonIdea = function () {// 保存常用意见
-                if(vm.ideas.length == 0){
-                    bsWin.alert("请编辑你要保存的意见信息！");
-                    return ;
-                }
-                $http({
-                    method: 'post',
-                    url: rootPath + "/idea",
-                    headers: {
-                        "contentType": "application/json;charset=utf-8" // 设置请求头信息
-                    },
-                    dataType: "json",
-                    data: angular.toJson(vm.ideas)
-                }).then(function (response) {
-                    if(response.data.flag || response.data.reCode == "ok"){
-                        vm.ideas = response.data.reObj;
-                        bsWin.alert("添加成功！");
-                    }else{
-                        bsWin.alert(response.data.reMsg);
-                    }
-                });
-            }
-
-            vm.saveCurrentIdea = function () {
-                var targetObj = $("#" + options.targetId);
-                targetObj.val(targetObj.val() + vm.ideaContent);
-                window.parent.$("#ideaWindow").data("kendoWindow").close();
-                targetObj.focus();
-            }
-        }//end
-
-        //初始化个人常用意见
-        function initIdea(vm){
-            var httpOptions={
-                method: 'post',
-                url: rootPath + "/idea/findMyIdea"
-            }
-
-            var httpSuccess=function success(response){
-                vm.ideas = response.data;
-            }
-
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
     }
 })();
 (function () {
@@ -14828,6 +15016,1371 @@
         }
         //end updateOffer
 
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('expertReviewCtrl', expertReview);
+
+    expertReview.$inject = ['$location', 'expertReviewSvc'];
+
+    function expertReview($location, expertReviewSvc) {
+        var vm = this;
+        vm.title = '专家列表';
+
+        vm.del = function (id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    expertReviewSvc.deleteExpertReview(vm, id);
+                }
+            });
+        }
+        vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+
+        activate();
+        function activate() {
+            expertReviewSvc.initExpertGrid(vm);
+            expertReviewSvc.getReviewList(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('expertReviewEditCtrl', expertReview);
+
+    expertReview.$inject = ['$location', 'expertReviewSvc', '$state'];
+
+    function expertReview($location, expertReviewSvc, $state) {
+        var vm = this;
+        vm.title = '添加附件';
+        vm.isuserExist = false;
+        vm.id = $state.params.id;
+        if (vm.id) {
+            vm.isUpdate = true;
+            vm.title = '更新附件';
+        }
+
+        vm.create = function () {
+            expertReviewSvc.createExpertReview(vm);
+        };
+        vm.update = function () {
+            expertReviewSvc.updateExpertReview(vm);
+        };
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                expertReviewSvc.getExpertReviewById(vm);
+            }
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('expertSelectCtrl', expertReview);
+
+    expertReview.$inject = [ 'expertReviewSvc', 'expertConditionSvc', 'expertSvc','$state','bsWin','$scope'];
+
+    function expertReview(expertReviewSvc, expertConditionSvc,expertSvc, $state,bsWin,$scope) {
+        var vm = this;
+        vm.title = '选择专家';
+        vm.conMaxIndex = 0;                   //条件号
+        vm.customCondition = new Array();
+        vm.expertReview = {};                 //评审方案对象
+        vm.confirmEPList = [];                //拟聘请专家列表（已经经过确认的专家）
+        vm.matchEPMap = {};                   //保存符合条件的专家信息
+        vm.selectIds = [],                    //已经抽取的专家信息ID（用于排除查询）
+        vm.autoSelectedEPList = [];           //抽取结果列表，抽取方法在后面封装
+        vm.businessId = $state.params.businessId;       //专家评审方案业务ID
+        vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
+        vm.businessType = $state.params.businessType;   //专家业务类型
+        var expertID = $state.params.expertID;   //专家ID
+        vm.isSuperUser = isSuperUser;
+        //S 查看专家详细
+        vm.findExportDetail = function (id) {
+            expertSvc.getExpertById(id, function (data) {
+                vm.model = data;
+                $("#selectExportDetail").kendoWindow({
+                    width: "80%",
+                    height: "auto",
+                    title: "专家详细信息",
+                    visible: false,
+                    modal: true,
+                    open:function(){
+                        $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.model.expertID + "&t=" + Math.random());
+                    },
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            });
+        }
+        //S 查看专家详细
+
+        //刷新已经选择的专家信息
+        vm.reFleshSelEPInfo = function(explist) {
+            $.each(explist,function(i, obj){
+                vm.confirmEPList.push(obj);
+                vm.selectIds.push(obj.expertDto.expertID);
+            })
+            vm.excludeIds = vm.selectIds.join(',');
+        }
+
+        //删除后刷新
+        vm.reFleshAfterRemove = function(ids){
+            $.each(ids,function(i, obj){
+                //1、删除已确认的专家
+                $.each(vm.confirmEPList,function(index, epObj){
+                    if(epObj && obj == epObj.id){
+                        vm.confirmEPList.splice(index, 1);
+                    }
+                })
+            })
+        }
+
+        //更新参加未参加状态
+        vm.reFleshJoinState = function(ids,state){
+            $.each(ids,function(i, obj){
+                //1、删除已确认的专家
+                $.each(vm.confirmEPList,function(index, epObj){
+                    if(obj == epObj.id){
+                        epObj.isJoin = state;
+                    }
+                })
+            })
+        }
+
+        //更新是否确认状态
+        vm.reFleshConfirmState = function(ids,state){
+            $.each(ids,function(i, obj){
+                //1、删除已确认的专家
+                $.each(vm.confirmEPList,function(index, epObj){
+                    if(obj == epObj.id){
+                        epObj.isConfrim = state;
+                    }
+                })
+            })
+        }
+
+        //更新抽取条件的抽取次数
+        vm.updateSelectedIndex = function(id){
+            if(id){
+                $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
+                    if(con.id == id){
+                        con.selectIndex = (!con.selectIndex)?1:con.selectIndex+1;
+                    }
+                })
+            }else{
+                $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
+                    con.selectIndex = (!con.selectIndex)?1:con.selectIndex+1;
+                })
+            }
+        }
+
+        vm.init = function(businessId,minBusinessId){
+            vm.expertReview = {};
+            vm.confirmEPList = [];
+            vm.selectIds = [];
+            expertReviewSvc.initReview(businessId,minBusinessId,function(data){
+                vm.expertReview = data;
+                //获取已经抽取的专家
+                if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
+                    $.each(vm.expertReview.expertSelectedDtoList,function(i, sep){
+                        vm.selectIds.push(sep.expertDto.expertID);
+                        vm.confirmEPList.push(sep);
+                    })
+                    if (vm.selectIds.length > 0) {
+                        vm.excludeIds = vm.selectIds.join(',');
+                    } else {
+                        vm.excludeIds = '';
+                    }
+                }
+            });
+        }
+
+        activate();
+        function activate() {
+            expertReviewSvc.initExpertGrid(vm);
+            vm.init(vm.businessId,vm.minBusinessId);
+        }
+
+        //弹出自选专家框
+        vm.showSelfExpertGrid = function () {
+            vm.selfExpertOptions.dataSource._skip=0;
+            vm.selfExpertOptions.dataSource.read();
+            $("#selfExpertDiv").kendoWindow({
+                width: "80%",
+                height: "680px",
+                title: "自选评审专家",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        //保存自选的专家
+        vm.saveSelfExpert = function () {
+            var selectIds = common.getKendoCheckId('#selfExpertGrid');
+            if (selectIds.length == 0) {
+                bsWin.alert("请先选择专家！");
+            } else if (selectIds.length > 1) {
+                bsWin.alert("自选专家最多只能选择一个！");
+            }else{
+                expertReviewSvc.saveSelfExpert(vm.businessId,vm.minBusinessId,vm.businessType,selectIds[0].value,vm.expertReview.id,vm.isCommit,function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        var ids = [];
+                        $.each(vm.confirmEPList,function(i, obj){
+                            if(obj.selectType == '2'){
+                                ids.push(obj.id)
+                            }
+                        })
+                        if(!vm.expertReview.id){
+                            vm.expertReview.id = data.idCode;
+                        }
+                        //刷新
+                        vm.reFleshSelEPInfo(data.reObj);
+                        vm.reFleshAfterRemove(ids);
+                        bsWin.success("操作成功！",function(){
+                            window.parent.$("#selfExpertDiv").data("kendoWindow").close();
+                        });
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                });
+            }
+        }
+
+        //删除自选专家
+        vm.delertSelfExpert = function () {
+            var isCheck = $("input[name='seletedEp']:checked");
+            if (isCheck.length < 1) {
+                bsWin.alert("请选择要删除的专家");
+            } else {
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "删除数据不可恢复，确定删除么？",
+                    onOk: function () {
+                        $('.confirmDialog').modal('hide');
+                        var ids = [];
+                        for (var i = 0; i < isCheck.length; i++) {
+                            ids.push(isCheck[i].value);
+                        }
+                        expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','),vm.isCommit,function(data){
+                            if(data.flag || data.reCode == 'ok'){
+                                vm.reFleshAfterRemove(ids);
+                                bsWin.success("操作成功！");
+                            }else{
+                                bsWin.error(data.reMsg);
+                            }
+                        });
+                    },
+                });
+            }
+        }
+
+        //自选专家查询
+        vm.querySelfExpert = function(){
+            vm.selfExpertOptions.dataSource._skip=0;
+            vm.selfExpertOptions.dataSource.read();
+        }
+
+        //境外专家
+        vm.showOutExpertGrid = function () {
+            vm.outExpertOptions.dataSource._skip=0;
+            vm.outExpertOptions.dataSource.read();
+            $("#outExpertDiv").kendoWindow({
+                width: "70%",
+                height: "680px",
+                title: "自选新专家、市外、境外专家",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        //删除选择的境外专家
+        vm.delertOutSelfExpert = function () {
+            var isCheck = $("input[name='seletedOutEp']:checked");
+            if (isCheck.length < 1) {
+                bsWin.alert("请选择要删除的专家");
+            } else {
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "删除数据不可恢复，确定删除么？",
+                    onOk: function () {
+                        $('.confirmDialog').modal('hide');
+                        var ids = [];
+                        for (var i = 0; i < isCheck.length; i++) {
+                            ids.push(isCheck[i].value);
+                        }
+                        expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','),vm.isCommit,function(data){
+                            if(data.flag || data.reCode == 'ok'){
+                                vm.reFleshAfterRemove(ids);
+                                bsWin.success("操作成功！");
+                            }else{
+                                bsWin.error(data.reMsg);
+                            }
+                        });
+                    },
+                });
+            }
+        }
+
+        //保存选择的境外专家
+        vm.saveOutExpert = function () {
+            var selectIds = common.getKendoCheckId('#outExpertGrid');
+            if (selectIds.length == 0) {
+                bsWin.alert("请先选择专家！");
+            } else {
+                var selExpertIdArr = [];
+                $.each(selectIds, function (i, obj) {
+                    selExpertIdArr.push(obj.value);
+                });
+                expertReviewSvc.saveOutExpert(vm.businessId,vm.minBusinessId,vm.businessType,selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
+                    if(data.flag || data.reCode == 'ok'){
+                        if(!vm.expertReview.id){
+                            vm.expertReview.id = data.idCode;
+                        }
+                        vm.reFleshSelEPInfo(data.reObj);
+                        bsWin.success("操作成功！",function(){
+                            window.parent.$("#outExpertDiv").data("kendoWindow").close();
+                        });
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                });
+            }
+        }
+
+        //境外专家查询
+        vm.queryOutExpert = function(){
+            vm.outExpertOptions.dataSource._skip=0;
+            vm.outExpertOptions.dataSource.read();
+        }
+
+        //计算符合条件的专家
+        vm.countMatchExperts = function (id) {
+            if (vm.expertReview.id) {
+                var postData = {};
+                vm.expertReview.expertSelConditionDtoList.forEach(function (t, number) {
+                    if (t.id == id) {
+                        postData = t;
+                    }
+                });
+                expertReviewSvc.countMatchExperts(postData,vm.minBusinessId,vm.expertReview.id,function(data){
+                    vm.matchEPMap[id] = data;
+                    $("#expertCount" + id).html(data.length);
+                });
+            } else {
+                bsWin.alert("请保存整体抽取方案再计算");
+            }
+        }
+
+        //查看符合条件的专家信息
+        vm.showMatchExperts = function(sortIndex){
+            vm.matchExpertList = [];
+            vm.matchExpertList = vm.matchEPMap[sortIndex];
+            $("#matchExpertDiv").kendoWindow({
+                width: "80%",
+                height: "600px",
+                title: "统计专家信息列表",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        vm.checkIntegerValue = function (checkValue, idStr, idSort) {
+            if (expertConditionSvc.isUnsignedInteger(checkValue)) {
+                $("#errorsOfficialNum" + idSort).html("");
+                $("#errorsAlternativeNum" + idSort).html("");
+                return checkValue;
+            } else {
+                $("#errorsOfficialNum" + idSort).html("只能填写数字");
+                $("#errorsAlternativeNum" + idSort).html("只能填写数字");
+                return ;
+            }
+        }
+
+        //添加随机抽取条件
+        vm.addCondition = function () {
+            if (!vm.isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
+                bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
+            } else {
+                if(!vm.expertReview.expertSelConditionDtoList){
+                    vm.expertReview.expertSelConditionDtoList = [];
+                }
+                vm.condition = {};
+                vm.condition.id = common.uuid();            //设置ID
+                vm.condition.businessId = vm.minBusinessId; //设置业务ID
+                vm.condition.selectType = "1";              //选择类型，这个一定不能少
+                vm.expertReview.expertSelConditionDtoList.push(vm.condition);
+            }
+        }
+
+        //删除专家抽取条件
+        vm.removeCondition = function () {
+            if (!vm.isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
+                bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
+            } else {
+                var isCheck = $("#conditionTable input[name='epConditionSort']:checked");
+                if (isCheck.length > 0) {
+                    bsWin.confirm({
+                        title: "询问提示",
+                        message: "删除数据的同时会删除该条件所抽取的专家，删除数据不可恢复，确定删除么？",
+                        onOk: function () {
+                            var ids = [];
+                            for (var i = 0; i < isCheck.length; i++) {
+                                $.each(vm.expertReview.expertSelConditionDtoList,function(c,con){
+                                    if (isCheck[i].value == con.id) {
+                                        ids.push(con.id);
+                                    }
+                                })
+                            }
+                            if(ids.length > 0){
+                                expertConditionSvc.deleteSelConditions(ids.join(","),vm.isCommit,function(data){
+                                    if(data.flag || data.reCode == 'ok'){
+                                        bsWin.success("操作成功！",function(){
+                                            vm.init(vm.businessId,vm.minBusinessId);
+                                        });
+                                    }else{
+                                        bsWin.error(data.reMsg);
+                                    }
+                                });
+                            }else{
+                                bsWin.success("操作成功！");
+                            }
+                        },
+                    });
+                }else{
+                    bsWin.alert("请选择要删除的抽取条件！");
+                }
+            }
+        }
+
+        //检查是否为正整数
+        function isUnsignedInteger(value) {
+            if ((/^(\+|-)?\d+$/.test(value)) && value > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        /******************************  以下是专家抽取方法 ***********************************/
+        //封装专家抽取条件信息
+        function buildCondition() {
+            if (vm.expertReview.expertSelConditionDtoList.length > 0) {
+                var validateResult = true;
+                vm.expertReview.expertSelConditionDtoList.forEach(function (t, number) {
+                    if (vm.expertReview.id) {
+                        t.expertReviewDto = {};
+                        t.expertReviewDto.id = vm.expertReview.id;   //抽取方案ID
+                    }
+                    if (!t.officialNum || !isUnsignedInteger(t.officialNum)) {
+                        $("#errorsOfficialNum" + t.id).html("必填，且为数字");
+                        validateResult = false;
+                    }
+                    if (!t.alternativeNum || !isUnsignedInteger(t.alternativeNum)) {
+                        $("#errorsAlternativeNum" + t.id).html("必填，且为数字");
+                        validateResult = false;
+                    }
+                    if (validateResult) {
+                        $("#errorsOfficialNum" + t.id).html("");
+                        $("#errorsAlternativeNum" + t.id).html("");
+                    }
+                });
+                return validateResult;
+            } else {
+                return false;
+            }
+        }
+
+        //保存专家抽取条件
+        vm.saveCondition = function () {
+            if (!vm.isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
+                bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
+            }else {
+                if (buildCondition()) {
+                    expertConditionSvc.saveCondition(vm.businessId,vm.minBusinessId,vm.businessType,vm.expertReview.id,vm.expertReview.expertSelConditionDtoList,function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            vm.expertReview.expertSelConditionDtoList = data.reObj;
+                            if(!vm.expertReview.id){
+                                vm.expertReview.id = vm.expertReview.expertSelConditionDtoList[0].expertReviewId;
+                            }
+                            bsWin.success("保存成功！");
+                        }else{
+                            bsWin.error(data.reMsg);
+                        }
+                    });
+                } else {
+                    bsWin.alert("专家抽取条件设置不完整！");
+                }
+            }
+        }
+
+        //（整体方案抽取）开始随机抽取
+        vm.startAutoExpertWin = function () {
+            if(!vm.expertReview.id){
+                bsWin.alert("请先进行整体专家抽取条件设置并保存！");
+                return ;
+            }
+            if (!isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
+                bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
+                return ;
+            }
+            if (buildCondition()) {
+                expertConditionSvc.saveCondition(vm.businessId,vm.minBusinessId,vm.businessType,vm.expertReview.id,vm.expertReview.expertSelConditionDtoList,function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.expertReview.expertSelConditionDtoList = data.reObj;
+                        if(!vm.expertReview.id){
+                            vm.expertReview.id = vm.expertReview.expertSelConditionDtoList[0].expertReviewId;
+                        }
+                        expertReviewSvc.queryAutoExpert(vm.expertReview.expertSelConditionDtoList,vm.minBusinessId,vm.expertReview.id,function(data){
+                            if(data.flag || data.reCode == 'ok'){
+                                //刷新页面抽取的专家
+                                vm.reFleshSelEPInfo(data.reObj.autoEPList);
+                                //抽取结果数组
+                                vm.autoSelectedEPList = [];
+                                vm.autoSelectedEPList = data.reObj.autoEPList;
+                                //刷新抽取次数
+                                vm.expertReview.state = '9';
+                                //弹框
+                                vm.showAutoExpertWin();
+                                //显示抽取效果
+                                expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
+                            }else{
+                                bsWin.error(data.reMsg);
+                            }
+                        });
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                });
+            } else {
+                bsWin.alert("专家抽取条件设置不完整！");
+            }
+        }
+
+        //显示随机抽取框
+        vm.showAutoExpertWin = function () {
+            $("#aotuExpertDiv").kendoWindow({
+                width: "90%",
+                height: "700px",
+                title: "专家抽取",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        //显示随机抽取结果
+        vm.showAutoMatchResultWin = function () {
+            $("#aotuMatchResultDiv").kendoWindow({
+                width: "90%",
+                height: "700px",
+                title: "专家抽取结果",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        //再次抽取专家
+        vm.repeatAutoExpert = function(id) {
+            var condition = [];
+            $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
+                if(con.id == id){
+                    condition.push(con);
+                }
+            })
+            if(condition[0].selectIndex > 3){
+                bsWin.alert("该条件已经进行了3次抽取，不能再继续抽取！");
+                return ;
+            }
+            expertReviewSvc.queryAutoExpert(condition,vm.minBusinessId,vm.expertReview.id,function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    //刷新页面抽取的专家
+                    vm.reFleshSelEPInfo(data.reObj.autoEPList);
+                    //抽取次数加一
+                    vm.expertReview.state = '9';
+                    //抽取结果数组
+                    vm.autoSelectedEPList = [];
+                    vm.autoSelectedEPList = data.reObj.autoEPList;
+                    //刷新抽取次数
+                    vm.updateSelectedIndex(id);
+                    //弹框
+                    vm.showAutoExpertWin();
+                    //显示抽取效果
+                    expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+            });
+        }
+
+        //确认已抽取的专家
+        vm.affirmAutoExpert = function () {
+            var isCheck = $("#allAutoEPTable input[name='autoEPCheck']:checked");
+            if(isCheck.length < 1){
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "您还没选择专家，确定没有合适的专家么？",
+                    onOk: function () {
+                        $scope.$apply(function(){
+                            //每个抽取条件的抽取次数加1
+                            $.each(vm.expertReview.expertSelConditionDtoList, function (c, con) {
+                                if(!con.selectIndex || con.selectIndex < 1){
+                                    con.selectIndex = 1;
+                                }else{
+                                    con.selectIndex = con.selectIndex + 1;
+                                }
+                                con.showDraftBt = true;
+                            })
+                        });
+                        window.parent.$("#aotuExpertDiv").data("kendoWindow").close();
+                    }
+                });
+            }else{
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                expertReviewSvc.affirmAutoExpert(vm.minBusinessId,vm.businessType,ids.join(","),'9',function(data){
+                    if(data.flag || data.reCode=='ok'){
+                        vm.reFleshConfirmState(ids,"9");
+                        vm.checkAutoOfficeExpert = false;
+                        vm.checkAutoAntiExpert = false;
+                        bsWin.success(data.reMsg);
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                })
+            }
+        }
+
+        //确定实际参加会议的专家
+        vm.affirmJoinExpert = function () {
+            $("#confirmJoinExpert").kendoWindow({
+                width: "960px",
+                height: "600px",
+                title: "参加评审会专家确认",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        //未参加改为参加
+        vm.updateToJoin = function () {
+            var isCheck = $("#notJoinExpertTable input[name='notJoinExpert']:checked");
+            if (isCheck.length < 1) {
+                bsWin.alert("请选择要改为参加会议的专家");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                expertReviewSvc.updateJoinState(vm.minBusinessId,vm.businessType, ids.join(','), '9',vm.isCommit,function(data){
+                    bsWin.success("操作成功！");
+                    vm.reFleshJoinState(ids,'9');
+                });
+            }
+        }
+
+        //参加改为未参加
+        vm.updateToNotJoin = function () {
+            var isCheck = $("#joinExpertTable input[name='joinExpert']:checked");
+            if (isCheck.length < 1) {
+                bsWin.alert("请选择未参加会议的专家");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
+                }
+                expertReviewSvc.updateJoinState(vm.minBusinessId,vm.businessType, ids.join(','), '0',vm.isCommit,function(data){
+                    bsWin.success("操作成功！");
+                    vm.reFleshJoinState(ids,'0');
+                });
+            }
+        }
+
+        //判断分值大小
+        vm.checkScore = function(expertSelObj){
+            if(expertSelObj.compositeScoreEnd){
+                if(expertSelObj.compositeScore && (expertSelObj.compositeScore>expertSelObj.compositeScoreEnd)){
+                    $("#compositeScoreEnd_"+expertSelObj.id).html("分值设置错误");
+                    expertSelObj.compositeScoreEnd = "";
+                }else{
+                    $("#compositeScoreEnd_"+expertSelObj.id).html("");
+                }
+            }else{
+                $("#compositeScoreEnd_"+expertSelObj.id).html("");
+            }
+        }
+
+        //超级管理员删除抽取的专家
+        vm.deleteAutoSelectEP = function(){
+            var isCheck = $("#autoDraftExpertTable input[name='checkSelectExpert']:checked");
+            if (isCheck.length > 0) {
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "删除数据不可恢复，确定删除么？",
+                    onOk: function () {
+                        var ids = [];
+                        for (var i = 0; i < isCheck.length; i++) {
+                            ids.push(isCheck[i].value);
+                        }
+                        expertReviewSvc.delSelectedExpert(vm.expertReview.id,ids.join(","),vm.isCommit,function (data) {
+                            if(data.flag || data.reCode == 'ok'){
+                                bsWin.alert("删除成功！",function () {
+                                    vm.reFleshAfterRemove(ids);
+                                });
+                            }else{
+                                bsWin.alert(data.reMsg);
+                            }
+                        })
+                    }
+                });
+            }else{
+                bsWin.alert("请选择要删除的抽取专家！");
+            }
+        }
+
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('expertReviewSvc', expertReview);
+
+    expertReview.$inject = ['$http', '$interval'];
+
+    function expertReview($http, $interval) {
+        var service = {
+            initExpertGrid: initExpertGrid,	            //初始化待抽取专家列表
+            saveSelfExpert: saveSelfExpert,		        //保存自选专家
+            saveOutExpert: saveOutExpert,               //保存选择的境外专家
+            countMatchExperts: countMatchExperts,       //计算符合条件的专家
+            getReviewList: getReviewList,               //查询专家评分
+
+            //以下为新方法
+            initReview: initReview,                      //初始化评审方案信息
+            delSelectedExpert: delSelectedExpert,        //删除已选专家信息
+            queryAutoExpert: queryAutoExpert,            //查询符合抽取条件的专家
+            validateAutoExpert: validateAutoExpert,      //显示抽取专家效果(抽取方法已在后台封装)
+            affirmAutoExpert: affirmAutoExpert,	         //确认已经抽取的专家
+            updateJoinState: updateJoinState,            //更改是否参加状态
+            findByBusinessId : findByBusinessId,         //根据业务ID查询评审方案信息
+
+            saveMark: saveMark,                         // 保存专家评分
+            savePayment: savePayment,                   // 保存专家费用
+            countTaxes: countTaxes,                     // 计算应纳税额
+            refleshBusinessEP : refleshBusinessEP,      //刷新业务的专家信息（已经确认和确定参加会议的专家）
+        };
+        return service;
+
+        //S_initReview
+        function initReview(businessId,minBusinessId,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/initBybusinessId",
+                params: {
+                    businessId:businessId,
+                    minBusinessId:minBusinessId
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_initReview
+
+        function getMinColumns() {
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.expertID)
+                    },
+                    filterable: false,
+                    width: 25,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {
+                    field: "name",
+                    title: "姓名",
+                    width: 100,
+                    filterable: false,
+                  template: function (item) {
+                      return '<a  ng-click="vm.findExportDetail(\''+item.expertID+'\')">'+item.name+'</a>'
+                  }
+                },
+                {
+                    field: "degRee",
+                    title: "学位",
+                    width: 100,
+                    filterable: false
+                },
+
+                {
+                    field: "sex",
+                    title: "性别",
+                    width: 50,
+                    filterable: true
+                },
+                {
+                    field: "comPany",
+                    title: "工作单位",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "degRee",
+                    title: "职务",
+                    width: 100,
+                    filterable: false
+                }, {
+                    field: "expertSort",
+                    title: "专家类别",
+                    width: 100,
+                    filterable: false
+                }
+            ];
+            return columns;
+        }
+
+        function initExpertGrid(vm) {
+            var dataBound = function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+
+            //S_专家自选
+            var dataSource2 = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/expert/findByOData", $("#selfSelExpertForm")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            vm.selfExpertOptions = {
+                dataSource: common.gridDataSource(dataSource2),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: getMinColumns(),
+                dataBound: dataBound,
+                resizable: true
+            };//E_专家自选
+
+
+            //S_市外专家
+            var dataSource3 = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/expert/findByOData", $("#outSelExpertForm"), {filter: "state eq '3'"}),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            vm.outExpertOptions = {
+                dataSource: common.gridDataSource(dataSource3),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: getMinColumns(),
+                dataBound: dataBound,
+                resizable: true
+            };//E_市外专家
+        }
+
+        //S_saveSelfExpert
+        function saveSelfExpert(businessId,minBusinessId,businessType,expertId,expertReviewId,isCommit,callBack) {
+            isCommit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/saveExpertReview",
+                params: {
+                    businessId:businessId,
+                    minBusinessId : minBusinessId,
+                    businessType : businessType,
+                    reviewId: angular.isUndefined(expertReviewId)?"":expertReviewId,
+                    expertIds: expertId,
+                    selectType: "2"
+                }
+            }
+            var httpSuccess = function success(response) {
+                isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                    isCommit = false;
+                }
+            });
+        }//E_saveSelfExpert
+
+        //S_保存境外专家
+        function saveOutExpert(businessId,minBusinessId,businessType,selExpertIds,expertReviewId,isCommit,callBack) {
+            isCommit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/saveExpertReview",
+                params: {
+                    businessId:businessId,
+                    minBusinessId:minBusinessId,
+                    businessType : businessType,
+                    reviewId: angular.isUndefined(expertReviewId)?"":expertReviewId,
+                    expertIds: selExpertIds,
+                    selectType: "3"
+                }
+            }
+            var httpSuccess = function success(response) {
+                isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                    isCommit = false;
+                }
+            });
+        }//E_saveOutExpert
+
+        //S_countMatchExperts
+        function countMatchExperts(postData,minBusinessId,expertReviewId,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expert/countReviewExpert",
+                data: postData,
+                params: {
+                    minBusinessId:minBusinessId,
+                    reviewId: expertReviewId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_countMatchExperts
+
+        //begin##getReviewList
+        function getReviewList(vm) {
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/expertReview/html/getReviewList"
+            }
+            var httpSuccess = function success(response) {
+                vm.reviewList = response.data;
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                    vm.isCommit = false;
+                }
+            });
+        }//end##getReviewList
+
+        //S_queryAutoExpert
+        function queryAutoExpert(conditionArr,minBusinessId,expertReviewId,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expert/autoExpertReview",
+                headers: {
+                    "contentType": "application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType: "json",
+                data: angular.toJson(conditionArr),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+                params: {
+                    minBusinessId: minBusinessId,
+                    reviewId: expertReviewId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_queryAutoExpert
+
+
+        //S_validateAutoExpert
+        function validateAutoExpert(allEPList,vm) {
+            //随机抽取
+            var timeCount = 0,totalExpertCount = vm.autoSelectedEPList.length,index = 0;
+            var interValVar = $interval(function () {
+                if (totalExpertCount == 0) {
+                    $interval.cancel(interValVar);
+                }else{
+                    var selscope = Math.floor(Math.random() * (allEPList.length));
+                    vm.showAutoExpertName = allEPList[selscope].name;
+                    timeCount++;
+                    if (timeCount % 10 == 0) {
+                        vm.autoSelectedEPList[index].show = true;
+                        vm.autoSelectedEPList[index].official = true;       //正式专家
+                        vm.autoSelectedEPList[index+1].show = true;
+                        vm.autoSelectedEPList[index+1].official = false;    //备选专家
+                        index = index + 2;
+                        totalExpertCount = totalExpertCount-2;
+                    }
+                }
+            }, 200);
+        }//E_validateAutoExpert
+
+        //S_updateJoinState
+        function updateJoinState(minBusinessId,businessType,ids, joinState,isCommit,callBack) {
+            isCommit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/updateJoinState",
+                params: {
+                    minBusinessId : minBusinessId,
+                    businessType : businessType,
+                    expertSelId: ids,
+                    state: joinState
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                    isCommit = false;
+                }
+            });
+        }//E_updateJoinState
+
+        //S_affirmAutoExpert(确认抽取专家)
+        function affirmAutoExpert(minBusinessId,businessType,seletedIds,joinState,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/affirmAutoExpert",
+                params: {
+                    minBusinessId: minBusinessId,
+                    businessType: businessType,
+                    expertSelId:seletedIds,
+                    state: joinState
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                }
+            });
+        }//E_affirmAutoExpert
+
+        //S_delSelectedExpert(删除已选专家)
+        function delSelectedExpert(expertReviewId, delIds,isCommit,callBack) {
+            isCommit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: rootPath + "/expertSelected",
+                params: {
+                    reviewId: expertReviewId,
+                    id: delIds,
+                    deleteAll: false
+                }
+            }
+            var httpSuccess = function success(response) {
+                isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                    isCommit = false;
+                }
+            });
+        }//E_delSelectedExpert
+
+
+        //S_根据业务ID查询评审方案信息
+        function findByBusinessId(businessId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/initBybusinessId",
+                params: {
+                    businessId: businessId,
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+
+                }
+            });
+        }
+
+        // S_保存专家评分
+        function saveMark(expertScore,callBack) {
+            var httpOptions = {
+                method: 'put',
+                url: rootPath + "/expertSelected",
+                data: expertScore,
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }// E_saveMark
+
+        // S_保存专家评审费
+        function savePayment(expertReview,isCommit,callBack) {
+            if (!validateNum(expertReview)) {
+                bsWin.alert("应纳税额计算错误,保存失败！");
+                return;
+            }
+            isCommit = true;
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/saveExpertReviewCostSingle",
+                data: expertReview
+            }
+            var httpSuccess = function success(response) {
+                isCommit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError:function () {
+                    isCommit = false;
+                }
+            });
+        }// E_savePayment
+
+        // S_计算费用
+        function countTaxes(ids,month,callBack) {
+            var url = rootPath + "/expertReview/getExpertReviewCost?expertIds={0}&month={1}";
+            //取得该评审方案评审专家在这个月的所有评审费用
+            var httpOptions = {
+                method: 'get',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                url: common.format(url, ids, month)
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }// E_countTaxes
+
+        // S_validateNum
+        function validateNum(expertReviews) {
+            var isVilad = true;
+            //计算每个评审的评审费是否正确
+            if (expertReviews != undefined && expertReviews.length > 0) {
+                expertReviews.forEach(function (v, i) {
+                    if (v.payDate == undefined) {
+                        v.errorMsg = "请选择发放日期";
+                        isVilad = false;
+                        return;
+                    }
+                    v.errorMsg = "";
+                    //总评审费
+                    var totalReviewCost = v.reviewCost == undefined ? 0 : v.reviewCost;
+                    //总税额
+                    var totalReviwTaxes = v.reviewTaxes == undefined ? 0 : v.reviewTaxes;
+                    //总合计
+                    var totalCost = v.totalCost == undefined ? 0 : v.totalCost;
+
+                    //计算每个专家
+                    if (v.expertSelectedDtoList != undefined && v.expertSelectedDtoList.length > 0) {
+
+                        var tempTotalReviewCost = 0;
+                        var tempTotalReviwTaxes = 0;
+                        var tempTotalCost = 0;
+
+                        v.expertSelectedDtoList.forEach(function (expertSelected, i) {
+                            //评审费用
+                            var reviewCost = expertSelected.reviewCost == undefined ? 0 : expertSelected.reviewCost;
+                            //税额
+                            var reviewTaxes = expertSelected.reviewTaxes == undefined ? 0 : expertSelected.reviewTaxes;
+                            //合计
+                            var totalCost = expertSelected.totalCost == undefined ? 0 : expertSelected.totalCost;
+                            var tempCost = parseFloat(reviewCost) + parseFloat(reviewTaxes);
+                            if (tempCost.toFixed(2) != parseFloat(totalCost).toFixed(2)) {
+                                isVilad = false;
+                                return;
+                            }
+                            tempTotalReviewCost = parseFloat(tempTotalReviewCost) + parseFloat(reviewCost);
+                            tempTotalReviwTaxes = parseFloat(tempTotalReviwTaxes) + parseFloat(reviewTaxes);
+                            tempTotalCost = parseFloat(tempTotalCost) + parseFloat(totalCost);
+                        });
+
+                        if (parseFloat(tempTotalReviewCost).toFixed(2) != parseFloat(totalReviewCost).toFixed(2)) {
+                            isVilad = false;
+                            return;
+                        }
+                        if (parseFloat(tempTotalReviwTaxes).toFixed(2) != parseFloat(totalReviwTaxes).toFixed(2)) {
+                            isVilad = false;
+                            return;
+                        }
+                        if (parseFloat(tempTotalCost).toFixed(2) != parseFloat(totalCost).toFixed(2)) {
+                            isVilad = false;
+                            return;
+                        }
+                    }
+                });
+            }
+
+            return isVilad;
+        }// E_validateNum
+
+        //S_刷新业务的专家信息
+        function refleshBusinessEP(businessId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/refleshBusinessEP",
+                params: {
+                    businessId : businessId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError:function () {
+
+                }
+            });
+        }//E_refleshBusinessEP
     }
 })();
 (function () {
@@ -20405,1371 +21958,6 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('expertReviewCtrl', expertReview);
-
-    expertReview.$inject = ['$location', 'expertReviewSvc'];
-
-    function expertReview($location, expertReviewSvc) {
-        var vm = this;
-        vm.title = '专家列表';
-
-        vm.del = function (id) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    expertReviewSvc.deleteExpertReview(vm, id);
-                }
-            });
-        }
-        vm.dels = function () {
-            var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.del(idStr);
-            }
-        };
-
-        activate();
-        function activate() {
-            expertReviewSvc.initExpertGrid(vm);
-            expertReviewSvc.getReviewList(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('expertReviewEditCtrl', expertReview);
-
-    expertReview.$inject = ['$location', 'expertReviewSvc', '$state'];
-
-    function expertReview($location, expertReviewSvc, $state) {
-        var vm = this;
-        vm.title = '添加附件';
-        vm.isuserExist = false;
-        vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新附件';
-        }
-
-        vm.create = function () {
-            expertReviewSvc.createExpertReview(vm);
-        };
-        vm.update = function () {
-            expertReviewSvc.updateExpertReview(vm);
-        };
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                expertReviewSvc.getExpertReviewById(vm);
-            }
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('expertSelectCtrl', expertReview);
-
-    expertReview.$inject = [ 'expertReviewSvc', 'expertConditionSvc', 'expertSvc','$state','bsWin','$scope'];
-
-    function expertReview(expertReviewSvc, expertConditionSvc,expertSvc, $state,bsWin,$scope) {
-        var vm = this;
-        vm.title = '选择专家';
-        vm.conMaxIndex = 0;                   //条件号
-        vm.customCondition = new Array();
-        vm.expertReview = {};                 //评审方案对象
-        vm.confirmEPList = [];                //拟聘请专家列表（已经经过确认的专家）
-        vm.matchEPMap = {};                   //保存符合条件的专家信息
-        vm.selectIds = [],                    //已经抽取的专家信息ID（用于排除查询）
-        vm.autoSelectedEPList = [];           //抽取结果列表，抽取方法在后面封装
-        vm.businessId = $state.params.businessId;       //专家评审方案业务ID
-        vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
-        vm.businessType = $state.params.businessType;   //专家业务类型
-        var expertID = $state.params.expertID;   //专家ID
-        vm.isSuperUser = isSuperUser;
-        //S 查看专家详细
-        vm.findExportDetail = function (id) {
-            expertSvc.getExpertById(id, function (data) {
-                vm.model = data;
-                $("#selectExportDetail").kendoWindow({
-                    width: "80%",
-                    height: "auto",
-                    title: "专家详细信息",
-                    visible: false,
-                    modal: true,
-                    open:function(){
-                        $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.model.expertID + "&t=" + Math.random());
-                    },
-                    closable: true,
-                    actions: ["Pin", "Minimize", "Maximize", "Close"]
-                }).data("kendoWindow").center().open();
-            });
-        }
-        //S 查看专家详细
-
-        //刷新已经选择的专家信息
-        vm.reFleshSelEPInfo = function(explist) {
-            $.each(explist,function(i, obj){
-                vm.confirmEPList.push(obj);
-                vm.selectIds.push(obj.expertDto.expertID);
-            })
-            vm.excludeIds = vm.selectIds.join(',');
-        }
-
-        //删除后刷新
-        vm.reFleshAfterRemove = function(ids){
-            $.each(ids,function(i, obj){
-                //1、删除已确认的专家
-                $.each(vm.confirmEPList,function(index, epObj){
-                    if(epObj && obj == epObj.id){
-                        vm.confirmEPList.splice(index, 1);
-                    }
-                })
-            })
-        }
-
-        //更新参加未参加状态
-        vm.reFleshJoinState = function(ids,state){
-            $.each(ids,function(i, obj){
-                //1、删除已确认的专家
-                $.each(vm.confirmEPList,function(index, epObj){
-                    if(obj == epObj.id){
-                        epObj.isJoin = state;
-                    }
-                })
-            })
-        }
-
-        //更新是否确认状态
-        vm.reFleshConfirmState = function(ids,state){
-            $.each(ids,function(i, obj){
-                //1、删除已确认的专家
-                $.each(vm.confirmEPList,function(index, epObj){
-                    if(obj == epObj.id){
-                        epObj.isConfrim = state;
-                    }
-                })
-            })
-        }
-
-        //更新抽取条件的抽取次数
-        vm.updateSelectedIndex = function(id){
-            if(id){
-                $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
-                    if(con.id == id){
-                        con.selectIndex = (!con.selectIndex)?1:con.selectIndex+1;
-                    }
-                })
-            }else{
-                $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
-                    con.selectIndex = (!con.selectIndex)?1:con.selectIndex+1;
-                })
-            }
-        }
-
-        vm.init = function(businessId,minBusinessId){
-            vm.expertReview = {};
-            vm.confirmEPList = [];
-            vm.selectIds = [];
-            expertReviewSvc.initReview(businessId,minBusinessId,function(data){
-                vm.expertReview = data;
-                //获取已经抽取的专家
-                if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
-                    $.each(vm.expertReview.expertSelectedDtoList,function(i, sep){
-                        vm.selectIds.push(sep.expertDto.expertID);
-                        vm.confirmEPList.push(sep);
-                    })
-                    if (vm.selectIds.length > 0) {
-                        vm.excludeIds = vm.selectIds.join(',');
-                    } else {
-                        vm.excludeIds = '';
-                    }
-                }
-            });
-        }
-
-        activate();
-        function activate() {
-            expertReviewSvc.initExpertGrid(vm);
-            vm.init(vm.businessId,vm.minBusinessId);
-        }
-
-        //弹出自选专家框
-        vm.showSelfExpertGrid = function () {
-            vm.selfExpertOptions.dataSource._skip=0;
-            vm.selfExpertOptions.dataSource.read();
-            $("#selfExpertDiv").kendoWindow({
-                width: "80%",
-                height: "680px",
-                title: "自选评审专家",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        //保存自选的专家
-        vm.saveSelfExpert = function () {
-            var selectIds = common.getKendoCheckId('#selfExpertGrid');
-            if (selectIds.length == 0) {
-                bsWin.alert("请先选择专家！");
-            } else if (selectIds.length > 1) {
-                bsWin.alert("自选专家最多只能选择一个！");
-            }else{
-                expertReviewSvc.saveSelfExpert(vm.businessId,vm.minBusinessId,vm.businessType,selectIds[0].value,vm.expertReview.id,vm.isCommit,function(data){
-                    if(data.flag || data.reCode == 'ok'){
-                        var ids = [];
-                        $.each(vm.confirmEPList,function(i, obj){
-                            if(obj.selectType == '2'){
-                                ids.push(obj.id)
-                            }
-                        })
-                        if(!vm.expertReview.id){
-                            vm.expertReview.id = data.idCode;
-                        }
-                        //刷新
-                        vm.reFleshSelEPInfo(data.reObj);
-                        vm.reFleshAfterRemove(ids);
-                        bsWin.success("操作成功！",function(){
-                            window.parent.$("#selfExpertDiv").data("kendoWindow").close();
-                        });
-                    }else{
-                        bsWin.error(data.reMsg);
-                    }
-                });
-            }
-        }
-
-        //删除自选专家
-        vm.delertSelfExpert = function () {
-            var isCheck = $("input[name='seletedEp']:checked");
-            if (isCheck.length < 1) {
-                bsWin.alert("请选择要删除的专家");
-            } else {
-                bsWin.confirm({
-                    title: "询问提示",
-                    message: "删除数据不可恢复，确定删除么？",
-                    onOk: function () {
-                        $('.confirmDialog').modal('hide');
-                        var ids = [];
-                        for (var i = 0; i < isCheck.length; i++) {
-                            ids.push(isCheck[i].value);
-                        }
-                        expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','),vm.isCommit,function(data){
-                            if(data.flag || data.reCode == 'ok'){
-                                vm.reFleshAfterRemove(ids);
-                                bsWin.success("操作成功！");
-                            }else{
-                                bsWin.error(data.reMsg);
-                            }
-                        });
-                    },
-                });
-            }
-        }
-
-        //自选专家查询
-        vm.querySelfExpert = function(){
-            vm.selfExpertOptions.dataSource._skip=0;
-            vm.selfExpertOptions.dataSource.read();
-        }
-
-        //境外专家
-        vm.showOutExpertGrid = function () {
-            vm.outExpertOptions.dataSource._skip=0;
-            vm.outExpertOptions.dataSource.read();
-            $("#outExpertDiv").kendoWindow({
-                width: "70%",
-                height: "680px",
-                title: "自选新专家、市外、境外专家",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        //删除选择的境外专家
-        vm.delertOutSelfExpert = function () {
-            var isCheck = $("input[name='seletedOutEp']:checked");
-            if (isCheck.length < 1) {
-                bsWin.alert("请选择要删除的专家");
-            } else {
-                bsWin.confirm({
-                    title: "询问提示",
-                    message: "删除数据不可恢复，确定删除么？",
-                    onOk: function () {
-                        $('.confirmDialog').modal('hide');
-                        var ids = [];
-                        for (var i = 0; i < isCheck.length; i++) {
-                            ids.push(isCheck[i].value);
-                        }
-                        expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','),vm.isCommit,function(data){
-                            if(data.flag || data.reCode == 'ok'){
-                                vm.reFleshAfterRemove(ids);
-                                bsWin.success("操作成功！");
-                            }else{
-                                bsWin.error(data.reMsg);
-                            }
-                        });
-                    },
-                });
-            }
-        }
-
-        //保存选择的境外专家
-        vm.saveOutExpert = function () {
-            var selectIds = common.getKendoCheckId('#outExpertGrid');
-            if (selectIds.length == 0) {
-                bsWin.alert("请先选择专家！");
-            } else {
-                var selExpertIdArr = [];
-                $.each(selectIds, function (i, obj) {
-                    selExpertIdArr.push(obj.value);
-                });
-                expertReviewSvc.saveOutExpert(vm.businessId,vm.minBusinessId,vm.businessType,selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
-                    if(data.flag || data.reCode == 'ok'){
-                        if(!vm.expertReview.id){
-                            vm.expertReview.id = data.idCode;
-                        }
-                        vm.reFleshSelEPInfo(data.reObj);
-                        bsWin.success("操作成功！",function(){
-                            window.parent.$("#outExpertDiv").data("kendoWindow").close();
-                        });
-                    }else{
-                        bsWin.error(data.reMsg);
-                    }
-                });
-            }
-        }
-
-        //境外专家查询
-        vm.queryOutExpert = function(){
-            vm.outExpertOptions.dataSource._skip=0;
-            vm.outExpertOptions.dataSource.read();
-        }
-
-        //计算符合条件的专家
-        vm.countMatchExperts = function (id) {
-            if (vm.expertReview.id) {
-                var postData = {};
-                vm.expertReview.expertSelConditionDtoList.forEach(function (t, number) {
-                    if (t.id == id) {
-                        postData = t;
-                    }
-                });
-                expertReviewSvc.countMatchExperts(postData,vm.minBusinessId,vm.expertReview.id,function(data){
-                    vm.matchEPMap[id] = data;
-                    $("#expertCount" + id).html(data.length);
-                });
-            } else {
-                bsWin.alert("请保存整体抽取方案再计算");
-            }
-        }
-
-        //查看符合条件的专家信息
-        vm.showMatchExperts = function(sortIndex){
-            vm.matchExpertList = [];
-            vm.matchExpertList = vm.matchEPMap[sortIndex];
-            $("#matchExpertDiv").kendoWindow({
-                width: "80%",
-                height: "600px",
-                title: "统计专家信息列表",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        vm.checkIntegerValue = function (checkValue, idStr, idSort) {
-            if (expertConditionSvc.isUnsignedInteger(checkValue)) {
-                $("#errorsOfficialNum" + idSort).html("");
-                $("#errorsAlternativeNum" + idSort).html("");
-                return checkValue;
-            } else {
-                $("#errorsOfficialNum" + idSort).html("只能填写数字");
-                $("#errorsAlternativeNum" + idSort).html("只能填写数字");
-                return ;
-            }
-        }
-
-        //添加随机抽取条件
-        vm.addCondition = function () {
-            if (!vm.isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
-                bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
-            } else {
-                if(!vm.expertReview.expertSelConditionDtoList){
-                    vm.expertReview.expertSelConditionDtoList = [];
-                }
-                vm.condition = {};
-                vm.condition.id = common.uuid();            //设置ID
-                vm.condition.businessId = vm.minBusinessId; //设置业务ID
-                vm.condition.selectType = "1";              //选择类型，这个一定不能少
-                vm.expertReview.expertSelConditionDtoList.push(vm.condition);
-            }
-        }
-
-        //删除专家抽取条件
-        vm.removeCondition = function () {
-            if (!vm.isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
-                bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
-            } else {
-                var isCheck = $("#conditionTable input[name='epConditionSort']:checked");
-                if (isCheck.length > 0) {
-                    bsWin.confirm({
-                        title: "询问提示",
-                        message: "删除数据的同时会删除该条件所抽取的专家，删除数据不可恢复，确定删除么？",
-                        onOk: function () {
-                            var ids = [];
-                            for (var i = 0; i < isCheck.length; i++) {
-                                $.each(vm.expertReview.expertSelConditionDtoList,function(c,con){
-                                    if (isCheck[i].value == con.id) {
-                                        ids.push(con.id);
-                                    }
-                                })
-                            }
-                            if(ids.length > 0){
-                                expertConditionSvc.deleteSelConditions(ids.join(","),vm.isCommit,function(data){
-                                    if(data.flag || data.reCode == 'ok'){
-                                        bsWin.success("操作成功！",function(){
-                                            vm.init(vm.businessId,vm.minBusinessId);
-                                        });
-                                    }else{
-                                        bsWin.error(data.reMsg);
-                                    }
-                                });
-                            }else{
-                                bsWin.success("操作成功！");
-                            }
-                        },
-                    });
-                }else{
-                    bsWin.alert("请选择要删除的抽取条件！");
-                }
-            }
-        }
-
-        //检查是否为正整数
-        function isUnsignedInteger(value) {
-            if ((/^(\+|-)?\d+$/.test(value)) && value > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        /******************************  以下是专家抽取方法 ***********************************/
-        //封装专家抽取条件信息
-        function buildCondition() {
-            if (vm.expertReview.expertSelConditionDtoList.length > 0) {
-                var validateResult = true;
-                vm.expertReview.expertSelConditionDtoList.forEach(function (t, number) {
-                    if (vm.expertReview.id) {
-                        t.expertReviewDto = {};
-                        t.expertReviewDto.id = vm.expertReview.id;   //抽取方案ID
-                    }
-                    if (!t.officialNum || !isUnsignedInteger(t.officialNum)) {
-                        $("#errorsOfficialNum" + t.id).html("必填，且为数字");
-                        validateResult = false;
-                    }
-                    if (!t.alternativeNum || !isUnsignedInteger(t.alternativeNum)) {
-                        $("#errorsAlternativeNum" + t.id).html("必填，且为数字");
-                        validateResult = false;
-                    }
-                    if (validateResult) {
-                        $("#errorsOfficialNum" + t.id).html("");
-                        $("#errorsAlternativeNum" + t.id).html("");
-                    }
-                });
-                return validateResult;
-            } else {
-                return false;
-            }
-        }
-
-        //保存专家抽取条件
-        vm.saveCondition = function () {
-            if (!vm.isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
-                bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
-            }else {
-                if (buildCondition()) {
-                    expertConditionSvc.saveCondition(vm.businessId,vm.minBusinessId,vm.businessType,vm.expertReview.id,vm.expertReview.expertSelConditionDtoList,function(data){
-                        if(data.flag || data.reCode == 'ok'){
-                            vm.expertReview.expertSelConditionDtoList = data.reObj;
-                            if(!vm.expertReview.id){
-                                vm.expertReview.id = vm.expertReview.expertSelConditionDtoList[0].expertReviewId;
-                            }
-                            bsWin.success("保存成功！");
-                        }else{
-                            bsWin.error(data.reMsg);
-                        }
-                    });
-                } else {
-                    bsWin.alert("专家抽取条件设置不完整！");
-                }
-            }
-        }
-
-        //（整体方案抽取）开始随机抽取
-        vm.startAutoExpertWin = function () {
-            if(!vm.expertReview.id){
-                bsWin.alert("请先进行整体专家抽取条件设置并保存！");
-                return ;
-            }
-            if (!isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
-                bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
-                return ;
-            }
-            if (buildCondition()) {
-                expertConditionSvc.saveCondition(vm.businessId,vm.minBusinessId,vm.businessType,vm.expertReview.id,vm.expertReview.expertSelConditionDtoList,function(data){
-                    if(data.flag || data.reCode == 'ok'){
-                        vm.expertReview.expertSelConditionDtoList = data.reObj;
-                        if(!vm.expertReview.id){
-                            vm.expertReview.id = vm.expertReview.expertSelConditionDtoList[0].expertReviewId;
-                        }
-                        expertReviewSvc.queryAutoExpert(vm.expertReview.expertSelConditionDtoList,vm.minBusinessId,vm.expertReview.id,function(data){
-                            if(data.flag || data.reCode == 'ok'){
-                                //刷新页面抽取的专家
-                                vm.reFleshSelEPInfo(data.reObj.autoEPList);
-                                //抽取结果数组
-                                vm.autoSelectedEPList = [];
-                                vm.autoSelectedEPList = data.reObj.autoEPList;
-                                //刷新抽取次数
-                                vm.expertReview.state = '9';
-                                //弹框
-                                vm.showAutoExpertWin();
-                                //显示抽取效果
-                                expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
-                            }else{
-                                bsWin.error(data.reMsg);
-                            }
-                        });
-                    }else{
-                        bsWin.error(data.reMsg);
-                    }
-                });
-            } else {
-                bsWin.alert("专家抽取条件设置不完整！");
-            }
-        }
-
-        //显示随机抽取框
-        vm.showAutoExpertWin = function () {
-            $("#aotuExpertDiv").kendoWindow({
-                width: "90%",
-                height: "700px",
-                title: "专家抽取",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        //显示随机抽取结果
-        vm.showAutoMatchResultWin = function () {
-            $("#aotuMatchResultDiv").kendoWindow({
-                width: "90%",
-                height: "700px",
-                title: "专家抽取结果",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        //再次抽取专家
-        vm.repeatAutoExpert = function(id) {
-            var condition = [];
-            $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
-                if(con.id == id){
-                    condition.push(con);
-                }
-            })
-            if(condition[0].selectIndex > 3){
-                bsWin.alert("该条件已经进行了3次抽取，不能再继续抽取！");
-                return ;
-            }
-            expertReviewSvc.queryAutoExpert(condition,vm.minBusinessId,vm.expertReview.id,function(data){
-                if(data.flag || data.reCode == 'ok'){
-                    //刷新页面抽取的专家
-                    vm.reFleshSelEPInfo(data.reObj.autoEPList);
-                    //抽取次数加一
-                    vm.expertReview.state = '9';
-                    //抽取结果数组
-                    vm.autoSelectedEPList = [];
-                    vm.autoSelectedEPList = data.reObj.autoEPList;
-                    //刷新抽取次数
-                    vm.updateSelectedIndex(id);
-                    //弹框
-                    vm.showAutoExpertWin();
-                    //显示抽取效果
-                    expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
-                }else{
-                    bsWin.error(data.reMsg);
-                }
-            });
-        }
-
-        //确认已抽取的专家
-        vm.affirmAutoExpert = function () {
-            var isCheck = $("#allAutoEPTable input[name='autoEPCheck']:checked");
-            if(isCheck.length < 1){
-                bsWin.confirm({
-                    title: "询问提示",
-                    message: "您还没选择专家，确定没有合适的专家么？",
-                    onOk: function () {
-                        $scope.$apply(function(){
-                            //每个抽取条件的抽取次数加1
-                            $.each(vm.expertReview.expertSelConditionDtoList, function (c, con) {
-                                if(!con.selectIndex || con.selectIndex < 1){
-                                    con.selectIndex = 1;
-                                }else{
-                                    con.selectIndex = con.selectIndex + 1;
-                                }
-                                con.showDraftBt = true;
-                            })
-                        });
-                        window.parent.$("#aotuExpertDiv").data("kendoWindow").close();
-                    }
-                });
-            }else{
-                var ids = [];
-                for (var i = 0; i < isCheck.length; i++) {
-                    ids.push(isCheck[i].value);
-                }
-                expertReviewSvc.affirmAutoExpert(vm.minBusinessId,vm.businessType,ids.join(","),'9',function(data){
-                    if(data.flag || data.reCode=='ok'){
-                        vm.reFleshConfirmState(ids,"9");
-                        vm.checkAutoOfficeExpert = false;
-                        vm.checkAutoAntiExpert = false;
-                        bsWin.success(data.reMsg);
-                    }else{
-                        bsWin.error(data.reMsg);
-                    }
-                })
-            }
-        }
-
-        //确定实际参加会议的专家
-        vm.affirmJoinExpert = function () {
-            $("#confirmJoinExpert").kendoWindow({
-                width: "960px",
-                height: "600px",
-                title: "参加评审会专家确认",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        //未参加改为参加
-        vm.updateToJoin = function () {
-            var isCheck = $("#notJoinExpertTable input[name='notJoinExpert']:checked");
-            if (isCheck.length < 1) {
-                bsWin.alert("请选择要改为参加会议的专家");
-            } else {
-                var ids = [];
-                for (var i = 0; i < isCheck.length; i++) {
-                    ids.push(isCheck[i].value);
-                }
-                expertReviewSvc.updateJoinState(vm.minBusinessId,vm.businessType, ids.join(','), '9',vm.isCommit,function(data){
-                    bsWin.success("操作成功！");
-                    vm.reFleshJoinState(ids,'9');
-                });
-            }
-        }
-
-        //参加改为未参加
-        vm.updateToNotJoin = function () {
-            var isCheck = $("#joinExpertTable input[name='joinExpert']:checked");
-            if (isCheck.length < 1) {
-                bsWin.alert("请选择未参加会议的专家");
-            } else {
-                var ids = [];
-                for (var i = 0; i < isCheck.length; i++) {
-                    ids.push(isCheck[i].value);
-                }
-                expertReviewSvc.updateJoinState(vm.minBusinessId,vm.businessType, ids.join(','), '0',vm.isCommit,function(data){
-                    bsWin.success("操作成功！");
-                    vm.reFleshJoinState(ids,'0');
-                });
-            }
-        }
-
-        //判断分值大小
-        vm.checkScore = function(expertSelObj){
-            if(expertSelObj.compositeScoreEnd){
-                if(expertSelObj.compositeScore && (expertSelObj.compositeScore>expertSelObj.compositeScoreEnd)){
-                    $("#compositeScoreEnd_"+expertSelObj.id).html("分值设置错误");
-                    expertSelObj.compositeScoreEnd = "";
-                }else{
-                    $("#compositeScoreEnd_"+expertSelObj.id).html("");
-                }
-            }else{
-                $("#compositeScoreEnd_"+expertSelObj.id).html("");
-            }
-        }
-
-        //超级管理员删除抽取的专家
-        vm.deleteAutoSelectEP = function(){
-            var isCheck = $("#autoDraftExpertTable input[name='checkSelectExpert']:checked");
-            if (isCheck.length > 0) {
-                bsWin.confirm({
-                    title: "询问提示",
-                    message: "删除数据不可恢复，确定删除么？",
-                    onOk: function () {
-                        var ids = [];
-                        for (var i = 0; i < isCheck.length; i++) {
-                            ids.push(isCheck[i].value);
-                        }
-                        expertReviewSvc.delSelectedExpert(vm.expertReview.id,ids.join(","),vm.isCommit,function (data) {
-                            if(data.flag || data.reCode == 'ok'){
-                                bsWin.alert("删除成功！",function () {
-                                    vm.reFleshAfterRemove(ids);
-                                });
-                            }else{
-                                bsWin.alert(data.reMsg);
-                            }
-                        })
-                    }
-                });
-            }else{
-                bsWin.alert("请选择要删除的抽取专家！");
-            }
-        }
-
-
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('expertReviewSvc', expertReview);
-
-    expertReview.$inject = ['$http', '$interval'];
-
-    function expertReview($http, $interval) {
-        var service = {
-            initExpertGrid: initExpertGrid,	            //初始化待抽取专家列表
-            saveSelfExpert: saveSelfExpert,		        //保存自选专家
-            saveOutExpert: saveOutExpert,               //保存选择的境外专家
-            countMatchExperts: countMatchExperts,       //计算符合条件的专家
-            getReviewList: getReviewList,               //查询专家评分
-
-            //以下为新方法
-            initReview: initReview,                      //初始化评审方案信息
-            delSelectedExpert: delSelectedExpert,        //删除已选专家信息
-            queryAutoExpert: queryAutoExpert,            //查询符合抽取条件的专家
-            validateAutoExpert: validateAutoExpert,      //显示抽取专家效果(抽取方法已在后台封装)
-            affirmAutoExpert: affirmAutoExpert,	         //确认已经抽取的专家
-            updateJoinState: updateJoinState,            //更改是否参加状态
-            findByBusinessId : findByBusinessId,         //根据业务ID查询评审方案信息
-
-            saveMark: saveMark,                         // 保存专家评分
-            savePayment: savePayment,                   // 保存专家费用
-            countTaxes: countTaxes,                     // 计算应纳税额
-            refleshBusinessEP : refleshBusinessEP,      //刷新业务的专家信息（已经确认和确定参加会议的专家）
-        };
-        return service;
-
-        //S_initReview
-        function initReview(businessId,minBusinessId,callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expertReview/initBybusinessId",
-                params: {
-                    businessId:businessId,
-                    minBusinessId:minBusinessId
-                }
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_initReview
-
-        function getMinColumns() {
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.expertID)
-                    },
-                    filterable: false,
-                    width: 25,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-                {
-                    field: "name",
-                    title: "姓名",
-                    width: 100,
-                    filterable: false,
-                  template: function (item) {
-                      return '<a  ng-click="vm.findExportDetail(\''+item.expertID+'\')">'+item.name+'</a>'
-                  }
-                },
-                {
-                    field: "degRee",
-                    title: "学位",
-                    width: 100,
-                    filterable: false
-                },
-
-                {
-                    field: "sex",
-                    title: "性别",
-                    width: 50,
-                    filterable: true
-                },
-                {
-                    field: "comPany",
-                    title: "工作单位",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "degRee",
-                    title: "职务",
-                    width: 100,
-                    filterable: false
-                }, {
-                    field: "expertSort",
-                    title: "专家类别",
-                    width: 100,
-                    filterable: false
-                }
-            ];
-            return columns;
-        }
-
-        function initExpertGrid(vm) {
-            var dataBound = function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            }
-
-            //S_专家自选
-            var dataSource2 = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/expert/findByOData", $("#selfSelExpertForm")),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-            vm.selfExpertOptions = {
-                dataSource: common.gridDataSource(dataSource2),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: getMinColumns(),
-                dataBound: dataBound,
-                resizable: true
-            };//E_专家自选
-
-
-            //S_市外专家
-            var dataSource3 = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/expert/findByOData", $("#outSelExpertForm"), {filter: "state eq '3'"}),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-            vm.outExpertOptions = {
-                dataSource: common.gridDataSource(dataSource3),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: getMinColumns(),
-                dataBound: dataBound,
-                resizable: true
-            };//E_市外专家
-        }
-
-        //S_saveSelfExpert
-        function saveSelfExpert(businessId,minBusinessId,businessType,expertId,expertReviewId,isCommit,callBack) {
-            isCommit = true;
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expertReview/saveExpertReview",
-                params: {
-                    businessId:businessId,
-                    minBusinessId : minBusinessId,
-                    businessType : businessType,
-                    reviewId: angular.isUndefined(expertReviewId)?"":expertReviewId,
-                    expertIds: expertId,
-                    selectType: "2"
-                }
-            }
-            var httpSuccess = function success(response) {
-                isCommit = false;
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess,
-                onError: function (response) {
-                    isCommit = false;
-                }
-            });
-        }//E_saveSelfExpert
-
-        //S_保存境外专家
-        function saveOutExpert(businessId,minBusinessId,businessType,selExpertIds,expertReviewId,isCommit,callBack) {
-            isCommit = true;
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expertReview/saveExpertReview",
-                params: {
-                    businessId:businessId,
-                    minBusinessId:minBusinessId,
-                    businessType : businessType,
-                    reviewId: angular.isUndefined(expertReviewId)?"":expertReviewId,
-                    expertIds: selExpertIds,
-                    selectType: "3"
-                }
-            }
-            var httpSuccess = function success(response) {
-                isCommit = false;
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess,
-                onError: function (response) {
-                    isCommit = false;
-                }
-            });
-        }//E_saveOutExpert
-
-        //S_countMatchExperts
-        function countMatchExperts(postData,minBusinessId,expertReviewId,callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expert/countReviewExpert",
-                data: postData,
-                params: {
-                    minBusinessId:minBusinessId,
-                    reviewId: expertReviewId
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_countMatchExperts
-
-        //begin##getReviewList
-        function getReviewList(vm) {
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/expertReview/html/getReviewList"
-            }
-            var httpSuccess = function success(response) {
-                vm.reviewList = response.data;
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess,
-                onError: function (response) {
-                    vm.isCommit = false;
-                }
-            });
-        }//end##getReviewList
-
-        //S_queryAutoExpert
-        function queryAutoExpert(conditionArr,minBusinessId,expertReviewId,callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expert/autoExpertReview",
-                headers: {
-                    "contentType": "application/json;charset=utf-8"  //设置请求头信息
-                },
-                traditional: true,
-                dataType: "json",
-                data: angular.toJson(conditionArr),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
-                params: {
-                    minBusinessId: minBusinessId,
-                    reviewId: expertReviewId
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_queryAutoExpert
-
-
-        //S_validateAutoExpert
-        function validateAutoExpert(allEPList,vm) {
-            //随机抽取
-            var timeCount = 0,totalExpertCount = vm.autoSelectedEPList.length,index = 0;
-            var interValVar = $interval(function () {
-                if (totalExpertCount == 0) {
-                    $interval.cancel(interValVar);
-                }else{
-                    var selscope = Math.floor(Math.random() * (allEPList.length));
-                    vm.showAutoExpertName = allEPList[selscope].name;
-                    timeCount++;
-                    if (timeCount % 10 == 0) {
-                        vm.autoSelectedEPList[index].show = true;
-                        vm.autoSelectedEPList[index].official = true;       //正式专家
-                        vm.autoSelectedEPList[index+1].show = true;
-                        vm.autoSelectedEPList[index+1].official = false;    //备选专家
-                        index = index + 2;
-                        totalExpertCount = totalExpertCount-2;
-                    }
-                }
-            }, 200);
-        }//E_validateAutoExpert
-
-        //S_updateJoinState
-        function updateJoinState(minBusinessId,businessType,ids, joinState,isCommit,callBack) {
-            isCommit = true;
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expertReview/updateJoinState",
-                params: {
-                    minBusinessId : minBusinessId,
-                    businessType : businessType,
-                    expertSelId: ids,
-                    state: joinState
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess,
-                onError: function (response) {
-                    isCommit = false;
-                }
-            });
-        }//E_updateJoinState
-
-        //S_affirmAutoExpert(确认抽取专家)
-        function affirmAutoExpert(minBusinessId,businessType,seletedIds,joinState,callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expertReview/affirmAutoExpert",
-                params: {
-                    minBusinessId: minBusinessId,
-                    businessType: businessType,
-                    expertSelId:seletedIds,
-                    state: joinState
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess,
-                onError: function (response) {
-                }
-            });
-        }//E_affirmAutoExpert
-
-        //S_delSelectedExpert(删除已选专家)
-        function delSelectedExpert(expertReviewId, delIds,isCommit,callBack) {
-            isCommit = true;
-            var httpOptions = {
-                method: 'delete',
-                url: rootPath + "/expertSelected",
-                params: {
-                    reviewId: expertReviewId,
-                    id: delIds,
-                    deleteAll: false
-                }
-            }
-            var httpSuccess = function success(response) {
-                isCommit = false;
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess,
-                onError: function (response) {
-                    isCommit = false;
-                }
-            });
-        }//E_delSelectedExpert
-
-
-        //S_根据业务ID查询评审方案信息
-        function findByBusinessId(businessId,callBack){
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expertReview/initBybusinessId",
-                params: {
-                    businessId: businessId,
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess,
-                onError: function (response) {
-
-                }
-            });
-        }
-
-        // S_保存专家评分
-        function saveMark(expertScore,callBack) {
-            var httpOptions = {
-                method: 'put',
-                url: rootPath + "/expertSelected",
-                data: expertScore,
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }// E_saveMark
-
-        // S_保存专家评审费
-        function savePayment(expertReview,isCommit,callBack) {
-            if (!validateNum(expertReview)) {
-                bsWin.alert("应纳税额计算错误,保存失败！");
-                return;
-            }
-            isCommit = true;
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expertReview/saveExpertReviewCostSingle",
-                data: expertReview
-            }
-            var httpSuccess = function success(response) {
-                isCommit = false;
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess,
-                onError:function () {
-                    isCommit = false;
-                }
-            });
-        }// E_savePayment
-
-        // S_计算费用
-        function countTaxes(ids,month,callBack) {
-            var url = rootPath + "/expertReview/getExpertReviewCost?expertIds={0}&month={1}";
-            //取得该评审方案评审专家在这个月的所有评审费用
-            var httpOptions = {
-                method: 'get',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                url: common.format(url, ids, month)
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }// E_countTaxes
-
-        // S_validateNum
-        function validateNum(expertReviews) {
-            var isVilad = true;
-            //计算每个评审的评审费是否正确
-            if (expertReviews != undefined && expertReviews.length > 0) {
-                expertReviews.forEach(function (v, i) {
-                    if (v.payDate == undefined) {
-                        v.errorMsg = "请选择发放日期";
-                        isVilad = false;
-                        return;
-                    }
-                    v.errorMsg = "";
-                    //总评审费
-                    var totalReviewCost = v.reviewCost == undefined ? 0 : v.reviewCost;
-                    //总税额
-                    var totalReviwTaxes = v.reviewTaxes == undefined ? 0 : v.reviewTaxes;
-                    //总合计
-                    var totalCost = v.totalCost == undefined ? 0 : v.totalCost;
-
-                    //计算每个专家
-                    if (v.expertSelectedDtoList != undefined && v.expertSelectedDtoList.length > 0) {
-
-                        var tempTotalReviewCost = 0;
-                        var tempTotalReviwTaxes = 0;
-                        var tempTotalCost = 0;
-
-                        v.expertSelectedDtoList.forEach(function (expertSelected, i) {
-                            //评审费用
-                            var reviewCost = expertSelected.reviewCost == undefined ? 0 : expertSelected.reviewCost;
-                            //税额
-                            var reviewTaxes = expertSelected.reviewTaxes == undefined ? 0 : expertSelected.reviewTaxes;
-                            //合计
-                            var totalCost = expertSelected.totalCost == undefined ? 0 : expertSelected.totalCost;
-                            var tempCost = parseFloat(reviewCost) + parseFloat(reviewTaxes);
-                            if (tempCost.toFixed(2) != parseFloat(totalCost).toFixed(2)) {
-                                isVilad = false;
-                                return;
-                            }
-                            tempTotalReviewCost = parseFloat(tempTotalReviewCost) + parseFloat(reviewCost);
-                            tempTotalReviwTaxes = parseFloat(tempTotalReviwTaxes) + parseFloat(reviewTaxes);
-                            tempTotalCost = parseFloat(tempTotalCost) + parseFloat(totalCost);
-                        });
-
-                        if (parseFloat(tempTotalReviewCost).toFixed(2) != parseFloat(totalReviewCost).toFixed(2)) {
-                            isVilad = false;
-                            return;
-                        }
-                        if (parseFloat(tempTotalReviwTaxes).toFixed(2) != parseFloat(totalReviwTaxes).toFixed(2)) {
-                            isVilad = false;
-                            return;
-                        }
-                        if (parseFloat(tempTotalCost).toFixed(2) != parseFloat(totalCost).toFixed(2)) {
-                            isVilad = false;
-                            return;
-                        }
-                    }
-                });
-            }
-
-            return isVilad;
-        }// E_validateNum
-
-        //S_刷新业务的专家信息
-        function refleshBusinessEP(businessId,callBack){
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/expertReview/refleshBusinessEP",
-                params: {
-                    businessId : businessId
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess,
-                onError:function () {
-
-                }
-            });
-        }//E_refleshBusinessEP
-    }
-})();
-(function () {
-    'use strict';
-
     angular.module('app').factory('flowSvc', flow);
 
     flow.$inject = ['$http', '$state', 'bsWin'];
@@ -23511,96 +23699,6 @@
 (function () {
     'use strict';
 
-    angular
-        .module('app')
-        .controller('homeCtrl', home);
-
-    home.$inject = ['$location','homeSvc']; 
-
-    function home($location, homeSvc) {
-        /* jshint validthis:true */
-    	var vm = this;
-        vm.title = '';
-        
-
-        vm.changePwd = function () {        	
-        	 homeSvc.changePwd(vm);
-          
-        }
-       
-        activate();
-        function activate() {
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('homeSvc', home);
-
-    home.$inject = ['$http'];
-
-    function home($http) {
-        var url_account_password = rootPath + "/account/password";
-
-        var service = {
-            changePwd: changePwd
-        };
-
-        return service;
-
-        // begin#updatehome
-        function changePwd(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
-                var httpOptions = {
-                    method: 'put',
-                    url: url_account_password,
-                    data: vm.model.password
-                }
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
-        }
-
-    }
-})();
-(function () {
-    'use strict';
-
     angular.module('app').controller('logCtrl', log);
 
     log.$inject = ['$location','logSvc']; 
@@ -23751,6 +23849,96 @@
     }
 
 
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('app')
+        .controller('homeCtrl', home);
+
+    home.$inject = ['$location','homeSvc']; 
+
+    function home($location, homeSvc) {
+        /* jshint validthis:true */
+    	var vm = this;
+        vm.title = '';
+        
+
+        vm.changePwd = function () {        	
+        	 homeSvc.changePwd(vm);
+          
+        }
+       
+        activate();
+        function activate() {
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('homeSvc', home);
+
+    home.$inject = ['$http'];
+
+    function home($http) {
+        var url_account_password = rootPath + "/account/password";
+
+        var service = {
+            changePwd: changePwd
+        };
+
+        return service;
+
+        // begin#updatehome
+        function changePwd(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+
+                var httpOptions = {
+                    method: 'put',
+                    url: url_account_password,
+                    data: vm.model.password
+                }
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
+
+        }
+
+    }
 })();
 (function () {
     'use strict';
@@ -24445,6 +24633,403 @@
         var service = {
         }
         return service;
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('officeUserCtrl', officeUser);
+
+    officeUser.$inject = ['$location', 'officeUserSvc'];
+
+    function officeUser($location, officeUserSvc) {
+        var vm = this;
+        vm.title = '处室人员管理';
+
+        vm.del = function (id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    officeUserSvc.deleteOfficeUser(vm, id);
+                }
+            });
+        }
+        vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+        
+        vm.queryOffice = function(){
+        	officeUserSvc.queryOffice(vm);
+        }
+        activate();
+        function activate() {
+            officeUserSvc.grid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('officeUserEditCtrl', officeUser);
+
+    officeUser.$inject = ['$location', 'officeUserSvc', '$state'];
+
+    function officeUser($location, officeUserSvc, $state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '添加人员';
+        vm.isuserExist = false;
+        vm.officeID = $state.params.officeID;
+        if (vm.officeID) {
+            vm.isUpdate = true;
+            vm.title = '更新人员';
+        }
+
+        vm.create = function () {
+            officeUserSvc.createOfficeUser(vm);
+        };
+        vm.update = function () {
+            officeUserSvc.updateOfficeUser(vm);
+        };
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                officeUserSvc.getOfficeUserById(vm);
+            }
+            officeUserSvc.getDepts(vm);//获取所有办事处
+           
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('officeUserSvc', officeUser);
+
+    officeUser.$inject = ['$http'];
+
+    function officeUser($http) {
+        var url_officeUser = rootPath + "/officeUser", url_back = '#/officeUserList';
+        var service = {
+            grid: grid,
+            getOfficeUserById: getOfficeUserById,
+            createOfficeUser: createOfficeUser,
+            deleteOfficeUser: deleteOfficeUser,
+            updateOfficeUser: updateOfficeUser,
+            getDepts:getDepts,						//获取所有办事处
+            queryOffice:queryOffice,
+        };
+
+        return service;
+        
+        function queryOffice(vm){
+            vm.gridOptions.dataSource._skip=0;
+        	vm.gridOptions.dataSource.read();	
+        }
+        //start 获取所有办事处
+        function getDepts(vm){
+        	var httpOptions = {
+                    method: 'get',
+                    url: common.format(url_officeUser + "/getDepts")
+                }
+                var httpSuccess = function success(response) {
+                    vm.depts = {};
+                    vm.depts = response.data;
+                    
+                }
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+        	
+        }
+        //end 获取所有办事处
+        
+        // begin#updateOfficeUser
+        function updateOfficeUser(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                vm.model.id = vm.id;// id
+                var httpOptions = {
+                    method: 'put',
+                    url: url_officeUser,
+                    data: vm.model
+                }
+
+                var httpSuccess = function success(response) {
+
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
+
+        }
+
+        // begin#deleteOfficeUser
+        function deleteOfficeUser(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: url_officeUser,
+                data: id
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                    	common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog :true,
+                            fn: function () {
+                            	vm.isSubmit = false;
+                                vm.gridOptions.dataSource.read();
+                            }
+                        })
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#createOfficeUser
+        function createOfficeUser(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+
+                var httpOptions = {
+                    method: 'post',
+                    url: url_officeUser,
+                    data: vm.model
+                };
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                closeDialog :true,
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    location.href = url_back;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            }
+        }
+
+        // begin#getOfficeUserById
+        function getOfficeUserById(vm) {
+        	var httpOptions = {
+                method: 'get',
+                url: rootPath + "/officeUser/html/findById",
+                params:{officeID:vm.officeID}
+            };
+            var httpSuccess = function success(response) {
+            	if(response.data.dept){
+					//vm.depts = {}
+					//vm.depts = response.data.depts;
+					//console.log(vm.depts);
+					
+				}
+                vm.model = response.data;
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });                       
+        }
+
+        // begin#grid
+        function grid(vm) {
+
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(url_officeUser+"/fingByOData",$("#formOffice")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+            
+          //S_序号
+            var  dataBound=function () {  
+                var rows = this.items();  
+                var page = this.pager.page() - 1;  
+                var pagesize = this.pager.pageSize();  
+                $(rows).each(function () {  
+                    var index = $(this).index() + 1 + page * pagesize;  
+                    var rowLabel = $(this).find(".row-number");  
+                    $(rowLabel).html(index);  
+                });  
+            } 
+            //S_序号
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                            item.officeID)
+                    },
+                    filterable: false,
+                    width: 20,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {  
+ 				    field: "rowNumber",  
+ 				    title: "序号",  
+ 				    width: 30,
+ 				    filterable : false,
+ 				    template: "<span class='row-number'></span>"  
+ 				 }
+ 				,
+                {
+                    field: "officeUserName",
+                    title: "办事处联系人",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "deptName",
+                    title: "所在办事处",
+                    width: 100,
+                    filterable: false
+                },
+               
+                {
+                    field: "officePhone",
+                    title: "电话",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "officeEmail",
+                    title: "邮件",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "officeDesc",
+                    title: "描述",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            "vm.del('" + item.officeID + "')", item.officeID);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound:dataBound,
+                resizable: true
+            };
+
+        }// end fun grid
+
     }
 })();
 (function () {
@@ -26270,403 +26855,6 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('officeUserCtrl', officeUser);
-
-    officeUser.$inject = ['$location', 'officeUserSvc'];
-
-    function officeUser($location, officeUserSvc) {
-        var vm = this;
-        vm.title = '处室人员管理';
-
-        vm.del = function (id) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    officeUserSvc.deleteOfficeUser(vm, id);
-                }
-            });
-        }
-        vm.dels = function () {
-            var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.del(idStr);
-            }
-        };
-        
-        vm.queryOffice = function(){
-        	officeUserSvc.queryOffice(vm);
-        }
-        activate();
-        function activate() {
-            officeUserSvc.grid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('officeUserEditCtrl', officeUser);
-
-    officeUser.$inject = ['$location', 'officeUserSvc', '$state'];
-
-    function officeUser($location, officeUserSvc, $state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '添加人员';
-        vm.isuserExist = false;
-        vm.officeID = $state.params.officeID;
-        if (vm.officeID) {
-            vm.isUpdate = true;
-            vm.title = '更新人员';
-        }
-
-        vm.create = function () {
-            officeUserSvc.createOfficeUser(vm);
-        };
-        vm.update = function () {
-            officeUserSvc.updateOfficeUser(vm);
-        };
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                officeUserSvc.getOfficeUserById(vm);
-            }
-            officeUserSvc.getDepts(vm);//获取所有办事处
-           
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('officeUserSvc', officeUser);
-
-    officeUser.$inject = ['$http'];
-
-    function officeUser($http) {
-        var url_officeUser = rootPath + "/officeUser", url_back = '#/officeUserList';
-        var service = {
-            grid: grid,
-            getOfficeUserById: getOfficeUserById,
-            createOfficeUser: createOfficeUser,
-            deleteOfficeUser: deleteOfficeUser,
-            updateOfficeUser: updateOfficeUser,
-            getDepts:getDepts,						//获取所有办事处
-            queryOffice:queryOffice,
-        };
-
-        return service;
-        
-        function queryOffice(vm){
-            vm.gridOptions.dataSource._skip=0;
-        	vm.gridOptions.dataSource.read();	
-        }
-        //start 获取所有办事处
-        function getDepts(vm){
-        	var httpOptions = {
-                    method: 'get',
-                    url: common.format(url_officeUser + "/getDepts")
-                }
-                var httpSuccess = function success(response) {
-                    vm.depts = {};
-                    vm.depts = response.data;
-                    
-                }
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-        	
-        }
-        //end 获取所有办事处
-        
-        // begin#updateOfficeUser
-        function updateOfficeUser(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-                var httpOptions = {
-                    method: 'put',
-                    url: url_officeUser,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
-        }
-
-        // begin#deleteOfficeUser
-        function deleteOfficeUser(vm, id) {
-            vm.isSubmit = true;
-            var httpOptions = {
-                method: 'delete',
-                url: url_officeUser,
-                data: id
-            };
-
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                    	common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                            	vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#createOfficeUser
-        function createOfficeUser(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
-                var httpOptions = {
-                    method: 'post',
-                    url: url_officeUser,
-                    data: vm.model
-                };
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    location.href = url_back;
-                                }
-                            });
-                        }
-                    });
-                };
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            }
-        }
-
-        // begin#getOfficeUserById
-        function getOfficeUserById(vm) {
-        	var httpOptions = {
-                method: 'get',
-                url: rootPath + "/officeUser/html/findById",
-                params:{officeID:vm.officeID}
-            };
-            var httpSuccess = function success(response) {
-            	if(response.data.dept){
-					//vm.depts = {}
-					//vm.depts = response.data.depts;
-					//console.log(vm.depts);
-					
-				}
-                vm.model = response.data;
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });                       
-        }
-
-        // begin#grid
-        function grid(vm) {
-
-            // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(url_officeUser+"/fingByOData",$("#formOffice")),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-            // End:dataSource
-            
-          //S_序号
-            var  dataBound=function () {  
-                var rows = this.items();  
-                var page = this.pager.page() - 1;  
-                var pagesize = this.pager.pageSize();  
-                $(rows).each(function () {  
-                    var index = $(this).index() + 1 + page * pagesize;  
-                    var rowLabel = $(this).find(".row-number");  
-                    $(rowLabel).html(index);  
-                });  
-            } 
-            //S_序号
-
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.officeID)
-                    },
-                    filterable: false,
-                    width: 20,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-                {  
- 				    field: "rowNumber",  
- 				    title: "序号",  
- 				    width: 30,
- 				    filterable : false,
- 				    template: "<span class='row-number'></span>"  
- 				 }
- 				,
-                {
-                    field: "officeUserName",
-                    title: "办事处联系人",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "deptName",
-                    title: "所在办事处",
-                    width: 100,
-                    filterable: false
-                },
-               
-                {
-                    field: "officePhone",
-                    title: "电话",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "officeEmail",
-                    title: "邮件",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "officeDesc",
-                    title: "描述",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 140,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.officeID + "')", item.officeID);
-                    }
-                }
-            ];
-            // End:column
-
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                dataBound:dataBound,
-                resizable: true
-            };
-
-        }// end fun grid
-
-    }
-})();
-(function () {
-    'use strict';
-
     angular.module('app').controller('orgCtrl', org);
 
     org.$inject = ['$location','orgSvc']; 
@@ -27425,6 +27613,240 @@
 })();
 (function () {
     'use strict';
+    angular.module('app').controller('takeUserCtrl', takeUser);
+
+    takeUser.$inject = ['bsWin', 'takeUserSvc','userSvc'];
+
+    function takeUser(bsWin, takeUserSvc,userSvc) {
+        var vm = this;
+        vm.title = "个人代办";
+        vm.model = {};
+
+        activate();
+        function activate() {
+            takeUserSvc.getUser(function(data) {
+                vm.model = data;
+                takeUserSvc.initAllUser(function(data) {
+                    vm.takeUserList = data;
+                    vm.initTaskUser(vm.model.takeUserId);
+                });
+            });
+
+            userSvc.getOrg(function(data){
+                vm.org = {};
+                vm.org = data;
+            });
+        }
+
+        //  取消代办人
+        vm.cancelTakeUser = function () {
+            if(!vm.model.takeUserId) {
+                bsWin.alert("你还没有设置代办人！");
+            } else {
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确认取消代办人么？",
+                    onOk: function () {
+                        takeUserSvc.cancelTakeUser(function(){
+                            vm.model.takeUserId = "";
+                            vm.taskUserName = "";
+                            bsWin.alert("操作成功!");
+                        });
+                    }
+                });
+            }
+        }
+
+
+        /**
+         * 保存代办人
+         * */
+        vm.saveTakeUser = function () {
+            if(vm.takeUserId){
+                takeUserSvc.saveTakeUser(vm.takeUserId, function (data) {
+                    vm.model.takeUserId = vm.takeUserId;
+                    vm.initTaskUser(vm.takeUserId);
+                    bsWin.alert("操作成功！");
+                });
+            }else{
+                bsWin.alert("请选择代办人！");
+            }
+        }
+
+        vm.initTaskUser = function(userId){
+            angular.forEach(vm.takeUserList,function(u,index){
+                if(u.id == userId){
+                    vm.taskUserName = u.displayName;
+                }
+            })
+        }
+
+    }
+
+})();
+(function(){
+    'use strict';
+    angular.module('app').factory("takeUserSvc" ,takeUser);
+
+    takeUser.$inject=['$http'];
+    function takeUser($http){
+
+        var service={
+            initAllUser : initAllUser ,//初始化所有用户
+            saveTakeUser : saveTakeUser ,//保存代办人
+            getUser : getUser ,//通过id查询个人信息
+            cancelTakeUser : cancelTakeUser ,//取消代办人
+            initZtreeClient:initZtreeClient,
+            updateZtree : updateZtree,
+
+        }
+        return service;
+
+        // begin#initZtreeClient
+        function initZtreeClient(vm) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/role/findAllRoles"
+            }
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                        var zTreeObj;
+                        var setting = {
+                            check: {
+                                chkboxType: {
+                                    "Y": "ps",
+                                    "N": "ps"
+                                },
+                                enable: true
+                            }
+                        };
+                        var zNodes = $linq(response.data).select(
+                            function (x) {
+                                return {
+                                    id: x.id,
+                                    name: x.roleName
+                                };
+                            }).toArray();
+                        var rootNode = {
+                            id: '',
+                            name: '角色集合',
+                            children: zNodes
+                        };
+                        zTreeObj = $.fn.zTree.init($("#zTree"), setting, rootNode);
+                        updateZtree(vm);
+                    }
+                });
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        //begin initAllUser
+        function  initAllUser(callBack){
+            var httpOptions={
+                method : "post",
+                url : rootPath + "/user/getAllUserDisplayName",
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+        }
+        //end initAllUser
+
+        //begin saveTakeUser
+        function saveTakeUser(takeUserId,callBack){
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/user/saveTakeUser",
+                params: {
+                    takeUserId:takeUserId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end saveTakeUser
+
+        //begin getUser
+        function getUser(callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/user/findCurrentUser",
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//end getUser
+
+        //begin cancelTakeUser
+        function cancelTakeUser(callBack){
+            var httpOptions={
+                method : "get",
+                url : rootPath + "/user/cancelTakeUser"
+            }
+
+            var httpSuccess = function success(response){
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end cancelTakeUser
+
+        function updateZtree(vm) {
+            var treeObj = $.fn.zTree.getZTreeObj("zTree");
+            var checkedNodes = $linq(vm.model.roleDtoList).select(function (x) {
+                return x.roleName;
+            }).toArray();
+            var allNodes = treeObj.getNodesByParam("level", 1, null);
+
+            var nodes = $linq(allNodes).where(function (x) {
+                return $linq(checkedNodes).contains(x.name);
+            }).toArray();
+
+            for (var i = 0, l = nodes.length; i < l; i++) {
+                treeObj.checkNode(nodes[i], true, true);
+            }
+        }
+    }
+})();
+(function () {
+    'use strict';
 
     angular.module('app').controller('pauseProjectCtrl', pauseProject);
 
@@ -27812,6 +28234,13 @@
         var signId = $state.params.signId;
         vm.projectStop = {};
         vm.projectStop.signid = signId;
+        vm.projectStop.stopId = $state.params.stopId;
+
+        //用于控制发起流程，返回流程等按钮
+        vm.showStartFlow = true;
+        if(vm.projectStop.stopId != ""){
+            vm.showStartFlow = false;
+        }
 
 
         //初始化附件上传控件
@@ -28056,240 +28485,6 @@
             pauseProjectSvc.getListInfo(signId , function(data){
                 vm.projectStopList = data;
             });
-        }
-    }
-})();
-(function () {
-    'use strict';
-    angular.module('app').controller('takeUserCtrl', takeUser);
-
-    takeUser.$inject = ['bsWin', 'takeUserSvc','userSvc'];
-
-    function takeUser(bsWin, takeUserSvc,userSvc) {
-        var vm = this;
-        vm.title = "个人代办";
-        vm.model = {};
-
-        activate();
-        function activate() {
-            takeUserSvc.getUser(function(data) {
-                vm.model = data;
-                takeUserSvc.initAllUser(function(data) {
-                    vm.takeUserList = data;
-                    vm.initTaskUser(vm.model.takeUserId);
-                });
-            });
-
-            userSvc.getOrg(function(data){
-                vm.org = {};
-                vm.org = data;
-            });
-        }
-
-        //  取消代办人
-        vm.cancelTakeUser = function () {
-            if(!vm.model.takeUserId) {
-                bsWin.alert("你还没有设置代办人！");
-            } else {
-                bsWin.confirm({
-                    title: "询问提示",
-                    message: "确认取消代办人么？",
-                    onOk: function () {
-                        takeUserSvc.cancelTakeUser(function(){
-                            vm.model.takeUserId = "";
-                            vm.taskUserName = "";
-                            bsWin.alert("操作成功!");
-                        });
-                    }
-                });
-            }
-        }
-
-
-        /**
-         * 保存代办人
-         * */
-        vm.saveTakeUser = function () {
-            if(vm.takeUserId){
-                takeUserSvc.saveTakeUser(vm.takeUserId, function (data) {
-                    vm.model.takeUserId = vm.takeUserId;
-                    vm.initTaskUser(vm.takeUserId);
-                    bsWin.alert("操作成功！");
-                });
-            }else{
-                bsWin.alert("请选择代办人！");
-            }
-        }
-
-        vm.initTaskUser = function(userId){
-            angular.forEach(vm.takeUserList,function(u,index){
-                if(u.id == userId){
-                    vm.taskUserName = u.displayName;
-                }
-            })
-        }
-
-    }
-
-})();
-(function(){
-    'use strict';
-    angular.module('app').factory("takeUserSvc" ,takeUser);
-
-    takeUser.$inject=['$http'];
-    function takeUser($http){
-
-        var service={
-            initAllUser : initAllUser ,//初始化所有用户
-            saveTakeUser : saveTakeUser ,//保存代办人
-            getUser : getUser ,//通过id查询个人信息
-            cancelTakeUser : cancelTakeUser ,//取消代办人
-            initZtreeClient:initZtreeClient,
-            updateZtree : updateZtree,
-
-        }
-        return service;
-
-        // begin#initZtreeClient
-        function initZtreeClient(vm) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/role/findAllRoles"
-            }
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        var zTreeObj;
-                        var setting = {
-                            check: {
-                                chkboxType: {
-                                    "Y": "ps",
-                                    "N": "ps"
-                                },
-                                enable: true
-                            }
-                        };
-                        var zNodes = $linq(response.data).select(
-                            function (x) {
-                                return {
-                                    id: x.id,
-                                    name: x.roleName
-                                };
-                            }).toArray();
-                        var rootNode = {
-                            id: '',
-                            name: '角色集合',
-                            children: zNodes
-                        };
-                        zTreeObj = $.fn.zTree.init($("#zTree"), setting, rootNode);
-                        updateZtree(vm);
-                    }
-                });
-            }
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        //begin initAllUser
-        function  initAllUser(callBack){
-            var httpOptions={
-                method : "post",
-                url : rootPath + "/user/getAllUserDisplayName",
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http : $http,
-                httpOptions : httpOptions,
-                success : httpSuccess
-            });
-        }
-        //end initAllUser
-
-        //begin saveTakeUser
-        function saveTakeUser(takeUserId,callBack){
-            var httpOptions = {
-                method: "post",
-                url: rootPath + "/user/saveTakeUser",
-                params: {
-                    takeUserId:takeUserId
-                }
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        //end saveTakeUser
-
-        //begin getUser
-        function getUser(callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/user/findCurrentUser",
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//end getUser
-
-        //begin cancelTakeUser
-        function cancelTakeUser(callBack){
-            var httpOptions={
-                method : "get",
-                url : rootPath + "/user/cancelTakeUser"
-            }
-
-            var httpSuccess = function success(response){
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        //end cancelTakeUser
-
-        function updateZtree(vm) {
-            var treeObj = $.fn.zTree.getZTreeObj("zTree");
-            var checkedNodes = $linq(vm.model.roleDtoList).select(function (x) {
-                return x.roleName;
-            }).toArray();
-            var allNodes = treeObj.getNodesByParam("level", 1, null);
-
-            var nodes = $linq(allNodes).where(function (x) {
-                return $linq(checkedNodes).contains(x.name);
-            }).toArray();
-
-            for (var i = 0, l = nodes.length; i < l; i++) {
-                treeObj.checkNode(nodes[i], true, true);
-            }
         }
     }
 })();
@@ -31413,14 +31608,46 @@
     'use strict';
     angular.module('app').controller('signCtrl', sign);
 
-    sign.$inject = ['signSvc','$state','flowSvc','signFlowSvc','bsWin'];
+    sign.$inject = ['signSvc','$state','flowSvc','signFlowSvc','bsWin','$rootScope'];
 
-    function sign(signSvc,$state,flowSvc,signFlowSvc,bsWin) {
+    function sign(signSvc,$state,flowSvc,signFlowSvc,bsWin,$rootScope) {
         var vm = this;
-       
+        //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.gridOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
+
+        }
         active();
         function active() {
-            signSvc.signGrid(vm);
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                //恢复查询条件
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.model = preView.data.model;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+
+                signSvc.signGrid(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+            }else {
+                signSvc.signGrid(vm);
+            }
+
         }
 
         //收文查询
@@ -33860,7 +34087,7 @@
         // begin#grid
         function grid(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+      /*      var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(url_sign + "/reserveListSign", $("#reserveFrom")),
                 schema: common.kendoGridConfig().schema({
@@ -33879,22 +34106,10 @@
                     field: "createdDate",
                     dir: "desc"
                 }
-            });
-
+            });*/
+            var dataSource = common.kendoGridDataSource(url_sign + "/reserveListSign",$("#reserveFrom"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
             // End:dataSourc
 
-            //S_序号
-            var dataBound = function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            }
-            //S_序号
 
             // Begin:column
             var columns = [
@@ -33982,10 +34197,10 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                dataBound: dataBound,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 resizable: true
             };
         }// end fun grid
@@ -34207,7 +34422,7 @@
         //S_初始化grid(过滤已签收和已经完成的项目)
         function signGrid(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+      /*      var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/sign/findBySignUser", $("#searchform")),
                 schema: common.kendoGridConfig().schema({
@@ -34226,20 +34441,9 @@
                     field: "createdDate",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/sign/findBySignUser",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
             // End:dataSource
-            //S_序号
-            var  dataBound=function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            }
-            //S_序号
             // Begin:column
             var columns = [
                 {
@@ -34264,7 +34468,7 @@
                     width: 280,
                     filterable: false,
                     template: function (item) {
-                        return '<a href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                        return '<a ng-click="vm.saveView()"  href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';
                     }
                 },
                 {
@@ -34355,10 +34559,10 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                dataBound:dataBound,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 resizable: true
             };
         }//E_初始化grid
@@ -34783,7 +34987,7 @@
         //signGetBackGrid
         function signGetBackGrid(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+           /* var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByGetBack", $("#signBackform")),
                 schema: common.kendoGridConfig().schema({
@@ -34802,7 +35006,10 @@
                     field: "createdDate",
                     dir: "desc"
                 }
-            });
+            });*/
+
+            var dataSource = common.kendoGridDataSource(rootPath + "/sign/fingByGetBack",$("#signBackform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+
             // End:dataSource
 
             // Begin:column
@@ -34874,19 +35081,10 @@
             vm.signGetBackGrid = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                },
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 resizable: true
             };
         }//E_初始化signGetBackGrid
@@ -35772,11 +35970,19 @@
     'use strict';
     angular.module('app').controller('signGetBackCtrl', signGetBack);
 
-    signGetBack.$inject = ['signSvc', 'flowSvc', 'signFlowSvc', 'bsWin'];
+    signGetBack.$inject = ['signSvc', 'flowSvc', 'signFlowSvc', 'bsWin','$state','$rootScope'];
 
-    function signGetBack(signSvc, flowSvc, signFlowSvc, bsWin) {
+    function signGetBack(signSvc, flowSvc, signFlowSvc, bsWin,$state,$rootScope) {
         var vm = this;
+        //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.signGetBackGrid.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
 
+        }
         vm.getBack = function (taskId, businessKey) {
             bsWin.confirm({
                 title: "询问提示",
@@ -35805,7 +36011,31 @@
 
         active();
         function active() {
-            signSvc.signGetBackGrid(vm);
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                //恢复查询条件
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.model = preView.data.model;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+
+                signSvc.signGetBackGrid(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+            }else {
+                signSvc.signGetBackGrid(vm);
+            }
+
         }
 
     }
@@ -36103,67 +36333,6 @@
 
     }//E_sysConfig
 
-})();
-(function () {
-    'use strict';
-    angular.module('app').controller('signworkCtrl', signworkC);
-
-    signworkC.$inject = ['signworkSvc','bsWin'];
-
-    function signworkC(signworkSvc,bsWin) {
-        var vm = this;
-       
-        active();
-        function active() {
-            vm.signWorkList = [];
-            signworkSvc.signWorkList(vm,function(data){
-                vm.signWorkList = data;
-                if(!vm.signWorkList || vm.signWorkList.length == 0){
-                    vm.nodata = true;
-                }else{
-                    vm.nodata = false;
-                }
-            });
-        }
-
-        //收文查询
-        vm.querySignWork = function(){
-            active();
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('signworkSvc', signwork);
-
-    signwork.$inject = ['$http', '$state','bsWin'];
-
-    function signwork($http, $state,bsWin) {
-        var service = {
-            signWorkList: signWorkList,
-        };
-        return service;
-
-        function signWorkList(vm,callBack){
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/signwork/fingSignWorkList",
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-    }
 })();
 (function () {
     'use strict';
@@ -39493,6 +39662,83 @@
                 success: httpSuccess
             });
         }//E_deleteBookRoom
+    }
+})();
+(function () {
+    'use strict';
+    angular.module('app').controller('signworkCtrl', signworkC);
+
+    signworkC.$inject = ['signworkSvc','bsWin'];
+
+    function signworkC(signworkSvc,bsWin) {
+        var vm = this;
+       
+        active();
+        function active() {
+            vm.signWorkList = [];
+            signworkSvc.signWorkList(function(data){
+                vm.signWorkList = data;
+                if(!vm.signWorkList || vm.signWorkList.length == 0){
+                    vm.nodata = true;
+                }else{
+                    vm.nodata = false;
+                }
+            });
+        }
+
+        //收文查询
+        vm.querySignWork = function(){
+            active();
+        }
+        //重置
+        vm.resetForm = function () {
+            var tab = $("#signworkform").find('input,select');
+            $.each(tab, function (i, obj) {
+                obj.value = "";
+            });
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('signworkSvc', signwork);
+
+    signwork.$inject = ['$http', '$state','bsWin'];
+
+    function signwork($http, $state,bsWin) {
+        var service = {
+            signWorkList: signWorkList,
+        };
+        return service;
+
+        function signWorkList(callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/signwork/fingSignWorkList",
+                headers:{ 'Content-Type': 'application/x-www-form-urlencoded'},
+                data: {$filter:common.buildOdataFilter($("#signworkform"))},
+                transformRequest: function(obj) {
+                    var str = [];
+                    for(var p in obj){
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    }
+                    return str.join("&");
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
     }
 })();
 (function () {

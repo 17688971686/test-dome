@@ -200,7 +200,9 @@
                 refresh: true,
                 pageSizes: true,
                 change:function(){
-                    scope.page = this.dataSource.page();
+                    if(scope && scope.page){
+                        scope.page = this.dataSource.page();
+                    }
                 }
             },
             dataBound:function(e){

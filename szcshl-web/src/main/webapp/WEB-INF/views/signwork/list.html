@@ -9,18 +9,17 @@
     <div class="well well-sm">
         <form id="signworkform" name="signworkform">
             <span class="help-inline">项目名称：</span>
-            <input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectname"
-                   placeholder="请输入">
+            <input type="text" operator="like" name="projectName" id="projectName" placeholder="请输入">
             <span class="help-inline" style="margin-left:15px;">签收日期：</span>
-            <input name="beginTime" kendo-date-picker k-format="'yyyy-MM-dd'"
-                   ng-model="vm.model.beginTime" value="" type="text" operator="ge"/>
+            <input name="signdate" kendo-date-picker k-format="'yyyy-MM-dd'"
+                   value="" type="text" operator="ge"/>
             至
-            <input name="endTime"kendo-date-picker k-format="'yyyy-MM-dd'"
-                   ng-model="vm.model.endTime" value="" type="text" operator="le"/>
+            <input name="signdate"kendo-date-picker k-format="'yyyy-MM-dd'"
+                   value="" type="text" operator="le"/>
             <button class="btn btn-sm btn-primary" ng-click="vm.querySignWork()" ng-disabled="vm.isSubmit">
                 <span class="glyphicon glyphicon-search"></span>查询
             </button>
-            <button class="btn btn-sm btn-primary" ng-click="vm.resetQuery()">
+            <button class="btn btn-sm btn-primary" ng-click="vm.resetForm()">
                 <span class="glyphicon glyphicon-repeat"></span>重置
             </button>
         </form>
@@ -53,7 +52,7 @@
         </tr>
         </tbody>
         <tr ng-show="vm.nodata">
-            <td colspan="6" class="text-center">
+            <td colspan="7" class="text-center">
                 没有数据！
             </td>
         </tr>
