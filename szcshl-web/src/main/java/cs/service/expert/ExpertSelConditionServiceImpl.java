@@ -6,10 +6,7 @@ import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelCondition;
-import cs.domain.expert.ExpertSelCondition_;
+import cs.domain.expert.*;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
@@ -21,6 +18,7 @@ import cs.model.expert.ExpertSelConditionDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
+import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
@@ -51,7 +49,7 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
     @Autowired
     private WorkProgramRepo workProgramRepo;
     @Autowired
-    private TopicInfoRepo topicInfoRepo;
+    private ExpertSelectedRepo expertSelectedRepo;
 
     @Override
     public PageModelDto<ExpertSelConditionDto> get(ODataObj odataObj) {
@@ -106,19 +104,12 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
     @Transactional
     public ResultMsg delete(String ids) {
         ResultMsg resultMsg = null;
-        List<String> idArr = StringUtil.getSplit(ids, ",");
-        for (String id : idArr) {
-            ExpertSelCondition condition = expertSelConditionRepo.findById(ExpertSelCondition_.id.getName(), id);
-            if (condition != null && condition.getSelectIndex() > 0) {
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，删除的条件中，已经进行了专家抽取！");
-                break;
-            }
-        }
-        if (resultMsg == null) {
-            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");
-        }
-        if (resultMsg.isFlag()) {
+        try{
             expertSelConditionRepo.deleteById(ExpertSelCondition_.id.getName(), ids);
+            expertSelectedRepo.deleteById(ExpertSelected_.conditionId.getName(),ids);
+            resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
+        }catch (Exception e){
+            resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！");
         }
         return resultMsg;
     }

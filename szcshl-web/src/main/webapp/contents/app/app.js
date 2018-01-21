@@ -199,52 +199,52 @@
                     controller: 'userCtrl',
                     controllerAs: 'vm'
                 }).state('userEdit', {
-                    url: '/userEdit/:id',
-                    templateUrl: rootPath + '/user/html/edit.html',
-                    controller: 'userEditCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#user
+                url: '/userEdit/:id',
+                templateUrl: rootPath + '/user/html/edit.html',
+                controller: 'userEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#user
 
-                //begin#org
+            //begin#org
                 .state('org', {
                     url: '/org',
                     templateUrl: rootPath + '/org/html/list.html',
                     controller: 'orgCtrl',
                     controllerAs: 'vm'
                 }).state('orgEdit', {
-                    url: '/orgEdit/:id',
-                    templateUrl: rootPath + '/org/html/edit.html',
-                    controller: 'orgEditCtrl',
-                    controllerAs: 'vm'
-                }).state('orgUser', {
-                    url: '/orgUser/:id',
-                    templateUrl: rootPath + '/org/html/orgUser.html',
-                    controller: 'orgUserCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#org
+                url: '/orgEdit/:id',
+                templateUrl: rootPath + '/org/html/edit.html',
+                controller: 'orgEditCtrl',
+                controllerAs: 'vm'
+            }).state('orgUser', {
+                url: '/orgUser/:id',
+                templateUrl: rootPath + '/org/html/orgUser.html',
+                controller: 'orgUserCtrl',
+                controllerAs: 'vm'
+            })
+            //end#org
 
-                //begin#sysdept
+            //begin#sysdept
                 .state('sysdept', {
                     url: '/sysdept',
                     templateUrl: rootPath + '/sysdept/html/list.html',
                     controller: 'sysdeptCtrl',
                     controllerAs: 'vm'
                 }).state('sysdeptEdit', {
-                    url: '/sysdeptEdit/:id',
-                    templateUrl: rootPath + '/sysdept/html/edit.html',
-                    controller: 'sysdeptEditCtrl',
-                    controllerAs: 'vm'
-                }).state('sysdeptUser', {
-                    url: '/sysdeptUser/:id',
-                    templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
-                    controller: 'sysdeptUserCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#sysdept
+                url: '/sysdeptEdit/:id',
+                templateUrl: rootPath + '/sysdept/html/edit.html',
+                controller: 'sysdeptEditCtrl',
+                controllerAs: 'vm'
+            }).state('sysdeptUser', {
+                url: '/sysdeptUser/:id',
+                templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
+                controller: 'sysdeptUserCtrl',
+                controllerAs: 'vm'
+            })
+            //end#sysdept
 
-                //begin#log
+            //begin#log
                 .state('log', {
                     url: '/log',
                     templateUrl: rootPath + '/log/html/list.html',
@@ -278,42 +278,42 @@
                     controller: 'meetingCtrl',
                     controllerAs: 'vm'
                 }).state('meetingEdit', {
-                    url: '/meetingEdit/:id',
-                    templateUrl: rootPath + '/meeting/html/edit.html',
-                    controller: 'meetingEditCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#meeting
+                url: '/meetingEdit/:id',
+                templateUrl: rootPath + '/meeting/html/edit.html',
+                controller: 'meetingEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#meeting
 
-                //begin#room
+            //begin#room
                 .state('room', {
                     url: '/room/:businessId/:businessType',
                     templateUrl: rootPath + '/room/html/roomlist.html',
                     controller: 'roomCtrl',
                     controllerAs: 'vm'
                 }).state('roomCount', {
-                    url: '/roomCount/:id',
-                    templateUrl: rootPath + '/room/html/countlist.html',
-                    controller: 'roomCountCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#room
+                url: '/roomCount/:id',
+                templateUrl: rootPath + '/room/html/countlist.html',
+                controller: 'roomCountCtrl',
+                controllerAs: 'vm'
+            })
+            //end#room
 
-                //begin#company
+            //begin#company
                 .state('company', {
                     url: '/company',
                     templateUrl: rootPath + '/company/html/list.html',
                     controller: 'companyCtrl',
                     controllerAs: 'vm'
                 }).state('companyEdit', {
-                    url: '/companyEdit/:id',
-                    templateUrl: rootPath + '/company/html/edit.html',
-                    controller: 'companyEditCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#company
+                url: '/companyEdit/:id',
+                templateUrl: rootPath + '/company/html/edit.html',
+                controller: 'companyEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#company
 
-                //begin#home
+            //begin#home
                 .state('accountPwd', {
                     url: '/accountPwd',
                     templateUrl: rootPath + '/account/html/changePwd.html',
@@ -370,7 +370,7 @@
                     controller: 'expertEditCtrl',
                     controllerAs: 'vm'
                 })
-                .state('expertReview', {
+                .state('expertReviewEdit', {
                     url: '/expertReview/:businessId/:minBusinessId/:businessType',
                     templateUrl: rootPath + '/expertReview/html/selectExpert.html',
                     controller: 'expertSelectCtrl',
@@ -1088,6 +1088,12 @@
 
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
         $rootScope.rootPath = rootPath;
+        $rootScope.DICT = DICTOBJ;
+        //kendo 语言
+        kendo.culture("zh-CN");
+        common.getTaskCount({$http: $http});
+
+
         //获取表头名称
         $rootScope.getTBHeadName = function (stageName, isAdvanced, type) {
             //项目建议书、可行性  提前介入称为评估论证
@@ -1132,13 +1138,11 @@
                 $state.go('gtasks');
             }
         };
-
         $rootScope.topSelectChange = function (dictKey, dicts, type) {
             if (dicts != undefined) {
                 for (var i = 0; i < dicts.length; i++) {
                     //根据code查询
                     if (type && type == "code") {
-
                         if (dicts[i].dictCode == dictKey) {
                             return dicts[i].dicts;
                         }
@@ -1245,7 +1249,7 @@
             if (!businessId || !businessType || !stageType) {
                 bsWin.alert("打印预览失败，参数不正确！");
             } else {
-                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version="+(new Date()).getTime()+"&file=" + rootPath + "/file/printPreview/" + businessId + "/" + businessType + "/" + stageType;
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/file/printPreview/" + businessId + "/" + businessType + "/" + stageType;
                 $("#iframePreview").attr("src", url);
                 $("#previewModal").kendoWindow({
                     width: "80%",
@@ -1258,11 +1262,6 @@
                 }).data("kendoWindow").center().open();
             }
         }
-
-        //kendo 语言
-        kendo.culture("zh-CN");
-        common.getTaskCount({$http: $http});
-        common.initDictData({$http: $http, scope: $rootScope});
     });
 
 })();

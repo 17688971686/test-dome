@@ -8,7 +8,49 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <ul lang="zh-CN">
     <head>
         <script>
+            function buildDict(dictsObj, dicts, parentId) {
+                if (!dicts || dicts.length == 0) {
+                    return;
+                }
+                if (!parentId) {
+                    for (var i = 0; i < dicts.length; i++) {
+                        var dict = dicts[i];
+                        if (!dict.parentId) {
+                            dictsObj[dict.dictCode] = {};
+                            dictsObj[dict.dictCode].dictId = dict.dictId;
+                            dictsObj[dict.dictCode].dictCode = dict.dictCode;
+                            dictsObj[dict.dictCode].dictName = dict.dictName;
+                            dictsObj[dict.dictCode].dictKey = dict.dictKey;
+                            dictsObj[dict.dictCode].dictSort = dict.dictSort;
+                            buildDict(dictsObj[dict.dictCode], dicts, dict.dictId);
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < dicts.length; i++) {
+                        var dict = dicts[i];
+                        if (dict.parentId && dict.parentId == parentId) {
+                            if (!dictsObj.dicts) {
+                                dictsObj.dicts = new Array();
+                            }
+                            var subDict = {};
+                            subDict.dictId = dict.dictId;
+                            subDict.dictName = dict.dictName;
+                            subDict.dictCode = dict.dictCode;
+                            subDict.dictKey = dict.dictKey;
+                            subDict.dictSort = dict.dictSort;
+                            dictsObj.dicts.push(subDict);
+                            buildDict(subDict, dicts, dict.dictId);
+                        }
+                    }
+                }
+            }//end
+
             window.rootPath = '${path}';
+            //是否是超级管理员
+            window.isSuperUser = '${CURRENT_USER.loginName}'== 'admin';
+            //数字字典对象
+            window.DICTOBJ = {};
+            buildDict(DICTOBJ,${DICT_ITEMS});
         </script>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -691,9 +733,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $(this).parent("li").css({"background": "rgb(230, 236, 242)"});
                 $(this).css({"font-weight": "bold"});
             })
-            //初始化数字字典
-            common.initDictItems(${DICT_ITEMS});
-           
+
             //消息弹窗
             showNotice(${NOTICE_LIST});
 

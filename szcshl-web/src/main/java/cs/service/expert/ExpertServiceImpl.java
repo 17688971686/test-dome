@@ -392,7 +392,7 @@ public class ExpertServiceImpl implements ExpertService {
         if (paramArrary.length == 1 && Validate.isString(paramArrary[0].getId())) {
             ExpertSelCondition expertSelCondition = expertSelConditionRepo.findById(ExpertSelCondition_.id.getName(), paramArrary[0].getId());
             if (expertSelCondition != null && expertSelCondition.getSelectIndex() > 0) {
-                if (expertSelCondition.getSelectIndex() > 2) {
+                if (!Constant.SUPER_USER.equals(SessionUtil.getLoginName()) && (expertSelCondition.getSelectIndex() > 2)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该条件已经进行3次专家抽取，不能再进行专家抽取！");
                 }
                 notFirstTime = true;
@@ -512,6 +512,8 @@ public class ExpertServiceImpl implements ExpertService {
             saveEPList.add(randomEP);
             //保存抽取记录
             ExpertSelected aExpertSelected = new ExpertSelected();
+            //抽取条件ID
+            aExpertSelected.setConditionId(epConditon.getId());
             aExpertSelected.setIsJoin(Constant.EnumState.YES.getValue());
             aExpertSelected.setIsConfrim(Constant.EnumState.NO.getValue());
             aExpertSelected.setSelectType(Constant.EnumExpertSelectType.AUTO.getValue());

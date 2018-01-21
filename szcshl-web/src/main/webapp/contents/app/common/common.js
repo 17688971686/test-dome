@@ -1,6 +1,6 @@
 ﻿(function () {
     'use strict';
-    var DICT_ITEMS;    //数字字典
+
     var service = {
         initJqValidation: initJqValidation,         // 重置form验证
         requestSuccess: requestSuccess,             // 请求成功时执行
@@ -18,14 +18,11 @@
         http: http,                                 // http请求
         gridDataSource: gridDataSource,             // gridDataSource
         buildOdataFilter: buildOdataFilter,         // 创建多条件查询的filter
-        initDictData: initDictData,                 // 初始化数字字典
+        //initDictData: initDictData,                 // 初始化数字字典
         kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
         getTaskCount: getTaskCount,                 // 用户待办总数
         uuid : uuid,                                // js
         downloadReport : downloadReport,            //报表下载
-        initDictItems: function (dictList) {
-            DICT_ITEMS = dictList;
-        }
     };
     window.common = service;
 
@@ -45,8 +42,6 @@
         $(".forExcel").click();
         aForExcel.remove();
     }
-
-
 
     function initJqValidation(formObj) {
         if (formObj) {
@@ -427,7 +422,7 @@
             }).get().join(" and ");
     }// E_封装filer的参数
 
-    function initDictData(options) {
+    /*function initDictData(options) {
         if (!DICT_ITEMS) {
             options.$http({
                 method: 'get',
@@ -446,9 +441,9 @@
             reduceDict(dictsObj, options.scope.dictMetaData);
             options.scope.DICT = dictsObj;
         }
-    }//end
+    }//end*/
 
-    function reduceDict(dictsObj, dicts, parentId) {
+    /*function reduceDict(dictsObj, dicts, parentId) {
         if (!dicts || dicts.length == 0) {
             return;
         }
@@ -483,7 +478,7 @@
                 }
             }
         }
-    }//end
+    }//end*/
 
     // S_获取项目待办总数
     function getTaskCount(options) {

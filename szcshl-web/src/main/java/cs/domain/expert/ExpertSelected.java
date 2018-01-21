@@ -98,6 +98,12 @@ public class ExpertSelected {
     @JoinColumn(name = "expertId")
     private Expert expert;
 
+    /**
+     * 抽取条件ID，这里不做关联，只是保存
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String conditionId;
+
     public String getId() {
         return id;
     }
@@ -248,5 +254,13 @@ public class ExpertSelected {
 
     public void setCompositeScoreEnd(Integer compositeScoreEnd) {
         this.compositeScoreEnd = compositeScoreEnd;
+    }
+
+    public String getConditionId() {
+        return conditionId;
+    }
+
+    public void setConditionId(String conditionId) {
+        this.conditionId = conditionId;
     }
 }
