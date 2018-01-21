@@ -8,6 +8,13 @@
         var signId = $state.params.signId;
         vm.projectStop = {};
         vm.projectStop.signid = signId;
+        vm.projectStop.stopId = $state.params.stopId;
+
+        //用于控制发起流程，返回流程等按钮
+        vm.showStartFlow = true;
+        if(vm.projectStop.stopId != ""){
+            vm.showStartFlow = false;
+        }
 
 
         //初始化附件上传控件

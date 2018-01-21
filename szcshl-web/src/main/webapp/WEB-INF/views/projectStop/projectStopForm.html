@@ -1,15 +1,15 @@
 <div class="well well-sm" style="background:white;">
 
     <div class="toolbar">
-        <button ng-hide="vm.projectStop.processInstanceId" class="btn btn-sm btn-success" ng-click="vm.commitProjectStop()">
+        <button ng-show="vm.showStartFlow" class="btn btn-sm btn-success" ng-click="vm.commitProjectStop()">
             <span class="glyphicon glyphicon-ok"></span>发起流程</button>
-        <go-back ng-hide="vm.projectStop.processInstanceId"></go-back>
+        <go-back ng-show="vm.showStartFlow"></go-back>
         <!--退回时的处理,判断是否有流程实例ID-->
         <button  class="btn btn-sm btn-success" ng-click="vm.saveProjectStop()">
             <span class="glyphicon glyphicon-ok"></span>保存</button>
         <button ng-if="vm.projectStop.isSupplementMaterial==9 ||vm.projectStop.isPuaseApprove==9" class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
         <button  ng-if="vm.projectStop.isSupplementMaterial==9 ||vm.projectStop.isPuaseApprove==9" class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
-        <a  ng-show="vm.projectStop.processInstanceId" class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
+        <a  ng-hide="vm.showStartFlow" class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
 
     </div>
 
