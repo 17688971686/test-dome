@@ -1263,6 +1263,16 @@
         kendo.culture("zh-CN");
         common.getTaskCount({$http: $http});
         common.initDictData({$http: $http, scope: $rootScope});
+        /**
+         * 返回时列表状态不改变。
+         * @type {{}}
+         */
+        //状态
+        $rootScope.view = {};
+        //保存查询条件
+        $rootScope.storeView = function (storeName,params){
+            $rootScope.view[storeName] = params;
+        }
     });
 
 })();

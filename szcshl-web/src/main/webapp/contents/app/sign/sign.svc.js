@@ -62,7 +62,7 @@
         //S_初始化grid(过滤已签收和已经完成的项目)
         function signGrid(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+      /*      var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/sign/findBySignUser", $("#searchform")),
                 schema: common.kendoGridConfig().schema({
@@ -81,20 +81,9 @@
                     field: "createdDate",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/sign/findBySignUser",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
             // End:dataSource
-            //S_序号
-            var  dataBound=function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            }
-            //S_序号
             // Begin:column
             var columns = [
                 {
@@ -119,7 +108,7 @@
                     width: 280,
                     filterable: false,
                     template: function (item) {
-                        return '<a href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                        return '<a ng-click="vm.saveView()"  href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';
                     }
                 },
                 {
@@ -210,10 +199,10 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                dataBound:dataBound,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 resizable: true
             };
         }//E_初始化grid
@@ -638,7 +627,7 @@
         //signGetBackGrid
         function signGetBackGrid(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+           /* var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByGetBack", $("#signBackform")),
                 schema: common.kendoGridConfig().schema({
@@ -657,7 +646,10 @@
                     field: "createdDate",
                     dir: "desc"
                 }
-            });
+            });*/
+
+            var dataSource = common.kendoGridDataSource(rootPath + "/sign/fingByGetBack",$("#signBackform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+
             // End:dataSource
 
             // Begin:column
@@ -729,19 +721,10 @@
             vm.signGetBackGrid = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                },
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 resizable: true
             };
         }//E_初始化signGetBackGrid

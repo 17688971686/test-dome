@@ -3,9 +3,9 @@
 
     angular.module('app').controller('adminSignListCtrl', admin);
 
-    admin.$inject = ['signSvc', 'adminSvc', 'bsWin', '$state', 'headerSvc', 'pauseProjectSvc'];
+    admin.$inject = ['signSvc', 'adminSvc', 'bsWin', '$state', 'headerSvc', 'pauseProjectSvc','$rootScope','$scope'];
 
-    function admin(signSvc, adminSvc, bsWin, $state, headerSvc, pauseProjectSvc) {
+    function admin(signSvc, adminSvc, bsWin, $state, headerSvc, pauseProjectSvc,$rootScope,$scope) {
         var vm = this;
         vm.title = '项目查询统计';
         vm.currentAssociateSign = {};
@@ -18,10 +18,41 @@
         // vm.filters ={};
         vm.signList = [];
         vm.page = 0;
+         //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.signListOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
+
+        }
 
         activate();
         function activate() {
-            adminSvc.getSignList(vm);
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.project = preView.data.project;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+
+                adminSvc.getSignList(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+            }else {
+                adminSvc.getSignList(vm);
+            }
             //初始化查询参数
             adminSvc.initSignList(function (data) {
                 if (data.flag || data.reCode == 'ok') {
@@ -254,6 +285,7 @@
          * @param processInstanceId
          */
         vm.signDetails = function(signid , processInstanceId){
+            vm.saveView();
             adminSvc.signDetails(signid , function(data){
                 if(data.flag ){
                     $state.go("signDetails" , {signid : signid} , {processInstanceId : processInstanceId});
