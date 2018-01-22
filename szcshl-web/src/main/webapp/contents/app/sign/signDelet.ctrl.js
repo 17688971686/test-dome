@@ -2,11 +2,21 @@
     'use strict';
     angular.module('app').controller('signDeletCtrl', signDelet);
 
-    signDelet.$inject = ['signSvc', 'flowSvc', 'signFlowSvc', 'bsWin'];
+    signDelet.$inject = ['signSvc', 'flowSvc', 'signFlowSvc', 'bsWin','$state','$rootScope'];
 
-    function signDelet(signSvc, flowSvc, signFlowSvc, bsWin) {
+    function signDelet(signSvc, flowSvc, signFlowSvc, bsWin,$state,$rootScope) {
         var vm = this;
         vm.title = "作废项目列表";
+
+        //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.signListOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
+
+        }
 
         //查找
         vm.query = function () {
@@ -49,7 +59,31 @@
 
         active();
         function active() {
-            signSvc.signDeletGrid(vm);
+
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.project = preView.data.project;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+
+                signSvc.signDeletGrid(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+            }else {
+                signSvc.signDeletGrid(vm);
+            }
+
         }
 
     }
