@@ -19,6 +19,7 @@
         vm.fileRecord = {};     //归档
         vm.expertReview = {};   //评审方案
         vm.work = {};
+        vm.isDisplay=true;   //附件显示删除按钮
         vm.expertList = new Array(15); //用于打印页面的专家列表，控制行数
         //按钮显示控制，全部归为这个对象控制
         vm.showFlag = {
@@ -235,6 +236,24 @@
                     sysfileSvc.initZtreeClient(vm, $scope);//树形图
                 }
             });
+            /**
+             * 删除附件
+             * @param fileId
+             */
+            vm.delFile = function(fileId){
+                sysfileSvc.delSysFile(fileId, function () {
+                    bsWin.alert("删除成功",function () {
+                        sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                            if (data && data.length > 0) {
+                                vm.showFlag.tabSysFile = true;
+                                vm.sysFileList = data;
+                                sysfileSvc.initZtreeClient(vm, $scope);//树形图
+                            }
+                        });
+                    })
+
+                });
+            }
             //初始化个人常用意见
             ideaSvc.initIdea(vm);
         }
