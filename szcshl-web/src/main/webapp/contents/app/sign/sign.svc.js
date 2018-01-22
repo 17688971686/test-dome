@@ -65,14 +65,20 @@
       /*      var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/sign/findBySignUser", $("#searchform")),
-                schema: common.kendoGridConfig().schema({
-                    id: "signid",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
+               schema: {
+                    data: "value",
+                    total: function (data) {
+                    if (data['count']) {
+                        $('#GET_SIGN_COUNT').html(data['count']);
+                    } else {
+                        $('#GET_SIGN_COUNT').html(0);
                     }
-                }),
+                    return data['count'];
+                },
+                model: {
+                    id: "taskId"
+                 }
+               },
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
@@ -82,7 +88,33 @@
                     dir: "desc"
                 }
             });*/
-            var dataSource = common.kendoGridDataSource(rootPath + "/sign/findBySignUser",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+           var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/findBySignUser", $("#searchform"),vm.gridParams),
+                schema: {
+                    data: "value",
+                    total: function (data) {
+                       if (data['count']) {
+                           $('#GET_SIGN_COUNT').html(data['count']);
+                       } else {
+                           $('#GET_SIGN_COUNT').html(0);
+                       }
+                       return data['count'];
+                    },
+                    model: {
+                       id: "signid"
+                    }
+                },
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize : vm.queryParams.pageSize ||10,
+                page:vm.queryParams.page||1,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
             // End:dataSource
             // Begin:column
             var columns = [
@@ -132,7 +164,7 @@
                 {
                     field: "projectcode",
                     title: "项目代码",
-                    width: 80,
+                    width: 160,
                     filterable: false,
                 },
                 {

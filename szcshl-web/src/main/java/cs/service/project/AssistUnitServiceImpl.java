@@ -167,11 +167,11 @@ public class AssistUnitServiceImpl implements AssistUnitService {
          */
         if (number > 0) {
             //2、取出前一次抽签的最大序号
-            sysConfig = sysConfigService.findByDataKey(Constant.EnumConfigKey.LAST_UNIT_MAXSORT.getValue());
+            sysConfig = sysConfigService.findByDataKey(Constant.RevireStageKey.LAST_UNIT_MAXSORT.getValue());
             if (sysConfig == null || !Validate.isString(sysConfig.getId())) {
                 sysConfig = new SysConfigDto();
                 sysConfig.setConfigName(Constant.DRAW_ASSIST_UNITNAME);
-                sysConfig.setConfigKey(Constant.EnumConfigKey.LAST_UNIT_MAXSORT.getValue());
+                sysConfig.setConfigKey(Constant.RevireStageKey.LAST_UNIT_MAXSORT.getValue());
                 sysConfig.setConfigValue(String.valueOf(number));
                 sysConfig.setIsShow(Constant.EnumState.NO.getValue());
             } else {

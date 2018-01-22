@@ -1,16 +1,18 @@
 package cs.service.project;
 
 import com.alibaba.fastjson.JSON;
-import cs.common.*;
+import cs.common.Constant;
 import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.Constant.EnumState;
 import cs.common.Constant.MsgCode;
+import cs.common.FlowConstant;
+import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.*;
 import cs.domain.external.Dept;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
-import cs.domain.flow.RuTask_;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.*;
@@ -1424,6 +1426,8 @@ public class SignServiceImpl implements SignService {
                 fileRecord.setPageDate(new Date());
                 fileRecordRepo.save(fileRecord);
 
+                //收文这边也要更新归档编号
+                sign.setFilenum(fileRecord.getFileNo());
                 //更改项目状态
                 sign.setSignState(EnumState.YES.getValue());
                 sign.setProcessState(Constant.SignProcessState.FINISH.getValue());
@@ -2408,12 +2412,43 @@ public class SignServiceImpl implements SignService {
 
     /**
      * 获取没有发送给发改委的项目信息
-     *
+     * 这里要加上事务，否则无法获取工作方案和发文的信息
      * @return
      */
     @Override
-    public List<Sign> findUnSendFGWList() {
-        return signRepo.findUnSendFGWList();
+    @Transactional
+    public List<SignDto> findUnSendFGWList() {
+        List<SignDto> listSignDto = new ArrayList<>();
+        List<Sign> listSign = signRepo.findUnSendFGWList();
+        if(Validate.isList(listSign)){
+            for(int i=0,l=listSign.size();i<l;i++){
+                Sign sign = listSign.get(i);
+                SignDto signDto = new SignDto();
+                BeanCopierUtils.copyProperties(sign, signDto);
+                //只获取主工作方案
+                if(Validate.isList(sign.getWorkProgramList())){
+                    int totalW = sign.getWorkProgramList().size();
+                    List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
+                    for(int j=0;j<totalW;j++){
+                        WorkProgram workProgram = sign.getWorkProgramList().get(j);
+                        if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())) {
+                            WorkProgramDto workProgramDto = new WorkProgramDto();
+                            BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+                            workProgramDtoList.add(workProgramDto);
+                            signDto.setWorkProgramDtoList(workProgramDtoList);
+                            break;
+                        }
+                    }
+                }
+                if (sign.getDispatchDoc() != null && Validate.isString(sign.getDispatchDoc().getId())) {
+                    DispatchDocDto dispatchDocDto = new DispatchDocDto();
+                    BeanCopierUtils.copyProperties(sign.getDispatchDoc(), dispatchDocDto);
+                    signDto.setDispatchDocDto(dispatchDocDto);
+                }
+                listSignDto.add(signDto);
+            }
+        }
+        return listSignDto;
     }
 
     /**
@@ -2430,5 +2465,32 @@ public class SignServiceImpl implements SignService {
             return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
         }
         return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败！");
+    }
+
+    /**
+     * 获取项目签收列表数量
+     * @return
+     */
+    @Override
+    public Integer findSignCount() {
+        Criteria criteria = signRepo.getExecutableCriteria();
+        //1、排除旧项目
+        criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
+        //2、排除已终止、已完成
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.isNull(Sign_.signState.getName()));
+        dis.add(Restrictions.sqlRestriction(" " + Sign_.signState.getName() + " != '" + EnumState.YES.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.FORCE.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.DELETE.getValue() + "' "));
+        criteria.add(dis);
+
+        //3、已签收，但是未发起流程的项目 或者已发起流程，但是未签收的项目
+        StringBuffer sb = new StringBuffer();
+        sb.append("( (" + Sign_.issign.getName() + " is null or " + Sign_.issign.getName() + " = '" + EnumState.NO.getValue() + "' ");
+        sb.append(" and " + Sign_.processInstanceId.getName() + " is not null ) ");
+        sb.append("  or ( " + Sign_.issign.getName() + " = '" + EnumState.YES.getValue() + "' and " + Sign_.processInstanceId.getName() + " is null ))");
+        criteria.add(Restrictions.sqlRestriction(sb.toString()));
+
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+
+        return totalResult;
     }
 }

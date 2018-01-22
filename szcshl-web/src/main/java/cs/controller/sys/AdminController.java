@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
 import cs.common.utils.*;
+import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
 import cs.service.flow.FlowService;
 import cs.service.project.AddSuppLetterService;
 import cs.service.project.ProjectStopService;
+import cs.service.project.SignService;
 import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
@@ -36,6 +38,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cs.common.Constant.FTP_IP;
+import static cs.common.Constant.RevireStageKey.KEY_FTPIP;
+
 @Controller
 @RequestMapping(name = "管理界面", path = "admin")
 @MudoleAnnotation(name = "我的工作台", value = "permission#workbench")
@@ -56,6 +61,8 @@ public class AdminController {
     private AnnountmentService annService;
     @Autowired
     private FlowService flowService;
+    @Autowired
+    private SignService signService;
 
     //@RequiresPermissions("admin#index#get")
     @RequiresAuthentication
@@ -69,19 +76,22 @@ public class AdminController {
             model.addAttribute("NOTICE_LIST", JSON.toJSONString(noticeList));
             SessionUtil.getSession().removeAttribute(Constant.NOTICE_KEY);
         }
-        String agent = request.getHeader("User-Agent").toLowerCase();
-        //如果是IE浏览器，则登录腾讯通
-        if (Tools.getBrowserName(agent).contains("ie") && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
-            String userState = rtxService.queryUserState(null, SessionUtil.getLoginName());
-            if ("0".equals(userState) || "2".equals(userState) ) {
-                model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null, SessionUtil.getLoginName()));
-                PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-                model.addAttribute("RTX_IP", propertyUtil.readProperty("RTX_IP"));
-                String rtxName = Validate.isString(SessionUtil.getUserInfo().getRtxName())?SessionUtil.getUserInfo().getRtxName():SessionUtil.getLoginName();
-                model.addAttribute("RTX_NAME", rtxName);
-            }
-        }
 
+        //如果使用腾讯通，则判断
+       if(rtxService.rtxEnabled()){
+           String agent = request.getHeader("User-Agent").toLowerCase();
+           //如果是IE浏览器，则登录腾讯通
+           if (Tools.getBrowserName(agent).contains("ie") && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
+               String userState = rtxService.queryUserState(null, SessionUtil.getLoginName());
+               if ("0".equals(userState) || "2".equals(userState) ) {
+                   model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null, SessionUtil.getLoginName()));
+                   PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+                   model.addAttribute("RTX_IP", propertyUtil.readProperty("RTX_IP"));
+                   String rtxName = Validate.isString(SessionUtil.getUserInfo().getRtxName())?SessionUtil.getUserInfo().getRtxName():SessionUtil.getLoginName();
+                   model.addAttribute("RTX_NAME", rtxName);
+               }
+           }
+       }
         return ctrlName + "/index";
     }
 
@@ -105,7 +115,10 @@ public class AdminController {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("DO_SIGN_COUNT", ruProcessTaskRepo.findMyDoingTask());
         resultMap.put("DO_TASK_COUNT", ruTaskRepo.findMyDoingTask());
-
+        //如果是项目签收人员，还要加上项目签收数量
+        if(SessionUtil.checkPermissions("sign#html/list#get")){
+            resultMap.put("GET_SIGN_COUNT", signService.findSignCount());
+        }
         return resultMap;
     }
 

@@ -21,9 +21,9 @@
             vm.model.isShow = '9';//是否显示
             //显示次项目窗口
             $("#configdiv").kendoWindow({
-                width: "70%px",
+                width: "760px",
                 height: "500px",
-                title: "参数编辑",
+                title: "系统参数编辑",
                 visible: false,
                 modal: true,
                 closable: true,

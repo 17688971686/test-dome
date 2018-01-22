@@ -5,7 +5,9 @@ import cs.common.ResultMsg;
 import cs.common.utils.PropertyUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.User;
+import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.sys.SysConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,10 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
+import static cs.common.Constant.FTP_IP;
+import static cs.common.Constant.RevireStageKey.KEY_FTPIP;
+import static cs.common.Constant.RevireStageKey.RTX_ENABLED;
+
 
 @Service
 public class RTXService {
@@ -28,7 +34,8 @@ public class RTXService {
 
     @Autowired
     private UserRepo userRepo;
-
+    @Autowired
+    private SysConfigService sysConfigService;
     /**
      * 获取腾讯通的sessionKey
      *
@@ -91,7 +98,8 @@ public class RTXService {
      * @return
      */
     public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg) {
-        if (resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null) {
+        //如果使用腾讯通，并处理成功！
+        if (rtxEnabled() && resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null) {
             String receiverIds = RTXSendMsgPool.getInstance().getReceiver(taskId).toString();
             List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
             if (Validate.isList(receiverList)) {
@@ -105,7 +113,7 @@ public class RTXService {
                 }
                 if (Validate.isString(rtxNames)) {
                     //正式启动再去掉注释
-                    //sendRTXMsg(null,"您有待办任务待处理！",rtxNames);
+                    sendRTXMsg(null,"您有待办任务待处理！",rtxNames);
                     RTXSendMsgPool.getInstance().removeCache(taskId);
                     return true;
                 }
@@ -178,5 +186,18 @@ public class RTXService {
             }
         }
         return result;
+    }
+
+    /**
+     * 判断是否使用腾讯通
+     * @return
+     */
+    public boolean rtxEnabled() {
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(RTX_ENABLED.getValue());
+        if(sysConfigDto != null && Constant.EnumState.YES.getValue().equals(sysConfigDto.getConfigValue())) {
+            return true;
+        }else{
+            return false;
+        }
     }
 }

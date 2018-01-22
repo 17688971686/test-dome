@@ -178,7 +178,7 @@ public interface SignService {
      * 获取未发送给委里的项目
      * @return
      */
-    List<Sign> findUnSendFGWList();
+    List<SignDto> findUnSendFGWList();
 
     /**
      * 恢复项目
@@ -188,4 +188,10 @@ public interface SignService {
      * @return
      */
     ResultMsg editSignState(String signId,String stateProperty,String stateValue);
+
+    /**
+     * 获取项目签收列表数量
+     * @return
+     */
+    Integer findSignCount();
 }

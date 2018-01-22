@@ -11,7 +11,9 @@ import cs.domain.project.WorkProgram;
 import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
+import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
+import cs.model.project.WorkProgramDto;
 import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
@@ -34,6 +36,8 @@ import java.net.URL;
 import java.util.*;
 
 import static cs.common.Constant.*;
+import static cs.common.Constant.RevireStageKey.RETURN_FGW_URL;
+import static cs.common.Constant.RevireStageKey.RTX_ENABLED;
 
 /**
  * 项目接口实现类
@@ -284,27 +288,11 @@ public class SignRestServiceImpl implements SignRestService {
      * @return
      */
     @Override
-    public ResultMsg setToFGW(Sign sign, String url, String loaclUrl) {
-        String sendUrl = url;
-        if (!Validate.isString(sendUrl)) {
-            // 接口地址
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            sendUrl = propertyUtil.readProperty(IFResultCode.FGW_PROJECT_IFS);
-        }
+    public ResultMsg setToFGW(SignDto sign, WorkProgramDto mainWP, DispatchDocDto dispatchDoc, String fgwUrl) {
+        String sendUrl = getReturnUrl();
         if (!Validate.isString(sendUrl)) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_01.getCode(), IFResultCode.IFMsgCode.SZEC_SFGW_01.getValue());
         }
-        if (!Validate.isString(loaclUrl)) {
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            loaclUrl = propertyUtil.readProperty(IFResultCode.LOCAL_URL);
-            if (Validate.isString(loaclUrl) && loaclUrl.endsWith("/")) {
-                loaclUrl = loaclUrl.substring(0, loaclUrl.length() - 1);
-            }
-        }
-        //主工作方案
-        WorkProgram mainWP = null;
-        //发文
-        DispatchDoc dispatchDoc = null;
         Map<String, String> params = new HashMap<>();
         try {
             //1、评审意见对象
@@ -326,18 +314,8 @@ public class SignRestServiceImpl implements SignRestService {
             psgcMap.put("blsj", sign.getLeaderDate().getTime());// 办理时间
             dataList.add(psgcMap);
 
-         /*   sign.setFilecode("Z201800001");*/
+            /*   sign.setFilecode("Z201800001");*/
             dataMap.put("swbh", sign.getFilecode());// 收文编号
-            if (Validate.isList(sign.getWorkProgramList())) {
-                for (WorkProgram wp : sign.getWorkProgramList()) {
-                    if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
-                        mainWP = wp;
-                        break;
-                    }
-                }
-            } else {
-                mainWP = workProgramRepo.findBySignIdAndBranchId(sign.getSignid(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
-            }
             if (mainWP != null) {
                 dataMap.put("psfs", IFResultCode.PSFS.getCodeByValue(mainWP.getReviewType()));// 评审方式
                 /**
@@ -357,11 +335,6 @@ public class SignRestServiceImpl implements SignRestService {
                 dataList.add(psgcMap);
             }
 
-            if (Validate.isObject(sign.getDispatchDoc())) {
-                dispatchDoc = sign.getDispatchDoc();
-            } else {
-                dispatchDoc = dispatchDocRepo.findById("signid", sign.getSignid());
-            }
             if (!Validate.isObject(dispatchDoc)) {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_03.getCode(), IFResultCode.IFMsgCode.SZEC_SFGW_03.getValue());
             }
@@ -392,7 +365,7 @@ public class SignRestServiceImpl implements SignRestService {
                 //评审报告附件
                 checkNameArr.add("评审意见");
                 checkNameArr.add("审核意见");
-                fjList = checkFile(fileList,checkNameArr,loaclUrl);
+                fjList = checkFile(fileList,checkNameArr,getLoaclUrl());
                 if(Validate.isList(fjList)){
                     dataMap.put("psbg", fjList);
                 }
@@ -401,7 +374,7 @@ public class SignRestServiceImpl implements SignRestService {
                 checkNameArr = new ArrayList<>();
                 checkNameArr.add("投资估算表");
                 checkNameArr.add("投资匡算表");
-                fjList = checkFile(fileList,checkNameArr,loaclUrl);
+                fjList = checkFile(fileList,checkNameArr,getLoaclUrl());
                 if(Validate.isList(fjList)){
                     dataMap.put("tzgsshb", fjList);
                 }
@@ -422,6 +395,39 @@ public class SignRestServiceImpl implements SignRestService {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
                     "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委异常！" + e.getMessage());
         }
+    }
+
+    /**
+     * 获取回传给委里的接口地址
+     * @return
+     */
+    @Override
+    public String getReturnUrl() {
+        String returnUrl = "";
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(RETURN_FGW_URL.getValue());
+        if(sysConfigDto != null) {
+            returnUrl = sysConfigDto.getConfigValue();
+        }else{
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            returnUrl = propertyUtil.readProperty(IFResultCode.FGW_PROJECT_IFS);
+        }
+        return returnUrl;
+    }
+
+    public String getLoaclUrl(){
+        String localUrl = "";
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(RETURN_FGW_URL.getValue());
+        if(sysConfigDto != null) {
+            localUrl = sysConfigDto.getConfigValue();
+        }else{
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            localUrl = propertyUtil.readProperty(IFResultCode.LOCAL_URL);
+            if (Validate.isString(localUrl) && localUrl.endsWith("/")) {
+                localUrl = localUrl.substring(0, localUrl.length() - 1);
+            }
+        }
+        return localUrl;
+
     }
 
     private ArrayList<HashMap<String, Object>> checkFile(List<SysFile> fileList,List<String> checkNameArr,String loaclUrl){

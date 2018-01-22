@@ -50,7 +50,8 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
     }
 
     /**
-     * 根据委里收文编号，获取项目信息
+     * 根据委里收文编号，不作废的才算新增
+     * 获取项目信息
      * @param filecode
      * @return
      */
@@ -59,7 +60,9 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from  " + Sign.class.getSimpleName());
         hqlBuilder.append(" where " + Sign_.filecode.getName() + " = :filecode ");
+        hqlBuilder.append(" and "+Sign_.signState.getName()+" !=:signState ");
         hqlBuilder.setParam("filecode", filecode);
+        hqlBuilder.setParam("signState", Constant.EnumState.DELETE.getValue());
 
         List<Sign> signList = findByHql(hqlBuilder);
         if(Validate.isList(signList)){
