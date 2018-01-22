@@ -75,12 +75,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         PageModelDto<ExpertReviewCondDto> pageModelDto = new PageModelDto<ExpertReviewCondDto>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select t.* from (   ");
-        sqlBuilder.append("select e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw  from cs_sign s  ");
-        sqlBuilder.append("left join cs_expert_review r  ");
-        sqlBuilder.append("on s.signid = r.businessid  ");
+        sqlBuilder.append("select e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw  from cs_expert e ");
         sqlBuilder.append("left join cs_expert_selected a  ");
-        sqlBuilder.append("on s.signid = a.businessid  ");
-        sqlBuilder.append("left join cs_expert e  on a.expertid = e.expertid) t  ");
+        sqlBuilder.append("on e.expertid = a.expertid   ");
+        sqlBuilder.append("left join cs_expert_review r  ");
+        sqlBuilder.append("on a.expertreviewid = r.id  ");
+        sqlBuilder.append("left join cs_sign s  on r.businessid=s.signid) t  ");
         sqlBuilder.append("where t.expertid is not null  ");
         //todo:添加查询条件
         if(null != expertReviewCondDto){
