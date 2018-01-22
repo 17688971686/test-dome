@@ -32,7 +32,6 @@
                 message: "确认要恢复项目吗？",
                 onOk: function () {
                     signSvc.editSignState(vm,function (data) {
-                        console.log(data);
                         if(data.flag || data.reCode == 'ok'){
                             bsWin.alert("恢复成功！",function(){
                                 vm.signListOptions.dataSource.read();
