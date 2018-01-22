@@ -5,7 +5,7 @@
 
 <div class="well well-sm" style="background:white;">
 	<ol class="breadcrumb">
-		<li><a href="#/sharingPlatlform">项目评审情况统计</a></li>
+		<li><a >项目评审情况统计</a></li>
 		<li class="active">{{vm.title}}</li>
 	</ol>
 	<div class="well well-sm">
@@ -43,7 +43,8 @@
 			<td class="text-center">{{x.declareValue}}</td>
 			<td class="text-center">{{x.authorizeValue}}</td>
 			<td class="text-center">{{x.ljhj}}</td>
-			<td class="text-center" ng-if="x.hjl">{{x.hjl}}%</td>
+			<td class="text-center" ng-if="x.hjl!=undefined">{{x.hjl}}%</td>
+            <td class="text-center" ng-if="x.hjl==undefined"> </td>
 		</tr>
 		<tr ng-if="vm.protReviewConditionList">
 			<td class="text-center" ><strong>合计</strong></td>
