@@ -51,6 +51,8 @@
                 <span ng-if="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'">
                 <button ng-click="previewFile(x.sysFileId,'image');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>预览</button>
             </span>
+                <button ng-show="vm.isDisplay" ng-click="vm.delFile(x.sysFileId)" class="btn btn-xs btn-danger"><span
+                        class="glyphicon glyphicon-remove"></span>删除</button>
             </td>
         </tr>
     </table>
