@@ -444,7 +444,7 @@ public class Arith {
         System.out.println(countCost(new BigDecimal(50000)));
         System.out.println(countCost(new BigDecimal(60000)));*/
 
-        System.out.println(get2Double(new BigDecimal(60000)));
-        System.out.println((new BigDecimal(60000)).setScale(2, BigDecimal.ROUND_HALF_UP));
+        //System.out.println(get2Double(new BigDecimal(60000)));
+        System.out.println((new BigDecimal(0)).setScale(2, BigDecimal.ROUND_HALF_UP));
     }
 }
