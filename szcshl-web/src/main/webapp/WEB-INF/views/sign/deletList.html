@@ -15,6 +15,7 @@
     <div class="well well-sm">
         <form id="deletform" name="deletform">
             <table style="width:100%">
+                <input name="signState" operator="eq" value="7" hidden="hidden">
                 <tr>
                     <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">项目名称</td>
                     <td  style="width: 20%;">
@@ -31,7 +32,7 @@
                     <select name="reviewstage" operator="eq" class="form-control select "
                             ng-model="vm.project.reviewstage">
                         <option value="">请选择</option>
-                        <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                        <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}" ng-selected="vm.project.reviewstage==x.dictName">{{x.dictName}}</option>
                     </select>
                 </td>
             </tr>

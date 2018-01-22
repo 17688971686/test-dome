@@ -807,28 +807,7 @@
         //begin_signDeletGrid
         //作废项目
         function signDeletGrid(vm) {
-            // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#deletform"),{filter: "signState eq 7"}),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "receivedate",
-                    dir: "desc"
-                }
-            });
-            // End:dataSource
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate",$("#deletform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
 
             // Begin:column
             var columns = [
@@ -845,9 +824,9 @@
                     filterable: false,
                     template: function (item) {
                         if (item.processInstanceId) {
-                            return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
                         } else {
-                            return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
                         }
 
                     }
@@ -887,20 +866,11 @@
             vm.signListOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
             };
         }//signDeletGrid
 
