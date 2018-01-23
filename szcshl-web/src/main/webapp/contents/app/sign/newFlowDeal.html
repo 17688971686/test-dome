@@ -11,6 +11,7 @@
     <span style="margin-left:20px;padding:3px 5px; color:#F39C12" ng-if="vm.model.ispresign == 0 && vm.model.palceStorage && (vm.flow.curNode.activitiId == 'SIGN_XMFZR1' || vm.flow.curNode.activitiId == 'SIGN_XMFZR2'||vm.flow.curNode.activitiId == 'SIGN_XMFZR3' || vm.flow.curNode.activitiId == 'SIGN_XMFZR4') ">
         <i class="fa fa-bullhorn" aria-hidden="true" ></i>  资料存放位置：{{vm.model.palceStorage}}
     </span>
+    <go-back></go-back>
 </div>
 <form id="flow_form" name="flow_form">
     <input type="hidden" ng-model="vm.flow.end" value="{{vm.flow.end}}"/> <!-- hidden taskId -->
