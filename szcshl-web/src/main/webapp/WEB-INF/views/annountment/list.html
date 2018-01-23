@@ -32,12 +32,12 @@
     <div class="well well-sm" style="margin-bottom: 10px;">
     <form id="annountmentform" name="annountmentform">
         <span class="help-inline">标题：</span>
-        <input type="text"  operator="like" name="anTitle" id="anTitle" placeholder="请输入标题名称">
+        <input ng-model="vm.model.anTitle" type="text"  operator="like" name="anTitle" id="anTitle" placeholder="请输入标题名称">
 
         <span class="help-inline" style="margin-left: 20px;">创建日期：</span>
-        <input name="createdDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="ge"/>
+        <input ng-model="vm.model.createdDateBegin" name="createdDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="ge"/>
         至
-        <input name="createdDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="le" />
+        <input ng-model="vm.model.createdDateEnd" name="createdDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="le" />
 
         <button class="btn btn-sm btn-primary" ng-click="vm.queryAnnountment()">
             <span class="glyphicon glyphicon-search"></span>查询
@@ -53,7 +53,7 @@
 <script type="text/template" id="columnBtns">
     <button class="btn btn-xs btn-success" ng-click="{0}"><span class="glyphicon glyphicon-edit"></span>查看</button>
     <@shiro.hasPermission name="annountment##put">
-    <a class="btn btn-xs btn-primary" href="#/annountmentEdit/{1}" ng-if="{2}">
+    <a class="btn btn-xs btn-primary" ng-click="vm.saveView()" href="#/annountmentEdit/{1}" ng-if="{2}">
         <span class="glyphicon glyphicon-pencil"></span>编辑</a>
     </@shiro.hasPermission>
     <@shiro.hasPermission name="annountment##delete">

@@ -208,7 +208,7 @@
 
         //S 年度月报简报列表
         function monthlyYearGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
+     /*       var dataSource = new kendo.data.DataSource({
                 type : 'odata',
                 transport : common.kendoGridConfig().transport(rootPath + "/addSuppLetter/monthlyMultiyearList", $("#form_monthly"), {filter:"fileYear eq '"+vm.suppletter.fileYear+"' and fileType eq '2' and monthlyType eq '月报简报'"}),
                 schema : common.kendoGridConfig().schema({
@@ -227,9 +227,9 @@
                     field : "createdDate",
                     dir : "desc"
                 }
-            });
-
-            //S_序号
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/addSuppLetter/monthlyMultiyearList",$("#form_monthly"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+        /*    //S_序号
             var dataBound = function () {
                 var rows = this.items();
                 $(rows).each(function () {
@@ -238,7 +238,7 @@
                     $(rowLabel).html(index);
                 });
             }
-            //S_序号
+            //S_序号*/
             // Begin:column
             var columns = [
                 {
@@ -254,9 +254,9 @@
                     filterable: false,
                     template: function (item) {
                         if(!item.processInstanceId){
-                            return '<a href="#/monthlyMultiyearEdit/'+vm.suppletter.fileYear+'/' + item.id + '" >' + item.title + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/monthlyMultiyearEdit/'+vm.suppletter.fileYear+'/' + item.id + '" >' + item.title + '</a>';
                         }else{
-                            return '<a href="#/monthlyMultiyView/' + item.id + '" >' + item.title + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/monthlyMultiyView/' + item.id + '" >' + item.title + '</a>';
                         }
 
                     }
@@ -304,9 +304,10 @@
             vm.monthlyYearGrid = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
+              /*  pageable: common.kendoGridConfig().pageable,*/
                 noRecords: common.kendoGridConfig().noRecordMessage,
-                dataBound: dataBound,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 columns: columns,
                 resizable: true
             };
@@ -315,40 +316,11 @@
 
         // begin#中心文件查询列表
         function monthlyMultiyearGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/addSuppLetter/monthlyMultiyearList", $("#form"), {filter: "fileType eq '2'"}),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
+
+            var dataSource = common.kendoGridDataSource(rootPath + "/addSuppLetter/monthlyMultiyearList",$("#form"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
             // End:dataSource
 
-            //S_序号
-            var dataBound = function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            }
-            //S_序号
+
             // Begin:column
             var columns = [
                 {
@@ -373,7 +345,7 @@
                     width: "30%",
                     filterable: false,
                     template: function (item) {
-                        return '<a href="#/monthlyMultiyView/' + item.id + '" >' + item.title + '</a>';
+                        return '<a ng-click="vm.saveView()" href="#/monthlyMultiyView/' + item.id + '" >' + item.title + '</a>';
                     }
                 },
                 {
@@ -415,9 +387,9 @@
             vm.multiyearGrid = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
-                dataBound: dataBound,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 columns: columns,
                 resizable: true
             };

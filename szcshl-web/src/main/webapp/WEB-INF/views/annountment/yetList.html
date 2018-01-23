@@ -15,17 +15,17 @@
             <tr>
                 <td class="text-right" style="width: 50px;">标题：</td>
                 <td>
-                    <input type="text"  operator="like" name="anTitle" id="anTitle" placeholder="请输入">
+                    <input ng-model="vm.model.anTitle" type="text"  operator="like" name="anTitle" id="anTitle" placeholder="请输入">
                 </td>
                 <td class="text-right" style="width: 60px;">发布人：</td>
                 <td>
-                    <input type="text"   operator="like" name="issueUser" id="issueUser" >
+                    <input ng-model="vm.model.issueUser" type="text"   operator="like" name="issueUser" id="issueUser" >
                 </td>
                 <td class="text-right"  style="width: 80px;">发布日期：</td>
                 <td>
-                    <input name="issueDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="ge"/>
+                    <input ng-model="vm.model.issueDateBegin" name="issueDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="ge"/>
                     至
-                    <input name="issueDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="le" />
+                    <input ng-model="vm.model.issueDateEnd" name="issueDate" style="width:126px;" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text" operator="le" />
                 </td>
                 <td>
                     <button class="btn btn-sm btn-primary" ng-click="vm.findAnnountment()">
