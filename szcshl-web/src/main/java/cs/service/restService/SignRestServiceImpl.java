@@ -3,19 +3,21 @@ package cs.service.restService;
 import com.alibaba.fastjson.JSON;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
-import cs.common.*;
-import cs.common.utils.*;
-import cs.domain.project.DispatchDoc;
+import cs.common.Constant;
+import cs.common.FGWResponse;
+import cs.common.IFResultCode;
+import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
+import cs.common.utils.PropertyUtil;
+import cs.common.utils.Validate;
 import cs.domain.project.Sign;
-import cs.domain.project.WorkProgram;
-import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.SysConfigDto;
-import cs.model.sys.SysFileDto;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
@@ -29,15 +31,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.*;
 
-import static cs.common.Constant.*;
+import static cs.common.Constant.EnumFlowNodeGroupName;
 import static cs.common.Constant.RevireStageKey.RETURN_FGW_URL;
-import static cs.common.Constant.RevireStageKey.RTX_ENABLED;
+import static cs.common.Constant.RevireStageKey.LOCAL_URL;
+import static cs.common.Constant.SUPER_USER;
 
 /**
  * 项目接口实现类
@@ -200,7 +200,7 @@ public class SignRestServiceImpl implements SignRestService {
             if (Validate.isList(signDto.getSysFileDtoList())) {
                 isHaveFile = true;
                 //连接ftp
-                Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(), sysFileService.findFtpId());
+                /*Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(), sysFileService.findFtpId());
                 boolean linkSucess = FtpUtil.connectFtp(f, true);
                 if (linkSucess) {
                     StringBuffer fileBuffer = new StringBuffer();
@@ -260,6 +260,7 @@ public class SignRestServiceImpl implements SignRestService {
                 } else {
                     resultMsg.setReMsg("附件存储失败，无法连接文件服务器！");
                 }
+                */
             }
             resultMsg.setFlag(true);
             if (Validate.isString(resultMsg.getReMsg())) {
@@ -273,9 +274,9 @@ public class SignRestServiceImpl implements SignRestService {
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
         } finally {
-            if (isHaveFile) {
+            /*if (isHaveFile) {
                 FtpUtil.closeFtp();
-            }
+            }*/
         }
 
         return resultMsg;
@@ -289,10 +290,6 @@ public class SignRestServiceImpl implements SignRestService {
      */
     @Override
     public ResultMsg setToFGW(SignDto sign, WorkProgramDto mainWP, DispatchDocDto dispatchDoc, String fgwUrl) {
-        String sendUrl = getReturnUrl();
-        if (!Validate.isString(sendUrl)) {
-            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_01.getCode(), IFResultCode.IFMsgCode.SZEC_SFGW_01.getValue());
-        }
         Map<String, String> params = new HashMap<>();
         try {
             //1、评审意见对象
@@ -382,7 +379,7 @@ public class SignRestServiceImpl implements SignRestService {
             params.put("dataMap", JSON.toJSONString(dataMap));
             params.put("dataList", JSON.toJSONString(dataList));
 
-            HttpResult hst = httpClientOperate.doPost(sendUrl, params);
+            HttpResult hst = httpClientOperate.doPost(fgwUrl, params);
             FGWResponse fGWResponse = JSON.toJavaObject(JSON.parseObject(hst.getContent()), FGWResponse.class);
             //成功
             if (Constant.EnumState.PROCESS.getValue().equals(fGWResponse.getRestate())) {
@@ -416,15 +413,15 @@ public class SignRestServiceImpl implements SignRestService {
 
     public String getLoaclUrl(){
         String localUrl = "";
-        SysConfigDto sysConfigDto = sysConfigService.findByKey(RETURN_FGW_URL.getValue());
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(LOCAL_URL.getValue());
         if(sysConfigDto != null) {
             localUrl = sysConfigDto.getConfigValue();
         }else{
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             localUrl = propertyUtil.readProperty(IFResultCode.LOCAL_URL);
-            if (Validate.isString(localUrl) && localUrl.endsWith("/")) {
-                localUrl = localUrl.substring(0, localUrl.length() - 1);
-            }
+        }
+        if (Validate.isString(localUrl) && localUrl.endsWith("/")) {
+            localUrl = localUrl.substring(0, localUrl.length() - 1);
         }
         return localUrl;
 

@@ -1,6 +1,10 @@
 package cs.common.utils;
 
+import cs.common.ftp.ConfigProvider;
+import cs.common.ftp.FtpClientConfig;
+import cs.common.ftp.FtpUtils;
 import cs.domain.sys.Ftp;
+import cs.domain.sys.Ftp_;
 import cs.domain.sys.SysFile;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -141,17 +145,16 @@ public class TemplateUtil {
         try {
             docFile = createDoc(dataMap, templateUrl, path + File.separator + relativeFileUrl+ File.separator+showName);
             fileType = fileType.toLowerCase();//统一转成小写
-            boolean linkSucess = FtpUtil.connectFtp(f,true);
-            if(linkSucess){
-                //上传到ftp,
-                String uploadFileName = Tools.generateRandomFilename().concat(fileType);
-                linkSucess = FtpUtil.uploadFile(relativeFileUrl, uploadFileName, new FileInputStream(docFile));
-                if (linkSucess) {
-                    Tools.deleteFile(docFile);
-                    sysFile = new SysFile(UUID.randomUUID().toString(), businessId, relativeFileUrl+ File.separator +uploadFileName, showName,
-                            docFile.length(), fileType, mainId, mainType, sysfileType, businessType);
-                    sysFile.setFtp(f);
-                }
+            String uploadFileName = Tools.generateRandomFilename().concat(fileType);
+            //连接ftp
+            FtpUtils ftpUtils = new FtpUtils();
+            FtpClientConfig k = ConfigProvider.getUploadConfig(f);
+            boolean upLoadSucess = ftpUtils.putFile(k,relativeFileUrl,uploadFileName,new FileInputStream(docFile));
+            if(upLoadSucess){
+                Tools.deleteFile(docFile);
+                sysFile = new SysFile(UUID.randomUUID().toString(), businessId, relativeFileUrl+ File.separator +uploadFileName, showName,
+                        docFile.length(), fileType, mainId, mainType, sysfileType, businessType);
+                sysFile.setFtp(f);
             }
         } catch (Exception e) {
             e.printStackTrace();

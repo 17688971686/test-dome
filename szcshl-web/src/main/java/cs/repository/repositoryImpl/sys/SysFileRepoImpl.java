@@ -2,9 +2,10 @@ package cs.repository.repositoryImpl.sys;
 
 import cs.common.Constant;
 import cs.common.ResultMsg;
-import cs.common.utils.FtpUtil;
+import cs.common.ftp.ConfigProvider;
+import cs.common.ftp.FtpClientConfig;
+import cs.common.ftp.FtpUtils;
 import cs.common.utils.SessionUtil;
-import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;
@@ -58,7 +59,7 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
             criteria.add(Restrictions.eq(SysFile_.showName.getName(), showName));
             List<SysFile> fileList = criteria.list();
             if (Validate.isList(fileList)) {
-                StringBuffer deleteIds = new StringBuffer();
+                /*StringBuffer deleteIds = new StringBuffer();
                 for (int i = 0, l = fileList.size(); i < l; i++) {
                     SysFile sysFile = fileList.get(i);
                     try {
@@ -81,7 +82,7 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
                 }
                 if (deleteIds.length() > 0) {
                     deleteById(SysFile_.sysFileId.getName(), deleteIds.toString());
-                }
+                }*/
             }
         }
     }
@@ -101,17 +102,19 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
                 try {
                     //删除ftp上的文件
                     Ftp f = fl.getFtp();
-                    if (f == null || !FtpUtil.connectFtp(f,false) || !FtpUtil.removeFile(fl.getFileUrl())) {
-                        resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！无法连接文件服务器，请联系管理员查看！");
-                    } else {
+                    FtpUtils ftpUtils = new FtpUtils();
+                    FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
+                    boolean deleteResult = ftpUtils.remove(fl.getFileUrl(),k);
+                    if (deleteResult) {
                         delete(fl);
                         resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
+                    } else {
+                        resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！无法连接文件服务器，请联系管理员查看！");
                     }
                 } catch (Exception e) {
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，错误信息已记录，请联系管理员查看！");
                     logger.info("删除ftp附件【" + fl.getShowName() + "】异常：" + e.getMessage());
                 } finally {
-                    FtpUtil.closeFtp();
                 }
             }else{
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"您无权删除此附件！");
@@ -135,7 +138,9 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
         criteria.add(Restrictions.like(SysFile_.fileUrl.getName(), "" + fileUrl + "%"));
         criteria.add(Restrictions.eq(SysFile_.showName.getName(), fileName));
         List<SysFile> sysFiles = criteria.list();
-        if(sysFiles.size()>0) sysFile = sysFiles.get(0);
+        if(sysFiles.size()>0) {
+            sysFile = sysFiles.get(0);
+        }
         return sysFile;
     }
 }
