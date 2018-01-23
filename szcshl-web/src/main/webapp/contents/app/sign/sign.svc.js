@@ -209,7 +209,6 @@
                     template: function (item) {
                         var isStartFlow = false;
                         if(item.processInstanceId){
-                            alert(item.processInstanceId);
                             isStartFlow = true;
                         }
                         var isRealSign = false;

@@ -216,6 +216,7 @@
                     $(rowLabel).html(index);
                 });
                 scope.pageSize = e.sender.dataSource.pageSize();
+                scope.page = e.sender.dataSource.page();
             },
             schema: function (model) {
                 return {
