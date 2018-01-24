@@ -113,32 +113,6 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
-
-       /* //以下对秘密项目进行限制查看，只有项目负责人、主负责人的部门领导，分管领导、主任可查看
-       List<ODataFilterItem> oDataFilterItemList = odataObj.getFilter();
-       if(oDataFilterItemList != null &&oDataFilterItemList.size() > 0){
-           for(ODataFilterItem oDataFilterItem : oDataFilterItemList){
-               if("secrectlevel".equals(oDataFilterItem.getField()) && "秘密".equals(oDataFilterItem.getValue().toString())){
-                   //部门负责人
-                   if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
-
-                       criteria.add(Restrictions.eq(SignDispaWork_.ministerName.getName() , SessionUtil.getDisplayName()));
-                   }
-                   //分管领导
-                   else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
-                       criteria.add(Restrictions.eq(SignDispaWork_.leaderName.getName() , SessionUtil.getDisplayName()));
-                   }
-                   //主任
-                   else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
-
-                   }else{
-                       //项目负责人
-                       criteria.add(Restrictions.like(SignDispaWork_.allPriUser.getName() ,"%" + SessionUtil.getDisplayName() + "%"));
-                   }
-               }
-           }
-       }*/
-
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);
         if (odataObj.getSkip() > 0) {

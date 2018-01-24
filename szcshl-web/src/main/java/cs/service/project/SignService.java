@@ -94,6 +94,11 @@ public interface SignService {
 
     ResultMsg reserveAddSign(SignDto signDto);
 
+    /**
+     * 查询项目预签收信息
+     * @param odataObj
+     * @return
+     */
 	PageModelDto<SignDto> findAllReserve(ODataObj odataObj);
 
 	void deleteReserveSign(String signid);
@@ -173,7 +178,7 @@ public interface SignService {
      * @param signdate
      * @return
      */
-    int findSignMaxSeqByType(String signType, Date signdate);
+    String findSignMaxSeqByType(String signType, Date signdate);
     /**
      * 获取未发送给委里的项目
      * @return

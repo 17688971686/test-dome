@@ -47,6 +47,7 @@
     <div class="well well-sm">
         <form id="searchform" name="searchform">
             <table style="width:100%" id="searchTable">
+                <!--  排除已删除 和未正式签收的项目-->
                 <input type="text"  name="signState" operator="ne" value="7" hidden="hidden">
                 <input type="text"  name="issign" operator="eq" value="9" hidden="hidden">
                 <tr>

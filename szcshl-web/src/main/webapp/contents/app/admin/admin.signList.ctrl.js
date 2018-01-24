@@ -63,12 +63,11 @@
 
         //重置
         vm.formReset = function () {
-            console.log(235);
-            var tab = $("#searchform").find('input,select');
+           /* var tab = $("#searchform").find('input,select');
             $.each(tab, function (i, obj) {
                 $('input:checkbox').attr('checked', false);
                 // obj.value = "";
-            });
+            });*/
             vm.project = {};
 
         }

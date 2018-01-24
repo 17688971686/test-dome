@@ -118,6 +118,8 @@ public class AdminController {
         //如果是项目签收人员，还要加上项目签收数量
         if(SessionUtil.checkPermissions("sign#html/list#get")){
             resultMap.put("GET_SIGN_COUNT", signService.findSignCount());
+        }
+        if(SessionUtil.checkPermissions("sign#html/reserveList#get")){
             resultMap.put("GET_RESERVESIGN_COUNT", signService.findReservesSignCount());
         }
         return resultMap;

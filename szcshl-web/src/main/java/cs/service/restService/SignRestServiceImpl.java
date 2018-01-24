@@ -188,10 +188,7 @@ public class SignRestServiceImpl implements SignRestService {
 
             //6、收文编号
             if (!Validate.isString(sign.getSignNum())) {
-                int maxSeq = signService.findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate());
-                sign.setSignSeq(maxSeq + 1);
-                String signSeqString = (maxSeq + 1) > 999 ? (maxSeq + 1) + "" : String.format("%03d", Integer.valueOf(maxSeq + 1));
-                sign.setSignNum(DateUtils.converToString(new Date(), "yyyy") + sign.getDealOrgType() + signSeqString);
+                sign.setSignNum(signService.findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate()));
             }
             signRepo.save(sign);
 
@@ -290,7 +287,6 @@ public class SignRestServiceImpl implements SignRestService {
         } finally {
 
         }
-
         return resultMsg;
     }
 

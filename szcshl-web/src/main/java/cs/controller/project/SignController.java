@@ -218,8 +218,8 @@ public class SignController {
     @RequiresAuthentication
     //@RequiresPermissions("sign#reserveListSign#post")
     @RequestMapping(name = "获取预签收列表", path = "reserveListSign", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<SignDto> reserveListSign(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public  PageModelDto<SignDto> reserveListSign(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDto> signlist = signService.findAllReserve(odataObj);
         return signlist;

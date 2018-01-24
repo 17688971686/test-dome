@@ -20,16 +20,16 @@
             <span>{{vm.smallTitle}}</span>
         </caption>
         <tr>
-            <td style="width: 2%">
+            <td style="width: 40px;">
                 <input id="checkboxAll" type="checkbox" class="checkbox" ng-model="selectAll"
                        ng-click="vm.all(selectAll)"/>
             </td>
-            <td style="width: 4%">序号</td>
-            <td style="width: 10%">收文编号</td>
-            <td style="width: 32%">项目名称</td>
+            <td style="width:50px;text-align: center;">序号</td>
+            <td style="width:140px;text-align: center;">收文编号</td>
+            <td >项目名称</td>
             <td style="width: 20%">建设单位</td>
             <td style="width: 10%">收文日期</td>
-            <td style="width: 6%">评审天数</td>
+            <td style="width: 10%">评审天数</td>
             <td style="width: 10%">剩余工作日</td>
         </tr>
         <tr ng-repeat="x in vm.signList">
@@ -37,8 +37,8 @@
                 <input type="checkbox" id="{{x.signid}}" ng-checked="selectAll" ng-model="x.state"
                        ng-click="vm.checks(x.reviewdays,x.surplusdays,x.signid)"/>
             </td>
-            <td>{{$index +1}}</td>
-            <td>{{x.dfilenum}}</td>
+            <td style="width:50px;text-align: center;">{{$index +1}}</td>
+            <td style="width:140px;text-align: center;">{{x.dfilenum}}</td>
             <td>{{x.projectname}}</td>
             <td>{{x.builtcompanyname}}</td>
             <td>{{x.receivedate}}</td>

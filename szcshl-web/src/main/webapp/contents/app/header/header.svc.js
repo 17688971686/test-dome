@@ -333,8 +333,8 @@
             });
 
             $("#selectHeaderWindow").kendoWindow({
-                width: "60%",
-                height: "70%",
+                width: "860px",
+                height: "500px",
                 title: "自定义报表",
                 visible: false,
                 modal: true,

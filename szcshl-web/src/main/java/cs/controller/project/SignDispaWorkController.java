@@ -52,8 +52,8 @@ public class SignDispaWorkController {
     //@RequiresPermissions("signView#getSignList#post")
     @RequiresAuthentication
     @RequestMapping(name = "项目查询统计", path = "getSignList", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<SignDispaWork> getSignList(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<SignDispaWork> getSignList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDispaWork> pageModelDto = signDispaWorkService.getCommQurySign(odataObj);
         return pageModelDto;
