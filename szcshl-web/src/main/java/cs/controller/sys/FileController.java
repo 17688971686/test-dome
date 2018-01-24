@@ -215,6 +215,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
             for (MultipartFile multipartFile : multipartFileList) {
                 String fileName = multipartFile.getOriginalFilename();
+                if(fileName.indexOf(".") == -1){
+                    errorMsg.append("附件【" + fileName + "】没有后缀名，无法上传到文件服务器！");
+                    continue ;
+                }
                 String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
                 SysFile sysFile = sysFileRepo.isExistFile(relativeFileUrl, fileName);
                 //统一转成小写

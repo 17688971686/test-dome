@@ -22,7 +22,7 @@ public class OrgDeptServiceImpl implements OrgDeptService {
      */
 	@Override
 	public List<OrgDept> queryAll() {
-		return orgDeptRepo.findAll();
+		return orgDeptRepo.findAllByCache();
 	}
 
     /**

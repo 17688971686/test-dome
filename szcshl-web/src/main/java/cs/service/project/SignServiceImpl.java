@@ -1735,7 +1735,7 @@ public class SignServiceImpl implements SignService {
      */
     @Override
     public ResultMsg initSignList() {
-        List<OrgDept> orgDeptList = orgDeptRepo.findAll();
+        List<OrgDept> orgDeptList = orgDeptRepo.findAllByCache();
         return new ResultMsg(true, MsgCode.OK.getValue(), "添加成功", orgDeptList);
     }
 

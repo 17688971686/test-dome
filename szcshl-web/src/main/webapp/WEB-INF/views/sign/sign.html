@@ -55,12 +55,10 @@
   	 	<!-- E 项目概算  -->
 
         <!-- 引入审批登记模板-->
-
-
     </div><!-- end tab1 -->
 
-    <div class="well well-sm tab-pane fade" style="background:white;" id="sign_diagram">
-        <img style="" src="{{vm.picture}}">
+    <div ng-if="vm.model.processInstanceId && vm.model.processState < 9"  class="well well-sm tab-pane fade" style="background:white;" id="sign_diagram">
+        <img style="" ng-src="{{vm.picture}}">
     </div><!-- end tab2 -->
 
     <div class="well well-sm tab-pane fade" style="background:white;" id="sign_history">
