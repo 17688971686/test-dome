@@ -379,6 +379,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         OutputStream out = response.getOutputStream();
         try {
             SysFile sysFile = fileService.findFileById(sysfileId);
+            ResponseUtils.setResponeseHead(sysFile.getFileType(), response);
+            response.setHeader("Content-Disposition", "attachment; filename="
+                    + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
             //获取相对路径
             String fileUrl = sysFile.getFileUrl();
             String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
@@ -389,9 +392,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
             boolean downResult = ftpUtils.downLoadFile(removeRelativeUrl,fileName,k,out);
             if (downResult) {
-                ResponseUtils.setResponeseHead(sysFile.getFileType(), response);
-                response.setHeader("Content-Disposition", "attachment; filename="
-                        + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
+
             } else {
                 String resultMsg = "连接文件服务器失败！";
                 out.write(resultMsg.getBytes());

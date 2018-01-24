@@ -217,7 +217,8 @@ public class SignServiceImpl implements SignService {
             Float reviewsDays = getReviewDays(sign.getReviewstage());
             if (reviewsDays > 0) {
                 sign.setSurplusdays(reviewsDays);
-                sign.setReviewdays(reviewsDays);
+                sign.setTotalReviewdays(reviewsDays);
+                sign.setReviewdays(0f);
             }
 
         }
@@ -1763,7 +1764,8 @@ public class SignServiceImpl implements SignService {
             Float reviewsDays = getReviewDays(sign.getReviewstage());
             if (reviewsDays > 0) {
                 sign.setSurplusdays(reviewsDays);
-                sign.setReviewdays(reviewsDays);
+                sign.setTotalReviewdays(reviewsDays);
+                sign.setReviewdays(0f);
             }
         }
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");

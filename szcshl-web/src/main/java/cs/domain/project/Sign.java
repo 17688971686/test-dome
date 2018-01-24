@@ -234,6 +234,10 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "NUMBER")
     private Float reviewdays;
 
+    //总评审天数
+    @Column(columnDefinition = "NUMBER")
+    private Float totalReviewdays;
+
     //归档编号
     @Column(columnDefinition = "VARCHAR(100)")
     private String filenum;
@@ -2541,5 +2545,13 @@ public class Sign extends DomainBase {
 
     public void setIsSendFGW(String isSendFGW) {
         this.isSendFGW = isSendFGW;
+    }
+
+    public Float getTotalReviewdays() {
+        return totalReviewdays;
+    }
+
+    public void setTotalReviewdays(Float totalReviewdays) {
+        this.totalReviewdays = totalReviewdays;
     }
 }

@@ -136,6 +136,9 @@ public class SignDto extends BaseDto {
 
     private Float reviewdays;
 
+    //总评审天数
+    private Float totalReviewdays;
+
     private String isassistproc;
 
     private String filenum;
@@ -2353,5 +2356,13 @@ public class SignDto extends BaseDto {
 
     public void setSysFileDtoList(List<SysFileDto> sysFileDtoList) {
         this.sysFileDtoList = sysFileDtoList;
+    }
+
+    public Float getTotalReviewdays() {
+        return totalReviewdays;
+    }
+
+    public void setTotalReviewdays(Float totalReviewdays) {
+        this.totalReviewdays = totalReviewdays;
     }
 }

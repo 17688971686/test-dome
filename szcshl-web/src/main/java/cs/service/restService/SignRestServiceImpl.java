@@ -7,17 +7,19 @@ import cs.common.Constant;
 import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.PropertyUtil;
-import cs.common.utils.Validate;
+import cs.common.ftp.ConfigProvider;
+import cs.common.ftp.FtpClientConfig;
+import cs.common.ftp.FtpUtils;
+import cs.common.utils.*;
 import cs.domain.project.Sign;
+import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.SysConfigDto;
+import cs.model.sys.SysFileDto;
 import cs.repository.repositoryImpl.project.DispatchDocRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
@@ -31,12 +33,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.*;
 
 import static cs.common.Constant.EnumFlowNodeGroupName;
-import static cs.common.Constant.RevireStageKey.RETURN_FGW_URL;
 import static cs.common.Constant.RevireStageKey.LOCAL_URL;
+import static cs.common.Constant.RevireStageKey.RETURN_FGW_URL;
 import static cs.common.Constant.SUPER_USER;
 
 /**
@@ -81,7 +86,6 @@ public class SignRestServiceImpl implements SignRestService {
         if (!Validate.isString(signDto.getFilecode())) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_02.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_02.getValue());
         }
-        boolean isHaveFile = false;
         ResultMsg resultMsg = new ResultMsg();
         try {
             String stageCode = "";
@@ -142,23 +146,18 @@ public class SignRestServiceImpl implements SignRestService {
                 sign.setIssign(Constant.EnumState.YES.getValue());
                 sign.setSigndate(now);
 
+                //计算评审天数
+                Float totalReviewDays = Constant.WORK_DAY_15;
                 SysConfigDto sysConfigDto = sysConfigService.findByKey(stageCode);
                 if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
-                    sign.setReviewdays(Float.parseFloat(sysConfigDto.getConfigValue()));
-                    sign.setSurplusdays(Float.parseFloat(sysConfigDto.getConfigValue()));
-                } else {
-                    //设定默认值，项目建议书和资金申请报告是12天，其他是15天
-                    if ((Constant.RevireStageKey.KEY_SUG.getValue()).equals(stageCode)
-                            || (Constant.RevireStageKey.KEY_REPORT.getValue()).equals(stageCode)) {
-                        //剩余评审天数
-                        sign.setSurplusdays(Constant.WORK_DAY_12);
-                        //评审天数，完成的时候再结算
-                        sign.setReviewdays(Constant.WORK_DAY_12);
-                    } else {
-                        sign.setSurplusdays(Constant.WORK_DAY_15);
-                        sign.setReviewdays(Constant.WORK_DAY_15);
-                    }
+                    totalReviewDays = Float.parseFloat(sysConfigDto.getConfigValue());
+                } else if ((Constant.RevireStageKey.KEY_SUG.getValue()).equals(stageCode) || (Constant.RevireStageKey.KEY_REPORT.getValue()).equals(stageCode)) {
+                    totalReviewDays = Constant.WORK_DAY_12;
                 }
+                //剩余评审天数
+                sign.setSurplusdays(totalReviewDays);
+                sign.setTotalReviewdays(totalReviewDays);
+                sign.setReviewdays(0f);
             }
 
             //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
@@ -198,43 +197,62 @@ public class SignRestServiceImpl implements SignRestService {
 
             //获取传送过来的附件
             if (Validate.isList(signDto.getSysFileDtoList())) {
-                isHaveFile = true;
+                StringBuffer fileBuffer = new StringBuffer();
+                int totalFileCount = signDto.getSysFileDtoList().size();
+                List<SysFile> saveFileList = new ArrayList<>();
                 //连接ftp
-                /*Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(), sysFileService.findFtpId());
-                boolean linkSucess = FtpUtil.connectFtp(f, true);
-                if (linkSucess) {
-                    StringBuffer fileBuffer = new StringBuffer();
-                    int totalFileCount = signDto.getSysFileDtoList().size();
-                    List<SysFile> saveFileList = new ArrayList<>(totalFileCount);
-                    //读取附件
-                    for (int i = 0, l = totalFileCount; i < l; i++) {
-                        SysFileDto sysFileDto = signDto.getSysFileDtoList().get(i);
-                        String showName = sysFileDto.getShowName();
-                        if (!Validate.isString(sysFileDto.getFileUrl())) {
-                            fileBuffer.append("【" + showName + "】附件接收失败，没有url!\r\n");
-                            continue;
-                        }
-                        SysFile sysFile = new SysFile();
-                        URL url = new URL(sysFileDto.getFileUrl());
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        //设置超时间为3秒
-                        conn.setConnectTimeout(600000);
-                        //防止屏蔽程序抓取而返回403错误
-                        conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-                        //得到输入流
+                Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(), sysFileService.findFtpId());
+                FtpUtils ftpUtils = new FtpUtils();
+                FtpClientConfig k = ConfigProvider.getUploadConfig(f);
 
+                //读取附件
+                for (int i = 0, l = totalFileCount; i < l; i++) {
+                    SysFileDto sysFileDto = signDto.getSysFileDtoList().get(i);
+                    String showName = sysFileDto.getShowName();
+                    if (!Validate.isString(sysFileDto.getFileUrl())) {
+                        fileBuffer.append("【" + showName + "】附件接收失败，没有url!\r\n");
+                        continue;
+                    }
+
+                    URL url = new URL(sysFileDto.getFileUrl());
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    //设置超时间为3秒
+                    conn.setConnectTimeout(600000);
+                    //防止屏蔽程序抓取而返回403错误
+                    conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+                    //得到输入流
+
+                    boolean fileExist = false;
+                    String relativeFileUrl = File.separator + Constant.SysFileType.SIGN.getValue() + File.separator + sign.getSignid() + File.separator + Constant.SysFileType.FGW_FILE.getValue();
+                    String uploadFileName = "";
+                    //如果附件已存在，则覆盖，否则新增
+                    SysFile sysFile = sysFileRepo.isExistFile(relativeFileUrl, showName);
+                    if (null != sysFile) {
+                        String fileUrl = sysFile.getFileUrl();
+                        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+                        if (relativeFileUrl.equals(removeRelativeUrl)) {
+                            uploadFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+                        }
+                        fileExist = true;
+                    } else {
+                        sysFile = new SysFile();
                         sysFile.setMainId(sign.getSignid());
                         sysFile.setBusinessId(sign.getSignid());
-                        sysFile.setMainType(SysFileType.SIGN.getValue());
-                        sysFile.setSysBusiType(SysFileType.FGW_FILE.getValue());
+                        sysFile.setMainType(Constant.SysFileType.SIGN.getValue());
+                        sysFile.setSysBusiType(Constant.SysFileType.FGW_FILE.getValue());
                         sysFile.setFileSize(sysFileDto.getFileSize());
-                        sysFile.setShowName(sysFileDto.getShowName());
+                        sysFile.setShowName(showName);
                         sysFile.setFileType(showName.substring(showName.lastIndexOf("."), showName.length()));
-                        String relativeFileUrl = File.separator + Constant.SysFileType.SIGN.getValue() + File.separator + sign.getSignid() + File.separator + Constant.SysFileType.FGW_FILE.getValue();
-
-                        String uploadFileName = Tools.generateRandomFilename().concat(sysFile.getFileType());
-                        boolean uploadResult = FtpUtil.uploadFile(relativeFileUrl, uploadFileName, conn.getInputStream());
-                        if (uploadResult) {
+                        uploadFileName = Tools.generateRandomFilename().concat(sysFile.getFileType());
+                    }
+                    //附件上传到ftp
+                    boolean uploadResult = ftpUtils.putFile(k,relativeFileUrl, uploadFileName, conn.getInputStream());
+                    if (uploadResult) {
+                        //保存数据库记录
+                        if (fileExist) {
+                            sysFile.setModifiedBy(SessionUtil.getDisplayName());
+                            sysFile.setModifiedDate(new Date());
+                        } else {
                             sysFile.setFileUrl(relativeFileUrl + File.separator + uploadFileName);
                             sysFile.setCreatedBy(SUPER_USER);
                             sysFile.setModifiedBy(SUPER_USER);
@@ -243,24 +261,20 @@ public class SignRestServiceImpl implements SignRestService {
                             sysFile.setFtp(f);
                             sysFile.setSysFileId(UUID.randomUUID().toString());
                             sysFile.setBusinessId(sign.getSignid());
-                            saveFileList.add(sysFile);
-
-                        } else {
-                            sysFile = null;
-                            fileBuffer.append("【" + showName + "】附件存储到文件服务器失败!\r\n");
                         }
+                        saveFileList.add(sysFile);
+                    } else {
+                        sysFile = null;
+                        fileBuffer.append("【" + showName + "】附件存储到文件服务器失败!\r\n");
                     }
-                    //保存附件
-                    if (Validate.isList(saveFileList)) {
-                        sysFileService.bathSave(saveFileList);
-                    }
-                    if (Validate.isString(fileBuffer.toString())) {
-                        resultMsg.setReMsg(fileBuffer.toString());
-                    }
-                } else {
-                    resultMsg.setReMsg("附件存储失败，无法连接文件服务器！");
                 }
-                */
+                //保存附件
+                if (Validate.isList(saveFileList)) {
+                    sysFileService.bathSave(saveFileList);
+                }
+                if (Validate.isString(fileBuffer.toString())) {
+                    resultMsg.setReMsg(fileBuffer.toString());
+                }
             }
             resultMsg.setFlag(true);
             if (Validate.isString(resultMsg.getReMsg())) {
@@ -274,9 +288,7 @@ public class SignRestServiceImpl implements SignRestService {
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
         } finally {
-            /*if (isHaveFile) {
-                FtpUtil.closeFtp();
-            }*/
+
         }
 
         return resultMsg;

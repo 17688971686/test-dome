@@ -88,7 +88,8 @@ public class SignCountWorkdayExecute implements Job {
                     Float reviewsDays = signService.getReviewDays(sign.getReviewstage());
                     if (reviewsDays > 0) {
                         sign.setSurplusdays(reviewsDays);
-                        sign.setReviewdays(reviewsDays);
+                        sign.setTotalReviewdays(reviewsDays);
+                        sign.setReviewdays(0f);
                     }
                 }
 
@@ -108,7 +109,9 @@ public class SignCountWorkdayExecute implements Job {
                 //4、计算从正式签收到当前时间的工作日，再减掉暂停的工作日，并设置相对应的状态
                 float usedWorkDay = QuartzUnit.countWorkday(workdayList,sign.getSigndate()) - stopWorkday;
                 //剩余评审天数 = 评审天数-已用评审天数
-                sign.setSurplusdays(sign.getReviewdays() - usedWorkDay);
+                sign.setSurplusdays(sign.getTotalReviewdays() - usedWorkDay);
+                //评审天数
+                sign.setReviewdays(usedWorkDay);
                 //默认是在办
                 sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
                 //如果已经发文，要计算发文日期
