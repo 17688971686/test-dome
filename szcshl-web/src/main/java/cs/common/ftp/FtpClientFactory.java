@@ -38,10 +38,7 @@ public class FtpClientFactory implements KeyedPooledObjectFactory<FtpClientConfi
         }
         // 设置传输协议
         cli.enterLocalPassiveMode();
-        long loginStart = System.currentTimeMillis();
         boolean loginSuccess = cli.login(key.getUsername(), key.getPassword());
-        long loginUsed = System.currentTimeMillis() - loginStart;
-        LOGGER.info("login " + key.toString() + " used time :" + loginUsed + " ms.");
         if (loginSuccess) {
             LOGGER.debug("FTP login success : " + key.toString());
         } else {
