@@ -392,7 +392,7 @@
                 var ids =[];
                 for(var i=0 ; i< vm.selectedHeaderList.length ; i++){
                     var s = {};
-                    if(vm.allHeaderList[0].checkbox){
+                    if(vm.selectedHeaderList[0].checkbox){
                         i=0;
                     }
                      s = vm.selectedHeaderList[i];

@@ -5,45 +5,37 @@
         <button class="btn btn-sm btn-danger" ng-click="vm.allCancel()">全取消</button>
     <#-- <button class="btn btn-sm btn-success" ng-click="vm.createTable()">确定</button>-->
     </div >
-    <div  class="well well-sm" style="background:white; padding-left: 200px; padding-right: 200px;">
+    <div  class="well well-sm" style="background:white; ">
 
-        <table class="table table-bordered" style="margin-top:10px;" >
+        <table class="table table-bordered" style="margin-top:10px;border-top:0px;" >
             <tr>
-                <td width="10%">
-                    <form id="selectHeaderForm">
-                        <p>
-                            <span>
-                                <strong>未选表字段</strong>
-                            </span>
-                          <#--  <span style="padding-left: 100px;">类型：</span>
-                            <select id="types" ng-change="vm.changeType()" ng-model="vm.headerType">
-                                <option value="">请选择</option>
-                                <option ng-repeat="x in DICT.HEADER_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-                            </select>-->
-                        </p>
-                        <table class="table table-bordered" >
-                            <thead style="display:block;">
-                            <tr>
-                                <th style="width: 60px;">选择</th>
-                                <th style="width: 200px;">
-                                    <span>名称</span>
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody style="display:block; max-height:500px;overflow-y: auto;">
-                            <tr ng-repeat="x in vm.allHeaderList">
-                                <td style="width: 60px;">
-                                    <input type="checkbox" name="{{x.headerName}}" value="{{x.headerValue}}" ng-model="x.checkbox"/>
-                                </td>
-                                <td style="width: 200px;">
-                                    <span>{{x.headerName}}</span>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </form>
+                <td width="40%">
+
+                    <div class="label-info" style="width: 100%;padding:2px 5px; font-size: 12px;">
+                        未选表字段
+                    </div>
+                    <div style="max-height: 400px;overflow-y: scroll;">
+                        <form id="selectHeaderForm">
+                            <table class="table table-bordered" style="border-top:1px solid #989898 ;">
+                                <tr class="active">
+                                    <th style="width: 15%;">选择</th>
+                                    <th style="width: 85%;">
+                                        <span>名称</span>
+                                    </th>
+                                </tr>
+                                <tr ng-repeat="x in vm.allHeaderList">
+                                    <td >
+                                        <input type="checkbox" name="{{x.headerName}}" value="{{x.headerValue}}" ng-model="x.checkbox"/>
+                                    </td>
+                                    <td >
+                                        <span>{{x.headerName}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
                 </td>
-                <td width="5%" style=" text-align:center;vertical-align:middle;">
+                <td width="20%" style=" text-align:center;vertical-align:middle;">
                     <p>
                         <button ng-click="vm.addHeader()">
                             <span class="glyphicon glyphicon-menu-right"></span>
@@ -57,31 +49,30 @@
                         </button>
                     </p>
                 </td>
-                <td width="10%">
-                    <p> <strong>已选表字段</strong></p>
-                    <form id="cancelHeaderForm">
-                        <table class="table table-bordered" >
-                            <thead style="display:block;">
-                            <tr>
-                                <th style="width: 60px;">选择</th>
-                                <th style="width: 200px;">
-                                    <span>名称</span>
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody style="display:block; max-height:500px;overflow-y: auto;">
-                            <tr ng-repeat="x in vm.selectedHeaderList">
-                                <td style="width: 60px;">
-                                    <input type="checkbox" name="{{x.headerName}}" value="{{x.headerValue}}" ng-model="x.checkbox"/>
-                                </td>
-                                <td style="width: 200px;">
-                                    <span>{{x.headerName}}</span>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </form>
-
+                <td width="40%">
+                    <div class="label-info" style="width: 100%;padding:2px 5px; font-size: 12px;">
+                        已选表字段
+                    </div>
+                    <div style="max-height: 400px; width: 100%;overflow-y: scroll;">
+                        <form id="cancelHeaderForm">
+                            <table class="table table-bordered" style="border-top:1px solid #989898;">
+                                <tr class="active">
+                                    <th style="width: 15%;">选择</th>
+                                    <th style="width: 85%;">
+                                        <span>名称</span>
+                                    </th>
+                                </tr>
+                                <tr ng-repeat="x in vm.selectedHeaderList">
+                                    <td >
+                                        <input type="checkbox" name="{{x.headerName}}" value="{{x.headerValue}}" ng-model="x.checkbox"/>
+                                    </td>
+                                    <td >
+                                        <span>{{x.headerName}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
                 </td>
             </tr>
         </table>
