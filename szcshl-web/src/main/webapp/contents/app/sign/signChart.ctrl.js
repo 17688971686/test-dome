@@ -22,7 +22,7 @@
         vm.capital = ['申报金额', '审定金额'];
         vm.projectType = ['市政工程', '房建工程', '信息工程', '设备采购', '其他'];
         vm.stage = ['3000万以下', '3000万-1亿', '1亿-10亿', '10亿以上'];
-        vm.review = ['项目概算', '项目建议书', '进口设备', '资金申请报告', '设备清单（进口）', '设备清单（国产）', '可行性研究报告', '其他'];
+        vm.review = ['项目概算', '项目建议书', '进口设备', '资金申请报告', '设备清单（进口）', '设备清单（国产）', '可行性研究报告', '其它'];
 
         /**
          * 通过开始和结束日期重新统计项目信息情况
@@ -35,7 +35,7 @@
             vm.fj = [];//房建工程
             vm.xx = [];//信息工程
             vm.sb = [];//设备采购
-            vm.qt = [];//其他
+            vm.qt = [];//其它
             vm.series = [];
             vm.resultData = [];//存series中Data的值
             vm.projectCount = [];//各阶段项目数目
@@ -494,13 +494,18 @@
                 if (data.flag || data.reCode == 'ok') {
                     var resultData = data.reObj;
                     if (resultData != undefined && resultData.length > 0) {
-                        for (var i = 0; i < resultData.length; i++) {
-                            $.each(resultData[i], function (key, value) {
-                                vm.reviewStage.push(key);
-                                vm.appalyinvestment.push(value[0]);
-                                vm.authorizeValue.push(value[1]);
-                                vm.projectCount.push(value[2]);
-                            });
+                        for(var j = 0 ; j < vm.review.length ; j ++ ){
+                            for (var i = 0; i < resultData.length; i++) {
+                                $.each(resultData[i], function (key, value) {
+                                    if( key == vm.review[j]){
+                                        vm.reviewStage.push(key);
+                                        vm.appalyinvestment.push(value[0]);
+                                        vm.authorizeValue.push(value[1]);
+                                        vm.projectCount.push(value[2]);
+                                    }
+
+                                });
+                            }
                         }
                         vm.resultData.push(vm.appalyinvestment, vm.authorizeValue);
                         vm.gotoHistogram();

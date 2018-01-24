@@ -48,11 +48,20 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             hqlBuilder.setParam("end" , end);
             hqlBuilder.setParam("processState" , Constant.SignProcessState.END_DIS_NUM.getValue());//已发文
             List<Object[]> objctList = this.getObjectArray(hqlBuilder);
-
+            Map< String , Object[]> map = new HashMap<>();
+            Object[] initData = new Object[]{0 , 0};
+            map.put( Constant.STAGE_SUG , initData);
+            map.put(Constant.STAGE_STUDY , initData);
+            map.put(Constant.STAGE_BUDGET, initData);
+            map.put(Constant.APPLY_REPORT, initData);
+            map.put(Constant.DEVICE_BILL_HOMELAND, initData);
+            map.put(Constant.DEVICE_BILL_IMPORT, initData);
+            map.put(Constant.IMPORT_DEVICE, initData);
+            map.put(Constant.OTHERS, initData);
             if(objctList != null && objctList.size()>0){
                 for(int i = 0 ; i<objctList.size() ; i++){
                     Object[] obj = objctList.get(i);
-                    Map< String , Object[]> map = new HashMap<>();
+
                     Object[] value = {((BigDecimal) obj[1] ) == null ? 0 : ((BigDecimal) obj[1]).divide(new BigDecimal(10000)) ,
                             ((BigDecimal) obj[2] ) == null ? 0 : ((BigDecimal) obj[2]).divide(new BigDecimal(10000)) ,
                             obj[3] == null ? 0 : obj[3]}; //[申报金额，审定金额，数目]
@@ -73,8 +82,9 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                     }else if((Constant.OTHERS).equals((String)obj[0])){
                         map.put(Constant.OTHERS, value);
                     }
-                    resultList.add(map);
+
                 }
+                resultList.add(map);
             }
             return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询数据成功" , resultList);
         }else{
