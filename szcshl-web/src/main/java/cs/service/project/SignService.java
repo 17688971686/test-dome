@@ -194,4 +194,9 @@ public interface SignService {
      * @return
      */
     Integer findSignCount();
+    /**
+     * 获取项目预签收列表数量
+     * @return
+     */
+    Integer findReservesSignCount();
 }

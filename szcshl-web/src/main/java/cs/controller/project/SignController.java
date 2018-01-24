@@ -208,7 +208,7 @@ public class SignController {
 
 
     @RequiresAuthentication
-//    @RequiresPermissions("sign#html/reserveList#get")
+   @RequiresPermissions("sign#html/reserveList#get")
     @RequestMapping(name = "项目预签收列表", path = "html/reserveList", method = RequestMethod.GET)
     public String reserveList() {
 
@@ -300,13 +300,13 @@ public class SignController {
         return signService.deleteSign(signid);
     }
 
-    @RequiresAuthentication
+/*    @RequiresAuthentication
     //@RequiresPermissions("sign#deleteReserve#delete")
     @RequestMapping(name = "删除预签收收文", path = "deleteReserve", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteReserve(@RequestParam String signid) {
         signService.deleteReserveSign(signid);
-    }
+    }*/
 
     @RequiresAuthentication
     //@RequiresPermissions("sign#html/initFillPageData#post")

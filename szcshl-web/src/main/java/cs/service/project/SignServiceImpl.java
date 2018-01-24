@@ -1760,6 +1760,7 @@ public class SignServiceImpl implements SignService {
         if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
             sign.setSigndate(new Date());
             sign.setIssign(EnumState.YES.getValue());       //正式签收
+            sign.setIspresign(EnumState.YES.getValue());       //正式签收
             Float reviewsDays = getReviewDays(sign.getReviewstage());
             if (reviewsDays > 0) {
                 sign.setSurplusdays(reviewsDays);
@@ -1848,7 +1849,7 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 获取签收项目（正式签收未发起流程或者已经发起流程未正式签收的项目）
+     * 获取签收项目（正式签收未发起流程或者已经发起流程正式签收的项目,排除预签收）
      *
      * @param odataObj
      * @return
@@ -1866,11 +1867,14 @@ public class SignServiceImpl implements SignService {
         dis.add(Restrictions.sqlRestriction(" " + Sign_.signState.getName() + " != '" + EnumState.YES.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.FORCE.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.DELETE.getValue() + "' "));
         criteria.add(dis);
 
-        //3、已签收，但是未发起流程的项目 或者已发起流程，但是未签收的项目
+        //3、已签收，但是未发起流程的项目 或者已签收，但是已发起流程，
         StringBuffer sb = new StringBuffer();
-        sb.append("( (" + Sign_.issign.getName() + " is null or " + Sign_.issign.getName() + " = '" + EnumState.NO.getValue() + "' ");
+        sb.append("( ("  + Sign_.issign.getName() + " = '" + EnumState.YES.getValue() + "' ");
+        sb.append(" and (" + Sign_.ispresign.getName() + "= '" + EnumState.YES.getValue() + "' or "+Sign_.ispresign.getName()+" is null )");
         sb.append(" and " + Sign_.processInstanceId.getName() + " is not null ) ");
-        sb.append("  or ( " + Sign_.issign.getName() + " = '" + EnumState.YES.getValue() + "' and " + Sign_.processInstanceId.getName() + " is null ))");
+        sb.append("  or ( " + Sign_.issign.getName() + " = '" + EnumState.YES.getValue() + "' ");
+        sb.append(" and (" + Sign_.ispresign.getName() + " = '" + EnumState.YES.getValue() + "' or "+Sign_.ispresign.getName()+" is null ) ");
+        sb.append(" and " + Sign_.processInstanceId.getName() + " is null ) )");
         criteria.add(Restrictions.sqlRestriction(sb.toString()));
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
@@ -1984,19 +1988,7 @@ public class SignServiceImpl implements SignService {
     @Override
     public PageModelDto<SignDto> findAllReserve(ODataObj odataObj) {
         PageModelDto<SignDto> pageModelDto = new PageModelDto<SignDto>();
-        Criteria criteria = signRepo.getExecutableCriteria();
-        criteria = odataObj.buildFilterToCriteria(criteria);
-        criteria.add(Restrictions.eq(Sign_.ispresign.getName(), Constant.EnumState.NO.getValue()));
-        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-        pageModelDto.setCount(totalResult);
-        criteria.setProjection(null);
-        if (odataObj.getSkip() > 0) {
-            criteria.setFirstResult(odataObj.getTop());
-        }
-        if (odataObj.getTop() > 0) {
-            criteria.setMaxResults(odataObj.getTop());
-        }
-        List<Sign> signlist = criteria.list();
+        List<Sign> signlist =signRepo.findByOdata(odataObj);
         List<SignDto> signDtos = new ArrayList<SignDto>(signlist == null ? 0 : signlist.size());
         if (signlist != null && signlist.size() > 0) {
             signlist.forEach(x -> {
@@ -2005,13 +1997,14 @@ public class SignServiceImpl implements SignService {
                 signDtos.add(signDto);
             });
         }
+        pageModelDto.setCount(odataObj.getCount());
         pageModelDto.setValue(signDtos);
 
         return pageModelDto;
     }
 
     /**
-     * 删除预签收项目
+     * 删除预签收项目（暂时不用）
      *
      * @param signid
      */
@@ -2482,11 +2475,40 @@ public class SignServiceImpl implements SignService {
         dis.add(Restrictions.sqlRestriction(" " + Sign_.signState.getName() + " != '" + EnumState.YES.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.FORCE.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.DELETE.getValue() + "' "));
         criteria.add(dis);
 
-        //3、已签收，但是未发起流程的项目 或者已发起流程，但是未签收的项目
+        //3、已签收，但是未发起流程的项目 或者已发起流程，签收的项目
         StringBuffer sb = new StringBuffer();
-        sb.append("( (" + Sign_.issign.getName() + " is null or " + Sign_.issign.getName() + " = '" + EnumState.NO.getValue() + "' ");
+        sb.append("( ("  + Sign_.issign.getName() + " = '" + EnumState.YES.getValue() + "' ");
+        sb.append(" and (" + Sign_.ispresign.getName() + "= '" + EnumState.YES.getValue() + "' or "+Sign_.ispresign.getName()+" is null )");
         sb.append(" and " + Sign_.processInstanceId.getName() + " is not null ) ");
-        sb.append("  or ( " + Sign_.issign.getName() + " = '" + EnumState.YES.getValue() + "' and " + Sign_.processInstanceId.getName() + " is null ))");
+        sb.append("  or ( " + Sign_.issign.getName() + " = '" + EnumState.YES.getValue() + "' ");
+        sb.append(" and (" + Sign_.ispresign.getName() + " = '" + EnumState.YES.getValue() + "' or "+Sign_.ispresign.getName()+" is null ) ");
+        sb.append(" and " + Sign_.processInstanceId.getName() + " is null ) )");
+        criteria.add(Restrictions.sqlRestriction(sb.toString()));
+
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+
+        return totalResult;
+    }
+
+    /**
+     * 获取项目预签收列表数量
+     * @return
+     */
+    @Override
+    public Integer findReservesSignCount() {
+        Criteria criteria = signRepo.getExecutableCriteria();
+        //1、排除旧项目
+        criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
+        //2、排除已终止、已完成
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.isNull(Sign_.signState.getName()));
+        dis.add(Restrictions.sqlRestriction(" " + Sign_.signState.getName() + " != '" + EnumState.YES.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.FORCE.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.DELETE.getValue() + "' "));
+        criteria.add(dis);
+
+        //3、预签收
+        StringBuffer sb = new StringBuffer();
+        sb.append(" "+ Sign_.ispresign.getName() + " is not null and " + Sign_.ispresign.getName() + " = '" + EnumState.NO.getValue() + "'" );
+        sb.append(" and "+ Sign_.signState.getName() + "  !=' "+EnumState.DELETE.getValue()+"' ");
         criteria.add(Restrictions.sqlRestriction(sb.toString()));
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();

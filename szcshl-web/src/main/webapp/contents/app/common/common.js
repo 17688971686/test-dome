@@ -513,6 +513,9 @@
             if(response.data.GET_SIGN_COUNT){
                 $('#GET_SIGN_COUNT').html(response.data.GET_SIGN_COUNT);
             }
+            if(response.data.GET_RESERVESIGN_COUNT){
+                $('#GET_RESERVESIGN_COUNT').html(response.data.GET_RESERVESIGN_COUNT);
+            }
         });
     }// E_获取待办总数
 
