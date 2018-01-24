@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.flow;
 
+import cs.common.Constant;
 import cs.common.utils.SessionUtil;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
@@ -26,10 +27,8 @@ public class RuProcessTaskRepoImpl extends AbstractRepository<RuProcessTask, Str
     @Override
     public int findMyDoingTask() {
         Criteria criteria = getExecutableCriteria();
-        Disjunction dis = Restrictions.disjunction();
-        dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
-        dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
-        criteria.add(dis);
+        criteria.add(Restrictions.ne(RuProcessTask_.signState.getName(), Constant.EnumState.DELETE.getValue()));
+        criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()), Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%") ));
         return ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
     }
     /**

@@ -21,9 +21,9 @@
         </select>
         <td class="text-right" style="width: 80px;">评审/函评日期：</td>
         <td style="min-width: 260px;">
-            <input name="reviewDate" style="width:114px" kendo-date-picker k-format="'yyyy-MM-dd'" type="text" operator="ge"/>
+            <input ng-model="vm.reviewFee.reviewDateBegin" name="reviewDate" style="width:114px" kendo-date-picker k-format="'yyyy-MM-dd'" type="text" operator="ge"/>
             至
-            <input name="reviewDate" style="width:114px" kendo-date-picker k-format="'yyyy-MM-dd'" type="text"  operator="le"/>
+            <input ng-model="vm.reviewFee.reviewDateEnd"  name="reviewDate" style="width:114px" kendo-date-picker k-format="'yyyy-MM-dd'" type="text"  operator="le"/>
         </td>
         <button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.query()">
             <span class="glyphicon glyphicon-search"></span>查询</button>

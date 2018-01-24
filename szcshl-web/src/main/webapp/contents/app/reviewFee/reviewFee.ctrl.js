@@ -1,18 +1,49 @@
 (function(){
     'use strict';
     angular.module('app').controller('reviewFeeCtrl' , reviewFee);
-    reviewFee.$inject = [ 'reviewFeeSvc' , 'expertReviewSvc' , 'bsWin' , '$state'];
+    reviewFee.$inject = [ 'reviewFeeSvc' , 'expertReviewSvc' , 'bsWin' , '$state','$rootScope'];
 
-    function reviewFee(reviewFeeSvc , expertReviewSvc , bsWin , $state){
+    function reviewFee(reviewFeeSvc , expertReviewSvc , bsWin , $state,$rootScope){
         var vm = this;
         vm.title = '项目列表';
         vm.reviewFee = {};
+        //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.gridOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
 
+        }
 
         activate();
 
         function activate(){
-            reviewFeeSvc.projectGrid(vm);
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.reviewFee = preView.data.reviewFee;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+
+                reviewFeeSvc.projectGrid(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+            }else {
+                reviewFeeSvc.projectGrid(vm);
+            }
+
         }
 
         /**
@@ -159,6 +190,7 @@
          * @param businessType
          */
         vm.detail = function(businessId , businessType){
+            vm.saveView();
             if(businessType.trim() == "SIGN"){
                 $state.go("signDetails" , {signid : businessId});
             }

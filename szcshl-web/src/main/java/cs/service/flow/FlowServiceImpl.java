@@ -426,12 +426,15 @@ public class FlowServiceImpl implements FlowService {
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
         Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
-        if (isUserDeal) {
+        criteria.add(Restrictions.ne(RuProcessTask_.signState.getName(), Constant.EnumState.DELETE.getValue()));
+        criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()), Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%") ));
+
+        /*      if (isUserDeal) {
             Disjunction dis = Restrictions.disjunction();
             dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
             dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
             criteria.add(dis);
-        }
+        }*/
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);

@@ -229,6 +229,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="sign#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="listSign">项目签收列表<span class="label label-danger" id="GET_SIGN_COUNT">0</span></a></li>
                             </@shiro.hasPermission>
+                            <@shiro.hasPermission name="sign#html/reserveListSign#get">
+                                <li><a href="javascript:void(0)" ui-sref="reserveList">项目预签收列表<span class="label label-danger" id="GET_RESERVESIGN_COUNT">0</span></a></li>
+                            </@shiro.hasPermission>
                             <@shiro.hasPermission name="sign#html/signGetBack#get">
                                 <li><a href="javascript:void(0)" ui-sref="signGetBack">项目重新分办</a></li>
                             </@shiro.hasPermission>

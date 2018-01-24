@@ -98,27 +98,34 @@
         // begin#grid
         function grid(vm) {
             // Begin:dataSource
-      /*      var dataSource = new kendo.data.DataSource({
+            var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_sign + "/reserveListSign", $("#reserveFrom")),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
+                transport: common.kendoGridConfig().transport(url_sign + "/reserveListSign", $("#reserveFrom"),vm.gridParams),
+                schema: {
+                    data: "value",
+                    total: function (data) {
+                        if (data['count']) {
+                            $('#GET_RESERVESIGN_COUNT').html(data['count']);
+                        } else {
+                            $('#GET_RESERVESIGN_COUNT').html(0);
                         }
+                        return data['count'];
+                    },
+                    model: {
+                        id: "signid"
                     }
-                }),
+                },
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 10,
+                pageSize : vm.queryParams.pageSize ||10,
+                page:vm.queryParams.page||1,
                 sort: {
                     field: "createdDate",
                     dir: "desc"
                 }
-            });*/
-            var dataSource = common.kendoGridDataSource(url_sign + "/reserveListSign",$("#reserveFrom"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
+            });
+
             // End:dataSourc
 
 
@@ -198,8 +205,21 @@
                     title: "操作",
                     width: 180,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(), item.signid,
-                            "vm.del('" + item.signid + "')");
+                        var isStartFlow = false;
+                        if(item.processInstanceId){
+                            isStartFlow = true;
+                        }
+                        var isRealSign = false;
+                        if(item.issign && (item.issign == 9 || item.issign == '9' )){
+                            isRealSign = true;
+                        }
+                        //如果已经发起流程，则只能查看
+                        return common.format($('#columnBtns').html(),
+                            item.signid, isStartFlow,
+                            item.signid + "/" + item.processInstanceId,
+                            "vm.del('" + item.signid + "')",
+                            "vm.startNewFlow('" + item.signid + "')",
+                            "vm.realSign('" + item.signid + "')", isRealSign);
                     }
                 }
             ];
