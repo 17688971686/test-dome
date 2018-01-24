@@ -24,7 +24,7 @@ public class SysFileUtil {
 
     public static String getFileSize(Long fileS){
         String size = "";
-        if(fileS == null){
+        if(fileS == null || fileS == 0 ){
             return size;
         }
         DecimalFormat df = new DecimalFormat("#.00");
