@@ -490,6 +490,16 @@
                 templateUrl: rootPath + '/sign/html/deletList.html',
                 controller: 'signDeletCtrl',
                 controllerAs: 'vm'
+            }).state('MaintainProjectList', {	//维护项目列表
+                url: '/MaintainProjectList',
+                templateUrl: rootPath + '/sign/html/MaintainProjectList.html',
+                controller: 'MaintainProjectCtrl',
+                controllerAs: 'vm'
+            }).state('MaintainProjectEdit', {	//维护项目的编辑
+                url: '/MaintainProjectEdit/:signid/:processInstanceId',
+                templateUrl: rootPath + '/sign/html/MaintainProjectEdit.html',
+                controller: 'MaintainProjectEditCtrl',
+                controllerAs: 'vm'
             })
             //end#signList
 
