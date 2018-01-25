@@ -31,6 +31,8 @@
             signDeletGrid:signDeletGrid,              //作废项目
             editSignState:editSignState ,             //恢复项目
             sumExistDays : sumExistDays,              //统计项目接受到现在所存在的天数（办结的，按办结日期，未办结的，按现在时间）
+            MaintenanProjectGrid:MaintenanProjectGrid  //维护项目
+
         };
         return service;
 
@@ -934,6 +936,138 @@
                 success: httpSuccess
             });
 
+        }
+        //end editSignState
+        //begin editSignState
+        //维护项目列表
+        function MaintenanProjectGrid(vm) {
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate",$("#Maintenanform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+            // Begin:column
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number text-center'></span>",
+                    width: 50
+                },
+                {
+                    field: "",
+                    title: "项目名称",
+                    width: 260,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.processInstanceId) {
+                            return '<a ng-click="vm.saveView()" href="#/MaintainProjectEdit/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                        } else {
+                            return '<a ng-click="vm.saveView()" href="#/MaintainProjectEdit/' + item.signid + '/" >' + item.projectname + '</a>';
+                        }
+
+                    }
+                }, {
+                    field: "builtcompanyname",
+                    title: "建设单位",
+                    width: 210,
+                    filterable: false,
+                },
+                {
+                    field: "reviewstage",
+                    title: "评审阶段",
+                    width: 120,
+                    filterable: false,
+                },
+                {
+                    field: "",
+                    title: "项目状态",
+                    width: 80,
+                    filterable: false,
+                    template: function (item) {
+                        var returnStr = "";
+                        switch (item.signState) {
+                            case "1":
+                                returnStr = "进行中";
+                                break;
+                            case "2":
+                                returnStr = "暂停";
+                                break;
+                            case "8":
+                                returnStr = "强制结束";
+                                break;
+                            case "9":
+                                returnStr = "已完成";
+                                break;
+                            default:
+                                ;
+                        }
+                        return returnStr;
+                    }
+                }, {
+                    field: "signNum",
+                    title: "收文编号",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "signdate",
+                    title: "收文日期",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "dfilenum",
+                    title: "发文号",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "ffilenum",
+                    title: "归档编号",
+                    width: 130,
+                    filterable: false,
+                },{
+                    field: "reviewOrgName",
+                    title: "所属部门",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "allPriUser",
+                    title: "项目负责人",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "dispatchType",
+                    title: "发文类型",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "appalyInvestment",
+                    title: "申报金额",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "authorizeValue",
+                    title: "审定金额",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "extraValue",
+                    title: "核减",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "approveValue",
+                    title: "批复金额",
+                    width: 100,
+                    filterable: false,
+                }
+            ];
+
+            // End:column
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
+            };
         }
         //end editSignState
     }

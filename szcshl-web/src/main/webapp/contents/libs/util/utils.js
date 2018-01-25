@@ -56,6 +56,22 @@ Date.prototype.halfYearAgo = function(){
 
     return pastYear + '-' + pastMonth + '-' + pastDay;
 }
+//根据传入的时间,获取一个月前日期
+Date.prototype.oneMonthAgo = function(){
+    // 先获取当前时间
+    var curDate = (this).getTime();
+    // 将一个月的时间单位换算成毫秒
+    var oneMonth = 365 / 12 * 24 * 3600 * 1000;
+    var pastResult = curDate - oneMonth;  // 半年前的时间（毫秒单位）
+
+    // 日期函数，定义起点为一个月
+    var pastDate = new Date(pastResult),
+        pastYear = pastDate.getFullYear(),
+        pastMonth = pastDate.getMonth() + 1,
+        pastDay = pastDate.getDate();
+
+    return pastYear + '-' + pastMonth + '-' + pastDay;
+}
 
 //根据传入的数字，获取相差year年前的日期
 Date.prototype.yearAgo = function(year){
