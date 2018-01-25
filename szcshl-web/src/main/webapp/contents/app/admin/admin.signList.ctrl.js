@@ -233,7 +233,6 @@
                             var totalDays = 0, daysCount = isCheck.length;
                             for (var i = 0; i < daysCount; i++) {
                                 totalDays += Number(isCheck[i].value);
-                                console.log(totalDays);
                             }
                             vm.averageDay = (totalDays / daysCount).toFixed(2);
                             vm.isopens = true;
