@@ -1094,6 +1094,13 @@
                     controller: 'signChartCtrl',
                     controllerAs: 'vm'
                 })
+                //维护项目
+                .state('reviewOpinion', {//修改意见
+                url: '/reviewOpinion/:signid/:processInstanceId',
+                templateUrl: rootPath + "/maintainProjec/html/reviewOpinion.html",
+                controller: 'reviewOpinionCtrl',
+                controllerAs: 'vm'
+            })
 
 
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {

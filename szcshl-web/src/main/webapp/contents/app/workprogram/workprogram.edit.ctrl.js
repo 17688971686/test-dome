@@ -274,6 +274,24 @@
             var isValid = $("#work_program_form").valid();
             if (isValid) {
                 if(!vm.isTime){
+                    if(vm.work.studyQuantum=="全天") {
+                        vm.work.studyBeginTime="";
+                        vm.work.studyEndTime="";
+                    }
+                    else {
+                        if ($("#studyBeginTime").val()) {
+                            vm.work.studyBeginTimeStr = $("#studyBeginTime").val();
+                        }
+                        if ($("#studyEndTime").val()) {
+                            vm.work.studyEndTimeStr = $("#studyEndTime").val();
+                        }
+                        if ($("#studyAllDay").val() && $("#studyBeginTime").val()) {
+                            vm.work.studyBeginTime = $("#studyAllDay").val() + " " + $("#studyBeginTime").val() + ":00";
+                        }
+                        if ($("#studyAllDay").val() && $("#studyEndTime").val()) {
+                            vm.work.studyEndTime = $("#studyAllDay").val() + " " + $("#studyEndTime").val() + ":00";
+                        }
+                    }
                     workprogramSvc.createWP(vm.work, false, vm.iscommit, function (data) {
                         if (data.flag || data.reCode == "ok") {
                             vm.work.id = data.reObj.id;

@@ -1,0 +1,128 @@
+<!--S 月报简报历史数据添加页面 -->
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+
+
+<div id="wrwindow" class="well well-sm">
+
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success"   ng-click="vm.create()" >
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+  <!--      <button class="btn btn-sm btn-success" ng-click="vm.updateMonthly()" ng-disabled="vm.isSubmit"
+                ng-show="vm.isUpdate"><span class="glyphicon glyphicon-ok"></span>更新
+        </button>-->
+      <a class="btn btn-sm btn-primary" href="#/MaintainProjectEdit/{{vm.model.signid}}/{{vm.model.processInstanceId}} ><span
+                class="glyphicon glyphicon-chevron-left"></span>返回
+        </a>
+
+
+    </div>
+    <form id="workForm" name="workForm">
+        <table class="table table-bordered" style="width: 100%;">
+            项目登记表意见
+            <tr >
+                <td  class="text-center" style="width: 20%;">综合部拟办意见：  </td>
+                <td>
+                    <textarea maxlength="120"  data-val-length-max="120"  data-val="true"   name="comprehensivehandlesug"  ng-change="vm.model.comprehensivehandlesug=countCharacter(vm.model.comprehensivehandlesug,120,'comprehensivehandlesugCountx')"   rows="3"  ng-model="vm.model.comprehensivehandlesug" style="width: 98%">{{ vm.model.comprehensivehandlesug }}</textarea>
+                    <span data-valmsg-for="comprehensivehandlesug" data-valmsg-replace="true" class="errors"></span>
+                    <p id="comprehensivehandlesugCountx" style="text-align: right;"></p>
+                </td>
+            </tr>
+            <tr >
+                <td  class="text-center" style="width: 20%;">部长处理意见：  </td>
+                <td>
+                    <textarea maxlength="120"  data-val-length-max="120"  data-val="true" name="ministerhandlesug"  rows="3" ng-model="vm.model.ministerhandlesug" ng-change="vm.model.ministerhandlesug=countCharacter(vm.model.ministerhandlesug,120,'ministerhandlesugCountx')"  ng-model="vm.model.ministerhandlesug" style="width: 98%">{{vm.model.ministerhandlesug}}</textarea>
+                    <span data-valmsg-for="ministerhandlesug" data-valmsg-replace="true" class="errors"></span>
+                    <p id="ministerhandlesugCountx" style="text-align: right;"></p>
+                </td>
+            </tr>
+            <tr >
+                <td  class="text-center" style="width: 20%;">中心领导签批意见：  </td>
+                <td>
+                    <textarea maxlength="120"  data-val-length-max="120"  data-val="true"  rows="3"  name="leaderhandlesug" id="leaderhandlesug" ng-model="vm.model.leaderhandlesug" ng-change="vm.model.leaderhandlesug=countCharacter(vm.model.leaderhandlesug,120,'leaderhandlesugCountx')"   value="" style="width: 98%">{{vm.model.leaderhandlesug}}</textarea>
+                    <span data-valmsg-for="leaderhandlesug" data-valmsg-replace="true" class="errors"></span>
+                    <p id="leaderhandlesugCountx" style="text-align: right;"></p>
+                </td>
+            </tr>
+        </table>
+        <div ng-repeat="x in vm.workList">
+        <table class="table table-bordered" style="width: 100%;" >
+
+            【{{x.reviewOrgName}} 】工作方案意见
+            <tr >
+                <td  class="text-center" style="width: 20%;">部长处理意见：  </td>
+
+                <td>
+                    <textarea maxlength="120"  data-val-length-max="120"  data-val="true"   name="ministerSuggesttion"  ng-change="x.ministerSuggesttion=countCharacter(x.ministerSuggesttion,120,'{{$index}}ministerSuggesttionCount')"   rows="3"  ng-model="x.ministerSuggesttion" style="width: 98%">{{x.ministerSuggesttion }}</textarea>
+                    <span data-valmsg-for="ministerSuggesttion" data-valmsg-replace="true" class="errors"></span>
+                    <p id="{{$index}}ministerSuggesttionCount"  style="text-align: right;"></p>
+                </td>
+            </tr>
+            <tr >
+                <td  class="text-center" style="width: 20%;">中心领导签批意见：  </td>
+                <td>
+                    <textarea maxlength="120"  data-val-length-max="120"  data-val="true"   name="leaderSuggesttion"  ng-change="x.leaderSuggesttion=countCharacter(x.leaderSuggesttion,120,'{{$index}}leaderSuggesttionCount')"   rows="3"  ng-model="x.leaderSuggesttion" style="width: 98%">{{x.leaderSuggesttion }}</textarea>
+                    <span data-valmsg-for="leaderSuggesttion" data-valmsg-replace="true" class="errors"></span>
+                    <p id="{{$index}}leaderSuggesttionCount" style="text-align: right;"></p>
+            </tr>
+        </table>
+        </div>
+        <table class="table table-bordered" style="width: 100%;" >
+            发文意见
+            <tr>
+                <td  class="text-center" style="width: 20%;">第一负责人意见：  </td>
+                <td>
+                    <div ng-bind-html="vm.dispatchDoc.mianChargeSuggest | trust2Html"></div>
+                </td>
+            </tr>
+            <tr >
+                <td  class="text-center" style="width: 20%;">第二负责人意见：  </td>
+                <td>
+                    <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
+                </td>
+            </tr>
+            <tr >
+                <td  class="text-center" style="width: 20%;">部长核稿意见：  </td>
+                <td>
+            <textarea maxlength="1000" data-val-length-max="1000"
+                      ng-change="vm.dispatchDoc.ministerSuggesttion=countCharacter(vm.dispatchDoc.ministerSuggesttion,1000,'ministerSuggesttionCount')"
+                      class="form-control input-sm "
+                      ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion"
+                      name="ministerSuggesttion" >{{vm.dispatchDoc.ministerSuggesttion}}</textarea>
+                    <span data-valmsg-for="ministerSuggesttion" data-valmsg-replace="true" class="errors"></span>
+                    <p id="ministerSuggesttionCount" style="text-align: right;"></p>
+                </td>
+            </tr>
+            <tr >
+                <td  class="text-center" style="width: 20%;">分管副主任意见：  </td>
+                <td>
+            <textarea maxlength="1000" data-val-length-max="1000"
+                      ng-change="vm.dispatchDoc.viceDirectorSuggesttion=countCharacter(vm.dispatchDoc.viceDirectorSuggesttion,1000,'viceDirectorSuggesttionCount')"
+                      class="form-control input-sm "
+                      ng-model="vm.dispatchDoc.viceDirectorSuggesttion" id="viceDirectorSuggesttion"
+                      name="viceDirectorSuggesttion" >{{vm.dispatchDoc.viceDirectorSuggesttion}}</textarea>
+                    <span data-valmsg-for="viceDirectorSuggesttion" data-valmsg-replace="true" class="errors"></span>
+                    <p id="viceDirectorSuggesttionCount" style="text-align: right;"></p>
+                </td>
+            </tr>
+            <tr >
+                <td  class="text-center" style="width: 20%;">主任签发：  </td>
+                <td>
+            <textarea maxlength="1000" data-val-length-max="1000"
+                      ng-change="vm.dispatchDoc.directorIssue=countCharacter(vm.dispatchDoc.directorIssue,1000,'directorIssueCount')"
+                      class="form-control input-sm "
+                      ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"
+                     >{{vm.dispatchDoc.directorIssue}}</textarea>
+                    <p id="directorIssueCount" style="text-align: right;"></p>
+
+                </td>
+            </tr>
+
+
+
+        </table>
+    </form>
+</div>
+<!--E 月报简报历史数据添加页面 -->
