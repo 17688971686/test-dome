@@ -887,7 +887,36 @@ public class Sign extends DomainBase {
      */
     @Column(columnDefinition = "VARCHAR(40)")
     private String contactsPhone;
-    
+
+
+    /**
+     * 延长天数（系统管理员添加）
+     */
+    @Column(columnDefinition = "NUMBER")
+    private Float lengthenDays;
+
+    /**
+     * 延长评审说明
+     */
+    @Column(columnDefinition = "VARCHAR(1000)")
+    private String lengthenExp;
+
+
+    public Float getLengthenDays() {
+        return lengthenDays;
+    }
+
+    public void setLengthenDays(Float lengthenDays) {
+        this.lengthenDays = lengthenDays;
+    }
+
+    public String getLengthenExp() {
+        return lengthenExp;
+    }
+
+    public void setLengthenExp(String lengthenExp) {
+        this.lengthenExp = lengthenExp;
+    }
 
     public List<ProjectStop> getProjectStopList() {
         return projectStopList;

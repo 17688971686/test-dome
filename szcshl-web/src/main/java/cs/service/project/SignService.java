@@ -211,4 +211,19 @@ public interface SignService {
      * @return
      */
     ResultMsg sumExistDays(String signIds);
+
+    /**
+     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期等
+     * @param signId
+     * @return
+     */
+    public SignDto findReviewDayBySignId(String signId) ;
+
+
+    /**
+     * 保存评审工作日维护的信息
+     * @param signDto
+     * @return
+     */
+    public ResultMsg saveReview(SignDto signDto);
 }

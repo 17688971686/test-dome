@@ -500,6 +500,11 @@
                 templateUrl: rootPath + '/sign/html/MaintainProjectEdit.html',
                 controller: 'MaintainProjectEditCtrl',
                 controllerAs: 'vm'
+            }).state('reviewWorkday', {	//维护项目 ---评审工作日维护
+                url: '/reviewWorkday/:signid',
+                templateUrl: rootPath + '/maintainProject/html/reviewWorkday.html',
+                controller: 'reviewWorkdayCtrl',
+                controllerAs: 'vm'
             })
             //end#signList
 
