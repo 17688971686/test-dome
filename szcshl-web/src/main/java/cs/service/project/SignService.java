@@ -204,4 +204,11 @@ public interface SignService {
      * @return
      */
     Integer findReservesSignCount();
+
+    /**
+     * 统计项目平均天数，未办结的按当前日期算，已办结的按办结日期算
+     * @param signIds
+     * @return
+     */
+    ResultMsg sumExistDays(String signIds);
 }

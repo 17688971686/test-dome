@@ -29,10 +29,31 @@
             editTemplatePrint:editTemplatePrint,      //编辑模板打印
             /*workProgramPrint:workProgramPrint,       //工作方案模板打印*/
             signDeletGrid:signDeletGrid,              //作废项目
-            editSignState:editSignState              //恢复项目
-
+            editSignState:editSignState ,             //恢复项目
+            sumExistDays : sumExistDays,              //统计项目接受到现在所存在的天数（办结的，按办结日期，未办结的，按现在时间）
         };
         return service;
+
+        //S_统计项目接受到现在所存在的天数
+        function sumExistDays(signIds,callBack){
+            var httpOptions = {
+                method : "post" ,
+                url : rootPath + "/sign/sumExistDays",
+                params : {signIds :signIds}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_sumExistDays
 
         //negin createDispatchTemplate
         function createDispatchTemplate(vm , callBack){
@@ -53,7 +74,6 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-
         }
         //end createDispatchTemplate
 
@@ -119,15 +139,6 @@
             // Begin:column
             var columns = [
                 {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.signid)
-                    },
-                    filterable: false,
-                    width: 30,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-                },
-                {
 				    field: "rowNumber",
 				    title: "序号",
 				    width: 50,
@@ -158,7 +169,7 @@
                 {
                     field: "reviewstage",
                     title: "评审阶段",
-                    width: 100,
+                    width: 130,
                     filterable: false,
                 },
                 {
@@ -172,7 +183,7 @@
                     title: "签收日期",
                     width: 100,
                     filterable: false,
-                    format: "{0:yyyy/MM/dd HH:mm:ss}"
+                    format: "{0:yyyy-MM-dd HH:mm:ss}"
                 },
                 {
                     field: "",
@@ -181,10 +192,7 @@
                     filterable: false,
                     template: function (item) {
                         if (item.signState) {
-                            if(item.signState == 0){
-                                return '<span style="color:red">预签收</span>';
-                            }
-                            else if (item.signState == 1) {
+                             if (item.signState == 1) {
                                 return '<span style="color:green;">进行中</span>';
                             } else if (item.signState == 2) {
                                 return '<span style="color:orange;">已暂停</span>';
@@ -205,7 +213,7 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 180,
+                    width: 320,
                     template: function (item) {
                         var isStartFlow = false;
                         if(item.processInstanceId){

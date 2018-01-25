@@ -5,8 +5,8 @@
         <span>标题：</span>
         <input type="text" ng-model="vm.fileName"/>
         <button class="btn btn-sm btn-success" ng-click="vm.selectHeader()">自定义报表</button>
-        <button class="btn btn-sm btn-success" ng-click="vm.countDay()">统计项目平均天数</button>
         <button class="btn btn-sm btn-success" ng-click="vm.countWork()">统计工作日</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.countDay()">统计项目平均天数</button>
         <button class="btn btn-sm btn-primary" ng-click="vm.excelExport()">导出</button>
     </div>
     <div ng-show="vm.isopens">
@@ -14,15 +14,17 @@
         <span ng-hide="vm.isDay">统计工作日为：{{vm.averageDay | number:0}}</span>
     </div>
 
-    <table class="table table-bordered">
-        <caption class="text-center">
-            <h3>{{vm.fileName}}</h3>
-            <span>{{vm.smallTitle}}</span>
-        </caption>
+    <div style="height:580px; overflow-y: scroll;">
+    <table class="table table-bordered" id="countSignDayTable">
+        <tr>
+            <td colspan="8" style="text-align: center;">
+                <h3>{{vm.fileName}}</h3>
+                <span>{{vm.smallTitle}}</span>
+            </td>
+        </tr>
         <tr>
             <td style="width: 40px;">
-                <input id="checkboxAll" type="checkbox" class="checkbox" ng-model="selectAll"
-                       ng-click="vm.all(selectAll)"/>
+                <input id="checkboxAll" type="checkbox" class="checkbox" ng-model="selectAll"/>
             </td>
             <td style="width:50px;text-align: center;">序号</td>
             <td style="width:140px;text-align: center;">收文编号</td>
@@ -34,8 +36,7 @@
         </tr>
         <tr ng-repeat="x in vm.signList">
             <td>
-                <input type="checkbox" id="{{x.signid}}" ng-checked="selectAll" ng-model="x.state"
-                       ng-click="vm.checks(x.reviewdays,x.surplusdays,x.signid)"/>
+                <input type="checkbox" id="{{x.signid}}" ng-checked="selectAll" name="sumSignDay" value="{{x.reviewdays}}"/>
             </td>
             <td style="width:50px;text-align: center;">{{$index +1}}</td>
             <td style="width:140px;text-align: center;">{{x.dfilenum}}</td>
@@ -46,4 +47,5 @@
             <td>{{x.surplusdays}}</td>
         </tr>
     </table>
+    </div>
 </div>

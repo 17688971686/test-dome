@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.project;
 
+import cs.common.ResultMsg;
 import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
 import cs.repository.IRepository;
@@ -54,5 +55,10 @@ public interface SignRepo extends IRepository<Sign, String> {
      */
     List<Sign> findUnSendFGWList();
 
-
+    /**
+     * 统计项目平均天数，未办结的按当前日期算，已办结的按办结日期算
+     * @param signIds
+     * @return
+     */
+    int sumExistDays(String signIds);
 }

@@ -17,12 +17,12 @@
         </span>
     </div>
 
-    <table class="table table-bordered">
+    <table class="table table-bordered" style="table-layout:fixed;word-break:break-all;word-wrap:break-word;">
         <tr class="active">
             <th style="width: 50px; text-align: center;">序号</th>
-            <th style="width: 180px;">参数名</th>
+            <th style="width: 200px;">参数名</th>
             <th style="width: 180px;">参数Key</th>
-            <th style="width: 180px;">参数值</th>
+            <th style="width: 200px;">参数值</th>
             <th style="">描述</th>
             <th style="width: 80px;">操作</th>
         </tr>
@@ -30,7 +30,7 @@
             <td style="width: 50px; text-align: center;">{{ $index + 1}}</td>
             <td>{{c.configName}}</td>
             <td>{{c.configKey}}</td>
-            <td>{{c.configValue}}</td>
+            <td style="width: 200px;">{{c.configValue}}</td>
             <td>{{c.descInfo}}</td>
             <td>
                 <button class="btn btn-xs btn-primary" ng-click="vm.editConfig(c.id)">

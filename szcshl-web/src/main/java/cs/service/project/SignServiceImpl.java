@@ -368,6 +368,9 @@ public class SignServiceImpl implements SignService {
     public SignDto findById(String signid, boolean queryAll) {
         Sign sign = signRepo.findById(signid);
         SignDto signDto = new SignDto();
+        if(!Validate.isObject(sign) || !Validate.isString(sign.getSignid())){
+            return null;
+        }
         BeanCopierUtils.copyProperties(sign, signDto);
         //查询所有的属性
         if (queryAll) {
@@ -2507,5 +2510,22 @@ public class SignServiceImpl implements SignService {
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         return totalResult;
+    }
+
+    /**
+     * 统计项目平均天数，未办结的按当前日期算，已办结的按办结日期算
+     * @param signIds
+     * @return
+     */
+    @Override
+    public ResultMsg sumExistDays(String signIds) {
+        ResultMsg resultMsg ;
+        try{
+            int totalDays = signRepo.sumExistDays(signIds);
+            resultMsg = new ResultMsg(true,MsgCode.OK.getValue(),"统计成功！",totalDays);
+        }catch (Exception e){
+            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"统计错误！");
+        }
+        return resultMsg;
     }
 }

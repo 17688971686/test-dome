@@ -131,15 +131,6 @@
 
             // Begin:column
             var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.signid)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-                },
                 {  
 				    field: "rowNumber",  
 				    title: "序号",  
@@ -150,7 +141,7 @@
                 {
                     field: "projectname",
                     title: "项目名称",
-                    width: 160,
+                    width: 280,
                     filterable: false
                 },
                 {
@@ -162,13 +153,13 @@
                 {
                     field: "designcompanyName",
                     title: "项目单位",
-                    width: 150,
+                    width: 220,
                     filterable: false,
                 },
                 {
                     field: "reviewstage",
                     title: "项目阶段",
-                    width: 80,
+                    width: 130,
                     filterable: false,
                 },
                 {
@@ -179,31 +170,16 @@
                 },
                 {
                     field: "receivedate",
-                    title: "收文时间",
+                    title: "收文日期",
                     width: 160,
                     filterable: false,
-                    format: "{0:yyyy/MM/dd HH:mm:ss}"
+                    format: "{0:yyyy-MM-dd HH:mm:ss}"
 
                 },
                 {
                     field: "",
-                    title: "流程状态",
-                    width: 80,
-                    filterable: false,
-                    template: function (item) {
-                        if (item.ispresign) {
-                            if (item.ispresign == 0) {
-                                return '<span style="color:green;">预签收</span>';
-                            }
-                        } else {
-                            return " "
-                        }
-                    }
-                },
-                {
-                    field: "",
                     title: "操作",
-                    width: 180,
+                    width: 320,
                     template: function (item) {
                         var isStartFlow = false;
                         if(item.processInstanceId){

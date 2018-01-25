@@ -338,17 +338,29 @@ public class SignController {
     @RequiresAuthentication
     //@RequiresPermissions("sign#initSignList#get")
     @RequestMapping(name = "初始化项目查询统计", path = "initSignList", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg initSignList() {
+    @ResponseBody
+    public ResultMsg initSignList() {
         return signService.initSignList();
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "初始化流程处理页面", path = "initFlowPageData", method = RequestMethod.GET)
     @Transactional
-    public @ResponseBody
-    SignDto initFlowPageData(@RequestParam(required = true) String signid) {
+    @ResponseBody
+    public SignDto initFlowPageData(@RequestParam(required = true) String signid) {
         return signService.findById(signid, true);
+    }
+
+    /**
+     * 统计项目平均天数，未办结的按当前日期算，已办结的按办结日期算
+     * @param signIds
+     * @return
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "统计项目平均天数", path = "sumExistDays", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg sumExistDays(@RequestParam(required = true) String signIds){
+        return signService.sumExistDays(signIds);
     }
 
     @RequiresAuthentication

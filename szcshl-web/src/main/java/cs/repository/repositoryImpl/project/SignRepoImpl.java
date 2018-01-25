@@ -2,6 +2,8 @@ package cs.repository.repositoryImpl.project;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.*;
 import cs.repository.AbstractRepository;
@@ -162,5 +164,25 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         List<Sign> resultList = criteria.list();
 
         return resultList;
+    }
+
+    /**
+     * 统计项目平均天数，未办结的按当前日期算，已办结的按办结日期算
+     * @param signIds
+     * @return
+     */
+    @Override
+    public int sumExistDays(String signIds) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" SELECT TRUNC(SUM ( CASE WHEN sf.SIGNSTATE = '9' THEN ");
+        sqlBuilder.append(" (CASE WHEN sf.fileDate IS NOT NULL THEN (TO_DATE (TO_CHAR (sf.fileDate, 'yyyy-mm-dd'),'yyyy-mm-dd')) ");
+        sqlBuilder.append(" WHEN sf.fileDate IS NULL THEN SYSDATE END - sf.recedate) ");
+        sqlBuilder.append(" ELSE (SYSDATE - sf.recedate) END ) ) sumDays ");
+        sqlBuilder.append(" FROM (SELECT cf.fileDate,");
+        sqlBuilder.append(" CASE WHEN CS.receivedate IS NOT NULL THEN CS.receivedate WHEN CS.receivedate IS NULL THEN cs.signdate ELSE SYSDATE END recedate, CS.SIGNSTATE ");
+        sqlBuilder.append(" FROM cs_sign cs LEFT JOIN CS_FILE_RECORD cf ON CS.SIGNID = CF.SIGNID ");
+        sqlBuilder.bulidPropotyString("where","CS.SIGNID",signIds);
+        sqlBuilder.append(" ) sf ");
+        return returnIntBySql(sqlBuilder);
     }
 }
