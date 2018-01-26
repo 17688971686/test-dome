@@ -655,10 +655,65 @@ public class SignDto extends BaseDto {
      */
     private List<SysFileDto> sysFileDtoList;
 
+
+    /**
+     * 已逝工作日
+     */
+    private Float goneDays;
+
+    /**
+     * 延长工作日（是指超过评审天数的天数）
+     */
+    private Float overDays;
+
+    /**
+     * 延长天数（系统管理员添加）
+     */
+    private Float lengthenDays;
+
+    /**
+     * 延长评审说明
+     */
+    private String lengthenExp;
+
     public SignDto() {
     }
 
+    public Float getGoneDays() {
+        return goneDays;
+    }
+
+    public void setGoneDays(Float goneDays) {
+        this.goneDays = goneDays;
+    }
+
+    public Float getOverDays() {
+        return overDays;
+    }
+
+    public void setOverDays(Float overDays) {
+        this.overDays = overDays;
+    }
+
+    public Float getLengthenDays() {
+        return lengthenDays;
+    }
+
+    public void setLengthenDays(Float lengthenDays) {
+        this.lengthenDays = lengthenDays;
+    }
+
+    public String getLengthenExp() {
+        return lengthenExp;
+    }
+
+    public void setLengthenExp(String lengthenExp) {
+        this.lengthenExp = lengthenExp;
+    }
+
     /*********************************** 以下是set get 方法 *****************************************/
+
+
 
     public String getComprehensiveName() {
         return comprehensiveName;

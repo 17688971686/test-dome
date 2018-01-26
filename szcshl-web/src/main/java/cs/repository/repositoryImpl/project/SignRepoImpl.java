@@ -3,9 +3,12 @@ package cs.repository.repositoryImpl.project;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.DateUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.*;
+import cs.model.project.SignDto;
 import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -184,5 +187,70 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         sqlBuilder.bulidPropotyString("where","CS.SIGNID",signIds);
         sqlBuilder.append(" ) sf ");
         return returnIntBySql(sqlBuilder);
+    }
+
+    /**
+     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期等
+     * @param signId
+     * @return
+     */
+    @Override
+    public SignDto findReviewDayBySignId(String signId) {
+        SignDto signDto = new SignDto();
+        signDto.setSignid(signId);
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select reviewdays  , surplusdays , signdate  , receivedate ,lengthenDays , lengthenExp  from cs_sign  where " + Sign_.signid.getName() + "=:signId");
+        hqlBuilder.setParam("signId" , signId);
+        List<Object[]> signList = this.getObjectArray(hqlBuilder);
+        if(signList != null && signList.size() > 0 ){
+            Object[] objects = signList.get(0);
+            signDto.setReviewdays(objects[0] == null ? 0 : Float.valueOf(objects[0].toString()));
+            signDto.setSurplusdays(objects[1] == null ? 0 : Float.valueOf(objects[1].toString()));
+            signDto.setSigndate(DateUtils.converToDate(objects[2].toString() , "yyyy-MM-dd"));
+
+            //由于目前 送来日期为空，所以需要判断是否为空
+            if(objects[3] != null){
+
+                signDto.setReceivedate(DateUtils.converToDate(objects[3].toString() , "yyyy-MM-dd"));
+            }
+            signDto.setGoneDays(signDto.getReviewdays() - signDto.getSurplusdays()); //已逝工作日
+            signDto.setOverDays(signDto.getSurplusdays() >= 0 ? 0 : Math.abs(signDto.getSurplusdays())); //延长工作日，如果剩余工作日大于等于0 ，则为0 否则取剩余工作日绝对值
+            signDto.setLengthenDays( objects[4] == null ? 0 : Float.valueOf(objects[4].toString()));
+            signDto.setLengthenExp(objects[5] == null ? "" : objects[5].toString());
+
+
+        }
+
+        return signDto;
+    }
+
+    /**
+     * 保存评审工作日维护的信息
+     * @param signDto
+     * @return
+     */
+    @Override
+    public ResultMsg saveReview(SignDto signDto) {
+
+        Sign sign = this.findById(Sign_.signid.getName() , signDto.getSignid());
+
+        BeanCopierUtils.copyPropertiesIgnoreNull(signDto , sign);
+
+        this.save(sign);
+
+//        HqlBuilder hqlBuilder = HqlBuilder.create();
+//        hqlBuilder.append("  update cs_sign set  " + Sign_.reviewdays.getName() + "=:reviewDays , ");
+//        hqlBuilder.append(Sign_.surplusdays.getName() + "=:surplusdays , ");
+//        hqlBuilder.append(Sign_.lengthenDays.getName() + "=:lengthenDays , ");
+//        hqlBuilder.append(Sign_.lengthenExp.getName() + "=:lengthenExp ");
+//        hqlBuilder.append(" where "  + Sign_.signid.getName() + "=:signId");
+//        hqlBuilder.setParam("reviewDays" , signDto.getReviewdays());
+//        hqlBuilder.setParam("surplusdays" , signDto.getSurplusdays());
+//        hqlBuilder.setParam("lengthenDays" , signDto.getLengthenDays());
+//        hqlBuilder.setParam("lengthenExp" , signDto.getLengthenExp());
+//        hqlBuilder.setParam("signId" , signDto.getSignid());
+//        this.executeHql(hqlBuilder);
+
+        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "保存成功！");
     }
 }

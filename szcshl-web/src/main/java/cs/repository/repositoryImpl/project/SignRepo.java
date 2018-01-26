@@ -3,6 +3,7 @@ package cs.repository.repositoryImpl.project;
 import cs.common.ResultMsg;
 import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
+import cs.model.project.SignDto;
 import cs.repository.IRepository;
 
 import java.util.List;
@@ -61,4 +62,18 @@ public interface SignRepo extends IRepository<Sign, String> {
      * @return
      */
     int sumExistDays(String signIds);
+
+    /**
+     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期等 ---用于评审工作日维护
+     * @param signId
+     * @return
+     */
+    SignDto findReviewDayBySignId(String signId);
+
+    /**
+     * 保存评审工作日维护的信息
+     * @param signDto
+     * @return
+     */
+    ResultMsg saveReview(SignDto signDto);
 }

@@ -2528,4 +2528,25 @@ public class SignServiceImpl implements SignService {
         }
         return resultMsg;
     }
+
+    /**
+     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期等
+     * @param signId
+     * @return
+     */
+    @Override
+    public SignDto findReviewDayBySignId(String signId) {
+        return signRepo.findReviewDayBySignId(signId);
+    }
+
+
+    /**
+     * 保存评审工作日维护的信息
+     * @param signDto
+     * @return
+     */
+    @Override
+    public ResultMsg saveReview(SignDto signDto) {
+        return signRepo.saveReview(signDto);
+    }
 }
