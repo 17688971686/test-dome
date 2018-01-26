@@ -146,14 +146,23 @@
          * 统计表导出
          */
         vm.excelExport = function () {
-            var fileName = escape(encodeURIComponent(vm.fileName));
-            if (vm.filters && vm.filters != undefined) {
+            var ids = [];
+            for (var i = 0; i < vm.signList.length; i++) {
+                ids.push(vm.signList[i].signid);
+            }
+            var idStr = ids.join(',');
+            signSvc.excelExport(idStr);
+
+           /* var fileName = escape(encodeURIComponent(vm.fileName));
+           if (vm.filters && vm.filters != undefined) {
                 var filters = JSON.stringify(vm.filters);
                 var filterDate = filters.substring(1, filters.length - 1);
             } else {
                 filterDate = "";
             }
             window.open(rootPath + "/signView/excelExport?filterData=" + escape(encodeURIComponent(filterDate)) + "&fileName=" + fileName);
+      */
+
         }
 
         /**

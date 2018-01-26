@@ -1099,13 +1099,50 @@
                     controller: 'signChartCtrl',
                     controllerAs: 'vm'
                 })
-                //维护项目
+                /********************以下是项目维护***************************/
+
+                .state('MaintainProjectList', {	//维护项目列表
+                    url: '/MaintainProjectList',
+                    templateUrl: rootPath + '/sign/html/MaintainProjectList.html',
+                    controller: 'MaintainProjectCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('MaintainProjectEdit', {	//维护项目的编辑
+                    url: '/MaintainProjectEdit/:signid/:processInstanceId',
+                    templateUrl: rootPath + '/sign/html/MaintainProjectEdit.html',
+                    controller: 'MaintainProjectEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('reviewWorkday', {	//评审工作日维护
+                    url: '/reviewWorkday/:signid',
+                    templateUrl: rootPath + '/maintainProject/html/reviewWorkday.html',
+                    controller: 'reviewWorkdayCtrl',
+                    controllerAs: 'vm'
+                })
                 .state('reviewOpinion', {//修改意见
-                url: '/reviewOpinion/:signid/:processInstanceId',
-                templateUrl: rootPath + "/maintainProject/html/reviewOpinion.html",
-                controller: 'reviewOpinionCtrl',
-                controllerAs: 'vm'
-            })
+                    url: '/reviewOpinion/:signid/:processInstanceId',
+                    templateUrl: rootPath + "/maintainProject/html/reviewOpinion.html",
+                    controller: 'reviewOpinionCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('maintainExpertScore', {//专家评分
+                    url: '/maintainExpertScore/:signid',
+                    templateUrl: rootPath + "/maintainProject/html/maintainExpertScore.html",
+                    controller: 'maintainExpertScoreCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('maintainExpertPayment', {//评审费发放
+                    url: '/maintainExpertPayment/:signid',
+                    templateUrl: rootPath + "/maintainProject/html/maintainExpertPayment.html",
+                    controller: 'maintainExpertPaymentCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('maintainExpertConfirm', {//修改确定的专家
+                    url: '/maintainExpertConfirm/:signid',
+                    templateUrl: rootPath + "/maintainProject/html/maintainExpertConfirm.html",
+                    controller: 'maintainExpertConfirmCtrl',
+                    controllerAs: 'vm'
+                })
 
 
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {

@@ -56,4 +56,25 @@ public class MaintainProjectController {
         return ctrlName + "/reviewWorkday";
     }
 
+    @RequiresPermissions("maintainProject#html/maintainExpertScore#get")
+    @RequestMapping(name = "专家评分", path = "html/maintainExpertScore", method = RequestMethod.GET)
+    public String maintainExpertScore() {
+
+        return  "expertReview/expert_score";
+    }
+
+    @RequiresPermissions("maintainProject#html/maintainExpertPayment#get")
+    @RequestMapping(name = "评审费发放", path = "html/maintainExpertPayment", method = RequestMethod.GET)
+    public String maintainExpertPayment() {
+
+        return  ctrlName + "/maintainExpertPayment";
+    }
+
+    @RequiresPermissions("maintainProject#html/maintainExpertConfirm#get")
+    @RequestMapping(name = "修改确定专家", path = "html/maintainExpertConfirm", method = RequestMethod.GET)
+    public String maintainExpertConfirm() {
+
+        return  "expertReview/expert_confirm";
+    }
+
 }

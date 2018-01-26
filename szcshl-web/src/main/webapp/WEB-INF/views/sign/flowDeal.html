@@ -6,7 +6,9 @@
 <!--项目阶段关联html-->
 <#include "/sign/signAssociate.html"/>
 <!--确认参加会议专家的弹窗公共页面-->
+<div style="display: none;">
 <#include "/expertReview/expert_confirm.html"/>
+</div>
 
 <style>
     .rating {
@@ -60,9 +62,9 @@
 
     <!--财务办理-->
     <div id="signCostWindow" style="background:white;display: none;">
-        <#include "/financial/costAdd.html"/>
+    <#include "/financial/costAdd.html"/>
     </div>
 
     <!--显示详情页-->
-    <#include "/sign/sign.html"/>
+<#include "/sign/sign.html"/>
 </div>
