@@ -199,52 +199,52 @@
                     controller: 'userCtrl',
                     controllerAs: 'vm'
                 }).state('userEdit', {
-                    url: '/userEdit/:id',
-                    templateUrl: rootPath + '/user/html/edit.html',
-                    controller: 'userEditCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#user
+                url: '/userEdit/:id',
+                templateUrl: rootPath + '/user/html/edit.html',
+                controller: 'userEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#user
 
-                //begin#org
+            //begin#org
                 .state('org', {
                     url: '/org',
                     templateUrl: rootPath + '/org/html/list.html',
                     controller: 'orgCtrl',
                     controllerAs: 'vm'
                 }).state('orgEdit', {
-                    url: '/orgEdit/:id',
-                    templateUrl: rootPath + '/org/html/edit.html',
-                    controller: 'orgEditCtrl',
-                    controllerAs: 'vm'
-                }).state('orgUser', {
-                    url: '/orgUser/:id',
-                    templateUrl: rootPath + '/org/html/orgUser.html',
-                    controller: 'orgUserCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#org
+                url: '/orgEdit/:id',
+                templateUrl: rootPath + '/org/html/edit.html',
+                controller: 'orgEditCtrl',
+                controllerAs: 'vm'
+            }).state('orgUser', {
+                url: '/orgUser/:id',
+                templateUrl: rootPath + '/org/html/orgUser.html',
+                controller: 'orgUserCtrl',
+                controllerAs: 'vm'
+            })
+            //end#org
 
-                //begin#sysdept
+            //begin#sysdept
                 .state('sysdept', {
                     url: '/sysdept',
                     templateUrl: rootPath + '/sysdept/html/list.html',
                     controller: 'sysdeptCtrl',
                     controllerAs: 'vm'
                 }).state('sysdeptEdit', {
-                    url: '/sysdeptEdit/:id',
-                    templateUrl: rootPath + '/sysdept/html/edit.html',
-                    controller: 'sysdeptEditCtrl',
-                    controllerAs: 'vm'
-                }).state('sysdeptUser', {
-                    url: '/sysdeptUser/:id',
-                    templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
-                    controller: 'sysdeptUserCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#sysdept
+                url: '/sysdeptEdit/:id',
+                templateUrl: rootPath + '/sysdept/html/edit.html',
+                controller: 'sysdeptEditCtrl',
+                controllerAs: 'vm'
+            }).state('sysdeptUser', {
+                url: '/sysdeptUser/:id',
+                templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
+                controller: 'sysdeptUserCtrl',
+                controllerAs: 'vm'
+            })
+            //end#sysdept
 
-                //begin#log
+            //begin#log
                 .state('log', {
                     url: '/log',
                     templateUrl: rootPath + '/log/html/list.html',
@@ -278,42 +278,42 @@
                     controller: 'meetingCtrl',
                     controllerAs: 'vm'
                 }).state('meetingEdit', {
-                    url: '/meetingEdit/:id',
-                    templateUrl: rootPath + '/meeting/html/edit.html',
-                    controller: 'meetingEditCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#meeting
+                url: '/meetingEdit/:id',
+                templateUrl: rootPath + '/meeting/html/edit.html',
+                controller: 'meetingEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#meeting
 
-                //begin#room
+            //begin#room
                 .state('room', {
                     url: '/room/:businessId/:businessType',
                     templateUrl: rootPath + '/room/html/roomlist.html',
                     controller: 'roomCtrl',
                     controllerAs: 'vm'
                 }).state('roomCount', {
-                    url: '/roomCount/:id',
-                    templateUrl: rootPath + '/room/html/countlist.html',
-                    controller: 'roomCountCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#room
+                url: '/roomCount/:id',
+                templateUrl: rootPath + '/room/html/countlist.html',
+                controller: 'roomCountCtrl',
+                controllerAs: 'vm'
+            })
+            //end#room
 
-                //begin#company
+            //begin#company
                 .state('company', {
                     url: '/company',
                     templateUrl: rootPath + '/company/html/list.html',
                     controller: 'companyCtrl',
                     controllerAs: 'vm'
                 }).state('companyEdit', {
-                    url: '/companyEdit/:id',
-                    templateUrl: rootPath + '/company/html/edit.html',
-                    controller: 'companyEditCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#company
+                url: '/companyEdit/:id',
+                templateUrl: rootPath + '/company/html/edit.html',
+                controller: 'companyEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#company
 
-                //begin#home
+            //begin#home
                 .state('accountPwd', {
                     url: '/accountPwd',
                     templateUrl: rootPath + '/account/html/changePwd.html',
@@ -489,21 +489,6 @@
                 url: '/deletList',
                 templateUrl: rootPath + '/sign/html/deletList.html',
                 controller: 'signDeletCtrl',
-                controllerAs: 'vm'
-            }).state('MaintainProjectList', {	//维护项目列表
-                url: '/MaintainProjectList',
-                templateUrl: rootPath + '/sign/html/MaintainProjectList.html',
-                controller: 'MaintainProjectCtrl',
-                controllerAs: 'vm'
-            }).state('MaintainProjectEdit', {	//维护项目的编辑
-                url: '/MaintainProjectEdit/:signid/:processInstanceId',
-                templateUrl: rootPath + '/sign/html/MaintainProjectEdit.html',
-                controller: 'MaintainProjectEditCtrl',
-                controllerAs: 'vm'
-            }).state('reviewWorkday', {	//维护项目 ---评审工作日维护
-                url: '/reviewWorkday/:signid',
-                templateUrl: rootPath + '/maintainProject/html/reviewWorkday.html',
-                controller: 'reviewWorkdayCtrl',
                 controllerAs: 'vm'
             })
             //end#signList
@@ -1099,14 +1084,50 @@
                     controller: 'signChartCtrl',
                     controllerAs: 'vm'
                 })
-                //维护项目
-                .state('reviewOpinion', {//修改意见
-                url: '/reviewOpinion/:signid/:processInstanceId',
-                templateUrl: rootPath + "/maintainProjec/html/reviewOpinion.html",
-                controller: 'reviewOpinionCtrl',
-                controllerAs: 'vm'
-            })
+                /********************以下是项目维护***************************/
 
+                .state('MaintainProjectList', {	//维护项目列表
+                    url: '/MaintainProjectList',
+                    templateUrl: rootPath + '/sign/html/MaintainProjectList.html',
+                    controller: 'MaintainProjectCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('MaintainProjectEdit', {	//维护项目的编辑
+                    url: '/MaintainProjectEdit/:signid/:processInstanceId',
+                    templateUrl: rootPath + '/sign/html/MaintainProjectEdit.html',
+                    controller: 'MaintainProjectEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('reviewWorkday', {	//评审工作日维护
+                    url: '/reviewWorkday/:signid',
+                    templateUrl: rootPath + '/maintainProject/html/reviewWorkday.html',
+                    controller: 'reviewWorkdayCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('reviewOpinion', {//修改意见
+                    url: '/reviewOpinion/:signid/:processInstanceId',
+                    templateUrl: rootPath + "/maintainProject/html/reviewOpinion.html",
+                    controller: 'reviewOpinionCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('maintainExpertScore', {//专家评分
+                    url: '/maintainExpertScore/:signid',
+                    templateUrl: rootPath + "/maintainProject/html/maintainExpertScore.html",
+                    controller: 'maintainExpertScoreCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('maintainExpertPayment', {//评审费发放
+                    url: '/maintainExpertPayment/:signid',
+                    templateUrl: rootPath + "/maintainProject/html/maintainExpertPayment.html",
+                    controller: 'maintainExpertPaymentCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('maintainExpertConfirm', {//修改确定的专家
+                    url: '/maintainExpertConfirm/:signid',
+                    templateUrl: rootPath + "/maintainProject/html/maintainExpertConfirm.html",
+                    controller: 'maintainExpertConfirmCtrl',
+                    controllerAs: 'vm'
+                })
 
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
         $rootScope.rootPath = rootPath;

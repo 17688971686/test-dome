@@ -23,11 +23,11 @@ import java.text.ParseException;
  * Date: 2017/10/11 16:26
  */
 @Controller
-@RequestMapping( name = "维护项目" , path = "maintainProjec")
+@RequestMapping( name = "维护项目" , path = "maintainProject")
 @MudoleAnnotation(name = "系统管理员" , value="permission#manager")
 public class MaintainProjectController {
 
-    private String ctrlName = "maintainProjec";
+    private String ctrlName = "maintainProject";
     @Autowired
     private SignService signService ;
 
@@ -54,6 +54,27 @@ public class MaintainProjectController {
     public String reviewWorkday() {
 
         return ctrlName + "/reviewWorkday";
+    }
+
+    @RequiresPermissions("maintainProject#html/maintainExpertScore#get")
+    @RequestMapping(name = "专家评分", path = "html/maintainExpertScore", method = RequestMethod.GET)
+    public String maintainExpertScore() {
+
+        return  "expertReview/expert_score";
+    }
+
+    @RequiresPermissions("maintainProject#html/maintainExpertPayment#get")
+    @RequestMapping(name = "评审费发放", path = "html/maintainExpertPayment", method = RequestMethod.GET)
+    public String maintainExpertPayment() {
+
+        return  ctrlName + "/maintainExpertPayment";
+    }
+
+    @RequiresPermissions("maintainProject#html/maintainExpertConfirm#get")
+    @RequestMapping(name = "修改确定专家", path = "html/maintainExpertConfirm", method = RequestMethod.GET)
+    public String maintainExpertConfirm() {
+
+        return  "expertReview/expert_confirm";
     }
 
 }

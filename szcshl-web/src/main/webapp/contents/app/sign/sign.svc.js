@@ -31,10 +31,22 @@
             signDeletGrid:signDeletGrid,              //作废项目
             editSignState:editSignState ,             //恢复项目
             sumExistDays : sumExistDays,              //统计项目接受到现在所存在的天数（办结的，按办结日期，未办结的，按现在时间）
-            MaintenanProjectGrid:MaintenanProjectGrid  //维护项目
+            MaintenanProjectGrid:MaintenanProjectGrid , //维护项目
+            excelExport : excelExport , //项目查询统计导出
 
         };
         return service;
+
+        //s_项目查询统计导出
+        function excelExport(signIds){
+            var downForm = $("#countSignDayForm");
+            downForm.attr("target","");
+            downForm.attr("method","post");
+            downForm.attr("action",rootPath + "/signView/excelExport");
+            downForm.find("input[name='signIds']").val(signIds);
+            downForm.submit();//表单提交
+        }
+        //e_项目查询统计导出
 
         //S_统计项目接受到现在所存在的天数
         function sumExistDays(signIds,callBack){

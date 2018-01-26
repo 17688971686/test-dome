@@ -12,13 +12,13 @@
         <tr>
             <td class="text-right">评审天数:<span class="required">*</span></td>
             <td>
-                <input type="text" name="reviewdays" ng-model="vm.sign.reviewdays" id="reviewdays"
+                <input type="number" name="reviewdays" ng-model="vm.sign.reviewdays" id="reviewdays"
                        data-val="true" data-val-required="必填"/>
                 <span data-valmsg-for="displayName" data-valmsg-replace="true" class="errors"></span>
             </td>
             <td class="text-right">剩余工作日:<span class="required">*</span></td>
             <td>
-                <input type="text" name="surplusdays" ng-model="vm.sign.surplusdays" id="surplusdays"
+                <input type="number" name="surplusdays" ng-model="vm.sign.surplusdays" id="surplusdays"
                        data-val="true" data-val-required="必填"/>
                 <span data-valmsg-for="displayName" data-valmsg-replace="true" class="errors"></span>
             </td>
@@ -44,7 +44,7 @@
             <tr>
                 <td  class="text-right">延长天数:<span class="required">*</span></td>
                 <td colspan="5">
-                    <input type="text" name="lengthenDays" ng-model="vm.sign.lengthenDays" id="lengthenDays"
+                    <input type="number" name="lengthenDays" ng-model="vm.sign.lengthenDays" id="lengthenDays"
                            data-val="true" data-val-required="必填"/> 天
                     <span data-valmsg-for="lengthenDays" data-valmsg-replace="true" class="errors"></span>
                 </td>

@@ -353,7 +353,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
     public List<SignDispaWork> queryStatistics(String queryData, int page) {
         String[]  queryArr = null ;
         if(Validate.isString(queryData)){
-
+            queryData = queryData.replaceAll("\\\\" , "");
             queryArr = queryData.split(",");
         }
         HqlBuilder hqlBuilder = HqlBuilder.create();

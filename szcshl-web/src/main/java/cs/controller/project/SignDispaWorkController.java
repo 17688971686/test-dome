@@ -5,11 +5,14 @@ import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
 import cs.common.utils.ExcelTools;
+import cs.common.utils.Validate;
 import cs.domain.project.SignDispaWork;
+import cs.domain.project.SignDispaWork_;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
 import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.service.expert.ExpertSelectedService;
 import cs.service.project.SignDispaWorkService;
 import cs.service.sys.HeaderService;
@@ -47,6 +50,9 @@ public class SignDispaWorkController {
 
     @Autowired
     private ExpertSelectedService expertSelectedService;
+
+    @Autowired
+    private SignDispaWorkRepo signDispaWorkRepo;
 
 
     //@RequiresPermissions("signView#getSignList#post")
@@ -126,19 +132,19 @@ public class SignDispaWorkController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "项目统计导出", path = "excelExport", method = RequestMethod.GET)
+    @RequestMapping(name = "项目统计导出", path = "excelExport", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void excelExport(HttpServletResponse resp, @RequestParam String filterData, @RequestParam String fileName) {
-
+    public void excelExport(HttpServletResponse resp, @RequestParam(required = true) String signIds) {
+        String fileName = "项目查询统计报表";
         ExcelTools excelTools = new ExcelTools();
         try {
             String title = java.net.URLDecoder.decode(fileName,"UTF-8");
-            String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
+//            String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
             ServletOutputStream sos = resp.getOutputStream();
             List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("项目类型");//选中的表字段
             List<Header> headerList = headerService.findHeaderByType("项目类型");//所有 表字段
-            List<SignDispaWork> signDispaWorkList = new ArrayList<>();
-            Boolean flag = true;
+
+          /*  Boolean flag = true;
             int page = 0;
             while (flag){
                 List<SignDispaWork> slist = signDispaWorkService.queryStatistics(filters , page);
@@ -152,8 +158,17 @@ public class SignDispaWorkController {
                 }else{
                     page++;
                 }
+            }*/
+            List<SignDispaWork> signDispaWorkList = new ArrayList<>();
+
+            if(Validate.isString(signIds)){
+                String[] ids = signIds.split(",");
+                for(String signId : ids){
+                    SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
+                    signDispaWorkList.add(signDispaWork);
+                }
             }
-//            List<SignDispaWork> signDispaWorkList = signDispaWorkService.getSignDispaWork(filters);
+
             String[] headerPair ;
             if(headerDtoList.size()>0) {
                 headerPair = new String[headerDtoList.size()];
