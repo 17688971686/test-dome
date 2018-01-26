@@ -13,6 +13,7 @@
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00");
         vm.work.signId = $state.params.signid;		//收文ID
+        vm.isControl=$state.params.isControl;		//按钮显示
         vm.work.id = "";
 
         vm.sign = {};						//创建收文对象

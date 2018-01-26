@@ -10,6 +10,7 @@
         vm.suppletter.businessId = $state.params.businessId;        //业务ID
         vm.suppletter.businessType = $state.params.businessType;    //业务类型
         vm.suppletter.id = $state.params.id;
+        vm.isControl=$state.params.isControl;//按钮控制
 
         vm.title = '拟补充资料函';
         vm.businessFlag = {

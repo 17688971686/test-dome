@@ -12,6 +12,7 @@
         vm.searchSign = {};        //发文查询对象
         vm.dispatchDoc = {};       //发文对象
         vm.dispatchDoc.signId = $state.params.signid;
+        vm.isControl=$state.params.isControl;//按钮控制
         vm.dispatchDoc.id = "";
 
         vm.showFlag = {

@@ -93,7 +93,7 @@
 
                 //begin#添加拟补充资料函
                 .state('addSupp', {
-                    url: '/addSupp/:businessId/:businessType',
+                    url: '/addSupp/:businessId/:businessType/:isControl',
                     templateUrl: rootPath + '/addSuppLetter/edit.html',
                     controller: 'addSuppLetterCtrl',
                     controllerAs: 'vm'
@@ -396,8 +396,8 @@
                     templateUrl: rootPath + '/sign/html/add.html',
                     controller: 'signCreateCtrl',
                     controllerAs: 'vm'
-                }).state('fillSign', {
-                url: '/fillSign/:signid',
+                }).state('fillSign', {//isControl用来控制按钮的显示
+                url: '/fillSign/:signid/:isControl',
                 cache: 'false',
                 templateUrl: rootPath + '/sign/html/fillin.html',
                 controller: 'signFillinCtrl',
@@ -510,7 +510,7 @@
 
             //begin#workprogram
                 .state('workprogramEdit', {
-                    url: '/workprogramEdit/:signid',
+                    url: '/workprogramEdit/:signid/:isControl',//isControl控制按钮的显示
                     templateUrl: rootPath + '/workprogram/html/edit.html',
                     controller: 'workprogramEditCtrl',
                     controllerAs: 'vm'
@@ -519,7 +519,7 @@
 
                 //begin#dispatch
                 .state('dispatchEdit', {
-                    url: '/dispatchEdit/:signid',
+                    url: '/dispatchEdit/:signid/:isControl',
                     templateUrl: rootPath + '/dispatch/html/edit.html',
                     controller: 'dispatchEditCtrl',
                     controllerAs: 'vm'
@@ -527,7 +527,7 @@
 
                 //begin#fileRecord
                 .state('fileRecordEdit', {
-                    url: '/fileRecordEdit/:signid',
+                    url: '/fileRecordEdit/:signid/:isControl',
                     templateUrl: rootPath + '/fileRecord/html/edit.html',
                     controller: 'fileRecordEditCtrl',
                     controllerAs: 'vm'
@@ -1102,7 +1102,7 @@
                 //维护项目
                 .state('reviewOpinion', {//修改意见
                 url: '/reviewOpinion/:signid/:processInstanceId',
-                templateUrl: rootPath + "/maintainProjec/html/reviewOpinion.html",
+                templateUrl: rootPath + "/maintainProject/html/reviewOpinion.html",
                 controller: 'reviewOpinionCtrl',
                 controllerAs: 'vm'
             })

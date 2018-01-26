@@ -14,7 +14,7 @@
 <!--合并选择公共页面-->
 <#include "/sign/mergeSign.html"/>
 
-<div class="toolbar">
+<div class="toolbar" ng-hide=" vm.isControl">
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.iscommit"><span
             class="glyphicon glyphicon-ok"></span>保存
     </button>
@@ -27,12 +27,26 @@
     <button  ng-if="vm.work.workreviveStage=='资金申请报告'" class="btn btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(vm.work.id,'WORKPROGRAM','STAGEREPORT')">打印预览</button>
 </div>
 
+<div class="toolbar" ng-show=" vm.isControl">
+    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.iscommit"><span
+            class="glyphicon glyphicon-ok"></span>保存
+    </button>
+<go-back></go-back>
+</div>
+
 <div style="background:white; min-height: 700px;">
-    <ul id="wpTab" class="nav nav-tabs">
+    <ul id="wpTab" class="nav nav-tabs" ng-hide="vm.isControl">
         <li class="active"><a data-toggle="tab" for-div="wp_edit">编辑页面</a></li>
         <li ng-show="vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0">
         <a data-toggle="tab" for-div="wp_list">项目其它工作方案</a></li>
     </ul>
+    <ul id="wpTab" class="nav nav-tabs" ng-show="vm.isControl">
+        <li class="active"><a data-toggle="tab" for-div="wp_edit">编辑页面</a></li>
+        <li ng-show="vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0">
+            <a data-toggle="tab" for-div="whwp_list">项目其它工作方案</a></li>
+    </ul>
+
+
 
 
     <!--S 编辑页面 -->
@@ -92,7 +106,7 @@
         <!--E 编辑页面 -->  
       
         <!--S 工作方案查看页面 -->
-        <div class="well well-sm tab-pane fade" style="background:white;" id="wp_list">
+        <div class="well well-sm tab-pane fade" style="background:white;" id="wp_list" >
             <div   ng-if="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它'" >
                 <div id="detail_xmjys" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/all_details.html'"></div>
             </div>
@@ -106,6 +120,22 @@
                 <div id="detail_jksb" ng-include src="'${path}/contents/app/workprogram/workprogramDetail/foregnDetail.html'"></div>
             </div>
 
+        </div>
+
+        <!--S 维护项目时的工作方案-->
+        <div class="well well-sm tab-pane fade" style="background:white;" id="whwp_list" >
+            <div   ng-if="vm.work.workreviveStage=='项目建议书'|| vm.work.workreviveStage=='可行性研究报告' || vm.work.workreviveStage=='项目概算' || vm.work.workreviveStage=='其它'" >
+                <div id="detail_xmjys" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistEdit.html'"></div>
+            </div>
+            <div  ng-if="vm.work.workreviveStage=='资金申请报告'" >
+                <div id="detail_zjsq" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistCapitalAppReportEdit.html'"></div>
+            </div>
+            <div  ng-if="vm.work.workreviveStage=='设备清单（国产）' || vm.work.workreviveStage=='设备清单（进口）'" >
+                <div id="detail_sbqd" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistEquipmentImportEdit.html'"></div>
+            </div>
+            <div  ng-if="vm.work.workreviveStage=='进口设备'" >
+                <div id="detail_jksb" ng-include src="'${path}/contents/app/workprogram/workprogramEdit/assistForeignEdit.html'"></div>
+            </div>
         </div>
 
     </div>
