@@ -13,6 +13,7 @@
         vm.fileRecord.signId = $state.params.signid;
         vm.fileRecord.fileRecordId = "";
         vm.signId = $state.params.signid;
+        vm.isControl=$state.params.isControl;		//按钮显示
         //是否协审归档（默认不是）
         vm.isassistproc = false;
         vm.drawingFile = [];//图纸资料

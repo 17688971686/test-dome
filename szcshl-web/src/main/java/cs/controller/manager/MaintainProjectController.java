@@ -23,11 +23,11 @@ import java.text.ParseException;
  * Date: 2017/10/11 16:26
  */
 @Controller
-@RequestMapping( name = "维护项目" , path = "maintainProjec")
+@RequestMapping( name = "维护项目" , path = "maintainProject")
 @MudoleAnnotation(name = "系统管理员" , value="permission#manager")
 public class MaintainProjectController {
 
-    private String ctrlName = "maintainProjec";
+    private String ctrlName = "maintainProject";
     @Autowired
     private SignService signService ;
 

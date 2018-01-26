@@ -10,7 +10,7 @@
 <!--合并选择公共页面-->
 <#include "/sign/mergeSign.html"/>
 
-<div class="toolbar">
+<div class="toolbar" ng-hide="vm.isControl">
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit">
         <span class="glyphicon glyphicon-ok"></span>保存
     </button>
@@ -28,6 +28,12 @@
     <button  ng-if="vm.dispatchDoc.dispatchStage=='项目概算'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEBUDGET')">打印预览</button>
     <button  ng-if="vm.dispatchDoc.dispatchStage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">打印预览</button>
 
+</div>
+<div class="toolbar" ng-show="vm.isControl">
+    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit">
+        <span class="glyphicon glyphicon-ok"></span>保存
+    </button>
+    <go-back></go-back>
 </div>
 
 <div class="well well-sm" style="background:white;">

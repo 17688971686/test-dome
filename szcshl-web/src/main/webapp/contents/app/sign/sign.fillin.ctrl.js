@@ -14,6 +14,7 @@
         vm.busiObj = {};             //业务对象，用于记录页面操作对象等信息
         vm.otherFile = [];//其他申报资料
         vm.supply={};    //拟补充资料
+        vm.isControl=$state.params.isControl; //按钮显示
         active();
         function active() {
             signSvc.initFillData(vm.model.signid, function (data) {

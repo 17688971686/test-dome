@@ -9,7 +9,7 @@
 <#include "/addSuppLetter/addsuppUpload.html"/>
 
 <div class="well well-sm" style="background:white; color: red">
-    <div class="toolbar">
+    <div class="toolbar" ng-hide="vm.isControl">
 
         <button class="btn btn-sm btn-success" ng-click="vm.saveAddSuppletter()" ng-disabled="vm.isCommit">
             <span class="glyphicon glyphicon-ok"></span>暂存
@@ -30,6 +30,12 @@
         <button class="btn btn-sm btn-danger" ng-click="back();" ng-disabled="vm.isCommit"><span
                 class="glyphicon glyphicon-chevron-left"></span>返回
         </button>
+    </div>
+    <div class="toolbar" ng-show="vm.isControl">
+        <button class="btn btn-sm btn-success" ng-click="vm.saveAddSuppletter()" ng-disabled="vm.isCommit">
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <go-back></go-back>
     </div>
     <!--  hidden input -->
     <input type="hidden" ng-model="vm.suppletter.id" name="id" value="{{vm.suppletter.id}}" id="id">

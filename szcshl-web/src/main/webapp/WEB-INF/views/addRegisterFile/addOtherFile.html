@@ -71,6 +71,13 @@
                             ng-selected="x.businessType == d.dictKey">{{d.dictName}}
                     </option>
                 </select>
+                <!-- 维护项目添加补充资料-->
+                <select ng-if="vm.showMaintainOther" ng-model="vm.addRegisters[$index].businessType" style="width: 95%;">
+                    <option value="">请选择</option>
+                    <option ng-repeat="d in DICT.BUSINESS_TYPE.dicts |myFilter:'dictKey':['1','4','5','6','7']" value="{{d.dictKey}}"
+                            ng-selected="x.businessType == d.dictKey">{{d.dictName}}
+                    </option>
+                </select>
             </td>
         </tr>
     </table>
