@@ -1,14 +1,9 @@
 package cs.quartz.execute;
 
 import cs.common.Constant;
-import cs.common.FlowConstant;
-import cs.common.IFResultCode;
 import cs.common.ResultMsg;
-import cs.common.utils.PropertyUtil;
 import cs.common.utils.Validate;
-import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
-import cs.domain.project.WorkProgram;
 import cs.domain.sys.Log;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
@@ -21,7 +16,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.util.ArrayList;
@@ -74,6 +68,7 @@ public class SendProjectInfoToFGW implements Job {
                         }
                         resultMsg = signRestService.setToFGW(signDto,mainWP,signDto.getDispatchDocDto(),fgwUrl);
                         if (resultMsg.isFlag()) {
+                            sucessIdList.add(signDto.getSignid());
                             sucessCount++;
                         } else {
                             errorCount++;

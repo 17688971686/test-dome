@@ -145,7 +145,7 @@
                     filterable: false
                 },
                 {
-                    field: "projectcode",
+                    field: "filecode",
                     title: "收文编号",
                     width: 120,
                     filterable: false,

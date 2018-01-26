@@ -5,9 +5,11 @@ import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
-import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.project.*;
+import cs.domain.project.Sign;
+import cs.domain.project.SignMerge;
+import cs.domain.project.SignMerge_;
+import cs.domain.project.Sign_;
 import cs.model.project.SignDto;
 import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
@@ -32,8 +34,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" update " + Sign.class.getSimpleName() + " set " + stateProperty + " =:state ");
         hqlBuilder.setParam("state", stateValue);
-        hqlBuilder.append(" where " + Sign_.signid.getName() + " =:signid ");
-        hqlBuilder.setParam("signid", signId);
+        hqlBuilder.bulidPropotyString("where",Sign_.signid.getName(),signId);
 
         return executeHql(hqlBuilder) >= 0 ? true : false;
     }

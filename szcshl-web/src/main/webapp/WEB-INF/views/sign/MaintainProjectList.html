@@ -17,24 +17,23 @@
             <table style="width:100%">
                 <input name="signState" operator="ne" value="7" hidden="hidden">
                 <tr>
-
-                    <td class="text-right" style="width:3%;min-width: 80px;">收文编号</td>
-                    <td style="width: 10%;">
+                    <td class="text-right" style="width:80px;">收文编号</td>
+                    <td style="width: 100px;">
                         <input name="signNum" type="text" operator="like"
                                ng-model="vm.model.signNum" class="form-control input-sm "/>
                     </td>
-                    <td class="text-right" style="width:3%;min-width: 80px;">发文号</td>
-                    <td style="width: 10%;">
+                    <td class="text-right" style="width:80px;">发文号</td>
+                    <td style="width: 100px;">
                         <input name="dfilenum" type="text" operator="like"
                                ng-model="vm.model.dfilenum" class="form-control input-sm "/>
                     </td>
-                    <td class="text-right" style="width:3%;min-width: 80px;">项目名称</td>
-                    <td style="width: 20%;">
+                    <td class="text-right" style="width:80px;">项目名称</td>
+                    <td style="width:180px;">
                         <input name="projectname" type="text" operator="like" ng-model="vm.model.projectname"
                                class="form-control input-sm "/>
                     </td>
-                    <td class="text-right" style="width:3%;min-width: 80px;">签收日期</td>
-                    <td style="width: 15%;">
+                    <td class="text-right" style="width:80px;">签收日期</td>
+                    <td style="width:260px;">
                         <input id="signdatebigen"  ng-model="vm.model.signdatebigen" type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="ge" name="signdate">
                         -
                         <input id="signdateend" ng-model="vm.model.signdateend" type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="le" name="signdate">

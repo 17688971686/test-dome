@@ -36,7 +36,7 @@
             }
             vm.sysFile = {
                 businessId: vm.suppletter.id,
-                mainId: vm.suppletter.id,
+                mainId: vm.suppletter.businessId,           //补充资料函的业务ID就是对应的项目ID或者其他的ID
                 mainType: sysfileSvc.mainTypeValue().SIGN,
                 sysfileType: sysfileSvc.mainTypeValue().AADSUPP_FILE,
                 sysBusiType: sysfileSvc.mainTypeValue().AADSUPP_FILE,
