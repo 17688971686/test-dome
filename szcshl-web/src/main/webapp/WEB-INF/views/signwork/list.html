@@ -22,6 +22,7 @@
             <button class="btn btn-sm btn-primary" ng-click="vm.resetForm()">
                 <span class="glyphicon glyphicon-repeat"></span>重置
             </button>
+            <go-back></go-back>
         </form>
     </div>
 
@@ -35,7 +36,7 @@
             <th class="text-center" style="width:20%">项目负责人</th>
             <th class="text-center" style="width:8%">操作</th>
         </tr>
-        <tbody ng-repeat="s in vm.signWorkList">
+        <tbody ng-repeat="s in vm.signWorkList | filter: {signId : vm.signId }">
         <tr>
             <td class="text-center" rowspan="{{s.signWorkDtoList.length + 1}}" style="vertical-align: middle;">{{$index + 1}}</td>
             <td rowspan="{{s.signWorkDtoList.length + 1}}" style="vertical-align: middle;">{{s.projectName}}</td>

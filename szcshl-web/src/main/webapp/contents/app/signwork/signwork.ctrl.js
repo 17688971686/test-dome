@@ -2,11 +2,12 @@
     'use strict';
     angular.module('app').controller('signworkCtrl', signworkC);
 
-    signworkC.$inject = ['signworkSvc','bsWin'];
+    signworkC.$inject = ['signworkSvc','bsWin' , '$state'];
 
-    function signworkC(signworkSvc,bsWin) {
+    function signworkC(signworkSvc,bsWin , $state) {
         var vm = this;
-       
+        vm.signId = $state.params.signid;
+
         active();
         function active() {
             vm.signWorkList = [];
