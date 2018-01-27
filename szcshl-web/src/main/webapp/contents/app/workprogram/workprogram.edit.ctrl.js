@@ -32,7 +32,12 @@
         activate();
         function activate() {
             vm.showAll = true;
-            workprogramSvc.initPage(vm);
+            if(vm.isControl){//是否为维护项目
+                workprogramSvc.workMaintainList(vm);
+            }else{
+                workprogramSvc.initPage(vm);
+            }
+
             $('#wpTab li').click(function (e) {
                 var aObj = $("a", this);
                 e.preventDefault();
@@ -363,6 +368,21 @@
         vm.printpage = function ($event) {
             var id =  $($event.target).attr("id");
             signSvc.workProgramPrint(id);
+        }
+
+      //维护项目时的工作方案的保存
+        vm.createMaintain=function () {
+            //保存工作方案的意见
+            if (vm.assistant != undefined && vm.assistant.length != 0) {
+                for (var i = 0; i < vm.assistant.length; i++) {
+                    workprogramSvc.createWP(vm.assistant[i], false, vm.iscommit);
+                }
+            }
+            if(vm.work){
+                workprogramSvc.createWP(vm.work, false, vm.iscommit,function () {
+                    bsWin.alert("操作成功");
+                });
+            }
         }
     }
 })();
