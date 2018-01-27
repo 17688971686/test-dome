@@ -248,6 +248,51 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         return resultMap;
     }
 
+
+
+    /**
+     * 根据收文ID查询
+     */
+    @Override
+    public Map<String, Object> workMaintainList(String signId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        //1、根据收文ID查询出所有的工作方案ID
+        Criteria criteria = workProgramRepo.getExecutableCriteria();
+        criteria.createAlias(WorkProgram_.sign.getName(), WorkProgram_.sign.getName());
+        criteria.add(Restrictions.eq(WorkProgram_.sign.getName() + "." + Sign_.signid.getName(), signId));
+        List<WorkProgram> wpList = criteria.list();
+
+        //2、是否有当前用户负责的工作方案
+        WorkProgram mainW = new WorkProgram();
+        if (Validate.isList(wpList)) {
+            int totalL = wpList.size();
+            //遍历第一遍，先找出主分支工作方案
+            for (int i=0;i<totalL;i++) {
+                WorkProgram wp = wpList.get(i);
+                if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                    mainW = wp;
+                    break;
+                }
+            }
+            List<WorkProgramDto> wpDtoList = new ArrayList<>();
+            for (int i=0;i<totalL;i++) {
+                WorkProgram wp = wpList.get(i);
+                    WorkProgramDto wpDto = new WorkProgramDto();
+                    BeanCopierUtils.copyProperties(wp, wpDto);
+                    if(Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                        WorkProgramDto mainWPDto = new WorkProgramDto();
+                        BeanCopierUtils.copyProperties(mainW,mainWPDto);
+                        wpDto.setMainWorkProgramDto(mainWPDto);
+                    workProgramRepo.initWPMeetingExp(wpDto, wp);
+                    wpDtoList.add(wpDto);
+                }
+            }
+            resultMap.put("WPList", wpDtoList);
+        }
+        resultMap.put("eidtWP", mainW);
+        return resultMap;
+    }
+
     /**
      * 拷贝主要属性
      * @param workProgramDto
