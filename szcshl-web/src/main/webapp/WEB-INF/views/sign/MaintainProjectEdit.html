@@ -39,8 +39,8 @@
 			margin-bottom: 5px;
 		}
 		.panel-heading{
-			padding:5px 20px;
-			text-align: left;
+			padding:5px;
+			text-align: center;
 		}
 		.options {
 			padding: 0;
@@ -100,26 +100,19 @@
 <body>
 <div class="container" style="width: 100%">
 	<div class="panel panel-primary" style="margin-bottom:0;">
-		<div class="panel-heading">
-		<button type="button" class="close">
-			<span aria-hidden="true">&times;</span>
-		</button>
-			<h3 class="panel-title">使用指南</h3>
+		<div class="panel-heading" style="text-align:center;">
+			<h3 >{{vm.model.projectname}}</h3>
 		</div>
 		<div class="panel-body" style="padding:10px 15px">
-			<h2 style="margin:0">深圳市智慧财政建设</h2>
-			<h5 style="border-bottom:1px solid #ddd;line-height:30px; ">
-				<span style="float: left;">评估论证</span>
-				<span style="margin-left: 80%">
-					<a style="height: 35px; width: 160px;" class="btn btn-xs btn-primary" href="#/reviewOpinion/{{vm.model.signid}}/{{vm.model.processInstanceId}} "><p style="margin-top: 5px;">修改意见</p></a>
-				</span>
-			</h5>
-
+			<div style="margin-bottom: 5px;text-align: left;">
+				<go-back></go-back>
+			</div>
 			<div class="well well-sm">
 				<ul class="item-list">
 					<li><a href="#/fillSign/{{vm.model.signid}}/true ">报审登记表</a></li>
 					<li><a href="" ng-click="vm.addRegisterFile()">登记补充材料</a></li>
 					<li><a href="" ng-click="vm.addSuppLetter()">拟补充材料函</a></li>
+					<li><a href="#/reviewOpinion/{{vm.model.signid}}/{{vm.model.processInstanceId}}" >修改意见</a></li>
                 </ul>
                 <ul class="item-list">
 					<li><a href="" ng-click="vm.addWorkProgram()" >拟工作方案</a></li>
@@ -129,13 +122,13 @@
 				</ul>
 				<ul class="item-list">
 					<li><a href="" ng-click="vm.scrap(vm.model.signid)">作废项目</a></li>
-					<li><a href="" >专家评分</a></li>
-                    <li><a href="">评审费发放表</a></li>
+					<li><a href="#/maintainExpertScore/{{vm.model.signid}} " >专家评分</a></li>
+                    <li><a href="#/maintainExpertPayment/{{vm.model.signid}} ">评审费发放表</a></li>
 					<li><a href="" ng-click="vm.pauseProject()">项目暂停管理</a></li>
 				</ul>
 				<ul class="item-list">
-                    <li><a href="">评审工作日维护</a></li>
-					<li><a href="">修改确定的专家</a></li>
+                    <li><a href="#/reviewWorkday/{{vm.model.signid}} ">评审工作日维护</a></li>
+					<li><a href="#/maintainExpertConfirm/{{vm.model.signid}}">修改确定的专家</a></li>
 					<li><a href="">专家抽取方案维护</a></li>
                     <li><a href=""  ng-click="vm.clickUploadBt();">上传扫描电子文档</a></li>
 
@@ -159,11 +152,11 @@
 						<div class="panel-heading">发文号</div>
 						<div class="panel-body">
 							<div class="input-group" style="margin-bottom:10px;">
-							  <span class="input-group-addon" id="basic-addon1">发文编号：</span>
+							  <span class="input-group-addon" >发文编号：</span>
 							  <input type="text" class="form-control" ng-model="vm.dispatchDoc.fileNum" disabled >
 							</div>
 							<div class="input-group">
-							  <span class="input-group-addon" id="basic-addon1">发文日期：</span>
+							  <span class="input-group-addon" >发文日期：</span>
 							  <input type="date" class="form-control" ng-model="vm.dispatchDoc.dispatchDate" disabled>
 							</div>
 						</div>
@@ -172,11 +165,11 @@
 						<div class="panel-heading">存档编号</div>
 						<div class="panel-body">
 							<div class="input-group" style="margin-bottom: 10px;">
-							  <span class="input-group-addon" id="basic-addon1">存档编号：</span>
+							  <span class="input-group-addon" >存档编号：</span>
 							  <input type="text" class="form-control" ng-model="vm.fileRecordDto.fileNo" disabled>
 							</div>
 							<div class="input-group">
-								<span class="input-group-addon" id="basic-addon1">评审费用：</span>
+								<span class="input-group-addon" >评审费用：</span>
 								<div class="form-control options">
 									<label for="radio1" style="border-right:1px solid #ddd">
 										<label>有</label>
@@ -184,7 +177,7 @@
 										<label class="radio" for="radio1"></label>
 									</label>
 									<label for="radio2" >
-										<label>无</span>
+										<span>无</span>
 										<input disabled type="radio" name="option" id="radio2" ng-model="vm.model.ishasreviewcost" ng-true-value="0" ng-false-value="9">
 										<label class="radio" for="radio2"></label>
 									</label>
@@ -224,9 +217,6 @@
 						</div>
 					</div>
 				</div>
-				<#--<button class="btn btn-success" style="margin-top:10px;">
-				<span class="glyphicon glyphicon-star"></span>
-				保存修改</button>-->
 			</div>
 		</div>
 	</div>
@@ -236,11 +226,5 @@
 <!-- 附件 -->
 <#include "/file/common.html"/>
 </body>
-<go-back></go-back>
-<a class="btn btn-xs btn-primary" href="#/fillSign/{{vm.model.signid}} "><span class="glyphicon glyphicon-pencil"></span>报审登记表</a>
-<a class="btn btn-xs btn-primary" href="#/reviewOpinion/{{vm.model.signid}}/{{vm.model.processInstanceId}} "><span class="glyphicon glyphicon-pencil"></span>修改意见</a>
-<a class="btn btn-xs btn-primary" href="#/reviewWorkday/{{vm.model.signid}} ">评审工作日维护</a>
-<a class="btn btn-xs btn-primary" href="#/maintainExpertScore/{{vm.model.signid}} ">专家评分</a>
-<a class="btn btn-xs btn-primary" href="#/maintainExpertPayment/{{vm.model.signid}} ">评审费发放表</a>
-<a class="btn btn-xs btn-primary" href="#/maintainExpertConfirm/{{vm.model.signid}} ">修改确认的专家</a>
+
 </html>

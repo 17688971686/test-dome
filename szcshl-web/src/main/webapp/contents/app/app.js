@@ -490,21 +490,6 @@
                 templateUrl: rootPath + '/sign/html/deletList.html',
                 controller: 'signDeletCtrl',
                 controllerAs: 'vm'
-            }).state('MaintainProjectList', {	//维护项目列表
-                url: '/MaintainProjectList',
-                templateUrl: rootPath + '/sign/html/MaintainProjectList.html',
-                controller: 'MaintainProjectCtrl',
-                controllerAs: 'vm'
-            }).state('MaintainProjectEdit', {	//维护项目的编辑
-                url: '/MaintainProjectEdit/:signid/:processInstanceId',
-                templateUrl: rootPath + '/sign/html/MaintainProjectEdit.html',
-                controller: 'MaintainProjectEditCtrl',
-                controllerAs: 'vm'
-            }).state('reviewWorkday', {	//维护项目 ---评审工作日维护
-                url: '/reviewWorkday/:signid',
-                templateUrl: rootPath + '/maintainProject/html/reviewWorkday.html',
-                controller: 'reviewWorkdayCtrl',
-                controllerAs: 'vm'
             })
             //end#signList
 
@@ -1100,7 +1085,6 @@
                     controllerAs: 'vm'
                 })
                 /********************以下是项目维护***************************/
-
                 .state('MaintainProjectList', {	//维护项目列表
                     url: '/MaintainProjectList',
                     templateUrl: rootPath + '/sign/html/MaintainProjectList.html',
