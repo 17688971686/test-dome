@@ -1035,7 +1035,7 @@
                 })
                 //项目专家抽取修改
                 .state('signwork', {
-                    url: '/signwork',
+                    url: '/signwork/:signid',
                     templateUrl: rootPath + "/signwork/html/list.html",
                     controller: 'signworkCtrl',
                     controllerAs: 'vm'
