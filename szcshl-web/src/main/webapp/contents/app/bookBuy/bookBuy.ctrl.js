@@ -56,17 +56,23 @@
         /**
          * 借书
          */
-        vm.borrowBook = function() {
-            var grid = $("#bookListGrid").data("kendoGrid");
+        vm.borrowBook = function(id) {
+           /* var grid = $("#bookListGrid").data("kendoGrid");
             // 获取行对象
             var data = grid.dataItem(grid.select());
             vm.model = data;
             vm.model.borrowNum = "";
             vm.model.borrowDate = "";
             vm.model.returnDate = "";
-            vm.model.bookBorrower =$("#curName").val();
+            vm.model.bookBorrower =$("#curName").val();*/
+            vm.model = {};
+            vm.model.bookBorrower = {}
+            bookBuySvc.queryBookBuyById(id,function(data){
+                vm.model = data;
+                vm.model.bookBorrower = data.bookBorrower;
+            })
            $("#borrowBookWindow").kendoWindow({
-                width: "38%",
+                width: "860px",
                 height: "300px",
                 title: "图书借阅",
                 visible: false,

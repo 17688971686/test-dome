@@ -17,7 +17,7 @@ public class BookBuyBusiness extends DomainBase {
     @Id
     private String businessId;
     //业务流程名字
-    @Column(columnDefinition = "varchar(64) ")
+    @Column(columnDefinition = "varchar(256) ")
     private String businessName;
     //申请部门
     @Column(columnDefinition = "varchar(64) ")

@@ -35,8 +35,6 @@ public interface BookBuyBusinessService {
 	ResultMsg startFlow(BookBuyDto[] bookList,BookBuyBusiness bookBuyBus);
 
 	//流程处理begin
-	ResultMsg startNewFlow(String signid);
-
 	ResultMsg stopFlow(String signid, ProjectStopDto projectStopDto);
 
 	ResultMsg restartFlow(String signid);

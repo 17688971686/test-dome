@@ -226,7 +226,9 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 			}else{
 				bookBuyBus.setBusinessId(bookList[0].getBusinessId());
 			}
-			bookBuyBus.setBusinessName("图书采购流程"+(bookBuyBusinessRepo.findAll().size()+1));
+			if(!Validate.isString(bookBuyBus.getBusinessName())){
+				bookBuyBus.setBusinessName("图书采购流程");
+			}
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.BOOKS_BUY_FLOW, bookBuyBus.getBusinessId(),
 					ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_APPLY.getValue(), SessionUtil.getUserId()));
 			processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), bookBuyBus.getBusinessName());
@@ -241,10 +243,6 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 		return  saveBooksDetailList(bookList,bookBuyBus);
 	}
 
-	@Override
-	public ResultMsg startNewFlow(String signid) {
-		return null;
-	}
 
 	@Override
 	public ResultMsg stopFlow(String signid, ProjectStopDto projectStopDto) {

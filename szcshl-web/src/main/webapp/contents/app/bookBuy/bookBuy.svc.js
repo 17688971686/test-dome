@@ -11,6 +11,7 @@
             grid: grid,  //图书查询列表
             bookBorrowGrid: bookBorrowGrid, //借书列表
             getBookBuyById: getBookBuyById,
+            queryBookBuyById:queryBookBuyById,      //根据ID查询
             createBookBuy: createBookBuy,
             deleteBookBuy: deleteBookBuy,
             updateBookBuy: updateBookBuy,
@@ -203,6 +204,25 @@
             });                       
         }
 
+        function  queryBookBuyById(id,callBack){
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/bookBuy/html/findById",
+                params:{id:id}
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
         /**
          * 借书列表
          */
@@ -226,11 +246,10 @@
 
         // begin#grid
         function grid(vm) {
-
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/bookBuy/findByOData", $("#bookForm"),{filter: "storeConfirm eq 'isNotNull' "}),
+                transport: common.kendoGridConfig().transport(rootPath + "/bookBuy/findByOData", $("#bookForm"),{filter: "storeConfirm eq 'isNotNull'"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -265,15 +284,6 @@
 
             // Begin:column
             var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-                },
                 {
                     field: "rowNumber",
                     title: "序号",
@@ -335,8 +345,7 @@
                     title: "操作",
                     width: 140,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            item.id);
+                        return common.format($('#columnBtns').html(), item.id);
                     }
                 }
             ];
@@ -350,9 +359,7 @@
                 columns: columns,
                 resizable: true,
                 dataBound:dataBound,
-                selectable: "row"
             };
-
         }// end fun grid
     }
 })();

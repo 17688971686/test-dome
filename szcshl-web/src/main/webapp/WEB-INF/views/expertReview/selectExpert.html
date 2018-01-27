@@ -3,7 +3,9 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 <!--确认参加会议专家的弹窗公共页面-->
-<#include "/expertReview/expert_confirm.html"/>
+<div style="background:white;display: none;" >
+    <#include "/expertReview/expert_confirm.html"/>
+</div>
 <!--专家详情信息-->
 <div style="background:white;display: none;" id="selectExportDetail">
     <#include "/expertReview/expertDetail.html"/>

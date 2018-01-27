@@ -227,7 +227,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                         </a>
                         <ul class="treeview-menu">
-                            <@shiro.hasPermission name="sign#html/reserveListSign#get">
+                            <@shiro.hasPermission name="sign#html/reserveList#get">
                                 <li><a href="javascript:void(0)" ui-sref="reserveList">项目预签收列表<span class="label label-danger" id="GET_RESERVESIGN_COUNT">0</span></a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="sign#html/list#get">
