@@ -15,7 +15,6 @@
             getAddSuppLetterById: getAddSuppLetterById, //根据ID查看拟补充资料函
             createFilenum: createFilenum,               //生成文件字号
             initSuppListDate: initSuppListDate,         //初始化拟补充资料函列表
-            findByBusinessId: findByBusinessId,         //根据主业务获取所有的附件信息
             initFlowDeal: initFlowDeal,                 //初始化流程数据
             startSignSupperFlow : startSignSupperFlow,  //发起拟补充资料函流程
         };
@@ -49,26 +48,6 @@
                 vm.suppletter = data;
             })
         }//E_initFlowDeal
-
-        //S 根据主业务获取所有的附件信息
-        function findByBusinessId(vm) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/file/findByBusinessId",
-                params: {
-                    businessId: vm.suppletter.id
-                }
-            };
-            var httpSuccess = function success(response) {
-                vm.sysFilelists = response.data;
-            };
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
 
         //E 根据主业务获取所有的附件信息
         //S 初始化拟补充资料函列表

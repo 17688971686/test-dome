@@ -127,7 +127,7 @@
                 //begin#拟补充资料函查询
                 .state('suppletterList', {
                     url: '/suppletterList',
-                    templateUrl: rootPath + '/addSuppLetter/suppLetterList.html',
+                    templateUrl: rootPath + '/addSuppLetter/html/suppLetterList.html',
                     controller: 'addSuppLetterQueryCtrl',
                     controllerAs: 'vm'
                 })//end#拟补充资料函查询

@@ -32,7 +32,7 @@
          * 重置
          */
         vm.resetSuppContent = function () {
-            var tab = $("#supQueryForm").find('input,select');
+            var tab = $("#supQueryForm").find('input,select').not(":submit, :reset, :image, :disabled,:hidden");
             $.each(tab, function (i, obj) {
                 obj.value = "";
             });

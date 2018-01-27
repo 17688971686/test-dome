@@ -11,6 +11,8 @@
         <li class="active">拟补充资料函查询</li>
     </ol>
     <form id="supQueryForm" name="supQueryForm" class="well well-sm">
+        <!--文件类型，1表示拟补充资料函-->
+        <input name="fileType" value="1" type="hidden" operator="eq"/>
         <span class="help-inline">文件标题：</span>
         <input type="text" operator="like" name="title" id="title" placeholder="请输入">
 

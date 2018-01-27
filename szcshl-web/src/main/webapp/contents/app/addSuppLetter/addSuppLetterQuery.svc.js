@@ -275,7 +275,7 @@
                 {
                     field: "userName",
                     title: "拟稿人",
-                    width: 120,
+                    width: 90,
                     filterable: false
                 },
                 {
@@ -285,12 +285,32 @@
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
-              
                 {
                     field: "filenum",
                     title: "文件字号",
                     width: 120,
                     filterable: false
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 80,
+                    filterable: false,
+                    template: function (item) {
+                        //如果拟补充资料函还未发起流程（保存异常或者提交附件失败）
+                        //则这里可以编辑
+                        var isShow = false;
+                        if(item.createdBy == curUserId && (angular.isUndefined(item.appoveStatus) || item.appoveStatus == null)){
+
+                            isShow = true;
+                        }
+                        if(isShow){
+                            return "<a class='btn btn-xs btn-primary' href='#addSuppLetterEdit/"+item.id+"'><span class='glyphicon glyphicon-pencil'></span>编辑</a>";
+                        }else{
+                            return "";
+                        }
+
+                    }
                 }
             ];
             // End:column
@@ -400,8 +420,7 @@
                     title: "操作",
                     width: 140,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                             item.id);
+                        return common.format($('#columnBtns').html(),item.id);
                     }
                 }
             ];

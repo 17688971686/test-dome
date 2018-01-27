@@ -48,6 +48,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             window.rootPath = '${path}';
             //是否是超级管理员
             window.isSuperUser = '${CURRENT_USER.loginName}'== 'admin';
+            window.curUserId = '${CURRENT_USER.id}';
             //数字字典对象
             window.DICTOBJ = {};
             buildDict(DICTOBJ,${DICT_ITEMS});
@@ -386,7 +387,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraiseList">优秀评审报告查询</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="addSuppLetter#html/suppLetterList#get">
-                                <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补资料函查询</a></li>
+                                <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补充资料函查询</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="signView#html/expertReviewCondCount#get">
                                 <li><a href="javascript:void(0)" ui-sref="expertRevCondCountList">专家评审情况统计</a></li>

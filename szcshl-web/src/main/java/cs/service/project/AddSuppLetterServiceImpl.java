@@ -274,26 +274,9 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Override
     public PageModelDto<AddSuppLetterDto> addsuppListData(ODataObj odataObj) {
         PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
-
-        Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
-        criteria = odataObj.buildFilterToCriteria(criteria);
-        //文件类型，1表示拟补充资料函
-        criteria.add(Restrictions.eq(AddSuppLetter_.fileType.getName(), EnumState.PROCESS.getValue()));
-        criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), EnumState.YES.getValue()));
-
-        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-        pageModelDto.setCount(totalResult);
-        criteria.setProjection(null);
-        if (odataObj.getSkip() > 0) {
-            criteria.setFirstResult(odataObj.getTop());
-        }
-        if (odataObj.getTop() > 0) {
-            criteria.setMaxResults(odataObj.getTop());
-        }
-        List<AddSuppLetter> allist = criteria.list();
+        List<AddSuppLetter> allist = addSuppLetterRepo.findByOdata(odataObj);
         List<AddSuppLetterDto> alDtos = new ArrayList<AddSuppLetterDto>(allist == null ? 0 : allist.size());
-
-        if (allist != null && allist.size() > 0) {
+        if (Validate.isList(allist)) {
             allist.forEach(x -> {
                 AddSuppLetterDto alDto = new AddSuppLetterDto();
                 BeanCopierUtils.copyProperties(x, alDto);
@@ -301,7 +284,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             });
         }
         pageModelDto.setValue(alDtos);
-
+        pageModelDto.setCount(odataObj.getCount());
         return pageModelDto;
     }
 

@@ -5,33 +5,26 @@
 
 <!-- 附件 -->
 <#include "/file/common.html"/>
-<!--拟补充资料函上传列表页面-->
-<#include "/addSuppLetter/addsuppUpload.html"/>
 
 <div class="well well-sm" style="background:white; color: red">
 <div class="toolbar">
-           
+    <go-back></go-back>
     <button class="btn btn-sm btn-success" ng-click="vm.saveAddSuppletter()" ng-disabled="vm.isCommit">
         <span class="glyphicon glyphicon-ok"></span>保存
     </button>
-    <button ng-hide="vm.suppletter.processInstanceId" class="btn btn-sm btn-default" ng-click="vm.startSignSupperFlow()"  ng-hide="vm.model.signState == '0' || vm.model.processInstanceId "><span
+    <button ng-hide="vm.suppletter.processInstanceId" class="btn btn-sm btn-success" ng-click="vm.startSignSupperFlow()"  ng-hide="vm.model.signState == '0' || vm.model.processInstanceId "><span
             class="glyphicon glyphicon-share-alt"></span>发起流程
     </button>
     <button ng-show='false'class="btn btn-sm btn-success" ng-click="vm.print()" ng-disabled="vm.isCommit">
         <span class="glyphicon glyphicon-ok"></span>打印
     </button>
-      <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt" ><i class="fa fa-cloud-upload" aria-hidden="true"></i>上传附件</button>
-     <button class="btn btn-sm btn-success" ng-click="vm.addSuppContent(vm.suppletter.id)">
-            <span class="glyphicon glyphicon-search"></span>查看附件
-     </button>
-    <a  class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
-<#--    <button class="btn btn-sm btn-danger" ng-click="vm.comeBack();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回
-    </button>-->
+    <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
+    <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
 </div>
-   		<!--  hidden input -->
-		 <input type="hidden" ng-model="vm.suppletter.id" name="id" value="{{vm.suppletter.id}}"id="id"  >  
-		<input type="hidden" ng-model="vm.suppletter.businessId" value="{{vm.suppletter.businessId}}" > 
-		<!--  s table -->
+    <!--  hidden input -->
+     <input type="hidden" ng-model="vm.suppletter.id" name="id" value="{{vm.suppletter.id}}"id="id"  >
+    <input type="hidden" ng-model="vm.suppletter.businessId" value="{{vm.suppletter.businessId}}" >
+    <!--  s table -->
 		
      <!-- s form -->
     <form id="suppletter_form" name="suppletter_form">
