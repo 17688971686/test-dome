@@ -193,14 +193,16 @@
         }
 
         // begin#getaddSuppLetterQueryById
-        function getaddSuppLetterQueryById(vm) {
+        function getaddSuppLetterQueryById(vm,callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/addSuppLetter/findById",
                 params: {id: vm.id}
             };
             var httpSuccess = function success(response) {
-                vm.suppletter = response.data;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
 
             common.http({
@@ -263,7 +265,7 @@
                     title: "文件标题",
                     filterable: false,
                     template: function (item) {
-                        return "<a ng-click='vm.showSuppLetterDetail("+JSON.stringify(item)+")'>"+item.title+"</a>";
+                        return "<a ng-click='vm.showSuppLetterDetail( " + '"' +(item.id) + '"'+ ")'>"+item.title+"</a>";
                     }
                 },
                 {

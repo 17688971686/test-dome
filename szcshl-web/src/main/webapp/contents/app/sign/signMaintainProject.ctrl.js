@@ -10,9 +10,10 @@
         vm.model={};
         vm.model.signdatebigen = (new Date()).oneMonthAgo();
         vm.model.signdateend = (new Date()).Format("yyyy-MM-dd");
+        $("#signdatebigen").val("");
+        $("#signdateend").val("");
         //需要赋值给value才会去查询
-        $("#signdatebigen").val(vm.model.signdatebigen);
-        $("#signdateend").val(vm.model.signdateend);
+
         //获取到当前的列表
         vm.stateName = $state.current.name;
         //查询参数
@@ -41,7 +42,6 @@
 
         active();
         function active() {
-
             if($rootScope.view[vm.stateName]){
                 var preView = $rootScope.view[vm.stateName];
                 //恢复grid
@@ -50,7 +50,7 @@
                 }
                 //恢复表单参数
                 if(preView.data){
-                    vm.project = preView.data.project;
+                    vm.model = preView.data.model;
                 }
                 //恢复数据
                 /*vm.project = preView.data.project;*/
@@ -63,6 +63,8 @@
                 //清除返回页面数据
                 $rootScope.view[vm.stateName] = undefined;
             }else {
+                $("#signdatebigen").val(vm.model.signdatebigen);
+                $("#signdateend").val(vm.model.signdateend);
                 signSvc.MaintenanProjectGrid(vm);
             }
 

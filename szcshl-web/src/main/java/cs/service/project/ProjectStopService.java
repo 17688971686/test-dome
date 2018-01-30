@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface ProjectStopService {
 	
-	List<ProjectStop> findProjectStopBySign(String signId);
+	List<ProjectStopDto> findProjectStopBySign(String signId);
 
     SignDispaWork findSignBySignId(String signId);
 

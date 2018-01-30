@@ -2,6 +2,10 @@
 <!--  协审流程编辑的工作方案  -->
 <!-- S 资金申请报告 -->
 <!--  s table-->
+<a data-toggle="collapse" data-target="#aswp_8">
+    [协办分支_{{vm.work.orgName}}_工作方案]
+</a>
+<div id="aswp_8" class="collapse in" >
 <table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
     <caption class="text-center">
         <p style="float:left;">
@@ -329,8 +333,12 @@
     </tr>
     </tbody>
 </table>
-
+</div>
 <div ng-repeat="y in vm.assistant">
+    <a data-toggle="collapse" data-target="#aswp_{{$index+4}}">
+        [协办分支_{{y.orgName}}_工作方案]
+    </a>
+    <div id="aswp_{{$index+4}}" class="collapse in">
 <table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
     <caption class="text-center">
         <p class="h3">
@@ -625,6 +633,7 @@
     </tr>
     </tbody>
 </table>
+    </div>
 </div>
 <!--<table class="table table-bordered">
     <tr>

@@ -113,7 +113,7 @@
                     } else {
                         //当是保存时提交就先保存
                         annountmentSvc.createAnnountment(vm, function (data) {
-                            vm.id = data.anId;                            //保存后取得id,流程发起需要
+                            vm.id = data.reObj.anId;                            //保存后取得id,流程发起需要
                             annountmentSvc.startFlow(vm.id, function (data) {//更新的提交
                                 if (data.flag || data.reCode == 'ok') {
                                     bsWin.success("操作成功！", function () {

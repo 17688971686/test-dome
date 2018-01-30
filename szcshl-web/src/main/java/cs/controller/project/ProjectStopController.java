@@ -3,6 +3,7 @@ package cs.controller.project;
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.domain.project.ProjectStop;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
@@ -51,9 +52,9 @@ public class ProjectStopController {
 	//@RequiresPermissions("projectStop#initProjectBySignId#get")
 	@RequestMapping(name="通过项目id获取暂停项目信息",path="getProjectStopBySignId" ,method=RequestMethod.POST)
 	@ResponseBody
-	public List<ProjectStop>  getProjectStopBySignId(@RequestParam  String signId){
-		List<ProjectStop> projectStopList = projectStopService.findProjectStopBySign(signId);
-		return projectStopList;
+	public List<ProjectStopDto>  getProjectStopBySignId(@RequestParam  String signId){
+		List<ProjectStopDto> projectStopDtoList = projectStopService.findProjectStopBySign(signId);
+		return projectStopDtoList;
 	}
 
    /* @RequiresAuthentication
@@ -100,10 +101,10 @@ public class ProjectStopController {
 	@RequestMapping(name="判断该项目是否已申请暂停而未处理完",path="findPausingProject",method = RequestMethod.POST)
 	@ResponseBody
 	public String findPausingProject(@RequestParam  String signId){
-		List<ProjectStop> projectStopList = projectStopService.findProjectStopBySign(signId);
+		List<ProjectStopDto> projectStopList = projectStopService.findProjectStopBySign(signId);
 		String result =null;
-		for(ProjectStop p : projectStopList){
-			if(Constant.EnumState.YES.getValue().equals(p.getIsactive()) && !Constant.EnumState.YES.getValue().equals(p.getIsOverTime())){
+		for(ProjectStopDto p : projectStopList){
+			if(Constant.EnumState.NO.getValue().equals(p.getIsactive()) && !Validate.isString(p.getIsOverTime())){
 				result= "pausingProject";
 				break;
 			}

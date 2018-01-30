@@ -2,9 +2,9 @@
     'use strict';
     angular.module('app').controller('signDeletCtrl', signDelet);
 
-    signDelet.$inject = ['signSvc', 'flowSvc', 'signFlowSvc', 'bsWin','$state','$rootScope'];
+    signDelet.$inject = ['signSvc', 'flowSvc', 'signFlowSvc', 'bsWin','$state','$rootScope','pauseProjectSvc'];
 
-    function signDelet(signSvc, flowSvc, signFlowSvc, bsWin,$state,$rootScope) {
+    function signDelet(signSvc, flowSvc, signFlowSvc, bsWin,$state,$rootScope,pauseProjectSvc) {
         var vm = this;
         vm.title = "作废项目列表";
 
@@ -27,6 +27,13 @@
         //恢复项目
         vm.editSignState = function (signid) {
             vm.signid = signid;
+            pauseProjectSvc.getProjectStopBySignId(signid,function (data) {//查找作项目是否暂停
+                if(data[0].isactive=="9" && data[0].isOverTime=="9"){//根据后台查回来最新数据的第一条来判断<后台已根据创建时间来排序了。保证第一天都是最新的>
+                    vm.stateValue="2"//恢复时项目是暂停的
+                }else{
+                    vm.stateValue="1"//恢复时项目是进行时的
+                }
+            })
             bsWin.confirm({
                 title: "询问提示",
                 message: "确认要恢复项目吗？",

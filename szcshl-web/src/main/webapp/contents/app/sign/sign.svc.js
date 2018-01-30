@@ -933,7 +933,7 @@
             var httpOptions = {
                 method : "post" ,
                 url : rootPath + "/sign/editSignState",
-                params : {signId : vm.signid,stateProperty: "signState",stateValue: "5" }
+                params : {signId : vm.signid,stateProperty: "signState",stateValue: vm.stateValue }
             }
 
             var httpSuccess = function success(response){
