@@ -101,7 +101,7 @@ public class ODataObj {
     }
 
     public final static Pattern odataLikePattern = Pattern.compile("(substringof\\(\\s*\\'?[^\\']*\\'\\s*\\,\\s*[\\w|\\.|/]+\\s*\\))"),
-            odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le|ni|in)\\s+(((datetime|date|bigDecimal)?\\'[^\\']*\\'|\\d+)|(\\([^\\)]*\\))))"),
+            odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le|ni|in)\\s+(((datetime|date|bigDecimal|integer|double)?\\'[^\\']*\\'|\\d+)|(\\([^\\)]*\\))))"),
             patternField = Pattern.compile(",(.*?)\\)"),
             patternValue = Pattern.compile("'(.*?)'");
 
@@ -163,10 +163,17 @@ public class ODataObj {
                     value = filterItems[2];
                     if (StringUtil.startsWithIgnoreCase(value, "bigdecimal'")) {// 如果是datetime
                         oDataFilterItem = new ODataFilterItem<BigDecimal>();
-                        oDataFilterItem.setValue(new BigDecimal(value.substring("bigdecimal'".length(), value.length() - 1)));
+                        String rgex = "bigdecimal'(.*?)'";
+                        oDataFilterItem.setValue(new BigDecimal(StringUtil.getSubUtilSimple(value, rgex)));
                     }else if (StringUtil.startsWithIgnoreCase(value, "integer'")) {// 如果是datetime
-                        oDataFilterItem = new ODataFilterItem<BigDecimal>();
-                        oDataFilterItem.setValue(Integer.parseInt(value.substring("integer'".length(), value.length() - 1)));
+                        oDataFilterItem = new ODataFilterItem<Integer>();
+                        String rgex = "integer'(.*?)'";
+                        oDataFilterItem.setValue(Integer.parseInt(StringUtil.getSubUtilSimple(value, rgex)));
+                    }
+                    else if (StringUtil.startsWithIgnoreCase(value, "double'")) {// 如果是datetime
+                        oDataFilterItem = new ODataFilterItem<Integer>();
+                        String rgex = "double'(.*?)'";
+                        oDataFilterItem.setValue(Double.parseDouble(StringUtil.getSubUtilSimple(value, rgex)));
                     }
                     else if (StringUtil.startsWithIgnoreCase(value, "datetime'") && value.endsWith("'")) {// 如果是datetime
                         oDataFilterItem = new ODataFilterItem<Date>();

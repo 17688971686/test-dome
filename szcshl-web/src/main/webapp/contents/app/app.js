@@ -154,7 +154,7 @@
 
                 //begin#registerFile
                 .state('registerFile', {
-                    url: '/registerFile/:businessId/',
+                    url: '/registerFile/:businessId',
                     templateUrl: rootPath + '/addRegisterFile/list.html',
                     controller: 'addRegisterFileCtrl',
                     controllerAs: 'vm'

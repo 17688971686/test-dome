@@ -9,6 +9,8 @@ import java.nio.charset.CharsetDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 字符串工具类
@@ -93,8 +95,27 @@ public class StringUtil extends StringUtils {
 			return (new StringBuilder()).append(Character.toLowerCase(f)).append(str.substring(1)).toString();
 	}
 
+	/**
+	 * 返回单个字符串，若匹配到多个的话就返回第一个，方法与getSubUtil一样
+	 * @param soap
+	 * @param rgex
+	 * @return
+	 */
+	public static String getSubUtilSimple(String soap,String rgex){
+		Pattern pattern = Pattern.compile(rgex);// 匹配的模式
+		Matcher m = pattern.matcher(soap);
+		while(m.find()){
+			return m.group(1);
+		}
+		return "";
+	}
 
 	public static void main(String[] args){
 		System.out.print("李安".substring(0,1));
+		String str = "integer'2'";
+		String rgex = "integer'(.*?)'";
+		System.out.println(getSubUtilSimple(str, rgex));
 	}
+
+
 }

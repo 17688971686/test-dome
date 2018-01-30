@@ -108,15 +108,24 @@
 
 				<td class="text-right" >综合评分</td>
 				<td>
-                    <select name="compositeScore" operator="ge">
-                        <option value="">请选择</option>
-                        <option value="1">1星</option>
-                        <option value="2">2星</option>
-                        <option value="3">3星</option>
-                        <option value="4">4星</option>
-                        <option value="5">5星</option>
-                    </select>
-
+                    <select name="compositeScore" operator="ge" data-type="double" style="width: 40px;">
+                        <option value=""></option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>分
+                    -
+					<select name="compositeScore" operator="le" data-type="double" style="width: 40px;">
+						<option value=""></option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select>
+					分
 				</td>
 			</tr>
 		</table>

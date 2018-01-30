@@ -220,17 +220,16 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
      */
     @Override
     public List<AddRegisterFileDto> findByBusinessId(String businessId) {
+        List<AddRegisterFileDto> resultList = new ArrayList<>();
         List<AddRegisterFile> fileList = addRegisterFileRepo.findByBusinessId(businessId);
         if (Validate.isList(fileList)) {
-            List<AddRegisterFileDto> resultList = new ArrayList<>(fileList.size());
             fileList.forEach(fl -> {
                 AddRegisterFileDto rfDto = new AddRegisterFileDto();
                 BeanCopierUtils.copyProperties(fl, rfDto);
                 resultList.add(rfDto);
             });
-            return resultList;
         }
-        return null;
+        return resultList;
     }
 
     @Override
