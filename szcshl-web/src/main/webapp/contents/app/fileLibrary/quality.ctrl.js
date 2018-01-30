@@ -75,7 +75,6 @@
                         onClick : zTreeOnClick,
                         beforeRemove : zTreeOnRemove,
                     },
-
                     data: {
                         simpleData: {
                             enable: true,
@@ -86,13 +85,18 @@
                 };
                 function zTreeOnClick(event, treeId, treeNode ) {
                     // $state.go('fileLibrary.fileList',{parentId : treeNode.id});
+                    zTreeObj.checkNode(treeNode, !treeNode.checked, true);
                     vm.parentFileId = treeNode.fileId;
                     if(treeNode.fileNature == "FOLDER" ){
+
                         vm.qualityList = [];
                         if(treeNode.children){
                             vm.qualityList = treeNode.children;
                         }
                         $scope.$apply();
+                    }
+                    if(treeNode.fileNature == "FILE"){
+                        vm.fileEdit(vm.parentFileId);
                     }
 
                 };
@@ -165,6 +169,7 @@
          * 新建文件夹弹出窗
          * */
         vm.addFolderWindow=function(fileId){
+            console.log(vm.fileLibrary);
             vm.fileLibrary = {};
             vm.fileLibrary.fileType = "QUALITY";
             if(fileId != undefined){
@@ -262,10 +267,16 @@
             vm.isUpdate = false;
             vm.fileId = fileId;
             vm.fileLibrary = {};
+            vm.sysFilelists = {};
             vm.fileLibrary.fileType = "QUALITY";
             if(vm.fileId){
                 vm.isUpdate=true;
-                fileLibrarySvc.findFileById(vm , vm.fileId);
+                fileLibrarySvc.findFileById(vm.fileId , function(data){
+                    vm.fileLibrary = data;
+                    vm.fileUrl = vm.fileLibrary.fileUrl;
+                    vm.fileName = vm.fileLibrary.fileName;
+                    vm.initFileUpload();
+                });
                 sysfileSvc.findByBusinessId(vm.fileId,function(data){
                     vm.sysFilelists = data;
                 });
@@ -295,6 +306,8 @@
                             vm.fileId = data.reObj.fileId;
                             fileLibrarySvc.getFileUrlById(vm, vm.fileId);
                             vm.initFileUpload();
+                            activate();
+                            // vm.refresh(vm.parentFileId);
                         });
                     } else {
                         bsWin.error(data.reMsg);
@@ -311,7 +324,9 @@
                 if(data.flag || data.reCode == 'ok'){
                     bsWin.alert("更新成功！", function(){
                         vm.initFileUpload();
+                        // vm.refresh(vm.parentFileId);
                         window.parent.$("#qualityEdit").data("kendoWindow").close();
+                        activate();
                     });
                 }else{
                     bsWin.error(data.reMsg);
@@ -324,7 +339,13 @@
          * @param fileId
          */
         vm.del = function(fileId){
+
             bsWin.confirm("删除的数据将无法恢复，确认删除？" , function(){
+                //手动删除树节点
+                var tree = $.fn.zTree.getZTreeObj("zTree");
+                var nodes = tree.getNodeByParam("id",fileId,null) ;
+                tree.removeNode(nodes);
+
                 fileLibrarySvc.deleteFile(fileId,function(){
                     vm.qualityList.forEach(function(quality , number){
                         if(quality.fileId == fileId){
@@ -376,5 +397,6 @@
                 })
             });
         }
+
     }
 })();

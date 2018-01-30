@@ -5,7 +5,7 @@
 
     function reviewFee(reviewFeeSvc , expertReviewSvc , bsWin , $state,$rootScope){
         var vm = this;
-        vm.title = '项目列表';
+        vm.title = '评审费发放';
         vm.reviewFee = {};
         //获取到当前的列表
         vm.stateName = $state.current.name;
