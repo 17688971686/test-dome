@@ -145,21 +145,20 @@
         //end fodlerById
 
         //begin findFileById
-        function findFileById(vm, fileId) {
+        function findFileById( fileId , callBack) {
             var httpOptions = {
                 method: "get",
                 url: rootPath + "/fileLibrary/findFileById",
                 params: {fileId: fileId}
             }
             var httpSuccess = function success(response) {
-                vm.fileLibrary = response.data;
-                vm.fileUrl = vm.fileLibrary.fileUrl;
-                vm.fileName = vm.fileLibrary.fileName;
-                vm.initFileUpload();
+                if( callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+
             }
 
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess

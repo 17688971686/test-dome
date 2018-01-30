@@ -41,17 +41,17 @@
                  </td>
              </tr>
             <tr ng-hide="vm.annountment.processInstanceId">
-                <td class="text-right">是否置顶： </td>
+                <td class="text-right">是否置顶：{{vm.annountment.isStick}} </td>
                 <td >
-                	<input type="radio" ng-model="vm.annountment.isStick "  name="isStick" value="9"/>是
-                	<input type="radio" ng-model="vm.annountment.isStick "  name="isStick" value="0"/>否
+                	<input type="checkbox" ng-model="vm.annountment.isStick "  name="isStick" ng-true-value="9" ng-checked=" vm.annountment.isStick == 9 || vm.annountment.isStick == '9'"/>是
+                	<input type="checkbox" ng-model="vm.annountment.isStick "  name="isStick" ng-true-value="0" ng-checked="!(vm.annountment.isStick) || vm.annountment.isStick == 0 || vm.annountment.isStick == '0'"/>否
                 </td>
             </tr>
              <tr ng-if="vm.isNeed=='1'" ng-hide="vm.annountment.processInstanceId">
                  <td class="text-right">发布： </td>
                  <td >
-                     <input type="radio" ng-model="vm.annountment.issue "  name="issue" value="9"/>是
-                     <input type="radio" ng-model="vm.annountment.issue "  name="issue" value="0"/>否
+                     <input type="checkbox" ng-model="vm.annountment.issue "  name="issue" ng-true-value="9" ng-checked=" vm.annountment.issue == 9 || vm.annountment.issue == '9'"/>是
+                     <input type="checkbox" ng-model="vm.annountment.issue "  name="issue" ng-true-value="0" ng-checked="!vm.annountment.issue || vm.annountment.issue == 0 || vm.annountment.issue == '0'"/>否
                  </td>
              </tr>
              <tr ng-hide="vm.annountment.processInstanceId">

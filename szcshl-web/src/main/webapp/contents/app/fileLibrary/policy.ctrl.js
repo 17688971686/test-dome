@@ -90,6 +90,9 @@
                         }
                         $scope.$apply();
                     }
+                    if(treeNode.fileNature == "FILE"){
+                        vm.fileEdit(vm.parentFileId);
+                    }
                 };
 
                 //删除节点
@@ -238,7 +241,12 @@
             vm.fileLibrary.fileType = "POLICY";
             if(vm.fileId){
                 vm.isUpdate=true;
-                fileLibrarySvc.findFileById(vm , vm.fileId);
+                fileLibrarySvc.findFileById(vm.fileId , function(data){
+                    vm.fileLibrary = data;
+                    vm.fileUrl = vm.fileLibrary.fileUrl;
+                    vm.fileName = vm.fileLibrary.fileName;
+                    vm.initFileUpload();
+                });
                 sysfileSvc.findByBusinessId(vm.fileId,function(data){
                     vm.sysFilelists = data;
                 });
@@ -265,6 +273,7 @@
                 fileLibrarySvc.saveFile(vm, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         bsWin.alert("保存成功！", function () {
+                            activate();
                             vm.policyList.push(data.reObj);
                             vm.fileId = data.reObj.fileId;
                             fileLibrarySvc.getFileUrlById(vm, vm.fileId);
@@ -288,6 +297,7 @@
                     bsWin.alert("更新成功！", function(){
                         vm.initFileUpload();
                         window.parent.$("#qualityEdit").data("kendoWindow").close();
+                        activate();
                     });
                 }else{
                     bsWin.error(data.reMsg);
@@ -301,6 +311,12 @@
          */
         vm.del = function(fileId){
             bsWin.confirm("删除的数据将无法恢复，确认删除？" , function(){
+
+                //手动删除树节点
+                var tree = $.fn.zTree.getZTreeObj("zTree");
+                var nodes = tree.getNodeByParam("id",fileId,null) ;
+                tree.removeNode(nodes);
+
                 fileLibrarySvc.deleteFile(fileId,function(){
                     vm.policyList.forEach(function(quality , number){
                         if(quality.fileId == fileId){

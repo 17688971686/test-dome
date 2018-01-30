@@ -38,11 +38,16 @@ public class SignWorkServiceImpl implements SignWorkService {
             for(int i=0,l=allList.size();i<l;i++){
                 boolean isSame = false;
                 SignWork signWork = allList.get(i);
+                //判断oldSignId是否是一个字符串，或者当前遍历业务id不等于oldSignId
                 if(!Validate.isString(oldSignId) || !oldSignId.equals(signWork.getSignId())){
+                    //如果是个集合，则给对象添加集合数据
                     if(Validate.isList(signWorkDtoList)){
                         signWorkDto.setSignWorkDtoList(signWorkDtoList);
-                        resultList.add(signWorkDto);
+
                     }
+                    //每次遍历先将对象存入结果集
+                    resultList.add(signWorkDto);
+                    //再将业务ID赋值给oldSignId ， 并重新定义对象以及集合
                     oldSignId = signWork.getSignId();
                     signWorkDto = new SignWorkDto();
                     signWorkDtoList = new ArrayList<>();
@@ -50,6 +55,7 @@ public class SignWorkServiceImpl implements SignWorkService {
                     isSame = true;
                 }
 
+                //如果oldSignId是字符串 或者业务id等于oldSignId, 则将遍历的对象之间赋值给Dto，并添加到结果集中
                 if(isSame){
                     SignWorkDto cSignWorkDto = new SignWorkDto();
                     BeanCopierUtils.copyProperties(signWork,cSignWorkDto);
