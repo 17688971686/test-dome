@@ -55,10 +55,6 @@ public class SignRestServiceImpl implements SignRestService {
     @Autowired
     private SignRepo signRepo;
     @Autowired
-    private WorkProgramRepo workProgramRepo;
-    @Autowired
-    private DispatchDocRepo dispatchDocRepo;
-    @Autowired
     private SignService signService;
     @Autowired
     private UserRepo userRepo;
@@ -370,7 +366,7 @@ public class SignRestServiceImpl implements SignRestService {
                 //评审报告附件
                 checkNameArr.add("评审意见");
                 checkNameArr.add("审核意见");
-                fjList = checkFile(fileList,checkNameArr,getLoaclUrl());
+                fjList = checkFile(fileList,checkNameArr,sysFileService.getLocalUrl());
                 if(Validate.isList(fjList)){
                     dataMap.put("psbg", fjList);
                 }
@@ -379,7 +375,7 @@ public class SignRestServiceImpl implements SignRestService {
                 checkNameArr = new ArrayList<>();
                 checkNameArr.add("投资估算表");
                 checkNameArr.add("投资匡算表");
-                fjList = checkFile(fileList,checkNameArr,getLoaclUrl());
+                fjList = checkFile(fileList,checkNameArr,sysFileService.getLocalUrl());
                 if(Validate.isList(fjList)){
                     dataMap.put("tzgsshb", fjList);
                 }
@@ -419,21 +415,6 @@ public class SignRestServiceImpl implements SignRestService {
         return returnUrl;
     }
 
-    public String getLoaclUrl(){
-        String localUrl = "";
-        SysConfigDto sysConfigDto = sysConfigService.findByKey(LOCAL_URL.getValue());
-        if(sysConfigDto != null) {
-            localUrl = sysConfigDto.getConfigValue();
-        }else{
-            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
-            localUrl = propertyUtil.readProperty(IFResultCode.LOCAL_URL);
-        }
-        if (Validate.isString(localUrl) && localUrl.endsWith("/")) {
-            localUrl = localUrl.substring(0, localUrl.length() - 1);
-        }
-        return localUrl;
-
-    }
 
     private ArrayList<HashMap<String, Object>> checkFile(List<SysFile> fileList,List<String> checkNameArr,String loaclUrl){
         ArrayList<HashMap<String, Object>> fjList = new ArrayList<HashMap<String, Object>>();

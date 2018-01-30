@@ -84,9 +84,8 @@
         </tr>
         <tr >
             <td style="text-align: center;">
-                <span style="font-size: 16px">文件名：${sysFile.showName}</span>
                 <span style="margin-left:20px;">
-                     <button type=button  class="btn" onclick="saveToServer();">保存</button>
+                     <button type=button  class="btn" onclick="WebSave();">保存</button>
                     <button type=button  class="btn" onclick="showPrintDialog();">打印</button>
                 </span>
             </td>
@@ -99,6 +98,8 @@
 </div>
 <script src="${path}/contents/libs/jquery/jquery.js"></script>
 <script src="${path}/contents/libs/weboffice/main.js"></script>
+<script src="${path}/contents/libs/layer/layer.js"></script>
+<link href="${path}/contents/libs/layer/theme/default/layer.css" rel="stylesheet"/>
 <!-- --------------------=== 调用Weboffice初始化方法 ===--------------------- -->
 <SCRIPT language=javascript event=NotifyCtrlReady for=WebOffice>
     /****************************************************
@@ -111,73 +112,46 @@
 </SCRIPT>
 
 <script type="text/javascript">
-    var filePath = '${filePath}';
     var fileType = '${fileType}';
-    var uploadFile = '${uploadFile}';
     var sysFileId = '${sysFileId}';
-    var fileName = '${fileName}';
+    var fileUrl = '${fileUrl}';
     function WebOffice_OpenOfficeFile(){
-        if(filePath){
-            try{
-                document.all.WebOffice.OptionFlag |= 128;
-                 fileName = escape(encodeURIComponent(fileName));
-                // 新建文档
-                var realPath = filePath+"?fileName="+fileName;
-                uploadFile = uploadFile + "?fileName=" + fileName;
-                document.all.WebOffice.LoadOriginalFile(realPath,fileType);
-            }catch(e){
-                alert("异常\r\nError:"+e+"\r\nError Code:"+e.number+"\r\nError Des:"+e.description);
-            }
+        try{
+            document.all.WebOffice.OptionFlag |= 0x0400;
+            document.all.WebOffice.LoadOriginalFile(fileUrl+"/file/fileDownload?sysfileId="+sysFileId,fileType);
+        }catch(e){
+            alert("异常\r\nError:"+e+"\r\nError Code:"+e.number+"\r\nError Des:"+e.description);
         }
     }
+
     /****************************************************
      *
      *					保存文件，保存在原路径
      *
      ****************************************************/
     function WebSave(){
-        document.all.WebOffice.Save();
-        var sysFileId = '${sysFile.sysFileId}';
-        $.ajax({
-            type:"get",
-            url: rootPath+"/file/fileSysUpload?sysFileId="+sysFileId,
-            async: false,
-            contentType: 'application/x-www-form-urlencoded',
-            success: function(result) {
-            },
-            error: function(result) {
-            }
-        });
-    }
-
-    /****************************************************
-     *
-     *保存weboffice的文档到服务器
-     *@url : 保存文件的远程地址
-     *
-     /****************************************************/
-    function saveToServer() {
-        document.all.WebOffice.HttpInit(); //  初始化 Http 引擎
-        document.all.WebOffice.SetTrackRevisions(0);
-        document.all.WebOffice.ShowRevisions(0);
-        //  添加上传文件
-        document.all.WebOffice.HttpAddPostString("state", 0);
-        document.all.WebOffice.HttpAddPostCurrFile("DocContent", ""); 	// 上传文件
-        //  提交上传文件
-        document.all.WebOffice.HttpPost(uploadFile);
-        var myDate = new Date();
-        var ranDom = myDate.getMinutes()+myDate.getSeconds();
-        $.ajax({
-            type:"get",
-            url: rootPath+"/file/fileSysUpload?sysFileId="+sysFileId+"&ranDom="+ranDom,
-            async: false,
-            contentType: 'application/x-www-form-urlencoded',
-            success: function(result) {
-            },
-            error: function(result) {
-            }
-        });
-
+        //先判断文件是否被修改，如果被修改，则更新；否则不做处理
+        var isSaved = document.all.WebOffice.IsSaved();
+        if(isSaved == 0){
+            var base64Value =document.all.WebOffice.GetFileBase64("",0);
+            $.ajax({
+                type: 'POST',
+                url: rootPath+"/file/saveByFileBase64",
+                data: {
+                    sysFileId : sysFileId,
+                    base64String : base64Value,
+                },
+                success: function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        alert("保存成功！");
+                    }else{
+                        alert(data.reMsg);
+                    }
+                },
+            });
+        }else{
+            alert("文件未改动,无需保存！");
+        }
     }
 
     /****************************************************

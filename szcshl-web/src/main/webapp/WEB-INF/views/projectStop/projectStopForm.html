@@ -62,7 +62,7 @@
                     <button ng-click="vm.downloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i class="fa fa-cloud-download" aria-hidden="true"></i>下载</button>
                     <!-- word 类型，在线编辑&ndash;&gt;-->
                     <span ng-if="x.fileType =='.docx' || x.fileType =='.doc' || x.fileType =='.xlsx' || x.fileType =='.xls' || x.fileType =='.ppt' || x.fileType =='.pptx'">
-                <button ng-click="previewFile(x.sysFileId,'office')" class="btn btn-xs btn-primary"><span
+                <button ng-click="editFile(x.sysFileId,x.fileType)" class="btn btn-xs btn-primary"><span
                         class="glyphicon glyphicon-pencil"></span>编辑</button>
             </span>
                     <!-- pdf 文件&ndash;&gt;-->

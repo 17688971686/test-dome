@@ -65,7 +65,7 @@
                         </button>
                         <!-- word 类型，在线编辑 -->
                         <span ng-if="s.fileType =='.docx' || s.fileType =='.doc' || s.fileType =='.xlsx' || s.fileType =='.xls' || s.fileType =='.ppt' || s.fileType =='.pptx'">
-                            <button ng-click="previewFile(s.sysFileId,'office')" class="btn btn-xs btn-primary"><span
+                            <button ng-click="editFile(s.sysFileId,x.fileType)" class="btn btn-xs btn-primary"><span
                                     class="glyphicon glyphicon-pencil"></span>编辑</button>
                         </span>
                         <!-- pdf 文件-->

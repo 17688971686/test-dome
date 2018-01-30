@@ -104,7 +104,6 @@
         function updateAnnountment(vm,callBack) {
             vm.isSubmit = true;
             vm.annountment.anContent = vm.editor.getContent();
-            alert(vm.annountment.anContent);
             var httpOptions = {
                 method: "put",
                 url: url_annountment,

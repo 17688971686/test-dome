@@ -1,6 +1,7 @@
 package cs.service.sys;
 
 import cs.common.Constant;
+import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.sys.Ftp;
@@ -29,6 +30,7 @@ import java.util.UUID;
 
 import static cs.common.Constant.FTP_IP;
 import static cs.common.Constant.RevireStageKey.KEY_FTPIP;
+import static cs.common.Constant.RevireStageKey.LOCAL_URL;
 
 @Service
 public class SysFileServiceImpl implements SysFileService {
@@ -228,6 +230,22 @@ public class SysFileServiceImpl implements SysFileService {
         }else{
             return sysConfigDto.getConfigValue();
         }
+    }
+
+    @Override
+    public String getLocalUrl() {
+        String localUrl = "";
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(LOCAL_URL.getValue());
+        if(sysConfigDto != null) {
+            localUrl = sysConfigDto.getConfigValue();
+        }else{
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            localUrl = propertyUtil.readProperty(IFResultCode.LOCAL_URL);
+        }
+        if (Validate.isString(localUrl) && localUrl.endsWith("/")) {
+            localUrl = localUrl.substring(0, localUrl.length() - 1);
+        }
+        return localUrl;
     }
 
     /**

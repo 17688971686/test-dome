@@ -776,7 +776,8 @@ public class Constant {
         FLOWBACK("流程回退"),
         FLOWACTIVE("流程激活"),
         FLOWSTOP("流程暂停"),
-        QUARTZ("定时器");
+        QUARTZ("定时器"),
+        FILEUPDATE("附件修改");
         private String value;
 
         LOG_MODULE(String value) {

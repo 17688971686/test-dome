@@ -1245,12 +1245,10 @@
         $rootScope.previewFile = function (sysFileId, fileType) {
             if (sysFileId) {
                 var url, width, height;
-                if ("office" == fileType) {
-                    url = rootPath + "/file/editFile?sysFileId=" + sysFileId;
-                } else if ("pdf" == fileType) {
-                    url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId;
+                if ("pdf" == fileType) {
+                    url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId+"&version="+(new Date()).getTime()+"";
                 } else if ("image" == fileType) {
-                    url = rootPath + "/file/preview/" + sysFileId;
+                    url = rootPath + "/file/preview/" + sysFileId+"&version="+(new Date()).getTime()+"";
                 }
                 if (url) {
                     var httpOptions = {
@@ -1261,6 +1259,7 @@
                         }
                     }
                     var httpSuccess = function success(response) {
+                        $("#iframePreview").attr("src", "");
                         if (response.data.flag || response.data.reCode == 'ok') {
                             $("#iframePreview").attr("src", url);
                             $("#previewModal").kendoWindow({
@@ -1287,6 +1286,12 @@
             } else {
                 bsWin.alert("参数不正确，无法在线预览");
             }
+        }
+
+        //文件在线编辑
+        $rootScope.editFile = function(sysFileId, fileType){
+           var url = rootPath + "/file/editFile?sysFileId=" + sysFileId+"&fileType="+fileType+"&version="+(new Date()).getTime();
+           window.open(url,"_blank");
         }
 
         //打印预览，生成word模板直接预览

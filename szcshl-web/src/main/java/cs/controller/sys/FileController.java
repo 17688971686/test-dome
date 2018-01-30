@@ -3,6 +3,7 @@ package cs.controller.sys;
 import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
+import cs.common.FlowConstant;
 import cs.common.ResultMsg;
 import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
@@ -13,6 +14,7 @@ import cs.domain.expert.ExpertReview;
 import cs.domain.project.*;
 import cs.domain.sys.Ftp;
 import cs.domain.sys.Ftp_;
+import cs.domain.sys.Log;
 import cs.domain.sys.SysFile;
 import cs.model.PageModelDto;
 import cs.model.archives.ArchivesLibraryDto;
@@ -20,7 +22,6 @@ import cs.model.expert.*;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.*;
 import cs.model.sys.PluginFileDto;
-import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
 import cs.model.topic.FilingDto;
 import cs.model.topic.TopicInfoDto;
@@ -33,9 +34,9 @@ import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.archives.ArchivesLibraryService;
 import cs.service.expert.ExpertService;
 import cs.service.project.*;
+import cs.service.sys.LogService;
 import cs.service.sys.SysFileService;
 import cs.service.topic.TopicInfoService;
-import org.apache.commons.net.ftp.FTPFile;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -47,7 +48,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartFile;
-
+import sun.misc.BASE64Decoder;
+import java.io.ByteArrayInputStream;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +73,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     private String ctrlName = "file";
 
     @Autowired
-    private SysFileService fileService;
+    private SysFileService sysFileService;
     @Autowired
     private RealPathResolver realPathResolver;
     @Autowired
@@ -120,6 +122,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @Autowired
     private AddRegisterFileService addRegisterFileService;
 
+    @Autowired
+    private LogService logService;
 
     private ServletContext servletContext;
 
@@ -142,7 +146,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         PageModelDto<SysFileDto> sysFileDtos = null;
         try {
             ODataObj odataObj = new ODataObj(request);
-            sysFileDtos = fileService.get(odataObj);
+            sysFileDtos = sysFileService.get(odataObj);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -153,7 +157,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequestMapping(name = "根据业务ID获取附件", path = "findByBusinessId", method = RequestMethod.POST)
     @ResponseBody
     public List<SysFileDto> findByBusinessId(@RequestParam(required = true) String businessId) {
-        List<SysFileDto> sysfileDto = fileService.findByBusinessId(businessId);
+        List<SysFileDto> sysfileDto = sysFileService.findByBusinessId(businessId);
         return sysfileDto;
     }
 
@@ -161,7 +165,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequestMapping(name = "根据主模块ID获取附件", path = "findByMainId", method = RequestMethod.POST)
     @ResponseBody
     public List<SysFileDto> findByMainId(@RequestParam(required = true) String mainId) {
-        List<SysFileDto> sysfileDto = fileService.findByMainId(mainId);
+        List<SysFileDto> sysfileDto = sysFileService.findByMainId(mainId);
         return sysfileDto;
     }
 
@@ -171,7 +175,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     public List<SysFileDto> queryFile(@RequestParam String mainId, @RequestParam String sysBusiType) {
         List<SysFileDto> sysfileDto = null;
         try {
-            sysfileDto = fileService.queryFile(mainId, sysBusiType);
+            sysfileDto = sysFileService.queryFile(mainId, sysBusiType);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -209,7 +213,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             String fileUploadPath = SysFileUtil.getUploadPath();
             String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType, mainId, sysBusiType, null);
 
-            Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), fileService.findFtpId());
+            Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), sysFileService.findFtpId());
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getUploadConfig(f);
 
@@ -241,10 +245,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     if (null != sysFile) {
                         sysFile.setModifiedBy(SessionUtil.getDisplayName());
                         sysFile.setModifiedDate(new Date());
-                        fileService.update(sysFile);
+                        sysFileService.update(sysFile);
                         resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "文件上传成功！");
                     } else {
-                        resultMsg = fileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
+                        resultMsg = sysFileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
                                 relativeFileUrl + File.separator + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
                     }
 
@@ -287,7 +291,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             fileType = fileType.toLowerCase();      //统一转成小写
 
             if (!multipartFile.isEmpty()) {
-                resultMsg = fileService.save(multipartFile, fileName, businessId, fileType, mainId, mainType, sysfileType, sysBusiType);
+                resultMsg = sysFileService.save(multipartFile, fileName, businessId, fileType, mainId, mainType, sysfileType, sysBusiType);
             } else {
                 resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件上传失败，无法获取文件信息！");
             }
@@ -297,60 +301,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         return resultMsg;
     }
 
-
-   /* *//**
-     * @return
-     * @throws IOException
-     *//*
-    @RequiresAuthentication
-    @RequestMapping(name = "ftp文件同步", path = "fileSysUpload", method = RequestMethod.GET)
-    @ResponseBody
-    public ResultMsg fileSysUpload(String sysFileId) {
-        logger.debug("==================ftp文件同步==================");
-        ResultMsg resultMsg = null;
-        try {
-            SysFile sysFile = fileService.findFileById(sysFileId);
-            //获取相对路径
-            String fileUrl = sysFile.getFileUrl();
-            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
-            String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
-
-            Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), fileService.findFtpId());
-            FtpUtils ftpUtils = new FtpUtils();
-            FtpClientConfig k = ConfigProvider.getUploadConfig(f);
-
-            boolean linkSucess = FtpUtil.connectFtp(sysFile.getFtp(), true);
-            if (linkSucess) {
-
-                //文件路径
-                String filePath = SysFileUtil.getUploadPath() + File.separator + storeFileName;
-                File file = new File(filePath);
-                FileInputStream fileInputStream = new FileInputStream(file);
-                boolean result = FtpUtil.uploadFile(removeRelativeUrl, storeFileName, fileInputStream);
-                if (result) {
-                    SysFileDto sysFileDto = new SysFileDto();
-                    sysFile.setModifiedBy(SessionUtil.getDisplayName());
-                    sysFile.setModifiedDate(new Date());
-                    fileService.update(sysFile);
-                    BeanCopierUtils.copyProperties(sysFile, sysFileDto);
-                    resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "文件同步成功！", sysFileDto);
-                } else {
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件同步失败！");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return resultMsg;
-    }*/
-
     @RequiresAuthentication
     @RequestMapping(name = "ftp文件校验", path = "fileSysCheck", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg checkFtpFile(@RequestParam(required = true) String sysFileId) {
         ResultMsg resultMsg;
         try {
-            SysFile sysFile = fileService.findFileById(sysFileId);
+            SysFile sysFile = sysFileService.findFileById(sysFileId);
             String fileUrl = sysFile.getFileUrl();
             String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
             String checkFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
@@ -382,7 +339,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     public void remoteDownload(@PathVariable("sysfileId") String sysfileId, HttpServletResponse response) throws Exception {
         OutputStream out = response.getOutputStream();
         try {
-            SysFile sysFile = fileService.findFileById(sysfileId);
+            SysFile sysFile = sysFileService.findFileById(sysfileId);
             ResponseUtils.setResponeseHead(sysFile.getFileType(), response);
             response.setHeader("Content-Disposition", "attachment; filename="
                     + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
@@ -421,7 +378,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     public void fileDownload(@RequestParam(required = true) String sysfileId, HttpServletResponse response) throws Exception {
         OutputStream out = response.getOutputStream();
         try {
-            SysFile sysFile = fileService.findFileById(sysfileId);
+            SysFile sysFile = sysFileService.findFileById(sysfileId);
             ResponseUtils.setResponeseHead(sysFile.getFileType(), response);
             response.setHeader("Content-Disposition", "attachment; filename="
                     + new String(sysFile.getShowName().getBytes("GB2312"), "ISO8859-1"));
@@ -456,14 +413,14 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequestMapping(name = "删除系统文件", path = "deleteSysFile", method = RequestMethod.DELETE)
     @ResponseBody
     public ResultMsg deleteSysFile(@RequestParam String id) {
-        return fileService.deleteById(id);
+        return sysFileService.deleteById(id);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "文件删除", path = "delete", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestParam(required = true) String sysFileId) {
-        fileService.deleteById(sysFileId);
+        sysFileService.deleteById(sysFileId);
     }
 
     /**
@@ -483,7 +440,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         InputStream inputStream = null;
         OutputStream out = null;
         try {
-            SysFile sysFile = fileService.findFileById(sysFileId);
+            SysFile sysFile = sysFileService.findFileById(sysFileId);
             //获取相对路径
             String fileUrl = sysFile.getFileUrl();
             String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
@@ -1029,56 +986,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     }
 
 
-    @RequiresAuthentication
-    @RequestMapping(name = "下载服务器Word", path = "html/download", method = RequestMethod.GET)
-    public String downloadFile(@RequestParam("fileName") String fileName, HttpServletResponse response) {
-        if (fileName != null) {
-            try {
-                fileName = java.net.URLDecoder.decode(java.net.URLDecoder.decode(fileName, "UTF-8"), "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            String realPath = SysFileUtil.getUploadPath();
-            File file = new File(realPath, fileName);
-            if (file.exists()) {
-                response.setContentType("application/force-download");// 设置强制下载不打开
-                response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);// 设置文件名
-                byte[] buffer = new byte[1024];
-                FileInputStream fis = null;
-                BufferedInputStream bis = null;
-                try {
-                    fis = new FileInputStream(file);
-                    bis = new BufferedInputStream(fis);
-                    OutputStream os = response.getOutputStream();
-                    int i = bis.read(buffer);
-                    while (i != -1) {
-                        os.write(buffer, 0, i);
-                        i = bis.read(buffer);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (bis != null) {
-                        try {
-                            bis.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (fis != null) {
-                        try {
-                            fis.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-
     /**
      * 只针对office文件
      *
@@ -1087,63 +994,87 @@ public class FileController implements ServletConfigAware, ServletContextAware {
      * @return
      */
     @RequiresAuthentication
-    @RequestMapping(name = "附件编辑", path = "editFile", method = RequestMethod.GET)
-    public String editFile(Model model, @RequestParam(required = true) String sysFileId, HttpServletRequest request) {
-        SysFile sysFile = fileService.findFileById(sysFileId);
-        //获取相对路径
-        String fileUrl = sysFile.getFileUrl();
-        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
-        String storeFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
-        //涉及到中文问题 根据系统实际编码改变
-        try {
-            removeRelativeUrl = new String(removeRelativeUrl.getBytes("GBK"), "iso-8859-1");
-            storeFileName = new String(storeFileName.getBytes("GBK"), "iso-8859-1");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //下载ftp服务器附件到本地服務
-       /* Boolean flag = FtpUtil.downloadFile(sysFile.getFtp().getIpAddr(), sysFile.getFtp().getPort() != null ? sysFile.getFtp().getPort() : 0, sysFile.getFtp().getUserName(), sysFile.getFtp().getPwd(), removeRelativeUrl,
-                storeFileName, SysFileUtil.getUploadPath());*/
-        String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-        model.addAttribute("filePath", basePath + "/file/html/download");
-        model.addAttribute("uploadFile", basePath + "/contents/uploadFile.jsp");
-        model.addAttribute("fileName", storeFileName);
+    @RequestMapping(name = "在线编辑", path = "editFile", method = RequestMethod.GET)
+    public String editFile(Model model, @RequestParam(required = true) String sysFileId,@RequestParam(required = true)String fileType) {
         model.addAttribute("sysFileId", sysFileId);
+        String openType="";
         //文件类型
-        String fileTyp;
-        switch (sysFile.getFileType().toLowerCase()) {
+        switch (fileType.toLowerCase()) {
             case ".doc":
             case ".docx":
-                fileTyp = "doc";
+                openType = "doc";
                 break;
             case ".xls":
-                fileTyp = "xls";
-                break;
             case ".xlsx":
-                fileTyp = "xlsx";
+                openType = "xls";
                 break;
             case ".ppt":
-                fileTyp = "ppt";
-                break;
             case ".pptx":
-                fileTyp = "pptx";
-                break;
-            case ".pdf":
-                fileTyp = "pdf";
+                openType = "ppt";
                 break;
             default:
-                fileTyp = "doc";
+                openType = "doc";
         }
-        model.addAttribute("fileType", fileTyp);
-        //附件信息
-        model.addAttribute("sysFile", sysFile);
-        if ("pdf".equals(fileTyp)) {
-            return "weboffice/reader_pdf";
-        } else {
-            model.addAttribute("pluginFilePath", Constant.plugin_file_path + "/weboffice.rar");
-            return "weboffice/edit_dj";
+        model.addAttribute("fileType", openType);
+        String fileUrl = sysFileService.getLocalUrl();
+        if(fileUrl.endsWith("/")){
+            fileUrl = fileUrl.substring(0,fileUrl.lastIndexOf("/"));
         }
+        model.addAttribute("fileUrl",fileUrl);
+        model.addAttribute("pluginFilePath", Constant.plugin_file_path + "/weboffice.rar");
+        return "weboffice/edit_dj";
+    }
+
+
+    /**
+     * 根据base64，保存文件
+     * @param sysFileId
+     * @param base64String
+     * @return
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "保存文件", path = "saveByFileBase64", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveByFileBase64(@RequestParam(required = true) String sysFileId,@RequestParam(required = true)String base64String) {
+        ResultMsg resultMsg ;
+        String errorMsg = "";
+        try {
+            SysFile sysFile = sysFileRepo.findById(sysFileId);
+            String fileUrl = sysFile.getFileUrl();
+            String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+            String uploadFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+            //上传到ftp,
+            Ftp f = sysFile.getFtp();
+            FtpUtils ftpUtils = new FtpUtils();
+            FtpClientConfig k = ConfigProvider.getUploadConfig(f);
+            BASE64Decoder decoder = new BASE64Decoder();
+            boolean uploadResult = ftpUtils.putFile(k, removeRelativeUrl, uploadFileName,new ByteArrayInputStream(decoder.decodeBuffer(base64String)));
+            if (uploadResult) {
+                //保存数据库记录
+                sysFile.setModifiedBy(SessionUtil.getDisplayName());
+                sysFile.setModifiedDate(new Date());
+                sysFileService.update(sysFile);
+                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "文件保存成功！修改的文件名是【"+sysFile.getShowName()+"】");
+            } else {
+                resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "文件保存失败！修改的文件名是【"+sysFile.getShowName()+"】");
+            }
+        }catch (Exception e){
+            errorMsg += e.getMessage();
+            resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "文件保存异常！");
+        }
+        //添加日记记录
+        Log log = new Log();
+        log.setCreatedDate(new Date());
+        log.setUserName(SessionUtil.getDisplayName());
+        log.setLogCode(resultMsg.getReCode());
+        log.setBuninessId(sysFileId);
+        log.setMessage(resultMsg.getReMsg()+errorMsg);
+        log.setModule(Constant.LOG_MODULE.FILEUPDATE.getValue());
+        log.setResult(resultMsg.isFlag()? Constant.EnumState.YES.getValue(): Constant.EnumState.NO.getValue());
+        log.setLogger(this.getClass().getName()+".saveByFileBase64");
+        log.setLogLevel(Constant.EnumState.PROCESS.getValue());
+        logService.save(log);
+        return resultMsg;
     }
 
     @RequiresPermissions("file#html/pluginfile#get")

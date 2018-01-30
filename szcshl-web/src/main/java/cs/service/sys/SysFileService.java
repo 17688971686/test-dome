@@ -53,4 +53,10 @@ public interface SysFileService {
      * @return
      */
     String findFtpId();
+
+    /**
+     * 获取本地
+     * @return
+     */
+    String getLocalUrl();
 }

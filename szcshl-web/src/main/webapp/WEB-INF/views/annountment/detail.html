@@ -5,10 +5,8 @@
         <table style="width: 100%;">
             <tr>
                 <td>
-                   <!-- <button class="btn btn-sm btn-success back" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回列表</button>-->
                     <go-back></go-back>
-                    <button class="btn btn-sm btn-success back" ng-click="vm.printNotice('annountment-body');" ng-disabled="vm.isCommit"><span class="glyphicon glyhicon-print"></span>打印</button>
-
+                    <button class="btn btn-sm btn-success back" ng-click="vm.printNotice();" ng-disabled="vm.isCommit"><span class="glyphicon glyhicon-print"></span>打印</button>
                 </td>
                 <td style="text-align: right;">
                     <span >发布人：{{vm.annountment.issueUser}}</span>
