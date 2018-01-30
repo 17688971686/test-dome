@@ -58,7 +58,7 @@
     <div class="well well-sm">
         会议室查询：
         <select ng-model="vm.search.mrID" name="mrID" ng-change="vm.findMeeting()">
-            <option ng-repeat="x in vm.meetings" value="{{x.id}}" ng-selected="vm.search.mrID == x.id">{{x.mrName}}</option>
+            <option ng-repeat="x in vm.meetings |filter:{mrStatus:'1'}" value="{{x.id}}" ng-selected="vm.search.mrID == x.id">{{x.mrName}}</option>
         </select>
         <span ng-show="vm.model.businessType && vm.model.businessId "><go-back></go-back></span>
         <button type="button" class="btn btn-sm btn-primary" ng-click="vm.exportThisWeekStage()" value="">

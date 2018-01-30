@@ -42,18 +42,22 @@
          * 查看拟补充资料函详情
          * @param item
          */
-        vm.showSuppLetterDetail = function(item){
-            vm.suppletter = item || {};
+        vm.showSuppLetterDetail = function(id){
             vm.isDisplay=true;
-            $("#suppLetterDetailDiv").kendoWindow({
-                width: "70%",
-                height: "620px",
-                title: "拟补充资料函详情",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
+            vm.id=id;
+            addSuppLetterQuerySvc.getaddSuppLetterQueryById(vm,function (data) {
+                vm.suppletter =data;
+                $("#suppLetterDetailDiv").kendoWindow({
+                    width: "70%",
+                    height: "620px",
+                    title: "拟补充资料函详情",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            });
+
         }
 
     }

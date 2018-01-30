@@ -233,6 +233,10 @@
                 if (!options.vm.sysFile.businessId) {
                     bsWin.alert("请先保存业务数据！");
                 } else {
+                    //B、清空上一次的上传文件的预览窗口
+                    options.vm.sysFile.sysBusiType="";
+                    angular.element('#sysfileinput').fileinput('clear');
+                    //E、清空上一次的上传文件的预览窗口
                     $("#commonUploadWindow").kendoWindow({
                         width: sysFileDefaults.width,
                         height: sysFileDefaults.height,

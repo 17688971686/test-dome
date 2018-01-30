@@ -1,9 +1,9 @@
 (function(){
     'use strict';
     angular.module('app').controller('reviewFeeCtrl' , reviewFee);
-    reviewFee.$inject = [ 'reviewFeeSvc' , 'expertReviewSvc' , 'bsWin' , '$state','$rootScope'];
+    reviewFee.$inject = [ 'reviewFeeSvc' , 'expertReviewSvc' , 'bsWin' , '$state','$rootScope','signSvc'];
 
-    function reviewFee(reviewFeeSvc , expertReviewSvc , bsWin , $state,$rootScope){
+    function reviewFee(reviewFeeSvc , expertReviewSvc , bsWin , $state,$rootScope,signSvc){
         var vm = this;
         vm.title = '项目列表';
         vm.reviewFee = {};
@@ -192,7 +192,11 @@
         vm.detail = function(businessId , businessType){
             vm.saveView();
             if(businessType.trim() == "SIGN"){
-                $state.go("signDetails" , {signid : businessId});
+                //先获取到processInstanceId流程实例id
+                signSvc.initFlowPageData(businessId, function (data) {
+                    vm.model = data;
+                    $state.go("signDetails", {signid: businessId,processInstanceId:vm.model.processInstanceId});
+                });
             }
             if(businessType.trim() == "TOPIC"){
                 $state.go("flowDetail" , {businessKey : businessId });

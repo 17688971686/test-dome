@@ -6,6 +6,7 @@ import cs.domain.project.ProjectStop;
 import cs.domain.project.Sign;
 import cs.domain.sys.Log;
 import cs.domain.sys.Workday;
+import cs.model.project.ProjectStopDto;
 import cs.quartz.unit.QuartzUnit;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
@@ -100,9 +101,9 @@ public class SignCountWorkdayExecute implements Job {
                 }
 
                 //3、通过收文ID查找 项目暂停情况,并计算项目总共暂停了几个工作日
-                List<ProjectStop> projectStopList = projectStopService.findProjectStopBySign(sign.getSignid());
+                List<ProjectStopDto> projectStopList = projectStopService.findProjectStopBySign(sign.getSignid());
                 float stopWorkday = 0;
-                for (ProjectStop ps : projectStopList) {
+                for (ProjectStopDto ps : projectStopList) {
                     //记录实际暂停的工作日
                     stopWorkday += ps.getPausedays() == null?0:ps.getPausedays();
                 }

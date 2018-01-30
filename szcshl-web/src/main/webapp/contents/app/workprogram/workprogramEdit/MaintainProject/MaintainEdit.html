@@ -2,6 +2,10 @@
 
 <!--S 项目建议书/可行性研究报告/项目概算/其他 -->
 <!--  s table-->
+<a data-toggle="collapse" data-target="#aswp_8">
+    [协办分支_{{vm.work.orgName}}_工作方案]
+</a>
+<div id="aswp_8" class="collapse in" >
 <table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
     <caption class="text-center">
         <p style="float:left;">
@@ -333,12 +337,12 @@
     </tr>
     </tbody>
 </table>
-
-<div ng-repeat="x in vm.assistant">
-<!--    <a data-toggle="collapse" data-target="#aswp_{{$index}}">
-        [协办分支_}{{w.branchId}_工作方案]
-    </a>-->
-    <div id="aswp_{{$index}}" class="collapse in" >
+</div>
+<div ng-repeat="x in vm.assistant" class="collapse in">
+    <a data-toggle="collapse" data-target="#aswp_{{$index+2}}">
+        [协办分支_{{x.orgName}}_工作方案]
+    </a>
+    <div id="aswp_{{$index+2}}" class="collapse in">
 <table class="table table-bordered">
     <caption class="text-center">
         <p class="h3">

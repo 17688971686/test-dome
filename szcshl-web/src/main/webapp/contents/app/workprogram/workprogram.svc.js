@@ -361,9 +361,9 @@
                         }
                         //重新赋值个各个工作方案的所属部门
                         for(var i=0;i< vm.assistant.length;i++){
-                            if(vm.assistant[i].branchId==i+2){//协办分支
-                                vm.assistant[i].orgName=vm.reviewOrgName[i+1];
-                            }
+
+                                vm.assistant[i].orgName=vm.reviewOrgName[vm.assistant[i].branchId-1];
+
                         }
                     }
 

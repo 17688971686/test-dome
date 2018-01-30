@@ -51,6 +51,7 @@
             }
 
             var httpSuccess=function success(response){
+                console.log(response);
                 if(response.data){
                     bsWin.alert("该项目暂停申请正在处理");
                 }else{

@@ -19,7 +19,6 @@
             signSvc.initFlowPageData(vm.model.signid, function (data) {
                 vm.model = data;
                 vm.dispatchDoc=vm.model.dispatchDocDto;
-                console.log(  vm.dispatchDoc);
                 if(vm.model.workProgramDtoList){
                     vm.workList=vm.model.workProgramDtoList;
                     //找出主方案，取出部门
@@ -34,9 +33,7 @@
                     }
                      //重新赋值个各个工作方案的所属部门
                     for(var i=0;i< vm.workList.length;i++){
-                        if(vm.model.workProgramDtoList[i].branchId==i+1){
-                            vm.workList[i].orgName=vm.reviewOrgName[i];
-                        }
+                            vm.workList[i].orgName=vm.reviewOrgName[vm.model.workProgramDtoList[i].branchId-1];
                     }
                 }
             });

@@ -380,7 +380,6 @@
 
         //S_startFlow
         function startFlow(id, callBack) {
-            console.log(id);
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/annountment/startFlow",

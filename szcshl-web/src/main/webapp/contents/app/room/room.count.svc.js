@@ -127,7 +127,7 @@
                 },
                 {
                     field: "addressName",
-                    title: "会议室",
+                    title: "会议室地点",
                     width: "20%",
                     filterable: false
                 },

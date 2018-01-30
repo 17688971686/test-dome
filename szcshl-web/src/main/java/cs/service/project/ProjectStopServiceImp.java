@@ -30,6 +30,8 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.apache.commons.collections.ArrayStack;
+import org.apache.commons.collections.BagUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
@@ -67,14 +69,20 @@ public class ProjectStopServiceImp implements ProjectStopService {
 
     @Override
     @Transactional
-    public List<ProjectStop> findProjectStopBySign(String signId) {
+    public List<ProjectStopDto> findProjectStopBySign(String signId) {
 
         HqlBuilder hqlBuilder = HqlBuilder.create();
 
-        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId");
+        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId"+" order by  createdDate desc");
         hqlBuilder.setParam("signId", signId);
         List<ProjectStop> psList = projectStopRepo.findByHql(hqlBuilder);
-        return psList;
+        List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
+        for(ProjectStop pt : psList){
+            ProjectStopDto projectStopDto=new ProjectStopDto();
+            BeanCopierUtils.copyPropertiesIgnoreNull(pt, projectStopDto);
+            projectStopDtoList.add(projectStopDto);
+        }
+        return projectStopDtoList;
     }
 
     /**
@@ -360,7 +368,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
                 //暂停时间，如果没有，就按审批通过算起。有就按暂停日期算起
                 if(null == projectStop.getPausetime() || DateUtils.daysBetween(new Date(),projectStop.getPausetime()) == 0){
                     projectStop.setPausetime(new Date());
-                    projectStop.setIsOverTime(Constant.EnumState.PROCESS.getValue());
+                    projectStop.setIsOverTime(Constant.EnumState.YES.getValue());
                     Sign sign = projectStop.getSign();
                     //如果领导同意，则将流程暂停
                     if(Constant.EnumState.YES.getValue().equals(isactive) ||isactive==null){
@@ -368,13 +376,14 @@ public class ProjectStopServiceImp implements ProjectStopService {
                         if(!stopResult.isFlag()){
                             return stopResult;
                         }
+                        //更改项目状态
+                        sign.setSignState(Constant.EnumState.STOP.getValue());
+                        sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
+                        signRepo.save(sign);
+
                     }
-                    //更改项目状态
-                    sign.setSignState(Constant.EnumState.STOP.getValue());
-                    sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
-                    signRepo.save(sign);
                 }else{
-                    projectStop.setIsOverTime(Constant.EnumState.NO.getValue());
+                    projectStop.setIsOverTime(Constant.EnumState.PROCESS.getValue());
                 }
                 projectStop.setLeaderId(SessionUtil.getUserId());
                 projectStop.setLeaderName(SessionUtil.getDisplayName());

@@ -61,7 +61,12 @@
         // S_跳转到 工作方案 编辑页面
         vm.addWorkProgram = function () {
             if( vm.model.processInstanceId){
-                $state.go('workprogramEdit', {signid: vm.model.signid,isControl:true});
+                if(vm.model.workProgramDtoList){
+                    $state.go('workprogramEdit', {signid: vm.model.signid,isControl:true});
+                }else{
+                    bsWin.alert("该项目还没有填写工作方案");
+                }
+
             }else{
                 bsWin.alert("该项目还没有发起流程");
             }
@@ -70,6 +75,7 @@
         // S_跳转到 发文 编辑页面
         vm.addDisPatch = function () {
          if( vm.model.processInstanceId){
+          if(vm.model.dispatchDocDto){
             //如果是未关联，并且是可研或者概算阶段，提醒是否要关联
             if ((!vm.model.isAssociate || vm.model.isAssociate == 0) &&
                 (signcommon.getReviewStage().STAGE_STUDY == vm.model.reviewstage || signcommon.getReviewStage().STAGE_BUDGET == vm.model.reviewstage)) {
@@ -108,14 +114,22 @@
             } else {
                 $state.go('dispatchEdit', {signid: vm.model.signid,isControl:true});
             }
+           }else{
+              bsWin.alert("该项目还没有填写发文");
+             }
          }else{
                 bsWin.alert("该项目还没有发起流程");
             }
         }// E_跳转到 发文 编辑页面
-
+// E_跳转到 发文 编辑页面
         vm.addDoFile = function () {
             if( vm.model.processInstanceId) {
-                $state.go('fileRecordEdit', {signid: vm.model.signid,isControl:true});
+                if(vm.modle.fileRecordDto){
+                    $state.go('fileRecordEdit', {signid: vm.model.signid,isControl:true});
+                }else{
+                    bsWin.alert("该项目还没有填写归档");
+                }
+
             }else{
                 bsWin.alert("该项目还没有发起流程");
             }
