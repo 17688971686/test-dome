@@ -48,7 +48,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.BASE64Decoder;
+import org.apache.commons.codec.binary.Base64;
 import java.io.ByteArrayInputStream;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -1047,8 +1047,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             Ftp f = sysFile.getFtp();
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getUploadConfig(f);
-            BASE64Decoder decoder = new BASE64Decoder();
-            boolean uploadResult = ftpUtils.putFile(k, removeRelativeUrl, uploadFileName,new ByteArrayInputStream(decoder.decodeBuffer(base64String)));
+            Base64 decoder = new Base64();
+            boolean uploadResult = ftpUtils.putFile(k, removeRelativeUrl, uploadFileName,new ByteArrayInputStream(decoder.decode(base64String)));
             if (uploadResult) {
                 //保存数据库记录
                 sysFile.setModifiedBy(SessionUtil.getDisplayName());
