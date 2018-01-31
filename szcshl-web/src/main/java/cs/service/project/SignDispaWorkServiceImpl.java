@@ -69,10 +69,9 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         criteria = oDataObj.buildFilterToCriteria(criteria);
-        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.mUserId.getName(), SessionUtil.getUserId()), Restrictions.like(SignDispaWork_.aUserID.getName(), SessionUtil.getUserId())));
-        criteria.add(Restrictions.or(Restrictions.ne(SignDispaWork_.signState.getName(),Constant.EnumState.DELETE.getValue())));
-
-        //criteria.add(Restrictions.like(SignDispaWork_.aUserID.getName() , SessionUtil.getUserId()));
+        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.mUserId.getName(), SessionUtil.getUserId()), Restrictions.like(SignDispaWork_.aUserID.getName(), "%"+SessionUtil.getUserId()+"%")));
+        criteria.add(Restrictions.ne(SignDispaWork_.signState.getName(),Constant.EnumState.DELETE.getValue()));
+     /*   criteria.add(Restrictions.like(SignDispaWork_.aUserID.getName() ,"%"+SessionUtil.getUserId()+"%"));*/
         //统计总数
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         pageModelDto.setCount(totalResult);

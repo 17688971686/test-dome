@@ -207,13 +207,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         //评审、函次数
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select t.expertid,count(t.expertid)reviewCount,t.isletterrw from (   ");
-        sqlBuilder.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_sign s   ");
-        sqlBuilder.append("left join cs_expert_review r  ");
-        sqlBuilder.append("on s.signid = r.businessid  ");
+        sqlBuilder.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_expert e    ");
         sqlBuilder.append("left join cs_expert_selected a  ");
-        sqlBuilder.append("on s.signid = a.businessid  ");
-        sqlBuilder.append("left join cs_expert e  ");
-        sqlBuilder.append("on a.expertid = e.expertid) t  ");
+        sqlBuilder.append("on e.expertid = a.expertid   ");
+        sqlBuilder.append("left join cs_expert_review r  ");
+        sqlBuilder.append("on a.expertreviewid = r.id  ");
+        sqlBuilder.append("left join cs_sign s  on r.businessid=s.signid) t  ");
         sqlBuilder.append("where t.expertid is not null   ");
         if(null != expertReviewConSimpleDto){
             if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getName())){
@@ -238,13 +237,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         HqlBuilder sqlBuilder1 = HqlBuilder.create();
         sqlBuilder1.append("select t1.expertid,sum(t1.reviewCount) from (  ");
         sqlBuilder1.append("select t.expertid,t.expertno,count(t.expertid) reviewCount,t.isletterrw  from (   ");
-        sqlBuilder1.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_sign s  ");
-        sqlBuilder1.append("left join cs_expert_review r  ");
-        sqlBuilder1.append("on s.signid = r.businessid  ");
+        sqlBuilder1.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_expert e   ");
         sqlBuilder1.append("left join cs_expert_selected a  ");
-        sqlBuilder1.append("on s.signid = a.businessid  ");
-        sqlBuilder1.append("left join cs_expert e  ");
-        sqlBuilder1.append(" on a.expertid = e.expertid) t  ");
+        sqlBuilder1.append("on e.expertid = a.expertid   ");
+        sqlBuilder1.append("left join cs_expert_review r  ");
+        sqlBuilder1.append("on a.expertreviewid = r.id  ");
+        sqlBuilder1.append("left join cs_sign s  on r.businessid=s.signid) t  ");
         sqlBuilder1.append(" where t.expertid is not null  ");
         if(null != expertReviewConSimpleDto){
             if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getName())){
