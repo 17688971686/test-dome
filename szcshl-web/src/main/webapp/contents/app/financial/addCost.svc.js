@@ -12,13 +12,13 @@
             vm.financial = {};
             //该判断用于项目签收流程中的财务办理
             if (object.businessId == undefined) {
-                if(object.signid == undefined){
+                if (object.signid == undefined) {
                     object.businessId = object.signId;
-                }else{
+                } else {
                     object.businessId = object.signid;
                 }
             }
-            if(!object.projectname){
+            if (!object.projectname) {
                 object.projectname = object.projectName;
             }
 
@@ -63,17 +63,17 @@
              * @param index
              */
             /*vm.changeName = function (index, changeName) {
-                if (vm.financials.length > 0) {
-                    for (var i = 0; i < (vm.financials.length) - 1; i++) {
-                        if (i != index) {
-                            if (vm.financials[i].chargeName != undefined && vm.financials[i].chargeName == changeName) {
-                                bsWin.alert("该费用已经录入，不能重复录入！");
-                                vm.financials[index] = {};
-                            }
-                        }
-                    }
-                }
-            }*/
+             if (vm.financials.length > 0) {
+             for (var i = 0; i < (vm.financials.length) - 1; i++) {
+             if (i != index) {
+             if (vm.financials[i].chargeName != undefined && vm.financials[i].chargeName == changeName) {
+             bsWin.alert("该费用已经录入，不能重复录入！");
+             vm.financials[index] = {};
+             }
+             }
+             }
+             }
+             }*/
 
             //添加报销记录
             vm.addFinancial = function () {
@@ -94,14 +94,14 @@
                 var isValid = $("#fnFrom").valid();
                 if (isValid) {
                     //更新付款日期
-                    angular.forEach(vm.financials,function(f,index){
+                    angular.forEach(vm.financials, function (f, index) {
                         f.paymentData = vm.financial.paymentData;
                     })
                     //保存
                     financialManagerSvc.savefinancial(vm.financials, function (data) {
                         if (data.flag || data.reCode == 'ok') {
                             vm.financials = data.reObj;
-                            bsWin.success(data.reMsg,function(){
+                            bsWin.success(data.reMsg, function () {
                                 $("#" + id).data("kendoWindow").close();
                             });
                         } else {
@@ -136,7 +136,7 @@
 
                             }
                             financialManagerSvc.deleteFinancialManager(idsStr, function (data) {
-                               //删除成功后，总金额需要重新计算
+                                //删除成功后，总金额需要重新计算
                                 vm.countCost();
                             });
                         }
@@ -144,54 +144,50 @@
 
                 }
             }
-            vm.count=function(){//当输入框输入值时就计算
-                 vm.countCost();
+            vm.count = function () {//当输入框输入值时就计算
+                vm.countCost();
             }
+            //初始化报销费用列表
+            financialManagerSvc.initFinancialProject(vm.financial, function (data) {
+                //1、获取已经添加的费用列表
+                vm.financials = data.financiallist;
+                //如果已经有项目费用，则计算总额
+                if (vm.financials && vm.financials.length > 0) {
+                    vm.countCost();
+                    if (vm.financials[0].paymentData) {
+                        vm.financial.paymentData = (new Date((vm.financials[0].paymentData).CompatibleDate())).Format("yyyy-MM-dd");
+                    }
+                }
 
-            $("#" + id).kendoWindow({
-                width: "70%",
-                height: "560",
-                title: vm.windowName,
-                visible: false,
-                modal: true,
-                closable: true,
-                open: function () {
-                    //初始化报销费用列表
-                    financialManagerSvc.initFinancialProject(vm.financial, function (data) {
-                        //1、获取已经添加的费用列表
-                        vm.financials = data.financiallist;
-                        //如果已经有项目费用，则计算总额
-                        if (vm.financials && vm.financials.length > 0) {
-                            vm.countCost();
-                            if(vm.financials[0].paymentData){
-                                vm.financial.paymentData = (new Date((vm.financials[0].paymentData).CompatibleDate())).Format("yyyy-MM-dd");
-                            }
-                        }
+                //2、查找专家评审费
+                expertReviewSvc.initReview(vm.financial.businessId, "", function (data) {
+                    vm.expertReview = data;
+                });
 
-                        //2、查找专家评审费
-                        expertReviewSvc.initReview(vm.financial.businessId, "", function (data) {
-                            vm.expertReview = data;
-                        });
-
-                        //项目才有协审费，不是项目，没有协审费
-                        if (costType == "ASSIST") {
-                            assistCostCountSvc.findSignCostBySignId(vm.financial.businessId, function (data) {
-                                vm.signAssistCostCounList = data;
-                            });
-                        }
+                //项目才有协审费，不是项目，没有协审费
+                if (costType == "ASSIST") {
+                    assistCostCountSvc.findSignCostBySignId(vm.financial.businessId, function (data) {
+                        vm.signAssistCostCounList = data;
                     });
-                },
-                close: function () {
-                    vm.financial = {};
-                    vm.expertReview = {};
-                    vm.financials = {};
-                    vm.signAssistCostCounList = {};
-                },
-                refresh: function () {
+                }
+                $("#" + id).kendoWindow({
+                    width: "70%",
+                    height: "560",
+                    title: vm.windowName,
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    close: function () {
+                        vm.financial = {};
+                        vm.expertReview = {};
+                        vm.financials = {};
+                        vm.signAssistCostCounList = {};
+                    },
+                    actions: ["Pin", "Minimize", "Maximize", "close"]
+                }).data("kendoWindow").center().open();
+            });
 
-                },
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
+
         }
 
 
