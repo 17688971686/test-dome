@@ -64,20 +64,17 @@ public class ExpertController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name="专家信息导出Excel" , path ="exportToExcel" , method = RequestMethod.GET)
+    @RequestMapping(name="专家信息导出Excel" , path ="exportToExcel" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void expertDetailExport(HttpServletRequest request,HttpServletResponse resp ,@RequestParam String filterData ,@RequestParam String fileName){
+    public void expertDetailExport(HttpServletRequest request,HttpServletResponse resp ){
         ServletOutputStream sos = null;
         try {
-//            ODataObj odataObj = new ODataObj(request);
-//            odataObj.setTop(0);
-//            odataObj.setCount(false);
-//            PageModelDto<ExpertDto> expertDtoList = expertService.get(odataObj);
-            String title = java.net.URLDecoder.decode(fileName,"UTF-8");
-            String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
+            ODataObj odataObj = new ODataObj(request);
+            odataObj.setTop(0);
+            odataObj.setCount(false);
+            PageModelDto<ExpertDto> expertDtoList = expertService.get(odataObj);
             List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("专家类型");//选中的表字段
             List<Header> headerList = headerService.findHeaderByType("专家类型");//所有 表字段
-            List<ExpertDto> expertDtoList = expertService.exportData(filters);
             ExcelTools excelTools = new ExcelTools();
             String[] headerPair ;
             if(headerDtoList.size()>0) {
@@ -91,7 +88,8 @@ public class ExpertController {
                     headerPair[i] = headerList.get(i).getHeaderName() + "=" + headerList.get(i).getHeaderKey();
                 }
             }
-            HSSFWorkbook wb = excelTools.createExcelBook("专家信息" , headerPair , expertDtoList , ExpertDto.class);
+            String title = "专家信息";
+            HSSFWorkbook wb = excelTools.createExcelBook(title , headerPair , expertDtoList.getValue() , ExpertDto.class);
             resp.setContentType("application/vnd.ms-excel;charset=GBK");
             resp.setHeader("Content-type", "application/x-msexcel");
             resp.setHeader("Content_Length", String.valueOf(wb.getBytes().length));
@@ -112,7 +110,6 @@ public class ExpertController {
                 e.printStackTrace();
 
             }
-
         }
     }
 

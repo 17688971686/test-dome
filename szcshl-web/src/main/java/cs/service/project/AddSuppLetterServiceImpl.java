@@ -71,7 +71,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Autowired
     private SignBranchRepo signBranchRepo;
     @Autowired
-    private MonthlyNewsletterRepo monthlyNewsletterRepo;
+    private WorkProgramRepo workProgramRepo;
 
     /**
      * 保存补充资料函
@@ -503,7 +503,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                     addSuppLetter.setFilenum(fileNumValue);
                     addSuppLetter.setFileSeq(curYearMaxSeq);
                     //补充资料函的发文日期
-                    addSuppLetter.setDeptDirectorDate(new Date());
+                    addSuppLetter.setDisapDate(new Date());
                 }
                 if(!Validate.isString(addSuppLetter.getFilenum())){
                     new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
@@ -516,6 +516,13 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 addSuppLetter.setAppoveStatus(EnumState.YES.getValue());
                 addSuppLetterRepo.save(addSuppLetter);
 
+                //更新项目和工作方案是否有拟补充资料函字段信息
+                //updateSuppLetterState(addSuppLetter.getBusinessId(),addSuppLetter.getBusinessType(),addSuppLetter.getDisapDate());
+                //如果是项目，则更新项目补充资料函状态
+                if(Validate.isString(addSuppLetter.getBusinessType()) && Constant.BusinessType.SIGN.getValue().equals(addSuppLetter.getBusinessType())){
+                    signRepo.updateSuppLetterState(addSuppLetter.getBusinessId(),EnumState.YES.getValue(),addSuppLetter.getDisapDate());
+                    workProgramRepo.updateSuppLetterState(addSuppLetter.getBusinessId(),EnumState.YES.getValue(),addSuppLetter.getDisapDate());
+                }
                 break;
             default:
                 break;
@@ -542,6 +549,15 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    @Override
+    public void updateSuppLetterState(String businessId, String businessType, Date disapDate) {
+        //如果是项目，则更新项目补充资料函状态
+        if(Validate.isString(businessType) && Constant.BusinessType.SIGN.getValue().equals(businessType)){
+            signRepo.updateSuppLetterState(businessId,EnumState.YES.getValue(),disapDate);
+            workProgramRepo.updateSuppLetterState(businessId,EnumState.YES.getValue(),disapDate);
+        }
     }
 
     private String buildUser(List<User> userList) {

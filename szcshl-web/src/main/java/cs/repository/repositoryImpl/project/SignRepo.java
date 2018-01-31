@@ -6,6 +6,7 @@ import cs.domain.project.SignDispaWork;
 import cs.model.project.SignDto;
 import cs.repository.IRepository;
 
+import java.util.Date;
 import java.util.List;
 
 public interface SignRepo extends IRepository<Sign, String> {
@@ -76,4 +77,12 @@ public interface SignRepo extends IRepository<Sign, String> {
      * @return
      */
     ResultMsg saveReview(SignDto signDto);
+
+    /**
+     * 更新拟补充资料函状态
+     * @param businessId
+     * @param value
+     * @param disapDate
+     */
+    void updateSuppLetterState(String businessId, String value, Date disapDate);
 }

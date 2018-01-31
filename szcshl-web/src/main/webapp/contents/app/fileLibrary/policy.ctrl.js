@@ -26,9 +26,10 @@
             //创建附件对象
             vm.sysFile = {
                 businessId : vm.fileId,
-                mainId : '',
+                mainId : vm.fileId,
                 mainType : sysfileSvc.mainTypeValue().POLICYLIBRARY,
-                sysBusiType :vm.fileUrl == undefined ? "" : vm.fileUrl.substring(vm.fileUrl.lastIndexOf(sysfileSvc.mainTypeValue().POLICYLIBRARY),vm.fileUrl.lastIndexOf(vm.fileName))
+                sysBusiType :vm.fileUrl == undefined ? "" : vm.fileUrl.substring(vm.fileUrl.lastIndexOf(sysfileSvc.mainTypeValue().POLICYLIBRARY),vm.fileUrl.lastIndexOf(vm.fileName)),
+                showBusiType : false,
             };
             sysfileSvc.initUploadOptions({
                 inputId : "sysfileinput",

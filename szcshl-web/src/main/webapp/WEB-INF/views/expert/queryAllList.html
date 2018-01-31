@@ -38,11 +38,11 @@
 	    <button class="btn btn-sm btn-primary" ng-click="vm.search()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-search"></span>查询</button>
 		<button class="btn btn-sm btn-primary" ng-click="vm.formReset()" >重置</button>
 		<button class="btn btn-sm btn-success" ng-click="vm.exportToExcel()" ng-disabled="vm.isSubmit" >导出execl</button>
-        <!--<button class="btn btn-sm btn-primary" ng-click="vm.selectHeader()"> 表字段设置</button>-->
+        <button class="btn btn-sm btn-primary" ng-click="vm.selectHeader()">导出字段自定义</button>
 	</div>
 
 	<form class="well well-sm" id="searchform" name="searchform">
-		<!--<input name="state" type="hidden"  operator="ne"  value="5"/>排除已删除的专家-->
+		<input name="state" type="hidden"  operator="ne"  value="0"/><!--排除已删除的专家-->
 		<table style="width:100%">
 			<tr>
 				<td class="text-right" style="width:80px;">专家范围</td>

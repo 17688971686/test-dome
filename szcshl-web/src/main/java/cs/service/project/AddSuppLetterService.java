@@ -8,6 +8,7 @@ import cs.repository.odata.ODataObj;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -82,4 +83,12 @@ public interface AddSuppLetterService {
      * @return
      */
     ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto);
+
+	/**
+	 * 更新拟补充资料函状态
+	 * @param businessId
+	 * @param businessType
+	 * @param disapDate
+	 */
+	void updateSuppLetterState(String businessId, String businessType, Date disapDate);
 }

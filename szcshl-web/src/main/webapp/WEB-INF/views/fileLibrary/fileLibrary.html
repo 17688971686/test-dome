@@ -41,7 +41,7 @@
                 <span class="glyphicon glyphicon-plus"></span>新建文件
             </button>
         </div>
-        <table class="table table-bordered" style="width: 98%;">
+        <table class="table table-bordered" >
             <tr class="active">
                 <td style="width: 250px;" align="center">文件名称</td>
                 <td style="width: 200px;" align="center">附件</td>
@@ -51,27 +51,18 @@
                 <td style="text-align: center;">{{x.fileName}}</td>
                 <td style="text-align: center;">
                     <p ng-repeat="s in x.sysFileDtoList">
-                        <i class="fa fa-file-image-o" aria-hidden="true"  ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
-                        <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
-                        <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
-                        <i class="fa fa-file-powerpoint-o" aria-hidden="true" ng-show="x.fileType =='.pptx' || x.fileType =='.ppt'"></i>
-                        <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                        <i class="fa fa-file-image-o" aria-hidden="true"  ng-if="s.fileType =='.png' || s.fileType =='.jpg' || s.fileType =='.gif'"></i>
+                        <i class="fa fa-file-word-o" aria-hidden="true" ng-if="s.fileType =='.docx' || s.fileType =='.doc'"></i>
+                        <i class="fa fa-file-excel-o" aria-hidden="true" ng-if="s.fileType =='.xlsx' || s.fileType =='.xls'"></i>
+                        <i class="fa fa-file-powerpoint-o" aria-hidden="true" ng-if="s.fileType =='.pptx' || s.fileType =='.ppt'"></i>
+                        <i class="fa fa-file-pdf-o" aria-hidden="true" ng-if="s.fileType =='.pdf'"></i>
                         <a ng-click="vm.commonDownloadSysFile(s.sysFileId)">{{ s.showName }}</a>
-                        <button ng-click="vm.commonDownloadSysFile(s.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i
-                                class="fa fa-cloud-download" aria-hidden="true"></i>下载
-                        </button>
-                        <!-- word 类型，在线编辑 -->
-                        <span ng-if="s.fileType =='.docx' || s.fileType =='.doc' || s.fileType =='.xlsx' || s.fileType =='.xls' || s.fileType =='.ppt' || s.fileType =='.pptx'">
-                            <button ng-click="editFile(s.sysFileId,x.fileType)" class="btn btn-xs btn-primary"><span
-                                    class="glyphicon glyphicon-pencil"></span>编辑</button>
-                        </span>
-                        <!-- pdf 文件-->
-                        <span ng-if="s.fileType =='.pdf'">
-                            <button ng-click="previewFile(s.sysFileId,'pdf');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>查看</button>
+                        <span ng-if="s.fileType =='.pdf' || s.fileType =='.docx' || s.fileType =='.doc' || s.fileType =='.xlsx' || s.fileType =='.xls' || s.fileType =='.ppt' || s.fileType =='.pptx' ">
+                            <button ng-click="previewFile(s.sysFileId,'pdf');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>预览</button>
                         </span>
                         <!-- image 文件-->
                         <span ng-if="s.fileType =='.png' || s.fileType =='.jpg' || s.fileType =='.gif'">
-                            <button ng-click="previewFile(s.sysFileId,'image');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>查看</button>
+                            <button ng-click="previewFile(s.sysFileId,'image');" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-search"></span>预览</button>
                         </span>
                     </p>
                 </td>
@@ -93,7 +84,7 @@
                 <span class="glyphicon glyphicon-ok"></span>保存
             </button>
         </div>
-        <table style="width: 100%;">
+        <table class="table table-bordered">
             <tr >
                 <td class="text-right" style="width: 120px; height: 40px;">文件夹名称<span class="required">*</span></td>
                 <td>

@@ -13,10 +13,15 @@ import cs.domain.project.Sign_;
 import cs.model.project.SignDto;
 import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.DateType;
+import org.hibernate.type.DoubleType;
 import org.hibernate.type.IntegerType;
+import org.hibernate.type.Type;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -253,5 +258,27 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
 //        this.executeHql(hqlBuilder);
 
         return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "保存成功！");
+    }
+
+    /**
+     * 更新拟拟补充资料函状态
+     * @param businessId
+     * @param value
+     * @param disapDate
+     */
+    @Override
+    public void updateSuppLetterState(String businessId, String value, Date disapDate) {
+        try{
+            HqlBuilder sqlBuilder = HqlBuilder.create();
+            sqlBuilder.append(" update cs_sign ");
+            sqlBuilder.append(" set " + Sign_.isHaveSuppLetter.getName() + " =:stateValue ").setParam("stateValue", value);
+            sqlBuilder.append(" ,"+Sign_.suppLetterDate.getName()+" = to_date(:disapDate,'yyyy-mm-dd') ").setParam("disapDate",DateUtils.converToString(disapDate,"yyyy-MM-dd"));
+            sqlBuilder.append(" where " + Sign_.signid.getName() + " =:signid ").setParam("signid", businessId);
+            sqlBuilder.append(" and "+ Sign_.isHaveSuppLetter.getName() +" is null or "+ Sign_.isHaveSuppLetter.getName() +" != '9'");
+            executeSql(sqlBuilder);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }

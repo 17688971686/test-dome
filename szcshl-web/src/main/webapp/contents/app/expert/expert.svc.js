@@ -623,29 +623,29 @@
 
         //S_导出综合查询的excel功能
         function exportToExcel(vm){
-            var fileName = escape(encodeURIComponent(vm.fileName));
-            if(vm.expert && vm.expert !=undefined){
-                var filters = JSON.stringify(vm.expert);
-                var filterDate = filters.substring(1,filters.length-1);
-            }
-            window.open(rootPath + "/expert/exportToExcel?filterData=" + escape(encodeURIComponent(filterDate)) + "&fileName=" +fileName);
-           /* var httpOptions ={
+            var httpOptions ={
                 method : 'post',
                 url : rootPath+"/expert/exportToExcel",
                 responseType: 'arraybuffer',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
-                data: $.param({$filter:common.buildOdataFilter($("#searchform")) }),
+                data: {$filter:common.buildOdataFilter($("#searchform")) },
+                transformRequest: function(obj) {
+                    var str = [];
+                    for(var p in obj){
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    }
+                    return str.join("&");
+                }
             }
             var httpSuccess = function success(response){
                 var blob = new Blob([response.data] , {type : "application/vnd.ms-excel"});
                 FileSaver.saveAs(blob, "专家信息.xls");
-                //common.downloadReport(response.data , "专家信息.xls" , "vnd.ms-excel");
             }
             common.http({
                 $http : $http ,
                 httpOptions : httpOptions,
                 success : httpSuccess
-            });*/
+            });
 
         }//E_exportToExcel
 
