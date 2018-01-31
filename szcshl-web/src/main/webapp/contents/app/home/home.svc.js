@@ -24,7 +24,7 @@
                 var httpOptions = {
                     method: 'put',
                     url: url_account_password,
-                    data: vm.model.password
+                    params:{password : vm.model.password}
                 }
 
                 var httpSuccess = function success(response) {

@@ -86,7 +86,7 @@ public class AccountController {
     @RequestMapping(name = "修改密码", path = "password", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
-    public ResultMsg password(@RequestBody String password) {
+    public ResultMsg password(@RequestParam String password) {
         userService.changePwd(password);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
