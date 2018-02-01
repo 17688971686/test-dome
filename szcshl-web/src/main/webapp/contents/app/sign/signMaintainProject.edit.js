@@ -11,7 +11,7 @@
         vm.model = {};
         vm.model.signid = $state.params.signid;   //业务ID
         vm.model.processInstanceId = $state.params.processInstanceId;	//流程实例ID
-        vm.signWorkList = [];
+        vm.signWorkList = {};
         //初始化附件上传控件
         vm.initFileUpload = function () {
             //创建附件对象
@@ -198,7 +198,7 @@
             if(signState == 9){
                 bsWin.alert("该项目已归档，不能再修改！");
             }else{
-                vm.signWorkList = [];
+                vm.signWorkList = {};
                 signSvc.findExpertReview(signid,function(data){
                     if(data || data.length > 0){
                         vm.signWorkList = data;
@@ -214,6 +214,10 @@
                     }
                 });
             }
+        }
+
+        vm.colseOpenWin = function () {
+            window.parent.$("#signWorkDiv").data("kendoWindow").close();
         }
 
     }

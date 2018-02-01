@@ -177,7 +177,6 @@
 										<input disabled type="radio" name="option" id="radio2" ng-model="vm.model.ishasreviewcost" ng-true-value="0" ng-false-value="9">
 										<label class="radio" for="radio2"></label>
 									</label>
-
 								</div>
 							</div>
 						</div>
@@ -234,17 +233,17 @@
 		</tr>
 		<tbody >
 		<tr >
-			<td rowspan="{{vm.signWorkList.signWorkDtoList.length + 1}}" style="vertical-align: middle;">{{vm.signWorkList.projectName}}</td>
+			<td class="text-center" rowspan="{{vm.signWorkList.signWorkDtoList.length + 1}}" style="vertical-align: middle;">{{vm.signWorkList.projectName}}</td>
 			<td class="text-center" rowspan="{{vm.signWorkList.signWorkDtoList.length + 1}}" style="vertical-align: middle;">{{vm.signWorkList.reviewstage}}</td>
 			<td class="text-center" rowspan="{{vm.signWorkList.signWorkDtoList.length + 1}}" style="vertical-align: middle;">{{vm.signWorkList.signdate}}</td>
 			<td class="text-center">{{vm.signWorkList.orgName}}</td>
 			<td class="text-center">{{vm.signWorkList.displaynames}}</td>
-			<td class="text-center"><a class="btn btn-sm btn-primary" ui-sref="expertReviewEdit({businessId:vm.signWorkList.signId,minBusinessId:vm.signWorkList.wpid,businessType:vm.signWorkList.businessType})">修改</a></td>
+			<td class="text-center"><a class="btn btn-sm btn-primary" ng-click="vm.colseOpenWin();" ui-sref="expertReviewEdit({businessId:vm.signWorkList.signId,minBusinessId:vm.signWorkList.wpid,businessType:vm.signWorkList.businessType})">修改</a></td>
 		</tr>
 		<tr ng-repeat="f in vm.signWorkList.signWorkDtoList" ng-if="vm.signWorkList.signWorkDtoList && vm.signWorkList.signWorkDtoList.length > 0">
 			<td class="text-center">{{f.orgName}}</td>
 			<td class="text-center">{{f.displaynames}}</td>
-			<td class="text-center"><a class="btn btn-sm btn-primary" ui-sref="expertReviewEdit({businessId:vm.signWorkList.signId,minBusinessId:f.wpid,businessType:f.businessType})">修改</a></td>
+			<td class="text-center"><a class="btn btn-sm btn-primary" ng-click="vm.colseOpenWin();" ui-sref="expertReviewEdit({businessId:vm.signWorkList.signId,minBusinessId:f.wpid,businessType:f.businessType})">修改</a></td>
 		</tr>
 		</tbody>
 	</table>
