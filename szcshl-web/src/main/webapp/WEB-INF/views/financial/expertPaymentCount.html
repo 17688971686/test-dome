@@ -17,7 +17,7 @@
 			<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>-->
 			<button ng-click="vm.getExpertCoustDetail()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">查看详细</button>
 			<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.excelExport()">导出EXCLE</button>
-			<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
+			<button class="btn btn-sm btn-primary" ng-click="vm.printFile()">打印</button>
 		</div>
 	</form>
 	<table class="table table-bordered">

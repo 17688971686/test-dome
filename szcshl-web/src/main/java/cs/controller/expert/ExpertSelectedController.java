@@ -1,10 +1,9 @@
 package cs.controller.expert;
 
 import cs.ahelper.IgnoreAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.ExcelTools;
+import cs.common.utils.*;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.odata.ODataObj;
@@ -20,9 +19,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 抽取专家 控制层
@@ -216,6 +218,76 @@ public class ExpertSelectedController {
             sos.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 打印预览
+     *
+     * @param time
+     * @param response
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "打印预览", path = "printPreview/{time}", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void printPreview(@PathVariable String time, HttpServletResponse response) {
+        InputStream inputStream = null;
+        File file = null;
+        File printFile = null;
+        try {
+            String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Constant.Template.WORD_SUFFIX.getKey();
+            String filePath = path.substring(0, path.lastIndexOf(".")) + Constant.Template.PDF_SUFFIX.getKey();
+            String fileName = "";
+           ExpertCostCountDto expertCostCountDto=new ExpertCostCountDto();
+           expertCostCountDto.setBeginTime(time);
+           ResultMsg resultMsg=expertSelectedService.expertCostTotal(expertCostCountDto);
+            Map<String, Object> expertFileDatas = new HashMap<>();
+            String year=time.substring(0,4);
+            String month=time.substring(5,7);
+            String times=year+"年"+month+"月";
+            expertFileDatas.put("time", times);
+            Map<String,ArrayList> map=(Map)resultMsg.getReObj();
+            for (String key:map.keySet()){
+                expertFileDatas.put("expertCostTotalInfo",map.get(key));
+            }
+           file = TemplateUtil.createDoc(expertFileDatas, Constant.Template.EXPERT_PAYTAXES.getKey(), path);
+
+            if (file != null) {
+                OfficeConverterUtil.convert2PDF(path, filePath);
+            }
+            printFile = new File(filePath);
+            inputStream = new BufferedInputStream(new FileInputStream(printFile));
+
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);  //读取文件流
+            inputStream.close();
+
+            response.reset();  //重置结果集
+            response.setContentType("application/pdf");
+            response.addHeader("Content-Length", "" + printFile.length());  //返回头 文件大小
+            response.setHeader("Content-Disposition", "inline;filename=" + new String(fileName.getBytes(), "ISO-8859-1"));
+
+            //获取返回体输出权
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            os.write(buffer); // 输出文件
+            os.flush();
+            os.close();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (file != null) {
+                    Tools.deleteFile(file);
+                }
+                if (printFile != null) {
+                    Tools.deleteFile(printFile);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -245,10 +245,20 @@
                         var isCanEdit = true;
                         //已发布或者走流程的不能删除
                         if(item.issue == '9' || item.processInstanceId){
-                            isCanDel = false;
+                            if(item.issue=='0' && item.appoveStatus == '9'){
+                                 isCanDel = true;
+                            }else{
+                                isCanDel = false;
+                            }
+
                         }
                         if(item.processInstanceId){
-                            isCanEdit = false;
+                            if(item.issue == '0' && item.appoveStatus == '9'){
+                                isCanEdit = true;
+                            }else{
+                                isCanEdit = false;
+                            }
+
                         }
                         return common.format(
                             $('#columnBtns').html(),

@@ -75,8 +75,10 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         PageModelDto<ExpertReviewCondDto> pageModelDto = new PageModelDto<ExpertReviewCondDto>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select t.* from (   ");
-        sqlBuilder.append("select e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw  from cs_expert e ");
-        sqlBuilder.append("left join cs_expert_selected a  ");
+        sqlBuilder.append("select e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw,a.isConfrim,a.isJoin  from cs_expert e ");
+        sqlBuilder.append("left join ( select ces.*  from cs_expert_selected ces ");//判断专家抽取到和去参加
+        sqlBuilder.append(" where  ces.isJoin='9' and ces.isConfrim='9' ) a  ");
+     /*   sqlBuilder.append("left join cs_expert_selected a ");*/
         sqlBuilder.append("on e.expertid = a.expertid   ");
         sqlBuilder.append("left join cs_expert_review r  ");
         sqlBuilder.append("on a.expertreviewid = r.id  ");
@@ -208,7 +210,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select t.expertid,count(t.expertid)reviewCount,t.isletterrw from (   ");
         sqlBuilder.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_expert e    ");
-        sqlBuilder.append("left join cs_expert_selected a  ");
+        sqlBuilder.append("left join ( select ces.*  from cs_expert_selected ces ");//判断专家抽取到和去参加
+        sqlBuilder.append(" where  ces.isJoin='9' and ces.isConfrim='9' ) a  ");
         sqlBuilder.append("on e.expertid = a.expertid   ");
         sqlBuilder.append("left join cs_expert_review r  ");
         sqlBuilder.append("on a.expertreviewid = r.id  ");
@@ -238,7 +241,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder1.append("select t1.expertid,sum(t1.reviewCount) from (  ");
         sqlBuilder1.append("select t.expertid,t.expertno,count(t.expertid) reviewCount,t.isletterrw  from (   ");
         sqlBuilder1.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_expert e   ");
-        sqlBuilder1.append("left join cs_expert_selected a  ");
+        sqlBuilder1.append("left join ( select ces.*  from cs_expert_selected ces ");//判断专家抽取到和去参加
+        sqlBuilder1.append(" where  ces.isJoin='9' and ces.isConfrim='9' ) a  ");
         sqlBuilder1.append("on e.expertid = a.expertid   ");
         sqlBuilder1.append("left join cs_expert_review r  ");
         sqlBuilder1.append("on a.expertreviewid = r.id  ");
@@ -352,14 +356,20 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         /*HqlBuilder sqlBuilder1 = HqlBuilder.create();
         sqlBuilder1.append("select t1.expertid,t1.name,t1.company,sum(t1.reviewCount) from (  ");
         sqlBuilder1.append("select t.expertid,t.expertno,t.name,t.company,count(t.expertid) reviewCount,t.isletterrw  from (   ");
-        sqlBuilder1.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_sign s  ");
+        sqlBuilder1.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_expert e  ");
+        sqlBuilder1.append("left join cs_expert_selected a ");
+        sqlBuilder1.append("on e.expertid = a.expertid   ");
         sqlBuilder1.append("left join cs_expert_review r  ");
+        sqlBuilder1.append("on a.expertreviewid = r.id  ");
+        sqlBuilder1.append("left join cs_sign s  on r.businessid=s.signid) t  ");
+        sqlBuilder1.append("where t.expertid is not null  ");
+        /*     sqlBuilder1.append("left join cs_expert_review r  ");
         sqlBuilder1.append("on s.signid = r.businessid  ");
         sqlBuilder1.append("left join cs_expert_selected a  ");
         sqlBuilder1.append("on s.signid = a.businessid  ");
         sqlBuilder1.append("left join cs_expert e  ");
         sqlBuilder1.append(" on a.expertid = e.expertid) t  ");
-        sqlBuilder1.append(" where t.expertid is not null  ");
+        sqlBuilder1.append(" where t.expertid is not null  ");*/
         if(null != expertReviewConSimpleDto){
             if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getName())){
                 sqlBuilder1.append("and t.name like '%"+expertReviewConSimpleDto.getName()+"%'  ");
@@ -866,7 +876,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 if(weakTemp.compareTo(endDate)<=0){
                     if(DateUtils.getSeason(begDate)== begseason){
                         //当前季度内参会次数大于12
-                        if(revCount>12){
+                        if(revCount>=12){
                             expertCompliList.add(tempArr);
                             revCount = 0;
                             break;
@@ -874,7 +884,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                         //按周计算  周参会次数大于2
                        int weakCount = getExpertRevTimes(begDate,weakTemp,expertId);
                         revCount += weakCount;
-                        if(weakCount>2){
+                        if(weakCount>=0){
                             expertCompliList.add(tempArr);
                             revCount = 0;
                             break;
