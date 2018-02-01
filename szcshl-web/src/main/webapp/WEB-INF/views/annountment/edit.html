@@ -32,16 +32,16 @@
                 </td>
             </tr>
              <tr ng-hide="vm.annountment.processInstanceId">
-                 <td class="text-right">是否需要审批：{{vm.annountment.isNeed}} </td>
+                 <td class="text-right">是否需要审批：</td>
                  <td >
-                     <select ng-model="vm.isNeed" ng-change="vm.annountment.issue=''">
+                     <select ng-model="vm.isNeed" >
                          <option value="0">需要</option>
                          <option value="1">不需要</option>
                      </select>
                  </td>
              </tr>
             <tr ng-hide="vm.annountment.processInstanceId">
-                <td class="text-right">是否置顶：{{vm.annountment.isStick}} </td>
+                <td class="text-right">是否置顶：</td>
                 <td >
                 	<input type="checkbox" ng-model="vm.annountment.isStick "  name="isStick" ng-true-value="9" ng-checked=" vm.annountment.isStick == 9 || vm.annountment.isStick == '9'"/>是
                 	<input type="checkbox" ng-model="vm.annountment.isStick "  name="isStick" ng-true-value="0" ng-checked="!(vm.annountment.isStick) || vm.annountment.isStick == 0 || vm.annountment.isStick == '0'"/>否

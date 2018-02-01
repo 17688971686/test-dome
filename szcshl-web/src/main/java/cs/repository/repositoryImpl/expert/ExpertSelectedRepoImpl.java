@@ -349,7 +349,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     @Override
     public ResultMsg expertReviewConComplicatedCount(ExpertReviewConSimpleDto expertReviewConSimpleDto) {
         Map<String, Object> resultMap = new HashMap<>();
-        HqlBuilder sqlBuilder1 = HqlBuilder.create();
+        /*HqlBuilder sqlBuilder1 = HqlBuilder.create();
         sqlBuilder1.append("select t1.expertid,t1.name,t1.company,sum(t1.reviewCount) from (  ");
         sqlBuilder1.append("select t.expertid,t.expertno,t.name,t.company,count(t.expertid) reviewCount,t.isletterrw  from (   ");
         sqlBuilder1.append("select  e.expertid,e.expertno,e.name,e.company,r.reviewdate,s.projectname,s.reviewstage,s.signid,a.isletterrw from cs_sign s  ");
@@ -379,8 +379,47 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder1.append("order by t1.expertno   ");
         List<Object[]> expertRevComplicateList = expertSelectedRepo.getObjectArray(sqlBuilder1);
         List<Object []> expertRevCompliDtoList = getExistsConComplicated(expertReviewConSimpleDto,expertRevComplicateList);
-        List<ExpertReviewConSimpleDto> expertRevConCompDtoList = new ArrayList<ExpertReviewConSimpleDto>();
-        if(expertRevCompliDtoList.size()>0){
+        List<ExpertReviewConSimpleDto> expertRevConCompDtoList = new ArrayList<ExpertReviewConSimpleDto>();*/
+        //日期条件
+        StringBuffer dateCondition = new StringBuffer();
+        if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getBeginTime())){
+            String beginTime = expertReviewConSimpleDto.getBeginTime();
+            dateCondition.append("and cer.reviewdate >= to_date('"+beginTime+"', 'yyyy-mm-dd')  ");
+        }
+        if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getEndTime())){
+            String endTime = expertReviewConSimpleDto.getEndTime();
+            dateCondition.append("and cer.reviewdate <= to_date('"+endTime+"', 'yyyy-mm-dd')  ");
+        }
+        //开始查询
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" SELECT tt.expertid,tt.name,tt.company, tce.totalCount ");
+        sqlBuilder.append(" FROM (SELECT ce.expertid, ce.name, ce.company FROM cs_expert ce,");
+        //查询一周内超过2次抽取和一个月内，超过4次抽取的专家
+        sqlBuilder.append(" (  SELECT DISTINCT EXPERTID FROM ( SELECT TO_CHAR (NEXT_DAY (CER.REVIEWDATE + 15 / 24 - 7, 2),'YYYY-MM-DD') AS weekDate, ");
+        sqlBuilder.append(" COUNT (ces.EXPERTID) AS countValue, ces.EXPERTID AS EXPERTID ");
+        sqlBuilder.append(" FROM CS_EXPERT_SELECTED ces LEFT JOIN CS_EXPERT_REVIEW cer ON ces.EXPERTREVIEWID = cer.ID ");
+        sqlBuilder.append(" WHERE 1=1 ").append(dateCondition.toString());
+        sqlBuilder.append(" GROUP BY TO_CHAR (NEXT_DAY (CER.REVIEWDATE + 15 / 24 - 7, 2),'YYYY-MM-DD'), ces.EXPERTID ");
+        sqlBuilder.append(" HAVING COUNT (ces.EXPERTID) > 2 ");
+        sqlBuilder.append(" UNION SELECT TO_CHAR (CER.REVIEWDATE, 'YYYY-MM') AS montDay,");
+        sqlBuilder.append(" COUNT (ces.EXPERTID) AS countValue, ces.EXPERTID AS EXPERTID ");
+        sqlBuilder.append(" FROM CS_EXPERT_SELECTED ces LEFT JOIN CS_EXPERT_REVIEW cer ON ces.EXPERTREVIEWID = cer.ID ");
+        sqlBuilder.append(" WHERE 1=1 ").append(dateCondition.toString());
+        sqlBuilder.append(" GROUP BY TO_CHAR (CER.REVIEWDATE, 'YYYY-MM'), ces.EXPERTID ");
+        sqlBuilder.append(" HAVING COUNT (ces.EXPERTID) > 4)) hse ");
+        sqlBuilder.append(" WHERE hse.EXPERTID = ce.EXPERTID) tt ");
+        sqlBuilder.append(" LEFT JOIN (  SELECT csc.expertid AS expertid, COUNT (csc.expertid) totalCount ");
+        sqlBuilder.append(" FROM CS_EXPERT_SELECTED csc LEFT JOIN CS_EXPERT_REVIEW cer ON csc.EXPERTREVIEWID = cer.ID ");
+        sqlBuilder.append(" WHERE 1=1 ").append(dateCondition.toString());
+        sqlBuilder.append(" GROUP BY csc.expertid) tce ");
+        sqlBuilder.append(" ON tt.expertid = tce.expertid ");
+        sqlBuilder.append(" WHERE 1=1 ");
+        if(Validate.isString(expertReviewConSimpleDto.getName())){
+            sqlBuilder.append(" and tt.name like '%"+expertReviewConSimpleDto.getName()+"%' ");
+        }
+        List<Object[]> expertRevCompliDtoList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        List<ExpertReviewConSimpleDto> expertRevConCompDtoList = new ArrayList<>();
+        if(Validate.isList(expertRevCompliDtoList)){
             for(int i=0;i<expertRevCompliDtoList.size();i++){
                Object[] tempArr = expertRevCompliDtoList.get(i);
                 ExpertReviewConSimpleDto expertReviewConSimpleDto1 = new ExpertReviewConSimpleDto();

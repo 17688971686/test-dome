@@ -15,4 +15,11 @@ public interface SignWorkService {
      * @return
      */
     List<SignWorkDto> fingSignWorkList(ODataObj odataObj);
+
+    /**
+     * 根据项目ID
+     * @param signId
+     * @return
+     */
+    SignWorkDto fingSignWorkById(String signId);
 }

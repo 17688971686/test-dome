@@ -236,7 +236,7 @@
             <tr>
                 <td  class="text-center">专家类别<span class="required">*</span></td>
                 <td colspan="3">
-                    <select ng-model="vm.model.expertSort" name="expertSort" class="form-control input-sm "
+                    <select ng-model="vm.model.expertSort" name="expertSort" class="form-control select-sm "
                             data-val="true" data-val-required="必填">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.EXPERT_SORT.dicts" ng-selected="vm.model.expertSort == x.dictName"
@@ -248,7 +248,7 @@
 
                 <td  class="text-center">区域类别<span class="required">*</span></td>
                 <td colspan="3">
-                    <select ng-model="vm.model.expertField" class="form-control input-sm " data-val="true" data-val-required="必填" name="expertField">
+                    <select ng-model="vm.model.expertField" class="form-control select-sm " data-val="true" data-val-required="必填" name="expertField">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.EXPERT_FIELD.dicts" ng-selected="vm.model.expertField == x.dictKey"
                                 value="{{x.dictKey}}">{{x.dictName}}

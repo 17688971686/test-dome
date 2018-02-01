@@ -32,10 +32,30 @@
             editSignState:editSignState ,             //恢复项目
             sumExistDays : sumExistDays,              //统计项目接受到现在所存在的天数（办结的，按办结日期，未办结的，按现在时间）
             MaintenanProjectGrid:MaintenanProjectGrid , //维护项目
-            excelExport : excelExport , //项目查询统计导出
-
+            excelExport : excelExport ,                 //项目查询统计导出
+            findExpertReview : findExpertReview,        //查询项目在办的专家抽取方案信息
         };
         return service;
+
+        //S_查询项目在办的专家抽取方案信息
+        function findExpertReview(signId,callBack){
+            var httpOptions = {
+                method : "post" ,
+                url : rootPath + "/signwork/fingSignWorkById",
+                params : {signId :signId}
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_findExpertReview
 
         //s_项目查询统计导出
         function excelExport(signIds){

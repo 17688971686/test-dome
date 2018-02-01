@@ -11,7 +11,7 @@
         vm.model = {};
         vm.model.signid = $state.params.signid;   //业务ID
         vm.model.processInstanceId = $state.params.processInstanceId;	//流程实例ID
-
+        vm.signWorkList = [];
         //初始化附件上传控件
         vm.initFileUpload = function () {
             //创建附件对象
@@ -121,7 +121,7 @@
                 bsWin.alert("该项目还没有发起流程");
             }
         }// E_跳转到 发文 编辑页面
-// E_跳转到 发文 编辑页面
+
         vm.addDoFile = function () {
             if( vm.model.processInstanceId) {
                 if(vm.modle.fileRecordDto){
@@ -193,6 +193,28 @@
             });
         }
 
+        //S_查找项目信息
+        vm.findExpertReview = function(signid,signState){
+            if(signState == 9){
+                bsWin.alert("该项目已归档，不能再修改！");
+            }else{
+                vm.signWorkList = [];
+                signSvc.findExpertReview(signid,function(data){
+                    if(data || data.length > 0){
+                        vm.signWorkList = data;
+                        $("#signWorkDiv").kendoWindow({
+                            width: "860px",
+                            height: "320px",
+                            title: "抽取专家维护",
+                            visible: false,
+                            modal: true,
+                            closable: true,
+                            actions: ["Pin", "Minimize", "Maximize", "close"]
+                        }).data("kendoWindow").center().open();
+                    }
+                });
+            }
+        }
 
     }
 })();
