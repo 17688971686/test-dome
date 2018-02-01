@@ -1212,7 +1212,7 @@
                 },
                 {
                     field: "",
-                    title: "流程名称",
+                    title: "任务名称",
                     filterable: false,
                     width: "25%",
                     template:function (item) {
@@ -1314,7 +1314,7 @@
                 },
                 {
                     field: "",
-                    title: "流程名称",
+                    title: "任务名称",
                     filterable: false,
                     width: "30%",
                     template: function (item) {

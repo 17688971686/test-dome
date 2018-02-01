@@ -24,8 +24,12 @@
 			</strong>
 			<strong ng-if="vm.model.beginTime=='' && vm.model.endTime">{{vm.year}}年{{vm.endMonth}}月项目评审情况统计表<br>
             </strong>
-			<strong ng-if="vm.model.beginTime && vm.model.endTime && vm.model.beginTime != vm.model.endTime ">{{vm.byear}}年{{vm.begMonth}}月至{{vm.year}}年{{vm.endMonth}}月项目评审情况统计表<br>
-			</strong>
+			<strong ng-if="vm.model.beginTime && vm.model.endTime && vm.model.beginTime != vm.model.endTime && vm.byear">
+				{{vm.byear}}年{{vm.begMonth}}月至{{vm.year}}年{{vm.endMonth}}月项目评审情况统计表<br>
+            </strong>
+            <strong ng-if="vm.model.beginTime && vm.model.endTime && vm.model.beginTime != vm.model.endTime && !vm.byear">
+                {{vm.year}}年{{vm.begMonth}}月至{{vm.year}}年{{vm.endMonth}}月项目评审情况统计表<br>
+            </strong>
             <strong ng-if=" vm.model.beginTime && vm.model.endTime && vm.model.beginTime == vm.model.endTime">{{vm.year}}年{{vm.begMonth}}月项目评审情况统计表<br>
             </strong>
 		</caption>

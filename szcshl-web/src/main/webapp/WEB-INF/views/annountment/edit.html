@@ -17,8 +17,10 @@
         <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate && vm.isNeed=='1' && vm.annountment.processInstanceId==undefined "><span class="glyphicon glyphicon-ok"></span>更新</button>
         <button class="btn btn-sm btn-success" ng-click="vm.startNewFlow()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate && vm.isNeed=='0' && vm.annountment.processInstanceId==undefined"><span class="glyphicon glyphicon-ok"></span>更新</button>
        <!--退回的处理-->
-        <a ng-show="vm.annountment.processInstanceId" class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
-        <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.annountment.processInstanceId"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        <a ng-show="vm.annountment.processInstanceId && vm.annountment.appoveStatus!='9'" class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
+        <button ng-show="vm.annountment.processInstanceId && vm.annountment.appoveStatus!='9'" class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ><span class="glyphicon glyphicon-ok"></span>保存</button>
+        <a  ng-show="vm.annountment.processInstanceId && vm.annountment.appoveStatus=='9'" class="btn btn-sm btn-primary" href="#/annountment"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+        <button   ng-show="vm.annountment.processInstanceId && vm.annountment.appoveStatus=='9'"class="btn btn-sm btn-success" ng-click="vm.startNewFlow()" ng-disabled="vm.isSubmit" ><span class="glyphicon glyphicon-ok"></span>更新</button>
     </div>
 
     <form id="form" name="form">
@@ -26,7 +28,7 @@
  			<tr>
                 <td class="text-right" style="width:160px;">标题： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isUpdate"  ng-model="vm.annountment.anTitle" id="anTitle" name="anTitle"
+                    <input  type="text" maxlength="200" class="form-control input-sm "   ng-model="vm.annountment.anTitle" id="anTitle" name="anTitle"
                             data-val="true" data-val-required="必填" data-val-length-max="100">
                     <span data-valmsg-for="anTitle" data-valmsg-replace="true" class="errors"></span>
                 </td>

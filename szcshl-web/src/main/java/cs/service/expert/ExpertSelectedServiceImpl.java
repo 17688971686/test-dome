@@ -732,7 +732,8 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
-        sqlBuilder.append("and s.signstate = '9'  ");
+        sqlBuilder.append("and s.signstate != '7' ");//过滤删除
+        sqlBuilder.append("and (s.ispresign != '0' or s.ispresign is null) ");//过滤预签收的
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
 
         //todo:添加查询条件
@@ -1009,6 +1010,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
      * @param projectReviewConditionDto
      * @return
      */
+    @Override
     public Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto) {
         return expertSelectedRepo.proReviewCount(projectReviewConditionDto);
     }

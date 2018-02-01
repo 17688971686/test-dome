@@ -99,6 +99,21 @@
         vm.getExpertCoustDetail = function () {
             $state.go('expertPaymentDetailCountList',{beginTime:vm.model.beginTime});
         }
+        //打印
+        vm.printFile=function () {
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version="+(new Date()).getTime()+"&file=" + rootPath + "/expertSelected/printPreview/" + vm.model.beginTime ;
+                $("#iframePreview").attr("src", url);
+                $("#previewModal").kendoWindow({
+                    width: "80%",
+                    height: "730px",
+                    title: "",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+
+        }
 
         /**
          * 专家评审费统计导出

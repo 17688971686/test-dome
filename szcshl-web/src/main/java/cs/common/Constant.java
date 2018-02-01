@@ -452,7 +452,10 @@ public class Constant {
         ARCHIVES_DETAIL("print/archives/archivesDetail" , "借阅档案"),
         //课题研究
         TOPICINFO_WORKPROGRAM("print/topicInfo/workProgramTopic" , "课题研究_工作方案"),
-        TOPICINFO_FILERECORD("print/topicInfo/fileTopic" , "课题研究_归档");
+        TOPICINFO_FILERECORD("print/topicInfo/fileTopic" , "课题研究_归档"),
+
+        //专家缴费
+        EXPERT_PAYTAXES("print/expert_paytaxes" , "专家缴费");
 
         private String key;
         private String value;
