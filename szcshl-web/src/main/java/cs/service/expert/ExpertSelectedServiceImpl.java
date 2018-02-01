@@ -72,8 +72,8 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     @Transactional
     public ResultMsg update(ExpertSelectedDto record) {
         boolean isUpdateScore = false;
-        if(!Validate.isObject(record.getScore()) || record.getScore() <= 0){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，你还没对专家进行评分！");
+        if (!Validate.isObject(record.getScore()) || record.getScore() <= 0) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，你还没对专家进行评分！");
         }
         ExpertSelected domain = expertSelectedRepo.findById(record.getId());
         if (!record.getScore().equals(domain.getScore())) {
@@ -86,7 +86,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             //计算综合评分（根据有评分总数，除以评分次数，没有评分的次数不算）
             expertRepo.updateExpertCompositeScore(domain.getExpert().getExpertID());
         }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
     @Override
@@ -562,7 +562,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
      * @return
      */
     @Override
-    public ResultMsg proReviewClassifyCount(ProjectReviewCostDto projectReviewCostDto,int page) {
+    public ResultMsg proReviewClassifyCount(ProjectReviewCostDto projectReviewCostDto, int page) {
         Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         HqlBuilder sqlBuilder1 = HqlBuilder.create();
@@ -628,7 +628,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             }
 
         }
-        sqlBuilder.append(" ) a ) where rn >" + (page * 200) + " and rn <" + ((page+1)*200+1));
+        sqlBuilder.append(" ) a ) where rn >" + (page * 200) + " and rn <" + ((page + 1) * 200 + 1));
         sqlBuilder1.append("group by f.chargename  ");
         List<Object[]> projectReviewCostList = expertCostCountRepo.getObjectArray(sqlBuilder);
         List<Object[]> projectClassifytList = expertCostCountRepo.getObjectArray(sqlBuilder1);
@@ -679,7 +679,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                     projectReviewCostDto1.setCharge((BigDecimal) projectReviewCost[11]);
                 }
             /*	if (null != projectReviewCostDto1.getBusinessId()) {
-					financialManagerDtoList = getFinancialManagerByBusid(projectReviewCostDto1.getBusinessId());
+                    financialManagerDtoList = getFinancialManagerByBusid(projectReviewCostDto1.getBusinessId());
 
 				}
 				if (financialManagerDtoList.size() > 0) {
@@ -695,7 +695,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
 
         if (projectClassifytList.size() > 0) {
             for (int i = 0; i < projectClassifytList.size(); i++) {
-                Object obj =                                                                                                projectClassifytList.get(i);
+                Object obj = projectClassifytList.get(i);
                 Object[] projectClassifyCost = (Object[]) obj;
                 ProReviewClassifyCountDto proReviewClassifyCountDto = new ProReviewClassifyCountDto();
                 if (null != projectClassifyCost[0]) {
@@ -1010,8 +1010,20 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
      * @param projectReviewConditionDto
      * @return
      */
+    @Override
     public Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto) {
         return expertSelectedRepo.proReviewCount(projectReviewConditionDto);
+    }
+
+    /**
+     * 获取提前介入评审情况
+     *
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public ProReviewConditionDto getAdvancedCon(ProReviewConditionDto projectReviewConditionDto) {
+        return expertSelectedRepo.getAdvancedCon(projectReviewConditionDto);
     }
 
 

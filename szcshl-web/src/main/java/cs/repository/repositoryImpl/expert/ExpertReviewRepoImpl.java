@@ -182,7 +182,7 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
             expertReview.setReviewTitle("《" + sign.getProjectname() + sign.getReviewstage()+"》专家评审费发放表");//专家评审费
         } else if (Constant.BusinessType.TOPIC.getValue().equals(businessType)) {
             TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
-            expertReview.setReviewTitle("《" + topicInfo.getTopicName() +"项目"+ "》专家评审费发放表");
+            expertReview.setReviewTitle("《" + topicInfo.getTopicName() + "》专家评审费发放表");
         }
     }
 
