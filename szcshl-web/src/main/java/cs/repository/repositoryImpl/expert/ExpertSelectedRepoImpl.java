@@ -876,7 +876,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 if(weakTemp.compareTo(endDate)<=0){
                     if(DateUtils.getSeason(begDate)== begseason){
                         //当前季度内参会次数大于12
-                        if(revCount>=12){
+                        if(revCount>12){
                             expertCompliList.add(tempArr);
                             revCount = 0;
                             break;
@@ -884,7 +884,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                         //按周计算  周参会次数大于2
                        int weakCount = getExpertRevTimes(begDate,weakTemp,expertId);
                         revCount += weakCount;
-                        if(weakCount>=0){
+                        if(weakCount>2){
                             expertCompliList.add(tempArr);
                             revCount = 0;
                             break;

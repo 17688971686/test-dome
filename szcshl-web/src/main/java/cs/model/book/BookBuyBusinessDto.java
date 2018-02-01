@@ -1,5 +1,6 @@
 package cs.model.book;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
 
 import java.util.Date;
@@ -21,25 +22,45 @@ public class BookBuyBusinessDto extends BaseDto {
     private String applyReason;
     private String orgDirectorId;
     private String orgDirector;
+    @JSONField(format = "yyyy-MM-dd")
     private Date orgDirectorDate;
     private String orgSLeaderId;
     private String orgSLeader;
     private String orgSLeaderHandlesug;
+    @JSONField(format = "yyyy-MM-dd")
     private Date orgSLeaderDate;
     private String orgMLeaderId;
     private String orgMLeader;
     private String orgMLeaderHandlesug;
+    @JSONField(format = "yyyy-MM-dd")
     private Date orgMLeaderDate;
     private String filerId;
     private String filer;
     private String filerHandlesug;
+    @JSONField(format = "yyyy-MM-dd")
     private Date filerDate;
     private List bookBuyList;
     private String processInstanceId;
     private String isFinishFiling;
     private String state;
     private String remark;
+
+    /**
+     * 申请日期
+     */
+    @JSONField(format = "yyyy-MM-dd")
+    private Date applyDate;
+
+
     public BookBuyBusinessDto() {
+    }
+
+    public Date getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(Date applyDate) {
+        this.applyDate = applyDate;
     }
 
     public String getBusinessId() {

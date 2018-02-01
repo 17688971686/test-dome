@@ -34,22 +34,22 @@
                     <td>
                         <select name="booksType"  class="form-control select-sm " operator="eq" ng-model="vm.searchModel.booksType">
                             <option value="">请选择</option>
-                            <option value="1">图书</option>
-                            <option value="2">书刊</option>
+                            <option ng-repeat="y in DICT.BOOK_TYPE.dicts"
+                                    ng-selected="x.booksType == y.dictName" value="{{y.dictName}}">{{y.dictName}}</option>
+                            <!--<option value="1">图书</option>
+                            <option value="2">书刊</option>-->
                         </select>
                     </td>
-                    <td class="text-right">专业类别</td>
+                   <!-- <td class="text-right">专业类别</td>
                     <td>
                         <select name="professionalType"  class="form-control select-sm " operator="eq" ng-model="vm.searchModel.professionalType">
                             <option value="">请选择</option>
                             <option value="1">BZ标准规范</option>
                             <option value="2">F经济</option>
                         </select>
-                    </td>
-                </tr>
-                <tr>
+                    </td>-->
                     <td class="text-right">入库时间</td>
-                    <td colspan="3">
+                    <td >
                         <input name="storeTime" operator="ge" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.searchModel.storeTime"  />
                         至
                         <input name="storeTime" operator="le" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"   />

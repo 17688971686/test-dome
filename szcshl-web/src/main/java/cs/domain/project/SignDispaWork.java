@@ -323,6 +323,20 @@ public class SignDispaWork {
     @Column(columnDefinition = "INTEGER")
     private Integer oldProjectId;
 
+    /**
+     * 是否项目预签收
+     */
+    @Column
+    private String ispresign;
+
+    public String getIspresign() {
+        return ispresign;
+    }
+
+    public void setIspresign(String ispresign) {
+        this.ispresign = ispresign;
+    }
+
     public String getLeaderName() {
         return leaderName;
     }

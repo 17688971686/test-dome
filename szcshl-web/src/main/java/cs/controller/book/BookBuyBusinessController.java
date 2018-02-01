@@ -113,6 +113,13 @@ public class BookBuyBusinessController {
     public String bookBorrowList() {
         return "bookBuy/bookBorrowList";
     }
+
+    @RequiresAuthentication
+    @RequiresPermissions("bookBuyBusiness#html/bookBuyBusinessDetail#get")
+    @RequestMapping(name = "图书详情页", path = "html/bookBuyBusinessDetail", method = RequestMethod.GET)
+    public String bookBuyBusinessDetail() {
+        return ctrlName + "/detail";
+    }
     // end#html
 
 }

@@ -309,12 +309,12 @@
                     width: 100,
                     filterable: false
                 },
-                {
+                /*{
                     field: "professionalType",
                     title: "专业类别",
                     width: 100,
                     filterable: false
-                },
+                },*/
                 {
                     field: "booksPrice",
                     title: "价格",
@@ -328,11 +328,18 @@
                     filterable: false
                 },
                 {
-                    field: "storeConfirm",
+                    field: "",
                     title: "库存",
                     width: 100,
                     attributes: {style: "color:red"},
-                    filterable: false
+                    filterable: false,
+                    template : function(item){
+                        if(item.storeConfirm){
+                            return item.storeConfirm;
+                        }else{
+                            return 0;
+                        }
+                    }
                 },
                 {
                     field: "storeTime",
@@ -345,7 +352,12 @@
                     title: "操作",
                     width: 140,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(), item.id);
+                        if(item.storeConfirm && item.storeConfirm > 0){
+
+                            return common.format($('#columnBtns').html(), item.id);
+                        }else{
+                            return "";
+                        }
                     }
                 }
             ];

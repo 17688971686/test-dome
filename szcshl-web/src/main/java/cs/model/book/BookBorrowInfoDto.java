@@ -1,5 +1,6 @@
 package cs.model.book;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.book.BookBuyBusiness;
 import cs.model.BaseDto;
 
@@ -20,8 +21,11 @@ public class BookBorrowInfoDto extends BaseDto {
     private String bookBorrower;
     private Integer borrowNum;
     private Integer returnNum; //还书数量
+    @JSONField(format = "yyyy-MM-dd")
     private Date borrowDate;
+    @JSONField(format = "yyyy-MM-dd")
     private Date returnDate;
+    @JSONField(format = "yyyy-MM-dd")
     private Date realReturnDate;  //实际还书日期
     private Integer totalCount;//个人借书总数
     private String bTime;

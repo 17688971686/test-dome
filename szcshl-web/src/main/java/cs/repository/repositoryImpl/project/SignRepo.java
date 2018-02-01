@@ -65,7 +65,7 @@ public interface SignRepo extends IRepository<Sign, String> {
     int sumExistDays(String signIds);
 
     /**
-     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期等 ---用于评审工作日维护
+     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期、评审总天数等 ---用于评审工作日维护
      * @param signId
      * @return
      */

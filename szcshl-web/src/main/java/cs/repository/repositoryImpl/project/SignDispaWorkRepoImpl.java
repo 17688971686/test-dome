@@ -42,11 +42,14 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , count(projectcode) projectCount from v_sign_disp_work" );
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
+            //排除预签收项目
+            hqlBuilder.append(" and ispresign <>:ispresign or ispresign is null");
             hqlBuilder.append(" group by " + SignDispaWork_.reviewstage.getName());
             hqlBuilder.append(" order by " +  SignDispaWork_.reviewstage.getName() + " desc");
             hqlBuilder.setParam("start" , start);
             hqlBuilder.setParam("end" , end);
             hqlBuilder.setParam("processState" , Constant.SignProcessState.END_DIS_NUM.getValue());//已发文
+            hqlBuilder.setParam("ispresign" , Constant.EnumState.YES.getValue());
             List<Object[]> objctList = this.getObjectArray(hqlBuilder);
             Map< String , Object[]> map = new HashMap<>();
             Object[] initData = new Object[]{0 , 0};
@@ -120,12 +123,17 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             hqlBuilder.append("select " + SignDispaWork_.reviewstage.getName() + "," + SignDispaWork_.projectType.getName() + ",count("+ SignDispaWork_.projectcode.getName() + ") projectNum from v_sign_disp_work ");
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
+            //排除预签项目
+            hqlBuilder.append(" and ispresign <>:ispresign  or ispresign is null");
+
             hqlBuilder.append(" group by " + SignDispaWork_.projectType.getName() + " ," + SignDispaWork_.reviewstage.getName() );
             hqlBuilder.append(" having " + SignDispaWork_.projectType.getName() + " is not null ") ;
             hqlBuilder.append(" order by " + SignDispaWork_.reviewstage.getName() +" desc , " + SignDispaWork_.projectType.getName() );
             hqlBuilder.setParam("start" , start);
             hqlBuilder.setParam("end" , end);
             hqlBuilder.setParam("processState" , Constant.SignProcessState.END_DIS_NUM.getValue()); //已发文
+            hqlBuilder.setParam("ispresign" , Constant.EnumState.YES.getValue());
+
             List<Object[]> objctList = this.getObjectArray(hqlBuilder);
             if(objctList != null && objctList.size()>0){
                 for(int i=0 ; i<objctList.size() ; i++){
