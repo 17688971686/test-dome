@@ -948,6 +948,13 @@
                     controller: 'bookBuyCtrl',
                     controllerAs: 'vm'
                 })
+                //图书详情页
+                .state('bookBuyBusinessDetail', {
+                    url: '/bookBuyBusinessDetail/:businessId/:viewDetail',
+                    templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessDetail.html',
+                    controller: 'bookBuyBusinessDetailCtrl',
+                    controllerAs: 'vm'
+                })
                 //借书查询
                 .state('bookBorrowList', {
                     url: '/bookBorrowList',

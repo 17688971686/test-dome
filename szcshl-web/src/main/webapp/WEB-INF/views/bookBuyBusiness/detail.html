@@ -2,7 +2,8 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div class="well well-sm conttent_list" style="background: white;min-height:960px;">
-    <p class="pro_title_1" style="margin:10px;margin-left:0px;">图书管理信息</p>
+    <go-back ng-show="vm.showGoBack"></go-back>
+    <p class="pro_title_1" style="margin:10px;margin-left:0px;" ng-hide="vm.showGoBack">图书管理信息</p>
     <form id="form" name="form">
         <table class="" style="width: 90%;">
             <caption class="text-center"> <h3><strong>采购图书资料申请表</strong></h3></caption>

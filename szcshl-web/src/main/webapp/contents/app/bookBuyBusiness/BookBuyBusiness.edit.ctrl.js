@@ -11,7 +11,7 @@
         vm.model = {};
         vm.conMaxIndex = 0;                   //条件号
         vm.conditions = new Array();         //条件列表
-        vm.title = '添加图书采购申请业务信息';
+        vm.title = '图书信息录入';
         vm.isuserExist = false;
         vm.businessId = $state.params.businessId;
         vm.viewDetail = $state.params.viewDetail;
@@ -30,7 +30,6 @@
             vm.isUpdate = true;
             vm.showFlag.modBooksDetail=true;
             vm.showFlag.addBooksDeatail=false;
-            vm.title = '更新图书采购申请业务信息';
             $("#businessId").val(vm.businessId);
         }else{
             vm.showFlag.modBooksDetail=false;

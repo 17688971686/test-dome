@@ -350,7 +350,6 @@
                     title: "申请日期",
                     width: "15%",
                     filterable: false,
-                    format: "{0:yyyy/MM/dd HH:mm:ss}"
                 },
                 {
                     field: "",

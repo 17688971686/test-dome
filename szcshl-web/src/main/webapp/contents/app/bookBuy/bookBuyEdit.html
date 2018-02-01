@@ -29,17 +29,17 @@
                     <input type="hidden" name="bookBorrower"  ng-model="vm.model.bookBorrower"/>
                     {{vm.model.bookBorrower}}
                 </td>
-                <td class="formAlignRight" width="10%">借书数量</td>
+                <td class="formAlignRight" width="10%">借书数量<span class="required">*</span></td>
                 <td>
-                    <input name="borrowNum" type="text" ng-change="vm.comparisonSize()"  ng-model="vm.model.borrowNum"/>
+                    <input name="borrowNum" id="borrowNum" type="text" ng-change="vm.comparisonSize()"  ng-model="vm.model.borrowNum" data-val="true" data-val-required="必填"/>
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight" width="10%">借书日期</td>
+                <td class="formAlignRight" width="10%">借书日期<span class="required">*</span></td>
                 <td>
-                    <input name="borrowDate" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.borrowDate"  />
+                    <input name="borrowDate" id="borrowDate" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.borrowDate" data-val="true" data-val-required="必填" />
                 </td>
-                <td class="formAlignRight" width="10%">应还日期</td>
+                <td class="formAlignRight" width="10%">应还日期<span class="required">*</span></td>
                 <td>
                     <input name="returnDate"  style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.returnDate"  />
                 </td>

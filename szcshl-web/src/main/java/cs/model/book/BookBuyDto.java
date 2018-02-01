@@ -1,5 +1,6 @@
 package cs.model.book;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.book.BookBuyBusiness;
 import cs.model.BaseDto;
 
@@ -25,6 +26,7 @@ public class BookBuyDto extends BaseDto {
     private String publishingCompany;
     private String bookNo;
     private String author;
+    @JSONField(format = "yyyy-MM-dd")
     private Date publishingTime;
     private Integer bookNumber;
     private Integer storeConfirm;
@@ -33,8 +35,18 @@ public class BookBuyDto extends BaseDto {
     private String operator;
     private String buyChannel;
     private BookBuyBusiness bookBuyBusiness;
+    @JSONField(format = "yyyy-MM-dd")
+    private Date storeTime ;
 
     public BookBuyDto() {
+    }
+
+    public Date getStoreTime() {
+        return storeTime;
+    }
+
+    public void setStoreTime(Date storeTime) {
+        this.storeTime = storeTime;
     }
 
     public String getId() {

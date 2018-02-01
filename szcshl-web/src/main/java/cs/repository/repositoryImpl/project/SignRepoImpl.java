@@ -196,7 +196,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
     }
 
     /**
-     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期等
+     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期、评审总天数等
      * @param signId
      * @return
      */
@@ -205,12 +205,18 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         SignDto signDto = new SignDto();
         signDto.setSignid(signId);
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select reviewdays  , surplusdays , signdate  , receivedate ,lengthenDays , lengthenExp  from cs_sign  where " + Sign_.signid.getName() + "=:signId");
+        hqlBuilder.append("select reviewdays  , surplusdays , signdate  , receivedate ,lengthenDays , lengthenExp , totalReviewdays  from cs_sign  where " + Sign_.signid.getName() + "=:signId");
         hqlBuilder.setParam("signId" , signId);
         List<Object[]> signList = this.getObjectArray(hqlBuilder);
         if(signList != null && signList.size() > 0 ){
             Object[] objects = signList.get(0);
-            signDto.setReviewdays(objects[0] == null ? 0 : Float.valueOf(objects[0].toString()));
+//            signDto.setReviewdays(objects[0] == null ? 0 : Float.valueOf(objects[0].toString()));
+            if(signDto.getTotalReviewdays() != null && signDto.getSurplusdays() != null){
+
+                signDto.setReviewdays((signDto.getTotalReviewdays() < signDto.getSurplusdays() || objects[0] == null) ? 0 : Float.valueOf(objects[0].toString()));
+            }else{
+                signDto.setReviewdays(Float.valueOf(0));
+            }
             signDto.setSurplusdays(objects[1] == null ? 0 : Float.valueOf(objects[1].toString()));
             signDto.setSigndate(DateUtils.converToDate(objects[2].toString() , "yyyy-MM-dd"));
 
@@ -219,12 +225,13 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
 
                 signDto.setReceivedate(DateUtils.converToDate(objects[3].toString() , "yyyy-MM-dd"));
             }
-            signDto.setGoneDays(signDto.getReviewdays() - signDto.getSurplusdays()); //已逝工作日
+//            signDto.setGoneDays(signDto.getTotalReviewdays() < signDto.getSurplusdays() ? 0 : signDto.getTotalReviewdays() - signDto.getSurplusdays()); //已逝工作日
             signDto.setOverDays(signDto.getSurplusdays() >= 0 ? 0 : Math.abs(signDto.getSurplusdays())); //延长工作日，如果剩余工作日大于等于0 ，则为0 否则取剩余工作日绝对值
             signDto.setLengthenDays( objects[4] == null ? 0 : Float.valueOf(objects[4].toString()));
             signDto.setLengthenExp(objects[5] == null ? "" : objects[5].toString());
 
 
+            signDto.setTotalReviewdays(objects[6] == null ? 0 : Float.valueOf(objects[6].toString()));
         }
 
         return signDto;

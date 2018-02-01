@@ -2530,7 +2530,7 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期等
+     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期、评审总天数等
      * @param signId
      * @return
      */

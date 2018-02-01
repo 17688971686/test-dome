@@ -723,6 +723,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append(" and s.ispresign <>:ispresign  or s.ispresign is null ").setParam("ispresign" , Constant.EnumState.YES.getValue());//排除预签收项目
         //todo:添加查询条件
 //        if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(endTime)){
