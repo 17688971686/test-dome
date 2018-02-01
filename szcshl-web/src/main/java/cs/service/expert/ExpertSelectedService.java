@@ -119,4 +119,12 @@ public interface ExpertSelectedService {
 	 * @return
 	 */
 	Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto);
+
+	/**
+	 * 获取提前介入评审情况
+	 *
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	ProReviewConditionDto getAdvancedCon(ProReviewConditionDto projectReviewConditionDto);
 }

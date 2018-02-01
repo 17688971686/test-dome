@@ -732,8 +732,9 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
-        sqlBuilder.append("and s.signstate = '9'  ");
+     //   sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  ");//排除预签收
 
         //todo:添加查询条件
         if (null != projectReviewConditionDto) {
@@ -1012,6 +1013,17 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     public Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto) {
         return expertSelectedRepo.proReviewCount(projectReviewConditionDto);
     }
+
+    /**
+     * 获取提前介入评审情况
+     *
+     * @param projectReviewConditionDto
+     * @return
+     */
+   public ProReviewConditionDto getAdvancedCon(ProReviewConditionDto projectReviewConditionDto){
+
+       return expertSelectedRepo.getAdvancedCon(projectReviewConditionDto);
+   }
 
 
 }

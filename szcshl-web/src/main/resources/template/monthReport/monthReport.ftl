@@ -1816,10 +1816,12 @@
                             </w:pict>
                         </w:r>
                     </w:p>
+                    <w:p></w:p>
+                    <w:p></w:p>
                     <w:p w:rsidR="006669E6" w:rsidRPr="006E23C6" w:rsidRDefault="006E23C6" w:rsidP="006E23C6">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
-                            <w:ind w:firstLineChars="200" w:firstLine="672"/>
+                            <w:ind w:firstLineChars="200" w:firstLine="640"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312" w:hint="eastAsia"/>
                                 <w:sz w:val="32"/>
@@ -1832,7 +1834,6 @@
                                 <w:sz w:val="32"/>
                                 <w:szCs w:val="32"/>
                             </w:rPr>
-                            <w:lastRenderedPageBreak/>
                             <w:t>${tqjrTotal}</w:t>
                         </w:r>
                     </w:p>

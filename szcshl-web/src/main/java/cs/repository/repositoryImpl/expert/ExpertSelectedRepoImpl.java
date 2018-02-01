@@ -421,6 +421,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
 
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
@@ -490,6 +491,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
@@ -563,7 +565,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select count(s.projectcode) from cs_sign s ");
         sqlBuilder.append("where 1 = 1 ");
-        sqlBuilder.append("and s.signstate='9'  ");
+       // sqlBuilder.append("and s.signstate='9'  ");
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
@@ -599,6 +602,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
        sqlBuilder.append("where 1 = 1 ");
        sqlBuilder.append("and s.signstate = '1'  ");
        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
        if(null != projectReviewConditionDto){
            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
@@ -647,8 +651,9 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
-//        sqlBuilder.append("and s.signstate = '9' ");
+        //sqlBuilder.append("and s.signstate = '9' ");
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
         //todo:添加查询条件
         if(null != projectReviewConditionDto){
@@ -698,7 +703,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                         proReviewConditionDto.setReviewStage(proReviewConditionDto.getReviewStage()+"（提前介入）");
                     }
                 }else{
-                    proReviewConditionDto.setProjectName(null);
+                    proReviewConditionDto.setIsadvanced(null);
                 }
 
                 projectReviewConDtoList.add(proReviewConditionDto);
@@ -723,8 +728,9 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
-//        sqlBuilder.append("and s.signstate = '9'  ");
+       // sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         //todo:添加查询条件
 //        if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(endTime)){
@@ -745,6 +751,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 3000  and d.declarevalue < 10000   ");
@@ -755,6 +762,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 10000  and d.declarevalue < 100000   ");
@@ -765,6 +773,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 100000   ");
@@ -1012,6 +1021,83 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("  ORDER BY EX.EXPERTNO ");
 
         return getObjectArray(sqlBuilder);
+    }
+
+    /**
+     * 获取提前介入评审情况
+     *
+     * @param projectReviewConditionDto
+     * @return
+     */
+   public ProReviewConditionDto getAdvancedCon(ProReviewConditionDto projectReviewConditionDto){
+       HqlBuilder sqlBuilder = HqlBuilder.create();
+       sqlBuilder.append("select  count(s.projectcode),sum(d.declarevalue) / 10000 declarevalue,sum(d.authorizevalue) / 10000 authorizevalue, " +
+               " (sum(d.declarevalue) - sum(d.authorizevalue)) / 10000 ljhj, " +
+               " round((sum(d.declarevalue) - sum(d.authorizevalue)) / 10000 / (sum(d.declarevalue) / 10000), 5) * 100 hjl ");
+       sqlBuilder.append("from cs_sign s  ");
+       sqlBuilder.append("left join cs_dispatch_doc d  ");
+       sqlBuilder.append(" on s.signid = d.signid  ");
+       sqlBuilder.append("where s.processstate >= 6  and s.isadvanced = '9'  and  ( s.ispresign != '0' or s.ispresign is null )  ");
+       if(null != projectReviewConditionDto){
+           if (StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())) {
+               String beginTime = projectReviewConditionDto.getBeginTime() + "-01 00:00:00";
+               String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+               String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+               String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
+               sqlBuilder.append("and s.signdate >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+               sqlBuilder.append("and s.signdate <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+           } else if (StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())) {
+               String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
+               String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+               String beginTime = projectReviewConditionDto.getBeginTime() + "-01 00:00:00";
+               String endTime = projectReviewConditionDto.getBeginTime() + "-" + day + " 23:59:59";
+               sqlBuilder.append("and s.signdate >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+               sqlBuilder.append("and s.signdate <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+           } else if (StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())) {
+               String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+               ;
+               String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+               String beginTime = projectReviewConditionDto.getEndTime() + "-01 00:00:00";
+               String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
+               sqlBuilder.append("and s.signdate >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+               sqlBuilder.append("and s.signdate <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+           }
+       }
+
+       List<Object[]> objArr = getObjectArray(sqlBuilder);
+       ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+       if (objArr.size() > 0) {
+               Object[] projectReviewCon = objArr.get(0);
+               if (null != projectReviewCon[0]) {
+                   proReviewConditionDto.setProCount((BigDecimal) projectReviewCon[0]);
+               }else{
+                   proReviewConditionDto.setProCount(null);
+               }
+
+               if (null != projectReviewCon[1]) {
+                   proReviewConditionDto.setDeclareValue((BigDecimal) projectReviewCon[1]);
+               }else{
+                   proReviewConditionDto.setDeclareValue(null);
+               }
+               if (null != projectReviewCon[2]) {
+                   proReviewConditionDto.setAuthorizeValue((BigDecimal) projectReviewCon[2]);
+                   }else{
+                   proReviewConditionDto.setAuthorizeValue(null);
+                }
+
+           if (null != projectReviewCon[3]) {
+               proReviewConditionDto.setLjhj((BigDecimal) projectReviewCon[3]);
+           }else{
+               proReviewConditionDto.setLjhj(null);
+           }
+
+           if (null != projectReviewCon[4]) {
+               proReviewConditionDto.setHjl((BigDecimal) projectReviewCon[4]);
+           }else{
+               proReviewConditionDto.setHjl(null);
+           }
+        }
+       return  proReviewConditionDto;
     }
 
 }
