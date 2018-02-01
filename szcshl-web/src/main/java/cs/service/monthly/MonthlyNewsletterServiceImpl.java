@@ -377,9 +377,11 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
             List<ProReviewConditionDto> proReviewConditionDtoList = (List<ProReviewConditionDto>) resultMap.get("protReviewConditionList");
             //当前月汇总
             proReviewConditionCur = expertSelectedService.proReviewConditionSum(proReviewConditionDto);
+            //获取提前介入项目信息
+            ProReviewConditionDto acvanceCurDto =  expertSelectedService.getAdvancedCon(proReviewConditionDto);
             //专家评审明细
             List<ProReviewConditionDto> proReviewCondDetailList = expertSelectedService.proReviewConditionDetail(proReviewConditionDto);
-            Map<String, List<ProReviewConditionDto>> proReviewCondDetailMap = new HashMap<String, List<ProReviewConditionDto>>();
+            Map<String, List<ProReviewConditionDto>> proReviewCondDetailMap = new LinkedHashMap<String, List<ProReviewConditionDto>>();
             for (int i = 0; i < proReviewConditionDtoList.size(); i++) {
                 List<ProReviewConditionDto> proReviewConditionDetailList = new ArrayList<ProReviewConditionDto>();
                 String key = "";
@@ -403,11 +405,14 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
             List<ProReviewConditionDto> proReviewConditionByTypeAllList = new ArrayList<ProReviewConditionDto>();
             Integer[] proCountArr = null; //按投资金额的项目数
             Integer totalNum = 0; //项目数
+            ProReviewConditionDto acvanceTotalDto = new ProReviewConditionDto();
             if (StringUtil.isNotEmpty(monthlyNewsletterDto.getStartMoultiyear()) && StringUtil.isNotEmpty(monthlyNewsletterDto.getStaerTheMonths()) && StringUtil.isNotEmpty(monthlyNewsletterDto.getEndTheMonths())) {
                 proReviewConditionDto.setBeginTime(monthlyNewsletterDto.getStartMoultiyear() + "-" + monthlyNewsletterDto.getStaerTheMonths());
                 proReviewConditionDto.setEndTime(monthlyNewsletterDto.getStartMoultiyear() + "-" + monthlyNewsletterDto.getEndTheMonths());
                 resultMsg = expertSelectedService.proReviewConditionCount(proReviewConditionDto);
                 resultMap = (Map<String, Object>) resultMsg.getReObj();
+                //获取提前介入项目信息
+                acvanceTotalDto = expertSelectedService.getAdvancedCon(proReviewConditionDto);
                 proReviewConditionDtoAllList = (List<ProReviewConditionDto>) resultMap.get("protReviewConditionList");
                 proReviewConditionSum = expertSelectedService.proReviewConditionSum(proReviewConditionDto);
                 //项目类别
@@ -425,8 +430,7 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 proCountArr = expertSelectedService.proReviewCondByDeclare(beginTime, endTime);
             }
 
-
-            docFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto, signCount, reviewCount, proReviewConditionDtoList, proReviewConditionDtoAllList, proReviewConditionByTypeAllList, totalNum, proReviewConditionCur, proReviewConditionSum, proReviewCondDetailMap, proCountArr);
+            docFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto, signCount, reviewCount, proReviewConditionDtoList, proReviewConditionDtoAllList, proReviewConditionByTypeAllList, totalNum, proReviewConditionCur, proReviewConditionSum, proReviewCondDetailMap, proCountArr,acvanceCurDto,acvanceTotalDto);
         }
         return docFile;
     }

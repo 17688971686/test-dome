@@ -84,7 +84,13 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      */
     ProReviewConditionDto proReviewConditionSum(ProReviewConditionDto projectReviewConditionDto);
 
-
+    /**
+     * 获取提前介入评审情况
+     *
+     * @param projectReviewConditionDto
+     * @return
+     */
+    ProReviewConditionDto getAdvancedCon(ProReviewConditionDto projectReviewConditionDto);
     /**
      * 项目评审情况明细
      *
