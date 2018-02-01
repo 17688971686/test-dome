@@ -369,7 +369,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder1.append("on s.signid = a.businessid  ");
         sqlBuilder1.append("left join cs_expert e  ");
         sqlBuilder1.append(" on a.expertid = e.expertid) t  ");
-        sqlBuilder1.append(" where t.expertid is not null  ");*/
+        sqlBuilder1.append(" where t.expertid is not null  ");
         if(null != expertReviewConSimpleDto){
             if(StringUtil.isNotEmpty(expertReviewConSimpleDto.getName())){
                 sqlBuilder1.append("and t.name like '%"+expertReviewConSimpleDto.getName()+"%'  ");
