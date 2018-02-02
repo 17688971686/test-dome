@@ -936,7 +936,7 @@ public class CreateTemplateUtils {
         dataMap.put("curYear",curYear);
         String[] reviewStage = {"xmjys-项目建议书","kxxyj-可行性研究报告","xmgs-项目概算","zjsq-资金申请报告","qt-其它","jksb-进口设备","sbqdgc-设备清单（国产）","sbqdjk-设备清单（进口）"};
         String[] reviewStageTotal = {"xmjysTotal-项目建议书","kxxyjTotal-可行性研究报告","xmgsTotal-项目概算","zjsqTotal-资金申请报告","qtTotal-其它","jksbTotal-进口设备","sbqdgcTotal-设备清单（国产）","sbqdjkTotal-设备清单（进口）"};
-        String[] projectType = {"projectTypeA-市政工程","projectTypeHouse-房建工程","projectTypeInfo-信息工程","projectTypeBuy-设备采购","projectTypeOther-其他"};
+        String[] projectType = {"projectTypeA-市政工程","projectTypeHouse-房建工程","projectTypeInfo-信息工程","projectTypeBuy-设备采购","projectTypeOther-其它"};
         boolean flag = true;
         //当月月报
         if (proReviewConditionDtoList.size()>0){
@@ -944,7 +944,7 @@ public class CreateTemplateUtils {
                 for(int i=0;i<reviewStage.length;i++){
                     String [] tempArr = reviewStage[i].split("-");
                     if(tempArr[1].equals(proReviewConditionDtoList.get(j).getReviewStage())){
-                        if(null == proReviewConditionDtoList.get(j).getIsadvanced()){
+                        if(null == proReviewConditionDtoList.get(j).getIsadvanced() || "0".equals(proReviewConditionDtoList.get(j).getIsadvanced()) ){
                             dataMap.put(tempArr[0], "完成"+tempArr[1]+"评审"+(proReviewConditionDtoList.get(j).getProCount()!=null?proReviewConditionDtoList.get(j).getProCount():0)+"项，" +
                                     "申报总投资"+(proReviewConditionDtoList.get(j).getDeclareValue() != null?proReviewConditionDtoList.get(j).getDeclareValue():0)
                                     +"亿元，审核后总投资 "+(proReviewConditionDtoList.get(j).getAuthorizeValue() != null ? proReviewConditionDtoList.get(j).getAuthorizeValue():0 )+"亿元，" +
@@ -995,7 +995,7 @@ public class CreateTemplateUtils {
                     String [] tempArr = reviewStageTotal[i].split("-");
                     //String [] tempArrTemp = reviewStageTotalTemp[i].split("-");
                     if(tempArr[1].equals(proReviewConditionDtoAllList.get(j).getReviewStage())){
-                        if(null == proReviewConditionDtoAllList.get(j).getIsadvanced()){
+                        if(null == proReviewConditionDtoAllList.get(j).getIsadvanced() || "0".equals(proReviewConditionDtoAllList.get(j).getIsadvanced())){
                             if(reviewTotal !=0 ){
                                 proCent = String.format("%.2f",(proReviewConditionDtoAllList.get(j).getProCount().floatValue()/(float) reviewTotal)*100)+"%";
                             }
@@ -1021,6 +1021,8 @@ public class CreateTemplateUtils {
         }
         //项目类别
         String projectTypeItem = monthlyNewsletterDto.getStaerTheMonths()+"至"+monthlyNewsletterDto.getTheMonths()+"月评审的项目中，";
+       // Float proCentf = 100f;
+       // Float temp1 = 0f;
         if(proReviewConditionByTypeList.size()>0){
             for(int i=0;i<proReviewConditionByTypeList.size();i++){
                 for(int j=0;j<projectType.length;j++){
@@ -1029,6 +1031,11 @@ public class CreateTemplateUtils {
                     if(tempArr[1].equals(proReviewConditionByTypeList.get(i).getProjectType())){
                         if(totalNum !=0 ){
                             proCent = String.format("%.2f",(proReviewConditionByTypeList.get(i).getProjectTypeCount().floatValue()/totalNum.floatValue()*100))+"%";
+              /*              temp1 += Float.valueOf(proCent.substring(0,proCent.length()-1));
+                            if(i == proReviewConditionByTypeList.size()-1 ){
+                                Float f = proCentf - temp1;
+                                proCent = f + "%";
+                            }*/
                         }else{
                             proCent = "0%";
                         }
@@ -1045,11 +1052,18 @@ public class CreateTemplateUtils {
         }
         dataMap.put("projectTypeItem",projectTypeItem);
         //投资金额
+      /*  proCentf = 100f;
+        temp1 = 0f;*/
         for(int i=0;i<proCountArr.length-1;i++){
             dataMap.put("proCount"+(i+1),proCountArr[i]);
             if(proCountArr[i]!=0 && proCountArr[proCountArr.length-1]!=0){
                 double temp = (double)proCountArr[i]/(double)proCountArr[proCountArr.length-1]*100;
                 String result = String.format("%.2f",temp)+"%";
+       /*         temp1 += Float.valueOf(result.substring(0,result.length()-1));
+                if(i == proReviewConditionByTypeList.size()-1 ){
+                    Float f = proCentf - temp1;
+                    proCent = f + "%";
+                }*/
                 dataMap.put("proCountCent"+(i+1),result);
             }else{
                 dataMap.put("proCountCent"+(i+1),0+"%");
