@@ -1255,7 +1255,7 @@
                 if ("pdf" == fileType) {
                     url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId+"&version="+(new Date()).getTime()+"";
                 } else if ("image" == fileType) {
-                    url = rootPath + "/file/preview/" + sysFileId+"&version="+(new Date()).getTime()+"";
+                    url = rootPath + "/file/preview/" + sysFileId+"?version="+(new Date()).getTime()+"";
                 }
                 if (url) {
                     var httpOptions = {
