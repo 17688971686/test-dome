@@ -1083,6 +1083,13 @@
                     controller: 'fileListCtrl',
                     controllerAs: 'vm'
                 })
+                //维护项目附件右边列表页
+                .state('MaintainProjectEdit.fileList', { //文件列表
+                    url: '/MaintainProjectEdit/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
 
                 //项目查询统计图表分析
                 .state('signChart', {

@@ -30,6 +30,7 @@
 
     <div class="well well-sm">
     <form id="auditform" name="auditform">
+        <input id="state" name="state" option="eq" hidden>
         <table style="width:100%; ">
             <tr>
                 <td class="text-right" style="width:80px;">专家范围</td>
@@ -69,7 +70,7 @@
                 </td>
                 <td class="text-right">职称</td>
                 <td>
-                    <select operator="eq" name="title">
+                    <select operator="eq" name="post">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.POST.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                     </select>

@@ -352,13 +352,15 @@
             var httpSuccess = function success(response) {
                 if (response.data != null && response.data != "") {
                     vm.work = response.data.eidtWP;//主办
+                    console.log(vm.work);
                     vm.assistant=response.data.WPList;//协办
+                    //初始化部门，得到数组
+                    if(vm.work.reviewOrgName){
+                        vm.reviewOrgName=vm.work.reviewOrgName.split(",");
+                        vm.work.orgName=vm.reviewOrgName[0];
+
+                    }
                     if(vm.assistant&&vm.assistant.length>0){
-                        //初始化部门，得到数组
-                        if(vm.work.reviewOrgName){
-                            vm.reviewOrgName=vm.work.reviewOrgName.split(",");
-                            vm.work.orgName=vm.reviewOrgName[0];
-                        }
                         //重新赋值个各个工作方案的所属部门
                         for(var i=0;i< vm.assistant.length;i++){
 
