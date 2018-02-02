@@ -359,8 +359,62 @@
             <version>1.0.5</version>
         </dependency>
     </dependencies>
+
+    <!-- 数据源配置 -->
+    <profiles>
+        <profile>
+            <id>dbdev</id>
+            <properties>
+                <env>dbdev</env>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>dbproduct</id>
+            <properties>
+                <env>dbproduct</env>
+            </properties>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>dbtest</id>
+            <properties>
+                <env>dbtest</env>
+            </properties>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
+
     <build>
         <finalName>szcshl-web</finalName>
+        <filters><!--获得过滤使用的源文件  即有实际数据的地反-->
+            <filter>src/main/resources/${env}.properties</filter>
+        </filters>
+        <!-- 指定 src/main/resources下所有文件及文件夹为资源文件 -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering> <!--是否使用过滤器-->
+            </resource>
+            <!-- 第二中方式 设置对dev.properties，等进行过虑，即这些文件中的${key}会被替换掉为真正的值-->
+            <!-- <resource>
+                <directory>src/main/resources/properties/properties</directory>&lt;!&ndash;一定要指向上层目录&ndash;&gt;
+                <includes>
+                    &lt;!&ndash;要遍历出来文件都必须写&ndash;&gt;
+                    <include>product.properties</include>
+                    <include>test.properties</include>
+                    <include>dev.properties</include>
+                    <include>db.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>-->
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

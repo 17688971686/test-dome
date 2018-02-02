@@ -121,7 +121,7 @@ public class SignCountWorkdayExecute implements Job {
                     disWorkDay = QuartzUnit.countWorkday(workdayList,sign.getExpectdispatchdate());
                 }
                 //计算更新亮灯状态
-                updateLightUpState(sign, usedWorkDay, new Float(sign.getReviewdays()).intValue(),new Float(disWorkDay).intValue());
+                updateLightUpState(sign, usedWorkDay, new Float(sign.getTotalReviewdays()).intValue(),new Float(disWorkDay).intValue());
 
                 sign.setSignState(Constant.signEnumState.PROCESS.getValue());
             }
