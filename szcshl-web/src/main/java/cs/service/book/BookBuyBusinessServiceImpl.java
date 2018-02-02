@@ -167,6 +167,8 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setApplyDept(bookList[0].getApplyDept());
 				bookBuyBusiness.setOperator(bookList[0].getOperator());
 				bookBuyBusiness.setBuyChannel(bookList[0].getBuyChannel());
+				bookBuyBusiness.setBusinessName(bookList[0].getBusinessName());
+				bookBuyBusiness.setApplyReason(bookList[0].getApplyReason());
 				//bookBuyBusinessRepo.save(bookBuyBusiness);
 			}else{
 				//多次保存或者保存后在发起流程
@@ -179,6 +181,8 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setApplyDept(bookList[0].getApplyDept());
 				bookBuyBusiness.setOperator(bookList[0].getOperator());
 				bookBuyBusiness.setBuyChannel(bookList[0].getBuyChannel());
+				bookBuyBusiness.setBusinessName(bookList[0].getBusinessName());
+				bookBuyBusiness.setApplyReason(bookList[0].getApplyReason());
 				if( null!= bookBuyBus && Validate.isString(bookBuyBus.getProcessInstanceId())){
 					bookBuyBusiness.setProcessInstanceId(bookBuyBus.getProcessInstanceId());
 					bookBuyBusiness.setState(bookBuyBus.getState());
@@ -226,7 +230,7 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 			}else{
 				bookBuyBus.setBusinessId(bookList[0].getBusinessId());
 			}
-			if(!Validate.isString(bookBuyBus.getBusinessName())){
+			if(!Validate.isString(bookList[0].getBusinessName())){
 				bookBuyBus.setBusinessName("图书采购流程");
 			}
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.BOOKS_BUY_FLOW, bookBuyBus.getBusinessId(),
