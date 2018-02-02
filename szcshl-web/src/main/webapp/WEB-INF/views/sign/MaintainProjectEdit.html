@@ -130,10 +130,19 @@
                     <li><a href="#/reviewWorkday/{{vm.model.signid}} ">评审工作日维护</a></li>
 					<li><a href="#/maintainExpertConfirm/{{vm.model.signid}}">修改确定的专家</a></li>
 					<li><a href=""  ng-click="vm.findExpertReview(vm.model.signid,vm.model.signState);">专家抽取方案维护</a></li>
-                    <li><a href=""  ng-click="vm.clickUploadBt();">上传扫描电子文档</a></li>
+                    <li>
+						<a href=""  ng-click="vm.clickUploadBt();">附件上传</a>
+					</li>
 				</ul>
 			</div>
-			<div class="well well-sm changeInfo" style="overflow:hidden;">
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" for-div="detail"> 详细信息</a></li>
+                <li ><a data-toggle="tab" for-div="upload">附件列表</a></li>
+            </ul>
+            <div class="tab-content" style="background:white;">
+                <!-- 详情页  审批登记-->
+                <div class="tab-pane fade in active" style="background:white;" id="detail">
+			        <div class="well well-sm changeInfo" style="overflow:hidden;">
 				<div class="col-md-6">
 					<div class="panel panel-info">
 						<div class="panel-heading">评审部门</div>
@@ -163,21 +172,6 @@
 							<div class="input-group" style="margin-bottom: 10px;">
 							  <span class="input-group-addon" >存档编号：</span>
 							  <input type="text" class="form-control" ng-model="vm.fileRecordDto.fileNo" disabled>
-							</div>
-							<div class="input-group">
-								<span class="input-group-addon" >评审费用：</span>
-								<div class="form-control options">
-									<label for="radio1" style="border-right:1px solid #ddd">
-										<label>有</label>
-										<input disabled type="radio" name="option" id="radio1" ng-model="vm.model.ishasreviewcost" ng-true-value="9" ng-false-value="0">
-										<label class="radio" for="radio1"></label>
-									</label>
-									<label for="radio2" >
-										<span>无</span>
-										<input disabled type="radio" name="option" id="radio2" ng-model="vm.model.ishasreviewcost" ng-true-value="0" ng-false-value="9">
-										<label class="radio" for="radio2"></label>
-									</label>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -213,6 +207,10 @@
 					</div>
 				</div>
 			</div>
+				</div>
+                <div class="well well-sm tab-pane fade" style="background:white;" id="upload" >
+                    <div  ng-include src="'${path}/szcshl-web/contents/app/sysFile/uploadFilelist.html'"></div>
+                </div><!-- 上传附件列表 -->
 		</div>
 	</div>
 </div>

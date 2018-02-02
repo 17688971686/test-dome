@@ -32,7 +32,7 @@
 	    };
 	    
 	    vm.auditToRemove=function(){
-	      	expertSvc.auditTo(vm,5);
+	      	expertSvc.auditTo(vm,0);
 	    };
 	    
 	    //各状态回到审核状态

@@ -26,14 +26,28 @@
                 inputId: "sysfileinput",
                 vm: vm,
                 uploadSuccess: function () {
-                    sysfileSvc.findByBusinessId(vm.annountment.anId, function (data) {
-                        vm.sysFilelists = data;
+                    //5、附件
+                    sysfileSvc.findByMianId( vm.model.signid,function(data){
+                        if(data && data.length > 0){
+                            vm.isDisplay=true;//删除附件按钮
+                            vm.sysFileList = data;
+                            sysfileSvc.initZtreeClient(vm,$scope);//树形图
+                        }
                     });
                 }
             });
         }
         active();
         function active(){
+            $('#myTab li').click(function (e) {
+                var aObj = $("a", this);
+                e.preventDefault();
+                aObj.tab('show');
+                var showDiv = aObj.attr("for-div");
+                $(".tab-pane").removeClass("active").removeClass("in");
+                $("#" + showDiv).addClass("active").addClass("in").show(500);
+                vm.model.showDiv = showDiv;
+            })
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid, function (data) {
                 vm.model = data;
@@ -50,6 +64,14 @@
                         }
                     }
                 }
+                //5、附件
+                sysfileSvc.findByMianId( vm.model.signid,function(data){
+                    if(data && data.length > 0){
+                        vm.isDisplay=true;//删除附件按钮
+                        vm.sysFileList = data;
+                        sysfileSvc.initZtreeClient(vm,$scope);//树形图
+                    }
+                });
 
             });
             vm.initFileUpload();
@@ -122,9 +144,10 @@
             }
         }// E_跳转到 发文 编辑页面
 
+        //跳转到归档页面
         vm.addDoFile = function () {
             if( vm.model.processInstanceId) {
-                if(vm.modle.fileRecordDto){
+                if(vm.model.fileRecordDto){
                     $state.go('fileRecordEdit', {signid: vm.model.signid,isControl:true});
                 }else{
                     bsWin.alert("该项目还没有填写归档");
@@ -220,5 +243,26 @@
             window.parent.$("#signWorkDiv").data("kendoWindow").close();
         }
 
+        //附件下载
+        vm.commonDownloadSysFile = function(sysFileId){
+            sysfileSvc.downloadFile(sysFileId);
+        }
+        /**
+         * 删除附件
+         * @param fileId
+         */
+        vm.delFile = function(fileId){
+            sysfileSvc.delSysFile(fileId, function () {
+                bsWin.alert("删除成功",function () {
+                    sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                        if (data && data.length > 0) {
+                            vm.sysFileList = data;
+                            sysfileSvc.initZtreeClient(vm, $scope);//树形图
+                        }
+                    });
+                })
+
+            });
+        }
     }
 })();
