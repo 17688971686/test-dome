@@ -179,6 +179,8 @@
                         p.operator= vm.model.operator;
                         p.buyChannel= vm.model.buyChannel;
                         p.businessId= $("#businessId").val();
+                        p.businessName = vm.model.businessName;
+                        p.applyReason = vm.model.applyReason;
                     });
                     return validateResult;
                 } else {

@@ -63,15 +63,17 @@
             vm.model = data;
             vm.model.borrowNum = "";
             vm.model.borrowDate = "";
-            vm.model.returnDate = "";
-            vm.model.bookBorrower =$("#curName").val();*/
-            vm.model = {};
-            vm.model.bookBorrower = {}
+            vm.model.returnDate = "";*/
+            // vm.model = {};
+
+            // // vm.model.bookBorrower = {}
             bookBuySvc.queryBookBuyById(id,function(data){
                 vm.model = data;
-                vm.model.bookBorrower = data.bookBorrower;
+                vm.model.bookBorrower =$("#curName").val();
             })
-           $("#borrowBookWindow").kendoWindow({
+            console.log(vm.model.bookBorrower);
+
+            $("#borrowBookWindow").kendoWindow({
                 width: "860px",
                 height: "300px",
                 title: "图书借阅",

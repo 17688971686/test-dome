@@ -37,8 +37,26 @@ public class BookBuyDto extends BaseDto {
     private BookBuyBusiness bookBuyBusiness;
     @JSONField(format = "yyyy-MM-dd")
     private Date storeTime ;
+    private String businessName;
+    private String applyReason;
 
     public BookBuyDto() {
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    public String getApplyReason() {
+        return applyReason;
+    }
+
+    public void setApplyReason(String applyReason) {
+        this.applyReason = applyReason;
     }
 
     public Date getStoreTime() {
