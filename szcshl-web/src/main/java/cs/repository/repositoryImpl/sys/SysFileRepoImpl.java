@@ -98,7 +98,6 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
         ResultMsg resultMsg ;
         if (Validate.isString(sysFileId)) {
             SysFile fl = findById(sysFileId);
-            if (SessionUtil.getLoginName().equals(fl.getCreatedBy())) {
                 try {
                     //删除ftp上的文件
                     Ftp f = fl.getFtp();
@@ -116,9 +115,6 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
                     logger.info("删除ftp附件【" + fl.getShowName() + "】异常：" + e.getMessage());
                 } finally {
                 }
-            }else{
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"您无权删除此附件！");
-            }
         }else{
             resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"没有删除的附件信息！");
         }

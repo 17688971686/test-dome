@@ -645,7 +645,7 @@ public class SignServiceImpl implements SignService {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，请先设置默认办理部门！");
                 }
                 task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-                taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());    //综合部拟办意见
+             /*   taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());    //综合部拟办意见*/
                 //完成综合部审批，查询是否有代办
                 dealUser = userRepo.findById(User_.id.getName(), sign.getLeaderId());
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
