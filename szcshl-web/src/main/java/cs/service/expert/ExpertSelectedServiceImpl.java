@@ -446,6 +446,8 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
         sqlBuilder.append("ON s.signid = mo.bsignid  ");
         sqlBuilder.append("where r.paydate is not null ");
+        //添加过滤条件。过滤删除
+        sqlBuilder.append("and s.signState <> '" + Constant.EnumState.DELETE.getValue() + "' ");
         //todo:添加查询条件
         if (null != projectReviewCostDto) {
             if (StringUtil.isNotEmpty(projectReviewCostDto.getProjectname())) {
@@ -834,7 +836,9 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
         sqlBuilder.append("ON s.signid = mo.bsignid  ");
         sqlBuilder.append("where r.paydate is not null ");
-
+        //添加过滤条件。过滤删除和暂停的
+        sqlBuilder.append("and s.signState <> '" + Constant.EnumState.DELETE.getValue() + "' ");
+        sqlBuilder.append("and s.signState <> '" + Constant.EnumState.STOP.getValue() + "' ");
         //todo:添加查询条件
         if (projectReviewCost != null) {
             if (StringUtil.isNotEmpty(projectReviewCost.getProjectname())) {

@@ -25,8 +25,17 @@
                 <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
             </select>
 
-            <span class="help-inline">评分：</span>
-            <select name="score" ng-model="vm.selectHis.score">
+            <span class="help-inline">评分阶段：</span>
+            <select name="score" ng-model="vm.selectHis.scoreBegin">
+                <option value="">请选择</option>
+                <option value="1">1星</option>
+                <option value="2">2星</option>
+                <option value="3">3星</option>
+                <option value="4">4星</option>
+                <option value="5">5星</option>
+            </select>
+            -
+            <select name="score" ng-model="vm.selectHis.scoreEnd">
                 <option value="">请选择</option>
                 <option value="1">1星</option>
                 <option value="2">2星</option>

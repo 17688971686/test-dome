@@ -1036,7 +1036,13 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
             sqlBuilder.append(" AND ES.ISJOIN =:isJoin ").setParam("isJoin",Constant.EnumState.YES.getValue());
 
             if(expertSelectHis.getScore() != null){
-                sqlBuilder.append(" AND ES.SCORE >:score ").setParam("score",expertSelectHis.getScore()-1, DoubleType.INSTANCE);
+                //先转成string进行拆分
+                String score=expertSelectHis.getScore().toString();
+                //转换赋值
+                double begin=Double.parseDouble(score.substring(0,1));
+                double end=Double.parseDouble(score.substring(1,2));
+                sqlBuilder.append(" AND ES.SCORE >:score ").setParam("score",begin-1, DoubleType.INSTANCE);
+                sqlBuilder.append(" AND ES.SCORE <:score1 ").setParam("score1",end+1, DoubleType.INSTANCE);
             }
 
             if(Validate.isString(expertSelectHis.getReviewStage())){

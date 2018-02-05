@@ -32,6 +32,17 @@
          * 查询
          */
         vm.search = function(){
+            //把两个数放到一个变量中，因为url是传实体类的。到service在拆分
+            if(vm.selectHis.scoreBegin){
+                if(vm.selectHis.scoreEnd){
+                    vm.selectHis.score=vm.selectHis.scoreBegin+vm.selectHis.scoreEnd;
+                }else{
+                    vm.selectHis.score=vm.selectHis.scoreBegin+5;//如果最大的选项没有写时。就到最大
+                }
+            }else{
+                vm.selectHis.score=1+vm.selectHis.scoreEnd;//如歌最小的选项没有写时，就到最小
+            }
+
             activate();
         }
 
