@@ -21,7 +21,7 @@ public class ExpertReview extends DomainBase {
 
     @Id
     @GeneratedValue(generator = "epReviewGenerator")
-    @GenericGenerator(name = "epReviewGenerator", strategy = "uuid")
+    @GenericGenerator(name = "epReviewGenerator", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     /**

@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Log {
 	@Id
     @GeneratedValue(generator= "logGenerator")
-    @GenericGenerator(name= "logGenerator",strategy = "uuid")
+    @GenericGenerator(name= "logGenerator",strategy = "org.hibernate.id.UUIDGenerator")
 	private String id;
 
     /**

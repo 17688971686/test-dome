@@ -169,12 +169,12 @@ public class SignCountWorkdayExecute implements Job {
         }*/
 
         //少于3个工作日
-        if ((totalWorkDay - usedWorkDay) <  Constant.WORK_DAY_3) {
+        if ((totalWorkDay - usedWorkDay) <=  Constant.WORK_DAY_3) {
             sign.setIsLightUp(Constant.signEnumState.UNDER3WORKDAY.getValue());
         }
 
         //所用工作日大于总工作日
-        if (usedWorkDay > totalWorkDay) {
+        if (usedWorkDay >= totalWorkDay) {
             //发文超期
             if(sign.getProcessState() < Constant.SignProcessState.END_DIS.getValue()){
                 sign.setIsLightUp(Constant.signEnumState.DISPAOVER.getValue());
