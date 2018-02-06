@@ -79,7 +79,7 @@
                     vm.total.ljhj = addNum(vm.total.ljhj ,p.ljhj);
                 }
             });
-            vm.total.hjl =   Math.round(vm.total.ljhj/vm.total.declarevalue  * 10000) / 10000*100;
+            vm.total.hjl =   Math.round(vm.total.ljhj/vm.total.declarevalue  * 10000) / 100;
         }
 
         vm.isBeginTime=function () {
