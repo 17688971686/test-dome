@@ -246,7 +246,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
-            <version>1.0.29</version>
+            <version>1.1.6</version>
         </dependency>
         <!-- ehcache -->
         <dependency>
@@ -346,13 +346,13 @@
             <artifactId>json</artifactId>
             <version>20160810</version>
         </dependency>
-        <!-- 本地流上传到服务器-->
+        <!-- 本地流上传到服务器
         <dependency>
             <groupId>com.jspsmart.upload</groupId>
             <artifactId>jspsmartupload</artifactId>
             <version>1.0</version>
         </dependency>
-
+        -->
         <dependency>
             <groupId>com.github.livesense</groupId>
             <artifactId>jodconverter-core</artifactId>

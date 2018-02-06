@@ -140,10 +140,9 @@
         /**
          * 报审登记表导出
          */
-        vm.printSign = function () {
-
+        /*vm.printSign = function () {
             var reviewstage = escape(encodeURIComponent(vm.model.reviewstage));
             window.open(rootPath + "/sign/printSign?signId=" + vm.model.signid + "&reviewStage=" + reviewstage);
-        }
+        }*/
     }
 })();

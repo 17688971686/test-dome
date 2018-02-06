@@ -83,7 +83,6 @@
                      $("#option"+i).remove();
                  }
                 createExpertCostTable(vm.expertCostTotalInfo);
-
             });
         }
 
@@ -120,8 +119,10 @@
          */
         vm.excelExport = function(){
             vm.fileName = "专家缴税统计汇总表"+vm.model.beginTime;
-            expertPaymentCountSvc.excelExport(vm,vm.expertCostTotalInfo,vm.fileName);
+            console.log(vm.expertCostTotalInfo);
+            expertPaymentCountSvc.excelExport(vm.expertCostTotalInfo,vm.fileName);
         }
+
         activate();
         function activate() {
             if(vm.model.beginTime==""){

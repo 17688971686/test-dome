@@ -197,27 +197,35 @@ public class ExpertSelectedController {
     @RequiresAuthentication
     @RequestMapping(name="专家评审费统计导出" , path ="excelExport" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void excelExport(HttpServletResponse resp ,@RequestBody ExpertCostCountDto[] expertCostCountDtoArr ,@RequestParam String fileName){
+    public void excelExport(HttpServletResponse resp ,@RequestBody ExpertCostCountDto[] expertCostCountDtoArr){
         ExcelTools excelTools = new ExcelTools();
         List<ExpertCostCountDto> expertCostCountDtoList = new ArrayList<>();
         for(ExpertCostCountDto eccd : expertCostCountDtoArr){
             expertCostCountDtoList.add(eccd);
         }
+        ServletOutputStream sos = null;
         try {
-            fileName = java.net.URLDecoder.decode(java.net.URLDecoder.decode(fileName,"UTF-8"),"UTF-8");
-            ServletOutputStream sos = resp.getOutputStream();
+            String titleName = "专家缴税统计";
+            sos = resp.getOutputStream();
             String [] headerPair =new String[]{"姓名=name","身份证号码=idCard","手机号码=userPhone","应缴所得税额(本月)=reviewcost","应缴税额(本月)=reviewtaxes","应缴所得税额(本年)=yreviewcost","应缴税额(本年)=yreviewtaxes"};
-            HSSFWorkbook wb = excelTools.createExcelBook(fileName , headerPair , expertCostCountDtoList , ExpertCostCountDto.class);
+            HSSFWorkbook wb = excelTools.createExcelBook("专家缴税统计" , headerPair , expertCostCountDtoList , ExpertCostCountDto.class);
             resp.setContentType("application/vnd.ms-excel;charset=GBK");
             resp.setHeader("Content-type" , "application/x-msexcel");
             resp.setHeader("Content_Length" , String.valueOf(wb.getBytes().length));
-            String fileName2 = fileName +".xls";
+            String fileName2 = new String((titleName + ".xls").getBytes("GB2312"), "ISO-8859-1");
             resp.setHeader("Content-Disposition" , "attachment;filename="+fileName2);
             wb.write(sos);
             sos.flush();
             sos.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            try{
+                sos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
         }
     }
 
