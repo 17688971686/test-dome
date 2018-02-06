@@ -1074,10 +1074,10 @@ public class CreateTemplateUtils {
         String relativeFileUrl = SysFileUtil.generatRelativeUrl(path ,  Constant.Template.MONTH_REPORT.getValue() ,null , null , showName);
 
         File docFile = TemplateUtil.createDoc(dataMap , Constant.Template.MONTH_REPORT.getKey() , path + File.separator + relativeFileUrl);
-        String filePath = docFile.getAbsolutePath();
+       /* String filePath = docFile.getAbsolutePath();
         filePath = filePath.substring(0, filePath.lastIndexOf("."))+"monthRep" + Constant.Template.WORD_SUFFIX.getKey();
         OfficeConverterUtil.wordSaveAsWord(docFile.getAbsolutePath(),filePath); //另存为doc
-        File realFile = new File(filePath);
-        return realFile;
+        File realFile = new File(filePath);*/
+        return docFile;
     }
 }
