@@ -232,6 +232,8 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 			}
 			if(!Validate.isString(bookList[0].getBusinessName())){
 				bookBuyBus.setBusinessName("图书采购流程");
+			}else{
+				bookBuyBus.setBusinessName(bookList[0].getBusinessName());
 			}
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.BOOKS_BUY_FLOW, bookBuyBus.getBusinessId(),
 					ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_APPLY.getValue(), SessionUtil.getUserId()));

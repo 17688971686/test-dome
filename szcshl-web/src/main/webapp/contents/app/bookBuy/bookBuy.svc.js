@@ -249,7 +249,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/bookBuy/findByOData", $("#bookForm"),{filter: "storeConfirm eq 'isNotNull'"}),
+                transport: common.kendoGridConfig().transport(rootPath + "/bookBuy/findByOData", $("#bookForm")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {

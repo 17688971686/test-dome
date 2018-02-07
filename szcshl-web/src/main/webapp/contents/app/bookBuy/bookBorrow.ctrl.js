@@ -37,7 +37,12 @@
             vm.model.booksName = booksName;
             vm.model.borrowNum=borrowNum;
             vm.model.bookBorrower = bookBorrower;
-            vm.model.returnDate = new Date(returnDate).Format("yyyy-MM-dd");
+           //当没有日期时。格式化会有Na-Na-Na的报错
+            if(returnDate!=undefined){
+                vm.model.returnDate = new Date(returnDate).Format("yyyy-MM-dd");
+            }else{
+                vm.model.returnDate="";
+            }
             vm.model.returnBorrower = $("#curName").val();
             $("#returnBookWindow").kendoWindow({
                 width: "38%",

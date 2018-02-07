@@ -20,6 +20,7 @@
     <div class="well well-sm">
         <form id="bookForm" name="bookForm" >
             <input id="curName" type="hidden" value="${CURRENT_USER.loginName}"/>
+            <input name="storeConfirm" operator="eq" value="isNotNull" hidden="hidden" />
             <table style="width:100%">
                 <tr>
                     <td class="text-right">图书号</td>

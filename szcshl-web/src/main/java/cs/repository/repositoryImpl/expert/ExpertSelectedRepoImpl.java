@@ -1029,7 +1029,10 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append(" LEFT JOIN CS_EXPERT_SELECTED es ON EX.EXPERTID = ES.EXPERTID ");
         sqlBuilder.append(" LEFT JOIN CS_EXPERT_REVIEW er ON ER.ID = ES.EXPERTREVIEWID ");
         sqlBuilder.append(" LEFT JOIN CS_WORK_PROGRAM wp ON WP.ID = ES.BUSINESSID ");
+        sqlBuilder.append(" LEFT JOIN CS_SIGN s ON S.SIGNID = WP.SIGNID   ");
         sqlBuilder.append(" WHERE ex.state != '3' AND ex.state != '4' AND ES.ID IS NOT NULL ");
+        //过滤预签收的
+        sqlBuilder.append(" AND (S.ispresign<>'"+Constant.EnumState.NO.getValue()+"' OR S.ispresign IS NULL)");
         //如果是专家评分，则必须是已确定并且参加会议的人
         if(isScore){
             sqlBuilder.append(" AND ES.ISCONFRIM =:isConfirm ").setParam("isConfirm", Constant.EnumState.YES.getValue());
