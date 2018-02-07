@@ -18,12 +18,21 @@ public class AssistUnitUser extends DomainBase {
     @Id
     private String id;
 
+    /**
+     * 联系人名称
+     */
     @Column(columnDefinition="VARCHAR(64)")
     private String userName;
 
+    /**
+     * 联系人电话
+     */
     @Column(columnDefinition="VARCHAR(16)")
     private String phoneNum;
 
+    /**
+     * 联系人地址
+     */
     @Column(columnDefinition="VARCHAR(64)")
     private String position;
 

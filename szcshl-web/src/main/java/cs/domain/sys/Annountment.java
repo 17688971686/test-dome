@@ -85,7 +85,10 @@ public class Annountment extends DomainBase {
     @Column(columnDefinition="date")
     private Date deptMinisterDate;
 
-    //分管副主任名称
+    /**
+     * 分管副主任Id
+     */
+
     @Column(columnDefinition = "varchar(64)")
     private String deptSLeaderId;
 
@@ -102,6 +105,9 @@ public class Annountment extends DomainBase {
     private Date deptSleaderDate;
 
 
+    /**
+     * 主任ID
+     */
     @Column(columnDefinition = "varchar(64)")
     private String deptDirectorId;
 

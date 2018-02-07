@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import java.util.List;
 
 /**
- * Description: 文件夹管理
+ * Description: 文件库管理
  * Author: mcl
  * Date: 2017/8/21 11:46
  */

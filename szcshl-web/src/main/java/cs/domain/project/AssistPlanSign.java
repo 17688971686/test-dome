@@ -5,6 +5,9 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+/**
+ * 协审计划收文表
+ */
 @Entity
 @Table(name = "cs_as_plansign")
 @DynamicUpdate(true)
