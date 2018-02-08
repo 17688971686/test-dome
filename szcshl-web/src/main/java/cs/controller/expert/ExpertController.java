@@ -1,19 +1,22 @@
 package cs.controller.expert;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
 import cs.common.utils.ExcelTools;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
-import cs.domain.expert.Expert;
-import cs.domain.project.SignDispaWork;
+import cs.domain.expert.ExpertSign;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
-import cs.model.expert.*;
+import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertSelConditionDto;
+import cs.model.expert.ExpertSelectHis;
+import cs.model.expert.ExpertSignDto;
 import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertService;
+import cs.service.expert.ExpertSignService;
 import cs.service.project.SignDispaWorkService;
 import cs.service.sys.HeaderService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -43,12 +46,12 @@ public class ExpertController {
     private String ctrlName = "expert";
     @Autowired
     private ExpertService expertService;
-
     @Autowired
     private SignDispaWorkService signDispaWorkService;
-
     @Autowired
     private HeaderService headerService;
+    @Autowired
+    private ExpertSignService expertSignService;
 
     @RequiresAuthentication
     //@RequiresPermissions("expert#findByOData#post")
@@ -61,20 +64,17 @@ public class ExpertController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name="专家信息导出Excel" , path ="exportToExcel" , method = RequestMethod.GET)
+    @RequestMapping(name="专家信息导出Excel" , path ="exportToExcel" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void expertDetailExport(HttpServletRequest request,HttpServletResponse resp ,@RequestParam String filterData ,@RequestParam String fileName){
+    public void expertDetailExport(HttpServletRequest request,HttpServletResponse resp ){
         ServletOutputStream sos = null;
         try {
-//            ODataObj odataObj = new ODataObj(request);
-//            odataObj.setTop(0);
-//            odataObj.setCount(false);
-//            PageModelDto<ExpertDto> expertDtoList = expertService.get(odataObj);
-            String title = java.net.URLDecoder.decode(fileName,"UTF-8");
-            String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
+            ODataObj odataObj = new ODataObj(request);
+            odataObj.setTop(0);
+            odataObj.setCount(false);
+            PageModelDto<ExpertDto> expertDtoList = expertService.get(odataObj);
             List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("专家类型");//选中的表字段
             List<Header> headerList = headerService.findHeaderByType("专家类型");//所有 表字段
-            List<ExpertDto> expertDtoList = expertService.exportData(filters);
             ExcelTools excelTools = new ExcelTools();
             String[] headerPair ;
             if(headerDtoList.size()>0) {
@@ -88,7 +88,8 @@ public class ExpertController {
                     headerPair[i] = headerList.get(i).getHeaderName() + "=" + headerList.get(i).getHeaderKey();
                 }
             }
-            HSSFWorkbook wb = excelTools.createExcelBook("专家信息" , headerPair , expertDtoList , ExpertDto.class);
+            String title = "专家信息";
+            HSSFWorkbook wb = excelTools.createExcelBook(title , headerPair , expertDtoList.getValue() , ExpertDto.class);
             resp.setContentType("application/vnd.ms-excel;charset=GBK");
             resp.setHeader("Content-type", "application/x-msexcel");
             resp.setHeader("Content_Length", String.valueOf(wb.getBytes().length));
@@ -109,7 +110,6 @@ public class ExpertController {
                 e.printStackTrace();
 
             }
-
         }
     }
 
@@ -148,16 +148,34 @@ public class ExpertController {
         return expertService.saveExpert(expert);
     }
 
+
+    /**
+     * 逻辑删除
+     * @param id
+     * @return
+     */
     @RequiresAuthentication
     //@RequiresPermissions("expert##delete")
     @RequestMapping(name = "删除专家", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String id) {
-        String[] ids = id.split(",");
-        if (ids.length > 1) {
-            expertService.deleteExpert(ids);
-        } else {
-            expertService.deleteExpert(id);
+    @ResponseBody
+    public ResultMsg delete(@RequestParam(required = true) String id) {
+        return expertService.deleteExpert(id);
+    }
+
+    /**
+     * 物理删除
+     * @param id
+     * @return
+     */
+    @RequiresAuthentication
+    //@RequiresPermissions("expert##delete")
+    @RequestMapping(name = "删除专家", path = "deleteExpertData", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResultMsg deleteExpertData(@RequestParam(required = true) String id) {
+        if(SessionUtil.hashRole(Constant.SUPER_ROLE)){
+            return expertService.deleteExpertData(id);
+        }else{
+            return new ResultMsg(false,Constant.MsgCode.ERROR.getValue(),"您没有权限进行删除操作！");
         }
     }
 
@@ -225,10 +243,10 @@ public class ExpertController {
     @RequiresAuthentication
     @RequestMapping(name="查询专家评审的项目信息" , path = "reviewProject" , method =  RequestMethod.POST)
     @ResponseBody
-    public List<SignDispaWork> reviewProject(@RequestParam String expertId){
-        List<SignDispaWork> resultList = new ArrayList<>();
+    public List<ExpertSignDto> reviewProject(@RequestParam String expertId){
+        List<ExpertSignDto> resultList = new ArrayList<>();
         if(Validate.isString(expertId)){
-            resultList = signDispaWorkService.reviewProject(expertId);
+            resultList = expertSignService.reviewProject(expertId);
         }
         return resultList;
     }

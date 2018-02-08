@@ -5,6 +5,7 @@ import cs.domain.sys.Org;
 import cs.model.project.WorkProgramDto;
 import cs.repository.IRepository;
 
+import java.util.Date;
 import java.util.List;
 
 public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
@@ -44,4 +45,20 @@ public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
      * @return
      */
     List<WorkProgram> findMergeWP(String signid);
+
+    /**
+     * 根据ID判断是否是想验证的评审方式
+     * @param reviewType
+     * @param workProgramId
+     * @return
+     */
+    boolean checkReviewType(String reviewType, String workProgramId);
+
+    /**
+     * 拟补充资料函状态
+     * @param businessId
+     * @param value
+     * @param disapDate
+     */
+    void updateSuppLetterState(String businessId, String value, Date disapDate);
 }

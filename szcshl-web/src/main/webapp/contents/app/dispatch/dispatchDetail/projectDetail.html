@@ -2,20 +2,22 @@
 <!--  S 项目建议书-->
 <!-- s table -->
 <table class="table table-bordered">
-    <caption>
-        <span>QR-4.3-10-A3</span>
-    </caption>
-    <caption class="text-center h3"><strong><p>深圳市政府投资项目评审中心</p>
-        <p>项目发文审批表</p></strong></caption>
-    <caption>
+    <caption class="text-center">
+        <p style="padding: 5px 10px;">
+            <span style="float: left;">QR-4.3-10-A3</span>
+        </p>
+        <p class="h3">
+            <strong>深圳市政府投资项目评审中心<br/>项目发文审批表</strong>
+        </p>
+        <p>
+            <span style="padding: 5px 10px;float: left;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
+            <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9"
+                  style="padding: 5px 10px;float: left;">主项目</span>
+            <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0"
+                  style="padding: 5px 10px;float: left;">次项目</span>
 
-        <span style="margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
-        <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9"
-              style="margin-left:10px;">主项目</span>
-        <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0"
-              style="margin-left:10px;">次项目</span>
-
-        <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
+            <span style="padding: 5px 10px;float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
+        </p>
     </caption>
     <tbody>
 
@@ -177,29 +179,29 @@
                     </td>
                 </tr>
 
-                <tr style="height: 50px;">
-                    <td>项目建设必要性</td>
+                <tr style="height: 80px;">
+                    <td >项目建设必要性</td>
                     <td colspan="6" class="text-left">
                         {{s.dispatchDocDto.projectBuildNecess}}
                     </td>
                 </tr>
 
-                <tr style="height: 50px;">
-                    <td>审定建设规模及内容</td>
+                <tr style="height: 80px;">
+                    <td class="text-center">审定建设规模及内容</td>
                     <td colspan="6" class="text-left">
                         {{s.dispatchDocDto.buildSizeContent}}
                     </td>
                 </tr>
 
-                <tr style="height: 50px;">
-                    <td>投资匡算及资金来源</td>
+                <tr style="height: 80px;">
+                    <td >投资匡算及资金来源</td>
                     <td colspan="6" class="text-left">
                         {{s.dispatchDocDto.fundTotalOrigin}}
                     </td>
                 </tr>
 
-                <tr style="height: 50px;">
-                    <td>下一阶段工作要求</td>
+                <tr style="height: 80px;">
+                    <td >下一阶段工作要求</td>
                     <td colspan="6" class="text-left">
                         {{s.dispatchDocDto.nextWorkPlan}}
                     </td>
@@ -239,29 +241,29 @@
                     </td>
                 </tr>
 
-                <tr style="height: 50px;">
-                    <td>项目建设必要性</td>
+                <tr style="height: 80px;">
+                    <td >项目建设必要性</td>
                     <td colspan="6" class="text-left">
                         {{vm.dispatchDoc.projectBuildNecess}}
                     </td>
                 </tr>
 
-                <tr style="height: 50px;">
-                    <td>审定建设规模及内容</td>
+                <tr style="height: 80px;">
+                    <td >审定建设规模及内容</td>
                     <td colspan="6" class="text-left">
                         {{vm.dispatchDoc.buildSizeContent}}
                     </td>
                 </tr>
 
-                <tr style="height: 50px;">
-                    <td>投资匡算及资金来源</td>
+                <tr style="height: 80px;">
+                    <td >投资匡算及资金来源</td>
                     <td colspan="6" class="text-left">
                         {{vm.dispatchDoc.fundTotalOrigin}}
                     </td>
                 </tr>
 
-                <tr style="height: 50px;">
-                    <td>下一阶段工作要求</td>
+                <tr style="height: 80px;">
+                    <td >下一阶段工作要求</td>
                     <td colspan="6" class="text-left">
                         {{vm.dispatchDoc.nextWorkPlan}}
                     </td>
@@ -271,7 +273,8 @@
     </tr>
     </tbody>
 </table>    <!-- end table -->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
+<!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;"
         ng-click="vm.templatePage('sign_dispatch_xmjys')">打印
-</button>
+</button>-->
+<button class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">打印预览</button>
 <!--  E 项目建议书-->

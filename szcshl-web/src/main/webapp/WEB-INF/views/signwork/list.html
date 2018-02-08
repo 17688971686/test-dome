@@ -1,0 +1,62 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li>系统管理员</li>
+        <li class="active">专家抽取方案维护列表</li>
+    </ol>
+
+    <div class="well well-sm">
+        <form id="signworkform" name="signworkform">
+            <span class="help-inline">项目名称：</span>
+            <input type="text" operator="like" name="projectName" id="projectName" placeholder="请输入">
+            <span class="help-inline" style="margin-left:15px;">签收日期：</span>
+            <input name="signdate" kendo-date-picker k-format="'yyyy-MM-dd'"
+                   value="" type="text" operator="ge"/>
+            至
+            <input name="signdate"kendo-date-picker k-format="'yyyy-MM-dd'"
+                   value="" type="text" operator="le"/>
+            <button class="btn btn-sm btn-primary" ng-click="vm.querySignWork()" ng-disabled="vm.isSubmit">
+                <span class="glyphicon glyphicon-search"></span>查询
+            </button>
+            <button class="btn btn-sm btn-primary" ng-click="vm.resetForm()">
+                <span class="glyphicon glyphicon-repeat"></span>重置
+            </button>
+            <go-back></go-back>
+        </form>
+    </div>
+
+    <table class="table table-bordered">
+        <tr class="active">
+            <th class="text-center" style="width:50px">序号</th>
+            <th >项目名称</th>
+            <th class="text-center" style="width:12%">评审阶段</th>
+            <th class="text-center" style="width:15%;">签收日期</th>
+            <th class="text-center" style="width:20%">分办部门</th>
+            <th class="text-center" style="width:20%">项目负责人</th>
+            <th class="text-center" style="width:8%">操作</th>
+        </tr>
+        <tbody ng-repeat="s in vm.signWorkList | filter: {signId : vm.signId }">
+        <tr>
+            <td class="text-center" rowspan="{{s.signWorkDtoList.length + 1}}" style="vertical-align: middle;">{{$index + 1}}</td>
+            <td rowspan="{{s.signWorkDtoList.length + 1}}" style="vertical-align: middle;">{{s.projectName}}</td>
+            <td class="text-center" rowspan="{{s.signWorkDtoList.length + 1}}" style="vertical-align: middle;">{{s.reviewstage}}</td>
+            <td class="text-center" rowspan="{{s.signWorkDtoList.length + 1}}" style="vertical-align: middle;">{{s.signdate}}</td>
+            <td class="text-center">{{s.orgName}}</td>
+            <td class="text-center">{{s.displaynames}}</td>
+            <td class="text-center"><a class="btn btn-sm btn-primary" ui-sref="expertReviewEdit({businessId:s.signId,minBusinessId:s.wpid,businessType:s.businessType})">修改</a></td>
+        </tr>
+        <tr ng-repeat="f in s.signWorkDtoList" ng-if="s.signWorkDtoList && s.signWorkDtoList.length > 0">
+            <td class="text-center">{{f.orgName}}</td>
+            <td class="text-center">{{f.displaynames}}</td>
+            <td class="text-center"><a class="btn btn-sm btn-primary" ui-sref="expertReviewEdit({businessId:s.signId,minBusinessId:f.wpid,businessType:f.businessType})">修改</a></td>
+        </tr>
+        </tbody>
+        <tr ng-show="vm.nodata">
+            <td colspan="7" class="text-center">
+                没有数据！
+            </td>
+        </tr>
+    </table>
+
+</div>

@@ -4,7 +4,6 @@ import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.ExcelUtils;
-import cs.common.utils.FileUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.meeting.RoomBooking;
@@ -20,7 +19,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -130,14 +128,14 @@ public class RoomBookingController {
     }
 
 
-    @RequiresAuthentication
+    /*@RequiresAuthentication
     //@RequiresPermissions("room#exportNextWeekStage#get")
     @RequestMapping(name = "导出下周评审会议安排", path = "exportNextWeekStage", method = RequestMethod.GET)
     public void exportsNext(HttpServletRequest req, HttpServletResponse resp) {
         roomBookingSerivce.exportNextWeekStage();
-    }
+    }*/
 
-    //导出本周全部会议安排
+   /* //导出本周全部会议安排
     @RequiresAuthentication
     //@RequiresPermissions("room#exportWeek#get")
     @RequestMapping(name = "导出本周全部会议安排", path = "exportWeek", method = RequestMethod.GET)
@@ -151,9 +149,9 @@ public class RoomBookingController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    //导出下周全部会议安排
+    /*//导出下周全部会议安排
     @RequiresAuthentication
     //@RequiresPermissions("room#exportNextWeek#get")
     @RequestMapping(name = "导出下周全部会议安排", path = "exportNextWeek", method = RequestMethod.GET)
@@ -168,7 +166,7 @@ public class RoomBookingController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @RequiresAuthentication
     //@RequiresPermissions("room#addRoom#post")

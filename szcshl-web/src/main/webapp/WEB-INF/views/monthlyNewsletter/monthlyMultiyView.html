@@ -1,9 +1,9 @@
 <!-- S 中心文件详细页面 -->
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-
 <!-- 查看中心文件附件页面 -->
-<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+<!-- 附件 -->
+<#include "/file/common.html"/>
 <div class="well well-sm" style="background:white; color: red">
     <ol class="breadcrumb">
         <li><a href="#/monthlyMultiyFileList">月报简报管理</a></li>

@@ -13,7 +13,7 @@
             findUsersByOrgId: findUsersByOrgId,     //查询评估部门
             deleteBookRoom: deleteBookRoom,          //删除会议室
             findAllMeeting: findAllMeeting,         //查找会议室地点
-
+            workMaintainList:workMaintainList,      //根据signid查询工作方案
             initMergeInfo: initMergeInfo,          //初始化合并项目信息
             getMergeSignBySignId: getMergeSignBySignId,   //初始化已选项目列表
             unMergeWPSign: unMergeWPSign,			//待选项目列表
@@ -340,21 +340,83 @@
             });
         }//S_初始化页面参数
 
+        //S_初始化页面参数
+        function workMaintainList(vm) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/html/workMaintainList",
+                params: {
+                    signId: vm.work.signId,
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (response.data != null && response.data != "") {
+                    vm.work = response.data.eidtWP;//主办
+                    console.log(vm.work);
+                    vm.assistant=response.data.WPList;//协办
+                    //初始化部门，得到数组
+                    if(vm.work.reviewOrgName){
+                        vm.reviewOrgName=vm.work.reviewOrgName.split(",");
+                        vm.work.orgName=vm.reviewOrgName[0];
+
+                    }
+                    if(vm.assistant&&vm.assistant.length>0){
+                        //重新赋值个各个工作方案的所属部门
+                        for(var i=0;i< vm.assistant.length;i++){
+
+                                vm.assistant[i].orgName=vm.reviewOrgName[vm.assistant[i].branchId-1];
+
+                        }
+                    }
+
+                    //如果没有赋值，则初始化一种类型，否则按照默认的类型
+                    //因为合并评审次项目是不可以修改的
+                    if(!vm.work.reviewType){
+                        vm.work.reviewType = "自评";
+                    }
+                    if(!vm.work.isSigle){
+                        vm.work.isSigle = '单个评审';
+                    }
+
+                    //如果选了专家，并且评审费有变动，则更改
+                    if (vm.work.expertDtoList && vm.work.expertDtoList.length > 0) {
+                        if (!vm.work.expertCost || vm.work.expertCost < 1000 * (vm.work.expertDtoList.length)) {
+                            vm.work.expertCost = 1000 * (vm.work.expertDtoList.length);
+                        }
+                    }
+                    vm.model.workProgramDtoList = {};
+                    //如果存在多个分支的情况，则显示项目总投资
+                    if ((response.data.showTotalInvestment == '9' || response.data.showTotalInvestment == 9)
+                        || (response.data.WPList && response.data.WPList.length > 0)) {
+                        vm.model.workProgramDtoList = response.data.WPList;
+                        vm.showTotalInvestment = true;
+                    }
+
+                    if (vm.work.branchId == "1") {
+                        findCompanys(vm);//查找主管部门
+                    }
+                    vm.work.signId = $state.params.signid;		//收文ID(重新赋值)
+                    if (vm.work.projectType) {
+                        vm.work.projectTypeDicts = $rootScope.topSelectChange(vm.work.projectType, $rootScope.DICT.PROJECTTYPE.dicts)
+                    }
+
+                    //如果是合并评审次项目，则不允许修改
+                    if (vm.work.isSigle == "合并评审" && (vm.work.isMainProject == "0" || vm.work.isMainProject == 0)) {
+                        vm.businessFlag.isReveiwAWP = true;
+                    }
+                }
+            }
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//S_初始化页面参数
+
         //S_保存操作
         function createWP(work, isNeedWorkProgram, isCommit, callBack) {
             isCommit = true;
-            if ($("#studyBeginTime").val()) {
-                work.studyBeginTimeStr = $("#studyBeginTime").val();
-            }
-            if ($("#studyEndTime").val()) {
-                work.studyEndTimeStr = $("#studyEndTime").val();
-            }
-            if ($("#studyAllDay").val() && $("#studyBeginTime").val()) {
-                work.studyBeginTime = $("#studyAllDay").val() + " " + $("#studyBeginTime").val() + ":00";
-            }
-            if ($("#studyAllDay").val() && $("#studyEndTime").val()) {
-                work.studyEndTime = $("#studyAllDay").val() + " " + $("#studyEndTime").val() + ":00";
-            }
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/workprogram/addWork",

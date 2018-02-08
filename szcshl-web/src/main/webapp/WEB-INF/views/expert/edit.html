@@ -3,7 +3,6 @@
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <!-- 专家评审项目 -->
 
-
 <div id="expertApply" class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;" >
     <ol class="breadcrumb">
         <li><a href="#/expertList">专家管理</a></li>
@@ -22,7 +21,7 @@
 
                 <td  class="text-center" width="10%">性别<span class="required">*</span></td>
                 <td width="15%">
-                    <select ng-model="vm.model.sex" class="form-control" name="sex" data-val-required="必填"
+                    <select ng-model="vm.model.sex" class="form-control select-sm" name="sex" data-val-required="必填"
                             data-val="true">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.SEX.dicts"
@@ -57,7 +56,7 @@
                 </td>
                 <td  class="text-center">最高学历<span class="required">*</span></td>
                 <td>
-                    <select ng-model="vm.model.qualifiCations" class="form-control " name="qualifiCations"
+                    <select ng-model="vm.model.qualifiCations" class="form-control  select-sm" name="qualifiCations"
                             data-val-required="必填" data-val="true">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.QUALIFI_CATIONS.dicts"
@@ -69,7 +68,7 @@
                 </td>
                 <td  class="text-center">最高学位<span class="required">*</span></td>
                 <td>
-                    <select ng-model="vm.model.degRee" class="form-control" name="degRee"
+                    <select ng-model="vm.model.degRee" class="form-control  select-sm" name="degRee"
                             data-val-required="必填" data-val="true">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.DEGREE.dicts" ng-selected="vm.model.degRee == x.dictName"
@@ -120,7 +119,7 @@
                 </td>
                 <td  class="text-center">职称<span class="required">*</span></td>
                 <td>
-                    <select ng-model="vm.model.post" class="form-control input-sm " name="post" data-val="true"
+                    <select ng-model="vm.model.post" class="form-control select-sm" name="post" data-val="true"
                             data-val-required="必填">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.POST.dicts" ng-selected="vm.model.post == x.dictName"
@@ -237,7 +236,7 @@
             <tr>
                 <td  class="text-center">专家类别<span class="required">*</span></td>
                 <td colspan="3">
-                    <select ng-model="vm.model.expertSort" name="expertSort"
+                    <select ng-model="vm.model.expertSort" name="expertSort" class="form-control select-sm "
                             data-val="true" data-val-required="必填">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.EXPERT_SORT.dicts" ng-selected="vm.model.expertSort == x.dictName"
@@ -249,7 +248,7 @@
 
                 <td  class="text-center">区域类别<span class="required">*</span></td>
                 <td colspan="3">
-                    <select ng-model="vm.model.expertField" data-val="true" data-val-required="必填" name="expertField">
+                    <select ng-model="vm.model.expertField" class="form-control select-sm " data-val="true" data-val-required="必填" name="expertField">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.EXPERT_FIELD.dicts" ng-selected="vm.model.expertField == x.dictKey"
                                 value="{{x.dictKey}}">{{x.dictName}}
@@ -719,16 +718,19 @@
 
 <div class="navbar navbar-default navbar-fixed-bottom" style="padding: 0;margin: 0;">
     <div class="text-center" style="line-height: 50px;">
-        <a class="btn btn-sm btn-primary" href="#/expert">
-            <span class="glyphicon glyphicon-chevron-left"></span>返回
-        </a>
-        <button class="btn btn-sm btn-success" ng-click="vm.saveEP()" ng-disabled="vm.isSubmit" >
+
+        <button class="btn btn-sm btn-success"  ng-click="vm.saveEP()" ng-disabled="vm.isSubmit" >
             <span class="glyphicon glyphicon-ok"></span>保存专家信息
         </button>
         <button ng-if="vm.model.expertID" class="btn btn-sm btn-success" ng-click="vm.selReviewProject()">
             <span class="glyphicon glyphicon-search"></span>专家评审项目列表
         </button>
-        <input id="btnPrint" class="btn btn-sm btn-primary" type="button" value="打印"  ng-click="vm.editPrint()" />
+        <button class="btn btn-sm btn-primary" ng-click="printFile(vm.model.expertID,'EXPERT','EXPERT')">
+            <span class="glyphicon glyphicon-print"></span>打印预览</button>
+        <a class="btn btn-sm btn-primary" href="#/expert">
+            <span class="glyphicon glyphicon-chevron-left"></span>返回
+        </a>
+        <!--<input id="btnPrint" class="btn btn-sm btn-primary" type="button" value="打印"  ng-click="vm.editPrint()" />-->
     </div>
 </div>
 </div>

@@ -11,8 +11,7 @@
         /* jshint validthis:true */
         var vm = this;
         vm.id = $state.params.id;
-       
-        
+
         vm.showAddUserDialog = function () {
         	$('.addUser').modal({
                 backdrop: 'static',
@@ -31,7 +30,7 @@
         	orgUserSvc.remove(vm,userId);
         };
         vm.removes = function () {     
-        	var selectIds = common.getKendoCheckId('.orgUserGrid');
+        	var selectIds = common.getKendoCheckId('.gird');
             if (selectIds.length == 0) {
                 common.alert({
                 	vm:vm,
@@ -47,11 +46,21 @@
                 vm.remove(idStr);
             }   
        }
+       //查询
+       vm.query=function () {
+           vm.gridOptions.dataSource._skip= 0;
+           vm.gridOptions.dataSource.read();
+       }
+       //重置
+        vm.formReset=function () {
+            var tab = $("#form").find('input,select').not(":submit, :reset, :image, :disabled,:hidden");
+            $.each(tab, function (i, obj) {
+                obj.value = "";
+            });
+        }
 
         activate();
         function activate() {
-        	
-        	// orgSvc.getOrgById(vm);
         	orgUserSvc.orgUserGrid(vm);
         	orgUserSvc.allUserGrid(vm);
         }

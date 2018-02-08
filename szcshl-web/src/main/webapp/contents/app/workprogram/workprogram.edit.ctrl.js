@@ -13,6 +13,7 @@
         vm.startDateTime = new Date("2006/6/1 08:00");
         vm.endDateTime = new Date("2030/6/1 21:00");
         vm.work.signId = $state.params.signid;		//收文ID
+        vm.isControl=$state.params.isControl;		//按钮显示
         vm.work.id = "";
 
         vm.sign = {};						//创建收文对象
@@ -31,7 +32,12 @@
         activate();
         function activate() {
             vm.showAll = true;
-            workprogramSvc.initPage(vm);
+            if(vm.isControl){//是否为维护项目
+                workprogramSvc.workMaintainList(vm);
+            }else{
+                workprogramSvc.initPage(vm);
+            }
+
             $('#wpTab li').click(function (e) {
                 var aObj = $("a", this);
                 e.preventDefault();
@@ -269,22 +275,67 @@
         }
 
         vm.create = function () {
-            var id = $("#work_program_form").find('div[class="ng-scope"]').attr("id");
-            common.initJqValidation($("#"+id));
+           /* var id = $("#work_program_form").find('div[class="ng-scope"]').attr("id");*/
+            common.initJqValidation($("#work_program_form"));
             var isValid = $("#work_program_form").valid();
             if (isValid) {
-                workprogramSvc.createWP(vm.work, false, vm.iscommit, function (data) {
-                    if (data.flag || data.reCode == "ok") {
-                        vm.work.id = data.reObj.id;
-                        bsWin.success("操作成功！");
-                    } else {
-                        bsWin.error(data.reMsg);
+                if(!vm.isTime){
+                    if(vm.work.studyQuantum=="全天") {
+                        vm.work.studyBeginTime="";
+                        vm.work.studyEndTime="";
                     }
-                });
+                    else {
+                        if ($("#studyBeginTime").val()) {
+                            vm.work.studyBeginTimeStr = $("#studyBeginTime").val();
+                        }
+                        if ($("#studyEndTime").val()) {
+                            vm.work.studyEndTimeStr = $("#studyEndTime").val();
+                        }
+                        if ($("#studyAllDay").val() && $("#studyBeginTime").val()) {
+                            vm.work.studyBeginTime = $("#studyAllDay").val() + " " + $("#studyBeginTime").val() + ":00";
+                        }
+                        if ($("#studyAllDay").val() && $("#studyEndTime").val()) {
+                            vm.work.studyEndTime = $("#studyAllDay").val() + " " + $("#studyEndTime").val() + ":00";
+                        }
+                    }
+                    workprogramSvc.createWP(vm.work, false, vm.iscommit, function (data) {
+                        if (data.flag || data.reCode == "ok") {
+                            vm.work.id = data.reObj.id;
+                            bsWin.success("操作成功！");
+                        } else {
+                            bsWin.error(data.reMsg);
+                        }
+                    });
+                }else{
+                    bsWin.alert("结束时间必须大于开始时间！");
+                }
+
             } else {
                 bsWin.alert("操作失败，有红色*号的选项为必填项，请按要求填写！");
             }
         };
+         //判断调研时间的结束时间是否小于开始时间
+        vm.compare=function () {
+            var studyBeginTimeStr = parseInt(vm.work.studyBeginTimeStr.split(":")[0]);
+            var studyEndTimeStr = parseInt(vm.work.studyEndTimeStr.split(":")[0]);
+            if(studyBeginTimeStr==studyEndTimeStr){//当“时”想等时，判断“分”
+                var beginTime = parseInt(vm.work.studyBeginTimeStr.split(":")[1]);
+                var endTime = parseInt(vm.work.studyEndTimeStr.split(":")[1]);
+                if(beginTime>endTime){ //判断“分”
+                    vm.isTime=true;
+                }else{
+                    vm.isTime=false;
+                }
+
+            }else{
+                if(studyBeginTimeStr>studyEndTimeStr){ //判断"时"
+                    vm.isTime=true;
+                }else{
+                    vm.isTime=false;
+                }
+            }
+
+        }
 
         //拟聘请专家
         vm.selectExpert = function () {
@@ -317,6 +368,21 @@
         vm.printpage = function ($event) {
             var id =  $($event.target).attr("id");
             signSvc.workProgramPrint(id);
+        }
+
+      //维护项目时的工作方案的保存
+        vm.createMaintain=function () {
+            //保存工作方案的意见
+            if (vm.assistant != undefined && vm.assistant.length != 0) {
+                for (var i = 0; i < vm.assistant.length; i++) {
+                    workprogramSvc.createWP(vm.assistant[i], false, vm.iscommit);
+                }
+            }
+            if(vm.work){
+                workprogramSvc.createWP(vm.work, false, vm.iscommit,function () {
+                    bsWin.alert("操作成功");
+                });
+            }
         }
     }
 })();

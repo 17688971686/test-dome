@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertCtrl', expert);
 
-    expert.$inject = ['$location', 'expertSvc', '$state','templatePrintSvc'];
+    expert.$inject = ['$scope', 'expertSvc', '$state','templatePrintSvc', 'headerSvc'];
 
-    function expert($location, expertSvc, $state,templatePrintSvc) {
+    function expert($scope, expertSvc, $state,templatePrintSvc , headerSvc) {
         var vm = this;
         vm.data = {};
         vm.title = '专家列表';
@@ -70,7 +70,7 @@
                 vm.model = data;
                 $("#queryExportDetail").kendoWindow({
                     width: "80%",
-                    height: "auto",
+                    height: "620px",
                     title: "专家详细信息",
                     visible: false,
                     modal: true,
@@ -90,6 +90,7 @@
                             templatePrintSvc.templatePrint("expertApply_templ");
                         }
                         //评审过项目
+                        vm.reviewProjectList = [];
                         expertSvc.reviewProjectGrid(vm.model.expertID,function(data){
                             vm.isLoading = false;
                             if(data && data.length > 0){
@@ -115,6 +116,13 @@
          */
         vm.exportToExcel = function () {
             expertSvc.exportToExcel(vm);
+        }
+
+        /**
+         * 自定义报表
+         */
+        vm.selectHeader = function(){
+            headerSvc.selectHeaderWindow(vm,vm.headerType);
         }
     }
 })();

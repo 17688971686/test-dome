@@ -1,11 +1,15 @@
 package cs.controller.book;
 
-import cs.ahelper.IgnoreAnnotation;
+import cs.ahelper.MudoleAnnotation;
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
+import cs.model.book.BookBorrowInfoDto;
 import cs.model.book.BookBuyDto;
 import cs.repository.odata.ODataObj;
 import cs.service.book.BookBuyService;
+import cs.service.book.BorrowBookService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -21,12 +25,14 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "图书信息", path = "bookBuy")
-@IgnoreAnnotation
+@MudoleAnnotation(name = "图书管理",value = "permission#bookBuy")
 public class BookBuyController {
 
 	String ctrlName = "bookBuy";
     @Autowired
     private BookBuyService bookBuyService;
+    @Autowired
+    private BorrowBookService borrowBookService;
 
     @RequiresAuthentication
     //@RequiresPermissions("bookBuy#findByOData#post")
@@ -44,6 +50,20 @@ public class BookBuyController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody BookBuyDto record) {
         bookBuyService.save(record);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "保存借书信息", path = "saveBorrowDetail", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveBorrowDetail(@RequestBody BookBorrowInfoDto bookBorrowInfoDto) {
+        return  borrowBookService.saveBooksDetail(bookBorrowInfoDto);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "保存还书信息", path = "saveReturnDetail", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveReturnDetail(@RequestBody BookBorrowInfoDto bookBorrowInfoDto) {
+        return borrowBookService.saveReturnDetail(bookBorrowInfoDto);
     }
 
     @RequiresAuthentication
@@ -70,10 +90,10 @@ public class BookBuyController {
 
     // begin#html
     @RequiresAuthentication
-   // @RequiresPermissions("bookBuy#html/list#get")
-    @RequestMapping(name = "列表页面", path = "html/list", method = RequestMethod.GET)
+    @RequiresPermissions("bookBuy#html/bookBuyList#get")
+    @RequestMapping(name = "列表页面", path = "html/bookBuyList", method = RequestMethod.GET)
     public String list() {
-        return ctrlName+"/list"; 
+        return ctrlName+"/bookBuyList";
     }
 
     @RequiresAuthentication

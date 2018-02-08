@@ -9,8 +9,6 @@
         	approveGrid: approveGrid,//补充资料函审批列表
         	addQueryGrid:addQueryGrid,//补充资料函查询列表
         	createaddSuppLetterQuery: createaddSuppLetterQuery,   //部长审批处理
-        	
-        	
         	deleteaddSuppLetterQuery: deleteaddSuppLetterQuery,
             updateaddSuppLetterQuery: updateaddSuppLetterQuery,
             getaddSuppLetterQueryById: getaddSuppLetterQueryById, //根据ID查看拟补充资料函
@@ -195,14 +193,16 @@
         }
 
         // begin#getaddSuppLetterQueryById
-        function getaddSuppLetterQueryById(vm) {
+        function getaddSuppLetterQueryById(vm,callBack) {
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/addSuppLetter/findById",
                 params: {id: vm.id}
             };
             var httpSuccess = function success(response) {
-                vm.suppletter = response.data;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
 
             common.http({
@@ -218,7 +218,7 @@
         	// Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_addSuppLetterQuery+"/addsuppListData" , $('#supQueryForm')),
+                transport: common.kendoGridConfig().transport(rootPath + "/addSuppLetter/addsuppListData" , $('#supQueryForm')),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -261,45 +261,57 @@
                     template: "<span class='row-number'></span>"
                 },
                 {
-                    field: "title",
+                    field: "",
                     title: "文件标题",
-                    width: 180,
-                    filterable: false
+                    filterable: false,
+                    template: function (item) {
+                        return "<a ng-click='vm.showSuppLetterDetail( " + '"' +(item.id) + '"'+ ")'>"+item.title+"</a>";
+                    }
                 },
                 {
                     field: "orgName",
                     title: "拟稿部门",
-                    width: 100,
+                    width: 120,
                     filterable: false
                 },
                 {
                     field: "userName",
                     title: "拟稿人",
-                    width: 100,
+                    width: 90,
                     filterable: false
                 },
                 {
                     field: "suppLetterTime",
                     title: "拟稿时间",
-                    width: 100,
+                    width: 120,
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
-              
                 {
                     field: "filenum",
                     title: "文件字号",
-                    width: 100,
+                    width: 120,
                     filterable: false
                 },
-              
                 {
                     field: "",
                     title: "操作",
-                    width: 100,
+                    width: 80,
+                    filterable: false,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            item.id);
+                        //如果拟补充资料函还未发起流程（保存异常或者提交附件失败）
+                        //则这里可以编辑
+                        var isShow = false;
+                        if(item.createdBy == curUserId && (angular.isUndefined(item.appoveStatus) || item.appoveStatus == null)){
+
+                            isShow = true;
+                        }
+                        if(isShow){
+                            return "<a class='btn btn-xs btn-primary' href='#addSuppLetterEdit/"+item.id+"'><span class='glyphicon glyphicon-pencil'></span>编辑</a>";
+                        }else{
+                            return "";
+                        }
+
                     }
                 }
             ];
@@ -410,8 +422,7 @@
                     title: "操作",
                     width: 140,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                             item.id);
+                        return common.format($('#columnBtns').html(),item.id);
                     }
                 }
             ];

@@ -12,10 +12,10 @@
     <div class="well well-sm">
         <form id="assistUnitform" name="assistUnitform">
             <span class="help-inline">单位名称：</span>
-            <input  operator="like" name="unitName" id="unitName"/>
+            <input ng-model="vm.model.unitName"  operator="like" name="unitName" id="unitName"/>
 
             <span class="help-inline">企业地址：</span>
-            <input operator="like" name="address" id="address"/>
+            <input ng-model="vm.model.address" operator="like" name="address" id="address"/>
 
             <button class="btn btn-sm btn-primary" ng-click="vm.queryAssistUnit()">
                 <span class="glyphicon glyphicon-search"></span>查询
@@ -37,7 +37,7 @@
     </button>
     </@shiro.hasPermission>
     <@shiro.hasPermission name="assistUnit##put">
-    <a class="btn btn-xs btn-primary" href="#/assistUnitEdit/{1}" ng-if="{2} == '1'">
+    <a class="btn btn-xs btn-primary" ng-click="vm.saveView()" href="#/assistUnitEdit/{1}" ng-if="{2} == '1'">
         <span class="glyphicon glyphicon-pencil"></span> 编辑
     </a>
     </@shiro.hasPermission>

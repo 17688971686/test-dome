@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class SysConfig extends DomainBase {
     @Id
     @GeneratedValue(generator = "plansignGenerator")
-    @GenericGenerator(name = "plansignGenerator", strategy = "uuid")
+    @GenericGenerator(name = "plansignGenerator", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     /**
@@ -28,7 +28,7 @@ public class SysConfig extends DomainBase {
     /**
      * 参数值
      */
-    @Column(columnDefinition = "VARCHAR(32)")
+    @Column(columnDefinition = "VARCHAR(256)")
     private String configValue;
 
     /**

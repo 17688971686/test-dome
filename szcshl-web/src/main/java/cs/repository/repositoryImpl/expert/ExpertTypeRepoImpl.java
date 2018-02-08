@@ -4,9 +4,9 @@ import cs.common.HqlBuilder;
 import cs.domain.expert.ExpertType;
 import cs.domain.expert.ExpertType_;
 import cs.repository.AbstractRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service
+@Repository
 public class ExpertTypeRepoImpl extends AbstractRepository<ExpertType, String> implements ExpertTypeRepo {
 
     /**

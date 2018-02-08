@@ -5,15 +5,15 @@
 
 <div class="well well-sm" style="background:white;">
 	<ol class="breadcrumb">
-		<li><a href="#/sharingPlatlform">项目评审情况统计</a></li>
+		<li><a >项目评审情况统计</a></li>
 		<li class="active">{{vm.title}}</li>
 	</ol>
 	<div class="well well-sm">
 	<form id="form" name="form" >
 		<span>统计月份：</span>
-		<input id="beginTime" name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM'"  ng-model="vm.model.beginTime" value="" type="text" operator="ge"/>
+		<input id="beginTime" name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM'"  ng-model="vm.model.beginTime" value="" type="text" operator="ge" ng-change="vm.isBeginTime()"/>
 		至
-		<input name="endTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM'"  ng-model="vm.model.endTime" value="" type="text" operator="le" />
+		<input name="endTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM'"  ng-model="vm.model.endTime" value="" type="text" operator="le" ng-change="vm.isBeginTime()" />
 		<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.proReviewConCount()"><span class="glyphicon glyphicon-search"></span>统计</a>
 		<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
 	</form>
@@ -23,9 +23,15 @@
 			<strong ng-if="vm.model.beginTime && vm.model.endTime==''">{{vm.year}}年{{vm.begMonth}}月项目评审情况统计表<br>
 			</strong>
 			<strong ng-if="vm.model.beginTime=='' && vm.model.endTime">{{vm.year}}年{{vm.endMonth}}月项目评审情况统计表<br>
-			</strong>
-			<strong ng-if="vm.model.beginTime && vm.model.endTime">{{vm.year}}年{{vm.begMonth}}月至{{vm.endMonth}}项目评审情况统计表<br>
-			</strong>
+            </strong>
+			<strong ng-if="vm.model.beginTime && vm.model.endTime && vm.model.beginTime != vm.model.endTime && vm.byear">
+				{{vm.byear}}年{{vm.begMonth}}月至{{vm.year}}年{{vm.endMonth}}月项目评审情况统计表<br>
+            </strong>
+            <strong ng-if="vm.model.beginTime && vm.model.endTime && vm.model.beginTime != vm.model.endTime && !vm.byear">
+                {{vm.year}}年{{vm.begMonth}}月至{{vm.year}}年{{vm.endMonth}}月项目评审情况统计表<br>
+            </strong>
+            <strong ng-if=" vm.model.beginTime && vm.model.endTime && vm.model.beginTime == vm.model.endTime">{{vm.year}}年{{vm.begMonth}}月项目评审情况统计表<br>
+            </strong>
 		</caption>
 		<tr >
 			<td style="width:20%"  class="text-center">评审阶段</td>
@@ -41,7 +47,8 @@
 			<td class="text-center">{{x.declareValue}}</td>
 			<td class="text-center">{{x.authorizeValue}}</td>
 			<td class="text-center">{{x.ljhj}}</td>
-			<td class="text-center" ng-if="x.hjl">{{x.hjl}}%</td>
+			<td class="text-center" ng-if="x.hjl!=undefined">{{x.hjl}}%</td>
+            <td class="text-center" ng-if="x.hjl==undefined"> </td>
 		</tr>
 		<tr ng-if="vm.protReviewConditionList">
 			<td class="text-center" ><strong>合计</strong></td>
@@ -50,6 +57,7 @@
 			<td class="text-center">{{vm.total.authorizevalue}}</td>
 			<td class="text-center">{{vm.total.ljhj}}</td>
 			<td class="text-center"  ng-if="vm.total.hjl">{{vm.total.hjl}}%</td>
+			<td ng-if="!(vm.total.hjl)"></td>
 		</tr>
 	</table>
 

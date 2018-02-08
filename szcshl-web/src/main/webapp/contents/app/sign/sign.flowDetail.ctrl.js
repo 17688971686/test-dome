@@ -13,7 +13,6 @@
         vm.work = {};
         vm.dispatchDoc = {};
         vm.fileRecord = {};
-        
         vm.model.signid = $state.params.signid;	
         vm.flow.taskId = $state.params.taskId;			//流程任务ID
         vm.flow.processInstanceId = $state.params.processInstanceId;	//流程实例ID
@@ -35,10 +34,10 @@
         }
         vm.expertList =  new Array(10); //用于打印页面的专家列表，控制行数
         //用于打印发文，项目概况控制
-        vm.workProgramXmjys ={};//项目建议书
-        vm.workProgramKxxyj = {};//可行性研究
-        vm.workProgramXmgs = {};//项目概算
-        vm.workProgramTg = {}; //调概
+        // vm.workProgramXmjys ={};//项目建议书
+        // vm.workProgramKxxyj = {};//可行性研究
+        // vm.workProgramXmgs = {};//项目概算
+        // vm.workProgramTg = {}; //调概
         active();
         function active(){
         	$('#myTab li').click(function (e) {
@@ -77,10 +76,20 @@
                     vm.fileRecord = vm.model.fileRecordDto;
                 }
 
-                //判断是否有多个分支，用于控制是否显示总投资字段 和 分开获取关联的项目信息（主要用于项目概算阶段）
+                //判断是否有多个分支，用于控制是否显示总投资字段 和 分开获取关联的项目信息（主要用于项目概算阶段）（旧版本）
+                //通过评估部门的个数来控制总投资字段  修改于（2018-01-16）
                 if(vm.model.workProgramDtoList && vm.model.workProgramDtoList.length >0){
-                    vm.showTotalInvestment = true;
-                    for( var i=0 ; i< vm.model.workProgramDtoList.lengt ; i++ ){
+                    var orgStr;
+                    if(vm.model.workProgramDtoList[0].branchId == '1' ||vm.model.workProgramDtoList[0].branchId == '1' ){
+                        orgStr = vm.model.workProgramDtoList[0].reviewOrgName;
+                    }else{
+                        orgStr = vm.model.workProgramDtoList[0].mainWorkProgramDto.reviewOrgName;
+                    }
+                    if(orgStr != '' && orgStr.split(',').length > 1){
+
+                        vm.showTotalInvestment = true;
+                    }
+                   /* for( var i=0 ; i< vm.model.workProgramDtoList.length ; i++ ){
                         var reviewStage = vm.model.workProgramDtoList[i].reviewstage;
                         if(reviewStage && reviewStage == '项目建议书'){
                             vm.workProgramXmjys =vm.model.workProgramDtoList[i];
@@ -96,7 +105,7 @@
                             vm.model.ischangeEstimate && (vm.model.ischangeEstimate == 9 || vm.model.ischangeEstimate == '9')){
                             vm.workProgramTg =vm.model.workProgramDtoList[i];
                         }
-                    }
+                    }*/
                 }
 
                 //初始化专家评分
@@ -106,6 +115,24 @@
                 //显示拟补充资料函
                 if(vm.model.suppLetterDtoList){
                     vm.showSupperIndex = 0;
+                }
+                //拟补充资料信息
+                if(vm.model.registerFileDtoDtoList!=undefined){
+                    vm.supply=[];//拟补充资料
+                    vm.registerFile=[];//其他资料
+                    vm.drawingFile=[];//图纸资料
+                    vm.otherFile=[];//归档的其他资料
+                    vm.model.registerFileDtoDtoList.forEach(function(registerFile  , x){
+                        if(registerFile.businessType ==3){
+                            vm.supply.push(registerFile);
+                        }else if(registerFile.businessType ==2){
+                            vm.drawingFile.push(registerFile);
+                        }else if(registerFile.businessType ==1 ||registerFile.businessType ==4){
+                            vm.registerFile.push(registerFile);
+                        }else if(registerFile.businessType ==5 ||registerFile.businessType ==6||registerFile.businessType ==7){
+                            vm.otherFile.push(registerFile);
+                        }
+                    })
                 }
             });
 
@@ -125,10 +152,11 @@
         }
 
         //签收模板打印
-        vm.printpage = function ($event) {
+        /*vm.printpage = function ($event) {
             var id =  $($event.target).attr("id");
             signSvc.workProgramPrint(id);
-        }
+        }*/
+
         /**
          * 打印功能 -分页
          */

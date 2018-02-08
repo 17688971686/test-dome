@@ -17,9 +17,31 @@
             assistExportExcel: assistExportExcel,					//专家协申费用导出
             findSingAssistCostCount: findSingAssistCostCount,		//协审费用统计列表
             findSingAssistCostList: findSingAssistCostList,			//协审费录入列表
+            findSignCostBySignId : findSignCostBySignId,            //根据项目ID获取项目的协审费用
         };
 
         return service;
+
+        //S_根据项目ID获取项目的协审费用
+        function findSignCostBySignId(signId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/financialManager/findSignCostBySignId",
+                params: {
+                    signId : signId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_根据项目ID获取项目的协审费用
 
         //S 协审费用统计列表
         function findSingAssistCostCount(singAssist, callBack) {

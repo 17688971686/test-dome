@@ -8,13 +8,15 @@
     function pauseProject($http, $state , bsWin) {
         var service = {
             initProject : initProject,                  //初始化项目信息
-            pauseProject: pauseProject,                 //保存暂停项目
+            pauseProject: pauseProject,                 //保存发起暂停项目
             initFlowDeal : initFlowDeal,                //初始化流程信息
             grid : grid,
             getProjectStopByStopId : getProjectStopByStopId,    //通过id获取暂停项目
             updateProjectStop : updateProjectStop,  //更新暂停项目审批信息
             findPausingProject : findPausingProject, //查找正在申请暂停的项目
             getListInfo : getListInfo , //获取审批结果通过的项目列表
+            getProjectStopBySignId : getProjectStopBySignId, //通过项目id获取暂停项目
+            saveProjectStop :saveProjectStop, //保存暂停项目
         };
         return service;
 
@@ -49,6 +51,7 @@
             }
 
             var httpSuccess=function success(response){
+                console.log(response);
                 if(response.data){
                     bsWin.alert("该项目暂停申请正在处理");
                 }else{
@@ -87,7 +90,7 @@
 
         }//end initProject
 
-        //S_保存项目暂停表信息
+        //S_保存发起流程项目暂停表信息
         function pauseProject(projectStop,callBack){
             var httpOptions = {
                 method: 'post',
@@ -106,6 +109,28 @@
                 success: httpSuccess
             });
         } //end_pauseProject
+
+        //S_保存项目暂停表信息
+        function saveProjectStop(projectStop,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/projectStop/saveProjectStop",
+                data: projectStop
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        } //end_pauseProject
+
+
 
         //S_初始化项目暂停信息
         function initFlowDeal(vm){
@@ -138,6 +163,31 @@
             });
         }
         //end getProjectStopByStopId
+
+        //begin getProjectStopBySignId
+        function getProjectStopBySignId(signId , callBack){
+            var httpOptions={
+                method : "post",
+                url : rootPath + "/projectStop/getProjectStopBySignId",
+                params : {
+                    signId : signId
+                }
+            }
+
+            var httpSuccess=function success(response){
+                if( callBack != undefined && typeof  callBack == 'function'){
+                    return callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end getProjectStopBySignId
+
 
         //begin updataProjectStop
         function updateProjectStop(vm){

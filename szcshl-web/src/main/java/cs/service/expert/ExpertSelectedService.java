@@ -35,7 +35,7 @@ public interface ExpertSelectedService {
 
 	List<FinancialManagerDto> getFinancialManagerByBusid(String businessId);
 
-	ResultMsg proReviewClassifyCount(ProjectReviewCostDto projectReviewCostDto);
+	ResultMsg proReviewClassifyCount(ProjectReviewCostDto projectReviewCostDto,int page);
 
 	/**
 	 * 项目评审情况统计
@@ -119,4 +119,12 @@ public interface ExpertSelectedService {
 	 * @return
 	 */
 	Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto);
+
+	/**
+	 * 获取提前介入评审情况
+	 *
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	ProReviewConditionDto getAdvancedCon(ProReviewConditionDto projectReviewConditionDto);
 }

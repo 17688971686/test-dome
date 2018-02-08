@@ -5,7 +5,9 @@ import cs.common.ResultMsg;
 import cs.common.utils.PropertyUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.User;
+import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.sys.SysConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,10 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
+import static cs.common.Constant.FTP_IP;
+import static cs.common.Constant.RevireStageKey.KEY_FTPIP;
+import static cs.common.Constant.RevireStageKey.RTX_ENABLED;
+
 
 @Service
 public class RTXService {
@@ -28,53 +34,57 @@ public class RTXService {
 
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private SysConfigService sysConfigService;
     /**
      * 获取腾讯通的sessionKey
-     * @param url           腾讯通URL
-     * @param loginUser     登录用户
+     *
+     * @param url       腾讯通URL
+     * @param loginUser 登录用户
      * @return
      */
-    public String getSessionKey(String url,String loginUser){
+    public String getSessionKey(String url, String loginUser) {
         String strSessionKey = "";
-        if(!Validate.isString(url)){
+        if (!Validate.isString(url)) {
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             url = propertyUtil.readProperty("RTX_URL");
         }
         url += RTX_GETSESSION;
-        try{
+        try {
             url += "receiver=" + URLEncoder.encode(loginUser, "GBK");
             java.net.URL loginUrl = new URL(url);
-            HttpURLConnection httpConnection = (HttpURLConnection)loginUrl.openConnection();
+            HttpURLConnection httpConnection = (HttpURLConnection) loginUrl.openConnection();
             BufferedReader reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-            strSessionKey=reader.readLine();
-        }catch(Exception e){
-            System.out.println("获取腾讯通sessionKey异常："+e);
+            strSessionKey = reader.readLine();
+        } catch (Exception e) {
+            System.out.println("获取腾讯通sessionKey异常：" + e);
         }
         return strSessionKey;
     }
 
     /**
      * 获取用户在线状态仅支持GET
-     * @param url           腾讯通URL
-     * @param loginUser     登录用户
+     *
+     * @param url       腾讯通URL
+     * @param loginUser 登录用户
      * @return String       0不在线 1在线 2离线 3异常
      * @example http://localhost:8012/getstatus.php?username=XXXX
      */
-    public String queryUserState(String url,String loginUser){
+    public String queryUserState(String url, String loginUser) {
         String userState = "0";
-        if(!Validate.isString(url)){
+        if (!Validate.isString(url)) {
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             url = propertyUtil.readProperty("RTX_URL");
         }
         url += RTX_GETSTATUS;
-        try{
+        try {
             url += "username=" + URLEncoder.encode(loginUser, "GBK");
             java.net.URL loginUrl = new URL(url);
-            HttpURLConnection httpConnection = (HttpURLConnection)loginUrl.openConnection();
+            HttpURLConnection httpConnection = (HttpURLConnection) loginUrl.openConnection();
             BufferedReader reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-            userState=reader.readLine();
-        }catch(Exception e){
-            System.out.println("获取用户在线状态异常："+e);
+            userState = reader.readLine();
+        } catch (Exception e) {
+            System.out.println("获取用户在线状态异常：" + e);
             userState = "3";
         }
         return userState;
@@ -82,30 +92,34 @@ public class RTXService {
 
     /**
      * 发送消息缓冲池
+     *
      * @param taskId
      * @param resultMsg
      * @return
      */
-    public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg){
-        if(resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null){
+    public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg) {
+        //如果使用腾讯通，并处理成功！
+        if (rtxEnabled() && resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null) {
             String receiverIds = RTXSendMsgPool.getInstance().getReceiver(taskId).toString();
             List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
-            if(Validate.isList(receiverList)){
+            if (Validate.isList(receiverList)) {
                 String rtxNames = "";
-                for(User u : receiverList){
-                    if(Validate.isString(rtxNames)){
+                for (int i = 0, l = receiverList.size(); i < l; i++) {
+                    User u = receiverList.get(i);
+                    if (i > 0) {
                         rtxNames += ",";
                     }
-                    rtxNames += u.getLoginName();
+                    rtxNames += Validate.isString(u.getRtxName()) ? u.getRtxName() : u.getLoginName();
                 }
-                if(Validate.isString(rtxNames)){
+                if (Validate.isString(rtxNames)) {
+                    //正式启动再去掉注释
                     sendRTXMsg(null,"您有待办任务待处理！",rtxNames);
                     RTXSendMsgPool.getInstance().removeCache(taskId);
                     return true;
                 }
             }
             return false;
-        }else{
+        } else {
             RTXSendMsgPool.getInstance().removeCache(taskId);
         }
         return true;
@@ -113,13 +127,14 @@ public class RTXService {
 
     /**
      * 腾讯通发送消息
-     * @param url           服务端地址
-     * @param sendMsg       消息
-     * @param receiver      接收人（多个用,号隔开）
+     *
+     * @param url      服务端地址
+     * @param sendMsg  消息
+     * @param receiver 接收人（多个用,号隔开）
      * @return
      */
-    public  String sendRTXMsg(String url, String sendMsg,String receiver) {
-        if(!Validate.isString(url)){
+    public String sendRTXMsg(String url, String sendMsg, String receiver) {
+        if (!Validate.isString(url)) {
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             url = propertyUtil.readProperty("RTX_URL");
         }
@@ -129,8 +144,8 @@ public class RTXService {
         String result = "";
         try {
             String param = "msg=" + URLEncoder.encode(sendMsg, "GBK")
-                    +"&receiver=" + URLEncoder.encode(receiver, "GBK")
-                    +"&title=" + URLEncoder.encode(MSG_TITLE, "GBK");
+                    + "&receiver=" + URLEncoder.encode(receiver, "GBK")
+                    + "&title=" + URLEncoder.encode(MSG_TITLE, "GBK");
             URL realUrl = new URL(url);
             // 打开和URL之间的连接
             HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
@@ -154,23 +169,35 @@ public class RTXService {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println("发送 POST 请求出现异常！"+e);
+            System.out.println("发送 POST 请求出现异常！" + e);
             return "false";
         }
         //使用finally块来关闭输出流、输入流
-        finally{
-            try{
-                if(out!=null){
+        finally {
+            try {
+                if (out != null) {
                     out.close();
                 }
-                if(in!=null){
+                if (in != null) {
                     in.close();
                 }
-            }
-            catch(IOException ex){
+            } catch (IOException ex) {
                 return "false";
             }
         }
         return result;
+    }
+
+    /**
+     * 判断是否使用腾讯通
+     * @return
+     */
+    public boolean rtxEnabled() {
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(RTX_ENABLED.getValue());
+        if(sysConfigDto != null && Constant.EnumState.YES.getValue().equals(sysConfigDto.getConfigValue())) {
+            return true;
+        }else{
+            return false;
+        }
     }
 }

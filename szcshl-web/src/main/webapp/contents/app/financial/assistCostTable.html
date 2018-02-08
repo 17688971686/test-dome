@@ -1,15 +1,16 @@
 <!-- start 专家协审费用 -->
-<div  id="assistCostWindow" class="well well-sm" style="background:white;display:none;">
+<div id="assistCostWindow" class="well well-sm" style="background:white;display:none;">
     <div class="well">
         评审费发放日期：<input type="text" name="payDate_{{$index}}" id="payDate_{{$index}}" style="width: 200px;"
                        class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
                        ng-model="vm.payDate" data-val-date="必须为日期">
         <span data-valmsg-for="payDate_{{$index}}" data-valmsg-replace="true" class="errors"></span>
-        <button  class="btn btn-sm btn-primary" ng-click="vm.assistExportExcel()"><span class="glyphicon glyphicon-chevron-left"></span>导出EXCEL</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.assistExportExcel()"><span
+                class="glyphicon glyphicon-chevron-left"></span>导出EXCEL
+        </button>
     </div>
 
     <form id="payform" name="payform">
-
         <table class="table table-bordered">
             <caption class="text-center h3"><strong>{{vm.reviewTitle}}</strong></caption>
             <tr>
@@ -31,7 +32,8 @@
                 <td> {{x.reviewTaxes}}</td>
                 <td> {{x.totalCost}}</td>
                 <td>
-                    <input type="checkbox"   name="isSupplementary" ng-checked="x.isLetterRw==9" ng-true-value="9" >是
+                    <input type="checkbox" name="isSupplementary" ng-checked="x.isLetterRw==9" ng-true-value="9"
+                           ng-false-value="0">是
                 </td>
             </tr>
             <tr>
@@ -42,9 +44,6 @@
 
             </tr>
         </table>
-
-
-
     </form>
 </div>
 <!-- end 专家协审费用 -->

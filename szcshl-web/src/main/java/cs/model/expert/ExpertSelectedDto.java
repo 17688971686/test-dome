@@ -48,6 +48,11 @@ public class ExpertSelectedDto {
      */
     private String isLetterRw;
 
+    /**
+     * 专家抽取条件ID
+     */
+    private String conditionId;
+
     private ExpertReviewDto expertReviewDto;
     private ExpertDto expertDto;
 
@@ -209,5 +214,13 @@ public class ExpertSelectedDto {
 
     public void setCompositeScoreEnd(Integer compositeScoreEnd) {
         this.compositeScoreEnd = compositeScoreEnd;
+    }
+
+    public String getConditionId() {
+        return conditionId;
+    }
+
+    public void setConditionId(String conditionId) {
+        this.conditionId = conditionId;
     }
 }

@@ -43,7 +43,7 @@
     }
 </style>
 
-<table  class="print-table" style="margin-top: 10px;">
+<table  class="print-table" style="margin-top: 20px;">
     <caption class="title">
             <p>深圳市政府投资项目评审中心 </p>
             <p>{{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}</p>
@@ -61,26 +61,26 @@
         <td width="17%"></td>
     </tr>-->
     <tr style="height: 60px;" >
-        <td width="16%">主办处室</td>
+        <td width="16%" class="text-center">主办处室</td>
         <td colspan="2"  width="34%">{{vm.model.maindeptName}}</td>
-        <td width="16%">收文编号</td>
+        <td width="16%" class="text-center">收文编号</td>
         <td colspan="2" width="34%"> {{vm.model.signNum}}</td>
     </tr>
     <tr style="height: 60px;">
-        <td>项目名称</td>
+        <td class="text-center">项目名称</td>
         <td colspan="2">{{vm.model.projectname}}</td>
-        <td>申请单位</td>
+        <td class="text-center">申请单位</td>
         <td colspan="2"> {{vm.model.designcompanyName}}</td>
     </tr>
     <tr style="height: 60px;">
-        <td>项目代码</td>
+        <td class="text-center">项目代码</td>
         <td colspan="2">{{vm.model.projectcode}}</td>
-        <td >缓急程度</td>
+        <td class="text-center">缓急程度</td>
         <td colspan="2">{{vm.model.urgencydegree}}</td>
     </tr>
 
     <tr>
-        <td rowspan="1">备审资料</td>
+        <td rowspan="1" class="text-center">备审资料</td>
         <td colspan="7">
             <table class="child-table" style="font-size: 12px;">
                 <tr>
@@ -96,12 +96,12 @@
                 <tr>
                     <td class="printing-td">项目处理表</td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugProDealOriginal"ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.sugProDealOriginal" 
                                ng-checked="vm.model.sugProDealOriginal == 9 || vm.model.sugProDealOriginal == '9'"
                                name="sugProDealOriginal"  ng-true-value="9" ng-false-value="0">
                     </td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugProDealCopy"ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.sugProDealCopy" 
                                ng-checked="vm.model.sugProDealCopy == 9 || vm.model.sugProDealCopy == '9'"
                                name="sugProDealCopy"  ng-true-value="9" ng-false-value="0">
                     </td>
@@ -112,11 +112,11 @@
                     </td>
                     <td class="printing-td">设备说明书 </td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sprcialDevicesOriginal" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.sprcialDevicesOriginal"  
                                ng-checked="vm.model.sprcialDevicesOriginal == 9 || vm.model.sprcialDevicesOriginal == '9'"
                                ng-true-value="9" ng-false-value="0"></td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sprcialDevicesCopy" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.sprcialDevicesCopy"  
                                ng-checked="vm.model.sprcialDevicesCopy == 9 || vm.model.sprcialDevicesCopy == '9'"
                                name="sprcialDevicesCopy"  ng-true-value="9" ng-false-value="0">
                     </td>
@@ -128,12 +128,12 @@
                 <tr>
                     <td class="printing-td">文件处理表 </td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugFileDealOriginal" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.sugFileDealOriginal"  
                                ng-checked="vm.model.sugFileDealOriginal == 9 || vm.model.sugFileDealOriginal == '9'"
                                ng-true-value="9" ng-false-value="0">
                     </td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.sugFileDealCopy"ng-disabled="true" name="sugFileDealCopy"
+                        <input type="checkbox" ng-model="vm.model.sugFileDealCopy"  name="sugFileDealCopy"
                                ng-checked="vm.model.sugFileDealCopy == 9 || vm.model.sugFileDealCopy == '9'"
                                ng-true-value="9" ng-false-value="0">
                     </td>
@@ -145,12 +145,12 @@
                     <td class="printing-td" >采购合同书
                     </td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.purchasDevicePactOriginal" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.purchasDevicePactOriginal"  
                                ng-checked="vm.model.purchasDevicePactOriginal == 9 || vm.model.purchasDevicePactOriginal == '9'"
                                name="purchasDevicePactOriginal"  ng-true-value="9" ng-false-value="0">
                     </td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.purchasDevicePactCopy"ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.purchasDevicePactCopy" 
                                ng-checked="vm.model.purchasDevicePactCopy == 9 || vm.model.purchasDevicePactCopy == '9'"
                                name="purchasDevicePactCopy" ng-true-value="9" ng-false-value="0">
                     </td>
@@ -162,16 +162,16 @@
                 <tr>
                     <td class="printing-td">项目申报表 </td>
                     <td>
-                        <input type="checkbox"  ng-model="vm.model.projectDeclareOriginal"id="projectDeclareOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
+                        <input type="checkbox"  ng-model="vm.model.projectDeclareOriginal"id="projectDeclareOriginal"   ng-true-value="9" ng-false-value="0"></td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.projectDeclareCopy"ng-disabled="true" name="projectDeclareCopy" id="projectDeclareCopy" ng-true-value="9" ng-false-value="0">
+                        <input type="checkbox" ng-model="vm.model.projectDeclareCopy"  name="projectDeclareCopy" id="projectDeclareCopy" ng-true-value="9" ng-false-value="0">
                     </td>
                     <td><input type="text" class="num"  ng-model="vm.model.projectDeclareCount" name="projectDeclareCount" ng-readonly="true"
                                id="projectDeclareCount"data-val="true" 12></td>
                     <td class="printing-td">项目核准文件</td>
-                    <td><input type="checkbox"  ng-model="vm.model.projectApproveFileOriginal" id="projectApproveFileOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0" ></td>
+                    <td><input type="checkbox"  ng-model="vm.model.projectApproveFileOriginal" id="projectApproveFileOriginal"   ng-true-value="9" ng-false-value="0" ></td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.projectApproveFileCopy"ng-disabled="true" name="projectApproveFileCopy" id="projectApproveFileCopy" ng-true-value="9" ng-false-value="0">
+                        <input type="checkbox" ng-model="vm.model.projectApproveFileCopy"  name="projectApproveFileCopy" id="projectApproveFileCopy" ng-true-value="9" ng-false-value="0">
                     </td>
                     <td><input type="text" class="num"  ng-model="vm.model.projectApproveFileCount" name="projectApproveFileCount" ng-readonly="true"
                                id="projectApproveFileCount"data-val="true"></td>
@@ -181,9 +181,9 @@
                     <td>
                         <input type="checkbox" ng-model="vm.model.projectApplyReportOriginal"
                                ng-checked="vm.model.projectApplyReportOriginal == 9 || vm.model.projectApplyReportOriginal == '9'"
-                               ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
+                                ng-true-value="9" ng-false-value="0"></td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.projectApplyReportCopy"ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.projectApplyReportCopy" 
                                ng-checked="vm.model.projectApplyReportCopy == 9 || vm.model.projectApplyReportCopy == '9'"
                                name="projectApplyReportCopy"  ng-true-value="9" ng-false-value="0">
                     </td>
@@ -194,9 +194,9 @@
                     <td>
                         <input type="checkbox" ng-model="vm.model.businessLicenseOriginal"
                                ng-checked="vm.model.businessLicenseOriginal == 9 || vm.model.businessLicenseOriginal == '9'"
-                               ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
+                                ng-true-value="9" ng-false-value="0"></td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.businessLicenseCopy" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.businessLicenseCopy"  
                                ng-checked="vm.model.businessLicenseCopy == 9 || vm.model.businessLicenseCopy == '9'"
                                name="businessLicenseCopy" ng-true-value="9" ng-false-value="0">
                     </td>
@@ -209,9 +209,9 @@
                     <td>
                         <input type="checkbox" ng-model="vm.model.purchasDeviceOriginal"
                                ng-checked="vm.model.purchasDeviceOriginal == 9 || vm.model.purchasDeviceOriginal == '9'"
-                               ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
+                                ng-true-value="9" ng-false-value="0"></td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.purchasDeviceCopy" ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.purchasDeviceCopy"  
                                ng-checked="vm.model.purchasDeviceCopy == 9 || vm.model.purchasDeviceCopy == '9'"
                                name="purchasDeviceCopy"  ng-true-value="9" ng-false-value="0">
                     </td>
@@ -223,9 +223,9 @@
                     <td>
                         <input type="checkbox" ng-model="vm.model.legalPersoncCardOriginal"
                                ng-checked="vm.model.legalPersoncCardOriginal == 9 || vm.model.legalPersoncCardOriginal == '9'"
-                               ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
+                                ng-true-value="9" ng-false-value="0"></td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.legalPersoncCardCopy"ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.legalPersoncCardCopy" 
                                ng-checked="vm.model.legalPersoncCardCopy == 9 || vm.model.legalPersoncCardCopy == '9'"
                                name="legalPersoncCardCopy"  ng-true-value="9" ng-false-value="0">
                     </td>
@@ -238,9 +238,9 @@
                     <td>
                         <input type="checkbox" ng-model="vm.model.ortherProjectOriginal"
                                ng-checked="vm.model.ortherProjectOriginal == 9 || vm.model.ortherProjectOriginal == '9'"
-                               ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
+                                ng-true-value="9" ng-false-value="0"></td>
                     <td>
-                        <input type="checkbox" ng-model="vm.model.ortherProjectCopy"ng-disabled="true"
+                        <input type="checkbox" ng-model="vm.model.ortherProjectCopy" 
                                ng-checked="vm.model.ortherProjectCopy == 9 || vm.model.ortherProjectCopy == '9'"
                                name="ortherProjectCopy"  ng-true-value="9" ng-false-value="0">
                     </td>
@@ -253,30 +253,30 @@
         </td>
     </tr>
     <tr>
-        <td >综合部分办</td>
+        <td class="text-center">综合部分办</td>
         <td colspan="5"  >
             <div class="signName" style="height: 150px;">
-                <div style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;"> {{vm.model.comprehensivehandlesug}}</div>
+                <div style="height: 50%;text-align: left;text-indent: 2em;overflow: hidden;"> {{vm.model.comprehensivehandlesug}}</div>
                 <p class="nameDate">签名：{{vm.model.comprehensiveName}}</p>
                 <p class="nameDate">日期：{{vm.model.comprehensiveDate}}</p>
             </div>
         </td>
     </tr>
     <tr>
-        <td >中心领导签批意见</td>
+        <td class="text-center">中心领导签批意见</td>
         <td colspan="5"  >
             <div class="signName" style="height: 150px;">
-                <div style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;"> {{vm.model.leaderhandlesug}}</div>
+                <div style="height: 50%;text-align: left;text-indent: 2em;overflow: hidden;"> {{vm.model.leaderhandlesug}}</div>
                 <p class="nameDate">签名：</p>
                 <p class="nameDate">日期：{{vm.model.leaderDate}}</p>
             </div>
         </td>
     </tr>
     <tr>
-        <td >部长处理意见</td>
+        <td class="text-center">部长处理意见</td>
         <td colspan="5" >
             <div class="signName" style="height: 150px;">
-                <div style="height: 60%;text-align: left;text-indent: 2em;overflow: hidden;"> {{vm.model.ministerhandlesug}}</div>
+                <div style="height: 50%;text-align: left;text-indent: 2em;overflow: hidden;"> {{vm.model.ministerhandlesug}}</div>
                 <p class="nameDate">签名：</p>
                 <p class="nameDate">日期：{{vm.model.ministerDate}}</p>
             </div>

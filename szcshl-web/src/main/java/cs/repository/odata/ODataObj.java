@@ -12,6 +12,7 @@ import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -100,7 +101,7 @@ public class ODataObj {
     }
 
     public final static Pattern odataLikePattern = Pattern.compile("(substringof\\(\\s*\\'?[^\\']*\\'\\s*\\,\\s*[\\w|\\.|/]+\\s*\\))"),
-            odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le|ni|in)\\s+(((datetime|date)?\\'[^\\']*\\'|\\d+)|(\\([^\\)]*\\))))"),
+            odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le|ni|in)\\s+(((datetime|date|bigDecimal|integer|double)?\\'[^\\']*\\'|\\d+)|(\\([^\\)]*\\))))"),
             patternField = Pattern.compile(",(.*?)\\)"),
             patternValue = Pattern.compile("'(.*?)'");
 
@@ -160,9 +161,22 @@ public class ODataObj {
                 filterItems = getFilterItems(odataMatcher.group());
                 if (ObjectUtils.isNoneEmpty(filterItems)) {
                     value = filterItems[2];
-                    if (StringUtil.startsWithIgnoreCase(value, "datetime'") && value.endsWith("'")) {// 如果是datetime
+                    if (StringUtil.startsWithIgnoreCase(value, "bigdecimal'")) {// 如果是datetime
+                        oDataFilterItem = new ODataFilterItem<BigDecimal>();
+                        String rgex = "bigdecimal'(.*?)'";
+                        oDataFilterItem.setValue(new BigDecimal(StringUtil.getSubUtilSimple(value, rgex)));
+                    }else if (StringUtil.startsWithIgnoreCase(value, "integer'")) {// 如果是datetime
+                        oDataFilterItem = new ODataFilterItem<Integer>();
+                        String rgex = "integer'(.*?)'";
+                        oDataFilterItem.setValue(Integer.parseInt(StringUtil.getSubUtilSimple(value, rgex)));
+                    }
+                    else if (StringUtil.startsWithIgnoreCase(value, "double'")) {// 如果是datetime
+                        oDataFilterItem = new ODataFilterItem<Integer>();
+                        String rgex = "double'(.*?)'";
+                        oDataFilterItem.setValue(Double.parseDouble(StringUtil.getSubUtilSimple(value, rgex)));
+                    }
+                    else if (StringUtil.startsWithIgnoreCase(value, "datetime'") && value.endsWith("'")) {// 如果是datetime
                         oDataFilterItem = new ODataFilterItem<Date>();
-
                         oDataFilterItem.setValue(DateUtils.parseDate(value.substring("datetime'".length(), value.length() - 1).replace("T", " "), "yyyy-MM-dd hh:mm:ss"));
                     } else if (StringUtil.startsWithIgnoreCase(value, "date'") && value.endsWith("'")) {// 如果是datetime
                         oDataFilterItem = new ODataFilterItem<Date>();
@@ -178,9 +192,10 @@ public class ODataObj {
                     } else if (value.startsWith("(") && value.endsWith(")")) {// 如果是string[]
                         oDataFilterItem = new ODataFilterItem<String[]>();
                         oDataFilterItem.setValue(value.replace("'","").substring(1, value.length() - 1).split(","));
-                    } else {// 其它为Number
+                    // 其它为Number
+                    } else {
                         oDataFilterItem = new ODataFilterItem<Object>();
-                        oDataFilterItem.setValue(Integer.valueOf(value));
+                        oDataFilterItem.setValue(value);
                     }
 
                     oDataFilterItem.setField(filterItems[0]);

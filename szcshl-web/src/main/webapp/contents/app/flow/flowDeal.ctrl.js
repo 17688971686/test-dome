@@ -60,45 +60,63 @@
                     });
                 }
             });
+            //附件加载类型，0表示不加载，1表示根据mainId加载，2表示根据businessId加载
+            var sysFileLoadType = 0;
             //4、各自显示模块
             switch (vm.processKey) {
                 case flowcommon.getFlowDefinedKey().TOPIC_FLOW:     //课题研究流程
                     topicSvc.initFlowDeal(vm);
+                    sysFileLoadType = 1;
                     break;
-                case flowcommon.getFlowDefinedKey().ASSERT_STORAGE_FLOW:
+                case flowcommon.getFlowDefinedKey().ASSERT_STORAGE_FLOW:    //资产入库流程
                     assertStorageBusinessSvc.initFlowDeal(vm);
+                    sysFileLoadType = 1;
                     break;
                 case flowcommon.getFlowDefinedKey().BOOKS_BUY_FLOW:         //图书采购流程
                     bookBuyBusinessSvc.initFlowDeal(vm);
+                    sysFileLoadType = 1;
                     break;
                 case flowcommon.getFlowDefinedKey().PROJECT_STOP_FLOW:      //项目暂停流程
                     pauseProjectSvc.initFlowDeal(vm);
+                    sysFileLoadType = 2;
                     break;
                 case flowcommon.getFlowDefinedKey().FLOW_ARCHIVES:          //档案借阅流程
                     archivesLibrarySvc.initFlowDeal(vm);
+                    sysFileLoadType = 1;
                     break;
                 case flowcommon.getFlowDefinedKey().FLOW_APPRAISE_REPORT:   //优秀申请报告流程
                     reviewProjectAppraiseSvc.initFlowDeal(vm);
                     break;
                 case flowcommon.getFlowDefinedKey().FLOW_SUPP_LETTER:       //拟补充资料函流程
                     addSuppLetterSvc.initFlowDeal(vm);
+                    sysFileLoadType = 2;
                     break;
                 case flowcommon.getFlowDefinedKey().MONTHLY_BULLETIN_FLOW:       //月报简报流程
                     monthlyMultiyearSvc.initFlowDeal(vm);
                     break;
                 case flowcommon.getFlowDefinedKey().ANNOUNT_MENT_FLOW:       //通知公告
                     annountmentSvc.initFlowDeal(vm);
+                    sysFileLoadType = 1;
                     break;
             }
             // 初始化上传附件
-            sysfileSvc.findByMianId(vm.businessKey,function(data){
-                if(data && data.length > 0){
-                    vm.showFlag.tabSysFile = true;
-                    vm.sysFileList = data;
-                    vm.urlType="flowDeal";//附件右边的列表显示
-                    sysfileSvc.initZtreeClient(vm,$scope);//树形图
-                }
-            });
+            if(sysFileLoadType == 1){
+                sysfileSvc.findByMianId(vm.businessKey,function(data){
+                    if(data && data.length > 0){
+                        vm.showFlag.tabSysFile = true;
+                        vm.sysFileList = data;
+                        sysfileSvc.initZtreeClient(vm,$scope);//树形图
+                    }
+                });
+            }else if(sysFileLoadType == 2){
+                sysfileSvc.findByBusinessId(vm.businessKey,function(data){
+                    if(data && data.length > 0){
+                        vm.showFlag.tabSysFile = true;
+                        vm.sysFileList = data;
+                        sysfileSvc.initZtreeClient(vm,$scope);//树形图
+                    }
+                });
+            }
             //5、初始化个人常用意见
             ideaSvc.initIdea(vm);
         }
@@ -199,6 +217,7 @@
                 starHalf: '../contents/libs/raty/lib/images/star-half.png',
                 readOnly: false,
                 halfShow: true,
+                hints   : ['不合格','合格','中等','良好','优秀'],
                 size: 34,
                 click: function (score, evt) {
                     vm.scoreExpert.score = score;
@@ -442,6 +461,18 @@
 
         /***************  E_月报简报  ***************/
 
+        /***************  s_档案借阅  ***************/
+        vm.isTime=function(){
+            if(vm.model.readDate!="" && vm.model.readDate!=undefined ){
+                if(vm.flow.businessMap.RETURNDATE<vm.model.readDate){
+                    bsWin.alert("归还时间不能小于查阅时间",function () {
+                        vm.flow.businessMap.RETURNDATE=vm.model.readDate;
+                        $scope.$apply();
+                    })
+                }
+            }
+        }
+        /***************  E_档案借阅  ***************/
 
     }
 })();

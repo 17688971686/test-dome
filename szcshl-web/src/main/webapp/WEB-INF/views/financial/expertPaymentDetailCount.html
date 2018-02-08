@@ -18,12 +18,13 @@
 			<button ng-click="vm.getExpertCoust()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">查看汇总</button>
 			<!--<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="">导出EXCLE</button>-->
 			<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
+			<go-back></go-back>
 		</div>
 		<div>
 			<table id="expertCostTable" border="1px" style="width: 90%;">
 				<caption class="text-center h3">
 					<strong>深圳市政府投资项目评审中心<br>
-						{{vm.year}}年{{vm.month}}月交税统计汇总表
+						{{vm.year}}年{{vm.month}}月缴税统计汇总表
 					</strong>
 				</caption>
 				<tr id="expertCostHead" >

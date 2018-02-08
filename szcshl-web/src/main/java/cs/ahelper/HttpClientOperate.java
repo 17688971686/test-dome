@@ -3,14 +3,10 @@ package cs.ahelper;
 /**
  * Created by shenning on 2017/10/15.
  */
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import cs.common.ResultMsg;
 import cs.common.utils.Validate;
+import org.apache.http.Consts;
+import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
@@ -30,8 +26,14 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
- * @autho 董杨炀
+ * @autho 
  * @time 2017年5月8日 下午3:22:09
  */
 @Component("httpClientOperate")
@@ -53,12 +55,13 @@ public class HttpClientOperate implements BeanFactoryAware{
     private RequestConfig requestConfig;
 
     private CloseableHttpClient getHttpClient(){
-        return this.beanFactory.getBean(CloseableHttpClient.class);
+        CloseableHttpClient httpClient = this.beanFactory.getBean(CloseableHttpClient.class);
+        return httpClient;
     }
 
     /**
      * 无参get请求
-     * @autho 董杨炀
+     * @autho 
      * @time 2017年5月8日 下午3:30:08
      * @param url
      * @return
@@ -107,7 +110,7 @@ public class HttpClientOperate implements BeanFactoryAware{
 
     /**
      * 有参post请求
-     * @autho 董杨炀
+     * @autho 
      * @time 2017年5月8日 下午3:32:48
      * @param url
      * @param params
@@ -126,7 +129,7 @@ public class HttpClientOperate implements BeanFactoryAware{
                 parameters.add(new BasicNameValuePair(key, params.get(key)));
             }
             // 构造一个form表单式的实体
-            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(parameters);
+            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(parameters, Consts.UTF_8);
             // 将请求实体设置到httpPost对象中
             httpPost.setEntity(formEntity);
         }
@@ -134,12 +137,7 @@ public class HttpClientOperate implements BeanFactoryAware{
         try {
             // 执行请求
             response = this.getHttpClient().execute(httpPost);
-            // 判断返回状态是否为200
-            /*if (response.getStatusLine().getStatusCode() == 200) {
-                String content = EntityUtils.toString(response.getEntity(), "UTF-8");
-                System.out.println(content);
-            }*/
-            return new HttpResult(response.getStatusLine().getStatusCode(),EntityUtils.toString(response.getEntity(), "UTF-8"));
+            return new HttpResult(response.getStatusLine().getStatusCode(),EntityUtils.toString(response.getEntity(), Consts.UTF_8));
         } finally {
             if (response != null) {
                 response.close();
@@ -150,7 +148,7 @@ public class HttpClientOperate implements BeanFactoryAware{
 
     /**
      * 有参post请求,json交互
-     * @autho 董杨炀
+     * @autho 
      * @time 2017年5月8日 下午3:33:01
      * @param url
      * @param json
@@ -171,11 +169,6 @@ public class HttpClientOperate implements BeanFactoryAware{
         try {
             // 执行请求
             response = this.getHttpClient().execute(httpPost);
-            // 判断返回状态是否为200
-            /*if (response.getStatusLine().getStatusCode() == 200) {
-                String content = EntityUtils.toString(response.getEntity(), "UTF-8");
-                System.out.println(content);
-            }*/
             return new HttpResult(response.getStatusLine().getStatusCode(),EntityUtils.toString(response.getEntity(), "UTF-8"));
         } finally {
             if (response != null) {
@@ -187,7 +180,7 @@ public class HttpClientOperate implements BeanFactoryAware{
 
     /**
      * 无参post请求
-     * @autho 董杨炀
+     * @autho 
      * @time 2017年5月8日 下午3:33:27
      * @param url
      * @return

@@ -29,7 +29,9 @@
             vm.sysFile = {
                 businessId: vm.annountment.anId,
                 mainId: vm.annountment.anId,
-                mainType: sysfileSvc.mainTypeValue().NOTICE,
+                mainType: "通知公告",
+                sysBusiType: "",
+                showBusiType: false,
             };
             sysfileSvc.initUploadOptions({
                 inputId: "sysfileinput",
@@ -44,8 +46,6 @@
         active();
         function active() {
             vm.isNeed = "1";//是否需要审批，默认不需要
-            /*  UE.delEditor("editor");//可能是缓存问题导致的，因此先删除缓存中已有的富文本，
-             vm.editor= UE.getEditor("editor");//再重新渲染*/
             //渲染百度Ueditor的编辑器
             vm.editor = new UE.ui.Editor();
             vm.editor.render('editor');
@@ -72,9 +72,14 @@
         //新增通知公告
         vm.create = function () {
             annountmentSvc.createAnnountment(vm, function (data) {
-                vm.isSubmit = false;
-                vm.annountment.anId = data.anId;
-                bsWin.alert("保存成功！");
+                if(data.flag || data.reCode == 'ok'){
+                    //保存成功重新跳转，要不然路径不对
+                    bsWin.alert("保存成功！",function(){
+                        $state.go("annountmentEdit", { id: data.reObj.anId},{reload:true});
+                    });
+                }else{
+                    bsWin.alert(data.reMsg);
+                }
             });
         }
 
@@ -108,7 +113,7 @@
                     } else {
                         //当是保存时提交就先保存
                         annountmentSvc.createAnnountment(vm, function (data) {
-                            vm.id = data.anId;                            //保存后取得id,流程发起需要
+                            vm.id = data.reObj.anId;                            //保存后取得id,流程发起需要
                             annountmentSvc.startFlow(vm.id, function (data) {//更新的提交
                                 if (data.flag || data.reCode == 'ok') {
                                     bsWin.success("操作成功！", function () {

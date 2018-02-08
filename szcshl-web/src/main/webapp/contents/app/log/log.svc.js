@@ -56,7 +56,7 @@
                 }, {
                     field: "",
                     title: "级别",
-                    width: 100,
+                    width: 60,
                     filterable: false,
                     template:function(item){
                         if(item.logLevel){
@@ -74,15 +74,18 @@
                 }, {
                     field: "message",
                     title: "日志内容",
-                    filterable: false
+                    filterable: false,
+                    width: 400,
                 }, {
                     field: "module",
                     title: "所属模块",
-                    filterable: false
+                    filterable: false,
+                    width: 200,
                 }, {
                     field: "logger",
                     title: "所在方法",
-                    filterable: false
+                    filterable: false,
+                    width: 350,
                 }, {
                     field: "userName",
                     title: "操作者",
@@ -91,7 +94,7 @@
                 }, {
                     field: "createdDate",
                     title: "操作时间",
-                    width: 180,
+                    width: 170,
                     filterable: false,
                     format: "{0:yyyy/MM/dd HH:mm:ss}"
                 }

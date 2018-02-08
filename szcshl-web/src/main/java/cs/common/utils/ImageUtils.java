@@ -49,7 +49,7 @@ public class ImageUtils {
      * @param src 源图片路径
      */
     public void getImageSizeByImageReader(String src) {
-        long beginTime = new Date().getTime();
+        long beginTime = System.currentTimeMillis();
         File file = new File(src);
         try {
             Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("jpg");
@@ -61,7 +61,7 @@ public class ImageUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        long endTime = new Date().getTime();
+        long endTime = System.currentTimeMillis();
         System.out.println("使用[ImageReader]获取图片尺寸耗时：[" + (endTime - beginTime) + "]ms");
     }
 
@@ -71,7 +71,7 @@ public class ImageUtils {
      * @param src 源图片路径
      */
     public void getImageSizeByBufferedImage(String src) {
-        long beginTime = new Date().getTime();
+        long beginTime = System.currentTimeMillis();
         File file = new File(src);
         FileInputStream is = null;
         try {
@@ -87,7 +87,7 @@ public class ImageUtils {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        long endTime = new Date().getTime();
+        long endTime = System.currentTimeMillis();
         System.out.println("使用[BufferedImage]获取图片尺寸耗时：[" + (endTime - beginTime) + "]ms");
     }
 
@@ -383,14 +383,15 @@ public class ImageUtils {
                 Graphics2D g = image.createGraphics();
                 g.setColor(Color.white);
                 g.fillRect(0, 0, width, height);
-                if (width == itemp.getWidth(null))
+                if (width == itemp.getWidth(null)) {
                     g.drawImage(itemp, 0, (height - itemp.getHeight(null)) / 2,
                             itemp.getWidth(null), itemp.getHeight(null),
                             Color.white, null);
-                else
+                }else {
                     g.drawImage(itemp, (width - itemp.getWidth(null)) / 2, 0,
                             itemp.getWidth(null), itemp.getHeight(null),
                             Color.white, null);
+                }
                 g.dispose();
                 itemp = image;
             }

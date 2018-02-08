@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertAuditCtrl', expert);
 
-    expert.$inject = ['$location', 'expertSvc','templatePrintSvc'];
+    expert.$inject = ['$scope', 'expertSvc','templatePrintSvc'];
 
-    function expert($location, expertSvc,templatePrintSvc) {
+    function expert($scope, expertSvc,templatePrintSvc) {
     	var vm = this;
         vm.title = "专家审核";
 
@@ -32,7 +32,7 @@
 	    };
 	    
 	    vm.auditToRemove=function(){
-	      	expertSvc.auditTo(vm,5);
+	      	expertSvc.auditTo(vm,0);
 	    };
 	    
 	    //各状态回到审核状态
@@ -54,11 +54,13 @@
 
         //S 查看专家详细
         vm.findExportDetail = function (id) {
+            vm.model = {};
+            vm.reviewProjectList = [];
             expertSvc.getExpertById(id, function (data) {
                 vm.model = data;
                 $("#auditExportDetail").kendoWindow({
                     width: "80%",
-                    height: "auto",
+                    height: "620px",
                     title: "专家详细信息",
                     visible: false,
                     modal: true,
@@ -73,26 +75,7 @@
                             $(".tab-pane").removeClass("active").removeClass("in");
                             $("#" + showDiv).addClass("active").addClass("in").show(500);
                         })
-                        //项目签收编辑模板打印
-                        vm.editPrint = function () {
-                            var mb = templatePrintSvc.getBrowserType();
-                            $("#expertApply").hide();
-                            $("#auditExportDetail").data("kendoWindow").close();
-                            $("#expertApply_templ").show();
-                            $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab").addClass("print-hide");
-                            $(".content-wrapper").addClass("print-content");
-                            if(mb == 'IE'){
-                                document.all.WebBrowser.ExecWB(7,1);
-                            }else{
-                                print();
-                            }
-                            $("#expertApply").show();
-                            $("#auditExportDetail").data("kendoWindow").open();
-                            $("#expertApply_templ").hide();
-                            $(".main-sidebar,#flow_form,.header,.breadcrumb,.toolbar,#myTab,#wpTab").removeClass("print-hide");
-                            $(".content-wrapper").removeClass("print-content");
-
-                        }
+                        vm.reviewProjectList = [];
                         //评审过项目
                         expertSvc.reviewProjectGrid(vm.model.expertID,function(data){
                             vm.isLoading = false;
@@ -102,7 +85,6 @@
                             }else{
                                 vm.noData = true;
                             }
-
                         });
                     },
                     closable: true,

@@ -100,19 +100,26 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_sign + "/reserveListSign", $("#reserveFrom")),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
+                transport: common.kendoGridConfig().transport(url_sign + "/reserveListSign", $("#reserveFrom"),vm.gridParams),
+                schema: {
+                    data: "value",
+                    total: function (data) {
+                        if (data['count']) {
+                            $('#GET_RESERVESIGN_COUNT').html(data['count']);
+                        } else {
+                            $('#GET_RESERVESIGN_COUNT').html(0);
                         }
+                        return data['count'];
+                    },
+                    model: {
+                        id: "signid"
                     }
-                }),
+                },
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 10,
+                pageSize : vm.queryParams.pageSize ||10,
+                page:vm.queryParams.page||1,
                 sort: {
                     field: "createdDate",
                     dir: "desc"
@@ -121,30 +128,9 @@
 
             // End:dataSourc
 
-            //S_序号
-            var dataBound = function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            }
-            //S_序号
 
             // Begin:column
             var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.signid)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-                },
                 {  
 				    field: "rowNumber",  
 				    title: "序号",  
@@ -155,11 +141,11 @@
                 {
                     field: "projectname",
                     title: "项目名称",
-                    width: 160,
+                    width: 280,
                     filterable: false
                 },
                 {
-                    field: "projectcode",
+                    field: "filecode",
                     title: "收文编号",
                     width: 120,
                     filterable: false,
@@ -167,13 +153,13 @@
                 {
                     field: "designcompanyName",
                     title: "项目单位",
-                    width: 150,
+                    width: 220,
                     filterable: false,
                 },
                 {
                     field: "reviewstage",
                     title: "项目阶段",
-                    width: 80,
+                    width: 130,
                     filterable: false,
                 },
                 {
@@ -184,34 +170,32 @@
                 },
                 {
                     field: "receivedate",
-                    title: "收文时间",
+                    title: "收文日期",
                     width: 160,
                     filterable: false,
-                    format: "{0:yyyy/MM/dd HH:mm:ss}"
+                    format: "{0:yyyy-MM-dd HH:mm:ss}"
 
                 },
                 {
                     field: "",
-                    title: "流程状态",
-                    width: 80,
-                    filterable: false,
-                    template: function (item) {
-                        if (item.ispresign) {
-                            if (item.ispresign == 0) {
-                                return '<span style="color:green;">预签收</span>';
-                            }
-                        } else {
-                            return " "
-                        }
-                    }
-                },
-                {
-                    field: "",
                     title: "操作",
-                    width: 180,
+                    width: 320,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(), item.signid,
-                            "vm.del('" + item.signid + "')");
+                        var isStartFlow = false;
+                        if(item.processInstanceId){
+                            isStartFlow = true;
+                        }
+                        var isRealSign = false;
+                        if(item.issign && (item.issign == 9 || item.issign == '9' )){
+                            isRealSign = true;
+                        }
+                        //如果已经发起流程，则只能查看
+                        return common.format($('#columnBtns').html(),
+                            item.signid, isStartFlow,
+                            item.signid + "/" + item.processInstanceId,
+                            "vm.del('" + item.signid + "')",
+                            "vm.startNewFlow('" + item.signid + "')",
+                            "vm.realSign('" + item.signid + "')", isRealSign);
                     }
                 }
             ];
@@ -220,10 +204,10 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                dataBound: dataBound,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 resizable: true
             };
         }// end fun grid

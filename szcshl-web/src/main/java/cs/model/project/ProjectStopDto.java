@@ -119,7 +119,10 @@ public class ProjectStopDto extends DomainBase {
      * 审批结果是否通过（9：通过，0，不通过）
      */
     private String isactive;
-
+    /**
+     * 是否已经执行（9表示已经执行，1:表示正在执行）
+     */
+    private String isOverTime;
     /**
      * 流程实例ID
      */
@@ -353,5 +356,13 @@ public class ProjectStopDto extends DomainBase {
 
     public void setSignDispaWork(SignDispaWork signDispaWork) {
         this.signDispaWork = signDispaWork;
+    }
+
+    public String getIsOverTime() {
+        return isOverTime;
+    }
+
+    public void setIsOverTime(String isOverTime) {
+        this.isOverTime = isOverTime;
     }
 }

@@ -2,57 +2,126 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 
-<div class="well well-sm" style="background:white;" >
-<div class="toolbar">
-    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-ok"></span>保存</button>
-	<a  class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
-	<button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
-	<button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
-</div>
- <!-- 归档 -->	
- <!--S 编辑页面/项目概算/进口设备/设备清单（进口）/设备清单（国产） -->
-    <!--  s form -->
-    <form id="fileRecord_form" name="fileRecord_form" >
-       <div ng-if="vm.fileRecord.fileReviewstage=='可行性研究报告'" >
-           <div id="fileFeasibilityEdit_kxxyj" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileFeasibilityEdit.html'"></div>
-           <div id="fileFeasibilityEdit_kxxyj_templ"  style="display: none;"> <#include "/templatePrint/filerecord/fileProjectDetailKxxyjbg.html"/></div>
-       </div>
+<!-- 附件 -->
+<#include "/file/common.html"/>
 
-	   <div  ng-if="vm.fileRecord.fileReviewstage=='项目建议书'" >
-           <div id="fileProjcetIdeaEdit_xmjys" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetIdeaEdit.html'"></div>
-           <div id="fileProjcetIdeaEdit_xmjys_templ"  style="display: none;"> <#include "/templatePrint/filerecord/fileProjectDetailXmjysl.html"/></div>
-       </div>
+<div class="well well-sm" style="background:white;">
+    <div class="toolbar" ng-hide="vm.isControl">
+        <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit"><span
+                class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <a class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
+        <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
 
-	   <div  ng-if="vm.fileRecord.fileReviewstage=='资金申请报告'" >
-           <div id="filecapitalAppReportEdit_zjsq" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/filecapitalAppReportEdit.html'"></div>
-           <div id="filecapitalAppReportEdit_zjsq_templ" style="display: none;"> <#include "/templatePrint/filerecord/capitalAppReportZjsq.html"/></div>
-       </div>
+        <button ng-if="vm.fileRecord.fileReviewstage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGESUG')">打印预览</button>
 
-        <div  ng-if="!vm.isassistproc && vm.fileRecord.fileReviewstage=='项目概算'" >
-            <div id="fileProjcetEdit_xmgs" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetEdit.html'"></div>
-            <div id="fileProjcetEdit_xmgs_templ"  style="display: none;"> <#include "/templatePrint/filerecord/fileProjectDetailXmgs.html"/></div>
-        </div>
+        <button ng-if="vm.fileRecord.fileReviewstage=='可行性研究报告'" class="btn btn-sm btn-primary" style="width: 70px; " ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGESTUDY')">打印预览</button>
 
-       <div  ng-if="vm.isassistproc && vm.fileRecord.fileReviewstage=='项目概算'" >
-           <div id="fileProjcetEdit_xmgs_xs" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetEditXS.html'" ></div>
-           <div id="fileProjcetEdit_xmgs_xs_templ"  style="display: none;"> <#include "/templatePrint/filerecord/fileProjectDetailXmgs.html"/></div>
-       </div>
-	   <div  ng-if="vm.fileRecord.fileReviewstage=='进口设备'" >
-           <div id="fileForeignEdit_jksb" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileForeignEdit.html'"></div>
-           <div id="fileForeignEdit_jksb_templ"  style="display: none;"> <#include "/templatePrint/filerecord/fileRecordForeignJksb.html"/></div>
-       </div>
-	   <div  ng-if="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'" >
-           <div id="fileRecordEdit_sbqd" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>
-           <div id="fileRecordEdit_sbqd_templ"  style="display: none;"> <#include "/templatePrint/filerecord/fileProjectDetailSbqd.html"/></div>
-       </div>
-	  <!--  <div ng-show="vm.fileRecord.fileReviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>  -->
-    </form> <!--  end form -->
-	<!--E 编辑页面/项目概算/进口设备/设备清单（进口）/设备清单（国产） -->
 
-	<!--S 归档打印模板  引入-->
+        <button ng-if="vm.fileRecord.fileReviewstage=='资金申请报告'" class="btn btn-sm btn-primary" style="width: 70px; " ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEREPORT')">打印预览</button>
 
-    <!--E 归档打印模板  引入-->
+        <button ng-if="!vm.isassistproc && vm.fileRecord.fileReviewstage=='项目概算'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEBUDGET')">打印预览</button>
 
+        <button ng-if="vm.isassistproc && vm.fileRecord.fileReviewstage=='项目概算'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEBUDGET_XS')">打印预览</button>
+
+        <button ng-if="vm.fileRecord.fileReviewstage=='进口设备'" class="btn btn-sm btn-primary"  style="width: 70px;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEDEVICE')">打印预览</button>
+
+        <button ng-if="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'" class="btn btn-sm btn-primary" style="width: 70px;" ng-click="printFile(vm.fileRecord.signId,'FILERECORD' , 'STAGEHOMELAND')">打印预览</button>
+
+
+        <button  class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="printFile(vm.fileRecord.signId,'FILERECOED_OTHERFILE' , 'OTHER_FILE')">打印其它资料</button>
+        <button ng-if=" vm.fileRecord.fileReviewstage=='项目概算'" class="btn btn-sm btn-primary" style="width: 100px;  " ng-click="printFile(vm.fileRecord.signId ,'FILERECOED_OTHERFILE' , 'DRAWING_FILE')">打印图纸备注</button>
+
+
+    </div>
+    <div class="toolbar" ng-show="vm.isControl">
+        <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit"><span
+                class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <go-back></go-back>
+    </div>
+    <!-- 归档 -->
+    <!--S 编辑页面/项目概算/进口设备/设备清单（进口）/设备清单（国产） -->
+
+    <div ng-if="vm.fileRecord.fileReviewstage=='可行性研究报告'">
+        <form id="fileRecord_form" name="fileRecord_form">
+            <div id="fileFeasibilityEdit_kxxyj" ng-include
+                 src="'${path}/contents/app/fileRecord/fileRecordEdit/fileFeasibilityEdit.html'"></div>
+        </form> <!--  end form -->
+        <#--<div id="fileFeasibilityEdit_kxxyj_templ" style="display: none;">
+            <#include "/templatePrint/filerecord/fileProjectDetailKxxyjbg.html"/>
+        </div>-->
+    </div>
+
+    <div ng-if="vm.fileRecord.fileReviewstage=='项目建议书'">
+        <form id="fileRecord_form" name="fileRecord_form">
+            <div id="fileProjcetIdeaEdit_xmjys" ng-include
+                 src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetIdeaEdit.html'"></div>
+        </form> <!--  end form -->
+        <#--<div id="fileProjcetIdeaEdit_xmjys_templ" style="display: none;">
+            <#include "/templatePrint/filerecord/fileProjectDetailXmjysl.html"/>
+        </div>-->
+    </div>
+
+    <div ng-if="vm.fileRecord.fileReviewstage=='资金申请报告'">
+        <form id="fileRecord_form" name="fileRecord_form">
+            <div id="filecapitalAppReportEdit_zjsq" ng-include
+                 src="'${path}/contents/app/fileRecord/fileRecordEdit/filecapitalAppReportEdit.html'"></div>
+        </form> <!--  end form -->
+        <#--<div id="filecapitalAppReportEdit_zjsq_templ" style="display: none;">
+            <#include "/templatePrint/filerecord/capitalAppReportZjsq.html"/>
+        </div>-->
+    </div>
+
+    <div ng-if="!vm.isassistproc && vm.fileRecord.fileReviewstage=='项目概算'">
+        <form id="fileRecord_form" name="fileRecord_form">
+            <div id="fileProjcetEdit_xmgs" ng-include
+                 src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetEdit.html'"></div>
+        </form> <!--  end form -->
+       <#-- <div id="fileProjcetEdit_xmgs_templ" style="display: none;">
+            <#include "/templatePrint/filerecord/fileProjectDetailXmgs.html"/>
+        </div>-->
+    </div>
+
+    <div ng-if="vm.isassistproc && vm.fileRecord.fileReviewstage=='项目概算'">
+        <form id="fileRecord_form" name="fileRecord_form">
+            <div id="fileProjcetEdit_xmgs_xs" ng-include
+                 src="'${path}/contents/app/fileRecord/fileRecordEdit/fileProjcetEditXS.html'"></div>
+        </form> <!--  end form -->
+        <#--<div id="fileProjcetEdit_xmgs_xs_templ" style="display: none;">
+            <#include "/templatePrint/filerecord/fileProjectDetailXmgsXS.html"/>
+        </div>-->
+    </div>
+    <div ng-if="vm.fileRecord.fileReviewstage=='进口设备'">
+        <form id="fileRecord_form" name="fileRecord_form">
+            <div id="fileForeignEdit_jksb" ng-include
+                 src="'${path}/contents/app/fileRecord/fileRecordEdit/fileForeignEdit.html'"></div>
+        </form> <!--  end form -->
+        <#--<div id="fileForeignEdit_jksb_templ" style="display: none;">
+            <#include "/templatePrint/filerecord/fileRecordForeignJksb.html"/>
+        </div>-->
+    </div>
+    <div ng-if="vm.fileRecord.fileReviewstage=='设备清单（国产）' ||vm.fileRecord.fileReviewstage=='设备清单（进口）'">
+        <form id="fileRecord_form" name="fileRecord_form">
+            <div id="fileRecordEdit_sbqd" ng-include
+                 src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>
+        </form> <!--  end form -->
+        <#--<div id="fileRecordEdit_sbqd_templ" style="display: none;">
+            <#include "/templatePrint/filerecord/fileProjectDetailSbqd.html"/>
+        </div>-->
+    </div>
+    <div ng-if="vm.fileRecord.fileReviewstage=='其它' ">
+        <form id="fileRecord_form" name="fileRecord_form">
+            <div id="fileRecordEdit_qt" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileOtherEdit.html?version=${.now}'"></div>
+        </form> <!--  end form -->
+    <#--<div id="fileRecordEdit_sbqd_templ" style="display: none;">
+        <#include "/templatePrint/filerecord/fileProjectDetailSbqd.html"/>
+    </div>-->
+    </div>
+    <!--  <div ng-show="vm.fileRecord.fileReviewstage=='项目建议书'" ng-include src="'${path}/contents/app/fileRecord/fileRecordEdit/fileDomesticEdit.html'"></div>  -->
+
+    <!--引入 添加其它资料 弹出框-->
+<#include "/addRegisterFile/addOtherFile.html"/>
 </div>

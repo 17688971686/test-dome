@@ -3,9 +3,9 @@
 
     angular.module('app').factory('expertPaymentCountSvc', expertPaymentCount);
 
-    expertPaymentCount.$inject = ['$http'];
+    expertPaymentCount.$inject = ['$http','FileSaver'];
 
-    function expertPaymentCount($http) {
+    function expertPaymentCount($http,FileSaver) {
         var url_expertPaymentCount = rootPath + "/expertPaymentCount", url_back = '#/expertPaymentCountList';
         var service = {
             grid: grid,
@@ -60,8 +60,28 @@
         }//E_专家评审费用明细统计
 
         //begin excelExport
-        function excelExport(vm,exportData,fileName){
-            var fileName1 = window.encodeURIComponent(window.encodeURIComponent(fileName));
+        function excelExport(exportData,fileName){
+            var httpOptions ={
+                method : 'post',
+                url : rootPath + "/expertSelected/excelExport",
+                headers : {
+                    "contentType" : "application/json;charset=utf-8"
+                },
+                traditional : true,
+                dataType : "json",
+                responseType: 'arraybuffer',
+                data : angular.toJson(exportData),
+            }
+            var httpSuccess = function success(response){
+                var blob = new Blob([response.data] , {type : "application/vnd.ms-excel"});
+                FileSaver.saveAs(blob, fileName+".xls");
+            }
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+            /*var fileName1 = window.encodeURIComponent(window.encodeURIComponent(fileName));
             var httpOptions ={
                 method : 'post',
                 url : rootPath + "/expertSelected/excelExport",
@@ -87,7 +107,7 @@
                 $http : $http ,
                 httpOptions : httpOptions,
                 success : httpSuccess
-            });
+            });*/
         }
         //end excelExport
 

@@ -31,7 +31,6 @@ public class AssistPlanDto extends BaseDto {
     private String isDrawed;
     private BigDecimal totalCost;
     private List<AssistUnitDto> assistUnitDtoList;
-
     private List<AssistPlanSignDto> assistPlanSignDtoList;
     private List assistUnitList;
 

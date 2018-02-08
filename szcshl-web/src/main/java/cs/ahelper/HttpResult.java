@@ -65,8 +65,6 @@ public class HttpResult implements Serializable {
     }
 
     /**
-     * @autho 董杨炀
-     * @time 2017年5月8日 下午3:37:23
      * @return
      */
     @Override

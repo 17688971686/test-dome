@@ -345,13 +345,12 @@ public class AppraiseServiceImpl implements AppraiseService {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
                 appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(), businessId);
+                appraiseReport.setMinisterId(SessionUtil.getUserId());
+                appraiseReport.setMinisterName(SessionUtil.getDisplayName());
+                appraiseReport.setMinisterOpinion(flowDto.getDealOption());
+                appraiseReport.setMinisterDate(new Date());
                 //同意
                 if (Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
-                    appraiseReport.setMinisterId(SessionUtil.getUserId());
-                    appraiseReport.setMinisterName(SessionUtil.getDisplayName());
-                    appraiseReport.setMinisterOpinion(flowDto.getDealOption());
-                    appraiseReport.setMinisterDate(new Date());
-
                     //获取综合部档案评审员用户
                     dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.APPRAISE_REVIEWER.getValue());
                     if (!Validate.isList(dealUserList)) {
@@ -383,6 +382,10 @@ public class AppraiseServiceImpl implements AppraiseService {
                 }
                 appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(), businessId);
                 Sign sign = signRepo.findById(Sign_.signid.getName(), appraiseReport.getSignId());
+                appraiseReport.setGeneralConductorId(SessionUtil.getUserId());
+                appraiseReport.setGeneralConductorName(SessionUtil.getDisplayName());
+                appraiseReport.setGeneralConductorOpinion(flowDto.getDealOption());
+                appraiseReport.setGeneralConductorDate(new Date());
                 if (Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
                     sign.setIsAppraising(Constant.EnumState.YES.getValue());
                     appraiseReport.setApproveStatus(Constant.EnumState.YES.getValue());

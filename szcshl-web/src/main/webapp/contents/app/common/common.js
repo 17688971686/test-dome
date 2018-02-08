@@ -1,6 +1,6 @@
 ﻿(function () {
     'use strict';
-    var DICT_ITEMS;    //数字字典
+
     var service = {
         initJqValidation: initJqValidation,         // 重置form验证
         requestSuccess: requestSuccess,             // 请求成功时执行
@@ -18,14 +18,11 @@
         http: http,                                 // http请求
         gridDataSource: gridDataSource,             // gridDataSource
         buildOdataFilter: buildOdataFilter,         // 创建多条件查询的filter
-        initDictData: initDictData,                 // 初始化数字字典
+        //initDictData: initDictData,                 // 初始化数字字典
         kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
         getTaskCount: getTaskCount,                 // 用户待办总数
         uuid : uuid,                                // js
         downloadReport : downloadReport,            //报表下载
-        initDictItems: function (dictList) {
-            DICT_ITEMS = dictList;
-        }
     };
     window.common = service;
 
@@ -45,8 +42,6 @@
         $(".forExcel").click();
         aForExcel.remove();
     }
-
-
 
     function initJqValidation(formObj) {
         if (formObj) {
@@ -75,7 +70,7 @@
             showError("发生错误！");
         } else {
             var data = options.response.data;
-            if (data && data.status == 555) {
+            if (data && data.reCode == 555) {
                 showError(data.message);
             } else if (options.fn) {
                 options.fn(data);
@@ -152,10 +147,10 @@
             return qs[1];
     }//end
 
-    function kendoGridDataSource(url, searchForm) {
+    function kendoGridDataSource(url, searchForm,page,pageSize,queryParams) {
         var dataSource = new kendo.data.DataSource({
             type: 'odata',
-            transport: kendoGridConfig().transport(url, searchForm),
+            transport: kendoGridConfig().transport(url, searchForm,queryParams),
             schema: kendoGridConfig().schema({
                 id: "id",
                 fields: {
@@ -167,7 +162,8 @@
             serverPaging: true,
             serverSorting: true,
             serverFiltering: true,
-            pageSize: 10,
+            pageSize : pageSize||10,
+            page:page||1,
             sort: {
                 field: "createdDate",
                 dir: "desc"
@@ -176,7 +172,7 @@
         return dataSource;
     }//end
 
-    function kendoGridConfig() {
+    function kendoGridConfig(scope) {
         return {
             filterable: {
                 extra: false,
@@ -202,7 +198,25 @@
                 previousNext: true,
                 buttonCount: 5,
                 refresh: true,
-                pageSizes: true
+                pageSizes: true,
+                change:function(){
+                    if(scope && scope.page){
+                        scope.page = this.dataSource.page();
+                    }
+                }
+            },
+            dataBound:function(e){
+                // this.dataSource.page(2);
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+                scope.pageSize = e.sender.dataSource.pageSize();
+                scope.page = e.sender.dataSource.page();
             },
             schema: function (model) {
                 return {
@@ -219,6 +233,7 @@
                         url: url,
                         dataType: "json",
                         type: "post",
+                        cache : false ,
                         beforeSend: function (req) {
                             req.setRequestHeader('Token', service.getToken());
                         },
@@ -226,27 +241,26 @@
                             if (form) {
                                 var filterParam = common.buildOdataFilter(form);
                                 if (filterParam) {
-                                    if (paramObj && paramObj.filter) {
-                                        return {
-                                            "$filter": filterParam + " and "
-                                            + paramObj.filter
-                                        };
+                                    if (paramObj && paramObj.$filter) {
+                                        var extendFilter = paramObj.$filter;
+                                        paramObj = undefined;
+                                        return {"$filter":filterParam+" and "+extendFilter};
                                     } else {
                                         return {
                                             "$filter": filterParam
                                         };
                                     }
                                 } else {
-                                    if (paramObj && paramObj.filter) {
+                                    if (paramObj && paramObj.$filter) {
                                         return {
-                                            "$filter": paramObj.filter
+                                            "$filter": paramObj.$filter
                                         };
                                     } else {
                                         return {};
                                     }
                                 }
                             } else {
-                                return {};
+                                return paramObj||{};
                             }
                         }
                     }
@@ -408,8 +422,9 @@
                     return false;
                 }
                 var dataType = $me.attr("data-type") || "String";
-                if (!("Integer" == dataType)) {
-                    val = "'" + val + "'";
+                val = "'" + val + "'";
+                if ("String" != dataType) {
+                    val = dataType + val;
                 }
                 var operator = $me.attr("operator") || "eq",
                     dataRole = $me.attr("data-role") || ""; // data-role="datepicker"
@@ -425,7 +440,7 @@
             }).get().join(" and ");
     }// E_封装filer的参数
 
-    function initDictData(options) {
+    /*function initDictData(options) {
         if (!DICT_ITEMS) {
             options.$http({
                 method: 'get',
@@ -444,9 +459,9 @@
             reduceDict(dictsObj, options.scope.dictMetaData);
             options.scope.DICT = dictsObj;
         }
-    }//end
+    }//end*/
 
-    function reduceDict(dictsObj, dicts, parentId) {
+    /*function reduceDict(dictsObj, dicts, parentId) {
         if (!dicts || dicts.length == 0) {
             return;
         }
@@ -481,7 +496,7 @@
                 }
             }
         }
-    }//end
+    }//end*/
 
     // S_获取项目待办总数
     function getTaskCount(options) {
@@ -494,6 +509,12 @@
             }
             if(response.data.DO_TASK_COUNT){
                 $('#DO_TASK_COUNT').html(response.data.DO_TASK_COUNT);
+            }
+            if(response.data.GET_SIGN_COUNT){
+                $('#GET_SIGN_COUNT').html(response.data.GET_SIGN_COUNT);
+            }
+            if(response.data.GET_RESERVESIGN_COUNT){
+                $('#GET_RESERVESIGN_COUNT').html(response.data.GET_RESERVESIGN_COUNT);
             }
         });
     }// E_获取待办总数

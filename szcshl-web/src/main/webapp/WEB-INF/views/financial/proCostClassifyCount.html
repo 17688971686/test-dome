@@ -8,61 +8,74 @@
 		<li><a href="#/sharingPlatlform">项目评审费分类统计</a></li>
 		<li class="active">{{vm.title}}</li>
 	</ol>
-	<form id="form" name="form">
-		<div class="well">
-			<table border="1px" width="100%">
-				<tbody>
-				<tr>
 
-					<td><span class="help-inline" style="margin-left:10px;">项目名称：</span></td>
-					<td>
-						<input type="text" style="width:200px" ng-model="vm.model.projectname" operator="like" >
-					</td>
-					<td>
-						<span class="help-inline" style="margin-left:10px;">建设单位：</span>
-					</td>
-					<td>
-						<input type="text" style="width:100px" ng-model="vm.model.builtcompanyname" operator="like">
-					</td>
-					<td><span class="help-inline" style="margin-left:10px;">费用类型：</span></td>
-					<td>
-						<select ng-model="vm.model.chargeName"
-								style=" height: 26px;">
-							<option value="">请选择</option>
-							<option ng-repeat="d in DICT.CWBL_FYMC.dicts"
-									value="{{d.dictName}}">{{d.dictName}}
-							</option>
-						</select>
-						<button ng-click="vm.projectCostCountList()" class="btn btn-sm btn-primary" style="margin-left:70px;"  value="saveCommonIdea">查看费用统计</button>
-					</td>
-					<td >
-						<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.proCostClassifyCount()">统计</a>
-					</td>
-				</tr>
-				<tr>
-					<td><span class="help-inline" style="margin-left:10px;">评审阶段：</span></td>
-					<td>
-						<select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage" style="height:26px;">
-							<option value="">请选择</option>
-							<option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
-						</select>
+            <div class="toolbar">
+                <button class="btn btn-sm btn-primary" ng-click="vm.proCostClassifyCount()" ng-disabled="vm.isSubmit">
+                    <span class="glyphicon glyphicon-search"></span>查询
+                </button>
+                <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
+                    <span class="glyphicon glyphicon-repeat"></span>重置
+                </button>
+               <!-- <button class="btn btn-sm btn-primary" ng-click="vm.QueryStatistics()">
+                    <i class="fa fa-bar-chart" aria-hidden="true"></i>统计</button>-->
+                <button ng-click="vm.projectCostCountList()" class="btn btn-sm btn-primary"  value="saveCommonIdea">查看费用统计</button>
 
-					</td>
-					<td><span class="help-inline" style="margin-left:10px;">评审部门：</span></td>
-					<td>
-						<select ng-model="vm.model.deptName"  style="height:26px;">
-							<option value="">请选择</option>
-							<option ng-repeat="x in vm.orgDeptList" value="{{x.name}}">{{x.name}}</option>
-						</select>
-					</td>
-					<td><span class="help-inline" style="margin-left:10px;">付款日期：</span></td>
-					<td> <input name="beginTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
-						至
-						<input name="endTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.model.endTime" value="" type="text" operator="and" /></td>
-					<td><a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.formReset()">重置</a></td>
-				</tr>
-				</tbody>
-			</table>
+          <!--      <span class="attentionDiv" style="padding:5px;font-size: 12px;">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
+        温馨提示：统计查询耗时较长，统计时，尽量不要进行大数据量的项目统计！
+        </span>-->
+            </div>
+    <div class="well well-sm">
+            <form id="form" name="form">
+
+                <table style="width:100%; ">
+                    <tr>
+                        <td class="text-right" style="width:80px;">项目名称</td>
+                        <td>
+                            <input ng-model="vm.model.projectname"  type="text" operator="like"/>
+                        </td>
+                        <td class="text-right" style="width:80px;">建设单位</td>
+                        <td>
+                            <input ng-model="vm.model.builtcompanyname"  type="text" operator="like"/>
+                        </td>
+                        <td class="text-right" style="width:80px;">付款日期</td>
+                        <td style="width: 260px;">
+                        <input ng-model="vm.model.beginTime" style="width: 113px;"  kendo-date-picker k-format="'yyyy-MM-dd'" type="text" operator="ge"/>
+                            至
+                            <input  ng-model="vm.model.endTime" style="width: 113px;"  kendo-date-picker k-format="'yyyy-MM-dd'" type="text" operator="le"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right">费用类型</td>
+                        <td>
+                            <select ng-model="vm.model.chargeName"
+                                    style=" height: 26px;">
+                                <option value="">请选择</option>
+                                <option ng-repeat="d in DICT.CWBL_FYMC.dicts"
+                                        value="{{d.dictName}}">{{d.dictName}}
+                                </option>
+                            </select>
+                        </td>
+
+                        <td class="text-right">评审阶段</td>
+                        <td>
+                            <select ng-model="vm.model.reviewstage"  name="reviewstage" id="reviewstage" style="height:26px;">
+                                <option value="">请选择</option>
+                                <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
+                            </select>
+                        </td>
+
+                        <td class="text-right">评审部门</td>
+                        <td>
+                            <select ng-model="vm.model.deptName"  style="height:26px;">
+                                <option value="">请选择</option>
+                                <option ng-repeat="x in vm.orgDeptList" value="{{x.name}}">{{x.name}}</option>
+                            </select>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </table>
 		</div>
 		<div>
 			<table border="1px" style="width: 100%;">

@@ -17,11 +17,14 @@ public class BookBuyBusiness extends DomainBase {
     @Id
     private String businessId;
     //业务流程名字
-    @Column(columnDefinition = "varchar(64) ")
+    @Column(columnDefinition = "varchar(256) ")
     private String businessName;
     //申请部门
     @Column(columnDefinition = "varchar(64) ")
     private String applyDept;
+    //申请日期
+    @Column(columnDefinition = "DATE")
+    private Date applyDate;
     //经办人
     @Column(columnDefinition = "varchar(64) ")
     private String operator;
@@ -310,5 +313,13 @@ public class BookBuyBusiness extends DomainBase {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Date getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(Date applyDate) {
+        this.applyDate = applyDate;
     }
 }

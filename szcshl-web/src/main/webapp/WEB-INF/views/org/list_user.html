@@ -12,20 +12,26 @@
         <div class="toolbar">
        		 <a class="btn btn-sm btn-primary" href="#/org"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
        		 <@shiro.hasPermission name="org#users#post"> 
-            <button class="btn btn-sm btn-primary" ng-click="vm.showAddUserDialog()"><span class="glyphicon glyphicon-plus"></span>添加成员</button>            
+            <button class="btn btn-sm btn-primary" ng-click="vm.showAddUserDialog()"><span class="glyphicon glyphicon-plus"></span>添加成员</button>
              </@shiro.hasPermission> 
               <@shiro.hasPermission name="org#deleteUsers#delete"> 
             <button class="btn btn-sm btn-danger" ng-click="vm.removes()" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-remove"></span>批量移除</button>
         </@shiro.hasPermission> 
+        </div>
+
+        <div class="well well-sm">
+                <span class="help-inline">关键字：</span>
+                <input type="text" ng-model="vm.model.keyword" operator="like" name="keyword" id="keyword" placeholder="请输入">
+                <button class="btn btn-sm btn-primary" ng-click="vm.query()"><span class="glyphicon glyphicon-search"></span>查询</button>
+                <button class="btn btn-sm btn-primary" ng-click="vm.formReset()"><span class="glyphicon glyphicon-repeat"></span>重置</button>
         </div>
         <script type="text/template" id="columnBtns">
  		<@shiro.hasPermission name="org#deleteUsers#delete"> 
 			<button class="btn btn-xs btn-danger"  ng-click="{0}" ><span class="glyphicon glyphicon-remove"></span>移除</button>
  		</@shiro.hasPermission> 
 		</script>
-
-         <div class="orgUserGrid" kendo-grid="grid" k-options="vm.gridOptions"></div>
     </form>
+    <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 
 <!-- 添加用户 -->

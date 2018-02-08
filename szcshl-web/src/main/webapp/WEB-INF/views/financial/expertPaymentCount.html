@@ -12,12 +12,12 @@
 		<div class="well well-print">
 			<span>统计月份：</span>
 			<input id="beginTime" name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
-			<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.countExpertCost()">统计</a>
+			<a class="btn btn-sm btn-primary" ng-click="vm.countExpertCost()">统计</a>
 	<!--		<button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
 			<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>-->
-			<button ng-click="vm.getExpertCoustDetail()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">查看详细</button>
-			<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.excelExport()">导出EXCLE</button>
-			<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
+			<button ng-click="vm.getExpertCoustDetail()" class="btn btn-sm btn-primary" value="saveCommonIdea">查看详细</button>
+			<button class="btn btn-sm btn-primary" ng-click="vm.excelExport()">导出EXCLE</button>
+			<button class="btn btn-sm btn-primary" ng-click="vm.printFile()"><span class="glyphicon glyphicon-print"></span>打印</button>
 		</div>
 	</form>
 	<table class="table table-bordered">

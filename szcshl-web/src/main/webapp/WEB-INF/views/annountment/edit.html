@@ -1,7 +1,8 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+<!-- 附件 -->
+<#include "/file/common.html"/>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -16,8 +17,10 @@
         <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate && vm.isNeed=='1' && vm.annountment.processInstanceId==undefined "><span class="glyphicon glyphicon-ok"></span>更新</button>
         <button class="btn btn-sm btn-success" ng-click="vm.startNewFlow()" ng-disabled="vm.isSubmit" ng-show="vm.isUpdate && vm.isNeed=='0' && vm.annountment.processInstanceId==undefined"><span class="glyphicon glyphicon-ok"></span>更新</button>
        <!--退回的处理-->
-        <a ng-show="vm.annountment.processInstanceId" class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
-        <button class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ng-show="vm.annountment.processInstanceId"><span class="glyphicon glyphicon-ok"></span>保存</button>
+        <a ng-show="vm.annountment.processInstanceId && vm.annountment.appoveStatus!='9'" class="btn btn-sm btn-danger" ng-click="backtoflow()"><span class="glyphicon glyphicon-chevron-left"></span>返回流程</a>
+        <button ng-show="vm.annountment.processInstanceId && vm.annountment.appoveStatus!='9'" class="btn btn-sm btn-success" ng-click="vm.update()" ng-disabled="vm.isSubmit" ><span class="glyphicon glyphicon-ok"></span>保存</button>
+        <a  ng-show="vm.annountment.processInstanceId && vm.annountment.appoveStatus=='9'" class="btn btn-sm btn-primary" href="#/annountment"><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
+        <button   ng-show="vm.annountment.processInstanceId && vm.annountment.appoveStatus=='9'"class="btn btn-sm btn-success" ng-click="vm.startNewFlow()" ng-disabled="vm.isSubmit" ><span class="glyphicon glyphicon-ok"></span>更新</button>
     </div>
 
     <form id="form" name="form">
@@ -25,32 +28,32 @@
  			<tr>
                 <td class="text-right" style="width:160px;">标题： <span class="required">*</span></td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isUpdate"  ng-model="vm.annountment.anTitle" id="anTitle" name="anTitle"
+                    <input  type="text" maxlength="200" class="form-control input-sm "   ng-model="vm.annountment.anTitle" id="anTitle" name="anTitle"
                             data-val="true" data-val-required="必填" data-val-length-max="100">
                     <span data-valmsg-for="anTitle" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
              <tr ng-hide="vm.annountment.processInstanceId">
-                 <td class="text-right">是否需要审批：{{vm.annountment.isNeed}} </td>
+                 <td class="text-right">是否需要审批：</td>
                  <td >
-                     <select ng-model="vm.isNeed" ng-change="vm.annountment.issue=''">
+                     <select ng-model="vm.isNeed" >
                          <option value="0">需要</option>
                          <option value="1">不需要</option>
                      </select>
                  </td>
              </tr>
             <tr ng-hide="vm.annountment.processInstanceId">
-                <td class="text-right">是否置顶： </td>
+                <td class="text-right">是否置顶：</td>
                 <td >
-                	<input type="radio" ng-model="vm.annountment.isStick "  name="isStick" value="9"/>是
-                	<input type="radio" ng-model="vm.annountment.isStick "  name="isStick" value="0"/>否
+                	<input type="checkbox" ng-model="vm.annountment.isStick "  name="isStick" ng-true-value="9" ng-checked=" vm.annountment.isStick == 9 || vm.annountment.isStick == '9'"/>是
+                	<input type="checkbox" ng-model="vm.annountment.isStick "  name="isStick" ng-true-value="0" ng-checked="!(vm.annountment.isStick) || vm.annountment.isStick == 0 || vm.annountment.isStick == '0'"/>否
                 </td>
             </tr>
              <tr ng-if="vm.isNeed=='1'" ng-hide="vm.annountment.processInstanceId">
                  <td class="text-right">发布： </td>
                  <td >
-                     <input type="radio" ng-model="vm.annountment.issue "  name="issue" value="9"/>是
-                     <input type="radio" ng-model="vm.annountment.issue "  name="issue" value="0"/>否
+                     <input type="checkbox" ng-model="vm.annountment.issue "  name="issue" ng-true-value="9" ng-checked=" vm.annountment.issue == 9 || vm.annountment.issue == '9'"/>是
+                     <input type="checkbox" ng-model="vm.annountment.issue "  name="issue" ng-true-value="0" ng-checked="!vm.annountment.issue || vm.annountment.issue == 0 || vm.annountment.issue == '0'"/>否
                  </td>
              </tr>
              <tr ng-hide="vm.annountment.processInstanceId">
@@ -76,6 +79,8 @@
                              <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
                              <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
                              <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+                             <button ng-if="x.fileType =='.pdf' || x.fileType =='.docx' || x.fileType =='.doc' || x.fileType =='.xlsx' || x.fileType =='.xls' || x.fileType =='.ppt' || x.fileType =='.pptx'"
+                             class="btn btn-xs btn-primary" ng-click="previewFile(x.sysFileId,'pdf')"><span class="glyphicon glyphicon-search"></span>查看</button>
                              <button class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
                          </p>
                      </div>

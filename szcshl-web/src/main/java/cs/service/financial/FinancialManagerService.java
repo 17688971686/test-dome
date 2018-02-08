@@ -52,4 +52,11 @@ public interface FinancialManagerService {
      * @return
      */
 	ResultMsg save(FinancialManagerDto[] record);
+
+	/**
+	 * 根据项目ID查询出对应的协审费用
+	 * @param signId
+	 * @return
+	 */
+	List<SignAssistCostDto> findSignCostBySignId(String signId);
 }

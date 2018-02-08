@@ -1,4 +1,5 @@
 <meta charset="UTF-8">
+<go-back ng-show="vm.showExpertScore"></go-back>
 <table class="table table-bordered">
     <caption class="text-center h3"><strong>专家评分</strong></caption><!--第一负责人才能评分-->
     <tr class="active">
@@ -63,5 +64,8 @@
         </table>
     </form>
 </div>
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
+<!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
+
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_SCORE')">打印预览</button>
+
 <!-- end 专家评分弹窗-->

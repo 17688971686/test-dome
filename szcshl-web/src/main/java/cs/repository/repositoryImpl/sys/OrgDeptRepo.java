@@ -14,6 +14,8 @@ public interface OrgDeptRepo extends IRepository<OrgDept, String>{
 
     List<User> queryOrgDeptUser(String signId,String branchId);
 
+    List<OrgDept> findAllByCache();
+
     void fleshOrgDeptCache();
 
     OrgDept findOrgDeptById(String id);

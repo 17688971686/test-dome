@@ -18,6 +18,7 @@
          * 通过流程类别查找
          */
         vm.query = function(){
+            vm.gridOptions.dataSource._skip=0;
             vm.gridOptions.dataSource.read();
         }
     }

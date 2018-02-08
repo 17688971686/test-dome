@@ -7,373 +7,398 @@
         'angular-loading-bar',
         'ngAnimate',
         'ngFileSaver'
-        ]).filter('trust2Html', ['$sce',function($sce) {
-            return function(val) {
-                return $sce.trustAsHtml(val);
-            };
-        }])
-        .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+    ]).filter('trust2Html', ['$sce', function ($sce) {
+        return function (val) {
+            return $sce.trustAsHtml(val);
+        };
+    }]).filter('myFilter', function () {
+        return function (collection, keyname, value) {
+            var output = [];
+            var valueArr = [];
+            if (value instanceof Array) {
+                valueArr = value;
+            } else {
+                valueArr.push(value);
+            }
+            angular.forEach(collection, function (item) {
+                angular.forEach(valueArr, function (checkValue) {
+                    //过滤数组中值与指定值相同的元素
+                    if (item[keyname] == checkValue) {
+                        output.push(item);
+                    }
+                })
+            });
+            return output;
+        }
+    })
+        .config(['cfpLoadingBarProvider', function (cfpLoadingBarProvider) {
             cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
             cfpLoadingBarProvider.spinnerTemplate = '<div style="position:fixed;width:100%;height:100%;left:0;top:0; z-index:10001;background:rgba(0, 0, 0, 0.3);overflow: hidden;"><div style="position: absolute;top:30%; width: 400px;height:40px;left:50%;"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>数据加载中...</div></div>';
         }])
         .config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/welcome');
-        $stateProvider
-            .state('welcome', {
-                url: '/welcome',
-                templateUrl: rootPath + '/admin/welcome.html',
-                controller: 'adminWelComeCtrl',
-                controllerAs: 'vm'
-            })
-            .state('gtasks', {
-                url: '/gtasks',
-                templateUrl: rootPath + '/admin/gtasks.html',
-                controller: 'adminCtrl',
-                controllerAs: 'vm'
-            })
-            .state('agendaTasks', {
-                url: '/agendaTasks',
-                templateUrl: rootPath + '/admin/agendaTasks.html',
-                controller: 'adminAgendaCtrl',
-                controllerAs: 'vm'
-            })
-            .state('doingTasks', {
-                url: '/doingTasks',
-                templateUrl: rootPath + '/admin/doingTasks.html',
-                controller: 'adminDoTaskCtrl',
-                controllerAs: 'vm'
-            })
-            //begin#流程公共页面
-            .state('flowDeal', {
-                url: '/flowDeal/:businessKey/:processKey/:taskId/:instanceId',
-                templateUrl: function($routeParams){return rootPath + '/flow/flowDeal/'+$routeParams.processKey+'.html';},
-                controller: 'flowDealCtrl',
-                controllerAs: 'vm'
-            })
-            .state('flowDetail', {
-                url: '/flowDetail/:businessKey/:processKey/:taskId/:instanceId',
-                templateUrl: function($routeParams){return rootPath + '/flow/flowDetail/'+$routeParams.processKey+'.html';},
-                controller: 'flowDetailCtrl',
-                controllerAs: 'vm'
-            })
-            .state('flowEnd', {
-                url: '/flowEnd/:businessKey/:processKey/:instanceId',
-                templateUrl: function($routeParams){return rootPath + '/flow/flowEnd/'+$routeParams.processKey+'.html';},
-                controller: 'flowEndCtrl',
-                controllerAs: 'vm'
-            })
-            //end#流程公共页面
+            $urlRouterProvider.otherwise('/welcome');
+            $stateProvider
+                .state('welcome', {
+                    url: '/welcome',
+                    templateUrl: rootPath + '/admin/welcome.html',
+                    controller: 'adminWelComeCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('gtasks', {
+                    url: '/gtasks',
+                    templateUrl: rootPath + '/admin/gtasks.html',
+                    controller: 'adminCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('agendaTasks', {
+                    url: '/agendaTasks',
+                    templateUrl: rootPath + '/admin/agendaTasks.html',
+                    controller: 'adminAgendaCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('doingTasks', {
+                    url: '/doingTasks',
+                    templateUrl: rootPath + '/admin/doingTasks.html',
+                    controller: 'adminDoTaskCtrl',
+                    controllerAs: 'vm'
+                })
+                //begin#流程公共页面
+                .state('flowDeal', {
+                    url: '/flowDeal/:businessKey/:processKey/:taskId/:instanceId',
+                    templateUrl: function ($routeParams) {
+                        return rootPath + '/flow/flowDeal/' + $routeParams.processKey + '.html';
+                    },
+                    controller: 'flowDealCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('flowDetail', {
+                    url: '/flowDetail/:businessKey/:processKey/:taskId/:instanceId',
+                    templateUrl: function ($routeParams) {
+                        return rootPath + '/flow/flowDetail/' + $routeParams.processKey + '.html';
+                    },
+                    controller: 'flowDetailCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('flowEnd', {
+                    url: '/flowEnd/:businessKey/:processKey/:instanceId',
+                    templateUrl: function ($routeParams) {
+                        return rootPath + '/flow/flowEnd/' + $routeParams.processKey + '.html';
+                    },
+                    controller: 'flowEndCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#流程公共页面
 
-             //S 拟补充资料函管理
+                //S 拟补充资料函管理
 
-            //begin#添加拟补充资料函
-            .state('addSupp', {
-                url: '/addSupp/:businessId/:businessType',
-                templateUrl: rootPath + '/addSuppLetter/edit.html',
-                controller: 'addSuppLetterCtrl',
-                controllerAs: 'vm'
-            })//end#添加拟补充资料函
+                //begin#添加拟补充资料函
+                .state('addSupp', {
+                    url: '/addSupp/:businessId/:businessType/:isControl',
+                    templateUrl: rootPath + '/addSuppLetter/edit.html',
+                    controller: 'addSuppLetterCtrl',
+                    controllerAs: 'vm'
+                })//end#添加拟补充资料函
 
-             //begin#拟补充资料函列表
-            .state('addSuppletterList', {
-                url: '/addSuppletterList/:businessId',
-                templateUrl: rootPath + '/addSuppLetter/list.html',
-                controller: 'addSuppLetterListCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函列表
+                //begin#拟补充资料函列表
+                .state('addSuppletterList', {
+                    url: '/addSuppletterList/:businessId',
+                    templateUrl: rootPath + '/addSuppLetter/list.html',
+                    controller: 'addSuppLetterListCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函列表
 
-            //begin#拟补充资料函查看流程详细页面
-            .state('addSuppLetterEdit', {
-                url: '/addSuppLetterEdit/:id',
-                templateUrl: rootPath + '/addSuppLetter/editUpload.html',
-                controller: 'addSuppLetterEditCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函查看流程详细页面
+                //begin#拟补充资料函查看流程详细页面
+                .state('addSuppLetterEdit', {
+                    url: '/addSuppLetterEdit/:id',
+                    templateUrl: rootPath + '/addSuppLetter/editUpload.html',
+                    controller: 'addSuppLetterEditCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函查看流程详细页面
 
-            //begin#拟补充资料函查看流程详细页面
-            .state('suppLetterView', {
-                url: '/suppLetterView/:id',
-                templateUrl: rootPath + '/addSuppLetter/view.html',
-                controller: 'suppLetterViewCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函查看流程详细页面
-
-
-            //begin#拟补充资料函查询
-            .state('suppletterList', {
-                url: '/suppletterList',
-                templateUrl: rootPath + '/addSuppLetter/suppLetterList.html',
-                controller: 'addSuppLetterQueryCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函查询
+                //begin#拟补充资料函查看流程详细页面
+                .state('suppLetterView', {
+                    url: '/suppLetterView/:id',
+                    templateUrl: rootPath + '/addSuppLetter/view.html',
+                    controller: 'suppLetterViewCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函查看流程详细页面
 
 
-             //begin#拟补充资料函详细信息
-            .state('querySuppLetterDetail', {
-                url: '/querySuppLetterDetail/:id',
-                templateUrl: rootPath + '/addSuppLetter/detail.html',
-                controller: 'addSuppLetterQueryEditCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函详细信息
+                //begin#拟补充资料函查询
+                .state('suppletterList', {
+                    url: '/suppletterList',
+                    templateUrl: rootPath + '/addSuppLetter/html/suppLetterList.html',
+                    controller: 'addSuppLetterQueryCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函查询
 
 
-            //begin#拟补充资料函审批处理页面
-            .state('suppLetterApproveEdit', {
-                url: '/suppLetterApproveEdit/:id',
-                templateUrl: rootPath + '/addSuppLetter/suppLetterApproveEdit.html',
-                controller: 'addSuppLetterQueryEditCtrl',
-                controllerAs: 'vm'
-            })//end#拟补充资料函审批处理页面
+                //begin#拟补充资料函详细信息
+                .state('querySuppLetterDetail', {
+                    url: '/querySuppLetterDetail/:id',
+                    templateUrl: rootPath + '/addSuppLetter/detail.html',
+                    controller: 'addSuppLetterQueryEditCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函详细信息
 
-            //E 拟补充资料函管理
 
-             //begin#registerFile
-            .state('registerFile', {
-                url: '/registerFile/:businessId/',
-                templateUrl: rootPath + '/addRegisterFile/list.html',
-                controller: 'addRegisterFileCtrl',
-                controllerAs: 'vm'
-            }) //end#registerFile
-            .state('dtasks', {
-                url: '/dtasks',
-                templateUrl: rootPath + '/admin/dtasks.html',
-                controller: 'adminDoingCtrl',
-                controllerAs: 'vm'
-            })
-            .state('personDtasks', {
-                url: '/personDtasks',
-                templateUrl: rootPath + '/sign/personDtasks.html',
-                controller: 'adminPersonDoingCtrl',
-                controllerAs: 'vm'
-            })
-            .state('etasks', {
-                url: '/etasks',
-                templateUrl: rootPath + '/sign/etasks.html',
-                controller: 'adminEndCtrl',
-                controllerAs: 'vm'
-            })
-            //begin#role
-            .state('role', {
-                url: '/role',
-                templateUrl: rootPath + '/role/html/list.html',
-                controller: 'roleCtrl',
-                controllerAs: 'vm'
-            })
-            .state('roleEdit', {
-                url: '/roleEdit/:id',
-                templateUrl: rootPath + '/role/html/edit.html',
-                controller: 'roleEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#role
+                //begin#拟补充资料函审批处理页面
+                .state('suppLetterApproveEdit', {
+                    url: '/suppLetterApproveEdit/:id',
+                    templateUrl: rootPath + '/addSuppLetter/suppLetterApproveEdit.html',
+                    controller: 'addSuppLetterQueryEditCtrl',
+                    controllerAs: 'vm'
+                })//end#拟补充资料函审批处理页面
 
-            //begin#user
-            .state('user', {
-                url: '/user',
-                templateUrl: rootPath + '/user/html/list.html',
-                controller: 'userCtrl',
-                controllerAs: 'vm'
-            }).state('userEdit', {
-                url: '/userEdit/:id',
-                templateUrl: rootPath + '/user/html/edit.html',
-                controller: 'userEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#user
+                //E 拟补充资料函管理
 
-            //begin#org
-            .state('org', {
-                url: '/org',
-                templateUrl: rootPath + '/org/html/list.html',
-                controller: 'orgCtrl',
-                controllerAs: 'vm'
-            }).state('orgEdit', {
-                url: '/orgEdit/:id',
-                templateUrl: rootPath + '/org/html/edit.html',
-                controller: 'orgEditCtrl',
-                controllerAs: 'vm'
-            }).state('orgUser', {
-                url: '/orgUser/:id',
-                templateUrl: rootPath + '/org/html/orgUser.html',
-                controller: 'orgUserCtrl',
-                controllerAs: 'vm'
-            })
-            //end#org
+                //begin#registerFile
+                .state('registerFile', {
+                    url: '/registerFile/:businessId',
+                    templateUrl: rootPath + '/addRegisterFile/list.html',
+                    controller: 'addRegisterFileCtrl',
+                    controllerAs: 'vm'
+                }) //end#registerFile
+                .state('dtasks', {
+                    url: '/dtasks',
+                    templateUrl: rootPath + '/admin/dtasks.html',
+                    controller: 'adminDoingCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('personDtasks', {
+                    url: '/personDtasks',
+                    templateUrl: rootPath + '/sign/personDtasks.html',
+                    controller: 'adminPersonDoingCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('etasks', {
+                    url: '/etasks',
+                    templateUrl: rootPath + '/sign/etasks.html',
+                    controller: 'adminEndCtrl',
+                    controllerAs: 'vm'
+                })
+                //begin#role
+                .state('role', {
+                    url: '/role',
+                    templateUrl: rootPath + '/role/html/list.html',
+                    controller: 'roleCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('roleEdit', {
+                    url: '/roleEdit/:id',
+                    templateUrl: rootPath + '/role/html/edit.html',
+                    controller: 'roleEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#role
 
-            //begin#sysdept
-            .state('sysdept', {
-                url: '/sysdept',
-                templateUrl: rootPath + '/sysdept/html/list.html',
-                controller: 'sysdeptCtrl',
-                controllerAs: 'vm'
-            }).state('sysdeptEdit', {
-                url: '/sysdeptEdit/:id',
-                templateUrl: rootPath + '/sysdept/html/edit.html',
-                controller: 'sysdeptEditCtrl',
-                controllerAs: 'vm'
-            }).state('sysdeptUser', {
-                url: '/sysdeptUser/:id',
-                templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
-                controller: 'sysdeptUserCtrl',
-                controllerAs: 'vm'
-            })
-            //end#sysdept
+                //begin#user
+                .state('user', {
+                    url: '/user',
+                    templateUrl: rootPath + '/user/html/list.html',
+                    controller: 'userCtrl',
+                    controllerAs: 'vm'
+                }).state('userEdit', {
+                    url: '/userEdit/:id',
+                    templateUrl: rootPath + '/user/html/edit.html',
+                    controller: 'userEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#user
 
-            //begin#log
-            .state('log', {
-                url: '/log',
-                templateUrl: rootPath + '/log/html/list.html',
-                controller: 'logCtrl',
-                controllerAs: 'vm'
-            })
-            //end#log
+                //begin#org
+                .state('org', {
+                    url: '/org',
+                    templateUrl: rootPath + '/org/html/list.html',
+                    controller: 'orgCtrl',
+                    controllerAs: 'vm'
+                }).state('orgEdit', {
+                    url: '/orgEdit/:id',
+                    templateUrl: rootPath + '/org/html/edit.html',
+                    controller: 'orgEditCtrl',
+                    controllerAs: 'vm'
+                }).state('orgUser', {
+                    url: '/orgUser/:id',
+                    templateUrl: rootPath + '/org/html/orgUser.html',
+                    controller: 'orgUserCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#org
 
-            //begin#config
-            .state('config', {
-                url: '/config',
-                templateUrl: rootPath + '/sysConfig/html/list.html',
-                controller: 'sysConfigCtrl',
-                controllerAs: 'vm'
-            })
-            //end#config
+                //begin#sysdept
+                .state('sysdept', {
+                    url: '/sysdept',
+                    templateUrl: rootPath + '/sysdept/html/list.html',
+                    controller: 'sysdeptCtrl',
+                    controllerAs: 'vm'
+                }).state('sysdeptEdit', {
+                    url: '/sysdeptEdit/:id',
+                    templateUrl: rootPath + '/sysdept/html/edit.html',
+                    controller: 'sysdeptEditCtrl',
+                    controllerAs: 'vm'
+                }).state('sysdeptUser', {
+                    url: '/sysdeptUser/:id',
+                    templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
+                    controller: 'sysdeptUserCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#sysdept
 
-            //begin#upload
-        	.state('upload', {
-        		url: '/upload/:uploadid',
-        		templateUrl: rootPath + '/upload/html/edit.html',
-        		controller: 'uploadEditCtrl',
-        		controllerAs: 'vm'
-        	})
-        	//end#upload
+                //begin#log
+                .state('log', {
+                    url: '/log',
+                    templateUrl: rootPath + '/log/html/list.html',
+                    controller: 'logCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#log
 
-            //begin#meeting
-            .state('meeting', {
-                url: '/meeting',
-                templateUrl: rootPath + '/meeting/html/list.html',
-                controller: 'meetingCtrl',
-                controllerAs: 'vm'
-            }).state('meetingEdit', {
-                url: '/meetingEdit/:id',
-                templateUrl: rootPath + '/meeting/html/edit.html',
-                controller: 'meetingEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#meeting
+                //begin#config
+                .state('config', {
+                    url: '/config',
+                    templateUrl: rootPath + '/sysConfig/html/list.html',
+                    controller: 'sysConfigCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#config
 
-            //begin#room
-            .state('room', {
-                url: '/room/:businessId/:businessType',
-                templateUrl: rootPath + '/room/html/roomlist.html',
-                controller: 'roomCtrl',
-                controllerAs: 'vm'
-            }).state('roomCount', {
-                url: '/roomCount/:id',
-                templateUrl: rootPath + '/room/html/countlist.html',
-                controller: 'roomCountCtrl',
-                controllerAs: 'vm'
-            })
-            //end#room
+                //begin#upload
+                .state('upload', {
+                    url: '/upload/:uploadid',
+                    templateUrl: rootPath + '/upload/html/edit.html',
+                    controller: 'uploadEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#upload
 
-            //begin#company
-            .state('company', {
-                url: '/company',
-                templateUrl: rootPath + '/company/html/list.html',
-                controller: 'companyCtrl',
-                controllerAs: 'vm'
-            }).state('companyEdit', {
-                url: '/companyEdit/:id',
-                templateUrl: rootPath + '/company/html/edit.html',
-                controller: 'companyEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#company
+                //begin#meeting
+                .state('meeting', {
+                    url: '/meeting',
+                    templateUrl: rootPath + '/meeting/html/list.html',
+                    controller: 'meetingCtrl',
+                    controllerAs: 'vm'
+                }).state('meetingEdit', {
+                    url: '/meetingEdit/:id',
+                    templateUrl: rootPath + '/meeting/html/edit.html',
+                    controller: 'meetingEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#meeting
 
-            //begin#home
-            .state('accountPwd', {
-                url: '/accountPwd',
-                templateUrl: rootPath + '/account/html/changePwd.html',
-                controller: 'homeCtrl',
-                controllerAs: 'vm'
-            })
-            //end#home
-            //begin#demo
-            .state('demo', {
-                url: '/demo',
-                templateUrl: rootPath + '/demo/html/list.html',
-                controller: 'demoCtrl',
-                controllerAs: 'vm'
-            })
-            //end#demo
+                //begin#room
+                .state('room', {
+                    url: '/room/:businessId/:businessType',
+                    templateUrl: rootPath + '/room/html/roomlist.html',
+                    controller: 'roomCtrl',
+                    controllerAs: 'vm'
+                }).state('roomCount', {
+                    url: '/roomCount/:id',
+                    templateUrl: rootPath + '/room/html/countlist.html',
+                    controller: 'roomCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#room
 
-            //begin Dict
-            .state('dict', {
-                url: '/dict',
-                templateUrl: rootPath + '/dict/html/list.html',
-                controller: 'dictCtrl',
-                controllerAs: 'vm'
-            })
-            .state('dict.edit', {
-                url: '/edit/:id',
-                templateUrl: rootPath + '/dict/html/edit.html',
-                controller: 'dictEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end Dict
+                //begin#company
+                .state('company', {
+                    url: '/company',
+                    templateUrl: rootPath + '/company/html/list.html',
+                    controller: 'companyCtrl',
+                    controllerAs: 'vm'
+                }).state('companyEdit', {
+                    url: '/companyEdit/:id',
+                    templateUrl: rootPath + '/company/html/edit.html',
+                    controller: 'companyEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#company
 
-            //begin expert
-            .state('expert', {
-            	url: '/expert',
-                templateUrl: rootPath + '/expert/html/queryAllList.html',
-                controller: 'expertCtrl',
-                controllerAs: 'vm'
-            })
-            .state('expertAudit', {
-            	url: '/expertAudit',
-                templateUrl: rootPath + '/expert/html/audit.html',
-                controller: 'expertAuditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('expertRepeat', {
-            	url: '/expertRepeat',
-                templateUrl: rootPath + '/expert/html/repeat.html',
-                controller: 'expertRepeatCtrl',
-                controllerAs: 'vm'
-            })
-            .state('expertEdit', {
-                url: '/expertEdit/:expertID',
-                templateUrl: rootPath + '/expert/html/edit.html',
-                controller: 'expertEditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('expertReviewEdit', {
-                url: '/expertReview/:businessId/:minBusinessId/:businessType',
-                templateUrl: rootPath + '/expertReview/html/selectExpert.html',
-                controller: 'expertSelectCtrl',
-                controllerAs: 'vm'
-            })
-            
-            .state('expertScore',{
-                url: '/expertScore',
-                templateUrl: rootPath + '/expert/html/scoreList.html',
-                controller: 'expertScoreCtrl',
-                controllerAs: 'vm'
-            })
-            .state('expertSelectHis',{
-                url: '/expertSelectHis',
-                templateUrl: rootPath + '/expert/html/selectHisList.html',
-                controller: 'expertSelectHisCtrl',
-                controllerAs: 'vm'
-            })
-            //end expert
-            //begin#sign
-            .state('addSign', {
-                url: '/addSign',
-                templateUrl: rootPath + '/sign/html/add.html',
-                controller: 'signCreateCtrl',
-                controllerAs: 'vm'
-            }).state('fillSign', {
-                url: '/fillSign/:signid',
-                cache:'false',
+                //begin#home
+                .state('accountPwd', {
+                    url: '/accountPwd',
+                    templateUrl: rootPath + '/account/html/changePwd.html',
+                    controller: 'homeCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#home
+                //begin#demo
+                .state('demo', {
+                    url: '/demo',
+                    templateUrl: rootPath + '/demo/html/list.html',
+                    controller: 'demoCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#demo
+
+                //begin Dict
+                .state('dict', {
+                    url: '/dict',
+                    templateUrl: rootPath + '/dict/html/list.html',
+                    controller: 'dictCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('dict.edit', {
+                    url: '/edit/:id',
+                    templateUrl: rootPath + '/dict/html/edit.html',
+                    controller: 'dictEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end Dict
+
+                //begin expert
+                .state('expert', {
+                    url: '/expert',
+                    templateUrl: rootPath + '/expert/html/queryAllList.html',
+                    controller: 'expertCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('expertAudit', {
+                    url: '/expertAudit',
+                    templateUrl: rootPath + '/expert/html/audit.html',
+                    controller: 'expertAuditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('expertRepeat', {
+                    url: '/expertRepeat',
+                    templateUrl: rootPath + '/expert/html/repeat.html',
+                    controller: 'expertRepeatCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('expertEdit', {
+                    url: '/expertEdit/:expertID',
+                    templateUrl: rootPath + '/expert/html/edit.html',
+                    controller: 'expertEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('expertReviewEdit', {
+                    url: '/expertReview/:businessId/:minBusinessId/:businessType',
+                    templateUrl: rootPath + '/expertReview/html/selectExpert.html',
+                    controller: 'expertSelectCtrl',
+                    controllerAs: 'vm'
+                })
+
+                .state('expertScore', {
+                    url: '/expertScore',
+                    templateUrl: rootPath + '/expert/html/scoreList.html',
+                    controller: 'expertScoreCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('expertSelectHis', {
+                    url: '/expertSelectHis',
+                    templateUrl: rootPath + '/expert/html/selectHisList.html',
+                    controller: 'expertSelectHisCtrl',
+                    controllerAs: 'vm'
+                })
+                //end expert
+                //begin#sign
+                .state('addSign', {
+                    url: '/addSign',
+                    templateUrl: rootPath + '/sign/html/add.html',
+                    controller: 'signCreateCtrl',
+                    controllerAs: 'vm'
+                }).state('fillSign', {//isControl用来控制按钮的显示
+                url: '/fillSign/:signid/:isControl',
+                cache: 'false',
                 templateUrl: rootPath + '/sign/html/fillin.html',
                 controller: 'signFillinCtrl',
                 controllerAs: 'vm'
@@ -408,49 +433,49 @@
                 controller: 'adminSignListCtrl',
                 controllerAs: 'vm'
             })//end#signList
-            .state('projectStopInfo', { //项目暂停表单（多个）
-                url: '/projectStopInfo/:signId',
-                templateUrl: rootPath + '/projectStop/html/projectStopInfo.html',
-                controller: 'projectStopInfoCtrl',
-                controllerAs: 'vm'
-            })//end#signList
-            .state('selectHeader',{
-                url : '/selectHeader',
-                templateUrl : rootPath + '/sign/html/selectHeader.html',
-                controller : 'selectHeaderCtrl',
-                controllerAs : 'vm'
+                .state('projectStopInfo', { //项目暂停表单（多个）
+                    url: '/projectStopInfo/:signId',
+                    templateUrl: rootPath + '/projectStop/html/projectStopInfo.html',
+                    controller: 'projectStopInfoCtrl',
+                    controllerAs: 'vm'
+                })//end#signList
+                .state('selectHeader', {
+                    url: '/selectHeader',
+                    templateUrl: rootPath + '/sign/html/selectHeader.html',
+                    controller: 'selectHeaderCtrl',
+                    controllerAs: 'vm'
 
-            })
-            .state('signGetBack', {//项目取回
-                url: '/signGetBack',
-                templateUrl: rootPath + '/sign/html/signGetBack.html',
-                controller: 'signGetBackCtrl',
-                controllerAs: 'vm'
-            })
-            .state('pauseProject', { //项目暂停审批
-                url: '/pauseProject',
-                templateUrl: rootPath + '/projectStop/html/pauseProjectList.html',
-                controller: 'pauseProjectCtrl',
-                controllerAs: 'vm'
-            })
-            .state('projectStopForm', { //项目暂停表单
-                url: '/projectStopForm/:signId/:stopId',
-                templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
-                controller: 'projectStopFormCtrl',
-                controllerAs: 'vm'
-            })
-            .state('projectStopFormEdit', { //编辑项目暂停表单
-                url: '/projectStopFormEdit/:stopId',
-                templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
-                controller: 'projectStopFormEditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('reserveAdd', {	//新增预签收
-                url: '/reserveAdd',
-                templateUrl: rootPath + '/sign/html/reserveAdd.html',
-                controller: 'signReserveAddCtrl',
-                controllerAs: 'vm'
-            }).state('reserveList', {	//预签收列表
+                })
+                .state('signGetBack', {//项目取回
+                    url: '/signGetBack',
+                    templateUrl: rootPath + '/sign/html/signGetBack.html',
+                    controller: 'signGetBackCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('pauseProject', { //项目暂停审批
+                    url: '/pauseProject',
+                    templateUrl: rootPath + '/projectStop/html/pauseProjectList.html',
+                    controller: 'pauseProjectCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('projectStopForm', { //项目暂停表单
+                    url: '/projectStopForm/:signId/:stopId',
+                    templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
+                    controller: 'projectStopFormCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('projectStopFormEdit', { //编辑项目暂停表单
+                    url: '/projectStopFormEdit/:stopId',
+                    templateUrl: rootPath + '/projectStop/html/projectStopForm.html',
+                    controller: 'projectStopFormEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('reserveAdd', {	//新增预签收
+                    url: '/reserveAdd',
+                    templateUrl: rootPath + '/sign/html/reserveAdd.html',
+                    controller: 'signReserveAddCtrl',
+                    controllerAs: 'vm'
+                }).state('reserveList', {	//预签收列表
                 url: '/reserveList',
                 templateUrl: rootPath + '/sign/html/reserveList.html',
                 controller: 'signReserveCtrl',
@@ -460,85 +485,90 @@
                 templateUrl: rootPath + '/sign/html/reserveList.html',
                 controller: 'signReserveCtrl',
                 controllerAs: 'vm'
+            }).state('deletList', {	//作废项目列表
+                url: '/deletList',
+                templateUrl: rootPath + '/sign/html/deletList.html',
+                controller: 'signDeletCtrl',
+                controllerAs: 'vm'
             })
             //end#signList
 
             //begin#workprogram
-            .state('workprogramEdit', {
-                url: '/workprogramEdit/:signid',
-                templateUrl: rootPath + '/workprogram/html/edit.html',
-                controller: 'workprogramEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#workprogram
+                .state('workprogramEdit', {
+                    url: '/workprogramEdit/:signid/:isControl',//isControl控制按钮的显示
+                    templateUrl: rootPath + '/workprogram/html/edit.html',
+                    controller: 'workprogramEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#workprogram
 
-            //begin#dispatch
-            .state('dispatchEdit', {
-                url: '/dispatchEdit/:signid',
-                templateUrl: rootPath + '/dispatch/html/edit.html',
-                controller: 'dispatchEditCtrl',
-                controllerAs: 'vm'
-            })//end#dispatch
+                //begin#dispatch
+                .state('dispatchEdit', {
+                    url: '/dispatchEdit/:signid/:isControl',
+                    templateUrl: rootPath + '/dispatch/html/edit.html',
+                    controller: 'dispatchEditCtrl',
+                    controllerAs: 'vm'
+                })//end#dispatch
 
-            //begin#fileRecord
-        	.state('fileRecordEdit', {
-            	url: '/fileRecordEdit/:signid',
-            	templateUrl: rootPath + '/fileRecord/html/edit.html',
-            	controller: 'fileRecordEditCtrl',
-            	controllerAs: 'vm'
-        	})
-        	//end#fileRecord
+                //begin#fileRecord
+                .state('fileRecordEdit', {
+                    url: '/fileRecordEdit/:signid/:isControl',
+                    templateUrl: rootPath + '/fileRecord/html/edit.html',
+                    controller: 'fileRecordEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#fileRecord
 
-            //begin#assistMng
-            .state('assistPlan', {
-                url: '/assistPlan',
-                templateUrl: rootPath + '/assistPlan/html/manager.html',
-                controller: 'assistPlanCtrl',
-                controllerAs: 'vm'
-            })
-            //begin#assistMng
+                //begin#assistMng
+                .state('assistPlan', {
+                    url: '/assistPlan',
+                    templateUrl: rootPath + '/assistPlan/html/manager.html',
+                    controller: 'assistPlanCtrl',
+                    controllerAs: 'vm'
+                })
+                //begin#assistMng
 
-        	//start #officeUser
-        	.state('officeUserList', {
-                url: '/officeUserList',
-                templateUrl: rootPath + '/officeUser/html/list.html',
-                controller: 'officeUserCtrl',
-                controllerAs: 'vm'
-            })
-        	.state('officeUserEdit', {
-            	url: '/officeUserEdit/:officeID',
-            	templateUrl: rootPath + '/officeUser/html/edit.html',
-            	controller: 'officeUserEditCtrl',
-            	controllerAs: 'vm'
-        	})
-        	// end #officeUser
+                //start #officeUser
+                .state('officeUserList', {
+                    url: '/officeUserList',
+                    templateUrl: rootPath + '/officeUser/html/list.html',
+                    controller: 'officeUserCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('officeUserEdit', {
+                    url: '/officeUserEdit/:officeID',
+                    templateUrl: rootPath + '/officeUser/html/edit.html',
+                    controller: 'officeUserEditCtrl',
+                    controllerAs: 'vm'
+                })
+                // end #officeUser
 
-        	//begin#dept
-        	.state('listDept', {
-                url: '/listDept',
-                templateUrl: rootPath + '/dept/html/list.html',
-                controller: 'deptCtrl',
-                controllerAs: 'vm'
-            })
-        	.state('deptEdit', {
-            	url: '/deptEdit/:deptId',
-            	templateUrl: rootPath + '/dept/html/edit.html',
-            	controller: 'deptEditCtrl',
-            	controllerAs: 'vm'
-        	}).state('deptOfficeUser', {
+                //begin#dept
+                .state('listDept', {
+                    url: '/listDept',
+                    templateUrl: rootPath + '/dept/html/list.html',
+                    controller: 'deptCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('deptEdit', {
+                    url: '/deptEdit/:deptId',
+                    templateUrl: rootPath + '/dept/html/edit.html',
+                    controller: 'deptEditCtrl',
+                    controllerAs: 'vm'
+                }).state('deptOfficeUser', {
                 url: '/deptOfficeUser/:deptId',
                 templateUrl: rootPath + '/dept/html/listOfficeUser.html',
                 controller: 'deptOfficeUserCtrl',
                 controllerAs: 'vm'
             })
-        	//end#dept
+            //end#dept
             //begin#assistUnit
-            .state('assistUnit', {
-                url: '/assistUnit',
-                templateUrl: rootPath + '/assistUnit/html/assistUnitList.html',
-                controller: 'assistUnitCtrl',
-                controllerAs: 'vm'
-            }).state('assistUnitEdit', {
+                .state('assistUnit', {
+                    url: '/assistUnit',
+                    templateUrl: rootPath + '/assistUnit/html/assistUnitList.html',
+                    controller: 'assistUnitCtrl',
+                    controllerAs: 'vm'
+                }).state('assistUnitEdit', {
                 url: '/assistUnitEdit/:id',
                 templateUrl: rootPath + '/assistUnit/html/assistUnitEdit.html',
                 controller: 'assistUnitEditCtrl',
@@ -546,508 +576,593 @@
             })
             //end#assistUnit
             //begin#assistUnit
-            .state('quartz', {
-                url: '/quartz',
-                templateUrl: rootPath + '/quartz/html/list.html',
-                controller: 'quartzCtrl',
-                controllerAs: 'vm'
-            })
-            //begin workday
-             .state('workday', {
-                url: '/workday',
-                templateUrl: rootPath + '/workday/html/list.html',
-                controller: 'workdayCtrl',
-                controllerAs: 'vm'
-            })
-             .state('workdayEdit', {
-                url: '/workdayEdit/:id',
-                templateUrl: rootPath + '/workday/html/edit.html',
-                controller: 'workdayEditCtrl',
-                controllerAs: 'vm'
-            })
-            //通过公告
-            .state('annountment', {
-                url: '/annountment',
-                templateUrl: rootPath + '/annountment/html/list.html',
-                controller: 'annountmentCtrl',
-                controllerAs: 'vm'
-            })
-            .state('annountmentEdit', {
-                url: '/annountmentEdit/:id',
-                templateUrl: rootPath + '/annountment/html/edit.html',
-                controller: 'annountmentEditCtrl',
-                controllerAs: 'vm'
-            })
-             //通知公告详情页
-             .state('annountmentDetail', {
-                url: '/annountmentDetail/:id',
-                templateUrl: rootPath + '/annountment/html/detail.html',
-                controller: 'annountmentDetailCtrl',
-                controllerAs: 'vm'
-            })
-             //通过公告
-            .state('annountmentYet', {
-                url: '/annountmentYet',
-                templateUrl: rootPath + '/annountment/html/yetList.html',
-                controller: 'annountmentYetCtrl',
-                controllerAs: 'vm'
-            })
-            //begin#sharing
-            .state('sharingPlatlform', {
-                url: '/sharingPlatlform',
-                templateUrl: rootPath + '/sharingPlatlform/html/list.html',
-                controller: 'sharingPlatlformCtrl',
-                controllerAs: 'vm'
-            }).state('sharingPlatlformEdit', {
+                .state('quartz', {
+                    url: '/quartz',
+                    templateUrl: rootPath + '/quartz/html/list.html',
+                    controller: 'quartzCtrl',
+                    controllerAs: 'vm'
+                })
+                //begin workday
+                .state('workday', {
+                    url: '/workday',
+                    templateUrl: rootPath + '/workday/html/list.html',
+                    controller: 'workdayCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('workdayEdit', {
+                    url: '/workdayEdit/:id',
+                    templateUrl: rootPath + '/workday/html/edit.html',
+                    controller: 'workdayEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //通过公告
+                .state('annountment', {
+                    url: '/annountment',
+                    templateUrl: rootPath + '/annountment/html/list.html',
+                    controller: 'annountmentCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('annountmentEdit', {
+                    url: '/annountmentEdit/:id',
+                    templateUrl: rootPath + '/annountment/html/edit.html',
+                    controller: 'annountmentEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //通知公告详情页
+                .state('annountmentDetail', {
+                    url: '/annountmentDetail/:id',
+                    templateUrl: rootPath + '/annountment/html/detail.html',
+                    controller: 'annountmentDetailCtrl',
+                    controllerAs: 'vm'
+                })
+                //通过公告
+                .state('annountmentYet', {
+                    url: '/annountmentYet',
+                    templateUrl: rootPath + '/annountment/html/yetList.html',
+                    controller: 'annountmentYetCtrl',
+                    controllerAs: 'vm'
+                })
+                //begin#sharing
+                .state('sharingPlatlform', {
+                    url: '/sharingPlatlform',
+                    templateUrl: rootPath + '/sharingPlatlform/html/list.html',
+                    controller: 'sharingPlatlformCtrl',
+                    controllerAs: 'vm'
+                }).state('sharingPlatlformEdit', {
                 url: '/sharingPlatlformEdit/:sharId',
                 templateUrl: rootPath + '/sharingPlatlform/html/edit.html',
                 controller: 'sharingPlatlformEditCtrl',
                 controllerAs: 'vm'
             })
-             //资料共享详情页
-             .state('sharingDetil', {
-                url: '/sharingDetil/:sharId',
-                templateUrl: rootPath + '/sharingPlatlform/html/detail.html',
-                controller: 'sharingDetailCtrl',
-                controllerAs: 'vm'
-            })
-             .state('sharingPlatlformYet', {
-                url: '/sharingPlatlformYet',
-                templateUrl: rootPath + '/sharingPlatlform/html/yetList.html',
-                controller: 'sharingPlatlformYetCtrl',
-                controllerAs: 'vm'
-            })
-            //end#sharing
-             //S 项目费用管理
-            //评审费录入页面
-             .state('financialManager', {
-                url: '/financialManager/:businessId',
-                templateUrl: rootPath + '/financialManager/html/add.html',
-                controller: 'financialManagerCtrl',
-                controllerAs: 'vm'
-            })
-            //协审费录入
-           .state('financialAssistManager', {
-               url: '/financialAssistManager/:businessId',
-                templateUrl: rootPath + '/financialManager/html/assistCostAdd.html',
-               controller: 'assistCostEditCtrl',
-                controllerAs: 'vm'
-            })
-            //协审费录入列表页面
-            .state('assistCostlist', {
-                url: '/assistCostlist/:costType',
-                templateUrl: rootPath + '/financialManager/html/assistCostList.html',
-                controller: 'assistCostCountEditCtrl',
-                controllerAs: 'vm'
-            })
-            //协审费统计列表
-             .state('assistCostCountList', {
-                url: '/assistCostCountList',
-                templateUrl: rootPath + '/financialManager/html/assistCostCount.html',
-                controller: 'assistCostCountListCtrl',
-                controllerAs: 'vm'
-            })
-            //评审费录入列表
-             .state('financialManagerList', {
-                url: '/financialManagerList/:costType',
-                templateUrl: rootPath + '/financialManager/html/list.html',
-                controller: 'financialManagerEditCtrl',
-                controllerAs: 'vm'
-            })
+            //资料共享详情页
+                .state('sharingDetil', {
+                    url: '/sharingDetil/:sharId',
+                    templateUrl: rootPath + '/sharingPlatlform/html/detail.html',
+                    controller: 'sharingDetailCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('sharingPlatlformYet', {
+                    url: '/sharingPlatlformYet',
+                    templateUrl: rootPath + '/sharingPlatlform/html/yetList.html',
+                    controller: 'sharingPlatlformYetCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#sharing
+                //S 项目费用管理
+                //评审费录入页面
+                .state('financialManager', {
+                    url: '/financialManager/:businessId',
+                    templateUrl: rootPath + '/financialManager/html/add.html',
+                    controller: 'financialManagerCtrl',
+                    controllerAs: 'vm'
+                })
+                //协审费录入
+                .state('financialAssistManager', {
+                    url: '/financialAssistManager/:businessId',
+                    templateUrl: rootPath + '/financialManager/html/assistCostAdd.html',
+                    controller: 'assistCostEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //协审费录入列表页面
+                .state('assistCostlist', {
+                    url: '/assistCostlist/:costType',
+                    templateUrl: rootPath + '/financialManager/html/assistCostList.html',
+                    controller: 'assistCostCountEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //协审费统计列表
+                .state('assistCostCountList', {
+                    url: '/assistCostCountList',
+                    templateUrl: rootPath + '/financialManager/html/assistCostCount.html',
+                    controller: 'assistCostCountListCtrl',
+                    controllerAs: 'vm'
+                })
+                //评审费录入列表
+                .state('financialManagerList', {
+                    url: '/financialManagerList/:costType',
+                    templateUrl: rootPath + '/financialManager/html/list.html',
+                    controller: 'financialManagerEditCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //专家缴费统计列表
-            .state('expertPaymentCountList', {
-                url: '/expertPaymentCountList/:beginTime',
-                templateUrl: rootPath + '/financialManager/html/expertPaymentCount.html',
-                controller: 'expertPaymentCountCtrl',
-                controllerAs: 'vm'
-            })
-            //专家缴费明细统计列表
-            .state('expertPaymentDetailCountList', {
-                url: '/expertPaymentDetailCountList/:beginTime',
-                templateUrl: rootPath + '/financialManager/html/expertPaymentDetailCount.html',
-                controller: 'expertPaymentDetailCountCtrl',
-                controllerAs: 'vm'
-            })
-            //专家费统计列表
-             .state('exportCountList', {
-                url: '/exportCountList',
-                templateUrl: rootPath + '/financialManager/html/expertCount.html',
-                controller: 'exportCountCtrl',
-                controllerAs: 'vm'
-            })
-             //专家评审情况统计列表
-            .state('expertRevCondCountList', {
-                url: '/expertRevCondCountList',
-                templateUrl: rootPath + '/signView/html/expertReviewCondCount.html',
-                controller: 'expertRevConCountCtrl',
-                controllerAs: 'vm'
-            })
-             //项目评审费统计列表
-            .state('projectCostCountList', {
-                url: '/projectCostCountList',
-                templateUrl: rootPath + '/financialManager/html/projectCostCount.html',
-                controller: 'projectCostCountCtrl',
-                controllerAs: 'vm'
-            })
-            //项目评审费分类统计列表
-            .state('proCostClassifyCountList', {
-                url: '/proCostClassifyCountList',
-                templateUrl: rootPath + '/financialManager/html/proCostClassifyCount.html',
-                controller: 'proCostClassifyCountCtrl',
-                controllerAs: 'vm'
-            })
-            //项目评审情况统计
-            .state('proReviewConCountList', {
-                url: '/proReviewConCountList',
-                templateUrl: rootPath + '/signView/html/proReviewConCount.html',
-                controller: 'proReviewConditionCtrl',
-                controllerAs: 'vm'
-            })
-             //E 项目费用管理
+                //专家缴费统计列表
+                .state('expertPaymentCountList', {
+                    url: '/expertPaymentCountList/:beginTime',
+                    templateUrl: rootPath + '/financialManager/html/expertPaymentCount.html',
+                    controller: 'expertPaymentCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //专家缴费明细统计列表
+                .state('expertPaymentDetailCountList', {
+                    url: '/expertPaymentDetailCountList/:beginTime',
+                    templateUrl: rootPath + '/financialManager/html/expertPaymentDetailCount.html',
+                    controller: 'expertPaymentDetailCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //专家费统计列表
+                .state('exportCountList', {
+                    url: '/exportCountList',
+                    templateUrl: rootPath + '/financialManager/html/expertCount.html',
+                    controller: 'exportCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //专家评审情况统计列表
+                .state('expertRevCondCountList', {
+                    url: '/expertRevCondCountList',
+                    templateUrl: rootPath + '/signView/html/expertReviewCondCount.html',
+                    controller: 'expertRevConCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //项目评审费统计列表
+                .state('projectCostCountList', {
+                    url: '/projectCostCountList',
+                    templateUrl: rootPath + '/financialManager/html/projectCostCount.html',
+                    controller: 'projectCostCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //项目评审费分类统计列表
+                .state('proCostClassifyCountList', {
+                    url: '/proCostClassifyCountList',
+                    templateUrl: rootPath + '/financialManager/html/proCostClassifyCount.html',
+                    controller: 'proCostClassifyCountCtrl',
+                    controllerAs: 'vm'
+                })
+                //项目评审情况统计
+                .state('proReviewConCountList', {
+                    url: '/proReviewConCountList',
+                    templateUrl: rootPath + '/signView/html/proReviewConCount.html',
+                    controller: 'proReviewConditionCtrl',
+                    controllerAs: 'vm'
+                })
+                //E 项目费用管理
 
-             //S 月报简报管理
-             //月报简报管理列表
-             .state('monthlyNewsletterList', {
-                url: '/monthlyNewsletterList',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyNewsletterList.html',
-                controller: 'monthlyNewsletterCtrl',
-                controllerAs: 'vm'
-            })
-            //新建月报简报管理
-            .state('monthlyEdit', {
-                url: '/monthlyEdit/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyNewsletterEdit.html',
-                controller: 'monthlyNewsletterEditCtrl',
-                controllerAs: 'vm'
-            })
+                //S 月报简报管理
+                //月报简报管理列表
+                .state('monthlyNewsletterList', {
+                    url: '/monthlyNewsletterList',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyNewsletterList.html',
+                    controller: 'monthlyNewsletterCtrl',
+                    controllerAs: 'vm'
+                })
+                //新建月报简报管理
+                .state('monthlyEdit', {
+                    url: '/monthlyEdit/:id',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyNewsletterEdit.html',
+                    controller: 'monthlyNewsletterEditCtrl',
+                    controllerAs: 'vm'
+                })
 
-             //年度月报简报
-             .state('theMonthsList', {
-                url: '/theMonthsList',
-                templateUrl: rootPath + '/monthlyNewsletter/html/theMonthsList.html',
-                controller: 'yearMonthlyNewsletterCtrl',
-                controllerAs: 'vm'
-            })
+                //年度月报简报
+                .state('theMonthsList', {
+                    url: '/theMonthsList',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/theMonthsList.html',
+                    controller: 'yearMonthlyNewsletterCtrl',
+                    controllerAs: 'vm'
+                })
 
-             //年度月报简报列表理页面
-             .state('monthlyFindByMultiyear', {
-                url: '/monthlyFindByMultiyear/:year',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearList.html',
-                controller: 'monthlyMultiyearCtrl',
-                controllerAs: 'vm'
-            })
+                //年度月报简报列表理页面
+                .state('monthlyFindByMultiyear', {
+                    url: '/monthlyFindByMultiyear/:year',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearList.html',
+                    controller: 'monthlyMultiyearCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //编辑新建年度月报简报页面
-             .state('monthlyMultiyearEdit', {
-                url: '/monthlyMultiyearEdit/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearAdd.html',
-                controller: 'monthlyMultiyearEditCtrl',
-                controllerAs: 'vm'
-            })
+                //编辑新建年度月报简报页面
+                .state('monthlyMultiyearEdit', {
+                    url: '/monthlyMultiyearEdit/:year/:id',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyearAdd.html',
+                    controller: 'monthlyMultiyearEditCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //月报简报查询页面
-             .state('monthlyMultiyFileList', {
-                url: '/monthlyMultiyFileList',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyFileList.html',
-                controller: 'monthlyMultiFileCtrl',
-                controllerAs: 'vm'
-            })
+                //月报简报查询页面
+                .state('monthlyMultiyFileList', {
+                    url: '/monthlyMultiyFileList',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyFileList.html',
+                    controller: 'monthlyMultiFileCtrl',
+                    controllerAs: 'vm'
+                })
 
-             //年度(中心文件)月报简报详细页面
-             .state('monthlyMultiyView', {
-                url: '/monthlyMultiyView/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyView.html',
-                controller: 'monthlyMultiyViewCtrl',
-                controllerAs: 'vm'
-            })
+                //年度(中心文件)月报简报详细页面
+                .state('monthlyMultiyView', {
+                    url: '/monthlyMultiyView/:id',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyMultiyView.html',
+                    controller: 'monthlyMultiyViewCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //月报简报历史数据列表
-             .state('monthlyHistoryList', {
-                url: '/monthlyHistoryList',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyHistoryList.html',
-                controller: 'monthlyHistoryCtrl',
-                controllerAs: 'vm'
-            })
-             //新建月报简报历史数据
-            .state('monthlyHistoryEdit', {
-                url: '/monthlyHistoryEdit/:id',
-                templateUrl: rootPath + '/monthlyNewsletter/html/monthlyHistoryAdd.html',
-                controller: 'monthlyHistoryEditCtrl',
-                controllerAs: 'vm'
-            })
-            //优秀评审报告填报
-            .state('approveWindow', {
-                url: '/approveWindow/:signId',
-                templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
-                controller: 'approveWindowCtrl',
-                controllerAs: 'vm'
-            })
-            //优秀评审报告编辑
-            .state('approveWindowEdit', {
-                url: '/approveWindowEdit/:id',
-                templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
-                controller: 'approveWindowEditCtrl',
-                controllerAs: 'vm'
-            })
+                //月报简报历史数据列表
+                .state('monthlyHistoryList', {
+                    url: '/monthlyHistoryList',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyHistoryList.html',
+                    controller: 'monthlyHistoryCtrl',
+                    controllerAs: 'vm'
+                })
+                //新建月报简报历史数据
+                .state('monthlyHistoryEdit', {
+                    url: '/monthlyHistoryEdit/:id',
+                    templateUrl: rootPath + '/monthlyNewsletter/html/monthlyHistoryAdd.html',
+                    controller: 'monthlyHistoryEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //优秀评审报告填报
+                .state('approveWindow', {
+                    url: '/approveWindow/:signId',
+                    templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
+                    controller: 'approveWindowCtrl',
+                    controllerAs: 'vm'
+                })
+                //优秀评审报告编辑
+                .state('approveWindowEdit', {
+                    url: '/approveWindowEdit/:id',
+                    templateUrl: rootPath + '/reviewProjectAppraise/html/approveWindow.html',
+                    controller: 'approveWindowEditCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //优秀评审报告列表
-            .state('reviewProjectAppraiseList', {
-                url: '/reviewProjectAppraiseList/:id',
-                templateUrl: rootPath + '/signView/html/list.html',
-                controller: 'reviewProjectAppraiseCtrl',
-                controllerAs: 'vm'
-            })
-            //评审项目评优列表
-            .state('reviewProjectAppraiseEdit', {
-                url: '/reviewProjectAppraiseEdit',
-                templateUrl: rootPath + '/reviewProjectAppraise/html/edit.html',
-                controller: 'reviewProjectAppraiseEditCtrl',
-                controllerAs: 'vm'
-            })
-            //优秀评审报告审批列表
-            .state('approveList', {
-                url: '/approveList',
-                templateUrl: rootPath + '/reviewProjectAppraise/html/approveList.html',
-                controller: 'approveListCtrl',
-                controllerAs: 'vm'
-            })
-            //E 月报简报管理
+                //优秀评审报告列表
+                .state('reviewProjectAppraiseList', {
+                    url: '/reviewProjectAppraiseList/:id',
+                    templateUrl: rootPath + '/signView/html/list.html',
+                    controller: 'reviewProjectAppraiseCtrl',
+                    controllerAs: 'vm'
+                })
+                //评审项目评优列表
+                .state('reviewProjectAppraiseEdit', {
+                    url: '/reviewProjectAppraiseEdit',
+                    templateUrl: rootPath + '/reviewProjectAppraise/html/edit.html',
+                    controller: 'reviewProjectAppraiseEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //优秀评审报告审批列表
+                .state('approveList', {
+                    url: '/approveList',
+                    templateUrl: rootPath + '/reviewProjectAppraise/html/approveList.html',
+                    controller: 'approveListCtrl',
+                    controllerAs: 'vm'
+                })
+                //E 月报简报管理
 
-            //S 档案借阅管理
-            //项目档案借阅录入页面
-             .state('libraryAdd', {
-                url: '/libraryAdd/:id',
-                templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryAdd.html',
-                controller: 'archivesLibraryCtrl',
-                controllerAs: 'vm'
-            })
-            //档案借阅查询
-            .state('archivesLibraryList', {
-                url: '/archivesLibraryList/:id',
-                templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryList.html',
-                controller: 'archivesLibraryListCtrl',
-                controllerAs: 'vm'
-            })
-            //档案借阅查看详情页
-            .state('archivesLibraryView', {
-                url: '/archivesLibraryView/:id',
-                templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryView.html',
-                controller: 'archivesLibraryViewCtrl',
-                controllerAs: 'vm'
-            })
-            //E 档案借阅管理
+                //S 档案借阅管理
+                //项目档案借阅录入页面
+                .state('libraryAdd', {
+                    url: '/libraryAdd/:id',
+                    templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryAdd.html',
+                    controller: 'archivesLibraryCtrl',
+                    controllerAs: 'vm'
+                })
+                //档案借阅查询
+                .state('archivesLibraryList', {
+                    url: '/archivesLibraryList/:id',
+                    templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryList.html',
+                    controller: 'archivesLibraryListCtrl',
+                    controllerAs: 'vm'
+                })
+                //档案借阅查看详情页
+                .state('archivesLibraryView', {
+                    url: '/archivesLibraryView/:id',
+                    templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryView.html',
+                    controller: 'archivesLibraryViewCtrl',
+                    controllerAs: 'vm'
+                })
+                //E 档案借阅管理
 
-              //begin#dispatch
-           /* .state('financialEdit', {
-                url: '/financialEdit/:signid',
-                templateUrl: rootPath + '/financialManager/html/addFinancial.html',
-                controller: 'financialManagerEditCtrl',
-                controllerAs: 'vm'
-            })*///end#财务管理
-            //end#financial
-            //系统安装包管理
-            .state('pluginfile',{
-                url: '/pluginfile',
-                templateUrl: rootPath + '/file/html/pluginfile.html',
-                controller: 'pluginfileCtrl',
-                controllerAs: 'vm'
-            })
-            //个人中心
-            .state('takeUser',{
-                url:'/takeUser',
-                templateUrl: rootPath + '/personalCenter/html/takeUser.html',
-                controller: 'takeUserCtrl',
-                controllerAs: 'vm'
-            })
-            //质量管理文件库
-            .state('fileLibrary',{
-                url : '/fileLibrary',
-                templateUrl : rootPath + '/fileLibrary/html/fileLibrary.html',
-                controller : 'qualityCtrl',
-                controllerAs : 'vm'
-            })
-            .state('fileLibrary.fileList',{ //文件列表
-                url : '/fileList/:parentId',
-                templateUrl : rootPath + '/fileLibrary/html/fileList.html',
-                controller : 'qualityListCtrl',
-                controllerAs : 'vm'
-            })
-            .state('fileLibrary.fileEdit',{//新建文件
-                url : '/fileEdit/:parentId/:fileId',
-                templateUrl : rootPath + '/fileLibrary/html/fileEdit.html',
-                controller : 'qualityEditCtrl',
-                controllerAs : 'vm'
-            })
-            //政策标准库
-            .state('policyLibrary',{
-                url : '/policyLibrary',
-                templateUrl : rootPath + '/fileLibrary/html/policyLibrary.html',
-                controller : 'policyCtrl',
-                controllerAs : 'vm'
-            })
-            .state('policyLibrary.policyList',{ //文件列表
-                url : '/policyList/:parentId',
-                templateUrl : rootPath + '/fileLibrary/html/policyList.html',
-                controller : 'policyListCtrl',
-                controllerAs : 'vm'
-            })
-            .state('policyLibrary.policyEdit',{//新建文件
-                url : '/policyEdit/:parentId/:fileId',
-                templateUrl : rootPath + '/fileLibrary/html/policyEdit.html',
-                controller : 'policyEditCtrl',
-                controllerAs : 'vm'
-            })
-            //图书采购流程
-            .state('bookBuyBusinessEdit', {
-                url: '/bookBuyBusinessEdit/:businessId',
-                templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessEdit.html',
-                controller: 'bookBuyBusinessEditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('myBookBuyBusiness',{
-                url : '/myBookBuyBusiness',
-                templateUrl : rootPath + '/bookBuyBusiness/html/bookBuyBusinessList.html',
-                controller : 'bookBuyBusinessCtrl',
-                controllerAs : 'vm'
-            })
-            //固定资产申购流程
-            .state('assertStorageBusinessEdit', {
-                url: '/assertStorageBusinessEdit/:businessId',
-                templateUrl: rootPath + '/assertStorageBusiness/html/assertStorageBusinessEdit.html',
-                controller: 'assertStorageBusinessEditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('myAssertStorageBusiness',{
-            url : '/myAssertStorageBusiness',
-            templateUrl : rootPath + '/assertStorageBusiness/html/assertStorageBusinessList.html',
-            controller : 'assertStorageBusinessCtrl',
-            controllerAs : 'vm'
-        })
-            .state('assertApplyUse',{
-                url : '/assertApplyUse',
-                templateUrl : rootPath + '/userAssertDetail/html/userAssertDetailAdd.html',
-                controller : 'userAssertDetailAddCtrl',
-                controllerAs : 'vm'
-            })
-            //课题研究流程
-            .state('addTopic',{
-                url : '/topicInfo/:id',
-                templateUrl : rootPath + '/topicInfo/html/add.html',
-                controller : 'topicAddCtrl',
-                controllerAs : 'vm'
-            })
-            .state('myTopic',{
-                url : '/myTopic',
-                templateUrl : rootPath + '/topicInfo/html/myList.html',
-                controller : 'myTopicCtrl',
-                controllerAs : 'vm'
-            })
+                //begin#dispatch
+                /* .state('financialEdit', {
+                 url: '/financialEdit/:signid',
+                 templateUrl: rootPath + '/financialManager/html/addFinancial.html',
+                 controller: 'financialManagerEditCtrl',
+                 controllerAs: 'vm'
+                 })*///end#财务管理
+                //end#financial
+                //系统安装包管理
+                .state('pluginfile', {
+                    url: '/pluginfile',
+                    templateUrl: rootPath + '/file/html/pluginfile.html',
+                    controller: 'pluginfileCtrl',
+                    controllerAs: 'vm'
+                })
+                //个人中心
+                .state('takeUser', {
+                    url: '/takeUser',
+                    templateUrl: rootPath + '/personalCenter/html/takeUser.html',
+                    controller: 'takeUserCtrl',
+                    controllerAs: 'vm'
+                })
+                //质量管理文件库
+                .state('fileLibrary', {
+                    url: '/fileLibrary',
+                    templateUrl: rootPath + '/fileLibrary/html/fileLibrary.html',
+                    controller: 'qualityCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('fileLibrary.fileList', { //文件列表
+                    url: '/fileList/:parentId',
+                    templateUrl: rootPath + '/fileLibrary/html/fileList.html',
+                    controller: 'qualityListCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('fileLibrary.fileEdit', {//新建文件
+                    url: '/fileEdit/:parentId/:fileId',
+                    templateUrl: rootPath + '/fileLibrary/html/fileEdit.html',
+                    controller: 'qualityEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //政策标准库
+                .state('policyLibrary', {
+                    url: '/policyLibrary',
+                    templateUrl: rootPath + '/fileLibrary/html/policyLibrary.html',
+                    controller: 'policyCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('policyLibrary.policyList', { //文件列表
+                    url: '/policyList/:parentId',
+                    templateUrl: rootPath + '/fileLibrary/html/policyList.html',
+                    controller: 'policyListCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('policyLibrary.policyEdit', {//新建文件
+                    url: '/policyEdit/:parentId/:fileId',
+                    templateUrl: rootPath + '/fileLibrary/html/policyEdit.html',
+                    controller: 'policyEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //图书采购流程
+                .state('bookBuyBusinessEdit', {
+                    url: '/bookBuyBusinessEdit/:businessId/:viewDetail',
+                    templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessEdit.html',
+                    controller: 'bookBuyBusinessEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('myBookBuyBusiness', {
+                    url: '/myBookBuyBusiness',
+                    templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessList.html',
+                    controller: 'bookBuyBusinessCtrl',
+                    controllerAs: 'vm'
+                })
+                //图书查询
+                .state('bookDetailList', {
+                    url: '/bookDetailList',
+                    templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyList.html',
+                    controller: 'bookBuyCtrl',
+                    controllerAs: 'vm'
+                })
+                //图书详情页
+                .state('bookBuyBusinessDetail', {
+                    url: '/bookBuyBusinessDetail/:businessId/:viewDetail',
+                    templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessDetail.html',
+                    controller: 'bookBuyBusinessDetailCtrl',
+                    controllerAs: 'vm'
+                })
+                //借书查询
+                .state('bookBorrowList', {
+                    url: '/bookBorrowList',
+                    templateUrl: rootPath + '/bookBuyBusiness/html/bookBorrowList.html',
+                    controller: 'bookBorrowCtrl',
+                    controllerAs: 'vm'
+                })
+                //固定资产申购流程
+                .state('assertStorageBusinessEdit', {
+                    url: '/assertStorageBusinessEdit/:businessId',
+                    templateUrl: rootPath + '/assertStorageBusiness/html/assertStorageBusinessEdit.html',
+                    controller: 'assertStorageBusinessEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('myAssertStorageBusiness', {
+                    url: '/myAssertStorageBusiness',
+                    templateUrl: rootPath + '/assertStorageBusiness/html/assertStorageBusinessList.html',
+                    controller: 'assertStorageBusinessCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('assertApplyUse', {
+                    url: '/assertApplyUse',
+                    templateUrl: rootPath + '/userAssertDetail/html/userAssertDetailAdd.html',
+                    controller: 'userAssertDetailAddCtrl',
+                    controllerAs: 'vm'
+                })
+                //课题研究流程
+                .state('addTopic', {
+                    url: '/topicInfo/:id',
+                    templateUrl: rootPath + '/topicInfo/html/add.html',
+                    controller: 'topicAddCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('myTopic', {
+                    url: '/myTopic',
+                    templateUrl: rootPath + '/topicInfo/html/myList.html',
+                    controller: 'myTopicCtrl',
+                    controllerAs: 'vm'
+                })
                 //表头设置
-            .state('header',{
-                url : '/header',
-                templateUrl : rootPath + '/header/html/list.html',
-                controller : 'headerCtrl',
-                controllerAs: 'vm'
-            })
-            .state('headerEdit',{
-                url : '/headerEdit/:headerType',
-                templateUrl : rootPath + '/header/html/selectHeader.html',
-                controller : 'headerEditCtrl',
-                controllerAs: 'vm'
-            })
-            .state('statisticalList',{
-                url : '/statisticalList/:headerType',
-                templateUrl : rootPath + '/header/html/statisticalList.html',
-                controller : 'statisticalListCtrl',
-                controllerAs: 'vm'
-            })
-            //统计图表
-            .state('statistical',{
-                url : '/statistical',
-                templateUrl : rootPath + "/statistical/html/list.html",
-                controller : 'statisticalCtrl',
-                controllerAs : 'vm'
-            })
-            .state('editWorkPlan',{
-                url : '/editWorkPlan/:topicId',
-                templateUrl : rootPath + '/workPlan/html/edit.html',
-                controller : 'workPlanEditCtrl',
-                controllerAs : 'vm'
-            })
-            .state('editFiling',{
-                url : '/editFiling/:topicId',
-                templateUrl : rootPath + '/filing/html/edit.html',
-                controller : 'filingEditCtrl',
-                controllerAs : 'vm'
-            })
-            //系统管理员业务
-            //评审费发放
-            .state('reviewFee',{
-                url : '/reviewFee',
-                templateUrl : rootPath + "/reviewFee/html/list.html",
-                controller : 'reviewFeeCtrl',
-                controllerAs : 'vm'
-            })
-            //待办的附件右边列表页
-            .state('signFlowDeal.fileList',{ //文件列表
-                url : '/fileList/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
-            //在办的附件右边列表页
-            .state('signFlowDetail.fileList',{ //文件列表
-                url : '/fileList/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
-            //已办结的附件右边列表页
-            .state('endSignDetail.fileList',{ //文件列表
-                url : '/fileList/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
-            //详细信息的附件右边列表页
-            .state('signDetails.fileList',{ //文件列表
-                url : '/fileList/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
+                .state('header', {
+                    url: '/header',
+                    templateUrl: rootPath + '/header/html/list.html',
+                    controller: 'headerCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('headerEdit', {
+                    url: '/headerEdit/:headerType',
+                    templateUrl: rootPath + '/header/html/selectHeader.html',
+                    controller: 'headerEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('statisticalList', {
+                    url: '/statisticalList/:headerType',
+                    templateUrl: rootPath + '/header/html/statisticalList.html',
+                    controller: 'statisticalListCtrl',
+                    controllerAs: 'vm'
+                })
+                //统计图表
+                .state('statistical', {
+                    url: '/statistical',
+                    templateUrl: rootPath + "/statistical/html/list.html",
+                    controller: 'statisticalCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('editWorkPlan', {
+                    url: '/editWorkPlan/:topicId',
+                    templateUrl: rootPath + '/workPlan/html/edit.html',
+                    controller: 'workPlanEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('editFiling', {
+                    url: '/editFiling/:topicId',
+                    templateUrl: rootPath + '/filing/html/edit.html',
+                    controller: 'filingEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //系统管理员业务
+                //评审费发放
+                .state('reviewFee', {
+                    url: '/reviewFee',
+                    templateUrl: rootPath + "/reviewFee/html/list.html",
+                    controller: 'reviewFeeCtrl',
+                    controllerAs: 'vm'
+                })
+                //项目专家抽取修改
+                .state('signwork', {
+                    url: '/signwork/:signid',
+                    templateUrl: rootPath + "/signwork/html/list.html",
+                    controller: 'signworkCtrl',
+                    controllerAs: 'vm'
+                })
+                //待办的附件右边列表页
+                .state('signFlowDeal.fileList', { //文件列表
+                    url: '/fileList/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
+                //在办的附件右边列表页
+                .state('signFlowDetail.fileList', { //文件列表
+                    url: '/fileList/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
+                //已办结的附件右边列表页
+                .state('endSignDetail.fileList', { //文件列表
+                    url: '/fileList/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
+                //详细信息的附件右边列表页
+                .state('signDetails.fileList', { //文件列表
+                    url: '/fileList/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //课题研究的附件右边列表页
-            .state('flowDeal.fileList',{ //文件列表
-                url : '/flowDeal/:id/:type',
-                templateUrl : rootPath + '/file/html/rightList.html',
-                controller : 'fileListCtrl',
-                controllerAs : 'vm'
-            })
+                //课题研究的附件右边列表页
+                .state('flowDeal.fileList', { //文件列表
+                    url: '/flowDeal/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
+                //维护项目附件右边列表页
+                .state('MaintainProjectEdit.fileList', { //文件列表
+                    url: '/MaintainProjectEdit/:id/:type',
+                    templateUrl: rootPath + '/file/html/rightList.html',
+                    controller: 'fileListCtrl',
+                    controllerAs: 'vm'
+                })
 
-            //项目查询统计图表分析
-            .state('signChart',{
-                url : '/signChart',
-                templateUrl : rootPath + "/signView/html/signChart.html",
-                controller : 'signChartCtrl',
-                controllerAs : 'vm'
-            })
+                //项目查询统计图表分析
+                .state('signChart', {
+                    url: '/signChart',
+                    templateUrl: rootPath + "/signView/html/signChart.html",
+                    controller: 'signChartCtrl',
+                    controllerAs: 'vm'
+                })
+                /********************以下是项目维护***************************/
+                .state('MaintainProjectList', {	//维护项目列表
+                    url: '/MaintainProjectList',
+                    templateUrl: rootPath + '/sign/html/MaintainProjectList.html',
+                    controller: 'MaintainProjectCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('MaintainProjectEdit', {	//维护项目的编辑
+                    url: '/MaintainProjectEdit/:signid/:processInstanceId',
+                    templateUrl: rootPath + '/sign/html/MaintainProjectEdit.html',
+                    controller: 'MaintainProjectEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('reviewWorkday', {	//评审工作日维护
+                    url: '/reviewWorkday/:signid',
+                    templateUrl: rootPath + '/maintainProject/html/reviewWorkday.html',
+                    controller: 'reviewWorkdayCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('reviewOpinion', {//修改意见
+                    url: '/reviewOpinion/:signid/:processInstanceId',
+                    templateUrl: rootPath + "/maintainProject/html/reviewOpinion.html",
+                    controller: 'reviewOpinionCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('maintainExpertScore', {//专家评分
+                    url: '/maintainExpertScore/:signid',
+                    templateUrl: rootPath + "/maintainProject/html/maintainExpertScore.html",
+                    controller: 'maintainExpertScoreCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('maintainExpertPayment', {//评审费发放
+                    url: '/maintainExpertPayment/:signid',
+                    templateUrl: rootPath + "/maintainProject/html/maintainExpertPayment.html",
+                    controller: 'maintainExpertPaymentCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('maintainExpertConfirm', {//修改确定的专家
+                    url: '/maintainExpertConfirm/:signid',
+                    templateUrl: rootPath + "/maintainProject/html/maintainExpertConfirm.html",
+                    controller: 'maintainExpertConfirmCtrl',
+                    controllerAs: 'vm'
+                })
 
 
-    }]).run(function ($rootScope, $http, $state, $stateParams,bsWin) {
+        }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
+        $rootScope.rootPath = rootPath;
+        $rootScope.DICT = DICTOBJ;
+        //kendo 语言
+        kendo.culture("zh-CN");
+        common.getTaskCount({$http: $http});
+
+
         //获取表头名称
-        $rootScope.getTBHeadName = function(stageName,isAdvanced,type){
+        $rootScope.getTBHeadName = function (stageName, isAdvanced, type) {
             //项目建议书、可行性  提前介入称为评估论证
-            if(isAdvanced && isAdvanced == '9' && (stageName == '项目建议书' || stageName == '可行性研究报告')){
+            if (isAdvanced && isAdvanced == '9' && (stageName == '项目建议书' || stageName == '可行性研究报告')) {
                 return "评估论证" + type;
-            }else{
-                if(stageName){
-                    if(stageName == '项目概算'){
-                        return "概算审核"+type;
+            } else {
+                if (stageName) {
+                    if (stageName == '项目概算') {
+                        return "概算审核" + type;
                     }
                     return stageName + type;
-                }else{
+                } else {
                     return type;
                 }
 
@@ -1060,60 +1175,60 @@
         $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
             $rootScope.previousState_name = fromState.name;
             $rootScope.previousState_params = fromParams;
-            if(fromState.name == 'signFlowDeal' || fromState.name == 'flowDeal'){
+            if (fromState.name == 'signFlowDeal' || fromState.name == 'flowDeal') {
                 $rootScope.$flowUrl = fromState.name;
                 $rootScope.$flowParams = fromParams;
             }
         });
 
         $rootScope.back = function () {
-        	if($rootScope.previousState_name ){
-        		$state.go($rootScope.previousState_name, $rootScope.previousState_params);
-        	}else{
+            if ($rootScope.previousState_name) {
+                $state.go($rootScope.previousState_name, $rootScope.previousState_params);
+            } else {
                 $state.go('welcome');
-        	}
+            }
         };
         $rootScope.backtoflow = function () {
-            if($rootScope.$flowUrl ){
+            if ($rootScope.$flowUrl) {
                 $state.go($rootScope.$flowUrl, $rootScope.$flowParams);
-            }else{
+            } else {
                 $state.go('gtasks');
             }
         };
 
-        $rootScope.topSelectChange = function (dictKey, dicts , type) {
-        	if(dicts !=undefined){
-	            for (var i = 0; i < dicts.length; i++) {
-	            	//根据code查询
-	            	if(type && type == "code"){
+        $rootScope.topSelectChange = function (dictKey, dicts, type) {
+            if (dicts != undefined) {
+                for (var i = 0; i < dicts.length; i++) {
+                    //根据code查询
+                    if (type && type == "code") {
 
-	            		if (dicts[i].dictCode == dictKey) {
-	                        return dicts[i].dicts;
-	                    }
-	            	//默认根据name查询
-	            	}else{
-	            		if (dicts[i].dictName == dictKey) {
-	                        return dicts[i].dicts;
-	                    }
-	            	}
-	            }
-        	}
+                        if (dicts[i].dictCode == dictKey) {
+                            return dicts[i].dicts;
+                        }
+                        //默认根据name查询
+                    } else {
+                        if (dicts[i].dictName == dictKey) {
+                            return dicts[i].dicts;
+                        }
+                    }
+                }
+            }
         }
 
         //S_初始化input框的值
-        $rootScope.initInputValue = function($event,defaultValue){
+        $rootScope.initInputValue = function ($event, defaultValue) {
             var checkbox = $event.target;
             var checked = checkbox.checked;
             if (checked && !defaultValue) {
                 return 1;
-            }else{
+            } else {
                 return defaultValue;
             }
         }//E_initInputValue
 
         //用于循环数字用
-        $rootScope.range = function(n) {
-            if(n){
+        $rootScope.range = function (n) {
+            if (n) {
                 return new Array(n);
             }
         }
@@ -1125,59 +1240,103 @@
          * @param msgId
          * @returns {*}
          */
-        $rootScope.countCharacter = function(key,maxnumber,msgId) {
-            var writeNum = key?key.length:0;
-            var resultMsg = "<span style='font-size:12px;'>（最多允许输入"+maxnumber+"个字";
-            if(writeNum > 0){
-                var lessNum = (maxnumber - writeNum)>0?(maxnumber - writeNum):0;
-                resultMsg += ",还能输入<font color='red'>"+lessNum+"</font>个字";
-                if(lessNum == 0){
-                    key = key.substr(0,maxnumber);
+        $rootScope.countCharacter = function (key, maxnumber, msgId) {
+            var writeNum = key ? key.length : 0;
+            var resultMsg = "<span style='font-size:12px;'>（最多允许输入" + maxnumber + "个字";
+            if (writeNum > 0) {
+                var lessNum = (maxnumber - writeNum) > 0 ? (maxnumber - writeNum) : 0;
+                resultMsg += ",还能输入<font color='red'>" + lessNum + "</font>个字";
+                if (lessNum == 0) {
+                    key = key.substr(0, maxnumber);
                 }
             }
             resultMsg += "</span>)";
-            $("#"+msgId).html(resultMsg);
+            $("#" + msgId).html(resultMsg);
             return key;
         }
 
         //文件预览
-        $rootScope.previewFile = function(sysFileId,fileType) {
-            var url,width,height;
-
-            if("office" == fileType){
-                url = rootPath+"/file/editFile?sysFileId="+sysFileId;
-                width = "82%";
-                height = "830px";
-            }else if("pdf" == fileType){
-                url =  rootPath+"/contents/libs/pdfjs-dist/web/viewer.html?file="+rootPath+"/file/preview/" + sysFileId;
-                width = "82%";
-                height = "830px";
-
-            }else if("image" == fileType){
-                url = rootPath+"/file/preview/" + sysFileId;
-                width = "75%";
-                height = "auto";
+        $rootScope.previewFile = function (sysFileId, fileType) {
+            if (sysFileId) {
+                var url, width, height;
+                if ("pdf" == fileType) {
+                    url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId+"&version="+(new Date()).getTime()+"";
+                } else if ("image" == fileType) {
+                    url = rootPath + "/file/preview/" + sysFileId+"?version="+(new Date()).getTime()+"";
+                }
+                if (url) {
+                    var httpOptions = {
+                        method: 'post',
+                        url: rootPath + "/file/fileSysCheck",
+                        params: {
+                            sysFileId: sysFileId
+                        }
+                    }
+                    var httpSuccess = function success(response) {
+                        $("#iframePreview").attr("src", "");
+                        if (response.data.flag || response.data.reCode == 'ok') {
+                            $("#iframePreview").attr("src", url);
+                            $("#previewModal").kendoWindow({
+                                width: "1050px",
+                                height: "730px",
+                                title: "",
+                                visible: false,
+                                modal: true,
+                                closable: true,
+                                actions: ["Pin", "Minimize", "Maximize", "Close"]
+                            }).data("kendoWindow").center().open();
+                        } else {
+                            bsWin.error(response.data.reMsg);
+                        }
+                    };
+                    common.http({
+                        $http: $http,
+                        httpOptions: httpOptions,
+                        success: httpSuccess
+                    });
+                } else {
+                    bsWin.alert("该文件不支持在线预览和在线编辑");
+                }
+            } else {
+                bsWin.alert("参数不正确，无法在线预览");
             }
-            if(url){
+        }
+
+        //文件在线编辑
+        $rootScope.editFile = function(sysFileId, fileType){
+           var url = rootPath + "/file/editFile?sysFileId=" + sysFileId+"&fileType="+fileType+"&version="+(new Date()).getTime();
+           window.open(url,"_blank");
+        }
+
+        //打印预览，生成word模板直接预览
+        $rootScope.printFile = function (businessId, businessType, stageType) {
+            if (!businessId || !businessType || !stageType) {
+                bsWin.alert("打印预览失败，参数不正确！");
+            } else {
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version="+(new Date()).getTime()+"&file=" + rootPath + "/file/printPreview/" + businessId + "/" + businessType + "/" + stageType;
                 $("#iframePreview").attr("src", url);
                 $("#previewModal").kendoWindow({
-                    width: width,
-                    height: height,
+                    width: "80%",
+                    height: "730px",
                     title: "",
                     visible: false,
                     modal: true,
                     closable: true,
                     actions: ["Pin", "Minimize", "Maximize", "Close"]
                 }).data("kendoWindow").center().open();
-            }else{
-                bsWin.alert("该文件不支持在线预览");
             }
-}
+        }
 
-        //kendo 语言
-        kendo.culture("zh-CN");
-        common.getTaskCount({$http: $http});
-    	common.initDictData({$http: $http, scope: $rootScope});
+        /**
+         * 返回时列表状态不改变。
+         * @type {{}}
+         */
+        //状态
+        $rootScope.view = {};
+        //保存查询条件
+        $rootScope.storeView = function (storeName,params){
+            $rootScope.view[storeName] = params;
+        }
     });
 
 })();

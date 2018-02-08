@@ -1,0 +1,286 @@
+<meta charset="UTF-8">
+<#assign path=request.contextPath/>
+<link rel="stylesheet" href="${path}/szcshl-web/contents/libs/bootstrap/css/bootstrap.css">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        list-style: none;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    .container {
+        text-align: center;
+        margin: 10px auto;
+    }
+
+    .container .well {
+        margin-bottom: 10px;
+    }
+
+    .item-list {
+        margin-bottom: 0;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        border-bottom: 1px solid #bfbfbf;
+    }
+
+    .item-list li {
+        min-width: 20%;
+        background: #337ab7;
+        margin: 10px;
+        line-height: 40px;
+        border-radius: 5px;
+    }
+
+    .item-list li a {
+        color: #fff;
+    }
+
+    .changeInfo {
+        overflow: hidden;
+    }
+
+    .changeInfo .panel {
+        margin-bottom: 5px;
+    }
+
+    .panel-heading {
+        padding: 2px;
+        text-align: center;
+    }
+
+    .options {
+        padding: 0;
+    }
+
+    .options > label {
+        display: inline-block;
+        width: 50%;
+        float: left;
+        margin-bottom: 0;
+        height: 100%;
+        line-height: 32px;
+        cursor: pointer;
+
+    }
+
+    .options > label:hover {
+        background: #eee;
+    }
+
+    .options input[type='radio'] {
+        margin: 0;
+        display: none;
+    }
+
+    .options input[type='radio'] + label.radio {
+        display: inline-block;
+        height: 16px;
+        width: 16px;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        text-align: center;
+        margin: 0;
+        position: relative;
+        top: 3px;
+    }
+
+    .options input + label:before {
+        content: '';
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #fff;
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+    }
+
+    .options input:checked + label {
+        background: #699cf8;
+        border-color: #699cf8 !important;
+    }
+
+    .options input:checked + label:before {
+        display: block;
+    }
+</style>
+
+<div class="container" style="width: 100%">
+    <div class="panel panel-primary" style="margin-bottom:0;">
+        <div class="panel-heading" style="text-align:center;">
+            <h3>【{{vm.model.projectname}}】项目维护</h3>
+        </div>
+        <div class="panel-body" style="padding:10px 15px">
+            <div style="margin-bottom: 5px;text-align: left;">
+                <a class="btn btn-sm btn-primary" href="#/MaintainProjectList"><span
+                        class="glyphicon glyphicon-chevron-left"></span>返回</a>
+            </div>
+            <div class="well well-sm">
+                <ul class="item-list">
+                    <li><a href="#/fillSign/{{vm.model.signid}}/true ">报审登记表</a></li>
+                    <li><a href="" ng-click="vm.addRegisterFile()">登记补充材料</a></li>
+                    <li><a href="" ng-click="vm.addSuppLetter()">拟补充材料函</a></li>
+                    <li><a href="#/reviewOpinion/{{vm.model.signid}}/{{vm.model.processInstanceId}}">修改意见</a></li>
+                </ul>
+                <ul class="item-list">
+                    <li><a href="" ng-click="vm.addWorkProgram()">拟工作方案</a></li>
+                    <li><a href="" ng-click="vm.addDisPatch()">拟评审报告</a></li>
+                    <li><a href="" ng-click="vm.addDoFile()">项目资料存档</a></li>
+                    <li><a href="" ng-click="vm.relation()">关联项目其他阶段</a></li>
+                </ul>
+                <ul class="item-list">
+                    <li><a href="" ng-click="vm.scrap(vm.model.signid)">作废项目</a></li>
+                    <li><a href="#/maintainExpertScore/{{vm.model.signid}} ">专家评分</a></li>
+                    <li><a href="#/maintainExpertPayment/{{vm.model.signid}} ">评审费发放表</a></li>
+                    <li><a href="" ng-click="vm.pauseProject()">项目暂停管理</a></li>
+                </ul>
+                <ul class="item-list">
+                    <li><a href="#/reviewWorkday/{{vm.model.signid}} ">评审工作日维护</a></li>
+                    <li><a href="#/maintainExpertConfirm/{{vm.model.signid}}">修改确定的专家</a></li>
+                    <li><a href="" ng-click="vm.findExpertReview(vm.model.signid,vm.model.signState);">专家抽取方案维护</a></li>
+                    <li>
+                        <a href="" ng-click="vm.clickUploadBt();">附件上传</a>
+                    </li>
+                </ul>
+            </div>
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" for-div="detail"> 详细信息</a></li>
+                <li><a data-toggle="tab" for-div="upload">附件列表</a></li>
+            </ul>
+            <div class="tab-content" style="background:white;">
+                <!-- 详情页  审批登记-->
+                <div class="tab-pane fade in active" style="background:white;" id="detail">
+                    <div class="well well-sm changeInfo" style="overflow:hidden;">
+                        <div class="col-md-6">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">评审部门</div>
+                                <div class="panel-body">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1">评审部门：</span>
+                                        <input type="text" class="form-control" ng-model="vm.work.reviewOrgName"
+                                               disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-info">
+                                <div class="panel-heading">发文号</div>
+                                <div class="panel-body">
+                                    <div class="input-group" style="margin-bottom:10px;">
+                                        <span class="input-group-addon">发文编号：</span>
+                                        <input type="text" class="form-control" ng-model="vm.dispatchDoc.fileNum"
+                                               disabled>
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">发文日期：</span>
+                                        <input type="date" class="form-control" ng-model="vm.dispatchDoc.dispatchDate"
+                                               disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-info">
+                                <div class="panel-heading">存档编号</div>
+                                <div class="panel-body">
+                                    <div class="input-group" style="margin-bottom: 10px;">
+                                        <span class="input-group-addon">存档编号：</span>
+                                        <input type="text" class="form-control" ng-model="vm.fileRecordDto.fileNo"
+                                               disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-info" style="height: 345px;">
+                                <div class="panel-heading">项目负责人</div>
+                                <div class="panel-body" style="padding:0;height:300px;overflow: auto">
+                                    <table class="table table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>序号</th>
+                                            <th>职责</th>
+                                            <th>办理人员</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-if="vm.work.mianChargeUserName">
+                                            <td>1</td>
+                                            <td>第一负责人</td>
+                                            <td>{{vm.work.mianChargeUserName}}</td>
+                                        </tr>
+                                        <tr ng-repeat="x in vm.secondChargeUserName">
+                                            <td>{{$index+2}}</td>
+                                            <td>第二负责人</td>
+                                            <td>{{x}}</td>
+                                        </tr>
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="well well-sm tab-pane fade" style="background:white;" id="upload">
+                    <div ng-include src="'${path}/contents/app/sysFile/uploadFilelist.html'"></div>
+                </div><!-- 上传附件列表 -->
+            </div>
+        </div>
+    </div>
+    <!--引入项目关联页面-->
+    <#include "/sign/signAssociate.html"/>
+    <!-- 附件 -->
+    <#include "/file/common.html"/>
+
+    <div id="signWorkDiv" style="display: none;">
+        <table class="table table-bordered">
+            <tr class="active">
+                <th>项目名称</th>
+                <th class="text-center" style="width:12%">评审阶段</th>
+                <th class="text-center" style="width:15%;">签收日期</th>
+                <th class="text-center" style="width:20%">分办部门</th>
+                <th class="text-center" style="width:20%">项目负责人</th>
+                <th class="text-center" style="width:8%">操作</th>
+            </tr>
+            <tbody>
+            <tr>
+                <td class="text-center" rowspan="{{vm.signWorkList.signWorkDtoList.length + 1}}"
+                    style="vertical-align: middle;">{{vm.signWorkList.projectName}}
+                </td>
+                <td class="text-center" rowspan="{{vm.signWorkList.signWorkDtoList.length + 1}}"
+                    style="vertical-align: middle;">{{vm.signWorkList.reviewstage}}
+                </td>
+                <td class="text-center" rowspan="{{vm.signWorkList.signWorkDtoList.length + 1}}"
+                    style="vertical-align: middle;">{{vm.signWorkList.signdate}}
+                </td>
+                <td class="text-center">{{vm.signWorkList.orgName}}</td>
+                <td class="text-center">{{vm.signWorkList.displaynames}}</td>
+                <td class="text-center"><a class="btn btn-sm btn-primary" ng-click="vm.colseOpenWin();"
+                                           ui-sref="expertReviewEdit({businessId:vm.signWorkList.signId,minBusinessId:vm.signWorkList.wpid,businessType:vm.signWorkList.businessType})">修改</a>
+                </td>
+            </tr>
+            <tr ng-repeat="f in vm.signWorkList.signWorkDtoList"
+                ng-if="vm.signWorkList.signWorkDtoList && vm.signWorkList.signWorkDtoList.length > 0">
+                <td class="text-center">{{f.orgName}}</td>
+                <td class="text-center">{{f.displaynames}}</td>
+                <td class="text-center"><a class="btn btn-sm btn-primary" ng-click="vm.colseOpenWin();"
+                                           ui-sref="expertReviewEdit({businessId:vm.signWorkList.signId,minBusinessId:f.wpid,businessType:f.businessType})">修改</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

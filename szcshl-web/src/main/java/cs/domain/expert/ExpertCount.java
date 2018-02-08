@@ -13,7 +13,7 @@ public class ExpertCount {
 
     @Id
     @GeneratedValue(generator = "id")
-    @GenericGenerator(name = "id", strategy = "uuid")
+    @GenericGenerator(name = "id", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
     @Column(columnDefinition="Integer")
     private Integer weekCount;

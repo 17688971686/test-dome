@@ -1,13 +1,13 @@
 package cs.controller.project;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.model.PageModelDto;
-import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
 import cs.repository.odata.ODataObj;
 import cs.service.project.AddSuppLetterService;
-
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(name = "拟补充资料函", path = "addSuppLetter")
-@MudoleAnnotation(name = "项目管理",value = "permission#sign")
+@MudoleAnnotation(name = "查询统计",value = "permission#queryStatistics")
 public class AddSuppLetterController {
 
     String ctrlName = "addSuppLetter";
@@ -38,6 +38,10 @@ public class AddSuppLetterController {
     @RequestMapping(name = "提交拟补充资料函", path = "saveSupp", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg saveSupp(@RequestBody AddSuppLetterDto addSuppLetterDto){
+        if(!Validate.isString(addSuppLetterDto.getFileType())){
+            //1表示拟补充资料函
+            addSuppLetterDto.setFileType(Constant.EnumState.PROCESS.getValue());
+        }
         return  addSuppLetterService.saveSupp(addSuppLetterDto);
     }
 
@@ -90,12 +94,12 @@ public class AddSuppLetterController {
         return addSuppLetterService.findById(id);
     }
 
-    @RequiresAuthentication
+    /*@RequiresAuthentication
     //@RequiresPermissions("dispatch#createFileNum#post")
     @RequestMapping(name = "生成文件字号", path = "createFileNum", method = RequestMethod.POST)
     public @ResponseBody ResultMsg createFileNum(@RequestParam String id) throws Exception {
         return addSuppLetterService.fileNum(id);
-    }
+    }*/
 
     @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#html/edit#get")
@@ -127,13 +131,13 @@ public class AddSuppLetterController {
     }
 
     @RequiresPermissions("addSuppLetter#html/suppLetterList#get")
-    @RequestMapping(name = "拟补充资料函查询", path = "suppLetterList", method = RequestMethod.GET)
+    @RequestMapping(name = "拟补充资料函查询", path = "html/suppLetterList", method = RequestMethod.GET)
     public String suppLetterList() {
         return ctrlName+"/suppLetterList";
     }
 
     @RequiresAuthentication
-    //@RequiresPermissions("addSuppLetter#html/suppLetterList#get")
+    //@RequiresPermissions("addSuppLetter#html/view#get")
     @RequestMapping(name = "拟补充资料函查看", path = "view", method = RequestMethod.GET)
     public String view() {
         return ctrlName+"/view";

@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.sys;
 
+import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.cache.CacheConstant;
 import cs.common.cache.CacheManager;
@@ -52,7 +53,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         Set<String> permissions = new HashSet<>();
         //如果超级管理员，则默认给所有权限，开发阶段暂时这么使用
         user.getRoles().forEach(x -> {
-            if ("超级管理员".equals(x.getRoleName())) {
+            if (Constant.SUPER_ROLE.equals(x.getRoleName())) {
                 permissions.clear();
                 permissions.add("*");
                 return;

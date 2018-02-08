@@ -13,6 +13,8 @@ import cs.repository.odata.ODataObj;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -92,16 +94,44 @@ public interface SignService {
 
     ResultMsg reserveAddSign(SignDto signDto);
 
+    /**
+     * 查询项目预签收信息
+     * @param odataObj
+     * @return
+     */
 	PageModelDto<SignDto> findAllReserve(ODataObj odataObj);
 
 	void deleteReserveSign(String signid);
 
+    /**
+     * 获取合并评审次项目
+     * @param signid
+     * @return
+     */
     List<SignDto> findReviewSign(String signid);
-    /***********************   更改项目状态  ****************************/
-    boolean updateSignState(String signId,String state);
+
+    /**
+     * 根据合并评审次项目，查询主项目
+     * @param signid
+     * @return
+     */
+    List<SignDto> findMainReviewSign(String signid);
+    /**
+     * 修改项目状态
+     * @param signId
+     * @param stateProperty 状态属性
+     * @param stateValue 值
+     * @return
+     */
+    boolean updateSignState(String signId,String stateProperty,String stateValue);
 
     boolean updateSignProcessState(String signId,Integer processState);
 
+    /**
+     * 获取签收项目（正式签收未发起流程或者已经发起流程未正式签收的项目）
+     * @param odataObj
+     * @return
+     */
     PageModelDto<SignDto> findBySignUser(ODataObj odataObj);
 
     List<SignDispaWork> findAssociateSign(SignDispaWork signDispaWork);
@@ -142,6 +172,58 @@ public interface SignService {
      */
     Float getReviewDays(String reviewstage);
 
-    /***********************   以下是对接接口部分  ****************************/
-    ResultMsg pushProject(SignDto signDto);
+    /**
+     * 获取项目编号
+     * @param signType
+     * @param signdate
+     * @return
+     */
+    String findSignMaxSeqByType(String signType, Date signdate);
+    /**
+     * 获取未发送给委里的项目
+     * @return
+     */
+    List<SignDto> findUnSendFGWList();
+
+    /**
+     * 恢复项目
+     * @param signId
+     * @param stateProperty 状态属性
+     * @param stateValue 值
+     * @return
+     */
+    ResultMsg editSignState(String signId,String stateProperty,String stateValue);
+
+    /**
+     * 获取项目签收列表数量
+     * @return
+     */
+    Integer findSignCount();
+    /**
+     * 获取项目预签收列表数量
+     * @return
+     */
+    Integer findReservesSignCount();
+
+    /**
+     * 统计项目平均天数，未办结的按当前日期算，已办结的按办结日期算
+     * @param signIds
+     * @return
+     */
+    ResultMsg sumExistDays(String signIds);
+
+    /**
+     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期、评审总天数等
+     * @param signId
+     * @return
+     */
+    public SignDto findReviewDayBySignId(String signId) ;
+
+
+    /**
+     * 保存评审工作日维护的信息
+     * @param signDto
+     * @return
+     */
+    public ResultMsg saveReview(SignDto signDto);
 }

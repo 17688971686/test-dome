@@ -46,19 +46,30 @@ public class BookBuy extends DomainBase {
     //作者
     @Column(columnDefinition="varchar(255)")
     private String author;
+
+    //合计
+    @Column(columnDefinition="varchar(255)")
+    private String totalPrice;
+    /**
+     * 入库时间
+     */
+    @Temporal(TemporalType.DATE)
+    @Column
+    private Date storeTime;
+    //图书数量
+    @Column(columnDefinition="INTEGER")
+    private Integer bookNumber;
+
+    //库存确认
+    @Column(columnDefinition="INTEGER")
+    private Integer storeConfirm;
+
     /**
      * 出版时间
      */
     @Temporal(TemporalType.DATE)
     @Column
     private Date publishingTime;
-    //图书数量
-    @Column(columnDefinition="NUMBER")
-    private String bookNumber;
-
-    //库存确认
-    @Column(columnDefinition="varchar(30)")
-    private String storeConfirm;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "businessId")
@@ -160,13 +171,6 @@ public class BookBuy extends DomainBase {
         this.author = author;
     }
 
-    public String getBookNumber() {
-        return bookNumber;
-    }
-
-    public void setBookNumber(String bookNumber) {
-        this.bookNumber = bookNumber;
-    }
 
     public Date getPublishingTime() {
         return publishingTime;
@@ -184,11 +188,35 @@ public class BookBuy extends DomainBase {
         this.bookBuyBusiness = bookBuyBusiness;
     }
 
-    public String getStoreConfirm() {
+    public String getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(String totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Date getStoreTime() {
+        return storeTime;
+    }
+
+    public void setStoreTime(Date storeTime) {
+        this.storeTime = storeTime;
+    }
+
+    public Integer getBookNumber() {
+        return bookNumber;
+    }
+
+    public void setBookNumber(Integer bookNumber) {
+        this.bookNumber = bookNumber;
+    }
+
+    public Integer getStoreConfirm() {
         return storeConfirm;
     }
 
-    public void setStoreConfirm(String storeConfirm) {
+    public void setStoreConfirm(Integer storeConfirm) {
         this.storeConfirm = storeConfirm;
     }
 }

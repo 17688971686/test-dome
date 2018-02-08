@@ -1,11 +1,14 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-idea.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+
+<!-- 附件 -->
+<#include "/file/common.html"/>
 
 <!--确认参加会议专家的弹窗公共页面-->
-<#include "/expertReview/expert_confirm.html"/>
-
+<div id="topicExpertConfirm" style="display: none;">
+    <#include "/expertReview/expert_confirm.html"/>
+</div>
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li><a href="#/agendaTasks">任务待办</a></li>

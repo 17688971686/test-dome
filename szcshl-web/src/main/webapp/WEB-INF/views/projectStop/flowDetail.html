@@ -9,6 +9,7 @@
 
     <ul id="myTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="project_info">项目暂停申请表</a></li>
+        <li ng-show="vm.showFlag"><a data-toggle="tab" for-div="flow_upload_file">附件列表</a></li>
         <li ><a data-toggle="tab" for-div="flow_diagram">流程图</a></li>
         <li ><a data-toggle="tab" for-div="flow_history">处理记录</a></li>
     </ul>
@@ -18,6 +19,9 @@
             <#include "/projectStop/detail.html"/>
         </div><!-- end tab -->
 
+        <div class="well well-sm tab-pane fade" style="background:white;" id="flow_upload_file" >
+            <div ng-include src="'${path}/contents/app/sysFile/uploadFilelist.html'"></div>
+        </div><!-- 上传附件列表 -->
         <div class="well well-sm tab-pane fade" style="background:white;" id="flow_diagram">
             <img style="" src="{{vm.picture}}">
         </div><!-- end tab -->

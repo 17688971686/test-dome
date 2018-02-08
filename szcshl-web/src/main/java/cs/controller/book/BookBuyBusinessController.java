@@ -51,17 +51,16 @@ public class BookBuyBusinessController {
     }
 
     @RequiresAuthentication
-	//@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
+	@RequestMapping(name = "主键查询", path = "html/findById",method=RequestMethod.GET)
 	public @ResponseBody BookBuyBusinessDto findById(@RequestParam(required = true)String id){		
 		return bookBuyBusinessService.findById(id);
 	}
 
     @RequiresAuthentication
-   // @RequiresPermissions("bookBuyBusiness##delete")
-    @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String id) {
-    	bookBuyBusinessService.delete(id);      
+    @RequestMapping(name = "删除记录", path = "bookDel", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResultMsg delete(@RequestParam(required = true)String ids) {
+        return bookBuyBusinessService.delete(ids);
     }
 
     @RequiresAuthentication
@@ -99,6 +98,27 @@ public class BookBuyBusinessController {
     @RequestMapping(name = "图书信息录入", path = "html/bookBuyBusinessEdit", method = RequestMethod.GET)
     public String edit() {
         return ctrlName+"/bookBuyBusinessEdit";
+    }
+
+    @RequiresAuthentication
+    @RequiresPermissions("bookBuyBusiness#html/bookBuyList#get")
+    @RequestMapping(name = "图书查询", path = "html/bookBuyList", method = RequestMethod.GET)
+    public String bookList() {
+        return "bookBuy/bookBuyList";
+    }
+
+    @RequiresAuthentication
+    @RequiresPermissions("bookBuyBusiness#html/bookBorrowList#get")
+    @RequestMapping(name = "借书列表", path = "html/bookBorrowList", method = RequestMethod.GET)
+    public String bookBorrowList() {
+        return "bookBuy/bookBorrowList";
+    }
+
+    @RequiresAuthentication
+    @RequiresPermissions("bookBuyBusiness#html/bookBuyBusinessDetail#get")
+    @RequestMapping(name = "图书详情页", path = "html/bookBuyBusinessDetail", method = RequestMethod.GET)
+    public String bookBuyBusinessDetail() {
+        return ctrlName + "/detail";
     }
     // end#html
 

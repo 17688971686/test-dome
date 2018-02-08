@@ -1,0 +1,75 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/bookBuy/bookReturnEdit.html'"></div>
+
+
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a href="#/bookBuy">图书管理</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+    <div class="toolbar">
+        <button class="btn btn-sm btn-primary" ng-click="vm.searchForm()" ng-disabled="vm.isSubmit"><span
+                class="glyphicon glyphicon-search"></span>查询
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
+            <span class="glyphicon glyphicon-repeat"></span>重置</button>
+    </div>
+    <div class="well well-sm">
+        <form id="bookForm" name="bookForm" >
+            <input id="curName" type="hidden" ng-value="${CURRENT_USER.loginName}"/>
+            <table style="width:100%">
+                <tr>
+                    <td class="text-right">图书号</td>
+                    <td style="width: 18%">
+                        <input name="bookNo" type="text" operator="like" ng-model="vm.searchModel.bookNo" class="form-control input-sm "/>
+                    </td>
+                    <td class="text-right">图书名称</td>
+                    <td style="width: 18%">
+                        <input name="booksName" type="text" operator="like" ng-model="vm.searchModel.booksName" class="form-control input-sm "/>
+                    </td>
+
+                    <td class="text-right">借书日期</td>
+                    <td>
+                        <input name="bTime" operator="ge" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.searchModel.bTime"  />
+                        至
+                        <input name="endTime" operator="le" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.searchModel.endTime"  />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div>
+        <table border="1px" style="width: 100%;">
+            <tr >
+                <td style="width:10%"  class="text-center">序号</td>
+                <td style="width:15%"  class="text-center">图书号</td>
+                <td style="width:20%"  class="text-center">图书名称</td>
+                <td style="width:15%"  class="text-center">借书人</td>
+                <td style="width:10%"  class="text-center">借书数量</td>
+                <td style="width:10%"  class="text-center">借书日期</td>
+                <td style="width:10%"  class="text-center">应还日期</td>
+                <td style="width:10%" class="text-center">操作</td>
+            </tr>
+            <tbody ng-repeat="c in vm.bookBorrowSumDtoList">
+            <tr  ng-repeat="x in vm.bookBorrowDetailList" ng-if="x.bookBorrower==c.bookBorrower ">
+                <td align="center">{{$index+1}}</td>
+                <td class="text-center">{{x.bookNo}}</td>
+                <td class="text-center">{{x.booksName}}</td>
+                <td class="text-center">{{x.bookBorrower}}</td>
+                <td class="text-center">{{x.borrowNum}}</td>
+                <td class="text-center">{{x.borrowDate}}</td>
+                <td class="text-center">{{x.returnDate}}</td>
+                <td class="text-center"><span  class="btn btn-xs btn-primary glyphicon glyphicon-ok" ng-click="vm.returnBook(x.id,x.bookNo,x.booksName,x.bookBorrower,x.borrowNum,x.returnDate)">还书</span></td>
+            </tr>
+            <tr>
+                <td class="text-center" colspan="4"><strong>合计</strong></td>
+                <td class="text-center" ><strong>{{c.totalCount}}</strong></td>
+                <td colspan="3"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

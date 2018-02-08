@@ -3,37 +3,39 @@
 <!--S 进口设备 -->
 <!--  s table-->
 <table class="table table-bordered" style="min-width: 900px;min-height: 1200px;">
-    <caption>
-        <span >QR-4.10-05-A0</span>
-    </caption>
-    <caption class="text-center h3"><strong>{{vm.work.titleName}}</strong></caption>
-    <caption style="width:100%;color: #333;">
-            <span>
+    <caption class="text-center">
+        <p style="float:left;">
+            <span>QR-4.10-05-A0</span>
+        </p>
+        <p class="h3">
+            <strong>{{vm.work.titleName}}</strong>
+        </p>
+        <p style="margin-top: 50px;"">
+        <span style="float: left;padding: 0px 20px;">
                 评审方式：
                 <select ng-model="vm.work.reviewType" name="reviewType" ng-change="vm.reviewTypeChange()" id="reviewType" ng-disabled="vm.businessFlag.isReveiwAWP">
-                    <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}"
-                            ng-selected="x.dictName == vm.work.reviewType" >{{x.dictName}}</option>
+                    <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" ng-selected="x.dictName == vm.work.reviewType"
+                            value="{{x.dictName}}">{{x.dictName}}</option>
                 </select>
-                 <select ng-if="vm.work.reviewType!='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
-                        <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" value="{{x.dictName}}"
-                                ng-selected="x.dictName == vm.work.isSigle" >{{x.dictName}}</option>
-                 </select>
-                 <select ng-if="vm.work.reviewType=='自评'"  ng-model="vm.work.isSigle" name="isSigle"
-                         ng-change="vm.reviewTypeChange()"  ng-disabled="vm.businessFlag.isReveiwAWP">
-                        <option value="单个评审">单个评审</option>
-                 </select>
+
+                 <select ng-show="vm.work.reviewType!='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
+                         <option ng-repeat="x in DICT.REVIEW_TYPE_SUB.dicts" ng-selected="x.dictName == vm.work.isSigle"
+                                 value="{{x.dictName}}">{{x.dictName}}</option>
+                  </select>
+                  <select ng-show="vm.work.reviewType=='自评'"  ng-model="vm.work.isSigle" name="isSigle" ng-change="vm.reviewTypeChange()" ng-disabled="vm.businessFlag.isReveiwAWP">
+                         <option value="单个评审">单个评审</option>
+                  </select>
             </span>
-            <span ng-show="vm.work.isSigle=='合并评审'" style="float: left;">
-                <input type="checkbox" name="isMainProject" ng-model="vm.work.isMainProject" ng-true-value="9"
-                       ng-false-value="0"
+        <span ng-show="vm.work.isSigle=='合并评审'" style="float: left;">
+                <input type="checkbox" name="isMainProject" ng-model="vm.work.isMainProject" ng-true-value="9" ng-false-value="0"
                        ng-checked="vm.work.isMainProject == '9'" ng-disabled="vm.businessFlag.isReveiwAWP">主项目
-                <input type="checkbox" name="isMainProject" ng-model="vm.work.isMainProject" ng-true-value="0"
-                       ng-false-value="9"
+                <input type="checkbox" name="isMainProject" ng-model="vm.work.isMainProject" ng-true-value="0" ng-false-value="9"
                        ng-checked="vm.work.isMainProject == '0'" ng-disabled="vm.businessFlag.isReveiwAWP">次项目
                 <button class="btn btn-xs btn-default" ng-click="vm.initMergeWP()"
                         ng-show="(vm.work.isMainProject==9 || vm.work.isMainProject=='9') && vm.work.isSigle=='合并评审'">关联项目</button>
             </span>
         <span style="float: right;padding: 0px 20px;">{{vm.work.titleDate | date:'yyyy年MM月dd日'}}</span>
+        </p>
     </caption>
     
     <tbody>
@@ -140,27 +142,28 @@
         </td>
     </tr>
     <tr>
-         <td class="text-center">调研时间</td>
-         <td colspan="7">
-         	 <input name="studyAllDay" kendo-date-picker k-format="'yyyy-MM-dd'"  ng-model="vm.work.studyAllDay"  style="width:140px;"id="studyAllDay"value="" type="text"/>
-             <select name="studyQuantum" ng-model ="vm.work.studyQuantum" style="width: 70px;height:30px">
-                 <option value="上午" ng-selected="(vm.work.studyQuantum == '上午' || !vm.work.studyQuantum)">上午</option>   <!--默认选中上午-->
-                 <option value="下午" ng-selected="vm.work.studyQuantum == '下午'">下午</option>
-                 <option value="全天" ng-selected="vm.work.studyQuantum == '全天'">全天</option>
-             </select>
-            	  <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime" style="width:100px;"
-					data-bind="value:start,invisible:isAllDay" name="studyBeginTime"
-					id="studyBeginTime" ng-model="vm.work.studyBeginTimeStr" />
-					 至
-				 <input kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" max="vm.endDateTime" style="width:100px;"
-                               data-bind="value:end,invisible:isAllDay" name="studyEndTime" id="studyEndTime"
-                               ng-model="vm.work.studyEndTimeStr" data-datecompare-msg="结束时间必须大于开始时间！"/>
-         </td>
-     </tr>
+        <td class="text-center" >调研时间</td>
+        <td colspan="7">
+            <input name="studyAllDay" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:140px;" ng-model="vm.work.studyAllDay"  id="studyAllDay"value="" type="text"/>
+            <select name="studyQuantum" ng-model ="vm.work.studyQuantum" style="width: 70px;height:30px">
+                <option value="上午" ng-selected="(vm.work.studyQuantum == '上午' || !vm.work.studyQuantum)">上午</option>   <!--默认选中上午-->
+                <option value="下午" ng-selected="vm.work.studyQuantum == '下午'">下午</option>
+                <option value="全天" ng-selected="vm.work.studyQuantum == '全天'">全天</option>
+            </select>
+            <input ng-show="vm.work.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
+                   data-bind="value:start,invisible:isAllDay" name="studyBeginTime"
+                   id="studyBeginTime" ng-change="vm.compare()" ng-model="vm.work.studyBeginTimeStr" />
+            <span ng-show="vm.work.studyQuantum!='全天'" > 至 </span>
+            <input ng-show="vm.work.studyQuantum!='全天'" kendo-time-picker k-formatt="'HH:mm'" min="vm.startDateTime" style="width:100px;" max="vm.endDateTime"
+                   data-bind="value:end,invisible:isAllDay" name="studyEndTime" id="studyEndTime"
+                   ng-model="vm.work.studyEndTimeStr" ng-change="vm.compare()" data-datecompare-msg="结束时间必须大于开始时间！"/>
+            <span ng-show="vm.isTime" style="color: red">结束时间必须大于开始时间！</span>
+        </td>
+    </tr>
     <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="vm.work.reviewType == '自评' ">
         <td class="text-center">专家费用（元）</td>
         <td colspan="7">
-            <input type="text"  ng-model="vm.work.expertCost" ng-value="0" name="expertCost" data-val-digits="只能为数字">
+            <input type="text"  ng-model="vm.work.expertCost" ng-value="0" name="expertCost" data-val-number="只能为数字">
             <span data-valmsg-for="expertCost" data-valmsg-replace="true" class="errors"></span>
         </td>
     </tr>
@@ -238,5 +241,4 @@
     
     </tbody>
 </table>    <!--  	end table -->
-<button id="wpMainEdit" class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="vm.printpage($event)">打印</button>
 <!--E 进口设备 -->

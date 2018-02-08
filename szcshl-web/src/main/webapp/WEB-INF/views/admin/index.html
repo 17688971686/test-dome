@@ -1,4 +1,5 @@
-﻿<#assign path=request.contextPath/>
+﻿<!--suppress ALL -->
+<#assign path=request.contextPath/>
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -7,7 +8,50 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <ul lang="zh-CN">
     <head>
         <script>
+            function buildDict(dictsObj, dicts, parentId) {
+                if (!dicts || dicts.length == 0) {
+                    return;
+                }
+                if (!parentId) {
+                    for (var i = 0; i < dicts.length; i++) {
+                        var dict = dicts[i];
+                        if (!dict.parentId) {
+                            dictsObj[dict.dictCode] = {};
+                            dictsObj[dict.dictCode].dictId = dict.dictId;
+                            dictsObj[dict.dictCode].dictCode = dict.dictCode;
+                            dictsObj[dict.dictCode].dictName = dict.dictName;
+                            dictsObj[dict.dictCode].dictKey = dict.dictKey;
+                            dictsObj[dict.dictCode].dictSort = dict.dictSort;
+                            buildDict(dictsObj[dict.dictCode], dicts, dict.dictId);
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < dicts.length; i++) {
+                        var dict = dicts[i];
+                        if (dict.parentId && dict.parentId == parentId) {
+                            if (!dictsObj.dicts) {
+                                dictsObj.dicts = new Array();
+                            }
+                            var subDict = {};
+                            subDict.dictId = dict.dictId;
+                            subDict.dictName = dict.dictName;
+                            subDict.dictCode = dict.dictCode;
+                            subDict.dictKey = dict.dictKey;
+                            subDict.dictSort = dict.dictSort;
+                            dictsObj.dicts.push(subDict);
+                            buildDict(subDict, dicts, dict.dictId);
+                        }
+                    }
+                }
+            }//end
+
             window.rootPath = '${path}';
+            //是否是超级管理员
+            window.isSuperUser = '${CURRENT_USER.loginName}'== 'admin';
+            window.curUserId = '${CURRENT_USER.id}';
+            //数字字典对象
+            window.DICTOBJ = {};
+            buildDict(DICTOBJ,${DICT_ITEMS});
         </script>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -55,6 +99,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <link rel="shortcut icon" href="${path}/contents/libs/adminLTE/dist/img/logo2.ico"/>
         <link rel="bookmark" href="${path}/contents/libs/adminLTE/dist/img/logo2.ico"/>
         <!--End:自定义css -->
+        <!--[if lt IE 11]>
+        <style type="text/css">
+            .newcheckbox{
+                border:none;
+            }
+        </style>
+        <![endif]-->
     </head>
     <!--
     BODY TAG OPTIONS:
@@ -176,10 +227,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                         </a>
                         <ul class="treeview-menu">
-                            <@shiro.hasPermission name="sign#html/list#get">
-                                <li><a href="javascript:void(0)" ui-sref="listSign">项目签收列表</a></li>
+                            <@shiro.hasPermission name="sign#html/reserveList#get">
+                                <li><a href="javascript:void(0)" ui-sref="reserveList">项目预签收列表<span class="label label-danger" id="GET_RESERVESIGN_COUNT">0</span></a></li>
                             </@shiro.hasPermission>
-                            <@shiro.hasPermission name="sign#html/getBack#get">
+                            <@shiro.hasPermission name="sign#html/list#get">
+                                <li><a href="javascript:void(0)" ui-sref="listSign">项目签收列表<span class="label label-danger" id="GET_SIGN_COUNT">0</span></a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="sign#html/signGetBack#get">
                                 <li><a href="javascript:void(0)" ui-sref="signGetBack">项目重新分办</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="sign#personDtasks#get">
@@ -333,7 +387,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <li><a href="javascript:void(0)" ui-sref="reviewProjectAppraiseList">优秀评审报告查询</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="addSuppLetter#html/suppLetterList#get">
-                                <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补资料函查询</a></li>
+                                <li><a href="javascript:void(0)" ui-sref="suppletterList">拟补充资料函查询</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="signView#html/expertReviewCondCount#get">
                                 <li><a href="javascript:void(0)" ui-sref="expertRevCondCountList">专家评审情况统计</a></li>
@@ -397,6 +451,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="bookBuyBusiness#html/bookBuyBusinessList#get">
                                 <li><a href="javascript:void(0)" ui-sref="myBookBuyBusiness">图书采购流程查询</a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="bookBuyBusiness#html/bookBuyList#get">
+                            <li><a href="javascript:void(0)" ui-sref="bookDetailList">图书查询</a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="bookBuyBusiness#html/bookBorrowList#get">
+                            <li><a href="javascript:void(0)" ui-sref="bookBorrowList">借书列表</a></li>
                             </@shiro.hasPermission>
                         </ul>
                     </li>
@@ -467,9 +527,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="reviewFee#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="reviewFee">评审费发放</a></li>
                             </@shiro.hasPermission>
+                           <!-- <@shiro.hasPermission name="signwork#html/list#get">
+                                <li><a href="javascript:void(0)" ui-sref="signwork">抽取专家修改</a></li>
+                            </@shiro.hasPermission>-->
                             <@shiro.hasPermission name="log#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="log">日志记录</a></li>
                             </@shiro.hasPermission>
+                            <@shiro.hasPermission name="sign#html/deletList#get">
+                                <li><a href="javascript:void(0)" ui-sref="deletList">作废项目</a></li>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name="sign#html/MaintainProjectList#get">
+                                <li><a href="javascript:void(0)" ui-sref="MaintainProjectList">维护项目</a></li>
+                            </@shiro.hasPermission>
+
                         </ul>
                     </li>
                 </@shiro.hasPermission>
@@ -569,6 +639,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
              immediately after the control sidebar -->
         <div class="control-sidebar-bg"></div>
 
+        <!-- 打印预览隐藏div START -->
+        <div id="previewModal" style="display:none;">
+            <iframe id="iframePreview" width='99%' height='700' allowfullscreen webkitallowfullscreen></iframe>
+        </div>
+        <!-- 打印预览隐藏div END -->
+        <!--  系统文件下载表单 -->
+        <form id="szecSysFileDownLoadForm" style="display:none;" >
+            <input name="sysfileId" type="hidden">
+        </form>
     </div>
 
     <!-- ./wrapper -->
@@ -625,14 +704,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="${path}/contents/libs/util/utils.js"></script>
 
     <link href="${path}/contents/libs/jquery/jquery.steps/css/jquery.step.css" rel="stylesheet"/>
-    <script src="${path}/contents/libs/jquery/jquery.steps/js/jquery.step.js?version = ${.now}"></script>
+    <script src="${path}/contents/libs/jquery/jquery.steps/js/jquery.step.js"></script>
     <!-- Optionally, you can add Slimscroll and FastClick plugins.
          Both of these plugins are recommended to enhance the
          user experience. Slimscroll is required when using the
          fixed layout. -->
 
     <!-- Begin:自定义Js -->
-    <script src="${path}/contents/app-dist/app.all.js?version = ${.now}"></script>
+    <script src="${path}/contents/app-dist/app.all.js"></script>
     <script src="${path}/contents/shared/index.js"></script>
     <script type="text/javascript">
         function showNotice(noticeList){
@@ -661,9 +740,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 $(this).parent("li").css({"background": "rgb(230, 236, 242)"});
                 $(this).css({"font-weight": "bold"});
             })
-            //初始化数字字典
-            common.initDictItems(${DICT_ITEMS});
-           
+
             //消息弹窗
             showNotice(${NOTICE_LIST});
 
@@ -675,7 +752,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     try {
                         var ip = "${RTX_IP}";
                         var objProp = RTXAX.GetObject("Property");
-                        objProp.value("RTXUsername") = "${user}";
+                        objProp.value("RTXUsername") = "${RTX_NAME}";
                         objProp.value("LoginSessionKey") = rtxSessionKey;
                         objProp.value("ServerAddress") = ip; //RTX Server IP地址
                         objProp.value("ServerPort") = 8000;
@@ -702,84 +779,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             }
         });
     </script>
-    <!--<script src="${path}/contents/app/common/common.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/app.js?version = ${.now}"></script>-->
-    <!--&lt;!&ndash; Role &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/role/sysconfig.svc.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/role/sysconfig.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/role/sysconfig.edit.ctrl.js?version = ${.now}"></script>-->
-    <!--&lt;!&ndash; User &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/user/user.svc.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/user/user.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/user/user.edit.ctrl.js?version = ${.now}"></script>-->
-    <!--&lt;!&ndash; Org&ndash;&gt;-->
-    <!--<script src="${path}/contents/app/org/org.svc.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/org/org.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/org/org.edit.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/org/orgUser.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/org/orgUser.svc.js?version = ${.now}"></script>-->
-    <!--&lt;!&ndash; log &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/log/log.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/log/log.svc.js?version = ${.now}"></script>-->
-    <!--&lt;!&ndash; meeting &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/meeting/meeting.svc.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/meeting/meeting.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/meeting/meeting.edit.ctrl.js?version = ${.now}"></script>-->
-    <!--&lt;!&ndash; room &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/room/room.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/room/room.edit.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/room/room.svc.js?version = ${.now}"></script>-->
-
-    <!--<script src="${path}/contents/app/room/room.count.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/room/room.count.svc.js?version = ${.now}"></script>-->
-
-    <!--&lt;!&ndash; company &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/company/company.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/company/company.edit.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/company/company.svc.js?version = ${.now}"></script>-->
-
-    <!--&lt;!&ndash; home &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/home/home.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/home/home.svc.js?version = ${.now}"></script>-->
-
-    <!--&lt;!&ndash; flow &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/flow/flow.svc.js?version = ${.now}"></script>-->
-    <!--&lt;!&ndash; sign &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/sign/assit.svc.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/sign/sign.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/sign/sign.create.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/sign/sign.fillin.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/sign/sign.flow.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/sign/sign.flowDeal.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/sign/sign.signDetails.crtl.js?version = ${.now}"></script>-->
-
-    <!--&lt;!&ndash; workProgram &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/workprogram/workprogram.edit.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/workprogram/workprogram.svc.js?version = ${.now}"></script>-->
-
-    <!--&lt;!&ndash; dispatch &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/dispatch/dispatch.svc.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/dispatch/dispatch.edit.ctrl.js?version = ${.now}"></script>-->
-
-    <!--&lt;!&ndash; demo &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/demo/demo.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/demo/demo.svc.js?version = ${.now}"></script>-->
-
-    <!--&lt;!&ndash; mytest &ndash;&gt;-->
-    <!--<script src="${path}/contents/app/mytest/mytest.svc.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/mytest/mytest.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/mytest/mytest.edit.ctrl.js?version = ${.now}"></script>-->
-
-    <!--<script src="${path}/contents/app/dict/dict.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/dict/dict.svc.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/dict/dict.edit.ctrl.js?version = ${.now}"></script>-->
-
-    <!--<script src="${path}/contents/app/expert/expert.ctrl.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/expert/expert.svc.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/expert/expert.edit.ctrl.js?version = ${.now}"></script>-->
-
-    <!--<script src="${path}/contents/app/expert/projectExpe.svc.js?version = ${.now}"></script>-->
-    <!--<script src="${path}/contents/app/expert/workExpe.svc.js?version = ${.now}"></script>-->
     <!-- End:自定义Js-->
     </body>
     </html>

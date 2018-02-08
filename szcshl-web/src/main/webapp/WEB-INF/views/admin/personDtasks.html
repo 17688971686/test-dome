@@ -7,7 +7,7 @@
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li>项目管理</li>
-        <li class="active">个人在审项目</li>
+        <li class="active">个人经办项目</li>
     </ol>
 
     <div class="well well-sm">
@@ -22,13 +22,13 @@
         <input ng-if="vm.model.preside=='2'" type="hidden" value="${CURRENT_USER.id}" operator="like" name="aUserID" id="aUserID">
 
         <span class="help-inline">评审阶段：</span>
-        <select name="reviewstage" operator="eq">
+        <select ng-model="vm.model.reviewstage" name="reviewstage" operator="eq">
             <option value="">请选择</option>
-            <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
+            <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}" ng-selected="vm.model.reviewstage==x.dictName">{{x.dictName}}</option>
         </select>
 
         <span class="help-inline">建设单位：</span>
-        <input type="text" ng-model="vm.model.projectcode" operator="like" name="builtcompanyname" id="builtcompanyname" placeholder="请输入">
+        <input type="text" ng-model="vm.model.builtcompanyname" operator="like" name="builtcompanyname" id="builtcompanyname" placeholder="请输入">
 
         <span class="help-inline">项目状态：</span>
         <select name="signState" ng-model="vm.model.signState">
@@ -59,7 +59,7 @@
 </div>
 
 <script type="text/template" id="columnBtns">
-    <a class="btn btn-xs btn-primary" href="#/{0}/{1}/{2}"><span class="glyphicon glyphicon-pencil"></span>查看</a>
+    <a class="btn btn-xs btn-primary" ng-click="vm.saveView()" href="#/{0}/{1}/{2}"><span class="glyphicon glyphicon-pencil"></span>查看</a>
     <!-- 暂停项目 -->
     <button class="btn btn-xs btn-warning" ng-click="{3}" ng-show="{4}"><span class="glyphicon glyphicon-off"></span>暂停</button>
     <!-- 启动项目 -->

@@ -27,10 +27,67 @@
             signGetBackGrid :signGetBackGrid,                //项目取回列表
             getBack:getBack,                            //项目取回
             editTemplatePrint:editTemplatePrint,      //编辑模板打印
-            workProgramPrint:workProgramPrint        //工作方案模板打印
-
+            /*workProgramPrint:workProgramPrint,       //工作方案模板打印*/
+            signDeletGrid:signDeletGrid,              //作废项目
+            editSignState:editSignState ,             //恢复项目
+            sumExistDays : sumExistDays,              //统计项目接受到现在所存在的天数（办结的，按办结日期，未办结的，按现在时间）
+            MaintenanProjectGrid:MaintenanProjectGrid , //维护项目
+            excelExport : excelExport ,                 //项目查询统计导出
+            findExpertReview : findExpertReview,        //查询项目在办的专家抽取方案信息
         };
         return service;
+
+        //S_查询项目在办的专家抽取方案信息
+        function findExpertReview(signId,callBack){
+            var httpOptions = {
+                method : "post" ,
+                url : rootPath + "/signwork/fingSignWorkById",
+                params : {signId :signId}
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_findExpertReview
+
+        //s_项目查询统计导出
+        function excelExport(signIds){
+            var downForm = $("#countSignDayForm");
+            downForm.attr("target","");
+            downForm.attr("method","post");
+            downForm.attr("action",rootPath + "/signView/excelExport");
+            downForm.find("input[name='signIds']").val(signIds);
+            downForm.submit();//表单提交
+        }
+        //e_项目查询统计导出
+
+        //S_统计项目接受到现在所存在的天数
+        function sumExistDays(signIds,callBack){
+            var httpOptions = {
+                method : "post" ,
+                url : rootPath + "/sign/sumExistDays",
+                params : {signIds :signIds}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_sumExistDays
 
         //negin createDispatchTemplate
         function createDispatchTemplate(vm , callBack){
@@ -51,7 +108,6 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-
         }
         //end createDispatchTemplate
 
@@ -60,17 +116,23 @@
         //S_初始化grid(过滤已签收和已经完成的项目)
         function signGrid(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+      /*      var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/sign/findBySignUser", $("#searchform")),
-                schema: common.kendoGridConfig().schema({
-                    id: "signid",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
+               schema: {
+                    data: "value",
+                    total: function (data) {
+                    if (data['count']) {
+                        $('#GET_SIGN_COUNT').html(data['count']);
+                    } else {
+                        $('#GET_SIGN_COUNT').html(0);
                     }
-                }),
+                    return data['count'];
+                },
+                model: {
+                    id: "taskId"
+                 }
+               },
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
@@ -79,31 +141,37 @@
                     field: "createdDate",
                     dir: "desc"
                 }
+            });*/
+           var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/sign/findBySignUser", $("#searchform"),vm.gridParams),
+                schema: {
+                    data: "value",
+                    total: function (data) {
+                       if (data['count']) {
+                           $('#GET_SIGN_COUNT').html(data['count']);
+                       } else {
+                           $('#GET_SIGN_COUNT').html(0);
+                       }
+                       return data['count'];
+                    },
+                    model: {
+                       id: "signid"
+                    }
+                },
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize : vm.queryParams.pageSize ||10,
+                page:vm.queryParams.page||1,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
             });
             // End:dataSource
-            //S_序号
-            var  dataBound=function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            }
-            //S_序号
             // Begin:column
             var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.signid)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-                },
                 {
 				    field: "rowNumber",
 				    title: "序号",
@@ -114,34 +182,34 @@
                 {
                     field: "",
                     title: "项目名称",
-                    width: 120,
+                    width: 280,
                     filterable: false,
                     template: function (item) {
-                        return '<a href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                        return '<a ng-click="vm.saveView()"  href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';
                     }
                 },
                 {
                     field: "filecode",
                     title: "收文编号",
-                    width: 80,
+                    width: 120,
                     filterable: false,
                 },
                 {
                     field: "designcompanyName",
                     title: "项目单位",
-                    width: 100,
+                    width: 260,
                     filterable: false,
                 },
                 {
                     field: "reviewstage",
-                    title: "项目阶段",
-                    width: 80,
+                    title: "评审阶段",
+                    width: 130,
                     filterable: false,
                 },
                 {
                     field: "projectcode",
                     title: "项目代码",
-                    width: 80,
+                    width: 160,
                     filterable: false,
                 },
                 {
@@ -149,7 +217,7 @@
                     title: "签收日期",
                     width: 100,
                     filterable: false,
-                    format: "{0:yyyy/MM/dd HH:mm:ss}"
+                    format: "{0:yyyy-MM-dd HH:mm:ss}"
                 },
                 {
                     field: "",
@@ -158,10 +226,7 @@
                     filterable: false,
                     template: function (item) {
                         if (item.signState) {
-                            if(item.signState == 0){
-                                return '<span style="color:red">预签收</span>';
-                            }
-                            else if (item.signState == 1) {
+                             if (item.signState == 1) {
                                 return '<span style="color:green;">进行中</span>';
                             } else if (item.signState == 2) {
                                 return '<span style="color:orange;">已暂停</span>';
@@ -182,13 +247,19 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 180,
+                    width: 320,
                     template: function (item) {
-                        var isStartFlow = angular.isString(item.processInstanceId);  //如果已经发起流程，则不能编辑
-                        var isRealSign = (item.issign && item.issign == 9)?true:false;
-
+                        var isStartFlow = false;
+                        if(item.processInstanceId){
+                            isStartFlow = true;
+                        }
+                        var isRealSign = false;
+                        if(item.issign && (item.issign == 9 || item.issign == '9' )){
+                            isRealSign = true;
+                        }
                         //如果已经发起流程，则只能查看
-                        return common.format($('#columnBtns').html(), item.signid, isStartFlow,
+                        return common.format($('#columnBtns').html(),
+                            item.signid, isStartFlow,
                             item.signid + "/" + item.processInstanceId,
                             "vm.del('" + item.signid + "')", isStartFlow,
                             "vm.startNewFlow('" + item.signid + "')", isStartFlow,
@@ -201,10 +272,10 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                dataBound:dataBound,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 resizable: true
             };
         }//E_初始化grid
@@ -629,7 +700,7 @@
         //signGetBackGrid
         function signGetBackGrid(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+           /* var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/sign/fingByGetBack", $("#signBackform")),
                 schema: common.kendoGridConfig().schema({
@@ -648,7 +719,10 @@
                     field: "createdDate",
                     dir: "desc"
                 }
-            });
+            });*/
+
+            var dataSource = common.kendoGridDataSource(rootPath + "/sign/fingByGetBack",$("#signBackform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+
             // End:dataSource
 
             // Begin:column
@@ -720,19 +794,10 @@
             vm.signGetBackGrid = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                },
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 resizable: true
             };
         }//E_初始化signGetBackGrid
@@ -775,7 +840,7 @@
             }
         }
 
-        //工作方案详细打印
+        /*//工作方案详细打印
         function workProgramPrint(id){
             var tempStr1;
             var tempStr2;
@@ -810,6 +875,232 @@
                 LODOP.ADD_PRINT_HTML(50,20,"100%","100%",strFormHtml2);
                 LODOP.PREVIEW();
             }
+        }*/
+
+        //begin_signDeletGrid
+        //作废项目
+        function signDeletGrid(vm) {
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate",$("#deletform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+
+            // Begin:column
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number text-center'></span>",
+                    width: 40
+                },
+                {
+                    field: "",
+                    title: "项目名称",
+                    width: 160,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.processInstanceId) {
+                            return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                        } else {
+                            return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                        }
+
+                    }
+                },
+                {
+                    field: "reviewstage",
+                    title: "项目阶段",
+                    width: 110,
+                    filterable: false,
+                },
+                {
+                    field: "projectcode",
+                    title: "项目代码",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "signdate",
+                    title: "签收日期",
+                    width: 100,
+                    filterable: false,
+                    format: "{0:yyyy/MM/dd HH:mm:ss}"
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 90,
+                    filterable: false,
+                    template: function (item) {
+                            return common.format($('#columnBtns').html(), "vm.editSignState('" + item.signid + "')");
+
+                    }
+                }
+            ];
+
+            // End:column
+            vm.signListOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
+            };
+        }//signDeletGrid
+
+
+        //negin editSignState
+        function editSignState(vm , callBack){
+            var httpOptions = {
+                method : "post" ,
+                url : rootPath + "/sign/editSignState",
+                params : {signId : vm.signid,stateProperty: "signState",stateValue: vm.stateValue }
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
         }
+        //end editSignState
+        //begin editSignState
+        //维护项目列表
+        function MaintenanProjectGrid(vm) {
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate",$("#Maintenanform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+            // Begin:column
+            var columns = [
+                {
+                    field: "",
+                    title: "序号",
+                    template: "<span class='row-number text-center'></span>",
+                    width: 50
+                },
+                {
+                    field: "",
+                    title: "项目名称",
+                    width: 260,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.processInstanceId) {
+                            return '<a ng-click="vm.saveView()" href="#/MaintainProjectEdit/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                        } else {
+                            return '<a ng-click="vm.saveView()" href="#/MaintainProjectEdit/' + item.signid + '/" >' + item.projectname + '</a>';
+                        }
+
+                    }
+                }, {
+                    field: "builtcompanyname",
+                    title: "建设单位",
+                    width: 210,
+                    filterable: false,
+                },
+                {
+                    field: "reviewstage",
+                    title: "评审阶段",
+                    width: 120,
+                    filterable: false,
+                },
+                {
+                    field: "",
+                    title: "项目状态",
+                    width: 80,
+                    filterable: false,
+                    template: function (item) {
+                        var returnStr = "";
+                        switch (item.signState) {
+                            case "1":
+                                returnStr = "进行中";
+                                break;
+                            case "2":
+                                returnStr = "暂停";
+                                break;
+                            case "8":
+                                returnStr = "强制结束";
+                                break;
+                            case "9":
+                                returnStr = "已完成";
+                                break;
+                            default:
+                                ;
+                        }
+                        return returnStr;
+                    }
+                }, {
+                    field: "signNum",
+                    title: "收文编号",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "signdate",
+                    title: "收文日期",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "dfilenum",
+                    title: "发文号",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "ffilenum",
+                    title: "归档编号",
+                    width: 130,
+                    filterable: false,
+                },{
+                    field: "reviewOrgName",
+                    title: "所属部门",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "allPriUser",
+                    title: "项目负责人",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "dispatchType",
+                    title: "发文类型",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "appalyInvestment",
+                    title: "申报金额",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "authorizeValue",
+                    title: "审定金额",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "extraValue",
+                    title: "核减",
+                    width: 100,
+                    filterable: false,
+                },{
+                    field: "approveValue",
+                    title: "批复金额",
+                    width: 100,
+                    filterable: false,
+                }
+            ];
+
+            // End:column
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
+            };
+        }
+        //end editSignState
     }
 })();

@@ -9,10 +9,8 @@
         /* jshint validthis:true */
         var vm = this;
         vm.title = '角色列表';
-        
 
-        vm.del = function (id) {        	
-        	 
+        vm.del = function (id) {
              common.confirm({
             	 vm:vm,
             	 title:"",

@@ -10,17 +10,18 @@
     </ol>
     <div class="well well-sm">
         <form id="searchform" name="searchform">
+            <input type name="signState" operator="ne" value="7" hidden="hidden">
             <span class="help-inline">项目名称：</span>
-            <input type="text" operator="like" name="projectName" id="projectName" placeholder="请输入">
+            <input type="text" ng-model="vm.model.projectName" operator="like" name="projectName" id="projectName" placeholder="请输入">
 
             <span class="help-inline" style="margin-left:10px;">项目阶段：</span>
-            <select name="reviewStage" operator="eq" >
+            <select ng-model="vm.model.reviewStage" name="reviewStage" operator="eq" >
                 <option value="">请选择</option>
-                <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}">{{x.dictName}}</option>
+                <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}" ng-selected="vm.model.reviewStage==x.dictName">{{x.dictName}}</option>
             </select>
 
             <span class="help-inline" style="margin-left:10px;">环节名称：</span>
-            <input type="text" operator="like" name="nodeNameValue" placeholder="请输入">
+            <input ng-model="vm.model.nodeNameValue" type="text" operator="like" name="nodeNameValue" placeholder="请输入">
 
             <button class="btn btn-sm btn-primary" ng-click="vm.querySign()"><span class="glyphicon glyphicon-search"></span>查询</button>
             <button class="btn btn-sm btn-primary" ng-click="vm.resetForm()"><span class="glyphicon glyphicon-repeat"></span>重置</button>
@@ -44,7 +45,7 @@
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions" id="grid" style="margin-top:0px;"></div>
 </div>
 <script type="text/template" id="columnBtns">
-    <a class="btn btn-xs btn-primary" href="#/{0}/{1}/{2}/{3}" ><span class="glyphicon glyphicon-edit"></span>处理</a>
+    <a ng-click="vm.saveView()" class="btn btn-xs btn-primary" href="#/{0}/{1}/{2}/{3}" ><span class="glyphicon glyphicon-edit"></span>处理</a>
 </script>
 <script type="text/template" id="detailBtns">
     <a class="btn btn-xs btn-info" href="#/{0}/{1}/{2}/{3}" ><span class="glyphicon glyphicon-search"></span>查看</a>

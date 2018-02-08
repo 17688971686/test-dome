@@ -11,22 +11,26 @@
     <div class="toolbar">
         <button class="btn btn-sm btn-primary" ng-click="vm.addConfig()"><span class="glyphicon glyphicon-plus"></span>新增
         </button>
+        <span class="attentionDiv" style="padding:5px;">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
+            温馨提示：系统参数是系统正常运行的保障，请不要随意修改！
+        </span>
     </div>
 
-    <table class="table table-bordered">
-        <tr>
-            <th style="width: 60px;">序号</th>
-            <th style="width: 180px;">参数名</th>
+    <table class="table table-bordered" style="table-layout:fixed;word-break:break-all;word-wrap:break-word;">
+        <tr class="active">
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 200px;">参数名</th>
             <th style="width: 180px;">参数Key</th>
-            <th style="width: 180px;">参数值</th>
+            <th style="width: 200px;">参数值</th>
             <th style="">描述</th>
-            <th style="width: 260px;">操作</th>
+            <th style="width: 80px;">操作</th>
         </tr>
         <tr ng-repeat="c in vm.configList">
-            <td>{{ $index + 1}}</td>
+            <td style="width: 50px; text-align: center;">{{ $index + 1}}</td>
             <td>{{c.configName}}</td>
             <td>{{c.configKey}}</td>
-            <td>{{c.configValue}}</td>
+            <td style="width: 200px;">{{c.configValue}}</td>
             <td>{{c.descInfo}}</td>
             <td>
                 <button class="btn btn-xs btn-primary" ng-click="vm.editConfig(c.id)">
@@ -72,7 +76,7 @@
             <tr>
                 <td class="text-right">参数值： <span class="required">*</span></td>
                 <td>
-                    <input maxlength="32" class="form-control input-sm " style="width: 80%;" ng-model="vm.model.configValue "
+                    <input maxlength="128" class="form-control input-sm " style="width: 80%;" ng-model="vm.model.configValue "
                            id="configValue" name="configValue" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="configValue" data-valmsg-replace="true" class="errors"></span>
                 </td>

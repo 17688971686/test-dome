@@ -1,55 +1,51 @@
-(function(){
+(function () {
     'use strict';
-    angular.module('app').controller('signChartCtrl' , signChart);
-    signChart.$inject = ['signChartSvc' , 'bsWin'];
-    function signChart(signChartSvc , bsWin){
-
+    angular.module('app').controller('signChartCtrl', signChart);
+    signChart.$inject = ['signChartSvc', 'bsWin'];
+    function signChart(signChartSvc, bsWin) {
         var vm = this;
-
-        vm.startDateTime = new Date("2006/6/1 08:00");
-        vm.endDateTime = new Date("2030/6/1 21:00");
-        vm.startTime = "";
-        vm.endTime = new Date().toISOString().slice(0,10) ;
+        vm.startTime = (new Date()).halfYearAgo();
+        vm.endTime = new Date().Format("yyyy-MM-dd");
         vm.chartType = 'histogram';//默认为柱状图
         vm.reviewStage = [];//评审阶段
         vm.appalyinvestment = [];//申报金额
         vm.authorizeValue = [];//审定金额
         vm.sz = [];//市政工程
         vm.fj = [];//房建工程
-        vm.xx = [] ;//信息工程
-        vm.sb = [] ;//设备采购
+        vm.xx = [];//信息工程
+        vm.sb = [];//设备采购
         vm.qt = [];//其他
         vm.series = [];
         vm.resultData = [];//存series中Data的值
         vm.projectCount = [];//各阶段项目数目
         vm.tooltipFormater = []; // 饼图提示框对应
-        vm.capital = ['申报金额' , '审定金额'];
-        vm.projectType =['市政工程' , '房建工程' , '信息工程' , '设备采购' , '其他'];
-        vm.stage = ['3000万以下','3000万-1亿' ,'1亿-10亿','10亿以上'];
-        vm.review = ['项目概算' , '项目建议书' , '进口设备' , '资金申请报告' , '设备清单（进口）' , '设备清单（国产）' , '可行性研究报告' , '其他' ];
+        vm.capital = ['申报金额', '审定金额'];
+        vm.projectType = ['市政工程', '房建工程', '信息工程', '设备采购', '其他'];
+        vm.stage = ['3000万以下', '3000万-1亿', '1亿-10亿', '10亿以上'];
+        vm.review = ['项目概算', '项目建议书', '进口设备', '资金申请报告', '设备清单（进口）', '设备清单（国产）', '可行性研究报告', '其它'];
 
         /**
          * 通过开始和结束日期重新统计项目信息情况
          */
-        vm.resetChart = function(){
+        vm.resetChart = function () {
             vm.reviewStage = [];//评审阶段
             vm.appalyinvestment = [];//申报金额
             vm.authorizeValue = [];//审定金额
             vm.sz = [];//市政工程
             vm.fj = [];//房建工程
-            vm.xx = [] ;//信息工程
-            vm.sb = [] ;//设备采购
-            vm.qt = [];//其他
+            vm.xx = [];//信息工程
+            vm.sb = [];//设备采购
+            vm.qt = [];//其它
             vm.series = [];
             vm.resultData = [];//存series中Data的值
             vm.projectCount = [];//各阶段项目数目
             vm.tooltipFormater = []; // 饼图提示框对应
             var typeChecked = $("input[type='radio']:checked").val();
-            if (typeChecked == 'lineChart'){
+            if (typeChecked == 'lineChart') {
                 vm.gotoLineChart();
-            }else if(typeChecked == 'histogram'){
+            } else if (typeChecked == 'histogram') {
                 activate();
-            }else if(typeChecked == 'pie'){
+            } else if (typeChecked == 'pie') {
                 vm.gotoPie();
             }
         }
@@ -57,20 +53,20 @@
         /**
          * 柱状图
          */
-        vm.gotoHistogram =function(){
-            vm.showHistogram=true;
+        vm.gotoHistogram = function () {
+            vm.showHistogram = true;
             vm.showLineChart = false;
             vm.showPie = false;
-            for(var i =0 ; i<vm.capital.length ; i++){
+            for (var i = 0; i < vm.capital.length; i++) {
                 vm.series.push(
                     {
-                        name : vm.capital[i],
-                        type : 'bar', //bar line
-                        data : vm.resultData[i],
-                        barWidth : 30,//设置柱子的宽度
-                        itemStyle : {
+                        name: vm.capital[i],
+                        type: 'bar', //bar line
+                        data: vm.resultData[i],
+                        barWidth: 30,//设置柱子的宽度
+                        itemStyle: {
                             normal: {
-                                label : {
+                                label: {
                                     show: true,
                                     position: 'top',
                                     formatter: function (params) {
@@ -89,16 +85,17 @@
         /**
          * 折线图
          */
-        vm.gotoLineChart = function(){
-            vm.showHistogram=false;
+        vm.gotoLineChart = function () {
+            vm.showHistogram = false;
             vm.showPie = false;
-            vm.showLineChart = true;signChartSvc.findByTypeAndReview(vm ,function(data){
-                if(data.flag || data.reCode == 'ok'){
+            vm.showLineChart = true;
+            signChartSvc.findByTypeAndReview(vm, function (data) {
+                if (data.flag || data.reCode == 'ok') {
                     var resultData = data.reObj;
-                    if(resultData !=undefined && resultData.length >0){
-                        for(var i =0; i<resultData.length ; i++){
-                            $.each(resultData[i] , function(key , value){
-                                vm.reviewStage.push( key);
+                    if (resultData != undefined && resultData.length > 0) {
+                        for (var i = 0; i < resultData.length; i++) {
+                            $.each(resultData[i], function (key, value) {
+                                vm.reviewStage.push(key);
                                 vm.sz.push(value[0]);
                                 vm.fj.push(value[1]);
                                 vm.xx.push(value[2]);
@@ -107,21 +104,21 @@
 
                             });
                         }
-                        vm.resultData.push(vm.sz , vm.fj , vm.xx , vm.sb , vm.qt);
-                        for(var i =0 ; i<vm.projectType.length ; i++){
+                        vm.resultData.push(vm.sz, vm.fj, vm.xx, vm.sb, vm.qt);
+                        for (var i = 0; i < vm.projectType.length; i++) {
                             vm.series.push(
                                 {
-                                    name : vm.projectType[i],
-                                    type : 'line', //bar line
-                                    data : vm.resultData[i],
-                                    itemStyle : {
+                                    name: vm.projectType[i],
+                                    type: 'line', //bar line
+                                    data: vm.resultData[i],
+                                    itemStyle: {
                                         normal: {
-                                            label : {
+                                            label: {
                                                 show: true,
                                                 position: 'top',
-                                                textStyle:{ //设置图表上数目的大小
-                                                    fontWeight : 'normal',
-                                                    fontSize : 15
+                                                textStyle: { //设置图表上数目的大小
+                                                    fontWeight: 'normal',
+                                                    fontSize: 15
                                                 },
                                                 formatter: function (params) {
                                                     return params.value;
@@ -135,7 +132,7 @@
                         }
                     }
                     vm.initLineChart();
-                }else{
+                } else {
                     bsWin.error(data.reMsg);
                 }
             });
@@ -144,16 +141,16 @@
         /**
          * 饼图
          */
-        vm.gotoPie = function(){
-            vm.showHistogram=false;
+        vm.gotoPie = function () {
+            vm.showHistogram = false;
             vm.showLineChart = false;
             vm.showPie = true;
-            signChartSvc.pieData(vm , function(data){
-                if(data.flag || data.reCode == 'ok') {
+            signChartSvc.pieData(vm, function (data) {
+                if (data.flag || data.reCode == 'ok') {
                     var resultData = data.reObj;
                     //console.log(235);
                     //console.log(resultData);
-                    if(resultData !=undefined && resultData != null){
+                    if (resultData != undefined && resultData != null) {
                         if (resultData[1] != undefined && resultData[1].length > 0) {
                             for (var i = 0; i < resultData[1].length; i++) {
                                 vm.series.push(
@@ -175,24 +172,23 @@
                                 vm.tooltipFormater.push(
                                     {
                                         seriesName: "项目数",
-                                        totalName : "项目总数",
-                                        totalValue : resultData[2],
+                                        totalName: "项目总数",
+                                        totalValue: resultData[2],
                                         name: vm.stage[i],
-                                        pidName : "占百分比",
-                                        data:  resultData[0][i],
-                                        value : resultData[1][i]
+                                        pidName: "占百分比",
+                                        data: resultData[0][i],
+                                        value: resultData[1][i]
 
                                     }
-
                                 );
                             }
                         }
                         vm.initPie();
-                    }else{
+                    } else {
                         bsWin.error("该时间段没有数据！");
                     }
 
-                }else{
+                } else {
                     bsWin.error(data.reMsg);
                 }
 
@@ -203,80 +199,104 @@
         /**
          * 初始化柱状图数据
          */
-        vm.initHistogram = function(){
+        vm.initHistogram = function () {
             var myChart = echarts.init(document.getElementById('histogram')); //只能用javaScript获取节点，如用jquery方式则找不到节点
-            var option ={
-                title :{
-                    text :  "申报金额与审定金额统计情况",
-                    subtext : '按评审阶段划分',
-                    x : 'center'
+            var option = {
+                title: {
+                    text: "申报金额与审定金额统计情况",
+                    subtext: '按评审阶段划分',
+                    x: 'center'
                 },
-                tooltip:{//提示框设置
-                    trigger : 'axis',
-                    axisPointer :{
-                        type : 'cross', //cross  line  shadow
-                        label : {
-                            backgroundColor : '#283b56'
+                tooltip: {//提示框设置
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross', //cross  line  shadow
+                        label: {
+                            backgroundColor: '#283b56'
                         }
                     }
                 },
-                legend :{ //头部显示说明，注意：data值要与series中的name一致，顺序可以不一致
-                    orient : 'vertical',
-                    left : 'left',
-                    data : vm.capital
+                legend: { //头部显示说明，注意：data值要与series中的name一致，顺序可以不一致
+                    orient: 'vertical',
+                    left: 'left',
+                    data: vm.capital
                 },
                 //工具栏设置
-                toolbox :{
-                    show : true,
-                    x : '850',
-                    feature : {
-                        dataView : {show : true ,readOnly : true},//数据统计
-                        restore : {show : true },//还原
-                        saveAsImage : {show : true}//下载
+                toolbox: {
+                    show: true,
+                    x: '80%',
+                    feature: {
+                        dataView: {show: true, readOnly: true},//数据统计
+                        restore: {show: true},//还原
+                        saveAsImage: {show: true}//下载
+                    },
+                    optionToContent : function(opt){
+                        var axisData = opt.xAxis[0].data;
+                        var series = opt.series;
+                        var table ='<table id="test" class="table-bordered table-striped" style="width:100%;text-align:center">';
+                        table += '<tbody><tr>';
+
+                        //遍历表头
+                        table += '<th style="text-align: center;">评审阶段</th>';
+                        for(var i=0 ; i<series.length; i++){
+                            table += '<th style="text-align: center;">' + series[i].name + '(亿元)' + '</th>';
+                        }
+                        table  += '</tr>';
+
+                        //遍历行
+                        for (var i = 0, l = axisData.length; i < l; i++) {
+                            table += '<tr>' + '<td>' + axisData[i] + '</td>';
+                            for(var j = 0 ; j < series.length ; j++){
+                                table += '<td>' + series[j].data[i] + '</td>';
+                            }
+                        }
+                        table += '</tbody>';
+                        return table;
+
                     }
                 },
 
                 //设置坐标
-                grid :{
+                grid: {
                     // 这些是设置坐标边距
-                    left : '13%',
-                    right : '10%',
-                    bottom : '10%',
-                    containLabel : true,
+                    left: '13%',
+                    right: '10%',
+                    bottom: '10%',
+                    containLabel: true,
                     //设置xy轴宽度
                     // y : 70,
                     // x : 60
                 },
-                xAxis :{
-                    type : 'category',
-                    name : '评审阶段',
-                    data :vm.review,
-                    axisTick :{
-                        alignWithLabel :true
+                xAxis: {
+                    type: 'category',
+                    name: '评审阶段',
+                    data: vm.review,
+                    axisTick: {
+                        alignWithLabel: true
                     },
-                    axisLabel :{
-                        interval : 0,
-                        rotate : 35 ,//倾斜度 -90 至 90 之间，默认为0
-                        margin : 2,
-                        textStyle :{
-                            fontWeight : 'bolder',
-                            color : '#295645'
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 35,//倾斜度 -90 至 90 之间，默认为0
+                        margin: 2,
+                        textStyle: {
+                            fontWeight: 'bolder',
+                            color: '#295645'
                         }
                     }
                 },
-                yAxis :{
-                    type : 'value',
-                    name : '金额（亿元）',
-                    min : 0,
-                    max : 100,
-                    interval : 10, //刻度值
+                yAxis: {
+                    type: 'value',
+                    name: '金额（亿元）',
+                    min: 0,
+                    // max: 1000,
+                    // interval: 100, //刻度值
                 },
-                series :vm.series,
-                itemStyle : {
-                    emphasis :{
-                        shadowBlur : 10 ,
-                        shadowOffsetX : 0,
-                        shadowColor : 'rgba(0,0,0,0.5)'
+                series: vm.series,
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0,0,0,0.5)'
                     }
                 }
             };
@@ -287,68 +307,92 @@
         /**
          * 初始化折线图
          */
-        vm.initLineChart = function(){
+        vm.initLineChart = function () {
             var myChart = echarts.init(document.getElementById('lineChart'));
             var option = {
-                title : {
-                    text :'评审项目类别统计情况',
-                    subtext : '按评审阶段划分',
-                    x : 'center'
+                title: {
+                    text: '评审项目类别统计情况',
+                    subtext: '按评审阶段划分',
+                    x: 'center'
                 },
-                tooltip :{
-                    trigger : 'item',
-                    formatter : '{a} <br/> {b} : {c}'
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/> {b} : {c}'
                 },
                 //设置坐标
-                grid :{
-                    left : '13%',
-                    right : '10%',
-                    bottom : '10%',
-                    containLabel : true,
+                grid: {
+                    left: '13%',
+                    right: '10%',
+                    bottom: '10%',
+                    containLabel: true,
                 },
-                toolbox :{
-                    show : true,
-                    x : '800',
-                    feature : {
-                        dataView : {show : true ,readOnly : true},//数据统计
-                        restore : {show : true },//还原
-                        saveAsImage : {show : true}//下载
+                toolbox: {
+                    show: true,
+                    x: '80%',
+                    feature: {
+                        dataView: {show: true, readOnly: true},//数据统计
+                        restore: {show: true},//还原
+                        saveAsImage: {show: true}//下载
+                    },
+                    optionToContent : function(opt){
+                        var axisData = opt.xAxis[0].data;
+                        var series = opt.series;
+                        var table ='<table id="test" class="table-bordered table-striped" style="width:100%;text-align:center">';
+                        table += '<tbody><tr>';
+
+                        //遍历表头
+                        table +=  '<th style="text-align: center;">评审阶段</th>';
+                        for(var i=0 ; i<series.length; i++){
+                            table +=  '<th style="text-align: center;">' + series[i].name + '</th>';
+                        }
+                        table  +=  '</tr>';
+
+                        //遍历行
+                        for (var i = 0, l = axisData.length; i < l; i++) {
+                            table += '<tr>' + '<td>' + axisData[i] + '</td>';
+                            for(var j = 0 ; j < series.length ; j++){
+                                table += '<td>' + series[j].data[i] + '</td>';
+                            }
+                        }
+                        table += '</tbody>';
+                        return table;
+
                     }
                 },
-                legend :{
-                    orient : 'vertical',
-                    left : 'left',
-                    data : vm.projectType
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: vm.projectType
                 },
-                xAxis : {
-                    type : 'category',
-                    name : '评审阶段',
+                xAxis: {
+                    type: 'category',
+                    name: '评审阶段',
                     splitLine: {show: false},
-                    data :vm.review,
-                    axisLabel :{
-                        interval : 0,
-                        rotate : 35 ,//倾斜度 -90 至 90 之间，默认为0
-                        margin : 2,
-                        textStyle :{
-                            fontWeight : 'bolder',
-                            color : '#295645'
+                    data: vm.review,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 35,//倾斜度 -90 至 90 之间，默认为0
+                        margin: 2,
+                        textStyle: {
+                            fontWeight: 'bolder',
+                            color: '#295645'
                         }
                     }
                 },
-                yAxis : {
-                    type : 'value',
-                    name : '项目个数',
-                    min : 0 ,
-                    max : 100 ,
-                    interval : 10
+                yAxis: {
+                    type: 'value',
+                    name: '项目个数',
+                    min: 0,
+                    // max: 100,
+                    // interval: 20
 
                 },
-                series : vm.series,
-                lineStyle : {
-                    emphasis :{
-                        shadowBlur : 10 ,
-                        shadowOffsetX : 0,
-                        shadowColor : 'rgba(0,0,0,0.5)'
+                series: vm.series,
+                lineStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0,0,0,0.5)'
                     }
                 }
             };
@@ -359,22 +403,22 @@
         /**
          * 初始化饼图
          */
-        vm.initPie = function(){
+        vm.initPie = function () {
             var myChart = echarts.init(document.getElementById('pie'));
-            var  option = {
-                title : {
-                    text : '评审项目比例情况',
-                    subtext : '按申报金额范围划分',
-                    x : 'center'
+            var option = {
+                title: {
+                    text: '评审项目比例情况',
+                    subtext: '按申报金额范围划分',
+                    x: 'center'
                 },
-                tooltip :{
-                    trigger : 'item',
-                    width : 150,
-                    formatter : function(params){
-                        for(var i = 0 ; i<vm.tooltipFormater.length ; i++){
-                            if(vm.tooltipFormater[i].name == params.name){
-                                return  params.name + "<br/>"
-                                    +vm.tooltipFormater[i].seriesName + " : " + vm.tooltipFormater[i].data + "<br/>"
+                tooltip: {
+                    trigger: 'item',
+                    width: 150,
+                    formatter: function (params) {
+                        for (var i = 0; i < vm.tooltipFormater.length; i++) {
+                            if (vm.tooltipFormater[i].name == params.name) {
+                                return params.name + "<br/>"
+                                    + vm.tooltipFormater[i].seriesName + " : " + vm.tooltipFormater[i].data + "<br/>"
                                     + vm.tooltipFormater[i].totalName + " : " + vm.tooltipFormater[i].totalValue + "<br/>"
                                     + vm.tooltipFormater[i].pidName + " : " + vm.tooltipFormater[i].value + "%";
                             }
@@ -382,38 +426,56 @@
                         }
                     }
                 },
-                grid :{
-                    left : '10%',
-                    right : '10%',
-                    bottom : '10%',
-                    containLabel : true,
+                grid: {
+                    left: '10%',
+                    right: '10%',
+                    bottom: '10%',
+                    containLabel: true,
                 },
-                toolbox :{
-                    show : true,
-                    x : '900',
-                    feature : {
-                        dataView : {show : true ,readOnly : true},//数据统计
-                        restore : {show : true },//还原
-                        saveAsImage : {show : true}//下载
+                toolbox: {
+                    show: true,
+                    x: '80%',
+                    feature: {
+                        dataView: {show: true, readOnly: true},//数据统计
+                        restore: {show: true},//还原
+                        saveAsImage: {show: true}//下载
+                    },
+                    optionToContent : function(opt){
+                        var series = opt.series[0].data;
+                        var table ='<table id="test" class="table-bordered table-striped" style="width:100%;text-align:center">';
+                        table += '<tbody><tr>';
+
+                        //遍历表头
+                        table += '<th style="text-align: center;">申报金额范围</th>';
+                        table += '<th style="text-align: center;">' + '占百分比(%)' + '</th>';
+                        table  += '</tr>';
+
+                        //遍历行
+                        for (var i = 0, l = series.length; i < l; i++) {
+                            table += '<tr>' + '<td>' + series[i].name + '</td>';
+                            table += '<td>' + series[i].value + '</td>';
+                        }
+                        table += '</tbody>';
+                        return table;
                     }
                 },
-                legend :{
-                    orient : 'vertical',
-                    left : 'left',
-                    data :vm.stage
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: vm.stage
                 },
-                series : [
+                series: [
                     {
-                        type : 'pie',
-                        radius : '30%',//半径
-                        center : ['50%','50%'],
-                        selectMode : 'single',
-                        data : vm.series,
-                        itemStyle : {
-                            emphasis :{
-                                shadowBlur : 10 ,
-                                shadowOffsetX : 0,
-                                shadowColor : 'rgba(0,0,0,0.5)'
+                        type: 'pie',
+                        radius: '30%',//半径
+                        center: ['50%', '50%'],
+                        selectMode: 'single',
+                        data: vm.series,
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0,0,0,0.5)'
                             }
                         }
 
@@ -427,35 +489,32 @@
 
 
         activate();
-        function activate(){
-            signChartSvc.getDate(function(data){
-                var start = data.replace(/-/g , "\/");
-                vm.startTime = new Date(Date.parse(start.substring(1,start.length-1))).toISOString().slice(0,10);
+        function activate() {
+            signChartSvc.findByTime(vm, function (data) {
+                if (data.flag || data.reCode == 'ok') {
+                    var resultData = data.reObj;
+                    if (resultData != undefined && resultData.length > 0) {
+                        for(var j = 0 ; j < vm.review.length ; j ++ ){
+                            for (var i = 0; i < resultData.length; i++) {
+                                $.each(resultData[i], function (key, value) {
+                                    if( key == vm.review[j]){
+                                        vm.reviewStage.push(key);
+                                        vm.appalyinvestment.push(value[0]);
+                                        vm.authorizeValue.push(value[1]);
+                                        vm.projectCount.push(value[2]);
+                                    }
 
-                signChartSvc.findByTime(vm , function(data){
-                    if(data.flag || data.reCode == 'ok'){
-                        var resultData = data.reObj;
-                        if(resultData !=undefined && resultData.length >0){
-                            for(var i =0; i<resultData.length ; i++){
-                                $.each(resultData[i] , function(key , value){
-                                    vm.reviewStage.push( key);
-                                    vm.appalyinvestment.push(value[0]);
-                                    vm.authorizeValue.push(value[1]);
-                                    vm.projectCount.push(value[2]);
                                 });
                             }
-                            vm.resultData.push(vm.appalyinvestment , vm.authorizeValue);
-                            vm.gotoHistogram();
                         }
-                    }else{
-                        bsWin.error(data.reMsg);
+                        vm.resultData.push(vm.appalyinvestment, vm.authorizeValue);
+                        vm.gotoHistogram();
                     }
-
-
-                });
+                } else {
+                    bsWin.error(data.reMsg);
+                }
             });
-
-        }
+        }//end_activate
 
 
     }

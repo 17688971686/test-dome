@@ -2,18 +2,51 @@
     'use strict';
     angular.module('app').controller('signCtrl', sign);
 
-    sign.$inject = ['signSvc','$state','flowSvc','signFlowSvc','bsWin'];
+    sign.$inject = ['signSvc','$state','flowSvc','signFlowSvc','bsWin','$rootScope'];
 
-    function sign(signSvc,$state,flowSvc,signFlowSvc,bsWin) {
+    function sign(signSvc,$state,flowSvc,signFlowSvc,bsWin,$rootScope) {
         var vm = this;
-       
+        //获取到当前的列表
+        vm.stateName = $state.current.name;
+        //查询参数
+        vm.queryParams = {};
+        //点击时。保存查询的条件和grid列表的条件
+        vm.saveView = function(){
+            $rootScope.storeView(vm.stateName,{gridParams:vm.gridOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
+
+        }
         active();
         function active() {
-            signSvc.signGrid(vm);
+            if($rootScope.view[vm.stateName]){
+                var preView = $rootScope.view[vm.stateName];
+                //恢复grid
+                //恢复查询条件
+                if(preView.gridParams){
+                    vm.gridParams = preView.gridParams;
+                }
+                //恢复表单参数
+                if(preView.data){
+                    vm.model = preView.data.model;
+                }
+                //恢复数据
+                /*vm.project = preView.data.project;*/
+                //恢复页数页码
+                if(preView.queryParams){
+                    vm.queryParams=preView.queryParams;
+                }
+
+                signSvc.signGrid(vm);
+                //清除返回页面数据
+                $rootScope.view[vm.stateName] = undefined;
+            }else {
+                signSvc.signGrid(vm);
+            }
+
         }
 
         //收文查询
         vm.querySign = function(){
+            vm.gridOptions.dataSource._skip=0;
             vm.gridOptions.dataSource.read();
         }
 
@@ -25,9 +58,8 @@
         vm.del = function (signid) {
             bsWin.confirm({
                 title: "询问提示",
-                message: "确认删除该条项目数据吗？删除数据不可恢复，请慎重！",
+                message: "确认删除该条项目数据吗？",
                 onOk: function () {
-                    $('.confirmDialog').modal('hide');
                     signSvc.deleteSign(signid,function(data){
                         if(data.flag || data.reCode == 'ok'){
                             bsWin.alert("删除成功！",function(){

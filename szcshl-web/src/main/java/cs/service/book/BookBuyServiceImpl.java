@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,16 +43,15 @@ public class BookBuyServiceImpl  implements BookBuyService {
 		return pageModelDto;
 	}
 
+    /**保存图书信息
+     *
+     * @param record
+     */
 	@Override
 	@Transactional
 	public void save(BookBuyDto record) {
 		BookBuy domain = new BookBuy(); 
-		BeanCopierUtils.copyProperties(record, domain); 
-		Date now = new Date();
-/*		domain.setCreatedBy(SessionUtil.getDisplayName());
-		domain.setModifiedBy(SessionUtil.getDisplayName());
-		domain.setCreatedDate(now);
-		domain.setModifiedDate(now);*/
+		BeanCopierUtils.copyProperties(record, domain);
 		bookBuyRepo.save(domain);
 	}
 
@@ -83,5 +81,18 @@ public class BookBuyServiceImpl  implements BookBuyService {
 	public void delete(String id) {
 
 	}
-	
+
+	/**
+	 * 结束后更新库存信息
+	 * @param id,num
+	 * @param num
+	 */
+	@Override
+	@Transactional
+	public void updateBookInfo(String id,Integer num) {
+		BookBuy domain = bookBuyRepo.findById(id);
+		domain.setStoreConfirm(domain.getStoreConfirm() - num);
+		bookBuyRepo.save(domain);
+	}
+
 }

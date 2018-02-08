@@ -5,18 +5,22 @@
     <!-- s table -->
     <table class="table table-bordered">
 
-        <caption class="text-center h3"><strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong></caption>
-        <caption>
-            <span>QR-4.9-09-A0</span>
-        </caption>
-        <caption>
-            <span style="margin-left:10px;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
-            <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9"
-                  style="margin-left:10px;">主项目</span>
-            <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0"
-                  style="margin-left:10px;">次项目</span>
+        <caption class="text-center">
+            <p style="padding: 5px 10px;">
+                <span style="float: left;">QR-4.9-09-A0</span>
+            </p>
+            <p class="h3">
+                <strong>深圳市政府投资项目评审中心<br>项目发文审批表</strong>
+            </p>
+            <p>
+                <span style="padding: 5px 10px;float: left;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
+                <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==9"
+                      style="padding: 5px 10px;float: left;">主项目</span>
+                <span ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject==0"
+                      style="padding: 5px 10px;float: left;">次项目</span>
 
-            <span style="float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
+                <span style="padding: 5px 10px;float:right;">发文类型：{{vm.dispatchDoc.dispatchType}}</span>
+            </p>
         </caption>
         <tbody>
 
@@ -71,7 +75,7 @@
 
         <tr>
             <td style="vertical-align: middle;" class="text-center">项目概况</td>
-            <td colspan="5" style="min-height: 50px;">
+            <td colspan="5" style="min-height: 100px;">
                 {{vm.dispatchDoc.description}}
             </td>
         </tr>
@@ -79,7 +83,7 @@
 
         <tr>
             <td style="vertical-align: middle;" class="text-center">相关说明</td>
-            <td colspan="5" style="min-height: 50px;">
+            <td colspan="5" style="min-height: 100px;">
                 {{vm.dispatchDoc.description}}
             </td>
         </tr>
@@ -96,7 +100,7 @@
             </td>
         </tr>
 
-        <tr>
+        <tr style="height: 100px;">
             <td style="vertical-align: middle;" class="text-center">评审意见摘要</td>
             <td colspan="5">
                 <div style="height: 80px;">{{vm.dispatchDoc.reviewAbstract}}</div>
@@ -106,7 +110,7 @@
         <tr>
             <td style="vertical-align: middle;" class="text-center">部长审核意见</td>
             <td colspan="5">
-                <div style="height: 80px;">
+                <div style="height: 100px;">
                     <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
                     <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
                     <p class="text-right" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
@@ -117,7 +121,7 @@
         <tr>
             <td style="vertical-align: middle;" class="text-center">分管副主任意见</td>
             <td colspan="5">
-                <div style="height: 80px;">
+                <div style="height: 100px;">
                     <p>{{vm.dispatchDoc.viceDirectorSuggesttion}}</p>
                     <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">
                         签名：{{vm.dispatchDoc.viceDirectorName}}</p>
@@ -130,7 +134,7 @@
         <tr>
             <td style="vertical-align: middle;" class="text-center">主任签发</td>
             <td colspan="5">
-                <div style="height: 80px;">
+                <div style="height: 100px;">
                     <p>{{vm.dispatchDoc.directorSuggesttion}}</p>
                     <p class="text-right" ng-if="vm.dispatchDoc.directorName">签名：{{vm.dispatchDoc.directorName}}</p>
                     <p class="text-right" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
@@ -141,6 +145,6 @@
         </tbody>
     </table>    <!-- end table -->
 </form> <!-- end form -->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
-</button>
+<button ng-if="vm.dispatchDoc.dispatchStage=='设备清单（国产）'" class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEHOMELAND')">打印预览</button>
+<button ng-if="vm.dispatchDoc.dispatchStage=='设备清单（进口）'" class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEIMPORT')">打印预览</button>
 <!--  E 设备清单（国产）/设备清单（进口）-->

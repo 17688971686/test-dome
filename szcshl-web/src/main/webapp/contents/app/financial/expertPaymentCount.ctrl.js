@@ -83,7 +83,6 @@
                      $("#option"+i).remove();
                  }
                 createExpertCostTable(vm.expertCostTotalInfo);
-
             });
         }
 
@@ -99,14 +98,31 @@
         vm.getExpertCoustDetail = function () {
             $state.go('expertPaymentDetailCountList',{beginTime:vm.model.beginTime});
         }
+        //打印
+        vm.printFile=function () {
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version="+(new Date()).getTime()+"&file=" + rootPath + "/expertSelected/printPreview/" + vm.model.beginTime ;
+                $("#iframePreview").attr("src", url);
+                $("#previewModal").kendoWindow({
+                    width: "80%",
+                    height: "730px",
+                    title: "",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+
+        }
 
         /**
          * 专家评审费统计导出
          */
         vm.excelExport = function(){
             vm.fileName = "专家缴税统计汇总表"+vm.model.beginTime;
-            expertPaymentCountSvc.excelExport(vm,vm.expertCostTotalInfo,vm.fileName);
+            console.log(vm.expertCostTotalInfo);
+            expertPaymentCountSvc.excelExport(vm.expertCostTotalInfo,vm.fileName);
         }
+
         activate();
         function activate() {
             if(vm.model.beginTime==""){
@@ -160,10 +176,10 @@
                  var expertCostDetailTr="";
                  expertCostDetailTr += "<tr id='option"+rowIndex+"'>";
                  expertCostDetailTr += "<td class='text-center' colspan='2'>";
-                 expertCostDetailTr += expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewTitle;
+                 expertCostDetailTr += expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewTitle == undefined ? "" : expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewTitle;
                  expertCostDetailTr += "</td>"
                  expertCostDetailTr += "<td class='text-center'>";
-                 expertCostDetailTr += expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewType;
+                 expertCostDetailTr += expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewType == undefined ? "" : expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewType;
                  expertCostDetailTr += "</td>"
                  expertCostDetailTr += "<td class='text-center'>";
                  if(expertCostTotalInfo[i].expertCostDetailCountDtoList[j].reviewDate!=undefined){

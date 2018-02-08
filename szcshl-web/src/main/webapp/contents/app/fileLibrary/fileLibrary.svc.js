@@ -46,6 +46,7 @@
         //end getFileUrlById
         //查询
         function queryUser(vm) {
+            vm.gridOptions.dataSource._skip=0;
             vm.gridOptions.dataSource.read();
         }
 
@@ -74,7 +75,7 @@
 
 
         //begin deleteFile
-        function deleteFile(vm, fileId) {
+        function deleteFile(fileId , callBack) {
             var httpOptions = {
                 method: "delete",
                 url: rootPath + "/fileLibrary/deleteFile",
@@ -82,10 +83,12 @@
             }
 
             var httpSuccess = function success(response) {
-                vm.gridOptions.dataSource.read();
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack();
+                }
+                // vm.gridOptions.dataSource.read();
             }
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -142,21 +145,20 @@
         //end fodlerById
 
         //begin findFileById
-        function findFileById(vm, fileId) {
+        function findFileById( fileId , callBack) {
             var httpOptions = {
                 method: "get",
                 url: rootPath + "/fileLibrary/findFileById",
                 params: {fileId: fileId}
             }
             var httpSuccess = function success(response) {
-                vm.fileLibrary = response.data;
-                vm.fileUrl = vm.fileLibrary.fileUrl;
-                vm.fileName = vm.fileLibrary.fileName;
-                vm.initFileUpload();
+                if( callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+
             }
 
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -194,7 +196,7 @@
         //end saveFile
 
         //begin initFolder
-        function initFileFolder(vm,callBack) {
+        function initFileFolder(vm,$scope,callBack) {
             var httpOptions = {
                 method: "get",
                 url: rootPath + "/fileLibrary/initFileFolder",
@@ -265,88 +267,22 @@
         }//end saveChildFolder
 
         //begin initFileList
-        function initFileList(vm) {
-            // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/fileLibrary/initFileList?fileId=" + vm.parentId, $("#" + vm.formId)),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        },
-                        modifiedDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: [
-                    {
-                        field: "issue",
-                        dir: "asc"
-                    }
-                ]
-            });
-            // End:dataSource
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.anId)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-                {
-                    field: "fileName",
-                    title: "文件名",
-                    width: 100,
-                    filterable: false
-                },
-                {
-                    field: "",
-                    title: "附件",
-                    width: 300,
-                    filterable: false,
-                    template: function (item) {
-                        if (item.sysFileDtoList.length > 0) {
-                            var sysFileDtoList = "";
-                            for (var i = 0, l = item.sysFileDtoList.length; i < l; i++) {
-                                sysFileDtoList += "<li>" + item.sysFileDtoList[i].showName + "</li>"
-                            }
-                            return sysFileDtoList;
-                        } else {
-                            return "";
-                        }
-                    }
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 150,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.fileId + "')", "vm.update('" + item.fileId + "')");
-                    }
+        function initFileList(fileId,fileType, callBack) {
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/fileLibrary/initFileList",
+                params : {fileId : fileId , fileType : fileType}
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
                 }
-            ];
-            // End:column
-
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true
-            };
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }//end initFileList
 
 

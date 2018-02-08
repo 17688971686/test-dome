@@ -15,10 +15,37 @@
             updateBookBuyBusiness: updateBookBuyBusiness,
             saveBookBuyBusinessDetail:saveBookBuyBusinessDetail,
             startFlow:startFlow,
-            initFlowDeal : initFlowDeal                //初始化图书采购流程信息
+            initFlowDeal : initFlowDeal,                //初始化图书采购流程信息
+            deleteBooksConditions : deleteBooksConditions //删除图书信息
         };
 
         return service;
+
+        /**
+         * 删除图书信息
+         * @param delIds
+         * @param isCommit
+         * @param callBack
+         */
+        function deleteBooksConditions(delIds,callBack){
+            var httpOptions = {
+                method : 'delete',
+                url : url_bookBuyBusiness + "/bookDel",
+                params:{
+                    ids : delIds
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess,
+            });
+        }
 
         // begin#updateBookBuyBusiness
         function updateBookBuyBusiness(vm) {
@@ -208,6 +235,9 @@
             };
             var httpSuccess = function success(response) {
                 vm.model = response.data;
+                for(var i=0;i<vm.model.bookBuyList.length;i++){
+                    vm.model.bookBuyList[i]["totalPrice"] = parseFloat(vm.model.bookBuyList[i].booksPrice)*(vm.model.bookBuyList[i].bookNumber);
+                }
             };
             common.http({
                 $http: $http,
@@ -245,7 +275,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/bookBuyBusiness/findByOData", $("#myTopicForm"),{filter: "createdBy eq ${CURRENT_USER.id}"}),
+                transport: common.kendoGridConfig().transport(rootPath + "/bookBuyBusiness/findByOData", $("#bookBuyForm"),{filter: "createdBy eq ${CURRENT_USER.id}"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -298,9 +328,15 @@
                     template: "<span class='row-number'></span>"
                 },
                 {
-                    field: "businessName",
-                    title: "业务流程名称",
+                    field: "applyDept",
+                    title: "申请部门",
                     width: "20%",
+                    filterable: false
+                },
+                {
+                    field: "operator",
+                    title: "申请人",
+                    width: "10%",
                     filterable: false
                 },
                 {
@@ -310,22 +346,23 @@
                     filterable: false
                 },
                 {
-                    field: "createdDate",
-                    title: "创建日期",
+                    field: "applyDate",
+                    title: "申请日期",
                     width: "15%",
                     filterable: false,
-                    format: "{0:yyyy/MM/dd HH:mm:ss}"
                 },
                 {
                     field: "",
-                    title: "已发起流程",
+                    title: "状态",
                     width: "15%",
                     filterable: false,
                     template: function (item) {
-                        if(item.processInstanceId){
-                            return "是";
+                        if(item.processInstanceId && item.filer){
+                            return "已办理";
+                        }else if(item.processInstanceId){
+                            return "正在办理";
                         }else{
-                            return "否";
+                            return "未确定申购";
                         }
                     }
                 },

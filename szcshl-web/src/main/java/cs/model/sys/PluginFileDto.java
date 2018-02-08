@@ -1,6 +1,6 @@
 package cs.model.sys;
 
-import cs.common.utils.FileUtils;
+import cs.common.utils.SysFileUtil;
 
 import java.io.File;
 
@@ -59,7 +59,7 @@ public class PluginFileDto {
         this.fileName = file.getName();
         this.filePath = file.getPath();
         this.fileSize = file.length();
-        this.fileLength = FileUtils.getFileSize(this.fileSize);
-        this.relativePath = relativePath + "/"+ this.fileName;
+        this.fileLength = SysFileUtil.getFileSize(this.fileSize);
+        this.relativePath = relativePath + File.separator+ this.fileName;
     }
 }

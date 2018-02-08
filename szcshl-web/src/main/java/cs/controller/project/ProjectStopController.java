@@ -3,6 +3,7 @@ package cs.controller.project;
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.domain.project.ProjectStop;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
@@ -47,6 +48,15 @@ public class ProjectStopController {
 		return projectStopService.findSignBySignId(signId);
 	}
 
+	@RequiresAuthentication
+	//@RequiresPermissions("projectStop#initProjectBySignId#get")
+	@RequestMapping(name="通过项目id获取暂停项目信息",path="getProjectStopBySignId" ,method=RequestMethod.POST)
+	@ResponseBody
+	public List<ProjectStopDto>  getProjectStopBySignId(@RequestParam  String signId){
+		List<ProjectStopDto> projectStopDtoList = projectStopService.findProjectStopBySign(signId);
+		return projectStopDtoList;
+	}
+
    /* @RequiresAuthentication
     //@RequiresPermissions("projectStop#countUsedWorkday#get")
 	@RequestMapping(name="计算已用工作日",path="countUsedWorkday",method = RequestMethod.GET)
@@ -56,11 +66,19 @@ public class ProjectStopController {
 	}*/
 
     @RequiresAuthentication
-	@RequestMapping(name="保存信息", path="savePauseProject" ,method=RequestMethod.POST)
+	@RequestMapping(name="发起流程", path="savePauseProject" ,method=RequestMethod.POST)
 	@ResponseBody
 	public ResultMsg pauseProject(@RequestBody  ProjectStopDto projectStopDto){
 		return projectStopService.savePauseProject(projectStopDto);
 	}
+
+	@RequiresAuthentication
+	@RequestMapping(name="保存信息", path="saveProjectStop" ,method=RequestMethod.POST)
+	@ResponseBody
+	public ResultMsg saveProjectStop(@RequestBody  ProjectStopDto projectStopDto){
+		return projectStopService.saveProjectStop(projectStopDto);
+	}
+
 
     @RequiresAuthentication
     //@RequiresPermissions("projectStop#getProjectStopByStopId#get")
@@ -83,10 +101,10 @@ public class ProjectStopController {
 	@RequestMapping(name="判断该项目是否已申请暂停而未处理完",path="findPausingProject",method = RequestMethod.POST)
 	@ResponseBody
 	public String findPausingProject(@RequestParam  String signId){
-		List<ProjectStop> projectStopList = projectStopService.findProjectStopBySign(signId);
+		List<ProjectStopDto> projectStopList = projectStopService.findProjectStopBySign(signId);
 		String result =null;
-		for(ProjectStop p : projectStopList){
-			if(Constant.EnumState.YES.getValue().equals(p.getIsactive()) && !Constant.EnumState.YES.getValue().equals(p.getIsOverTime())){
+		for(ProjectStopDto p : projectStopList){
+			if(Constant.EnumState.NO.getValue().equals(p.getIsactive()) && !Validate.isString(p.getIsOverTime())){
 				result= "pausingProject";
 				break;
 			}

@@ -1,29 +1,36 @@
 package cs.service.sys;
 
 import cs.common.Constant;
-import cs.common.HqlBuilder;
+import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
-import cs.domain.project.Sign;
+import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.SysFile_;
 import cs.model.PageModelDto;
+import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import static cs.common.Constant.FTP_IP;
+import static cs.common.Constant.RevireStageKey.KEY_FTPIP;
+import static cs.common.Constant.RevireStageKey.LOCAL_URL;
 
 @Service
 public class SysFileServiceImpl implements SysFileService {
@@ -32,12 +39,12 @@ public class SysFileServiceImpl implements SysFileService {
     private SysFileRepo sysFileRepo;
 
     @Autowired
-    private SignRepo signRepo;
+    private SysConfigService sysConfigService;
 
     @Override
     @Transactional
-    public ResultMsg save(byte[] bytes, String fileName, String businessId, String fileType,
-                          String mainId,String mainType, String sysfileType, String sysBusiType) {
+    public ResultMsg save(MultipartFile multipartFile, String fileName, String businessId, String fileType,
+                          String mainId, String mainType, String sysfileType, String sysBusiType) {
         try {
             String fileUploadPath = SysFileUtil.getUploadPath();
             String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType,mainId, sysBusiType, fileName);
@@ -45,7 +52,7 @@ public class SysFileServiceImpl implements SysFileService {
             SysFile sysFile = new SysFile();
             sysFile.setSysFileId(UUID.randomUUID().toString());
             sysFile.setBusinessId(businessId);
-            sysFile.setFileSize(bytes.length);
+            sysFile.setFileSize(multipartFile.getSize());
             sysFile.setShowName(fileName);
             sysFile.setFileType(fileType);
             sysFile.setFileUrl(relativeFileUrl);
@@ -64,7 +71,7 @@ public class SysFileServiceImpl implements SysFileService {
 
             //先保存成功，
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileUploadPath + File.separator + relativeFileUrl));
-            stream.write(bytes);
+            stream.write(multipartFile.getBytes());
             stream.close();
             SysFileDto sysFileDto = new SysFileDto();
             BeanCopierUtils.copyProperties(sysFile,sysFileDto);
@@ -76,21 +83,20 @@ public class SysFileServiceImpl implements SysFileService {
     }
 
     @Transactional
+    @Override
     public void update(SysFile sysFile) {
         sysFileRepo.save(sysFile);
     }
 
     @Override
     @Transactional
-    public ResultMsg saveToFtp(byte[] bytes, String fileName, String businessId, String fileType, String mainId, String mainType, String sysfileType, String sysBusiType, String ftpIp, String port, String ftpUser, String ftpPwd, String ftpBasePath, String ftpFilePath) {
+    public ResultMsg saveToFtp(long size, String fileName, String businessId, String fileType,String relativeFileUrl,
+                               String mainId, String mainType, String sysfileType, String sysBusiType, Ftp ftp) {
         try {
-            String fileUploadPath = SysFileUtil.getUploadPath();
-            String relativeFileUrl = SysFileUtil.generatRelativeUrl(fileUploadPath, mainType,mainId, sysBusiType, fileName);
-
             SysFile sysFile = new SysFile();
             sysFile.setSysFileId(UUID.randomUUID().toString());
             sysFile.setBusinessId(businessId);
-            sysFile.setFileSize(bytes.length);
+            sysFile.setFileSize(size);
             sysFile.setShowName(fileName);
             sysFile.setFileType(fileType);
             sysFile.setFileUrl(relativeFileUrl);
@@ -104,19 +110,10 @@ public class SysFileServiceImpl implements SysFileService {
             sysFile.setModifiedBy(SessionUtil.getLoginName());
             sysFile.setCreatedDate(now);
             sysFile.setModifiedDate(now);
-            sysFile.setFtpIp(ftpIp);
-            sysFile.setPort(port);
-            sysFile.setFtpUser(ftpUser);
-            sysFile.setFtpPwd(ftpPwd);
-            sysFile.setFtpBasePath(ftpBasePath);
-            sysFile.setFtpFilePath(ftpFilePath);
-
+            sysFile.setFtp(ftp);
             sysFileRepo.save(sysFile);
 
             //先保存成功，
-         /*   BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileUploadPath + File.separator + relativeFileUrl));
-            stream.write(bytes);
-            stream.close();*/
             SysFileDto sysFileDto = new SysFileDto();
             BeanCopierUtils.copyProperties(sysFile,sysFileDto);
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"文件上传成功！",sysFileDto);
@@ -137,6 +134,7 @@ public class SysFileServiceImpl implements SysFileService {
             sysFileDto.setFileUrl(item.getFileUrl());
             sysFileDto.setShowName(item.getShowName());
             sysFileDto.setFileType(item.getFileType());
+            sysFileDto.setFileSizeStr(SysFileUtil.getFileSize(item.getFileSize()));
             sysFileDtoList.add(sysFileDto);
         }
         PageModelDto<SysFileDto> pageModelDto = new PageModelDto<>();
@@ -153,20 +151,8 @@ public class SysFileServiceImpl implements SysFileService {
      */
     @Override
     @Transactional
-    public void deleteById(String sysFileId) {
-        List<SysFile> fileList = sysFileRepo.findByIds(SysFile_.sysFileId.getName(), sysFileId, null);
-        if (fileList != null && fileList.size() > 0) {
-            String path = SysFileUtil.getUploadPath();
-            fileList.forEach(f -> {
-                if(SessionUtil.getLoginName().equals(f.getCreatedBy())){
-                    sysFileRepo.delete(f);
-                   // SysFileUtil.deleteFile(path + f.getFileUrl());
-                    FtpUtil.removeFile(f.getFtpIp(),f.getPort()!=null?Integer.parseInt(f.getPort()):0,f.getFtpUser(),f.getFtpPwd(),f.getFtpBasePath(),f.getShowName(),"");
-                }else{
-                    throw new IllegalArgumentException("您没有权限删除该文件！");
-                }
-            });
-        }
+    public ResultMsg deleteById(String sysFileId) {
+        return sysFileRepo.deleteByFileId(sysFileId);
     }
 
     /**
@@ -180,15 +166,6 @@ public class SysFileServiceImpl implements SysFileService {
         return sysFile;
     }
 
-    /**
-     * 根据ID获取附件信息
-     * @param sysfileId
-     * @return
-     */
-    public SysFile findFileByIdGet(String sysfileId) {
-        SysFile sysFile = sysFileRepo.findByIdGet(sysfileId);
-        return sysFile;
-    }
 
     /**
      * 根据主业务ID获取附件信息
@@ -197,14 +174,15 @@ public class SysFileServiceImpl implements SysFileService {
      */
     @Override
     public List<SysFileDto> findByMainId(String mainId) {
-        Criteria criteria = sysFileRepo.getExecutableCriteria();
-        criteria.add(Restrictions.eq(SysFile_.mainId.getName(),mainId));
-        List<SysFile> sysFiles = criteria.list();
+        List<SysFile> sysFiles = sysFileRepo.findByMainId(mainId);
         List<SysFileDto> sysFileDtoList = new ArrayList<SysFileDto>(sysFiles == null ? 0 : sysFiles.size());
-        if (sysFiles != null) {
+        if (Validate.isList(sysFiles)) {
             sysFiles.forEach(sf -> {
                 SysFileDto sysFileDto = new SysFileDto();
                 BeanCopierUtils.copyProperties(sf, sysFileDto);
+                if(null != sf.getFileSize()){
+                    sysFileDto.setFileSizeStr(SysFileUtil.getFileSize(sf.getFileSize()));
+                }
                 sysFileDtoList.add(sysFileDto);
             });
         }
@@ -231,6 +209,46 @@ public class SysFileServiceImpl implements SysFileService {
     }
 
     /**
+     * 批量更新
+     * @param saveFileList
+     */
+    @Override
+    public void bathSave(List<SysFile> saveFileList) {
+        sysFileRepo.bathUpdate(saveFileList);
+    }
+
+    /**
+     * 获取默认的ftpId
+     * @return
+     */
+    @Override
+    public String findFtpId() {
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_FTPIP.getValue());
+        if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())) {
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            return propertyUtil.readProperty(FTP_IP);
+        }else{
+            return sysConfigDto.getConfigValue();
+        }
+    }
+
+    @Override
+    public String getLocalUrl() {
+        String localUrl = "";
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(LOCAL_URL.getValue());
+        if(sysConfigDto != null) {
+            localUrl = sysConfigDto.getConfigValue();
+        }else{
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            localUrl = propertyUtil.readProperty(IFResultCode.LOCAL_URL);
+        }
+        if (Validate.isString(localUrl) && localUrl.endsWith("/")) {
+            localUrl = localUrl.substring(0, localUrl.length() - 1);
+        }
+        return localUrl;
+    }
+
+    /**
      * 根据业务ID获取附件信息
      */
     /**
@@ -248,6 +266,7 @@ public class SysFileServiceImpl implements SysFileService {
             sysFiles.forEach(sf -> {
                 SysFileDto sysFileDto = new SysFileDto();
                 BeanCopierUtils.copyProperties(sf, sysFileDto);
+                sysFileDto.setFileSizeStr(SysFileUtil.getFileSize(sf.getFileSize()));
                 sysFileDtoList.add(sysFileDto);
             });
         }

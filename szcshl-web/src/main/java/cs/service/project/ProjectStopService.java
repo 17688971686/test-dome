@@ -15,12 +15,13 @@ import java.util.List;
 
 public interface ProjectStopService {
 	
-	List<ProjectStop> findProjectStopBySign(String signId);
+	List<ProjectStopDto> findProjectStopBySign(String signId);
 
     SignDispaWork findSignBySignId(String signId);
 
     ResultMsg savePauseProject(ProjectStopDto projectStopDto);
 
+    ResultMsg saveProjectStop(ProjectStopDto projectStopDto);
     PageModelDto<ProjectStopDto> findProjectStopByStopId(ODataObj oDataObj);
 
     /**

@@ -10,35 +10,38 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <div class="toolbar">
-        <a class="btn btn-sm btn-primary" ui-sref="monthlyMultiyearEdit({id:null})"><span
+        <a class="btn btn-sm btn-primary" ui-sref="monthlyMultiyearEdit({year:$state.params.year,id:null})"><span
                 class="glyphicon glyphicon-plus"></span>新建月报简报</a>
-        <button class="btn btn-sm btn-success" ng-click="vm.addSuppQuery()"><span
+        <button class="btn btn-sm btn-primary" ng-click="vm.addSuppQuery()"><span
                 class="glyphicon glyphicon-search"></span>查询
         </button>
         <a class="btn btn-sm btn-primary" ng-click="vm.resetAddSupp()">重置</a>
     </div>
 
     <div class="well well-sm">
-        <form id="form_monthly" name="form_monthly">
+        <form id="form_monthly"  name="form_monthly">
+           <input id="fileYear" name="fileYear"  operator="eq"  hidden="hidden"  >
+            <input name="fileType" operator="eq" value="2" hidden="hidden">
+            <input name="monthlyType" operator="eq" value="月报简报" hidden="hidden">
             <!--隐藏传初始条件end-->
             文件标题：
             <input type="text" ng-model="vm.suppletter.title" operator="like" name="title" id="title" placeholder="请输入">
 
             <span class="help-inline" style="margin-left:10px;">拟稿部门：</span>
-            <select name="orgName" id="orgName" style="width:80px" operator="eq">
+            <select ng-model="vm.model.orgName" name="orgName" id="orgName" style="width:80px" operator="eq">
                 <option value="">请选择</option>
-                <option ng-repeat="o in vm.orglist" value="{{o.name}}">{{o.name}}</option>
+                <option ng-repeat="o in vm.orglist" value="{{o.name}}" ng-selected="vm.model.orgName==o.name">{{o.name}}</option>
             </select>
             <span class="help-inline" style="margin-left:10px;">拟稿人：</span>
-            <input type="text" name="userName" id="userName" operator="like"
+            <input ng-model="vm.model.userName" type="text" name="userName" id="userName" operator="like"
                    placeholder="请输入">
 
 
             <span class="help-inline" style="margin-left:10px;">拟稿时间：</span>
-            <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
+            <input ng-model="vm.model.suppLetterBeingTime" name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
                    value="" type="text" operator="ge"/>
             至
-            <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
+            <input ng-model="vm.model.suppLetterEndTime" name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'"
                    value="" type="text" operator="le"/>
         </form>
     </div>
@@ -48,7 +51,7 @@
 </div>
 <!--E 年度月报简报列表  -->
 <script type="text/template" id="columnBtns">
-    <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{0}" ng-hide="{1}"><span
+    <a class="btn btn-xs btn-primary" href="#/monthlyMultiyearEdit/{0}/{1}" ng-if="('${CURRENT_USER.id}'=='{2}' || '{3}')"><span
             class="glyphicon glyphicon-pencil"></span>编辑</a>
-    <a class="btn btn-xs btn-info" href="#/monthlyMultiyView/{2}"><span class="glyphicon glyphicon-search"></span>查看</a>
+    <a class="btn btn-xs btn-info" ng-click="vm.saveView()" href="#/monthlyMultiyView/{4}"><span class="glyphicon glyphicon-search"></span>查看</a>
 </script>

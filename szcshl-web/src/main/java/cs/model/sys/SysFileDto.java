@@ -18,7 +18,7 @@ public class SysFileDto extends BaseDto {
 
     private String showName;
 
-    private Integer fileSize;
+    private Long fileSize;
 
     private String fileType;
 
@@ -42,6 +42,12 @@ public class SysFileDto extends BaseDto {
      */
     private String sysBusiType;
 
+    /**
+     * 文件大小，主要用于显示
+     */
+    private String fileSizeStr;
+
+    private Integer sort;
 
     public SysFileDto() {
     }
@@ -78,11 +84,11 @@ public class SysFileDto extends BaseDto {
         this.showName = showName;
     }
 
-    public Integer getFileSize() {
+    public Long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(Integer fileSize) {
+    public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 
@@ -124,5 +130,21 @@ public class SysFileDto extends BaseDto {
 
     public void setMainType(String mainType) {
         this.mainType = mainType;
+    }
+
+    public String getFileSizeStr() {
+        return fileSizeStr;
+    }
+
+    public void setFileSizeStr(String fileSizeStr) {
+        this.fileSizeStr = fileSizeStr;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

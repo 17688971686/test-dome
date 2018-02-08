@@ -18,7 +18,7 @@ public class Annountment extends DomainBase {
 
     @Id
     @GeneratedValue(generator = "noticeGenerator")
-    @GenericGenerator(name = "noticeGenerator", strategy = "uuid")
+    @GenericGenerator(name = "noticeGenerator", strategy = "org.hibernate.id.UUIDGenerator")
     private String anId;
 
     /**

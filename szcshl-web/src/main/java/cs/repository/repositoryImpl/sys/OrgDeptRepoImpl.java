@@ -4,6 +4,7 @@ import cs.common.HqlBuilder;
 import cs.common.cache.CacheConstant;
 import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
+import cs.common.utils.Validate;
 import cs.domain.sys.OrgDept;
 import cs.domain.sys.User;
 import cs.domain.sys.User_;
@@ -66,6 +67,20 @@ public class OrgDeptRepoImpl extends AbstractRepository<OrgDept, String> impleme
     }
 
     /**
+     * 缓存查询所有部门信息
+     * @return
+     */
+    @Override
+    public List<OrgDept> findAllByCache() {
+        ICache cache = CacheManager.getCache();
+        List<OrgDept> list = (List<OrgDept>) cache.get(CacheConstant.ORG_DEPT_CACHE);
+        if(!Validate.isList(list)){
+            list = findAll();
+        }
+        return list;
+    }
+
+    /**
      * 缓存所有的部门信息
      */
     @Override
@@ -74,6 +89,8 @@ public class OrgDeptRepoImpl extends AbstractRepository<OrgDept, String> impleme
         List<OrgDept> allList = findAll();
         cache.put(CacheConstant.ORG_DEPT_CACHE,allList);
     }
+
+
 
     @Override
     public OrgDept findOrgDeptById(String id) {

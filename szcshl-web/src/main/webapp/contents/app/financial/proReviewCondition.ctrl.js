@@ -79,8 +79,16 @@
                     vm.total.ljhj = addNum(vm.total.ljhj ,p.ljhj);
                 }
             });
-            vm.total.hjl =   Math.round(vm.total.ljhj/vm.total.declarevalue  * 10000) / 10000*100;
+            vm.total.hjl =   Math.round(vm.total.ljhj/vm.total.declarevalue  * 10000) / 100;
         }
+
+        vm.isBeginTime=function () {
+            vm.byear=vm.model.beginTime.split("-")[0];
+            vm.begMonth=vm.model.beginTime.split("-")[1];
+            vm.endMonth=vm.model.endTime.split("-")[1];
+            vm.year=vm.model.endTime.split("-")[0];
+        }
+        
         activate();
         function activate() {
                 var date=new Date;

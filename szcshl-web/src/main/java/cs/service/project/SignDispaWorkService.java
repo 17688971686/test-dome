@@ -18,6 +18,11 @@ public interface SignDispaWorkService {
      */
     PageModelDto<SignDispaWork> findMyDoProject(ODataObj odataObj,boolean isMianUser);
 
+    /**
+     * 项目综合查询
+     * @param odataObj
+     * @return
+     */
     PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj);
 
     /**
@@ -75,13 +80,6 @@ public interface SignDispaWorkService {
     PageModelDto<SignDispaWork> findOverSignDispaWork();
 
     /**
-     * 通过专家id 获取专家评审过的项目信息
-     * @param expertId
-     * @return
-     */
-    List<SignDispaWork> reviewProject(String expertId);
-
-    /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
      * @param startTime
      * @param endTime
@@ -96,5 +94,21 @@ public interface SignDispaWorkService {
      * @return
      */
     ResultMsg findByTypeAndReview(String startTime , String endTime);
+
+    /**
+     * 通过条件查询统计
+     * @param queryData
+     * @param page
+     * @return
+     */
+    List<SignDispaWork> queryStatistics(String  queryData , int page);
+
+    /**
+     * 通过业务id，判断当前用户是否有权限查看项目详情----用于秘密项目
+     * @param signId
+     * @return
+     */
+    ResultMsg findSecretProPermission(String signId);
+
 
 }

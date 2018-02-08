@@ -1,5 +1,9 @@
 <meta charset="UTF-8">
 <div  id="expert_detail" class="well well-sm conttent_list" style="background: white;min-height:960px;margin-bottom: 50px;">
+    <div class="toolbar">
+        <button class="btn btn-sm btn-primary" ng-click="printFile(vm.model.expertID,'EXPERT','EXPERT')">
+            <span class="glyphicon glyphicon-print"></span>打印预览</button>
+    </div>
     <table class="">
         <caption class="text-center"><h3><strong>深圳市政府投资项目咨询专家申请表</strong></h3></caption>
         <tr>
@@ -110,7 +114,9 @@
 
             <td class="text-center">区域类别</td>
             <td colspan="3">
-                {{vm.model.expertField}}
+                <span ng-show="vm.model.expertField == 2">境外专家</span>
+                <span ng-show="vm.model.expertField == 1">市外专家</span>
+                <span ng-show="vm.model.expertField == 0">市内专家</span>
             </td>
         </tr>
 
@@ -225,5 +231,5 @@
         </tr>
     </table>
 </div>
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="vm.editPrint()">打印</button>
+
 

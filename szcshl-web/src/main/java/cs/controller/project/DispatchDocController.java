@@ -60,7 +60,7 @@ public class DispatchDocController {
 
     @RequiresAuthentication
     //@RequiresPermissions("dispatch#createDispatchTemplate#post")
-    @RequestMapping(name="生成发文模板" , path="createDispatchTemplate" , method = RequestMethod.POST )
+    @RequestMapping(name="生成评审报告模板" , path="createDispatchTemplate" , method = RequestMethod.POST )
     @ResponseBody
     public ResultMsg createDispatchTemplate(@RequestParam  String signId){
 

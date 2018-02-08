@@ -33,7 +33,26 @@ public class AddRegisterFileDto extends BaseDto {
      */
     private String businessId;
 
-	public AddRegisterFileDto() {
+
+    /**
+     * 业务类型：
+     * 1为报审文件，2为归档图纸，3为补充材料，4其他资料，
+     * 5为归档中的报审登记表中的其它资料，
+     * 6为归档项目审核中的补充资料，
+     * 7为归档其它特殊文件
+     */
+    private Integer businessType;
+
+
+    public Integer getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(Integer businessType) {
+        this.businessType = businessType;
+    }
+
+    public AddRegisterFileDto() {
     }
    
     public String getId() {

@@ -5,7 +5,7 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/sharingPlatlform">共享平台</a></li>
+        <li><a href="#/sharingPlatlform">公告资料管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
 
@@ -29,28 +29,28 @@
     <div class="well well-sm">
     <form id="formSharing" name="formSharing">
         <span class="help-inline">主题：</span>
-        <input type="text"  operator="like" name="theme" id="theme" placeholder="请输入名称">
+        <input type="text" ng-model="vm.model.theme"  operator="like" name="theme" id="theme" placeholder="请输入名称">
 
-        <span class="help-inline" style="margin-left:10px;">共享主题：</span>
-        <select style="width:10%;" ng-model="vm.model.pubDept"   name="pubDept" id="pubDept" operator="eq" >
+      <!--  <span class="help-inline" style="margin-left:10px;">共享用户：</span>
+        <select  style="width:10%;" ng-model="vm.model.pubDept"   name="pubDept" id="pubDept" operator="eq" >
             <option value="">无</option>
-            <option ng-repeat="org in vm.orglist" value="{{org.name}}">{{org.name}}</option>
+            <option ng-repeat="u in vm.userlist" value="{{u.id}}" >{{u.displayName}}</option>
         </select>
 
         <span class="help-inline" style="margin-left:10px;">共享部门：</span>
         <select style="width:10%;" ng-model="vm.model.postResume"  name="postResume" id="postResume" operator="eq" >
             <option value="">无</option>
-            <option ng-repeat="r in vm.userlist" value="{{r.loginName}}">{{r.loginName}}</option>
-        </select>
+            <option ng-repeat="r in vm.orglist" value="{{r.id}}">{{r.name}}</option>
+        </select>-->
     </form>
     </div>
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>
 
 <script type="text/template" id="columnBtns">
-    <a class="btn btn-xs btn-success" href="#/sharingDetil/{0}"><span class="glyphicon glyphicon-edit"></span>查看</a>
+    <a class="btn btn-xs btn-success" ng-click="vm.saveView()" href="#/sharingDetil/{0}"><span class="glyphicon glyphicon-edit"></span>查看</a>
     <@shiro.hasPermission name="sharingPlatlform##put">
-    <a class="btn btn-xs btn-primary" href="#/sharingPlatlformEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+    <a class="btn btn-xs btn-primary" ng-click="vm.saveView()" href="#/sharingPlatlformEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
     </@shiro.hasPermission>
     <@shiro.hasPermission name="sharingPlatlform##delete">
     <button class="btn btn-xs btn-danger"  ng-click="{2}" ><span class="glyphicon glyphicon-remove"></span>删除</button>

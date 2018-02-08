@@ -2,7 +2,9 @@
 <meta charset="UTF-8">
 
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+
+<!-- 附件 -->
+<#include "/file/common.html"/>
 
 <div class="well well-sm" style="background:white;overflow:auto;">
     <form id="form" name="form">
@@ -13,30 +15,34 @@
         </div>
         <table style="width:100%;overflow:auto;">
             <tr>
-                <td class="formAlignRight" style="width: 200px;">文件名称：<span class="required">*</span></td>
-                <td>
-                    <input type="text" name="fileName" id="fileName" ng-model="vm.fileLibrary.fileName" class="form-control input-sm" style="width: 70%;" data-val="true" data-val-required="必填"/>
+                <td class="text-right" style="width: 120px; height: 40px;">文件名称：<span class="required">*</span></td>
+                <td width="75%">
+                    <input type="text" name="fileName" id="fileName" ng-model="vm.fileLibrary.fileName"
+                           style="padding: 3px 8px; width: 80%;" data-val="true" data-val-required="必填"/>
                 </td>
-                <td>
+                <td width="5%">
                     <span data-valmsg-for="fileName" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
             <tr>
-                <td class="formAlignRight" style="width: 200px;">排序号：</td>
+                <td class="text-right">排序号：</td>
                 <td>
-                    <input type="number" name="fileSort" ng-model="vm.fileLibrary.fileSort" class="form-control input-sm" style="width: 70%;"/>
+                    <input type="number" name="fileSort" ng-model="vm.fileLibrary.fileSort"
+                           style="padding: 3px 8px; width: 65%;"/>
+                    <span class="label label-info">只能输入数字</span>
                 </td>
                 <td></td>
             </tr>
             <tr>
-                <td class="formAlignRight" style="width: 200px;">文件内容：</td>
+                <td class="text-right">文件内容：</td>
                 <td>
-                    <textarea name="fileContent" ng-model="vm.fileLibrary.fileContent" style="width: 70%;"></textarea>
+                    <textarea name="fileContent" ng-model="vm.fileLibrary.fileContent"
+                             rows="5" style="padding: 3px 8px; width: 80%;"></textarea>
                 </td>
                 <td></td>
             </tr>
             <tr>
-                <td class="formAlignRight">附件： </td>
+                <td class="text-right">附件： </td>
                 <td colspan="2">
                     <p><button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt" >上传附件</button></p>
                     <div ng-repeat="x in vm.sysFilelists">
@@ -46,7 +52,7 @@
                             <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
                             <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
                             <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
-                            <button class="btn btn-xs btn-danger" ng-click="vm.delSysFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
+                            <button class="btn btn-xs btn-danger" ng-click="vm.delFile(x.sysFileId)"><i class="fa fa-times" aria-hidden="true"></i>删除</button>
                         </p>
                     </div>
                 </td>

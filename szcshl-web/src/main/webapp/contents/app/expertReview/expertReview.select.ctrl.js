@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertSelectCtrl', expertReview);
 
-    expertReview.$inject = [ 'expertReviewSvc', 'expertConditionSvc', 'expertSvc','$state','bsWin'];
+    expertReview.$inject = [ 'expertReviewSvc', 'expertConditionSvc', 'expertSvc','$state','bsWin','$scope'];
 
-    function expertReview(expertReviewSvc, expertConditionSvc,expertSvc, $state,bsWin) {
+    function expertReview(expertReviewSvc, expertConditionSvc,expertSvc, $state,bsWin,$scope) {
         var vm = this;
         vm.title = '选择专家';
         vm.conMaxIndex = 0;                   //条件号
@@ -19,7 +19,7 @@
         vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
         vm.businessType = $state.params.businessType;   //专家业务类型
         var expertID = $state.params.expertID;   //专家ID
-
+        vm.isSuperUser = isSuperUser;
         //S 查看专家详细
         vm.findExportDetail = function (id) {
             expertSvc.getExpertById(id, function (data) {
@@ -101,6 +101,9 @@
         }
 
         vm.init = function(businessId,minBusinessId){
+            vm.expertReview = {};
+            vm.confirmEPList = [];
+            vm.selectIds = [];
             expertReviewSvc.initReview(businessId,minBusinessId,function(data){
                 vm.expertReview = data;
                 //获取已经抽取的专家
@@ -115,7 +118,6 @@
                         vm.excludeIds = '';
                     }
                 }
-
             });
         }
 
@@ -127,6 +129,7 @@
 
         //弹出自选专家框
         vm.showSelfExpertGrid = function () {
+            vm.selfExpertOptions.dataSource._skip=0;
             vm.selfExpertOptions.dataSource.read();
             $("#selfExpertDiv").kendoWindow({
                 width: "80%",
@@ -201,11 +204,13 @@
 
         //自选专家查询
         vm.querySelfExpert = function(){
+            vm.selfExpertOptions.dataSource._skip=0;
             vm.selfExpertOptions.dataSource.read();
         }
 
         //境外专家
         vm.showOutExpertGrid = function () {
+            vm.outExpertOptions.dataSource._skip=0;
             vm.outExpertOptions.dataSource.read();
             $("#outExpertDiv").kendoWindow({
                 width: "70%",
@@ -274,6 +279,7 @@
 
         //境外专家查询
         vm.queryOutExpert = function(){
+            vm.outExpertOptions.dataSource._skip=0;
             vm.outExpertOptions.dataSource.read();
         }
 
@@ -300,7 +306,7 @@
             vm.matchExpertList = [];
             vm.matchExpertList = vm.matchEPMap[sortIndex];
             $("#matchExpertDiv").kendoWindow({
-                width: "70%",
+                width: "80%",
                 height: "600px",
                 title: "统计专家信息列表",
                 visible: false,
@@ -324,7 +330,7 @@
 
         //添加随机抽取条件
         vm.addCondition = function () {
-            if (vm.expertReview.state == 9 || vm.expertReview.state == '9') {
+            if (!vm.isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
             } else {
                 if(!vm.expertReview.expertSelConditionDtoList){
@@ -340,14 +346,14 @@
 
         //删除专家抽取条件
         vm.removeCondition = function () {
-            if (vm.expertReview.state == 9 || vm.expertReview.state == '9') {
+            if (!vm.isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
             } else {
                 var isCheck = $("#conditionTable input[name='epConditionSort']:checked");
                 if (isCheck.length > 0) {
                     bsWin.confirm({
                         title: "询问提示",
-                        message: "删除数据不可恢复，确定删除么？",
+                        message: "删除数据的同时会删除该条件所抽取的专家，删除数据不可恢复，确定删除么？",
                         onOk: function () {
                             var ids = [];
                             for (var i = 0; i < isCheck.length; i++) {
@@ -360,14 +366,9 @@
                             if(ids.length > 0){
                                 expertConditionSvc.deleteSelConditions(ids.join(","),vm.isCommit,function(data){
                                     if(data.flag || data.reCode == 'ok'){
-                                        bsWin.success("操作成功！");
-                                        $.each(ids,function(i,id){
-                                            $.each(vm.expertReview.expertSelConditionDtoList,function(c,con){
-                                                if (id == con.id) {
-                                                    vm.expertReview.expertSelConditionDtoList.splice(c, 1);     //没有保存抽取条件的直接删除
-                                                }
-                                            })
-                                        })
+                                        bsWin.success("操作成功！",function(){
+                                            vm.init(vm.businessId,vm.minBusinessId);
+                                        });
                                     }else{
                                         bsWin.error(data.reMsg);
                                     }
@@ -423,7 +424,7 @@
 
         //保存专家抽取条件
         vm.saveCondition = function () {
-            if (vm.expertReview.state == 9 || vm.expertReview.state == '9') {
+            if (!vm.isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
             }else {
                 if (buildCondition()) {
@@ -447,10 +448,10 @@
         //（整体方案抽取）开始随机抽取
         vm.startAutoExpertWin = function () {
             if(!vm.expertReview.id){
-                bsWin.alert("请先进行整体！");
+                bsWin.alert("请先进行整体专家抽取条件设置并保存！");
                 return ;
             }
-            if (vm.expertReview.state == 9 || vm.expertReview.state == '9') {
+            if (!isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
                 return ;
             }
@@ -550,25 +551,40 @@
         vm.affirmAutoExpert = function () {
             var isCheck = $("#allAutoEPTable input[name='autoEPCheck']:checked");
             if(isCheck.length < 1){
-                bsWin.alert("请选择要确认的抽取专家！");
-                return ;
-            }
-            var ids = [];
-            for (var i = 0; i < isCheck.length; i++) {
-                ids.push(isCheck[i].value);
-            }
-            expertReviewSvc.affirmAutoExpert(vm.minBusinessId,vm.businessType,ids.join(","),'9',function(data){
-                if(data.flag || data.reCode=='ok'){
-                    vm.reFleshConfirmState(ids,"9");
-                    vm.checkAutoOfficeExpert = false;
-                    vm.checkAutoAntiExpert = false;
-                    bsWin.success(data.reMsg);
-                }else{
-                    bsWin.error(data.reMsg);
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "您还没选择专家，确定没有合适的专家么？",
+                    onOk: function () {
+                        $scope.$apply(function(){
+                            //每个抽取条件的抽取次数加1
+                            $.each(vm.expertReview.expertSelConditionDtoList, function (c, con) {
+                                if(!con.selectIndex || con.selectIndex < 1){
+                                    con.selectIndex = 1;
+                                }else{
+                                    con.selectIndex = con.selectIndex + 1;
+                                }
+                                con.showDraftBt = true;
+                            })
+                        });
+                        window.parent.$("#aotuExpertDiv").data("kendoWindow").close();
+                    }
+                });
+            }else{
+                var ids = [];
+                for (var i = 0; i < isCheck.length; i++) {
+                    ids.push(isCheck[i].value);
                 }
-
-            })
-
+                expertReviewSvc.affirmAutoExpert(vm.minBusinessId,vm.businessType,ids.join(","),'9',function(data){
+                    if(data.flag || data.reCode=='ok'){
+                        vm.reFleshConfirmState(ids,"9");
+                        vm.checkAutoOfficeExpert = false;
+                        vm.checkAutoAntiExpert = false;
+                        bsWin.success(data.reMsg);
+                    }else{
+                        bsWin.error(data.reMsg);
+                    }
+                })
+            }
         }
 
         //确定实际参加会议的专家
@@ -631,5 +647,35 @@
                 $("#compositeScoreEnd_"+expertSelObj.id).html("");
             }
         }
+
+        //超级管理员删除抽取的专家
+        vm.deleteAutoSelectEP = function(){
+            var isCheck = $("#autoDraftExpertTable input[name='checkSelectExpert']:checked");
+            if (isCheck.length > 0) {
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "删除数据不可恢复，确定删除么？",
+                    onOk: function () {
+                        var ids = [];
+                        for (var i = 0; i < isCheck.length; i++) {
+                            ids.push(isCheck[i].value);
+                        }
+                        expertReviewSvc.delSelectedExpert(vm.expertReview.id,ids.join(","),vm.isCommit,function (data) {
+                            if(data.flag || data.reCode == 'ok'){
+                                bsWin.alert("删除成功！",function () {
+                                    vm.reFleshAfterRemove(ids);
+                                });
+                            }else{
+                                bsWin.alert(data.reMsg);
+                            }
+                        })
+                    }
+                });
+            }else{
+                bsWin.alert("请选择要删除的抽取专家！");
+            }
+        }
+
+
     }
 })();

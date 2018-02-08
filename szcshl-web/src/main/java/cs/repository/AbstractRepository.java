@@ -40,6 +40,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
         this.persistentClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
+    @Override
     public Criteria getExecutableCriteria() {
         return DetachedCriteria.forClass(this.getPersistentClass()).getExecutableCriteria(getSession());
     }
@@ -108,7 +109,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @SuppressWarnings({"unchecked", "deprecation"})
     public List<T> findByOdata(ODataObj oDataObj) {
         logger.debug("findByOdata");
-        Criteria crit = this.getSession().createCriteria(this.getPersistentClass());
+        Criteria crit = getExecutableCriteria();
         List<T> list = oDataObj.buildQuery(crit).list();
         return list;
     }

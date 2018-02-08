@@ -97,6 +97,8 @@ public class DispatchDocDto extends BaseDto {
 
     private String directorName;//局长名称
 
+    private  String directorIssue;//意见
+
     //申报金额
     private BigDecimal declareValue;
 
@@ -542,5 +544,12 @@ public class DispatchDocDto extends BaseDto {
 	public void setDispatchStage(String dispatchStage) {
 		this.dispatchStage = dispatchStage;
 	}
-    
+
+    public String getDirectorIssue() {
+        return directorIssue;
+    }
+
+    public void setDirectorIssue(String directorIssue) {
+        this.directorIssue = directorIssue;
+    }
 }

@@ -12,6 +12,12 @@ public class Constant {
      * 超级管理员账号
      */
     public static final String SUPER_USER = "admin";
+    public static final String SUPER_ROLE = "超级管理员";
+
+    /**
+     * 默认需要上传的文件
+     */
+    public static final String DEFAULT_CHECK_FILE = "投资估算表,投资匡算表;评审意见,审核意见";
     /**
      * 企业名称
      */
@@ -49,6 +55,10 @@ public class Constant {
     public static String DISPATCH_PREFIX = "深投审";
 
     /**
+     * 拟补充资料函文件字号
+     */
+    public static String ADDSUPPER_PREFIX = "深投审函";
+    /**
      * 默认收文工作日
      */
     public static Float WORK_DAY_15 = 15f;
@@ -70,7 +80,7 @@ public class Constant {
     /**
      * 初始化用户密码
      */
-    public static final String PASSWORD = "123456";
+    public static final String PASSWORD = "1";
 
     /**
      * 插件默认地址
@@ -94,12 +104,7 @@ public class Constant {
      * 文件存到ftp的
      * Ip地址、服务端口、用户名、密码、基础路径、文件存放路径
      */
-    public static final String FTP_IP1 = "FTP_IP1";
-    public static final String FTP_PORT1 = "FTP_PORT1";
-    public static final String FTP_USER = "FTP_USER";
-    public static final String FTP_PWD = "FTP_PWD";
-    public static final String FTP_BASE_PATH = "FTP_BASE_PATH";
-    public static final String FTP_FILE_PATH = "FTP_FILE_PATH";
+    public static final String FTP_IP = "FTP_IP1";
 
 
     /**
@@ -133,7 +138,6 @@ public class Constant {
      */
     public static enum EnumConfigKey {
         CONFIG_LIST("CONFIG_LIST"),                 //所有数据参数缓存
-        LAST_UNIT_MAXSORT("LAST_UNIT_MAXSORT"),     //上一个抽签单位的最大序号
         SYSINIT("SYSINIT"),                         //系统初始化
         ;
 
@@ -161,8 +165,13 @@ public class Constant {
      * @author ldm
      */
     public static enum EnumState {
-        NO("0"), PROCESS("1"), STOP("2"), NORMAL("5"),
-        DELETE("7"), FORCE("8"), YES("9");
+        NO("0"),
+        PROCESS("1"),
+        STOP("2"),
+        NORMAL("5"),
+        DELETE("7"),
+        FORCE("8"),
+        YES("9");
 
         private String value;
 
@@ -171,6 +180,33 @@ public class Constant {
         }
 
         public String getValue() {
+            return value;
+        }
+    }
+    /**
+     * 业务类型：
+     * 1为报审文件，2为归档图纸，3为补充材料，4其他资料，
+     * 5为归档中的报审登记表中的其它资料，
+     * 6为归档项目审核中的补充资料，
+     * 7为归档其它特殊文件
+     */
+
+    public static enum AddRegisterFileType {
+        BSWJ(1),
+        GDTZ(2),
+        BCZL(3),
+        QTZL(4),
+        GBQT(5),
+        GXBZ(6),
+        GQTW(7);
+
+        private Integer value;
+
+        AddRegisterFileType(Integer value) {
+            this.value = value;
+        }
+
+        public Integer getValue() {
             return value;
         }
     }
@@ -185,7 +221,7 @@ public class Constant {
         OFFICIAL("2"),              //正式
         ALTERNATIVE("3"),           //备选
         STOP("4"),                  //停用
-        REMOVE("5");                //已删除
+        REMOVE("0");                //已删除
 
         private String value;
 
@@ -309,7 +345,9 @@ public class Constant {
      */
     public static enum Template {
         EXPORTROOM("exportRoom", "导出会议室安排"),
-        OUTPUT_SUFFIX(".doc", "work文档"),        //生成work文档
+        EXCEL_SUFFIX(".xls", "xls表格"),
+        WORD_SUFFIX(".doc", "work文档"),
+        PDF_SUFFIX(".pdf", "pdf文档"),
         COMPERE("compere", "主持人"),
         MEETING_AM("meetingAM", "会议议程（上午）"),
         MEETING_PM("meetingPM", "会议议程（下午）"),
@@ -319,7 +357,7 @@ public class Constant {
         UNIT_NOTICE("notice", "项目单位会议通知"),
         THIS_STAGE_MEETING("thisStageMeeing", "本周评审会议安排"),
         NEXT_STAGE_MEETING("nextStageMeeting", "下周评审会议安排"),
-        OUTPUT_SUFFIX_XLS(".xls", "xls表格"),//生成xls表格
+
 
         //可行性研究报告
         STUDY_OPINION("study/opinion", "可行性研究报告_评审意见"),
@@ -350,7 +388,74 @@ public class Constant {
         SUBJECT_STUDY_MEETINGAM("subjectStudy/subjectMeetingAM", "课题研究_会议议程（上午）"),
         SUBJECT_STUDY_MEETINGPM("subjectStudy/subjectMeetingPM", "课题研究_会议议程（下午）"),
         //月报简报
-        MONTH_REPORT("monthReport/monthReport", "月报简报");
+        MONTH_REPORT("monthReport/monthReport", "月报简报"),
+
+        /*************以下是ISO模板*************/
+        //项目建议书
+        STAGE_SUG_SIGN("print/sign/xmjys" , "项目建议书_报审登记表"),
+        STAGE_SUG_WORKPROGRAM("print/workProgram/xmjys" , "项目建议书_工作方案"),
+        STAGE_SUG_FILERECORD("print/filerecord/fileXmjys" , "项目建议书_归档"),
+        STAGE_SUG_DISPATCHDOC("print/dispatchDoc/dispatchXmjys" , "项目建议书_发文"),
+        STAGE_STUDY_DISPATCHDOC("print/dispatchDoc/dispatchKxxyj" , "可行性研究报告_发文"),
+        STAGE_BUDGET_DISPATCHDOC("print/dispatchDoc/dispatchXmgs" , "项目概算_发文"),
+
+        STAGE_REPORT_WORKPROGRAM("print/workProgram/zjsq" , "资金申请_工作方案"),
+        STAGE_DEVICE_WORKPROGRAM("print/workProgram/jksb" , "进口设备_工作方案"),
+        STAGE_HOMELAND_WORKPROGRAM("print/workProgram/sbqd" , "设备清单_工作方案"),
+
+        //可行性研究
+        STAGE_STUDY_FILERECORD("print/filerecord/fileKxxyj" , "可行性研究_归档"),
+
+        //项目概算
+        STAGE_BUDGET_SIGN("print/sign/signXmgs" , "项目概算_报审登记表"),
+        STAGE_BUDGET_FILERECORD("print/filerecord/fileXmgs" , "项目概算_归档"),
+        STAGE_BUDGET_XS_FILERECORD("print/filerecord/fileXmgsXS" , "项目概算协审_归档"),
+
+        //进口设备
+        IMPORT_DEVICE_SIGN("print/sign/signJksb" , "进口设备_报审登记表"),
+        IMPORT_DEVICE_FILERECORD("print/filerecord/fileJksb" , "进口设备_归档"),
+        IMPORT_DEVICE_DISPATCHDOC("print/dispatchDoc/dispatchJksb" , "进口设备_发文"),
+
+        //设备清单
+        DEVICE_BILL_SIGN("print/sign/signSbqd" , "设备清单_报审登记表"),
+        DEVICE_BILL_FILERECORD("print/filerecord/fileSbqd2" , "设备清单_归档"),
+        DEVICE_BILL_DISPATCHDOC("print/dispatchDoc/dispatchSbqd" , "设备清单_发文"),
+
+        //资金申请报告
+        APPLY_REPORT_FILERECORD("print/filerecord/fileZjsq" , "资金申请_归档"),
+        APPLY_REPORT_SIGN("print/sign/signZjsq" , "资金申请_报审登记表"),
+        APPLY_REPORT_DISPATCHDOC("print/dispatchDoc/dispatchZjsq" , "资金申请单_发文"),
+
+        //其它
+        OTHERS_DISPATCHDOC("print/dispatchDoc/dispatchOther" , "其它阶段_发文"),
+        OTHERS_FILERECORD("print/filerecord/fileOther" , "其它阶段_归档"),
+
+        //其它资料
+        OTHER_FILE("print/other" , "其它资料"),
+
+        //拟补充资料函
+        ADDSUPPLETER("print/common" , "拟补充资料函"),
+
+        //专家申请表
+        EXPERT("print/expert" , "专家申请表"),
+
+        //专家评审费
+        EXPERT_PAYMENT("print/expert_payment" , "专家评审费"),
+
+        //专家评分
+        EXPERT_SCORD("print/expert_score" , "专家评分"),
+
+        //月报简报
+        MONTHLY("print/monthly/monthly" , "月报简报"),
+
+        //借阅档案
+        ARCHIVES_DETAIL("print/archives/archivesDetail" , "借阅档案"),
+        //课题研究
+        TOPICINFO_WORKPROGRAM("print/topicInfo/workProgramTopic" , "课题研究_工作方案"),
+        TOPICINFO_FILERECORD("print/topicInfo/fileTopic" , "课题研究_归档"),
+
+        //专家缴费
+        EXPERT_PAYTAXES("print/expert_paytaxes" , "专家缴费");
 
         private String key;
         private String value;
@@ -390,7 +495,8 @@ public class Constant {
         FILELIBRARY("质量管理文件库"),
         POLICYLIBRARY("政策标准库"),
         SUBJECT_STUDY("课题研究"),
-        TEMOLATE("评审报告");
+        TEMOLATE("评审报告"),
+        FGW_FILE("委附件");
 
         private String value;
 
@@ -450,29 +556,6 @@ public class Constant {
         private String value;
 
         MergeType(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    /**
-     * 部门名称
-     *
-     * @author sjy
-     */
-    public static enum OrgName {
-        ORGZHB("综合部"),
-        ORGPGYB("评估一部"),
-        ORGPGEB("评估二部"),
-        ORGGSYB("概算一部"),
-        ORGGSEB("概算二部");
-
-        private String value;
-
-        OrgName(String value) {
             this.value = value;
         }
 
@@ -601,15 +684,20 @@ public class Constant {
      * 评审阶段key值
      */
     public static enum RevireStageKey {
-        KEY_SUG("STAGE_SUG"),           //项目建议书
-        KEY_STUDY("STAGE_STUDY"),       //可行性研究报告
-        KEY_BUDGET("STAGE_BUDGET"),     //项目概算
-        KEY_REPORT("STAGE_REPORT"),     //资金申请报告
-        KEY_HOMELAND("STAGE_HOMELAND"), //设备清单（国产）
-        KEY_IMPORT("STAGE_IMPORT"),     //设备清单（进口）
-        KEY_DEVICE("STAGE_DEVICE"),     //进口设备
-        KEY_OTHER("STAGE_OTHER");       //其他
-
+        KEY_SUG("STAGESUG"),           //项目建议书
+        KEY_STUDY("STAGESTUDY"),       //可行性研究报告
+        KEY_BUDGET("STAGEBUDGET"),     //项目概算
+        KEY_REPORT("STAGEREPORT"),     //资金申请报告
+        KEY_HOMELAND("STAGEHOMELAND"), //设备清单（国产）
+        KEY_IMPORT("STAGEIMPORT"),     //设备清单（进口）
+        KEY_DEVICE("STAGEDEVICE"),     //进口设备
+        KEY_OTHER("STAGEOTHER"),       //其他
+        LAST_UNIT_MAXSORT("LAST_UNIT_MAXSORT"),     //上一个抽签单位的最大序号
+        KEY_CHECKFILE("CHECKFILE"),    //要检测的文件名名称
+        KEY_FTPIP("FTPIP"),            //文件服务器IP地址,
+        RTX_ENABLED("RTX_ENABLED"),     //是否使用腾讯通账号
+        RETURN_FGW_URL("RETURN_FGW_URL"),//回传给委里的接口配置
+        LOCAL_URL("LOCAL_URL");         //系统访问地址
         private String value;
 
         RevireStageKey(String value) {
@@ -628,28 +716,28 @@ public class Constant {
         public static String getZHCNName(String value) {
             String resultZHName = "";
             switch (value){
-                case "STAGE_SUG":
+                case "STAGESUG":
                     resultZHName = STAGE_SUG;
                     break;
-                case "STAGE_STUDY":
+                case "STAGESTUDY":
                     resultZHName = STAGE_STUDY;
                     break;
-                case "STAGE_BUDGET":
+                case "STAGEBUDGET":
                     resultZHName = STAGE_BUDGET;
                     break;
-                case "STAGE_REPORT":
+                case "STAGEREPORT":
                     resultZHName = APPLY_REPORT;
                     break;
-                case "STAGE_HOMELAND":
+                case "STAGEHOMELAND":
                     resultZHName = DEVICE_BILL_HOMELAND;
                     break;
-                case "STAGE_IMPORT":
+                case "STAGEIMPORT":
                     resultZHName = DEVICE_BILL_IMPORT;
                     break;
-                case "STAGE_DEVICE":
+                case "STAGEDEVICE":
                     resultZHName = IMPORT_DEVICE;
                     break;
-                case "STAGE_OTHER":
+                case "STAGEOTHER":
                     resultZHName = OTHERS;
                     break;
                 default:
@@ -659,7 +747,6 @@ public class Constant {
         }
 
     }
-
 
     /**
      * 存档编号KEY值
@@ -691,7 +778,9 @@ public class Constant {
         FLOWCOMMIT("流程提交"),
         FLOWBACK("流程回退"),
         FLOWACTIVE("流程激活"),
-        FLOWSTOP("流程暂停");
+        FLOWSTOP("流程暂停"),
+        QUARTZ("定时器"),
+        FILEUPDATE("附件修改");
         private String value;
 
         LOG_MODULE(String value) {

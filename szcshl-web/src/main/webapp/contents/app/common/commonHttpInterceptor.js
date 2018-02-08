@@ -63,6 +63,19 @@
 
     app.config(['$httpProvider', function ($httpProvider) { // 添加拦截器
         $httpProvider.interceptors.push(commonHttpInterceptor);
+
+        //ie下angular的缓存问题
+            // Initialize get if not there
+           if (!$httpProvider.defaults.headers.get) {
+                   $httpProvider.defaults.headers.get = {};
+             }
+
+          // Enables Request.IsAjaxRequest() in ASP.NET MVC
+           $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+
+           //禁用IE对ajax的缓存
+           $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
+           $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
     }]);
 
     if (jQuery) {  // 设置jQuery的ajax全局默认配置

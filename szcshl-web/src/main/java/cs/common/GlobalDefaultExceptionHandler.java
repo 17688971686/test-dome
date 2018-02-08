@@ -22,19 +22,22 @@ public class GlobalDefaultExceptionHandler {
 	public static final String DEFAULT_ERROR_VIEW = "error";
 
 	@ExceptionHandler(value = IllegalArgumentException.class)
-	public @ResponseBody Response illegalErrorHandler(HttpServletRequest req, Exception e) throws Exception {
-		Response response = new Response();
-		response.setMessage(e.getMessage());
-		response.setStatus(555);
+	@ResponseBody
+	public ResultMsg illegalErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+		ResultMsg resultMsg = new ResultMsg();
+		resultMsg.setReMsg(e.getMessage());
+		resultMsg.setReCode("555");
 		logger.warn( e.getMessage());
-		return response;
+		return resultMsg;
 	}
+
 	@ExceptionHandler(value ={ UnauthenticatedException.class,AuthorizationException.class})
 	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
 	public String unAuthErrorHandler(HttpServletRequest req, Exception e) throws Exception {
 		logger.warn("登录信息失效或您没有权限!");
 		return "error/401";
 	}
+
 	@ExceptionHandler(value = Exception.class)
 	public void  errorHandler(HttpServletRequest req, Exception e) throws Exception {
 		

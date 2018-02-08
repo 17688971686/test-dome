@@ -120,6 +120,9 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     @Qualifier("monthFlowBackImpl")
     private IFlowBack monthFlowBackImpl;
+    @Autowired
+    @Qualifier("projectStopFlowBackImpl")
+    private IFlowBack projectStopFlowBackImpl;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -221,6 +224,9 @@ public class FlowServiceImpl implements FlowService {
                             roomBookingRepo.updateStateByBusinessId(workPlan.getId(), Constant.EnumState.NO.getValue());
                         }
                     }
+                    break;
+                case FlowConstant.PROJECT_STOP_FLOW:
+                    backActivitiId = projectStopFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
                     break;
                 case FlowConstant.FLOW_APPRAISE_REPORT:
                     backActivitiId = appraiseFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
@@ -382,13 +388,16 @@ public class FlowServiceImpl implements FlowService {
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
         criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(), Constant.EnumState.YES.getValue()));
-        if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) { //是部门负责人
-            criteria.add(Restrictions.eq(SignDispaWork_.ministerName.getName(), SessionUtil.getDisplayName()));
-        } else if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {//是副主任
-            criteria.add(Restrictions.eq(SignDispaWork_.leaderName.getName(), SessionUtil.getDisplayName()));
-        } else if (!SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())) {//不是主任
-            criteria.add(Restrictions.or(Restrictions.like(SignDispaWork_.aUserID.getName(), SessionUtil.getUserId()), Restrictions.like(SignDispaWork_.mUserId.getName(), SessionUtil.getUserId())));
+        if(Constant.SUPER_USER.equals(SessionUtil.getLoginName()) || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
 
+        }else{
+            if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) { //是部门负责人
+                criteria.add(Restrictions.eq(SignDispaWork_.ministerName.getName(), SessionUtil.getDisplayName()));
+            } else if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {//是副主任
+                criteria.add(Restrictions.eq(SignDispaWork_.leaderName.getName(), SessionUtil.getDisplayName()));
+            } else {//不是主任
+                criteria.add(Restrictions.or(Restrictions.like(SignDispaWork_.aUserID.getName(), SessionUtil.getUserId()), Restrictions.like(SignDispaWork_.mUserId.getName(), SessionUtil.getUserId())));
+            }
         }
 
         //统计总数
@@ -439,8 +448,11 @@ public class FlowServiceImpl implements FlowService {
         List<RuProcessTask> runProcessList = criteria.list();
         //合并评审项目处理
         runProcessList.forEach(rl -> {
+            //如果是合并评审主项目，则查询次项目，如果是合并评审次项目，则查询主项目
             if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
                 rl.setReviewSignDtoList(signService.findReviewSign(rl.getBusinessKey()));
+            }else if (Constant.EnumState.NO.getValue().equals(rl.getReviewType())) {
+                rl.setReviewSignDtoList(signService.findMainReviewSign(rl.getBusinessKey()));
             }
         });
 
@@ -459,6 +471,8 @@ public class FlowServiceImpl implements FlowService {
     public List<HiProcessTask> getProcessHistory(String processInstanceId) {
         Criteria criteria = hiProcessTaskRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(HiProcessTask_.procInstId.getName(), processInstanceId));
+        //先根据办结时间排序，再根据开始时间排序
+        criteria.addOrder(Order.asc(HiProcessTask_.endTime.getName()));
         criteria.addOrder(Order.asc(HiProcessTask_.startTime.getName()));
         List<HiProcessTask> resultList = criteria.list();
         return resultList;
@@ -475,6 +489,7 @@ public class FlowServiceImpl implements FlowService {
         Disjunction dis = Restrictions.disjunction();
         dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
         dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
+        criteria.add(Restrictions.ne(RuProcessTask_.signState.getName(), Constant.EnumState.DELETE.getValue()));
         criteria.add(dis);
         //排除合并评审阶段的次项目数据
         Disjunction dis2 = Restrictions.disjunction();

@@ -130,8 +130,8 @@ public class Arith {
      * <p>
      * 定精度，以后的数字四舍五入。
      *
-     * @param v1 被除数
-     * @param v2 除数
+     * @param v1    被除数
+     * @param v2    除数
      * @param scale 表示表示需要精确到小数点以后几位 。
      * @return 两个参数的商
      */
@@ -148,7 +148,7 @@ public class Arith {
     /**
      * 提供精确的小数位四舍五入处理。
      *
-     * @param v 需要四舍五入的数字
+     * @param v     需要四舍五入的数字
      * @param scale 小数点后保留几位
      * @return 四舍五入后的结果
      */
@@ -298,11 +298,12 @@ public class Arith {
 
     /**
      * BigDecimal的加法运算封装
-     * @author : shijing
-     * 2017年3月23日下午4:53:21
+     *
      * @param b1
      * @param bn
      * @return
+     * @author : shijing
+     * 2017年3月23日下午4:53:21
      */
     public static BigDecimal safeAdd(BigDecimal b1, BigDecimal... bn) {
         if (null == b1) {
@@ -319,6 +320,7 @@ public class Arith {
 
     /**
      * 计算金额方法
+     *
      * @param b1
      * @param bn
      * @return
@@ -329,9 +331,10 @@ public class Arith {
 
     /**
      * BigDecimal的安全减法运算
-     * @param isZero  减法结果为负数时是否返回0，true是返回0（金额计算时使用），false是返回负数结果
-     * @param b1        被减数
-     * @param bn        需要减的减数数组
+     *
+     * @param isZero 减法结果为负数时是否返回0，true是返回0（金额计算时使用），false是返回负数结果
+     * @param b1     被减数
+     * @param bn     需要减的减数数组
      * @return
      */
     public static BigDecimal safeSubtract(Boolean isZero, BigDecimal b1, BigDecimal... bn) {
@@ -349,17 +352,19 @@ public class Arith {
 
     /**
      * 金额除法计算，返回2位小数（具体的返回多少位大家自己看着改吧）
+     *
      * @param b1
      * @param b2
      * @return
      */
-    public static <T extends Number> BigDecimal safeDivide(T b1, T b2){
+    public static <T extends Number> BigDecimal safeDivide(T b1, T b2) {
         return safeDivide(b1, b2, BigDecimal.ZERO);
     }
 
     /**
      * BigDecimal的除法运算封装，如果除数或者被除数为0，返回默认值
      * 默认返回小数位后2位，用于金额计算
+     *
      * @param b1
      * @param b2
      * @param defaultValue
@@ -378,6 +383,7 @@ public class Arith {
 
     /**
      * BigDecimal的乘法运算封装
+     *
      * @param b1
      * @param b2
      * @return
@@ -389,38 +395,45 @@ public class Arith {
         return BigDecimal.valueOf(b1.doubleValue()).multiply(BigDecimal.valueOf(b2.doubleValue())).setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
+    //保留2位小数
+    public static double get2Double(BigDecimal a) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        return new Double(df.format(a.setScale(2)).toString());
+    }
+
     /**
      * 计算专家税费
-     	800<X≤4000时：（所得额-800）*20%——如果是1000元，就是缴税40
-     	4000<X≤20000时:所得额*(1-20%)*20%
-     	20000＜X≤50000时：所得额*（1-20%）*30%-2000
-     	超过50000忘记是多少了，我再问财务找一个那个文件
+     * 	800<X≤4000时：（所得额-800）*20%——如果是1000元，就是缴税40
+     * 	4000<X≤20000时:所得额*(1-20%)*20%
+     * 	20000＜X≤50000时：所得额*（1-20%）*30%-2000
+     * 	超过50000忘记是多少了，我再问财务找一个那个文件
+     *
      * @param expense
      * @return
      */
     public static BigDecimal countCost(BigDecimal expense) {
         BigDecimal returnCost = BigDecimal.ZERO;
-        if(expense == null || expense.compareTo(BigDecimal.ZERO) == -1 ){
+        if (expense == null || expense.compareTo(BigDecimal.ZERO) == -1) {
             return returnCost;
         }
         double totalValue = expense.doubleValue();
-        if(totalValue > 800 && totalValue <= 4000){
-            returnCost = safeDivide((totalValue-800)*20,100);
-        }else if(totalValue > 4000 && totalValue <= 20000){
-            returnCost = safeDivide(totalValue*80*20,10000);
-        }else if(totalValue > 20000 && totalValue <= 50000){
-            returnCost = safeDivide(totalValue*80*30,10000);
-            returnCost = safeSubtract(returnCost,new BigDecimal(2000));
-        }else if(totalValue > 50000){
-            returnCost = safeDivide(totalValue*80*30,10000);
-            returnCost = safeSubtract(returnCost,new BigDecimal(2755));
+        if (totalValue > 800 && totalValue <= 4000) {
+            returnCost = safeDivide((totalValue - 800) * 20, 100);
+        } else if (totalValue > 4000 && totalValue <= 20000) {
+            returnCost = safeDivide(totalValue * 80 * 20, 10000);
+        } else if (totalValue > 20000 && totalValue <= 50000) {
+            returnCost = safeDivide(totalValue * 80 * 30, 10000);
+            returnCost = safeSubtract(returnCost, new BigDecimal(2000));
+        } else if (totalValue > 50000) {
+            returnCost = safeDivide(totalValue * 80 * 30, 10000);
+            returnCost = safeSubtract(returnCost, new BigDecimal(2755));
         }
 
         return returnCost;
     }
 
-    public static void main(String[] args){
-        System.out.println(countCost(new BigDecimal(500)));
+    public static void main(String[] args) {
+        /*System.out.println(countCost(new BigDecimal(500)));
         System.out.println(countCost(new BigDecimal(800)));
         System.out.println(countCost(new BigDecimal(900)));
         System.out.println(countCost(new BigDecimal(2000)));
@@ -429,6 +442,9 @@ public class Arith {
         System.out.println(countCost(new BigDecimal(20000)));
         System.out.println(countCost(new BigDecimal(40000)));
         System.out.println(countCost(new BigDecimal(50000)));
-        System.out.println(countCost(new BigDecimal(60000)));
+        System.out.println(countCost(new BigDecimal(60000)));*/
+
+        //System.out.println(get2Double(new BigDecimal(60000)));
+        System.out.println((new BigDecimal(0)).setScale(2, BigDecimal.ROUND_HALF_UP));
     }
 }

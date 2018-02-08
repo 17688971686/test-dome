@@ -153,13 +153,28 @@ public class SysConfigServiceImpl implements SysConfigService {
         List<SysConfigDto> resultList = queryAll();
         if (resultList != null && resultList.size() >= 0) {
             for (SysConfigDto sc : resultList) {
-                if (sc.getConfigKey().equals(key)) {
+                if (sc.getConfigKey() != null && sc.getConfigKey().equals(key)) {
                     modelDto = sc;
                     break;
                 }
             }
         }
         return modelDto;
+    }
+
+    /**
+     * 根据key值从数据库查询
+     * @param key
+     * @return
+     */
+    @Override
+    public SysConfigDto findByDataKey(String key) {
+        SysConfigDto sysConfigDto = new SysConfigDto();
+        SysConfig sysConfig = sysConfigRepo.findByDataKey(key);
+        if(sysConfig != null && Validate.isString(sysConfig.getConfigValue())){
+            BeanCopierUtils.copyProperties(sysConfig,sysConfigDto);
+        }
+        return sysConfigDto;
     }
 
 }

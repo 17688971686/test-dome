@@ -47,10 +47,8 @@ public class FileLibraryController {
     @RequiresAuthentication
     @RequestMapping(name="获取文件夹下所有文件",path="initFileList",method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<FileLibraryDto> initFileList(HttpServletRequest request) throws ParseException {
-        String fileId = request.getParameter("fileId");
-        ODataObj oDataObj = new ODataObj(request);
-        return fileLibraryService.initFileList(oDataObj , fileId);
+    public ResultMsg initFileList(@RequestParam String fileId , @RequestParam String fileType)  {
+        return fileLibraryService.initFileList( fileId , fileType);
     }
 
     //@RequiresPermissions("fileLibrary#findFileById#get")

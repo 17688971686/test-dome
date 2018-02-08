@@ -4,11 +4,10 @@ import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
-import cs.domain.expert.*;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
-import cs.model.PageModelDto;
-import cs.model.expert.ProReviewConditionDto;
 import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -17,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static cs.common.Constant.SUPER_ROLE;
+
 /**
  * Description: 项目统计视图 数据操作实现类
  * author: ldm
@@ -24,25 +25,6 @@ import java.util.*;
  */
 @Repository
 public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, String> implements SignDispaWorkRepo {
-    @Override
-    public List<SignDispaWork> reviewProject(String expertId) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + SignDispaWork.class.getSimpleName() + " where " + SignDispaWork_.signid.getName() + " in (");
-        hqlBuilder.append(" select " + ExpertReview_.businessId.getName() + " from " + ExpertReview.class.getSimpleName() + " where " + ExpertReview_.id.getName() + " in (");
-        hqlBuilder.append(" select " + ExpertSelected_.expertReview.getName() + "." + ExpertReview_.id.getName() + " from " + ExpertSelected.class.getSimpleName() + " where ");
-        hqlBuilder.append(" " + ExpertSelected_.isConfrim.getName() + "=:isConfrim");
-        hqlBuilder.append(" and " + ExpertSelected_.isJoin.getName() + "=:isJoin");
-        hqlBuilder.append(" and " + ExpertSelected_.expert.getName() + "." + Expert_.expertID.getName() + "=:expertId))");
-        hqlBuilder.setParam("isConfrim" , Constant.EnumState.YES.getValue());
-        hqlBuilder.setParam("isJoin" , Constant.EnumState.YES.getValue());
-        hqlBuilder.setParam("expertId" , expertId);
-
-        List<SignDispaWork> signDispaWorkList = this.findByHql(hqlBuilder);
-      /*  PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
-        pageModelDto.setValue(signDispaWorkList);
-        pageModelDto.setCount(signDispaWorkList.size());*/
-        return signDispaWorkList;
-    }
 
     /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
@@ -52,26 +34,37 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
      */
     @Override
     public ResultMsg findByTime(String startTime, String endTime) {
-
         Date start = DateUtils.converToDate(startTime , "yyyy-MM-dd");
         Date end = DateUtils.converToDate(endTime , "yyyy-MM-dd");
         List<Map<String , Object[]>> resultList = new ArrayList<>();
         if(DateUtils.daysBetween(start , end) >0){
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , count(projectcode) projectCount from v_sign_disp_work" );
-            hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >:start and " + SignDispaWork_.signdate.getName() + "<:end");
+            hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
+            //排除预签收项目
+            hqlBuilder.append(" and ispresign <>:ispresign or ispresign is null");
             hqlBuilder.append(" group by " + SignDispaWork_.reviewstage.getName());
             hqlBuilder.append(" order by " +  SignDispaWork_.reviewstage.getName() + " desc");
             hqlBuilder.setParam("start" , start);
             hqlBuilder.setParam("end" , end);
             hqlBuilder.setParam("processState" , Constant.SignProcessState.END_DIS_NUM.getValue());//已发文
+            hqlBuilder.setParam("ispresign" , Constant.EnumState.YES.getValue());
             List<Object[]> objctList = this.getObjectArray(hqlBuilder);
-
+            Map< String , Object[]> map = new HashMap<>();
+            Object[] initData = new Object[]{0 , 0};
+            map.put( Constant.STAGE_SUG , initData);
+            map.put(Constant.STAGE_STUDY , initData);
+            map.put(Constant.STAGE_BUDGET, initData);
+            map.put(Constant.APPLY_REPORT, initData);
+            map.put(Constant.DEVICE_BILL_HOMELAND, initData);
+            map.put(Constant.DEVICE_BILL_IMPORT, initData);
+            map.put(Constant.IMPORT_DEVICE, initData);
+            map.put(Constant.OTHERS, initData);
             if(objctList != null && objctList.size()>0){
                 for(int i = 0 ; i<objctList.size() ; i++){
                     Object[] obj = objctList.get(i);
-                    Map< String , Object[]> map = new HashMap<>();
+
                     Object[] value = {((BigDecimal) obj[1] ) == null ? 0 : ((BigDecimal) obj[1]).divide(new BigDecimal(10000)) ,
                             ((BigDecimal) obj[2] ) == null ? 0 : ((BigDecimal) obj[2]).divide(new BigDecimal(10000)) ,
                             obj[3] == null ? 0 : obj[3]}; //[申报金额，审定金额，数目]
@@ -92,8 +85,9 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                     }else if((Constant.OTHERS).equals((String)obj[0])){
                         map.put(Constant.OTHERS, value);
                     }
-                    resultList.add(map);
+
                 }
+                resultList.add(map);
             }
             return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "查询数据成功" , resultList);
         }else{
@@ -127,14 +121,19 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         if(DateUtils.daysBetween(start , end) >0){
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append("select " + SignDispaWork_.reviewstage.getName() + "," + SignDispaWork_.projectType.getName() + ",count("+ SignDispaWork_.projectcode.getName() + ") projectNum from v_sign_disp_work ");
-            hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >:start and " + SignDispaWork_.signdate.getName() + "<:end");
+            hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
+            //排除预签项目
+            hqlBuilder.append(" and ispresign <>:ispresign  or ispresign is null");
+
             hqlBuilder.append(" group by " + SignDispaWork_.projectType.getName() + " ," + SignDispaWork_.reviewstage.getName() );
             hqlBuilder.append(" having " + SignDispaWork_.projectType.getName() + " is not null ") ;
             hqlBuilder.append(" order by " + SignDispaWork_.reviewstage.getName() +" desc , " + SignDispaWork_.projectType.getName() );
             hqlBuilder.setParam("start" , start);
             hqlBuilder.setParam("end" , end);
             hqlBuilder.setParam("processState" , Constant.SignProcessState.END_DIS_NUM.getValue()); //已发文
+            hqlBuilder.setParam("ispresign" , Constant.EnumState.YES.getValue());
+
             List<Object[]> objctList = this.getObjectArray(hqlBuilder);
             if(objctList != null && objctList.size()>0){
                 for(int i=0 ; i<objctList.size() ; i++){
@@ -318,13 +317,13 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             deviceMap.put(Constant.IMPORT_DEVICE, devices);
             Map<String ,Object[]> otherMap = new HashMap<>();
             otherMap.put(Constant.OTHERS, others);
-            resultList.add(sugMap);
-            resultList.add(studyMap);
             resultList.add(budgetMap);
-            resultList.add(reportMap);
-            resultList.add(homeLandMap);
-            resultList.add(importMap);
+            resultList.add(sugMap);
             resultList.add(deviceMap);
+            resultList.add(reportMap);
+            resultList.add(importMap);
+            resultList.add(homeLandMap);
+            resultList.add(studyMap);
             resultList.add(otherMap);
 
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultList);
@@ -349,6 +348,119 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             return signDispaWorkList.get(0);
         }else{
             return null;
+        }
+    }
+
+    /**
+     * 通过条件查询统计
+     * @param queryData
+     * @param page
+     * @return
+     */
+    @Override
+    public List<SignDispaWork> queryStatistics(String queryData, int page) {
+        String[]  queryArr = null ;
+        if(Validate.isString(queryData)){
+            queryData = queryData.replaceAll("\\\\" , "");
+            queryArr = queryData.split(",");
+        }
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        try{
+            hqlBuilder.append("select * from (select a.* , rownum rn from (");
+            hqlBuilder.append("select * from V_SIGN_DISP_WORK where signstate != '7' " );
+            if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
+                hqlBuilder.append(" and ");
+                for (int i = 0; i < queryArr.length; i++) {
+                    String filter = queryArr[i];
+                    String[] params = filter.split(":");
+
+                    //对中文乱码进行处理
+                    String value = params[1].substring(1, params[1].length() - 1);
+                    if(value.equals(new String(value.getBytes("iso8859-1"), "iso8859-1"))){
+
+                        value =  new String((params[1].substring(1, params[1].length() - 1) ).getBytes("iso8859-1"), "UTF-8");
+                    }
+
+                    //项目签收日期
+                    if("signDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("signdate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                    }else if("signDateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("signdate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                    }
+                    //发文日期
+                    else if("dispatchDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("dispatchDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                    }else if("dispatchdateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("dispatchDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+
+                    }
+                    //归档日期
+                    else if("fileDateBegin".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("fileDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                    }else if("fileDateEnd".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("fileDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+
+                    }
+                    //申报投资
+                    else if("appalyInvestmentMin".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("appalyInvestment>=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
+                    }else if("appalyInvestmentMax".equals(params[0].substring(1, params[0].length() - 1))){
+                        hqlBuilder.append("appalyInvestment<=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
+
+                    }else{
+
+                        hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + " like '%" + value + "%'");
+//                        hqlBuilder.setParam(params[0].substring(1, params[0].length() - 1), value);
+                    }
+                    if (i < queryArr.length - 1) {
+                        hqlBuilder.append(" and ");
+                    }
+                }
+            }
+            hqlBuilder.append(" ) a ) where rn >" + (page * 100) + " and rn <" + ((page+1)*100+1));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        List<SignDispaWork> signDispaWorkList = findBySql(hqlBuilder);
+        return signDispaWorkList;
+    }
+
+
+    /**
+     * 通过业务id，判断当前用户是否有权限查看项目详情----用于秘密项目
+     * @param signId
+     * @return
+     */
+    @Override
+    public ResultMsg findSecretProPermission(String signId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select " + SignDispaWork_.signid.getName() + " from V_SIGN_DISP_WORK where " + SignDispaWork_.signid.getName() + "=:signId" );
+        hqlBuilder.setParam("signId" , signId);
+
+        //部门负责人
+        if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
+            hqlBuilder.append(" and " + SignDispaWork_.ministerName.getName() + "=:ministerName").setParam("ministerName" , SessionUtil.getDisplayName());
+        }
+        //分管领导
+        else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
+            hqlBuilder.append(" and " + SignDispaWork_.leaderName.getName() + "=:leaderName").setParam("leaderName" , SessionUtil.getDisplayName());
+        }
+        //主任或者超级管理员
+        else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue()) || SessionUtil.hashRole(SUPER_ROLE)){
+
+        }else{
+            //项目负责人
+            hqlBuilder.append(" and " + SignDispaWork_.allPriUser.getName() + " like '%" + SessionUtil.getDisplayName() + "%'");
+        }
+
+        List<Object[]> objList =  getObjectArray(hqlBuilder);
+
+        if(objList!=null && objList.size()>0){
+            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , null);
+
+        }else{
+
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您无权限查看此项目信息！");
         }
     }
 

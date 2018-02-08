@@ -1,28 +1,18 @@
 package cs.controller.project;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import cs.ahelper.IgnoreAnnotation;
-import cs.common.ResultMsg;
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 import cs.common.Constant.EnumFlowNodeGroupName;
-import cs.domain.sys.SysFile;
+import cs.common.ResultMsg;
 import cs.model.project.FileRecordDto;
 import cs.service.project.FileRecordService;
 import cs.service.sys.UserService;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping(name = "归档", path = "fileRecord")

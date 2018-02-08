@@ -10,6 +10,7 @@
         vm.suppletter.businessId = $state.params.businessId;        //业务ID
         vm.suppletter.businessType = $state.params.businessType;    //业务类型
         vm.suppletter.id = $state.params.id;
+        vm.isControl=$state.params.isControl;//按钮控制
 
         vm.title = '拟补充资料函';
         vm.businessFlag = {
@@ -36,7 +37,7 @@
             }
             vm.sysFile = {
                 businessId: vm.suppletter.id,
-                mainId: vm.suppletter.id,
+                mainId: vm.suppletter.businessId,           //补充资料函的业务ID就是对应的项目ID或者其他的ID
                 mainType: sysfileSvc.mainTypeValue().SIGN,
                 sysfileType: sysfileSvc.mainTypeValue().AADSUPP_FILE,
                 sysBusiType: sysfileSvc.mainTypeValue().AADSUPP_FILE,
@@ -51,6 +52,7 @@
             common.initJqValidation($("#suppletter_form"));
             var isValid = $("#suppletter_form").valid();
             if (isValid) {
+                vm.suppletter.fileType = "1";   //1表示拟补充资料函
                 addSuppLetterSvc.saveSuppLetter(vm.suppletter,vm.isCommit,function(data){
                     if(data.flag || data.reCode == 'ok'){
                         vm.suppletter = data.reObj;
@@ -96,26 +98,6 @@
                });
             } else {
                 bsWin.alert("表格填写不正确，请检查相应的必填项信息！");
-            }
-        }
-
-        //拟补充资料函查看附件
-        vm.addSuppContent = function () {
-            if (vm.suppletter.id) {
-                vm.showsupp = true;
-                var ideaEditWindow = $("#addsuppletter");
-                ideaEditWindow.kendoWindow({
-                    width: "60%",
-                    height: "90%",
-                    title: "拟补资料函正文",
-                    visible: false,
-                    modal: true,
-                    closable: true,
-                    actions: ["Pin", "Minimize", "Maximize", "close"]
-                }).data("kendoWindow").center().open();
-                addSuppLetterSvc.findByBusinessId(vm);
-            } else {
-                bsWin.alert("请先保存业务数据");
             }
         }
 

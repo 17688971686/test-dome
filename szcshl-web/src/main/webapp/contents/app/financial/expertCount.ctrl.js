@@ -77,6 +77,7 @@
        }
         //表单查询
         vm.searchForm = function(){
+            vm.gridOptions.dataSource._skip=0;
             vm.gridOptions.dataSource.read();
         }
 

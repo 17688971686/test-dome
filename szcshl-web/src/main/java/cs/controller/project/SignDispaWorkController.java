@@ -5,11 +5,14 @@ import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
 import cs.common.utils.ExcelTools;
+import cs.common.utils.Validate;
 import cs.domain.project.SignDispaWork;
+import cs.domain.project.SignDispaWork_;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
 import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.service.expert.ExpertSelectedService;
 import cs.service.project.SignDispaWorkService;
 import cs.service.sys.HeaderService;
@@ -25,6 +28,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -47,12 +51,15 @@ public class SignDispaWorkController {
     @Autowired
     private ExpertSelectedService expertSelectedService;
 
+    @Autowired
+    private SignDispaWorkRepo signDispaWorkRepo;
+
 
     //@RequiresPermissions("signView#getSignList#post")
     @RequiresAuthentication
     @RequestMapping(name = "项目查询统计", path = "getSignList", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<SignDispaWork> getSignList(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<SignDispaWork> getSignList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDispaWork> pageModelDto = signDispaWorkService.getCommQurySign(odataObj);
         return pageModelDto;
@@ -63,7 +70,6 @@ public class SignDispaWorkController {
     @RequestMapping(name = "待选合并评审项目", path = "unMergeWPSign", method = RequestMethod.POST)
     @ResponseBody
     public List<SignDispaWork> unMergeWPSign(@RequestParam(required = true) String signId) {
-        System.out.println(signId);
         return signDispaWorkService.unMergeWPSign(signId);
     }
 
@@ -119,23 +125,50 @@ public class SignDispaWorkController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "项目统计导出", path = "excelExport", method = RequestMethod.GET)
+    @RequestMapping(name = "通过条件查询进行统计分析" , path = "QueryStatistics" , method = RequestMethod.POST)
+    @ResponseBody
+    public List<SignDispaWork> queryStatistics(@RequestParam String queryData , @RequestParam int page){
+        return signDispaWorkService.queryStatistics(queryData , page);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "项目统计导出", path = "excelExport", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void excelExport(HttpServletResponse resp, @RequestParam String filterData, @RequestParam String fileName) {
-
+    public void excelExport(HttpServletResponse resp, @RequestParam(required = true) String signIds) {
+        String fileName = "项目查询统计报表";
         ExcelTools excelTools = new ExcelTools();
-//        List<SignDispaWork> signDispaWorkList = new ArrayList<>();
-
-//        for (SignDispaWork sdw : signDispaWorks) {
-//            signDispaWorkList.add(sdw);
-//        }
         try {
             String title = java.net.URLDecoder.decode(fileName,"UTF-8");
-            String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
+//            String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
             ServletOutputStream sos = resp.getOutputStream();
             List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("项目类型");//选中的表字段
             List<Header> headerList = headerService.findHeaderByType("项目类型");//所有 表字段
-            List<SignDispaWork> signDispaWorkList = signDispaWorkService.getSignDispaWork(filters);
+
+          /*  Boolean flag = true;
+            int page = 0;
+            while (flag){
+                List<SignDispaWork> slist = signDispaWorkService.queryStatistics(filters , page);
+                if(slist !=null && slist.size()>0){
+                    for(SignDispaWork signDispaWork : slist){
+                        signDispaWorkList.add(signDispaWork);
+                    }
+                }
+                if(slist ==null  || slist.size()<50 ){
+                    flag = false;
+                }else{
+                    page++;
+                }
+            }*/
+            List<SignDispaWork> signDispaWorkList = new ArrayList<>();
+
+            if(Validate.isString(signIds)){
+                String[] ids = signIds.split(",");
+                for(String signId : ids){
+                    SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
+                    signDispaWorkList.add(signDispaWork);
+                }
+            }
+
             String[] headerPair ;
             if(headerDtoList.size()>0) {
                 headerPair = new String[headerDtoList.size()];
@@ -253,6 +286,14 @@ public class SignDispaWorkController {
         return calendar.getTime();
 
     }
+
+    @RequiresAuthentication
+    @RequestMapping(name="对秘密项目进行权限限制" , path="findSecretProPermission" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg findSecretProPermission(@RequestParam String signId){
+        return signDispaWorkService.findSecretProPermission(signId);
+    }
+
     @RequiresPermissions("signView#html/signChart#get")
     @RequestMapping(name="项目统计分析" , path = "html/signChart" , method = RequestMethod.GET)
     public String signChart(){

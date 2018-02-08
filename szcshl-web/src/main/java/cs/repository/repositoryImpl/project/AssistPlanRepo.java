@@ -17,7 +17,7 @@ public interface AssistPlanRepo extends IRepository<AssistPlan, String> {
      * @param signAssistCostDto
      * @return
      */
-    List<Object[]> signAssistCostList(SignAssistCostDto signAssistCostDto,String planState);
+    List<Object[]> signAssistCostList(SignAssistCostDto signAssistCostDto,boolean isShowDetail);
 
     /**
      * 根据业务ID，更新协审计划状态
@@ -25,4 +25,11 @@ public interface AssistPlanRepo extends IRepository<AssistPlan, String> {
      * @param value
      */
     void updatePlanStateByBusinessId(String businessId, String value);
+
+    /**
+     * 根据项目ID查询出对应的协审费用
+     * @param signId
+     * @return
+     */
+    List<SignAssistCostDto> findSignCostBySignId(String signId);
 }

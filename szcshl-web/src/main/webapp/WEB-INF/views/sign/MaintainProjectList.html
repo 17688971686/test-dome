@@ -1,0 +1,52 @@
+<div class="well well-sm" style="background:white;">
+    <ol class="breadcrumb">
+        <li><a>系统管理员</a></li>
+        <li class="active">{{vm.title}}</li>
+    </ol>
+
+    <div class="toolbar">
+        <button class="btn btn-sm btn-primary" ng-click="vm.query()" ng-disabled="vm.isSubmit"><span
+                class="glyphicon glyphicon-search"></span>查询
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
+            <span class="glyphicon glyphicon-repeat"></span>重置
+        </button>
+    </div>
+    <div class="well well-sm">
+        <form id="Maintenanform" name="Maintenanform">
+            <table style="width:100%">
+                <input name="signState" operator="ne" value="7" hidden="hidden">
+                <input name="signState" operator="ne" value="2" hidden="hidden">
+                <tr>
+                    <td class="text-right" style="width:80px;">收文编号</td>
+                    <td style="width: 100px;">
+                        <input name="signNum" type="text" operator="like"
+                               ng-model="vm.model.signNum" class="form-control input-sm "/>
+                    </td>
+                    <td class="text-right" style="width:80px;">发文号</td>
+                    <td style="width: 100px;">
+                        <input name="dfilenum" type="text" operator="like"
+                               ng-model="vm.model.dfilenum" class="form-control input-sm "/>
+                    </td>
+                    <td class="text-right" style="width:80px;">项目名称</td>
+                    <td style="width:180px;">
+                        <input name="projectname" type="text" operator="like" ng-model="vm.model.projectname"
+                               class="form-control input-sm "/>
+                    </td>
+                    <td class="text-right" style="width:80px;">签收日期</td>
+                    <td style="width:260px;">
+                        <input id="signdatebigen"  ng-model="vm.model.signdatebigen" type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="ge" name="signdate">
+                        -
+                        <input id="signdateend" ng-model="vm.model.signdateend" type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="le" name="signdate">
+
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <script type="text/template" id="columnBtns">
+        <button class="btn btn-xs btn-success" ng-click="{0}"><span class="glyphicon glyphicon-ok"></span>恢复项目</button>
+    </script>
+    <div id="signGrid" class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
+
+</div>
