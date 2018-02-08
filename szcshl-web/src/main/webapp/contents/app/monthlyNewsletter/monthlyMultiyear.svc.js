@@ -140,21 +140,11 @@
             };
 
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog: true,
-                            fn: function () {
-                                vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
+                bsWin.alert("操作成功",function () {
+                    vm.isSubmit = false;
+                    vm.monthlyYearGrid.dataSource.read();
+                })
+
             };
 
             common.http({
@@ -296,7 +286,7 @@
                         if(angular.isUndefined(item.processInstanceId) || item.processInstanceId == ''){
                             isStartFlow = false;
                         }
-                        return common.format($('#columnBtns').html(),vm.suppletter.fileYear, item.id, isStartFlow,item.createdBy,item.id);
+                        return common.format($('#columnBtns').html(),vm.suppletter.fileYear, item.id, isStartFlow,item.createdBy,item.id,"vm.del('" + item.id + "')");
                     }
                 }
             ];
