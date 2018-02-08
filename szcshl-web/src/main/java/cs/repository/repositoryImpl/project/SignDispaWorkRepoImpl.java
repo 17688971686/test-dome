@@ -43,7 +43,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
             //排除预签收项目
-            hqlBuilder.append(" and ispresign <>:ispresign or ispresign is null");
+            hqlBuilder.append(" and (ispresign <>:ispresign or ispresign is null)");
             hqlBuilder.append(" group by " + SignDispaWork_.reviewstage.getName());
             hqlBuilder.append(" order by " +  SignDispaWork_.reviewstage.getName() + " desc");
             hqlBuilder.setParam("start" , start);
@@ -124,7 +124,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
             //排除预签项目
-            hqlBuilder.append(" and ispresign <>:ispresign  or ispresign is null");
+            hqlBuilder.append(" and ( ispresign <>:ispresign  or ispresign is null)");
 
             hqlBuilder.append(" group by " + SignDispaWork_.projectType.getName() + " ," + SignDispaWork_.reviewstage.getName() );
             hqlBuilder.append(" having " + SignDispaWork_.projectType.getName() + " is not null ") ;

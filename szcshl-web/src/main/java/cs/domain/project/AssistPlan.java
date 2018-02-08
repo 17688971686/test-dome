@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 协审计划表
+ */
 @Entity
 @Table(name = "cs_as_plan")
 @DynamicUpdate(true)

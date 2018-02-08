@@ -24,11 +24,14 @@ public class ExpertSelected {
     private Double score;
 
     /**
-     * 综合评分
+     * 综合评分(开始分值)
      */
     @Column(columnDefinition = "NUMBER")
     private Integer compositeScore;
 
+    /**
+     * 综合评分(结束分值)
+     */
     @Column(columnDefinition = "NUMBER")
     private Integer compositeScoreEnd;
 

@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
+ * 组别表
  * Created by ldm on 2017/8/18.
  */
 @Entity
@@ -28,7 +29,7 @@ public class SysDept {
     private String name;
 
     /**
-     * 部长名称
+     * 部长ID
      */
     @Column(columnDefinition = "varchar(64)")
     private String ministerId;
