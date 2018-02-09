@@ -122,22 +122,22 @@
        //S 初始化关联项目评审费
         function initFinancialProject(vm){
         	var httpOptions = {
-                    method: 'get',
-                    url: rootPath + "/expertPaymentCount/initfinancial",
-                    params:{
-                    	signid: vm.financial.signid
-                    }
-                };
-                var httpSuccess = function success(response) {
-                    vm.model = response.data.financialDto;
-                    vm.financials = response.data.financiallist;
-                };
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
+                method: 'get',
+                url: rootPath + "/expertPaymentCount/initfinancial",
+                params:{
+                    signid: vm.financial.signid
+                }
+            };
+            var httpSuccess = function success(response) {
+                vm.model = response.data.financialDto;
+                vm.financials = response.data.financiallist;
+            };
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
         }
        // E 初始化关联项目评审费
 

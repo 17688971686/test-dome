@@ -96,12 +96,16 @@
                         <img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;">
                     </span>
                 </td>
-                <td class="text-center">{{$index + 1}}</td>
+                <td class="text-center">
+                    <span ng-class="{'label label-primary':(s.processState && s.processState >5 && s.processState< 9), 'label label-success': (s.processState && s.processState ==9 )}">
+                    {{$index + 1}}
+                    </span>
+                </td>
                 <td class="text-center"><a href="" ng-click="vm.showCostWindow(s,'reviewCostWindow')">{{s.projectname}}</a></td>
                 <td class="text-center">{{s.builtcompanyname}}</td>
                 <td class="text-center">{{s.reviewstage}}</td>
                 <td class="text-center">{{s.principal}}</td>
-                <td class="text-center">{{s.totalCost | filter : "yyyy-MM-dd"}}</td>
+                <td class="text-center">{{s.totalCost}}</td>
                 <td class="text-center">{{s.signdate}}</td>
             </tr>
         </table>

@@ -224,25 +224,33 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("left join cs_expert e  on s.expertid = e.expertid ");
         sqlBuilder.append("left join cs_expert_review r on s.expertreviewid = r.id ");
         sqlBuilder.append("where 1=1 ");
-        String[] timeArr = expertCostDto.getBeginTime().split("-");
-        if (null != expertCostDto && null != expertCostDto.getBeginTime()) {
-            String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
-            String bTime = expertCostDto.getBeginTime() + "-01 00:00:00";
-            String eTime = expertCostDto.getBeginTime() + "-" + day + " 23:59:59";
-            sqlBuilder.append("and r.paydate is not null  ");
-            sqlBuilder.append("and r.paydate >= to_date('" + bTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-            sqlBuilder.append(" and r.paydate <= to_date('" + eTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-            sqlBuilder.append("and s.isconfrim = '9' ");
-            sqlBuilder.append("and s.isjoin = '9' ");
+
+        if(expertCostDto == null){
+            expertCostDto = new ExpertCostCountDto();
         }
+        if(!Validate.isString(expertCostDto.getYear())){
+            expertCostDto.setYear(DateUtils.getNowYear());
+        }
+        if(!Validate.isString(expertCostDto.getMonth())){
+            expertCostDto.setMonth(String.valueOf(DateUtils.getCurMonth()));
+        }
+        String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(expertCostDto.getYear()),Integer.parseInt(expertCostDto.getMonth())) + "";
+        String bTime = expertCostDto.getYear()+"-"+expertCostDto.getMonth()+ "-01 00:00:00";
+        String eTime = expertCostDto.getYear()+"-"+expertCostDto.getMonth()+ "-" + day + " 23:59:59";
+        sqlBuilder.append("and r.paydate is not null  ");
+        sqlBuilder.append("and r.paydate >= to_date('" + bTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append(" and r.paydate <= to_date('" + eTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.isconfrim = '9' ");
+        sqlBuilder.append("and s.isjoin = '9' ");
+
         sqlBuilder.append("group by e.expertid,e.name,e.idcard,e.userphone ");
         sqlBuilder.append("having sum(s.reviewcost)>0");
         sqlBuilder.append("union  ");
         sqlBuilder.append("select e.name,e.idcard,e.userphone,null reviewcost,null reviewtaxes,sum(s.reviewcost) yreviewcost,sum(s.reviewtaxes)yreviewtaxes from cs_expert_selected s  ");
         sqlBuilder.append("left join cs_expert e  on s.expertid = e.expertid  ");
         sqlBuilder.append("left join cs_expert_review r on s.expertreviewid = r.id ");
-        sqlBuilder.append("where r.paydate is not null and  r.paydate >= to_date('" + timeArr[0] + "-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and  r.paydate <= to_date('" + timeArr[0] + "-12-31 23:59:59','yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("where r.paydate is not null and  r.paydate >= to_date('" + expertCostDto.getYear() + "-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and  r.paydate <= to_date('" + expertCostDto.getYear() + "-12-31 23:59:59','yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.isconfrim = '9' ");
         sqlBuilder.append("and s.isjoin = '9' ");
         sqlBuilder.append("group by e.expertid,e.name,e.idcard,e.userphone ");
@@ -303,15 +311,24 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append(" left join cs_expert_review r ");
         sqlBuilder.append("on s.expertreviewid = r.id ");
         sqlBuilder.append("where 1=1 ");
-        if (null != expertCostDetailCountDto && null != expertCostDetailCountDto.getBeginTime()) {
-            String[] timeArr = expertCostDetailCountDto.getBeginTime().split("-");
-            String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
-            beginTime = expertCostDetailCountDto.getBeginTime() + "-01 00:00:00";
-            endTime = expertCostDetailCountDto.getBeginTime() + "-" + day + " 23:59:59";
-            sqlBuilder.append(" and r.paydate is not null  ");
-            sqlBuilder.append("and r.paydate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-            sqlBuilder.append(" and r.paydate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+
+        if(expertCostDetailCountDto == null){
+            expertCostDetailCountDto = new ExpertCostDetailCountDto();
         }
+        if(!Validate.isString(expertCostDetailCountDto.getYear())){
+            expertCostDetailCountDto.setYear(DateUtils.getNowYear());
+        }
+        if(!Validate.isString(expertCostDetailCountDto.getMonth())){
+            expertCostDetailCountDto.setMonth(String.valueOf(DateUtils.getCurMonth()));
+        }
+        String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(expertCostDetailCountDto.getYear()),Integer.parseInt(expertCostDetailCountDto.getMonth())) + "";
+        String bTime = expertCostDetailCountDto.getYear()+"-"+expertCostDetailCountDto.getMonth()+ "-01 00:00:00";
+        String eTime = expertCostDetailCountDto.getYear()+"-"+expertCostDetailCountDto.getMonth()+ "-" + day + " 23:59:59";
+
+        sqlBuilder.append(" and r.paydate is not null  ");
+        sqlBuilder.append("and r.paydate >= to_date('" + bTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append(" and r.paydate <= to_date('" + eTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+
         sqlBuilder.append("and s.isconfrim ='9' ");
         sqlBuilder.append("and s.isjoin ='9' ");
         sqlBuilder.append("group by e.expertid,e.name, e.expertno ");

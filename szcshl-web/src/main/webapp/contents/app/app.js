@@ -1,9 +1,9 @@
 (function () {
     'use strict';
     angular.module('app', [
-        // Angular modules 
-        "ui.router",
-        "kendo.directives",
+        // Angular modules
+        'ui.router',
+        'kendo.directives',
         'angular-loading-bar',
         'ngAnimate',
         'ngFileSaver'
@@ -31,11 +31,10 @@
             return output;
         }
     })
-        .config(['cfpLoadingBarProvider', function (cfpLoadingBarProvider) {
+        .config(["$stateProvider", "$locationProvider", "$urlRouterProvider", 'cfpLoadingBarProvider', function ($stateProvider, $locationProvider, $urlRouterProvider, cfpLoadingBarProvider) {
+            $locationProvider.hashPrefix(''); // 1.6.x版本使用路由功能需加上这句
             cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
             cfpLoadingBarProvider.spinnerTemplate = '<div style="position:fixed;width:100%;height:100%;left:0;top:0; z-index:10001;background:rgba(0, 0, 0, 0.3);overflow: hidden;"><div style="position: absolute;top:30%; width: 400px;height:40px;left:50%;"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i>数据加载中...</div></div>';
-        }])
-        .config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
             $urlRouterProvider.otherwise('/welcome');
             $stateProvider
                 .state('welcome', {
@@ -199,52 +198,52 @@
                     controller: 'userCtrl',
                     controllerAs: 'vm'
                 }).state('userEdit', {
-                    url: '/userEdit/:id',
-                    templateUrl: rootPath + '/user/html/edit.html',
-                    controller: 'userEditCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#user
+                url: '/userEdit/:id',
+                templateUrl: rootPath + '/user/html/edit.html',
+                controller: 'userEditCtrl',
+                controllerAs: 'vm'
+            })
+            //end#user
 
-                //begin#org
+            //begin#org
                 .state('org', {
                     url: '/org',
                     templateUrl: rootPath + '/org/html/list.html',
                     controller: 'orgCtrl',
                     controllerAs: 'vm'
                 }).state('orgEdit', {
-                    url: '/orgEdit/:id',
-                    templateUrl: rootPath + '/org/html/edit.html',
-                    controller: 'orgEditCtrl',
-                    controllerAs: 'vm'
-                }).state('orgUser', {
-                    url: '/orgUser/:id',
-                    templateUrl: rootPath + '/org/html/orgUser.html',
-                    controller: 'orgUserCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#org
+                url: '/orgEdit/:id',
+                templateUrl: rootPath + '/org/html/edit.html',
+                controller: 'orgEditCtrl',
+                controllerAs: 'vm'
+            }).state('orgUser', {
+                url: '/orgUser/:id',
+                templateUrl: rootPath + '/org/html/orgUser.html',
+                controller: 'orgUserCtrl',
+                controllerAs: 'vm'
+            })
+            //end#org
 
-                //begin#sysdept
+            //begin#sysdept
                 .state('sysdept', {
                     url: '/sysdept',
                     templateUrl: rootPath + '/sysdept/html/list.html',
                     controller: 'sysdeptCtrl',
                     controllerAs: 'vm'
                 }).state('sysdeptEdit', {
-                    url: '/sysdeptEdit/:id',
-                    templateUrl: rootPath + '/sysdept/html/edit.html',
-                    controller: 'sysdeptEditCtrl',
-                    controllerAs: 'vm'
-                }).state('sysdeptUser', {
-                    url: '/sysdeptUser/:id',
-                    templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
-                    controller: 'sysdeptUserCtrl',
-                    controllerAs: 'vm'
-                })
-                //end#sysdept
+                url: '/sysdeptEdit/:id',
+                templateUrl: rootPath + '/sysdept/html/edit.html',
+                controller: 'sysdeptEditCtrl',
+                controllerAs: 'vm'
+            }).state('sysdeptUser', {
+                url: '/sysdeptUser/:id',
+                templateUrl: rootPath + '/sysdept/html/sysdeptUser.html',
+                controller: 'sysdeptUserCtrl',
+                controllerAs: 'vm'
+            })
+            //end#sysdept
 
-                //begin#log
+            //begin#log
                 .state('log', {
                     url: '/log',
                     templateUrl: rootPath + '/log/html/list.html',
@@ -397,42 +396,42 @@
                     controller: 'signCreateCtrl',
                     controllerAs: 'vm'
                 }).state('fillSign', {//isControl用来控制按钮的显示
-                url: '/fillSign/:signid/:isControl',
-                cache: 'false',
-                templateUrl: rootPath + '/sign/html/fillin.html',
-                controller: 'signFillinCtrl',
-                controllerAs: 'vm'
-            }).state('listSign', {
-                url: '/listSign',
-                templateUrl: rootPath + '/sign/html/list.html',
-                controller: 'signCtrl',
-                controllerAs: 'vm'
-            }).state('signFlowDeal', {
-                url: '/signFlowDeal/:signid/:taskId/:processInstanceId',
-                templateUrl: rootPath + '/sign/html/flowDeal.html',
-                controller: 'signFlowDealCtrl',
-                controllerAs: 'vm'
-            }).state('signFlowDetail', {
-                url: '/signFlowDetail/:signid/:taskId/:processInstanceId',
-                templateUrl: rootPath + '/sign/html/signFlowDetail.html',
-                controller: 'signFlowDetailCtrl',
-                controllerAs: 'vm'
-            }).state('signDetails', {//详细信息
-                url: '/signDetails/:signid/:processInstanceId',
-                templateUrl: rootPath + '/sign/html/signDetails.html',
-                controller: 'signDetailsCtrl',
-                controllerAs: 'vm'
-            }).state('endSignDetail', { //已经办结的详情信息
-                url: '/endSignDetail/:signid/:processInstanceId',
-                templateUrl: rootPath + '/sign/html/signEndDetails.html',
-                controller: 'signEndCtrl',
-                controllerAs: 'vm'
-            }).state('signList', { //项目查询统计
-                url: '/signList',
-                templateUrl: rootPath + '/signView/html/signList.html',
-                controller: 'adminSignListCtrl',
-                controllerAs: 'vm'
-            })//end#signList
+                    url: '/fillSign/:signid/:isControl',
+                    cache: 'false',
+                    templateUrl: rootPath + '/sign/html/fillin.html',
+                    controller: 'signFillinCtrl',
+                    controllerAs: 'vm'
+                }).state('listSign', {
+                    url: '/listSign',
+                    templateUrl: rootPath + '/sign/html/list.html',
+                    controller: 'signCtrl',
+                    controllerAs: 'vm'
+                }).state('signFlowDeal', {
+                    url: '/signFlowDeal/:signid/:taskId/:processInstanceId',
+                    templateUrl: rootPath + '/sign/html/flowDeal.html',
+                    controller: 'signFlowDealCtrl',
+                    controllerAs: 'vm'
+                }).state('signFlowDetail', {
+                    url: '/signFlowDetail/:signid/:taskId/:processInstanceId',
+                    templateUrl: rootPath + '/sign/html/signFlowDetail.html',
+                    controller: 'signFlowDetailCtrl',
+                    controllerAs: 'vm'
+                }).state('signDetails', {//详细信息
+                    url: '/signDetails/:signid/:processInstanceId',
+                    templateUrl: rootPath + '/sign/html/signDetails.html',
+                    controller: 'signDetailsCtrl',
+                    controllerAs: 'vm'
+                }).state('endSignDetail', { //已经办结的详情信息
+                    url: '/endSignDetail/:signid/:processInstanceId',
+                    templateUrl: rootPath + '/sign/html/signEndDetails.html',
+                    controller: 'signEndCtrl',
+                    controllerAs: 'vm'
+                }).state('signList', { //项目查询统计
+                    url: '/signList',
+                    templateUrl: rootPath + '/signView/html/signList.html',
+                    controller: 'adminSignListCtrl',
+                    controllerAs: 'vm'
+                })//end#signList
                 .state('projectStopInfo', { //项目暂停表单（多个）
                     url: '/projectStopInfo/:signId',
                     templateUrl: rootPath + '/projectStop/html/projectStopInfo.html',
@@ -476,24 +475,24 @@
                     controller: 'signReserveAddCtrl',
                     controllerAs: 'vm'
                 }).state('reserveList', {	//预签收列表
-                url: '/reserveList',
-                templateUrl: rootPath + '/sign/html/reserveList.html',
-                controller: 'signReserveCtrl',
-                controllerAs: 'vm'
-            }).state('reserveEdit', {	//预签收审批登记表
-                url: '/reserveEdit',
-                templateUrl: rootPath + '/sign/html/reserveList.html',
-                controller: 'signReserveCtrl',
-                controllerAs: 'vm'
-            }).state('deletList', {	//作废项目列表
-                url: '/deletList',
-                templateUrl: rootPath + '/sign/html/deletList.html',
-                controller: 'signDeletCtrl',
-                controllerAs: 'vm'
-            })
-            //end#signList
+                    url: '/reserveList',
+                    templateUrl: rootPath + '/sign/html/reserveList.html',
+                    controller: 'signReserveCtrl',
+                    controllerAs: 'vm'
+                }).state('reserveEdit', {	//预签收审批登记表
+                    url: '/reserveEdit',
+                    templateUrl: rootPath + '/sign/html/reserveList.html',
+                    controller: 'signReserveCtrl',
+                    controllerAs: 'vm'
+                }).state('deletList', {	//作废项目列表
+                    url: '/deletList',
+                    templateUrl: rootPath + '/sign/html/deletList.html',
+                    controller: 'signDeletCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#signList
 
-            //begin#workprogram
+                //begin#workprogram
                 .state('workprogramEdit', {
                     url: '/workprogramEdit/:signid/:isControl',//isControl控制按钮的显示
                     templateUrl: rootPath + '/workprogram/html/edit.html',
@@ -556,26 +555,26 @@
                     controller: 'deptEditCtrl',
                     controllerAs: 'vm'
                 }).state('deptOfficeUser', {
-                url: '/deptOfficeUser/:deptId',
-                templateUrl: rootPath + '/dept/html/listOfficeUser.html',
-                controller: 'deptOfficeUserCtrl',
-                controllerAs: 'vm'
-            })
-            //end#dept
-            //begin#assistUnit
+                    url: '/deptOfficeUser/:deptId',
+                    templateUrl: rootPath + '/dept/html/listOfficeUser.html',
+                    controller: 'deptOfficeUserCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#dept
+                //begin#assistUnit
                 .state('assistUnit', {
                     url: '/assistUnit',
                     templateUrl: rootPath + '/assistUnit/html/assistUnitList.html',
                     controller: 'assistUnitCtrl',
                     controllerAs: 'vm'
                 }).state('assistUnitEdit', {
-                url: '/assistUnitEdit/:id',
-                templateUrl: rootPath + '/assistUnit/html/assistUnitEdit.html',
-                controller: 'assistUnitEditCtrl',
-                controllerAs: 'vm'
-            })
-            //end#assistUnit
-            //begin#assistUnit
+                    url: '/assistUnitEdit/:id',
+                    templateUrl: rootPath + '/assistUnit/html/assistUnitEdit.html',
+                    controller: 'assistUnitEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#assistUnit
+                //begin#assistUnit
                 .state('quartz', {
                     url: '/quartz',
                     templateUrl: rootPath + '/quartz/html/list.html',
@@ -629,12 +628,12 @@
                     controller: 'sharingPlatlformCtrl',
                     controllerAs: 'vm'
                 }).state('sharingPlatlformEdit', {
-                url: '/sharingPlatlformEdit/:sharId',
-                templateUrl: rootPath + '/sharingPlatlform/html/edit.html',
-                controller: 'sharingPlatlformEditCtrl',
-                controllerAs: 'vm'
-            })
-            //资料共享详情页
+                    url: '/sharingPlatlformEdit/:sharId',
+                    templateUrl: rootPath + '/sharingPlatlform/html/edit.html',
+                    controller: 'sharingPlatlformEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //资料共享详情页
                 .state('sharingDetil', {
                     url: '/sharingDetil/:sharId',
                     templateUrl: rootPath + '/sharingPlatlform/html/detail.html',
@@ -687,14 +686,14 @@
 
                 //专家缴费统计列表
                 .state('expertPaymentCountList', {
-                    url: '/expertPaymentCountList/:beginTime',
+                    url: '/expertPaymentCountList/:year/:month',
                     templateUrl: rootPath + '/financialManager/html/expertPaymentCount.html',
                     controller: 'expertPaymentCountCtrl',
                     controllerAs: 'vm'
                 })
                 //专家缴费明细统计列表
                 .state('expertPaymentDetailCountList', {
-                    url: '/expertPaymentDetailCountList/:beginTime',
+                    url: '/expertPaymentDetailCountList/:year/:month',
                     templateUrl: rootPath + '/financialManager/html/expertPaymentDetailCount.html',
                     controller: 'expertPaymentDetailCountCtrl',
                     controllerAs: 'vm'
@@ -1165,7 +1164,6 @@
                 } else {
                     return type;
                 }
-
             }
         }
 
@@ -1260,9 +1258,9 @@
             if (sysFileId) {
                 var url, width, height;
                 if ("pdf" == fileType) {
-                    url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId+"&version="+(new Date()).getTime()+"";
+                    url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?file=" + rootPath + "/file/preview/" + sysFileId + "&version=" + (new Date()).getTime() + "";
                 } else if ("image" == fileType) {
-                    url = rootPath + "/file/preview/" + sysFileId+"?version="+(new Date()).getTime()+"";
+                    url = rootPath + "/file/preview/" + sysFileId + "?version=" + (new Date()).getTime() + "";
                 }
                 if (url) {
                     var httpOptions = {
@@ -1303,9 +1301,9 @@
         }
 
         //文件在线编辑
-        $rootScope.editFile = function(sysFileId, fileType){
-           var url = rootPath + "/file/editFile?sysFileId=" + sysFileId+"&fileType="+fileType+"&version="+(new Date()).getTime();
-           window.open(url,"_blank");
+        $rootScope.editFile = function (sysFileId, fileType) {
+            var url = rootPath + "/file/editFile?sysFileId=" + sysFileId + "&fileType=" + fileType + "&version=" + (new Date()).getTime();
+            window.open(url, "_blank");
         }
 
         //打印预览，生成word模板直接预览
@@ -1313,7 +1311,7 @@
             if (!businessId || !businessType || !stageType) {
                 bsWin.alert("打印预览失败，参数不正确！");
             } else {
-                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version="+(new Date()).getTime()+"&file=" + rootPath + "/file/printPreview/" + businessId + "/" + businessType + "/" + stageType;
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/file/printPreview/" + businessId + "/" + businessType + "/" + stageType;
                 $("#iframePreview").attr("src", url);
                 $("#previewModal").kendoWindow({
                     width: "80%",
@@ -1334,7 +1332,7 @@
         //状态
         $rootScope.view = {};
         //保存查询条件
-        $rootScope.storeView = function (storeName,params){
+        $rootScope.storeView = function (storeName, params) {
             $rootScope.view[storeName] = params;
         }
     });

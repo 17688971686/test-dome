@@ -31,6 +31,9 @@ public class ExpertCostCountDto  {
     private BigDecimal yreviewtaxes;
 
     private String beginTime;
+    //以下字段只是协助作用
+    private String year;
+    private String month;
 
     List<ExpertCostDetailCountDto> expertCostDetailCountDtoList;
 
@@ -128,5 +131,21 @@ public class ExpertCostCountDto  {
 
     public void setBeginTime(String beginTime) {
         this.beginTime = beginTime;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
     }
 }
