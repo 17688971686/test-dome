@@ -309,6 +309,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <li><a href="javascript:void(0)" ui-sref="projectCostCountList">评审费用统计</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="financialManager#html/expertPaymentCount#get">
+                                <!--
+                                <li><a href="#/expertPaymentCountList//" >专家缴税统计</a></li>
+                                -->
                                 <li><a href="javascript:void(0)" ui-sref="expertPaymentCountList">专家缴税统计</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="financialManager#html/expertCount#get">

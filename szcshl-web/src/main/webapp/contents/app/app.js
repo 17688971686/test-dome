@@ -686,8 +686,9 @@
 
                 //专家缴费统计列表
                 .state('expertPaymentCountList', {
-                    url: '/expertPaymentCountList/:year/:month',
+                    url: '/expertPaymentCountList',
                     templateUrl: rootPath + '/financialManager/html/expertPaymentCount.html',
+                    params: {'year': (new Date()).getFullYear()+'','month':((new Date()).getMonth() + 1)+''},//参数在这边声明
                     controller: 'expertPaymentCountCtrl',
                     controllerAs: 'vm'
                 })

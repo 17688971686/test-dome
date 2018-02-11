@@ -5,7 +5,7 @@
 
 <div class="well well-sm" style="background:white;">
 	<ol class="breadcrumb">
-		<li><a href="#/sharingPlatlform">专家缴税统计</a></li>
+		<li><a>专家缴税统计</a></li>
 		<li class="active">{{vm.title}}</li>
 	</ol>
 	<form id="form" name="form">
@@ -13,7 +13,6 @@
 			<span>统计日期：</span>
 			<select name="year" ng-model="vm.model.year">
                 <option ng-repeat="x in DICT.NDBG.dicts"
-                        ng-selected="vm.model.year == x.dictName"
                         value="{{x.dictName}}">{{x.dictName}}
                 </option>
 			</select> 年

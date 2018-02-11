@@ -12,28 +12,8 @@
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
         vm.model = {};
-
-        //S 输入数字校验
-        vm.inputIntegerValue = function (checkValue, idSort) {
-            if (expertPaymentCountSvc.isUnsignedInteger(checkValue)) {
-                $("#errorsUnmber" + idSort).html("");
-            } else {
-                $("#errorsUnmber" + idSort).html("只能输入数字");
-            }
-        }
-        //E 输入数字校验
-
-        //按月份统计专家明细
-        vm.countExpertCostDetail = function () {
-            expertPaymentCountSvc.expertCostDetailTotal(vm, function (data) {
-                vm.expertCostTotalInfo = data.reObj.expertCostTotalInfo
-                var trCount = $("#expertCostTable tr").length;
-                for (var i = 1; i < trCount; i++) {
-                    $("#option" + i).remove();
-                }
-                createExpertCostTable(vm.expertCostTotalInfo);
-            });
-        }
+        vm.model.year = $state.params.year;
+        vm.model.month = $state.params.month;
 
         vm.countExpertCost = function () {
             expertPaymentCountSvc.expertCostTotal(vm, function (data) {
@@ -70,15 +50,12 @@
 
         activate();
         function activate() {
-            if($state.params.year){
-                vm.model.year = $state.params.year;
-                vm.model.month = $state.params.month;
-            }else{
-                var date = new Date;
+            if(!vm.model.year || !vm.model.month) {
+                var date = new Date();
                 var year = date.getFullYear();
                 var month = date.getMonth() + 1;
-                vm.model.year = year;
-                vm.model.month = month;
+                vm.model.year = year+'';
+                vm.model.month = month+'';
             }
             expertPaymentCountSvc.expertCostTotal(vm, function (data) {
                 vm.expertCostTotalInfo = data.reObj.expertCostTotalInfo
