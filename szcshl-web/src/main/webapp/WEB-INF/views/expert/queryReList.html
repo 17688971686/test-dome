@@ -26,7 +26,7 @@
 		<button class="btn btn-xs btn-danger"  ng-click="{0}" ng-show="{2}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
  	</@shiro.hasPermission> 
 	<@shiro.hasPermission name="expert##put"> 
-	       <a class="btn btn-xs btn-primary" href="#/expertEdit/{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+	       <a class="btn btn-xs btn-primary"href="javascript:void(0)" ui-sref="expertEdit({id:'{1}'})"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
  	</@shiro.hasPermission> 
 </script>
 
