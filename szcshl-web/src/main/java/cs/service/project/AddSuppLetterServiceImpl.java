@@ -258,13 +258,18 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      */
     @Override
     public void delete(String id) {
-        this.delete(id);
+       /* this.delete(id);*/
+       AddSuppLetter addSuppLetter=addSuppLetterRepo.findById(id);
+       if(addSuppLetter !=null){
+           addSuppLetterRepo.delete(addSuppLetter);
+       }
+
     }
 
     @Override
     public void deletes(String[] ids) {
         for (String id : ids) {
-            this.delete(id);
+           this.delete(id);
         }
     }
 
