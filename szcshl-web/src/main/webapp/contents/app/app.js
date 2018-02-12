@@ -286,12 +286,14 @@
 
                 //begin#room
                 .state('room', {
-                    url: '/room/:businessId/:businessType',
+                    url: '/room',
+                    params:{'businessId' : '' , 'businessType' : ''},
                     templateUrl: rootPath + '/room/html/roomlist.html',
                     controller: 'roomCtrl',
                     controllerAs: 'vm'
                 }).state('roomCount', {
-                    url: '/roomCount/:id',
+                    url: '/roomCount',
+                    params:{'id' : ''},
                     templateUrl: rootPath + '/room/html/countlist.html',
                     controller: 'roomCountCtrl',
                     controllerAs: 'vm'
@@ -364,7 +366,7 @@
                     controllerAs: 'vm'
                 })
                 .state('expertEdit', {
-                    url: '/expertEdit/:expertID',
+                    url: '/expertEdit/:id',
                     templateUrl: rootPath + '/expert/html/edit.html',
                     controller: 'expertEditCtrl',
                     controllerAs: 'vm'
@@ -823,7 +825,8 @@
 
                 //优秀评审报告列表
                 .state('reviewProjectAppraiseList', {
-                    url: '/reviewProjectAppraiseList/:id',
+                    url: '/reviewProjectAppraiseList',
+                    params:{'id' : ''},
                     templateUrl: rootPath + '/signView/html/list.html',
                     controller: 'reviewProjectAppraiseCtrl',
                     controllerAs: 'vm'
@@ -847,14 +850,16 @@
                 //S 档案借阅管理
                 //项目档案借阅录入页面
                 .state('libraryAdd', {
-                    url: '/libraryAdd/:id',
+                    url: '/libraryAdd',
+                    params:{'id' : ''},
                     templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryAdd.html',
                     controller: 'archivesLibraryCtrl',
                     controllerAs: 'vm'
                 })
                 //档案借阅查询
                 .state('archivesLibraryList', {
-                    url: '/archivesLibraryList/:id',
+                    url: '/archivesLibraryList',
+                    params:{'id' : ''},
                     templateUrl: rootPath + '/archivesLibrary/html/archivesLibraryList.html',
                     controller: 'archivesLibraryListCtrl',
                     controllerAs: 'vm'
@@ -930,7 +935,8 @@
                 })
                 //图书采购流程
                 .state('bookBuyBusinessEdit', {
-                    url: '/bookBuyBusinessEdit/:businessId/:viewDetail',
+                    url: '/bookBuyBusinessEdit',
+                    params:{'businessId' : '' , 'viewDetail' : ''},
                     templateUrl: rootPath + '/bookBuyBusiness/html/bookBuyBusinessEdit.html',
                     controller: 'bookBuyBusinessEditCtrl',
                     controllerAs: 'vm'
@@ -1176,7 +1182,6 @@
                 $rootScope.$flowParams = fromParams;
             }
         });
-
         $rootScope.back = function () {
             if ($rootScope.previousState_name) {
                 $state.go($rootScope.previousState_name, $rootScope.previousState_params);
