@@ -1174,7 +1174,6 @@
 
         //实现返回的函数
         $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
-            alert("页面加载成功！");
             $rootScope.previousState_name = fromState.name;
             $rootScope.previousState_params = fromParams;
             if (fromState.name == 'signFlowDeal' || fromState.name == 'flowDeal') {
