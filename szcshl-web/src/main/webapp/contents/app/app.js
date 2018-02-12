@@ -1141,8 +1141,6 @@
                     controller: 'maintainExpertConfirmCtrl',
                     controllerAs: 'vm'
                 })
-
-
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
         $rootScope.rootPath = rootPath;
         $rootScope.DICT = DICTOBJ;
@@ -1169,9 +1167,8 @@
         }
 
         //实现返回的函数
-        $rootScope.$state = $state;
-        $rootScope.$stateParams = $stateParams;
         $rootScope.$on("$stateChangeSuccess", function (event, toState, toParams, fromState, fromParams) {
+            alert("页面加载成功！");
             $rootScope.previousState_name = fromState.name;
             $rootScope.previousState_params = fromParams;
             if (fromState.name == 'signFlowDeal' || fromState.name == 'flowDeal') {

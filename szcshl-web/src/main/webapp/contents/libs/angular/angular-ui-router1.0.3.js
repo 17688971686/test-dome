@@ -9329,7 +9329,7 @@
                         function updateAfterTransition(trans) {
                             trans.promise.then(update);
                         }
-                        $scope.$on('$stateChangeSuccess', update);
+                        $stateChangeSuccess.$on('$stateChangeSuccess', update);
                         $scope.$on('$destroy', $uiRouter.transitionService.onStart({}, updateAfterTransition));
                         if ($uiRouter.globals.transition) {
                             updateAfterTransition($uiRouter.globals.transition);
