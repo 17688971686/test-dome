@@ -32,6 +32,8 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -121,9 +123,12 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 sign = signRepo.findById(Sign_.signid.getName(), workProgramDto.getSignId());
             }
             //只有主方案改了，才会更新
-            if ((FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()).equals(workProgram.getBranchId())
-                    && (sign.getAppalyInvestment() == null ||  (sign.getAppalyInvestment().compareTo(workProgram.getAppalyInvestment()) != 0 ))) {
-                sign.setAppalyInvestment(workProgram.getAppalyInvestment());
+            if ((FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()).equals(workProgram.getBranchId())) {
+                //如果有多个分支，则以总申报金额为准，否则，以该项目的申报金额为准
+                BigDecimal compareInvestment = workProgram.getTotalInvestment()==null?workProgram.getAppalyInvestment():workProgram.getTotalInvestment();
+                if(compareInvestment != null && (sign.getAppalyInvestment() == null ||  (sign.getAppalyInvestment().compareTo(compareInvestment) != 0))){
+                    sign.setAppalyInvestment(compareInvestment);
+                }
             }
             //表示正在做工作方案
             sign.setProcessState(Constant.SignProcessState.DO_WP.getValue());

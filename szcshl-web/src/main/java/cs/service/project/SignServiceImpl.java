@@ -599,7 +599,7 @@ public class SignServiceImpl implements SignService {
             task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
             taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());    //综合部拟办意见
             //查询是否有待办人员
-            User leadUser = userRepo.findById(User_.id.getName(), sign.getLeaderId());
+            User leadUser = userRepo.getCacheUserById(sign.getLeaderId());
             String assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
             taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_FGLD.getValue(), assigneeValue));
             //放入腾讯通消息缓冲池
@@ -1023,8 +1023,9 @@ public class SignServiceImpl implements SignService {
 
                 workProgramRepo.save(wk);
 
-                //设定下一环节处理人
-                dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
+                //设定下一环节处理人【分管领导是分配工作方案那个分管领导，不是部门的分管领导】
+                sign = signRepo.findById(Sign_.signid.getName(), signid);
+                dealUser = userRepo.getCacheUserById(sign.getLeaderId());
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                 //下一环节还是自己
                 if (assigneeValue.equals(SessionUtil.getUserId())) {
