@@ -425,7 +425,12 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 //投资金额
                 String beginTime = proReviewConditionDto.getBeginTime() + "-01 00:00:00";
                 String[] timeArr = proReviewConditionDto.getEndTime().split("-");
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                String day = "";
+                if(Integer.parseInt(timeArr[1])>1){
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                }else{
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                }
                 String endTime = proReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
                 proCountArr = expertSelectedService.proReviewCondByDeclare(beginTime, endTime);
             }

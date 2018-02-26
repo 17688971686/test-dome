@@ -476,20 +476,35 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String day = "";
+                if(Integer.parseInt(timeArr[1])>1){
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                }else{
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                }
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String day = "";
+                if(Integer.parseInt(timeArr[1])>1){
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                }else{
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                }
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String day = "";
+                if(Integer.parseInt(timeArr[1])>1){
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                }else{
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                }
                 String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
@@ -546,20 +561,35 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String day = "";
+                if(Integer.parseInt(timeArr[1])>1){
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                }else{
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                }
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String day = "";
+                if(Integer.parseInt(timeArr[1])>1){
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                }else{
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                }
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String day = "";
+                if(Integer.parseInt(timeArr[1])>1){
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                }else{
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                }
                 String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
@@ -620,7 +650,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String day = "";
+                if(Integer.parseInt(timeArr[1])>1){
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                }else{
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                }
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
@@ -657,7 +692,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
        if(null != projectReviewConditionDto){
            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
-               String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+               String day = "";
+               if(Integer.parseInt(timeArr[1])>1){
+                   day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+               }else{
+                   day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+               }
                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
@@ -712,20 +752,35 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String day = "";
+                if(Integer.parseInt(timeArr[1])>1){
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                }else{
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                }
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String day = "";
+                if(Integer.parseInt(timeArr[1])>1){
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                }else{
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                }
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
+                String day = "";
+                if(Integer.parseInt(timeArr[1])>1){
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                }else{
+                    day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                }
                 String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
@@ -1108,21 +1163,35 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
            if (StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())) {
                String beginTime = projectReviewConditionDto.getBeginTime() + "-01 00:00:00";
                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
-               String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+               String day = "";
+               if(Integer.parseInt(timeArr[1])>1){
+                   day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+               }else{
+                   day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+               }
                String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
                sqlBuilder.append("and s.signdate >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
                sqlBuilder.append("and s.signdate <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
            } else if (StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())) {
                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
-               String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+               String day = "";
+               if(Integer.parseInt(timeArr[1])>1){
+                   day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+               }else{
+                   day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+               }
                String beginTime = projectReviewConditionDto.getBeginTime() + "-01 00:00:00";
                String endTime = projectReviewConditionDto.getBeginTime() + "-" + day + " 23:59:59";
                sqlBuilder.append("and s.signdate >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
                sqlBuilder.append("and s.signdate <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
            } else if (StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())) {
                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
-               ;
-               String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+               String day = "";
+               if(Integer.parseInt(timeArr[1])>1){
+                   day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+               }else{
+                   day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+               }
                String beginTime = projectReviewConditionDto.getEndTime() + "-01 00:00:00";
                String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
                sqlBuilder.append("and s.signdate >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
