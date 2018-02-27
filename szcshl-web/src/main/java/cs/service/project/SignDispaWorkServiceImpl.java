@@ -111,6 +111,21 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     public PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj) {
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
+        List<ODataFilterItem> oDataFilterItemList =  odataObj.getFilter();
+        Boolean flag = false;
+        if(oDataFilterItemList.size() > 0 ){
+            for(ODataFilterItem o : oDataFilterItemList){
+
+                if("reviewdays".equals(o.getField())){
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        if(!flag){
+            criteria.add(Restrictions.ge(SignDispaWork_.reviewdays.getName() , (float)0));
+            criteria.add(Restrictions.le(SignDispaWork_.reviewdays.getName() , (float)3));
+        }
         criteria = odataObj.buildFilterToCriteria(criteria);
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);

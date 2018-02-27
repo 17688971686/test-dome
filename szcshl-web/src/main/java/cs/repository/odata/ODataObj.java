@@ -101,7 +101,7 @@ public class ODataObj {
     }
 
     public final static Pattern odataLikePattern = Pattern.compile("(substringof\\(\\s*\\'?[^\\']*\\'\\s*\\,\\s*[\\w|\\.|/]+\\s*\\))"),
-            odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le|ni|in)\\s+(((datetime|date|bigDecimal|integer|double)?\\'[^\\']*\\'|\\d+)|(\\([^\\)]*\\))))"),
+            odataOtherPattern = Pattern.compile("([\\w|\\.|/]+\\s+(eq|ne|gt|ge|lt|le|ni|in)\\s+(((datetime|date|bigDecimal|integer|double|float)?\\'[^\\']*\\'|\\d+)|(\\([^\\)]*\\))))"),
             patternField = Pattern.compile(",(.*?)\\)"),
             patternValue = Pattern.compile("'(.*?)'");
 
@@ -161,10 +161,14 @@ public class ODataObj {
                 filterItems = getFilterItems(odataMatcher.group());
                 if (ObjectUtils.isNoneEmpty(filterItems)) {
                     value = filterItems[2];
-                    if (StringUtil.startsWithIgnoreCase(value, "bigdecimal'")) {// 如果是datetime
+                    if (StringUtil.startsWithIgnoreCase(value, "bigDecimal'")) {// 如果是bigDecimal
                         oDataFilterItem = new ODataFilterItem<BigDecimal>();
-                        String rgex = "bigdecimal'(.*?)'";
+                        String rgex = "bigDecimal'(.*?)'";
                         oDataFilterItem.setValue(new BigDecimal(StringUtil.getSubUtilSimple(value, rgex)));
+                    }else if(StringUtil.startsWithIgnoreCase(value, "float'")){// 如果是float
+                        oDataFilterItem = new ODataFilterItem<Float>();
+                        String rgex = "float'(.*?)'";
+                        oDataFilterItem.setValue(new Float(StringUtil.getSubUtilSimple(value, rgex)));
                     }else if (StringUtil.startsWithIgnoreCase(value, "integer'")) {// 如果是datetime
                         oDataFilterItem = new ODataFilterItem<Integer>();
                         String rgex = "integer'(.*?)'";

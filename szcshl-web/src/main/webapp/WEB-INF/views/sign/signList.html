@@ -189,13 +189,21 @@
                 </tr>
                 <tr class="hidetr changeTr">
                     <td class="text-right">归档日期</td>
-                    <td colspan="3">
+                    <td colspan="2">
                         <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateBegin"
                                operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                         至
                         <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateEnd"
                                operator="le"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                    </td>
+                   <td class="text-right">评审天数</td>
+                    <td>
+                        <input name="reviewdays" data-type='float' ng-model="vm.project.beginReviewdays"
+                               style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="ge"/>
+                        -
+                        <input name="reviewdays" data-type='float' ng-model="vm.project.endReviewdays"
+                               style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="le"/>
                     </td>
                     <td class="text-right">申报投资</td>
                     <td>

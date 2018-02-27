@@ -762,7 +762,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
                 String day = "";
                 if(Integer.parseInt(timeArr[1])>1){
-                     day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                     day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 }else{
                      day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 }
@@ -773,7 +773,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
                 String day = "";
                 if(Integer.parseInt(timeArr[1])>1){
-                     day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                     day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 }else{
                      day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 }
