@@ -585,24 +585,27 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         BeanCopierUtils.copyProperties(work, workDto);
         if(Validate.isString(work.getBranchId()) && !work.getBranchId().equals("1")){
             WorkProgram mainWork =  workProgramRepo.findBySignIdAndBranchId(work.getSign().getSignid(),"1");
-            workDto.setProjectName(mainWork.getProjectName());
-            workDto.setTotalInvestment(mainWork.getTotalInvestment());
-            workDto.setSendFileUnit(mainWork.getSendFileUnit());
-            workDto.setSendFileUser(mainWork.getSendFileUser());
-            workDto.setBuildCompany(mainWork.getBuildCompany());
-            workDto.setDesignCompany(mainWork.getDesignCompany());
-            workDto.setMainDeptName(mainWork.getMainDeptName());
-            workDto.setIsHaveEIA(mainWork.getIsHaveEIA());
-            workDto.setProjectType(mainWork.getProjectType());
-            workDto.setProjectSubType(mainWork.getProjectSubType());
-            workDto.setIndustryType(mainWork.getIndustryType());
-            workDto.setContactPerson(mainWork.getContactPerson());
-            workDto.setContactPersonPhone(mainWork.getContactPersonPhone());
-            workDto.setContactPersonTel(mainWork.getContactPersonTel());
-            workDto.setContactPersonFax(mainWork.getContactPersonFax());
-            workDto.setReviewOrgName(mainWork.getReviewOrgName());
-            workDto.setMianChargeUserName(mainWork.getMianChargeUserName());
-            workDto.setSecondChargeUserName(mainWork.getSecondChargeUserName());
+            if(mainWork != null){
+
+                workDto.setProjectName(mainWork.getProjectName());
+                workDto.setTotalInvestment(mainWork.getTotalInvestment());
+                workDto.setSendFileUnit(mainWork.getSendFileUnit());
+                workDto.setSendFileUser(mainWork.getSendFileUser());
+                workDto.setBuildCompany(mainWork.getBuildCompany());
+                workDto.setDesignCompany(mainWork.getDesignCompany());
+                workDto.setMainDeptName(mainWork.getMainDeptName());
+                workDto.setIsHaveEIA(mainWork.getIsHaveEIA());
+                workDto.setProjectType(mainWork.getProjectType());
+                workDto.setProjectSubType(mainWork.getProjectSubType());
+                workDto.setIndustryType(mainWork.getIndustryType());
+                workDto.setContactPerson(mainWork.getContactPerson());
+                workDto.setContactPersonPhone(mainWork.getContactPersonPhone());
+                workDto.setContactPersonTel(mainWork.getContactPersonTel());
+                workDto.setContactPersonFax(mainWork.getContactPersonFax());
+                workDto.setReviewOrgName(mainWork.getReviewOrgName());
+                workDto.setMianChargeUserName(mainWork.getMianChargeUserName());
+                workDto.setSecondChargeUserName(mainWork.getSecondChargeUserName());
+            }
         }
         if(Constant.EnumState.NO.getValue().equals(workDto.getIsMainProject()) && EnumState.NO.equals(workDto.getIsSigle())){//次项目
             //查找主项目信息，并且获取主项目的会议室信息和专家信息

@@ -393,7 +393,8 @@
                     filterable: false,
                     template: function (item) {
                         if (item.surplusDays != undefined) {
-                            return (item.surplusDays > 0) ? item.surplusDays : 0;
+                            return item.surplusDays;
+                            // return (item.surplusDays > 0) ? item.surplusDays : 0;
                         } else {
                             return "";
                         }
@@ -667,7 +668,8 @@
                     filterable: false,
                     template: function (item) {
                         if (item.surplusDays != undefined) {
-                            return (item.surplusDays > 0) ? item.surplusDays : 0;
+                            return item.surplusDays;
+                            // return (item.surplusDays > 0) ? item.surplusDays : 0;
                         } else {
                             return "";
                         }
@@ -805,7 +807,8 @@
                     filterable: false,
                     template: function (item) {
                         if (item.surplusdays != undefined) {
-                            return (item.surplusdays > 0) ? item.surplusdays : 0;
+                            return item.surplusdays;
+                            // return (item.surplusdays > 0) ? item.surplusdays : 0;
                         } else {
                             return "";
                         }
@@ -1117,7 +1120,8 @@
                     filterable: false,
                     template: function (item) {
                         if (item.surplusdays != undefined) {
-                            return (item.surplusdays > 0) ? item.surplusdays : 0;
+                            return item.surplusdays;
+                            // return (item.surplusdays > 0) ? item.surplusdays : 0;
                         } else {
                             return "";
                         }
