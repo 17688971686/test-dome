@@ -426,6 +426,7 @@
                 if ("String" != dataType) {
                     val = dataType + val;
                 }
+
                 var operator = $me.attr("operator") || "eq",
                     dataRole = $me.attr("data-role") || ""; // data-role="datepicker"
                 if (dataRole == "datepicker") {
@@ -434,9 +435,7 @@
                     val = "datetime" + val;
                 }
 
-                return operator == "like" ? ("substringof(" + val + ", "
-                + elem.name + ")") : (elem.name + " " + operator
-                + " " + val);
+                return operator == "like" ? ("substringof(" + val + ", "+ elem.name + ")") : (elem.name + " "+operator+" " + val);
             }).get().join(" and ");
     }// E_封装filer的参数
 
