@@ -68,10 +68,36 @@
             monthlyNewsletterSvc.createMonthReport(vm);
         }
 
+        /**
+         * 初始化月报简报默认生成上个月数据
+         */
+        function initRepData() {
+            var date = new Date();
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            if(month == 1){
+                vm.monthly.reportMultiyear = (year - 1)+"";
+                vm.monthly.startMoultiyear = (year - 1)+"";
+                vm.monthly.endMoultiyear = (year - 1)+"";
+                vm.monthly.theMonths = "12";
+                vm.monthly.staerTheMonths = "1";
+                vm.monthly.endTheMonths = "12";
+            }else{
+                vm.monthly.reportMultiyear = year + "";
+                vm.monthly.startMoultiyear = year + "";
+                vm.monthly.endMoultiyear = year + "";
+                vm.monthly.theMonths = (month - 1) + "";
+                vm.monthly.staerTheMonths = "1";
+                vm.monthly.endTheMonths = (month - 1) + "";
+            }
+        }
+
         activate();
         function activate() {
             if (vm.isUpdate) {
                 monthlyNewsletterSvc.getMonthlyNewsletterById(vm);
+            }else{
+                initRepData();
             }
         }
     }
