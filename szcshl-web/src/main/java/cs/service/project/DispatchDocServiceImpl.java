@@ -106,13 +106,23 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 String showName = sysFile.getShowName().substring(0,sysFile.getShowName().lastIndexOf("."));
                 for (Map.Entry<String,Boolean> entry : checkTypeMap.entrySet()) {
                     if(entry.getValue() == false){
-                        if(entry.getKey().contains(showName)){
+                        //项目概算不用上传投资匡算表或投资估算表
+                        if(Constant.STAGE_BUDGET.equals(dispatchDoc.getDispatchStage()) ){
+                            if("评审意见,审核意见".equals(entry.getKey())){
+                                entry.setValue(true);
+                                successCount++;
+                                break;
+                            }
+                        }else if(entry.getKey().contains(showName)){
                             entry.setValue(true);
                             successCount++;
                         }
                     }
                 }
-                if(successCount == checkCount){
+                if(Constant.STAGE_BUDGET.equals(dispatchDoc.getDispatchStage()) && successCount == 1) {
+                    isUploadMainFile = true;
+                    break;
+                }else if(successCount == checkCount){
                     isUploadMainFile = true;
                     break;
                 }
@@ -121,9 +131,18 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         if(!isUploadMainFile){
             StringBuffer errorBuffer = new StringBuffer();
             for (Map.Entry<String,Boolean> entry : checkTypeMap.entrySet()) {
-                if(entry.getValue() == false){
-                    errorBuffer.append(entry.getKey().replaceAll(",","或者")+";");
+                //项目概算不用上传投资匡算表或投资估算表
+                if(Constant.STAGE_BUDGET.equals(dispatchDoc.getDispatchStage()) ){
+                    if("评审意见,审核意见".equals(entry.getKey()) && entry.getValue() == false){
+
+                        errorBuffer.append(entry.getKey().replaceAll(",","或者")+";");
+                    }
+                }else{
+                    if(entry.getValue() == false){
+                        errorBuffer.append(entry.getKey().replaceAll(",","或者")+";");
+                    }
                 }
+
             }
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传"+errorBuffer.toString()+"附件信息！");
         }
