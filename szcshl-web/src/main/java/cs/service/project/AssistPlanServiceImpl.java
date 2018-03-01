@@ -110,6 +110,8 @@ public class AssistPlanServiceImpl implements AssistPlanService {
 
             /************************  协审类型判断 **************************/
             if (Constant.MergeType.ASSIST_SIGNLE.getValue().equals(record.getAssistType())) {
+                //如果是独立项目，没有选择拆分个数则默认为 1
+                record.setSplitNum(record.getSplitNum() == null ? 1 : record.getSplitNum());
                 List<AssistPlanSign> saveList = new ArrayList<>(record.getSplitNum());
                 int i = 1;
                 while (i <= record.getSplitNum()) {
