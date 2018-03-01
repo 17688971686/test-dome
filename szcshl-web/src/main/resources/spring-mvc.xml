@@ -16,6 +16,11 @@
 	<context:component-scan base-package="cs.controller" >
 	 	<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
+
+	<!-- 移动端自动扫描@Controller注入为bean -->
+	<context:component-scan base-package="cs.mobile.controller" >
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
 	
 	<!-- <context:component-scan base-package="com.dingding.dingPC.controller" /> -->
 	<mvc:interceptors>
