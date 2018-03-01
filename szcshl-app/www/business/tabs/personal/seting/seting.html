@@ -1,0 +1,27 @@
+<ion-view title="个人设置" class="{{viewMainClass}}">
+<ion-nav-bar class="bar-positive">
+		<ion-nav-buttons side="left">
+			<button ng-click="back()" class="button back-button buttons button-clear header-item">
+            	<i class="icon ion-android-arrow-back"></i> </button>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<ion-content>
+
+		<div class="list">
+			<div class="padding"></div>
+			<div class="padding"></div>
+			<a class="item item-icon-left item-icon-right" ng-click="clearLocal()">
+				<i class="icon ion-ios-trash"></i>清空缓存
+				<i class="icon ion-ios-arrow-right"></i>
+			</a>
+			<a class="item item-icon-left item-icon-right" ng-click="goVersion()">
+				<i class="icon ion-clipboard"></i>
+				版本检测 v{{version}}
+				<span style="color: red;font-size: 12px;padding-left: 20px;" ng-show="isNew">(有新版本可用 v{{newVersion}})</span>
+				<i class="icon ion-ios-arrow-right"></i>
+			</a>
+		</div>
+
+	</ion-content>
+
+</ion-view>

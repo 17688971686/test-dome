@@ -1,0 +1,39 @@
+<!--延长报修页面-->
+
+            <div class="item text-center bg_9BE1FA" ng-show="isSubmit">
+		        <span style="color: red;">申请维修延长流程已提交，待审核</span>
+	        </div>
+			<!--基本信息页面-->
+			<div ng-include="'areas/workDynamic/task/commonality/basic.html'"></div>
+	        <label class="item item-select">
+	        	<span >延长天数：</span>
+	        	<span class="item-input inline" style="width: 140px;" ng-show="_TEMP_.yyymmm && _TEMP_.yyymmm==0">
+					<input type="number" maxlength="2" min="1" max="99" ng-model="data.repairApply.duration" placeholder="请输人天数" style="display: inline;width: 100px;"
+						onkeyup="this.value=this.value.replace( /\D/g,'')" onafterpaste="this.value=this.value.replace( /\D/g,'')">
+	        	</span>
+	        	<select ng-model="_TEMP_.yyymmm" ng-change="data.repairApply.duration = _TEMP_.yyymmm == 0 ? '' : _TEMP_.yyymmm*1">
+	       			<option value="">请选择</option>
+	       			<option value="1">1天</option>
+	       			<option value="2">2天</option>
+	       			<option value="3">3天</option>
+	       			<option value="4">4天</option>
+	       			<option value="5">5天</option>
+	       			<option value="6">6天</option>
+	       			<option value="7">7天</option>
+	       			<option value="0">其他</option>
+	       		</select>
+	       </label>
+	       <label class="item item-select">
+	       		延长维修原因
+	       		<select ng-model="_TEMP_.yy" ng-change="data.repairApply.reason = _TEMP_.yy">
+	       			<option value="">请选择</option>
+	       			<option>有事请假</option>
+	       			<option>任务太多</option>
+	       			<option>损坏严重需要更多时间</option>
+	       		</select>
+	        </label>
+	        <label class="item">
+	          	<textarea style="width: 100%;height: 100px;" maxlength="200" ng-model="data.repairApply.reason" placeholder="请输入延长原因"></textarea>
+	        </label>
+	        <button class="button button-block button-balanced" ng-click="repairTimeDelayApply()"
+	        	ng-disabled="!(data.repairApply.duration && data.repairApply.reason ) || isSubmit">提交申请</button>

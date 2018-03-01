@@ -1,0 +1,85 @@
+<ion-view title="{{title}}">
+	<!--视图标题-->
+	<ion-nav-bar class="bar-positive">
+		<!--视图头部-->
+		<ion-nav-buttons side="left">
+			<!--后退-->
+			<button ng-click="back()" class="button back-button buttons button-clear header-item">
+            	<i class="icon ion-android-arrow-back"></i></button>
+		</ion-nav-buttons>
+		<ion-nav-buttons side="right">
+			<!--提交-->
+			<a ng-click="submitProc()" class="button back-button buttons button-clear header-item" ng-disabled="!model.leaderCheckCompleteMsg">
+				提交
+			</a>
+			<!--<a ng-click="designate($event)" class="button back-button buttons button-clear header-item">
+				保存
+			</a>-->
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	
+	<!--选项卡-->
+	<ion-tabs class="tabs-icon-only tabs-positive">
+		<!--选项卡 -- 选项  -- begin================================================基本信息========================================================================-->
+		<ion-tab title="基本信息">
+			<ion-header-bar class="bar-positive">
+				<!--选项卡标题-->
+				<!--<h1 class="title">基本信息</h1>-->
+			</ion-header-bar>
+			<ion-content has-tabs="true">
+				<!--选项卡内容-->
+				<ion-refresher pulling-text="获取最新数据..." refreshing-text="刷新完毕" on-refresh="doRefresh()"></ion-refresher>
+				<!--基本信息页面-->
+				<div ng-include="'areas/workDynamic/task/commonality/basic.html'"></div>
+				<!--显示报修图片-->
+				<div class="text-center">报修图片</div>
+				
+				<div>
+					<div class="w33_h43 float_l border_1px border_2DA4FF " ng-repeat="x in model.files|filter:{fileType:1} ">
+						<a ng-click="showImg((model.files|filter:{fileType:1}),$index)">
+							<img ng-src="{{x.fileUrl.length > 750 ? '' : (rootPath+ '/downLoad/')}}{{x.fileUrl}} " width='100%' />
+						</a>
+					</div>
+					<p style="clear: both; "></p>
+				</div>
+			<div class="item">
+		    	<span>维修情况说明：</span>
+		    	<span>{{model.repairRemark}}</span>
+		    </div>
+			<label class="item item-select">
+	          	<span>确认意见：</span>
+	          	<select ng-model="model.isNeedLeaderCheck" ng-change="model.leaderCheckCompleteMsg = (model.isNeedLeaderCheck=='0'? '确认通过' : '确认不通过，需返修')">
+	              <option value="0">确认通过</option>
+	              <option value="1">确认不通过，需返修</option>
+	            </select>
+	        </label>
+	         <!--确认意见--->
+	        <div ng-show="model.isReal" ng-include="'areas/workDynamic/task/commonView/leaderOpinion.html'"></div>
+			</ion-content>
+		</ion-tab>
+		<!--选项卡 -- 选项  -- begin================================================现场照片========================================================================-->
+		<ion-tab title="现场图片"  on-deselect="">
+				<!--现场图片页面-->
+			<ion-header-bar class="bar-positive ">
+			</ion-header-bar>
+			<ion-content has-tabs="true ">
+				<div ng-include=" 'areas/workDynamic/task/commonView/scenePhoto.html' "></div>
+			</ion-content>
+		</ion-tab>
+		<!--选项卡 -- 选项  -- begin================================================维修设施========================================================================-->
+		<ion-tab title="维修设施 " on-deselect="">
+			<ion-header-bar class="bar-positive ">
+			</ion-header-bar>
+			<ion-content has-tabs="true ">
+				<div ng-include=" 'areas/workDynamic/task/commonView/repairFacilities.html' "></div>
+			</ion-content>
+		</ion-tab>
+		<!--选项卡 -- 选项  -- begin================================================其他操作========================================================================-->
+		<ion-tab title="处理记录" on-select="getRecords() " on-deselect="">
+			<ion-content has-tabs="true ">
+				<!--处理记录页面-->
+				<div ng-include=" 'areas/workDynamic/task/commonality/dispose.html' "></div>
+			</ion-content>
+		</ion-tab>
+	</ion-tabs>
+</ion-view>

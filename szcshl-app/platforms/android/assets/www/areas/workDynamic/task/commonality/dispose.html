@@ -1,0 +1,23 @@
+<!--处理记录页面-->
+<style>
+.col{
+  padding: 5px;
+  /*border: 1px solid #ddd;*/
+  border-radius: 2px;
+  text-align: left;
+}
+.even .col{  background-color: #F8F8F8; }
+.odd .col{  background-color: #FFFBE6; }
+</style>
+<div class="{{$index % 2 == 0 ? 'odd' : 'even'}}" ng-repeat="x in proccessRecords">
+	<div class="row">
+		<div class="col col-50">处理人：{{x.assignee}}</div>
+		<div class="col col-50">环节：{{x.activityName}}</div>
+	</div>
+	<div class="row">
+		<div class="col">时间：{{x.startTime}} ~ {{x.endTime}}</div>
+	</div>
+	<div class="row">
+		<div class="col">意见：	{{x.message}}</div>
+	</div>
+</div>

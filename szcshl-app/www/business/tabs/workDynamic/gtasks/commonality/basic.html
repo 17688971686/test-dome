@@ -1,0 +1,32 @@
+<!--处理页面-->
+<style>
+.lgxitem {
+    border-color: #ddd;
+    background-color: #fff;
+    color: #444;
+    position: relative;
+    z-index: 2;
+    display: block;
+    margin: -1px;
+    padding: 16px;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 16px;
+}
+</style>
+			<label class="item">
+				本环节名称：{{flow.curNode.activitiName}}
+	        </label>
+        <label class="item  item-stacked-label">
+          <span class="input-label">处理意见：</span>
+          <input type="text" ng-model="flow.dealOption">
+        </label>
+  			<label class="item" ng-show="flow.nextNode && (flow.nextNode.length > 0)">
+	          	<span>下一环节名称：</span>
+	          	<span ng-repeat="x in flow.nextNode" >{{x.activitiName}}</span>
+	        </label>
+	<!--        <label class="item">
+	          	<span>业务处理：</span>
+	          	<span><button class="button button-small button-calm">工作方案</button>  </span>
+	        </label>-->
+	 

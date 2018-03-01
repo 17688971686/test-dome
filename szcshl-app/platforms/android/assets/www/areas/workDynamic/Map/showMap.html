@@ -1,0 +1,20 @@
+<ion-modal-view>
+	<ion-content class="width_100">
+		<h3>{{mapSvcObj.title || '地图服务'}}</h3>
+	    <div class="bar bar-header bar-positive">
+	    	<button class="button icon ion-arrow-left-c" ng-click="modal.remove()"></button>
+	      	<h1 class="title size_ss">{{mapSvcObj.title || '地图服务'}}</h1>
+	      	<!--<button class="button icon ion-navicon"></button>-->
+	    </div>
+		<div>
+        	<div id="baiduMap" class="w100_h130"></div>
+		</div>
+		<div>
+        	当前位置：经度：{{mapSvcObj.longitude}}  纬度：{{mapSvcObj.latitude}}<br />
+        	详细地址：{{mapSvcObj.addrmsg}}
+        </div>
+        <p></p><div class="button-bar bar-light">
+			<a class="button" ng-click="mapSvc.setCurrentPosition()"><i class="icon ion-location"> 当前位置</i></a>
+		</div><p></p>
+	</ion-content>
+</ion-modal-view>

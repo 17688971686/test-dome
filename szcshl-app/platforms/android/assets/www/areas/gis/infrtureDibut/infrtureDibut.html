@@ -1,0 +1,69 @@
+<ion-view class="custompane {{viewMainClass}}" title="">
+	<ion-content>
+		<div style="width: {{WIDTH}}px;height: {{HEIGHT*0.5}}px; float: left;">
+			<div id="baiduMap_infrtureDibut" style="width: 100%;height: 100%;"></div>
+		</div>
+		<div style="height:{{HEIGHT*0.5}}px">
+			<div class="row">
+				<div class="col">
+					<div class="width_100 float_l search-custom">
+						<div class="width_5 float_l">&nbsp;</div>
+						<div class="width_75 float_l"><input ng-model="site_data.search" class="width_100 not_border not_bgColor" placeholder="搜索"></div>
+						<div class="width_10  float_l">
+							<a ng-click="site_data.search=''"><i class="icon ion-close-circled color_delete" ng-show="site_data.search"></i>&nbsp;</a>
+						</div>
+						<div class="width_10 float_l">
+							<a ng-click="query(site_data.search);show_index = ''">&nbsp;<i class="icon ion-search"></i></a>
+						</div>
+						<div class="clear_l"></div>
+					</div>
+				</div>
+				<!--<div class="col-20 text-center {{show_index==1? 'bor_ltr_1px' : ''}}" style="margin-top: 7px;padding-top: 3px;">-->
+				<!--<div class="col-20 text-center" style="margin-top: 7px;padding-top: 3px;">
+					<span ng-click="show_index = show_index==1 ? '' : 1">
+							&nbsp;筛选 <i class="icon {{show_index==1? 'ion-arrow-up-b' : 'ion-arrow-down-b'}}"></i>&nbsp;
+						</span>
+				</div>-->
+			</div>
+			<div class="row" ng-show="true">
+				<div class="col item item-select">&nbsp;
+					<select ng-model="street" ng-options="x.streetName for x in streets" ng-change="streetChange(street)">
+						<option value="">请选择街道</option>
+					</select>
+				</div>
+				<div class="col item item-select text-center">&nbsp;
+					<select ng-model="community" ng-options="x.communityName for x in communitys" ng-change="communityChange(community)">
+						<option value="">请选择社区</option>
+					</select>
+				</div>
+			</div>
+			<ion-scroll zooming="true" direction="y" style="width: 100%; height: 90%">
+				<div style="width: 100%; height: 70%;">
+					<ion-list class="project-list">
+						<a class="item item-icon-right" ng-repeat="site in siteList" ng-click="siteClick(site)">
+							<div class="list-box">
+								<i class="icon ion-chevron-right icon-accessory"></i>
+								<h2>{{site.siteName}}</h2>
+								<div class="size_ss text_color_f5">
+									<div class="width_40 float_l">{{site.placeSystem}}</div>
+									<div class="width_30 float_l">{{site.siteType}}</div>
+									<div class="width_30 float_l color_delete" ng-show="!site.siteCoord_X || !site.siteCoord_Y">未定位</div>
+									<div class="clear_b"></div>
+								</div>
+							</div>
+						</a>
+					</ion-list>
+					<div class="item">
+						<p></p>
+						<div class="button-bar bar-balanced">
+							<a ng-click="loadSite(site_data.pageNum-1)" ng-if="site_data.pageNum > 1" class="button">上一页</a>
+							<a ng-click="loadSite(site_data.pageNum+1)" ng-if="siteList && siteList.length == site_data.pageSize" class="button">下一页</a>
+						</div>
+						<p></p>
+						<div ng-if="site_data.message" class="text-center size_s">{{site_data.message}}</div>
+					</div>
+				</div>
+			</ion-scroll>
+		</div>
+	</ion-content>
+</ion-view>

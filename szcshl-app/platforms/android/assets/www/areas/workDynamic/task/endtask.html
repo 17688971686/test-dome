@@ -1,0 +1,105 @@
+<ion-view title="办结工作({{endtaskCount||0}})" class="listpage {{viewMainClass}}">
+	<ion-nav-bar class="bar-positive">
+		<ion-nav-buttons side="left">
+			<button ng-click="back()" class="button back-button buttons button-clear header-item">
+            	<i class="icon ion-android-arrow-back"></i> </button>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<div class="bar bar-subheader bg_EEEEEE min_he_30px task"  style="margin-top: 20px;" >
+		<div class="width_100">
+			<div class="width_85 float_l search-custom">
+				<div class="width_5 float_l">&nbsp;</div>
+				<div class="bor_input float_l width_80 text-right" style="border:0px;">
+					<div class="width_90 float_l"><input ng-model="condition.search" class="width_100 not_border not_bgColor" placeholder="搜索"></div>
+					<div class="width_10  float_l"><a ng-click="condition.search=''" ng-show="condition.search"><i class="icon ion-close-circled color_delete"></i></a></div>
+					<div class="clear_l"></div>
+				</div>
+				<div class="width_15 float_r text-center"><a ng-click="query(condition.search);show_list = false">&nbsp;<i class="icon ion-search"></i></a></div>
+			</div>
+			<div class="width_15 float_r  sail"><a ng-click="handoverPage();"><i class="icon ion-shuffle">筛选</i></a></div>
+			<div class="clear_l"></div>
+		</div>
+	</div>
+	<ion-content>
+		<ion-refresher pulling-text="获取最新数据..." refreshing-text="刷新完毕" on-refresh="doRefresh()"></ion-refresher>
+	<div ng-if="!show_list">
+		<div class="bg_EEEEEE">
+			<div class="bg_EEEEEE size_min">
+			<div class="float_l bg_7CC4E7 margin_5px" ng-show="procName_show">{{procName_show}}</div>
+			<div class="float_l bg_7CC4E7 margin_5px" ng-show="streetName_show">{{streetName_show}}</div>
+			<div class="float_l bg_7CC4E7 margin_5px" ng-show="condition.startTime">{{condition.startTime}}以后</div>
+			<div class="float_l bg_7CC4E7 margin_5px" ng-show="condition.endTime">{{condition.endTime}}以前</div>
+			<div class="clear_l"></div>
+		</div>
+		</div>
+		<!--列表-->
+		<ion-list class="project-list">
+			<a class="item item-icon-right" ng-repeat="tasklist in endtask" href="#/office/end_{{tasklist.processKey}}/{{tasklist.businessKey}}/{{tasklist.taskId}}">
+				<div class="list-icon">
+					<img src="./img/theme/icon9.png" ng-show="tasklist.processKey=='repairRegisterProcess'" />
+					<img src="./img/theme/icon7.png" ng-show="tasklist.processKey=='inspectProcess'" />
+					<img src="./img/theme/icon8.png" ng-show="tasklist.processKey=='maintenanceProcess'" />
+					<img src="./img/theme/icon6.png" ng-show="tasklist.processKey=='repairTimeDelayApplyProcess'" />
+					<img src="./img/theme/icon4.png" ng-show="tasklist.processKey=='facilityBasicProcess'" />
+				</div>
+				<div class="list-content">
+					<div class="list-box">
+						<i class="icon ion-chevron-right icon-accessory"></i>
+						<h2>{{tasklist.taskTitle}}</h2>
+						<div class="size_ss text_color_f5">
+							<div class="width_45 float_l">{{tasklist.processName}}</div>
+							<div class="width_30 float_l">{{tasklist.taskName}}</div>
+							<div class="clear_b" style="color: #999999;"><img src="./img/theme/icon5.png" /> &nbsp; {{tasklist.endTime}}</div>
+						</div>
+					</div>
+					
+				</div>	
+			</a>
+		</ion-list>
+		<!--没有更多数据时候的用户提示-->
+		<div class="padding"></div>
+		<div ng-hide="moreDataCanBeLoaded" style="text-align: center">
+			<span>到底了，没有更多数据了！</span>
+		</div>
+		<ion-infinite-scroll ng-if="moreDataCanBeLoaded" on-infinite="loadData()" distance="1%"></ion-infinite-scroll>
+	</div>
+	<div ng-if="show_list" class="">
+		<div class="bg">
+			<div class="width_100 text-center">
+				<p></p><div class="button-bar bar-balanced size_s">
+			          <a class="button button-small bg-white" ng-click="setStartTime()">最小时间：{{temp.startTime||'不限'}}</a>
+			          <a class="button button-small bg-white" ng-click="setEndTime()">最大时间：{{temp.endTime||'不限'}}</a>
+			        </div>
+			    <p></p>
+			</div>
+		</div>
+		<!--<div class="item width_100">流程</div>-->
+		<div class="item">
+			<div class="width_100 text-center margin_b_8px">流程</div>
+			<div class="width_33 float_l text-center padding_3px" ng-repeat="i in procList">
+				<button class="button {{$index == selectProcIndex ? 'button-assertive' :'button-positive'}}"  ng-click="selectProc(i, $index)">{{i.NAME_}}</button>
+				<!--<div class="radius_3px size_ss height_35px border_1px bor_DDDDDD {{$index == selectProcIndex ? 'bg-red' :'bg-white'}}" ng-click="selectProc(i, $index)">{{i.NAME_}}</div>-->
+			</div>
+			<div class="clear_b"></div>
+		</div>
+		<!--<div class="item width_100">街道</div>-->
+		<div class="item">
+			<div class="width_100 text-center margin_b_8px">街道</div>
+			<div class="width_33 float_l text-center padding_3px" ng-repeat="x in streetDtos">
+				<button class="button {{$index == selectStreetIndex ? 'button-assertive' :'button-positive'}}" ng-click="selectStreet(x, $index)" >{{x.streetName}}</button>
+				<!--<div class="radius_5px size_ss height_35px border_1px bor_DDDDDD {{$index == selectStreetIndex ? 'bg-red' :'bg-white'}}" ng-click="selectStreet(x, $index)">{{x.streetName}}</div>-->
+			</div>
+			<div class="clear_b"></div>
+		</div>
+		<div class="item">
+		 	<button class="button button-calm button-small width_50" ng-click="screen();handoverPage();">&nbsp;确定&nbsp;</button>
+			<button class="button button-calm button-small width_50" ng-click="reset()">&nbsp;重置&nbsp;</button>
+    	</div>
+    	
+		<!--<div class="bar bar-footer bg_EEEEEE">
+			<button class="button button-calm button-small width_50" ng-click="screen();handoverPage();">&nbsp;确定&nbsp;</button>
+			<button class="button button-calm button-small width_50" ng-click="reset()">&nbsp;重置&nbsp;</button>
+	    </div>-->
+	</div>
+	</ion-content>
+</ion-view>

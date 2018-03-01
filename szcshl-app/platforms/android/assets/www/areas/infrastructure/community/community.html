@@ -1,0 +1,60 @@
+<ion-view title="{{model.communityName}}信息" class="{{viewMainClass}}">
+	<ion-nav-bar class="custom-bar bar-positive">
+		<ion-nav-buttons side="left"><!--后退-->
+			<button ng-click="back()" class="button back-button buttons button-clear header-item">
+            	<i class="icon ion-android-arrow-back"></i></button>
+		</ion-nav-buttons>
+		<!--<ion-nav-buttons side="right">
+			<a ng-click="submitProc()" ng-disabled="!(model.repairRemark && model.files && (model.files|filter:{fileType:2}).length>0)" 
+				class="button back-button buttons button-clear header-item" ng-show="pageIndex != 3 && pageIndex != 2">提交</a>
+			<a ng-click="save()" class="button back-button buttons button-clear header-item" ng-show="pageIndex != 3 && pageIndex != 2">保存</a>
+		</ion-nav-buttons>-->
+	</ion-nav-bar>
+	<div class="bar bar-subheader text-center" style="margin-top: 20px;">
+	</div>
+	<ion-content>
+		<ion-refresher pulling-text="获取最新数据..." refreshing-text="刷新完毕" on-refresh="doRefresh()"></ion-refresher>
+		<table class="table table-left">			
+		    <tbody>
+		      <tr>
+		        <td class="color-black" style="width:30%;">社区名称</td>
+		        <td style="width:70%">{{model.communityName}}</td>
+		      </tr>
+		      <tr>
+		        <td class="color-black">所在街道</td>
+		        <td>{{model.streetDto.streetName}}</td>
+		      </tr>
+		      <tr>
+		        <td class="color-black">社区排序</td>
+		        <td>{{model.communitySort}}</td>
+		      </tr>
+		      <tr>
+		        <td colspan="2">备注：{{model.communityInfo}}</td>
+		      </tr>
+		    </tbody>
+		 </table>
+		 <div class="item bor_t_1px">
+		 	<p></p>
+			 	<div class="button-bar bar-balanced">
+		          <a ng-click="show_siteList();show_site = !show_site" class="button">{{show_site ? '隐藏' : '显示'}}场地</a>
+		          <!--<a class="button">添加场地</a>-->
+		        </div>
+	    	<p></p>
+	    	<div ng-show="show_site">
+		 		<div class="item" ng-repeat="site in model.sites">
+		 			{{site.siteName}}<br />
+		 			<div class="row size_ss color_95C2C1">
+		 				<div class="col">{{site.siteType}}</div>
+		 				<div class="col">{{site.operationPattern}}</div>
+		 				<div class="col">{{site.openCondition}}</div>
+		 			</div>
+		 		</div>
+		 		<div class="item" ng-hide="model.sites && model.sites.length>0">
+		 			<div class="row size_ss text-center">
+		 				<div class="col">没有场地数据</div>
+		 			</div>
+		 		</div>
+		 	</div>
+		 </div>
+	</ion-content>
+</ion-view>

@@ -1,0 +1,22 @@
+<ion-view title="待办项目" class="{{viewMainClass}}">
+	<ion-nav-bar class="bar-positive">
+		<ion-nav-buttons side="left">
+			<button ng-click="back()" class="button back-button buttons button-clear header-item">
+            	<i class="icon ion-android-arrow-back"></i> </button>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<ion-content>
+		
+	 <div class="has-header">
+      <ul class="list">
+        <a ng-repeat="x in  gtaksList" class="item"  href="#/workDynamic/gtasks/signFlowDeal/{{x.businessKey}}/{{x.processInstanceId}}/{{x.taskId}}">
+          {{x.projectName}}
+        </a>
+      </ul>
+    </div>
+		
+	</ion-content>
+	
+	<div class="bar bar-footer">
+	</div>
+</ion-view>

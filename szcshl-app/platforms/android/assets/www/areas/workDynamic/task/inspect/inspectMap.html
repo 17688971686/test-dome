@@ -1,0 +1,22 @@
+<ion-modal-view>
+	<ion-content class="width_100">
+		<h2>{{mapSvcObj.title || '地图服务'}}</h2>
+	    <div class="bar bar-header bar-positive">
+	    	<button class="button icon ion-arrow-left-c" ng-click="modal.remove()"></button>
+	      	<h1 class="title size_ss">{{mapSvcObj.title || '地图服务'}}</h1>
+	      	<a class="button" ng-click="model.inspectLng = mapSvcObj.longitude; model.inspectLat = mapSvcObj.latitude"
+	      		ng-if="!(model.inspectLng == mapSvcObj.longitude && model.inspectLat == mapSvcObj.latitude)">保存</a>
+	      	<a class="button" ng-if="model.inspectLng == mapSvcObj.longitude && model.inspectLat == mapSvcObj.latitude" disabled="disabled">已保存</a>
+	    </div>
+	    <div style="padding-left: 16px;">
+        	坐标：经度：{{mapSvcObj.longitude}}  纬度：{{mapSvcObj.latitude}}<br />
+        	地址：{{mapSvcObj.addrmsg}}
+        </div>
+		<div>
+        	<div id="baiduMap" class="w100_h140"></div>
+		</div>
+		<div class="bar bar-footer">
+			<button class="button button-calm button-small ion-location width_100" ng-click="mapSvcObj.setCurrentPosition()">重新定位</button>
+	    </div>
+	</ion-content>
+</ion-modal-view>

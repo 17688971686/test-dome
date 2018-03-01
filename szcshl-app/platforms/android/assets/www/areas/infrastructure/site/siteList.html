@@ -1,0 +1,80 @@
+<!--搜索条件-->
+<ion-view class="{{viewMainClass}}">
+<ion-content>
+	<ion-refresher pulling-text="获取最新数据..." refreshing-text="刷新完毕" on-refresh="doRefreshSite()"></ion-refresher>
+	<div class="row">
+		<div class="col">
+			<div class="width_100 float_l search-custom">
+				<div class="width_5 float_l">&nbsp;</div>
+				<div class="width_75 float_l"><input ng-model="site_data.search" class="width_100 not_border not_bgColor" placeholder="搜索"></div>
+				<div class="width_10  float_l">
+					<a ng-click="site_data.search=''"><i class="icon ion-close-circled color_delete" ng-show="site_data.search"></i>&nbsp;</a>
+				</div>
+				<div class="width_10 float_l">
+					<a ng-click="querySite(site_data.search);show_index = ''">&nbsp;<i class="icon ion-search"></i></a>
+				</div>
+				<div class="clear_l"></div>
+			</div>
+		</div>
+	</div>
+	<div class="row text-center" ng-show="true">
+		<div ng-click="show_index = show_index==1 ? '' : 1" class="col {{show_index==1? 'bor_ltr_1px' : 'color_95C2C1'}}">
+			所属街道<i class="icon {{show_index==1? 'ion-arrow-up-b' : 'ion-arrow-down-b'}}"></i>
+		</div>
+		<div ng-click="show_index = show_index==2 ? '' : 2" class="col {{show_index==2? 'bor_ltr_1px' : 'color_95C2C1'}}">
+			所属社区<i class="icon {{show_index==2? 'ion-arrow-up-b' : 'ion-arrow-down-b'}}"></i>
+		</div>
+		<!--<div ng-click="show_index = show_index==3 ? '' : 3" class="col {{show_index==3? 'bor_ltr_1px' : ''}}">
+					单位名称<i class="icon ion-arrow-down-b"></i>
+				</div>
+				<div ng-click="show_index = show_index==4 ? '' : 4" class="col {{show_index==4? 'bor_ltr_1px' : ''}}">
+					管辖单位<i class="icon ion-arrow-down-b"></i>
+				</div>-->
+	</div>
+	<!--街道选项-->
+	<div class="width_100" style="z-index: 9;" ng-show="show_index==1">
+		<ion-radio value="" ng-model="site_data.street" ng-change="streetChange()" name="street">
+			不限
+		</ion-radio>
+		<ion-radio ng-repeat="item in streets" ng-value="item.streetId" ng-model="site_data.street" ng-change="streetChange(item)" name="street">
+			{{ item.streetName }}
+		</ion-radio>
+	</div>
+	<!--社区选项-->
+	<div class="width_100" style="z-index: 9;" ng-show="show_index==2">
+		<ion-radio value="" ng-model="site_data.community" ng-change="" name="community">
+			不限
+		</ion-radio>
+		<ion-radio ng-repeat="item in communitys" ng-value="item.communityId" ng-model="site_data.community" ng-change="" name="community">
+			{{ item.communityName }}
+		</ion-radio>
+		<!--<div ng-show="communitys && communitys.length==0">请先选择街道</div>-->
+	</div>
+	<!--列表-->
+	<div ng-hide="show_index">
+		<ion-list class="project-list">
+			<a class="item item-icon-right" ng-repeat="site in siteList" ng-click="siteClick(site)">
+				<div class="list-box">
+					<i class="icon ion-chevron-right icon-accessory"></i>
+					<h2>{{site.siteName}}</h2>
+					<div class="size_ss text_color_f5">
+						<div class="width_20 float_l">{{site.streetDto.streetName}}</div>
+						<div class="width_25 float_l">{{site.communityDto.communityName}}</div>
+					
+						<div class="clear_b"></div>
+					</div>
+					<div class="size_ss text_color_f5">
+						<div class="width_45 float_l">{{site.affiliatedUnitDto.unitName}}</div>
+					</div>
+				</div>
+			</a>
+		</ion-list>
+		<div class="padding"></div>
+		<!--没有更多数据时候的用户提示-->
+		<div ng-hide="site_data.loadMore" style="text-align: center">
+			<span>到底了，没有更多数据了！</span>
+		</div>
+		<ion-infinite-scroll ng-if="site_data.loadMore" on-infinite="loadSite(show_index)" distance="1%"></ion-infinite-scroll>
+	</div>
+</ion-content>
+</ion-view>

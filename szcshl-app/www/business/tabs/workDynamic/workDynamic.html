@@ -1,0 +1,82 @@
+ <style>
+.col{
+  background-color: #F9FAFB;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  text-align: center;
+}
+</style>
+<ion-view class="custompane" title="<div class='header-custom'><img src='./img/theme/persion.png' /><strong>个人信息</strong></div>">
+	<ion-nav-bar class="custom-bar bar-positive"></ion-nav-bar>
+	<ion-content> 
+   <div class="content has-header ionic-pseudo">
+
+      <div class="list">
+
+        <a class="item item-icon-left" ui-sref="gtasks" >
+        	 <i class="icon ion-chatbubble-working"></i>
+          待办项目
+           <span class="badge badge-assertive">{{signCounts}}</span>
+        </a>
+
+        <a class="item item-icon-left item-icon-right" href="#">
+            <i class="icon ion-android-clipboard" ></i>
+          
+          在办项目
+          <i class="icon ion-android-share"></i>
+        </a>
+
+        <a class="item item-icon-left  " href="#">
+         
+          <i class="icon ion-chatbubble-working"></i>
+          待办任务
+            <span class="badge badge-assertive">{{taskCounts}}</span>
+        
+        </a>
+
+        <a class="item item-icon-left item-icon-right" href="#">
+          <i class="icon ion-android-document"></i>
+         在办任务
+         <i class="icon ion-android-share"></i>
+        </a>
+
+        <div class="item item-divider">
+          Activities
+        </div>
+
+        <a class="item item-icon-left" href="#">
+          <i class="icon ion-beaker"></i>
+          Breaking Bad
+          <span class="item-note">
+            Blue, yellow, pink
+          </span>
+        </a>
+
+        <a class="item item-icon-left" href="#">
+          <i class="icon ion-music-note"></i>
+          Music
+          <span class="item-note">
+            JT
+          </span>
+        </a>
+
+        <a class="item item-icon-left" href="#">
+          <i class="icon ion-ios-game-controller-b"></i>
+          Games
+          <span class="item-note">
+            Super Mario
+          </span>
+        </a>
+
+        <a class="item item-icon-left item-icon-right" href="#">
+          <i class="icon ion-bag"></i>
+          Shopping
+          <i class="icon ion-arrow-right-c"></i>
+        </a>
+
+      </div>
+
+    </div>
+	</ion-content>
+</ion-view>
