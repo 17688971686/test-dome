@@ -25,7 +25,23 @@
 		<load-on-startup>1</load-on-startup>
 
 	</servlet>
-
+	<filter>
+		<filter-name>xFrameFilter</filter-name>
+		<filter-class>cs.common.filter.XFrameOptionFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>xFrameFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!--APP API FIlter-->
+	<filter>
+		<filter-name>appApiFilter</filter-name>
+		<filter-class>cs.common.filter.MobileApiFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>appApiFilter</filter-name>
+		<url-pattern>/api/*</url-pattern>
+	</filter-mapping>
 	<!-- Map all requests to the DispatcherServlet for handling -->
 	<servlet-mapping>
 		<servlet-name>framework</servlet-name>

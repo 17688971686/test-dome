@@ -131,6 +131,7 @@
             <value>
                 <!-- ** = anon所有url都可以匿名访问 -->
                 /contents/** =anon
+                /api/** =anon
                 /sys/init =anon
                 /testRTX =anon
                 <!--接口-->
