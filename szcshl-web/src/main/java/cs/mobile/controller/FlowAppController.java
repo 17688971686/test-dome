@@ -7,6 +7,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.Validate;
 import cs.domain.sys.Log;
 import cs.mobile.service.FlowAppService;
+import cs.mobile.service.IFlowApp;
 import cs.mobile.service.WorkDynamicService;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
@@ -72,8 +73,8 @@ public class FlowAppController {
     private TaskService taskService;
 
     @Autowired
-    @Qualifier("signFlowImpl")
-    private IFlow signFlowImpl;
+    @Qualifier("SignFlowAppImpl")
+    private IFlowApp signFlowAppImpl;
     @Autowired
     @Qualifier("assertStorageFlowImpl")
     private IFlow assertStorageFlowImpl;
@@ -215,7 +216,7 @@ public class FlowAppController {
 
     @RequestMapping(name = "获取流程处理信息", path = "flowNodeInfo", method = RequestMethod.POST)
     public @ResponseBody
-    FlowDto flowNodeInfo(@RequestParam(required = true) String taskId, @RequestParam(required = true) String processInstanceId) {
+    FlowDto flowNodeInfo(@RequestParam(required = true) String taskId,  String processInstanceId,String userid) {
         FlowDto flowDto = new FlowDto();
         flowDto.setProcessInstanceId(processInstanceId);
         flowDto.setEnd(false);
@@ -242,7 +243,7 @@ public class FlowAppController {
              */
             switch (processInstance.getProcessDefinitionKey()){
                 case FlowConstant.SIGN_FLOW:
-                    flowDto.setBusinessMap(signFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));
+                    flowDto.setBusinessMap(signFlowAppImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey(),userid));
                     break;
                 case FlowConstant.TOPIC_FLOW:
                     flowDto.setBusinessMap(topicFlowImpl.getFlowBusinessMap(processInstance.getBusinessKey(),task.getTaskDefinitionKey()));

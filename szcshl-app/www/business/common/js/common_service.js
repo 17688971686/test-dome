@@ -3,12 +3,16 @@ angular.module('common.service', [])
 	.service('Message', function($ionicPopup, $ionicModal, $ionicBackdrop, $timeout, global) {
 		var template = '<ion-popover-view><ion-content> Hello! </ion-content></ion-popover-view>';
 
-		function show(msg) {
+		function show(msg,callback) {
 			return $ionicPopup.alert({
 				title: '提示',
 				template: "<center>" + msg + "</center>",
 				okText: '确定'
-			});
+			}).then(function(res) {
+		           if(typeof callback === 'function'){
+		        	if(res) {callback();} 
+		        }
+            });
 		}
 		return {
 			show: show,
