@@ -5,7 +5,7 @@ angular.module('route.commonDetail', [
 		$stateProvider
 
 			.state('commonDetail', {
-				url: '/commonDetail',
+				url: '/commonDetail/:signId',
 				cache:'false',
 				templateUrl: 'business/tabs/commonDetail/commonIndex.html',
 				controller: "commonDetailCtrl"

@@ -1,0 +1,131 @@
+<!--项目建议书/可行性研究报告-->
+<style>
+	.lgxitem {
+		border-color: #ddd;
+		background-color: #fff;
+		color: #444;
+		position: relative;
+		z-index: 2;
+		display: block;
+		margin: -1px;
+		padding: 16px;
+		border-width: 1px;
+		border-style: solid;
+		font-size: 16px;
+	}
+	
+	.col {
+		/*background-color: #F9FAFB;*/
+		padding: 0px 0px;
+		border: 1px solid #ddd;
+		border-radius: 2px;
+		text-align: center;
+	}
+</style>
+<div>
+	<label class="item">
+				发文方式：{{(dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}
+	</label>
+	<label class="item">
+				发文类型：{{dispatchDoc.dispatchType}}
+	</label>
+	<label class="item">
+				发文部门：{{dispatchDoc.orgName}}
+	</label>
+	<label class="item">
+				拟稿人：{{dispatchDoc.userName}}
+	</label>
+	<label class="item">
+				发文日期：{{dispatchDoc.dispatchDate}}
+	</label>
+	<label class="item">
+				文件标题：{{dispatchDoc.fileTitle}}
+	</label>
+
+	<label class="item">
+				发行范围：{{dispatchDoc.dispatchScope}}
+	</label>
+	<label class="item">
+				相关说明：{{dispatchDoc.description}}
+	</label>
+	<label class="item">
+				评审意见摘要：{{dispatchDoc.reviewAbstract}}
+	</label>
+</div>
+
+<div class="row">
+	<div class="col-10" >项目概况</div>
+	<div class="col-90" ng-repeat="s in dispatchDoc.associateSignDtoList.slice().reverse()">
+		<div class="row">
+			<div class="col col-20">{{s.reviewstage}}</div>
+			<div class="col col-10">申报</div>
+			<div class="col col-10">审定</div>
+			<div class="col col-15">核减（增）</div>
+			<div class="col col-15">核减（增）率</div>
+			<div class="col col-15">批复金额</div>
+			<div class="col col-15">备注</div>
+		</div>
+		<div class="row">
+			<div class="col col-20">投资金额（万元）</div>
+			<div class="col col-10">{{s.dispatchDocDto.declareValue}}</div>
+			<div class="col col-10">{{s.dispatchDocDto.authorizeValue}}</div>
+			<div class="col col-15">{{s.dispatchDocDto.extraValue}}</div>
+			<div class="col col-15">{{s.dispatchDocDto.extraRate}} %</div>
+			<div class="col col-15">{{s.dispatchDocDto.approveValue}}</div>
+			<div class="col col-15">{{s.dispatchDocDto.remark}}</div>
+		</div>
+		<div class="row">
+			<div class="col col-20">项目建设必要性</div>
+			<div class="col col" style="text-align: left;">{{s.dispatchDocDto.projectBuildNecess}}</div>
+		</div>
+		<div class="row">
+			<div class="col col-20">审定建设规模及内容</div>
+			<div class="col col" style="text-align: left;">{{s.dispatchDocDto.buildSizeContent}}</div>
+		</div>
+		<div class="row">
+			<div class="col col-20">投资匡算及资金来源</div>
+			<div class="col col" style="text-align: left;">{{s.dispatchDocDto.fundTotalOrigin}}</div>
+		</div>
+		<div class="row">
+			<div class="col col-20">下一阶段工作要求</div>
+			<div class="col col" style="text-align: left;">{{s.dispatchDocDto.nextWorkPlan}}</div>
+		</div>
+	</div>
+	<div class="col-90">
+		<div class="row">
+			<div class="col col-20">{{sign.reviewstage}}</div>
+			<div class="col col-10">申报</div>
+			<div class="col col-10">审定</div>
+			<div class="col col-15">核减（增）</div>
+			<div class="col col-15">核减（增）率</div>
+			<div class="col col-15">批复金额</div>
+			<div class="col col-15">备注</div>
+		</div>
+		<div class="row">
+			<div class="col col-20">投资金额（万元）</div>
+			<div class="col col-10">{{dispatchDoc.declareValue}}</div>
+			<div class="col col-10">{{dispatchDoc.authorizeValue}}</div>
+			<div class="col col-15">{{dispatchDoc.extraValue}}</div>
+			<div class="col col-15">{{dispatchDoc.extraRate}} %</div>
+			<div class="col col-15">{{dispatchDoc.approveValue}}</div>
+			<div class="col col-15">{{dispatchDoc.remark}}</div>
+		</div>
+		<div class="row">
+			<div class="col col-20">项目建设必要性</div>
+			<div class="col col" style="text-align: left;">{{dispatchDoc.projectBuildNecess}}</div>
+		</div>
+		<div class="row">
+			<div class="col col-20">审定建设规模及内容</div>
+			<div class="col col" style="text-align: left;">{{dispatchDoc.buildSizeContent}}</div>
+		</div>
+		<div class="row">
+			<div class="col col-20">投资匡算及资金来源</div>
+			<div class="col col" style="text-align: left;">{{dispatchDoc.fundTotalOrigin}}</div>
+		</div>
+		<div class="row">
+			<div class="col col-20">下一阶段工作要求</div>
+			<div class="col col" style="text-align: left;">{{dispatchDoc.nextWorkPlan}}</div>
+		</div>
+	</div>
+	
+</div>
