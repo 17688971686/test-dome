@@ -31,7 +31,9 @@
             });
 
         }
-
+        //默认查询评审天数为 0-3
+        vm.project.beginReviewdays = 0;
+        vm.project.endReviewdays = 3;
         activate();
         function activate() {
             if ($rootScope.view[vm.stateName]) {

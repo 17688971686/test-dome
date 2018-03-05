@@ -113,7 +113,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         List<ODataFilterItem> oDataFilterItemList =  odataObj.getFilter();
         Boolean flag = false;
-        if(oDataFilterItemList.size() > 0 ){
+        if(oDataFilterItemList !=null && oDataFilterItemList.size() > 0 ){
             for(ODataFilterItem o : oDataFilterItemList){
 
                 if("reviewdays".equals(o.getField())){
