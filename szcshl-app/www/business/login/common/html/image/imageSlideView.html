@@ -1,0 +1,17 @@
+<ion-modal-view>
+	<ion-content class="width_100 bg_black" style="width:100%;margin: 0;padding: 0;background-color: black;">
+		<ion-slide-box ng-click="modal.remove()" active-slide="modal.index" show-pager="false" on-slide-changed="modal.index" style="text-align: center;height:{{HEIGHT*0.8}}px;">
+            <ion-slide ng-repeat="x in modal.imgs">
+                <span ng-show="x.downloadProgress" style="position:relative; top:50%; color: #ffffff;">正在下载图片</span>
+                <img ng-src="{{x.bigImageUrl}}" width='100%' style="position:relative;top:30%;"/>				<!--<img  ng-src="data:image/jpg;base64,{{x.bigImageData}}"  width='100%' />-->
+
+			</ion-slide>
+		</ion-slide-box>
+		<div style="text-align: center;position: fix;bottom:0px;color:#ffffff">
+			<span class="color_blue0">{{modal.index+1}}/{{modal.imgs.length}}</span>
+		</div>
+		<div style="text-align: center;position: fix;font-size: 30px; bottom:0px;" ng-if="modal.show_photo_delete">
+			<a class="icon ion-trash-a" ng-click="modal.deletePhoto(modal.index)"></a>
+		</div>
+	</ion-content>
+</ion-modal-view>
