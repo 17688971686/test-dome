@@ -31,7 +31,7 @@
 	<ion-content>
 		<div >
 			<ion-list class="project-list">
-				<a ng-repeat="x in  projectList"  class="item item-icon-right" href="#/commonDetail">
+				<a ng-repeat="x in  projectList"  class="item item-icon-right" href="#/commonDetail/{{x.signid}}">
 					<div class="list-left">
 						<div class="list-box">
 							<i class="icon ion-chevron-right icon-accessory"></i>
@@ -39,7 +39,6 @@
 							<div class="size_ss text_color_f5">
 								<div class="width_50 float_l">{{x.reviewstage}}</div>
 								<div class="width_50 float_l">{{x.mUserName}}</div>
-
 							</div>
 						</div>
 					</div>

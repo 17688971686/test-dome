@@ -1,0 +1,175 @@
+<!--项目建议书/可行性研究报告-->
+<style>
+	.lgxitem {
+		border-color: #ddd;
+		background-color: #fff;
+		color: #444;
+		position: relative;
+		z-index: 2;
+		display: block;
+		margin: -1px;
+		padding: 16px;
+		border-width: 1px;
+		border-style: solid;
+		font-size: 16px;
+	}
+</style>
+<div ng-repeat="x in workProgramList | orderBy:x.branchId" ng-if="x.branchId == '1' || x.branchId == 1">
+	<a  data-toggle="collapse" data-target="#aswp_{{$index}}">
+		{{x.titleName}}
+	</a>
+	<div id="aswp_{{$index}}" class="collapse in">
+		<label class="item">
+				项目名称：{{x.projectName}}
+	    </label>
+		<label class="item">
+				建设单位：{{x.buildCompany}}
+	    </label>
+		<label class="item">
+				编制单位：{{x.designCompany}}
+	    </label>
+		<label class="item">
+				来文单位：{{x.sendFileUnit}}
+	    </label>
+		<label class="item">
+				来文单位联系人：{{x.sendFileUser}}
+	    </label>
+		<label class="item">
+				是否环评：<input type="checkbox" name="isHaveEIA" disabled="disabled" 
+					ng-checked="x.isHaveEIA && (x.isHaveEIA == 9 || x.isHaveEIA == '9')" ng-true-value="9" ng-false-value="0">是 
+				       <input type="checkbox" name="isHaveEIA" disabled="disabled"  
+				       	ng-checked="!x.isHaveEIA || x.isHaveEIA == 0 || x.isHaveEIA == '0'" ng-true-value="9" ng-false-value="0">否 
+	    </label>
+
+		<label class="item">
+				项目类别：{{x.projectType}}
+	    </label>
+		<label class="item">
+				小类：{{x.projectSubType}}
+	    </label>
+		<label class="item">
+				行业类别：{{x.industryType}}
+	    </label>
+		<label class="item">
+				联系人：{{x.contactPerson}}
+	    </label>
+		<label class="item">
+				手机：{{x.contactPersonPhone}}
+	    </label>
+		<label class="item">
+				电话：{{x.contactPersonTel}}
+	    </label>
+		<label class="item">
+				传真：{{x.contactPersonFax}}
+	    </label>
+		<label class="item">
+				申报投资：{{x.appalyInvestment}} 万元
+	    </label>
+		<label class="item">
+				申报建设规模：{{x.buildSize}}
+	    </label>
+		<label class="item">
+				申报建设内容：{{x.buildContent}}
+	    </label>
+		<label class="item">
+				项目背景：{{x.projectBackGround}}
+	    </label>
+		<label class="item">
+				评估部门：{{x.reviewOrgName}}
+	    </label>
+		<label class="item">
+				第一负责人：{{x.mianChargeUserName}}
+	    </label>
+		<label class="item">
+				第二负责人：{{x.secondChargeUserName}}
+	    </label>
+		<label class="item">
+				调研时间：{{x.studyAllDay}}<span ng-if="x.studyQuantum">,</span>{{x.studyQuantum}}<span
+                        ng-if="x.studyBeginTimeStr">,</span>{{x.studyBeginTimeStr}}<span
+                        ng-if="x.studyEndTimeStr">至</span>{{x.studyEndTimeStr}}	    </label>
+		<label class="item">
+				专家费用：{{x.expertCost}} 元
+	    </label>
+
+	</div>
+</div>
+<div ng-repeat="x in workProgramList | orderBy:x.branchId" ng-if="x.branchId != '1' || x.branchId != 1" style="padding-top: 10px;">
+	<a ng-click="show_{{$index}} == true">
+		[协办分支_{{x.branchId}}_工作方案]
+
+	</a>
+	<div ng-hide="show_{{$index}}">
+		<label class="item">
+				项目名称：{{x.projectName}}
+	    </label>
+		<label class="item">
+				建设单位：{{x.mainWorkProgramDto.buildCompany}}
+	    </label>
+		<label class="item">
+				编制单位：{{x.mainWorkProgramDto.designCompany}}
+	    </label>
+		<label class="item">
+				来文单位：{{x.mainWorkProgramDto.sendFileUnit}}
+	    </label>
+		<label class="item">
+				来文单位联系人：{{x.mainWorkProgramDto.sendFileUser}}
+	    </label>
+		<label class="item">
+				是否环评：<input type="checkbox" name="isHaveEIA" disabled="disabled" 
+					ng-checked="x.mainWorkProgramDto.isHaveEIA && (x.mainWorkProgramDto.isHaveEIA == 9 || x.mainWorkProgramDto.isHaveEIA == '9')" ng-true-value="9" ng-false-value="0">是 
+				       <input type="checkbox" name="isHaveEIA" disabled="disabled"  
+				       	ng-checked="!x.mainWorkProgramDto.isHaveEIA || x.mainWorkProgramDto.isHaveEIA == 0 || x.mainWorkProgramDto.isHaveEIA == '0'" ng-true-value="9" ng-false-value="0">否 
+	    </label>
+
+		<label class="item">
+				项目类别：{{x.mainWorkProgramDto.projectType}}
+	    </label>
+		<label class="item">
+				小类：{{x.mainWorkProgramDto.projectSubType}}
+	    </label>
+		<label class="item">
+				行业类别：{{x.mainWorkProgramDto.industryType}}
+	    </label>
+		<label class="item">
+				联系人：{{x.mainWorkProgramDto.contactPerson}}
+	    </label>
+		<label class="item">
+				手机：{{x.mainWorkProgramDto.contactPersonPhone}}
+	    </label>
+		<label class="item">
+				电话：{{x.mainWorkProgramDto.contactPersonTel}}
+	    </label>
+		<label class="item">
+				传真：{{x.mainWorkProgramDto.contactPersonFax}}
+	    </label>
+		<label class="item">
+				申报投资：{{x.appalyInvestment}} 万元
+	    </label>
+		<label class="item">
+				申报建设规模：{{x.buildSize}}
+	    </label>
+		<label class="item">
+				申报建设内容：{{x.buildContent}}
+	    </label>
+		<label class="item">
+				项目背景：{{x.projectBackGround}}
+	    </label>
+		<label class="item">
+				评估部门：{{x.mainWorkProgramDto.reviewOrgName}}
+	    </label>
+		<label class="item">
+				第一负责人：{{x.mainWorkProgramDto.mianChargeUserName}}
+	    </label>
+		<label class="item">
+				第二负责人：{{x.mainWorkProgramDto.secondChargeUserName}}
+	    </label>
+		<label class="item">
+				调研时间：{{x.studyAllDay}}<span ng-if="x.studyQuantum">,</span>{{x.studyQuantum}}<span
+                        ng-if="x.studyBeginTimeStr">,</span>{{x.studyBeginTimeStr}}<span
+                        ng-if="x.studyEndTimeStr">至</span>{{x.studyEndTimeStr}}	    </label>
+		<label class="item">
+				专家费用：{{x.expertCost}} 元
+	    </label>
+
+	</div>
+</div>
