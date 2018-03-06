@@ -150,7 +150,7 @@
     </div>
  
     <!--负责分工-->
-    <div class="item" ng-show="flow.nextNode && (flow.nextNode.length > 0)">
+    <div class="item" ng-show="showFlag.nodeSelPrincipal && sign.isassistflow == 9">
         <span style="text-align:center;">
                                     负责分工:
                 <select name="userType" id="userType">
@@ -179,7 +179,7 @@
         </span>
 	</div>   
 	<!--分工的列表-->
-	<div class="row"  ng-show="flow.nextNode && (flow.nextNode.length > 0)" id="xs_bmfb">
+	<div class="row"  ng-show="showFlag.nodeSelPrincipal && sign.isassistflow == 9" id="xs_bmfb">
      <div class="col">选择	
         <div ng-repeat="x in businessFlag.principalUsers" class="frame" >
           <input type="checkbox" name="selPriUser" value="{{x.userId}}"/>
@@ -198,10 +198,8 @@
      <div class="col">总负责人
         <div ng-repeat="x in businessFlag.principalUsers"   class="frame">
            {{x.isMainUser == 9?'是':'否'}}
-           {{x.isMainUser}}
         </div>
      </div>
 
 </div>
-	
 	
