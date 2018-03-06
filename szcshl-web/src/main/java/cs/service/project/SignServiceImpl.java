@@ -149,7 +149,7 @@ public class SignServiceImpl implements SignService {
         Sign sign = null;
         //如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
         if (!signDto.getFilecode().endsWith("0000")) {
-            signRepo.findByFilecode(signDto.getFilecode());
+            signRepo.findByFilecode(signDto.getFilecode(),signDto.getSignState());
         }
         //1、根据收文编号获取项目信息
         if (sign == null) {
@@ -263,6 +263,9 @@ public class SignServiceImpl implements SignService {
         Sign sign = signRepo.findById(signId);
         SignDto signDto = new SignDto();
         BeanCopierUtils.copyProperties(sign, signDto);
+        if(Validate.isEmpty(signDto.getSendusersign())){
+            signDto.setSendusersign(SessionUtil.getLoginName());
+        }
         map.put("sign", signDto);
 
         //获取办事处所有信息

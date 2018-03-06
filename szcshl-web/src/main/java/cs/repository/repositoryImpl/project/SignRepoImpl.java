@@ -67,14 +67,15 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
      * @return
      */
     @Override
-    public Sign findByFilecode(String filecode) {
+    public Sign findByFilecode(String filecode,String signState) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from  " + Sign.class.getSimpleName());
         hqlBuilder.append(" where " + Sign_.filecode.getName() + " = :filecode ");
-        hqlBuilder.append(" and "+Sign_.signState.getName()+" !=:signState ");
         hqlBuilder.setParam("filecode", filecode);
-        hqlBuilder.setParam("signState", Constant.EnumState.DELETE.getValue());
-
+        if(Validate.isString(signState)){
+            hqlBuilder.append(" and "+Sign_.signState.getName()+" !=:signState ");
+            hqlBuilder.setParam("signState", Constant.EnumState.DELETE.getValue());
+        }
         List<Sign> signList = findByHql(hqlBuilder);
         if(Validate.isList(signList)){
             return signList.get(0);

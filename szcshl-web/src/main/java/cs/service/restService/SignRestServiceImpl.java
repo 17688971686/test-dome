@@ -114,7 +114,7 @@ public class SignRestServiceImpl implements SignRestService {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
             }
             //1、根据收文编号获取项目信息
-            Sign sign = signRepo.findByFilecode(signDto.getFilecode());
+            Sign sign = signRepo.findByFilecode(signDto.getFilecode(),signDto.getSignState());
             Date now = new Date();
             if (sign == null) {
                 sign = new Sign();
