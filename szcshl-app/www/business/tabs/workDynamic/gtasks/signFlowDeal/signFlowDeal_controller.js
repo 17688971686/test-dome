@@ -9,10 +9,10 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
 		var parameter={};
 		parameter.processInstanceId=$scope.processInstanceId;
 		parameter.taskId=$scope.taskId;
-	/*	parameter.userid=$rootScope.userInfo.id;*/
+		parameter.userid=$rootScope.userInfo.id;
 	/*parameter.userid="1c41d130-32b4-4230-9d8a-1277727d3c60";*/
 	/*	parameter.userid="9746a99b-7629-472b-a233-cb3cf94a9da1";*/
-			parameter.userid="1c41d130-32b4-4230-9d8a-1277727d3c60";
+		
 	
 			//返回
 			$scope.back = function() {
@@ -614,6 +614,7 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
 					$scope.sign=response.data
 					$scope.fileRecord=$scope.sign.fileRecord;
 					$scope.dispatchDoc=$scope.sign.dispatchDocDto;
+					$scope.workProgramList = $scope.sign.workProgramDtoList;
    
          		},function(response){
          			console.log('初始化失败');

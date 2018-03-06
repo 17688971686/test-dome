@@ -3,6 +3,7 @@ angular.module('route.workDynamic', [
 	'workDynamic.controller',
 	'route.gtasks',//待办项目
 	'route.dtasks',//在办项目
+	'route.agendaTasks',//在办任务
 ]).config(function($stateProvider, $urlRouterProvider) {
 		$stateProvider
 

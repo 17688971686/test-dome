@@ -4,6 +4,7 @@ import cs.common.Constant;
 import cs.common.utils.SessionUtil;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
+import cs.domain.flow.RuTask;
 import cs.domain.flow.RuTask_;
 import cs.model.PageModelDto;
 import cs.repository.odata.ODataObj;
@@ -84,6 +85,28 @@ public class WorkDynamicServiceImpl implements WorkDynamicService {
             }
         });
 
+        pageModelDto.setCount(totalResult);
+        pageModelDto.setValue(runProcessList);
+        return pageModelDto;
+    }
+
+
+    /**
+     * 查询我的待办任务（除项目签收流程外）
+     *
+     * @return
+     */
+    @Override
+    public PageModelDto<RuTask> queryMyAgendaTask(String  id) {
+        PageModelDto<RuTask> pageModelDto = new PageModelDto<RuTask>();
+        Criteria criteria = ruTaskRepo.getExecutableCriteria();
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.eq(RuTask_.assignee.getName(), id));
+        dis.add(Restrictions.like(RuTask_.assigneeList.getName(), "%" + id + "%"));
+        criteria.add(dis);
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        criteria.setProjection(null);
+        List<RuTask> runProcessList = criteria.list();
         pageModelDto.setCount(totalResult);
         pageModelDto.setValue(runProcessList);
         return pageModelDto;

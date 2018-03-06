@@ -13,7 +13,7 @@ import org.activiti.engine.task.Task;
 public interface FlowAppService {
 
     /**
-     * 流程处理
+     * 项目流程处理
      * @param processInstance
      * @param task
      * @param flowDto
@@ -21,4 +21,9 @@ public interface FlowAppService {
      * @return
      */
     ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto, UserDto userDto);
+
+    /**
+     * 图书流程处理
+     */
+    ResultMsg bookDealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto, UserDto userDto);
 }
