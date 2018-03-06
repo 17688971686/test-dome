@@ -346,6 +346,7 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
                     $scope.showFlag.businessTr = true;
                     $scope.showFlag.nodeConfirmDis = true;
                     $scope.businessFlag.passDis = '9';  //默认通过
+                    console.log( $scope.businessFlag.passDis);
                     $scope.showFlag.tabDispatch = true;
                     $("#show_dispatch_a").click();
                     break;
@@ -510,7 +511,7 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
                         Message.show("总负责人只能选一个");
                         return;
                     }
-                    if ($scope.businessFlag.isSelMainPriUser == false && (angular.isUndefined($scope.isMainPriUser) || $scope.businessFlag.isMainPriUser == 0)) {
+                    if ($scope.businessFlag.isSelMainPriUser == false && (angular.isUndefined($scope.businessFlag.isMainPriUser) || $scope.businessFlag.isMainPriUser == 0)) {
                         Message.show("请先选择总负责人");
                         return;
                     }
@@ -528,7 +529,6 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
                     var priUser = {};
                     priUser.userId = isCheck[i].value;
                     priUser.userType = $("#userType").val();
-                    console.log($scope.isMainPriUser);
                     if ($scope.businessFlag.isMainPriUser == 9) {
                         $scope.businessFlag.isSelMainPriUser = true;
                         priUser.isMainUser = 9;
@@ -546,7 +546,6 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
                    if($scope.businessFlag.principalUsers==undefined){
                    	$scope.businessFlag.principalUsers=[];//初始化
                    }
-                   console.log(priUser.isMainUser);
                     $scope.businessFlag.principalUsers.push(priUser);
                     //初始化处理人
                     $scope.initDealUserName($scope.businessFlag.principalUsers);
@@ -593,6 +592,19 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
                 //初始化处理人
                 $scope.initDealUserName($scope.businessFlag.principalUsers);
             }
+    }
+			
+      //监听是否通过
+    $scope.watchPassDis = function () {
+            //监听是否关联事件
+        $scope.$watch("businessFlag.passDis", function (newValue, oldValue) {
+            if (newValue == 9) {
+                $scope.flow.dealOption = "通过";
+            } else {
+                    $scope.flow.dealOption = "不通过";
+            }
+
+        });
     }
 			activate();
 		

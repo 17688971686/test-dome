@@ -11,16 +11,20 @@ import cs.model.PageModelDto;
 
 import cs.model.project.SignDto;
 
+import cs.repository.odata.ODataObj;
+import cs.service.flow.FlowService;
 import cs.service.project.SignService;
 
 import org.apache.log4j.Logger;
 
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.*;
 
@@ -38,6 +42,8 @@ public class workDynamicController {
     private WorkDynamicService workDynamicService;
     @Autowired
     private SignService signService;
+    @Autowired
+    private FlowService flowService;
 
 
 
@@ -62,6 +68,13 @@ public class workDynamicController {
     public @ResponseBody
     PageModelDto<RuProcessTask> tasks(String id) throws ParseException {
         PageModelDto<RuProcessTask> pageModelDto = workDynamicService.queryRunProcessTasks(id,true);
+        return pageModelDto;
+    }
+
+    @RequestMapping(name = "在办项目", path = "doingtasks", method = RequestMethod.GET)
+    public @ResponseBody
+    PageModelDto<RuProcessTask> doingtasks() throws ParseException {
+        PageModelDto<RuProcessTask> pageModelDto = workDynamicService.queryRunProcessTasks("",false);
         return pageModelDto;
     }
 

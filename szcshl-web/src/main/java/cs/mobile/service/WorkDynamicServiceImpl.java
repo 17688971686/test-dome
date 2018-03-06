@@ -68,15 +68,9 @@ public class WorkDynamicServiceImpl implements WorkDynamicService {
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
         Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
         if (isUserDeal) {
-          /*  Disjunction dis = Restrictions.disjunction();
-            dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), id));
-            dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + id + "%"));*/
             criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.assignee.getName(), id),Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + id + "%")));
-            criteria.add(Restrictions.ne(RuProcessTask_.signState.getName(), Constant.EnumState.DELETE.getValue()));
-
-           /* criteria.add(dis);*/
         }
-
+        criteria.add(Restrictions.ne(RuProcessTask_.signState.getName(), Constant.EnumState.DELETE.getValue()));
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);
         List<RuProcessTask> runProcessList = criteria.list();
