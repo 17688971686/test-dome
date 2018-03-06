@@ -9,11 +9,12 @@
 		
 	 <div class="has-header">
       <ul class="list">
-        <a ng-repeat="x in  gtaksList" class="item"  href="#/workDynamic/gtasks/signFlowDeal/{{x.businessKey}}/{{x.processInstanceId}}/{{x.taskId}}">
+        <a ng-repeat="x in  dtaksList" class="item"  href="#/commonDetail/{{x.signid}}">
           {{x.projectName}}
         <div class="size_ss text_color_f5">
-			<div class="width_50 float_l">{{x.reviewStage}}</div>
-			<div class="width_50 float_l">{{x.nodeNameValue}}</div>
+			<div class="width_30 float_l">{{x.reviewStage}}</div>
+			<div class="width_40 float_l">{{x.nodeNameValue}}</div>
+			<div class="width_30 float_l">{{x.displayName}}</div>
 			</div>
         </a>
       </ul>

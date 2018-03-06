@@ -37,6 +37,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -164,7 +165,7 @@ public class FlowAppController {
                     resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.BOOKS_BUY_FLOW:
-                    resultMsg = bookBuyBusinessService.dealFlow(processInstance, task,flowDto);
+                    resultMsg = flowAppService.bookDealFlow(processInstance, task,flowDto,userDto);
                     break;
                 case FlowConstant.ASSERT_STORAGE_FLOW:
                     resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
@@ -299,4 +300,6 @@ public class FlowAppController {
 
         return flowDto;
     }
+
+
 }

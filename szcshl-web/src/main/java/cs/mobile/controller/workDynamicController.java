@@ -6,6 +6,7 @@ import cs.common.utils.SessionUtil;
 import cs.controller.flow.FlowController;
 import cs.domain.flow.RuProcessTask;
 
+import cs.domain.flow.RuTask;
 import cs.mobile.service.WorkDynamicService;
 import cs.model.PageModelDto;
 
@@ -78,6 +79,17 @@ public class workDynamicController {
         return pageModelDto;
     }
 
+    /**
+     * 查询我的待办任务（除项目流程外）
+     * @return
+     * @throws ParseException
+     */
+    @RequestMapping(name = "我的待办任务", path = "agendaTasks", method = RequestMethod.GET)
+    public @ResponseBody
+    PageModelDto<RuTask> queryMyAgendaTask(String id) throws ParseException {
+        PageModelDto<RuTask> pageModelDto = workDynamicService.queryMyAgendaTask(id);
+        return pageModelDto;
+    }
     @RequestMapping(name = "初始化流程处理页面", path = "initFlowPageData", method = RequestMethod.GET)
     @Transactional
     @ResponseBody
