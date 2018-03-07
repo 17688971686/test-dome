@@ -3,6 +3,7 @@ package cs.controller.sys;
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.Validate;
 import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -65,7 +66,10 @@ public class AccountController {
             }
         }
         model.addAttribute("msg", msg);
-
+       String browerVerson =  getBrowserName(request.getHeader("User-Agent").toLowerCase());
+       if(Validate.isString(browerVerson) && (browerVerson.equals("ie8")|| (browerVerson.equals("ie7")))){
+           return "home/loginLow";
+       }
         return "home/login";
     }
 
@@ -99,4 +103,40 @@ public class AccountController {
     }
 
     // end#html
+
+    /**
+     * 获取浏览器版本信息
+     * @Title: getBrowserName
+     * @data:2015-1-12下午05:08:49
+     * @author:wolf
+     *
+     * @param agent
+     * @return
+     */
+
+    public String getBrowserName(String agent) {
+        if(agent.indexOf("msie 7")>0){
+            return "ie7";
+        }else if(agent.indexOf("msie 8")>0){
+            return "ie8";
+        }else if(agent.indexOf("msie 9")>0){
+            return "ie9";
+        }else if(agent.indexOf("msie 10")>0){
+            return "ie10";
+        }else if(agent.indexOf("msie")>0){
+            return "ie";
+        }else if(agent.indexOf("opera")>0){
+            return "opera";
+        }else if(agent.indexOf("opera")>0){
+            return "opera";
+        }else if(agent.indexOf("firefox")>0){
+            return "firefox";
+        }else if(agent.indexOf("webkit")>0){
+            return "webkit";
+        }else if(agent.indexOf("gecko")>0 && agent.indexOf("rv:11")>0){
+            return "ie11";
+        }else{
+            return "Others";
+        }
+    }
 }
