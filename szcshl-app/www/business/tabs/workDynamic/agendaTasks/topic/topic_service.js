@@ -1,8 +1,8 @@
-angular.module('bookBuy.service', ['common.service', 'global_variable'])
-	.service('bookBuyService', function(global,$http) {
+angular.module('topic.service', ['common.service', 'global_variable'])
+	.service('topicService', function(global,$http) {
 		return {
 			initFlowPageData: function(id) {
-				var url = global.SERVER_PATH + "/api/pendingTask/bookBuy?id="+id;
+				var url = global.SERVER_PATH + "/api/pendingTask/topic?id="+id;
 				return $http({
 					method: 'GET',
 					url: url,

@@ -1,14 +1,14 @@
-angular.module('agendaTasks.controller', ['agendaTasks.service', 'common.service', 'global_variable'])
+angular.module('doingTasks.controller', ['doingTasks.service', 'common.service', 'global_variable'])
 
-	.controller('agendaTasksCtrl', ['$rootScope','$scope', '$ionicPopup', '$state', '$timeout','APP_EVENTS','$ionicHistory','agendaTasksService',
-		function($rootScope,$scope, $ionicPopup, $state, $timeout,APP_EVENTS,$ionicHistory,agendaTasksService) {
+	.controller('doingTasksCtrl', ['$rootScope','$scope', '$ionicPopup', '$state', '$timeout','APP_EVENTS','$ionicHistory','doingTasksService',
+		function($rootScope,$scope, $ionicPopup, $state, $timeout,APP_EVENTS,$ionicHistory,doingTasksService) {
 
 			//返回
 			$scope.back = function() {
 				$state.go('tab.workDynamic');
 			}
 			
-			//控制不同的任务跳转
+						//控制不同的任务跳转
 			$scope.flowDeal=function(processKey,businessKey,taskId,processInstanceId){
 				
 				switch (processKey) {
@@ -58,8 +58,7 @@ angular.module('agendaTasks.controller', ['agendaTasks.service', 'common.service
 			    case flowcommon.getFlowDefinedKey().ASSERT_STORAGE_FLOW:
                 		$state.go('assertStorage',{id:businessKey,processInstanceId:processInstanceId,taskId:taskId});
                     break;
-              
-				
+					
 				//档案借阅流程		
 			    case flowcommon.getFlowDefinedKey().FLOW_ARCHIVES:
                 		$state.go('archives',{id:businessKey,processInstanceId:processInstanceId,taskId:taskId});
@@ -69,14 +68,13 @@ angular.module('agendaTasks.controller', ['agendaTasks.service', 'common.service
 					
 				}
 				
-				
 			}
 			
 			activate();
 		
 			function activate(){
-				agendaTasksService.agendaTasks($rootScope.userInfo.id).then(function(response){
-					$scope.agendaTasksList=response.data.value;
+				doingTasksService.doingTasks().then(function(response){
+					$scope.doingTasksList=response.data.value;
    
          		},function(response){
          			console.log('初始化失败');
@@ -86,7 +84,7 @@ angular.module('agendaTasks.controller', ['agendaTasks.service', 'common.service
          		});
 
 			}
-
+	   
 	
 		}
 	])

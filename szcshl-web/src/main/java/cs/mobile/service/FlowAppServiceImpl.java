@@ -12,11 +12,9 @@ import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.expert.ExpertSelected_;
 import cs.domain.project.*;
-import cs.domain.sys.Org;
-import cs.domain.sys.OrgDept;
-import cs.domain.sys.User;
-import cs.domain.sys.User_;
+import cs.domain.sys.*;
 import cs.model.flow.FlowDto;
+import cs.model.sys.RoleDto;
 import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.book.BookBuyBusinessRepo;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
@@ -91,6 +89,12 @@ public class FlowAppServiceImpl implements FlowAppService {
     private ExpertRepo expertRepo;
     @Autowired
     private BookBuyBusinessRepo bookBuyBusinessRepo;
+    @Autowired
+    private AddSuppLetterRepo  addSuppLetterRepo;
+    @Autowired
+    private AnnountmentRepo annountmentRepo;
+    @Autowired
+    private  AddSuppLetterService addSuppLetterService;
 
 
     @Override
@@ -992,7 +996,7 @@ public class FlowAppServiceImpl implements FlowAppService {
 
 
     /**
-     * 流程处理
+     * 图书流程处理
      * @param processInstance
      * @param flowDto
      * @return ResultMsg
@@ -1122,4 +1126,457 @@ public class FlowAppServiceImpl implements FlowAppService {
             booksList.get(i).setStoreTime(new Date());
         }
     }
+
+
+    /**
+     * 月报简报流程处理
+     *
+     * @param processInstance
+     * @param task
+     * @param flowDto
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg monthlyDealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto,UserDto userDto) {
+        String businessId = processInstance.getBusinessKey(),
+                assigneeValue = "";                            //流程处理人
+        Map<String, Object> variables = new HashMap<>();       //流程参数
+        User dealUser = null;                                  //用户
+        List<User> dealUserList = null;                        //用户列表
+        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+        String nextNodeKey = "";                    //下一环节名称
+        AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(businessId);
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        //环节处理人设定
+        switch (task.getTaskDefinitionKey()) {
+            //项目负责人填报
+            case FlowConstant.MONTH_YB:
+                flowDto.setDealOption("");//默认意见为空
+                for (RoleDto r:userDto.getRoleDtoList() ){
+                    if (r.getRoleName().equals(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){
+                        assigneeValue=userDto.getOrgDto().getOrgSLeader();
+                        variables=ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_FGLD.getValue(), assigneeValue);
+                        variables.put(FlowConstant.MonthlyNewsletterFlowParams.MONTH_USER.getValue(), true);
+                        break;
+                    }else{
+                        variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_BZ.getValue(), SessionUtil.getUserInfo().getOrg().getOrgDirector());
+                        variables.put(FlowConstant.MonthlyNewsletterFlowParams.MONTH_USER.getValue(), false);
+                    }
+                }
+
+
+                break;
+            //部长审批
+            case FlowConstant.MONTH_BZ:
+                addSuppLetter.setDeptMinisterId(userDto.getId());
+                addSuppLetter.setDeptMinisterName(userDto.getDisplayName());
+                addSuppLetter.setDeptMinisterDate(new Date());
+                addSuppLetter.setDeptMinisterIdeaContent(flowDto.getDealOption());
+                addSuppLetter.setAppoveStatus(Constant.EnumState.PROCESS.getValue());
+                addSuppLetterRepo.save(addSuppLetter);
+                assigneeValue=userDto.getOrgDto().getOrgSLeader();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_FGLD.getValue(), assigneeValue);
+                //下一环节还是自己处理
+                if(assigneeValue.equals(userDto.getId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.MONTH_FG;
+                }
+                break;
+            //分管领导审批
+            case FlowConstant.MONTH_FG:
+                addSuppLetter.setDeptSLeaderId(userDto.getId());
+                addSuppLetter.setDeptSLeaderName(userDto.getDisplayName());
+                addSuppLetter.setDeptSleaderDate(new Date());
+                addSuppLetter.setDeptSLeaderIdeaContent(flowDto.getDealOption());
+                addSuppLetter.setAppoveStatus(Constant.EnumState.STOP.getValue());
+                addSuppLetterRepo.save(addSuppLetter);
+                //查询部门领导
+                dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
+                if (!Validate.isList(dealUserList)) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
+                }
+                assigneeValue=dealUserList.get(0).getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_ZR.getValue(), assigneeValue);
+                //下一环节还是自己处理
+                if(assigneeValue.equals(userDto.getId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.MONTH_ZR;
+                }
+                break;
+
+            //主任审批
+            case FlowConstant.MONTH_ZR:
+                addSuppLetter.setDeptDirectorId(userDto.getId());
+                addSuppLetter.setDeptDirectorName(userDto.getDisplayName());
+                addSuppLetter.setDeptDirectorDate(new Date());
+                addSuppLetter.setDeptDirectorIdeaContent(flowDto.getDealOption());
+                addSuppLetter.setAppoveStatus(Constant.EnumState.YES.getValue());
+                //判断生成序号
+                String seq = "";
+                int curYearMaxSeq = addSuppLetterRepo.findybMaxSeq(addSuppLetter.getFileType());
+                if(curYearMaxSeq < 1000){
+                    seq = String.format("%03d", Integer.valueOf(curYearMaxSeq+1));
+                }else{
+                    seq = (curYearMaxSeq+1)+"";
+                }
+                addSuppLetter.setMonthlySeq(curYearMaxSeq+1);
+
+                //查询年份
+                String year = DateUtils.converToString(addSuppLetter.getSuppLetterTime(),"yyyy");
+                //生成存档编号,年份+类型+存档年份+存档序号
+                String fileNumber = year + Constant.FILE_RECORD_KEY.YD.getValue() + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yy") + seq;
+                addSuppLetter.setFileCode(fileNumber);
+                addSuppLetterRepo.save(addSuppLetter);
+                break;
+            default:
+                break;
+        }
+        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
+        if (flowDto.isEnd()) {
+            taskService.complete(task.getId());
+        } else {
+            taskService.complete(task.getId(), variables);
+            //如果下一环节还是自己
+            if(isNextUser){
+                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                for(Task t:nextTaskList){
+                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+                        ResultMsg returnMsg = monthlyDealFlow(processInstance,t,flowDto,userDto);
+                        if(returnMsg.isFlag() == false){
+                            return returnMsg;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        //放入腾讯通消息缓冲池
+        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+
+    /**
+     * 通知公告流程处理
+     *
+     * @param processInstance
+     * @param task
+     * @param flowDto
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg annountDealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto, UserDto userDto) {
+        String businessId = processInstance.getBusinessKey(),
+                assigneeValue = "";                            //流程处理人
+        List<User> userList = null;                 //用户列表
+        User dealUser = null;
+        Map<String, Object> variables = new HashMap<>();       //流程参数
+        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+        String nextNodeKey = "";                    //下一环节名称
+        Annountment annountment = annountmentRepo.findById(Annountment_.anId.getName(), businessId);
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        //环节处理人设定
+        switch (task.getTaskDefinitionKey()) {
+            //项目负责人填报
+            case FlowConstant.ANNOUNT_TZ:
+                for (RoleDto r:userDto.getRoleDtoList() ) {
+                    if (r.getRoleName().equals(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {//判断是否是部长
+                        dealUser = userRepo.getCacheUserById(userDto.getOrgDto().getOrgSLeader());
+                        assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                        variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), assigneeValue);
+                        variables.put(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), true);
+                        break;
+                    } else {
+                        String userId = userDto.getOrgDto().getOrgDirector() == null ? userDto.getId() : userDto.getOrgDto().getOrgDirector();
+                        User leadUser = userRepo.getCacheUserById(userId);
+                        assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
+                        variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), assigneeValue);
+                        variables.put(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), false);
+                    }
+                }
+                break;
+            //部长审批
+            case FlowConstant.ANNOUNT_BZ:
+                annountment.setDeptMinisterId(userDto.getId());
+                annountment.setDeptMinisterName(userDto.getDisplayName());
+                annountment.setDeptMinisterDate(new Date());
+                annountment.setDeptMinisterIdeaContent(flowDto.getDealOption());
+                annountment.setAppoveStatus(Constant.EnumState.PROCESS.getValue());
+                annountmentRepo.save(annountment);
+                assigneeValue = userDto.getOrgDto().getOrgSLeader();//下一环节的处理人
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_FZ.getValue(), assigneeValue);
+                //下一环节还是自己处理
+                if (assigneeValue.equals(userDto.getId())) {
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.ANNOUNT_FZ;
+                }
+                break;
+            //副主任审批
+            case FlowConstant.ANNOUNT_FZ:
+                annountment.setDeptSLeaderId(userDto.getId());
+                annountment.setDeptSLeaderName(userDto.getDisplayName());
+                annountment.setDeptSleaderDate(new Date());
+                annountment.setDeptSLeaderIdeaContent(flowDto.getDealOption());
+                annountment.setAppoveStatus(Constant.EnumState.STOP.getValue());
+                annountmentRepo.save(annountment);
+                //查询部门主任领导
+
+                userList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
+                if (!Validate.isList(userList)) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
+                }
+                assigneeValue = userList.get(0).getId();//下一环节处理人
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_ZR.getValue(), assigneeValue);
+                //下一环节还是自己处理
+                if (assigneeValue.equals(userDto.getId())) {
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.ANNOUNT_ZR;
+                }
+                break;
+
+            //主任审批
+            case FlowConstant.ANNOUNT_ZR:
+                annountment.setDeptDirectorId(userDto.getId());
+                annountment.setDeptDirectorName(userDto.getDisplayName());
+                annountment.setDeptDirectorDate(new Date());
+                annountment.setDeptDirectorIdeaContent(flowDto.getDealOption());
+                annountment.setAppoveStatus(Constant.EnumState.YES.getValue());
+                annountmentRepo.save(annountment);
+                if (flowDto.getBusinessMap().get("AGREE") != null) {
+                    if (Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE"))) {//当主任同意时就发布通知公告
+                        updateIssueState(annountment.getAnId(), Constant.EnumState.YES.getValue(),userDto);
+                    }
+                } else {
+                    updateIssueState(annountment.getAnId(), Constant.EnumState.YES.getValue(),userDto);
+                }
+
+                break;
+            default:
+                break;
+        }
+        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
+        if (flowDto.isEnd()) {
+            taskService.complete(task.getId());
+        } else {
+            taskService.complete(task.getId(), variables);
+            //如果下一环节还是自己
+            if (isNextUser) {
+                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                for (Task t : nextTaskList) {
+                    if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
+                        ResultMsg returnMsg = annountDealFlow(processInstance, t, flowDto,userDto);
+                        if (returnMsg.isFlag() == false) {
+                            return returnMsg;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        //放入腾讯通消息缓冲池
+        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    /**
+     * 更改通知公告的发布状态（如果是已审批的，不能取消发布）
+     *
+     * @param ids
+     * @param issueState
+     */
+    @Transactional
+    public ResultMsg updateIssueState(String ids, String issueState,UserDto userDto) {
+        ResultMsg resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        List<Annountment> bathAnnountment = new ArrayList<>();
+        //是否取消发布
+        boolean isCancelPublish = (Constant.EnumState.NO.getValue().equals(issueState)) ? true : false;
+        List<Annountment> updateList = annountmentRepo.findByIds(Annountment_.anId.getName(), ids, null);
+        if (Validate.isList(updateList)) {
+            Date now = new Date();
+            for (int i = 0, l = updateList.size(); i < l; i++) {
+                Annountment annountment = updateList.get(i);
+                if (Validate.isString(annountment.getProcessInstanceId())) {
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，审批的通知公告，不能对其进行修改和删除操作！");
+                    break;
+                }
+                //如果是发布
+                if (!isCancelPublish) {
+                    if (!Validate.isString(annountment.getIssueUser())) {
+                        annountment.setIssueUser(userDto.getDisplayName());
+                    }
+                    if (!Validate.isObject(annountment.getIssueDate())) {
+                        annountment.setIssueDate(now);
+                    }
+                }
+                annountment.setModifiedBy(userDto.getId());
+                annountment.setModifiedDate(now);
+                annountment.setIssue(issueState);
+
+                bathAnnountment.add(annountment);
+            }
+        }
+        if (resultMsg.isFlag() && Validate.isList(bathAnnountment)) {
+            annountmentRepo.bathUpdate(bathAnnountment);
+        }
+
+        return resultMsg;
+    }
+
+    /**
+     * 拟补充资料函流程处理
+     *
+     * @param processInstance
+     * @param task
+     * @param flowDto
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg suppletterDealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto,UserDto userDto) {
+        String businessId = processInstance.getBusinessKey(),
+                assigneeValue = "";                            //流程处理人
+        Map<String, Object> variables = new HashMap<>();       //流程参数
+        User dealUser = null;                                  //用户
+        List<User> dealUserList = null;                        //用户列表
+        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+        String nextNodeKey = "";                    //下一环节名称
+        AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), businessId);
+        //环节处理人设定
+        switch (task.getTaskDefinitionKey()) {
+            //项目负责人填报
+            case FlowConstant.FLOW_SPL_FZR:
+                OrgDept orgDept = orgDeptRepo.queryBySignBranchId(addSuppLetter.getBusinessId(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+                if (orgDept == null) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "主办部门已被删除，请联系管理员进行处理！");
+                }
+                if (!Validate.isString(orgDept.getDirectorID())) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
+                }
+                dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
+                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+
+                addSuppLetter.setAppoveStatus(Constant.EnumState.NO.getValue());
+                addSuppLetterRepo.save(addSuppLetter);
+                break;
+            //部长审批
+            case FlowConstant.FLOW_SPL_BZ_SP:
+                //没有分支，则直接跳转到分管领导环节
+                if (signBranchRepo.allAssistCount(addSuppLetter.getBusinessId()) == 0) {
+                    dealUser = signBranchRepo.findMainSLeader(addSuppLetter.getBusinessId());
+                    assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                    variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);  //设置分管领导
+                    variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), true);             //设置分支条件
+                    //2表示到分管领导会签
+                    addSuppLetter.setAppoveStatus(Constant.EnumState.STOP.getValue());
+                    //下一环节还是自己处理
+                    if(assigneeValue.equals(userDto.getId())){
+                        isNextUser = true;
+                        nextNodeKey = FlowConstant.FLOW_SPL_FGLD_SP;
+                    }
+                    //有分支，则跳转到领导会签环节
+                } else {
+                    dealUserList = signBranchRepo.findAssistOrgDirector(addSuppLetter.getBusinessId());
+                    assigneeValue = buildUser(dealUserList);
+                    variables.put(FlowConstant.SignFlowParams.USER_HQ_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
+                    variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), false);            //设置分支条件
+                    //1表示到领导会签
+                    addSuppLetter.setAppoveStatus(Constant.EnumState.PROCESS.getValue());
+                }
+                addSuppLetter.setDeptMinisterId(userDto.getId());
+                addSuppLetter.setDeptMinisterName(userDto.getDisplayName());
+                addSuppLetter.setDeptMinisterDate(new Date());
+                addSuppLetter.setDeptMinisterIdeaContent(flowDto.getDealOption());
+
+                addSuppLetterRepo.save(addSuppLetter);
+                break;
+            //领导会签
+            case FlowConstant.FLOW_SPL_LD_HQ:
+                dealUser = signBranchRepo.findMainSLeader(addSuppLetter.getBusinessId());
+                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);
+
+                //下一环节还是自己处理
+                if(assigneeValue.equals(userDto.getId())){
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.FLOW_SPL_FGLD_SP;
+                }
+                String signString = "";
+                //旧的会签记录
+                String oldMsg = addSuppLetter.getLeaderSignIdeaContent();
+                if (Validate.isString(oldMsg) && !"null".equals(oldMsg)) {
+                    signString += oldMsg+"<br>";
+                }
+                signString += "<span style='float: left'>"+flowDto.getDealOption()+"</span>" + "<br>" + userDto.getDisplayName() + "<br>" + DateUtils.converToString(new Date(), null);
+                addSuppLetter.setLeaderSignIdeaContent(signString);
+                //2表示到分管领导会签
+                addSuppLetterRepo.save(addSuppLetter);
+                break;
+
+            //分管领导审批
+            case FlowConstant.FLOW_SPL_FGLD_SP:
+                //如果没有生成文件字号或者生成错的文件字号，则重新生成
+                if (!Validate.isString(addSuppLetter.getFilenum()) || !addSuppLetter.getFilenum().contains(Constant.ADDSUPPER_PREFIX)) {
+                    //获取拟稿最大编号
+                    int curYearMaxSeq = addSuppLetterService.findCurMaxSeq(addSuppLetter.getSuppLetterTime());
+                    curYearMaxSeq = (curYearMaxSeq + 1);
+                    String fileNumValue = "";
+                    if(curYearMaxSeq < 1000){
+                        fileNumValue = String.format("%03d", Integer.valueOf(curYearMaxSeq));
+                    }else{
+                        fileNumValue = curYearMaxSeq+"";
+                    }
+                    fileNumValue = Constant.ADDSUPPER_PREFIX + "[" + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yyyy") + "]" + fileNumValue;
+                    addSuppLetter.setFilenum(fileNumValue);
+                    addSuppLetter.setFileSeq(curYearMaxSeq);
+                    //补充资料函的发文日期
+                    addSuppLetter.setDisapDate(new Date());
+                }
+                if(!Validate.isString(addSuppLetter.getFilenum())){
+                    new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
+                }
+
+                addSuppLetter.setDeptSLeaderId(userDto.getId());
+                addSuppLetter.setDeptSLeaderName(userDto.getDisplayName());
+                addSuppLetter.setDeptSleaderDate(new Date());
+                addSuppLetter.setDeptSLeaderIdeaContent(flowDto.getDealOption());
+                addSuppLetter.setAppoveStatus(Constant.EnumState.YES.getValue());
+                addSuppLetterRepo.save(addSuppLetter);
+
+                //更新项目和工作方案是否有拟补充资料函字段信息
+                //updateSuppLetterState(addSuppLetter.getBusinessId(),addSuppLetter.getBusinessType(),addSuppLetter.getDisapDate());
+                //如果是项目，则更新项目补充资料函状态
+                if(Validate.isString(addSuppLetter.getBusinessType()) && Constant.BusinessType.SIGN.getValue().equals(addSuppLetter.getBusinessType())){
+                    signRepo.updateSuppLetterState(addSuppLetter.getBusinessId(), Constant.EnumState.YES.getValue(),addSuppLetter.getDisapDate());
+                    workProgramRepo.updateSuppLetterState(addSuppLetter.getBusinessId(), Constant.EnumState.YES.getValue(),addSuppLetter.getDisapDate());
+                }
+                break;
+            default:
+                break;
+        }
+        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
+        if (flowDto.isEnd()) {
+            taskService.complete(task.getId());
+        } else {
+            taskService.complete(task.getId(), variables);
+            //如果下一环节还是自己
+            if(isNextUser){
+                List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
+                for(Task t:nextTaskList){
+                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+                        ResultMsg returnMsg = suppletterDealFlow(processInstance,t,flowDto,userDto);
+                        if(returnMsg.isFlag() == false){
+                            return returnMsg;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        //放入腾讯通消息缓冲池
+        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
 }

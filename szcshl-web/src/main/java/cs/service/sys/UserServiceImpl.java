@@ -247,8 +247,8 @@ public class UserServiceImpl implements UserService {
         List<Role> roleList = user.getRoles();
         if (roleList != null && roleList.size() > 0) {
             List<RoleDto> roleDtoList = new ArrayList<RoleDto>(roleList.size());
-            RoleDto roleDto = new RoleDto();
             roleList.forEach(r -> {
+                RoleDto roleDto = new RoleDto();
                 BeanCopierUtils.copyProperties(r, roleDto);
                 roleDtoList.add(roleDto);
             });
