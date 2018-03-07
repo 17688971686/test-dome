@@ -455,7 +455,8 @@ public class Constant {
         TOPICINFO_FILERECORD("print/topicInfo/fileTopic" , "课题研究_归档"),
 
         //专家缴费
-        EXPERT_PAYTAXES("print/expert_paytaxes" , "专家缴费");
+        EXPERT_PAYTAXES("print/expert_paytaxes" , "专家缴费"),
+        EXPERT_PAYTAXESDETAIL("print/expert_paytaxesDetail" , "专家缴费详细页");
 
         private String key;
         private String value;

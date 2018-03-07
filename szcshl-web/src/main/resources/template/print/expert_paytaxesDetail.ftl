@@ -64,71 +64,62 @@
                 <w:body>
                     <w:p>
                         <w:pPr>
-                            <w:ind w:firstLine="1626" w:firstLineChars="600"/>
-                            <w:jc w:val="left"/>
+                            <w:jc w:val="center"/>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia" w:hAnsiTheme="majorEastAsia"
                                           w:eastAsiaTheme="majorEastAsia" w:cstheme="majorEastAsia"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia" w:hAnsiTheme="majorEastAsia"
+                                          w:eastAsiaTheme="majorEastAsia" w:cstheme="majorEastAsia"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>深圳市政府投资项目评审中心</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:pPr>
+                            <w:jc w:val="center"/>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia" w:hAnsiTheme="majorEastAsia"
+                                          w:eastAsiaTheme="majorEastAsia" w:cstheme="majorEastAsia"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
                         </w:pPr>
                         <w:r>
                             <w:rPr>
-                                <w:rStyle w:val="3"/>
                                 <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia" w:hAnsiTheme="majorEastAsia"
                                           w:eastAsiaTheme="majorEastAsia" w:cstheme="majorEastAsia"/>
-                                <w:b/>
-                                <w:i w:val="0"/>
-                                <w:caps w:val="0"/>
-                                <w:color w:val="000000"/>
-                                <w:spacing w:val="0"/>
-                                <w:sz w:val="27"/>
-                                <w:szCs w:val="27"/>
-                                <w:shd w:val="clear" w:fill="FFFFFF"/>
-                            </w:rPr>
-                            <w:t xml:space="preserve">深圳市政府投资项目评审中心 </w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rStyle w:val="3"/>
-                                <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia" w:hAnsiTheme="majorEastAsia"
-                                          w:eastAsiaTheme="majorEastAsia" w:cstheme="majorEastAsia"/>
-                                <w:b/>
-                                <w:i w:val="0"/>
-                                <w:caps w:val="0"/>
-                                <w:color w:val="000000"/>
-                                <w:spacing w:val="0"/>
-                                <w:sz w:val="27"/>
-                                <w:szCs w:val="27"/>
-                                <w:shd w:val="clear" w:fill="FFFFFF"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t>${time!}</w:t>
+                            <w:t>${year!}年${menth!}月缴税统计汇总详细表</w:t>
                         </w:r>
-                        <w:r>
+                    </w:p>
+                    <w:p>
+                        <w:pPr>
+                            <w:jc w:val="center"/>
                             <w:rPr>
-                                <w:rStyle w:val="3"/>
                                 <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia" w:hAnsiTheme="majorEastAsia"
                                           w:eastAsiaTheme="majorEastAsia" w:cstheme="majorEastAsia"/>
-                                <w:b/>
-                                <w:i w:val="0"/>
-                                <w:caps w:val="0"/>
-                                <w:color w:val="000000"/>
-                                <w:spacing w:val="0"/>
-                                <w:sz w:val="27"/>
-                                <w:szCs w:val="27"/>
-                                <w:shd w:val="clear" w:fill="FFFFFF"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                                <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t>缴税统计汇总表</w:t>
-                        </w:r>
+                        </w:pPr>
                     </w:p>
                     <w:tbl>
                         <w:tblPr>
-                            <w:tblStyle w:val="5"/>
-                            <w:tblpPr w:leftFromText="180" w:rightFromText="180" w:vertAnchor="text" w:horzAnchor="page"
-                                      w:tblpX="488" w:tblpY="952"/>
-                            <w:tblOverlap w:val="never"/>
-                            <w:tblW w:w="11067" w:type="dxa"/>
+                            <w:tblStyle w:val="4"/>
+                            <w:tblW w:w="8519" w:type="dxa"/>
                             <w:tblInd w:w="0" w:type="dxa"/>
                             <w:tblBorders>
                                 <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
@@ -140,21 +131,17 @@
                             </w:tblBorders>
                             <w:tblLayout w:type="fixed"/>
                             <w:tblCellMar>
-                                <w:top w:w="0" w:type="dxa"/>
                                 <w:left w:w="108" w:type="dxa"/>
-                                <w:bottom w:w="0" w:type="dxa"/>
                                 <w:right w:w="108" w:type="dxa"/>
                             </w:tblCellMar>
                         </w:tblPr>
                         <w:tblGrid>
-                            <w:gridCol w:w="657"/>
-                            <w:gridCol w:w="969"/>
-                            <w:gridCol w:w="2136"/>
-                            <w:gridCol w:w="2130"/>
-                            <w:gridCol w:w="1500"/>
-                            <w:gridCol w:w="1110"/>
-                            <w:gridCol w:w="1500"/>
-                            <w:gridCol w:w="1065"/>
+                            <w:gridCol w:w="791"/>
+                            <w:gridCol w:w="1410"/>
+                            <w:gridCol w:w="2059"/>
+                            <w:gridCol w:w="1421"/>
+                            <w:gridCol w:w="1421"/>
+                            <w:gridCol w:w="1417"/>
                         </w:tblGrid>
                         <w:tr>
                             <w:tblPrEx>
@@ -168,29 +155,31 @@
                                 </w:tblBorders>
                                 <w:tblLayout w:type="fixed"/>
                             </w:tblPrEx>
-                            <w:trPr>
-                                <w:trHeight w:val="317" w:hRule="atLeast"/>
-                            </w:trPr>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="657" w:type="dxa"/>
-                                    <w:vMerge w:val="restart"/>
-                                    <w:vAlign w:val="center"/>
+                                    <w:tcW w:w="791" w:type="dxa"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
                                             <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                         <w:t>序号</w:t>
                                     </w:r>
@@ -198,179 +187,161 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="969" w:type="dxa"/>
-                                    <w:vMerge w:val="restart"/>
-                                    <w:vAlign w:val="center"/>
+                                    <w:tcW w:w="1410" w:type="dxa"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
                                             <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>姓名</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="2136" w:type="dxa"/>
-                                    <w:vMerge w:val="restart"/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:keepNext w:val="0"/>
-                                        <w:keepLines w:val="0"/>
-                                        <w:pageBreakBefore w:val="0"/>
-                                        <w:widowControl w:val="0"/>
-                                        <w:kinsoku/>
-                                        <w:wordWrap/>
-                                        <w:overflowPunct/>
-                                        <w:topLinePunct w:val="0"/>
-                                        <w:autoSpaceDE/>
-                                        <w:autoSpaceDN/>
-                                        <w:bidi w:val="0"/>
-                                        <w:adjustRightInd/>
-                                        <w:snapToGrid/>
-                                        <w:spacing w:line="240" w:lineRule="auto"/>
-                                        <w:ind w:left="0" w:leftChars="0" w:right="0" w:rightChars="0" w:firstLine="0"
-                                               w:firstLineChars="0"/>
-                                        <w:jc w:val="center"/>
-                                        <w:textAlignment w:val="center"/>
-                                        <w:outlineLvl w:val="9"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>身份证号码</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="2130" w:type="dxa"/>
-                                    <w:vMerge w:val="restart"/>
-                                    <w:vAlign w:val="center"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>手机号码</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="2610" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="Hiragino Sans GB"
-                                                      w:hAnsi="Hiragino Sans GB" w:eastAsia="宋体"
-                                                      w:cs="Hiragino Sans GB"/>
-                                            <w:b w:val="0"/>
-                                            <w:i w:val="0"/>
-                                            <w:caps w:val="0"/>
-                                            <w:color w:val="000000"/>
-                                            <w:spacing w:val="0"/>
-                                            <w:sz w:val="21"/>
-                                            <w:szCs w:val="21"/>
-                                            <w:shd w:val="clear" w:fill="F5F5F5"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="Hiragino Sans GB"
-                                                      w:hAnsi="Hiragino Sans GB" w:eastAsia="Hiragino Sans GB"
-                                                      w:cs="Hiragino Sans GB"/>
-                                            <w:b w:val="0"/>
-                                            <w:i w:val="0"/>
-                                            <w:caps w:val="0"/>
-                                            <w:color w:val="000000"/>
-                                            <w:spacing w:val="0"/>
-                                            <w:sz w:val="21"/>
-                                            <w:szCs w:val="21"/>
-                                            <w:shd w:val="clear" w:fill="F5F5F5"/>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>本月合计</w:t>
+                                        <w:t>名称</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2565" w:type="dxa"/>
-                                    <w:gridSpan w:val="2"/>
+                                    <w:tcW w:w="2059" w:type="dxa"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
                                         <w:jc w:val="center"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="Hiragino Sans GB"
-                                                      w:hAnsi="Hiragino Sans GB" w:eastAsia="Hiragino Sans GB"
-                                                      w:cs="Hiragino Sans GB"/>
-                                            <w:b w:val="0"/>
-                                            <w:i w:val="0"/>
-                                            <w:caps w:val="0"/>
-                                            <w:color w:val="000000"/>
-                                            <w:spacing w:val="0"/>
-                                            <w:sz w:val="21"/>
-                                            <w:szCs w:val="21"/>
-                                            <w:shd w:val="clear" w:fill="F5F5F5"/>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="Hiragino Sans GB"
-                                                      w:hAnsi="Hiragino Sans GB" w:eastAsia="Hiragino Sans GB"
-                                                      w:cs="Hiragino Sans GB"/>
-                                            <w:b w:val="0"/>
-                                            <w:i w:val="0"/>
-                                            <w:caps w:val="0"/>
-                                            <w:color w:val="000000"/>
-                                            <w:spacing w:val="0"/>
-                                            <w:sz w:val="21"/>
-                                            <w:szCs w:val="21"/>
-                                            <w:shd w:val="clear" w:fill="F5F5F5"/>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>本年累计</w:t>
+                                        <w:t>专家代码</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1421" w:type="dxa"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>评审费</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1421" w:type="dxa"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>应缴税</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1417" w:type="dxa"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>合计</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                         </w:tr>
+                        <#list expertCostTotalInfo as  expert>
                         <w:tr>
                             <w:tblPrEx>
                                 <w:tblBorders>
@@ -382,375 +353,217 @@
                                     <w:insideV w:val="single" w:color="auto" w:sz="4" w:space="0"/>
                                 </w:tblBorders>
                                 <w:tblLayout w:type="fixed"/>
+                                <w:tblCellMar>
+                                    <w:left w:w="108" w:type="dxa"/>
+                                    <w:right w:w="108" w:type="dxa"/>
+                                </w:tblCellMar>
                             </w:tblPrEx>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="657" w:type="dxa"/>
-                                    <w:vMerge w:val="continue"/>
+                                    <w:tcW w:w="791" w:type="dxa"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
+                                        <w:jc w:val="center"/>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
                                             <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="969" w:type="dxa"/>
-                                    <w:vMerge w:val="continue"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="2136" w:type="dxa"/>
-                                    <w:vMerge w:val="continue"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="2130" w:type="dxa"/>
-                                    <w:vMerge w:val="continue"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1500" w:type="dxa"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="Hiragino Sans GB"
-                                                      w:hAnsi="Hiragino Sans GB" w:eastAsia="Hiragino Sans GB"
-                                                      w:cs="Hiragino Sans GB"/>
-                                            <w:b w:val="0"/>
-                                            <w:i w:val="0"/>
-                                            <w:caps w:val="0"/>
-                                            <w:color w:val="000000"/>
-                                            <w:spacing w:val="0"/>
-                                            <w:sz w:val="21"/>
-                                            <w:szCs w:val="21"/>
-                                            <w:shd w:val="clear" w:fill="F5F5F5"/>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>应缴所得税额</w:t>
+                                        <w:t>${expert_index+1}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1110" w:type="dxa"/>
+                                    <w:tcW w:w="1410" w:type="dxa"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
+                                        <w:jc w:val="center"/>
                                         <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
                                             <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="Hiragino Sans GB"
-                                                      w:hAnsi="Hiragino Sans GB" w:eastAsia="Hiragino Sans GB"
-                                                      w:cs="Hiragino Sans GB"/>
-                                            <w:b w:val="0"/>
-                                            <w:i w:val="0"/>
-                                            <w:caps w:val="0"/>
-                                            <w:color w:val="000000"/>
-                                            <w:spacing w:val="0"/>
-                                            <w:sz w:val="21"/>
-                                            <w:szCs w:val="21"/>
-                                            <w:shd w:val="clear" w:fill="F5F5F5"/>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>应缴税额</w:t>
+                                        <w:t>${(expert.name)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1500" w:type="dxa"/>
+                                    <w:tcW w:w="2059" w:type="dxa"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
+                                        <w:jc w:val="center"/>
                                         <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
                                             <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="Hiragino Sans GB"
-                                                      w:hAnsi="Hiragino Sans GB" w:eastAsia="Hiragino Sans GB"
-                                                      w:cs="Hiragino Sans GB"/>
-                                            <w:b w:val="0"/>
-                                            <w:i w:val="0"/>
-                                            <w:caps w:val="0"/>
-                                            <w:color w:val="000000"/>
-                                            <w:spacing w:val="0"/>
-                                            <w:sz w:val="21"/>
-                                            <w:szCs w:val="21"/>
-                                            <w:shd w:val="clear" w:fill="F5F5F5"/>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>应缴所得税额</w:t>
+                                        <w:t>${(expert.expertNo)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1065" w:type="dxa"/>
+                                    <w:tcW w:w="1421" w:type="dxa"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
+                                        <w:jc w:val="center"/>
                                         <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
                                             <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="Hiragino Sans GB"
-                                                      w:hAnsi="Hiragino Sans GB" w:eastAsia="Hiragino Sans GB"
-                                                      w:cs="Hiragino Sans GB"/>
-                                            <w:b w:val="0"/>
-                                            <w:i w:val="0"/>
-                                            <w:caps w:val="0"/>
-                                            <w:color w:val="000000"/>
-                                            <w:spacing w:val="0"/>
-                                            <w:sz w:val="21"/>
-                                            <w:szCs w:val="21"/>
-                                            <w:shd w:val="clear" w:fill="F5F5F5"/>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>应缴税额</w:t>
+                                        <w:t>${(expert.reviewcost)!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1421" w:type="dxa"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>${(expert.reviewtaxes)!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1417" w:type="dxa"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia"
+                                                      w:hAnsiTheme="majorEastAsia" w:eastAsiaTheme="majorEastAsia"
+                                                      w:cstheme="majorEastAsia"/>
+                                            <w:sz w:val="18"/>
+                                            <w:szCs w:val="18"/>
+                                            <w:vertAlign w:val="baseline"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>${(expert.monthTotal)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                         </w:tr>
-                           <#list expertCostTotalInfo as Expert>
-                        <w:tr>
-                            <w:tblPrEx>
-                                <w:tblBorders>
-                                    <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:bottom w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:right w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:insideH w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                    <w:insideV w:val="single" w:color="auto" w:sz="4" w:space="0"/>
-                                </w:tblBorders>
-                                <w:tblLayout w:type="fixed"/>
-                            </w:tblPrEx>
-                            <w:trPr>
-                                <w:trHeight w:val="507" w:hRule="atLeast"/>
-                            </w:trPr>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="657" w:type="dxa"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${Expert_index+1}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="969" w:type="dxa"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${Expert.name!}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="2136" w:type="dxa"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${Expert.idCard!}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="2130" w:type="dxa"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsiaTheme="minorEastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${Expert.userPhone!}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1500" w:type="dxa"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:vertAlign w:val="baseline"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${Expert.reviewcost!}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1110" w:type="dxa"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:vertAlign w:val="baseline"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${Expert.reviewtaxes!}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1500" w:type="dxa"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:vertAlign w:val="baseline"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${Expert.yreviewcost!}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1065" w:type="dxa"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:rPr>
-                                            <w:vertAlign w:val="baseline"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${Expert.yreviewtaxes!}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                        </w:tr>
-                           </#list>
+                        </#list>
                     </w:tbl>
-
-
+                    <w:p>
+                        <w:pPr>
+                            <w:jc w:val="center"/>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:asciiTheme="majorEastAsia" w:hAnsiTheme="majorEastAsia"
+                                          w:eastAsiaTheme="majorEastAsia" w:cstheme="majorEastAsia"/>
+                                <w:sz w:val="32"/>
+                                <w:szCs w:val="32"/>
+                                <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
                     <w:sectPr>
                         <w:pgSz w:w="11906" w:h="16838"/>
-                        <w:pgMar w:top="1440" w:right="454" w:bottom="1440" w:left="454" w:header="851" w:footer="992"
+                        <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="851" w:footer="992"
                                  w:gutter="0"/>
-                        <w:cols w:space="0" w:num="1"/>
-                        <w:rtlGutter w:val="0"/>
+                        <w:cols w:space="425" w:num="1"/>
                         <w:docGrid w:type="lines" w:linePitch="312" w:charSpace="0"/>
                     </w:sectPr>
                 </w:body>
@@ -802,7 +615,7 @@
                 <ScaleCrop>false</ScaleCrop>
                 <LinksUpToDate>false</LinksUpToDate>
                 <CharactersWithSpaces>0</CharactersWithSpaces>
-                <Application>WPS Office_10.1.0.6929_F1E327BC-269C-435d-A152-05C5408002CA</Application>
+                <Application>WPS Office_10.1.0.7022_F1E327BC-269C-435d-A152-05C5408002CA</Application>
                 <DocSecurity>0</DocSecurity>
             </Properties>
         </pkg:xmlData>
@@ -814,10 +627,11 @@
                                xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"
                                xmlns:dcmitype="http://purl.org/dc/dcmitype/"
                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                <dcterms:created xsi:type="dcterms:W3CDTF">2014-10-29T12:08:00Z</dcterms:created>
+                <dcterms:created xsi:type="dcterms:W3CDTF">2018-03-07T02:59:00Z</dcterms:created>
                 <dc:creator>Administrator</dc:creator>
                 <cp:lastModifiedBy>Administrator</cp:lastModifiedBy>
-                <dcterms:modified xsi:type="dcterms:W3CDTF">2018-02-01T09:49:15Z</dcterms:modified>
+                <dcterms:modified xsi:type="dcterms:W3CDTF">2018-03-07T03:17:23Z</dcterms:modified>
+                <cp:revision>1</cp:revision>
             </cp:coreProperties>
         </pkg:xmlData>
     </pkg:part>
@@ -827,7 +641,7 @@
             <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties"
                         xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
                 <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="2" name="KSOProductBuildVer">
-                    <vt:lpwstr>2052-10.1.0.6929</vt:lpwstr>
+                    <vt:lpwstr>2052-10.1.0.7022</vt:lpwstr>
                 </property>
             </Properties>
         </pkg:xmlData>
@@ -911,22 +725,37 @@
                     <w:sig w:usb0="E00002FF" w:usb1="4000ACFF" w:usb2="00000001" w:usb3="00000000" w:csb0="2000019F"
                            w:csb1="00000000"/>
                 </w:font>
-                <w:font w:name="Hiragino Sans GB">
-                    <w:altName w:val="Segoe Print"/>
-                    <w:panose1 w:val="00000000000000000000"/>
+                <w:font w:name="华文宋体">
+                    <w:panose1 w:val="02010600040101010101"/>
+                    <w:charset w:val="86"/>
+                    <w:family w:val="auto"/>
+                    <w:pitch w:val="default"/>
+                    <w:sig w:usb0="00000287" w:usb1="080F0000" w:usb2="00000000" w:usb3="00000000" w:csb0="0004009F"
+                           w:csb1="DFD70000"/>
+                </w:font>
+                <w:font w:name="Wingdings 3">
+                    <w:panose1 w:val="05040102010807070707"/>
                     <w:charset w:val="00"/>
                     <w:family w:val="auto"/>
                     <w:pitch w:val="default"/>
-                    <w:sig w:usb0="00000000" w:usb1="00000000" w:usb2="00000000" w:usb3="00000000" w:csb0="00000000"
+                    <w:sig w:usb0="00000000" w:usb1="00000000" w:usb2="00000000" w:usb3="00000000" w:csb0="80000000"
                            w:csb1="00000000"/>
                 </w:font>
-                <w:font w:name="Segoe Print">
-                    <w:panose1 w:val="02000600000000000000"/>
+                <w:font w:name="Webdings">
+                    <w:panose1 w:val="05030102010509060703"/>
                     <w:charset w:val="00"/>
                     <w:family w:val="auto"/>
                     <w:pitch w:val="default"/>
-                    <w:sig w:usb0="0000028F" w:usb1="00000000" w:usb2="00000000" w:usb3="00000000" w:csb0="2000009F"
-                           w:csb1="47010000"/>
+                    <w:sig w:usb0="00000000" w:usb1="00000000" w:usb2="00000000" w:usb3="00000000" w:csb0="80000000"
+                           w:csb1="00000000"/>
+                </w:font>
+                <w:font w:name="Wingdings 2">
+                    <w:panose1 w:val="05020102010507070707"/>
+                    <w:charset w:val="00"/>
+                    <w:family w:val="auto"/>
+                    <w:pitch w:val="default"/>
+                    <w:sig w:usb0="00000000" w:usb1="00000000" w:usb2="00000000" w:usb3="00000000" w:csb0="80000000"
+                           w:csb1="00000000"/>
                 </w:font>
                 <w:font w:name="Calibri Light">
                     <w:panose1 w:val="020F0302020204030204"/>
@@ -935,6 +764,30 @@
                     <w:pitch w:val="default"/>
                     <w:sig w:usb0="A00002EF" w:usb1="4000207B" w:usb2="00000000" w:usb3="00000000" w:csb0="2000019F"
                            w:csb1="00000000"/>
+                </w:font>
+                <w:font w:name="仿宋">
+                    <w:panose1 w:val="02010609060101010101"/>
+                    <w:charset w:val="86"/>
+                    <w:family w:val="auto"/>
+                    <w:pitch w:val="default"/>
+                    <w:sig w:usb0="800002BF" w:usb1="38CF7CFA" w:usb2="00000016" w:usb3="00000000" w:csb0="00040001"
+                           w:csb1="00000000"/>
+                </w:font>
+                <w:font w:name="华文中宋">
+                    <w:panose1 w:val="02010600040101010101"/>
+                    <w:charset w:val="86"/>
+                    <w:family w:val="auto"/>
+                    <w:pitch w:val="default"/>
+                    <w:sig w:usb0="00000287" w:usb1="080F0000" w:usb2="00000000" w:usb3="00000000" w:csb0="0004009F"
+                           w:csb1="DFD70000"/>
+                </w:font>
+                <w:font w:name="华文仿宋">
+                    <w:panose1 w:val="02010600040101010101"/>
+                    <w:charset w:val="86"/>
+                    <w:family w:val="auto"/>
+                    <w:pitch w:val="default"/>
+                    <w:sig w:usb0="00000287" w:usb1="080F0000" w:usb2="00000000" w:usb3="00000000" w:csb0="0004009F"
+                           w:csb1="DFD70000"/>
                 </w:font>
             </w:fonts>
         </pkg:xmlData>
@@ -950,17 +803,15 @@
                         xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
                         xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"
                         xmlns:sl="http://schemas.openxmlformats.org/schemaLibrary/2006/main" mc:Ignorable="w14">
-                <w:zoom w:percent="100"/>
-                <w:doNotDisplayPageBoundaries w:val="1"/>
+                <w:zoom w:percent="150"/>
                 <w:embedSystemFonts/>
-                <w:bordersDoNotSurroundHeader w:val="0"/>
-                <w:bordersDoNotSurroundFooter w:val="0"/>
+                <w:bordersDoNotSurroundHeader w:val="1"/>
+                <w:bordersDoNotSurroundFooter w:val="1"/>
                 <w:documentProtection w:enforcement="0"/>
                 <w:defaultTabStop w:val="420"/>
                 <w:drawingGridVerticalSpacing w:val="156"/>
-                <w:displayHorizontalDrawingGridEvery w:val="1"/>
-                <w:displayVerticalDrawingGridEvery w:val="1"/>
-                <w:noPunctuationKerning w:val="1"/>
+                <w:displayHorizontalDrawingGridEvery w:val="0"/>
+                <w:displayVerticalDrawingGridEvery w:val="2"/>
                 <w:characterSpacingControl w:val="compressPunctuation"/>
                 <w:compat>
                     <w:spaceForUL/>
@@ -969,11 +820,7 @@
                     <w:ulTrailSpace/>
                     <w:doNotExpandShiftReturn/>
                     <w:adjustLineHeightInTable/>
-                    <w:doNotWrapTextWithPunct/>
-                    <w:doNotUseEastAsianBreakRules/>
                     <w:useFELayout/>
-                    <w:doNotUseIndentAsNumberingTabStop/>
-                    <w:useAltKinsokuLineBreakRules/>
                     <w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word"
                                      w:val="14"/>
                     <w:compatSetting w:name="overrideTableStyleFontSizeAndJustification"
@@ -984,16 +831,11 @@
                                      w:val="1"/>
                 </w:compat>
                 <w:rsids>
-                    <w:rsidRoot w:val="00000000"/>
-                    <w:rsid w:val="29CF5B31"/>
-                    <w:rsid w:val="3EC72323"/>
-                    <w:rsid w:val="445A51C8"/>
-                    <w:rsid w:val="56B11FDF"/>
-                    <w:rsid w:val="70CE57F4"/>
-                    <w:rsid w:val="788D2D3D"/>
+                    <w:rsidRoot w:val="04721458"/>
+                    <w:rsid w:val="04721458"/>
+                    <w:rsid w:val="4F160D74"/>
                 </w:rsids>
                 <m:mathPr>
-                    <m:mathFont m:val="Cambria Math"/>
                     <m:brkBin m:val="before"/>
                     <m:brkBinSub m:val="--"/>
                     <m:smallFrac m:val="0"/>
@@ -1029,8 +871,8 @@
                 <w:docDefaults>
                     <w:rPrDefault>
                         <w:rPr>
-                            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:eastAsia="宋体"
-                                      w:cs="Times New Roman"/>
+                            <w:rFonts w:asciiTheme="minorHAnsi" w:hAnsiTheme="minorHAnsi"
+                                      w:eastAsiaTheme="minorEastAsia" w:cstheme="minorBidi"/>
                         </w:rPr>
                     </w:rPrDefault>
                 </w:docDefaults>
@@ -1106,8 +948,7 @@
                                     w:name="Title"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Closing"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Signature"/>
-                    <w:lsdException w:qFormat="1" w:unhideWhenUsed="0" w:uiPriority="0"
-                                    w:name="Default Paragraph Font"/>
+                    <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:name="Default Paragraph Font"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Body Text"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Body Text Indent"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="List Continue"/>
@@ -1150,7 +991,7 @@
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="HTML Sample"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="HTML Typewriter"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="HTML Variable"/>
-                    <w:lsdException w:qFormat="1" w:unhideWhenUsed="0" w:uiPriority="0" w:name="Normal Table"/>
+                    <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:name="Normal Table"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="annotation subject"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Table Simple 1"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Table Simple 2"/>
@@ -1195,8 +1036,7 @@
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Table Web 2"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Table Web 3"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Balloon Text"/>
-                    <w:lsdException w:qFormat="1" w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0"
-                                    w:name="Table Grid"/>
+                    <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Table Grid"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Table Theme"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="60" w:semiHidden="0" w:name="Light Shading"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="61" w:semiHidden="0" w:name="Light List"/>
@@ -1401,13 +1241,11 @@
                 <w:style w:type="character" w:default="1" w:styleId="2">
                     <w:name w:val="Default Paragraph Font"/>
                     <w:semiHidden/>
-                    <w:qFormat/>
                     <w:uiPriority w:val="0"/>
                 </w:style>
-                <w:style w:type="table" w:default="1" w:styleId="4">
+                <w:style w:type="table" w:default="1" w:styleId="3">
                     <w:name w:val="Normal Table"/>
                     <w:semiHidden/>
-                    <w:qFormat/>
                     <w:uiPriority w:val="0"/>
                     <w:tblPr>
                         <w:tblLayout w:type="fixed"/>
@@ -1419,19 +1257,9 @@
                         </w:tblCellMar>
                     </w:tblPr>
                 </w:style>
-                <w:style w:type="character" w:styleId="3">
-                    <w:name w:val="Strong"/>
-                    <w:basedOn w:val="2"/>
-                    <w:qFormat/>
-                    <w:uiPriority w:val="0"/>
-                    <w:rPr>
-                        <w:b/>
-                    </w:rPr>
-                </w:style>
-                <w:style w:type="table" w:styleId="5">
+                <w:style w:type="table" w:styleId="4">
                     <w:name w:val="Table Grid"/>
-                    <w:basedOn w:val="4"/>
-                    <w:qFormat/>
+                    <w:basedOn w:val="3"/>
                     <w:uiPriority w:val="0"/>
                     <w:pPr>
                         <w:widowControl w:val="0"/>

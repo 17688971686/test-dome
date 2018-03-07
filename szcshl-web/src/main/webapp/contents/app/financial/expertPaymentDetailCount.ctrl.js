@@ -24,7 +24,7 @@
         //按月份统计专家明细
         vm.countExpertCostDetail = function () {
             expertPaymentCountSvc.expertCostDetailTotal(vm, function (data) {
-                vm.expertCostTotalInfo = data.reObj.expertCostTotalInfo
+                vm.expertCostTotalInfo = data.reObj.expertCostTotalInfo;
                 var trCount = $("#expertCostTable tr").length;
                 for (var i = 1; i < trCount; i++) {
                     $("#option" + i).remove();
@@ -59,24 +59,23 @@
                 for (var i = 0; i < expertCostTotalInfo.length; i++) {
                     rowIndex++;
                     expertCostTr += "<tr id='option" + rowIndex + "'>";
-                    expertCostTr += "<td colspan='5'>";
+                    // expertCostTr += "<td colspan='5'>";
                     if (expertCostTotalInfo[i].name.length == 2) {
-                        expertCostTr += "<span style='margin-left: 6.5%;'><strong>" + expertCostTotalInfo[i].name + "</strong></span>";
+                        expertCostTr += "<td  class='text-center'><strong>" + expertCostTotalInfo[i].name + "</strong></td>";
                     } else {
-                        expertCostTr += "<span style='margin-left: 5%;'><strong>" + expertCostTotalInfo[i].name + "</strong></span>";
+                        expertCostTr += "<td  class='text-center'><strong>" + expertCostTotalInfo[i].name + "</strong></td>";
                     }
-                    expertCostTr += "<span style='margin-left: 8%;'></span><strong>" + expertCostTotalInfo[i].expertNo + "</strong></span>";
-                    expertCostTr += "<span style='margin-left: 58%;'></span><strong>合计:</strong></span>";
-                    expertCostTr += "<span style='margin-left: 4%;'></span><strong>" + expertCostTotalInfo[i].monthTotal + "</strong></span>";
-                    expertCostTr += "</td>";
+                    expertCostTr += "<td  class='text-center'><strong>" + expertCostTotalInfo[i].expertNo + "</strong></td>";
+                    // expertCostTr += "</td>";
                     expertCostTr += "<td class='text-center'>";
                     expertCostTr += expertCostTotalInfo[i].reviewcost;
                     expertCostTr += "</td>"
                     expertCostTr += "<td class='text-center'>";
                     expertCostTr += expertCostTotalInfo[i].reviewtaxes;
                     expertCostTr += "</td>"
+                    expertCostTr += "<td  class='text-center'><strong>" + expertCostTotalInfo[i].monthTotal + "</strong></td>";
                     expertCostTr += "</tr>";
-                    if (expertCostTotalInfo[i].expertCostDetailCountDtoList.length > 0) {
+                    if (expertCostTotalInfo[i].expertCostDetailCountDtoList != undefined && expertCostTotalInfo[i].expertCostDetailCountDtoList.length > 0) {
                         for (var j = 0; j < expertCostTotalInfo[i].expertCostDetailCountDtoList.length; j++) {
                             rowIndex++;
                             var expertCostDetailTr = "";
@@ -110,6 +109,22 @@
                 }
                 $("#expertCostHead").after(expertCostTr);
             }
+        }
+
+        //打印
+        vm.printFile = function () {
+            var time = vm.model.year + vm.model.month;
+            var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/expertSelected/printPreviewDetail/" + time;
+            $("#iframePreview").attr("src", url);
+            $("#previewModal").kendoWindow({
+                width: "80%",
+                height: "730px",
+                title: "",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
         }
     }
 })();

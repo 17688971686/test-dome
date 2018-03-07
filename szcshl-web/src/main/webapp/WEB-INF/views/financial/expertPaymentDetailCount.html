@@ -36,24 +36,25 @@
 			<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>-->
 			<button ng-click="vm.getExpertCoust()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">查看汇总</button>
 			<!--<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="">导出EXCLE</button>-->
-			<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
+			<button class="btn btn-sm btn-primary" ng-click="vm.printFile()">打印</button>
 			<go-back></go-back>
 		</div>
 		<div>
 			<table id="expertCostTable" border="1px" style="width: 90%;">
 				<caption class="text-center h3">
 					<strong>深圳市政府投资项目评审中心<br>
-						{{vm.year}}年{{vm.month}}月缴税统计汇总表
+						{{vm.model.year}}年{{vm.model.month}}月缴税统计汇总详细表
 					</strong>
 				</caption>
 				<tr id="expertCostHead" >
 					<td  style="width:10%"  class="text-center">姓名</td>
-					<td  style="width:20%"  class="text-center">项目名称</td>
-					<td  style="width:10%"  class="text-center">评审方式</td>
-					<td  style="width:15%"  class="text-center">评审会时间</td>
-					<td  style="width:15%"  class="text-center">函评时间</td>
+					<td  style="width:20%"  class="text-center">专家代码</td>
+
+					<#--<td  style="width:15%"  class="text-center">评审会时间</td>
+					<td  style="width:15%"  class="text-center">函评时间</td>-->
 					<td  style="width:15%"  class="text-center">评审费</td>
 					<td  style="width:15%"  class="text-center">应缴税</td>
+                    <td  style="width:10%"  class="text-center">合计</td>
 				</tr>
 
 			</table>
