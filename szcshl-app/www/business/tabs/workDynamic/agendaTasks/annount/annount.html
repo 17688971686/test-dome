@@ -12,15 +12,28 @@
 	<!--选项卡-->
 	<ion-tabs class="tabs-icon-only tabs-positive">
 
-		<!--选项卡 -- 选项  -- begin================================================图书采购流程详细信息========================================================================-->
-		<ion-tab title="图书采购流程详细信息 " on-select="switchPageM(1)">
+		<!--选项卡 -- 选项  -- begin================================================通知公告详细信息========================================================================-->
+		<ion-tab title="详细信息 " on-select="switchPageM(1)">
 			<ion-header-bar class="bar-positive ">
 			</ion-header-bar>
 			<!--<ion-content has-tabs="true " on-swipe-right="switchPageM(0)" on-swipe-left="switchPageM(2)">-->
 			<ion-content has-tabs="true ">
 				<!--选项卡内容-->
-				<div ng-include="'business/tabs/commonDetail/sign/signDetail.html'"></div>
-	
+        <label class="item">
+				标题：{{annountList.anTitle}}
+	    </label>
+	    <label class="item">
+				内容：{{annountList.anContent}}
+	    </label>
+	    <label class="item">
+				部长意见：{{annountList.deptMinisterIdeaContent}}
+	    </label>	    
+	    <label class="item">
+				副主任意见：{{annountList.deptSLeaderIdeaContent}}
+	    </label>				
+	    <label class="item">
+				主任意见：{{annountList.deptDirectorIdeaContent}}
+	    </label>				
 			</ion-content>
 		</ion-tab>
 		

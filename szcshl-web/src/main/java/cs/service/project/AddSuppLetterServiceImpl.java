@@ -122,7 +122,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      * @param dispaDate
      * @return
      */
-    private int findCurMaxSeq(Date dispaDate) {
+    @Override
+    public int findCurMaxSeq(Date dispaDate) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select max(" + AddSuppLetter_.fileSeq.getName() + ") from cs_add_suppLetter where " + AddSuppLetter_.suppLetterTime.getName() + " between ");
         sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )");

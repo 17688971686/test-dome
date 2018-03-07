@@ -72,9 +72,9 @@ public class workDynamicController {
         return pageModelDto;
     }
 
-    @RequestMapping(name = "在办项目", path = "doingtasks", method = RequestMethod.GET)
+    @RequestMapping(name = "在办项目", path = "dtasks", method = RequestMethod.GET)
     public @ResponseBody
-    PageModelDto<RuProcessTask> doingtasks() throws ParseException {
+    PageModelDto<RuProcessTask> dtasks() throws ParseException {
         PageModelDto<RuProcessTask> pageModelDto = workDynamicService.queryRunProcessTasks("",false);
         return pageModelDto;
     }
@@ -86,10 +86,19 @@ public class workDynamicController {
      */
     @RequestMapping(name = "我的待办任务", path = "agendaTasks", method = RequestMethod.GET)
     public @ResponseBody
-    PageModelDto<RuTask> queryMyAgendaTask(String id) throws ParseException {
+    PageModelDto<RuTask> agendaTasks(String id) throws ParseException {
         PageModelDto<RuTask> pageModelDto = workDynamicService.queryMyAgendaTask(id);
         return pageModelDto;
     }
+
+    @RequestMapping(name = "在办任务", path = "doingtasks", method = RequestMethod.GET)
+    public @ResponseBody
+    PageModelDto<RuTask> doingtasks(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<RuTask> pageModelDto = flowService.queryAgendaTask(odataObj);
+        return pageModelDto;
+    }
+
     @RequestMapping(name = "初始化流程处理页面", path = "initFlowPageData", method = RequestMethod.GET)
     @Transactional
     @ResponseBody

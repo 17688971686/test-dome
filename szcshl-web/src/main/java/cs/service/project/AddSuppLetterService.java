@@ -91,4 +91,12 @@ public interface AddSuppLetterService {
 	 * @param disapDate
 	 */
 	void updateSuppLetterState(String businessId, String businessType, Date disapDate);
+
+	/**
+	 * 获取最大拟稿编号
+	 *
+	 * @param dispaDate
+	 * @return
+	 */
+	int findCurMaxSeq(Date dispaDate);
 }

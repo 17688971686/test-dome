@@ -183,10 +183,10 @@ public class FlowAppController {
                     resultMsg = addSuppLetterService.dealSignSupperFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.MONTHLY_BULLETIN_FLOW:
-                    resultMsg = monthlyNewsletterService.dealSignSupperFlow(processInstance, task,flowDto);
+                    resultMsg = flowAppService.monthlyDealFlow(processInstance, task,flowDto,userDto);
                     break;
                 case FlowConstant.ANNOUNT_MENT_FLOW:
-                    resultMsg = annountmentService.dealSignSupperFlow(processInstance, task,flowDto);
+                    resultMsg = flowAppService.annountDealFlow(processInstance, task,flowDto,userDto);
                     break;
                 default:
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，没有对应的流程！");

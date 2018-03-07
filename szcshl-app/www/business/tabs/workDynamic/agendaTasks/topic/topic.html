@@ -1,0 +1,116 @@
+<ion-view title="{{title}}" class="{{viewMainClass}}">
+	<!--视图标题-->
+	<ion-nav-bar class="bar-positive">
+		<!--视图头部-->
+		<ion-nav-buttons side="left">
+			<!--后退-->
+			<button ng-click="back()" class="button back-button buttons button-clear header-item">
+            	<i class="icon ion-android-arrow-back"></i></button>
+		</ion-nav-buttons>
+		<ion-nav-buttons side="right">
+			<!--提交-->
+		<!--	<a ng-click="submitProc()" class="button back-button buttons button-clear header-item" >
+				提交
+			</a>-->
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<!--选项卡-->
+	<ion-tabs class="tabs-icon-only tabs-positive">
+
+		<!--选项卡 -- 选项  -- begin================================================课题研究流程详细信息========================================================================-->
+		<ion-tab title="详细信息 " on-select="switchPageM(0)">
+			<ion-header-bar class="bar-positive ">
+			</ion-header-bar>
+			<!--<ion-content has-tabs="true " on-swipe-right="switchPageM(0)" on-swipe-left="switchPageM(2)">-->
+			<ion-content has-tabs="true ">
+				<!--选项卡内容-->
+        <label class="item">
+				课题名称：{{topicList.topicName}}
+	    </label>
+	    <label class="item">
+				合作研究单位：{{topicList.cooperator}}
+	    </label>
+	    <label class="item">
+			        申报部门：{{topicList.orgName}}
+	    </label>	    
+	    <label class="item">
+				是否报发改委审批：{{topicList.sendFgw== 9?'是':'否'}}
+	    </label>				
+	    <label class="item">
+				是否委里立项：{{topicList.fgwlx== 9?'是':'否'}}
+	    </label>
+	    <label class="item">
+				备注信息：{{topicList.remark}}
+	    </label>	    
+			</ion-content>
+		</ion-tab>
+		
+		<!--选项卡 -- ================================================工作方案========================================================================-->
+		<ion-tab title="工作方案" on-select="switchPageM(1)" ng-show="workPlanDto">
+			<ion-header-bar class="bar-positive">
+				<!--选项卡标题-->
+				<!--<h1 class="title">基本信息</h1>-->
+			</ion-header-bar>
+			<!--<ion-content has-tabs="true" on-swipe-right="switchPageM(4)" on-swipe-left="switchPageM(1)">-->
+			<ion-content has-tabs="true">
+		<label class="item">
+				课题名称：{{workPlanDto.topicName}}
+	    </label>
+	    <label class="item">
+				合作研究单位：{{workPlanDto.cooperator}}
+	    </label>
+	    <label class="item">
+			        联系人：{{workPlanDto.contactName}}
+	    </label>	    
+	    <label class="item">
+				联系电话：{{workPlanDto.tellPhone}}
+	    </label>				
+	    <label class="item">
+				传真：{{workPlanDto.fax}}
+	    </label>
+	    <label class="item">
+				课题主要研究<br>
+				内容和研究成果：{{workPlanDto.topicContent}}
+	    </label>			
+				
+				
+	
+			</ion-content>
+		</ion-tab>
+		<!--选项卡 -- ================================================归档信息========================================================================-->
+		<ion-tab title="归档信息" on-select="switchPageM(2)" ng-show="filingDto">
+			<ion-header-bar class="bar-positive">
+				<!--选项卡标题-->
+				<!--<h1 class="title">基本信息</h1>-->
+			</ion-header-bar>
+			<!--<ion-content has-tabs="true" on-swipe-right="switchPageM(4)" on-swipe-left="switchPageM(1)">-->
+			<ion-content has-tabs="true">
+		<label class="item">
+				归档编号：{{filingDto.fileNo}}
+	    </label>
+	    <label class="item">
+				课题名称：{{filingDto.topicName}}
+	    </label>
+	    <label class="item">
+			        合作单位：{{filingDto.cooperator}}
+	    </label>	    
+	    <label class="item">
+				课题代码：{{filingDto.topicCode}}
+	    </label>				
+	
+	
+				
+			</ion-content>
+		</ion-tab>
+
+		
+
+	
+			<!--<ion-content has-tabs="true " on-swipe-right="switchPageM(3)" on-swipe-left="switchPageM(0)">-->
+			<ion-content has-tabs="true ">
+				<!--选项卡内容-->
+				<ion-refresher pulling-text="获取最新数据... " refreshing-text="刷新完毕 " on-refresh="doRefresh(4) "></ion-refresher>
+			</ion-content>
+		</ion-tab>
+	</ion-tabs>
+</ion-view>
