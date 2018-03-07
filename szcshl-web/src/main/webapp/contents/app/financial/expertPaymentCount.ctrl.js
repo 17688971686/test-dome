@@ -27,7 +27,9 @@
 
         //打印
         vm.printFile = function () {
-            var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/expertSelected/printPreview/" + vm.model.beginTime;
+
+            var time = vm.model.year + vm.model.month;
+            var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/expertSelected/printPreview/" + time;
             $("#iframePreview").attr("src", url);
             $("#previewModal").kendoWindow({
                 width: "80%",

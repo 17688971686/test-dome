@@ -273,16 +273,16 @@
                 },
                 {
                     field: "expertReviewDto.reviewDate",
-                    title: "评审时间",
+                    title: "评审/函评日期",
                     width: 70,
                     filterable: false,
                 },
-                {
+                /*{
                     field: "expertReviewDto.reviewDate",
                     title: "函评时间",
                     width: 70,
                     filterable: false,
-                },
+                },*/
                 {
                     field: "principal",
                     title: "负责人",
