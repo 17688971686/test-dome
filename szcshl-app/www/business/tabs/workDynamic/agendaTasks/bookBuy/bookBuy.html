@@ -19,7 +19,29 @@
 			<!--<ion-content has-tabs="true " on-swipe-right="switchPageM(0)" on-swipe-left="switchPageM(2)">-->
 			<ion-content has-tabs="true ">
 				<!--选项卡内容-->
-				<div ng-include="'business/tabs/commonDetail/sign/signDetail.html'"></div>
+			
+		<label class="item">
+				申购标题：{{bookList.businessName}}
+	    </label>
+	    <label class="item">
+				申请部门：{{bookList.applyDept}}
+	    </label>
+	    <label class="item">
+				经办人：{{bookList.operator}}
+	    </label>
+	    <label class="item">
+				购买渠道：{{bookList.buyChannel}}
+	    </label>
+	    <label class="item">
+				申请事由及
+                               发放范围：{{bookList.applyReason}}
+	    </label>				
+	    <label class="item">
+				分管副主任：{{bookList.orgSLeaderHandlesug}}
+	    </label>
+	    <label class="item">
+				主任审批	：{{bookList.orgMLeaderHandlesug}}
+	    </label>	
 	
 			</ion-content>
 		</ion-tab>

@@ -49,7 +49,17 @@ angular.module('projectStop.controller', ['projectStop.service', 'common.service
 			function activate(){
 				//详细信息
 				projectStopService.initFlowPageData($scope.id).then(function(response){
+					
 					$scope.projectStopList=response.data;
+					$scope.signDispaWork=$scope.projectStopList.signDispaWork;
+					//标题
+					$scope.title=$scope.signDispaWork.projectname;
+					  //评审天数-剩余工作日
+                     if($scope.signDispaWork.reviewstage == '可行性研究报告' || $scope.signDispaWorkreviewstage == '项目概算'){
+                           $scope.signDispaWork.countUsedWorkday = 15-$scope.signDispaWork.surplusdays;
+                        }else{
+                            $scope.signDispaWork.countUsedWorkday = 12-$scope.signDispaWork.surplusdays;
+                        }
          		},function(response){
          			console.log('初始化失败');
          		
@@ -57,7 +67,7 @@ angular.module('projectStop.controller', ['projectStop.service', 'common.service
          			console.log('refresh complete event...');
          		});
          		
-         		//流程信息
+/*         		//流程信息
          		projectStopService.flowNodeInfo(parameter).then(function(response){
          		     $scope.flow=response.data;
          		},function(response){
@@ -65,7 +75,7 @@ angular.module('projectStop.controller', ['projectStop.service', 'common.service
          		
          		}).finally(function(){
          			console.log('refresh complete event...');
-         		});
+         		});*/
 
 			}
 		

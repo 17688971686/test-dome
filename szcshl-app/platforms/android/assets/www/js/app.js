@@ -1,46 +1,23 @@
-// Ionic Starter App
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'route', 'config', 'global', 'DIYfilter', /*'ng-fusioncharts',*/ 'ngCordova', 'ionic-datepicker'])
+angular.module('starter', ['ionic', 'route', 'config', 'global_variable', 'ngCordova', 'ionic-datepicker'])
 
-	.run(function($ionicPlatform, GlobalVariable, $rootScope, $http, $state, $ionicPopup) {
-		//获取用户名并保存到全局域中
-		$rootScope.loginName = localStorage.getItem("loginName");
-		//全局根目录
-		$rootScope.rootPath = GlobalVariable.SERVER_PATH;
+	.run(function($ionicPlatform, global, $rootScope, $http, $state, $ionicPopup, $location, $timeout, $ionicHistory) {
 		//获取屏幕宽高
 		$rootScope.HEIGHT = window.screen.height;
 		$rootScope.WIDTH = window.screen.width;
-		//		console.log(ionic.Platform.isIOS());
-		localStorage.setItem("isIOS", ionic.Platform.isIOS());
-
-
-		//版本检测
-		GlobalVariable.versionCheck = function(callback) {
-			$http({
-				method: 'get',
-				url: GlobalVariable.SERVER_PATH + '/mobile/version/versionCheck?platform='+ionic.Platform.platform()
-			}).then(function(response) {
-				var versionInfo = response.data;
-				if(versionInfo &&  versionInfo.version){
-					var date = new Date();
-					var version_date = date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate();
-					localStorage.setItem('VERSION_DATE', version_date); //保存版本检测日期
-					localStorage.setItem("VERSION_INFO", JSON.stringify(versionInfo)); //保存版本信息
-					localStorage.setItem("VERSION_NEW", versionInfo.version); //保存新版本号
-					if(versionInfo.version != GlobalVariable.VERSION && (typeof callback === 'function')) {
-						callback(versionInfo);
-					}
-				}
-			}, function(response) {
-				// 请求失败执行代码
+		//$rootScope.body_padding_top = ionic.Platform.isIOS() ? 20 : 0;//body内部距顶部像素值
+		$rootScope.userInfo=JSON.parse(localStorage.getItem('userInfo'));
+		$rootScope.viewMainClass = ionic.Platform.isIOS() ? 'iosViewMain' : '';
+		//生成年份数组最小2016年，最大当前年份加1
+		var max = global.CurrentYear + 1;
+		for(var i = 2016; i <= max; i++) {
+			global.Years.push({
+				id: i - 2016,
+				name: i + '年',
+				value: i
 			});
 		}
-
+		//系统就绪
 		$ionicPlatform.ready(function() {
 			// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
 			// for form inputs)
@@ -52,67 +29,47 @@ angular.module('starter', ['ionic', 'route', 'config', 'global', 'DIYfilter', /*
 				// org.apache.cordova.statusbar required
 				StatusBar.styleLightContent();
 			}
-			//自动版本检测
-			var date = new Date();
-			var version_date = date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate();
-			var VERSION_DATE = localStorage.getItem('VERSION_DATE'); //获取上次版本检测日期
-			if(VERSION_DATE != version_date) {
-				GlobalVariable.versionCheck(function(versionInfo) {
-					$ionicPopup.confirm({
-						title: '有新版本可用 v' + versionInfo.version,
-						//template: versionInfo.info,
-						cancelText: '下次再说',
-						okText: '现在更新'
-					}).then(function(res) {
-						if(res) {
-							window.location.href = $rootScope.rootPath + "/contents/assets/" + data.platform + "/文体设施管养.apk";
-						} else {
-
-						}
-					});
-				});
-			}
-			
-			Date.prototype.Format = function (fmt) { //author: meizz 
-			    var o = {
-			        "M+": this.getMonth() + 1, //月份 
-			        "d+": this.getDate(), //日 
-			        "h+": this.getHours(), //小时 
-			        "m+": this.getMinutes(), //分 
-			        "s+": this.getSeconds(), //秒 
-			        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
-			        "S": this.getMilliseconds() //毫秒 
-			    };
-			    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-			    for (var k in o)
-			    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-			    return fmt;
-			}
 		});
 
-		//		/*注册返回事件*/
-		//		$ionicPlatform.registerBackButtonAction(function(e) {
-		//
-		////			alert("sucess");
-		//			ionic.Platform.exitApp();
-		//			/*根据首页的路由判断是否提示退出*/
-		//			if($location.path() == "/login") {
-		//				if(!$rootScope.popup.isPopup) {
-		//					showConfirm();
-		//				}
-		//			}
-		//			e.preventDefault();
-		//			return false;
-		//		});
-
-		//自定义数组删除元素方法
-		Array.prototype.removeByValue = function(val) {
-			for(var i = 0; i < this.length; i++) {
-				if(this[i] == val) {
-					this.splice(i, 1);
-					break;
+		//退出系统
+		var exitApp = function() {
+			//双击退出方式
+			/*if($rootScope.backButtonPressedOnceToExit) {
+				ionic.Platform.exitApp();//退出app
+			} else {
+				$rootScope.backButtonPressedOnceToExit = true;
+				$cordovaToast.showShortBottom('再按一次退出系统');//需安装插件
+				setTimeout(function() {
+					$rootScope.backButtonPressedOnceToExit = false;
+				}, 2000);
+			}*/
+			//询问框退出方式
+			$ionicPopup.confirm({
+				title: '确定退出系统?',
+				//template: '',
+				cancelText: '取消',
+				okText: '退出'
+			}).then(function(res) {
+				if(res) {
+					ionic.Platform.exitApp(); //退出app
 				}
-			}
+			});
 		}
+		//注册返回事件  注册101为退出系统事件
+		$ionicPlatform.registerBackButtonAction(function(e) {
+
+			var path = $location.path();
+			if(path == '/tab/workDynamic' || path == '/tab/infrtureDibut' || path == '/tab/infrastructure' || path == '/tab/personal' || path == '/login') {
+				exitApp(); //首页返回-退出系统
+			} else if((path.substring(0, 13) == '/office/task/' || path.substring(0, 28) == '/office/listMaintenanceProce') && typeof $rootScope.back_function === 'function') {
+				$rootScope.back_function();
+			} else if($ionicHistory.backView()) {
+				$ionicHistory.goBack(); //返回上一界面
+			} else {
+				exitApp(); //无法确定返回动作-退出系统
+			}
+			e.preventDefault();
+			return false;
+		}, 101);
 
 	});

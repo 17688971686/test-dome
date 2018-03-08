@@ -6,6 +6,7 @@ angular.module('starter', ['ionic', 'route', 'config', 'global_variable', 'ngCor
 		$rootScope.HEIGHT = window.screen.height;
 		$rootScope.WIDTH = window.screen.width;
 		//$rootScope.body_padding_top = ionic.Platform.isIOS() ? 20 : 0;//body内部距顶部像素值
+		$rootScope.userInfo=JSON.parse(localStorage.getItem('userInfo'));
 		$rootScope.viewMainClass = ionic.Platform.isIOS() ? 'iosViewMain' : '';
 		//生成年份数组最小2016年，最大当前年份加1
 		var max = global.CurrentYear + 1;
@@ -18,7 +19,6 @@ angular.module('starter', ['ionic', 'route', 'config', 'global_variable', 'ngCor
 		}
 		//系统就绪
 		$ionicPlatform.ready(function() {
-		    $rootScope.userInfo=localStorage.getItem('userInfo');
 			// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
 			// for form inputs)
 			if(window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {

@@ -50,6 +50,8 @@ angular.module('assertStorage.controller', ['assertStorage.service', 'common.ser
 				//详细信息
 				assertStorageService.initFlowPageData($scope.id).then(function(response){
 					$scope.assertStorageList=response.data;
+					//标题
+					$scope.title=$scope.assertStorageList.anTitle
          		},function(response){
          			console.log('初始化失败');
          		
