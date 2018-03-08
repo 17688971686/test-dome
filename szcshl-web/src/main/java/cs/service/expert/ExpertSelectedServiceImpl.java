@@ -153,7 +153,6 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             }
 
         }
-        //根据评审费发放时间查询
         if (beginTime != null || endTime != null || expertName != null) {
             StringBuffer sqlSB = new StringBuffer();
             sqlSB.append(" (select count(t.id) from cs_expert_review t  where t.id = " + criteria.getAlias() + "_.EXPERTREVIEWID ");

@@ -63,6 +63,14 @@ public class ExpertController {
         return expertDtos;
     }
 
+    @RequestMapping(name = "获取市外、境外专家数据", path = "findExpertFieldByOData", method = RequestMethod.POST)
+    public @ResponseBody
+    PageModelDto<ExpertDto> findExpertFieldByOData(HttpServletRequest request) throws ParseException {
+        ODataObj odataObj = new ODataObj(request);
+        PageModelDto<ExpertDto> expertDtos = expertService.getExpertField(odataObj);
+        return expertDtos;
+    }
+
     @RequiresAuthentication
     @RequestMapping(name="专家信息导出Excel" , path ="exportToExcel" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

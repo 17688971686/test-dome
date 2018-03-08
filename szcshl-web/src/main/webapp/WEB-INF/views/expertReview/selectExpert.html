@@ -467,9 +467,11 @@
             <form id="outSelExpertForm" class="breadcrumb">
                 <input name="expertID" ng-model="vm.excludeIds" type="text" ng-hide="true" operator="ni" value="">
                 <!--自选新专家只能在备选中选择-->
-                <input name="state" type="text" ng-hide="true" operator="eq" value="3">
+                <input name="state1" type="text" ng-hide="true" operator="eq" value="3">
+                <input name="state2" type="text" ng-hide="true" operator="eq" value="1">
                 <!-- 境外专家-->
-                <input name="expertField" type="text" ng-hide="true" operator="in" value="1,2">
+                <input name="expertField1" type="text" ng-hide="true" operator="eq" value="1">
+                <input name="expertField2" type="text" ng-hide="true" operator="eq" value="2">
                 <!-- 专家规避-->
                 <input name="comPany" ng-model="vm.bulidComPany" type="text" ng-hide="true" operator="ne" value="">
                 <input name="comPany" ng-model="vm.designComPany" type="text" ng-hide="true" operator="ne" value="">

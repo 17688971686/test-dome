@@ -66,6 +66,105 @@ public class ExpertServiceImpl implements ExpertService {
     }
 
     /**
+     *新专家、市外、境外专家
+     * @param odataObj
+     * @return
+     */
+    @Override
+    public PageModelDto<ExpertDto> getExpertField(ODataObj odataObj) {
+        PageModelDto<ExpertDto> pageModelDto = new PageModelDto<ExpertDto>();
+        String state1 = "", state2 = "", expertField1 = "",expertField2="",maJorBigParam = "",maJorSamllParam="",expertTypeParam="";
+        //Criteria 查询
+        Criteria criteria = expertRepo.getExecutableCriteria();
+        if (Validate.isList(odataObj.getFilter())) {
+            Object value;
+            for (ODataFilterItem item : odataObj.getFilter()) {
+                value = item.getValue();
+                if (null == value) {
+                    continue;
+                }
+                if ("state1".equals(item.getField())) {
+                    state1 = item.getValue().toString();
+                    continue;
+                }
+                if ("state2".equals(item.getField())) {
+                    state2 = item.getValue().toString();
+                    continue;
+                }
+                if ("expertField1".equals(item.getField())) {
+                    expertField1 = item.getValue().toString();
+                    continue;
+                }
+                if ("expertField2".equals(item.getField())) {
+                    expertField2 = item.getValue().toString();
+                    continue;
+                }
+                if("maJorBigParam".equals(item.getField())){
+                    maJorBigParam = item.getValue().toString();
+                    continue;
+                }
+                if("maJorSamllParam".equals(item.getField())){
+                    maJorSamllParam = item.getValue().toString();
+                    continue;
+                }
+                if("expertTypeParam".equals(item.getField())){
+                    expertTypeParam = item.getValue().toString();
+                    continue;
+                }
+                criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
+            }
+
+            //关联专家大类、小类和专业类型查询
+            if(Validate.isString(maJorBigParam) || Validate.isString(maJorSamllParam) || Validate.isString(expertTypeParam)){
+                StringBuffer sqlSB = new StringBuffer();
+                sqlSB.append(" (select count(ept.ID) from CS_EXPERT_TYPE ept where EPT.EXPERTID = "+criteria.getAlias()+"_.EXPERTID ");
+                //突出专业，大类
+                if (Validate.isString(maJorBigParam)) {
+                    sqlSB.append(" and ept.maJorBig = '"+maJorBigParam+"' ");
+                }
+                //突出专业，小类
+                if (Validate.isString(maJorSamllParam)) {
+                    sqlSB.append(" and ept.maJorSmall = '"+maJorSamllParam+"' ");
+                }
+                //专家类型
+                if (Validate.isString(expertTypeParam)) {
+                    sqlSB.append(" and ept.expertType = '"+expertTypeParam+"' ");
+                }
+                sqlSB.append(" ) > 0 ");
+                criteria.add(Restrictions.sqlRestriction(sqlSB.toString()));
+            }
+
+        }
+        if (Validate.isString(state1) && Validate.isString(state2)&& Validate.isString(expertField1)
+                && Validate.isString(expertField2) ) {
+            StringBuffer sqlSB = new StringBuffer();
+            sqlSB.append(" ( state = "+state1+"  or ( ( expertField = "+expertField1+" or EXPERTFIELD = "+expertField2+" ) and state <> "+state2+" ) )");
+            criteria.add(Restrictions.sqlRestriction(sqlSB.toString()));
+        }
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        criteria.setProjection(null);
+        // 处理分页
+        if (odataObj.getSkip() > 0) {
+            criteria.setFirstResult(odataObj.getSkip());
+        }
+        if (odataObj.getTop() > 0) {
+            criteria.setMaxResults(odataObj.getTop());
+        }
+        List<Expert> resultList = criteria.list();
+        List<ExpertDto> resultDtoList = new ArrayList<ExpertDto>(resultList.size());
+        if (Validate.isList(resultList)) {
+            resultList.forEach(x -> {
+                ExpertDto modelDto = new ExpertDto();
+                BeanCopierUtils.copyProperties(x, modelDto);
+                resultDtoList.add(modelDto);
+            });
+        }
+        pageModelDto.setCount(totalResult);
+        pageModelDto.setValue(resultDtoList);
+        return pageModelDto;
+    }
+
+    /**
      * 保存专家信息
      *
      * @param expertDto

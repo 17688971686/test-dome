@@ -152,7 +152,7 @@
             //S_市外专家
             var dataSource3 = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/expert/findByOData", $("#outSelExpertForm")),
+                transport: common.kendoGridConfig().transport(rootPath + "/expert/findExpertFieldByOData", $("#outSelExpertForm")),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {

@@ -61,4 +61,11 @@ public interface ExpertService {
      * @return
      */
     List<ExpertDto> exportData(String filters);
+
+    /**
+     * 获取室内境外专家
+     * @param odataObj
+     * @return
+     */
+    PageModelDto<ExpertDto> getExpertField(ODataObj odataObj);
 }
