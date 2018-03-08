@@ -1,0 +1,51 @@
+<meta charset="UTF-8">
+<div id="returnBookWindow" style="margin:0px 20px 0px 10px;background:white;display:none;">
+    <div class="toolbar">
+        <button class="btn btn-sm btn-primary" ng-click="vm.returnBookList()">
+            <span class="glyphicon glyphicon-chevron-left"></span>返回
+        </button>
+        <button class="btn btn-sm btn-success" ng-click="vm.saveReturnBookDetail()">
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+    </div>
+    <form id="bookForm" name="bookForm">
+        <table class="table table-bordered">
+            <tr>
+                <input type="hidden"  name="id" ng-model="vm.model.id"/>
+                <td class="formAlignRight" style="width: 15%">图书号</td>
+                <td>
+                    <input type="hidden" name="bookNo"  ng-model="vm.model.bookNo"/>
+                    {{vm.model.bookNo}}
+                </td>
+                <td class="formAlignRight" style="width: 15%">图书名称</td>
+                <td>
+                    <input type="hidden" name="booksName"  ng-model="vm.model.booksName"/>
+                    {{vm.model.booksName}}
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="10%">还书人</td>
+                <td>
+                    <input type="hidden" name="returnBorrower"  ng-model="vm.model.returnBorrower" />
+                    {{vm.model.returnBorrower}}
+                </td>
+                <td class="formAlignRight" style="width: 15%">还书数量</td>
+                <td>
+                    <input ng-change="vm.comparisonStill()" name="borrowNum" type="text"  ng-model="vm.model.returnNum"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="formAlignRight" width="10%">还书日期</td>
+                <td>
+                    <input name="borrowDate" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.realReturnDate"  />
+                </td>
+                <td class="formAlignRight" style="width: 15%">应还日期</td>
+                <td>
+                    <input name="returnDate"  style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" ng-model="vm.model.returnDate"  />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<!--E 借书信息弹窗 -->
+

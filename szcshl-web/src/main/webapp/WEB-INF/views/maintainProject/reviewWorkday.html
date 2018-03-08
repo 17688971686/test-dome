@@ -1,0 +1,61 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<div>
+    <div class="toolbar">
+        <go-back></go-back>
+        <button class="btn btn-sm btn-success" ng-click="vm.saveReview()">保存</button>
+    </div>
+    <form name="form" id="form">
+    <table class="table table-bordered  dataTable">
+        <tr>
+            <td class="text-right" style="width: 15%">评审时限:<span class="required">*</span></td>
+            <td>
+                <input type="number" name="totalReviewdays" ng-model="vm.sign.totalReviewdays" id="totalReviewdays"
+                       data-val="true" data-val-required="必填"  ng-mouseleave="vm.changeTotalReviewDays()"/>
+                <span data-valmsg-for="displayName" data-valmsg-replace="true" class="errors"></span>
+            </td>
+            <td class="text-right">剩余工作日:<span class="required">*</span></td>
+            <td>
+                <input type="number" name="surplusdays" ng-model="vm.sign.surplusdays" id="surplusdays"
+                       data-val="true" data-val-required="必填"/>
+                <span data-valmsg-for="displayName" data-valmsg-replace="true" class="errors"></span>
+            </td>
+            <td class="text-right">已逝工作日:</td>
+            <td>
+                <input type="text" name="reviewdays" ng-model="vm.sign.reviewdays" disabled="disabled"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right">延长工作日:</td>
+            <td>
+                <input type="text" name="lengthenDays" ng-model="vm.sign.lengthenDays" disabled="disabled"/>
+            </td>
+            <td class="text-right">收文日期:</td>
+            <td>
+                <input type="text" name="signdate" ng-model="vm.sign.signdate" disabled="disabled"/>
+            </td>
+            <td class="text-right">送达日期:</td>
+            <td>
+                <input type="text" name="receivedate" ng-model="vm.sign.receivedate" disabled="disabled"/>
+            </td>
+        </tr>
+          <!--  <tr>
+                <td  class="text-right">延长天数:<span class="required">*</span></td>
+                <td colspan="5">
+                    <input type="number" name="lengthenDays" ng-model="vm.sign.lengthenDays" id="lengthenDays"
+                           data-val="true" data-val-required="必填"/> 天
+                    <span data-valmsg-for="lengthenDays" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>-->
+            <tr>
+                <td class="text-right"> 延长评审说明：<br/>（暂停与延长审批说明）</td>
+                <td colspan="5">
+                    <textarea maxlength="500"  data-val-length-max="500"  data-val="true"
+                              rows="5"  style="width: 98%" name="lengthenExp" ng-model="vm.sign.lengthenExp"></textarea>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

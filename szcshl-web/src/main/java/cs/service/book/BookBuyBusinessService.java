@@ -26,7 +26,7 @@ public interface BookBuyBusinessService {
 
 	BookBuyBusinessDto findById(String deptId);
 
-	void delete(String id);
+	ResultMsg delete(String id);
 
 	void deleteByBusinessId(String businessId);
 
@@ -35,8 +35,6 @@ public interface BookBuyBusinessService {
 	ResultMsg startFlow(BookBuyDto[] bookList,BookBuyBusiness bookBuyBus);
 
 	//流程处理begin
-	ResultMsg startNewFlow(String signid);
-
 	ResultMsg stopFlow(String signid, ProjectStopDto projectStopDto);
 
 	ResultMsg restartFlow(String signid);

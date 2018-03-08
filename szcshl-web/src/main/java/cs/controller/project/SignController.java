@@ -1,11 +1,17 @@
 package cs.controller.project;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
@@ -202,7 +208,7 @@ public class SignController {
 
 
     @RequiresAuthentication
-//    @RequiresPermissions("sign#html/reserveList#get")
+   @RequiresPermissions("sign#html/reserveList#get")
     @RequestMapping(name = "项目预签收列表", path = "html/reserveList", method = RequestMethod.GET)
     public String reserveList() {
 
@@ -212,8 +218,8 @@ public class SignController {
     @RequiresAuthentication
     //@RequiresPermissions("sign#reserveListSign#post")
     @RequestMapping(name = "获取预签收列表", path = "reserveListSign", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<SignDto> reserveListSign(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public  PageModelDto<SignDto> reserveListSign(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<SignDto> signlist = signService.findAllReserve(odataObj);
         return signlist;
@@ -255,6 +261,21 @@ public class SignController {
         return signService.findByPlanId(planId,isOnlySign);
     }
 
+    /**
+     * 恢复项目
+     *
+     * @param signId      项目ID
+     * @param stateProperty 项目状态字段
+     * @param stateValue 状态值
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "恢复项目", path = "editSignState", method = RequestMethod.POST)
+    public @ResponseBody
+    ResultMsg editSignState(@RequestParam(required = true) String signId, String stateProperty,String stateValue) {
+        return signService.editSignState(signId, stateProperty,stateValue);
+    }
+
+
     @RequiresAuthentication
     //@RequiresPermissions("sign#html/fillin#get")
     @RequestMapping(name = "填写表格页面", path = "html/fillin", method = RequestMethod.GET)
@@ -279,13 +300,13 @@ public class SignController {
         return signService.deleteSign(signid);
     }
 
-    @RequiresAuthentication
+/*    @RequiresAuthentication
     //@RequiresPermissions("sign#deleteReserve#delete")
     @RequestMapping(name = "删除预签收收文", path = "deleteReserve", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteReserve(@RequestParam String signid) {
         signService.deleteReserveSign(signid);
-    }
+    }*/
 
     @RequiresAuthentication
     //@RequiresPermissions("sign#html/initFillPageData#post")
@@ -317,17 +338,29 @@ public class SignController {
     @RequiresAuthentication
     //@RequiresPermissions("sign#initSignList#get")
     @RequestMapping(name = "初始化项目查询统计", path = "initSignList", method = RequestMethod.POST)
-    public @ResponseBody
-    ResultMsg initSignList() {
+    @ResponseBody
+    public ResultMsg initSignList() {
         return signService.initSignList();
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "初始化流程处理页面", path = "initFlowPageData", method = RequestMethod.GET)
     @Transactional
-    public @ResponseBody
-    SignDto initFlowPageData(@RequestParam(required = true) String signid) {
+    @ResponseBody
+    public SignDto initFlowPageData(@RequestParam(required = true) String signid) {
         return signService.findById(signid, true);
+    }
+
+    /**
+     * 统计项目平均天数，未办结的按当前日期算，已办结的按办结日期算
+     * @param signIds
+     * @return
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "统计项目平均天数", path = "sumExistDays", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg sumExistDays(@RequestParam(required = true) String signIds){
+        return signService.sumExistDays(signIds);
     }
 
     @RequiresAuthentication
@@ -385,7 +418,7 @@ public class SignController {
         return ctrlName + "/hiProcessTask";
     }
 
-    @RequiresPermissions("sign#html/getBack#get")
+    @RequiresPermissions("sign#html/signGetBack#get")
     @RequestMapping(name = "项目重新分办", path = "html/signGetBack", method = RequestMethod.GET)
     public String getBack() {
 
@@ -413,5 +446,57 @@ public class SignController {
 
         return "admin/etasks";
     }
+
+    @RequiresPermissions("sign#html/deletList#get")
+    @RequestMapping(name = "作废项目", path = "html/deletList", method = RequestMethod.GET)
+    public String deletList() {
+
+        return ctrlName + "/deletList";
+    }
+    @RequiresPermissions("sign#html/MaintainProjectList#get")
+    @RequestMapping(name = "维护项目", path = "html/MaintainProjectList", method = RequestMethod.GET)
+    public String MaintainProjectList() {
+
+        return ctrlName + "/MaintainProjectList";
+    }
+    @RequiresPermissions("sign#html/MaintainProjectList#get")
+    @RequestMapping(name = "维护项目的编辑", path = "html/MaintainProjectEdit", method = RequestMethod.GET)
+    public String MaintainProjectEdit() {
+
+        return ctrlName + "/MaintainProjectEdit";
+    }
+
+    /***************报审登记表导出***************/
+   /* @RequiresAuthentication
+    @RequestMapping(name="报审登记表导出" , path = "printSign" , method = RequestMethod.GET)
+    @ResponseStatus(value=HttpStatus.NO_CONTENT)
+    public void printSign(HttpServletResponse resp, @RequestParam String signId , @RequestParam String reviewStage){
+
+
+        InputStream is = null;
+        ServletOutputStream sos = null;
+        File file = signService.printSign(signId , reviewStage);
+        try {
+            String title = java.net.URLDecoder.decode(reviewStage, "UTF-8");//解码，需要抛异常
+            String fileName = reviewStage + "报审登记表";
+            is = new FileInputStream(file);
+            resp.setCharacterEncoding("utf-8");
+            resp.setContentType("application/msword");
+            // 设置浏览器以下载的方式处理该文件默认
+            String fileName2 = new String((fileName + ".doc").getBytes("GB2312"), "ISO-8859-1");
+            resp.addHeader("Content-Disposition", "attachment;filename=" + fileName2);
+            sos = resp.getOutputStream();
+            byte[] buffer = new byte[512];  // 缓冲区
+            int bytesToRead = -1;
+            // 通过循环将读入的Word文件的内容输出到浏览器中
+            while ((bytesToRead = is.read(buffer)) != -1) {
+                sos.write(buffer, 0, bytesToRead);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }*/
 
 }

@@ -67,7 +67,7 @@
         function activate() {
             if($state.params.businessId){
                 addRegisterFileSvc.initAddRegisterFile($state.params.businessId,function(data){
-                    if(data){
+                    if(data && data.length > 0){
                         vm.addRegisters = data;
                     }
                 });

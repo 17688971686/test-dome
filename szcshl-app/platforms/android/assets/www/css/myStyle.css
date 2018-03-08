@@ -1,0 +1,121 @@
+<style>
+	.shdffdfsfgdsfsnjfgdsfg{}
+	.textarea_w_h{width: 100%;height: 100px;}
+	.po_relative{position: relative;height: 100%;}
+	.inline{display: inline;}
+	.ioc_rigth_top{position: absolute; top: 2px;right: 2px;width: 23;height: 23;color: red;}
+	.color_blue0{color:#64B2F9;}
+	.color_blue1{color:#4889F6;}
+	.color_edit{color: #367FA9;}
+	.color_add{color: green;}
+	.color_delete{color: red;}
+	.color_cancel{color: #00ACD6;}
+	.color_index{color:#64B2F9;}
+	.color_95C2C1{color:#95C2C1;}
+	.bg_7CC4E7{background-color: #7CC4E7;}
+	.bg_EEEEEE{background-color: #EEEEEE;}
+	.bg_black{background-color: black;}
+	.bg_9BE1FA{background-color: #9BE1FA;}
+	.bg_F7F7F7{background-color: #F7F7F7;}
+	.text_color_a{color: #AAAAAA;}
+	.text_color_b{color: #B2B2B2;}
+	.text_color_c{color: #CCCCCC;}
+	.text_color_d{color: #DDDDDD;}
+	.text_color_e{color: #EEEEEE;}
+	.text_color_8f{color: #8F8F8F;}
+	.text_color_f5{color: #F59393;}
+	.text_center{text-align: center;}
+	.text_right{text-align: right;}
+	.text_left{text-align: left;}
+	.size_ss{font-size: 13px;line-height: 20px;}
+	.size_s{font-size: 15px;line-height: 30px;}
+	.size_m{font-size: 20px;line-height: 40px;}
+	.size_l{font-size: 25px;line-height: 50px;}
+	.icon_s{font-size: 23px;}
+	.icon_m{font-size: 30px;}
+	.icon_l{font-size: 40px;}
+	.even{  background-color: #F8F8F8; }
+	.odd{  background-color: #FFFBE6; }
+	.margin_0px{margin: 0px;}
+	.margin_2px{margin: 2px;}
+	.margin_3px{margin: 3px;}
+	.margin_5px{margin: 5px;}
+	.margin_top_8{margin-top: 8px;}
+	.margin_t_12px{margin-top: 12px;}
+	.margin_b_8px{margin-bottom: 8px;}
+	.margin_l_5px{margin-left: 5px;}
+	.margin_r_5px{margin-right: 5px;}
+	.padding_2px{padding: 2px;}
+	.padding_3px{padding: 3px;}
+	.padding_t_5px{padding-top: 5px;}
+	.padding_l_16px{padding-left: 16px;}
+	.float_r{float: right;}
+	.float_l{float: left;}
+	.clear_b{clear: both;}
+	.clear_l{clear: left;}
+	.clear_r{clear: right;}
+	.radius_10px{ border-radius:10px 10px 10px 10px; }
+	.radius_5px{ border-radius:5px 5px 5px 5px; }
+	.radius_3px{ border-radius:3px 3px 3px 3px; }
+	.radius_2px{ border-radius:2px 2px 2px 2px; }
+	.border_1px{border: 1px solid;}
+	.bor_t_1px{border-top: 1px solid;}
+	.bor_l_1px{border-left: 1px solid;}
+	.bor_r_1px{border-right: 1px solid;}
+	.bor_b_1px{border-bottom: 1px solid;}
+	.bor_lt_1px{border-top: 1px solid;border-left: 1px solid;}
+	.bor_rb_1px{border-bottom: 1px solid;border-right: 1px solid;}
+	.bor_ltr_1px{border: 1px solid;border-bottom: 0px;}
+	.bor_DDDDDD{border-color: #DDDDDD;}
+	.bor_2DA4FF{border-color: #2DA4FF;}
+	.bor_skyblue{border-color:skyblue;}
+	.bor_input{border-bottom:1px solid #FE9341;}
+	.not_border{border-left:0px;border-top:0px;border-right:0px;border-bottom:0px;}
+	.not_bgColor{background-color:transparent;}
+	/*宽度*/
+	.width_50{width: 50%;}
+	.width_45{width: 45%;} .width_55{width: 55%;}
+	.width_40{width: 40%;} .width_60{width: 60%;}
+	.width_35{width: 35%;} .width_65{width: 65%;}
+	.width_33{width: 33.33%;} .width_67{width: 66.67%;}
+	.width_30{width: 30%;} .width_70{width: 70%;}
+	.width_25{width: 25%;} .width_75{width: 75%;}
+	.width_20{width: 20%;} .width_80{width: 80%;}
+	.width_15{width: 15%;} .width_85{width: 85%;}
+	.width_10{width: 10%;} .width_90{width: 90%;}
+	.width_7{width:   7%;} .width_97{width: 97%;}
+	.width_5{width:   5%;} .width_95{width: 95%;}
+	.width_100{width: 100%;}
+	.min_wit_10{min-width: 10%;}
+	/*高度*/
+	.height_100{height: 100%;}
+	.height_28px{height: 28px;}
+	.height_30px{height: 30px;}
+	.height_35px{height: 35px;}
+	.height_40px{height: 40px;}
+	.height_45px{height: 45px;}
+	.height_50px{height: 50px;}
+	.height_55px{height: 55px;}
+	.height_60px{height: 60px;}
+	.heigth_100{height: 100%;}
+	.min_he_30px{height: 30px;}
+	.min_he_40px{height: 40px;}
+	.max_he_50px{height: 50px;}
+	.max_he_60px{height: 60px;}
+	/*固定高宽比*/
+	.w33_h11{width:33%;height:0;padding-bottom:11%;}
+	.w33_h20{width:33%;height:0;padding-bottom:20%;}
+	.w33_h43{width:33%;height:0;padding-bottom:43%;}
+	.w100_h100{width:100%;height:0;padding-bottom:100%;}
+	.w100_h110{width:100%;height:0;padding-bottom:110%;}
+	.w100_h120{width:100%;height:0;padding-bottom:120%;}
+	.w100_h130{width:100%;height:0;padding-bottom:130%;}
+	.w100_h133{width:100%;height:0;padding-bottom:133%;}
+	.w100_h140{width:100%;height:0;padding-bottom:140%;}
+	.w100_h150{width:100%;height:0;padding-bottom:150%;}
+	.w100_h160{width:100%;height:0;padding-bottom:160%;}
+	.w100_h165{width:100%;height:0;padding-bottom:165%;}
+	/*头部高度*/
+	.min-header .has-header {top: 64px;}
+	.none-header .has-header {top: 0px;}
+</style>

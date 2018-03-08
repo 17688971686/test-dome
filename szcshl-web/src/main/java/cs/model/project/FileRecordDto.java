@@ -6,6 +6,7 @@ import cs.model.BaseDto;
 
 import javax.persistence.Column;
 import java.util.Date;
+import java.util.List;
 
 public class FileRecordDto extends BaseDto {
 
@@ -616,6 +617,74 @@ public class FileRecordDto extends BaseDto {
      * @return
      */
     private String isassistproc;
+
+    private String procsugFileFileCopy;
+
+    private Integer feasibilityDisposeCount;
+
+    private String feasibilityDisposeOriginal;
+
+    private String feasibilityDisposeCopy;
+
+    private Integer feasibilityFormCount;
+
+    private String feasibilityFormOriginal;
+
+    private String feasibilityFormCopy;
+
+    private String projectProposalCopy;
+
+    private String projectProposalOriginal;
+
+    private Integer projectProposalCount;
+
+    private String feasibilityReplyCopy;
+
+    private String feasibilityReplyOriginal;
+
+    private Integer feasibilityReplyCount;
+
+    private Integer feasibilityDeclareCount;
+
+    private String feasibilityDeclareOriginal;
+
+    private String feasibilityDeclareCopy;
+
+    private Integer feasibilityProjectCount;
+
+    private String feasibilityProjectOriginal;
+
+    private String feasibilityProjectCopy;
+
+    private Integer feasibilityDocumentCount;
+
+
+    private String feasibilityDocumentOriginal;
+
+    private String feasibilityDocumentCopy;
+
+    private String landPlanningLicenseOriginal;
+
+    private Integer landPlanningLicenseCount;
+
+    private String approvalCopy;
+
+    private String approvalOriginal;
+
+    private Integer approvalCount;
+
+    /**
+     * 补充资料函列表
+     */
+    private List<AddRegisterFileDto> registerFileDto;
+
+    public List<AddRegisterFileDto> getRegisterFileDto() {
+        return registerFileDto;
+    }
+
+    public void setRegisterFileDto(List<AddRegisterFileDto> registerFileDto) {
+        this.registerFileDto = registerFileDto;
+    }
 
     public String getAssistPlanOriginal() {
         return assistPlanOriginal;
@@ -2409,5 +2478,221 @@ public class FileRecordDto extends BaseDto {
 
     public void setIsassistproc(String isassistproc) {
         this.isassistproc = isassistproc;
+    }
+
+    public String getProcsugFileFileCopy() {
+        return procsugFileFileCopy;
+    }
+
+    public void setProcsugFileFileCopy(String procsugFileFileCopy) {
+        this.procsugFileFileCopy = procsugFileFileCopy;
+    }
+
+    public Integer getFeasibilityDisposeCount() {
+        return feasibilityDisposeCount;
+    }
+
+    public void setFeasibilityDisposeCount(Integer feasibilityDisposeCount) {
+        this.feasibilityDisposeCount = feasibilityDisposeCount;
+    }
+
+    public String getFeasibilityDisposeOriginal() {
+        return feasibilityDisposeOriginal;
+    }
+
+    public void setFeasibilityDisposeOriginal(String feasibilityDisposeOriginal) {
+        this.feasibilityDisposeOriginal = feasibilityDisposeOriginal;
+    }
+
+    public String getFeasibilityDisposeCopy() {
+        return feasibilityDisposeCopy;
+    }
+
+    public void setFeasibilityDisposeCopy(String feasibilityDisposeCopy) {
+        this.feasibilityDisposeCopy = feasibilityDisposeCopy;
+    }
+
+    public Integer getFeasibilityFormCount() {
+        return feasibilityFormCount;
+    }
+
+    public void setFeasibilityFormCount(Integer feasibilityFormCount) {
+        this.feasibilityFormCount = feasibilityFormCount;
+    }
+
+    public String getFeasibilityFormOriginal() {
+        return feasibilityFormOriginal;
+    }
+
+    public void setFeasibilityFormOriginal(String feasibilityFormOriginal) {
+        this.feasibilityFormOriginal = feasibilityFormOriginal;
+    }
+
+    public String getFeasibilityFormCopy() {
+        return feasibilityFormCopy;
+    }
+
+    public void setFeasibilityFormCopy(String feasibilityFormCopy) {
+        this.feasibilityFormCopy = feasibilityFormCopy;
+    }
+
+    public String getProjectProposalCopy() {
+        return projectProposalCopy;
+    }
+
+    public void setProjectProposalCopy(String projectProposalCopy) {
+        this.projectProposalCopy = projectProposalCopy;
+    }
+
+    public String getProjectProposalOriginal() {
+        return projectProposalOriginal;
+    }
+
+    public void setProjectProposalOriginal(String projectProposalOriginal) {
+        this.projectProposalOriginal = projectProposalOriginal;
+    }
+
+    public Integer getProjectProposalCount() {
+        return projectProposalCount;
+    }
+
+    public void setProjectProposalCount(Integer projectProposalCount) {
+        this.projectProposalCount = projectProposalCount;
+    }
+
+    public String getFeasibilityReplyCopy() {
+        return feasibilityReplyCopy;
+    }
+
+    public void setFeasibilityReplyCopy(String feasibilityReplyCopy) {
+        this.feasibilityReplyCopy = feasibilityReplyCopy;
+    }
+
+    public String getFeasibilityReplyOriginal() {
+        return feasibilityReplyOriginal;
+    }
+
+    public void setFeasibilityReplyOriginal(String feasibilityReplyOriginal) {
+        this.feasibilityReplyOriginal = feasibilityReplyOriginal;
+    }
+
+    public Integer getFeasibilityReplyCount() {
+        return feasibilityReplyCount;
+    }
+
+    public void setFeasibilityReplyCount(Integer feasibilityReplyCount) {
+        this.feasibilityReplyCount = feasibilityReplyCount;
+    }
+
+    public Integer getFeasibilityDeclareCount() {
+        return feasibilityDeclareCount;
+    }
+
+    public void setFeasibilityDeclareCount(Integer feasibilityDeclareCount) {
+        this.feasibilityDeclareCount = feasibilityDeclareCount;
+    }
+
+    public String getFeasibilityDeclareOriginal() {
+        return feasibilityDeclareOriginal;
+    }
+
+    public void setFeasibilityDeclareOriginal(String feasibilityDeclareOriginal) {
+        this.feasibilityDeclareOriginal = feasibilityDeclareOriginal;
+    }
+
+    public String getFeasibilityDeclareCopy() {
+        return feasibilityDeclareCopy;
+    }
+
+    public void setFeasibilityDeclareCopy(String feasibilityDeclareCopy) {
+        this.feasibilityDeclareCopy = feasibilityDeclareCopy;
+    }
+
+    public Integer getFeasibilityProjectCount() {
+        return feasibilityProjectCount;
+    }
+
+    public void setFeasibilityProjectCount(Integer feasibilityProjectCount) {
+        this.feasibilityProjectCount = feasibilityProjectCount;
+    }
+
+    public String getFeasibilityProjectOriginal() {
+        return feasibilityProjectOriginal;
+    }
+
+    public void setFeasibilityProjectOriginal(String feasibilityProjectOriginal) {
+        this.feasibilityProjectOriginal = feasibilityProjectOriginal;
+    }
+
+    public String getFeasibilityProjectCopy() {
+        return feasibilityProjectCopy;
+    }
+
+    public void setFeasibilityProjectCopy(String feasibilityProjectCopy) {
+        this.feasibilityProjectCopy = feasibilityProjectCopy;
+    }
+
+    public Integer getFeasibilityDocumentCount() {
+        return feasibilityDocumentCount;
+    }
+
+    public void setFeasibilityDocumentCount(Integer feasibilityDocumentCount) {
+        this.feasibilityDocumentCount = feasibilityDocumentCount;
+    }
+
+    public String getFeasibilityDocumentOriginal() {
+        return feasibilityDocumentOriginal;
+    }
+
+    public void setFeasibilityDocumentOriginal(String feasibilityDocumentOriginal) {
+        this.feasibilityDocumentOriginal = feasibilityDocumentOriginal;
+    }
+
+    public String getFeasibilityDocumentCopy() {
+        return feasibilityDocumentCopy;
+    }
+
+    public void setFeasibilityDocumentCopy(String feasibilityDocumentCopy) {
+        this.feasibilityDocumentCopy = feasibilityDocumentCopy;
+    }
+
+    public String getLandPlanningLicenseOriginal() {
+        return landPlanningLicenseOriginal;
+    }
+
+    public void setLandPlanningLicenseOriginal(String landPlanningLicenseOriginal) {
+        this.landPlanningLicenseOriginal = landPlanningLicenseOriginal;
+    }
+
+    public Integer getLandPlanningLicenseCount() {
+        return landPlanningLicenseCount;
+    }
+
+    public void setLandPlanningLicenseCount(Integer landPlanningLicenseCount) {
+        this.landPlanningLicenseCount = landPlanningLicenseCount;
+    }
+
+    public String getApprovalCopy() {
+        return approvalCopy;
+    }
+
+    public void setApprovalCopy(String approvalCopy) {
+        this.approvalCopy = approvalCopy;
+    }
+
+    public String getApprovalOriginal() {
+        return approvalOriginal;
+    }
+
+    public void setApprovalOriginal(String approvalOriginal) {
+        this.approvalOriginal = approvalOriginal;
+    }
+
+    public Integer getApprovalCount() {
+        return approvalCount;
+    }
+
+    public void setApprovalCount(Integer approvalCount) {
+        this.approvalCount = approvalCount;
     }
 }

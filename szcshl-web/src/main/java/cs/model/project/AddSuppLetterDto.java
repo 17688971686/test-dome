@@ -2,7 +2,6 @@ package cs.model.project;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
-
 import java.util.Date;
 
 
@@ -18,7 +17,14 @@ public class AddSuppLetterDto extends BaseDto {
      */
     private String id;
 
-    //拟稿部门
+    /**
+     * 文件年度（月报简报用）
+     */
+    private String fileYear;
+
+    /**
+     * 拟稿部门
+     */
     private String orgName;
 
     /**
@@ -116,7 +122,7 @@ public class AddSuppLetterDto extends BaseDto {
     private String fileCode;
 
     //月报的序号
-    private Integer MonthlySeq;
+    private Integer monthlySeq;
     /**
      * 业务ID
      */
@@ -141,12 +147,6 @@ public class AddSuppLetterDto extends BaseDto {
      * 流程实例ID
      */
     private String processInstanceId;
-
-    /**
-     * 月报简报月份(用于按年分类，不用保存到数据库)
-     * @return
-     */
-    private String monthLetterYearName;
 
     public String getId() {
         return id;
@@ -429,18 +429,19 @@ public class AddSuppLetterDto extends BaseDto {
     }
 
     public Integer getMonthlySeq() {
-        return MonthlySeq;
+        return monthlySeq;
     }
 
     public void setMonthlySeq(Integer monthlySeq) {
-        MonthlySeq = monthlySeq;
+        this.monthlySeq = monthlySeq;
     }
 
-    public String getMonthLetterYearName() {
-        return monthLetterYearName;
+    public String getFileYear() {
+        return fileYear;
     }
 
-    public void setMonthLetterYearName(String monthLetterYearName) {
-        this.monthLetterYearName = monthLetterYearName;
+    public void setFileYear(String fileYear) {
+        this.fileYear = fileYear;
     }
+
 }

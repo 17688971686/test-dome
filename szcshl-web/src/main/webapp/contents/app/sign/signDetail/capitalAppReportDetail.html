@@ -2,15 +2,17 @@
 <!--S 资金申请报告 -->
 <!-- s table -->
 <table class="table table-bordered" style="margin-bottom: 0px;">
-    <caption class="text-center h3">
-        <strong>
-            深圳市政府投资项目评审中心 <br>
-            {{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}
-        </strong>
-    </caption>
-    <caption>
-        <span style="width: 200px;float: left;padding: 5px 10px;">QR-4.11-01-A0</span>
-        <span style="width: 200px;float: right;padding: 5px 10px;">收文日期：{{vm.model.signdate | date:'yyyy年MM月dd日'}}</span>
+    <caption class="text-center">
+        <p class="h3">
+            <strong>
+                深圳市政府投资项目评审中心 </br>
+                {{getTBHeadName(vm.model.reviewstage,vm.model.isAdvanced,'项目报审登记表')}}
+            </strong>
+        </p>
+        <p>
+            <span style="width: 200px;float: left;padding: 5px 10px;">QR-4.11-01-A0</span>
+            <span style="width: 200px;float: right;padding: 5px 10px;">收文日期：{{vm.model.signdate | date:'yyyy年MM月dd日'}}</span>
+        </p>
     </caption>
     <tbody>
 
@@ -74,22 +76,22 @@
                 <tr>
                     <td style="border-top:none;width:20%;">&nbsp;</td>
                     <td style="border-top:none;width:20%;text-align: center;">原件/复印件</td>
-                    <td style="border-top:none;width:10%;">份数</td>
+                    <td style="border-top:none;width:10%;"><span  >份数</span></td>
                     <td style="border-top:none;width:20%;">&nbsp;</td>
                     <td style="border-top:none;width:20%;text-align: center;">原件</td>
-                    <td style="border-top:none;width:10%;">份数</td>
+                    <td style="border-top:none;width:10%;"><span  >份数</span></td>
                 </tr>
                 <tr>
                     <td style="border-top:none;text-align:right;">委项目处理表</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:50px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-click="vm.model.sugProDealCount = initInputValue($event,vm.model.sugProDealCount)"
                                ng-model="vm.model.sugProDealOriginal"
                                name="sugProDealOriginal" id="addOriginal"
                                ng-true-value="9" ng-false-value="0">
                     </td>
                     <td style="border-top:none;">
-                        <input type="text" style="width:50px;" class="form-control input-sm "
+                        <input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm "
                                ng-model="vm.model.sugProDealCount" ng-disabled="true"
                                name="sugProDealCount"
                                id="sugProDealCount" data-val="true"
@@ -99,15 +101,15 @@
 
                     <td style="border-top:none;text-align:right;">资金申请报告</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:50px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-click="vm.model.capitalAppReportCount = initInputValue($event,vm.model.capitalAppReportCount)"
                                ng-model="vm.model.capitalAppReportOriginal"
                                id="capitalAppReportOriginal" ng-true-value="9"
                                ng-false-value="0">
                     </td>
                     <td style="border-top:none;">
-                        <input type="text" style="width:50px;"
-                               class="form-control input-sm " ng-disabled="true"
+                        <input type="text" style="width:40px;text-align:center;border-radius:0px;"
+                               class="input-sm " ng-disabled="true"
                                ng-model="vm.model.capitalAppReportCount"
                                name="capitalAppReportCount"
                                id="sugProAdviseCount" data-val="true"
@@ -119,13 +121,13 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">委文件处理表</td>
                     <td style="border-top:none;text-align:center;">
-                        <input type="checkbox" style="width:50px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-click="vm.model.sugFileDealCount = initInputValue($event,vm.model.sugFileDealCount)"
                                ng-model="vm.model.sugFileDealOriginal"
                                id="sugFileDealOriginal" ng-true-value="9"
                                ng-false-value="0"></td>
                     <td style="border-top:none;">
-                        <input type="text" style="width:50px;" class="form-control input-sm"
+                        <input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm"
                                ng-model="vm.model.sugFileDealCount" id="sugFileDealCount"
                                name="sugFileDealCount" ng-disabled="true"
                                data-val="true" data-val-digits="只能输入数字">
@@ -134,8 +136,8 @@
                     <td style="border-top:none;text-align:right;">电子文档</td>
                     <td style="border-top:none;"></td>
                     <td style="border-top:none;">
-                        <input type="text" style="width:50px;"
-                               class="form-control input-sm " ng-disabled="true"
+                        <input type="text" style="width:40px;text-align:center;border-radius:0px;"
+                               class="input-sm " ng-disabled="true"
                                ng-model="vm.model.proSugEledocCount"
                                name="proSugEledocCount"
                                id="proSugEledocCount" data-val="true"
@@ -147,15 +149,15 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">项目单位申报表</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:50px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-click="vm.model.sugOrgApplyCount = initInputValue($event,vm.model.sugOrgApplyCount)"
                                ng-model="vm.model.sugOrgApplyOriginal"
                                id="sugOrgApplyOriginal" ng-true-value="9"
                                ng-false-value="0">
                     </td>
                     <td style="border-top:none;">
-                        <input type="text" style="width:50px;"
-                               class="form-control input-sm " ng-disabled="true"
+                        <input type="text" style="width:40px;text-align:center;border-radius:0px;"
+                               class="input-sm " ng-disabled="true"
                                ng-model="vm.model.sugOrgApplyCount"
                                name="sugOrgApplyCount"
                                id="sugOrgApplyCount" data-val="true"
@@ -165,14 +167,14 @@
 
                     <td style="border-top:none;text-align:right;">相关会议纪要</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:50px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-click="vm.model.sugMeetCount = initInputValue($event,vm.model.sugMeetCount)"
                                ng-model="vm.model.sugMeetOriginal"
                                id="sugMeetOriginal" ng-true-value="9"
                                ng-false-value="0">
                     </td>
                     <td style="border-top:none;">
-                        <input type="text" style="width:50px;" class="form-control input-sm "
+                        <input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm "
                                ng-model="vm.model.sugMeetCount" name="sugMeetCount"
                                id="sugMeetCount" data-val="true" ng-disabled="true"
                                data-val-digits="只能输入数字">
@@ -183,13 +185,13 @@
                 <tr>
                     <td style="border-top:none;text-align:right;">项目单位请示报告</td>
                     <td style="border-top:none;text-align: center;">
-                        <input type="checkbox" style="width:50px;" ng-disabled="true"
+                        <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-click="vm.model.sugOrgReqCount = initInputValue($event,vm.model.sugOrgReqCount)"
                                ng-model="vm.model.sugOrgReqOriginal"
                                id="sugOrgReqOriginal" ng-true-value="9"
                                ng-false-value="0"></td>
                     <td style="border-top:none;">
-                        <input type="text" style="width:50px;" class="form-control input-sm "
+                        <input type="text" style="width:40px;text-align:center;border-radius:0px;" class="input-sm "
                                ng-model="vm.model.sugOrgReqCount"
                                name="sugOrgReqCount" ng-disabled="true"
                                id="sugOrgReqCount" data-val="true"
@@ -243,7 +245,11 @@
         </td>
     </tr>
 </table>
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
-</button>
+<!--<button class="btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印
+</button>-->
+<p style="text-align: center;">
+
+    <button class="btn btn-sm btn-primary" style="width: 100px; " ng-click="printFile(vm.model.signid,'SIGN' , 'STAGEREPORT')">打印预览</button>
+</p>
 <!-- end table -->
 <!-- E 资金申请报告  -->

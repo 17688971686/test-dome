@@ -3,17 +3,18 @@
 
     angular.module('app').controller('signFillinCtrl', sign);
 
-    sign.$inject = ['signSvc', 'sysfileSvc', '$state', '$http', 'bsWin', '$scope'];
+    sign.$inject = ['signSvc', 'sysfileSvc', '$state', '$http', 'bsWin', '$scope','addRegisterFileSvc'];
 
-    function sign(signSvc, sysfileSvc, $state, $http, bsWin, $scope) {
+    function sign(signSvc, sysfileSvc, $state, $http, bsWin, $scope,addRegisterFileSvc) {
         var vm = this;
         vm.model = {};		//创建一个form对象
         vm.title = '填写报审登记表';        		//标题
         vm.model.signid = $state.params.signid;	//收文ID
         vm.flowDeal = false;		//是否是流程处理标记
-
         vm.busiObj = {};             //业务对象，用于记录页面操作对象等信息
-
+        vm.otherFile = [];//其他申报资料
+        vm.supply={};    //拟补充资料
+        vm.isControl=$state.params.isControl; //按钮显示
         active();
         function active() {
             signSvc.initFillData(vm.model.signid, function (data) {
@@ -37,12 +38,41 @@
                     mainId: vm.model.signid,
                     mainType: sysfileSvc.mainTypeValue().SIGN,
                     sysfileType: sysfileSvc.mainTypeValue().FILLSIGN,
-                    sysBusiType: sysfileSvc.mainTypeValue().FILLSIGN,
                 };
                 sysfileSvc.initUploadOptions({
                     inputId: "sysfileinput",
-                    vm: vm
+                     vm: vm
                 });
+
+                //初始化，打印预览的stageType
+                if(vm.model.reviewstage == "项目建议书" || vm.model.reviewstage == "可行性研究报告"){
+                    vm.stageType = "STAGESUG";
+                }
+                else if(vm.model.reviewstage == "资金申请报告"){
+                    vm.stageType = "STAGEREPORT";
+                }
+                else if(vm.model.reviewstage == "设备清单（国产）" || vm.model.reviewstage == "设备清单（进口）"){
+                    vm.stageType = "STAGEHOMELAND";
+                }
+                else if(vm.model.reviewstage == "进口设备"){
+                    vm.stageType = "STAGEDEVICE";
+                }
+                else if(vm.model.reviewstage == "项目概算"){
+                    vm.stageType = "STAGEBUDGET";
+                }
+                //其它资料信息
+                if(data.reObj.registerFileDtoDtoList!=undefined){
+                    data.reObj.registerFileDtoDtoList.forEach(function(registerFile  , x){
+                        if(registerFile.businessType == 3){
+                            vm.supply.push(registerFile);
+                        }else if(registerFile.businessType == 2){
+                            vm.drawingFile.push(registerFile);
+                        }else{
+                            vm.otherFile.push(registerFile);
+                        }
+                    })
+                }
+
             });
         }
 
@@ -213,6 +243,89 @@
             });
         }
 
+        /******以下是其它资料添加*****/
+
+        vm.addOtherFile = function (businessId, businessType) {
+            if(!vm.addRegisters){
+                vm.addRegisters = [];
+            }
+            if (!businessId) {
+                bsWin.alert("请先保存数据！");
+            } else {
+                if(businessType == "4"){
+                    vm.addRegisters = vm.otherFile;
+                    vm.showFilePage = false;
+                    vm.showFileOther = false;
+                    vm.showSignOther = true;
+                }
+                if(businessType == "2"){
+                    vm.addRegisters = vm.drawingFile;
+                    vm.showFilePage = true;
+                    vm.showFileOther = false;
+                    vm.showSignOther = false;
+                }
+
+                vm.businessId = businessId;
+                vm.businessType = businessType;
+
+                $("#addOtherFile").kendoWindow({
+                    width: "840px",
+                    height: "480px",
+                    title: "补充资料编辑",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }
+
+        }
+
+
+        //新建其它资料
+        vm.addRegisterFile = function () {
+            vm.addRegister = {};
+            vm.addRegister.businessId = vm.businessId;
+            vm.addRegister.businessType = vm.businessType;
+            vm.addRegister.id = common.uuid();
+            vm.addRegisters.push(vm.addRegister);
+        }
+
+        //保存其它资料
+        vm.saveRegisterFile = function () {
+            addRegisterFileSvc.saveRegisterFile(vm.addRegisters, function (data) {
+                if (data.flag || data.reCode == 'ok') {
+                    bsWin.alert("操作成功");
+                    vm.addRegisters = data.reObj;
+                } else {
+                    bsWin.alert(data.reMsg);
+                }
+            });
+        }
+        //删除其它资料
+        vm.deleteRegisterFile = function () {
+            var isCheked = $("#addOtherFile input[name='addRegistersCheck']:checked")
+            if (isCheked.length < 1) {
+                bsWin.alert("请选择要删除的记录！");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheked.length; i++) {
+                    vm.addRegisters.forEach(function (f, number) {
+                        if (f.id && isCheked[i].value == f.id) {
+                            ids.push(isCheked[i].value);
+                            vm.addRegisters.splice(number, 1);
+                        }
+                    });
+                }
+                if (ids.length > 0) {
+                    addRegisterFileSvc.deleteByIds(ids.join(","), function (data) {
+                        bsWin.alert("删除成功！");
+                    });
+                }
+            }
+        }
+
+        /******以下是其它资料添加END*****/
         //项目签收编辑模板打印
         vm.editPrint = function () {
             var LODOP = getLodop();

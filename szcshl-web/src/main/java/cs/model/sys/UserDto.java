@@ -39,7 +39,12 @@ public class UserDto extends BaseDto {
     private String loginName;
 
     /**
-     * 登录名
+     * 腾讯通账号
+     */
+    private String rtxName;
+
+    /**
+     * 登录密码
      */
     private String password;
 
@@ -111,7 +116,7 @@ public class UserDto extends BaseDto {
     /**
      * 登录次数
      */
-    private int loginFailCount;
+    private Integer loginFailCount;
 
     /**
      * 最后登录成功日期
@@ -315,11 +320,11 @@ public class UserDto extends BaseDto {
         this.remark = remark;
     }
 
-    public int getLoginFailCount() {
+    public Integer getLoginFailCount() {
         return loginFailCount;
     }
 
-    public void setLoginFailCount(int loginFailCount) {
+    public void setLoginFailCount(Integer loginFailCount) {
         this.loginFailCount = loginFailCount;
     }
 
@@ -401,5 +406,13 @@ public class UserDto extends BaseDto {
 
     public void setMngOrgType(String mngOrgType) {
         this.mngOrgType = mngOrgType;
+    }
+
+    public String getRtxName() {
+        return rtxName;
+    }
+
+    public void setRtxName(String rtxName) {
+        this.rtxName = rtxName;
     }
 }

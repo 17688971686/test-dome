@@ -5,9 +5,8 @@
         <table style="width: 100%;">
             <tr>
                 <td>
-                    <button class="btn btn-sm btn-success back" ng-click="back();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-chevron-left"></span>返回列表</button>
-                    <button class="btn btn-sm btn-success back" ng-click="vm.printNotice('annountment-body');" ng-disabled="vm.isCommit"><span class="glyphicon glyhicon-print"></span>打印</button>
-
+                    <go-back></go-back>
+                    <button class="btn btn-sm btn-success back" ng-click="vm.printNotice();" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-print"></span>打印</button>
                 </td>
                 <td style="text-align: right;">
                     <span >发布人：{{vm.annountment.issueUser}}</span>
@@ -30,17 +29,19 @@
         <!--打印区结束-->
 
       <!--附件区 -->
-     <div style="text-align: left;">
-    	<strong ng-show="vm.sysFilelists.length > 0">附件:</strong>
-        <div ng-repeat="x in vm.sysFilelists">
-            <p >
-                <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
-                <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
-                <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
-                <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
-                <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
-            </p>
-        </div>
+     <div style="text-align: left;" ng-if="vm.sysFilelists && vm.sysFilelists.length > 0">
+         <table class="table">
+             <tr ng-repeat="x in vm.sysFilelists">
+                 <td rowspan="{{vm.sysFilelists.length}}" ng-if="$index == 0" style="width: 80px;border-top:0px;padding: 3px;"><strong>附件列表：</strong></td>
+                 <td style="border-top:0px;padding: 3px;">
+                     <i class="fa fa-file-image-o" aria-hidden="true" ng-show="x.fileType =='.png' || x.fileType =='.jpg' || x.fileType =='.gif'"></i>
+                     <i class="fa fa-file-word-o" aria-hidden="true" ng-show="x.fileType =='.docx' || x.fileType =='.doc'"></i>
+                     <i class="fa fa-file-excel-o" aria-hidden="true" ng-show="x.fileType =='.xlsx' || x.fileType =='.xls'"></i>
+                     <i class="fa fa-file-pdf-o" aria-hidden="true" ng-show="x.fileType =='.pdf'"></i>
+                     <a ng-click="vm.downloadSysFile(x.sysFileId)">{{ x.showName }}</a>
+                 </td>
+             </tr>
+         </table>
     </div>
         <!--附件区结束-->
     </div>
@@ -48,7 +49,7 @@
 
 
     <!--滚动通知区-->
-    <div style="padding: 10px 0px; min-height: 80px; border-top:1px dotted #CCCCCC;">
+    <div style="padding: 10px 0px; min-height: 80px;">
         <div style="width: 90%; margin: auto;">
             <ol >
                 <!--上一篇-->

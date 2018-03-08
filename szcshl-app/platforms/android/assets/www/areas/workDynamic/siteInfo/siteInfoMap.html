@@ -1,0 +1,47 @@
+<ion-modal-view>
+	<ion-content class="width_100">
+		<h3>{{'场地信息'}}</h3>
+	    <div class="bar bar-header bar-positive">
+	    	<button class="button icon ion-arrow-left-c" ng-click="modal.remove()"></button>
+	      	<h1 class="title size_ss">{{'场地信息'}}</h1>
+	      	<a class="button" ng-click="siteInfoSvcObj.setPosition(mapSvcObj.longitude, mapSvcObj.latitude)"
+	      		ng-if="!(siteInfoSvcObj.siteInfo.siteCoord_X == mapSvcObj.longitude && siteInfoSvcObj.siteInfo.siteCoord_Y == mapSvcObj.latitude)">保存</a>
+	      		<a class="button" ng-if="siteInfoSvcObj.siteInfo.siteCoord_X == mapSvcObj.longitude && siteInfoSvcObj.siteInfo.siteCoord_Y == mapSvcObj.latitude" disabled="disabled">已保存</a>
+	    </div>
+	    <label class="item">
+	        <span>场地名称：</span>
+	        <span>{{siteInfoSvcObj.siteInfo.siteName}}</span>
+	    </label>
+	   <!-- <label class="item">
+	        <span>所属社区：</span>
+	        <span>{{siteInfoSvcObj.siteInfo.communityDto.communityName}}</span>
+	    </label>
+	    <label class="item">
+	        <span>所属街道：</span>
+	        <span>{{siteInfoSvcObj.siteInfo.streetDto.streetName}}</span>
+	    </label>-->
+	    <label class="item">
+	        <span>坐标经度：</span>
+	        <span ng-show="siteInfoSvcObj.siteInfo.siteCoord_X">{{siteInfoSvcObj.siteInfo.siteCoord_X}}</span>
+	        <span ng-hide="siteInfoSvcObj.siteInfo.siteCoord_X" style="color: red;">未定位</span>
+	        <!--<button class="button button-calm" ng-click="siteInfoSvcObj.setPosition(mapSvcObj.longitude, mapSvcObj.latitude)">设置</button>-->
+	    </label>
+	    <label class="item">
+	        <span>坐标纬度：</span>
+	        <span ng-show="siteInfoSvcObj.siteInfo.siteCoord_Y">{{siteInfoSvcObj.siteInfo.siteCoord_Y}}</span>
+	        <span ng-hide="siteInfoSvcObj.siteInfo.siteCoord_Y" style="color: red;">未定位</span>
+	        <!--<button class="button button-calm" ng-click="siteInfoSvcObj.setPosition(mapSvcObj.longitude, mapSvcObj.latitude)">设置</button>-->
+	    </label>
+	    <div style="padding-left: 16px;">
+        	当前位置：经度：{{mapSvcObj.longitude}}  纬度：{{mapSvcObj.latitude}}<br />
+        	当前地址：{{mapSvcObj.addrmsg}}
+        </div>
+		<div>
+        	<div id="baiduMap" class="w100_h110"></div>
+		</div>
+		<div class="bar bar-footer">
+			<button class="button button-calm button-small ion-location width_100" ng-click="mapSvcObj.setCurrentPosition()">重新定位</button>
+	    </div>
+	</ion-content>
+</ion-modal-view>
+

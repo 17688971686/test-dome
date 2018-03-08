@@ -2,113 +2,13 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
 
-<style type="text/css" id="xxxx" media="all">
+<!-- 附件 -->
+<#include "/file/common.html"/>
+<style type="text/css" media=print>
     .noprint {
         display: none
     }
-    /* CSS Document */
-    .print-table {
-        font-family: "Microsoft Yahei";
-        font-size: 14px;
-        border: solid 1px #000;
-        border-collapse: collapse;
-        color: #000;
-        width: 200mm;
-    }
-    .print-table .title {
-        text-align: center;
-        font-size: 20px;
-        font-weight: bold;
-        line-height: 20px;
-        color: #000000;
-    }
-
-    .print-table th {
-        text-align: center;
-    }
-
-    .print-table th,
-    .print-table td {
-        border: 1px solid #000;
-        vertical-align: middle;
-        color:#000;
-        font-size:16px;
-    }
-
-    .print-table td:first-child {
-        text-align: center;
-        padding: 15px 0;
-    }
-
-    .print-table .tr-hidden td {
-        border: none;
-        height: 0;
-        paddign: 0;
-        margin: 0;
-    }
-
-    .print-table .child-table td {
-        padding: 5px 0;
-    }
-
-    .num {
-        width: 16px;
-        height: 16px;
-        border: 1px solid #000;
-        text-align: center;
-    }
-
-    .child-table {
-        font-family: "Microsoft Yahei";
-        width: 100%;
-        margin: 5px 0px;
-    }
-
-    .child-table td {
-        font-size:16px;
-        border: none;
-        text-align: center;
-    }
-
-    .print-table p {
-        margin-bottom: 0;
-    }
-
-    .print-table caption {
-        padding: 0;
-        text-align: left;
-    }
-
-    .signName {
-        width: 600px;
-        height: 100px;
-        overflow: hidden;
-    }
-    .nameDate {
-        line-height: 17px;
-        padding-left: 75%;
-    }
-    .signDetail {
-        max-height: 51px;
-        text-align: left;
-        text-indent: 2em;
-        overflow: hidden;
-    }
-
-    .text-left {
-        text-align: left;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    .text-right {
-        text-align: right;
-    }
-
 </style>
 <style>
 	.printbody{
@@ -141,7 +41,7 @@
 	}
 	.tableBOX table>tbody>tr>td{white-space : nowrap; padding:0px !important; text-align: center;}
 </style>
-<div class="well well-sm" style="background:white;min-height: 900px;">
+<div class="well well-sm" style="background:white;margin-bottom: 50px;">
     <!-- s form -->
     <form id="sign_fill_form" name="sign_fill_form">
 		<!-- S 编辑页面 -->
@@ -149,35 +49,35 @@
         <div ng-if="vm.model.reviewstage=='项目建议书' || vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它'">
             <div id="sign_fill_xmjys"  ng-include src="'${path}/contents/app/sign/signEdit/default.html'"></div>
             <!-- 打印模板-->
-            <div id="sign_fill_xmjys_templ" > <#include "/templatePrint/sign/detaiXmjys.html"/></div>
+           <#-- <div id="sign_fill_xmjys_templ" style="display: none;"> <#include "/templatePrint/sign/detaiXmjys.html"/></div>-->
         </div>
         <!--E_ 项目建议书/可行性研究报告 -->
 
 		<!-- S 资金申请报告 -->
         <div ng-if="vm.model.reviewstage=='资金申请报告'">
-            <div id="sign_fill_zjsq"  ng-include src="'${path}/contents/app/sign/signEdit/capitalAppReportEdit.html'"></div>
-            <div id="sign_fill_zjsq_templ" style="display: none;"><#include "/templatePrint/sign/capitalAppReportZjsq.html"/></div>
+            <div id="sign_fill_zjsq"  ng-include src="'${path}/contents/app/sign/signEdit/capitalAppReportEdit.html?version=${.now}'"></div>
+            <#--<div id="sign_fill_zjsq_templ" style="display: none;"><#include "/templatePrint/sign/capitalAppReportZjsq.html"/></div>-->
         </div>
         <!-- S 资金申请报告 -->
         
 		<!-- S 进口设备 -->
         <div ng-if="vm.model.reviewstage=='进口设备'">
             <div id="sign_fill_jksb"  ng-include src="'${path}/contents/app/sign/signEdit/foreignEquipmenEditt.html'"></div>
-            <div id="sign_fill_jksb_templ" style="display: none;"><#include "/templatePrint/sign/foreignEquipmenDetail.html"/></div>
+           <#-- <div id="sign_fill_jksb_templ" style="display: none;"><#include "/templatePrint/sign/foreignEquipmenDetail.html"/></div>-->
         </div>
         <!-- S 进口设备 -->
         
          <!-- S_设备清单（国产） -->
         <div ng-if="vm.model.reviewstage=='设备清单（国产）' || vm.model.reviewstage=='设备清单（进口）'">
             <div id="sign_fill_sbqd"  ng-include src="'${path}/contents/app/sign/signEdit/equipmenDomesticEdit.html'"></div>
-            <div id="sign_fill_sbqd_templ" style="display: none;"><#include "/templatePrint/sign/equipmenDomesticDetail.html"/></div>
+            <#--<div id="sign_fill_sbqd_templ" style="display: none;"><#include "/templatePrint/sign/equipmenDomesticDetail.html"/></div>-->
         </div>
         <!-- E_设备清单（国产） -->
     	
     	<!-- S 项目概算  -->
         <div ng-if="vm.model.reviewstage=='项目概算'">
             <div id="sign_fill_xmgs"  ng-include src="'${path}/contents/app/sign/signEdit/projectBudgetEidt.html'"></div>
-            <div id="sign_fill_xmgs_templ" style="display: none;"> <#include "/templatePrint/sign/detailXmgs.html"/></div>
+            <#--<div id="sign_fill_xmgs_templ" style="display: none;"> <#include "/templatePrint/sign/detailXmgs.html"/></div>-->
         </div>
         <!-- E 项目概算  -->
     	
@@ -189,22 +89,28 @@
     </form> <!-- end form -->
 
 	<div class="navbar navbar-default navbar-fixed-bottom" style="padding: 0;margin: 0;">
-        <div class="text-center" style="line-height: 50px;">
+        <div class="text-center" style="line-height: 50px;" ng-hide="vm.isControl">
             默认办理部门：<input type="radio" value="PX" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>评估</span> <input type="radio" value="GX" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>概算</span>
             <button class="btn btn-sm btn-default" ng-click="vm.startNewFlow()"  ng-hide=" vm.model.processInstanceId ">发起流程</button>
-            <button class="btn btn-sm btn-default" ng-click="vm.updateFillin()">保存</button>
+            <button class="btn btn-sm btn-default" ng-click="vm.updateFillin()">{{vm.isControl}}保存</button>
             <button class="btn btn-sm btn-default" ng-click="backtoflow();" ng-if="vm.model.processInstanceId"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
           <!--  <button id="linksbtn" class="btn btn-sm btn-default"  ng-click="vm.signPreview()" >打印预览</button>-->
-            <input id="btnPrint" class="btn btn-sm btn-default" type="button" value="打印"  ng-click="vm.editPrint()" />
-            <button class="btn btn-sm btn-default" ng-click="vm.otherPrintln()" ng-hide="true">其他资料打印</button>
+            <button class="btn btn-sm btn-default" type="button"   ng-click="printFile(vm.model.signid,'SIGN' , vm.stageType)" >打印预览</button>
+            <button class="btn btn-sm btn-default" type="button"   ng-click="printFile(vm.model.signid,'SIGN_OTHERFILE' , 'OTHER_FILE')" >打印其他资料</button>
             <button class="btn btn-sm btn-default" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
             <button class="btn btn-sm btn-default" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
            <!--  <button class="btn btn-sm btn-default"  ng-click="vm.startNewFlow()" >发起流程</button> -->
+            </div>
+        <div class="text-center" style="line-height: 50px;" ng-show="vm.isControl">
+            <button class="btn btn-sm btn-default" ng-click="vm.updateFillin()">保存</button>
+            <a class="btn btn-sm btn-default" href="#/MaintainProjectEdit/{{vm.model.signid}}/{{vm.model.processInstanceId}}" ><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
         </div>
+
 	</div>
 
 	<!--E 打印预览 -->
-
+    <!--引入 添加其它资料 弹出框-->
+    <#include "/addRegisterFile/addOtherFile.html"/>
 </div>
 	 
 	

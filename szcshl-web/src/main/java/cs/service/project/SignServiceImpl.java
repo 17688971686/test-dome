@@ -1,31 +1,44 @@
 package cs.service.project;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import cs.common.*;
+import com.alibaba.fastjson.JSON;
+import cs.common.Constant;
+import cs.common.Constant.EnumFlowNodeGroupName;
+import cs.common.Constant.EnumState;
+import cs.common.Constant.MsgCode;
+import cs.common.FlowConstant;
+import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.*;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelCondition;
-import cs.domain.expert.ExpertSelected;
+import cs.domain.expert.*;
+import cs.domain.external.Dept;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.*;
+import cs.model.PageModelDto;
+import cs.model.expert.ExpertReviewDto;
+import cs.model.external.DeptDto;
+import cs.model.external.OfficeUserDto;
+import cs.model.flow.FlowDto;
 import cs.model.project.*;
+import cs.model.sys.OrgDto;
 import cs.model.sys.SysConfigDto;
+import cs.model.sys.UserDto;
 import cs.quartz.unit.QuartzUnit;
+import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.expert.ExpertRepo;
+import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
+import cs.repository.repositoryImpl.external.DeptRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.*;
+import cs.service.external.OfficeUserService;
+import cs.service.flow.FlowService;
+import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.WorkdayService;
 import org.activiti.engine.ProcessEngine;
@@ -35,31 +48,15 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alibaba.fastjson.JSON;
-
-import cs.common.Constant.EnumFlowNodeGroupName;
-import cs.common.Constant.EnumState;
-import cs.common.Constant.MsgCode;
-import cs.domain.expert.ExpertReview;
-import cs.domain.external.Dept;
-import cs.model.PageModelDto;
-import cs.model.expert.ExpertReviewDto;
-import cs.model.external.DeptDto;
-import cs.model.external.OfficeUserDto;
-import cs.model.flow.FlowDto;
-import cs.model.sys.OrgDto;
-import cs.model.sys.UserDto;
-import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.external.DeptRepo;
-import cs.service.external.OfficeUserService;
-import cs.service.flow.FlowService;
-import cs.service.rtx.RTXSendMsgPool;
+import java.util.*;
 
 @Service
 public class SignServiceImpl implements SignService {
@@ -88,7 +85,7 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private OfficeUserService officeUserService;
     @Autowired
-    private  FileRecordService fileRecordService;
+    private FileRecordService fileRecordService;
     @Autowired
     private CompanyRepo companyRepo;
     @Autowired
@@ -134,6 +131,9 @@ public class SignServiceImpl implements SignService {
     private WorkdayService workdayService;
     @Autowired
     private ProjectStopService projectStopService;
+    @Autowired
+    private ExpertRepo expertRepo;
+
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -149,7 +149,7 @@ public class SignServiceImpl implements SignService {
         Sign sign = null;
         //如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
         if (!signDto.getFilecode().endsWith("0000")) {
-            signRepo.findByFilecode(signDto.getFilecode());
+            signRepo.findByFilecode(signDto.getFilecode(),signDto.getSignState());
         }
         //1、根据收文编号获取项目信息
         if (sign == null) {
@@ -158,7 +158,7 @@ public class SignServiceImpl implements SignService {
             if (sign.getReceivedate() == null) {
                 sign.setReceivedate(now);
             }
-            BeanCopierUtils.copyProperties(signDto, sign);
+            BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
             sign.setSignid(UUID.randomUUID().toString());
             sign.setSignState(EnumState.NORMAL.getValue());
             sign.setSigndate(now);
@@ -205,10 +205,7 @@ public class SignServiceImpl implements SignService {
         }
         //6、收文编号
         if (!Validate.isString(sign.getSignNum())) {
-            int maxSeq = findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate());
-            sign.setSignSeq(maxSeq + 1);
-            String signSeqString = (maxSeq + 1) > 999 ? (maxSeq + 1) + "" : String.format("%03d", Integer.valueOf(maxSeq + 1));
-            sign.setSignNum(DateUtils.converToString(new Date(), "yyyy") + sign.getDealOrgType() + signSeqString);
+            sign.setSignNum(findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate()));
         }
         //7、正式签收
         if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
@@ -218,7 +215,8 @@ public class SignServiceImpl implements SignService {
             Float reviewsDays = getReviewDays(sign.getReviewstage());
             if (reviewsDays > 0) {
                 sign.setSurplusdays(reviewsDays);
-                sign.setReviewdays(reviewsDays);
+                sign.setTotalReviewdays(reviewsDays);
+                sign.setReviewdays(0f);
             }
 
         }
@@ -265,6 +263,9 @@ public class SignServiceImpl implements SignService {
         Sign sign = signRepo.findById(signId);
         SignDto signDto = new SignDto();
         BeanCopierUtils.copyProperties(sign, signDto);
+        if(Validate.isEmpty(signDto.getSendusersign())){
+            signDto.setSendusersign(SessionUtil.getLoginName());
+        }
         map.put("sign", signDto);
 
         //获取办事处所有信息
@@ -310,6 +311,18 @@ public class SignServiceImpl implements SignService {
             });
             map.put("leaderList", leaderList);
         }
+        //补充资料
+        List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(), sign.getSignid(), null);
+        if (Validate.isList(registerFileList)) {
+            List<AddRegisterFileDto> registerFileDtoList = new ArrayList<>(registerFileList.size());
+            registerFileList.forEach(rl -> {
+                AddRegisterFileDto dto = new AddRegisterFileDto();
+                BeanCopierUtils.copyProperties(rl, dto);
+                registerFileDtoList.add(dto);
+            });
+            map.put("registerFileDtoDtoList", registerFileDtoList);
+        }
+
         return new ResultMsg(true, MsgCode.OK.getValue(), "查询数据成功", map);
     }
 
@@ -339,21 +352,28 @@ public class SignServiceImpl implements SignService {
     @Override
     @Transactional
     public ResultMsg deleteSign(String signid) {
-        Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
+/*        Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
         if (Validate.isString(sign.getProcessInstanceId())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "该项目已经发起流程，不能删除！");
         }
         if (sign.getSigndate() != null || EnumState.YES.getValue().equals(sign.getIssign())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "该项目已经正式签收，不能删除！");
         }
-        signRepo.deleteById(Sign_.signid.getName(), signid);
-        return new ResultMsg(true, MsgCode.OK.getValue(), "删除成功！");
+        signRepo.deleteById(Sign_.signid.getName(), signid);*/
+        if (signRepo.updateSignState(signid, Sign_.signState.getName(), EnumState.DELETE.getValue())) {
+            return new ResultMsg(true, MsgCode.OK.getValue(), "删除成功！");
+        } else {
+            return new ResultMsg(false, MsgCode.ERROR.getValue(), "删除失败！");
+        }
     }
 
     @Override
     public SignDto findById(String signid, boolean queryAll) {
         Sign sign = signRepo.findById(signid);
         SignDto signDto = new SignDto();
+        if(!Validate.isObject(sign) || !Validate.isString(sign.getSignid())){
+            return null;
+        }
         BeanCopierUtils.copyProperties(sign, signDto);
         //查询所有的属性
         if (queryAll) {
@@ -399,31 +419,31 @@ public class SignServiceImpl implements SignService {
                     List<WorkProgramDto> workProgramDtoList = new ArrayList<>(totalL);
                     //由于工作方案不是按主次顺便排序，则遍历工作方案，获取主工作方案
                     WorkProgram mainW = new WorkProgram();
-                    if(totalL > 1){
+                    if (totalL > 1) {
                         //遍历第一遍，先找出主分支工作方案
-                        for (int i=0;i<totalL;i++) {
+                        for (int i = 0; i < totalL; i++) {
                             WorkProgram wp = sign.getWorkProgramList().get(i);
-                            if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                            if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
                                 mainW = wp;
                                 break;
                             }
                         }
                     }
 
-                    for (int i=0;i<totalL;i++) {
+                    for (int i = 0; i < totalL; i++) {
                         WorkProgram workProgram = sign.getWorkProgramList().get(i);
                         WorkProgramDto workProgramDto = new WorkProgramDto();
                         BeanCopierUtils.copyProperties(workProgram, workProgramDto);
                         workProgramRepo.initWPMeetingExp(workProgramDto, workProgram);
                         workProgramDto.setSignId(signid);
-                        if(!FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())){
+                        if (!FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())) {
                             WorkProgramDto mainWPDto = new WorkProgramDto();
                             //如果已经填报了主工作方案，则从主工作方案中获取
-                            if(Validate.isString(mainW.getId())){
-                                BeanCopierUtils.copyProperties(mainW,mainWPDto);
-                            //否则从项目中初始化
-                            }else{
-                                workProgramService.copySignCommonInfo(mainWPDto,sign);
+                            if (Validate.isString(mainW.getId())) {
+                                BeanCopierUtils.copyProperties(mainW, mainWPDto);
+                                //否则从项目中初始化
+                            } else {
+                                workProgramService.copySignCommonInfo(mainWPDto, sign);
                             }
                             workProgramDto.setMainWorkProgramDto(mainWPDto);
                         }
@@ -442,6 +462,18 @@ public class SignServiceImpl implements SignService {
             if (sign.getFileRecord() != null && Validate.isString(sign.getFileRecord().getFileRecordId())) {
                 FileRecordDto fileRecordDto = new FileRecordDto();
                 BeanCopierUtils.copyProperties(sign.getFileRecord(), fileRecordDto);
+                //补充资料
+                List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(), sign.getFileRecord().getFileRecordId(), null);
+                if (Validate.isList(registerFileList)) {
+                    List<AddRegisterFileDto> registerFileDtoList = new ArrayList<>(registerFileList.size());
+                    registerFileList.forEach(rl -> {
+                        AddRegisterFileDto dto = new AddRegisterFileDto();
+                        BeanCopierUtils.copyProperties(rl, dto);
+                        registerFileDtoList.add(dto);
+                    });
+                    fileRecordDto.setRegisterFileDto(registerFileDtoList);
+                }
+
                 signDto.setFileRecordDto(fileRecordDto);
             }
 
@@ -449,11 +481,11 @@ public class SignServiceImpl implements SignService {
             if (EnumState.YES.getValue().equals(sign.getIsassistproc())) {
                 List<AssistPlanSignDto> planSignDtoList = assistPlanSignService.findBySignId(sign.getSignid());
                 //设置项目名称之类的信息
-                planSignDtoList.forEach(ps ->{
-                    if(!Validate.isString(ps.getProjectName())){
+                planSignDtoList.forEach(ps -> {
+                    if (!Validate.isString(ps.getProjectName())) {
                         String newProjectName = signDto.getProjectname();
-                        if(ps.getSplitNum() > 1){
-                            newProjectName += "（"+ps.getSplitNum()+"）";
+                        if (ps.getSplitNum() > 1) {
+                            newProjectName += "（" + ps.getSplitNum() + "）";
                         }
                         ps.setProjectName(newProjectName);
                     }
@@ -480,7 +512,7 @@ public class SignServiceImpl implements SignService {
                 signDto.setSuppLetterDtoList(suppLetterDtoList);
             }
 
-            //拟补充资料
+            //补充资料
             List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(), signid, null);
             if (Validate.isList(registerFileList)) {
                 List<AddRegisterFileDto> registerFileDtoList = new ArrayList<>(registerFileList.size());
@@ -511,7 +543,7 @@ public class SignServiceImpl implements SignService {
      */
     @Override
     public ResultMsg endFlow(String signid) {
-        if (signRepo.updateSignState(signid, EnumState.FORCE.getValue())) {
+        if (signRepo.updateSignState(signid, Sign_.signState.getName(), EnumState.FORCE.getValue())) {
             return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
         }
         return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败！");
@@ -550,6 +582,10 @@ public class SignServiceImpl implements SignService {
             sign.setProcessInstanceId(processInstance.getId());
             sign.setSignState(EnumState.PROCESS.getValue());
             sign.setProcessState(Constant.SignProcessState.IS_START.getValue());
+            //送件人,默认为流程发起人
+            if (Validate.isString(sign.getSendusersign())) {
+                sign.setSendusersign(SessionUtil.getLoginName());
+            }
             signRepo.save(sign);
 
             //4、跳过第一环节（主任审核）
@@ -566,7 +602,7 @@ public class SignServiceImpl implements SignService {
             task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
             taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());    //综合部拟办意见
             //查询是否有待办人员
-            User leadUser = userRepo.findById(User_.id.getName(), sign.getLeaderId());
+            User leadUser = userRepo.getCacheUserById(sign.getLeaderId());
             String assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
             taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_FGLD.getValue(), assigneeValue));
             //放入腾讯通消息缓冲池
@@ -612,7 +648,7 @@ public class SignServiceImpl implements SignService {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，请先设置默认办理部门！");
                 }
                 task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-                taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());    //综合部拟办意见
+             /*   taskService.addComment(task.getId(), processInstance.getId(), sign.getComprehensivehandlesug());    //综合部拟办意见*/
                 //完成综合部审批，查询是否有代办
                 dealUser = userRepo.findById(User_.id.getName(), sign.getLeaderId());
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
@@ -835,24 +871,34 @@ public class SignServiceImpl implements SignService {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没有完成工作方案，不能进行下一步操作！");
                     }
 
-                    //如果是主项目
-                    if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
-                        //如果是专家评审会，则一定要选会议室(单个评审或者合并评审主项目要判断，合并评审次项目不用判断)
-                        if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) && !roomBookingRepo.isHaveBookMeeting(wk.getId())
-                                && (Constant.MergeType.REVIEW_SIGNLE.equals(wk.getIsSigle()) || (Constant.MergeType.REVIEW_MERGE.equals(wk.getIsSigle()) && !EnumState.YES.getValue().equals(wk.getIsMainProject())))) {
-                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【专家评审会】，但是还没有选择会议室，请先预定会议室！");
+                    //是否专家评审
+                    boolean isExpertReview = Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) || Constant.MergeType.REVIEW_LEETER.getValue().equals(wk.getReviewType());
+                    //是否单个评审
+                    boolean isSigle = Constant.MergeType.REVIEW_SIGNLE.getValue().equals(wk.getIsSigle());
+                    //是否合并评审主项目
+                    boolean isMergeMain = (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && EnumState.YES.getValue().equals(wk.getIsMainProject()));
+                    //是否主分支
+                    boolean isMainBranch = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex);
+
+                    //判断是否预定了会议室和选择了专家（只对主分支判断，因为协办分支以主分支为准，当然也可以自己选，但是不是强制要求）
+                    if (isMainBranch) {
+                        //单个评审或者合并评审主项目；如果是专家评审会，则要选择专家和会议室
+                        boolean needCheck = isExpertReview && (isSigle || isMergeMain);
+                        if (needCheck) {
+                            if (expertRepo.countByBusinessId(wk.getId()) == 0) {
+                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【" + wk.getReviewType() + "】，但是还没有选择专家，请先选择专家！");
+                            }
+                            if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) && !roomBookingRepo.isHaveBookMeeting(wk.getId())) {
+                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "您选择的评审方式是【" + wk.getReviewType() + "】，但是还没有选择会议室，请先预定会议室！");
+                            }
                         }
-                        //如果是合并评审主项目，
-                        if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle())
-                                && EnumState.YES.getValue().equals(wk.getIsMainProject())) {
-                            //如果没有合并其他项目，则不准提交
-                            if (!signMergeRepo.isHaveMerge(signid, Constant.MergeType.WORK_PROGRAM.getValue())) {
-                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "工作方案您选择的是合并评审主项目，您还没有设置关联项目，不能提交到下一步！");
-                            }
-                            //如果合并评审次项目没提交，不能进行下一步操作
-                            if (!signRepo.isMergeSignEndWP(signid)) {
-                                return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还没有完成工作方案，不能进行下一步操作！");
-                            }
+                        //如果没有合并其他项目，则不准提交
+                        if (isMergeMain && !signMergeRepo.isHaveMerge(signid, Constant.MergeType.WORK_PROGRAM.getValue())) {
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "工作方案您选择的是合并评审主项目，您还没有设置关联项目，不能提交到下一步！");
+                        }
+                        //如果合并评审次项目没提交，不能进行下一步操作
+                        if (!signRepo.isMergeSignEndWP(signid)) {
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还未提交审批，主项目不能提交审批！");
                         }
                     }
 
@@ -879,10 +925,10 @@ public class SignServiceImpl implements SignService {
                         variables.put(FlowConstant.SignFlowParams.USER_BZ4.getValue(), assigneeValue);
                     }
                     //更改预定会议室状态
-                    roomBookingRepo.updateStateByBusinessId(wk.getId(),EnumState.PROCESS.getValue());
+                    roomBookingRepo.updateStateByBusinessId(wk.getId(), EnumState.PROCESS.getValue());
                     //完成分支工作方案
                     signBranchRepo.finishWP(signid, wk.getBranchId());
-                //不做工作方案
+                    //不做工作方案
                 } else {
                     dealUser = signPrincipalService.getMainPriUser(signid);
                     if (dealUser == null) {
@@ -980,8 +1026,9 @@ public class SignServiceImpl implements SignService {
 
                 workProgramRepo.save(wk);
 
-                //设定下一环节处理人
-                dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
+                //设定下一环节处理人【分管领导是分配工作方案那个分管领导，不是部门的分管领导】
+                sign = signRepo.findById(Sign_.signid.getName(), signid);
+                dealUser = userRepo.getCacheUserById(sign.getLeaderId());
                 assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                 //下一环节还是自己
                 if (assigneeValue.equals(SessionUtil.getUserId())) {
@@ -1059,19 +1106,20 @@ public class SignServiceImpl implements SignService {
                 //完成分支的工作方案
                 signBranchRepo.finishBranch(signid, branchIndex);
                 //更改预定会议室状态
-                roomBookingRepo.updateStateByBusinessId(wk.getId(),EnumState.YES.getValue());
+                roomBookingRepo.updateStateByBusinessId(wk.getId(), EnumState.YES.getValue());
                 //更新评审会时间
                 ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.businessId.getName(), signid);
                 if (expertReview != null) {
                     //以主工作方案为准，工作方案不做工作方案，则任选一个
-                    if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)
-                            || expertReview.getReviewDate() == null){
+                    if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)
+                            || expertReview.getReviewDate() == null) {
+                        //如果是专家评审会，获取评审会日期
                         if (Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType())) {
-                            //获取评审会日期
                             expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(wk.getId()));
+                            //如果是专家函评，取函评日期并修改专家默认评审方式为函评
                         } else {
-                            //函评日期
                             expertReview.setReviewDate(wk.getLetterDate());
+                            expertSelectedRepo.updateExpertSelectState(wk.getId(), ExpertSelected_.isLetterRw.getName(), EnumState.YES.getValue());
                         }
                         expertReviewRepo.save(expertReview);
                     }
@@ -1367,23 +1415,25 @@ public class SignServiceImpl implements SignService {
                 //设置归档编号
                 if (!Validate.isString(fileRecord.getFileNo())) {
                     String fileNumValue = "";
-                    int maxSeq =fileRecordService.findCurMaxSeq(fileRecord.getFileDate());
-                    if(maxSeq < 1000){
-                        fileNumValue = String.format("%03d", Integer.valueOf(maxSeq+1));
-                    }else{
-                        fileNumValue = (maxSeq+1)+"";
+                    int maxSeq = fileRecordService.findCurMaxSeq(fileRecord.getFileDate());
+                    maxSeq = maxSeq + 1;
+                    if (maxSeq < 1000) {
+                        fileNumValue = String.format("%03d", maxSeq);
+                    } else {
+                        fileNumValue = String.valueOf(maxSeq);
                     }
+                    //设置本次的发文序号
+                    fileRecord.setFileSeq(maxSeq);
                     //归档编号=发文年份+档案类型+存档年份+存档顺序号
-                    fileNumValue = DateUtils.converToString(sign.getExpectdispatchdate(),"yyyy")+ ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
-                            +DateUtils.converToString(fileRecord.getFileDate(),"yy")+fileNumValue;
+                    fileNumValue = DateUtils.converToString(sign.getExpectdispatchdate(), "yyyy") + ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
+                            + DateUtils.converToString(fileRecord.getFileDate(), "yy") + fileNumValue;
                     fileRecord.setFileNo(fileNumValue);
                 }
                 fileRecord.setPageDate(new Date());
                 fileRecordRepo.save(fileRecord);
 
-
-
-
+                //收文这边也要更新归档编号
+                sign.setFilenum(fileRecord.getFileNo());
                 //更改项目状态
                 sign.setSignState(EnumState.YES.getValue());
                 sign.setProcessState(Constant.SignProcessState.FINISH.getValue());
@@ -1497,8 +1547,8 @@ public class SignServiceImpl implements SignService {
      * @return
      */
     @Override
-    public Map<String,Object> findByPlanId(String planId,String isOnlySign) {
-        Map<String,Object> resultMap = new HashMap<>();
+    public Map<String, Object> findByPlanId(String planId, String isOnlySign) {
+        Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" select distinct sign from " + Sign.class.getSimpleName() + " as sign,AssistPlanSign as psign ");
         sqlBuilder.append(" where sign." + Sign_.signid.getName() + " = psign." + AssistPlanSign_.signId.getName());
@@ -1512,13 +1562,13 @@ public class SignServiceImpl implements SignService {
             BeanCopierUtils.copyProperties(s, signDto);
             resultList.add(signDto);
         });
-        resultMap.put("signList",resultList);
+        resultMap.put("signList", resultList);
 
-        if(EnumState.NO.getValue().equals(isOnlySign)){
+        if (EnumState.NO.getValue().equals(isOnlySign)) {
             //协审计划信息
             AssistPlan assistPlan = assistPlanRepo.findById(planId);
             AssistPlanDto planDto = new AssistPlanDto();
-            BeanCopierUtils.copyProperties(assistPlan,planDto);
+            BeanCopierUtils.copyProperties(assistPlan, planDto);
 
             //获取项目信息
             if (Validate.isList(assistPlan.getAssistPlanSignList())) {
@@ -1530,7 +1580,7 @@ public class SignServiceImpl implements SignService {
                 }
                 planDto.setAssistPlanSignDtoList(planSignDtoList);
             }
-            resultMap.put("planDto",planDto);
+            resultMap.put("planDto", planDto);
         }
         return resultMap;
     }
@@ -1669,9 +1719,9 @@ public class SignServiceImpl implements SignService {
     public List<Sign> selectSignNotFinish() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" SELECT s FROM " + Sign.class.getSimpleName() + " s LEFT JOIN ");
-        hqlBuilder.append( RuProcessTask.class.getSimpleName()+" pt ON s."+Sign_.signid.getName()+" = pt."+RuProcessTask_.businessKey.getName());
-        hqlBuilder.append(" WHERE pt."+RuProcessTask_.taskId.getName()+" is not null AND pt."+RuProcessTask_.taskState.getName()+ "=:taskState " );
-        hqlBuilder.setParam("taskState",EnumState.PROCESS.getValue());
+        hqlBuilder.append(RuProcessTask.class.getSimpleName() + " pt ON s." + Sign_.signid.getName() + " = pt." + RuProcessTask_.businessKey.getName());
+        hqlBuilder.append(" WHERE pt." + RuProcessTask_.taskId.getName() + " is not null AND pt." + RuProcessTask_.taskState.getName() + "=:taskState ");
+        hqlBuilder.setParam("taskState", EnumState.PROCESS.getValue());
         List<Sign> signList = signRepo.findByHql(hqlBuilder);
         return signList;
     }
@@ -1690,7 +1740,7 @@ public class SignServiceImpl implements SignService {
      */
     @Override
     public ResultMsg initSignList() {
-        List<OrgDept> orgDeptList = orgDeptRepo.findAll();
+        List<OrgDept> orgDeptList = orgDeptRepo.findAllByCache();
         return new ResultMsg(true, MsgCode.OK.getValue(), "添加成功", orgDeptList);
     }
 
@@ -1707,19 +1757,18 @@ public class SignServiceImpl implements SignService {
         }
         //6、收文编号
         if (!Validate.isString(sign.getSignNum())) {
-            int maxSeq = findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate());
-            sign.setSignSeq(maxSeq + 1);
-            String signSeqString = (maxSeq + 1) > 999 ? (maxSeq + 1) + "" : String.format("%03d", Integer.valueOf(maxSeq + 1));
-            sign.setSignNum(DateUtils.converToString(new Date(), "yyyy") + sign.getDealOrgType() + signSeqString);
+            sign.setSignNum(findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate()));
         }
         //7、正式签收
         if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
             sign.setSigndate(new Date());
             sign.setIssign(EnumState.YES.getValue());       //正式签收
+            sign.setIspresign(EnumState.YES.getValue());    //正式签收
             Float reviewsDays = getReviewDays(sign.getReviewstage());
             if (reviewsDays > 0) {
                 sign.setSurplusdays(reviewsDays);
-                sign.setReviewdays(reviewsDays);
+                sign.setTotalReviewdays(reviewsDays);
+                sign.setReviewdays(0f);
             }
         }
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
@@ -1779,15 +1828,16 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 更改项目状态
+     * 修改项目状态
      *
      * @param signId
-     * @param state
+     * @param stateProperty 状态属性
+     * @param stateValue    值
      * @return
      */
     @Override
-    public boolean updateSignState(String signId, String state) {
-        return signRepo.updateSignState(signId, state);
+    public boolean updateSignState(String signId, String stateProperty, String stateValue) {
+        return signRepo.updateSignState(signId, stateProperty, stateValue);
     }
 
     /**
@@ -1803,7 +1853,7 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 签收人获取项目列表
+     * 获取签收项目（正式签收未发起流程或者已经发起流程正式签收的项目,排除预签收）
      *
      * @param odataObj
      * @return
@@ -1816,18 +1866,17 @@ public class SignServiceImpl implements SignService {
         //1、排除旧项目
         criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
         //2、排除已终止、已完成
-        criteria.add(Restrictions.ne(Sign_.signState.getName(), EnumState.YES.getValue()));
-        criteria.add(Restrictions.ne(Sign_.signState.getName(), EnumState.FORCE.getValue()));
-        //3、已签收，但是未发起流程的项目 或者已发起流程，但是未签收的项目
-        StringBuffer sb = new StringBuffer();
-        sb.append("( (" + Sign_.issign.getName() + " is null or " + Sign_.issign.getName() + " = '" + EnumState.NO.getValue() + "' ");
-        sb.append(" and " + Sign_.processInstanceId.getName() + " = '" + EnumState.YES.getValue() + "') ");
-        sb.append("  or ( " + Sign_.issign.getName() + " = '" + EnumState.YES.getValue() + "' and " + Sign_.processInstanceId.getName() + " is null ))");
-        criteria.add(Restrictions.sqlRestriction(sb.toString()));
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.isNull(Sign_.signState.getName()));
+        dis.add(Restrictions.sqlRestriction(" " + Sign_.signState.getName() + " != '" + EnumState.YES.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.FORCE.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.DELETE.getValue() + "' "));
+        criteria.add(dis);
+
+        //3、已签收，但是未发起流程的项目
+        criteria.add(Restrictions.eq(Sign_.issign.getName(),EnumState.YES.getValue()));
+        criteria.add(Restrictions.isNull(Sign_.processInstanceId.getName()));
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);
-
         criteria.addOrder(Order.desc(Sign_.createdDate.getName()));
         if (odataObj.getSkip() > 0) {
             criteria.setFirstResult(odataObj.getSkip());
@@ -1913,12 +1962,13 @@ public class SignServiceImpl implements SignService {
                 break;
             }
         }
+        /*预签收的项目，没有评审中心的收文编号
         if (!Validate.isString(sign.getSignNum())) {
             int maxSeq = findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate());
             sign.setSignSeq(maxSeq + 1);
             String signSeqString = (maxSeq + 1) > 999 ? (maxSeq + 1) + "" : String.format("%03d", Integer.valueOf(maxSeq + 1));
             sign.setSignNum(DateUtils.converToString(new Date(), "yyyy") + sign.getDealOrgType() + signSeqString);
-        }
+        }*/
 
         sign.setSignid(UUID.randomUUID().toString());
         sign.setCreatedDate(now);
@@ -1933,37 +1983,32 @@ public class SignServiceImpl implements SignService {
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);
     }
 
+    /**
+     * 查询项目预签收信息
+     *
+     * @param odataObj
+     * @return
+     */
     @Override
     public PageModelDto<SignDto> findAllReserve(ODataObj odataObj) {
         PageModelDto<SignDto> pageModelDto = new PageModelDto<SignDto>();
-        Criteria criteria = signRepo.getExecutableCriteria();
-        criteria = odataObj.buildFilterToCriteria(criteria);
-        criteria.add(Restrictions.eq(Sign_.ispresign.getName(), Constant.EnumState.NO.getValue()));
-        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-        pageModelDto.setCount(totalResult);
-        criteria.setProjection(null);
-        if (odataObj.getSkip() > 0) {
-            criteria.setFirstResult(odataObj.getTop());
-        }
-        if (odataObj.getTop() > 0) {
-            criteria.setMaxResults(odataObj.getTop());
-        }
-        List<Sign> signlist = criteria.list();
-        List<SignDto> signDtos = new ArrayList<SignDto>(signlist == null ? 0 : signlist.size());
-        if (signlist != null && signlist.size() > 0) {
+        List<Sign> signlist = signRepo.findByOdata(odataObj);
+        List<SignDto> signDtos = new ArrayList<SignDto>();
+        if (Validate.isList(signlist)) {
             signlist.forEach(x -> {
                 SignDto signDto = new SignDto();
                 BeanCopierUtils.copyProperties(x, signDto);
                 signDtos.add(signDto);
             });
         }
+        pageModelDto.setCount(odataObj.getCount());
         pageModelDto.setValue(signDtos);
 
         return pageModelDto;
     }
 
     /**
-     * 删除预签收项目
+     * 删除预签收项目（暂时不用）
      *
      * @param signid
      */
@@ -1978,7 +2023,7 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 获取合并评审项目
+     * 获取合并评审次项目
      *
      * @param signid
      * @return
@@ -2000,12 +2045,35 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
+     * 获取合并评审主项目
+     *
+     * @param signid
+     * @return
+     */
+    @Override
+    public List<SignDto> findMainReviewSign(String signid) {
+        List<Sign> signList = signRepo.findMainReviewSign(signid);
+        if (Validate.isList(signList)) {
+            List<SignDto> resultList = new ArrayList<>(signList.size());
+            signList.forEach(sl -> {
+                SignDto signDto = new SignDto();
+                BeanCopierUtils.copyProperties(sl, signDto);
+                resultList.add(signDto);
+            });
+
+            return resultList;
+        }
+        return null;
+    }
+
+    /**
      * 根据项目类型，获取项目最大收文编号
      *
      * @param signType
      * @return
      */
-    private int findSignMaxSeqByType(String signType, Date signdate) {
+    @Override
+    public String findSignMaxSeqByType(String signType, Date signdate) {
         if (signdate == null) {
             signdate = new Date();
         }
@@ -2016,107 +2084,88 @@ public class SignServiceImpl implements SignService {
         sqlBuilder.setParam("signType", signType);
         sqlBuilder.setParam("beginTime", DateUtils.converToString(signdate, "yyyy") + "-01-01 00:00:00");
         sqlBuilder.setParam("endTime", DateUtils.converToString(signdate, "yyyy") + "-12-31 23:59:59");
-        return dispatchDocRepo.returnIntBySql(sqlBuilder);
+        int maxSeq = signRepo.returnIntBySql(sqlBuilder)+ 1;
+        String signSeqString = maxSeq> 999 ? maxSeq+ "" : String.format("%03d", Integer.valueOf(maxSeq));
+        return (DateUtils.converToString(new Date(), "yyyy") +signType + signSeqString);
     }
 
-    /***********************   以下是对接接口部分  ****************************/
     /**
-     * 项目推送
-     *
-     * @param signDto
+     * 报审登记表导出
+     * @param signId
+     * @param reviewStage
      * @return
      */
-    @Override
-    public ResultMsg pushProject(SignDto signDto) {
-        if (signDto == null) {
-            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
-        }
-        if (!Validate.isString(signDto.getFilecode())) {
-            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_02.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_02.getValue());
-        }
-        String stageCode = "";
-        if(Validate.isString(signDto.getReviewstage())){
-            stageCode = signDto.getReviewstage();
-            String stageCHName = Constant.RevireStageKey.getZHCNName(stageCode);
-            if(!Validate.isString(stageCHName)){
-                StringBuffer resultMsg = new StringBuffer("各阶段对应的标识如下：");
-                resultMsg.append("("+Constant.RevireStageKey.KEY_SUG.getValue()+":"+Constant.STAGE_SUG);
-                resultMsg.append("|"+Constant.RevireStageKey.KEY_STUDY.getValue()+":"+Constant.STAGE_STUDY);
-                resultMsg.append("|"+Constant.RevireStageKey.KEY_BUDGET.getValue()+":"+Constant.STAGE_BUDGET);
-                resultMsg.append("|"+Constant.RevireStageKey.KEY_REPORT.getValue()+":"+Constant.APPLY_REPORT);
-                resultMsg.append("|"+Constant.RevireStageKey.KEY_HOMELAND.getValue()+":"+Constant.DEVICE_BILL_HOMELAND);
-                resultMsg.append("|"+Constant.RevireStageKey.KEY_IMPORT.getValue()+":"+Constant.DEVICE_BILL_IMPORT);
-                resultMsg.append("|"+Constant.RevireStageKey.KEY_DEVICE.getValue()+":"+Constant.IMPORT_DEVICE);
-                resultMsg.append("|"+Constant.RevireStageKey.KEY_OTHER.getValue()+":"+Constant.OTHERS +")");
-                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue()+resultMsg.toString());
-            }
-            //对应系统的阶段名称
-            signDto.setReviewstage(stageCHName);
-            //是否是项目概算流程
-            if (Constant.RevireStageKey.KEY_BUDGET.getValue().equals(stageCode)
-                    || Validate.isString(signDto.getIschangeEstimate())) {
-                signDto.setIsassistflow(EnumState.YES.getValue());
-            } else {
-                signDto.setIsassistflow(EnumState.NO.getValue());
-            }
-        }else{
-            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
-        }
-        //1、根据收文编号获取项目信息
-        Sign sign = signRepo.findByFilecode(signDto.getFilecode());
-        Date now = new Date();
-        if (sign == null) {
-            sign = new Sign();
-            BeanCopierUtils.copyProperties(signDto, sign);
+    /*@Override
+    public File printSign(String signId, String reviewStage) {
 
-            sign.setSignid(UUID.randomUUID().toString());
-            sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
-            sign.setCreatedDate(now);
-            sign.setModifiedDate(now);
-            sign.setCreatedBy("FGW");
-            sign.setModifiedBy("FGW");
-        } else {
-            BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-        }
+        Map<String , Object> dataMap = new HashMap<>();
+        Sign sign = signRepo.findById(Sign_.signid.getName() , signId);
+//        SignDto signDto = new SignDto();
+//        BeanCopierUtils.copyProperties(sign , signDto);
 
-        //送来时间
-        if (Validate.isObject(sign.getReceivedate())) {
-            sign.setReceivedate(now);
-        }
+        dataMap.put("signdate" ,DateUtils.converToString(sign.getSigndate() , "yyyy年MM月dd日") );
+        dataMap.put("projectname" , sign.getProjectname());
+        dataMap.put("signNum" , sign.getSignNum());
+        dataMap.put("builtcompanyName" , sign.getBuiltcompanyName());
+        dataMap.put("designcompanyName" , sign.getDesigncompanyName());
+        dataMap.put("maindeptName" , sign.getMaindeptName());
+        dataMap.put("mainDeptUserName" , sign.getMainDeptUserName());
+        dataMap.put("assistdeptName" , sign.getAssistdeptName());
+        dataMap.put("assistDeptUserName" , sign.getAssistDeptUserName());
+        dataMap.put("urgencydegree" , sign.getUrgencydegree());
+        dataMap.put("projectcode" , sign.getProjectcode());
+        dataMap.put("secrectlevel" , sign.getSecrectlevel());
+        dataMap.put("sugProDealOriginal" , sign.getSugProDealOriginal());
+        dataMap.put("sugProDealCount" , sign.getSugProDealCount());
+        dataMap.put("sugProAdviseOriginal" , sign.getSugProAdviseOriginal());
+        dataMap.put("sugProAdviseCount" , sign.getSugProAdviseCount());
+        dataMap.put("sugFileDealOriginal" , sign.getSugFileDealOriginal());
+        dataMap.put("sugFileDealCount" , sign.getSugFileDealCount());
+        dataMap.put("proSugEledocCount" , sign.getProSugEledocCount());
+        dataMap.put("sugOrgApplyOriginal" , sign.getSugOrgApplyOriginal());
+        dataMap.put("sugOrgApplyCount" , sign.getSugOrgApplyCount());
+        dataMap.put("sugMeetOriginal" , sign.getSugMeetOriginal());
+        dataMap.put("sugMeetCount" , sign.getSugMeetCount());
+        dataMap.put("sugOrgReqOriginal" , sign.getSugOrgReqOriginal());
+        dataMap.put("sugOrgReqCount" , sign.getSugOrgReqCount());
+        dataMap.put("studyPealOriginal" , sign.getStudyPealOriginal());
+        dataMap.put("studyProDealCount" , sign.getStudyProDealCount());
+        dataMap.put("envproReplyCopy" , sign.getEnvproReplyCopy());
+        dataMap.put("envproReplyCount" , sign.getEnvproReplyCount());
+        dataMap.put("studyFileDealOriginal" , sign.getStudyFileDealOriginal());
+        dataMap.put("studyFileDealCount" , sign.getStudyFileDealCount());
+        dataMap.put("planAddrCopy" , sign.getPlanAddrCopy());
+        dataMap.put("planAddrCount" , sign.getPlanAddrCount());
+        dataMap.put("studyOrgApplyOriginal" , sign.getStudyOrgApplyOriginal());
+        dataMap.put("studyOrgApplyCount" , sign.getStudyOrgApplyCount());
+        dataMap.put("reportOrigin" , sign.getReportOrigin());
+        dataMap.put("reportCopy" , sign.getReportCopy());
+        dataMap.put("reportCount" , sign.getReportCount());
+        dataMap.put("studyOrgReqOriginal" , sign.getStudyOrgReqOriginal());
+        dataMap.put("studyOrgReqCount" , sign.getStudyOrgReqCount());
+        dataMap.put("eledocCount" , sign.getEledocCount());
+        dataMap.put("studyProSugOriginal" , sign.getStudyProSugOriginal());
+        dataMap.put("studyProSugCount" , sign.getStudyProSugCount());
+        dataMap.put("energyOriginal" , sign.getEnergyOriginal());
+        dataMap.put("energyCopy" , sign.getEnergyCopy());
+        dataMap.put("energyCount" , sign.getEnergyCount());
+        dataMap.put("studyMeetOriginal" , sign.getStudyMeetOriginal());
+        dataMap.put("studyMeetCount" , sign.getStudyMeetCount());
+        dataMap.put("comprehensivehandlesug" , sign.getComprehensivehandlesug());
+        dataMap.put("comprehensiveDate" ,DateUtils.converToString(sign.getComprehensiveDate() , "yyyy年MM月dd日") );
+        dataMap.put("leaderhandlesug" , sign.getLeaderhandlesug());
+        dataMap.put("leaderDate" ,DateUtils.converToString(sign.getLeaderDate() , "yyyy年MM月dd日") );
+        dataMap.put("ministerhandlesug" , sign.getMinisterhandlesug());
+        dataMap.put("ministerDate" ,DateUtils.converToString(sign.getMinisterDate() , "yyyy年MM月dd日") );
+        dataMap.put("sendusersign" , sign.getSendusersign());
+        String path =SysFileUtil.getUploadPath();//文件路劲
+        String relativeFileUrl = SysFileUtil.generatRelativeUrl(path, Constant.SysFileType.MEETTINGROOM.getValue(), signId,null,sign.getReviewstage());
+        String pathFile = path + File.separator + relativeFileUrl;
+        File file = TemplateUtil.createDoc(dataMap , Constant.Template.SUG_SIGN.getKey() , pathFile);
 
-        //未签收的，改为正式签收
-        if (!Validate.isString(sign.getIssign()) || EnumState.NO.getValue().equals(sign.getIssign())) {
-            //正式签收
-            sign.setIssign(EnumState.YES.getValue());
-            sign.setSigndate(now);
 
-            SysConfigDto sysConfigDto = sysConfigService.findByKey(stageCode);
-            if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
-                sign.setReviewdays(Float.parseFloat(sysConfigDto.getConfigValue()));
-                sign.setSurplusdays(Float.parseFloat(sysConfigDto.getConfigValue()));
-            } else {
-                //设定默认值，项目建议书和资金申请报告是12天，其他是15天
-                if ((Constant.RevireStageKey.KEY_SUG.getValue()).equals(stageCode)
-                        || (Constant.RevireStageKey.KEY_REPORT.getValue()).equals(stageCode)) {
-                    //剩余评审天数
-                    sign.setSurplusdays(Constant.WORK_DAY_12);
-                    //评审天数，完成的时候再结算
-                    sign.setReviewdays(Constant.WORK_DAY_12);
-                } else {
-                    sign.setSurplusdays(Constant.WORK_DAY_15);
-                    sign.setReviewdays(Constant.WORK_DAY_15);
-                }
-            }
-        }
-
-        //保存
-        try {
-            signRepo.save(sign);
-            return new ResultMsg(true, IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue(),sign.getSignid());
-        } catch (Exception e) {
-            return new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue()+e.getMessage(),sign.getSignid());
-        }
-    }
+        return file;
+    }*/
 
     /**
      * 更新是否已生成模板状态
@@ -2246,7 +2295,7 @@ public class SignServiceImpl implements SignService {
             for (int i = 0, l = workProgramList.size(); i < l; i++) {
                 WorkProgram wp = workProgramList.get(i);
                 if (deleteBranchId) {
-                    if(branchId.equals(wp.getBranchId())){
+                    if (branchId.equals(wp.getBranchId())) {
                         deleteWPId = wp.getId();
                         deleteWPList.add(wp);
                         break;
@@ -2292,7 +2341,7 @@ public class SignServiceImpl implements SignService {
                 }
             }
             //最后删除工作方案信息
-            for(WorkProgram wp : deleteWPList){
+            for (WorkProgram wp : deleteWPList) {
                 sign.getWorkProgramList().remove(wp);
                 signRepo.save(sign);
                 wp.setSign(null);
@@ -2315,19 +2364,19 @@ public class SignServiceImpl implements SignService {
         boolean isLoadWorkDay = false;
         Sign sign = signRepo.findById(businessKey);
         //如果有项目暂停列表，则要更新对应的状态信息
-        if(Validate.isList(sign.getProjectStopList())){
+        if (Validate.isList(sign.getProjectStopList())) {
             List<Workday> workdayList = null;
             List<ProjectStop> updateList = null;
-            for(int i=0,l=sign.getProjectStopList().size();i<l;i++){
+            for (int i = 0, l = sign.getProjectStopList().size(); i < l; i++) {
                 ProjectStop pl = sign.getProjectStopList().get(i);
                 //审批通过，又没执行完的（正常情况下，只有一条记录）
-                if(EnumState.YES.getValue().equals(pl.getIsactive()) && !EnumState.YES.getValue().equals(pl.getIsOverTime())){
-                    if(!isLoadWorkDay){
+                if (EnumState.YES.getValue().equals(pl.getIsactive()) && !EnumState.YES.getValue().equals(pl.getIsOverTime())) {
+                    if (!isLoadWorkDay) {
                         workdayList = workdayService.findWorkDayByNow();
                         updateList = new ArrayList<>();
                         isLoadWorkDay = true;
                     }
-                    int countDay = QuartzUnit.countWorkday(workdayList,(pl.getPausetime()==null?pl.getCreatedDate():pl.getPausetime()));
+                    int countDay = QuartzUnit.countWorkday(workdayList, (pl.getPausetime() == null ? pl.getCreatedDate() : pl.getPausetime()));
                     pl.setIsOverTime(Constant.EnumState.YES.getValue());
                     //实际启动日期
                     pl.setStartTime(new Date());
@@ -2337,7 +2386,7 @@ public class SignServiceImpl implements SignService {
                     updateList.add(pl);
                 }
             }
-            if(Validate.isList(updateList)){
+            if (Validate.isList(updateList)) {
                 projectStopService.updateProjectStopStatus(updateList);
             }
         }
@@ -2346,16 +2395,162 @@ public class SignServiceImpl implements SignService {
         sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
         signRepo.save(sign);
 
-        return new ResultMsg(true,MsgCode.OK.getValue(),"操作成功！");
+        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
     }
 
     /**
      * 保存项目信息，这个在定时器中用到，请不要删除
+     *
      * @param sign
      */
     @Override
     @Transactional
     public void save(Sign sign) {
         signRepo.save(sign);
+    }
+
+    /**
+     * 获取没有发送给发改委的项目信息
+     * 这里要加上事务，否则无法获取工作方案和发文的信息
+     *
+     * @return
+     */
+    @Override
+    @Transactional
+    public List<SignDto> findUnSendFGWList() {
+        List<SignDto> listSignDto = new ArrayList<>();
+        List<Sign> listSign = signRepo.findUnSendFGWList();
+        if (Validate.isList(listSign)) {
+            for (int i = 0, l = listSign.size(); i < l; i++) {
+                Sign sign = listSign.get(i);
+                SignDto signDto = new SignDto();
+                BeanCopierUtils.copyProperties(sign, signDto);
+                //只获取主工作方案
+                if (Validate.isList(sign.getWorkProgramList())) {
+                    int totalW = sign.getWorkProgramList().size();
+                    List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
+                    for (int j = 0; j < totalW; j++) {
+                        WorkProgram workProgram = sign.getWorkProgramList().get(j);
+                        if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())) {
+                            WorkProgramDto workProgramDto = new WorkProgramDto();
+                            BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+                            workProgramDtoList.add(workProgramDto);
+                            signDto.setWorkProgramDtoList(workProgramDtoList);
+                            break;
+                        }
+                    }
+                }
+                if (sign.getDispatchDoc() != null && Validate.isString(sign.getDispatchDoc().getId())) {
+                    DispatchDocDto dispatchDocDto = new DispatchDocDto();
+                    BeanCopierUtils.copyProperties(sign.getDispatchDoc(), dispatchDocDto);
+                    signDto.setDispatchDocDto(dispatchDocDto);
+                }
+                listSignDto.add(signDto);
+            }
+        }
+        return listSignDto;
+    }
+
+    /**
+     * 恢复项目
+     *
+     * @param signId
+     * @param stateProperty
+     * @param stateValue
+     * @return
+     */
+    @Override
+    public ResultMsg editSignState(String signId, String stateProperty, String stateValue) {
+        if (signRepo.updateSignState(signId, stateProperty, stateValue)) {
+            return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+        }
+        return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败！");
+    }
+
+    /**
+     * 获取项目签收列表数量
+     *
+     * @return
+     */
+    @Override
+    public Integer findSignCount() {
+        Criteria criteria = signRepo.getExecutableCriteria();
+        //1、排除旧项目
+        criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
+        //2、排除已终止、已完成
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.isNull(Sign_.signState.getName()));
+        dis.add(Restrictions.sqlRestriction(" " + Sign_.signState.getName() + " != '" + EnumState.YES.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.FORCE.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.DELETE.getValue() + "' "));
+        criteria.add(dis);
+
+        //3、已签收，但是未发起流程的项目
+        criteria.add(Restrictions.eq(Sign_.issign.getName(),EnumState.YES.getValue()));
+        criteria.add(Restrictions.isNull(Sign_.processInstanceId.getName()));
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+
+        return totalResult;
+    }
+
+    /**
+     * 获取项目预签收列表数量
+     *
+     * @return
+     */
+    @Override
+    public Integer findReservesSignCount() {
+        Criteria criteria = signRepo.getExecutableCriteria();
+        //1、排除旧项目
+        criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
+        //2、排除已终止、已完成、已删除
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.isNull(Sign_.signState.getName()));
+        dis.add(Restrictions.sqlRestriction(" " + Sign_.signState.getName() + " != '" + EnumState.YES.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.FORCE.getValue() + "' and " + Sign_.signState.getName() + " != '" + EnumState.DELETE.getValue() + "' "));
+        criteria.add(dis);
+
+        //3、预签收
+        StringBuffer sb = new StringBuffer();
+        sb.append(" " + Sign_.ispresign.getName() + " is not null and " + Sign_.ispresign.getName() + " = '" + EnumState.NO.getValue() + "' ");
+        criteria.add(Restrictions.sqlRestriction(sb.toString()));
+
+        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        return totalResult;
+    }
+
+    /**
+     * 统计项目平均天数，未办结的按当前日期算，已办结的按办结日期算
+     * @param signIds
+     * @return
+     */
+    @Override
+    public ResultMsg sumExistDays(String signIds) {
+        ResultMsg resultMsg ;
+        try{
+            int totalDays = signRepo.sumExistDays(signIds);
+            resultMsg = new ResultMsg(true,MsgCode.OK.getValue(),"统计成功！",totalDays);
+        }catch (Exception e){
+            resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"统计错误！");
+        }
+        return resultMsg;
+    }
+
+    /**
+     * 通过收文id查询 评审天数、剩余工作日、收文日期、送来日期、评审总天数等
+     * @param signId
+     * @return
+     */
+    @Override
+    public SignDto findReviewDayBySignId(String signId) {
+        return signRepo.findReviewDayBySignId(signId);
+    }
+
+
+    /**
+     * 保存评审工作日维护的信息
+     * @param signDto
+     * @return
+     */
+    @Override
+    public ResultMsg saveReview(SignDto signDto) {
+        return signRepo.saveReview(signDto);
     }
 }

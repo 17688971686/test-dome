@@ -1,0 +1,57 @@
+<ion-view title="{{title}}" class="{{viewMainClass}}">
+	<!--视图标题-->
+	<ion-nav-bar class="bar-positive">
+		<!--视图头部-->
+		<ion-nav-buttons side="left">
+			<!--后退-->
+			<button ng-click="back()" class="button back-button buttons button-clear header-item">
+            	<i class="icon ion-android-arrow-back"></i></button>
+		</ion-nav-buttons>
+
+	</ion-nav-bar>
+	<!--选项卡-->
+	<ion-tabs class="tabs-icon-only tabs-positive">
+
+		<!--选项卡 -- 选项  -- begin================================================优秀评审报告申报流程详细信息========================================================================-->
+		<ion-tab title="详细信息 " on-select="switchPageM(1)">
+			<ion-header-bar class="bar-positive ">
+			</ion-header-bar>
+			<!--<ion-content has-tabs="true " on-swipe-right="switchPageM(0)" on-swipe-left="switchPageM(2)">-->
+			<ion-content has-tabs="true ">
+				<!--选项卡内容-->
+        <label class="item">
+				项目名称：{{appraiseList.projectName}}
+	    </label>
+	    <label class="item">
+				申报标题：{{appraiseList.appraiseReportName}}
+	    </label>
+	    <label class="item">
+				申请人：{{appraiseList.proposerName}}
+	    </label>	    
+	    <label class="item">
+				申请时间：{{appraiseList.proposerTime}}
+	    </label>				
+	    <label class="item">
+				申请原因：{{appraiseList.appraiseCause}}
+	    </label>				
+	    <label class="item">
+				部长审批：{{appraiseList.ministerOpinion}}
+	    </label>				
+	    <label class="item">
+				综合部审批：{{appraiseList.generalConductorOpinion}}
+	    </label>		
+			</ion-content>
+		</ion-tab>
+		
+
+		
+
+	
+			<!--<ion-content has-tabs="true " on-swipe-right="switchPageM(3)" on-swipe-left="switchPageM(0)">-->
+			<ion-content has-tabs="true ">
+				<!--选项卡内容-->
+				<ion-refresher pulling-text="获取最新数据... " refreshing-text="刷新完毕 " on-refresh="doRefresh(4) "></ion-refresher>
+			</ion-content>
+		</ion-tab>
+	</ion-tabs>
+</ion-view>

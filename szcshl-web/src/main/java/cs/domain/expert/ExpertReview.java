@@ -21,7 +21,7 @@ public class ExpertReview extends DomainBase {
 
     @Id
     @GeneratedValue(generator = "epReviewGenerator")
-    @GenericGenerator(name = "epReviewGenerator", strategy = "uuid")
+    @GenericGenerator(name = "epReviewGenerator", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     /**
@@ -67,7 +67,7 @@ public class ExpertReview extends DomainBase {
     private BigDecimal reviewTaxes;
 
     /**
-     * 状态
+     * 状态(9表示已完成评审费发放)
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String state;

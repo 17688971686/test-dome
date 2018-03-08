@@ -42,6 +42,13 @@ public class UserController {
 
 
     //@RequiresPermissions("user#fingByOData#post")
+
+    /**
+     * 因排序有问题，直接在页面排序
+     * @param request
+     * @return
+     * @throws ParseException
+     */
     @RequiresAuthentication
     @RequestMapping(name = "获取用户数据", path = "fingByOData", method = RequestMethod.POST)
     @ResponseBody
@@ -86,7 +93,10 @@ public class UserController {
     @ResponseBody
     public List<UserDto> findChargeUsers() {
         User curUser = SessionUtil.getUserInfo();
-        return userService.findUserByOrgId(curUser.getOrg().getId());
+        if(curUser.getOrg() != null){
+            return userService.findUserByOrgId(curUser.getOrg().getId());
+        }
+        return null;
     }
 
     //@RequiresPermissions("user#findByOrgUserName#get")
@@ -121,9 +131,9 @@ public class UserController {
     //@RequiresPermissions("user##delete")
     @RequiresAuthentication
     @RequestMapping(name = "删除用户", path = "", method = RequestMethod.DELETE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody String id) {
-        userService.deleteUser(id);
+    @ResponseBody
+    public ResultMsg delete(@RequestBody String id) {
+        return userService.deleteUser(id);
     }
 
     //@RequiresPermissions("user##put")

@@ -54,10 +54,14 @@ public class SignAssistCostDto {
     private Date payDate;
 
     /**
-     * 申报金额
+     * 申报金额（万元）
      */
-    private BigDecimal applyCost;
+    private BigDecimal declareValue;
 
+    /**
+     * 审定金额（万元）
+     */
+    private BigDecimal authorizeValue;
     /**
      * 警示灯状态
      */
@@ -142,12 +146,20 @@ public class SignAssistCostDto {
         this.payDate = payDate;
     }
 
-    public BigDecimal getApplyCost() {
-        return applyCost;
+    public BigDecimal getDeclareValue() {
+        return declareValue;
     }
 
-    public void setApplyCost(BigDecimal applyCost) {
-        this.applyCost = applyCost;
+    public void setDeclareValue(BigDecimal declareValue) {
+        this.declareValue = declareValue;
+    }
+
+    public BigDecimal getAuthorizeValue() {
+        return authorizeValue;
+    }
+
+    public void setAuthorizeValue(BigDecimal authorizeValue) {
+        this.authorizeValue = authorizeValue;
     }
 
     public List<FinancialManagerDto> getCostList() {

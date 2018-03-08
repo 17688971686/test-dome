@@ -11,6 +11,7 @@ import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -25,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static cs.common.Constant.UNUSER;
 
 /**
  * Description: 自定义表单过滤器
@@ -58,10 +61,11 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         User user = userService.findByName(username);
         if(user != null){
             //用户停用，未激活等判断
-            /*if(isDisabled(user)){
-                return onLoginFailure(token,failureUrl,adminLogin,new DisabledException(),request, response);
+            if(UNUSER.equals(user.getUseState()) || "f".equals(user.getJobState())){
+               /* throw new DisabledAccountException();*/
+                return onLoginFailure(token,new DisabledAccountException(),request, response);
             }
-            if(!isActive(user)){
+            /* if(!isActive(user)){
                 return onLoginFailure(token,failureUrl,adminLogin,new InactiveException(),request, response);
             }*/
         }
@@ -153,7 +157,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
                 //之前登陆的用户
                 String username  = (String) subject.getPrincipal();
                 //如果两次登陆的用户不一样，则先退出之前登陆的用户(之前有登录用户，则退出)
-                if (username != null ){
+                if (Validate.isString(username)){
                     subject.logout();
                 }
             }

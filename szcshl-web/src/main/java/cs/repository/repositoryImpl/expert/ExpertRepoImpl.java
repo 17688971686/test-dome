@@ -2,10 +2,14 @@ package cs.repository.repositoryImpl.expert;
 
 import cs.common.Constant;
 import cs.common.HqlBuilder;
+import cs.common.utils.ObjectUtils;
 import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected_;
 import cs.domain.expert.Expert_;
+import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertSelConditionDto;
+import cs.model.project.SignAssistCostDto;
 import cs.repository.AbstractRepository;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
@@ -14,11 +18,14 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Repository
 public class ExpertRepoImpl extends AbstractRepository<Expert, String> implements ExpertRepo {
 
     /**
@@ -75,6 +82,19 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
         sqlBuilder.append(" and "+ ExpertSelected_.isJoin.getName()+" = :isJoin )");
         sqlBuilder.setParam("isJoin",Constant.EnumState.YES.getValue());
         return findBySql(sqlBuilder);
+    }
+
+    @Override
+    public int countByBusinessId(String businessId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select count(e.expertID) from cs_expert e where e.expertID in (select expertID from cs_expert_selected ");
+        sqlBuilder.append("  where "+ExpertSelected_.businessId.getName()+" = :businessId ");
+        sqlBuilder.setParam("businessId",businessId);
+        sqlBuilder.append(" and "+ ExpertSelected_.isConfrim.getName()+" = :isConfirm ");
+        sqlBuilder.setParam("isConfirm",Constant.EnumState.YES.getValue());
+        sqlBuilder.append(" and "+ ExpertSelected_.isJoin.getName()+" = :isJoin )");
+        sqlBuilder.setParam("isJoin",Constant.EnumState.YES.getValue());
+        return returnIntBySql(sqlBuilder);
     }
 
     @Override
@@ -215,5 +235,89 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
             executeSql(sqlBuilder);
         }
 
+    }
+
+    /**
+     * 根据抽取条件，获取抽取的专家
+     * @param minBusinessId
+     * @param reviewId
+     * @param epSelCondition
+     * @return
+     */
+    @Override
+    public List<ExpertDto> fingDrafExpert(String minBusinessId, String reviewId, ExpertSelConditionDto epSelCondition) {
+        List<ExpertDto> resultList = new ArrayList<>();
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" SELECT distinct ep.EXPERTID, ep.NAME, ep.COMPANY, ep.JOB, ep.POST, ep.EXPERTSORT ");
+        sqlBuilder.append(" , ep.USERPHONE, ep.MAJORSTUDY, ep.MAJORWORK,ep.REMARK,ep.COMPOSITESCORE ");
+        sqlBuilder.append(" FROM CS_EXPERT ep LEFT JOIN ( ");
+        sqlBuilder.append(" SELECT WP.ID ID, WP.BUILDCOMPANY bcp, WP.DESIGNCOMPANY dcp FROM CS_WORK_PROGRAM wp ");
+        sqlBuilder.append(" WHERE WP.ID = :minBusinessId) lwp").setParam("minBusinessId",minBusinessId);
+        sqlBuilder.append(" ON (lwp.bcp = ep.COMPANY OR lwp.dcp = ep.COMPANY ) ");
+        sqlBuilder.append(" LEFT JOIN CS_EXPERT_SELECTED cursel ON CURSEL.EXPERTID = EP.EXPERTID ");
+        sqlBuilder.append(" AND CURSEL.EXPERTREVIEWID = :reviewId ").setParam("reviewId",reviewId);
+        //是否有抽取条件
+        boolean isHaveCondition = Validate.isObject(epSelCondition) && (Validate.isString(epSelCondition.getMaJorBig())
+                || Validate.isString(epSelCondition.getMaJorSmall()) || Validate.isString(epSelCondition.getExpeRttype()));
+        if(isHaveCondition){
+            sqlBuilder.append(" left JOIN V_EXPERT_DRAFPOOL edp on edp.EXPERTID = EP.EXPERTID ");
+            if(Validate.isString(epSelCondition.getMaJorBig())){
+                sqlBuilder.append(" AND edp.maJorBig = :maJorBig ").setParam("maJorBig",epSelCondition.getMaJorBig());
+            }
+            if(Validate.isString(epSelCondition.getMaJorSmall())){
+                sqlBuilder.append(" AND edp.maJorSmall = :maJorSmall ").setParam("maJorSmall",epSelCondition.getMaJorSmall());
+            }
+            if(Validate.isString(epSelCondition.getExpeRttype())){
+                sqlBuilder.append(" AND edp.expertType = :expertType ").setParam("expertType",epSelCondition.getExpeRttype());
+            }
+        }
+        sqlBuilder.append(" WHERE ep.STATE = '2' AND lwp.ID IS NULL AND CURSEL.ID IS NULL ");
+        if(isHaveCondition){
+            sqlBuilder.append(" AND edp.EXPERTID IS NOT NULL");
+        }
+        boolean isHaveScore = Validate.isObject(epSelCondition) && (epSelCondition.getCompositeScore() != null || epSelCondition.getCompositeScoreEnd() != null);
+        if(isHaveScore){
+            if(epSelCondition.getCompositeScore() > -1){
+                sqlBuilder.append(" and  ep.compositeScore >= :compositeScore");
+                sqlBuilder.setParam("compositeScore", epSelCondition.getCompositeScore());
+            }
+            if( epSelCondition.getCompositeScoreEnd() > -1){
+                sqlBuilder.append(" and  ep.compositeScore <= :compositeScoreEnd");
+                sqlBuilder.setParam("compositeScoreEnd", epSelCondition.getCompositeScoreEnd());
+            }
+        }
+        List<Object[]> expertList = getObjectArray(sqlBuilder);
+        if(Validate.isList(expertList)){
+            for (int i = 0, l = expertList.size(); i < l; i++) {
+                ExpertDto expertDto = new ExpertDto();
+                Object[] obj = expertList.get(i);
+                String expertId = obj[0] == null ? "" : obj[0].toString();
+                String expertName = obj[1] == null ? "" : obj[1].toString();
+                String comPany = obj[2] == null ? "" : obj[2].toString();
+                String job = obj[3] == null ? "" : obj[3].toString();
+                String post = obj[4] == null ? "" : obj[4].toString();
+                String expertSort = obj[5] == null ? "" : obj[5].toString();
+                String userPhone = obj[6] == null ? "" : obj[6].toString();
+                String majorStudy = obj[7] == null ? "" : obj[7].toString();
+                String majorWork = obj[8] == null ? "" : obj[8].toString();
+                String remark = obj[9] == null ? "" : obj[9].toString();
+                Double compositeScore = obj[10] == null ? null : Double.valueOf(obj[10].toString());
+
+                expertDto.setExpertID(expertId);
+                expertDto.setName(expertName);
+                expertDto.setComPany(comPany);
+                expertDto.setJob(job);
+                expertDto.setPost(post);
+                expertDto.setExpertSort(expertSort);
+                expertDto.setUserPhone(userPhone);
+                expertDto.setMajorStudy(majorStudy);
+                expertDto.setMajorWork(majorWork);
+                expertDto.setRemark(remark);
+                expertDto.setCompositeScore(compositeScore);
+
+                resultList.add(expertDto);
+            }
+        }
+        return resultList;
     }
 }

@@ -5,13 +5,16 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+/**
+ * 协审计划收文表
+ */
 @Entity
 @Table(name = "cs_as_plansign")
 @DynamicUpdate(true)
 public class AssistPlanSign {
     @Id
     @GeneratedValue(generator= "plansignGenerator")
-    @GenericGenerator(name= "plansignGenerator",strategy = "uuid")
+    @GenericGenerator(name= "plansignGenerator",strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     /**
@@ -43,6 +46,18 @@ public class AssistPlanSign {
      */
     @Column(columnDefinition="NUMBER")
     private Float assistDays;
+
+    /**
+     * 协审类型，这个类型是必须的
+     */
+    @Column(columnDefinition="VARCHAR(32)")
+    private String assistType;
+
+    /**
+     * 项目名称（旧系统有，保留）
+     */
+    @Column(columnDefinition="VARCHAR(256)")
+    private String projectName;
 
     /**
      * 是否主项目（9代表是，0代表否）
@@ -141,5 +156,21 @@ public class AssistPlanSign {
 
     public void setSplitNum(Integer splitNum) {
         this.splitNum = splitNum;
+    }
+
+    public String getAssistType() {
+        return assistType;
+    }
+
+    public void setAssistType(String assistType) {
+        this.assistType = assistType;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 }

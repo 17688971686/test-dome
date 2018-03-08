@@ -27,15 +27,15 @@ public interface RoomBookingSerivce {
 
     List<RoomBookingDto> getRoomList();
 
-    List<RoomBooking> findWeek();
+   /* List<RoomBooking> findWeek();*/
 
-    List<RoomBookingDto> findNextWeek();
+   /* List<RoomBookingDto> findNextWeek();*/
 
     List<MeetingRoomDto> findMeetingAll();
 
-    void exportThisWeekStage();
+    /*void exportThisWeekStage();*/
 
-    void exportNextWeekStage();
+    /*void exportNextWeekStage();*/
 
     File exportRoom(String date, String rbType, String mrId);
 

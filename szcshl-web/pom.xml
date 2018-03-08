@@ -15,6 +15,7 @@
         <shiro.version>1.3.2</shiro.version>
         <!-- httpClient -->
         <httpclient.version>4.5.2</httpclient.version>
+        <commons.pool.version>2.2</commons.pool.version>
     </properties>
     <dependencies>
         <dependency>
@@ -79,12 +80,14 @@
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-ehcache</artifactId>
             <version>${shiro.version}</version>
+            <!--
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
+            -->
         </dependency>
 
         <dependency>
@@ -210,14 +213,12 @@
             <artifactId>poi</artifactId>
             <version>3.14</version>
         </dependency>
-
+        <!--jacob-->
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.0</version>
-            <scope>compile</scope>
+            <groupId>net.sf.jacob-project</groupId>
+            <artifactId>jacob</artifactId>
+            <version>1.14.3</version>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -245,7 +246,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
-            <version>1.0.29</version>
+            <version>1.1.6</version>
         </dependency>
         <!-- ehcache -->
         <dependency>
@@ -290,6 +291,8 @@
             <artifactId>jasperreports-fonts</artifactId>
             <version>6.3.1_sn</version>
         </dependency>
+
+        <!-- shiro -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
@@ -326,6 +329,13 @@
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>${commons.pool.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.blingblingbang</groupId>
             <artifactId>ueditor</artifactId>
@@ -336,15 +346,75 @@
             <artifactId>json</artifactId>
             <version>20160810</version>
         </dependency>
-        <!-- 本地流上传到服务器-->
+        <!-- 本地流上传到服务器
         <dependency>
             <groupId>com.jspsmart.upload</groupId>
             <artifactId>jspsmartupload</artifactId>
             <version>1.0</version>
         </dependency>
+        -->
+        <dependency>
+            <groupId>com.github.livesense</groupId>
+            <artifactId>jodconverter-core</artifactId>
+            <version>1.0.5</version>
+        </dependency>
     </dependencies>
+
+    <!-- 数据源配置 -->
+    <profiles>
+        <profile>
+            <id>dbdev</id>
+            <properties>
+                <env>dbdev</env>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>dbproduct</id>
+            <properties>
+                <env>dbproduct</env>
+            </properties>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>dbtest</id>
+            <properties>
+                <env>dbtest</env>
+            </properties>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
+
     <build>
         <finalName>szcshl-web</finalName>
+        <filters><!--获得过滤使用的源文件  即有实际数据的地反-->
+            <filter>src/main/resources/${env}.properties</filter>
+        </filters>
+        <!-- 指定 src/main/resources下所有文件及文件夹为资源文件 -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>*</include>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            <!-- 设置对config.properties进行过虑，即这些文件中的${key}会被替换掉为真正的值 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>config.properties</include>
+                    <include>business.properties</include>
+                </includes>
+                <filtering>true</filtering> <!--是否使用过滤器-->
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

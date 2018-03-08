@@ -25,28 +25,28 @@
         <table class="table table-bordered  dataTable">
             <caption class="text-center"><h4><strong>用户信息</strong></h4></caption>
             <tr>
-                <td class="text-right" width="11%">登录名：<span class="required">*</span></td>
+                <td class="text-right" width="11%">姓名<span class="required">*</span></td>
+                <td width="22%">
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.displayName" id="displayName" name="displayName" data-val="false" data-val-required="必填">
+                    <span data-valmsg-for="displayName" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td class="text-right" width="11%">登录名<span class="required">*</span></td>
                 <td width="22%">
                     <input  type="text" maxlength="200" class="form-control input-sm " ng-disabled="vm.isUpdate"  ng-model="vm.model.loginName " id="loginName" name="loginName" data-val="true" data-val-required="必填">
                     <span data-valmsg-for="loginName" data-valmsg-replace="true" class="errors"></span>
                     <span class="errors" ng-show="vm.isUserExist">角色已存在</span>
                 </td>
-                <td class="text-right" width="11%">工号：</td>
+
+                <td rowspan="3" style="vertical-align: middle;" class="text-right" width="11%">用户头像</td>
+                <td rowspan="3" width="22%"><img style="margin: 10px 0px;" src="" width="80" height="80" alt=""/></td>
+            </tr>
+            <tr>
+                <td class="text-right" >工号</td>
                 <td width="22%">
                     <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userNo" id="userNo" name="userNo" readonly="readonly">
                     <span data-valmsg-for="userNo" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td rowspan="3" style="vertical-align: middle;" class="text-right" width="11%">用户头像：</td>
-                <td rowspan="3" width="22%"><img style="margin: 10px 0px;" src="" width="80" height="80" alt=""/></td>
-            </tr>
-
-            <tr>
-                <td class="text-right">姓名：</td>
-                <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.displayName" id="displayName" name="displayName" data-val="false" data-val-required="必填">
-                    <span data-valmsg-for="displayName" data-valmsg-replace="true" class="errors"></span>
-                </td>
-                <td class="text-right">性别：<span class="required">*</span></td>
+                <td class="text-right">性别<span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.userSex" name="userSex" id="userSex" class="form-control select-sm">
                         <option ng-repeat="x in DICT.SEX.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.model.userSex">{{x.dictName}}</option>
@@ -56,14 +56,14 @@
             </tr>
 
             <tr>
-                <td class="text-right">所在部门：<span class="required">*</span> </td>
+                <td class="text-right">所在部门</td>
                 <td>
-                    <select ng-model="vm.model.orgId" id="orgId" name="orgId"class="form-control select-sm " data-val="true" data-val-required="必填">
+                    <select ng-model="vm.model.orgId" id="orgId" name="orgId" class="form-control select-sm">
                         <option ng-repeat="x in vm.org" ng-selected="vm.model.orgDto.id == x.id"  value="{{x.id}}" >{{x.name}}</option>
                     </select>
                     <span data-valmsg-for="name" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="text-right">在职情况：<span class="required">*</span></td>
+                <td class="text-right">在职情况<span class="required">*</span></td>
                 <td>
                     <select ng-model="vm.model.jobState" id="jobState" name="jobState"class="form-control select-sm " data-val="true" data-val-required="必填">
                         <option value="t" ng-selected="vm.model.jobState == 't'">在职</option>
@@ -74,42 +74,46 @@
             </tr>
 
             <tr>
-                <td class="text-right">联系手机：<span class="required">*</span></td>
+                <td class="text-right">联系手机<span class="required">*</span></td>
                 <td>
                     <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userMPhone" id="userMPhone" name="userMPhone" data-val="false" data-val-required="必填">
                     <span data-valmsg-for="userMPhone" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="text-right">联系电话：<span class="required">*</span></td>
+                <td class="text-right">联系电话<span class="required">*</span></td>
                 <td>
                     <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.userPhone" id="userPhone" name="userPhone" data-val="false" data-val-required="必填">
                     <span data-valmsg-for="userPhone" data-valmsg-replace="true" class="errors"></span>
-                    <span class="errors" ng-show="vm.isUserExist"></span>
                 </td>
-                <td class="text-right">电子邮件：<span class="required">*</span></td>
+                <td class="text-right">电子邮件</td>
                 <td>
-                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.email" id="email" name="email" data-val="false" data-val-required="必填">
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.email" id="email" name="email" data-val="true" >
                     <span data-valmsg-for="email" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
 
             <tr>
-                <td class="text-right">职务：</td>
-                <td>
-                     <select ng-model="vm.model.position" id="position" name="position"class="form-control select-sm ">
-						 <option value="01" ng-selected="vm.model.position == '01'">中心主任</option>
-                         <option value="02" ng-selected="vm.model.position == '02'">中心副主任</option>
-                         <option value="03" ng-selected="vm.model.position == '03'">部长</option>
-                         <option value="04" ng-selected="vm.model.position == '04'">工程师</option>
-					</select>
-					<span data-valmsg-for="position" data-valmsg-replace="true" class="errors"></span>
+                <!--
+                <td class="text-right">是否上传发改委</td>
+                <td >
+                    <select ng-model="vm.model.isUploadFGW" id="isUploadFGW" name="isUploadFGW"class="form-control select-sm " >
+                        <option value="0" ng-selected="vm.model.isUploadFGW == '0'">否</option>
+                        <option value="1" ng-selected="vm.model.isUploadFGW == '1'">已提交</option>
+                        <option value="2" ng-selected="vm.model.isUploadFGW == '2'">已上传</option>
+                    </select>
                 </td>
-                <td class="text-right">是否参与考勤： </td>
+                -->
+                <td class="text-right">职务</td>
+                <td>
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.position" id="position" name="position" data-val="true" data-val-required="必填">
+                    <span data-valmsg-for="position" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td class="text-right">是否参与考勤</td>
                 <td>
                     <input  type="radio" name="isAttendance" ng-model="vm.model.isAttendance" value="0" ng-checked="true"/>是
                     <input  type="radio" name="isAttendance" ng-model="vm.model.isAttendance" value="1"/>否
                     <span data-valmsg-for="isAttendance" data-valmsg-replace="true" class="errors"></span>
                 </td>
-                <td class="text-right">是否参与统计： </td>
+                <td class="text-right">是否参与统计</td>
                 <td>
                     <input  type="radio" name="isCount" ng-model="vm.model.isCount" value="0" ng-checked="true"/>是
                     <input  type="radio" name="isCount" ng-model="vm.model.isCount" value="1"/>否
@@ -118,24 +122,17 @@
             </tr>
             
             <tr>
-                <td class="text-right">是否上传发改委： </td>
-                <td >
-                	<select ng-model="vm.model.isUploadFGW" id="isUploadFGW" name="isUploadFGW"class="form-control select-sm " >
-						 <option value="0" ng-selected="vm.model.isUploadFGW == '0'">否</option>
-                         <option value="1" ng-selected="vm.model.isUploadFGW == '1'">已提交</option>
-                         <option value="2" ng-selected="vm.model.isUploadFGW == '2'">已上传</option>
-					</select>
-                </td>
-
-                <td class="text-right">停用情况：<span class="required">*</span></td>
+                <td class="text-right">职称</td>
                 <td>
-                    <select ng-model="vm.model.useState" id="useState" name="useState"class="form-control select-sm " data-val="true" data-val-required="必填">
-                        <option ng-repeat="x in DICT.USERSTATE.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.model.useState">{{x.dictName}}</option>
-                    </select>
-                    <span data-valmsg-for="useState" data-valmsg-replace="true" class="errors"></span>
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.jobTitle" id="jobTitle" name="jobTitle" >
+                    <span data-valmsg-for="jobTitle" data-valmsg-replace="true" class="errors"></span>
                 </td>
-
-                <td class="text-right">排序序号： </td>
+                <td class="text-right">腾讯通账号<span class="required">*</span></td>
+                <td>
+                    <input  type="text" maxlength="200" class="form-control input-sm "  ng-model="vm.model.rtxName" id="rtxName" name="rtxName" data-val="true" data-val-required="必填">
+                    <span data-valmsg-for="rtxName" data-valmsg-replace="true" class="errors"></span>
+                </td>
+                <td class="text-right">排序序号 </td>
                 <td>
                     <input  type="number" name="userSort" ng-model="vm.model.userSort"  ng-checked="true"/>
                     <span data-valmsg-for="userSort" data-valmsg-replace="true" class="errors"></span>
@@ -143,14 +140,13 @@
             </tr>
             
             <tr>
-                <td class="text-right">备注： </td>
+                <td class="text-right" style="vertical-align: middle;">备注</td>
                 <td colspan="5">
                     <textarea class="form-control" maxlength="200" name="remark" id="remark" ng-model="vm.model.remark" style="height:120px;"></textarea>
-                    <br/>
                     <span data-valmsg-for="remark" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
             <tr>
-                <td class="text-right" style="vertical-align:top">所属角色： </td>
+                <td class="text-right" style="vertical-align:top">所属角色</td>
                 <td colspan="5" >
                     <div >
                         <ul id="zTree" class="ztree"></ul>

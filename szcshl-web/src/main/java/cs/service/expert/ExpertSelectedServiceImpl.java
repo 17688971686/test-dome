@@ -72,8 +72,8 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     @Transactional
     public ResultMsg update(ExpertSelectedDto record) {
         boolean isUpdateScore = false;
-        if(!Validate.isObject(record.getScore()) || record.getScore() <= 0){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，你还没对专家进行评分！");
+        if (!Validate.isObject(record.getScore()) || record.getScore() <= 0) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，你还没对专家进行评分！");
         }
         ExpertSelected domain = expertSelectedRepo.findById(record.getId());
         if (!record.getScore().equals(domain.getScore())) {
@@ -86,7 +86,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             //计算综合评分（根据有评分总数，除以评分次数，没有评分的次数不算）
             expertRepo.updateExpertCompositeScore(domain.getExpert().getExpertID());
         }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
     @Override
@@ -224,25 +224,33 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("left join cs_expert e  on s.expertid = e.expertid ");
         sqlBuilder.append("left join cs_expert_review r on s.expertreviewid = r.id ");
         sqlBuilder.append("where 1=1 ");
-        String[] timeArr = expertCostDto.getBeginTime().split("-");
-        if (null != expertCostDto && null != expertCostDto.getBeginTime()) {
-            String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
-            String bTime = expertCostDto.getBeginTime() + "-01 00:00:00";
-            String eTime = expertCostDto.getBeginTime() + "-" + day + " 23:59:59";
-            sqlBuilder.append("and r.paydate is not null  ");
-            sqlBuilder.append("and r.paydate >= to_date('" + bTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-            sqlBuilder.append(" and r.paydate <= to_date('" + eTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-            sqlBuilder.append("and s.isconfrim = '9' ");
-            sqlBuilder.append("and s.isjoin = '9' ");
+
+        if(expertCostDto == null){
+            expertCostDto = new ExpertCostCountDto();
         }
+        if(!Validate.isString(expertCostDto.getYear())){
+            expertCostDto.setYear(DateUtils.getNowYear());
+        }
+        if(!Validate.isString(expertCostDto.getMonth())){
+            expertCostDto.setMonth(String.valueOf(DateUtils.getCurMonth()));
+        }
+        String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(expertCostDto.getYear()),Integer.parseInt(expertCostDto.getMonth())) + "";
+        String bTime = expertCostDto.getYear()+"-"+expertCostDto.getMonth()+ "-01 00:00:00";
+        String eTime = expertCostDto.getYear()+"-"+expertCostDto.getMonth()+ "-" + day + " 23:59:59";
+        sqlBuilder.append("and r.paydate is not null  ");
+        sqlBuilder.append("and r.paydate >= to_date('" + bTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append(" and r.paydate <= to_date('" + eTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and s.isconfrim = '9' ");
+        sqlBuilder.append("and s.isjoin = '9' ");
+
         sqlBuilder.append("group by e.expertid,e.name,e.idcard,e.userphone ");
         sqlBuilder.append("having sum(s.reviewcost)>0");
         sqlBuilder.append("union  ");
         sqlBuilder.append("select e.name,e.idcard,e.userphone,null reviewcost,null reviewtaxes,sum(s.reviewcost) yreviewcost,sum(s.reviewtaxes)yreviewtaxes from cs_expert_selected s  ");
         sqlBuilder.append("left join cs_expert e  on s.expertid = e.expertid  ");
         sqlBuilder.append("left join cs_expert_review r on s.expertreviewid = r.id ");
-        sqlBuilder.append("where r.paydate is not null and  r.paydate >= to_date('" + timeArr[0] + "-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and  r.paydate <= to_date('" + timeArr[0] + "-12-31 23:59:59','yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("where r.paydate is not null and  r.paydate >= to_date('" + expertCostDto.getYear() + "-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and  r.paydate <= to_date('" + expertCostDto.getYear() + "-12-31 23:59:59','yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and s.isconfrim = '9' ");
         sqlBuilder.append("and s.isjoin = '9' ");
         sqlBuilder.append("group by e.expertid,e.name,e.idcard,e.userphone ");
@@ -303,15 +311,24 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append(" left join cs_expert_review r ");
         sqlBuilder.append("on s.expertreviewid = r.id ");
         sqlBuilder.append("where 1=1 ");
-        if (null != expertCostDetailCountDto && null != expertCostDetailCountDto.getBeginTime()) {
-            String[] timeArr = expertCostDetailCountDto.getBeginTime().split("-");
-            String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
-            beginTime = expertCostDetailCountDto.getBeginTime() + "-01 00:00:00";
-            endTime = expertCostDetailCountDto.getBeginTime() + "-" + day + " 23:59:59";
-            sqlBuilder.append(" and r.paydate is not null  ");
-            sqlBuilder.append("and r.paydate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-            sqlBuilder.append(" and r.paydate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+
+        if(expertCostDetailCountDto == null){
+            expertCostDetailCountDto = new ExpertCostDetailCountDto();
         }
+        if(!Validate.isString(expertCostDetailCountDto.getYear())){
+            expertCostDetailCountDto.setYear(DateUtils.getNowYear());
+        }
+        if(!Validate.isString(expertCostDetailCountDto.getMonth())){
+            expertCostDetailCountDto.setMonth(String.valueOf(DateUtils.getCurMonth()));
+        }
+        String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(expertCostDetailCountDto.getYear()),Integer.parseInt(expertCostDetailCountDto.getMonth())) + "";
+        String bTime = expertCostDetailCountDto.getYear()+"-"+expertCostDetailCountDto.getMonth()+ "-01 00:00:00";
+        String eTime = expertCostDetailCountDto.getYear()+"-"+expertCostDetailCountDto.getMonth()+ "-" + day + " 23:59:59";
+
+        sqlBuilder.append(" and r.paydate is not null  ");
+        sqlBuilder.append("and r.paydate >= to_date('" + bTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append(" and r.paydate <= to_date('" + eTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+
         sqlBuilder.append("and s.isconfrim ='9' ");
         sqlBuilder.append("and s.isjoin ='9' ");
         sqlBuilder.append("group by e.expertid,e.name, e.expertno ");
@@ -446,6 +463,8 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
         sqlBuilder.append("ON s.signid = mo.bsignid  ");
         sqlBuilder.append("where r.paydate is not null ");
+        //添加过滤条件。过滤删除
+        sqlBuilder.append("and s.signState <> '" + Constant.EnumState.DELETE.getValue() + "' ");
         //todo:添加查询条件
         if (null != projectReviewCostDto) {
             if (StringUtil.isNotEmpty(projectReviewCostDto.getProjectname())) {
@@ -562,10 +581,11 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
      * @return
      */
     @Override
-    public ResultMsg proReviewClassifyCount(ProjectReviewCostDto projectReviewCostDto) {
+    public ResultMsg proReviewClassifyCount(ProjectReviewCostDto projectReviewCostDto, int page) {
         Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         HqlBuilder sqlBuilder1 = HqlBuilder.create();
+        sqlBuilder.append("select * from (select a.* , rownum rn from (");
         sqlBuilder.append("select s.projectcode,s.projectname,s.builtcompanyname,s.reviewstage,r.totalcost,r.paydate,d.declarevalue,d.authorizevalue,s.signdate,r.businessid,f.chargename,f.charge from cs_sign s  ");
         sqlBuilder.append(" left join cs_expert_review r  ");
         sqlBuilder.append("on s.signid = r.businessid  ");
@@ -627,6 +647,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             }
 
         }
+        sqlBuilder.append(" ) a ) where rn >" + (page * 200) + " and rn <" + ((page + 1) * 200 + 1));
         sqlBuilder1.append("group by f.chargename  ");
         List<Object[]> projectReviewCostList = expertCostCountRepo.getObjectArray(sqlBuilder);
         List<Object[]> projectClassifytList = expertCostCountRepo.getObjectArray(sqlBuilder1);
@@ -677,7 +698,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                     projectReviewCostDto1.setCharge((BigDecimal) projectReviewCost[11]);
                 }
             /*	if (null != projectReviewCostDto1.getBusinessId()) {
-					financialManagerDtoList = getFinancialManagerByBusid(projectReviewCostDto1.getBusinessId());
+                    financialManagerDtoList = getFinancialManagerByBusid(projectReviewCostDto1.getBusinessId());
 
 				}
 				if (financialManagerDtoList.size() > 0) {
@@ -726,33 +747,36 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     public ResultMsg proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto) {
         Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj,round((sum(d.declarevalue) -sum(d.authorizevalue))/10000/(sum(d.declarevalue)/10000),5)*100  hjl,s.isadvanced   from cs_sign s   ");
+        sqlBuilder.append("select s.reviewstage, count(s.projectcode),sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj, decode(sum(d.declarevalue),0,0,  round((sum(d.declarevalue) - sum(d.authorizevalue)) / 10000 / (sum(d.declarevalue) / 1000), 5) * 1000) hjl,s.isadvanced   from cs_sign s   ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");
         sqlBuilder.append("on s.signid = d.signid  ");
         sqlBuilder.append("where 1 = 1 ");
-        sqlBuilder.append("and s.signstate = '9'  ");
-        sqlBuilder.append("and s.processstate = 6  ");//已发文
+        sqlBuilder.append("and s.signstate != '7' ");//过滤删除
+        sqlBuilder.append("and (s.ispresign != '0' or s.ispresign is null) ");//过滤预签收的
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
 
         //todo:添加查询条件
         if (null != projectReviewConditionDto) {
             if (StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())) {
                 String beginTime = projectReviewConditionDto.getBeginTime() + "-01 00:00:00";
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and s.signdate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
             } else if (StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())) {
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String beginTime = projectReviewConditionDto.getBeginTime() + "-01 00:00:00";
                 String endTime = projectReviewConditionDto.getBeginTime() + "-" + day + " 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
                 sqlBuilder.append("and s.signdate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
             } else if (StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())) {
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
-                ;
-                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]) - 1)) + "";
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String beginTime = projectReviewConditionDto.getEndTime() + "-01 00:00:00";
                 String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
                 sqlBuilder.append("and s.signdate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
@@ -831,7 +855,9 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
         sqlBuilder.append("ON s.signid = mo.bsignid  ");
         sqlBuilder.append("where r.paydate is not null ");
-
+        //添加过滤条件。过滤删除和暂停的
+        sqlBuilder.append("and s.signState <> '" + Constant.EnumState.DELETE.getValue() + "' ");
+        sqlBuilder.append("and s.signState <> '" + Constant.EnumState.STOP.getValue() + "' ");
         //todo:添加查询条件
         if (projectReviewCost != null) {
             if (StringUtil.isNotEmpty(projectReviewCost.getProjectname())) {
@@ -1007,8 +1033,20 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
      * @param projectReviewConditionDto
      * @return
      */
+    @Override
     public Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto) {
         return expertSelectedRepo.proReviewCount(projectReviewConditionDto);
+    }
+
+    /**
+     * 获取提前介入评审情况
+     *
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public ProReviewConditionDto getAdvancedCon(ProReviewConditionDto projectReviewConditionDto) {
+        return expertSelectedRepo.getAdvancedCon(projectReviewConditionDto);
     }
 
 

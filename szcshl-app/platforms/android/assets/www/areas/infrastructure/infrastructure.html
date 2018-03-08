@@ -1,0 +1,12 @@
+<ion-view title="基础设施管理"class="listpage {{viewMainClass}}">
+	<ion-nav-bar class="custom-bar bar-positive">
+	</ion-nav-bar>
+	<div class="bar bar-subheader text-center task" style="margin-top: 25px;">
+		<div ng-click="page_index=0" class="width_33 {{page_index==0? 'bg-white bor_ltr_1px' : 'bg_EEEEEE bor_b_1px'}} bor_skyblue padding_t_5px">社区</div>
+		<div ng-click="page_index=1" class="width_33 {{page_index==1? 'bg-white bor_ltr_1px' : 'bg_EEEEEE bor_b_1px'}} bor_skyblue padding_t_5px">场地</div>
+		<div ng-click="page_index=2" class="width_33 {{page_index==2? 'bg-white bor_ltr_1px' : 'bg_EEEEEE bor_b_1px'}} bor_skyblue padding_t_5px">设施</div>
+	</div>
+	<div class="" ng-show="page_index==0" ng-include=" 'areas/infrastructure/community/communityList.html' "></div>
+	<div class="" ng-show="page_index==1" ng-include=" 'areas/infrastructure/site/siteList.html' "></div>
+	<div class="" ng-show="page_index==2" ng-include=" 'areas/infrastructure/facilitybasicdata/facilitybasicdataList.html' "></div>
+</ion-view>

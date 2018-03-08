@@ -38,7 +38,7 @@
         <tr >
             <td class="text-center">经费估算</td>
             <td colspan="8" >
-                {{vm.workplan.cost}} （单位：元）
+                {{vm.model.workPlanDto.cost}} （单位：元）
             </td>
         </tr>
         <tr ng-show="vm.model.workPlanDto.roomDtoList && vm.model.workPlanDto.roomDtoList.length > 0" >
@@ -119,4 +119,5 @@
         </tr>
     </table>
 </div>
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
+<!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.id,'TOPICINFO' , 'TOPICINFO_WORKPROGRAM')">打印预览</button>

@@ -35,6 +35,9 @@ public class ExpertCostDetailCountDto {
 
     private String endTime;
 
+    private String year;
+    private String month;
+
     public String getExpertId() {
         return expertId;
     }
@@ -113,5 +116,21 @@ public class ExpertCostDetailCountDto {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
     }
 }

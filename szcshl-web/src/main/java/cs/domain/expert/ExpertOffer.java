@@ -17,7 +17,7 @@ public class ExpertOffer extends DomainBase {
 
     @Id
     @GeneratedValue(generator= "OfferGenerator")
-    @GenericGenerator(name= "OfferGenerator",strategy = "uuid")
+    @GenericGenerator(name= "OfferGenerator",strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     /**

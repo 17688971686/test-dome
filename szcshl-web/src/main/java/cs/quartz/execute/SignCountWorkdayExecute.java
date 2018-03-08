@@ -4,10 +4,13 @@ import cs.common.Constant;
 import cs.common.utils.Validate;
 import cs.domain.project.ProjectStop;
 import cs.domain.project.Sign;
+import cs.domain.sys.Log;
 import cs.domain.sys.Workday;
+import cs.model.project.ProjectStopDto;
 import cs.quartz.unit.QuartzUnit;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
+import cs.service.sys.LogService;
 import cs.service.sys.WorkdayService;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
@@ -17,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,12 +34,12 @@ public class SignCountWorkdayExecute implements Job {
     private static Logger logger = Logger.getLogger(SignCountWorkdayExecute.class);
     @Autowired
     private SignService signService;
-
     @Autowired
     private ProjectStopService projectStopService;
-
     @Autowired
     private WorkdayService workdayService;
+    @Autowired
+    private LogService logService;
 
     /*警示灯状态如下：
      * PROCESS("1"),	//在办
@@ -50,6 +54,15 @@ public class SignCountWorkdayExecute implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+        //添加日记记录
+        Log log = new Log();
+        log.setCreatedDate(new Date());
+        log.setUserName(Constant.SUPER_USER);
+        log.setBuninessId("");
+        log.setModule(Constant.LOG_MODULE.QUARTZ.getValue()+"【工作日计算】" );
+        //优先级别中等
+        log.setLogLevel(Constant.EnumState.STOP.getValue());
+        log.setLogger(this.getClass().getName()+".execute");
         try{
             logger.info("------------------ 工作日计算定时器 开始 ------------------");
             List<Workday> workdayList = null;
@@ -76,7 +89,8 @@ public class SignCountWorkdayExecute implements Job {
                     Float reviewsDays = signService.getReviewDays(sign.getReviewstage());
                     if (reviewsDays > 0) {
                         sign.setSurplusdays(reviewsDays);
-                        sign.setReviewdays(reviewsDays);
+                        sign.setTotalReviewdays(reviewsDays);
+                        sign.setReviewdays(0f);
                     }
                 }
 
@@ -87,16 +101,18 @@ public class SignCountWorkdayExecute implements Job {
                 }
 
                 //3、通过收文ID查找 项目暂停情况,并计算项目总共暂停了几个工作日
-                List<ProjectStop> projectStopList = projectStopService.findProjectStopBySign(sign.getSignid());
+                List<ProjectStopDto> projectStopList = projectStopService.findProjectStopBySign(sign.getSignid());
                 float stopWorkday = 0;
-                for (ProjectStop ps : projectStopList) {
+                for (ProjectStopDto ps : projectStopList) {
                     //记录实际暂停的工作日
                     stopWorkday += ps.getPausedays() == null?0:ps.getPausedays();
                 }
                 //4、计算从正式签收到当前时间的工作日，再减掉暂停的工作日，并设置相对应的状态
                 float usedWorkDay = QuartzUnit.countWorkday(workdayList,sign.getSigndate()) - stopWorkday;
                 //剩余评审天数 = 评审天数-已用评审天数
-                sign.setSurplusdays(sign.getReviewdays() - usedWorkDay);
+                sign.setSurplusdays(sign.getTotalReviewdays() - usedWorkDay);
+                //评审天数
+                sign.setReviewdays(usedWorkDay);
                 //默认是在办
                 sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
                 //如果已经发文，要计算发文日期
@@ -105,15 +121,22 @@ public class SignCountWorkdayExecute implements Job {
                     disWorkDay = QuartzUnit.countWorkday(workdayList,sign.getExpectdispatchdate());
                 }
                 //计算更新亮灯状态
-                updateLightUpState(sign, usedWorkDay, new Float(sign.getReviewdays()).intValue(),new Float(disWorkDay).intValue());
+                updateLightUpState(sign, usedWorkDay, new Float(sign.getTotalReviewdays()).intValue(),new Float(disWorkDay).intValue());
 
                 sign.setSignState(Constant.signEnumState.PROCESS.getValue());
             }
             signService.bathUpdate(signList);
+            log.setMessage("完成项目工作日计算！");
+            log.setLogCode(Constant.MsgCode.OK.getValue());
+            log.setResult(Constant.EnumState.YES.getValue());
             logger.info("------------------ 工作日计算定时器 结束 ------------------");
         }catch (Exception e){
+            log.setMessage("工作日计算异常："+e.getMessage());
+            log.setLogCode(Constant.MsgCode.ERROR.getValue());
+            log.setResult(Constant.EnumState.NO.getValue());
             logger.info("工作日计算定时器异常："+e.getMessage());
         }
+        logService.save(log);
 
     }
 
@@ -146,12 +169,12 @@ public class SignCountWorkdayExecute implements Job {
         }*/
 
         //少于3个工作日
-        if ((totalWorkDay - usedWorkDay) <  Constant.WORK_DAY_3) {
+        if ((totalWorkDay - usedWorkDay) <=  Constant.WORK_DAY_3) {
             sign.setIsLightUp(Constant.signEnumState.UNDER3WORKDAY.getValue());
         }
 
         //所用工作日大于总工作日
-        if (usedWorkDay > totalWorkDay) {
+        if (usedWorkDay >= totalWorkDay) {
             //发文超期
             if(sign.getProcessState() < Constant.SignProcessState.END_DIS.getValue()){
                 sign.setIsLightUp(Constant.signEnumState.DISPAOVER.getValue());

@@ -16,8 +16,14 @@ public class AddSuppLetter extends DomainBase {
 	//拟稿编号
 	@Id
 	@GeneratedValue(generator = "suppLetterGenerator")
-    @GenericGenerator(name = "suppLetterGenerator", strategy = "uuid")
+    @GenericGenerator(name = "suppLetterGenerator", strategy = "org.hibernate.id.UUIDGenerator")
 	private String id;
+
+	/**
+	 * 文件年度（月报简报用）
+	 */
+	@Column(columnDefinition="VARCHAR(4)")
+	private String fileYear;
 
 	/**
 	 * 拟稿部门
@@ -143,7 +149,7 @@ public class AddSuppLetter extends DomainBase {
 
 	//月报的文字序号
 	@Column(columnDefinition = "INTEGER")
-	private Integer MonthlySeq;
+	private Integer monthlySeq;
 
     /**
      * 业务ID
@@ -456,10 +462,18 @@ public class AddSuppLetter extends DomainBase {
     }
 
 	public Integer getMonthlySeq() {
-		return MonthlySeq;
+		return monthlySeq;
 	}
 
 	public void setMonthlySeq(Integer monthlySeq) {
-		MonthlySeq = monthlySeq;
+		this.monthlySeq = monthlySeq;
 	}
+
+    public String getFileYear() {
+        return fileYear;
+    }
+
+    public void setFileYear(String fileYear) {
+        this.fileYear = fileYear;
+    }
 }

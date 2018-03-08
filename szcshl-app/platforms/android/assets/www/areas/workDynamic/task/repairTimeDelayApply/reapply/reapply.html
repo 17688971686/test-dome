@@ -1,0 +1,65 @@
+<ion-view title="维修延长重新申请">
+	<ion-nav-bar class="bar-positive">
+		<ion-nav-buttons side="left"><!--后退-->
+			<button ng-click="back()" class="button back-button buttons button-clear header-item">
+            	<i class="icon ion-android-arrow-back"></i></button>
+		</ion-nav-buttons>
+	    <ion-nav-buttons side="right"><!--提交-->
+			<a ng-click="submitProc()" ng-disabled="!tiemApply.approvalOpinion" 
+				class="button back-button buttons button-clear header-item" >
+            	提交
+			</a>
+<!--			<a ng-click="save()" class="button back-button buttons button-clear header-item" ng-show="pageIndex != 3 && pageIndex != 2">
+				保存
+			</a>-->
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<ion-content>
+		<ion-refresher pulling-text="获取最新数据..." refreshing-text="刷新完毕" on-refresh="doRefresh()"></ion-refresher>
+	     	<div ng-include="'areas/workDynamic/task/commonality/basic.html'"></div>
+	        <label class="item">
+	        	<span>审核意见：</span>
+	            <span>{{tiemApply.approvalOpinion}}</span>
+		    </label>
+         <label class="item item-select">
+	        	<span >延长天数：</span>
+	        	<span class="item-input inline" style="width: 140px;" ng-show="duration && duration==0">
+					<input type="number" maxlength="2" min="1" max="99" ng-model="tiemApply.duration" placeholder="请输人天数" style="display: inline;width: 100px;"
+						onkeyup="this.value=this.value.replace( /\D/g,'')" onafterpaste="this.value=this.value.replace( /\D/g,'')">
+	        	</span>
+	        	<select ng-model="duration" ng-change="tiemApply.duration = duration == 0 ? '' : duration*1">
+	       			<option value="">请选择</option>
+	       			<option value="1">1天</option>
+	       			<option value="2">2天</option>
+	       			<option value="3">3天</option>
+	       			<option value="4">4天</option>
+	       			<option value="5">5天</option>
+	       			<option value="6">6天</option>
+	       			<option value="7">7天</option>
+	       			<option value="0">其他</option>
+	       		</select>
+	       </label>
+	       <label class="item item-select">
+	       		延长维修原因
+	       		<select ng-model="tiemApply.reason" ng-change="tiemApply.reason = tiemApply.reason">
+	       			<option value="">请选择</option>
+	       			<option>有事请假</option>
+	       			<option>任务太多</option>
+	       			<option>损坏严重需要更多时间</option>
+	       		</select>
+	        </label>
+	        <label class="item">
+	          	<textarea style="width: 100%;height: 100px;" maxlength="200" ng-model="tiemApply.reason" placeholder="请输入延长原因"></textarea>
+	        </label>
+	        <label class="item item-select">
+	        <span>下一步环节：</span>
+	          	<select ng-model="tiemApply.operation" >
+	             <option value="" ng-hide="tiemApply.operation">请选择</option>
+	             <option value="0">重新申请</option>
+	             <option value="1">放弃申请</option>
+	        </select>
+	        </label>
+	</ion-content>
+
+
+</ion-view>

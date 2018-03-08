@@ -5,11 +5,13 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/meeting">预签收管理</a></li>
+        <li><a href="#/meeting">项目管理管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
     <form id="reserveFrom" name="reserveFrom">
         <div class="well">
+            <input name="signState" value="7" operator="ne" hidden="hidden">
+            <input name="ispresign" value="0" operator="eq" hidden="hidden">
             <span class="help-inline">项目名称：</span>
 	    	<input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">
 	    	
@@ -17,20 +19,18 @@
 	    	<input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">	    		
 
             <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySign()">查询</a>
-            
+            <a class="btn btn-sm btn-primary" href="#/reserveAdd">项目预签收</a>
         </div>
     </form>
 
 	<script type="text/template" id="columnBtns">
-
-    <@shiro.hasPermission name="sign##put">
-	       <a class="btn btn-xs btn-primary" href="#/fillSign/{0}" ><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-	</@shiro.hasPermission>
-
-    <@shiro.hasPermission name="sign##delete">
-       <button class="btn btn-xs btn-danger"  ng-click="{1}" ><span class="glyphicon glyphicon-remove"></span>删除</button>
-    </@shiro.hasPermission>
- 
+        <a class="btn btn-xs btn-primary" ng-click="vm.saveView()" href="#/fillSign/{0}/" ng-hide="{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
+        <a class="btn btn-xs btn-primary" ng-click="vm.saveView()" href="#/signDetails/{2}" ng-disabled="vm.isCommit">查看详情</a>
+        <button class="btn btn-xs btn-danger"  ng-click="{3}" ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-remove"></span>删除</button>
+        <!-- 发起流程 -->
+        <button class="btn btn-xs btn-success"  ng-click="{4}" ng-hide="{1}" ng-disabled="vm.isCommit">发起流程</button>
+        <!--正式签收-->
+        <button class="btn btn-xs btn-success"  ng-click="{5}" ng-hide="{6}" ng-disabled="vm.isCommit">正式签收</button>
 	</script>
 	
 	<div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>

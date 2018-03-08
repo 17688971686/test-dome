@@ -193,7 +193,10 @@ public class AssertStorageBusinessServiceImpl  implements AssertStorageBusinessS
 			}else{
 				assertStorageBusiness.setBusinessId(goodsDetailList[0].getBusinessId());
 			}
-			assertStorageBusiness.setBusinessName("固定资产申购流程"+(assertStorageBusinessRepo.findAll().size()+1));
+			//assertStorageBusiness.setBusinessName("固定资产申购流程"+(assertStorageBusinessRepo.findAll().size()+1));
+			if(!Validate.isString(assertStorageBusiness.getBusinessName())){
+				assertStorageBusiness.setBusinessName("固定资产申购流程");
+			}
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.ASSERT_STORAGE_FLOW, assertStorageBusiness.getBusinessId(),
 					ActivitiUtil.setAssigneeValue(FlowConstant.AssertStorageFlowParams.USER.getValue(), SessionUtil.getUserId()));
 			processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), assertStorageBusiness.getBusinessName());

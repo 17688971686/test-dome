@@ -1,0 +1,33 @@
+<!--登录页面-->
+<ion-view class="loginpane" view-title="<div class='slogans'><img src='./img/theme/solgan.png' /></div>">
+	<ion-nav-bar class="loginbar bar-positive"></ion-nav-bar>
+	<ion-content>
+		
+		<div style="margin-top: 60%; padding: 20px;">
+			<form name="myForm" novalidate>
+
+				<div class="list list-inset">
+					<label class="item item-input">
+                        <i class="icon ion-person positive"></i>
+                        <input type="text" placeholder="用户名"  ng-model="formUser.loginName" required>
+                    </label>
+					<label class="item item-input">
+                        <i class="icon ion-locked positive"></i>
+                        <input type="password" placeholder="密码"  ng-model="formUser.password" required>
+                    </label>
+				</div>
+
+				<!--	<div class="list list-inset">
+					<ion-toggle toggle-class="toggle-calm" ng-model="remeberUser" ng-checked="remeberUser" ng-click="remeber(remeberUser,formUser)">
+						记住账号
+					</ion-toggle>
+				</div>-->
+
+				<div class="list list-inset" style="background:none">
+					<input class="button  button-block button-positive" type="submit" ng-disabled="myForm.$invalid" ng-click="doLogin(formUser)" value="登录" />
+				</div>
+				<!--<a ui-sref="tab.workDynamic">dd</a>-->
+			</form>
+		</div>
+	</ion-content>
+</ion-view>

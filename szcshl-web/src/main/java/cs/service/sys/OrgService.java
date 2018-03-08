@@ -15,7 +15,7 @@ public interface OrgService {
 	ResultMsg createOrg(OrgDto orgDto);
 	ResultMsg updateOrg(OrgDto orgDto);
 	void deleteOrg(String id) ;
-	PageModelDto<UserDto> getOrgUsers(String id) ;
+	PageModelDto<UserDto> getOrgUsers(String id,ODataObj odataObj) ;
 	PageModelDto<UserDto> getUsersNotInOrg(String id,ODataObj oDataObj);
 	void addUserToOrg(String userId,String orgId);
 	void removeOrgUser(String userId, String orgId);

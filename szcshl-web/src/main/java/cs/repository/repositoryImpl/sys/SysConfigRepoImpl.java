@@ -2,6 +2,7 @@ package cs.repository.repositoryImpl.sys;
 
 import cs.domain.sys.SysConfig;
 import cs.domain.sys.SysConfig_;
+import cs.model.sys.SysConfigDto;
 import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -46,5 +47,18 @@ public class SysConfigRepoImpl extends AbstractRepository<SysConfig, String> imp
         }else{
             return null;
         }
+    }
+
+    /**
+     * 根据key值从数据库查询数据
+     * @param key
+     * @return
+     */
+    @Override
+    public SysConfig findByDataKey(String key) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(SysConfig_.configKey.getName() , key));
+        SysConfig sysConfig = (SysConfig) criteria.uniqueResult();
+        return sysConfig;
     }
 }

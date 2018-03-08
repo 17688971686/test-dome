@@ -21,7 +21,7 @@ public class Idea extends DomainBase{
 
 	@Id
 	@GeneratedValue(generator= "ideaGenerator")
-	@GenericGenerator(name= "ideaGenerator",strategy = "uuid")
+	@GenericGenerator(name= "ideaGenerator",strategy = "org.hibernate.id.UUIDGenerator")
 	private String ideaID;  //审批意见id
 	
 	@Column(columnDefinition="VARCHAR(2000)")

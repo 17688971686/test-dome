@@ -2,7 +2,6 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<script src="https://kendo.cdn.telerik.com/2017.2.621/js/pako_deflate.min.js"></script>
 <style>
     .custom-event {
         color: #000000;
@@ -48,9 +47,8 @@
         float: right;
         background-color: #b92c28;
     }
+
 </style>
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
@@ -60,7 +58,7 @@
     <div class="well well-sm">
         会议室查询：
         <select ng-model="vm.search.mrID" name="mrID" ng-change="vm.findMeeting()">
-            <option ng-repeat="x in vm.meetings" value="{{x.id}}" ng-selected="vm.search.mrID == x.id">{{x.mrName}}</option>
+            <option ng-repeat="x in vm.meetings |filter:{mrStatus:'1'}" value="{{x.id}}" ng-selected="vm.search.mrID == x.id">{{x.mrName}}</option>
         </select>
         <span ng-show="vm.model.businessType && vm.model.businessId "><go-back></go-back></span>
         <button type="button" class="btn btn-sm btn-primary" ng-click="vm.exportThisWeekStage()" value="">

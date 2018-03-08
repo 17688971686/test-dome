@@ -11,7 +11,7 @@
         vm.data = {};
         vm.title = '专家信息编辑';
         vm.isuserExist = false;
-        vm.expertID = $state.params.expertID;
+        vm.expertID = $state.params.id;
         //一些参数
         vm.showSS = true;
         vm.showSC = false;
@@ -50,6 +50,7 @@
                     visible: false,
                     open:function(){
                         vm.isLoading = true;
+                        vm.reviewProjectList = [];
                         expertSvc.reviewProjectGrid(vm.model.expertID,function(data){
                             vm.isLoading = false;
                             if(data && data.length > 0){

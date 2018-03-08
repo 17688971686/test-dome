@@ -15,6 +15,7 @@
 
         //S_初始化
         function initFileRecordData(vm) {
+            vm.otherFile=[];//定义归档其他资料的包含分类5、6、7
             var httpOptions = {
                 method: 'get',
                 url: rootPath + "/fileRecord/initFillPage",
@@ -27,6 +28,18 @@
                     vm.signUserList = response.data.sign_user_List;
                     //是否协审
                     vm.isassistproc = (vm.fileRecord.isassistproc == '9')?true:false;
+                    //其它资料信息
+                    vm.fileRecord.registerFileDto.forEach(function(registerFile  , x){
+                        if(registerFile.businessType == 5 ||registerFile.businessType == 6 ||registerFile.businessType == 7){
+                            vm.otherFile.push(registerFile);
+                        }else if(registerFile.businessType == 2){
+                            vm.drawingFile.push(registerFile);
+                        }
+                        /*else if(registerFile.businessType == "XMJYS_DECLARE_FILE"){
+                            vm.declareFile.push(registerFile);
+                        }*/
+                    })
+
                     //初始化附件上传
                     vm.initFileUpload();
                 }
@@ -40,7 +53,7 @@
         }//E_初始化
 
         //S_保存
-        function saveFileRecord(vm) {
+        function saveFileRecord(vm,callBack) {
             common.initJqValidation($("#fileRecord_form"));
             var isValid = $("#fileRecord_form").valid();
             if (isValid) {
@@ -57,13 +70,8 @@
                     data: vm.fileRecord
                 }
                 var httpSuccess = function success(response) {
-                    vm.isCommit = false;
-                    if(response.data.flag || response.data.reCode == 'ok'){
-                        vm.fileRecord = response.data.reObj;
-                        vm.fileRecord.signId = vm.signId;
-                        bsWin.success("操作成功！")
-                    }else{
-                        bsWin.error(response.data.reMsg);
+                    if (callBack != undefined && typeof callBack == 'function') {
+                        callBack(response.data);
                     }
                 }
                 common.http({
@@ -74,6 +82,8 @@
                         vm.isCommit = false;
                     }
                 });
+            }else{
+
             }
         }//E_保存
 

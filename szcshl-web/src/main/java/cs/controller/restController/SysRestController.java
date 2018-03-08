@@ -1,25 +1,25 @@
 package cs.controller.restController;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.JSONSerializer;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
 import cs.ahelper.IgnoreAnnotation;
-import cs.common.Constant;
-import cs.common.FGWResponse;
-import cs.common.IFResultCode;
-import cs.common.ResultMsg;
+import cs.common.*;
 import cs.common.utils.PropertyUtil;
 import cs.common.utils.Validate;
-import cs.controller.project.SignController;
+import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
+import cs.domain.project.WorkProgram;
 import cs.domain.sys.Log;
 import cs.model.project.SignDto;
+import cs.model.project.WorkProgramDto;
+import cs.model.sys.SysFileDto;
 import cs.model.topic.TopicInfoDto;
 import cs.service.project.SignService;
+import cs.service.restService.SignRestService;
 import cs.service.sys.LogService;
 import cs.service.topic.TopicInfoService;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
+
+import static cs.common.Constant.SUPER_USER;
 
 /**
  * 系统接口controller
@@ -40,14 +42,15 @@ import java.util.*;
 public class SysRestController {
     private static Logger logger = Logger.getLogger(SysRestController.class);
     @Autowired
-    private SignService signService;
+    private SignRestService signRestService;
     @Autowired
     private TopicInfoService topicInfoService;
     @Autowired
     private HttpClientOperate httpClientOperate;
     @Autowired
     private LogService logService;
-
+    @Autowired
+    private SignService signService;
     /**
      * 项目签收信息
      *
@@ -55,17 +58,25 @@ public class SysRestController {
      * @return
      */
     @RequestMapping(name = "项目签收信息", value = "/pushProject", method = RequestMethod.POST)
-    @Transactional
-    public ResultMsg pushProject(@RequestParam String signDtoJson) {
-        //json转出对象
+    public synchronized ResultMsg pushProject(@RequestParam String signDtoJson) {
+        ResultMsg resultMsg = null;
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
-        ResultMsg resultMsg = signService.pushProject(signDto);
+        String msg = "项目【"+signDto.getProjectname()+"("+signDto.getFilecode()+")】，";
+        try{
+            //json转出对象
+            resultMsg = signRestService.pushProject(signDto);
+        }catch (Exception e){
+            resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
+            e.printStackTrace();
+        }
+
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
+        log.setUserName(SUPER_USER);
         log.setLogCode(resultMsg.getReCode());
         log.setModule(Constant.LOG_MODULE.INTERFACE.getValue() + "【获取项目信息接口】");
-        log.setMessage(resultMsg.getReMsg());
+        log.setMessage(msg+resultMsg.getReMsg());
         log.setBuninessId(Validate.isObject(resultMsg.getReObj()) ? resultMsg.getReObj().toString() : "");
         log.setBuninessType(Constant.BusinessType.SIGN.getValue());
         log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
@@ -145,7 +156,7 @@ public class SysRestController {
             //3、办理意见
             ArrayList<HashMap<String, Object>> dataList = new ArrayList<HashMap<String, Object>>();
             HashMap<String, Object> psgcMap = new HashMap<String, Object>();
-            psgcMap.put("blhj", IFResultCode.PSGCBLHJ.getCodeByValue(nodeNameKey));// 办理环节
+            psgcMap.put("blhj", "1");// 办理环节
             psgcMap.put("psblyj", "办理意见办理意见办理意见办理意见办理意见");// 办理意见
             psgcMap.put("blr", "办理人");// 办理人
             psgcMap.put("blsj", (new Date()).getTime());// 办理时间
@@ -214,16 +225,86 @@ public class SysRestController {
         return returnMsg;
     }
 
-
     @RequestMapping(name = "项目签收信息", value = "/testJson")
     public void testJson() throws IOException {
-        String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/";
+        String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/pushProject";
         SignDto signDto = new SignDto();
-        signDto.setSignid("122");
-        signDto.setCreatedBy("系统管理员");
+        //委里收文编号
+        signDto.setFilecode("C20171221");
+        //项目建议书阶段
+        signDto.setReviewstage("STAGESUG");
+        //项目名称
+        signDto.setProjectname("深圳市政府投资教育项目");
+        //附件列表
+        List<SysFileDto> fileDtoList = new ArrayList<>();
+        SysFileDto sysFileDto = new SysFileDto();
+        //显示名称，后缀名也要
+        sysFileDto.setShowName("gdzctz.xlsx");
+        //附件大小，Long类型
+        sysFileDto.setFileSize(11213L);
+        //附件下载地址
+        sysFileDto.setFileUrl("http://203.91.46.83:8030/SZFGWAPP/LEAP/SZFGWOA/datastatistics/sz-invest/gdzctz.xlsx");
+        fileDtoList.add(sysFileDto);
+        //项目添加附件列表
+        signDto.setSysFileDtoList(fileDtoList);
+
         Map<String, String> params = new HashMap<>();
         params.put("signDtoJson", JSON.toJSONString(signDto));
-        HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI + "/pushProject", params);
+        HttpResult hst = httpClientOperate.doPost(REST_SERVICE_URI, params);
+        //System.out.println(params.get("signDtoJson"));
         System.out.println(hst.toString());
+    }
+
+    @RequestMapping(name = "项目签收信息", value = "/testFGWJson")
+    public void testFGWJson() throws IOException {
+        //1、查询还未发送给发改委的项目信息（在办或者已办结，未发送的项目）
+        List<SignDto> unSendList = signService.findUnSendFGWList();
+        if (Validate.isList(unSendList)) {
+            //部分参数
+            int sucessCount = 0, errorCount = 0, totalCount = unSendList.size();
+            StringBuffer errorBuffer = new StringBuffer();
+            List<String> sucessIdList = new ArrayList<>();
+            ResultMsg resultMsg = null;
+            // 接口地址
+            for(int i=0,l=unSendList.size();i<l;i++){
+                SignDto signDto = unSendList.get(i);
+                WorkProgramDto mainWP = null;
+                if (Validate.isList(signDto.getWorkProgramDtoList())) {
+                    mainWP = signDto.getWorkProgramDtoList().get(0);
+                }
+                resultMsg = signRestService.setToFGW(signDto,mainWP,signDto.getDispatchDocDto(),signRestService.getReturnUrl());
+                if(resultMsg.isFlag()){
+                    sucessCount ++ ;
+                }else{
+                    errorCount ++;
+                    errorBuffer.append(resultMsg.getReMsg()+"\r\n");
+                }
+            }
+
+            if(sucessCount == 0){
+                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), errorBuffer.toString());
+            }else if(errorCount == 0){
+                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "本次回传数据成功，总共回传【"+sucessCount+"】个项目数据！");
+            }else {
+                String msg = "本次总共回传【"+totalCount+"】，成功【"+sucessCount+"】个，失败"+errorCount+"】个；"+errorBuffer.toString();
+                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), msg);
+            }
+            //更改成功发送的项目状态
+            if(Validate.isList(sucessIdList)){
+                signService.updateSignState(StringUtils.join(sucessIdList,","), Sign_.isSendFGW.getName(), Constant.EnumState.YES.getValue());
+            }
+
+            //添加日记记录
+            Log log = new Log();
+            log.setCreatedDate(new Date());
+            log.setLogCode(resultMsg.getReCode());
+            log.setMessage(resultMsg.getReMsg());
+            log.setModule(Constant.LOG_MODULE.INTERFACE.getValue() + "【项目回调接口】");
+            log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
+            log.setLogger(this.getClass().getName() + ".execute");
+            //优先级别高
+            log.setLogLevel(Constant.EnumState.PROCESS.getValue());
+            logService.save(log);
+        }
     }
 }

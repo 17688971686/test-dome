@@ -116,6 +116,24 @@
 
         // begin#生成月报简报
         function createMonthReport(vm) {
+            if(vm.monthly.reportMultiyear == undefined){
+                vm.monthly.reportMultiyear = "";
+            }
+            if(vm.monthly.theMonths == undefined){
+                vm.monthly.theMonths = "";
+            }
+            if(vm.monthly.startMoultiyear == undefined){
+                vm.monthly.startMoultiyear ="";
+            }
+            if(vm.monthly.endMoultiyear== undefined){
+                vm.monthly.endMoultiyear = "";
+            }
+            if(vm.monthly.staerTheMonths== undefined){
+                vm.monthly.staerTheMonths = "";
+            }
+            if(vm.monthly.endTheMonths == undefined){
+                vm.monthly.endTheMonths = "";
+            }
             window.open(rootPath + "/monthlyNewsletter/createMonthReport?reportMultiyear=" + vm.monthly.reportMultiyear + "&theMonths="
                 + vm.monthly.theMonths + "&startMoultiyear=" + vm.monthly.startMoultiyear + "&endMoultiyear=" + vm.monthly.endMoultiyear+ "&staerTheMonths=" + vm.monthly.staerTheMonths+ "&endTheMonths=" + vm.monthly.endTheMonths);
         /*    var httpOptions = {
@@ -166,7 +184,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData",$("#monthlyForm"),{filter:"monthlyType eq '1'"}),
+                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData",$("#monthlyForm"),{$filter:"monthlyType eq '1'"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -277,7 +295,7 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData",$("#monthlyForm"),{filter:"monthlyType eq '2'"}),
+                transport: common.kendoGridConfig().transport(url_monthlyNewsletter+"/findByOData",$("#monthlyForm"),{$filter:"monthlyType eq '2'"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {

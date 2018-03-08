@@ -2,13 +2,15 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+
+<!-- 附件 -->
+<#include "/file/common.html"/>
 <!--项目阶段关联html-->
 <#include "/sign/signAssociate.html"/>
 <!--合并选择公共页面-->
 <#include "/sign/mergeSign.html"/>
 
-<div class="toolbar">
+<div class="toolbar" ng-hide="vm.isControl">
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit">
         <span class="glyphicon glyphicon-ok"></span>保存
     </button>
@@ -17,6 +19,21 @@
     </button>
     <button class="btn btn-sm btn-primary" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
     <button class="btn btn-sm btn-primary" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='资金申请报告'"  class=" btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEREPORT')">打印预览</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='设备清单（国产）'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEHOMELAND')">打印预览</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='设备清单（进口）'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEIMPORT')">打印预览</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='可行性研究报告'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESTUDY')">打印预览</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='进口设备'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEDEVICE')">打印预览</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='其它'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEOTHER')">打印预览</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='项目概算'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGEBUDGET')">打印预览</button>
+    <button  ng-if="vm.dispatchDoc.dispatchStage=='项目建议书'" class="btn btn-sm btn-primary" style="width: 70px; margin: auto;" ng-click="printFile(vm.dispatchDoc.id,'DISPATCHDOC' , 'STAGESUG')">打印预览</button>
+
+</div>
+<div class="toolbar" ng-show="vm.isControl">
+    <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit">
+        <span class="glyphicon glyphicon-ok"></span>保存
+    </button>
+    <go-back></go-back>
 </div>
 
 <div class="well well-sm" style="background:white;">
@@ -27,45 +44,51 @@
         <!-- S 项目建议书  -->
         <div   ng-show="vm.dispatchDoc.dispatchStage=='项目建议书'">
             <div id="projectEdit_xmjsy" ng-include  src="'${path}/contents/app/dispatch/dispatchEdit/projectEdit.html'"></div>
-            <div id="projectEdit_xmjsy_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmjys.html"/></div>
+            <#--<div id="projectEdit_xmjsy_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmjys.html"/></div>-->
         </div>
         <!-- S 项目建议书 -->
 
         <!-- S 可行性研究报告 -->
         <div  ng-show="vm.dispatchDoc.dispatchStage=='可行性研究报告'" >
             <div id="feasibilityEdit_kxxyj" ng-include  src="'${path}/contents/app/dispatch/dispatchEdit/feasibilityEdit.html'"></div>
-            <div id="feasibilityEdit_kxxyj_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailKxxyjbg.html"/></div>
+            <#--<div id="feasibilityEdit_kxxyj_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailKxxyjbg.html"/></div>-->
         </div>
         <!-- E 可行性研究报告 -->
 
         <!-- S 资金申请报告 -->
         <div  ng-show="vm.dispatchDoc.dispatchStage=='资金申请报告'" >
             <div id="capitalAppReportEdit_zjsq" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/capitalAppReportEdit.html'"></div>
-            <div id="capitalAppReportEdit_zjsq_templ" style="display: none;" > <#include "/templatePrint/dispatch/capitalAppReportZjsq.html"/></div>
+            <#--<div id="capitalAppReportEdit_zjsq_templ" style="display: none;" > <#include "/templatePrint/dispatch/capitalAppReportZjsq.html"/></div>-->
         </div>
         <!-- E 资金申请报告 -->
 
         <!-- S 项目概算 -->
         <div  ng-show="vm.dispatchDoc.dispatchStage=='项目概算'" >
             <div id="projectBudgetEdit_xmgs" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/projectBudgetEdit.html'"></div>
-            <div id="projectBudgetEdit_xmgs_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmgs.html"/></div>
+            <#--<div id="projectBudgetEdit_xmgs_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailXmgs.html"/></div>-->
         </div>
         <!-- E 项目概算 -->
 
         <!-- S 进口设备 -->
         <div  ng-show="vm.dispatchDoc.dispatchStage=='进口设备'">
             <div id="foreignEdit_jksb"  ng-include src="'${path}/contents/app/dispatch/dispatchEdit/foreignEdit.html'"></div>
-            <div id="foreignEdit_jksb_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailJksb.html"/></div>
+            <#--<div id="foreignEdit_jksb_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailJksb.html"/></div>-->
         </div>
         <!-- E 进口设备 -->
 
         <!-- S 设备清单（国产）/设备清单（进口） -->
         <div ng-show="vm.dispatchDoc.dispatchStage=='设备清单（国产）' || vm.dispatchDoc.dispatchStage=='设备清单（进口）' ">
             <div  id="domesticEdit_sbqd" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/domesticEdit.html'"></div>
-            <div id="domesticEdit_sbqd_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailSbqd.html"/></div>
+            <#--<div id="domesticEdit_sbqd_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailSbqd.html"/></div>-->
         </div>
         <!-- E 设备清单（国产）/设备清单（进口） -->
 
+        <!-- S 其他 -->
+        <div ng-show="vm.dispatchDoc.dispatchStage=='其它'">
+            <div  id="otherEdit_qt" ng-include src="'${path}/contents/app/dispatch/dispatchEdit/otherEdit.html'"></div>
+        <#--<div id="domesticEdit_sbqd_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailSbqd.html"/></div>-->
+        </div>
+        <!-- E 设备清单（国产）/设备清单（进口） -->
         <!---S 发文打印模板 引入-->
 
         <!---E 发文打印模板 引入-->

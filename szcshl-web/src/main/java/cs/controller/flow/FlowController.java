@@ -28,6 +28,7 @@ import cs.service.project.AddSuppLetterService;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
 import cs.service.reviewProjectAppraise.AppraiseService;
+import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
 import cs.service.sys.LogService;
 import cs.service.topic.TopicInfoService;
@@ -130,7 +131,8 @@ public class FlowController {
     private AnnountmentService annountmentService;
     @Autowired
     private LogService logService;
-
+    @Autowired
+    private RTXService rtxService;
 
     //@RequiresPermissions("flow#html/tasks#post")
     @RequiresAuthentication
@@ -477,6 +479,8 @@ public class FlowController {
         //优先级别高
         log.setLogLevel(Constant.EnumState.PROCESS.getValue());
         logService.save(log);
+        //腾讯通消息处理
+        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg);
         return resultMsg;
     }
 
@@ -642,6 +646,9 @@ public class FlowController {
                 break;
             case FlowConstant.ANNOUNT_MENT_FLOW:
                 resultPage = "annountMent/flow/flowDeal";
+                break;
+            case FlowConstant.BOOKS_BUY_FLOW:
+                resultPage = "bookBuyBusiness/flowEnd";
                 break;
             default:
                 ;

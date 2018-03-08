@@ -26,7 +26,6 @@
 
         //初始化附件上传控件
         vm.initFileUpload = function(){
-
             if (!vm.suppletter.id) {
                 //监听ID，如果有新值，则自动初始化上传控件
                 $scope.$watch("vm.suppletter.id", function (newValue, oldValue) {
@@ -37,34 +36,16 @@
             }
             vm.sysFile = {
                 businessId: vm.suppletter.id,
-                mainId: vm.suppletter.id,
+                mainId: vm.suppletter.businessId,
                 mainType: sysfileSvc.mainTypeValue().SIGN,
                 sysfileType: sysfileSvc.mainTypeValue().AADSUPP_FILE,
                 sysBusiType: sysfileSvc.mainTypeValue().AADSUPP_FILE,
+                detailBt: "detail_file_bt",
             };
             sysfileSvc.initUploadOptions({
                 inputId: "sysfileinput",
                 vm: vm
             });
-        }
-        //拟补充资料函查看附件
-        vm.addSuppContent = function () {
-        	if(vm.suppletter.id){
-            vm.showsupp = true;
-            var ideaEditWindow = $("#addsuppletter");
-            ideaEditWindow.kendoWindow({
-                width: "60%",
-                height: "90%",
-                title: "拟补资料函正文",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
-            addSuppLetterSvc.findByBusinessId(vm);
-        	}else{
-        		bsWin.alert("请先保存业务数据");
-        	}
         }
         //保存拟补资料函
         vm.saveAddSuppletter = function () {

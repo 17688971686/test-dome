@@ -1,173 +1,250 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/admin/reportList.html'"></div>
+<style>
+    .hidetr{
+        display: none;
+    }
+    .less,.more{
+        width: 40px;
+        color: #e08e0b;
+        font-size: 12px;
+        padding:2px;
+        cursor:pointer;
+    }
+</style>
 
+<!--引入查询统计弹框--->
+<div  style="background:white;display: none;">
+<#include "/sign/statisticsList.html"/>
+</div>
+
+<!--引入自定义表字段--->
+<div  style="background:white;display: none;">
+<#include "/header/selectHeader.html"/>
+</div>
 <!-- 项目综合查询页面 -->
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a >项目管理</a></li>
+        <li><a>项目管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
 
     <div class="toolbar">
-        <button class="btn btn-sm btn-primary" ng-click="vm.searchSignList()" ng-disabled="vm.isSubmit"><span
-                class="glyphicon glyphicon-search"></span>查询
+        <button class="btn btn-sm btn-primary" ng-click="vm.searchSignList()" ng-disabled="vm.isSubmit">
+            <span class="glyphicon glyphicon-search"></span>查询
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
-            <span class="glyphicon glyphicon-repeat"></span>重置</button>
-        <!--<a class="btn btn-sm btn-primary" href="#/statisticalList/{{vm.headerType}}"> 统计</a>-->
-        <button class="btn btn-sm btn-primary" ng-click="vm.statistical()">
-            统计</button>
-        <a class="btn btn-sm btn-primary" href="#/headerEdit/{{vm.headerType}}"> 表字段设置</a>
+            <span class="glyphicon glyphicon-repeat"></span>重置
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.QueryStatistics()">
+            <i class="fa fa-bar-chart" aria-hidden="true"></i>统计</button>
+
+        <span class="attentionDiv" style="padding:5px;font-size: 12px;">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
+        温馨提示：统计查询耗时较长，统计时，尽量不要进行大数据量的项目统计！
+        </span>
     </div>
     <div class="well well-sm">
-        <form id="searchform" name="searchform" >
-            <table style="width:100%">
+        <form id="searchform" name="searchform">
+            <table style="width:100%" id="searchTable">
+                <!--  排除已删除 和未正式签收的项目-->
+                <input type="text"  name="signState" operator="ne" value="7" hidden="hidden">
+                <input type="text"  name="issign" operator="eq" value="9" hidden="hidden">
                 <tr>
-                    <td  class="text-right" style="width:10%;">项目名称</td>
-                    <td style="width:15%;">
-                        <input name="projectname" type="text" operator="like" ng-model="vm.project.projectname" class="form-control input-sm "/>
+                    <td class="text-right" style="width:10%;min-width: 80px;max-width-width:120px;">项目名称</td>
+                    <td colspan="3" style="width: 40%;">
+                        <input name="projectname" type="text" operator="like" ng-model="vm.project.projectname"
+                               class="form-control input-sm "/>
                     </td>
-                    <td  class="text-right" style="width:10%;">建设单位</td>
-                    <td style="width:15%;">
-                        <input name="builtcompanyName" type="text" operator="like" ng-model="vm.project.builtcompanyName" class="form-control input-sm "/>
+                    <td class="text-right" style="width:10%;min-width: 80px;max-width-width:120px;">建设单位</td>
+                    <td colspan="3" style="width: 40%;">
+                        <input name="builtcompanyName" type="text" operator="like"
+                               ng-model="vm.project.builtcompanyName" class="form-control input-sm "/>
                     </td>
-
-                    <td  class="text-right" style="width:10%;">是否有环评</td>
-                    <td style="width:15%;">
-                        <input type="checkbox" name="ishaveeia" operator="eq" ng-model="vm.project.ishaveeia" value="9" ng-true-value="9">
-                    </td>
-
-                    <td  class="text-right" style="width:10%;">是否有其他关联</td>
-                    <td style="width:15%;">
-                        <input type="checkbox" name="isRelated"  operator="eq" ng-model="vm.project.isRelated"  value="9" ng-true-value="9">
+                    <td style="vertical-align: top;">
+                        <div class="more">
+                           <span >展开</span><i class="fa fa-angle-double-down" aria-hidden="true"></i>
+                        </div>
                     </td>
                 </tr>
                 <tr>
-                    <td  class="text-right">项目类型</td>
-                    <td>
-                        <select name="projectType" operator="eq" class="form-control select-sm" ng-model="vm.project.projecttype">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
-                            </option>
-                        </select>
-                    </td>
-                    <td  class="text-right">项目负责人</td>
-                    <td>
-                        <input name="aUserName" type="text" operator="like" ng-model="vm.project.aUserName" class="form-control input-sm "/>
-                    </td>
-                    <td  class="text-right">归档编号</td>
-                    <td>
-                        <input name="ffilenum" type="text" operator="like" ng-model="vm.project.ffilenum" class="form-control input-sm "/>
-                    </td>
-                    <td  class="text-right">主管部门</td>
-                    <td>
-                        <select name="mOrgId"  class="form-control select-sm " operator="eq" ng-model="vm.project.mOrgId">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in vm.orgDeptList" value="{{x.id}}">{{x.name}}</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td  class="text-right" style="width:150px;">项目状态</td>
-                    <td>
-                        <select name="signState" ng-model="vm.sign.signState" operator="eq" class="form-control select-sm " >
+                    <td class="text-right">项目状态</td>
+                    <td width="15%">
+                        <select name="signState" ng-model="vm.project.signState" operator="eq"
+                                class="form-control select-sm ">
                             <option value="">请选择</option>
                             <option value="1">进行中</option>
                             <option value="2">已暂停</option>
                             <option value="9">已完成</option>
                         </select>
                     </td>
-                    <td  class="text-right">评审阶段</td>
-                    <td>
-                        <select name="reviewstage"  operator="eq" class="form-control select "  ng-model="vm.project.reviewstage">
+                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">项目类型</td>
+                    <td width="15%">
+                        <select name="projectType" operator="eq" class="form-control select-sm"
+                                ng-model="vm.project.projectType" >
                             <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-                        </select>
-                    </td>
-                    <td  class="text-right">缓急程度</td>
-                    <td>
-                        <select operator="eq" name="urgencydegree" class="form-control select-sm " ng-model="vm.project.urgencydegree">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
-                        </select>
-                    </td>
-                    <td  class="text-right">评审方式</td>
-                    <td>
-                        <select operator="eq" name="reviewType"  class="form-control select-sm " ng-model="vm.project.reviewType">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
+                            <option  ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.projectType==x.dictName" >{{x.dictName}}
                             </option>
                         </select>
                     </td>
-
+                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">主管部门</td>
+                    <td width="15%">
+                        <select name="mOrgId" class="form-control select-sm " operator="eq"
+                                ng-model="vm.project.mOrgId">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in vm.orgDeptList" value="{{x.id}}" ng-selected="vm.project.mOrgId==x.id" >{{x.name}}</option>
+                        </select>
+                    </td>
+                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">缓急程度</td>
+                    <td width="15%">
+                        <select operator="eq" name="urgencydegree" class="form-control select-sm "
+                                ng-model="vm.project.urgencydegree">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.BAOMI.dicts" value="{{x.dictName}}" ng-selected="vm.project.urgencydegree==x.dictName" >{{x.dictName}}</option>
+                        </select>
+                    </td>
                 </tr>
-                <tr>
-                    <td  class="text-right">文件字号</td>
+                <tr class="hidetr changeTr">
+                    <td class="text-right">项目负责人</td>
                     <td>
-                        <input name="dfilenum" type="text" operator="like" class="form-control input-sm " ng-model="vm.project.dfilenum"/>
+                        <input name="allPriUser" type="text" operator="like" ng-model="vm.project.allPriUser"
+                               class="form-control input-sm "/>
                     </td>
-                    <td  class="text-right" style="width:150px;">收文日期</td>
+                    <td class="text-right">秘密等级</td>
                     <td>
-                        <input type="text" name="signdate" class="form-control input" style="width: 100%"  operator="ge" ng-model="vm.project.signdate"
-                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
+                        <select operator="eq" name="secrectlevel" ng-model="vm.project.secrectlevel"
+                                class="form-control select-sm">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}" ng-selected="vm.project.secrectlevel==x.dictName">{{x.dictName}}
+                            </option>
+                        </select>
+                    </td>
+                    <td class="text-right">归档编号</td>
+                    <td>
+                        <input name="ffilenum" type="text" operator="like" ng-model="vm.project.ffilenum"
+                               class="form-control input-sm "/>
+                    </td>
+                    <td class="text-right">文件字号</td>
+                    <td>
+                        <input name="dfilenum" type="text" operator="like" class="form-control input-sm "
+                               ng-model="vm.project.dfilenum"/>
+                    </td>
+                </tr>
+                <tr class="hidetr changeTr">
+                    <td class="text-right">评审阶段</td>
+                    <td>
+                        <select name="reviewstage" operator="eq" class="form-control select "
+                                ng-model="vm.project.reviewstage">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}" ng-selected="vm.project.reviewstage==x.dictName">{{x.dictName}}</option>
+                        </select>
                     </td>
 
-                    <td  class="text-right">发文日期</td>
+                    <td class="text-right">评审方式</td>
                     <td>
-                        <input type="text" name="dispatchDate" class="form-control input-sm " style="width: 100%" operator="ge" ng-model="vm.project.dispatchDate"
-                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'" >
+                        <select operator="eq" name="reviewType" class="form-control select-sm "
+                                ng-model="vm.project.reviewType">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.REVIEW_TYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.reviewType==x.dictName">{{x.dictName}}
+                            </option>
+                        </select>
                     </td>
-                    <td  class="text-right">归档日期</td>
+                    <td class="text-right">发文类型</td>
                     <td>
-                        <input type="text" name="fileDate" class="form-control input-sm " style="width: 100%" operator="ge" ng-model="vm.project.fileDate"
+                        <select operator="eq" name="dispatchType" class="form-control select-sm "
+                                ng-model="vm.project.dispatchType">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.dispatchType==x.dictName">{{x.dictName}}
+                            </option>
+                        </select>
+                    </td>
+                    <td class="text-right">行业类型</td>
+                    <td>
+                        <select operator="eq" name="industryType" ng-model="vm.project.industryType"
+                                class="form-control select-sm">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.industryType==x.dictName">{{x.dictName}}
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr class="hidetr changeTr">
+                    <td class="text-right">签收日期</td>
+                    <td colspan="3">
+                        <input type="text" name="signdate" style="width:45%;min-width: 115px;max-width: 150px;" operator="ge" ng-model="vm.project.signDateBegin"
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                        至
+                        <input type="text" name="signdate" style="width:45%;min-width: 115px;max-width: 150px;" operator="le" ng-model="vm.project.signDateEnd"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
+                    <td class="text-right">发文日期</td>
+                    <td colspan="3">
+                        <input type="text" name="dispatchDate"  style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.dispatchDateBegin"
+                               operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                        至
+                        <input type="text" name="dispatchDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.dispatchdateEnd"
+                               operator="le" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                    </td>
                 </tr>
-                <tr>
-                    <td  class="text-right">发文类型</td>
+                <tr class="hidetr changeTr">
+                    <td class="text-right">归档日期</td>
+                    <td colspan="2">
+                        <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateBegin"
+                               operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                        至
+                        <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateEnd"
+                               operator="le"
+                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                    </td>
+                   <td class="text-right">评审天数</td>
                     <td>
-                        <select operator="eq" name="dispatchType" class="form-control select-sm " ng-model="vm.project.dispatchType">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
-                            </option>
-                        </select>
+                        <input name="reviewdays" data-type='float' ng-model="vm.project.beginReviewdays"
+                               style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="ge"/>
+                        -
+                        <input name="reviewdays" data-type='float' ng-model="vm.project.endReviewdays"
+                               style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="le"/>
+                    </td>
+                    <td class="text-right">申报投资</td>
+                    <td>
+                        <input name="appalyInvestment" data-type='bigDecimal' ng-model="vm.project.appalyInvestmentMin"
+                               style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="ge"/>
+                        -
+                        <input name="appalyInvestment" data-type='bigDecimal' ng-model="vm.project.appalyInvestmentMax"
+                               style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="le"/>
+                    </td>
+                    <td class="text-right">是否有关联</td>
+                    <td>
+                        <input type="checkbox" name="isRelated" operator="eq" ng-model="vm.project.isRelated" value="9"
+                               ng-true-value="9">
+                    </td>
+                </tr>
+                <tr class="hidetr changeTr">
+                    <td class="text-right">是否暂停</td>
+                    <td>
+                        <input type="checkbox" operator="eq" name="isProjectStop" value="9" ng-model="vm.project.isProjectStop"
+                               ng-true-value="9"/>
                     </td>
 
-                    <td  class="text-right">申报投资</td>
+                    <td class="text-right">有补充资料函</td>
                     <td>
-                        <input name="appalyInvestment" type="text" operator="like" ng-model="vm.project.appalyInvestment" class="form-control input-sm "/>
+                        <input type="checkbox" name="isHaveSuppLetter" operator="eq" value="9"
+                               ng-model="vm.project.isHaveSuppLetter" ng-true-value="9"/>
                     </td>
-                    <td  class="text-right">行业类型</td>
+                    <td class="text-right">有补充资料</td>
                     <td>
-                        <select operator="eq" name="industryType" ng-model="vm.project.industryType"  class="form-control select-sm">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.INDUSTRYTYPE.dicts" value="{{x.dictName}}">{{x.dictName}}
-                            </option>
-                        </select>
+                        <input type="checkbox" name="isSupplementary" operator="eq" value="9"
+                               ng-model="vm.project.isSupplementary" ng-true-value="9"/>
                     </td>
-                    <td  class="text-right">秘密等级</td>
+                    <td class="text-right">是否有环评</td>
                     <td>
-                        <select operator="eq" name="secrectlevel" ng-model="vm.project.secrectlevel" class="form-control select-sm">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}">{{x.dictName}}
-                            </option>
-                        </select>
-                </tr>
-                <tr>
-                    <td  class="text-right">是否暂停</td>
-                    <td>
-                        <input type="checkbox"  operator="eq" name="signState" value="2"  ng-model="vm.project.signState" ng-true-value="2"/>
+                        <input type="checkbox" name="ishaveeia" operator="eq" ng-model="vm.project.ishaveeia" value="9"
+                               ng-true-value="9">
                     </td>
-                    <td  class="text-right">有补充资料函</td>
-                    <td>
-                        <input type="checkbox" name="isHaveSuppLetter" operator="eq"  value="9" ng-model="vm.project.isHaveSuppLetter" ng-true-value="9"/>
-                    </td>
-                    <td  class="text-right">有补充资料</td>
-                    <td>
-                        <input type="checkbox" name="isSupplementary" operator="eq" value="9" ng-model="vm.project.isSupplementary" ng-true-value="9"/>
+                    <td style="vertical-align: top;">
+                        <div class="less">
+                            <span >收起</span><i class="fa fa-angle-double-up" aria-hidden="true"></i>
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -175,12 +252,24 @@
     </div>
     <div id="signGrid" class="grid" kendo-grid="grid" k-options="vm.signListOptions"></div>
 </div>
-<script type="text/template" id="columnBtns">	
-<@shiro.hasPermission name="sign##put">
-	       <button class="btn btn-xs btn-primary" ng-click="{0}" ><span class="glyphicon glyphicon-pencil"></span>查看暂停信息</button>
-</@shiro.hasPermission>
+<script type="text/template" id="columnBtns">
+    <@shiro.hasPermission name="sign##put">
+    <button class="btn btn-xs btn-primary" ng-click="{0}"><span class="glyphicon glyphicon-pencil"></span>查看暂停信息
+    </button>
+    </@shiro.hasPermission>
 </script>
-
+<script>
+    $(function(){
+        $('.more').on('click',function(){
+            $("#searchTable .changeTr").removeClass("hidetr");
+            $("#searchTable .more").addClass("hidetr");
+        })
+        $('.less').on('click',function(){
+           $("#searchTable .changeTr").addClass("hidetr");
+            $("#searchTable .more").removeClass("hidetr");
+        })
+    })
+</script>
 
 
 

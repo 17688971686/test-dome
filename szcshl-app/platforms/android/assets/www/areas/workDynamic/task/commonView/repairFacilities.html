@@ -1,0 +1,106 @@
+<div ng-if="model.repairFacilitiDtos.length==0" style="text-align: center">
+				<span>没有更多数据了！</span>
+	</div>
+
+<!--维修设备列表 ===============begin=============0===========================================================-->
+<div ng-show="facility_page == 0">
+	<!--查看维修设施-->
+	<!--<div class="item text-center bg_9BE1FA">
+		费用合计：
+		<span ng-hide="cost>10000">{{cost}}元</span>
+		<span style="color: red;" ng-show="cost>10000">{{cost}}元&nbsp;&nbsp;&nbsp;超过10000元需要审核</span>
+	</div>-->
+	<div class="item text-center bg_9BE1FA" ng-show="cost>10000">
+		<span style="color: red;">费用超出系统要求范围，请先提交审核再维修</span>
+	</div>
+	<ion-list class="project-list">
+		<a class="item item-icon-right" ng-repeat="x in model.repairFacilitiDtos | orderBy:'repairFacilityId'" ng-click="_TEMP_.repairFacilitiDtos = x;swichFacilityPage(5)">
+			<i class="icon ion-chevron-right icon-accessory"></i>
+			<div class="size_ss">
+				<div class="width_65 float_l">{{x.equipMentDto.equipMentName || x.facilityName}}&nbsp;&nbsp;&nbsp;{{x.facilityNumber}}</div>
+				<!--<div class="width_35 float_l">费用：{{x.cost}}元</div>-->
+				<div class="clear_b"></div>
+			</div>
+		</a>
+	<div class="item text-center bg_9BE1FA" ng-show="model.totalRepairCost>10000">
+		<span>维修总价:</span>
+		<span style="color: red;">{{model.totalRepairCost}}</span>
+	</div>
+	</ion-list>
+	<p></p>
+	<p></p>
+</div>
+<!--维修设备列表 ===============end=============0===========================================================-->
+<!--维修设施展开================================5===========================================================-->
+<div ng-show="facility_page == 5">
+	<!--<ion-list class="project-list">-->
+	<div class="item text-center bg_9BE1FA" ng-show="cost>10000">
+		<span style="color: red;">费用超出系统要求范围，请先提交审核再维修</span>
+	</div>
+	<label class="item">
+		<div style="width: 100%;text-align: center;">
+			{{_TEMP_.repairFacilitiDtos.facilityName || _TEMP_.repairFacilitiDtos.equipMentDto.equipMentName}}
+			&nbsp;&nbsp;&nbsp;{{_TEMP_.repairFacilitiDtos.facilityNumber}}  
+		</div>
+	</label>
+	<!--<div class="text-center  height_30px">维修细项列表({{_TEMP_.repairFacilitiDtos.repairItemDto.length}})</div>-->
+	<ion-list class="project-list">
+		<div ng-repeat="x in _TEMP_.repairFacilitiDtos.repairItemDto  | orderBy:'repairItemId'" class="item item-icon-right size_ss {{$index %2 == 0 ? 'odd':'even'}}" ng-click="_TEMP_.repairItemDto = x;swichFacilityPage(1)">
+			<i class="icon ion-chevron-right icon-accessory"></i>
+			<div>
+				<div class="size_ss" ng-click="">
+					<div class="width_50 float_l">&nbsp;分类：{{x.repairType}}</div>
+					<div class="width_50 float_l">&nbsp;名称：{{x.repairMplName}}</div>
+					<div class="width_50 float_l">&nbsp;数量：{{x.repairNumber}}{{x.repairUnit}}</div>
+					<div class="width_50 float_l">&nbsp;单价：{{x.repairUnitPrice}}</div>
+					<!--<div class="width_100 float_l">&nbsp;费用：{{x.repairUnitPrice}}元/{{x.repairUnit}}&nbsp;&nbsp;x&nbsp;&nbsp;{{x.repairNumber}}{{x.repairUnit}}&nbsp;&nbsp;=&nbsp;&nbsp;{{x.repairUnitPrice*x.repairNumber}}元</div>-->
+					<div class="width_100 clear_b">&nbsp;备注：{{x.remark}}</div>
+				</div>
+			</div>
+		</div>
+	</ion-list>
+</div>
+<!--查看维修设施 end================查看维修设施end==============================================================================-->
+<!--维修细项  查看=============================1==========================================================================================-->
+<div ng-show="facility_page == 1">
+	<label class="item">
+		          	<div style="width: 100%;text-align: center;">查看维修细项</div>
+		        </label>
+	<label class="item">
+		          	分类：{{_TEMP_.repairItemDto.repairType}}
+		        </label>
+	<label class="item">
+		          	名称：{{_TEMP_.repairItemDto.repairMplName}}
+		        </label>
+	<!--<label class="item">
+		          	单价：{{_TEMP_.repairItemDto.repairUnitPrice}}元/{{_TEMP_.repairItemDto.repairUnit}}
+		        </label>-->
+	<label class="item">
+		          	数量：{{_TEMP_.repairItemDto.repairNumber}}{{_TEMP_.repairItemDto.repairUnit}}
+		        </label>
+	<!--<label class="item">
+		          	费用：{{_TEMP_.repairItemDto.repairNumber*_TEMP_.repairItemDto.repairUnitPrice}}元
+		        </label>-->
+	<div class="row bg-white">
+		<div class="col size_s">&nbsp;&nbsp;备注：{{_TEMP_.repairItemDto.remark}}</div>
+	</div>
+	<div class="row">
+		<div class="col-50" style="border: 1px solid #11C1F3;background-color: white;text-align: center;" id="list_left">
+			<span class="text">维修前图片：</span>
+			<span ng-repeat="x in _TEMP_.repairItemDto.fileList|filter:{fileType:1}" style="border: 1px solid #000000;" ng-if="x.fileType == 1">
+		        <a ng-click="showImg((_TEMP_.repairItemDto.fileList|filter:{fileType:1}),$index)">
+		        	<img ng-src="{{x.fileUrl.length > 750 ? '' : (rootPath+'/downLoad/')}}{{x.fileUrl}}" width='100%' alt="{{x.showName}}" />
+		        </a>
+		    </span>
+		</div>
+		<div class="col-50" style="border: 1px solid #11C1F3;background-color: white;text-align: center;" id="list_rigth">
+			<span class="text">维修后图片：</span>
+			<span ng-repeat="x in _TEMP_.repairItemDto.fileList|filter:{fileType:2}" style="border: 1px solid #000000;" ng-if="x.fileType == 2">
+				<a ng-click="showImg((_TEMP_.repairItemDto.fileList|filter:{fileType:2}),$index)">
+		        			<img ng-src="{{x.fileUrl.length > 750 ? '' : (rootPath+'/downLoad/')}}{{x.fileUrl}}" width='100%' alt="{{x.showName}}"/>
+		        </a>
+			</span>
+		</div>
+	</div>
+	<p></p>
+</div>

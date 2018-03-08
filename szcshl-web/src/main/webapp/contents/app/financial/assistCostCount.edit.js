@@ -48,7 +48,5 @@
         vm.addCostWindow = function(object,id){
             addCostSvc.initAddCost(vm,vm.costType,object,id);
         }
-
-
     }
 })();

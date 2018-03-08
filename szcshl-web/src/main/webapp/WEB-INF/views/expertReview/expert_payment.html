@@ -73,8 +73,8 @@
                         </td>
                         <td> {{x.reviewTaxes}}</td>
                         <td> {{x.totalCost}}</td>
-                        <td> <input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="vm.model.expertReviewDto.expertSelectedDtoList[$index].isLetterRw"
-                                    ng-true-value="9" ng-false-value="0" ng-checked="vm.model.expertReviewDto.expertSelectedDtoList[$index].isLetterRw==9"></td>
+                        <td><input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="x.isLetterRw"
+                                    ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
                     </tr>
                     <tr>
                         <td colspan="4" class="text-right">总计：</td>
@@ -89,4 +89,6 @@
         </tbody>
     </table>
 </form>
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
+<!--
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_PAY')">打印预览</button>

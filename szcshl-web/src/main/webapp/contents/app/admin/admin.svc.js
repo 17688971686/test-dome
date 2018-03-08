@@ -26,10 +26,32 @@
              findtasks: findtasks,                      //待办项目列表
              findHomePluginFile :findHomePluginFile,    //获取首页安装文件*/
             excelExport: excelExport,                   //项目统计导出
-            statisticalGrid: statisticalGrid,
+            statisticalGrid: statisticalGrid,    //(停用)
             workName: workName,  //获取流程列表
+            QueryStatistics : QueryStatistics , //通过条件，对项目进行查询统计
+            signDetails : signDetails ,
+
+
         }
         return service;
+        function signDetails(signId , callBack ){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/signView/findSecretProPermission",
+                params : {signId : signId}
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         //begin excelExport
         function excelExport(vm, fileName, project) {
@@ -206,8 +228,8 @@
         function gtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks", $("#searchform")),
-                schema: {
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks", $("#searchform"),vm.gridParams),
+                schema:  {
                     data: "value",
                     total: function (data) {
                         if (data['count']) {
@@ -229,7 +251,8 @@
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 10,
+                pageSize: vm.queryParams.pageSize||10,
+                page:vm.queryParams.page||1,
                 sort: {
                     field: "createdDate",
                     dir: "desc"
@@ -294,9 +317,9 @@
                     width: 200,
                     template: function (item) {
                         if (checkCanEdit(item)) {
-                            return '<a href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
+                            return  '<a ng-click="vm.saveView()" href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                         } else {
-                            return '<a href="#/signFlowDeal/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/signFlowDeal/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                         }
                     }
                 },
@@ -341,7 +364,7 @@
                                 if (index > 0) {
                                     projectName += ",";
                                 }
-                                projectName += data.projectname;
+                                projectName += '<a href="#/signDetails/' + data.signid + '/'+ data.processInstanceId + '" >' + data.projectname + '</a>';
                             });
                             return projectName;
                         } else {
@@ -370,7 +393,8 @@
                     filterable: false,
                     template: function (item) {
                         if (item.surplusDays != undefined) {
-                            return (item.surplusDays > 0) ? item.surplusDays : 0;
+                            return item.surplusDays;
+                            // return (item.surplusDays > 0) ? item.surplusDays : 0;
                         } else {
                             return "";
                         }
@@ -412,20 +436,11 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
             };
         }//E_gtasksGrid
 
@@ -546,9 +561,9 @@
 
         //S_在办项目
         function dtasksGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
+    /*        var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform"),{filter: "signState ne 7"}),
                 schema: {
                     data: "value",
                     total: function (data) {
@@ -566,7 +581,8 @@
                     field: "createdDate",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/flow/html/doingtasks",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
             var columns = [
                 {
                     field: "",
@@ -616,7 +632,7 @@
                     filterable: false,
                     width: "18%",
                     template: function (item) {
-                        return '<a href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
+                        return '<a ng-click="vm.saveView()" href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                     }
                 },
                 {
@@ -652,7 +668,8 @@
                     filterable: false,
                     template: function (item) {
                         if (item.surplusDays != undefined) {
-                            return (item.surplusDays > 0) ? item.surplusDays : 0;
+                            return item.surplusDays;
+                            // return (item.surplusDays > 0) ? item.surplusDays : 0;
                         } else {
                             return "";
                         }
@@ -690,20 +707,11 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
 
             };
         }//E_dtasksGrid
@@ -711,9 +719,9 @@
         //begin_getSignList
         function getSignList(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
+     /*       var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList", $("#searchform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#searchform"),{filter: "signState ne 7"}),
                 schema: common.kendoGridConfig().schema({
                     id: "id",
                     fields: {
@@ -727,10 +735,12 @@
                 serverFiltering: true,
                 pageSize: 10,
                 sort: {
-                    field: "createdDate",
+                    field: "receivedate",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+
             // End:dataSource
 
             // Begin:column
@@ -744,14 +754,23 @@
                 {
                     field: "",
                     title: "项目名称",
-                    width: 160,
+                    width: 280,
                     filterable: false,
                     template: function (item) {
-                        if (item.processInstanceId) {
-                            return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
-                        } else {
-                            return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                        if(item.secrectlevel == "秘密"){
+                            if (item.processInstanceId) {
+                                return '<a ng-click="vm.signDetails('+"'"+item.signid+"'," +"'" +item.processInstanceId +"'"+ ')" >' + item.projectname + '</a>';
+                            } else {
+                                return '<a ng-click="vm.signDetails('+"'"+item.signid+"' , " +"'" +"'"+')" >' + item.projectname + '</a>';
+                            }
+                        }else{
+                            if (item.processInstanceId) {
+                                return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                            } else {
+                                return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                            }
                         }
+
 
                     }
                 },
@@ -763,15 +782,17 @@
                 },
                 {
                     field: "signdate",
-                    title: "收文日期",
+                    title: "签收日期",
                     width: 100,
-                    filterable: false
+                    filterable: false,
+                    format: "{0:yyyy-MM-dd}"
                 },
                 {
                     field: "dispatchDate",
                     title: "发文日期",
                     width: 100,
-                    filterable: false
+                    filterable: false,
+                    format: "{0:yyyy-MM-dd}"
                 },
                 {
                     field: "reviewdays",
@@ -785,8 +806,9 @@
                     width: 100,
                     filterable: false,
                     template: function (item) {
-                        if (item.surplusDays != undefined) {
-                            return (item.surplusDays > 0) ? item.surplusDays : 0;
+                        if (item.surplusdays != undefined) {
+                            return item.surplusdays;
+                            // return (item.surplusdays > 0) ? item.surplusdays : 0;
                         } else {
                             return "";
                         }
@@ -799,7 +821,7 @@
                     filterable: false
                 },
                 {
-                    field: "aUserName",
+                    field: "allPriUser",
                     title: "项目负责人",
                     width: 110,
                     filterable: false
@@ -813,11 +835,11 @@
                 {
                     field: "dfilenum",
                     title: "文件字号",
-                    width: 125,
+                    width: 130,
                     filterable: false
                 },
                 {
-                    field: "appalyinvestment",
+                    field: "appalyInvestment",
                     title: "申报投资",
                     width: 100,
                     filterable: false
@@ -847,12 +869,6 @@
                     filterable: false
                 },
                 {
-                    field: "receivedate",
-                    title: "批复来文时间",
-                    width: 110,
-                    filterable: false
-                },
-                {
                     field: "dispatchType",
                     title: "发文类型",
                     width: 100,
@@ -862,12 +878,13 @@
                     field: "fileDate",
                     title: "归档日期",
                     width: 100,
-                    filterable: false
+                    filterable: false,
+                    format: "{0:yyyy-MM-dd}"
                 },
                 {
                     field: "builtcompanyname",
                     title: "建设单位",
-                    width: 140,
+                    width: 260,
                     filterable: false
                 },
                 {
@@ -886,7 +903,7 @@
                 {
                     field: "daysafterdispatch",
                     title: "发文后工作日",
-                    width: 100,
+                    width: 120,
                     filterable: false
                 },
                 {
@@ -898,7 +915,6 @@
                         if (item.signState == '2') {
                             return common.format($('#columnBtns').html(),
                                 "vm.ProjectStopInfo('" + item.signid + "')");
-
                         } else {
                             return "";
                         }
@@ -911,11 +927,14 @@
             vm.signListOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
+                /*  pageable: common.kendoGridConfig().pageable,*/
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound /*function () {
+
+                 /*                dataBound: function () {
                     var rows = this.items();
                     var page = this.pager.page() - 1;
                     var pagesize = this.pager.pageSize();
@@ -924,7 +943,7 @@
                         var rowLabel = $(this).find(".row-number");
                         $(rowLabel).html(index);
                     });
-                }
+                }*/
             };
         }//end_getSignList
 
@@ -948,7 +967,7 @@
 
         //begin persontasksGrid
         function personMainTasksGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
+/*            var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks", $("#searchform")),
                 schema: {
@@ -968,7 +987,8 @@
                     field: "signdate",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/html/personMainTasks?$orderby=signdate desc",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
             var columns = [
                 {
                     field: "",
@@ -1028,9 +1048,9 @@
                     filterable: false,
                     template: function (item) {
                         if (item.processInstanceId) {
-                            return '<a href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
                         } else {
-                            return '<a href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
                         }
 
                     }
@@ -1100,7 +1120,8 @@
                     filterable: false,
                     template: function (item) {
                         if (item.surplusdays != undefined) {
-                            return (item.surplusdays > 0) ? item.surplusdays : 0;
+                            return item.surplusdays;
+                            // return (item.surplusdays > 0) ? item.surplusdays : 0;
                         } else {
                             return "";
                         }
@@ -1146,42 +1167,14 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
             };
 
             // End:column
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
-
-            };
         }
 
         //end persontasksGrid
@@ -1222,10 +1215,13 @@
                     width: 50
                 },
                 {
-                    field: "instanceName",
-                    title: "流程名称",
+                    field: "",
+                    title: "任务名称",
                     filterable: false,
-                    width: "25%"
+                    width: "25%",
+                    template:function (item) {
+                        return '<a href="#/flowDeal/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/'+item.instanceId+'" >' + item.instanceName + '</a>';
+                    }
                 },
                 {
                     field: "nodeNameValue",
@@ -1291,7 +1287,7 @@
 
         //S_所有在办任务
         function doingTaskGrid(vm) {
-            var dataSource = new kendo.data.DataSource({
+      /*      var dataSource = new kendo.data.DataSource({
                 type: 'odata',
                 transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask", $('#doingTaskForm')),
                 schema: {
@@ -1311,7 +1307,8 @@
                     field: "createTime",
                     dir: "desc"
                 }
-            });
+            });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask?$orderby=createTime desc",$("#doingTaskForm"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
             var columns = [
                 {
                     field: "",
@@ -1321,11 +1318,11 @@
                 },
                 {
                     field: "",
-                    title: "流程名称",
+                    title: "任务名称",
                     filterable: false,
                     width: "30%",
                     template: function (item) {
-                        return '<a href="#/flowDetail/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/' + item.instanceId + '" >' + item.instanceName + '</a>';
+                        return '<a ng-click="vm.saveView()" href="#/flowDetail/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/' + item.instanceId + '" >' + item.instanceName + '</a>';
                     }
                 },
                 {
@@ -1372,20 +1369,11 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: function () {
-                    var rows = this.items();
-                    var page = this.pager.page() - 1;
-                    var pagesize = this.pager.pageSize();
-                    $(rows).each(function () {
-                        var index = $(this).index() + 1 + page * pagesize;
-                        var rowLabel = $(this).find(".row-number");
-                        $(rowLabel).html(index);
-                    });
-                }
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
 
             };
         }//S_doingTaskGrid
@@ -1435,6 +1423,35 @@
             });
 
         }//end countWorakday
+
+        /**
+         * 通过条件对项目进行查询统计分析
+         * @param vm
+         */
+        function QueryStatistics(vm , callBack){
+
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/signView/QueryStatistics",
+                // data : vm.project,
+                params : {queryData : vm.filters ,  page : vm.page}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
+
+        }
 
     }
 })();

@@ -1,13 +1,12 @@
 package cs.common;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.project.WorkProgram_;
 import org.hibernate.query.Query;
 import org.hibernate.type.Type;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * HQL查询工具类

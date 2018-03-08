@@ -4,8 +4,6 @@ import cs.common.Constant;
 import cs.common.FlowConstant;
 import cs.domain.sys.Annountment;
 import cs.domain.sys.Annountment_;
-import cs.domain.sys.User;
-import cs.domain.sys.User_;
 import cs.repository.repositoryImpl.sys.AnnountmentRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;

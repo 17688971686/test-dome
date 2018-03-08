@@ -44,7 +44,7 @@
                 template: "<span class='row-number'></span>",
                 width: 50
             }, {
-                field: "nodeName",
+                field: "nodeNameValue",
                 title: "环节名称",
                 width: 120,
                 filterable: false
@@ -106,7 +106,7 @@
                     id: "hctId"
                 }),
                 rowNumber: true,
-                headerCenter: true
+                headerCenter: true,
             });
             var columns = [{
                 field: "",
@@ -114,7 +114,7 @@
                 template: "<span class='row-number'></span>",
                 width: 50
             }, {
-                field: "nodeName",
+                field: "nodeNameValue",
                 title: "环节名称",
                 width: "20%",
                 filterable: false

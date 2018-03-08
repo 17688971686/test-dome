@@ -26,7 +26,7 @@ public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>
 		return findByHql(hql);
 	}
 
-	@Override
+	/*@Override
 	public List<RoomBooking> findWeekBook() {
 		Calendar cal =Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -100,7 +100,7 @@ public class RoomBookingRepoImpl extends AbstractRepository<RoomBooking, String>
         Criteria criteria =getExecutableCriteria();
         List<RoomBookingDto> roomList= criteria.add(Restrictions.between("rbDay", nextMonday, nextSunday)).list();
 		return roomList;
-	}
+	}*/
 
     /**
      * 根据业务ID获取评审会日期

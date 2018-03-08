@@ -1,0 +1,78 @@
+<ion-view title="{{title|| '添加设施维护'}}" class="{{viewMainClass}}">
+	<!--视图标题-->
+	<ion-nav-bar class="bar-positive">
+		<!--视图头部-->
+		<ion-nav-buttons side="left">
+			<!--后退-->
+			<button ng-click="back()" class="button back-button buttons button-clear header-item">
+            	<i class="icon ion-android-arrow-back"></i></button>
+		</ion-nav-buttons>
+		<ion-nav-buttons side="right">
+			<!--提交-->
+			<a ng-click="submit()" ng-disabled="!(model.description && model.siteInfo.siteId)" class="button back-button buttons button-clear header-item">
+				提交
+			</a>
+			<a ng-click="save()" ng-disabled="!(model.siteInfo.siteId)" class="button back-button buttons button-clear header-item">
+				保存
+			</a>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<ion-content has-tabs="true">
+		<!--选项卡内容-->
+		<ion-refresher pulling-text="获取最新数据..." refreshing-text="刷新完毕" on-refresh="doRefresh()"></ion-refresher>
+		<div class="item item-select">
+			街道：
+			<select ng-model="model.street.streetId" ng-change="model.community.communityId='';model.siteInfo.siteId='';streetChange(model.street.streetId)">
+				<option value="">请选择</option>
+				<option ng-repeat="street in streets" value="{{street.streetId}}">{{street.streetName}}</option>
+			</select>
+		</div>
+		<div class="item item-select">
+			社区：
+			<select ng-model="model.community.communityId" ng-change="model.siteInfo.siteId='';communityChange(model.community.communityId)">
+				<option value="">请选择</option>
+				<option ng-repeat="community in communitys" value="{{community.communityId}}">{{community.communityName}}</option>
+			</select>
+		</div>
+		<div class="item item-select">
+			场地：
+			<select ng-model="model.siteInfo.siteId" ng-change="siteInfoChange(model.siteInfo.siteId)">
+				<option value="">请选择</option>
+				<option ng-repeat="siteInfo in siteInfos" value="{{siteInfo.siteId}}">{{siteInfo.siteName}}</option>
+			</select>
+		</div>
+		<div class="item item-input">
+			地址：<input ng-model="model.feedBackAddress" type="text" placeholder="详细地址--选填" />
+		</div>
+		<label class="item">
+		          	<textarea ng-model="model.description" placeholder="损毁情况描述--必填" class="textarea_w_h" maxlength="200"></textarea>
+		      	</label>
+		<!--<label class="item item-input">
+		          	<textarea ng-model="facilityInfo" placeholder="备注" style="height: 90px;" maxlength="200"></textarea>
+		      	</label>-->
+		<div class="item item-button-right">
+			报修图片：<button ng-click="addImage()" class="button button-positive">添加</button>
+		</div>
+		<div>
+			<div class="w33_h43 float_l border_1px border_2DA4FF " ng-repeat="x in model.files|filter:{fileType:1} " ">
+					<a ng-click="showImg((model.files|filter:{fileType:1}),$index) ">
+						<div class='po_relative'>
+							<img ng-src="{{x.fileUrl.length> 750 ? '' : (rootPath+ '/downLoad/')}}{{x.fileUrl}} " width='100%' />
+				<a class='ioc_rigth_top' ng-click="deleteImage(x) "><i class='icon ion-close-circled icon_s'></i></a>
+			</div>
+			</a>
+		</div>
+		<p style="clear: both; "></p>
+		<div class="item item-button-right">
+			报修设施：<button ng-click="addFacility()" class="button button-positive">添加</button>
+		</div>
+		<ion-list class="project-list">
+			<a class="item item-icon-right" ng-repeat="x in model.repairFacilitiDtos | orderBy:'repairFacilityId'" ng-click="">
+				<i class="icon ion-chevron-right  ion-close-circled color_delete" ng-click="model.repairFacilitiDtos.removeByValue(x)"></i>
+				<div class="size_ss">
+					<div class="float_l">{{x.facilityName || x.equipMentDto.equipMentName}}&nbsp;&nbsp;&nbsp;{{x.facilityNumber}}</div>
+				</div>
+			</a>
+		</ion-list>
+	</ion-content>
+</ion-view>

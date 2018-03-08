@@ -15,10 +15,37 @@
             updateBookBuyBusiness: updateBookBuyBusiness,
             saveBookBuyBusinessDetail:saveBookBuyBusinessDetail,
             startFlow:startFlow,
-            initFlowDeal : initFlowDeal                //初始化图书采购流程信息
+            initFlowDeal : initFlowDeal,                //初始化图书采购流程信息
+            deleteBooksConditions : deleteBooksConditions //删除图书信息
         };
 
         return service;
+
+        /**
+         * 删除图书信息
+         * @param delIds
+         * @param isCommit
+         * @param callBack
+         */
+        function deleteBooksConditions(delIds,callBack){
+            var httpOptions = {
+                method : 'delete',
+                url : url_bookBuyBusiness + "/bookDel",
+                params:{
+                    ids : delIds
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess,
+            });
+        }
 
         // begin#updateBookBuyBusiness
         function updateBookBuyBusiness(vm) {
@@ -208,6 +235,9 @@
             };
             var httpSuccess = function success(response) {
                 vm.model = response.data;
+                for(var i=0;i<vm.model.bookBuyList.length;i++){
+                    vm.model.bookBuyList[i]["totalPrice"] = parseFloat(vm.model.bookBuyList[i].booksPrice)*(vm.model.bookBuyList[i].bookNumber);
+                }
             };
             common.http({
                 $http: $http,
@@ -320,7 +350,6 @@
                     title: "申请日期",
                     width: "15%",
                     filterable: false,
-                    format: "{0:yyyy/MM/dd HH:mm:ss}"
                 },
                 {
                     field: "",

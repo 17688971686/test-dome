@@ -15,6 +15,7 @@ import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
+import cs.model.project.AssistPlanDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
@@ -31,6 +32,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -50,13 +52,12 @@ import java.util.*;
  */
 @Service
 public class AddSuppLetterServiceImpl implements AddSuppLetterService {
+    private static Logger logger = Logger.getLogger(AddSuppLetterServiceImpl.class);
 
     @Autowired
     private AddSuppLetterRepo addSuppLetterRepo;
     @Autowired
     private SignRepo signRepo;
-    @Autowired
-    private WorkProgramRepo workProgramRepo;
     @Autowired
     private RuntimeService runtimeService;
     @Autowired
@@ -70,7 +71,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Autowired
     private SignBranchRepo signBranchRepo;
     @Autowired
-    private MonthlyNewsletterRepo monthlyNewsletterRepo;
+    private WorkProgramRepo workProgramRepo;
 
     /**
      * 保存补充资料函
@@ -121,9 +122,10 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      * @param dispaDate
      * @return
      */
-    private int findCurMaxSeq(Date dispaDate) {
+    @Override
+    public int findCurMaxSeq(Date dispaDate) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max(" + AddSuppLetter_.fileSeq.getName() + ") from cs_add_suppLetter where " + AddSuppLetter_.disapDate.getName() + " between ");
+        sqlBuilder.append("select max(" + AddSuppLetter_.fileSeq.getName() + ") from cs_add_suppLetter where " + AddSuppLetter_.suppLetterTime.getName() + " between ");
         sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )");
         sqlBuilder.setParam("beginTime", DateUtils.converToString(dispaDate, "yyyy") + "-01-01 00:00:00");
         sqlBuilder.setParam("endTime", DateUtils.converToString(dispaDate, "yyyy") + "-12-31 23:59:59");
@@ -158,48 +160,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             suppletterDto.setMergencyLevel(sign.getUrgencydegree());
         }
         return suppletterDto;
-    }
-
-    /**
-     * 生成文件字号
-     */
-    @Override
-    @Transactional
-    public ResultMsg fileNum(String id) {
-        AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), id);
-        if (Validate.isString(addSuppLetter.getFilenum())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该补充资料函已经生成过发文字号，不能重复生成！");
-        }
-        //获取拟稿最大编号
-        int curYearMaxSeq = findCurMaxSeq(addSuppLetter.getSuppLetterTime());
-        String filenum = Constant.DISPATCH_PREFIX + "[" + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yyyy") + "]" + (curYearMaxSeq + 1);
-        addSuppLetter.setFilenum(filenum);
-        addSuppLetter.setFileSeq((curYearMaxSeq + 1));
-        addSuppLetterRepo.save(addSuppLetter);
-
-        //如果是收文，则要更新对应的资料信息(如果生成了文件字号，工作方案的是否补充资料函则显示为是，并且显示最新的日期。如果没有，则显示为否)
-        if (Constant.BusinessType.SIGN.getValue().equals(addSuppLetter.getBusinessType())) {
-            Date now = new Date();
-            Sign sign = signRepo.findById(Sign_.signid.getName(), addSuppLetter.getBusinessId());
-            if (!Validate.isString(sign.getIsHaveSuppLetter()) || Constant.EnumState.NO.getValue().equals(sign.getIsHaveSuppLetter())) {
-                sign.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
-                sign.setSuppLetterDate(now);
-                signRepo.save(sign);
-            }
-            List<WorkProgram> wpList = workProgramRepo.findByIds(Sign_.signid.getName(), addSuppLetter.getBusinessId(), null);
-            if (Validate.isList(wpList)) {
-                List<WorkProgram> saveList = new ArrayList<>();
-                for (WorkProgram wp : wpList) {
-                    if (!Validate.isString(wp.getIsHaveSuppLetter()) || Constant.EnumState.NO.getValue().equals(wp.getIsHaveSuppLetter())) {
-                        wp.setIsHaveSuppLetter(Constant.EnumState.YES.getValue());
-                        wp.setSuppLetterDate(now);
-                        saveList.add(wp);
-                    }
-                }
-                workProgramRepo.bathUpdate(saveList);
-            }
-        }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", addSuppLetter);
     }
 
     /**
@@ -266,47 +226,17 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      */
     @Override
     public PageModelDto<AddSuppLetterDto> monthlyMultiyearListData(ODataObj odataObj) {
-        Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
-        if (Validate.isList(odataObj.getFilter())) {
-            Object value;
-            for (ODataFilterItem item : odataObj.getFilter()) {
-                value = item.getValue();
-                if (null == value) {
-                    continue;
-                }
-                //如果是月报简报年度列表，则不分页
-                if("monthLetterYearName".equals(item.getField())){
-                    //不统计分页
-                    odataObj.setCount(false);
-                    criteria.add(Restrictions.gt(AddSuppLetter_.createdDate.getName(),DateUtils.converToDate(value.toString()+"-01-01 00:00:00","yyyy-MM-dd HH:mm:ss")));
-                    criteria.add(Restrictions.lt(AddSuppLetter_.createdDate.getName(),DateUtils.converToDate(value.toString()+"-12-31 24:00:00","yyyy-MM-dd HH:mm:ss")));
-                    continue;
-                }
-                criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value));
-            }
-        }
-        //如果统计分页
-        if(odataObj.isCount()){
-            Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-            criteria.setProjection(null);
-            odataObj.setCount(totalResult);
-            if (odataObj.getTop() != 0) {
-                criteria.setFirstResult(odataObj.getSkip());
-                criteria.setMaxResults(odataObj.getTop());
-            }
-        }
-        List<AddSuppLetter> suppLetterList = criteria.list();
-        List<AddSuppLetterDto> suppLetterDtoList = new ArrayList<AddSuppLetterDto>();
-        if (Validate.isList(suppLetterList)) {
-            suppLetterList.forEach(x -> {
-                AddSuppLetterDto addDto = new AddSuppLetterDto();
-                BeanCopierUtils.copyProperties(x, addDto);
-                suppLetterDtoList.add(addDto);
+        PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
+        List<AddSuppLetter> resultList = addSuppLetterRepo.findByOdata(odataObj);
+        List<AddSuppLetterDto> resultDtoList = new ArrayList<AddSuppLetterDto>(resultList==null?0:resultList.size());
+        if (Validate.isList(resultList)) {
+            resultList.forEach(x -> {
+                AddSuppLetterDto modelDto = new AddSuppLetterDto();
+                BeanCopierUtils.copyProperties(x, modelDto);
+                resultDtoList.add(modelDto);
             });
         }
-
-        PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
-        pageModelDto.setValue(suppLetterDtoList);
+        pageModelDto.setValue(resultDtoList);
         pageModelDto.setCount(odataObj.getCount());
 
         return pageModelDto;
@@ -329,13 +259,18 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      */
     @Override
     public void delete(String id) {
-        this.delete(id);
+       /* this.delete(id);*/
+       AddSuppLetter addSuppLetter=addSuppLetterRepo.findById(id);
+       if(addSuppLetter !=null){
+           addSuppLetterRepo.delete(addSuppLetter);
+       }
+
     }
 
     @Override
     public void deletes(String[] ids) {
         for (String id : ids) {
-            this.delete(id);
+           this.delete(id);
         }
     }
 
@@ -345,26 +280,9 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Override
     public PageModelDto<AddSuppLetterDto> addsuppListData(ODataObj odataObj) {
         PageModelDto<AddSuppLetterDto> pageModelDto = new PageModelDto<AddSuppLetterDto>();
-
-        Criteria criteria = addSuppLetterRepo.getExecutableCriteria();
-        criteria = odataObj.buildFilterToCriteria(criteria);
-        //文件类型，1表示拟补充资料函
-        criteria.add(Restrictions.eq(AddSuppLetter_.fileType.getName(), EnumState.PROCESS.getValue()));
-        criteria.add(Restrictions.eq(AddSuppLetter_.appoveStatus.getName(), EnumState.YES.getValue()));
-
-        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-        pageModelDto.setCount(totalResult);
-        criteria.setProjection(null);
-        if (odataObj.getSkip() > 0) {
-            criteria.setFirstResult(odataObj.getTop());
-        }
-        if (odataObj.getTop() > 0) {
-            criteria.setMaxResults(odataObj.getTop());
-        }
-        List<AddSuppLetter> allist = criteria.list();
+        List<AddSuppLetter> allist = addSuppLetterRepo.findByOdata(odataObj);
         List<AddSuppLetterDto> alDtos = new ArrayList<AddSuppLetterDto>(allist == null ? 0 : allist.size());
-
-        if (allist != null && allist.size() > 0) {
+        if (Validate.isList(allist)) {
             allist.forEach(x -> {
                 AddSuppLetterDto alDto = new AddSuppLetterDto();
                 BeanCopierUtils.copyProperties(x, alDto);
@@ -372,7 +290,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             });
         }
         pageModelDto.setValue(alDtos);
-
+        pageModelDto.setCount(odataObj.getCount());
         return pageModelDto;
     }
 
@@ -495,7 +413,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Override
     @Transactional
     public ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
-        ResultMsg rturnReuslt = null;
         String businessId = processInstance.getBusinessKey(),
                 assigneeValue = "";                            //流程处理人
         Map<String, Object> variables = new HashMap<>();       //流程参数
@@ -577,11 +494,27 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 
             //分管领导审批
             case FlowConstant.FLOW_SPL_FGLD_SP:
-                //生成发文字号失败，则
-                   rturnReuslt = fileNum(addSuppLetter.getId());
-                if (!rturnReuslt.isFlag()) {
-                    return rturnReuslt;
+                //如果没有生成文件字号或者生成错的文件字号，则重新生成
+                if (!Validate.isString(addSuppLetter.getFilenum()) || !addSuppLetter.getFilenum().contains(Constant.ADDSUPPER_PREFIX)) {
+                    //获取拟稿最大编号
+                    int curYearMaxSeq = findCurMaxSeq(addSuppLetter.getSuppLetterTime());
+                    curYearMaxSeq = (curYearMaxSeq + 1);
+                    String fileNumValue = "";
+                    if(curYearMaxSeq < 1000){
+                        fileNumValue = String.format("%03d", Integer.valueOf(curYearMaxSeq));
+                    }else{
+                        fileNumValue = curYearMaxSeq+"";
+                    }
+                    fileNumValue = Constant.ADDSUPPER_PREFIX + "[" + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yyyy") + "]" + fileNumValue;
+                    addSuppLetter.setFilenum(fileNumValue);
+                    addSuppLetter.setFileSeq(curYearMaxSeq);
+                    //补充资料函的发文日期
+                    addSuppLetter.setDisapDate(new Date());
                 }
+                if(!Validate.isString(addSuppLetter.getFilenum())){
+                    new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
+                }
+
                 addSuppLetter.setDeptSLeaderId(SessionUtil.getUserId());
                 addSuppLetter.setDeptSLeaderName(SessionUtil.getDisplayName());
                 addSuppLetter.setDeptSleaderDate(new Date());
@@ -589,6 +522,13 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 addSuppLetter.setAppoveStatus(EnumState.YES.getValue());
                 addSuppLetterRepo.save(addSuppLetter);
 
+                //更新项目和工作方案是否有拟补充资料函字段信息
+                //updateSuppLetterState(addSuppLetter.getBusinessId(),addSuppLetter.getBusinessType(),addSuppLetter.getDisapDate());
+                //如果是项目，则更新项目补充资料函状态
+                if(Validate.isString(addSuppLetter.getBusinessType()) && Constant.BusinessType.SIGN.getValue().equals(addSuppLetter.getBusinessType())){
+                    signRepo.updateSuppLetterState(addSuppLetter.getBusinessId(),EnumState.YES.getValue(),addSuppLetter.getDisapDate());
+                    workProgramRepo.updateSuppLetterState(addSuppLetter.getBusinessId(),EnumState.YES.getValue(),addSuppLetter.getDisapDate());
+                }
                 break;
             default:
                 break;
@@ -615,6 +555,15 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    @Override
+    public void updateSuppLetterState(String businessId, String businessType, Date disapDate) {
+        //如果是项目，则更新项目补充资料函状态
+        if(Validate.isString(businessType) && Constant.BusinessType.SIGN.getValue().equals(businessType)){
+            signRepo.updateSuppLetterState(businessId,EnumState.YES.getValue(),disapDate);
+            workProgramRepo.updateSuppLetterState(businessId,EnumState.YES.getValue(),disapDate);
+        }
     }
 
     private String buildUser(List<User> userList) {

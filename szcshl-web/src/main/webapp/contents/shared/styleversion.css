@@ -546,3 +546,40 @@ div.k-window{
 .attentionDiv{
     border: 1px solid #e08e0b; border-radius: 3px;padding:3px 5px;color:#e08e0b;
 }
+
+input[disabled],input:disabled{
+    border:1px solid #989898;
+    background-color:white;
+    color:#1a1600;
+}
+
+/*IE6 Using Javascript to add CSS class "disabled"*/
+* html input.disabled{
+    border:1px solid #989898;
+    background-color:white;
+    color:#1a1600;
+}
+/*复选框样式*/
+.newcheckbox{
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;  /* 清除默认样式 */
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border:1px solid #989898;
+    text-align: center;
+    line-height:20px;
+    vertical-align: middle;
+    font-weight:normal;
+}
+.newcheckbox:before{
+    content:'√';
+    display: none;
+}
+.newcheckbox:checked:before{
+    display: block;
+}
+.newcheckbox:focus{
+    outline: none;
+}

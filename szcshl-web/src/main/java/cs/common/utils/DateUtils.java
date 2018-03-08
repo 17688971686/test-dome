@@ -315,10 +315,10 @@ public class DateUtils {
      * @return
      */
     public static int getMaxDayOfMonth(int year, int month) {
-        if (month == 1 && isLeapYear(year)) {
+        if (month == 2 && isLeapYear(year)) {
             return 29;
         } else {
-            return DAY_OF_MONTH[month];
+            return DAY_OF_MONTH[month-1];
         }
     }
 

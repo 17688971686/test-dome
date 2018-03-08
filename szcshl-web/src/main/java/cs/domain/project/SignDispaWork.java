@@ -1,6 +1,8 @@
 package cs.domain.project;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -30,14 +32,25 @@ public class SignDispaWork {
     private String isAppraising;
 
     /**
+     * 是否确认签收(9:是，其他 否)
+     */
+    private String issign;
+
+    /**
+     * 委内收文编号
+     */
+    @Column
+    private String filecode;
+    /**
      * 项目签收日期
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date signdate;
 
     /**
-     * 收文编号
+     * 评审中心收文编号(年份+收文类型+序号[序号保留3位数])
      */
     @Column
     private String signnum;
@@ -69,8 +82,8 @@ public class SignDispaWork {
     /**
      * 投资申报
      */
-    @Column
-    private BigDecimal appalyinvestment;
+    @Column(columnDefinition="NUMBER")
+    private BigDecimal appalyInvestment;
 
     /**
      * 是否有其他关联
@@ -87,13 +100,15 @@ public class SignDispaWork {
     /**
      * 项目进程状态
      */
+    @Column
     private String processState;
 
     /**
-     * 送来日期
+     * 收文日期
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date receivedate;
 
     /**
@@ -178,6 +193,11 @@ public class SignDispaWork {
      */
     @Column
     private String aUserName;
+    /**
+     * 所有负责人
+     */
+    @Column
+    private String allPriUser;
 
     /**
      * 中心领导名称
@@ -238,6 +258,7 @@ public class SignDispaWork {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date dispatchDate;
 
     /**
@@ -257,6 +278,7 @@ public class SignDispaWork {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JSONField(format = "yyyy-MM-dd")
     private Date fileDate;
 
     //项目状态
@@ -277,9 +299,43 @@ public class SignDispaWork {
     @Column
     private String isassistproc;
 
+    /**
+     * 警示灯状态
+     */
     @Column
     private String lightState;
 
+    /**
+     * 是否已经发送发改委
+     */
+    @Column
+    private String isSendFGW;
+
+    /**
+     * 项目是否暂停
+     */
+    @Column
+    private String isProjectStop;
+
+    /**
+     * 旧项目ID
+     */
+    @Column(columnDefinition = "INTEGER")
+    private Integer oldProjectId;
+
+    /**
+     * 是否项目预签收
+     */
+    @Column
+    private String ispresign;
+
+    public String getIspresign() {
+        return ispresign;
+    }
+
+    public void setIspresign(String ispresign) {
+        this.ispresign = ispresign;
+    }
 
     public String getLeaderName() {
         return leaderName;
@@ -367,14 +423,6 @@ public class SignDispaWork {
 
     public void setBuiltcompanyname(String builtcompanyname) {
         this.builtcompanyname = builtcompanyname;
-    }
-
-    public BigDecimal getAppalyinvestment() {
-        return appalyinvestment;
-    }
-
-    public void setAppalyinvestment(BigDecimal appalyinvestment) {
-        this.appalyinvestment = appalyinvestment;
     }
 
     public String getIsRelated() {
@@ -647,5 +695,61 @@ public class SignDispaWork {
 
     public void setLightState(String lightState) {
         this.lightState = lightState;
+    }
+
+    public String getIsSendFGW() {
+        return isSendFGW;
+    }
+
+    public void setIsSendFGW(String isSendFGW) {
+        this.isSendFGW = isSendFGW;
+    }
+
+    public Integer getOldProjectId() {
+        return oldProjectId;
+    }
+
+    public void setOldProjectId(Integer oldProjectId) {
+        this.oldProjectId = oldProjectId;
+    }
+
+    public String getIssign() {
+        return issign;
+    }
+
+    public void setIssign(String issign) {
+        this.issign = issign;
+    }
+
+    public String getFilecode() {
+        return filecode;
+    }
+
+    public void setFilecode(String filecode) {
+        this.filecode = filecode;
+    }
+
+    public BigDecimal getAppalyInvestment() {
+        return appalyInvestment;
+    }
+
+    public void setAppalyInvestment(BigDecimal appalyInvestment) {
+        this.appalyInvestment = appalyInvestment;
+    }
+
+    public String getAllPriUser() {
+        return allPriUser;
+    }
+
+    public void setAllPriUser(String allPriUser) {
+        this.allPriUser = allPriUser;
+    }
+
+    public String getIsProjectStop() {
+        return isProjectStop;
+    }
+
+    public void setIsProjectStop(String isProjectStop) {
+        this.isProjectStop = isProjectStop;
     }
 }

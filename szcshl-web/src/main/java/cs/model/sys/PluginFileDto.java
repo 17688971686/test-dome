@@ -60,6 +60,6 @@ public class PluginFileDto {
         this.filePath = file.getPath();
         this.fileSize = file.length();
         this.fileLength = SysFileUtil.getFileSize(this.fileSize);
-        this.relativePath = relativePath + "/"+ this.fileName;
+        this.relativePath = relativePath + File.separator+ this.fileName;
     }
 }

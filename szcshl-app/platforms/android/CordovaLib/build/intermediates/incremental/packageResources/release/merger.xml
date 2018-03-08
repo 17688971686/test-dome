@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="D:\项目资料\龙岗区文体设施维护管理系统\代码\wtssgl-app\platforms\android\CordovaLib\res"/><source path="D:\项目资料\龙岗区文体设施维护管理系统\代码\wtssgl-app\platforms\android\CordovaLib\build\generated\res\rs\release"/><source path="D:\项目资料\龙岗区文体设施维护管理系统\代码\wtssgl-app\platforms\android\CordovaLib\build\generated\res\generated\release"/></dataSet><dataSet config="release"><source path="D:\项目资料\龙岗区文体设施维护管理系统\代码\wtssgl-app\platforms\android\CordovaLib\src\release\res"/></dataSet><mergedItems/></merger>

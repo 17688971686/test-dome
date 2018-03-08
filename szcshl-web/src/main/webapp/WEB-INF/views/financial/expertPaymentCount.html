@@ -5,24 +5,42 @@
 
 <div class="well well-sm" style="background:white;">
 	<ol class="breadcrumb">
-		<li><a href="#/sharingPlatlform">专家缴税统计</a></li>
+		<li><a>专家缴税统计</a></li>
 		<li class="active">{{vm.title}}</li>
 	</ol>
 	<form id="form" name="form">
 		<div class="well well-print">
-			<span>统计月份：</span>
-			<input id="beginTime" name="beginTime" style="width:130px" kendo-date-picker k-format="'yyyy-MM'"  ng-model="vm.model.beginTime" value="" type="text" operator="and"/>
-			<a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.countExpertCost()">统计</a>
-	<!--		<button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
+			<span>统计日期：</span>
+			<select name="year" ng-model="vm.model.year">
+                <option ng-repeat="x in DICT.NDBG.dicts"
+                        value="{{x.dictName}}">{{x.dictName}}
+                </option>
+			</select> 年
+			<select name="month" ng-model="vm.model.month">
+				<option value="1" ng-selected="vm.model.month == 1">1</option>
+                <option value="2" ng-selected="vm.model.month == 2">2</option>
+                <option value="3" ng-selected="vm.model.month == 3">3</option>
+                <option value="4" ng-selected="vm.model.month == 4">4</option>
+                <option value="5" ng-selected="vm.model.month == 5">5</option>
+                <option value="6" ng-selected="vm.model.month == 6">6</option>
+                <option value="7" ng-selected="vm.model.month == 7">7</option>
+                <option value="8" ng-selected="vm.model.month == 8">8</option>
+                <option value="9" ng-selected="vm.model.month == 9">9</option>
+                <option value="10" ng-selected="vm.model.month == 10">10</option>
+                <option value="11" ng-selected="vm.model.month == 11">11</option>
+                <option value="12" ng-selected="vm.model.month == 12">12</option>
+			</select> 月
+			<a class="btn btn-sm btn-primary" ng-click="vm.countExpertCost()">统计</a>
+	        <!--<button ng-click="vm.addFinancial()"  class="btn btn-sm btn-primary" style="margin-left:10px;"></span>打印预览</button>
 			<button ng-click="vm.saveFinancial()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">打印</button>-->
-			<button ng-click="vm.getExpertCoustDetail()" class="btn btn-sm btn-primary" style="margin-left:10px;"  value="saveCommonIdea">查看详细</button>
-			<button class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.excelExport()">导出EXCLE</button>
-			<button class="btn btn-sm btn-primary" onclick="printpage(this)">打印</button>
+			<button ng-click="vm.getExpertCoustDetail()" class="btn btn-sm btn-primary" value="saveCommonIdea">查看详细</button>
+			<button class="btn btn-sm btn-primary" ng-click="vm.excelExport()">导出EXCLE</button>
+			<button class="btn btn-sm btn-primary" ng-click="vm.printFile()"><span class="glyphicon glyphicon-print"></span>打印</button>
 		</div>
 	</form>
 	<table class="table table-bordered">
 		<caption class="text-center h4">
-			<strong>深圳市政府投资项目评审中心 {{vm.year}}年{{vm.month}}月缴税统计汇总表 </strong>
+			<strong>深圳市政府投资项目评审中心 {{vm.model.year}}年{{vm.model.month}}月缴税统计汇总表 </strong>
 		</caption>
 		<tr class="active">
 			<td rowspan="2" style="width:5%;vertical-align: middle;"  class="text-center">序号</td>

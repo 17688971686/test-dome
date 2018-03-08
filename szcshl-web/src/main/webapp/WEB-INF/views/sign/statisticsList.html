@@ -1,0 +1,93 @@
+<meta charset="UTF-8">
+<div id="queryStatisticsWindow" class="well well-sm" style="width:99%;background:white; display: none">
+
+    <div class="well">
+        <span>标题：</span>
+        <input type="text" ng-model="vm.fileName"/>
+        <button class="btn btn-sm btn-success" ng-click="vm.selectHeader()">自定义报表</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.countWork()">统计工作日</button>
+        <button class="btn btn-sm btn-success" ng-click="vm.countDay()">统计项目平均天数</button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.excelExport()">导出</button>
+    </div>
+    <div ng-show="vm.isopens">
+        <span ng-show="vm.isDay">统计项目的平均天数为：{{vm.averageDay | number:0}}</span>
+        <span ng-hide="vm.isDay">统计工作日为：{{vm.averageDay | number:0}}</span>
+    </div>
+
+    <div style="height:580px; overflow-y: scroll;">
+        <form id="countSignDayForm" name="countSignDayForm">
+            <input name="signIds" type="hidden"/>
+            <div style="overflow-x: scroll;width: 2500px;">
+            <table class="table table-bordered" id="countSignDayTable">
+                <tr>
+                    <td colspan="22" style="text-align: center;">
+                        <h3>{{vm.fileName}}</h3>
+                        <span>{{vm.smallTitle}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 40px;">
+                        <input id="checkboxAll" type="checkbox" class="checkbox" ng-model="selectAll"/>
+                    </td>
+                    <td style="width:50px;text-align: center;">序号</td>
+                    <td style="width:140px;text-align: center;">收文编号</td>
+                    <td style="width:350px;text-align: center;">项目名称</td>
+                    <td style="width: 140px;">评审阶段</td>
+                    <td style="width: 140px;">收文日期</td>
+                    <td style="width: 90px;">评审天数</td>
+                    <td style="width: 100px;">剩余工作日</td>
+                    <td style="width: 140px;">评审部门</td>
+                    <td style="width: 140px;">项目负责人</td>
+                    <td style="width: 140px;">归档编号</td>
+                    <td style="width: 140px;">文件字号</td>
+                    <td style="width: 80px;">申报投资</td>
+                    <td style="width: 80px;">审定投资</td>
+                    <td style="width: 90px;">核减（增）</td>
+                    <td style="width: 80px;">核减率</td>
+                    <td style="width: 90px;">批复金额</td>
+                    <td style="width: 140px;">发文类型</td>
+                    <td style="width: 140px;">归档日期</td>
+                    <td style="width: 410px;">建设单位</td>
+                    <td style="width: 70px;">是否协审</td>
+                    <td style="width: 140px;">发文后工作日</td>
+
+                </tr>
+                <tr ng-repeat="x in vm.signList">
+                    <td>
+                        <input type="checkbox" id="{{x.signid}}" ng-checked="selectAll" name="sumSignDay" value="{{x.reviewdays}}"/>
+                    </td>
+                    <td style="width:50px;text-align: center;">{{$index +1}}</td>
+                    <td style="width:140px;text-align: center;">{{x.dfilenum}}</td>
+                    <td>{{x.projectname}}</td>
+                    <td>{{x.reviewstage}}</td>
+                    <td>{{x.receivedate}}</td>
+                    <td>{{x.reviewdays}}</td>
+                    <td>{{x.surplusdays}}</td>
+
+                    <td>{{x.reviewOrgName}}</td>
+                    <td>{{x.allPriUser}}</td>
+                    <td>{{x.ffilenum}}</td>
+                    <td>{{x.dfilenum}}</td>
+
+                    <td>{{x.appalyInvestment}}</td>
+                    <td>{{x.authorizeValue}}</td>
+                    <td>{{x.extraValue}}</td>
+                    <td>{{x.extraRate}}</td>
+
+                    <td>{{x.approveValue}}</td>
+                    <td>{{x.dispatchType}}</td>
+                    <td>{{x.fileDate}}</td>
+                    <td>{{x.builtcompanyname}}</td>
+
+                    <td ng-if="x.isassistproc==9">是{{x.isassistproc}}</td>
+                    <td ng-if="x.isassistproc==0 || x.isassistproc==undefined ">否</td>
+                    <td ng-if="x.daysafterdispatch!=undefined">{{x.daysafterdispatch}}</td>
+                    <td ng-if="x.daysafterdispatch==undefined"> </td>
+
+
+                </tr>
+            </table>
+            </div>
+        </form>
+    </div>
+</div>

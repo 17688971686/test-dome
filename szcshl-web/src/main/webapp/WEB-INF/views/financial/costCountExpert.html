@@ -18,9 +18,9 @@
                             <td>姓名</td>
                             <td>是否外地</td>
                             <td>开户行/银行账号</td>
-                            <td>评审费</td>
-                            <td>应纳税额</td>
-                            <td>合计（元）</td>
+                            <td>评审费（元）</td>
+                            <td>应纳税额（元）</td>
+                            <td >合计（元）</td>
                         </tr>
                         <tr ng-repeat="x in vm.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
                             <td>{{$index+1}}</td>
@@ -34,7 +34,7 @@
                             <td ng-if="x.totalCost!=undefined || x.totalCost!=''" > {{x.totalCost}}</td>
                         </tr>
                         <tr>
-                            <td colspan="4" >合计</td>
+                            <td align="right" colspan="4" >合计</td>
                             <td>{{vm.expertReview.reviewCost}}</td>
                             <td>{{vm.expertReview.reviewTaxes}}</td>
                             <td>{{vm.expertReview.totalCost}}</td>

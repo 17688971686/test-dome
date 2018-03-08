@@ -20,10 +20,12 @@ import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.DateType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -187,5 +189,36 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
         hqlBuilder.setParam("signId",signid).setParam("mergeType",Constant.MergeType.WORK_PROGRAM.getValue());
 
         return findByHql(hqlBuilder);
+    }
+
+    /**
+     * 根据ID判断是否是想验证的评审方式
+     * @param reviewType
+     * @param workProgramId
+     * @return
+     */
+    @Override
+    public boolean checkReviewType(String reviewType, String workProgramId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select count(wp.id) from CS_WORK_PROGRAM wp where WP.ID = :workProgramId and WP.REVIEWTYPE = :reviewType ");
+        sqlBuilder.setParam("workProgramId",workProgramId).setParam("reviewType",reviewType);
+        return (returnIntBySql(sqlBuilder)>0);
+    }
+
+    /**
+     * 更新工作方案的拟补充资料函
+     * @param businessId
+     * @param value
+     * @param disapDate
+     */
+    @Override
+    public void updateSuppLetterState(String businessId, String value, Date disapDate) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update cs_work_program ");
+        sqlBuilder.append(" set " + WorkProgram_.isHaveSuppLetter.getName() + " =:stateValue ").setParam("stateValue", value);
+        sqlBuilder.append(" ,"+WorkProgram_.suppLetterDate.getName()+" = to_date(:disapDate,'yyyy-mm-dd') ").setParam("disapDate",DateUtils.converToString(disapDate,"yyyy-MM-dd"));
+        sqlBuilder.append(" where signid =:signid ").setParam("signid", businessId);
+        sqlBuilder.append(" and "+ WorkProgram_.isHaveSuppLetter.getName() +" is null or "+ WorkProgram_.isHaveSuppLetter.getName() +" != '9'");
+        executeSql(sqlBuilder);
     }
 }

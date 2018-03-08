@@ -1,0 +1,68 @@
+<!--巡查流程-->
+<ion-view title="巡查流程">
+	<!--视图标题-->
+	<ion-nav-bar class="bar-positive">
+		<!--视图头部-->
+		<ion-nav-buttons side="left">
+			<!--后退-->
+			<button ng-click="back()" class="button back-button buttons button-clear header-item">
+            	<i class="icon ion-android-arrow-back"></i></button>
+		</ion-nav-buttons>
+		<!--提交-->
+		<ion-nav-buttons side="right">
+			<a ng-click="submitProc(data.designate)" class="button back-button buttons button-clear header-item" ng-disabled="!data.designate">
+				提交
+			</a>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<!--选项卡-->
+	<ion-tabs class="tabs-icon-only tabs-positive">
+		<!--选项卡 -- 选项  -- begin================================================基本信息========================================================================-->
+		<ion-tab title="基本信息" on-select="" on-deselect="">
+			<ion-header-bar class="bar-positive">
+			</ion-header-bar>
+			<ion-content has-tabs="true">
+				<!--<ion-refresher pulling-text="获取最新数据..." refreshing-text="刷新完毕" on-refresh="doRefresh()"></ion-refresher>-->
+				<!--选项卡内容-->
+				<div>
+					<label class="item item-input">
+	          	<span>任务名：</span>
+	          	<span>{{model.taskName}}</span>
+	        </label>
+					<label class="item item-input">
+	          	<span>巡查场地：</span>
+	          	<span>{{model.siteInfo.siteName}}</span>
+	       </label>
+					<div class="item item-select">
+						<span>指派给：</span>
+						<select ng-model="data.designate">
+							<option value="">请选择</option>
+							<option value="{{x.loginName}}" ng-repeat="x in list">{{x.displayName}}</option>
+						</select>
+					</div>
+					<div>
+						<div class="w33_h43 float_l border_1px border_2DA4FF" ng-repeat="x in files|filter:{fileType:1}">
+							<a ng-click="showImg((files|filter:{fileType:1}),$index)">
+								<div class='po_relative'>
+									<img ng-src="{{x.fileUrl.length > 750 ? '' : (rootPath+'/downLoad/')}}{{x.fileUrl}}" width='100%' />
+									<a class='ioc_rigth_top' ng-click="deletePic(x)"><i class='icon ion-close-circled icon_s'></i></a>
+								</div>
+							</a>
+						</div>
+						<p style="clear: both;"></p>
+					</div>
+				</div>
+			</ion-content>
+		</ion-tab>
+		<ion-tab title="处理记录" on-select="goProccessRecords()" on-deselect="exitProccessRecords()">
+			<ion-header-bar class="bar-positive">
+			</ion-header-bar>
+			<ion-content has-tabs="true">
+				<ion-refresher pulling-text="获取最新数据..." refreshing-text="刷新完毕" on-refresh="refreshProccessRecords()"></ion-refresher>
+				<!--选项卡内容-->
+				<!--处理记录页面-->
+				<div ng-include="'areas/workDynamic/task/commonality/dispose.html'"></div>
+			</ion-content>
+		</ion-tab>
+	</ion-tabs>
+</ion-view>

@@ -3,9 +3,9 @@
 
     angular.module('app').controller('annountmentDetailCtrl',annountmentDetail);
 
-    annountmentDetail.$inject = ['$location','$state','annountmentSvc'];
+    annountmentDetail.$inject = ['sysfileSvc','$state','annountmentSvc'];
 
-    function annountmentDetail($location, $state,annountmentSvc) {
+    function annountmentDetail(sysfileSvc, $state,annountmentSvc) {
         var vm = this;
         vm.title = '通知公告详情页';
         vm.annountment = {};    //通知公告对象
@@ -23,6 +23,11 @@
             annountmentSvc.findDetailById(vm,id);
         }
 
+        //附件下载
+        vm.downloadSysFile = function(sysId){
+            sysfileSvc.downloadFile(sysId);
+        }
+
 
         vm.alertwd=function(){
             $("section").addClass("cont-alert");
@@ -31,16 +36,14 @@
             $("section").removeClass("cont-alert");
         }
         //打印
-        vm.printNotice = function(id){
+        vm.printNotice = function(){
             var LODOP = getLodop();
             var strStylePath = rootPath +"/contents/shared/annountmentPrint.css";
             var strStyleCSS="<link href="+strStylePath+" type='text/css' rel='stylesheet'>";
-            var strFormHtml="<head>"+strStyleCSS+"</head><body>"+$("#"+id).html()+"</body>";
+            var strFormHtml="<head>"+strStyleCSS+"</head><body>"+$("#annountment-body").html()+"</body>";
             LODOP.PRINT_INIT("");
-            LODOP.SET_PRINT_STYLEA("FontName","System");
             LODOP.ADD_PRINT_HTML(10,20,"100%","100%",strFormHtml);
             LODOP.PREVIEW();
-
         }
 
     }

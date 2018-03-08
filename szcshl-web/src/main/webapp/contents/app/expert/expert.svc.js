@@ -12,7 +12,8 @@
 			auditGrid : auditGrid,				//初始化审核页面的所有grid
 			getExpertById : getExpertById,		//通过ID查询专家信息详情
 			saveExpert : saveExpert,            //保存专家信息
-			deleteExpert : deleteExpert,        //删除专家信息
+			deleteExpert : deleteExpert,        //删除专家信息(逻辑删除)
+            deleteExpertData:deleteExpertData,	//删除专家信息(物理删除)
 			searchMuti : searchMuti,		    //综合查询
 			searchAudit : searchAudit,		    //审核查询
 			repeatGrid : repeatGrid,		    //重复专家查询
@@ -46,21 +47,15 @@
 			var httpOptions = {
 				method : 'delete',
 				url : url_expert,
-				data : id
-
+                params:{
+                    id : id
+                }
 			}
 			var httpSuccess = function success(response) {
+                vm.isSubmit = false;
 				if(callBack != undefined && typeof  callBack == 'function'){
 					callBack(response.data);
 				}
-				/*common.requestSuccess({
-					vm : vm,
-					response : response,
-					fn : function() {
-						vm.isSubmit = false;
-						vm.gridOptions.dataSource.read();
-					}
-				});*/
 			}
 			common.http({
 				vm : vm,
@@ -70,9 +65,35 @@
 			});
 		}
 		// end#deleteUser
+
+		//begin_deleteExpertData
+		function deleteExpertData(vm, id , callBack){
+            vm.isSubmit = true;
+            var httpOptions = {
+                method : 'delete',
+                url : rootPath + "/expert/deleteExpertData",
+                params:{
+                    id : id
+                }
+
+            }
+            var httpSuccess = function success(response) {
+                vm.isSubmit = false;
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                vm : vm,
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess
+            });
+		}//end_deleteExpertData
 		
 		// begin#search
 		function searchMuti(vm) {
+            vm.gridOptions.dataSource._skip=0;
 			vm.gridOptions.dataSource.read();	
 		}
 		// end#searchMuti									
@@ -126,7 +147,29 @@
 		
 		// begin#grid
 		function grid(vm) {
-			var  dataSource = common.kendoGridDataSource(rootPath+"/expert/findByOData",$("#searchform"));
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#searchform"),{$filter: "state ne 0"}),
+                schema: common.kendoGridConfig().schema({
+                    id: "expertID",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "applyDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+
 			var  dataBound = function () {  
                 var rows = this.items();  
                 var page = this.pager.page() - 1;  
@@ -296,7 +339,7 @@
 		function auditGrid(vm){
 			var dataSource1 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '1' and unable ne '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '1'"}),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -317,7 +360,7 @@
 			
 			var dataSource2 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '2' and unable ne '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '2'"}),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -338,7 +381,7 @@
 			
 			var dataSource3 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '3' and unable ne '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '3'"}),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -359,7 +402,7 @@
 			
 			var dataSource4 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '4' and unable ne '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '4'"}),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -380,7 +423,7 @@
 			
 			var dataSource5 = new kendo.data.DataSource({
 				type : 'odata',
-				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{filter:"state eq '5' and unable ne '1'"}),
+				transport : common.kendoGridConfig().transport(rootPath+"/expert/findByOData",$("#auditform"),{$filter:"state eq '0'"}),
 				schema : common.kendoGridConfig().schema({
 					id : "id",
 					fields : {
@@ -463,10 +506,21 @@
 		
 		//S_searchAudit
 		function searchAudit(vm){
-			vm.gridOptions1.dataSource.read();	
+            vm.gridOptions1.dataSource._skip=0;
+            vm.gridOptions2.dataSource._skip=0;
+            vm.gridOptions3.dataSource._skip=0;
+            vm.gridOptions4.dataSource._skip=0;
+            vm.gridOptions5.dataSource._skip=0;
+            //查询时。不会再经过grid。所以取不到过滤的条件。需要重新在添加
+            $("#state").val("1");
+			vm.gridOptions1.dataSource.read();
+            $("#state").val("2");
 			vm.gridOptions2.dataSource.read();
+            $("#state").val("3");
 			vm.gridOptions3.dataSource.read();
+            $("#state").val("4");
 			vm.gridOptions4.dataSource.read();
+            $("#state").val("0");
 			vm.gridOptions5.dataSource.read();
 		}//S_endAudit
 		
@@ -575,29 +629,29 @@
 
         //S_导出综合查询的excel功能
         function exportToExcel(vm){
-            var fileName = escape(encodeURIComponent(vm.fileName));
-            if(vm.expert && vm.expert !=undefined){
-                var filters = JSON.stringify(vm.expert);
-                var filterDate = filters.substring(1,filters.length-1);
-            }
-            window.open(rootPath + "/expert/exportToExcel?filterData=" + escape(encodeURIComponent(filterDate)) + "&fileName=" +fileName);
-           /* var httpOptions ={
+            var httpOptions ={
                 method : 'post',
                 url : rootPath+"/expert/exportToExcel",
                 responseType: 'arraybuffer',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
-                data: $.param({$filter:common.buildOdataFilter($("#searchform")) }),
+                data: {$filter:common.buildOdataFilter($("#searchform")) },
+                transformRequest: function(obj) {
+                    var str = [];
+                    for(var p in obj){
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    }
+                    return str.join("&");
+                }
             }
             var httpSuccess = function success(response){
                 var blob = new Blob([response.data] , {type : "application/vnd.ms-excel"});
                 FileSaver.saveAs(blob, "专家信息.xls");
-                //common.downloadReport(response.data , "专家信息.xls" , "vnd.ms-excel");
             }
             common.http({
                 $http : $http ,
                 httpOptions : httpOptions,
                 success : httpSuccess
-            });*/
+            });
 
         }//E_exportToExcel
 

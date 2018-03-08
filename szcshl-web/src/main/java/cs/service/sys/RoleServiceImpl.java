@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
@@ -133,7 +134,7 @@ public class RoleServiceImpl implements RoleService {
             for (User user : users) {
                 user.getRoles().remove(role);
             }
-            if (!role.getRoleName().equals("超级管理员")) {
+            if (!role.getRoleName().equals(Constant.SUPER_ROLE)) {
                 roleRepository.delete(role);
                 logger.info(String.format("删除角色,角色名:%s", role.getRoleName()));
             }

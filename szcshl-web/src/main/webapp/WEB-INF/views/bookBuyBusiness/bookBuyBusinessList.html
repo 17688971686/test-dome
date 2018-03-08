@@ -2,11 +2,11 @@
 <meta charset="UTF-8">
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a>图书采购业务流程</a></li>
+        <li><a>图书管理</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
     <div class="toolbar">
-        <button class="btn btn-sm btn-success" ng-click="vm.searchForm()" ng-disabled="vm.isSubmit"><span
+        <button class="btn btn-sm btn-primary" ng-click="vm.searchForm()" ng-disabled="vm.isSubmit"><span
                 class="glyphicon glyphicon-search"></span>查询
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">重置</button>
@@ -15,12 +15,30 @@
         <form id="bookBuyForm" name="bookBuyForm">
             <table style="width:100%">
                 <tr>
-                    <td class="text-right">申请部门：</td>
-                    <td class="text-right"><input name="applyDept" type="text" operator="like" ng-model="vm.searchModel.applyDept" class="form-control input-sm "/></td>
-                    <td class="text-right">申请人：</td>
-                    <td class="text-right"><input name="operator" type="text" operator="like" ng-model="vm.searchModel.operator" class="form-control input-sm "/></td>
-                    <td class="text-right">购买渠道：</td>
-                    <td class="text-right"><input name="buyChannel" type="text" operator="like" ng-model="vm.searchModel.buyChannel"  class="form-control input-sm "/></td>
+                    <td class="text-right" width="100px">申请部门：</td>
+                    <td  >
+                        <!--<input name="applyDept" type="text" operator="like" ng-model="vm.searchModel.applyDept"
+                               class="form-control input-sm " width="200px"/>-->
+                        <select id="applyDept" name="applyDept" operator="like" class="form-control select-sm "
+                                ng-model="vm.searchModel.applyDept" style="width : 200px;">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.TRANSACT_DEPARTMENT.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                        </select>
+                    </td>
+                    <td class="text-right" width="100px">申请人：</td>
+                    <td >
+                        <input name="operator" type="text" operator="like" ng-model="vm.searchModel.operator"
+                               class="form-control input-sm " style="width : 200px;" />
+                    </td>
+                    <td class="text-right" width="100px">购买渠道：</td>
+                    <td  >
+                        <!--<input name="buyChannel" type="text" operator="like" ng-model="vm.searchModel.buyChannel"  class="form-control input-sm "/>-->
+                        <select id="buyChannel" name="buyChannel" operator="like" class="form-control select-sm "
+                                ng-model="vm.searchModel.buyChannel" style="width : 200px;">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.BUY_CHANNEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                        </select>
+                    </td>
                 </tr>
             </table>
         </form>
@@ -30,7 +48,7 @@
 
 <script type="text/template" id="columnBtns">
     <a class="btn btn-xs btn-primary" href="#/bookBuyBusinessEdit/{0}/0" ng-hide="{1}"><span class="glyphicon glyphicon-pencil"></span>编辑</a>
-    <a class="btn btn-xs btn-info" href="#/bookBuyBusinessEdit/{0}/1" ><span class="glyphicon glyphicon-comment"></span>查看详情</a>
+    <a class="btn btn-xs btn-info" href="#/bookBuyBusinessDetail/{0}/1" ><span class="glyphicon glyphicon-comment"></span>查看详情</a>
 </script>
 
 

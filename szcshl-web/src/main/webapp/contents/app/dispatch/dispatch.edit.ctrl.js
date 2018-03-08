@@ -12,6 +12,7 @@
         vm.searchSign = {};        //发文查询对象
         vm.dispatchDoc = {};       //发文对象
         vm.dispatchDoc.signId = $state.params.signid;
+        vm.isControl=$state.params.isControl;//按钮控制
         vm.dispatchDoc.id = "";
 
         vm.showFlag = {
@@ -177,6 +178,9 @@
             var isValid = $('#dispatch_form').valid();
             if(isValid){
                 dispatchSvc.saveDispatch(vm);
+/*                if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
+                    $scope.$apply();
+                }*/
             }else{
                 bsWin.alert("提交失败，有红色标识的是必填项，请确认是否填写！");
             }

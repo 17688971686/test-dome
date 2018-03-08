@@ -128,14 +128,14 @@ public class RoomBookingController {
     }
 
 
-    @RequiresAuthentication
+    /*@RequiresAuthentication
     //@RequiresPermissions("room#exportNextWeekStage#get")
     @RequestMapping(name = "导出下周评审会议安排", path = "exportNextWeekStage", method = RequestMethod.GET)
     public void exportsNext(HttpServletRequest req, HttpServletResponse resp) {
         roomBookingSerivce.exportNextWeekStage();
-    }
+    }*/
 
-    //导出本周全部会议安排
+   /* //导出本周全部会议安排
     @RequiresAuthentication
     //@RequiresPermissions("room#exportWeek#get")
     @RequestMapping(name = "导出本周全部会议安排", path = "exportWeek", method = RequestMethod.GET)
@@ -149,9 +149,9 @@ public class RoomBookingController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    //导出下周全部会议安排
+    /*//导出下周全部会议安排
     @RequiresAuthentication
     //@RequiresPermissions("room#exportNextWeek#get")
     @RequestMapping(name = "导出下周全部会议安排", path = "exportNextWeek", method = RequestMethod.GET)
@@ -166,7 +166,7 @@ public class RoomBookingController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @RequiresAuthentication
     //@RequiresPermissions("room#addRoom#post")

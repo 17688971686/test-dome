@@ -87,17 +87,38 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
     @Transactional
     public ResultMsg bathSave(AddRegisterFileDto[] addRegisterFileDtos) {
         if (addRegisterFileDtos != null && addRegisterFileDtos.length > 0) {
+
+            //更改收文状态
+            Sign sign = signRepo.findById(Sign_.signid.getName(), addRegisterFileDtos[0].getBusinessId());
+            if (sign != null && (!Validate.isString(sign.getIsSupplementary()) || Constant.EnumState.NO.getValue().equals(sign.getIsSupplementary()))) {
+                sign.setIsSupplementary(Constant.EnumState.YES.getValue());
+                signRepo.save(sign);
+            }
+            //更新归档拟补充资料信息
+            FileRecord fileRecord = fileRecordRepo.findById(Sign_.signid.getName(), addRegisterFileDtos[0].getBusinessId());
+            if (fileRecord != null && (!Validate.isString(fileRecord.getIsSupplementary()) ||
+                    Constant.EnumState.NO.getValue().equals(fileRecord.getIsSupplementary()))) {
+                fileRecord.setIsSupplementary(Constant.EnumState.YES.getValue());
+                fileRecordRepo.save(fileRecord);
+            }
+
             List<AddRegisterFileDto> resultList = new ArrayList<>(addRegisterFileDtos.length);
             List<AddRegisterFile> saveList = new ArrayList<>(addRegisterFileDtos.length);
-            addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(), addRegisterFileDtos[0].getBusinessId());
+            addRegisterFileRepo.deleteByBusIdAndBusType(addRegisterFileDtos[0].getBusinessId() , addRegisterFileDtos[0].getBusinessType());
+//            addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(), addRegisterFileDtos[0].getBusinessId());
             Date now = new Date();
             for (AddRegisterFileDto addRegisterFileDto : addRegisterFileDtos) {
                 AddRegisterFile addRegisterFile = new AddRegisterFile();
                 BeanCopierUtils.copyProperties(addRegisterFileDto, addRegisterFile);
+
                 addRegisterFile.setCreatedDate(now);
                 addRegisterFile.setCreatedBy(SessionUtil.getDisplayName());
                 addRegisterFile.setModifiedDate(now);
                 addRegisterFile.setModifiedBy(SessionUtil.getDisplayName());
+
+                if(addRegisterFileDto.getBusinessType()==null){
+                    addRegisterFile.setBusinessType(Constant.AddRegisterFileType.BCZL.getValue());
+                }
                 saveList.add(addRegisterFile);
             }
             addRegisterFileRepo.bathUpdate(saveList);
@@ -106,23 +127,23 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
                 BeanCopierUtils.copyProperties(sl, dto);
                 resultList.add(dto);
             });
-            //更改收文状态
-            Sign sign = signRepo.findById(Sign_.signid.getName(), saveList.get(0).getBusinessId());
-            if (!Validate.isString(sign.getIsSupplementary()) || Constant.EnumState.NO.getValue().equals(sign.getIsSupplementary())) {
-                sign.setIsSupplementary(Constant.EnumState.YES.getValue());
-                signRepo.save(sign);
-            }
-            //更新归档拟补充资料信息
-            FileRecord fileRecord = fileRecordRepo.findById(Sign_.signid.getName(), saveList.get(0).getBusinessId());
-            if (fileRecord != null && (!Validate.isString(fileRecord.getIsSupplementary()) ||
-                    Constant.EnumState.NO.getValue().equals(fileRecord.getIsSupplementary()))) {
-                fileRecord.setIsSupplementary(Constant.EnumState.YES.getValue());
-                fileRecordRepo.save(fileRecord);
-            }
+
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", resultList);
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先填写补充资料！");
         }
+    }
+
+
+    /**
+     * 通过业务id 和 业务类型查询
+     * @param businessId
+     * @param businessType
+     * @return
+     */
+    @Override
+    public List<AddRegisterFile> findByBusIdAndBusType(String businessId, Integer businessType) {
+        return addRegisterFileRepo.findByBusIdAndBusType(businessId , businessType);
     }
 
     @Override
@@ -199,17 +220,16 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
      */
     @Override
     public List<AddRegisterFileDto> findByBusinessId(String businessId) {
+        List<AddRegisterFileDto> resultList = new ArrayList<>();
         List<AddRegisterFile> fileList = addRegisterFileRepo.findByBusinessId(businessId);
         if (Validate.isList(fileList)) {
-            List<AddRegisterFileDto> resultList = new ArrayList<>(fileList.size());
             fileList.forEach(fl -> {
                 AddRegisterFileDto rfDto = new AddRegisterFileDto();
                 BeanCopierUtils.copyProperties(fl, rfDto);
                 resultList.add(rfDto);
             });
-            return resultList;
         }
-        return null;
+        return resultList;
     }
 
     @Override

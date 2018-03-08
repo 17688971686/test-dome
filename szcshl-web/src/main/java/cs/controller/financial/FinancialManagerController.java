@@ -65,7 +65,14 @@ public class FinancialManagerController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "协审费录入", path = "findSingAssistCostCount", method = RequestMethod.POST)
+    @RequestMapping(name = "根据项目ID查询出对应的协审费用", path = "findSignCostBySignId", method = RequestMethod.POST)
+    @ResponseBody
+    public List<SignAssistCostDto> findSignCostBySignId(@RequestParam String signId) {
+        return financialManagerService.findSignCostBySignId(signId);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "协审费统计", path = "findSingAssistCostCount", method = RequestMethod.POST)
     @ResponseBody
     public List<SignAssistCostDto> findSingAssistCostCount(@RequestBody SignAssistCostDto signAssistCost) {
         return financialManagerService.signAssistCostList(signAssistCost, true);
@@ -251,15 +258,25 @@ public class FinancialManagerController {
             cell = row.createCell((short) 5);
             cell.setCellValue("合计（元）");
             cell.setCellStyle(style);
-
+            //要先进行过滤。取出需要的数据。
+            //如果没有先进行过滤时。直接循环赋值。会造成有一些行会空白的。（也就是说有多少条数据就有多少行,过滤的那行会变成空。所以先进行过滤）
+            List<ExpertSelectedDto> expertSelectedDtoList=new ArrayList<>();
             for (int i = 0; i < expertReviewDto.getExpertSelectedDtoList().size(); i++) {
+                //把未确认和未参加会议的专家过滤掉
+                if(Constant.EnumState.YES.getValue().equals(expertReviewDto.getExpertSelectedDtoList().get(i).getIsConfrim()) &&
+                        Constant.EnumState.YES.getValue(). equals(expertReviewDto.getExpertSelectedDtoList().get(i).getIsJoin())){
+                    expertSelectedDtoList.add(expertReviewDto.getExpertSelectedDtoList().get(i));
+                }
+            }
+            //然后再进行赋值
+            for (int i = 0; i < expertSelectedDtoList.size(); i++) {
                 row = sheet.createRow((int) i + 4);//用来控制数据在第几行开始
                 //定义实体类
-                ExpertDto expertDto = expertReviewDto.getExpertSelectedDtoList().get(i).getExpertDto();
+                ExpertDto expertDto = expertSelectedDtoList.get(i).getExpertDto();
                 Expert expert = new Expert();
                 ExpertSelected expertSelected = new ExpertSelected();
                 BeanCopierUtils.copyProperties(expertDto, expert);
-                BeanCopierUtils.copyProperties(expertReviewDto.getExpertSelectedDtoList().get(i), expertSelected);
+                BeanCopierUtils.copyProperties(expertSelectedDtoList.get(i), expertSelected);
                 // 第四步，创建单元格，并设置值
                 //先定义单元格。方便写入样式
                 HSSFCell NameCells = row.createCell((short) 0);//名字
@@ -307,6 +324,7 @@ public class FinancialManagerController {
                 //合计
                 TotalCells.setCellValue(expertSelected.getTotalCost()== null ? "" :expertSelected.getTotalCost().toString());
                 TotalCells.setCellStyle(style);
+
             }
             // 第六步，将文件保存
             ServletOutputStream sos = response.getOutputStream();

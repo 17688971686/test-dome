@@ -22,6 +22,25 @@ public class WorkExpeDto extends BaseDto {
     private Integer seqNum;    //工作简历
     private ExpertDto expertDto;
 
+    private String beginTimeStr;
+    private String endTimeStr;
+
+    public String getBeginTimeStr() {
+        return beginTimeStr;
+    }
+
+    public void setBeginTimeStr(String beginTimeStr) {
+        this.beginTimeStr = beginTimeStr;
+    }
+
+    public String getEndTimeStr() {
+        return endTimeStr;
+    }
+
+    public void setEndTimeStr(String endTimeStr) {
+        this.endTimeStr = endTimeStr;
+    }
+
     public ExpertDto getExpertDto() {
         return expertDto;
     }

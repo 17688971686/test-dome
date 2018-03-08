@@ -4,12 +4,14 @@ package cs.model.project;
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertReviewDto;
+import cs.model.sys.SysFileDto;
 
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class SignDto extends BaseDto{
+public class SignDto extends BaseDto {
 
     private String signid;
 
@@ -64,25 +66,19 @@ public class SignDto extends BaseDto{
     private String reviewstage;
 
     private String ispresign;
-    
-   /* //评审费录入状态 :9表示已办理,0表示未办理
-    private String financiaStatus; 
-    
-    //协审费录入状态 :9表示已办理,0表示未办理
-    private String assistStatus;*/
-    
+
     //是否有登记补充资料:9表示是,0表示否
     private String isSupplementary;
-    
+
     //是否有拟补充资料函:9表示是,0表示否
     private String isHaveSuppLetter;
-    
+
     //拟补充资料函发文日期
     @JSONField(format = "yyyy-MM-dd")
     private Date suppLetterDate;
     //审定投资
     private BigDecimal authorizeValue;
-    
+
     private String projectname;
 
     private String ischangeEstimate;
@@ -139,6 +135,9 @@ public class SignDto extends BaseDto{
     private Float daysafterdispatch;
 
     private Float reviewdays;
+
+    //总评审天数
+    private Float totalReviewdays;
 
     private String isassistproc;
 
@@ -206,7 +205,7 @@ public class SignDto extends BaseDto{
     private String proSugEledocCopy;
 
     //申报投资
-    private BigDecimal appalyInvestment;
+    private Double appalyInvestment;
 
     //建议书相关会议纪要份数
     private Integer sugMeetCount;
@@ -608,6 +607,11 @@ public class SignDto extends BaseDto{
     private List<AssistPlanSignDto> planSignDtoList;
 
     /**
+     * 是否已经回传给发改委（9：是，其它：否）
+     */
+    private String isSendFGW;
+
+    /**
      * 拟补充资料函列表
      */
     private List<AddSuppLetterDto> suppLetterDtoList;
@@ -624,32 +628,92 @@ public class SignDto extends BaseDto{
      * 专家评审方案信息
      */
     private ExpertReviewDto expertReviewDto;
-    
+
     /**
      * 资料存放位置
      */
     private String palceStorage;
-    
+
     /**
      * 送来存放时间
      */
     @JSONField(format = "yyyy-MM-dd")
     private Date palceTime;
-    
+
     /**
      * 联系人
      */
     private String contacts;
-    
+
     /**
      * 联系电话
      */
     private String contactsPhone;
 
+    /**
+     * 附件列表（目前用于接收附件）
+     */
+    private List<SysFileDto> sysFileDtoList;
+
+
+    /**
+     * 已逝工作日
+     */
+    private Float goneDays;
+
+    /**
+     * 延长工作日（是指超过评审天数的天数）
+     */
+    private Float overDays;
+
+    /**
+     * 延长天数（系统管理员添加）
+     */
+    private Float lengthenDays;
+
+    /**
+     * 延长评审说明
+     */
+    private String lengthenExp;
+
     public SignDto() {
     }
 
+    public Float getGoneDays() {
+        return goneDays;
+    }
+
+    public void setGoneDays(Float goneDays) {
+        this.goneDays = goneDays;
+    }
+
+    public Float getOverDays() {
+        return overDays;
+    }
+
+    public void setOverDays(Float overDays) {
+        this.overDays = overDays;
+    }
+
+    public Float getLengthenDays() {
+        return lengthenDays;
+    }
+
+    public void setLengthenDays(Float lengthenDays) {
+        this.lengthenDays = lengthenDays;
+    }
+
+    public String getLengthenExp() {
+        return lengthenExp;
+    }
+
+    public void setLengthenExp(String lengthenExp) {
+        this.lengthenExp = lengthenExp;
+    }
+
     /*********************************** 以下是set get 方法 *****************************************/
+
+
 
     public String getComprehensiveName() {
         return comprehensiveName;
@@ -1172,11 +1236,11 @@ public class SignDto extends BaseDto{
         this.proSugEledocCopy = proSugEledocCopy;
     }
 
-    public BigDecimal getAppalyInvestment() {
+    public Double getAppalyInvestment() {
         return appalyInvestment;
     }
 
-    public void setAppalyInvestment(BigDecimal appalyInvestment) {
+    public void setAppalyInvestment(Double appalyInvestment) {
         this.appalyInvestment = appalyInvestment;
     }
 
@@ -2038,14 +2102,14 @@ public class SignDto extends BaseDto{
 
     
    /* public String getFinanciaStatus() {
-		return financiaStatus;
+        return financiaStatus;
 	}
 
 	public void setFinanciaStatus(String financiaStatus) {
 		this.financiaStatus = financiaStatus;
 	}*/
 
-	public String getLeaderhandlesug() {
+    public String getLeaderhandlesug() {
         return leaderhandlesug;
     }
 
@@ -2197,13 +2261,13 @@ public class SignDto extends BaseDto{
         this.planSignDtoList = planSignDtoList;
     }
 
-	public String getIsProjectState() {
-		return isProjectState;
-	}
+    public String getIsProjectState() {
+        return isProjectState;
+    }
 
-	public void setIsProjectState(String isProjectState) {
-		this.isProjectState = isProjectState;
-	}
+    public void setIsProjectState(String isProjectState) {
+        this.isProjectState = isProjectState;
+    }
 
     public String getSignNum() {
         return signNum;
@@ -2237,29 +2301,29 @@ public class SignDto extends BaseDto{
 		this.assistStatus = assistStatus;
 	}*/
 
-	public BigDecimal getAuthorizeValue() {
-		return authorizeValue;
-	}
+    public BigDecimal getAuthorizeValue() {
+        return authorizeValue;
+    }
 
-	public void setAuthorizeValue(BigDecimal authorizeValue) {
-		this.authorizeValue = authorizeValue;
-	}
+    public void setAuthorizeValue(BigDecimal authorizeValue) {
+        this.authorizeValue = authorizeValue;
+    }
 
-	public String getIsHaveSuppLetter() {
-		return isHaveSuppLetter;
-	}
+    public String getIsHaveSuppLetter() {
+        return isHaveSuppLetter;
+    }
 
-	public void setIsHaveSuppLetter(String isHaveSuppLetter) {
-		this.isHaveSuppLetter = isHaveSuppLetter;
-	}
+    public void setIsHaveSuppLetter(String isHaveSuppLetter) {
+        this.isHaveSuppLetter = isHaveSuppLetter;
+    }
 
-	public Date getSuppLetterDate() {
-		return suppLetterDate;
-	}
+    public Date getSuppLetterDate() {
+        return suppLetterDate;
+    }
 
-	public void setSuppLetterDate(Date suppLetterDate) {
-		this.suppLetterDate = suppLetterDate;
-	}
+    public void setSuppLetterDate(Date suppLetterDate) {
+        this.suppLetterDate = suppLetterDate;
+    }
 
     public ExpertReviewDto getExpertReviewDto() {
         return expertReviewDto;
@@ -2301,36 +2365,59 @@ public class SignDto extends BaseDto{
         this.oldProjectId = oldProjectId;
     }
 
-	public String getPalceStorage() {
-		return palceStorage;
-	}
+    public String getPalceStorage() {
+        return palceStorage;
+    }
 
-	public void setPalceStorage(String palceStorage) {
-		this.palceStorage = palceStorage;
-	}
+    public void setPalceStorage(String palceStorage) {
+        this.palceStorage = palceStorage;
+    }
 
-	public Date getPalceTime() {
-		return palceTime;
-	}
+    public Date getPalceTime() {
+        return palceTime;
+    }
 
-	public void setPalceTime(Date palceTime) {
-		this.palceTime = palceTime;
-	}
+    public void setPalceTime(Date palceTime) {
+        this.palceTime = palceTime;
+    }
 
-	public String getContacts() {
-		return contacts;
-	}
+    public String getContacts() {
+        return contacts;
+    }
 
-	public void setContacts(String contacts) {
-		this.contacts = contacts;
-	}
+    public void setContacts(String contacts) {
+        this.contacts = contacts;
+    }
 
-	public String getContactsPhone() {
-		return contactsPhone;
-	}
+    public String getContactsPhone() {
+        return contactsPhone;
+    }
 
-	public void setContactsPhone(String contactsPhone) {
-		this.contactsPhone = contactsPhone;
-	}
-    
+    public void setContactsPhone(String contactsPhone) {
+        this.contactsPhone = contactsPhone;
+    }
+
+    public String getIsSendFGW() {
+        return isSendFGW;
+    }
+
+    public void setIsSendFGW(String isSendFGW) {
+        this.isSendFGW = isSendFGW;
+    }
+
+    public List<SysFileDto> getSysFileDtoList() {
+        return sysFileDtoList;
+    }
+
+    public void setSysFileDtoList(List<SysFileDto> sysFileDtoList) {
+        this.sysFileDtoList = sysFileDtoList;
+    }
+
+    public Float getTotalReviewdays() {
+        return totalReviewdays;
+    }
+
+    public void setTotalReviewdays(Float totalReviewdays) {
+        this.totalReviewdays = totalReviewdays;
+    }
 }

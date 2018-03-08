@@ -1,14 +1,18 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+<!--详情页-->
+<div id="suppLetterDetailDiv" style="display: none;">
+    <#include "/addSuppLetter/detail.html"/>
+</div>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/addSuppLetter">拟补充资料函查询</a></li>
-        <li class="active">{{vm.title}}</li>
+        <li>查询统计</li>
+        <li class="active">拟补充资料函查询</li>
     </ol>
     <form id="supQueryForm" name="supQueryForm" class="well well-sm">
+        <!--文件类型，1表示拟补充资料函-->
+        <input name="fileType" value="1" type="hidden" operator="eq"/>
         <span class="help-inline">文件标题：</span>
         <input type="text" operator="like" name="title" id="title" placeholder="请输入">
 
@@ -25,7 +29,7 @@
         <input name="suppLetterTime" style="width:124px" kendo-date-picker k-format="'yyyy-MM-dd'" value="" type="text"
                operator="le"/>
 
-        <button class="btn btn-sm btn-success" ng-click="vm.quarySuppContent()">
+        <button class="btn btn-sm btn-primary" ng-click="vm.quarySuppContent()">
             <span class="glyphicon glyphicon-search">查询</span>
         </button>
         <button class="btn btn-sm btn-primary" ng-click="vm.resetSuppContent()">
@@ -37,7 +41,3 @@
 
 </div>
 
-<script type="text/template" id="columnBtns">
-    <a class="btn btn-xs btn-primary" href="#/querySuppLetterDetail/{0}"><span
-            class="glyphicon glyphicon-pencil"></span>查看详细</a>
-</script>

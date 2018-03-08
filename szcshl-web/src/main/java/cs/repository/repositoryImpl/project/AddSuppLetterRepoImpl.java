@@ -43,7 +43,7 @@ public class AddSuppLetterRepoImpl extends AbstractRepository<AddSuppLetter, Str
     @Override
     public  Integer findybMaxSeq(String fileType){
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max(" + AddSuppLetter_.MonthlySeq.getName() + ") from cs_add_suppLetter" );
+        sqlBuilder.append("select max(" + AddSuppLetter_.monthlySeq.getName() + ") from cs_add_suppLetter" );
         sqlBuilder.append(" where " + AddSuppLetter_.fileType.getName() + " =:fileType ").setParam("fileType", fileType);
         return addSuppLetterRepo.returnIntBySql(sqlBuilder);
     }

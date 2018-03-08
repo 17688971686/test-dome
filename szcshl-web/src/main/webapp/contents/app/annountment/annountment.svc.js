@@ -80,10 +80,11 @@
                 vm.isSubmit = true;
                 var httpOptions = {
                     method: "post",
-                    url: url_annountment,
+                    url: rootPath + "/annountment",
                     data: vm.annountment
                 }
                 var httpSuccess = function success(response) {
+                    vm.isSubmit = false;
                     if (callBack != undefined && typeof callBack == 'function') {
                         callBack(response.data);
                     }
@@ -103,7 +104,6 @@
         function updateAnnountment(vm,callBack) {
             vm.isSubmit = true;
             vm.annountment.anContent = vm.editor.getContent();
-            alert(vm.annountment.anContent);
             var httpOptions = {
                 method: "put",
                 url: url_annountment,
@@ -155,47 +155,8 @@
         // begin#grid
         function grid(vm) {
             // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/annountment/fingByCurUser",$("#annountmentform")),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        },
-                        modifiedDate: {
-                            type: "date"
-                        }
-
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: [
-                {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-                ]
-            });
+            var dataSource = common.kendoGridDataSource(rootPath + "/annountment/fingByCurUser",$("#annountmentform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
             // End:dataSource
-
-            //S_序号
-            var dataBound = function () {
-                var rows = this.items();
-                var page = this.pager.page() - 1;
-                var pagesize = this.pager.pageSize();
-                $(rows).each(function () {
-                    var index = $(this).index() + 1 + page * pagesize;
-                    var rowLabel = $(this).find(".row-number");
-                    $(rowLabel).html(index);
-                });
-            };
-            //S_序号
-
             // Begin:column
             var columns = [
                 {
@@ -284,10 +245,20 @@
                         var isCanEdit = true;
                         //已发布或者走流程的不能删除
                         if(item.issue == '9' || item.processInstanceId){
-                            isCanDel = false;
+                            if(item.issue=='0' && item.appoveStatus == '9'){
+                                 isCanDel = true;
+                            }else{
+                                isCanDel = false;
+                            }
+
                         }
                         if(item.processInstanceId){
-                            isCanEdit = false;
+                            if(item.issue == '0' && item.appoveStatus == '9'){
+                                isCanEdit = true;
+                            }else{
+                                isCanEdit = false;
+                            }
+
                         }
                         return common.format(
                             $('#columnBtns').html(),
@@ -305,9 +276,9 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
-                dataBound: dataBound,
+                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
                 columns: columns,
                 resizable: true
             };
@@ -418,7 +389,6 @@
 
         //S_startFlow
         function startFlow(id, callBack) {
-            console.log(id);
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/annountment/startFlow",

@@ -1,0 +1,48 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-baidumaplocation": {
+            "ANDROID_KEY": "NN43LVYAFueUiytZh6tssgPusAqpztRq",
+            "IOS_KEY": "p4kYEY4dGcPH3srGjX9u2aiYqEL01045",
+            "IOS_LOCATION_DESC": "请点击'好'以允许访问。",
+            "PACKAGE_NAME": "com.szcshl.wtssglsys"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.szcshl.wtssglsys"
+        },
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.szcshl.wtssglsys"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.szcshl.wtssglsys"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.szcshl.wtssglsys"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.szcshl.wtssglsys"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.szcshl.wtssglsys"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.szcshl.wtssglsys"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.szcshl.wtssglsys"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.szcshl.wtssglsys"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.szcshl.wtssglsys"
+        }
+    },
+    "dependent_plugins": {}
+}

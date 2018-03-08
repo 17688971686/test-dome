@@ -57,12 +57,12 @@ public class BookBuy extends DomainBase {
     @Column
     private Date storeTime;
     //图书数量
-    @Column(columnDefinition="NUMBER")
-    private String bookNumber;
+    @Column(columnDefinition="INTEGER")
+    private Integer bookNumber;
 
     //库存确认
-    @Column(columnDefinition="varchar(30)")
-    private String storeConfirm;
+    @Column(columnDefinition="INTEGER")
+    private Integer storeConfirm;
 
     /**
      * 出版时间
@@ -171,13 +171,6 @@ public class BookBuy extends DomainBase {
         this.author = author;
     }
 
-    public String getBookNumber() {
-        return bookNumber;
-    }
-
-    public void setBookNumber(String bookNumber) {
-        this.bookNumber = bookNumber;
-    }
 
     public Date getPublishingTime() {
         return publishingTime;
@@ -195,14 +188,6 @@ public class BookBuy extends DomainBase {
         this.bookBuyBusiness = bookBuyBusiness;
     }
 
-    public String getStoreConfirm() {
-        return storeConfirm;
-    }
-
-    public void setStoreConfirm(String storeConfirm) {
-        this.storeConfirm = storeConfirm;
-    }
-
     public String getTotalPrice() {
         return totalPrice;
     }
@@ -217,5 +202,21 @@ public class BookBuy extends DomainBase {
 
     public void setStoreTime(Date storeTime) {
         this.storeTime = storeTime;
+    }
+
+    public Integer getBookNumber() {
+        return bookNumber;
+    }
+
+    public void setBookNumber(Integer bookNumber) {
+        this.bookNumber = bookNumber;
+    }
+
+    public Integer getStoreConfirm() {
+        return storeConfirm;
+    }
+
+    public void setStoreConfirm(Integer storeConfirm) {
+        this.storeConfirm = storeConfirm;
     }
 }

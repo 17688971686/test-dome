@@ -1,5 +1,6 @@
 package cs.model.book;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.book.BookBuyBusiness;
 import cs.model.BaseDto;
 
@@ -25,16 +26,45 @@ public class BookBuyDto extends BaseDto {
     private String publishingCompany;
     private String bookNo;
     private String author;
+    @JSONField(format = "yyyy-MM-dd")
     private Date publishingTime;
-    private String bookNumber;
-    private String storeConfirm;
+    private Integer bookNumber;
+    private Integer storeConfirm;
     private String applyDept;
     private String businessId;
     private String operator;
     private String buyChannel;
     private BookBuyBusiness bookBuyBusiness;
+    @JSONField(format = "yyyy-MM-dd")
+    private Date storeTime ;
+    private String businessName;
+    private String applyReason;
 
     public BookBuyDto() {
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    public String getApplyReason() {
+        return applyReason;
+    }
+
+    public void setApplyReason(String applyReason) {
+        this.applyReason = applyReason;
+    }
+
+    public Date getStoreTime() {
+        return storeTime;
+    }
+
+    public void setStoreTime(Date storeTime) {
+        this.storeTime = storeTime;
     }
 
     public String getId() {
@@ -128,20 +158,7 @@ public class BookBuyDto extends BaseDto {
     public void setPublishingTime(Date publishingTime) {
         this.publishingTime = publishingTime;
     }
-    public String getBookNumber() {
-        return bookNumber;
-    }
 
-    public void setBookNumber(String bookNumber) {
-        this.bookNumber = bookNumber;
-    }
-    public String getStoreConfirm() {
-        return storeConfirm;
-    }
-
-    public void setStoreConfirm(String storeConfirm) {
-        this.storeConfirm = storeConfirm;
-    }
     public BookBuyBusiness getBookBuyBusiness() {
         return bookBuyBusiness;
     }
@@ -180,5 +197,21 @@ public class BookBuyDto extends BaseDto {
 
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
+    }
+
+    public Integer getBookNumber() {
+        return bookNumber;
+    }
+
+    public void setBookNumber(Integer bookNumber) {
+        this.bookNumber = bookNumber;
+    }
+
+    public Integer getStoreConfirm() {
+        return storeConfirm;
+    }
+
+    public void setStoreConfirm(Integer storeConfirm) {
+        this.storeConfirm = storeConfirm;
     }
 }

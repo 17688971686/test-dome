@@ -4,13 +4,11 @@ import cs.common.Constant;
 import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.ActivitiUtil;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.book.BookBuy;
 import cs.domain.book.BookBuyBusiness;
 import cs.domain.book.BookBuyBusiness_;
+import cs.domain.book.BookBuy_;
 import cs.domain.sys.Org;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
@@ -21,8 +19,8 @@ import cs.model.project.ProjectStopDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.book.BookBuyBusinessRepo;
 import cs.repository.repositoryImpl.book.BookBuyRepo;
-import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.rtx.RTXSendMsgPool;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -54,8 +52,7 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 	private TaskService taskService;
 	@Autowired
 	private UserRepo userRepo;
-	@Autowired
-	private OrgDeptRepo orgDeptRepo;
+
 	@Override
 	public PageModelDto<BookBuyBusinessDto> get(ODataObj odataObj) {
 		PageModelDto<BookBuyBusinessDto> pageModelDto = new PageModelDto<BookBuyBusinessDto>();
@@ -110,8 +107,33 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 
 	@Override
 	@Transactional
-	public void delete(String id) {
+	public ResultMsg delete(String ids) {
+		try{
+			if(Validate.isString(ids)){
+				if(ids.contains(",")){
+					String idsArr[] = ids.split(",");
+					for(String id : idsArr){
+						delExistBookInfo(id);
+					}
+				}else{
+					delExistBookInfo(ids);
+				}
+			}
 
+		}catch (Exception e){
+			return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，数据异常");
+		}
+		return new ResultMsg(false, Constant.MsgCode.OK.getValue(),"操作成功！");
+	}
+
+	private boolean delExistBookInfo(String id){
+		boolean flag = false;
+		BookBuy bookBuy = bookBuyRepoRepo.findById(BookBuy_.id.getName(), id);
+		if (null != bookBuy){
+			bookBuyRepoRepo.delete(bookBuy);
+			flag = true;
+		}
+		return  flag;
 	}
 
 	@Override
@@ -145,6 +167,8 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setApplyDept(bookList[0].getApplyDept());
 				bookBuyBusiness.setOperator(bookList[0].getOperator());
 				bookBuyBusiness.setBuyChannel(bookList[0].getBuyChannel());
+				bookBuyBusiness.setBusinessName(bookList[0].getBusinessName());
+				bookBuyBusiness.setApplyReason(bookList[0].getApplyReason());
 				//bookBuyBusinessRepo.save(bookBuyBusiness);
 			}else{
 				//多次保存或者保存后在发起流程
@@ -157,6 +181,8 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setApplyDept(bookList[0].getApplyDept());
 				bookBuyBusiness.setOperator(bookList[0].getOperator());
 				bookBuyBusiness.setBuyChannel(bookList[0].getBuyChannel());
+				bookBuyBusiness.setBusinessName(bookList[0].getBusinessName());
+				bookBuyBusiness.setApplyReason(bookList[0].getApplyReason());
 				if( null!= bookBuyBus && Validate.isString(bookBuyBus.getProcessInstanceId())){
 					bookBuyBusiness.setProcessInstanceId(bookBuyBus.getProcessInstanceId());
 					bookBuyBusiness.setState(bookBuyBus.getState());
@@ -204,7 +230,11 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 			}else{
 				bookBuyBus.setBusinessId(bookList[0].getBusinessId());
 			}
-			bookBuyBus.setBusinessName("图书采购流程"+(bookBuyBusinessRepo.findAll().size()+1));
+			if(!Validate.isString(bookList[0].getBusinessName())){
+				bookBuyBus.setBusinessName("图书采购流程");
+			}else{
+				bookBuyBus.setBusinessName(bookList[0].getBusinessName());
+			}
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.BOOKS_BUY_FLOW, bookBuyBus.getBusinessId(),
 					ActivitiUtil.setAssigneeValue(FlowConstant.BooksBuyFlowParams.USER_APPLY.getValue(), SessionUtil.getUserId()));
 			processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), bookBuyBus.getBusinessName());
@@ -219,10 +249,6 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 		return  saveBooksDetailList(bookList,bookBuyBus);
 	}
 
-	@Override
-	public ResultMsg startNewFlow(String signid) {
-		return null;
-	}
 
 	@Override
 	public ResultMsg stopFlow(String signid, ProjectStopDto projectStopDto) {
@@ -324,7 +350,7 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				bookBuyBusiness.setFilerHandlesug(flowDto.getDealOption());
 				List<BookBuy> booksList = bookBuyBusiness.getBookBuyList();
 				flowEndUpdateBooks(booksList);
-				bookBuyBusiness.getBookBuyList().clear();
+				//bookBuyBusiness.getBookBuyList().clear();
 				bookBuyBusiness.setBookBuyList(booksList);
 				bookBuyBusinessRepo.save(bookBuyBusiness);
 				task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
@@ -351,6 +377,8 @@ public class BookBuyBusinessServiceImpl  implements BookBuyBusinessService {
 				}
 			}
 		}
+		//放入腾讯通消息缓冲池
+		RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(),assigneeValue);
 		return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
 	}
 

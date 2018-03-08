@@ -41,7 +41,13 @@ public class HiProcessTask {
      * 环节名称
      */
     @Column
-    private String nodeName;
+    private String nodeNameValue;
+
+    /**
+     * 环节名称Key
+     */
+    @Column
+    private String nodeKeyValue;
     /**
      * 开始日期
      */
@@ -120,14 +126,6 @@ public class HiProcessTask {
         this.procDefId = procDefId;
     }
 
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
-    }
-
     public Date getStartTime() {
         return startTime;
     }
@@ -190,5 +188,21 @@ public class HiProcessTask {
 
     public void setDurationStr(String durationStr) {
         this.durationStr = durationStr;
+    }
+
+    public String getNodeNameValue() {
+        return nodeNameValue;
+    }
+
+    public void setNodeNameValue(String nodeNameValue) {
+        this.nodeNameValue = nodeNameValue;
+    }
+
+    public String getNodeKeyValue() {
+        return nodeKeyValue;
+    }
+
+    public void setNodeKeyValue(String nodeKeyValue) {
+        this.nodeKeyValue = nodeKeyValue;
     }
 }

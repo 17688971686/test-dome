@@ -20,7 +20,7 @@ public class WorkPlan extends DomainBase {
 
     @Id
     @GeneratedValue(generator= "workPlanGenerator")
-    @GenericGenerator(name= "workPlanGenerator",strategy = "uuid")
+    @GenericGenerator(name= "workPlanGenerator",strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     /**

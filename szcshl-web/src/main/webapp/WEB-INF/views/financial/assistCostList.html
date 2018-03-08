@@ -33,7 +33,7 @@
                            ng-model="vm.signAssistCost.endTime"/>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-success" ng-click="vm.queryAssistCost()" ng-disabled="vm.isSubmit">
+                    <button class="btn btn-sm btn-primary" ng-click="vm.queryAssistCost()" ng-disabled="vm.isSubmit">
                         <span class="glyphicon glyphicon-search"></span>查询
                     </button>
                     <button class="btn btn-sm btn-primary" ng-click="vm.assistCostReset()">
@@ -57,19 +57,20 @@
         】
     </div>
 
-    <div class="table-responsive" style="max-height: 800px; overflow-y: scroll;">
+    <div class="table-responsive" >
         <table class="table table-bordered">
             <tr class="active">
-                <th class="text-center" style="width:60px"></th>
-                <th class="text-center" style="width:70px">序号</th>
-                <th class="text-center" style="width:18%">项目名称</th>
-                <th class="text-center" style="width:12%">协审单位</th>
-                <th class="text-center" style="width:13%">项目负责人</th>
+                <th class="text-center" style="width:40px"></th>
+                <th class="text-center" style="width:50px">序号</th>
+                <th class="text-center" >项目名称</th>
+                <th class="text-center" style="width:10%">协审单位</th>
+                <th class="text-center" style="width:10%">项目负责人</th>
                 <th class="text-center" style="width:10%">协审登记号</th>
                 <th class="text-center" style="width:10%">计划协审费用</th>
                 <th class="text-center" style="width:10%;">实际协审费用</th>
                 <th class="text-center" style="width:10%;">付款日期</th>
                 <th class="text-center" style="width:8%;">申报金额</th>
+                <th class="text-center" style="width:8%;">审定金额</th>
             </tr>
             <tr ng-repeat="s in vm.signAssistCostList">
                 <td class="text-center">
@@ -95,7 +96,7 @@
                     </span>
                 </td>
                 <td class="text-center">
-                    <span ng-class="{'label label-primary':(s.processState && s.processState >=5 && s.processState< 7), 'label label-success': (s.processState && s.processState ==8 )}">
+                    <span ng-class="{'label label-primary':(s.processState && s.processState >5 && s.processState< 9), 'label label-success': (s.processState && s.processState ==9 )}">
                     {{$index + 1}}
                     </span>
                 </td>
@@ -106,10 +107,11 @@
                 <td class="text-center">{{s.planCost}}</td>
                 <td class="text-center">{{s.factCost}}</td>
                 <td class="text-center">{{s.payDate}}</td>
-                <td class="text-center">{{s.applyCost}}</td>
+                <td class="text-center">{{s.declareValue}}</td>
+                <td class="text-center">{{s.authorizeValue}}</td>
             </tr>
             <tr ng-show="vm.nodata">
-                <td colspan="10" class="text-center">
+                <td colspan="11" class="text-center">
                     没有数据！
                 </td>
             </tr>

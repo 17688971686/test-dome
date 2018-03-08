@@ -47,7 +47,7 @@
                            ng-model="vm.model.endTime" value="" type="text" operator="le"/>
                 </td>
                 <td colspan="2">
-                    <button class="btn btn-sm btn-success" ng-click="vm.queryFinancl()" ng-disabled="vm.isSubmit">
+                    <button class="btn btn-sm btn-primary" ng-click="vm.queryFinancl()" ng-disabled="vm.isSubmit">
                         <span class="glyphicon glyphicon-search"></span>查询
                     </button>
                     <button class="btn btn-sm btn-primary" ng-click="vm.resetQuery()">
@@ -72,7 +72,7 @@
         】
     </div>
 
-    <div class="table-responsive" style="max-height: 800px; overflow-y: scroll;">
+    <div class="table-responsive" style="max-height: 600px; overflow-y: scroll;">
         <table class="table table-bordered">
             <tr class="active">
                 <th class="text-center" style="width:50px"></th>
@@ -96,12 +96,16 @@
                         <img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;">
                     </span>
                 </td>
-                <td class="text-center">{{$index + 1}}</td>
-                <td class="text-center"><a ng-click="vm.showCostWindow(s,'reviewCostWindow')">{{s.projectname}}</a></td>
+                <td class="text-center">
+                    <span ng-class="{'label label-primary':(s.processState && s.processState >5 && s.processState< 9), 'label label-success': (s.processState && s.processState ==9 )}">
+                    {{$index + 1}}
+                    </span>
+                </td>
+                <td class="text-center"><a href="" ng-click="vm.showCostWindow(s,'reviewCostWindow')">{{s.projectname}}</a></td>
                 <td class="text-center">{{s.builtcompanyname}}</td>
                 <td class="text-center">{{s.reviewstage}}</td>
                 <td class="text-center">{{s.principal}}</td>
-                <td class="text-center">{{s.totalCost | filter : "yyyy-MM-dd"}}</td>
+                <td class="text-center">{{s.totalCost}}</td>
                 <td class="text-center">{{s.signdate}}</td>
             </tr>
         </table>

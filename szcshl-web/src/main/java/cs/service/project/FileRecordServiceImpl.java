@@ -4,12 +4,11 @@ import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
-import cs.domain.project.FileRecord;
-import cs.domain.project.FileRecord_;
-import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
+import cs.domain.project.*;
 import cs.domain.sys.User;
+import cs.model.project.AddRegisterFileDto;
 import cs.model.project.FileRecordDto;
+import cs.repository.repositoryImpl.project.AddRegisterFileRepo;
 import cs.repository.repositoryImpl.project.FileRecordRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import org.apache.log4j.Logger;
@@ -17,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,6 +30,9 @@ public class FileRecordServiceImpl implements FileRecordService {
     private SignRepo signRepo;
     @Autowired
     private SignPrincipalService signPrincipalService;
+
+    @Autowired
+    private AddRegisterFileRepo addRegisterFileRepo;
 
     @Override
     @Transactional
@@ -52,6 +56,9 @@ public class FileRecordServiceImpl implements FileRecordService {
             } else {
                 fileRecord = fileRecordRepo.findById(fileRecordDto.getFileRecordId());
                 BeanCopierUtils.copyPropertiesIgnoreNull(fileRecordDto, fileRecord);
+
+                //先删除拟补充资料函
+//                addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(), fileRecordDto.getSignId());
             }
             fileRecord.setModifiedBy(SessionUtil.getLoginName());
             fileRecord.setModifiedDate(now);
@@ -78,6 +85,24 @@ public class FileRecordServiceImpl implements FileRecordService {
             sign.setProcessState(Constant.SignProcessState.DO_FILE.getValue());
             fileRecord.setSign(sign);
 
+            //5、添加拟补充资料函
+           /* if (Validate.isList(fileRecordDto.getRegisterFileDto())) {
+                List<AddRegisterFile> registerFileList = new ArrayList<>(fileRecordDto.getRegisterFileDto().size());
+                for (AddRegisterFileDto fdto : fileRecordDto.getRegisterFileDto()) {
+                    AddRegisterFile addRegisterFile = new AddRegisterFile();
+                    BeanCopierUtils.copyProperties(fdto, addRegisterFile);
+                    addRegisterFile.setBusinessId(fileRecordDto.getSignId());
+                    addRegisterFile.setCreatedBy(SessionUtil.getUserId());
+                    addRegisterFile.setCreatedDate(now);
+                    addRegisterFile.setModifiedBy(SessionUtil.getUserId());
+                    addRegisterFile.setModifiedDate(now);
+                    registerFileList.add(addRegisterFile);
+                    BeanCopierUtils.copyProperties(addRegisterFile, fdto);
+                }
+                addRegisterFileRepo.bathUpdate(registerFileList);
+            }*/
+
+
             fileRecordRepo.save(fileRecord);
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileRecordDto);
         } else {
@@ -95,15 +120,29 @@ public class FileRecordServiceImpl implements FileRecordService {
     @Override
     public FileRecordDto initBySignId(String signid) {
         FileRecordDto fileRecordDto = new FileRecordDto();
+        List<AddRegisterFileDto> dtoList = new ArrayList<>();
         //根据属性查找ID
         FileRecord fileRecord = fileRecordRepo.findById("signid",signid);
         if (fileRecord != null && Validate.isString(fileRecord.getFileRecordId())) {
             BeanCopierUtils.copyProperties(fileRecord, fileRecordDto);
+
+            //查询补充资料函信息
+            List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(),signid,null);
+            if(Validate.isList(registerFileList)){
+
+                registerFileList.forEach(rgf -> {
+                    AddRegisterFileDto dto = new AddRegisterFileDto();
+                    BeanCopierUtils.copyProperties(rgf,dto);
+                    dtoList.add(dto);
+                });
+
+            }
         } else {
             //如果是新增，则要初始化
             User priUser = signPrincipalService.getMainPriUser(signid);
            
             Sign sign = signRepo.findById(Sign_.signid.getName(), signid);
+            fileRecordDto.setSignId(signid);
             fileRecordDto.setProjectName(sign.getProjectname());
             fileRecordDto.setProjectCode(sign.getProjectcode());
             fileRecordDto.setFileReviewstage(sign.getReviewstage());//评审阶段
@@ -123,7 +162,11 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileRecordDto.setFileTitle(fileTitle);
             //是否协审
             fileRecordDto.setIsassistproc(sign.getIsassistproc());
+
+
         }
+
+        fileRecordDto.setRegisterFileDto(dtoList);
         return fileRecordDto;
     }
 
@@ -132,6 +175,7 @@ public class FileRecordServiceImpl implements FileRecordService {
      * @param fileRecordDate
      * @return
      */
+    @Override
     public int findCurMaxSeq(Date fileRecordDate) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select max("+ FileRecord_.fileSeq.getName()+") from cs_file_record where "+FileRecord_.fileDate.getName()+" between ");

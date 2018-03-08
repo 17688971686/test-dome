@@ -3,9 +3,9 @@
 
     angular.module('app').factory('userSvc', user);
 
-    user.$inject = ['$http' , 'bsWin'];
+    user.$inject = ['$http', 'bsWin'];
 
-    function user($http , bsWin) {
+    function user($http, bsWin) {
         var url_user = rootPath + "/user", url_back = '#/user', url_role = rootPath + "/role/fingByOData",
             url_dictgroup = rootPath + "/dict";
         var service = {
@@ -17,30 +17,31 @@
             updateUser: updateUser,
             getOrg: getOrg,
             queryUser: queryUser,
-            getZtreeChecked :getZtreeChecked ,
+            getZtreeChecked: getZtreeChecked,
             //initUserNo : initUserNo//初始化 员工工号
-            resetPwd : resetPwd , //重置密码
+            resetPwd: resetPwd, //重置密码
         };
 
         return service;
 
 
         //begin resetPwd
-        function resetPwd(vm , ids ){
+        function resetPwd(vm, ids) {
             var httpOptions = {
-                method : 'put',
-                url : url_user + '/resetPwd' ,
-                params : {ids : ids}
+                method: 'put',
+                url: url_user + '/resetPwd',
+                params: {ids: ids}
             }
-            var httpSuccess = function success(response){
-                bsWin.success("重置密码成功！");
-                vm.gridOptions.dataSource.read();
+            var httpSuccess = function success(response) {
+                bsWin.success("重置密码成功！",function(){
+                    vm.gridOptions.dataSource.read();
+                });
             }
             common.http({
-                vm : vm ,
-                httpOptions : httpOptions ,
-                success : httpSuccess ,
-                $http : $http
+                vm: vm,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                $http: $http
             });
         }
         //end resetPwd
@@ -128,41 +129,33 @@
                 // msg:"您填写的信息不正确,请核对后提交!"
                 // })
             }
-
         }
 
         // begin#deleteUser
-        function deleteUser(vm, id) {
+        function deleteUser(vm, id,callBack) {
             vm.isSubmit = true;
             var httpOptions = {
                 method: 'delete',
                 url: url_user,
                 data: id
-
             }
             var httpSuccess = function success(response) {
-
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        vm.isSubmit = false;
-                        vm.gridOptions.dataSource.read();
-                    }
-
-                });
-
+                vm.isSubmit = false;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
                 vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
-                success: httpSuccess
+                success: httpSuccess,
+                onError : function(){vm.isSubmit = false;}
             });
         }
 
         // begin#createUser
-        function createUser(userModel,isSubmit,callBack) {
+        function createUser(userModel, isSubmit, callBack) {
             isSubmit = true;
             var httpOptions = {
                 method: 'post',
@@ -283,30 +276,16 @@
             // Begin:dataSource
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(url_user + "/fingByOData?$orderby=userSort", $("#usersform")),
+                transport: common.kendoGridConfig().transport(rootPath + "/user/fingByOData", $("#usersform"),{filter: "loginName ne 'admin'"}),
                 schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        },
-                        modifiedDate: {
-                            type: "date"
-                        }
-                    }
+                    id: "id"
                 }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
+                serverPaging: false,
+                serverSorting: false,
+                serverFiltering: false,
+                pageSize: 10
             });
-
             // End:dataSource
-
             //S_序号
             var dataBound = function () {
                 var rows = this.items();
@@ -323,7 +302,7 @@
             var columns = [
                 {
                     template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",item.id)
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
                     },
                     filterable: false,
                     width: 40,
@@ -391,11 +370,23 @@
                 },
                 {
                     field: "",
+                    title: "在职情况",
+                    width: 80,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.jobState && item.jobState == "t") {
+                            return "在职";
+                        } else {
+                            return "已撤销";
+                        }
+                    }
+                },
+                {
+                    field: "",
                     title: "操作",
                     width: 140,
                     template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
+                        return common.format($('#columnBtns').html(),"vm.del('" + item.id + "')", item.id);
 
                     }
                 }
@@ -416,6 +407,7 @@
 
         //查询
         function queryUser(vm) {
+            vm.gridOptions.dataSource._skip = 0;
             vm.gridOptions.dataSource.read();
         }
 

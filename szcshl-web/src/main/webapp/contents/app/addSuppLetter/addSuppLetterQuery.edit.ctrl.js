@@ -33,7 +33,9 @@
         activate();
         function activate() {
         	//查看补充资料详细信息
-            addSuppLetterQuerySvc.getaddSuppLetterQueryById(vm);
+            addSuppLetterQuerySvc.getaddSuppLetterQueryById(vm,function (data) {
+                vm.suppletter =data;
+            });
             
         }
     }

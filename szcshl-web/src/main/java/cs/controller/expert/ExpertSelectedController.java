@@ -1,10 +1,9 @@
 package cs.controller.expert;
 
 import cs.ahelper.IgnoreAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.ExcelTools;
+import cs.common.utils.*;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.odata.ODataObj;
@@ -20,9 +19,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 抽取专家 控制层
@@ -108,8 +110,8 @@ public class ExpertSelectedController {
     //@RequiresPermissions("expertSelected#expertCostTotal#post")
     @RequestMapping(name = "项目评审费分类统计", path = "proCostClassifyTotal", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg proCostClassifyTotal(@RequestBody ProjectReviewCostDto projectReviewCostDto){
-        return  expertSelectedService.proReviewClassifyCount(projectReviewCostDto);
+    public ResultMsg proCostClassifyTotal(@RequestBody ProjectReviewCostDto projectReviewCostDto,int page){
+        return  expertSelectedService.proReviewClassifyCount(projectReviewCostDto,page);
     }
     @RequiresAuthentication
     //@RequiresPermissions("expertSelected#expertCostTotal#post")
@@ -177,7 +179,7 @@ public class ExpertSelectedController {
             }
                 //String title = new String((fileName).getBytes("GB2312") , "ISO-8859-1");
                 ServletOutputStream sos = resp.getOutputStream();
-                String [] headerPair =new String[]{"姓名=name","身份证号=idCard","开户行=openingBank","银行账号=bankAccount","评审费=reviewCost","应缴税=reviewTaxes","项目名称=reviewTitle","评审时间=reviewDate","负责人=principal"};
+                String [] headerPair =new String[]{"姓名=name","身份证号=idCard","开户行=openingBank","银行账号=bankAccount","评审费=reviewCost","应缴税=reviewTaxes","项目名称=reviewTitle","评审/函评日期=reviewDate","负责人=principal"};
                 HSSFWorkbook wb = excelTools.createExcelBook(title , headerPair , expertCostDetailDtoList , ExpertCostDetailDto.class);
                 resp.setContentType("application/vnd.ms-excel;charset=GBK");
                 resp.setHeader("Content-type" , "application/x-msexcel");
@@ -195,27 +197,179 @@ public class ExpertSelectedController {
     @RequiresAuthentication
     @RequestMapping(name="专家评审费统计导出" , path ="excelExport" , method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void excelExport(HttpServletResponse resp ,@RequestBody ExpertCostCountDto[] expertCostCountDtoArr ,@RequestParam String fileName){
+    public void excelExport(HttpServletResponse resp ,@RequestBody ExpertCostCountDto[] expertCostCountDtoArr){
         ExcelTools excelTools = new ExcelTools();
         List<ExpertCostCountDto> expertCostCountDtoList = new ArrayList<>();
         for(ExpertCostCountDto eccd : expertCostCountDtoArr){
             expertCostCountDtoList.add(eccd);
         }
+        ServletOutputStream sos = null;
         try {
-            fileName = java.net.URLDecoder.decode(java.net.URLDecoder.decode(fileName,"UTF-8"),"UTF-8");
-            ServletOutputStream sos = resp.getOutputStream();
+            String titleName = "专家缴税统计";
+            sos = resp.getOutputStream();
             String [] headerPair =new String[]{"姓名=name","身份证号码=idCard","手机号码=userPhone","应缴所得税额(本月)=reviewcost","应缴税额(本月)=reviewtaxes","应缴所得税额(本年)=yreviewcost","应缴税额(本年)=yreviewtaxes"};
-            HSSFWorkbook wb = excelTools.createExcelBook(fileName , headerPair , expertCostCountDtoList , ExpertCostCountDto.class);
+            HSSFWorkbook wb = excelTools.createExcelBook("专家缴税统计" , headerPair , expertCostCountDtoList , ExpertCostCountDto.class);
             resp.setContentType("application/vnd.ms-excel;charset=GBK");
             resp.setHeader("Content-type" , "application/x-msexcel");
             resp.setHeader("Content_Length" , String.valueOf(wb.getBytes().length));
-            String fileName2 = fileName +".xls";
+            String fileName2 = new String((titleName + ".xls").getBytes("GB2312"), "ISO-8859-1");
             resp.setHeader("Content-Disposition" , "attachment;filename="+fileName2);
             wb.write(sos);
             sos.flush();
             sos.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            try{
+                sos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+        }
+    }
+
+    /**
+         * 打印预览
+         *
+         * @param time
+         * @param response
+         */
+        @RequiresAuthentication
+        @RequestMapping(name = "打印预览", path = "printPreview/{time}", method = RequestMethod.GET)
+        @ResponseStatus(value = HttpStatus.OK)
+        public void printPreview(@PathVariable String time, HttpServletResponse response) {
+            InputStream inputStream = null;
+            File file = null;
+            File printFile = null;
+            try {
+                String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Constant.Template.WORD_SUFFIX.getKey();
+                String filePath = path.substring(0, path.lastIndexOf(".")) + Constant.Template.PDF_SUFFIX.getKey();
+                String fileName = "";
+                String year=time.substring(0,4);
+                String month=time.substring(4);
+                ExpertCostCountDto expertCostCountDto=new ExpertCostCountDto();
+//           expertCostCountDto.setBeginTime(time);
+                expertCostCountDto.setYear(year);
+                expertCostCountDto.setMonth(month);
+                ResultMsg resultMsg=expertSelectedService.expertCostTotal(expertCostCountDto);
+                Map<String, Object> expertFileDatas = new HashMap<>();
+
+                String times=year+"年"+month+"月";
+                expertFileDatas.put("time", times);
+                Map<String,ArrayList> map=(Map)resultMsg.getReObj();
+                for (String key:map.keySet()){
+                    expertFileDatas.put("expertCostTotalInfo",map.get(key));
+                }
+                file = TemplateUtil.createDoc(expertFileDatas, Constant.Template.EXPERT_PAYTAXES.getKey(), path);
+
+                if (file != null) {
+                    OfficeConverterUtil.convert2PDF(path, filePath);
+                }
+                printFile = new File(filePath);
+                inputStream = new BufferedInputStream(new FileInputStream(printFile));
+
+                byte[] buffer = new byte[inputStream.available()];
+                inputStream.read(buffer);  //读取文件流
+                inputStream.close();
+
+                response.reset();  //重置结果集
+                response.setContentType("application/pdf");
+                response.addHeader("Content-Length", "" + printFile.length());  //返回头 文件大小
+                response.setHeader("Content-Disposition", "inline;filename=" + new String(fileName.getBytes(), "ISO-8859-1"));
+
+                //获取返回体输出权
+                OutputStream os = new BufferedOutputStream(response.getOutputStream());
+                os.write(buffer); // 输出文件
+                os.flush();
+                os.close();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }finally {
+                try {
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                    if (file != null) {
+                        Tools.deleteFile(file);
+                    }
+                    if (printFile != null) {
+                        Tools.deleteFile(printFile);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+    }
+
+    /**
+     * 查看明细的打印预览
+     *
+     * @param time
+     * @param response
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "打印预览", path = "printPreviewDetail/{time}", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void printPreviewDetail(@PathVariable String time, HttpServletResponse response) {
+        InputStream inputStream = null;
+        File file = null;
+        File printFile = null;
+        try {
+            String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Constant.Template.WORD_SUFFIX.getKey();
+            String filePath = path.substring(0, path.lastIndexOf(".")) + Constant.Template.PDF_SUFFIX.getKey();
+            String fileName = "";
+            String year = time.substring(0, 4);
+            String month = time.substring(4);
+            ExpertCostDetailCountDto expertCostDetailCountDto = new ExpertCostDetailCountDto();
+            expertCostDetailCountDto.setYear(year);
+            expertCostDetailCountDto.setMonth(month);
+            ResultMsg resultMsg = expertSelectedService.expertCostDetailTotal(expertCostDetailCountDto);
+            Map<String, Object> expertFileDatas = new HashMap<>();
+            String times = year + "年" + month + "月";
+            expertFileDatas.put("time", times);
+            Map<String, ArrayList> map = (Map) resultMsg.getReObj();
+            for (String key : map.keySet()) {
+                expertFileDatas.put("expertCostTotalInfo", map.get(key));
+            }
+            file = TemplateUtil.createDoc(expertFileDatas, Constant.Template.EXPERT_PAYTAXESDETAIL.getKey(), path);
+
+            if (file != null) {
+                OfficeConverterUtil.convert2PDF(path, filePath);
+            }
+            printFile = new File(filePath);
+            inputStream = new BufferedInputStream(new FileInputStream(printFile));
+
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);  //读取文件流
+            inputStream.close();
+
+            response.reset();  //重置结果集
+            response.setContentType("application/pdf");
+            response.addHeader("Content-Length", "" + printFile.length());  //返回头 文件大小
+            response.setHeader("Content-Disposition", "inline;filename=" + new String(fileName.getBytes(), "ISO-8859-1"));
+
+            //获取返回体输出权
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            os.write(buffer); // 输出文件
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (file != null) {
+                    Tools.deleteFile(file);
+                }
+                if (printFile != null) {
+                    Tools.deleteFile(printFile);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

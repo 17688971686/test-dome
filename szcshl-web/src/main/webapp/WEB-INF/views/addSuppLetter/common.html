@@ -31,23 +31,23 @@
             </td>
         </tr>
         <tr>
-            <td class="text-center">发文日期</td>
+           <!-- <td class="text-center">发文日期</td>
             <td>
                 {{x.disapDate}}
-            </td>
+            </td>-->
 
             <td class="text-center">文件字号</td>
-            <td> {{x.filenum}} </td>
+            <td colspan="3"> {{x.filenum}} </td>
         </tr>
 
         <tr>
-            <td class="text-center">文件标题 <span class="required">*</span></td>
+            <td class="text-center">文件标题 </td>
             <td colspan="3">
                 {{x.title}}
             </td>
         </tr>
         <tr>
-            <td class="text-center">发行范围<span class="required">*</span></td>
+            <td class="text-center">发行范围</td>
             <td colspan="3">
                 {{x.dispaRange}}
                 <span style="float: right;">(印{{x.printnum}}份)</span>
@@ -80,5 +80,7 @@
         </tr>
         </tbody>
     </table>    <!-- end table -->
+    <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(x.id,'ADDSUPPLETER' , 'ADDSUPPLETER')">打印预览</button>
 </div>
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>
+<!--
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->

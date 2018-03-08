@@ -1,0 +1,1 @@
+jarsigner -verbose -keystore wtssglapp.keystore -signedjar 文体设施管养.apk platforms\android\build\outputs\apk\android-release-unsigned.apk testKey

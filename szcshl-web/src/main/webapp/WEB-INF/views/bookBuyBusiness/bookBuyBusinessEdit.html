@@ -23,57 +23,64 @@
         <table class="table table-bordered">
             <caption class="text-center"> <h3><strong>采购图书资料申请表</strong></h3></caption>
             <tr>
+                <td style="text-align:right;" >申购标题<span class="required">*</span></td>
+                <td colspan="5" >
+                    <input maxlength="125" class="form-control input-sm " id="businessName" name="businessName"
+                           data-val="true" data-val-required="必填" ng-model="vm.model.businessName" />
+                    <span data-valmsg-for="businessName" data-valmsg-replace="true" class="errors"></span>
+                </td>
+            </tr>
+            <tr>
                 <input type="hidden"  id="businessId"/>
-                <td class="formAlignRight" width="10%">申请部门</td>
+                <td style="text-align:right;" width="10%">申请部门</td>
                 <td width="20%">
                     <input type="text" maxlength="200" class="form-control input-sm "  ng-disabled="true"
                            ng-model="vm.model.applyDept" ng-init="vm.model.applyDept = '${CURRENT_USER.org.name}'"  id="applyDept" name="applyDept">
                 </td>
-                <td class="formAlignRight" width="10%">经办人</td>
+                <td style="text-align:right;" width="10%">经办人</td>
                 <td width="20%">
                     <input type="text" maxlength="200" class="form-control input-sm " ng-disabled="true"
                            ng-model="vm.model.operator" ng-init="vm.model.operator = '${CURRENT_USER.loginName}'" id="operator" name="operator">
                 </td>
 
-                <td class="formAlignRight" width="10%">购买渠道</td>
-         <td>
-                    <select id="buyChannel" class="form-control select-sm " ng-model="vm.model.buyChannel" ng-disabled="vm.showFlag.buyChannel">
+                <td style="text-align:right;" width="10%">购买渠道 <span class="required">*</span></td>
+                 <td width="20%">
+                    <select id="buyChannel" name="buyChannel" class="form-control select-sm " ng-model="vm.model.buyChannel" ng-disabled="vm.showFlag.buyChannel"  data-val="true" data-val-required="必填">
                         <option value="">请选择</option>
-                        <option ng-repeat="x in DICT.BOOK_BUYCHANLE_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                        <option ng-repeat="x in DICT.BUY_CHANNEL.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
                     </select>
+                     <span data-valmsg-for="buyChannel" data-valmsg-replace="true" class="errors"></span>
                 </td>
-
             </tr>
             <tr>
-                <td class="formAlignRight" width="10%">申请事由及发放范围</td>
-                <td width="90%" colspan="5" >
+                <td style="text-align:right;" >申请事由及<br>发放范围</td>
+                <td colspan="5" >
                       <textarea maxlength="200" class="form-control input-sm " rows="3"
-                                ng-disabled="vm.showFlag.bookBuyBzTr" ng-model="vm.model.applyReason"
-                                id="applyReason" name="applyReason"
-                      />
+                                ng-model="vm.model.applyReason" id="applyReason" name="applyReason" />
                 </td>
             </tr>
 
             <tr>
-                <td class="formAlignRight" width="10%">分管副主任审核</td>
-                <td width="40%"  >
+                <td style="text-align:right;" >分管副主任审核</td>
+                <td colspan="5">
                       <textarea maxlength="200" class="form-control input-sm " rows="3"
                                 ng-disabled="vm.showFlag.bookBuyFgzrTr" ng-model="vm.model.orgSLeader"
                                 id="orgSLeader" name="orgSLeader"
                       />
                 </td>
-                <td class="formAlignRight" width="10%">主任审批</td>
-                <td width="40%" colspan="3" >
+            </tr>
+            <tr>
+                <td style="text-align:right;" >主任审批</td>
+                <td colspan="5" >
                       <textarea maxlength="200" class="form-control input-sm " rows="3"
                                 ng-disabled="vm.showFlag.bookBuyZrTr" ng-model="vm.model.orgMLeader"
                                 id="orgMLeader" name="orgMLeader"
                       />
                 </td>
             </tr>
-
             <tr>
-                <td class="formAlignRight" width="10%">购买后档案员验收并入库</td>
-                <td width="90%" colspan="5" >
+                <td style="text-align:right;" >购买后档案员<br>验收并入库</td>
+                <td  colspan="5" >
                       <textarea maxlength="200" class="form-control input-sm " rows="3"
                                 ng-disabled="vm.showFlag.bookBuyYsrk" ng-model="vm.model.filer"
                                 id="filer" name="filer"
@@ -90,10 +97,9 @@
                     class="glyphicon glyphicon-remove"></span>删除
             </button>
         </div>
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="conditionTable">
             <tr class="bookBuyInfo">
-                <td style="width:5%;min-width:30px;" class="text-center"><input type='checkbox' ng-model="epCondtion"/></td>
-                <td style="width:7%;min-width:50px;" class="text-center">序号</td>
+                <td style="width:5%;min-width:30px;" class="text-center"><input type='checkbox' ng-model="bookBuyCondtion"/></td>
                 <td class="text-center" style="width:10%;">书刊名称</td>
                 <td class="text-center" style="width:10%;">图书\期刊分类</td>
                 <td class="text-center" style="width:10%;">出版社</td>
@@ -105,10 +111,9 @@
                 <td class="text-center" style="width:10%;">合计</td>
             </tr>
 
-            <tr  ng-repeat="x in vm.conditions">
+            <tr id="conTr{{x.sort}}"  ng-repeat="x in vm.conditions">
                 <td align="center">
-                    <input type='checkbox' name="epConditionSort" ng-checked="bbCondtion" value="{{x.sort}}"/></td>
-                <td align="center">{{x.sort}}</td>
+                    <input type='checkbox' name="bookInfos"  value="{{x.sort}}"/></td>
                 <td align="center">
                     <input type="text" maxlength="200" class="form-control input-sm "
                            id="booksName{{x.sort}}"  value="{{x.booksName}}" ng-disabled="vm.showFlag.isCommit"/>
@@ -116,7 +121,7 @@
                 <td align="center">
                     <select id="booksType{{x.sort}}" class="form-control select-sm " ng-disabled="vm.showFlag.isCommit">
                         <option value="">请选择</option>
-                        <option ng-repeat="x in DICT.BOOK_TYPE.dicts" value="{{x.dictName}}">{{x.dictName}}</option>
+                        <option ng-repeat="y in DICT.BOOK_TYPE.dicts" ng-selected="x.booksType == y.dictName" value="{{y.dictName}}">{{y.dictName}}</option>
                     </select>
                 </td>
                 <td align="center">

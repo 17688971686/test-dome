@@ -1,0 +1,7 @@
+
+/*====table========================*/
+.table{ width:100%; background-color:#fff; table-layout:fixed}
+.table td{ padding:8px; border:1px solid #dce0e3; vertical-align:middle; font-size:12px; text-align:center; word-wrap:break-word}
+.table tbody tr:nth-of-type(even){ background-color:#f7f7f7}
+.table-blue thead tr td{ background-color:#1961d9; color:#fff; border-color:#3b79df}
+.table-left td{ text-align:left; font-size:14px}

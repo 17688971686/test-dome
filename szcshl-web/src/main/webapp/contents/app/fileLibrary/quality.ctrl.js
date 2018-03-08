@@ -2,19 +2,55 @@
     'use strict';
     angular.module('app').controller('qualityCtrl', quality);
 
-    quality.$inject=['bsWin','$state','$location','fileLibrarySvc' ,'$scope' , '$interval'];
+    quality.$inject=['bsWin','$state','$location','fileLibrarySvc' ,'$scope' , '$interval' , 'sysfileSvc'];
 
-    function quality(bsWin,$state,$location,fileLibrarySvc , $scope , $interval){
+    function quality(bsWin,$state,$location,fileLibrarySvc , $scope , $interval , sysfileSvc){
         var vm = this;
         // vm.title="";
         vm.parentId = $state.params.parentId;
+        vm.fileId = $state.params.fileId;
         vm.fileLibrary={};
         vm.fileLibrary.fileType = "QUALITY";//初始化文件库类型 - 质量管理文件库
+        vm.fileType = "QUALITY";
         vm.qualityList = [];
+
+        //初始化附件上传控件
+        vm.initFileUpload = function(){
+            if(!vm.fileId){
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.fileId",function (newValue , oldValue){
+                    if(newValue && newValue != oldValue && !vm.initUploadOptionSuccess){
+                        vm.initFileUpload();
+                    }
+                });
+            }
+            //创建附件对象
+            vm.sysFile = {
+                businessId : vm.fileId,
+                mainId : vm.fileId,
+                mainType : sysfileSvc.mainTypeValue().FILELIBRARY,
+                sysBusiType :vm.fileUrl == undefined ? "" : vm.fileUrl.substring(vm.fileUrl.lastIndexOf(sysfileSvc.mainTypeValue().FILELIBRARY),vm.fileUrl.lastIndexOf(vm.fileName)),
+                showBusiType : false,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId : "sysfileinput",
+                vm :vm ,
+                uploadSuccess : function(){
+                    sysfileSvc.findByBusinessId(vm.fileId,function(data){
+                        vm.sysFilelists = data;
+                        fileLibrarySvc.initFileList(vm.parentFileId , vm.fileType, function(data){
+                            vm.qualityList = data.reObj;
+                        })
+                    });
+                }
+            });
+        }
+
         activate();
         function activate(){
             fileLibrarySvc.initFileFolder(vm, $scope , function(data){
-                vm.qualityList = data;
+                // vm.qualityList = data;
+
                 var zTreeObj;
                 var setting = {
                     check: {
@@ -40,7 +76,6 @@
                         onClick : zTreeOnClick,
                         beforeRemove : zTreeOnRemove,
                     },
-
                     data: {
                         simpleData: {
                             enable: true,
@@ -51,13 +86,18 @@
                 };
                 function zTreeOnClick(event, treeId, treeNode ) {
                     // $state.go('fileLibrary.fileList',{parentId : treeNode.id});
-                    if(treeNode.check_Child_State == 0 ){
+                    zTreeObj.checkNode(treeNode, !treeNode.checked, true);
+                    vm.parentFileId = treeNode.fileId;
+                    if(treeNode.fileNature == "FOLDER" ){
+
                         vm.qualityList = [];
                         if(treeNode.children){
                             vm.qualityList = treeNode.children;
                         }
                         $scope.$apply();
-                        // console.log(vm.qualityList);
+                    }
+                    if(treeNode.fileNature == "FILE"){
+                        vm.fileEdit(vm.parentFileId);
                     }
 
                 };
@@ -93,68 +133,21 @@
                 vm.zNodes = $linq(data).select(
                     function(x){
                         var pId = null;
-                        var returnObj = {
-                            id : x.fileId,
-                            name : x.fileName,
-                            pId : x.parentFileId,
-                            fileNature : x.fileNature,
-                            sysFileDtoList : x.sysFileDtoList,
-                        }
+                        var returnObj = x;
+                        returnObj = x;
+                        returnObj.id = x.fileId;
+                        returnObj.name = x.fileName;
+                        returnObj.pId = x.parentFileId;
 
                         if(x.fileNature == 'FOLDER'){
                             returnObj.icon = rootPath+"/contents/libs/zTree/css/zTreeStyle/img/diy/7.png";
                         }
-
-                        /*return {
-                            id : x.fileId,
-                            name : x.fileName,
-                            pId : pId,
-                            fileNature : x.fileNature,
-                            icon : rootPath+"/contents/libs/zTree/css/zTreeStyle/img/diy/7.png"
-                        };*/
                         return returnObj;
                     }).toArray();
+
+                vm.initFileTreeSucess = true;
                 // zTreeObj = $.fn.zTree.init($("#zTree"),setting,  zNodes );
                 // vm.folderTree = zTreeObj;
-
-                var array = vm.qualityList;
-                vm.zNodes = [];
-                vm.initFileTreeSucess = false;
-                var data = [];
-                //循环数据取出父类和相对应的子类
-                for(var i=0 , l = array.length ; i < l ; i++){
-                    var s = new Object();
-                    s = array[i];
-                    s.name = array[i].fileName;
-                    s.id = array[i].fileId ;
-                    //如果父id为空，说明是第一级文件夹,直接以第一级的文件名作为key
-                    if(!array[i].parentFileId  ) {
-                        var node = new Object();//定义父类的对象
-                        node.id = (new Date()).getTime();
-                        node.name = array[i].fileName;
-                        vm.zNodes.push(node);
-                        var arr = [];
-                        arr.push(s);
-                        data[array[i].fileName] = arr;
-                    }else {
-                        for(var j=0 , h = array.length ; j<h ; j++){
-                            if(array[i].parentFileId == array[j].fileId){
-                                data[array[j].fileName].push(s)
-                            }
-                        }
-                    }
-                }
-                for(var i=0,l=vm.zNodes.length;i<l;i++){
-                    for(var key in data){
-                        if(vm.zNodes[i].name == key){
-                            vm.zNodes[i].children = data[key];
-                        }
-                    }
-                    if(i==(l-1)){
-                        vm.initFileTreeSucess = true;
-                    }
-                }
-
 
                 //监听值改变
                 $scope.$watch("vm.initFileTreeSucess", function (newValue, oldValue) {
@@ -170,12 +163,14 @@
                     }
                 });
             });
+            vm.initFileUpload();
         }
 
         /**
          * 新建文件夹弹出窗
          * */
         vm.addFolderWindow=function(fileId){
+            console.log(vm.fileLibrary);
             vm.fileLibrary = {};
             vm.fileLibrary.fileType = "QUALITY";
             if(fileId != undefined){
@@ -267,18 +262,77 @@
 
 
         /**
-         * 新建文件跳转页
+         * 新建文件 或 更新文件 操作
          */
-        vm.addFile = function(){
-            $state.go('fileLibrary.fileEdit',{parentId : vm.parentId,fileId : ''});
+        vm.fileEdit = function(fileId ){
+            vm.isUpdate = false;
+            vm.fileId = fileId;
+            vm.fileLibrary = {};
+            vm.sysFilelists = {};
+            vm.fileLibrary.fileType = "QUALITY";
+            if(vm.fileId){
+                vm.isUpdate=true;
+                fileLibrarySvc.findFileById(vm.fileId , function(data){
+                    vm.fileLibrary = data;
+                    vm.fileUrl = vm.fileLibrary.fileUrl;
+                    vm.fileName = vm.fileLibrary.fileName;
+                    vm.initFileUpload();
+                });
+                sysfileSvc.findByBusinessId(vm.fileId,function(data){
+                    vm.sysFilelists = data;
+                });
+            }
+            $("#qualityEdit").kendoWindow({
+                width: "800px",
+                height: "500px",
+                title: "文件编辑",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"]
+            }).data("kendoWindow").center().open();
         }
 
         /**
-         * 跳转更新文件页面
-         * @param fileId
+         * 保存新建文件
          */
-        vm.update  = function(fileId,parentFileId){
-            $state.go('fileLibrary.fileEdit',{parentId :parentFileId ,fileId : fileId});
+        vm.createFile=function(){
+            vm.fileLibrary.parentFileId = vm.parentFileId;
+            common.initJqValidation();
+            if (vm.fileLibrary.fileName) {
+                fileLibrarySvc.saveFile(vm, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        bsWin.alert("保存成功！", function () {
+                            vm.qualityList.push(data.reObj);
+                            vm.fileId = data.reObj.fileId;
+                            fileLibrarySvc.getFileUrlById(vm, vm.fileId);
+                            vm.initFileUpload();
+                            activate();
+                            // vm.refresh(vm.parentFileId);
+                        });
+                    } else {
+                        bsWin.error(data.reMsg);
+                    }
+                });
+            }
+        }
+
+        /**
+         * 更新文件
+         */
+        vm.updateFile = function (){
+            fileLibrarySvc.updateFile(vm , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.alert("更新成功！", function(){
+                        vm.initFileUpload();
+                        // vm.refresh(vm.parentFileId);
+                        window.parent.$("#qualityEdit").data("kendoWindow").close();
+                        activate();
+                    });
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+            });
         }
 
         /**
@@ -286,8 +340,20 @@
          * @param fileId
          */
         vm.del = function(fileId){
+
             bsWin.confirm("删除的数据将无法恢复，确认删除？" , function(){
-                fileLibrarySvc.deleteFile(vm,fileId);
+                //手动删除树节点
+                var tree = $.fn.zTree.getZTreeObj("zTree");
+                var nodes = tree.getNodeByParam("id",fileId,null) ;
+                tree.removeNode(nodes);
+
+                fileLibrarySvc.deleteFile(fileId,function(){
+                    vm.qualityList.forEach(function(quality , number){
+                        if(quality.fileId == fileId){
+                            vm.qualityList.splice(number , 1);
+                        }
+                    });
+                });
             })
         }
 
@@ -295,17 +361,41 @@
         /**
          *  模糊查询
          */
-        vm.queryUser=function(){
+       /* vm.queryUser=function(){
             fileLibrarySvc.queryUser(vm);
-        };
+        };*/
 
         /**
          * 重置按钮
          */
-        vm.resetUser = function(){
+        /*vm.resetUser = function(){
             var tab = $("#fileForm").find('input');
             $.each(tab, function (i, obj) {
                 obj.value = "";
+            });
+        }*/
+
+        /**
+         * 附件下载
+         */
+
+        vm.commonDownloadSysFile = function(sysFileId){
+            sysfileSvc.downloadFile(sysFileId);
+        }
+        /**
+         * 重写 删除附件
+         * @param fileId
+         */
+        vm.delFile = function(fileId){
+            sysfileSvc.delSysFile(fileId, function () {
+                $.each(vm.sysFilelists, function (i, sf) {
+                    if (sf.sysFileId == fileId) {
+                        vm.sysFilelists.splice(i, 1);
+                    }
+                });
+                fileLibrarySvc.initFileList(vm.parentFileId , vm.fileType , function(data){
+                    vm.qualityList = data.reObj;
+                })
             });
         }
 

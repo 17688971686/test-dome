@@ -1,38 +1,35 @@
 package cs.service.project;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import cs.domain.project.*;
-import cs.repository.repositoryImpl.project.*;
-import org.apache.log4j.Logger;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import cs.common.Constant;
 import cs.common.Constant.EnumState;
 import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.CreateTemplateUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.Expert_;
+import cs.domain.project.*;
+import cs.domain.sys.Ftp;
+import cs.domain.sys.Ftp_;
 import cs.domain.sys.SysFile;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
+import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
+import cs.repository.repositoryImpl.project.DispatchDocRepo;
+import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
+import cs.repository.repositoryImpl.project.SignMergeRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.service.sys.SysConfigService;
+import cs.service.sys.SysFileService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.*;
+import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
 
 @Service
 public class DispatchDocServiceImpl implements DispatchDocService {
@@ -45,20 +42,24 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     private SignService signService;
     @Autowired
     private SignMergeRepo signMergeRepo;
-
-    @Autowired
-    private WorkProgramRepo workProgramRepo;
-
     @Autowired
     private ExpertRepo expertRepo;
-
     @Autowired
     private SysFileRepo sysFileRepo;
-
     @Autowired
     private SignDispaWorkRepo signDispaWorkRepo;
-
-    // 生成文件字号
+    @Autowired
+    private SysConfigService sysConfigService;
+    @Autowired
+    private FtpRepo ftpRepo;
+    @Autowired
+    private SysFileService sysFileService;
+    /**
+     * 生成发文编号，生成发文编号之前，要先上传项目评审意见
+     * @param signId
+     * @param dispatchId
+     * @return
+     */
     @Override
     @Transactional
     public ResultMsg fileNum(String signId,String dispatchId) {
@@ -74,11 +75,89 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         if(Validate.isString(dispatchDoc.getFileNum())){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该发文已经生成了发文编号！");
         }
+        //1、获取附件列表
+        boolean isUploadMainFile = false;
+        List<SysFile> fileList = sysFileRepo.findByMainId(signId);
+        //默认每个类型都没检测
+        String checFileName = "";
+        Map<String,Boolean> checkTypeMap = new HashMap<>();
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
+        if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())){
+            checFileName = Constant.DEFAULT_CHECK_FILE;
+        }else{
+            checFileName = sysConfigDto.getConfigValue();
+            if(checFileName.indexOf("；") > -1){
+                checFileName = checFileName.replace("；",";");
+            }
+            if(checFileName.indexOf("，") > -1){
+                checFileName = checFileName.replace("，",",");
+            }
+        }
+        //需要检测的文件类型
+        List<String> typeFileList = StringUtil.getSplit(checFileName,";");
+        for(String fileType : typeFileList){
+            checkTypeMap.put(fileType,false);
+        }
+
+        if(Validate.isList(fileList)){
+            int checkCount = typeFileList.size(),successCount = 0;
+            for(int i=0,l=fileList.size();i<l;i++){
+                SysFile sysFile = fileList.get(i);
+                String showName = sysFile.getShowName().substring(0,sysFile.getShowName().lastIndexOf("."));
+                for (Map.Entry<String,Boolean> entry : checkTypeMap.entrySet()) {
+                    if(entry.getValue() == false){
+                        //项目概算不用上传投资匡算表或投资估算表
+                        if(Constant.STAGE_BUDGET.equals(dispatchDoc.getDispatchStage()) ){
+                            if("评审意见,审核意见".equals(entry.getKey())){
+                                entry.setValue(true);
+                                successCount++;
+                                break;
+                            }
+                        }else if(entry.getKey().contains(showName)){
+                            entry.setValue(true);
+                            successCount++;
+                        }
+                    }
+                }
+                if(Constant.STAGE_BUDGET.equals(dispatchDoc.getDispatchStage()) && successCount == 1) {
+                    isUploadMainFile = true;
+                    break;
+                }else if(successCount == checkCount){
+                    isUploadMainFile = true;
+                    break;
+                }
+            }
+        }
+        if(!isUploadMainFile){
+            StringBuffer errorBuffer = new StringBuffer();
+            for (Map.Entry<String,Boolean> entry : checkTypeMap.entrySet()) {
+                //项目概算不用上传投资匡算表或投资估算表
+                if(Constant.STAGE_BUDGET.equals(dispatchDoc.getDispatchStage()) ){
+                    if("评审意见,审核意见".equals(entry.getKey()) && entry.getValue() == false){
+
+                        errorBuffer.append(entry.getKey().replaceAll(",","或者")+";");
+                    }
+                }else{
+                    if(entry.getValue() == false){
+                        errorBuffer.append(entry.getKey().replaceAll(",","或者")+";");
+                    }
+                }
+
+            }
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传"+errorBuffer.toString()+"附件信息！");
+        }
         //获取发文最大编号
         int curYearMaxSeq = findCurMaxSeq(dispatchDoc.getDispatchDate());
-        String fileNum = Constant.DISPATCH_PREFIX+"["+ DateUtils.converToString(dispatchDoc.getDispatchDate(),"yyyy")+"]"+(curYearMaxSeq + 1);
-        dispatchDoc.setFileNum(fileNum);
-        dispatchDoc.setFileSeq((curYearMaxSeq + 1));
+        curYearMaxSeq = curYearMaxSeq + 1;
+        String fileNumValue = "";
+        if(curYearMaxSeq < 1000){
+            fileNumValue = String.format("%03d", Integer.valueOf(curYearMaxSeq));
+        }else{
+            fileNumValue = curYearMaxSeq+"";
+        }
+        fileNumValue = Constant.DISPATCH_PREFIX+"["+ DateUtils.converToString(dispatchDoc.getDispatchDate(),"yyyy")+"]"+fileNumValue;
+        dispatchDoc.setFileNum(fileNumValue);
+        dispatchDoc.setFileSeq(curYearMaxSeq);
         dispatchDocRepo.save(dispatchDoc);
         //如果是合并发文，则更新所有关联的发文编号
         if(Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDoc.getDispatchWay())){
@@ -97,12 +176,12 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         sign.setProcessState( Constant.SignProcessState.END_DIS_NUM.getValue());
         //2、发文日期等修改
         sign.setExpectdispatchdate(new Date());
-        sign.setDocnum(fileNum);
+        sign.setDocnum(fileNumValue);
         //3、发文后剩余工作日
         sign.setDaysafterdispatch(sign.getSurplusdays());
         signRepo.save(sign);
 
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileNum);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileNumValue);
 
     }
 
@@ -304,98 +383,73 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         List<Expert> expertList=expertRepo.findByBusinessId(signId);
 
         List<SysFile> sysFileList = new ArrayList<>();
-
-        if(Constant.STAGE_STUDY.equals(signDispaWork.getReviewstage())){//可行性研究报告
-            SysFile studyOpinion = CreateTemplateUtils.createStudyTemplateOpinion(signDispaWork );
-            if(studyOpinion != null){
+        Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),sysFileService.findFtpId());
+        //可行性研究报告
+        if(Constant.STAGE_STUDY.equals(signDispaWork.getReviewstage())){
+            SysFile studyOpinion = CreateTemplateUtils.createStudyTemplateOpinion(f,signDispaWork );
+            if(studyOpinion != null && Validate.isString(studyOpinion.getSysFileId())){
                 sysFileList.add(studyOpinion);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
 
-            SysFile studyEstimate = CreateTemplateUtils.createStudyTemplateEstimate(signDispaWork );
-            if(studyEstimate != null){
+            SysFile studyEstimate = CreateTemplateUtils.createStudyTemplateEstimate(f,signDispaWork );
+            if(studyEstimate != null  && Validate.isString(studyEstimate.getSysFileId())){
                 sysFileList.add(studyEstimate);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
 
-            SysFile studyRoster = CreateTemplateUtils.createStudyTemplateRoster(signDispaWork , expertList);
-            if(studyRoster != null){
+            SysFile studyRoster = CreateTemplateUtils.createStudyTemplateRoster(f,signDispaWork , expertList);
+            if(studyRoster != null   && Validate.isString(studyRoster.getSysFileId())){
                 sysFileList.add(studyRoster);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
         }else if(Constant.STAGE_BUDGET.equals(signDispaWork.getReviewstage())){//项目概算
 
-            SysFile budgetEstimate = CreateTemplateUtils.createBudgetTemplateEstimate(signDispaWork );
-            if(budgetEstimate != null){
+            SysFile budgetEstimate = CreateTemplateUtils.createBudgetTemplateEstimate(f,signDispaWork );
+            if(budgetEstimate != null && Validate.isString(budgetEstimate.getSysFileId())){
                 sysFileList.add(budgetEstimate);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
 
-            SysFile budgetOpinion = CreateTemplateUtils.createBudgetTemplateOpinion(signDispaWork );
-            if(budgetOpinion != null){
+            SysFile budgetOpinion = CreateTemplateUtils.createBudgetTemplateOpinion(f,signDispaWork );
+            if(budgetOpinion != null && Validate.isString(budgetOpinion.getSysFileId())){
                 sysFileList.add(budgetOpinion);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
 
-            SysFile budgetProjectCost = CreateTemplateUtils.createBudgetTemplateProjectCost(signDispaWork );
-            if(budgetProjectCost != null){
+            SysFile budgetProjectCost = CreateTemplateUtils.createBudgetTemplateProjectCost(f,signDispaWork );
+            if(budgetProjectCost != null && Validate.isString(budgetProjectCost.getSysFileId())){
                 sysFileList.add(budgetProjectCost);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
 
-            SysFile budgetRoster = CreateTemplateUtils.createBudgetTemplateRoster(signDispaWork  ,expertList);
-            if(budgetRoster != null){
+            SysFile budgetRoster = CreateTemplateUtils.createBudgetTemplateRoster(f,signDispaWork  ,expertList);
+            if(budgetRoster != null && Validate.isString(budgetRoster.getSysFileId())){
                 sysFileList.add(budgetRoster);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
         }else if(Constant.APPLY_REPORT.equals(signDispaWork.getReviewstage())){//资金申请报告
-            SysFile reportEstimate = CreateTemplateUtils.createReportTemplateEstimate(signDispaWork );
-            if(reportEstimate != null){
+            SysFile reportEstimate = CreateTemplateUtils.createReportTemplateEstimate(f,signDispaWork );
+            if(reportEstimate != null && Validate.isString(reportEstimate.getSysFileId())){
                 sysFileList.add(reportEstimate);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
 
-            SysFile reportOpinion = CreateTemplateUtils.createReportTemplateOpinion(signDispaWork );
-            if(reportOpinion != null){
+            SysFile reportOpinion = CreateTemplateUtils.createReportTemplateOpinion(f,signDispaWork );
+            if(reportOpinion != null  && Validate.isString(reportOpinion.getSysFileId())){
                 sysFileList.add(reportOpinion);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
 
-            SysFile reportRoster = CreateTemplateUtils.createReportTemplateRoster(signDispaWork , expertList);
-            if(reportRoster != null){
+            SysFile reportRoster = CreateTemplateUtils.createReportTemplateRoster(f,signDispaWork , expertList);
+            if(reportRoster != null  && Validate.isString(reportRoster.getSysFileId())){
                 sysFileList.add(reportRoster);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
         }else{//项目建议书以及其他评审阶段
-            SysFile sugEstimate = CreateTemplateUtils.createSugTemplateEstime(signDispaWork );
-            if(sugEstimate != null){
+            SysFile sugEstimate = CreateTemplateUtils.createSugTemplateEstime(f,signDispaWork );
+            if(sugEstimate != null  && Validate.isString(sugEstimate.getSysFileId())){
                 sysFileList.add(sugEstimate);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
 
-            SysFile sugOpinion = CreateTemplateUtils.createSugTemplateOpinion(signDispaWork );
-            if(sugOpinion != null){
+            SysFile sugOpinion = CreateTemplateUtils.createSugTemplateOpinion(f,signDispaWork );
+            if(sugOpinion != null && Validate.isString(sugOpinion.getSysFileId())){
                 sysFileList.add(sugOpinion);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
 
-            SysFile sugRoster = CreateTemplateUtils.createSugTemplateRoster(signDispaWork , expertList);
-            if(sugRoster != null){
+            SysFile sugRoster = CreateTemplateUtils.createSugTemplateRoster(f,signDispaWork , expertList);
+            if(sugRoster != null && Validate.isString(sugRoster.getSysFileId())){
                 sysFileList.add(sugRoster);
-            }else{
-                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
             }
         }
 
@@ -407,12 +461,17 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 sf.setModifiedDate(now);
                 sf.setModifiedBy(SessionUtil.getLoginName());
                 sf.setCreatedBy(SessionUtil.getLoginName());
+                //先删除旧数据
+                sysFileRepo.delete(sf.getMainId(),sf.getBusinessId(),sf.getSysBusiType(),sf.getShowName());
             });
             sysFileRepo.bathUpdate(sysFileList);
             signService.updateSignTemplate(signId);//修改是否生成发文模板状态
+            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "评审报告文件生成成功！" , null);
+        }else{
+            return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
         }
 
-        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "评审报告文件生成成功！" , null);
+
     }
 
 }

@@ -145,7 +145,7 @@ public class SysServiceImpl implements SysService {
         } else {
             //初始化角色
             Role role = new Role();
-            role.setRoleName("超级管理员");
+            role.setRoleName(Constant.SUPER_ROLE);
             role.setId(UUID.randomUUID().toString());
             role.setRemark("系统初始化创建,不可删除");
             role.setCreatedBy("root");
@@ -172,7 +172,7 @@ public class SysServiceImpl implements SysService {
             user.setId(UUID.randomUUID().toString());
             user.setPassword(SUPER_USER);
             user.setRemark("系统初始化创建,不可删除");
-            user.setDisplayName("超级管理员");
+            user.setDisplayName(Constant.SUPER_ROLE);
             user.getRoles().add(role);
             user.setCreatedBy("root");
             user.setModifiedBy("root");

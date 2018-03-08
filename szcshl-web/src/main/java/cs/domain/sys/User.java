@@ -41,13 +41,18 @@ public class User extends DomainBase {
     /**
      * 登录名
      */
-    @Column(columnDefinition = "varchar(64) NOT NULL")
+    @Column(columnDefinition = "varchar(255) NOT NULL")
     private String loginName;
 
     /**
-     * 登录名
+     * 腾讯通账号
      */
-    @Column(columnDefinition = "varchar(20) NOT NULL")
+    @Column(columnDefinition = "varchar(64)")
+    private String rtxName;
+    /**
+     * 密码
+     */
+    @Column(columnDefinition = "varchar(255) NOT NULL")
     private String password;
 
     /**
@@ -59,7 +64,7 @@ public class User extends DomainBase {
     /**
      * 性别
      */
-    @Column(columnDefinition = "varchar(2) ")
+    @Column(columnDefinition = "varchar(10) ")
     private String userSex;
 
     /**
@@ -69,10 +74,10 @@ public class User extends DomainBase {
     private String userPhone;
 
     /**
-     * 联系电话
+     * 联系手机
      */
-    @Column(columnDefinition = "varchar(20) ")
-    private String userMPhone; //联系手机
+    @Column(columnDefinition = "varchar(255) ")
+    private String userMPhone;
 
     /**
      * 电子邮件
@@ -83,13 +88,13 @@ public class User extends DomainBase {
     /**
      * 在职情况(t表示在职，f表示不在)
      */
-    @Column(columnDefinition = "varchar(2) ")
+    @Column(columnDefinition = "varchar(255) ")
     private String jobState;
 
     /**
      * 是否停用
      */
-    @Column(columnDefinition = "varchar(2) ")
+    @Column(columnDefinition = "varchar(255) ")
     private String useState;
 
     /**
@@ -131,8 +136,8 @@ public class User extends DomainBase {
     /**
      * 登录次数
      */
-    @Column(columnDefinition = "integer")
-    private int loginFailCount;
+    @Column(columnDefinition = "INTEGER")
+    private Integer loginFailCount;
 
     /**
      * 最后登录成功日期
@@ -246,11 +251,11 @@ public class User extends DomainBase {
     }
 
 
-    public int getLoginFailCount() {
+    public Integer getLoginFailCount() {
         return loginFailCount;
     }
 
-    public void setLoginFailCount(int loginFailCount) {
+    public void setLoginFailCount(Integer loginFailCount) {
         this.loginFailCount = loginFailCount;
     }
 
@@ -436,5 +441,13 @@ public class User extends DomainBase {
 
     public void setSysDeptList(List<SysDept> sysDeptList) {
         this.sysDeptList = sysDeptList;
+    }
+
+    public String getRtxName() {
+        return rtxName;
+    }
+
+    public void setRtxName(String rtxName) {
+        this.rtxName = rtxName;
     }
 }

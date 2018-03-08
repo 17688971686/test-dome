@@ -12,7 +12,7 @@ public class SharingPrivilege {
 
     @Id
     @GeneratedValue(generator= "sharePriviGenerator")
-    @GenericGenerator(name= "sharePriviGenerator",strategy = "uuid")
+    @GenericGenerator(name= "sharePriviGenerator",strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     /**

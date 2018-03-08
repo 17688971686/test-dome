@@ -19,7 +19,7 @@ public class Filing extends DomainBase {
 
     @Id
     @GeneratedValue(generator= "filingGenerator")
-    @GenericGenerator(name= "filingGenerator",strategy = "uuid")
+    @GenericGenerator(name= "filingGenerator",strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     /**
@@ -56,37 +56,53 @@ public class Filing extends DomainBase {
     /**
      * 课题计划书
      */
+    //份数
+    @Column(columnDefinition="INTEGER")
     private Integer planCount;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String planOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String planCopy;
 
     /**
      * 课题研究合同
      */
+    //份数
+    @Column(columnDefinition="INTEGER")
     private Integer contract;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String contractOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String contractCopy;
 
     /**
      * 电子文档
      */
+    //份数
+    @Column(columnDefinition="INTEGER")
     private Integer eleDocCount;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String eleDocOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String eleDocCopy;
 
     /**
      * 其他
      */
+    //份数
+    @Column(columnDefinition="INTEGER")
     private Integer otherCount;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String otherOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String otherCopy;
     //E课题前期资料
 
@@ -95,82 +111,115 @@ public class Filing extends DomainBase {
     /**
      * 工作方案
      */
+    //份数
+    @Column(columnDefinition="INTEGER")
     private Integer wplanCount;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String wplanOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String wplanCopy;
 
     /**
      * 研究成果
      */
+    //份数
+    @Column(columnDefinition="INTEGER")
     private Integer studyCount;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String studyOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String studyCopy;
 
     /**
      * 研究成果意见
      */
+    //份数
+    @Column(columnDefinition="INTEGER")
     private Integer studyIdeaCount;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String studyIdeaOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String studyIdeaCopy;
 
     /**
      * 研究成果电子文档
      */
+    //份数
+    @Column(columnDefinition="INTEGER")
     private Integer studyEleCount;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String studyEleOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String studyEleCopy;
 
     /**
      * 会议签到表
      */
+    @Column(columnDefinition="INTEGER")
     private Integer signinCount;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String signinOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String signinCopy;
 
     /**
      * 课题完成报告
      */
+    //份数
+    @Column(columnDefinition="INTEGER")
     private Integer reportCount;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String reportOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String reportCopy;
 
     /**
      * 其他
      */
+    @Column(columnDefinition="INTEGER")
     private Integer sOtherCount;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String sOtherOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String sOtherCopy;
 
     /**
      * 专家发放表
      */
+    //份数
+    @Column(columnDefinition="INTEGER")
     private Integer epCostCount;
-
+    //原件
+    @Column(columnDefinition="VARCHAR(2)")
     private String epCostOrig;
-
+    //复印件
+    @Column(columnDefinition="VARCHAR(2)")
     private String epCostCopy;
 
     /**
      * 项目负责人
      */
+    //签名
     private String principal;
-
+    //部长审核
     private String director;
 
+
+    // 归档员
     private String filingUser;
 
     /**

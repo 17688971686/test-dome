@@ -30,6 +30,8 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.apache.commons.collections.ArrayStack;
+import org.apache.commons.collections.BagUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
@@ -67,14 +69,20 @@ public class ProjectStopServiceImp implements ProjectStopService {
 
     @Override
     @Transactional
-    public List<ProjectStop> findProjectStopBySign(String signId) {
+    public List<ProjectStopDto> findProjectStopBySign(String signId) {
 
         HqlBuilder hqlBuilder = HqlBuilder.create();
 
-        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId");
+        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId"+" order by  createdDate desc");
         hqlBuilder.setParam("signId", signId);
         List<ProjectStop> psList = projectStopRepo.findByHql(hqlBuilder);
-        return psList;
+        List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
+        for(ProjectStop pt : psList){
+            ProjectStopDto projectStopDto=new ProjectStopDto();
+            BeanCopierUtils.copyPropertiesIgnoreNull(pt, projectStopDto);
+            projectStopDtoList.add(projectStopDto);
+        }
+        return projectStopDtoList;
     }
 
     /**
@@ -103,7 +111,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
     }*/
 
     /**
-     * 保存项目暂停信息
+     * 保存发起项目暂停信息
      * @param projectStopDto
      * @return
      */
@@ -112,12 +120,12 @@ public class ProjectStopServiceImp implements ProjectStopService {
     public ResultMsg savePauseProject(ProjectStopDto projectStopDto) {
         try{
             ProjectStop projectStop = new ProjectStop();
-            //判断是否是更新(这步基本没用到)
+ /*           //判断是否是更新(这步基本没用到)
             if(Validate.isString(projectStopDto.getStopid())){
                 projectStop = projectStopRepo.findById(projectStopDto.getStopid());
                 BeanCopierUtils.copyPropertiesIgnoreNull(projectStopDto, projectStop);
                 projectStopRepo.save(projectStop);
-            }else{
+            }*/
                 Sign sign = signRepo.findById(projectStopDto.getSignid());
                 //1、判断项目当前的状态
                 if(Constant.EnumState.STOP.getValue().equals(sign.getSignState())){
@@ -170,13 +178,53 @@ public class ProjectStopServiceImp implements ProjectStopService {
                 projectStop.setProcessInstanceId(processInstance.getId());
                 projectStop.setSign(sign);
                 projectStopRepo.save(projectStop);
-            }
+
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
         }catch(Exception e){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，错误信息已记录，请联系管理员处理！");
         }
 
     }
+
+    /**
+     * 保存项目暂停信息
+     * @param projectStopDto
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg saveProjectStop(ProjectStopDto projectStopDto) {
+
+
+            ProjectStop projectStop = new ProjectStop();
+            //判断是否是更新(这步基本没用到)
+            if(Validate.isString(projectStopDto.getStopid())){
+                projectStop = projectStopRepo.findById(projectStopDto.getStopid());
+                BeanCopierUtils.copyPropertiesIgnoreNull(projectStopDto, projectStop);
+                projectStopRepo.save(projectStop);
+            }else{
+                Sign sign = signRepo.findById(projectStopDto.getSignid());
+                BeanCopierUtils.copyProperties(projectStopDto, projectStop);
+                if(!Validate.isObject(projectStop.getExpectpausedays())){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，没填写预计暂停天数！");
+                }
+                Date now = new Date();
+                projectStop.setCreatedBy(SessionUtil.getDisplayName());
+                projectStop.setCreatedDate(now);
+                projectStop.setModifiedBy(SessionUtil.getDisplayName());
+                projectStop.setModifiedDate(now);
+                projectStop.setStopid(UUID.randomUUID().toString());
+                //设置默认值
+                projectStop.setIsactive(Constant.EnumState.NO.getValue());
+                projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
+                projectStop.setSign(sign);
+                projectStopRepo.save(projectStop);
+            }
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",projectStop);
+
+    }
+
+
 
     @Override
     public PageModelDto<ProjectStopDto> findProjectStopByStopId(ODataObj oDataObj) {
@@ -320,7 +368,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
                 //暂停时间，如果没有，就按审批通过算起。有就按暂停日期算起
                 if(null == projectStop.getPausetime() || DateUtils.daysBetween(new Date(),projectStop.getPausetime()) == 0){
                     projectStop.setPausetime(new Date());
-                    projectStop.setIsOverTime(Constant.EnumState.PROCESS.getValue());
+                    projectStop.setIsOverTime(Constant.EnumState.YES.getValue());
                     Sign sign = projectStop.getSign();
                     //如果领导同意，则将流程暂停
                     if(Constant.EnumState.YES.getValue().equals(isactive) ||isactive==null){
@@ -328,13 +376,14 @@ public class ProjectStopServiceImp implements ProjectStopService {
                         if(!stopResult.isFlag()){
                             return stopResult;
                         }
+                        //更改项目状态
+                        sign.setSignState(Constant.EnumState.STOP.getValue());
+                        sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
+                        signRepo.save(sign);
+
                     }
-                    //更改项目状态
-                    sign.setSignState(Constant.EnumState.STOP.getValue());
-                    sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
-                    signRepo.save(sign);
                 }else{
-                    projectStop.setIsOverTime(Constant.EnumState.NO.getValue());
+                    projectStop.setIsOverTime(Constant.EnumState.PROCESS.getValue());
                 }
                 projectStop.setLeaderId(SessionUtil.getUserId());
                 projectStop.setLeaderName(SessionUtil.getDisplayName());

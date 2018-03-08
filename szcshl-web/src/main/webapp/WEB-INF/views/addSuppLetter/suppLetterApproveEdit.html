@@ -3,7 +3,9 @@
 <meta charset="UTF-8">
 <div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
 <div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-upload.html'"></div>
+
+<!-- 附件 -->
+<#include "/file/common.html"/>
 <div class="well well-sm" style="background:white; color: red">
 <div class="toolbar">
     
@@ -50,17 +52,17 @@
                 </td>
             </tr>
             <tr>
-                <td style="width:150px;" class="text-center">发文日期</td>
+  <!--              <td style="width:150px;" class="text-center">发文日期</td>
                 <td>
                 {{vm.suppletter.disapDate}}
-                </td>
+                </td>-->
 
                 <td style="width:150px;" class="text-center">文件字号</td>
-                <td> {{vm.suppletter.filenum}} </td>
+                <td colspan="3"> {{vm.suppletter.filenum}} </td>
             </tr>
 
             <tr>
-                <td style="width:150px;" class="text-center">文件标题 <span class="required">*</span></td>
+                <td style="width:150px;" class="text-center">文件标题 </td>
                 <td colspan="3">
                 {{vm.suppletter.title}}
                 </td>

@@ -10,9 +10,18 @@ import cs.model.project.WorkProgramDto;
 
 public interface WorkProgramService {
 
+    /**
+     * 保存工作方案
+     * @param workProgramDto
+     * @param isNeedWorkProgram
+     * @return
+     */
     ResultMsg save(WorkProgramDto workProgramDto, Boolean isNeedWorkProgram);
 
     Map<String,Object> initWorkProgram(String signId);
+
+    Map<String,Object> workMaintainList(String signId);
+
 
     /**
      * 根据当前负责人，删除工作方案信息

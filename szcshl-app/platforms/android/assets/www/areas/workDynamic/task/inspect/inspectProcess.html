@@ -1,0 +1,154 @@
+<!--巡查流程-->
+<ion-view title="巡查流程">
+	<!--视图标题-->
+	<ion-nav-bar class="bar-positive">
+		<!--视图头部-->
+		<ion-nav-buttons side="left">
+			<!--后退-->
+			<button ng-click="back()" class="button back-button buttons button-clear header-item">
+            	<i class="icon ion-android-arrow-back"></i></button>
+		</ion-nav-buttons>
+		<!--提交-->
+		<ion-nav-buttons side="right">
+			<a ng-click="submitProc()" class="button back-button buttons button-clear header-item"
+				ng-disabled="!(model.isNeedRepair && model.inspectResultContent  && model.files && (model.files|filter:{fileType:1}).length>0)"  ng-show="pageIndex==0">
+				提交
+			</a>
+			<a ng-click="save()" class="button back-button buttons button-clear header-item"  ng-show="pageIndex==0">
+				保存
+			</a>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<!--选项卡-->
+	<ion-tabs class="tabs-icon-only tabs-positive">
+		<!--选项卡 -- 选项  -- begin================================================基本信息========================================================================-->
+		<ion-tab title="基本信息" on-select="switchPageM(0)" on-deselect="">
+			<ion-header-bar class="bar-positive">
+			</ion-header-bar>
+			<ion-content has-tabs="true" on-swipe-right="switchPageM(1)" on-swipe-left="switchPageM(1)">
+				<!--<ion-refresher pulling-text="获取最新数据..." refreshing-text="刷新完毕" on-refresh="doRefresh()"></ion-refresher>-->
+				<!--选项卡内容-->
+		<div ng-show="_TEMP_.page == 0">
+					<label class="item">
+	          	<span>任务名：</span>
+	          	<span>{{model.taskName}}</span>
+	        </label>
+					<label class="item">
+	          	<span>巡查场地：</span>
+	          	<span>{{model.siteInfo.siteName}}</span>
+	       </label>
+					<label class="item">
+	          	<span>报修图片：</span>
+	          	<button class="button button-small button-calm" ng-click="addPic(1)"><i class="icon ion-image"> 选择</i></button>
+	        </label>
+					<div>
+						{{test}}
+						<div style="width:100px;height:100px;float:left;margin-right: 10px;margin-top:10px;"  ng-repeat="x in model.files track by x.ts">
+							<a ng-click="showImg($index)">
+								<div class='po_relative'>
+									<!--<img  ng-src="{{x.smallImageURL}}"  width='100%' />-->
+									<img  ng-src="{{x.smallImageUrl}}"  width='100%' />
+									<!--<a class='ioc_rigth_top' ng-click="deletePic(x)"><i class='icon ion-close-circled icon_s'></i></a>-->
+								</div>
+							</a>
+						</div>
+						<p style="clear: both;"></p>
+					</div>
+					<div class="item item-select">
+						巡查结果：
+						<select ng-model="model.isNeedRepair" ng-change="model.inspectResultContent = (model.isNeedRepair=='1' ? '需要维修' : '不需要维修')">
+							<option value=""  ng-hide="model.isNeedRepair">请选择</option>
+							<option value="1" >需要维修</option>
+							<option value="0" >不需要维修</option>
+						</select>
+					</div>
+					<div class="item">
+							<form>
+								<textarea class="textarea_w_h" maxlength="200" ng-model="model.inspectResultContent" placeholder="请输入维修说明"></textarea>
+							</form>
+					</div>
+					<div ng-show="model.isNeedRepair == '1'">
+						<!--<ion-toggle ng-model="checked" ng-checked="checked">
+						是否报修：<span style="color: red;">{{checked ? "是" : "否"}}</span>
+					</ion-toggle>-->
+						<div ng-repeat="x in model.repairRegisters" class="size_s margin_top_8 {{bgColor = $index % 2 == 0 ? 'odd' : 'even'}}">
+							<div class="text_center">{{x.repairTitle}}</div>
+							<div class="padding_l_16px">地址：{{x.feedBackAddress}}</div>
+							<div class="padding_l_16px">备注：{{x.description}}</div>
+							<div class="">
+								<div style="width: 30%;height: 100%;float: left; padding-left: 16px;">
+									报修设施：<br />
+									<a class="button button-small button-balanced" ng-click="addFacility(x)">添加设施</a>
+								</div>
+								<div style="width: 70%;height:40px;float: right;border-bottom: 1px solid salmon;"  ng-repeat="o in x.repairFacilities">
+									<div class="row">
+										<div class="col-80"> {{o.equipMentDto.equipMentName || o.facilityName}}</div>
+										<div class="col-20"><a ng-click="x.repairFacilities.removeByValue(o)" class="icon ion-minus-circled icon_s color_delete"></a></div>
+									</div>
+								</div>
+								<div style="width: 70%;height:40px;float: right;border-bottom: 1px solid salmon;"  ng-show="!x.repairFacilities || x.repairFacilities.length==0">
+									<div class="row">
+										<div class="col text-center">没有报修设施</div>
+									</div>
+								</div>
+								<div style="clear: both;"></div>
+							</div>
+						</div>
+						<p></p><div class="button-bar bar-light">
+							<a class="button" ng-click="_TEMP_.records = {};_TEMP_.page = 1" href="">新增报修记录</a>
+						</div><p></p>
+					</div>
+				<p></p>
+				<div class="button-bar bar-light ">
+					<a class="button button-small" ng-click="showMap()"><i class="icon ion-location "> 巡查地点
+						<span style="color: red;" ng-hide="model.inspectLng && model.inspectLat"><i class="icon ion-information">（未定位）</i></span>
+						<span style="color: green;" ng-show="model.inspectLng && model.inspectLat"><i class="icon ion-checkmark-circled">（已定位）</i></span>
+					</i></a>
+				</div>
+				<p></p>
+				<p></p>
+				<div class="button-bar bar-light ">
+					<a class="button " ng-click="setSite()">场地信息
+						<!--<span style="color: red;" ng-hide="model.inspectLng"><i class="icon ion-information">（未设置）</i></span>
+						<span style="color: green;" ng-show="model.inspectLng"><i class="icon ion-checkmark-circled">（已设置）</i></span>-->
+					</a>
+					<a class="button" ng-click="addFacilitybasicdata()" href="">新增场地设施</a>
+				</div>
+				<p></p>
+				</div>
+				<div ng-show="_TEMP_.page == 1">
+					<label class="item item-input">
+				          	<span>标题：</span>
+				          	<input type="text" ng-model="_TEMP_.records.repairTitle" />
+				        </label>
+					<label class="item item-input">
+				          	<span>地址：</span>
+				          	<input type="text" ng-model="_TEMP_.records.feedBackAddress" />
+				        </label>
+					<div class="item">
+						<span>备注：</span>
+						<form>
+							<textarea style="width: 100%;height: 120px;" maxlength="200" ng-model="_TEMP_.records.description" placeholder="请输入。。。"></textarea>
+						</form>
+					</div>
+					<p></p>
+					<div class="button-bar bar-light">
+						<a class="button ion-checkmark-round" ng-click="addRecords(_TEMP_.records);_TEMP_.page = 0" ng-disabled="!_TEMP_.records.repairTitle">保存</a>
+						<a class="button ion-arrow-return-left" ng-click="_TEMP_.page = 0">取消</a>
+					</div>
+					<p></p>
+				</div>
+			</ion-content>
+		</ion-tab>
+		<ion-tab title="处理记录" on-select="switchPageM(1)">
+			<ion-header-bar class="bar-positive">
+			</ion-header-bar>
+			<ion-content has-tabs="true" on-swipe-right="switchPageM(0)" on-swipe-left="switchPageM(0)">
+				<ion-refresher pulling-text="获取最新数据..." refreshing-text="刷新完毕" on-refresh="refreshProccessRecords()"></ion-refresher>
+				<!--选项卡内容-->
+				<!--处理记录页面-->
+				<div ng-include="'areas/workDynamic/task/commonality/dispose.html'"></div>
+			</ion-content>
+		</ion-tab>
+	</ion-tabs>
+</ion-view>

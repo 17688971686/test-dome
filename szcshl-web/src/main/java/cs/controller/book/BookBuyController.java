@@ -1,10 +1,13 @@
 package cs.controller.book;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
+import cs.model.book.BookBorrowInfoDto;
 import cs.model.book.BookBuyDto;
 import cs.repository.odata.ODataObj;
 import cs.service.book.BookBuyService;
+import cs.service.book.BorrowBookService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,8 @@ public class BookBuyController {
 	String ctrlName = "bookBuy";
     @Autowired
     private BookBuyService bookBuyService;
+    @Autowired
+    private BorrowBookService borrowBookService;
 
     @RequiresAuthentication
     //@RequiresPermissions("bookBuy#findByOData#post")
@@ -45,6 +50,20 @@ public class BookBuyController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public void post(@RequestBody BookBuyDto record) {
         bookBuyService.save(record);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "保存借书信息", path = "saveBorrowDetail", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveBorrowDetail(@RequestBody BookBorrowInfoDto bookBorrowInfoDto) {
+        return  borrowBookService.saveBooksDetail(bookBorrowInfoDto);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "保存还书信息", path = "saveReturnDetail", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveReturnDetail(@RequestBody BookBorrowInfoDto bookBorrowInfoDto) {
+        return borrowBookService.saveReturnDetail(bookBorrowInfoDto);
     }
 
     @RequiresAuthentication

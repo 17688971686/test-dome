@@ -51,7 +51,7 @@ public class OrgServiceImpl implements OrgService {
             OrgDto orgDto = new OrgDto();
             BeanCopierUtils.copyProperties(o, orgDto);
             /*List<User> userList = o.getUsers();
-			if(userList != null && userList.size() > 0){
+            if(userList != null && userList.size() > 0){
 				List<UserDto> userDtoList = new ArrayList<UserDto>(userList.size());
 				userList.forEach(u ->{
 					UserDto userDto = new UserDto();
@@ -88,8 +88,8 @@ public class OrgServiceImpl implements OrgService {
                 User user = userRepo.findById(User_.id.getName(), org.getOrgSLeader());
                 String newMngOrgType = Constant.OrgType.getValue(org.getName());
                 //查看其是否还有分管部门
-                if(orgRepo.checkMngOrg(user.getId())>0 && !user.getMngOrgType().equals(newMngOrgType)){
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，分管领导不能同时分管概算部又分管评估部！");
+                if (orgRepo.checkMngOrg(user.getId()) > 0 && !user.getMngOrgType().equals(newMngOrgType)) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，分管领导不能同时分管概算部又分管评估部！");
                 }
                 user.setMngOrgType(newMngOrgType);
                 userRepo.save(user);
@@ -121,19 +121,19 @@ public class OrgServiceImpl implements OrgService {
             User user = userRepo.findById(User_.id.getName(), orgDto.getOrgSLeader());
             String newMngOrgType = Constant.OrgType.getValue(orgDto.getName());
             //查看其是否还有分管部门
-            if(orgRepo.checkMngOrg(user.getId())>0 && !newMngOrgType.equals(user.getMngOrgType())){
+            if (orgRepo.checkMngOrg(user.getId()) > 0 && !newMngOrgType.equals(user.getMngOrgType())) {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，分管领导不能同时分管概算部又分管评估部！");
-            }else{
+            } else {
                 user.setMngOrgType(newMngOrgType);
                 userRepo.save(user);
             }
         }
         BeanCopierUtils.copyPropertiesIgnoreNull(orgDto, org);
-        if(Validate.isString(oldOrgSLeader)){
+        if (Validate.isString(oldOrgSLeader)) {
             //查看其是否还有分管部门
-            if(orgRepo.checkMngOrg(oldOrgSLeader) == 0){
+            if (orgRepo.checkMngOrg(oldOrgSLeader) == 0) {
                 User oldUser = userRepo.findById(User_.id.getName(), oldOrgSLeader);
-                if(oldUser != null){
+                if (oldUser != null) {
                     oldUser.setMngOrgType(null);
                     userRepo.save(oldUser);
                 }
@@ -157,24 +157,34 @@ public class OrgServiceImpl implements OrgService {
 
     @Override
     @Transactional
-    public PageModelDto<UserDto> getOrgUsers(String id) {
+    public PageModelDto<UserDto> getOrgUsers(String id, ODataObj odataObj) {
         PageModelDto<UserDto> pageModelDto = new PageModelDto<>();
         List<UserDto> userDtos = new ArrayList<>();
         Org org = orgRepo.findById(id);
         if (org != null) {
-            org.getUsers().forEach(x -> {
-                UserDto userDto = new UserDto();
-                userDto.setId(x.getId());
-                userDto.setRemark(x.getRemark());
-                userDto.setLoginName(x.getLoginName());
-                userDto.setDisplayName(x.getDisplayName());
-                userDtos.add(userDto);
-            });
+            String ss = "";
+            if (odataObj.getFilter() != null) {
+                ss = odataObj.getFilter().get(0).getValue().toString();
+            }
+            List<User> userList = org.getUsers();
+            for (int i = 0,l=userList.size(); i < l; i++) {
+                User user = userList.get(i);
+                if (odataObj.getFilter() != null) {
+                    if (user.getLoginName().indexOf(ss) != -1 || user.getDisplayName().indexOf(ss) != -1) {
+                        UserDto userDto = new UserDto();
+                        BeanCopierUtils.copyProperties(user,userDto);
+                        userDtos.add(userDto);
+                    }
+                } else {
+                    UserDto userDto = new UserDto();
+                    BeanCopierUtils.copyProperties(user,userDto);
+                    userDtos.add(userDto);
+                }
+            }
             pageModelDto.setValue(userDtos);
             pageModelDto.setCount(userDtos.size());
             logger.info(String.format("查找部门用户，部门%s", org.getOrgIdentity()));
         }
-
         return pageModelDto;
     }
 

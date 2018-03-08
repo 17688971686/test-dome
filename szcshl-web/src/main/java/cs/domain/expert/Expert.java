@@ -114,7 +114,7 @@ public class Expert extends DomainBase {
     private String expertField;    //专家区域(区域类别 2为镜外专家1为市外专家0为市内专家)
 
     @Column(columnDefinition = "varchar(30) ")
-    private String state;    //专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除5)
+    private String state;         //专家范围(审核中1,正式专家2,备选专家3,已停用4 ，已删除0)
 
     @Column(columnDefinition = "BLOB")
     private byte[] photo;    //专家照片

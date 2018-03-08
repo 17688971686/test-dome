@@ -39,6 +39,14 @@ public class WorkProgramController {
     }
 
     @RequiresAuthentication
+    //@RequiresPermissions("workprogram#initWorkProgram#post")
+    @RequestMapping(name = "查询工作方案", path = "html/workMaintainList", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String,Object> workMaintainList(@RequestParam(required = true) String signId) {
+        return workProgramService.workMaintainList(signId);
+    }
+
+    @RequiresAuthentication
     //@RequiresPermissions("workprogram#initWorkProgramById#post")
     @RequestMapping(name = "根据ID查找工作方案信息", path = "initWorkProgramById", method = RequestMethod.POST)
     public @ResponseBody WorkProgramDto initWorkProgramById(@RequestParam(required = true) String workId){

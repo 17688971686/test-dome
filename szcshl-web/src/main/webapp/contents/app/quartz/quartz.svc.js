@@ -171,25 +171,25 @@
                 {
                     field: "quartzName",
                     title: "定时器名称",
-                    width: "10%",
+                    width: 200,
                     filterable: false,
                 },
                 {
                     field: "className",
                     title: "类名",
-                    width: "35%",
+                    width: 260,
                     filterable: false,
                 },
                 {
                     field: "cronExpression",
                     title: "表达式",
-                    width: "8%",
+                    width: 150,
                     filterable: false,
                 },
                 {
                     field: "",
                     title: "状态",
-                    width: "8%",
+                    width: 80,
                     filterable: false,
                     template: function (item) {
                         if (item.curState) {
@@ -207,13 +207,13 @@
                 {
                     field: "descInfo",
                     title: "描述",
-                    width: "20%",
+                    width: 120,
                     filterable: false
                 },
                 {
                     field: "",
                     title: "操作",
-                    width: "10%",
+                    width: 80,
                     template: function (item) {
                         var canExecute = false;
                         if(item.curState == 9){

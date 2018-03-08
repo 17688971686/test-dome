@@ -22,7 +22,7 @@ public class DispatchDoc extends DomainBase {
     @Id
     private String id;
 
-    //发文方式
+    //发文方式（1：表示独立发文，2表示合并发文）
     @Column(columnDefinition = "VARCHAR(20)")
     private String dispatchWay;
 

@@ -84,7 +84,13 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      */
     ProReviewConditionDto proReviewConditionSum(ProReviewConditionDto projectReviewConditionDto);
 
-
+    /**
+     * 获取提前介入评审情况
+     *
+     * @param projectReviewConditionDto
+     * @return
+     */
+    ProReviewConditionDto getAdvancedCon(ProReviewConditionDto projectReviewConditionDto);
     /**
      * 项目评审情况明细
      *
@@ -119,4 +125,11 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
     Integer proReviewCount(ProReviewConditionDto projectReviewConditionDto);
 
 
+    /**
+     * 更改抽取专家的属性值
+     * @param businessId
+     * @param propertyname
+     * @param value
+     */
+    void updateExpertSelectState(String businessId, String propertyname, String value);
 }

@@ -1,6 +1,5 @@
 package cs.service.book;
 
-import cs.domain.book.BookBuy;
 import cs.model.PageModelDto;
 import cs.model.book.BookBuyDto;
 import cs.repository.odata.ODataObj;
@@ -22,4 +21,9 @@ public interface BookBuyService {
 
 	void delete(String id);
 
+	/**
+	 * 更新图书信息
+	 * @param id,num
+	 */
+	void updateBookInfo(String id,Integer num);
 }

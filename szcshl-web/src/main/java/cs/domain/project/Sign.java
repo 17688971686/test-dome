@@ -50,7 +50,7 @@ public class Sign extends DomainBase {
     private String filecode;
 
     /**
-     * 收文编号(年份+收文类型+序号[序号保留3位数])
+     * 评审中心收文编号(年份+收文类型+序号[序号保留3位数])
      */
     @Column(columnDefinition = "VARCHAR(16)")
     private String signNum;
@@ -233,6 +233,10 @@ public class Sign extends DomainBase {
     //评审天数
     @Column(columnDefinition = "NUMBER")
     private Float reviewdays;
+
+    //总评审天数
+    @Column(columnDefinition = "NUMBER")
+    private Float totalReviewdays;
 
     //归档编号
     @Column(columnDefinition = "VARCHAR(100)")
@@ -853,7 +857,13 @@ public class Sign extends DomainBase {
     //是否提前介入
     @Column(columnDefinition = "VARCHAR(2)")
     private String isAdvanced;
-    
+
+    /**
+     * 是否已经回传给发改委（9：是，其它：否）
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isSendFGW;
+    /**************************  状态字段放这里  ****************************/
     /**
      * 存放位置
      */
@@ -877,9 +887,36 @@ public class Sign extends DomainBase {
      */
     @Column(columnDefinition = "VARCHAR(40)")
     private String contactsPhone;
-    
 
-    /**************************  状态字段放这里  ****************************/
+
+    /**
+     * 延长天数（系统管理员添加）
+     */
+    @Column(columnDefinition = "NUMBER")
+    private Float lengthenDays;
+
+    /**
+     * 延长评审说明
+     */
+    @Column(columnDefinition = "VARCHAR(1000)")
+    private String lengthenExp;
+
+
+    public Float getLengthenDays() {
+        return lengthenDays;
+    }
+
+    public void setLengthenDays(Float lengthenDays) {
+        this.lengthenDays = lengthenDays;
+    }
+
+    public String getLengthenExp() {
+        return lengthenExp;
+    }
+
+    public void setLengthenExp(String lengthenExp) {
+        this.lengthenExp = lengthenExp;
+    }
 
     public List<ProjectStop> getProjectStopList() {
         return projectStopList;
@@ -2530,6 +2567,20 @@ public class Sign extends DomainBase {
 	public void setContactsPhone(String contactsPhone) {
 		this.contactsPhone = contactsPhone;
 	}
-    
-    
+
+    public String getIsSendFGW() {
+        return isSendFGW;
+    }
+
+    public void setIsSendFGW(String isSendFGW) {
+        this.isSendFGW = isSendFGW;
+    }
+
+    public Float getTotalReviewdays() {
+        return totalReviewdays;
+    }
+
+    public void setTotalReviewdays(Float totalReviewdays) {
+        this.totalReviewdays = totalReviewdays;
+    }
 }

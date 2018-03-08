@@ -340,7 +340,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
             BeanCopierUtils.copyProperties(ol,orgDto);
             if(ol.getUsers() != null && ol.getUsers().size() > 0){
                 ol.getUsers().forEach( ul ->{
-                    if("t".equals(ul.getJobState())){
+                    if("t".equals(ul.getJobState()) && !Constant.SUPER_USER.equals(ul.getLoginName())){
                         UserDto userDto = new UserDto();
                         userDto.setDisplayName(ul.getDisplayName());
                         userDto.setId(ul.getId());
@@ -362,11 +362,13 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         List<UserDto> userDtoList2 = new ArrayList<>();
         if(noOrgUserList != null && noOrgUserList.size() > 0){
             noOrgUserList.forEach( ul ->{
-                UserDto userDto = new UserDto();
-                userDto.setDisplayName(ul.getDisplayName());
-                userDto.setId(ul.getId());
-                userDto.setLoginName(ul.getLoginName());
-                userDtoList2.add(userDto);
+                if(!Constant.SUPER_USER.equals(ul.getLoginName())){
+                    UserDto userDto = new UserDto();
+                    userDto.setDisplayName(ul.getDisplayName());
+                    userDto.setId(ul.getId());
+                    userDto.setLoginName(ul.getLoginName());
+                    userDtoList2.add(userDto);
+                }
             });
         }
         resultMap.put("noOrgUserList",userDtoList2);
