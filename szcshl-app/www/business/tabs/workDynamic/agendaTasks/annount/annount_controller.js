@@ -50,6 +50,8 @@ angular.module('annount.controller', ['annount.service', 'common.service', 'glob
 				//详细信息
 				annountService.initFlowPageData($scope.id).then(function(response){
 					$scope.annountList=response.data;
+					//标题
+					$scope.title=$scope.annountList.anTitle
          		},function(response){
          			console.log('初始化失败');
          		

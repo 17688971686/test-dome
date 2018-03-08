@@ -20,16 +20,16 @@
 			<ion-content has-tabs="true ">
 				<!--选项卡内容-->
         <label class="item">
-				借阅人员：{{archivesList.isSZECUser=9?'本单位人员':'非本单位人员'}}
+				借阅人员：{{archivesList.isSZECUser==9?'本单位人员':'非本单位人员'}}
 	    </label>
 	    <label class="item">
-				资料存放地：{{archivesList.archivesType=9?'市存档资料':'评审中心存档资料'}}
+				资料存放地：{{archivesList.archivesType==9?'市存档资料':'评审中心存档资料'}}
 	    </label>
 	    <label class="item">
-				是否外借：{{archivesList.isLendOut=9?'外借':'非外借'}}
+				是否外借：{{archivesList.isLendOut==9?'外借':'非外借'}}
 	    </label>
 	    <label class="item">
-                                查阅单位：{{archivesList.readCompany}}
+                查阅单位：{{archivesList.readCompany}}
 	    </label>	
 	    <label class="item">
 				借阅人：{{archivesList.readUsername}}

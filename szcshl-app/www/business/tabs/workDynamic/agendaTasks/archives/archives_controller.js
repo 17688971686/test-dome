@@ -50,6 +50,8 @@ angular.module('archives.controller', ['archives.service', 'common.service', 'gl
 				//详细信息
 				archivesService.initFlowPageData($scope.id).then(function(response){
 					$scope.archivesList=response.data;
+					//标题
+					$scope.title=$scope.archivesList.readProjectName
          		},function(response){
          			console.log('初始化失败');
          		

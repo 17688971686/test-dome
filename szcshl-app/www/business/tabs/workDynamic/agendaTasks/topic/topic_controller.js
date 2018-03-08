@@ -52,6 +52,8 @@ angular.module('topic.controller', ['topic.service', 'common.service', 'global_v
 					$scope.topicList=response.data;
 					$scope.filingDto=$scope.topicList.filingDto;
 					$scope.workPlanDto=$scope.topicList.workPlanDto;
+					//标题
+					$scope.title=$scope.topicList.topicName
          		},function(response){
          			console.log('初始化失败');
          		

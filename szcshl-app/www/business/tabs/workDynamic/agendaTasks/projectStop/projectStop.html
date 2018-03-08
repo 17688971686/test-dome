@@ -12,15 +12,40 @@
 	<!--选项卡-->
 	<ion-tabs class="tabs-icon-only tabs-positive">
 
-		<!--选项卡 -- 选项  -- begin================================================图书采购流程详细信息========================================================================-->
+		<!--选项卡 -- 选项  -- begin================================================项目暂停流程========================================================================-->
 		<ion-tab title="详细信息 " on-select="switchPageM(1)">
 			<ion-header-bar class="bar-positive ">
 			</ion-header-bar>
 			<!--<ion-content has-tabs="true " on-swipe-right="switchPageM(0)" on-swipe-left="switchPageM(2)">-->
 			<ion-content has-tabs="true ">
-				<!--选项卡内容-->
-				<div ng-include="'business/tabs/commonDetail/sign/signDetail.html'"></div>
-	
+		<label class="item">
+				项目名称：{{signDispaWork.projectname}}
+	    </label>
+	    <label class="item">
+				申报单位：{{signDispaWork.builtcompanyname}}
+	    </label>
+	    <label class="item">
+				评审部门：{{signDispaWork.mOrgName}}
+	    </label>	    
+	    <label class="item">
+				项目负责人：{{signDispaWork.mUserName}}
+	    </label>				
+	    <label class="item">
+				收文时间：{{signDispaWork.receivedate}}
+	    </label>	
+	    <label class="item">
+				已用工作日：{{signDispaWork.countUsedWorkday}}
+	    </label>	    
+	    <label class="item">
+				项目暂停天数：{{projectStopList.expectpausedays}}
+	    </label>				
+	    <label class="item">
+				项目基本情况：{{projectStopList.projectDesc}}
+	    </label>
+	    <label class="item">
+				要求暂定原因：{{projectStopList.pasedescription}}
+	    </label>				
+	    
 			</ion-content>
 		</ion-tab>
 		

@@ -7,7 +7,7 @@ angular.module('global_variable', [])
 		//正式环境
 		//SERVER_PATH: 'http://203.91.36.247',
 		//本机开发环境
-		SERVER_PATH: 'http://localhost:8080/szcshl-web',//本地开发ip
+		SERVER_PATH: 'http://192.168.1.188:8080/szcshl-web',//本地开发ip
 		//测试环境
 		//SERVER_PATH:'http://120.77.208.59:8088/wtssgl',
 		SERVER_PATH_PROJECT: 'http://120.77.216.41:9004/ProjectAppService.svc',

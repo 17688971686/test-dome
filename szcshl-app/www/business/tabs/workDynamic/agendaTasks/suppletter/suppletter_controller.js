@@ -50,6 +50,8 @@ angular.module('suppletter.controller', ['suppletter.service', 'common.service',
 				//详细信息
 				suppletterService.initFlowPageData($scope.id).then(function(response){
 					$scope.suppletterList=response.data;
+					//标题
+					$scope.title=$scope.suppletterList.title
          		},function(response){
          			console.log('初始化失败');
          		

@@ -50,6 +50,8 @@ angular.module('appraise.controller', ['appraise.service', 'common.service', 'gl
 				//详细信息
 				appraiseService.initFlowPageData($scope.id).then(function(response){
 					$scope.appraiseList=response.data;
+					//标题
+					$scope.title=$scope.appraiseList.projectName
          		},function(response){
          			console.log('初始化失败');
          		

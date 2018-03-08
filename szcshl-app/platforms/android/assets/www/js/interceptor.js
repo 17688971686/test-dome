@@ -5,9 +5,9 @@
  */
 (function() {
 	'use strict';
-	var app = angular.module('interceptor', ['global']);
+	var app = angular.module('interceptor', ['global_variable']);
 
-	app.factory('MessageInterceptor', ["$q", "$timeout", "$injector", "GlobalVariable", function($q, $timeout, $injector, GlobalVariable) {
+	app.factory('MessageInterceptor', ["$q", "$timeout", "$injector", "global", function($q, $timeout, $injector, global) {
 		var popup = undefined;
 		var alertInstance = undefined;
 
@@ -43,7 +43,7 @@
 			request: function(config) {
 				if(config.url.indexOf('.html') == -1) {
 					config.params = config.params || {};
-					config.params.callKey = GlobalVariable.SERVER_CALLKEY;
+					config.params.callKey = global.SERVER_CALLKEY;
 				}
 				if(config.method != 'GET'&&!config.isIgnoreLoading) {
 					if(!popup) {

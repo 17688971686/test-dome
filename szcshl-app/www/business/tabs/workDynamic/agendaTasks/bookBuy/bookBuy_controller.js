@@ -50,6 +50,8 @@ angular.module('bookBuy.controller', ['bookBuy.service', 'common.service', 'glob
 				//详细信息
 				bookBuyService.initFlowPageData($scope.id).then(function(response){
 					$scope.bookList=response.data;
+					//标题
+					$scope.title=$scope.bookList.businessName
          		},function(response){
          			console.log('初始化失败');
          		
@@ -57,7 +59,7 @@ angular.module('bookBuy.controller', ['bookBuy.service', 'common.service', 'glob
          			console.log('refresh complete event...');
          		});
          		
-         		//流程信息
+    /*     		//流程信息
          		bookBuyService.flowNodeInfo(parameter).then(function(response){
          		     $scope.flow=response.data;
          		},function(response){
@@ -65,7 +67,7 @@ angular.module('bookBuy.controller', ['bookBuy.service', 'common.service', 'glob
          		
          		}).finally(function(){
          			console.log('refresh complete event...');
-         		});
+         		});*/
 
 			}
 		

@@ -50,6 +50,8 @@ angular.module('monthly.controller', ['monthly.service', 'common.service', 'glob
 				//详细信息
 				monthlyService.initFlowPageData($scope.id).then(function(response){
 					$scope.monthlyList=response.data;
+					//标题
+					$scope.title=$scope.monthlyList.title
          		},function(response){
          			console.log('初始化失败');
          		
