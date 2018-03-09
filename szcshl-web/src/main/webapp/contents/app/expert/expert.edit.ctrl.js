@@ -464,6 +464,9 @@
                     visible: false,
                     modal: true,
                     closable: true,
+                    close:function () {
+                        vm.showProjectOffer=false;
+                    },
                     actions: ["Pin", "Minimize", "Maximize", "Close"]
                 }).data("kendoWindow").center().open();
             } else {
@@ -503,6 +506,7 @@
         }
         //关闭窗口信息
         vm.closeOffer = function () {
+            vm.showProjectOffer=false;
             window.parent.$("#ep_offer_div").data("kendoWindow").close();
         }
         //查看专家聘书

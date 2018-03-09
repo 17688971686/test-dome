@@ -54,7 +54,10 @@
     </form>
     <div class="loginform-footer" style="">
         <button ng-click="vm.submit()" ng-disabled="vm.isSubmit" class="btn btn-success" type="submit" value="登录">登录</button>
-        <p style="margin-top: 10px;">温馨提示：系统常见问题请<a href="javascript:;" ng-click="vm.sysInfo()">点击这里</a> </p>
+        <p style="margin-top: 10px;">温馨提示：系统常见问题请<a href="javascript:;" ng-click="vm.sysInfo()">点击这里</a>
+        <a style="margin-left: 40px;" ng-click="vm.openQrcode()">扫一扫下载app</a>
+        </p>
+
     </div>
 </div>
 <div class="footer"> 深圳市政府投资项目评审中心版权所有</div>
@@ -80,6 +83,13 @@
     </table>
 </div>
 <!-- 弹窗说明 end-->
+<!-- 二维码弹窗说明 begin-->
+<div id="showQrcode" style="display: none;">
+    <div style="text-align: center ;margin-top: 50px;">
+      <img src="${path}/contents/file/qrcode.png">
+    </div>
+</div>
+<!-- 二维码弹窗说明 end-->
 <!-- kendo -->
 <link href="${path}/contents/libs/kendoui/kendo.common.min.css" rel="stylesheet"/>
 <link href="${path}/contents/libs/kendoui/kendo.blueopal.min.css"  rel="stylesheet"/>
@@ -111,6 +121,19 @@
                     width : "600px",
                     height : "400px",
                     title : "系统说明",
+                    visible : false,
+                    modal : true,
+                    closable : true,
+                    actions : [ "Pin", "Minimize", "Maximize", "Close" ]
+                }).data("kendoWindow").center().open();
+            }
+
+            //打开二维码下载弹窗
+            vm.openQrcode= function(){
+                $("#showQrcode").kendoWindow({
+                    width : "400px",
+                    height : "400px",
+                    title : "安卓apk下载",
                     visible : false,
                     modal : true,
                     closable : true,

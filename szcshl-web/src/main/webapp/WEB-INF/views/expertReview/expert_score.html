@@ -33,7 +33,37 @@
     </tbody>
 </table>
 <!-- end 专家评分 -->
-
+<table class="table table-bordered">
+    <caption class="text-center h3"><strong>单位评分</strong></caption><!--第一负责人才能评分-->
+    <tr class="active">
+        <td width="18%">单位名称</td>
+        <td width="10%">单位电话</td>
+        <td width="10%">邮编	</td>
+        <td width="10%">地址	</td>
+        <td width="12%">单位评分</td>
+        <td width="28%">评分描述</td>
+        <td width="12%" ng-if="vm.showFlag.isMainPrinUser">操作</td>
+    </tr>
+    <tr >
+        <td>{{vm.model.unitScoreDto.company.coName}}</td>
+        <td>{{vm.model.unitScoreDto.company.coPhone}}</td>
+        <td>{{vm.model.unitScoreDto.company.coPC}}</td>
+        <td>{{vm.model.unitScoreDto.company.coAddress}}</td>
+        <td>
+            <span style='color:gold;font-size:20px;' ng-repeat="c in range(vm.model.unitScoreDto.score) track by $index ">
+                <i class='fa fa-star' aria-hidden='true'></i>
+            </span>
+        </td>
+        <td>{{vm.model.unitScoreDto.describes}}</td>
+        <td ng-if="vm.showFlag.isMainPrinUser">
+            <button class="btn btn-xs btn-primary" ng-click="vm.editUnitScore(vm.model.unitScoreDto.id)">
+                <span class="glyphicon glyphicon-pencil"></span>评分
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<!-- end 单位评分 -->
 <!-- start 专家评分弹窗-->
 <div id="score_win" style="display: none;">
     <div class="toolbar">
@@ -64,6 +94,37 @@
         </table>
     </form>
 </div>
+
+<!-- start 单位评分弹窗-->
+<div id="unitscore_win" style="display: none;">
+    <div class="toolbar">
+        <button class="btn btn-sm btn-success" ng-click="vm.saveUnit()" ng-disabled="vm.isCommit" >
+            <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.closeEditMark()" ng-disabled="vm.isCommit" >
+            关闭
+        </button>
+    </div>
+    <form id="expert_score_form" name="expert_score_form">
+        <table class="table table-bordered">
+            <tr>
+                <td style="width:90px;">单位星级:<span class="required">*</span></td>
+                <td>
+                        <div id="star" data-num="{{vm.model.unitScoreDto.score}}"></div>
+
+                </td>
+            </tr>
+            <tr>
+                <td style="width:90px;">评级描述:<span class="required">*</span></td>
+                <td>
+                    <textarea maxlength="120" rows="7" style="width: 100%;" ng-model="vm.model.unitScoreDto.describes" ></textarea>
+                    <p style="text-align: right;padding: 0px;margin:0px;font-size: 12px;"><span>最多输入120字</span></p>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
 <!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
 
 <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_SCORE')">打印预览</button>

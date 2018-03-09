@@ -6,6 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.ResultMsg;
+import cs.model.project.UnitScoreDto;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +92,14 @@ public class CompanyController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody CompanyDto companyDto) {
         companyService.updateCompany(companyDto);
+    }
+
+    //@RequiresPermissions("company##put")
+    @RequiresAuthentication
+    @RequestMapping(name = "更新单位评分", path = "saveUnitScore", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResultMsg saveUnitScore(@RequestBody UnitScoreDto unitScoreDto) {
+        return companyService.updateUnitScore(unitScoreDto);
     }
 
     //@RequiresPermissions("company##delete")

@@ -133,6 +133,8 @@ public class SignServiceImpl implements SignService {
     private ProjectStopService projectStopService;
     @Autowired
     private ExpertRepo expertRepo;
+    @Autowired
+    private UnitScoreRepo unitScoreRepo;
 
     /**
      * 项目签收保存操作（这里的方法是正式签收）
@@ -249,7 +251,26 @@ public class SignServiceImpl implements SignService {
     public void updateSign(SignDto signDto) {
         Sign sign = signRepo.findById(signDto.getSignid());
         BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
+        if(Validate.isString(sign.getDesigncompanyName())){//添加单位评分
+            Company company=companyRepo.findCompany(sign.getDesigncompanyName());
+            UnitScore unitScore=unitScoreRepo.findUnitScore(sign.getSignid());
+            if(unitScore!=null){
+                unitScore.setCompany(company);
+                unitScoreRepo.save(unitScore);
+            }else{
+                UnitScore unitScores =new UnitScore();
+                unitScores.setSignid(sign.getSignid());
+                unitScores.setCompany(company);
+                unitScores.setId(UUID.randomUUID().toString());
+                unitScores.setCreatedBy(SessionUtil.getDisplayName());
+                unitScores.setCreatedDate(new Date());
+                unitScores.setModifiedBy(SessionUtil.getDisplayName());
+                unitScores.setCreatedDate(new Date());
+                unitScoreRepo.save(unitScores);
+            }
 
+
+        }
         sign.setModifiedBy(SessionUtil.getUserId());
         sign.setModifiedDate(new Date());
         signRepo.save(sign);
@@ -498,6 +519,13 @@ public class SignServiceImpl implements SignService {
             if (Validate.isObject(expertReview)) {
                 ExpertReviewDto expertReviewDto = expertReviewRepo.formatReview(expertReview);
                 signDto.setExpertReviewDto(expertReviewDto);
+            }
+            //单位评分
+            UnitScore unitScore=unitScoreRepo.findUnitScore(signid);
+            if(Validate.isObject(expertReview)){
+                UnitScoreDto unitScoreDto=new UnitScoreDto();
+                BeanCopierUtils.copyPropertiesIgnoreNull(unitScore,unitScoreDto);
+                signDto.setUnitScoreDto(unitScoreDto);
             }
 
             //拟补充资料函
