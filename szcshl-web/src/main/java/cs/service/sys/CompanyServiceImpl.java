@@ -4,7 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import cs.common.Constant;
+import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
+import cs.domain.project.UnitScore;
+import cs.domain.project.UnitScore_;
+import cs.model.project.UnitScoreDto;
+import cs.repository.repositoryImpl.project.UnitScoreRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -24,6 +31,8 @@ public class CompanyServiceImpl implements CompanyService {
     private static Logger logger = Logger.getLogger(CompanyServiceImpl.class);
     @Autowired
     private CompanyRepo companyRepo;
+    @Autowired
+    private UnitScoreRepo unitScoreRepo;
 
     @Override
     public PageModelDto<CompanyDto> get(ODataObj odataObj) {
@@ -159,6 +168,20 @@ public class CompanyServiceImpl implements CompanyService {
             });
         }
         return comDtoList;
+    }
+
+    @Override
+    @Transactional
+    public ResultMsg updateUnitScore(UnitScoreDto unitScoreDto) {
+        boolean isUpdateScore = false;
+        if (!Validate.isObject(unitScoreDto.getScore()) || unitScoreDto.getScore() <= 0) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，你还没对专家进行评分！");
+        }
+        UnitScore unitScore = unitScoreRepo.findById(UnitScore_.id.getName(), unitScoreDto.getId());
+        BeanCopierUtils.copyPropertiesIgnoreNull(unitScoreDto, unitScore);
+        unitScoreRepo.save(unitScore);
+
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
 }

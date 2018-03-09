@@ -676,6 +676,11 @@ public class SignDto extends BaseDto {
      */
     private String lengthenExp;
 
+    /**
+     * 单位评分
+     */
+    private UnitScoreDto unitScoreDto;
+
     public SignDto() {
     }
 
@@ -2419,5 +2424,13 @@ public class SignDto extends BaseDto {
 
     public void setTotalReviewdays(Float totalReviewdays) {
         this.totalReviewdays = totalReviewdays;
+    }
+
+    public UnitScoreDto getUnitScoreDto() {
+        return unitScoreDto;
+    }
+
+    public void setUnitScoreDto(UnitScoreDto unitScoreDto) {
+        this.unitScoreDto = unitScoreDto;
     }
 }

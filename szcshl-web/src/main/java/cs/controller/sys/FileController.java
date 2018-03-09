@@ -10,6 +10,8 @@ import cs.common.ftp.FtpClientConfig;
 import cs.common.ftp.FtpUtils;
 import cs.common.utils.*;
 import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertOffer;
+import cs.domain.expert.ExpertOffer_;
 import cs.domain.expert.ExpertReview;
 import cs.domain.project.*;
 import cs.domain.sys.Ftp;
@@ -27,6 +29,7 @@ import cs.model.topic.FilingDto;
 import cs.model.topic.TopicInfoDto;
 import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.expert.ExpertOfferRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.FtpRepo;
@@ -126,6 +129,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     private LogService logService;
 
     private ServletContext servletContext;
+
+    @Autowired
+    private ExpertOfferRepo expertOfferRepo;
 
     @Override
     public void setServletContext(ServletContext servletContext) {
@@ -856,6 +862,24 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                     file = TemplateUtil.createDoc(expertDataMap, Template.EXPERT.getKey(), path);
 
+                    break;
+
+                case "EXPERTOFFER":
+                    //专家聘书
+                    ExpertOffer expertOffer =expertOfferRepo.findById(ExpertOffer_.id.getName(), businessId);
+                    Map<String, Object> expertOfferDataMap =new HashMap<>();
+                    expertOfferDataMap.put("name",expertOffer.getExpert().getName());
+                    expertOfferDataMap.put("sex",expertOffer.getExpert().getSex());
+                    expertOfferDataMap.put("birthDay",expertOffer.getExpert().getBirthDay());
+                    expertOfferDataMap.put("idCard",expertOffer.getExpert().getIdCard());
+                    expertOfferDataMap.put("qualifiCations",expertOffer.getExpert().getQualifiCations());
+                    expertOfferDataMap.put("post",expertOffer.getExpert().getPost());
+                    expertOfferDataMap.put("sendCcieDate",expertOffer.getSendCcieDate());
+                    expertOfferDataMap.put("period",expertOffer.getPeriod());
+                    expertOfferDataMap.put("expertNo",expertOffer.getExpert().getExpertNo());
+                    expertOfferDataMap.put("fafang","深圳市政府投资项目评审中心");
+
+                    file = TemplateUtil.createDoc(expertOfferDataMap, Template.EXPERTOFFER.getKey(), path);
                     break;
 
                 case "TOPICINFO":

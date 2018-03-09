@@ -439,6 +439,9 @@ public class Constant {
         //专家申请表
         EXPERT("print/expert" , "专家申请表"),
 
+        //专家聘书
+        EXPERTOFFER("print/expertoffer","专家聘书"),
+
         //专家评审费
         EXPERT_PAYMENT("print/expert_payment" , "专家评审费"),
 

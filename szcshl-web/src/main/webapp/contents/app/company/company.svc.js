@@ -16,6 +16,7 @@
 			updatecompany:updatecompany,
 			deletecompany:deletecompany	,
 			queryConpany : queryConpany,//模糊查询
+            saveUnit:saveUnit//保存单位评分
 		};		
 		return service;	
 		
@@ -289,7 +290,25 @@
 				success:httpSuccess
 			});
         }// end fun deletecompany
-		
+
+        // S_保存单位评分
+        function saveUnit(unitScore,callBack) {
+            var httpOptions = {
+                method: 'put',
+                url: url_company + "/saveUnitScore",
+                data: unitScore,
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }// E_saveMark
 		
 		
 		

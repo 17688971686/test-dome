@@ -2,8 +2,10 @@ package cs.service.sys;
 
 import java.util.List;
 
+import cs.common.ResultMsg;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
+import cs.model.project.UnitScoreDto;
 import cs.model.sys.CompanyDto;
 import cs.repository.odata.ODataObj;
 
@@ -18,6 +20,8 @@ public interface CompanyService {
 	void deleteCompanys(String[] ids);
 	
 	void updateCompany(CompanyDto companyDto);
+
+	ResultMsg updateUnitScore(UnitScoreDto unitScoreDto);
 
 	CompanyDto findByIdCompany(String id);
 

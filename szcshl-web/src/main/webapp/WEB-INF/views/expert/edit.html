@@ -25,7 +25,7 @@
                             data-val="true">
                         <option value="">请选择</option>
                         <option ng-repeat="x in DICT.SEX.dicts"
-                                ng-selected="vm.model.sex == x.dictName|orderBy:'dictName'" value="{{x.dictName}}">
+                                ng-selected="vm.model.sex == x.dictName" value="{{x.dictName}}">
                             {{x.dictName}}
                         </option>
                     </select>
@@ -600,6 +600,9 @@
     <div class="toolbar">
         <button class="btn btn-sm btn-success" ng-click="vm.saveOffer()" ng-hide="vm.showProjectOffer">
             <span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="printFile(vm.expertOffer.id,'EXPERTOFFER','EXPERTOFFER')" ng-show="vm.showProjectOffer">
+            <span class="glyphicon glyphicon-print"></span>打印
         </button>
         <button class="btn btn-sm btn-danger" ng-click="vm.closeOffer()">
             <span class="glyphicon glyphicon-ok"></span>关闭
