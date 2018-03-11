@@ -641,10 +641,11 @@ public class UserServiceImpl implements UserService {
         User user=userRepo.findUserByName(userName);
         ResultMsg resultMsg =new ResultMsg();
         if(user!=null){
+            System.out.println(Constant.OrgType.ORGGSEB.getKey());
             for(Role r :user.getRoles()){
-                //判断。登录的只能是部门负责人、副主任、主任
+                //判断。登录的只能是部门负责人、副主任、主任,评估一部信息化组
                 if(r.getRoleName().equals(EnumFlowNodeGroupName.DEPT_LEADER.getValue()) || r.getRoleName().equals(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())
-                    || r.getRoleName().equals(EnumFlowNodeGroupName.DIRECTOR.getValue()) ){
+                    || r.getRoleName().equals(EnumFlowNodeGroupName.DIRECTOR.getValue()) || user.getOrg().getName().equals(Constant.OrgType.ORXXHZ.getKey()) ){
 
 
             Date date = new Date();
