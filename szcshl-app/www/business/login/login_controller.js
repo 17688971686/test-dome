@@ -54,7 +54,7 @@ angular.module('login.controller', ['login.service','common.service', 'global_va
 						});
 					} else {
 						myPopup.close();
-						$scope.showErrorMesPopup(data.message);
+						$scope.showErrorMesPopup(data.reMsg);
 					}
 				},function(status){
 					myPopup.close();

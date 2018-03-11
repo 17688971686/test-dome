@@ -7,30 +7,13 @@
 			<button ng-click="back()" class="button back-button buttons button-clear header-item">
             	<i class="icon ion-android-arrow-back"></i></button>
 		</ion-nav-buttons>
-		<ion-nav-buttons side="right">
-			<!--提交-->
-			<a ng-click="submitProc()" ng-show="isReveal" class="button back-button buttons button-clear header-item" >
-				提交
-			</a>
-		</ion-nav-buttons>
+
 	</ion-nav-bar>
 	<!--选项卡-->
 	<ion-tabs class="tabs-icon-only tabs-positive">
-		<!--选项卡 -- 选项  -- begin================================================基本信息========================================================================-->
-		<ion-tab title="处理信息"  on-select="switchPageM(0)">
-			<ion-header-bar class="bar-positive">
-				<!--选项卡标题-->
-				<!--<h1 class="title">基本信息</h1>-->
-			</ion-header-bar>
-			<!--<ion-content has-tabs="true" on-swipe-right="switchPageM(4)" on-swipe-left="switchPageM(1)">-->
-			<ion-content has-tabs="true">
-				
-				<!--基本信息页面-->
-				<div ng-include="'business/tabs/workDynamic/gtasks/commonality/basic.html'"></div>
-			</ion-content>
-		</ion-tab>
+
 		<!--选项卡 -- 选项  -- begin================================================审批登记========================================================================-->
-		<ion-tab title="审批登记 "   on-select="switchPageM(1)" >
+		<ion-tab title="审批登记 " on-select="switchPageM(1)">
 			<ion-header-bar class="bar-positive ">
 			</ion-header-bar>
 			<!--<ion-content has-tabs="true " on-swipe-right="switchPageM(0)" on-swipe-left="switchPageM(2)">-->
@@ -42,7 +25,7 @@
 		</ion-tab>
 		
 				<!--选项卡 -- 选项  -- begin================================================工作方案========================================================================-->
-		<ion-tab title="工作方案 "  ng-if="workProgramList" on-select="switchPageM(2)">
+		<ion-tab title="工作方案 " on-select="switchPageM(2)" ng-if="workProgramList">
 			<ion-header-bar class="bar-positive ">
 			</ion-header-bar>
 			<!--<ion-content has-tabs="true " on-swipe-right="switchPageM(0)" on-swipe-left="switchPageM(2)">-->
@@ -54,7 +37,7 @@
 		</ion-tab>
 		
 				<!--选项卡 -- 选项  -- begin================================================发文信息========================================================================-->
-		<ion-tab title="发文信息 "  ng-if="dispatchDoc" on-select="switchPageM(3)">
+		<ion-tab title="发文信息 " on-select="switchPageM(3)" ng-if="dispatchDoc">
 			<ion-header-bar class="bar-positive ">
 			</ion-header-bar>
 			<!--<ion-content has-tabs="true " on-swipe-right="switchPageM(0)" on-swipe-left="switchPageM(2)">-->
@@ -65,7 +48,7 @@
 			</ion-content>
 		</ion-tab>
 						<!--选项卡 -- 选项  -- begin================================================归档信息========================================================================-->
-		<ion-tab title="归档信息 "   ng-if="fileRecord" on-select="switchPageM(4)">
+		<ion-tab title="归档信息 " on-select="switchPageM(4)" ng-if="fileRecord">
 			<ion-header-bar class="bar-positive ">
 			</ion-header-bar>
 			<!--<ion-content has-tabs="true " on-swipe-right="switchPageM(0)" on-swipe-left="switchPageM(2)">-->

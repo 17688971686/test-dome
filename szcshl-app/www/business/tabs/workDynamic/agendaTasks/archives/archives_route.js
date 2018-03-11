@@ -5,7 +5,7 @@ angular.module('route.archives', [
 		$stateProvider
 
 			.state('archives', {
-				url: '/workDynamic/agendaTasks/archives/:id/:processInstanceId/:taskId',
+				url: '/workDynamic/agendaTasks/archives/:id/:processInstanceId/:taskId/:backType',
 				cache:'false',
 				templateUrl: 'business/tabs/workDynamic/agendaTasks/archives/archives.html',
 				controller: "archivesCtrl"

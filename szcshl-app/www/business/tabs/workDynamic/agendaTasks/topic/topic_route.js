@@ -5,7 +5,7 @@ angular.module('route.topic', [
 		$stateProvider
 
 			.state('topic', {
-				url: '/workDynamic/agendaTasks/topic/:id/:processInstanceId/:taskId',
+				url: '/workDynamic/agendaTasks/topic/:id/:processInstanceId/:taskId/:backType',
 				cache:'false',
 				templateUrl: 'business/tabs/workDynamic/agendaTasks/topic/topic.html',
 				controller: "topicCtrl"

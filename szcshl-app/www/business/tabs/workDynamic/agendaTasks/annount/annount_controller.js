@@ -15,7 +15,7 @@ angular.module('annount.controller', ['annount.service', 'common.service', 'glob
 	
 			//返回
 			$scope.back = function() {
-				$state.go('agendaTasks');
+				$state.go($state.params.backType);
 			}
 		//流程提交	
 	$scope.submitProc=function(){

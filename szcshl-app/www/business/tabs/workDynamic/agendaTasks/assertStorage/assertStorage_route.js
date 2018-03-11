@@ -5,7 +5,7 @@ angular.module('route.assertStorage', [
 		$stateProvider
 
 			.state('assertStorage', {
-				url: '/workDynamic/agendaTasks/assertStorage/:id/:processInstanceId/:taskId',
+				url: '/workDynamic/agendaTasks/assertStorage/:id/:processInstanceId/:taskId/:backType',
 				cache:'false',
 				templateUrl: 'business/tabs/workDynamic/agendaTasks/assertStorage/assertStorage.html',
 				controller: "assertStorageCtrl"

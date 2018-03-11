@@ -1,7 +1,7 @@
 angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.service', 'global_variable'])
 
-	.controller('signFlowDealCtrl', ['$rootScope','$scope', '$ionicPopup', '$state', '$timeout','APP_EVENTS','$ionicHistory','signFlowDealService','Message',
-		function($rootScope,$scope, $ionicPopup, $state, $timeout,APP_EVENTS,$ionicHistory,signFlowDealService,Message) {
+	.controller('signFlowDealCtrl', ['$rootScope','$scope', '$ionicPopup', '$state', '$timeout','APP_EVENTS','$ionicHistory','signFlowDealService','Message','$ionicTabsDelegate',
+		function($rootScope,$scope, $ionicPopup, $state, $timeout,APP_EVENTS,$ionicHistory,signFlowDealService,Message,$ionicTabsDelegate) {
 
 	    $scope.signid = $state.params.signid;
 		$scope.processInstanceId = $state.params.processInstanceId;
@@ -13,10 +13,20 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
 	/*parameter.userid="1c41d130-32b4-4230-9d8a-1277727d3c60";*/
 	/*	parameter.userid="9746a99b-7629-472b-a233-cb3cf94a9da1";*/
 		
-	
+	    $scope.isReveal=true;//提交按钮的显示
 			//返回
 			$scope.back = function() {
 				$state.go('gtasks');
+			}
+			//切换页面
+			$scope.switchPageM = function(index){
+				if(index!=0){
+                    $scope.isReveal=false;					
+				}else{
+					$scope.isReveal=true;
+				}
+
+				$ionicTabsDelegate.select(index);
 			}
 		//流程提交	
 	$scope.submitProc=function(){

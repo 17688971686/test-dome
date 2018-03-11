@@ -5,7 +5,7 @@ angular.module('route.monthly', [
 		$stateProvider
 
 			.state('monthly', {
-				url: '/workDynamic/agendaTasks/monthly/:id/:processInstanceId/:taskId',
+				url: '/workDynamic/agendaTasks/monthly/:id/:processInstanceId/:taskId/:backType',
 				cache:'false',
 				templateUrl: 'business/tabs/workDynamic/agendaTasks/monthly/monthly.html',
 				controller: "monthlyCtrl"

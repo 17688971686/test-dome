@@ -5,7 +5,7 @@ angular.module('route.bookBuy', [
 		$stateProvider
 
 			.state('bookBuy', {
-				url: '/workDynamic/agendaTasks/bookBuy/:id/:processInstanceId/:taskId',
+				url: '/workDynamic/agendaTasks/bookBuy/:id/:processInstanceId/:taskId/:backType',
 				cache:'false',
 				templateUrl: 'business/tabs/workDynamic/agendaTasks/bookBuy/bookBuy.html',
 				controller: "bookBuyCtrl"

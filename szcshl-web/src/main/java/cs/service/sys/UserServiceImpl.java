@@ -641,6 +641,12 @@ public class UserServiceImpl implements UserService {
         User user=userRepo.findUserByName(userName);
         ResultMsg resultMsg =new ResultMsg();
         if(user!=null){
+            for(Role r :user.getRoles()){
+                //判断。登录的只能是部门负责人、副主任、主任
+                if(r.getRoleName().equals(EnumFlowNodeGroupName.DEPT_LEADER.getValue()) || r.getRoleName().equals(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())
+                    || r.getRoleName().equals(EnumFlowNodeGroupName.DIRECTOR.getValue()) ){
+
+
             Date date = new Date();
             HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             if(user.getLoginFailCount()>5&&user.getLastLoginDate().getDay()==(new Date()).getDay()){
@@ -678,19 +684,24 @@ public class UserServiceImpl implements UserService {
                 log.setCreatedDate(date);
                 log.setMessage("用户名或密码错误");
                 logService.save(log);
+                break;//当密码错误时就停止循环。防止提示信息被覆盖
             }
             userRepo.save(user);
         }else{
+                resultMsg.setReMsg("没有权限登录!");
+             }
+
+        }
+      }else{
             Date date = new Date();
-            resultMsg.setReMsg("用户名或密码错误!");
+            resultMsg.setReMsg("用户不存在!");
             //登陆日志
             HttpServletRequest req = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
             /*loginLog.setDisplayName("用户不存在");*/
             Log log = new Log();
-            log.setUserName(user.getDisplayName());
             log.setResult("0");
             log.setCreatedDate(date);
-            log.setMessage("用户名或密码错误");
+            log.setMessage("用户不存在");
             logService.save(log);
         }
 

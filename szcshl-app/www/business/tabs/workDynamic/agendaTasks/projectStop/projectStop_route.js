@@ -5,7 +5,7 @@ angular.module('route.projectStop', [
 		$stateProvider
 
 			.state('projectStop', {
-				url: '/workDynamic/agendaTasks/projectStop/:id/:processInstanceId/:taskId',
+				url: '/workDynamic/agendaTasks/projectStop/:id/:processInstanceId/:taskId/:backType',
 				cache:'false',
 				templateUrl: 'business/tabs/workDynamic/agendaTasks/projectStop/projectStop.html',
 				controller: "projectStopCtrl"

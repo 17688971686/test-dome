@@ -5,7 +5,7 @@ angular.module('route.suppletter', [
 		$stateProvider
 
 			.state('suppletter', {
-				url: '/workDynamic/agendaTasks/suppletter/:id/:processInstanceId/:taskId',
+				url: '/workDynamic/agendaTasks/suppletter/:id/:processInstanceId/:taskId/:backType',
 				cache:'false',
 				templateUrl: 'business/tabs/workDynamic/agendaTasks/suppletter/suppletter.html',
 				controller: "suppletterCtrl"

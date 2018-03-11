@@ -1,4 +1,4 @@
-<ion-view title="待办项目" class="{{viewMainClass}}">
+<ion-view title="在办项目" class="{{viewMainClass}}">
 	<ion-nav-bar class="bar-positive">
 		<ion-nav-buttons side="left">
 			<button ng-click="back()" class="button back-button buttons button-clear header-item">
@@ -9,7 +9,7 @@
 		
 	 <div class="has-header">
       <ul class="list">
-        <a ng-repeat="x in  dtaksList" class="item"  href="#/commonDetail/{{x.signid}}">
+        <a ng-repeat="x in  dtaksList" class="item"  href="#/dtasks/detali/{{x.businessKey}}">
           {{x.projectName}}
         <div class="size_ss text_color_f5">
 			<div class="width_30 float_l">{{x.reviewStage}}</div>

@@ -5,7 +5,7 @@ angular.module('route.appraise', [
 		$stateProvider
 
 			.state('appraise', {
-				url: '/workDynamic/agendaTasks/appraise/:id/:processInstanceId/:taskId',
+				url: '/workDynamic/agendaTasks/appraise/:id/:processInstanceId/:taskId/:backType',
 				cache:'false',
 				templateUrl: 'business/tabs/workDynamic/agendaTasks/appraise/appraise.html',
 				controller: "appraiseCtrl"

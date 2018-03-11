@@ -10,12 +10,10 @@ angular.module('suppletter.controller', ['suppletter.service', 'common.service',
 		parameter.processInstanceId=$scope.processInstanceId;
 		parameter.taskId=$scope.taskId;
 		parameter.userid=$rootScope.userInfo.id;
-	/*parameter.userid="1c41d130-32b4-4230-9d8a-1277727d3c60";*/
-	/*	parameter.userid="9746a99b-7629-472b-a233-cb3cf94a9da1";*/
 	
 			//返回
 			$scope.back = function() {
-				$state.go('agendaTasks');
+				$state.go($state.params.backType);
 			}
 		//流程提交	
 	$scope.submitProc=function(){
