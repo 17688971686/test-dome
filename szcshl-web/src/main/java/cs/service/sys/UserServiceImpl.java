@@ -13,6 +13,7 @@ import cs.model.sys.OrgDto;
 import cs.model.sys.RoleDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.RoleRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
@@ -48,6 +49,8 @@ public class UserServiceImpl implements UserService {
     private IdentityService identityService;
     @Autowired
     private LogService logService;
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
 
     @Override
     @Transactional
@@ -641,12 +644,10 @@ public class UserServiceImpl implements UserService {
         User user=userRepo.findUserByName(userName);
         ResultMsg resultMsg =new ResultMsg();
         if(user!=null){
-            for(Role r :user.getRoles()){
-                //判断。登录的只能是部门负责人、副主任、主任
-                if(r.getRoleName().equals(EnumFlowNodeGroupName.DEPT_LEADER.getValue()) || r.getRoleName().equals(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())
-                    || r.getRoleName().equals(EnumFlowNodeGroupName.DIRECTOR.getValue()) ){
-
-
+            List<OrgDept> orgDeptList=orgDeptRepo.findAll();
+            for(OrgDept orgDept :orgDeptList){
+                //判断。登录的只能是部门负责人、副主任、主任、信息组
+           if(orgDept.getDirectorID().equals(user.getId()) || orgDept.getsLeaderID().equals(user.getId()) || orgDept.getmLeaderID().equals(user.getId()) ){
             Date date = new Date();
             HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             if(user.getLoginFailCount()>5&&user.getLastLoginDate().getDay()==(new Date()).getDay()){
