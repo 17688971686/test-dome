@@ -13,7 +13,6 @@ import cs.model.sys.OrgDto;
 import cs.model.sys.RoleDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.RoleRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
