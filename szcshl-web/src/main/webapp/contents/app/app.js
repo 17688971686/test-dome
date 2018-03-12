@@ -1147,6 +1147,21 @@
                     controller: 'maintainExpertConfirmCtrl',
                     controllerAs: 'vm'
                 })
+
+            // begin 党务管理
+                .state('partyEdit', {//党员信息录入
+                    url: '/partyEdit',
+                    templateUrl: rootPath + "/partyManager/html/partyEdit.html",
+                    controller: 'partyEditCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('partyList', {//党员信息查询列
+                    url: '/partyList',
+                    templateUrl: rootPath + "/partyManager/html/partyList.html",
+                    controller: 'partyListCtrl',
+                    controllerAs: 'vm'
+                })
+            // end 党务管理
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
         $rootScope.rootPath = rootPath;
         $rootScope.DICT = DICTOBJ;
