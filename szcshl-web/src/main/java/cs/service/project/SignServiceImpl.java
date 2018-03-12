@@ -522,7 +522,7 @@ public class SignServiceImpl implements SignService {
             }
             //单位评分
             UnitScore unitScore=unitScoreRepo.findUnitScore(signid);
-            if(Validate.isObject(expertReview)){
+            if(Validate.isObject(unitScore)){
                 UnitScoreDto unitScoreDto=new UnitScoreDto();
                 BeanCopierUtils.copyPropertiesIgnoreNull(unitScore,unitScoreDto);
                 signDto.setUnitScoreDto(unitScoreDto);
@@ -792,7 +792,18 @@ public class SignServiceImpl implements SignService {
                         assigneeValue += obj.getUserId();
                         obj.setSignId(signid);
                         obj.setFlowBranch(branchIndex);
+
                     }
+                    //更改项目信息
+                   /* sign.setMinisterhandlesug(flowDto.getDealOption());
+                    sign.setMinisterDate(new Date());
+                    sign.setMinisterId(SessionUtil.getUserId());
+                    sign.setMinisterName(SessionUtil.getDisplayName());*/
+                    sign.setMinisterDate(new Date());
+                    String optionString = Validate.isString(sign.getMinisterhandlesug()) ? (sign.getMinisterhandlesug() + "<br>") : "";
+                    sign.setMinisterhandlesug(optionString + flowDto.getDealOption() + " <p style='text-align:right;'>签名：" + SessionUtil.getDisplayName()+ "</p>" +"<p style='text-align:right;'> 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日")+"</p>");
+
+
                     //不是协审项目
                 } else {
                     //主流程处理，一定要有第一负责人
@@ -812,14 +823,23 @@ public class SignServiceImpl implements SignService {
                         signPriList.add(mainPri);
 
                         //更改项目信息
-                        sign.setMinisterhandlesug(flowDto.getDealOption());
+                        /*sign.setMinisterhandlesug(flowDto.getDealOption());
                         sign.setMinisterDate(new Date());
                         sign.setMinisterId(SessionUtil.getUserId());
                         sign.setMinisterName(SessionUtil.getDisplayName());
 
+
+                 /*       String optionString = Validate.isString(sign.getMinisterhandlesug()) ? (sign.getMinisterhandlesug() + "<br>") : "";
+                        sign.setMinisterhandlesug(optionString + flowDto.getDealOption() + " <p style='text-align:right;'>签名：" + SessionUtil.getDisplayName()+ "</p>" +"<p style='text-align:right;'> 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日")+"</p>");
+*/
                     }
                     //项目负责人
                     if (flowDto.getBusinessMap().get("A_USER_ID") != null) {
+                        //更改项目信息,部长意见
+                        String optionString = Validate.isString(sign.getMinisterhandlesug()) ? (sign.getMinisterhandlesug() + "<br>") : "";
+                        sign.setMinisterhandlesug(optionString + flowDto.getDealOption() + " <p style='text-align:right;'>签名：" + SessionUtil.getDisplayName()+ "</p>" +"<p style='text-align:right;'> 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日")+"</p>");
+                        sign.setMinisterDate(new Date());
+
                         businessId = flowDto.getBusinessMap().get("A_USER_ID").toString();
                         userList = userRepo.getCacheUserListById(businessId);
                         if (signPriList == null) {
@@ -1194,6 +1214,7 @@ public class SignServiceImpl implements SignService {
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 String optionString = Validate.isString(dp.getSecondChargeSuggest()) ? (dp.getSecondChargeSuggest() + "<br>") : "";
                 dp.setSecondChargeSuggest(optionString + flowDto.getDealOption() + "              " + SessionUtil.getDisplayName() + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+
                 dispatchDocRepo.save(dp);
 
                 //如果同意

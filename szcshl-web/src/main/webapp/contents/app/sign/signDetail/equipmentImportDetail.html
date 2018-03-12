@@ -397,7 +397,7 @@
     <tr>
         <td width="15%" class="text-center">部长处理意见</td>
         <td colspan="3">
-            {{vm.model.ministerhandlesug}}
+            <div ng-bind-html="vm.model.ministerhandlesug | trust2Html"></div>
         </td>
     </tr>
     <tr>

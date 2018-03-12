@@ -448,6 +448,9 @@ public class Constant {
         //专家评分
         EXPERT_SCORD("print/expert_score" , "专家评分"),
 
+        //单位评分
+        UNIT_SCORE("print/unit_score","单位评分"),
+
         //月报简报
         MONTHLY("print/monthly/monthly" , "月报简报"),
 

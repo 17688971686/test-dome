@@ -32,8 +32,12 @@
     </tr>
     </tbody>
 </table>
+
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_SCORE')">打印预览</button>
+
 <!-- end 专家评分 -->
-<table class="table table-bordered">
+
+<table class="table table-bordered" ng-if="vm.model.unitScoreDto">
     <caption class="text-center h3"><strong>单位评分</strong></caption><!--第一负责人才能评分-->
     <tr class="active">
         <td width="18%">单位名称</td>
@@ -63,7 +67,10 @@
     </tr>
     </tbody>
 </table>
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.unitScoreDto.id,'SIGN_UNIT' , 'SIGN_UNIT_SCORE')">打印预览</button>
+
 <!-- end 单位评分 -->
+
 <!-- start 专家评分弹窗-->
 <div id="score_win" style="display: none;">
     <div class="toolbar">
@@ -127,6 +134,5 @@
 
 <!--<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
 
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_SCORE')">打印预览</button>
 
 <!-- end 专家评分弹窗-->
