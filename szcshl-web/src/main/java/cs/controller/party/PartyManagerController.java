@@ -65,8 +65,13 @@ public class PartyManagerController {
         return ctrlName + "/partyEdit";
     }
 
-    @RequestMapping(name="党员信息列表" , path = "html/partyList" , method = RequestMethod.GET)
+    @RequestMapping(name = "党员信息列表" , path = "html/partyList" , method = RequestMethod.GET)
     public String partyList(){
         return ctrlName + "/partyList";
+    }
+
+    @RequestMapping(name = "党员会议添加" , path = "html/addPartyMeeting" , method = RequestMethod.GET )
+    public String partyMeeting(){
+        return ctrlName + "/addPartyMeeting";
     }
 }

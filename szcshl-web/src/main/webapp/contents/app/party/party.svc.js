@@ -3,9 +3,9 @@
 
     angular.module('app').factory('partySvc', party);
 
-    party.$inject = ['$http', '$state' , 'bsWin'];
+    party.$inject = ['$http', '$state' , 'bsWin' , '$rootScope'];
 
-    function party($http, $state , bsWin) {
+    function party($http, $state , bsWin , $rootScope) {
 
         var service = {
             createParty : createParty,  //保存党员信息
@@ -126,10 +126,21 @@
                     filterable: false,
                 },
                 {
-                    field: "pmNation",
+                    field: "",
                     title: "民族",
                     width: 50,
                     filterable: false,
+                    template :function(item){
+                        var pmNation = "";
+                        for(var i =0 ; i < $rootScope.DICT.NATION.dicts.length ; i++){
+                            var v = $rootScope.DICT.NATION.dicts[i];
+                            if(item.pmNation == v.dictKey){
+                                pmNation =  v.dictName;
+                                break;
+                            }
+                        }
+                        return pmNation;
+                    }
                 },
                 {
                     field: "pmEducation",

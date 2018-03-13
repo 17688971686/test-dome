@@ -1161,6 +1161,12 @@
                     controller: 'partyListCtrl',
                     controllerAs: 'vm'
                 })
+                .state('partyMeeting', {//党员会议添加编辑页
+                    url: '/partyMeeting',
+                    templateUrl: rootPath + "/partyManager/html/addPartyMeeting.html",
+                    controller: 'partyMeetingCtrl',
+                    controllerAs: 'vm'
+                })
             // end 党务管理
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
         $rootScope.rootPath = rootPath;
