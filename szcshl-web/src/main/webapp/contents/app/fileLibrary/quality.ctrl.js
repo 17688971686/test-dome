@@ -82,6 +82,10 @@
                             idKey: "id",
                             pIdKey: "pId",
                         },
+                        showTitle:true, //是否显示节点title信息提示 默认为true
+                        key: {
+                            title:"fileName" //设置title提示信息对应的属性名称 也就是节点相关的某个属性
+                        }
                     }
                 };
                 function zTreeOnClick(event, treeId, treeNode ) {
@@ -154,6 +158,13 @@
                     if (newValue == true) {
                         var timer = $interval(function () {
                             var s = document.getElementById("zTree");
+
+                            for(var i=0;i<vm.zNodes.length;i++){//控制文件名，多的用点来显示
+                                if(vm.zNodes[i].name.length>7){
+                                    var ss=vm.zNodes[i].name.substring(0,7);
+                                    vm.zNodes[i].name=ss+"...";
+                                }
+                            }
                             //当有ztree的id时开始赋值
                             if (s != null) {
                                 zTreeObj = $.fn.zTree.init($("#zTree"), setting, vm.zNodes);
@@ -303,6 +314,7 @@
                 fileLibrarySvc.saveFile(vm, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         bsWin.alert("保存成功！", function () {
+                            window.parent.$("#qualityEdit").data("kendoWindow").close();
                             vm.qualityList.push(data.reObj);
                             vm.fileId = data.reObj.fileId;
                             fileLibrarySvc.getFileUrlById(vm, vm.fileId);

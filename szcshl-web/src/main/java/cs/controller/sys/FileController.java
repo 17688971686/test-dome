@@ -132,6 +132,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     @Autowired
     private ExpertOfferRepo expertOfferRepo;
+    @Autowired
+    private UnitScoreRepo unitScoreRepo;
 
     @Override
     public void setServletContext(ServletContext servletContext) {
@@ -540,6 +542,25 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 case "SIGN":
                     Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
                     Map<String, Object> dataMap = TemplateUtil.entryAddMap(sign);
+                    String ministerhandlesug=sign.getMinisterhandlesug();
+                    String cc=null;
+                    //拼接部长意见
+                    if (Validate.isString(ministerhandlesug)) {
+                        cc="请（";
+                        String[] s= ministerhandlesug.split("（" );//截取字符串
+                        for(int i=1;i<s.length;i++){//循环拼接
+                         String[] a= s[i].split("\\)" );
+                         if(i+1==s.length){
+                             cc+=a[0];
+                         }else{
+                             cc+=a[0]+",";
+                         }
+
+
+                        }
+                        cc+="）组织办理";
+                    }
+                    dataMap.put("ministerhandlesug",cc);
                     if (stageType.equals(RevireStageKey.KEY_SUG.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_STUDY.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())) {
@@ -835,6 +856,22 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     file = TemplateUtil.createDoc(addsuppletterData, Template.ADDSUPPLETER.getKey(), path);
                     break;
 
+                case "SIGN_UNIT":
+                    //单位评分
+                    if("SIGN_UNIT_SCORE".equals(stageType)){
+                       UnitScore unitScore=unitScoreRepo.findById(UnitScore_.id.getName(),businessId);
+                        Map<String, Object> unitScoerMap =new HashMap<>();
+                       if(Validate.isObject(unitScore)){
+                        unitScoerMap.put("coName",unitScore.getCompany().getCoName());
+                        unitScoerMap.put("coPhone",unitScore.getCompany().getCoPhone());
+                        unitScoerMap.put("coPC",unitScore.getCompany().getCoPC());
+                        unitScoerMap.put("coAddress",unitScore.getCompany().getCoAddress());
+                        unitScoerMap.put("score",unitScore.getScore());
+                        unitScoerMap.put("describes",unitScore.getDescribes());
+                       }
+                        file = TemplateUtil.createDoc(unitScoerMap, Template.UNIT_SCORE.getKey(), path);
+                    }
+                     break;
                 case "EXPERT":
                     //专家申请表
                     ExpertDto expertDto = expertService.findById(businessId);
