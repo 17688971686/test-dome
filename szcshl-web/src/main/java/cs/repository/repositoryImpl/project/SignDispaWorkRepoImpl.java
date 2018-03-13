@@ -11,6 +11,8 @@ import cs.domain.project.SignDispaWork_;
 import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -26,6 +28,8 @@ import static cs.common.Constant.SUPER_ROLE;
 @Repository
 public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, String> implements SignDispaWorkRepo {
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
      * @param startTime
@@ -462,6 +466,17 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
             return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "您无权限查看此项目信息！");
         }
+    }
+
+
+    @Override
+    //总体总况
+    public List<Map<String,Object>> dataskCount(){
+        //for mysql
+        String statisticsSql = " select COUNT(signid)  as SIGNNUMBER ,reviewstage   from V_SIGN_DISP_WORK t where signstate<>7 and signstate<>2 group by t.reviewstage";
+        List<Map<String,Object>> statList=jdbcTemplate.queryForList(statisticsSql);
+
+        return statList;
     }
 
 }

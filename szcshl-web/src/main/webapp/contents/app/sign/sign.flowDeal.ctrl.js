@@ -770,7 +770,9 @@
             vm.initUserOption();
         }
         //部门领导分办，选择用户的默认处理意见
-        vm.initUserOption = function () {
+
+        var selUser = []
+        vm.initUserOption = function (displayName) {
             var selUserId = $("#selPrincipalMainUser").val();
             var isSelMainUser = false;
             var defaultOption = "请（"
@@ -782,10 +784,16 @@
                     }
                 })
             }
-            var selUser = []
-            $('#principalAssistUser input[selectType="assistUser"]:checked').each(function () {
-                selUser.push($(this).attr("tit"));
-            });
+            //根据勾选的来加
+             if($("input[name='"+displayName+"']").is(':checked')){//勾中的
+                 selUser.push(displayName)
+             }else{//不勾中的
+                 angular.forEach(selUser,function(su,index){
+                     if(su == displayName){
+                         selUser.splice(index,1);
+                     }
+                 });
+             }
 
             if (selUser.length > 0) {
                 if (isSelMainUser) {
@@ -879,8 +887,31 @@
                         }
                     });
                     vm.businessFlag.principalUsers.push(priUser);
+                    //进行排序。主负责人第一
+                    vm.businessFlag.principalUsers.sort(by("isMainUser"));
                     //初始化处理人
                     vm.initDealUserName(vm.businessFlag.principalUsers);
+                }
+            }
+        }
+        //排序的方法
+        var by = function(name){
+            return function(o, p){
+                var a, b;
+                if (typeof o === "object" && typeof p === "object" && o && p) {
+                    a = o[name];
+                    b = p[name];
+                    console.log(a,b);
+                    if (a === b) {
+                        return 0;
+                    }
+                    if (typeof a === typeof b) {
+                        return a > b ? -1 : 1;
+                    }
+                    return typeof a > typeof b ? -1 : 1;
+                }
+                else {
+                    throw ("error");
                 }
             }
         }
@@ -918,7 +949,9 @@
                     if (i > 0) {
                         defaultOption += ","
                     }
-                    defaultOption += u.userName;
+                        defaultOption += u.userName;
+
+
                 })
                 defaultOption += " )组织办理。";
                 vm.flow.dealOption = defaultOption;

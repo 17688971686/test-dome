@@ -118,7 +118,7 @@
                             <td>
                                 <div id="principalAssistUser">
                                     <li ng-repeat="u in vm.users" style="float:left;width:80px;text-align: left;">
-                                        <input type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}" ng-click="vm.initUserOption()" />{{u.displayName}}
+                                        <input name="{{u.displayName}}" type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}" ng-click="vm.initUserOption(u.displayName)" />{{u.displayName}}
                                     </li>
                                 </div>
                             </td>

@@ -5,6 +5,7 @@ import cs.domain.project.SignDispaWork;
 import cs.repository.IRepository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 项目统计视图 数据操作实现接口
@@ -50,6 +51,12 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
      * @return
      */
     ResultMsg findSecretProPermission(String signId);
+
+    /**
+     * 在办项目数量统计
+     * @return
+     */
+    List<Map<String,Object>> dataskCount();
 
 
 }
