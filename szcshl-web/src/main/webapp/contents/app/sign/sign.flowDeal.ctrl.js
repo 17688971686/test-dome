@@ -735,20 +735,34 @@
             } else {
                 $("#assist_" + checkboxValue).removeAttr("disabled");
             }
-            vm.initOption();
+            vm.initOption($event);
         }
+        var selOrg = [];
+        vm.initOption = function ($event) {
+            var checkbox = $event.target;
+            var obj =$(checkbox);
+            var selectType = obj.attr("selectType");
+            var checked = checkbox.checked;
+            if(checked && selectType == 'main'){
+                selOrg.splice(0, 0, obj.attr("tit"));
+            }else if(!checked && selectType == 'main'){
+                selOrg[0]= "";
+            }
 
-        vm.initOption = function () {
-            var selOrg = [];
-            $('.seleteTable input[selectType="main"]:checked').each(function () {
-                selOrg.push($(this).attr("tit"));
-            });
-            $('.seleteTable input[selectType="assist"]:checked').each(function () {
-                selOrg.push($(this).attr("tit"));
-            });
+            if(checked && selectType == 'assist'){
+                selOrg.push(obj.attr("tit"));
+            }else if(!checked && selectType == 'assist'){
+                var title = obj.attr("tit");
+                angular.forEach(selOrg,function(tit,index){
+                    if(tit == title){
+                        selOrg.splice(index,1);
+                    }
+                });
+            }
             if (selOrg.length > 0) {
                 vm.flow.dealOption = "请（" + selOrg.join('，') + "）组织评审";
             }
+
         }
 
         //检查项目负责人

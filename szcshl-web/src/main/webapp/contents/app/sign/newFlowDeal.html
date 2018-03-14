@@ -85,7 +85,7 @@
                             <td align="center"><input type="checkbox" selectType="main" tit="{{x.name}}"
                                                       ng-click="vm.mainOrg($event)" value="{{x.id}}"/></td>
                             <td align="center"><input type="checkbox" selectType="assist" tit="{{x.name}}"
-                                                      id="assist_{{x.id}}" ng-click="vm.initOption()" value="{{x.id}}"/>
+                                                      id="assist_{{x.id}}" ng-click="vm.initOption($event)" value="{{x.id}}"/>
                             </td>
                         </tr>
                     </table>
