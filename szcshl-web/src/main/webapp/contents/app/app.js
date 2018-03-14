@@ -1212,17 +1212,21 @@
         };
 
         $rootScope.topSelectChange = function (dictKey, dicts, type) {
+            console.log(dictKey);
+            console.log(dicts);
             if (dicts != undefined) {
                 for (var i = 0; i < dicts.length; i++) {
                     //根据code查询
                     if (type && type == "code") {
 
                         if (dicts[i].dictCode == dictKey) {
+                            console.log(1);
                             return dicts[i].dicts;
                         }
                         //默认根据name查询
                     } else {
                         if (dicts[i].dictName == dictKey) {
+                            console.log(2);
                             return dicts[i].dicts;
                         }
                     }

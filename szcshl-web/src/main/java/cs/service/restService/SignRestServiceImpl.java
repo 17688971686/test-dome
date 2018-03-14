@@ -243,7 +243,7 @@ public class SignRestServiceImpl implements SignRestService {
                     if (uploadResult) {
                         //保存数据库记录
                         if (fileExist) {
-                            sysFile.setModifiedBy(SessionUtil.getDisplayName());
+                            sysFile.setModifiedBy(SUPER_USER);
                             sysFile.setModifiedDate(new Date());
                         } else {
                             sysFile.setFileUrl(relativeFileUrl + File.separator + uploadFileName);
