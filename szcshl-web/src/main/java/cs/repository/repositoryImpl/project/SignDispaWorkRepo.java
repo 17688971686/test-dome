@@ -58,5 +58,11 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
      */
     List<Map<String,Object>> dataskCount();
 
+ /**
+  * 在办项目处理情况统计
+  * @return
+  */
+ List<Map<String,Object>> dtasksLineSign();
+
 
 }

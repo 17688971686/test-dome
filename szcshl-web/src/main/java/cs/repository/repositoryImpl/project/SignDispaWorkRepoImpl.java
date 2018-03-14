@@ -470,10 +470,20 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
 
     @Override
-    //总体总况
+    //在办项目数量统计
     public List<Map<String,Object>> dataskCount(){
         //for mysql
         String statisticsSql = " select COUNT(signid)  as SIGNNUMBER ,reviewstage   from V_SIGN_DISP_WORK t where signstate<>7 and signstate<>2 group by t.reviewstage";
+        List<Map<String,Object>> statList=jdbcTemplate.queryForList(statisticsSql);
+
+        return statList;
+    }
+
+    @Override
+    //在办项目处理情况统计
+    public List<Map<String,Object>> dtasksLineSign(){
+        //for mysql
+        String statisticsSql = " select t.signid, t.projectname,t.receivedate,t.surplusdays from V_SIGN_DISP_WORK t where signstate<>7 and signstate<>2";
         List<Map<String,Object>> statList=jdbcTemplate.queryForList(statisticsSql);
 
         return statList;

@@ -139,6 +139,18 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     }
 
     /**
+     * 在办项目办理情况查询统计
+     *
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg dtasksLineSign() {
+        List<Map<String, Object>> dtasks=signDispaWorkRepo.dtasksLineSign();
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",dtasks);
+    }
+
+    /**
      * 合并评审，关联项目显示出同部门，项目工作方案未审批的项目
      * 同时过滤有分支的项目
      *
