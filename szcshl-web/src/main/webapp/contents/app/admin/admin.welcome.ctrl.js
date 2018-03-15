@@ -99,6 +99,80 @@
             myChart.setOption(option);
         }//end initHistogram
 
+        /**
+         * 初始化折线图
+         */
+        vm.initLineChart = function () {
+            var myChart = echarts.init(document.getElementById('lineChart'));
+            var option = {
+                title: {
+                    text: '项目办理情况',
+                    subtext: '按签收日期划分',
+                    x: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/> {b} : {c}'
+                },
+                //设置坐标
+                grid: {
+                    left: '13%',
+                    right: '10%',
+                    bottom: '10%',
+                    containLabel: true,
+                },
+             /*   legend: {
+                 orient: 'vertical',
+                 left: 'left',
+                 data: vm.projectType
+                 },*/
+                xAxis: {
+                    type: 'category',
+                    name: '签收日期',
+                    splitLine: {show: false},
+                    data: vm.reviewdate,
+                    axisLabel: {
+                        interval: 0,
+                        margin: 2,
+                        textStyle: {
+                            fontWeight: 'bolder',
+                            color: '#295645'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '剩余工作日',
+                    min: -3,
+                     max: 15,
+                    // interval: 20
+
+                },
+                dataZoom: [{
+                    startValue: '2018-02-01'
+                }, {
+                    type: 'inside'
+                }],
+                series: [
+                    {
+                        name:'剩余工作日',
+                        type:'line',
+                        data: vm.linedatas
+                    }
+                ],
+                lineStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0,0,0,0.5)'
+                    }
+                }
+            };
+            myChart.setOption(option);
+
+        }//end initLineChart
+
+
 
 
         activate();
@@ -132,8 +206,24 @@
                 }
 
                 vm.initHistogram();//初始化柱状图
+            });
+            adminSvc.countLine(function (data) {
+                vm.linedatas=[];
+                vm.reviewdate=[];
+                vm.name=[];
+                for(var i=0;i<data.reObj.length;i++){
+                    if(data.reObj[i].RECEIVEDATE){
+                        vm.linedatas.push(data.reObj[i].SURPLUSDAYS);
+                        var dates=data.reObj[i].RECEIVEDATE.split(" ");//不要00:00:00
+                        vm.reviewdate.push(dates[0]);
+                        vm.name.push(data.reObj[i].PROJECTNAME);
+                    }
 
-            })
+                }
+                 console.log(vm.name);
+                vm.initLineChart();//初始化折线图
+            });
+
         }
 
 

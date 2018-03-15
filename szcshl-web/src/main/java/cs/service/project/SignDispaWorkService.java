@@ -33,6 +33,12 @@ public interface SignDispaWorkService {
     ResultMsg dtasksSign();
 
     /**
+     * 在办项目办理情况查询统计
+     * @return
+     */
+    ResultMsg dtasksLineSign();
+
+    /**
      * 查询待合并评审的项目
      * @param signId
      * @return

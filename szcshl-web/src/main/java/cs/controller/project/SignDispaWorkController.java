@@ -72,6 +72,13 @@ public class SignDispaWorkController {
         return signDispaWorkService.dtasksSign();
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "在办项目办理情况查询统计", path = "dtasksLineSign", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg dtasksLineSign() {
+        return signDispaWorkService.dtasksLineSign();
+    }
+
 
 
     @RequiresAuthentication
