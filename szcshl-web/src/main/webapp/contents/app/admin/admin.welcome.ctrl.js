@@ -11,9 +11,9 @@
         }
     });
 
-    adminWelCome.$inject = ['bsWin','adminSvc'];
+    adminWelCome.$inject = ['bsWin','adminSvc','$state'];
 
-    function adminWelCome(bsWin, adminSvc) {
+    function adminWelCome(bsWin, adminSvc,$state) {
         var vm = this;
         vm.title = '主页';
 
@@ -111,9 +111,18 @@
                     x: 'center'
                 },
                 tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/> {b} : {c}'
+                    trigger: 'axis',
+                    formatter: function (param) {
+                       　//option.series[param[0].seriesIndex].rawdate[param[0].dataIndex]是rawdate传的值
+                        //先进行切割，获取到项目名称
+                        var ssArray=option.series[param[0].seriesIndex].rawdate[param[0].dataIndex].split(",");
+                        var res ='签收日期：'+param[0].name + '<br/>'+'项目名称：'+ ssArray[0]+'<br/>'+param[0].seriesName+'：'+param[0].data;
+
+                        return res;
+                    }
                 },
+
+
                 //设置坐标
                 grid: {
                     left: '13%',
@@ -131,14 +140,6 @@
                     name: '签收日期',
                     splitLine: {show: false},
                     data: vm.reviewdate,
-                    axisLabel: {
-                        interval: 0,
-                        margin: 2,
-                        textStyle: {
-                            fontWeight: 'bolder',
-                            color: '#295645'
-                        }
-                    }
                 },
                 yAxis: {
                     type: 'value',
@@ -157,7 +158,8 @@
                     {
                         name:'剩余工作日',
                         type:'line',
-                        data: vm.linedatas
+                        data: vm.linedatas,
+                        rawdate:vm.name//自定义参数
                     }
                 ],
                 lineStyle: {
@@ -169,6 +171,11 @@
                 }
             };
             myChart.setOption(option);
+            myChart.on('click', function(param) {
+                //进行分割。获取到signid
+                var ssArray=option.series[param.seriesIndex].rawdate[param.dataIndex].split(",");
+                 $state.go('signDetails',{signid: ssArray[1],processInstanceId:ssArray[2]});
+            });
 
         }//end initLineChart
 
@@ -216,11 +223,11 @@
                         vm.linedatas.push(data.reObj[i].SURPLUSDAYS);
                         var dates=data.reObj[i].RECEIVEDATE.split(" ");//不要00:00:00
                         vm.reviewdate.push(dates[0]);
-                        vm.name.push(data.reObj[i].PROJECTNAME);
+                        //自定义传参，先进行拼接需要的数据。后再拆分
+                        vm.name.push(data.reObj[i].PROJECTNAME+","+data.reObj[i].SIGNID+","+data.reObj[i].PROCESSINSTANCEID);
                     }
 
                 }
-                 console.log(vm.name);
                 vm.initLineChart();//初始化折线图
             });
 

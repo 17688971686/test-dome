@@ -30,7 +30,7 @@ public class FileLibrary extends DomainBase{
     /**
      * 文件名称
      */
-    @Column(columnDefinition = "VARCHAR(128)")
+    @Column(columnDefinition = "VARCHAR(1024)")
     private String fileName;
 
     /**
