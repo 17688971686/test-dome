@@ -6,10 +6,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.*;
 import cs.model.PageModelDto;
-import cs.model.expert.ExpertDto;
-import cs.model.expert.ExpertReviewDto;
-import cs.model.expert.ExpertSelConditionDto;
-import cs.model.expert.ExpertSelectedDto;
+import cs.model.expert.*;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
@@ -79,7 +76,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
         domain.setModifiedBy(SessionUtil.getLoginName());
         domain.setModifiedDate(new Date());
-
         expertReviewRepo.save(domain);
     }
 
@@ -163,6 +159,16 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             ep.setPhoto(null);
             ExpertDto expertDto = new ExpertDto();
             BeanCopierUtils.copyProperties(ep, expertDto);
+            if(Validate.isList(ep.getExpertType())){
+                List<ExpertTypeDto> expertDtoList = new ArrayList<ExpertTypeDto>(ep.getExpertType().size());
+                ep.getExpertType().forEach(y -> {
+                    ExpertTypeDto expertTypeDto=new ExpertTypeDto();
+                    BeanCopierUtils.copyProperties(y, expertTypeDto);
+                    expertDtoList.add(expertTypeDto);
+                });
+                expertDto.setExpertTypeDtoList(expertDtoList);
+            }
+
             selDto.setExpertDto(expertDto);//设置专家信息Dto
         }
         return selDto;

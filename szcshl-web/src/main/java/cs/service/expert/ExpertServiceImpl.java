@@ -58,6 +58,16 @@ public class ExpertServiceImpl implements ExpertService {
             item.setPhoto(null);
             ExpertDto expertDto = new ExpertDto();
             BeanCopierUtils.copyProperties(item, expertDto);
+            //添加专家类别
+             if(Validate.isList(item.getExpertType())){
+                 List<ExpertTypeDto> expertTypeDtoList = new ArrayList<>();
+                 item.getExpertType().forEach(x -> {
+                     ExpertTypeDto expertTypeDto = new ExpertTypeDto();
+                     BeanCopierUtils.copyProperties(x, expertTypeDto);
+                     expertTypeDtoList.add(expertTypeDto);
+                 });
+                 expertDto.setExpertTypeDtoList(expertTypeDtoList);
+             }
             listExpertDto.add(expertDto);
         }
         pageModelDto.setCount(odataObj.getCount());
@@ -152,10 +162,23 @@ public class ExpertServiceImpl implements ExpertService {
         }
         List<Expert> resultList = criteria.list();
         List<ExpertDto> resultDtoList = new ArrayList<ExpertDto>(resultList.size());
+
         if (Validate.isList(resultList)) {
             resultList.forEach(x -> {
                 ExpertDto modelDto = new ExpertDto();
                 BeanCopierUtils.copyProperties(x, modelDto);
+                if(Validate.isList(x.getExpertType())){
+                    List<ExpertTypeDto> expertDtoList = new ArrayList<ExpertTypeDto>(x.getExpertType().size());
+                    x.getExpertType().forEach(y -> {
+                        ExpertTypeDto expertTypeDto=new ExpertTypeDto();
+                        BeanCopierUtils.copyProperties(y, expertTypeDto);
+                        expertDtoList.add(expertTypeDto);
+                    });
+                    modelDto.setExpertTypeDtoList(expertDtoList);
+                }
+
+
+
                 resultDtoList.add(modelDto);
             });
         }

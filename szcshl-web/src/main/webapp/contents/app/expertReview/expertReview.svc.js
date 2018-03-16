@@ -95,10 +95,28 @@
                     width: 100,
                     filterable: false
                 }, {
-                    field: "expertSort",
+                    field: "",
                     title: "专家类别",
                     width: 100,
-                    filterable: false
+                    template : function(item) {
+                        if(item.expertTypeDtoList){
+                            var expertTypeList=item.expertTypeDtoList;
+                            var expertSortName="";
+                            for(var i=0;i<expertTypeList.length;i++){
+                                if(expertSortName!=expertTypeList[i].expertType){
+                                    if(i>0){
+                                        expertSortName+="、"
+                                    }
+                                    expertSortName+=expertTypeList[i].expertType;
+                                }
+
+                            }
+                            return expertSortName;
+                        }else{
+                            return "";
+                        }
+                    }
+
                 }
             ];
             return columns;

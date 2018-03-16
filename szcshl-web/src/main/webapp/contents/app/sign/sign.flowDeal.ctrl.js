@@ -154,6 +154,41 @@
 
                         vm.showTotalInvestment = true;
                     }
+
+                    //进行专家的专业类别拼接
+                    for(var i=0;i<vm.model.workProgramDtoList.length;i++){
+                        var workProgramDtoList=vm.model.workProgramDtoList;//进行存值
+                        //判断下是否有拟请的专家
+                         if(workProgramDtoList[i].expertDtoList){
+                             var expertDtoList=workProgramDtoList[i].expertDtoList;//进行存值
+                           for(var j=0;j<expertDtoList.length;j++){
+                               //判断下专家是否有专业类别
+                               if(expertDtoList[j].expertTypeDtoList){
+                                   var expertTypeList=expertDtoList[j].expertTypeDtoList;//进行存值
+                                   var major="";//专业
+                                   var expertCategory=""//专业类别
+                                   for(var k=0;k<expertTypeList.length;k++){
+                                       if(expertCategory.indexOf(expertTypeList[k].expertType)<0){
+                                           if(k>0){
+                                               expertCategory+="、"
+                                           }
+                                           expertCategory+=expertTypeList[k].expertType;
+                                       }
+                                       if(k>0){
+                                           major+="、"
+                                       }
+                                       major+=expertTypeList[k].maJorBig+"、"+expertTypeList[k].maJorSmall;
+
+                                   }
+                                   expertDtoList[j].expertCategory=expertCategory;
+                                   expertDtoList[j].major=major;
+                               }
+                           }
+
+                         }
+                    }
+
+
                    /* for (var i = 0; i < vm.model.workProgramDtoList.length; i++) {
                         var reviewStage = vm.model.workProgramDtoList[i].reviewstage;
                         if (reviewStage && reviewStage == '项目建议书') {

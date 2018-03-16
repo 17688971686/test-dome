@@ -181,9 +181,9 @@
                 <td class="text-center">{{x.comPany}}</td>
                 <td class="text-center">{{x.job}}</td>
                 <td class="text-center">{{x.post}}</td>
-                <td class="text-center">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
+                <td class="text-center">{{x.major}}</td>
                 <td class="text-center">{{x.userPhone}}</td>
-                <td class="text-center">{{x.expeRttype}}</td>
+                <td class="text-center">{{x.expertCategory}}</td>
                 <td class="text-center">{{x.remark}}</td>
             </tr>
             <tr>
@@ -224,6 +224,9 @@
     </button>
     <button ng-if="w.workreviveStage=='项目概算'" class="form-control btn-sm btn-primary"
             style="width: 100px; margin: auto;" ng-click="printFile(w.id,'WORKPROGRAM','STAGEBUDGET')">打印预览
+    </button>
+    <button ng-if="w.expertDtoList" class="form-control btn-sm btn-primary"
+            style="width: 120px;"  ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
     </button>
 </div>
 <!-- end 主项目 -->
@@ -437,5 +440,8 @@
     </button>
     <button ng-if="w.workreviveStage=='项目概算'" class="form-control btn-sm btn-primary"
             style="width: 100px; margin: auto;" ng-click="printFile(w.id,'WORKPROGRAM','STAGEBUDGET')">打印预览
+    </button>
+    <button ng-if="w.expertDtoList" class="form-control btn-sm btn-primary"
+            style="width: 100px; margin: auto;" ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
     </button>
 </div>

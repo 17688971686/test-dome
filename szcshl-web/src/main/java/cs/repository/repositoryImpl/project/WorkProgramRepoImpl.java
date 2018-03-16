@@ -13,6 +13,7 @@ import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertTypeDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.AbstractRepository;
@@ -168,6 +169,15 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
                     ExpertDto expertDto = new ExpertDto();
                     el.setPhoto(null);
                     BeanCopierUtils.copyProperties(el,expertDto);
+                    if(Validate.isList(el.getExpertType())){//添加专业类别
+                        List<ExpertTypeDto>  expertTypeDtoList= new ArrayList<ExpertTypeDto>(el.getExpertType().size());
+                        el.getExpertType().forEach(y -> {
+                            ExpertTypeDto expertTypeDto=new ExpertTypeDto();
+                            BeanCopierUtils.copyProperties(y, expertTypeDto);
+                            expertTypeDtoList.add(expertTypeDto);
+                        });
+                        expertDto.setExpertTypeDtoList(expertTypeDtoList);
+                    }
                     expertDtoList.add(expertDto);
                 });
                 workProgramDto.setExpertDtoList(expertDtoList);

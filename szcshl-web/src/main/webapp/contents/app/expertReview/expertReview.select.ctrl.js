@@ -43,6 +43,7 @@
         //刷新已经选择的专家信息
         vm.reFleshSelEPInfo = function(explist) {
             $.each(explist,function(i, obj){
+
                 vm.confirmEPList.push(obj);
                 vm.selectIds.push(obj.expertDto.expertID);
             })
@@ -110,6 +111,30 @@
                 if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
                     $.each(vm.expertReview.expertSelectedDtoList,function(i, sep){
                         vm.selectIds.push(sep.expertDto.expertID);
+                        //判断是否有专业类别
+                        if(sep.expertDto.expertTypeDtoList){
+                            var expertTypeList=sep.expertDto.expertTypeDtoList;
+                            var major="";//专业
+                            var expertCategory=""//专业类别
+                            for(var i=0;i<expertTypeList.length;i++){
+                                if(i>0){
+                                    major+="、"
+                                }
+                                major+=expertTypeList[i].maJorBig+"、"+expertTypeList[i].maJorSmall;
+                                if(expertCategory!=expertTypeList[i].expertType){//如果专业类别一样。只显示一个就行了
+                                    if(i>0){
+                                        expertCategory+="、"
+                                    }
+                                    expertCategory+=expertTypeList[i].expertType;
+                                }
+
+                            }
+                            sep.expertDto.major=major;//专业
+                            sep.expertDto.expertCategory=expertCategory;//专业类别
+                        }else{
+                            sep.expertDto.major="";
+                            sep.expertDto.expertCategory="";
+                        }
                         vm.confirmEPList.push(sep);
                     })
                     if (vm.selectIds.length > 0) {

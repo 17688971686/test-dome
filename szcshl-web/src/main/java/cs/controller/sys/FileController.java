@@ -640,6 +640,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         workData.put("wpTile", "设备清单工作方案");
                         workData.put("wpCode", "QR-4.9-02-A0");
                         file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_HOMELAND_WORKPROGRAM.getKey(), path);
+                    }else if(null != stageType && stageType.equals("INFORMATION")){
+
+                        file = TemplateUtil.createDoc(workData, Constant.Template.INFORMATION.getKey(), path);
                     }
 //                    file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_SUG_WORKPROGRAM.getKey(), path);
                     break;
