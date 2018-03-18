@@ -26,6 +26,8 @@
             savePayment: savePayment,                   // 保存专家费用
             countTaxes: countTaxes,                     // 计算应纳税额
             refleshBusinessEP : refleshBusinessEP,      //刷新业务的专家信息（已经确认和确定参加会议的专家）
+
+            saveNewExpert:saveNewExpert,              //保存新的聘请专家信息
         };
         return service;
 
@@ -617,5 +619,26 @@
                 }
             });
         }//E_refleshBusinessEP
+
+        // S_保存修改过的最新聘请专家信息
+        function saveNewExpert(expertNewInfo,callBack) {
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/expertReview/expertNewInfo",
+                data : expertNewInfo
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess,
+            })
+
+        }
+        // end#saveExpert
     }
 })();

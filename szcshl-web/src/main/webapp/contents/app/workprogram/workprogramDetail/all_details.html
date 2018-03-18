@@ -216,6 +216,7 @@
             </tr>
         </table>
     </div>
+    <div style="margin: auto">
     <button ng-if="w.workreviveStage=='项目建议书'" class="form-control btn-sm btn-primary"
             style="width: 100px; margin: auto;" ng-click="printFile(w.id,'WORKPROGRAM','STAGESUG')">打印预览
     </button>
@@ -226,8 +227,9 @@
             style="width: 100px; margin: auto;" ng-click="printFile(w.id,'WORKPROGRAM','STAGEBUDGET')">打印预览
     </button>
     <button ng-if="w.expertDtoList" class="form-control btn-sm btn-primary"
-            style="width: 120px;"  ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+            style="width: 120px;margin: auto "  ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
     </button>
+    </div>
 </div>
 <!-- end 主项目 -->
 

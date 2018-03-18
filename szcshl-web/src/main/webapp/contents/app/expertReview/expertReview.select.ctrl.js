@@ -701,6 +701,44 @@
             }
         }
 
+        // 交换数组元素
+        var swapItems = function(arr, index1, index2) {
+            arr[index1] = arr.splice(index2, 1, arr[index1])[0];
+            return arr;
+        };
+
+        // 上移
+        vm.upRecord = function(arr, $index) {
+            if($index == 0) {
+                return;
+            }
+            swapItems(arr, $index, $index - 1);
+        };
+
+        // 下移
+        vm.downRecord = function(arr, $index) {
+            if($index == arr.length -1) {
+                return;
+            }
+            swapItems(arr, $index, $index + 1);
+        };
+
+        vm.saveExpert=function () {
+            console.log(vm.confirmEPList);
+            for(var i=0;i<vm.confirmEPList.length;i++){
+                if(vm.confirmEPList[i].isConfrim=="9" && vm.confirmEPList[i].isJoin=="9"){//确认参加的
+                    vm.confirmEPList[i].expertDto.expertNewTypeDtoList=vm.confirmEPList[i].expertDto.expertTypeDtoList;//专家专业
+                    vm.confirmEPList[i].expertDto.businessId=vm.confirmEPList[i].businessId;//工作方案的id
+                     expertReviewSvc.saveNewExpert(vm.confirmEPList[i].expertDto,function (data) {
+
+                     })
+                }
+
+
+            }
+
+
+        }
 
     }
 })();

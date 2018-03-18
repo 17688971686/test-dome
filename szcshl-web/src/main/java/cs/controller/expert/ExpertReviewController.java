@@ -10,6 +10,7 @@ import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertNewInfoDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertReviewService;
@@ -177,6 +178,14 @@ public class ExpertReviewController {
     @ResponseBody
     public ResultMsg saveExpertReviewCostSingle(@RequestBody ExpertReviewDto expertReview) {
         return expertReviewService.saveExpertReviewCost(expertReview);
+    }
+
+    //保存新的专家信息
+    @RequiresAuthentication
+    @RequestMapping(name = "保存新的专家信息", path = "expertNewInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveExpertReviewCostSingle(@RequestBody ExpertNewInfoDto expertNewInfoDto) {
+        return expertReviewService.saveExpertNewInfo(expertNewInfoDto);
     }
 
     // begin#html
