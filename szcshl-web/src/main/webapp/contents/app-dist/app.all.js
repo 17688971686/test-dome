@@ -1161,6 +1161,12 @@
                     controller: 'partyListCtrl',
                     controllerAs: 'vm'
                 })
+                .state('partyMeeting', {//党员会议添加编辑页
+                    url: '/partyMeeting',
+                    templateUrl: rootPath + "/partyManager/html/addPartyMeeting.html",
+                    controller: 'partyMeetingCtrl',
+                    controllerAs: 'vm'
+                })
             // end 党务管理
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
         $rootScope.rootPath = rootPath;
@@ -1212,8 +1218,6 @@
         };
 
         $rootScope.topSelectChange = function (dictKey, dicts, type) {
-            console.log(dictKey);
-            console.log(dicts);
             if (dicts != undefined) {
                 for (var i = 0; i < dicts.length; i++) {
                     //根据code查询
@@ -3701,7 +3705,8 @@
             workName: workName,  //获取流程列表
             QueryStatistics : QueryStatistics , //通过条件，对项目进行查询统计
             signDetails : signDetails ,
-            countDtasks:countDtasks//统计在办项目数量
+            countDtasks:countDtasks,//统计在办项目数量
+            countLine:countLine//在办项目办理情况
 
 
         }
@@ -5152,6 +5157,33 @@
 
         }
 
+        /**
+         * 在办项目统计数量
+         * @param vm
+         */
+        function countLine(callBack){
+
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/signView/dtasksLineSign",
+            }
+
+            var httpSuccess = function success(response){
+
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
+
+        }
+
 
 
     }
@@ -5169,9 +5201,9 @@
         }
     });
 
-    adminWelCome.$inject = ['bsWin','adminSvc'];
+    adminWelCome.$inject = ['bsWin','adminSvc','$state'];
 
-    function adminWelCome(bsWin, adminSvc) {
+    function adminWelCome(bsWin, adminSvc,$state) {
         var vm = this;
         vm.title = '主页';
 
@@ -5257,6 +5289,87 @@
             myChart.setOption(option);
         }//end initHistogram
 
+        /**
+         * 初始化折线图
+         */
+        vm.initLineChart = function () {
+            var myChart = echarts.init(document.getElementById('lineChart'));
+            var option = {
+                title: {
+                    text: '项目办理情况',
+                    subtext: '按签收日期划分',
+                    x: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function (param) {
+                       　//option.series[param[0].seriesIndex].rawdate[param[0].dataIndex]是rawdate传的值
+                        //先进行切割，获取到项目名称
+                        var ssArray=option.series[param[0].seriesIndex].rawdate[param[0].dataIndex].split(",");
+                        var res ='签收日期：'+param[0].name + '<br/>'+'项目名称：'+ ssArray[0]+'<br/>'+param[0].seriesName+'：'+param[0].data;
+
+                        return res;
+                    }
+                },
+
+
+                //设置坐标
+                grid: {
+                    left: '13%',
+                    right: '10%',
+                    bottom: '10%',
+                    containLabel: true,
+                },
+             /*   legend: {
+                 orient: 'vertical',
+                 left: 'left',
+                 data: vm.projectType
+                 },*/
+                xAxis: {
+                    type: 'category',
+                    name: '签收日期',
+                    splitLine: {show: false},
+                    data: vm.reviewdate,
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '剩余工作日',
+                    min: -3,
+                     max: 15,
+                    // interval: 20
+
+                },
+                dataZoom: [{
+                    startValue: '2018-02-01'
+                }, {
+                    type: 'inside'
+                }],
+                series: [
+                    {
+                        name:'剩余工作日',
+                        type:'line',
+                        data: vm.linedatas,
+                        rawdate:vm.name//自定义参数
+                    }
+                ],
+                lineStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0,0,0,0.5)'
+                    }
+                }
+            };
+            myChart.setOption(option);
+            myChart.on('click', function(param) {
+                //进行分割。获取到signid
+                var ssArray=option.series[param.seriesIndex].rawdate[param.dataIndex].split(",");
+                 $state.go('signDetails',{signid: ssArray[1],processInstanceId:ssArray[2]});
+            });
+
+        }//end initLineChart
+
+
 
 
         activate();
@@ -5290,8 +5403,24 @@
                 }
 
                 vm.initHistogram();//初始化柱状图
+            });
+            adminSvc.countLine(function (data) {
+                vm.linedatas=[];
+                vm.reviewdate=[];
+                vm.name=[];
+                for(var i=0;i<data.reObj.length;i++){
+                    if(data.reObj[i].RECEIVEDATE){
+                        vm.linedatas.push(data.reObj[i].SURPLUSDAYS);
+                        var dates=data.reObj[i].RECEIVEDATE.split(" ");//不要00:00:00
+                        vm.reviewdate.push(dates[0]);
+                        //自定义传参，先进行拼接需要的数据。后再拆分
+                        vm.name.push(data.reObj[i].PROJECTNAME+","+data.reObj[i].SIGNID+","+data.reObj[i].PROCESSINSTANCEID);
+                    }
 
-            })
+                }
+                vm.initLineChart();//初始化折线图
+            });
+
         }
 
 
@@ -15455,6 +15584,7 @@
         //刷新已经选择的专家信息
         vm.reFleshSelEPInfo = function(explist) {
             $.each(explist,function(i, obj){
+
                 vm.confirmEPList.push(obj);
                 vm.selectIds.push(obj.expertDto.expertID);
             })
@@ -15522,6 +15652,30 @@
                 if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
                     $.each(vm.expertReview.expertSelectedDtoList,function(i, sep){
                         vm.selectIds.push(sep.expertDto.expertID);
+                        //判断是否有专业类别
+                        if(sep.expertDto.expertTypeDtoList){
+                            var expertTypeList=sep.expertDto.expertTypeDtoList;
+                            var major="";//专业
+                            var expertCategory=""//专业类别
+                            for(var i=0;i<expertTypeList.length;i++){
+                                if(i>0){
+                                    major+="、"
+                                }
+                                major+=expertTypeList[i].maJorBig+"、"+expertTypeList[i].maJorSmall;
+                                if(expertCategory!=expertTypeList[i].expertType){//如果专业类别一样。只显示一个就行了
+                                    if(i>0){
+                                        expertCategory+="、"
+                                    }
+                                    expertCategory+=expertTypeList[i].expertType;
+                                }
+
+                            }
+                            sep.expertDto.major=major;//专业
+                            sep.expertDto.expertCategory=expertCategory;//专业类别
+                        }else{
+                            sep.expertDto.major="";
+                            sep.expertDto.expertCategory="";
+                        }
                         vm.confirmEPList.push(sep);
                     })
                     if (vm.selectIds.length > 0) {
@@ -16189,10 +16343,28 @@
                     width: 100,
                     filterable: false
                 }, {
-                    field: "expertSort",
+                    field: "",
                     title: "专家类别",
                     width: 100,
-                    filterable: false
+                    template : function(item) {
+                        if(item.expertTypeDtoList){
+                            var expertTypeList=item.expertTypeDtoList;
+                            var expertSortName="";
+                            for(var i=0;i<expertTypeList.length;i++){
+                                if(expertSortName!=expertTypeList[i].expertType){
+                                    if(i>0){
+                                        expertSortName+="、"
+                                    }
+                                    expertSortName+=expertTypeList[i].expertType;
+                                }
+
+                            }
+                            return expertSortName;
+                        }else{
+                            return "";
+                        }
+                    }
+
                 }
             ];
             return columns;
@@ -28581,9 +28753,9 @@
 
     angular.module('app').factory('partySvc', party);
 
-    party.$inject = ['$http', '$state' , 'bsWin'];
+    party.$inject = ['$http', '$state' , 'bsWin' , '$rootScope'];
 
-    function party($http, $state , bsWin) {
+    function party($http, $state , bsWin , $rootScope) {
 
         var service = {
             createParty : createParty,  //保存党员信息
@@ -28704,10 +28876,21 @@
                     filterable: false,
                 },
                 {
-                    field: "pmNation",
+                    field: "",
                     title: "民族",
                     width: 50,
                     filterable: false,
+                    template :function(item){
+                        var pmNation = "";
+                        for(var i =0 ; i < $rootScope.DICT.NATION.dicts.length ; i++){
+                            var v = $rootScope.DICT.NATION.dicts[i];
+                            if(item.pmNation == v.dictKey){
+                                pmNation =  v.dictName;
+                                break;
+                            }
+                        }
+                        return pmNation;
+                    }
                 },
                 {
                     field: "pmEducation",
@@ -28885,6 +29068,26 @@
             vm.gridOptions.dataSource.read();
         }
 
+
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('partyMeetingCtrl', partyMeeting);
+
+    partyMeeting.$inject = ['partySvc' , 'bsWin' , 'sharingPlatlformSvc'];
+
+    function partyMeeting(partySvc , bsWin , sharingPlatlformSvc) {
+        var vm = this;
+        vm.title = '党员会议添加';        		//标题
+        vm.party = {};
+
+        active();
+        function active(){
+            sharingPlatlformSvc.initOrgAndUser(vm);
+        }
 
     }
 })();
@@ -34156,6 +34359,41 @@
 
                         vm.showTotalInvestment = true;
                     }
+
+                    //进行专家的专业类别拼接
+                    for(var i=0;i<vm.model.workProgramDtoList.length;i++){
+                        var workProgramDtoList=vm.model.workProgramDtoList;//进行存值
+                        //判断下是否有拟请的专家
+                         if(workProgramDtoList[i].expertDtoList){
+                             var expertDtoList=workProgramDtoList[i].expertDtoList;//进行存值
+                           for(var j=0;j<expertDtoList.length;j++){
+                               //判断下专家是否有专业类别
+                               if(expertDtoList[j].expertTypeDtoList){
+                                   var expertTypeList=expertDtoList[j].expertTypeDtoList;//进行存值
+                                   var major="";//专业
+                                   var expertCategory=""//专业类别
+                                   for(var k=0;k<expertTypeList.length;k++){
+                                       if(expertCategory.indexOf(expertTypeList[k].expertType)<0){
+                                           if(k>0){
+                                               expertCategory+="、"
+                                           }
+                                           expertCategory+=expertTypeList[k].expertType;
+                                       }
+                                       if(k>0){
+                                           major+="、"
+                                       }
+                                       major+=expertTypeList[k].maJorBig+"、"+expertTypeList[k].maJorSmall;
+
+                                   }
+                                   expertDtoList[j].expertCategory=expertCategory;
+                                   expertDtoList[j].major=major;
+                               }
+                           }
+
+                         }
+                    }
+
+
                    /* for (var i = 0; i < vm.model.workProgramDtoList.length; i++) {
                         var reviewStage = vm.model.workProgramDtoList[i].reviewstage;
                         if (reviewStage && reviewStage == '项目建议书') {

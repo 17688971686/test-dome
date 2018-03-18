@@ -1218,8 +1218,6 @@
         };
 
         $rootScope.topSelectChange = function (dictKey, dicts, type) {
-            console.log(dictKey);
-            console.log(dicts);
             if (dicts != undefined) {
                 for (var i = 0; i < dicts.length; i++) {
                     //根据code查询
