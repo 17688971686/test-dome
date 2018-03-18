@@ -9,6 +9,7 @@ import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertNewInfoDto;
 import cs.model.expert.ExpertReviewDto;
 import cs.model.expert.ExpertSelectedDto;
 import cs.repository.odata.ODataObj;
@@ -53,6 +54,14 @@ public interface ExpertReviewService {
     void saveExpertReviewCost(ExpertReviewDto[]  expertReviews);
 
 	ResultMsg saveExpertReviewCost(ExpertReviewDto  expertReview);
+
+	/**
+	 * 保存最新的专家信息
+	 * @param expertNewInfoDto
+	 * @return
+	 */
+
+	ResultMsg saveExpertNewInfo(ExpertNewInfoDto expertNewInfoDto);
 
 	/**
 	 * 查询专家评审费超期发放的信息

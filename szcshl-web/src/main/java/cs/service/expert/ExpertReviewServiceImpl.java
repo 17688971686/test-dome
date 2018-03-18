@@ -10,9 +10,7 @@ import cs.model.expert.*;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
-import cs.repository.repositoryImpl.expert.ExpertRepo;
-import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
+import cs.repository.repositoryImpl.expert.*;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import org.apache.log4j.Logger;
@@ -26,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Description: 专家评审 业务操作实现类 author: ldm Date: 2017-5-17 14:02:25
@@ -46,6 +41,11 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     @Autowired
     private WorkProgramRepo workProgramRepo;
+    @Autowired
+    private ExpertNewInfoRepo expertNewInfoRepo;
+
+    @Autowired
+    private ExpertNewTypeRepo expertNewTypeRepo;
 
 
     @Override
@@ -515,6 +515,49 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     @Transactional
     public void save(ExpertReview expertReview) {
         expertReviewRepo.save(expertReview);
+    }
+
+    @Override
+    public ResultMsg saveExpertNewInfo(ExpertNewInfoDto expertNewInfoDto) {
+        //Criteria 查询
+        Criteria criteria = expertNewInfoRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(ExpertNewInfo_.businessId.getName(),expertNewInfoDto.getBusinessId()));
+        List<ExpertNewInfo> resultList = criteria.list();//根据业务id去查询。看下是否有新的专家信息
+        if(Validate.isList(resultList)){
+            resultList.forEach(expertNewInfo-> {
+                if(Validate.isList(expertNewInfo.getExpertNewType())){//查询是否有最新的专业修改了
+                    expertNewInfo.getExpertNewType().forEach(expertNewType-> {
+                         expertNewTypeRepo.delete(expertNewType);//把存在的最新专业给清除
+
+                    });
+                }
+                expertNewInfoRepo.delete(expertNewInfo);//把前面存过的最新专家信息给删除掉。
+
+            });
+        }
+        //保存最新的专家信息
+        ExpertNewInfo expertNewInfo=new ExpertNewInfo();
+        BeanCopierUtils.copyPropertiesIgnoreNull(expertNewInfoDto,expertNewInfo);
+        expertNewInfo.setExpertNewInfoId(UUID.randomUUID().toString());
+        expertNewInfoRepo.save(expertNewInfo);//保存新的专家信息
+        if(Validate.isList(expertNewInfoDto.getExpertNewTypeDtoList())){//保存新的专家专业
+            for(ExpertNewTypeDto expertNewTypeDto:expertNewInfoDto.getExpertNewTypeDtoList()){
+                ExpertNewType expertNewType=new ExpertNewType();
+                BeanCopierUtils.copyPropertiesIgnoreNull(expertNewTypeDto,expertNewType);
+                //ExpertNewInfo expertNewInfos=expertNewInfoRepo.findById(ExpertNewInfo_.expertNewInfoId.getName(),expertNewInfo.getExpertNewInfoId());
+                expertNewType.setExpertNewInfo(expertNewInfo);//专家信息的关联
+                expertNewType.setId(UUID.randomUUID().toString());
+                expertNewType.setModifiedBy(SessionUtil.getDisplayName());
+                expertNewType.setModifiedDate(new Date());
+                expertNewType.setCreatedBy(SessionUtil.getDisplayName());
+                expertNewType.setCreatedDate(new Date());
+                expertNewTypeRepo.save(expertNewType);//保存最新专业
+            }
+        }
+
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+
+
     }
 
 }
