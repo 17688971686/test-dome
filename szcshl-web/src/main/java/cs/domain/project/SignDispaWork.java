@@ -158,6 +158,12 @@ public class SignDispaWork {
      */
     @Column
     private String projectType;
+    /**
+     * 项目类别(小类)
+     */
+    @Column
+    private String projectSubType;
+
 
     /**
      * 评审方式
@@ -751,5 +757,13 @@ public class SignDispaWork {
 
     public void setIsProjectStop(String isProjectStop) {
         this.isProjectStop = isProjectStop;
+    }
+
+    public String getProjectSubType() {
+        return projectSubType;
+    }
+
+    public void setProjectSubType(String projectSubType) {
+        this.projectSubType = projectSubType;
     }
 }

@@ -33,14 +33,15 @@
         }
 
         //S_查询预定人
-        function findAllUsers(vm) {
+        function findAllUsers(vm,callBack) {
             var httpOptions = {
                 method: 'get',
                 url: common.format(url_user + "/findAllUsers")
             }
             var httpSuccess = function success(response) {
-                vm.userlist = {};
-                vm.userlist = response.data;
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             }
             common.http({
                 vm: vm,
