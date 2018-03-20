@@ -69,9 +69,27 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                 for(int i = 0 ; i<objctList.size() ; i++){
                     Object[] obj = objctList.get(i);
 
-                    Object[] value = {((BigDecimal) obj[1] ) == null ? 0 : ((BigDecimal) obj[1]).divide(new BigDecimal(10000)) ,
-                            ((BigDecimal) obj[2] ) == null ? 0 : ((BigDecimal) obj[2]).divide(new BigDecimal(10000)) ,
-                            obj[3] == null ? 0 : obj[3]}; //[申报金额，审定金额，数目]
+                    double appalyinvestment = ((BigDecimal) obj[1] ) == null ? 0 : ((BigDecimal) obj[1]).divide(new BigDecimal(10000)).doubleValue();
+
+                    double authorizeValue = ((BigDecimal) obj[2] ) == null ? 0 : ((BigDecimal) obj[2]).divide(new BigDecimal(10000)).doubleValue();
+
+                    int num = obj[3] == null ? 0 : new BigDecimal(obj[3].toString()).intValue();
+
+                    double ratio = 0; //审定/申报比例
+
+                    double extraRate = 0;//核减（增）率
+
+                    if(appalyinvestment != 0){
+
+                        ratio =Integer.valueOf( String.format("%.00f" , authorizeValue/appalyinvestment *100) );
+
+                    }
+
+                    if(authorizeValue != 0 ){
+                        extraRate =Integer.valueOf( String.format("%.00f" , (appalyinvestment - authorizeValue)/appalyinvestment *100) );
+                    }
+
+                    Object[] value = {appalyinvestment , authorizeValue , num  , ratio , extraRate}; //[申报金额，审定金额，数目 , 审定/申报 ， 核减（增率）]
                     if((Constant.STAGE_SUG).equals((String)obj[0])){
                         map.put( Constant.STAGE_SUG , value);
                     }else if((Constant.STAGE_STUDY).equals((String)obj[0])){
