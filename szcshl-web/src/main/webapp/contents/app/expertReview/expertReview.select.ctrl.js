@@ -12,6 +12,7 @@
         vm.customCondition = new Array();
         vm.expertReview = {};                 //评审方案对象
         vm.confirmEPList = [];                //拟聘请专家列表（已经经过确认的专家）
+        vm.confirmEPListReplace = [];                //已经调整过的聘请专家列表（已经经过确认的专家）
         vm.matchEPMap = {};                   //保存符合条件的专家信息
         vm.selectIds = [],                    //已经抽取的专家信息ID（用于排除查询）
         vm.autoSelectedEPList = [];           //抽取结果列表，抽取方法在后面封装
@@ -20,6 +21,7 @@
         vm.businessType = $state.params.businessType;   //专家业务类型
         var expertID = $state.params.expertID;   //专家ID
         vm.isSuperUser = isSuperUser;
+
         //S 查看专家详细
         vm.findExportDetail = function (id) {
             expertSvc.getExpertById(id, function (data) {
@@ -71,6 +73,13 @@
                         epObj.isJoin = state;
                     }
                 })
+                if(vm.confirmEPListReplace.length > 0){
+                    $.each(vm.confirmEPListReplace,function(index, epObj){
+                        if(obj == epObj.id){
+                            epObj.isJoin = state;
+                        }
+                    })
+                }
             })
         }
 
@@ -143,16 +152,25 @@
                         vm.excludeIds = '';
                     }
                 }
+
+                expertReviewSvc.initNewExpertInfo(vm.minBusinessId,function (data) {  //新专家调初始化
+                    $.each(data,function (i,obj1) {
+                        $.each(vm.confirmEPList,function (j,obj2) {
+                            if(obj1.name == obj2.expertDto.name && obj2.isConfrim == '9' ){
+                                vm.confirmEPListReplace.push(obj2);
+                            }
+                        });
+                    })
+                });
             });
         }
+         activate();
+         function activate() {
+             expertReviewSvc.initExpertGrid(vm);
+             vm.init(vm.businessId,vm.minBusinessId);
+         }
 
-        activate();
-        function activate() {
-            expertReviewSvc.initExpertGrid(vm);
-            vm.init(vm.businessId,vm.minBusinessId);
-        }
-
-        //弹出自选专家框
+                     //弹出自选专家框
         vm.showSelfExpertGrid = function () {
             vm.selfExpertOptions.dataSource._skip=0;
             vm.selfExpertOptions.dataSource.read();
@@ -625,6 +643,13 @@
             }).data("kendoWindow").center().open();
         }
 
+        //拟聘请专家信息返回
+        vm.expertBack = function () {
+            $state.go('workprogramEdit', {signid:vm.businessId ,minBusinessId:vm.minBusinessId,businessType:vm.businessType});
+        }
+
+
+
         //未参加改为参加
         vm.updateToJoin = function () {
             var isCheck = $("#notJoinExpertTable input[name='notJoinExpert']:checked");
@@ -712,7 +737,7 @@
             if($index == 0) {
                 return;
             }
-            swapItems(arr, $index, $index - 1);
+            vm.confirmEPListReplace = swapItems(arr, $index, $index - 1);
         };
 
         // 下移
@@ -720,23 +745,19 @@
             if($index == arr.length -1) {
                 return;
             }
-            swapItems(arr, $index, $index + 1);
+            vm.confirmEPListReplace =  swapItems(arr, $index, $index + 1);
         };
 
+        /**
+         * 保存新专家信息
+         */
         vm.saveExpert=function () {
-            console.log(vm.confirmEPList);
-            for(var i=0;i<vm.confirmEPList.length;i++){
-                if(vm.confirmEPList[i].isConfrim=="9" && vm.confirmEPList[i].isJoin=="9"){//确认参加的
-                    vm.confirmEPList[i].expertDto.expertNewTypeDtoList=vm.confirmEPList[i].expertDto.expertTypeDtoList;//专家专业
-                    vm.confirmEPList[i].expertDto.businessId=vm.confirmEPList[i].businessId;//工作方案的id
-                     expertReviewSvc.saveNewExpert(vm.confirmEPList[i].expertDto,function (data) {
-
-                     })
-                }
-
-
+            if(vm.confirmEPListReplace.length > 0){
+                expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
+                });
+            }else{
+                bsWin.alert("请调整专家位置");
             }
-
 
         }
 

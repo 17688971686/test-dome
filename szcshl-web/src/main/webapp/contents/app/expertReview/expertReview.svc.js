@@ -27,10 +27,12 @@
             countTaxes: countTaxes,                     // 计算应纳税额
             refleshBusinessEP : refleshBusinessEP,      //刷新业务的专家信息（已经确认和确定参加会议的专家）
 
-            saveNewExpert:saveNewExpert,              //保存新的聘请专家信息
+            saveNewExpert:saveNewExpert,              //保存新的聘请专家信息,
+            initNewExpertInfo:initNewExpertInfo                         // 初始化调整后的专家信息
         };
         return service;
 
+        
         //S_initReview
         function initReview(businessId,minBusinessId,callBack) {
             var httpOptions = {
@@ -625,7 +627,12 @@
             var httpOptions = {
                 method : 'post',
                 url : rootPath + "/expertReview/expertNewInfo",
-                data : expertNewInfo
+                headers:{
+                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType : "json",
+                data : angular.toJson(expertNewInfo)//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {
@@ -640,5 +647,28 @@
 
         }
         // end#saveExpert
+
+        function initNewExpertInfo(businessId,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/getExpertInfo",
+                params: {
+                    businessId : businessId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError:function () {
+
+                }
+            });
+        }
     }
 })();

@@ -12,6 +12,8 @@ public class ExpertNewInfoDto extends BaseDto {
 
     private String expertNewInfoId;//id
 
+    private String expertID;//专家ID
+
     private String name;//专家姓名
 
     private String comPany;//工作单位
@@ -32,7 +34,7 @@ public class ExpertNewInfoDto extends BaseDto {
      */
     private String isLetterRw;
 
-    private List<ExpertNewTypeDto> expertNewTypeDtoList;
+    private List<ExpertNewTypeDto> expertTypeDtoList;
 
     public String getExpertNewInfoId() {
         return expertNewInfoId;
@@ -106,11 +108,19 @@ public class ExpertNewInfoDto extends BaseDto {
         this.isLetterRw = isLetterRw;
     }
 
-    public List<ExpertNewTypeDto> getExpertNewTypeDtoList() {
-        return expertNewTypeDtoList;
+    public List<ExpertNewTypeDto> getExpertTypeDtoList() {
+        return expertTypeDtoList;
     }
 
-    public void setExpertNewTypeDtoList(List<ExpertNewTypeDto> expertNewTypeDtoList) {
-        this.expertNewTypeDtoList = expertNewTypeDtoList;
+    public void setExpertTypeDtoList(List<ExpertNewTypeDto> expertTypeDtoList) {
+        this.expertTypeDtoList = expertTypeDtoList;
+    }
+
+    public String getExpertID() {
+        return expertID;
+    }
+
+    public void setExpertID(String expertID) {
+        this.expertID = expertID;
     }
 }

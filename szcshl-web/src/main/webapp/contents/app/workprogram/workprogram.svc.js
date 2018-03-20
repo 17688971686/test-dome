@@ -285,13 +285,13 @@
                 method: 'post',
                 url: rootPath + "/workprogram/html/initWorkProgram",
                 params: {
-                    signId: vm.work.signId,
+                    signId: vm.work.signId
                 }
             }
+
             var httpSuccess = function success(response) {
                 if (response.data != null && response.data != "") {
                     vm.work = response.data.eidtWP;
-
                     //如果没有赋值，则初始化一种类型，否则按照默认的类型
                     //因为合并评审次项目是不可以修改的
                     if(!vm.work.reviewType){
@@ -306,6 +306,37 @@
                         if (!vm.work.expertCost || vm.work.expertCost < 1000 * (vm.work.expertDtoList.length)) {
                             vm.work.expertCost = 1000 * (vm.work.expertDtoList.length);
                         }
+                        //进行专家的专业类别拼接
+                        //    var workProgramDtoList = vm.work.expertDtoList;//进行存值
+                            //判断下是否有拟请的专家
+                            if(vm.work.expertDtoList){
+                                var expertDtoList=vm.work.expertDtoList;//进行存值
+                                for(var j=0;j<expertDtoList.length;j++){
+                                    //判断下专家是否有专业类别
+                                    if(expertDtoList[j].expertTypeDtoList){
+                                        var expertTypeList=expertDtoList[j].expertTypeDtoList;//进行存值
+                                        var major="";//专业
+                                        var expertCategory=""//专业类别
+                                        for(var k=0;k<expertTypeList.length;k++){
+                                            if(expertCategory.indexOf(expertTypeList[k].expertType)<0){
+                                                if(k>0){
+                                                    expertCategory+="、"
+                                                }
+                                                expertCategory+=expertTypeList[k].expertType;
+                                            }
+                                            if(k>0){
+                                                major+="、"
+                                            }
+                                            major+=expertTypeList[k].maJorBig+"、"+expertTypeList[k].maJorSmall;
+
+                                        }
+                                        expertDtoList[j].expertCategory=expertCategory;
+                                        expertDtoList[j].major=major;
+                                    }
+                                }
+
+                            }
+
                     }
                     vm.model.workProgramDtoList = {};
                     //如果存在多个分支的情况，则显示项目总投资

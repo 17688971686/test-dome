@@ -505,6 +505,27 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         return expertDtoList;
     }
 
+    /**
+     * 后去新专家信息
+     * @param businessId
+     * @return
+     */
+    @Override
+    public List<ExpertNewInfoDto> getExpertInfo(String businessId) {
+        List<ExpertNewInfoDto> expertDtoList = new ArrayList<>();
+        List<ExpertNewInfo> expertList = expertNewInfoRepo.findByBusinessId(businessId);
+        if(Validate.isList(expertList)){
+            expertList.forEach( el ->{
+                ExpertNewInfoDto expertDto = new ExpertNewInfoDto();
+               // el.setPhoto(null);
+                BeanCopierUtils.copyProperties(el,expertDto);
+                expertDtoList.add(expertDto);
+            });
+        }
+        return expertDtoList;
+    }
+
+
     @Override
     @Transactional
     public List<ExpertReview> queryUndealReview() {
@@ -518,45 +539,46 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     }
 
     @Override
-    public ResultMsg saveExpertNewInfo(ExpertNewInfoDto expertNewInfoDto) {
-        //Criteria 查询
-        Criteria criteria = expertNewInfoRepo.getExecutableCriteria();
-        criteria.add(Restrictions.eq(ExpertNewInfo_.businessId.getName(),expertNewInfoDto.getBusinessId()));
-        List<ExpertNewInfo> resultList = criteria.list();//根据业务id去查询。看下是否有新的专家信息
-        if(Validate.isList(resultList)){
-            resultList.forEach(expertNewInfo-> {
-                if(Validate.isList(expertNewInfo.getExpertNewType())){//查询是否有最新的专业修改了
-                    expertNewInfo.getExpertNewType().forEach(expertNewType-> {
-                         expertNewTypeRepo.delete(expertNewType);//把存在的最新专业给清除
-
-                    });
-                }
-                expertNewInfoRepo.delete(expertNewInfo);//把前面存过的最新专家信息给删除掉。
-
-            });
-        }
-        //保存最新的专家信息
-        ExpertNewInfo expertNewInfo=new ExpertNewInfo();
-        BeanCopierUtils.copyPropertiesIgnoreNull(expertNewInfoDto,expertNewInfo);
-        expertNewInfo.setExpertNewInfoId(UUID.randomUUID().toString());
-        expertNewInfoRepo.save(expertNewInfo);//保存新的专家信息
-        if(Validate.isList(expertNewInfoDto.getExpertNewTypeDtoList())){//保存新的专家专业
-            for(ExpertNewTypeDto expertNewTypeDto:expertNewInfoDto.getExpertNewTypeDtoList()){
-                ExpertNewType expertNewType=new ExpertNewType();
-                BeanCopierUtils.copyPropertiesIgnoreNull(expertNewTypeDto,expertNewType);
-                //ExpertNewInfo expertNewInfos=expertNewInfoRepo.findById(ExpertNewInfo_.expertNewInfoId.getName(),expertNewInfo.getExpertNewInfoId());
-                expertNewType.setExpertNewInfo(expertNewInfo);//专家信息的关联
-                expertNewType.setId(UUID.randomUUID().toString());
-                expertNewType.setModifiedBy(SessionUtil.getDisplayName());
-                expertNewType.setModifiedDate(new Date());
-                expertNewType.setCreatedBy(SessionUtil.getDisplayName());
-                expertNewType.setCreatedDate(new Date());
-                expertNewTypeRepo.save(expertNewType);//保存最新专业
+    public ResultMsg saveExpertNewInfo(ExpertReviewNewInfoDto[] expertReviewNewInfoDtos) {
+        try{
+            if(expertReviewNewInfoDtos.length > 0){
+                expertNewTypeRepo.deleteById("businessId",expertReviewNewInfoDtos[0].getBusinessId());
+                expertNewInfoRepo.deleteById("businessId",expertReviewNewInfoDtos[0].getBusinessId());
             }
+            for(int i = 0 ; i < expertReviewNewInfoDtos.length; i++ ){
+                ExpertNewInfoDto expertNewInfoDto =  expertReviewNewInfoDtos[i].getExpertDto();
+                expertNewInfoDto.setBusinessId(expertReviewNewInfoDtos[i].getBusinessId());
+                Criteria criteria = expertNewInfoRepo.getExecutableCriteria();
+                criteria.add(Restrictions.eq(ExpertNewInfo_.businessId.getName(),expertNewInfoDto.getBusinessId()));
+
+                //保存最新的专家信息
+                ExpertNewInfo expertNewInfo=new ExpertNewInfo();
+                BeanCopierUtils.copyPropertiesIgnoreNull(expertNewInfoDto,expertNewInfo);
+                expertNewInfo.setExpertNewInfoId(UUID.randomUUID().toString());
+                expertNewInfo.setCreatedDate(new Date());
+                expertNewInfo.setModifiedDate(new Date());
+                expertNewInfoRepo.save(expertNewInfo);//保存新的专家信息
+                if(Validate.isList(expertNewInfoDto.getExpertTypeDtoList())){//保存新的专家专业
+                    for(ExpertNewTypeDto expertNewTypeDto:expertNewInfoDto.getExpertTypeDtoList()){
+                        ExpertNewType expertNewType=new ExpertNewType();
+                        BeanCopierUtils.copyPropertiesIgnoreNull(expertNewTypeDto,expertNewType);
+                        expertNewType.setExpertNewInfo(expertNewInfo);//专家信息的关联
+                        expertNewType.setId(UUID.randomUUID().toString());
+                        expertNewType.setBusinessId(expertNewInfoDto.getBusinessId());
+                        expertNewType.setModifiedBy(SessionUtil.getDisplayName());
+                        expertNewType.setModifiedDate(new Date());
+                        expertNewType.setCreatedBy(SessionUtil.getDisplayName());
+                        expertNewType.setCreatedDate(new Date());
+                        expertNewTypeRepo.save(expertNewType);//保存最新专业
+                    }
+                }
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败！");
         }
-
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
-
 
     }
 

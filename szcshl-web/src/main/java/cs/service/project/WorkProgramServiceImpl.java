@@ -148,11 +148,12 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         }
     }
 
+
     /**
      * 根据收文ID初始化 用户待处理的工作方案
      */
     @Override
-    public Map<String, Object> initWorkProgram(String signId) {
+    public Map<String, Object> initWorkProgram(String signId,String isShowNewExpert) {
         Map<String, Object> resultMap = new HashMap<>();
         WorkProgramDto workProgramDto = new WorkProgramDto();
 
@@ -185,7 +186,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         BeanCopierUtils.copyProperties(mainW,mainWPDto);
                         workProgramDto.setMainWorkProgramDto(mainWPDto);
                     }
-                    workProgramRepo.initWPMeetingExp(workProgramDto, wp);
+                        workProgramRepo.initWPMeetingExp(workProgramDto, wp);
+
                     isHaveCurUserWP = true;
                 } else {
                     WorkProgramDto wpDto = new WorkProgramDto();

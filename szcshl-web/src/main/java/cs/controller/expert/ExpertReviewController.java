@@ -1,32 +1,27 @@
 package cs.controller.expert;
 
 import cs.ahelper.IgnoreAnnotation;
-import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.expert.Expert;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertNewInfoDto;
 import cs.model.expert.ExpertReviewDto;
+import cs.model.expert.ExpertReviewNewInfoDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertReviewService;
 import cs.service.expert.ExpertSelConditionService;
 import cs.service.expert.ExpertSelectedService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -184,8 +179,15 @@ public class ExpertReviewController {
     @RequiresAuthentication
     @RequestMapping(name = "保存新的专家信息", path = "expertNewInfo", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg saveExpertReviewCostSingle(@RequestBody ExpertNewInfoDto expertNewInfoDto) {
-        return expertReviewService.saveExpertNewInfo(expertNewInfoDto);
+    public  ResultMsg saveExpertReviewCostSingle(@RequestBody ExpertReviewNewInfoDto[] expertReviewNewInfoDtos) {
+        return  expertReviewService.saveExpertNewInfo(expertReviewNewInfoDtos);
+    }
+    //保存新的专家信息
+    @RequiresAuthentication
+    @RequestMapping(name = "获取新的专家信息", path = "getExpertInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public  List<ExpertNewInfoDto> getExpertInfo(@RequestParam(required = true) String businessId) {
+        return  expertReviewService.getExpertInfo(businessId);
     }
 
     // begin#html

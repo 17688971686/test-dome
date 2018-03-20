@@ -3,11 +3,9 @@ package cs.repository.repositoryImpl.project;
 import cs.common.Constant;
 import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertNewInfo;
 import cs.domain.expert.ExpertSelected_;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
@@ -17,11 +15,11 @@ import cs.model.expert.ExpertTypeDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.AbstractRepository;
+import cs.repository.repositoryImpl.expert.ExpertNewInfoRepo;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.type.DateType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -38,6 +36,8 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
     private RoomBookingRepo roomBookingRepo;
     @Autowired
     private ExpertRepo expertRepo;
+    @Autowired
+    private ExpertNewInfoRepo expertNewInfoRepo;
     /**
      * 根据收文编号，查询对应工作方案
      * @param signId
@@ -162,7 +162,13 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
                 workProgramDto.setRoomBookingDtos(roomBookingDtos);
             }
             //2、拟聘请专家
-            List<Expert> expertList = expertRepo.findByBusinessId(wp.getId());
+            List<Expert> expertList = null;
+            List<ExpertNewInfo> expertNewList = null;
+            expertNewList = expertNewInfoRepo.findByBusinessId(wp.getId());
+            if(expertNewList.size() > 0 ){ //从新专家信息表查
+            }else{
+              expertList = expertRepo.findByBusinessId(wp.getId());
+            }
             if(Validate.isList(expertList)){
                 List<ExpertDto> expertDtoList = new ArrayList<>(expertList.size());
                 expertList.forEach( el ->{
@@ -181,7 +187,26 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
                     expertDtoList.add(expertDto);
                 });
                 workProgramDto.setExpertDtoList(expertDtoList);
+            }else if(Validate.isList(expertNewList)){
+                List<ExpertDto> expertDtoList = new ArrayList<>(expertNewList.size());
+                expertNewList.forEach( el ->{
+                    ExpertDto expertDto = new ExpertDto();
+                   // el.setPhoto(null);
+                    BeanCopierUtils.copyProperties(el,expertDto);
+                    if(Validate.isList(el.getExpertType())){//添加专业类别
+                        List<ExpertTypeDto>  expertTypeDtoList= new ArrayList<ExpertTypeDto>(el.getExpertType().size());
+                        el.getExpertType().forEach(y -> {
+                            ExpertTypeDto expertTypeDto=new ExpertTypeDto();
+                            BeanCopierUtils.copyProperties(y, expertTypeDto);
+                            expertTypeDtoList.add(expertTypeDto);
+                        });
+                        expertDto.setExpertTypeDtoList(expertTypeDtoList);
+                    }
+                    expertDtoList.add(expertDto);
+                });
+                workProgramDto.setExpertDtoList(expertDtoList);
             }
+
         }
     }
 

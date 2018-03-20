@@ -18,9 +18,10 @@ public interface WorkProgramService {
      */
     ResultMsg save(WorkProgramDto workProgramDto, Boolean isNeedWorkProgram);
 
-    Map<String,Object> initWorkProgram(String signId);
+    Map<String,Object> initWorkProgram(String signId,String isShowNewExpert);
 
     Map<String,Object> workMaintainList(String signId);
+
 
 
     /**

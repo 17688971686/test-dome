@@ -16,6 +16,8 @@ public class ExpertNewType extends DomainBase {
     @Id
     private String id;
 
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String businessId;
 
     @Column(columnDefinition = "VARCHAR(300)")
     private String expertType;//专家类别
@@ -69,5 +71,13 @@ public class ExpertNewType extends DomainBase {
 
     public void setExpertNewInfo(ExpertNewInfo expertNewInfo) {
         this.expertNewInfo = expertNewInfo;
+    }
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
     }
 }

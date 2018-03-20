@@ -496,7 +496,7 @@
 
                 //begin#workprogram
                 .state('workprogramEdit', {
-                    url: '/workprogramEdit/:signid/:isControl',//isControl控制按钮的显示
+                    url: '/workprogramEdit/:signid/:isControl/:minBusinessId/:businessType',//isControl控制按钮的显示
                     templateUrl: rootPath + '/workprogram/html/edit.html',
                     controller: 'workprogramEditCtrl',
                     controllerAs: 'vm'
@@ -1222,15 +1222,12 @@
                 for (var i = 0; i < dicts.length; i++) {
                     //根据code查询
                     if (type && type == "code") {
-
                         if (dicts[i].dictCode == dictKey) {
-                            console.log(1);
                             return dicts[i].dicts;
                         }
                         //默认根据name查询
                     } else {
                         if (dicts[i].dictName == dictKey) {
-                            console.log(2);
                             return dicts[i].dicts;
                         }
                     }
@@ -15553,6 +15550,7 @@
         vm.customCondition = new Array();
         vm.expertReview = {};                 //评审方案对象
         vm.confirmEPList = [];                //拟聘请专家列表（已经经过确认的专家）
+        vm.confirmEPListReplace = [];                //已经调整过的聘请专家列表（已经经过确认的专家）
         vm.matchEPMap = {};                   //保存符合条件的专家信息
         vm.selectIds = [],                    //已经抽取的专家信息ID（用于排除查询）
         vm.autoSelectedEPList = [];           //抽取结果列表，抽取方法在后面封装
@@ -15612,6 +15610,13 @@
                         epObj.isJoin = state;
                     }
                 })
+                if(vm.confirmEPListReplace.length > 0){
+                    $.each(vm.confirmEPListReplace,function(index, epObj){
+                        if(obj == epObj.id){
+                            epObj.isJoin = state;
+                        }
+                    })
+                }
             })
         }
 
@@ -15684,16 +15689,25 @@
                         vm.excludeIds = '';
                     }
                 }
+
+                expertReviewSvc.initNewExpertInfo(vm.minBusinessId,function (data) {  //新专家调初始化
+                    $.each(data,function (i,obj1) {
+                        $.each(vm.confirmEPList,function (j,obj2) {
+                            if(obj1.name == obj2.expertDto.name && obj2.isConfrim == '9' ){
+                                vm.confirmEPListReplace.push(obj2);
+                            }
+                        });
+                    })
+                });
             });
         }
+         activate();
+         function activate() {
+             expertReviewSvc.initExpertGrid(vm);
+             vm.init(vm.businessId,vm.minBusinessId);
+         }
 
-        activate();
-        function activate() {
-            expertReviewSvc.initExpertGrid(vm);
-            vm.init(vm.businessId,vm.minBusinessId);
-        }
-
-        //弹出自选专家框
+                     //弹出自选专家框
         vm.showSelfExpertGrid = function () {
             vm.selfExpertOptions.dataSource._skip=0;
             vm.selfExpertOptions.dataSource.read();
@@ -16166,6 +16180,13 @@
             }).data("kendoWindow").center().open();
         }
 
+        //拟聘请专家信息返回
+        vm.expertBack = function () {
+            $state.go('workprogramEdit', {signid:vm.businessId ,minBusinessId:vm.minBusinessId,businessType:vm.businessType});
+        }
+
+
+
         //未参加改为参加
         vm.updateToJoin = function () {
             var isCheck = $("#notJoinExpertTable input[name='notJoinExpert']:checked");
@@ -16242,6 +16263,40 @@
             }
         }
 
+        // 交换数组元素
+        var swapItems = function(arr, index1, index2) {
+            arr[index1] = arr.splice(index2, 1, arr[index1])[0];
+            return arr;
+        };
+
+        // 上移
+        vm.upRecord = function(arr, $index) {
+            if($index == 0) {
+                return;
+            }
+            vm.confirmEPListReplace = swapItems(arr, $index, $index - 1);
+        };
+
+        // 下移
+        vm.downRecord = function(arr, $index) {
+            if($index == arr.length -1) {
+                return;
+            }
+            vm.confirmEPListReplace =  swapItems(arr, $index, $index + 1);
+        };
+
+        /**
+         * 保存新专家信息
+         */
+        vm.saveExpert=function () {
+            if(vm.confirmEPListReplace.length > 0){
+                expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
+                });
+            }else{
+                bsWin.alert("请调整专家位置");
+            }
+
+        }
 
     }
 })();
@@ -16274,6 +16329,9 @@
             savePayment: savePayment,                   // 保存专家费用
             countTaxes: countTaxes,                     // 计算应纳税额
             refleshBusinessEP : refleshBusinessEP,      //刷新业务的专家信息（已经确认和确定参加会议的专家）
+
+            saveNewExpert:saveNewExpert,              //保存新的聘请专家信息,
+            initNewExpertInfo:initNewExpertInfo                         // 初始化调整后的专家信息
         };
         return service;
 
@@ -16865,6 +16923,55 @@
                 }
             });
         }//E_refleshBusinessEP
+
+        // S_保存修改过的最新聘请专家信息
+        function saveNewExpert(expertNewInfo,callBack) {
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/expertReview/expertNewInfo",
+                headers:{
+                    "contentType":"application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType : "json",
+                data : angular.toJson(expertNewInfo)//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http,
+                httpOptions : httpOptions,
+                success : httpSuccess,
+            })
+
+        }
+        // end#saveExpert
+
+        function initNewExpertInfo(businessId,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/expertReview/getExpertInfo",
+                params: {
+                    businessId : businessId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError:function () {
+
+                }
+            });
+        }
     }
 })();
 (function () {
@@ -34292,6 +34399,7 @@
         // vm.workProgramTg = {}; //调概
         active();
         function active() {
+            console.log("sign");
             $('#myTab li').click(function (e) {
                 var aObj = $("a", this);
                 e.preventDefault();
@@ -41968,13 +42076,12 @@
                 method: 'post',
                 url: rootPath + "/workprogram/html/initWorkProgram",
                 params: {
-                    signId: vm.work.signId,
+                    signId: vm.work.signId
                 }
             }
             var httpSuccess = function success(response) {
                 if (response.data != null && response.data != "") {
                     vm.work = response.data.eidtWP;
-
                     //如果没有赋值，则初始化一种类型，否则按照默认的类型
                     //因为合并评审次项目是不可以修改的
                     if(!vm.work.reviewType){
@@ -41989,6 +42096,37 @@
                         if (!vm.work.expertCost || vm.work.expertCost < 1000 * (vm.work.expertDtoList.length)) {
                             vm.work.expertCost = 1000 * (vm.work.expertDtoList.length);
                         }
+                        //进行专家的专业类别拼接
+                        //    var workProgramDtoList = vm.work.expertDtoList;//进行存值
+                            //判断下是否有拟请的专家
+                            if(vm.work.expertDtoList){
+                                var expertDtoList=vm.work.expertDtoList;//进行存值
+                                for(var j=0;j<expertDtoList.length;j++){
+                                    //判断下专家是否有专业类别
+                                    if(expertDtoList[j].expertTypeDtoList){
+                                        var expertTypeList=expertDtoList[j].expertTypeDtoList;//进行存值
+                                        var major="";//专业
+                                        var expertCategory=""//专业类别
+                                        for(var k=0;k<expertTypeList.length;k++){
+                                            if(expertCategory.indexOf(expertTypeList[k].expertType)<0){
+                                                if(k>0){
+                                                    expertCategory+="、"
+                                                }
+                                                expertCategory+=expertTypeList[k].expertType;
+                                            }
+                                            if(k>0){
+                                                major+="、"
+                                            }
+                                            major+=expertTypeList[k].maJorBig+"、"+expertTypeList[k].maJorSmall;
+
+                                        }
+                                        expertDtoList[j].expertCategory=expertCategory;
+                                        expertDtoList[j].major=major;
+                                    }
+                                }
+
+                            }
+
                     }
                     vm.model.workProgramDtoList = {};
                     //如果存在多个分支的情况，则显示项目总投资

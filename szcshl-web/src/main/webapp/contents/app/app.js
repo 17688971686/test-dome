@@ -496,7 +496,7 @@
 
                 //begin#workprogram
                 .state('workprogramEdit', {
-                    url: '/workprogramEdit/:signid/:isControl',//isControl控制按钮的显示
+                    url: '/workprogramEdit/:signid/:isControl/:minBusinessId/:businessType',//isControl控制按钮的显示
                     templateUrl: rootPath + '/workprogram/html/edit.html',
                     controller: 'workprogramEditCtrl',
                     controllerAs: 'vm'
@@ -1222,15 +1222,12 @@
                 for (var i = 0; i < dicts.length; i++) {
                     //根据code查询
                     if (type && type == "code") {
-
                         if (dicts[i].dictCode == dictKey) {
-                            console.log(1);
                             return dicts[i].dicts;
                         }
                         //默认根据name查询
                     } else {
                         if (dicts[i].dictName == dictKey) {
-                            console.log(2);
                             return dicts[i].dicts;
                         }
                     }

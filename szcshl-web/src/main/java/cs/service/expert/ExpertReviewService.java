@@ -8,10 +8,7 @@ import cs.common.ResultMsg;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
-import cs.model.expert.ExpertDto;
-import cs.model.expert.ExpertNewInfoDto;
-import cs.model.expert.ExpertReviewDto;
-import cs.model.expert.ExpertSelectedDto;
+import cs.model.expert.*;
 import cs.repository.odata.ODataObj;
 
 /**
@@ -43,6 +40,9 @@ public interface ExpertReviewService {
      */
     List<Map<String,Object>> getExpertReviewCost(String expertIds, String month);
 
+	//List<Map<String,Object>> getExpertInfo();
+
+
     /**
      * 根据专家评审方案ID和月份获取专家对应月份的评审费
      * @param expertReviewId
@@ -61,7 +61,7 @@ public interface ExpertReviewService {
 	 * @return
 	 */
 
-	ResultMsg saveExpertNewInfo(ExpertNewInfoDto expertNewInfoDto);
+	ResultMsg saveExpertNewInfo( ExpertReviewNewInfoDto[] expertReviewNewInfoDtos);
 
 	/**
 	 * 查询专家评审费超期发放的信息
@@ -77,6 +77,7 @@ public interface ExpertReviewService {
 	 */
     List<ExpertDto> refleshBusinessEP(String businessId);
 
+	List<ExpertNewInfoDto> getExpertInfo(String businessId);
 
 	/**
 	 * 查询超期未办理专家评审费的方法

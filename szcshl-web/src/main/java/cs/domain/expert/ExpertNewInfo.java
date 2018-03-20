@@ -15,6 +15,9 @@ public class ExpertNewInfo extends DomainBase {
     @Id
     private String expertNewInfoId;//id
 
+    @Column(columnDefinition = "varchar(65)")
+    private String expertID;//专家ID
+
     @Column(columnDefinition = "varchar(32) NOT NULL")
     private String name;//专家姓名
 
@@ -42,9 +45,8 @@ public class ExpertNewInfo extends DomainBase {
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String isLetterRw;
-
-    @OneToMany(mappedBy = "expertNewInfo", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<ExpertNewType> expertNewType;//专家类型
+    @OneToMany(targetEntity=ExpertNewType.class ,mappedBy = "expertNewInfo", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<ExpertNewType> expertType;//专家类型
 
     public String getExpertNewInfoId() {
         return expertNewInfoId;
@@ -118,11 +120,19 @@ public class ExpertNewInfo extends DomainBase {
         this.isLetterRw = isLetterRw;
     }
 
-    public List<ExpertNewType> getExpertNewType() {
-        return expertNewType;
+    public List<ExpertNewType> getExpertType() {
+        return expertType;
     }
 
-    public void setExpertNewType(List<ExpertNewType> expertNewType) {
-        this.expertNewType = expertNewType;
+    public void setExpertType(List<ExpertNewType> expertType) {
+        this.expertType = expertType;
+    }
+
+    public String getExpertID() {
+        return expertID;
+    }
+
+    public void setExpertID(String expertID) {
+        this.expertID = expertID;
     }
 }

@@ -30,12 +30,13 @@ public class WorkProgramController {
         return workProgramService.save(workProgramDto, isNeedWorkProgram);
     }
 
+
     @RequiresAuthentication
     //@RequiresPermissions("workprogram#initWorkProgram#post")
     @RequestMapping(name = "初始化工作方案", path = "html/initWorkProgram", method = RequestMethod.POST)
     public @ResponseBody
-    Map<String,Object> initWorkBySignId(@RequestParam(required = true) String signId) {
-        return workProgramService.initWorkProgram(signId);
+    Map<String,Object> initWorkBySignId(@RequestParam(required = true) String signId,String isShowNewExpert) {
+        return workProgramService.initWorkProgram(signId,isShowNewExpert);
     }
 
     @RequiresAuthentication
