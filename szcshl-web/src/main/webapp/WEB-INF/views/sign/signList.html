@@ -11,6 +11,23 @@
         padding:2px;
         cursor:pointer;
     }
+    .form-controls {
+        width: 46.5%;
+        height: 34px;
+       /* padding: 6px 12px;*/
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #000;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        border-radius: 0;
+        box-shadow: none;
+        border-color: #989898;
+    }
 </style>
 
 <!--引入查询统计弹框--->
@@ -70,24 +87,30 @@
                 <tr>
                     <td class="text-right">项目状态</td>
                     <td width="15%">
-                        <select name="signState" ng-model="vm.project.signState" operator="eq"
+                        <select name="processState" ng-model="vm.project.processState" operator="eq"
                                 class="form-control select-sm ">
                             <option value="">请选择</option>
-                            <option value="1">进行中</option>
-                            <option value="2">已暂停</option>
-                            <option value="9">已完成</option>
+                            <option  ng-repeat="x in DICT.SIGN_STATE.dicts" value="{{x.dictKey}}" ng-selected="vm.project.processState==x.dictName" >{{x.dictName}}
+                            </option>
                         </select>
                     </td>
                     <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">项目类型</td>
                     <td width="15%">
-                        <select name="projectType" operator="eq" class="form-control select-sm"
-                                ng-model="vm.project.projectType" >
+                        <select name="projectType" operator="eq" class="form-controls select-sm "
+                                ng-model="vm.project.projectType" ng-change="vm.project.projectTypeDicts = topSelectChange(vm.project.projectType,DICT.PROJECTTYPE.dicts)">
                             <option value="">请选择</option>
                             <option  ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.projectType==x.dictName" >{{x.dictName}}
                             </option>
                         </select>
+                       -
+                        <select ng-model="vm.project.projectSubType" name="projectSubType" class="form-controls select-sm " >
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in vm.project.projectTypeDicts" value="{{x.dictName}}"
+                                    ng-selected="vm.project.projectSubType == x.dictName">{{x.dictName}}
+                            </option>
+                        </select>
                     </td>
-                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">主管部门</td>
+                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">评审部门</td>
                     <td width="15%">
                         <select name="mOrgId" class="form-control select-sm " operator="eq"
                                 ng-model="vm.project.mOrgId">
@@ -107,8 +130,21 @@
                 <tr class="hidetr changeTr">
                     <td class="text-right">项目负责人</td>
                     <td>
-                        <input name="allPriUser" type="text" operator="like" ng-model="vm.project.allPriUser"
-                               class="form-control input-sm "/>
+                    <select class="form-controls select-sm" ng-model="vm.project.displayName" ng-change="vm.project.fztype='全部'" >
+                        <option value="">请选择</option>
+                        <option ng-repeat="r in vm.userlist" value="{{r.displayName}}">{{r.displayName}}</option>
+                    </select>
+                        &nbsp;
+                    <select class="form-controls select-sm" ng-model="vm.project.fztype">
+                        <option value="">请选择</option>
+                        <option value="全部">全部</option>
+                        <option value="第一负责人">第一负责人</option>
+                        <option value="第二负责人">第二负责人</option>
+                    </select>
+                        <input ng-if="vm.project.fztype=='第一负责人'" operator="eq" name="mUserName" value="{{vm.project.displayName}}" hidden/>
+                        <input ng-if="vm.project.fztype=='第二负责人'" operator="like" name="aUserName" value="{{vm.project.displayName}}" hidden/>
+                        <input ng-if="vm.project.fztype=='全部'" operator="like" name="allPriUser"  value="{{vm.project.displayName}}" hidden/>
+                        <input ng-if="vm.project.fztype==' '" operator="like" name="allPriUser"  value="{{vm.project.displayName}}" hidden/>
                     </td>
                     <td class="text-right">秘密等级</td>
                     <td>
@@ -151,13 +187,14 @@
                     </td>
                     <td class="text-right">发文类型</td>
                     <td>
-                        <select operator="eq" name="dispatchType" class="form-control select-sm "
+                        <select operator="eq" name="dispatchType"  class="form-control select-sm "
                                 ng-model="vm.project.dispatchType">
                             <option value="">请选择</option>
                             <option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.dispatchType==x.dictName">{{x.dictName}}
                             </option>
                         </select>
                     </td>
+
                     <td class="text-right">行业类型</td>
                     <td>
                         <select operator="eq" name="industryType" ng-model="vm.project.industryType"
@@ -171,7 +208,7 @@
 
                 <tr class="hidetr changeTr">
                     <td class="text-right">签收日期</td>
-                    <td colspan="3">
+                    <td colspan="2">
                         <input type="text" name="signdate" style="width:45%;min-width: 115px;max-width: 150px;" operator="ge" ng-model="vm.project.signDateBegin"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                         至
@@ -179,13 +216,26 @@
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                     <td class="text-right">发文日期</td>
-                    <td colspan="3">
+                    <td colspan="2">
                         <input type="text" name="dispatchDate"  style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.dispatchDateBegin"
                                operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                         至
                         <input type="text" name="dispatchDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.dispatchdateEnd"
                                operator="le" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
+                    <td class="text-right">提前介入/正常</td>
+                    <td>
+                        <select  ng-model="vm.project.reviewstages"
+                                class="form-control select-sm">
+                            <option value="">请选择</option>
+                            <option value="提前介入">提前介入</option>
+                            <option value="正常">正常</option>
+                        </select>
+                    </td>
+                    <!--进行判断-->
+                    <input ng-if="vm.project.reviewstages=='正常'" name="reviewstage" operator="ne" value="提前介入" hidden/>
+                    <input ng-if="vm.project.reviewstages=='提前介入'" name="reviewstage" operator="eq" value="提前介入" hidden/>
+
                 </tr>
                 <tr class="hidetr changeTr">
                     <td class="text-right">归档日期</td>
@@ -249,6 +299,20 @@
                 </tr>
             </table>
         </form>
+    </div>
+    <!--操作说明提示框-->
+    <div class="label-default" style="width: 100%;padding:5px 10px;">
+        【
+        <span class="label-primary" style="padding:0px 13px;"></span> 已发文
+        <span class="label-success" style="padding:0px 13px;"></span> 已存档
+        】
+        【
+        <span id="span1"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>暂停
+        <span id="span2"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>少于3个工作日
+        <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
+        <span id="span4"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
+        <span id="span5"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>存档超期
+        】
     </div>
     <div id="signGrid" class="grid" kendo-grid="grid" k-options="vm.signListOptions"></div>
 </div>

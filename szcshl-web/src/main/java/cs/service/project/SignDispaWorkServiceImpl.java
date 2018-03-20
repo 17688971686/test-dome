@@ -111,6 +111,30 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     public PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj) {
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
+        for(int i=0;i<odataObj.getFilter().size();i++){
+            //对发文类型的查询
+            if(odataObj.getFilter().get(i).getField().equals("dispatchType")){
+                if(odataObj.getFilter().get(i).getValue().equals("非暂不实施项目")){
+                    //非暂不实施项目=项目发文+退文
+                    criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(),"项目发文"),
+                            Restrictions.eq(SignDispaWork_.dispatchType.getName(),"项目退文") ));
+                }else{
+                    //非退文项目=暂不实施+项目发文
+                    criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(),"项目发文"),
+                            Restrictions.eq(SignDispaWork_.dispatchType.getName(),"暂不实施") ));
+                }
+                odataObj.getFilter().remove(i);//删除前台传过来的条件
+            }
+            //对项目状态进行判断
+            if(odataObj.getFilter().get(i).getField().equals("processState")){
+                if(odataObj.getFilter().get(i).getValue().equals(Constant.EnumState.STOP.getValue())){
+                    odataObj.getFilter().get(i).setField("signState");
+                }
+            }
+
+
+        }
+
         criteria = odataObj.buildFilterToCriteria(criteria);
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);

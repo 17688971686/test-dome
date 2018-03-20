@@ -81,7 +81,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("on e.expertid = a.expertid   ");
         sqlBuilder.append("left join cs_expert_review r  ");
         sqlBuilder.append("on a.expertreviewid = r.id  ");
-        sqlBuilder.append("left join cs_sign s  on r.businessid=s.signid) t  ");
+        sqlBuilder.append("left join (select * from CS_SIGN t where signState <> '7' and signState <> '2' and (ispresign ='9' or ispresign  is null)) s  on r.businessid=s.signid) t  ");
         sqlBuilder.append("where t.expertid is not null  ");
         //todo:添加查询条件
         if(null != expertReviewCondDto){

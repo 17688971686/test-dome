@@ -720,27 +720,6 @@
 
         //begin_getSignList
         function getSignList(vm) {
-            // Begin:dataSource
-     /*       var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/getSignList?$orderby=receivedate", $("#searchform"),{filter: "signState ne 7"}),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "receivedate",
-                    dir: "desc"
-                }
-            });*/
             var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
 
             // End:dataSource
@@ -749,9 +728,53 @@
             var columns = [
                 {
                     field: "",
+                    title: "",
+                    width: 30,
+                    template: function (item) {
+                        switch (item.lightState) {
+                            case "4":          //暂停
+                                return $('#span1').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
+                                break;
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "6":          	//发文超期
+                                return $('#span3').html();
+                                break;
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
+                                break;
+                            case "1":          //在办
+                                return "";
+                                break;
+                            case "2":           //已发文
+                                return "";
+                                break;
+                            case "3":           //已发送存档
+                                return "";
+                                break;
+                            default:
+                                return "";
+                                ;
+                        }
+                    }
+                },
+                {
+                    field: "",
                     title: "序号",
-                    template: "<span class='row-number text-center'></span>",
-                    width: 50
+                    width: 60,
+                    template: function (item) {
+                        if (item.processState && item.processState >= 6 && item.processState <= 7) {
+                            return "<span class='row-number label label-primary'></span>";
+                        } else if (item.processState && item.processState == 9) {
+                            return "<span class='row-number label label-success'></span>";
+                        } else {
+                            return "<span class='row-number'></span>";
+                        }
+                    }
                 },
                 {
                     field: "",

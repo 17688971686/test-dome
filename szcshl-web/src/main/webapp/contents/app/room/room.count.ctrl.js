@@ -24,7 +24,10 @@
             //会议室
             roomCountSvc.roomList(vm);
             //用户
-            roomCountSvc.findAllUsers(vm);
+            roomCountSvc.findAllUsers(vm,function (data) {
+                vm.userlist = {};
+                vm.userlist = data;
+            });
             //部门
             adminSvc.initSignList(function(data){
                 if(data.flag || data.reCode == 'ok'){
