@@ -4,6 +4,7 @@ import cs.model.BaseDto;
 
 import java.util.List;
 
+
 /**
  * Created by Administrator on 2018/3/18.
  * 新的专家聘请信息
@@ -33,6 +34,14 @@ public class ExpertNewInfoDto extends BaseDto {
      * 是否函评
      */
     private String isLetterRw;
+
+    private String expeRttype;
+
+    private String maJorBig;//突出专业（大类）
+
+    private String maJorSmall;//突出专业（小类）
+
+    private String isJoin;
 
     private List<ExpertNewTypeDto> expertTypeDtoList;
 
@@ -122,5 +131,37 @@ public class ExpertNewInfoDto extends BaseDto {
 
     public void setExpertID(String expertID) {
         this.expertID = expertID;
+    }
+
+    public String getExpeRttype() {
+        return expeRttype;
+    }
+
+    public void setExpeRttype(String expeRttype) {
+        this.expeRttype = expeRttype;
+    }
+
+    public String getMaJorBig() {
+        return maJorBig;
+    }
+
+    public void setMaJorBig(String maJorBig) {
+        this.maJorBig = maJorBig;
+    }
+
+    public String getMaJorSmall() {
+        return maJorSmall;
+    }
+
+    public void setMaJorSmall(String maJorSmall) {
+        this.maJorSmall = maJorSmall;
+    }
+
+    public String getIsJoin() {
+        return isJoin;
+    }
+
+    public void setIsJoin(String isJoin) {
+        this.isJoin = isJoin;
     }
 }

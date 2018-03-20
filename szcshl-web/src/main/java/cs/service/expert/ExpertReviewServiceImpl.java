@@ -548,30 +548,31 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             for(int i = 0 ; i < expertReviewNewInfoDtos.length; i++ ){
                 ExpertNewInfoDto expertNewInfoDto =  expertReviewNewInfoDtos[i].getExpertDto();
                 expertNewInfoDto.setBusinessId(expertReviewNewInfoDtos[i].getBusinessId());
-                Criteria criteria = expertNewInfoRepo.getExecutableCriteria();
-                criteria.add(Restrictions.eq(ExpertNewInfo_.businessId.getName(),expertNewInfoDto.getBusinessId()));
-
                 //保存最新的专家信息
                 ExpertNewInfo expertNewInfo=new ExpertNewInfo();
                 BeanCopierUtils.copyPropertiesIgnoreNull(expertNewInfoDto,expertNewInfo);
                 expertNewInfo.setExpertNewInfoId(UUID.randomUUID().toString());
                 expertNewInfo.setCreatedDate(new Date());
                 expertNewInfo.setModifiedDate(new Date());
+                expertNewInfo.setMaJorBig(expertReviewNewInfoDtos[i].getMaJorBig());
+                expertNewInfo.setMaJorSmall(expertReviewNewInfoDtos[i].getMaJorSmall());
+                expertNewInfo.setExpeRttype(expertReviewNewInfoDtos[i].getExpeRttype());
+                expertNewInfo.setIsJoin(expertReviewNewInfoDtos[i].getIsJoin());
+                expertNewInfo.setIsLetterRw(expertReviewNewInfoDtos[i].getIsLetterRw());
                 expertNewInfoRepo.save(expertNewInfo);//保存新的专家信息
-                if(Validate.isList(expertNewInfoDto.getExpertTypeDtoList())){//保存新的专家专业
-                    for(ExpertNewTypeDto expertNewTypeDto:expertNewInfoDto.getExpertTypeDtoList()){
-                        ExpertNewType expertNewType=new ExpertNewType();
-                        BeanCopierUtils.copyPropertiesIgnoreNull(expertNewTypeDto,expertNewType);
-                        expertNewType.setExpertNewInfo(expertNewInfo);//专家信息的关联
-                        expertNewType.setId(UUID.randomUUID().toString());
-                        expertNewType.setBusinessId(expertNewInfoDto.getBusinessId());
-                        expertNewType.setModifiedBy(SessionUtil.getDisplayName());
-                        expertNewType.setModifiedDate(new Date());
-                        expertNewType.setCreatedBy(SessionUtil.getDisplayName());
-                        expertNewType.setCreatedDate(new Date());
-                        expertNewTypeRepo.save(expertNewType);//保存最新专业
-                    }
-                }
+
+                ExpertNewType expertNewType=new ExpertNewType();
+                expertNewType.setExpertNewInfo(expertNewInfo);//专家信息的关联
+                expertNewType.setId(UUID.randomUUID().toString());
+                expertNewType.setMaJorBig(expertReviewNewInfoDtos[i].getMaJorBig());
+                expertNewType.setMaJorSmall(expertReviewNewInfoDtos[i].getMaJorSmall());
+                expertNewType.setExpertType(expertReviewNewInfoDtos[i].getExpeRttype());
+                expertNewType.setBusinessId(expertNewInfoDto.getBusinessId());
+                expertNewType.setModifiedBy(SessionUtil.getDisplayName());
+                expertNewType.setModifiedDate(new Date());
+                expertNewType.setCreatedBy(SessionUtil.getDisplayName());
+                expertNewType.setCreatedDate(new Date());
+                expertNewTypeRepo.save(expertNewType);//保存专家类型
 
             }
         }catch (Exception e){

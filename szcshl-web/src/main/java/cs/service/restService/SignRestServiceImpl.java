@@ -379,6 +379,16 @@ public class SignRestServiceImpl implements SignRestService {
                 if(Validate.isList(fjList)){
                     dataMap.put("tzgsshb", fjList);
                 }
+
+                //评审组名单附件
+                fjList = new ArrayList<HashMap<String, Object>>();
+                checkNameArr = new ArrayList<>();
+                checkNameArr.add("评审组名单");
+                checkNameArr.add("评审组名单");
+                fjList = checkFile(fileList,checkNameArr,sysFileService.getLocalUrl());
+                if(Validate.isList(fjList)){
+                    dataMap.put("pszmd", fjList);
+                }
             }
             params.put("dataMap", JSON.toJSONString(dataMap));
             params.put("dataList", JSON.toJSONString(dataList));

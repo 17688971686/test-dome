@@ -21,6 +21,7 @@
         vm.businessType = $state.params.businessType;   //专家业务类型
         var expertID = $state.params.expertID;   //专家ID
         vm.isSuperUser = isSuperUser;
+        vm.saveNewExpertFlag = 0;   //保存新专家标志
 
         //S 查看专家详细
         vm.findExportDetail = function (id) {
@@ -45,8 +46,10 @@
         //刷新已经选择的专家信息
         vm.reFleshSelEPInfo = function(explist) {
             $.each(explist,function(i, obj){
-
                 vm.confirmEPList.push(obj);
+                if(vm.confirmEPListReplace.length > 0){
+                    vm.confirmEPListReplace.push(obj);
+                }
                 vm.selectIds.push(obj.expertDto.expertID);
             })
             vm.excludeIds = vm.selectIds.join(',');
@@ -59,6 +62,11 @@
                 $.each(vm.confirmEPList,function(index, epObj){
                     if(epObj && obj == epObj.id){
                         vm.confirmEPList.splice(index, 1);
+                    }
+                })
+                $.each(vm.confirmEPListReplace,function(index, epObj){
+                    if(epObj && obj == epObj.id){
+                        vm.confirmEPListReplace.splice(index, 1);
                     }
                 })
             })
@@ -118,6 +126,7 @@
                 vm.expertReview = data;
                 //获取已经抽取的专家
                 if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
+
                     $.each(vm.expertReview.expertSelectedDtoList,function(i, sep){
                         vm.selectIds.push(sep.expertDto.expertID);
                         //判断是否有专业类别
@@ -154,9 +163,14 @@
                 }
 
                 expertReviewSvc.initNewExpertInfo(vm.minBusinessId,function (data) {  //新专家调初始化
-                    $.each(data,function (i,obj1) {
+                  $.each(data,function (i,obj1) {
                         $.each(vm.confirmEPList,function (j,obj2) {
                             if(obj1.name == obj2.expertDto.name && obj2.isConfrim == '9' ){
+                                obj2.maJorBig = obj1.maJorBig;
+                                obj2.maJorSmall = obj1.maJorSmall;
+                                obj2.expeRttype = obj1.expeRttype;
+                                obj2.isJoin = obj1.isJoin;
+                                obj2.isLetterRw = obj1.isLetterRw;
                                 vm.confirmEPListReplace.push(obj2);
                             }
                         });
@@ -187,6 +201,7 @@
 
         //保存自选的专家
         vm.saveSelfExpert = function () {
+            vm.saveNewExpertFlag = '1';
             var selectIds = common.getKendoCheckId('#selfExpertGrid');
             if (selectIds.length == 0) {
                 bsWin.alert("请先选择专家！");
@@ -219,6 +234,7 @@
 
         //删除自选专家
         vm.delertSelfExpert = function () {
+            vm.saveNewExpertFlag = '1';
             var isCheck = $("input[name='seletedEp']:checked");
             if (isCheck.length < 1) {
                 bsWin.alert("请选择要删除的专家");
@@ -268,6 +284,7 @@
 
         //删除选择的境外专家
         vm.delertOutSelfExpert = function () {
+            vm.saveNewExpertFlag = '1';
             var isCheck = $("input[name='seletedOutEp']:checked");
             if (isCheck.length < 1) {
                 bsWin.alert("请选择要删除的专家");
@@ -296,6 +313,7 @@
 
         //保存选择的境外专家
         vm.saveOutExpert = function () {
+            vm.saveNewExpertFlag = '1';
             var selectIds = common.getKendoCheckId('#outExpertGrid');
             if (selectIds.length == 0) {
                 bsWin.alert("请先选择专家！");
@@ -645,6 +663,10 @@
 
         //拟聘请专家信息返回
         vm.expertBack = function () {
+            if(vm.saveNewExpertFlag == '1'){
+                bsWin.alert("拟聘请专家数据有改动，请保存后再返回！");
+                return;
+            }
             $state.go('workprogramEdit', {signid:vm.businessId ,minBusinessId:vm.minBusinessId,businessType:vm.businessType});
         }
 
@@ -652,6 +674,7 @@
 
         //未参加改为参加
         vm.updateToJoin = function () {
+            vm.saveNewExpertFlag = '1';
             var isCheck = $("#notJoinExpertTable input[name='notJoinExpert']:checked");
             if (isCheck.length < 1) {
                 bsWin.alert("请选择要改为参加会议的专家");
@@ -669,6 +692,7 @@
 
         //参加改为未参加
         vm.updateToNotJoin = function () {
+            vm.saveNewExpertFlag = '1';
             var isCheck = $("#joinExpertTable input[name='joinExpert']:checked");
             if (isCheck.length < 1) {
                 bsWin.alert("请选择未参加会议的专家");
@@ -732,9 +756,12 @@
             return arr;
         };
 
+
         // 上移
         vm.upRecord = function(arr, $index) {
+            vm.saveNewExpertFlag = '1';
             if($index == 0) {
+                vm.confirmEPListReplace = arr;
                 return;
             }
             vm.confirmEPListReplace = swapItems(arr, $index, $index - 1);
@@ -742,7 +769,9 @@
 
         // 下移
         vm.downRecord = function(arr, $index) {
+            vm.saveNewExpertFlag = '1';
             if($index == arr.length -1) {
+                vm.confirmEPListReplace = arr;
                 return;
             }
             vm.confirmEPListReplace =  swapItems(arr, $index, $index + 1);
@@ -752,11 +781,21 @@
          * 保存新专家信息
          */
         vm.saveExpert=function () {
+            vm.saveNewExpertFlag = '0';
             if(vm.confirmEPListReplace.length > 0){
                 expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
+                    bsWin.success("操作成功！");
                 });
             }else{
-                bsWin.alert("请调整专家位置");
+                $.each(vm.confirmEPList,function (j,obj2) {
+                    if(obj2.isConfrim == '9' ){
+                        vm.confirmEPListReplace.push(obj2);
+                    }
+                });
+                expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
+                    bsWin.success("操作成功！");
+                });
+
             }
 
         }
