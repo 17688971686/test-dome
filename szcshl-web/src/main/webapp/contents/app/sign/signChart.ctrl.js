@@ -176,7 +176,8 @@
                         saveAsImage: {show: true}//下载
                     },
                     optionToContent : function(opt){
-                        var axisData = opst.xAxis[0].data;
+
+                        var axisData = opt.xAxis[0].data;
                         var series = opt.series;
                         var table ='<table id="test" class="table-bordered table-striped" style="width:100%;text-align:center">';
                         table += '<tbody><tr>';

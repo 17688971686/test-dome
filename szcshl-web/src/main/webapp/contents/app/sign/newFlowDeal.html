@@ -227,9 +227,9 @@
                     <button class="btn btn-xs btn-primary" ng-click="vm.addWorkProgram()" ng-disabled="vm.isCommit"
                             ng-show="vm.businessFlag.isNeedWP == 9 "><span class="glyphicon glyphicon-edit"></span>工作方案
                     </button>
-                    <button class="btn btn-xs btn-primary" ng-click="vm.meetingDoc()" ng-disabled="vm.isCommit"
+                   <!-- <button class="btn btn-xs btn-primary" ng-click="vm.meetingDoc()" ng-disabled="vm.isCommit"
                             ng-show="vm.businessFlag.isNeedWP == 9 "><span class="glyphicon glyphicon-edit"></span>会前准备材料
-                    </button>
+                    </button>-->
                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetter()" ng-disabled="vm.isCommit"><span
                             class="glyphicon glyphicon-edit"></span>拟补充资料函
                     </button>
@@ -249,6 +249,9 @@
                     </button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addDisPatch()" ng-disabled="vm.isCommit"><span
                             class="glyphicon glyphicon-edit"></span>发文
+                    </button>
+                    <button class="btn btn-xs btn-primary" ng-click="vm.meetingDoc()" ng-disabled="vm.isCommit"
+                            ng-show="vm.showMeterial "><span class="glyphicon glyphicon-edit"></span>会前准备材料
                     </button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.reviewReportDoc()" ng-disabled="vm.isCommit" >
                         <span class="glyphicon glyphicon-edit"></span>生成评审报告模板
