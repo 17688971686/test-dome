@@ -123,9 +123,15 @@
                 var deActive = $("#myTab .active");
                 var deObj = $("a", deActive);
                 vm.model.showDiv = deObj.attr("for-div");
+
+                //判断是否有工作方案,并且是正在发文环节的，有工作方案则显示会前材料按钮
+                if( vm.model.processState == 3 || vm.model.processState == 4){
+                    vm.showMeterial = true;
+                }
                 //发文
                 if (vm.model.dispatchDocDto) {
                     vm.showFlag.tabDispatch = true;
+
                     vm.dispatchDoc = vm.model.dispatchDocDto;
                     //如果是合并发文次项目，则不用生成发文编号
                     if ((vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 0)
