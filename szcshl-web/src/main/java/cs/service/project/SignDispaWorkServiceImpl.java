@@ -13,6 +13,7 @@ import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
+import cs.domain.sys.OrgDept;
 import cs.model.PageModelDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
@@ -21,6 +22,7 @@ import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
+import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
@@ -56,6 +58,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     private DispatchDocRepo dispatchDocRepo;
     @Autowired
     private SignBranchRepo signBranchRepo;
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
 
     /**
      * 查询个人办理项目
@@ -174,6 +178,21 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     @Transactional
     public ResultMsg dtasksSign() {
         List<Map<String, Object>> dtasks=signDispaWorkRepo.dataskCount();
+        List<OrgDept> orgDeptList=orgDeptRepo.findAllByCache();
+        Boolean isdisplay=false;
+        for(OrgDept orgDept:orgDeptList){
+            //判断下登录人是否为部长、分管领导、主任
+            if(orgDept.getsLeaderID().equals(SessionUtil.getUserId()) ||orgDept.getDirectorID().equals(SessionUtil.getUserId()) ||
+                    orgDept.getmLeaderID().equals(SessionUtil.getUserId()) ){
+                isdisplay=true;
+            }
+        }
+        //定义map
+        Map map = new HashMap();
+        //进行赋值。
+        map.put("isdisplays",isdisplay);
+        //添加到list，返回
+        dtasks.add(map);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",dtasks);
     }
 
