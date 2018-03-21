@@ -487,7 +487,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         if (workProgram == null || StringUtil.isEmpty(workProgram.getId())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，请先填写工作方案");
         }
-
+        sysFileService.deleteByBusinessIdAndBusinessType(signId , Constant.SysFileType.MEETING.getValue());
         //2、生成会前准备材料
         List<SysFile> saveFile = new ArrayList<>();
 
