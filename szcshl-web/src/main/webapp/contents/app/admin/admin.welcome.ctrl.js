@@ -16,8 +16,6 @@
     function adminWelCome(bsWin, adminSvc,$state) {
         var vm = this;
         vm.title = '主页';
-
-
         /**
          * 初始化柱状图数据
          */
@@ -103,7 +101,16 @@
          * 初始化折线图
          */
         vm.initLineChart = function () {
-            var myChart = echarts.init(document.getElementById('lineChart'));
+            //当页面两个id相同时会发生冲突不显示。所以用两个id来分别显示部长以上和普通员工的显示
+            if(vm.isdisplays){
+                //普通员工
+                var myChart = echarts.init(document.getElementById('lineChart'));
+            }else{
+                //部长以上
+                var myChart = echarts.init(document.getElementById('lineChartss'));
+            }
+
+
             var option = {
                 title: {
                     text: '项目办理情况',
@@ -209,10 +216,20 @@
                         vm.review.push(data.reObj[i].REVIEWSTAGE);
                         vm.signNumber.push(data.reObj[i].SIGNNUMBER);
                     }
+                    //判断。只有部长，分管领导，主任才会显示
+                   if(data.reObj[i].isdisplays){
+                        vm.isdisplays=false;//部长，分管领导，主任
+
+                   }else{
+                       vm.isdisplays=true;//普通员工
+
+                   }
 
                 }
 
                 vm.initHistogram();//初始化柱状图
+
+
             });
             adminSvc.countLine(function (data) {
                 vm.linedatas=[];
