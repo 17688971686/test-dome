@@ -379,6 +379,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
                         //更改项目状态
                         sign.setSignState(Constant.EnumState.STOP.getValue());
                         sign.setIsLightUp(Constant.signEnumState.PAUSE.getValue());
+                        sign.setIsProjectState(Constant.EnumState.YES.getValue());//表示曾经暂停或延时过
                         signRepo.save(sign);
 
                     }

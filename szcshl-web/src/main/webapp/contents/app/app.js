@@ -30,6 +30,19 @@
             });
             return output;
         }
+    }).filter('unique', function () {
+        return function (collection, keyname) {
+            var output = [],
+                keys = [];
+            angular.forEach(collection, function (item) {
+                var key = item[keyname];
+                if (keys.indexOf(key) === -1) {
+                    keys.push(key);
+                    output.push(item);
+                }
+            });
+            return output;
+        };
     })
         .config(["$stateProvider", "$locationProvider", "$urlRouterProvider", 'cfpLoadingBarProvider', function ($stateProvider, $locationProvider, $urlRouterProvider, cfpLoadingBarProvider) {
             $locationProvider.hashPrefix(''); // 1.6.x版本使用路由功能需加上这句

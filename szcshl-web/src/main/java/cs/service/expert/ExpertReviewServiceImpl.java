@@ -251,6 +251,15 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             ep.setPhoto(null);
             ExpertDto expertDto = new ExpertDto();
             BeanCopierUtils.copyProperties(ep, expertDto);
+            if(Validate.isList(ep.getExpertType())){
+                List<ExpertTypeDto> expertDtoList = new ArrayList<ExpertTypeDto>(ep.getExpertType().size());
+                ep.getExpertType().forEach(y -> {
+                    ExpertTypeDto expertTypeDto=new ExpertTypeDto();
+                    BeanCopierUtils.copyProperties(y, expertTypeDto);
+                    expertDtoList.add(expertTypeDto);
+                });
+                expertDto.setExpertTypeDtoList(expertDtoList);
+            }
             dto.setExpertDto(expertDto);//设置专家信息Dto
             resultList.add(dto);
         }

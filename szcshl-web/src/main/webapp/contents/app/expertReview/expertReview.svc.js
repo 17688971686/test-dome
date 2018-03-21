@@ -98,7 +98,53 @@
                     title: "职务",
                     width: 100,
                     filterable: false
-                }, {
+                },{
+                    field: "",
+                    title: "专业大类",
+                    width: 100,
+                    template : function(item) {
+                        if(item.expertTypeDtoList){
+                            var expertTypeList=item.expertTypeDtoList;
+                            var expertSortName="";
+                            for(var i=0;i<expertTypeList.length;i++){
+                                if(expertSortName.indexOf(expertTypeList[i].maJorBig) == -1 ){
+                                    if(i>0){
+                                        expertSortName+="<br>"
+                                    }
+                                    expertSortName+=expertTypeList[i].maJorBig;
+                                }
+
+                            }
+                            return expertSortName;
+                        }else{
+                            return "";
+                        }
+                    }
+                },{
+                    field: "",
+                    title: "专业小类",
+                    width: 100,
+                    template : function(item) {
+                        if(item.expertTypeDtoList){
+                            var expertTypeList=item.expertTypeDtoList;
+                            var expertSortName="";
+                            for(var i=0;i<expertTypeList.length;i++){
+
+                                if(expertSortName.indexOf(expertTypeList[i].maJorSmall) == -1 ){//是否包含有重复
+                                    if(i>0){
+                                        expertSortName+="<br>"
+                                    }
+                                    expertSortName+=expertTypeList[i].maJorSmall;
+                                }
+
+
+                            }
+                            return expertSortName;
+                        }else{
+                            return "";
+                        }
+                    }
+                },{
                     field: "",
                     title: "专家类别",
                     width: 100,
@@ -109,7 +155,7 @@
                             for(var i=0;i<expertTypeList.length;i++){
                                 if(expertSortName!=expertTypeList[i].expertType){
                                     if(i>0){
-                                        expertSortName+="、"
+                                        expertSortName+="<br>"
                                     }
                                     expertSortName+=expertTypeList[i].expertType;
                                 }

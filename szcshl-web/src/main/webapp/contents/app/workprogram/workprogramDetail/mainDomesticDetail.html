@@ -26,29 +26,29 @@
             <tr>
                 <td style="width:10%;" colspan="2" class="text-center">项目名称</td>
                 <td colspan="3" ng-show="vm.showTotalInvestment">{{w.projectName}}</td>
-                <td colspan="7" ng-hide="vm.showTotalInvestment">{{w.projectName}}</td>
+                <td colspan="8" ng-hide="vm.showTotalInvestment">{{w.projectName}}</td>
 
                 <td class="text-center" style="width:10%;" ng-show="vm.showTotalInvestment">总投资</td>
-                <td colspan="3" ng-show="vm.showTotalInvestment">{{w.appalyInvestment}} 万元</td>
+                <td colspan="4" ng-show="vm.showTotalInvestment">{{w.appalyInvestment}} 万元</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">来文单位</td>
                 <td colspan="3">{{w.sendFileUnit}}</td>
                 <td style="width:10%;" class="text-center">来文单位联系人</td>
-                <td colspan="3">{{w.sendFileUser}}</td>
+                <td colspan="4">{{w.sendFileUser}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">建设单位</td>
                 <td colspan="3">{{w.buildCompany}}</td>
                 <td class="text-center">编制单位</td>
-                <td colspan="3">{{w.designCompany}}</td>
+                <td colspan="4">{{w.designCompany}}</td>
             </tr>
 
             <tr>
                 <td class="text-center" colspan="2">主管部门</td>
                 <td colspan="3">{{w.mainDeptName}}</td>
                 <td class="text-center">是否有环评</td>
-                <td colspan="3">
+                <td colspan="4">
                     <input type="checkbox" ng-value="9" ng-checked="w.isHaveEIA==9 || w.isHaveEIA=='9'" name="isHaveEIA" ng-disabled="true">是
                     <input type="checkbox" ng-value="0" ng-checked="!w.isHaveEIA || w.isHaveEIA==0 || w.isHaveEIA=='0'" name="isHaveEIA" ng-disabled="true">否
                 </td>
@@ -59,37 +59,37 @@
                 <td style="width:10%;" class="text-center">小类</td>
                 <td style="width:15%;">{{w.projectSubType}}</td>
                 <td class="text-center">行业类别</td>
-                <td colspan="3">{{w.industryType}}</td>
+                <td colspan="4">{{w.industryType}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">联系人</td>
                 <td colspan="3">{{w.contactPerson}}</td>
                 <td class="text-center">手机</td>
-                <td colspan="3">{{w.contactPersonPhone}}</td>
+                <td colspan="4">{{w.contactPersonPhone}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">电话</td>
                 <td colspan="3">{{w.contactPersonTel}}</td>
                 <td class="text-center">传真</td>
-                <td colspan="3">{{w.contactPersonFax}}</td>
+                <td colspan="4">{{w.contactPersonFax}}</td>
             </tr>
             <tr>
                 <td rowspan="4" style="width:5%;" class="text-center" style="vertical-align:middle;">项目概况</td>
                 <td class="text-center" style="width:10%;">申报投资</td>
-                <td colspan="7">{{w.appalyInvestment}} 万元</td>
+                <td colspan="8">{{w.appalyInvestment}} 万元</td>
 
             </tr>
             <tr style="height: 80px;">
                 <td class="text-center" >申报建设规模</td>
-                <td colspan="7">{{w.buildSize}}</td>
+                <td colspan="8">{{w.buildSize}}</td>
             </tr>
             <tr style="height: 80px;">
                 <td class="text-center">申报建设内容</td>
-                <td colspan="7">{{w.buildContent}}</td>
+                <td colspan="8">{{w.buildContent}}</td>
             </tr>
             <tr style="height: 80px;">
                 <td class="text-center">项目背景</td>
-                <td colspan="7">{{w.projectBackGround}}</td>
+                <td colspan="8">{{w.projectBackGround}}</td>
             </tr>
             <tr>
                 <td rowspan="2" colspan="2" class="text-center">评估部门</td>
@@ -97,13 +97,13 @@
                     {{w.reviewOrgName}}
                 </td>
                 <td class="text-center">第一负责人</td>
-                <td colspan="3">
+                <td colspan="4">
                     {{w.mianChargeUserName}}
                 </td>
             </tr>
             <tr>
                 <td class="text-center" >第二负责人</td>
-                <td colspan="3">
+                <td colspan="4">
                     {{w.secondChargeUserName}}
                 </td>
             </tr>
@@ -113,26 +113,26 @@
                      <span>
                         <input type="checkbox" ng-disabled="true" ng-model="w.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="w.isHaveSuppLetter==9" ng-true-value="9" >是
                     </span>
-                            <span style="margin-left: 10px;">
+                    <span style="margin-left: 10px;">
                         <input type="checkbox" ng-disabled="true" ng-model="w.isHaveSuppLetter" name="isHaveSuppLetter" ng-checked="!w.isHaveSuppLetter || w.isHaveSuppLetter==0"  ng-true-value="0">否
                     </span>
                 </td>
                 <td class="text-center">补充资料函发文日期</td>
-                <td colspan="3">{{w.suppLetterDate}}</td>
+                <td colspan="4">{{w.suppLetterDate}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">调研时间</td>
-                <td colspan="7">
+                <td colspan="8">
                     {{w.studyAllDay}}<span ng-if="w.studyQuantum">,</span>{{w.studyQuantum}}<span ng-if="w.studyBeginTimeStr">,</span>{{w.studyBeginTimeStr}}<span ng-if="w.studyEndTimeStr">至</span>{{w.studyEndTimeStr}}
                 </td>
             </tr>
             <tr  ng-if="w.isSigle=='单个评审' || (w.isSigle=='合并评审' && w.isMainProject == 9)" >
                 <td class="text-center" colspan="2">专家费用</td>
-                <td colspan="7">{{w.expertCost}}</td>
+                <td colspan="8">{{w.expertCost}}</td>
             </tr>
             <tr  ng-if="w.reviewType == '专家函评'" >
                 <td class="text-center" colspan="2">函评会日期</td>
-                <td colspan="7">{{w.letterDate}}</td>
+                <td colspan="8">{{w.letterDate}}</td>
             </tr>
             <tr ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
                 <td class="text-center" style="width:20%;" colspan="2">评审会日期</td>
@@ -140,7 +140,7 @@
                 <td class="text-center" style="width:10%;">开始时间</td>
                 <td class="text-center" style="width:10%;">结束时间</td>
                 <td class="text-center" style="width:10%;">主持人</td>
-                <td class="text-center" colspan="3">会议内容</td>
+                <td class="text-center" colspan="4">会议内容</td>
             </tr>
             <tr ng-repeat="r in w.roomBookingDtos track by $index" ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
                 <td class="text-center" colspan="2">{{r.rbDate}}</td>
@@ -148,15 +148,16 @@
                 <td class="text-center">{{r.beginTimeStr}}</td>
                 <td class="text-center">{{r.endTimeStr}}</td>
                 <td class="text-center">{{r.host}}</td>
-                <td class="text-center" colspan="3">{{r.content}}</td>
+                <td class="text-center" colspan="4">{{r.content}}</td>
             </tr>
             <tr ng-show="w.expertDtoList && w.expertDtoList.length > 0">
                 <td class="text-center" style="width:10%;" colspan="2">拟聘请专家</td>
                 <td class="text-center" style="width:15%;">工作单位</td>
                 <td class="text-center" style="width:10%;">职务</td>
                 <td class="text-center" style="width:15%;">职称</td>
-                <td class="text-center" style="width:10%;">专业</td>
-                <td class="text-center" style="width:15%;">联系电话</td>
+                <td class="text-center" style="width:5%;">专业大类</td>
+                <td class="text-center" style="width:15%;">专业小类</td>
+                <td class="text-center" style="width:5%;">联系电话</td>
                 <td class="text-center" style="width:10%;">专家类别</td>
                 <td class="text-center" style="width:15%;">备注</td>
             </tr>
@@ -165,26 +166,33 @@
                 <td class="text-center">{{x.comPany}}</td>
                 <td class="text-center">{{x.job}}</td>
                 <td class="text-center">{{x.post}}</td>
-                <td class="text-center">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
+                <td align="center">
+                    <span ng-repeat="y in x.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}<br></span>
+                </td>
+                <td align="center">
+                    <span ng-repeat="y in x.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}<br></span>
+                </td>
                 <td class="text-center">{{x.userPhone}}</td>
-                <td class="text-center">{{x.expeRttype}}</td>
+                <td align="center">
+                    <span ng-repeat="y in x.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span>
+                </td>
                 <td class="text-center">{{x.remark}}</td>
             </tr>
             <tr style="height: 80px;">
                 <td  class="text-center" colspan="2">拟邀请单位及领导</td>
-                <td colspan="7" >
+                <td colspan="8" >
                     {{w.inviteUnitLeader}}
                 </td>
             </tr>
             <tr style="height: 80px;">
                 <td class="text-center" colspan="2">拟评审重点问题</td>
-                <td colspan="7" >
+                <td colspan="8" >
                     {{w.mainPoint}}
                 </td>
             </tr>
             <tr>
                 <td style="height: 80px;" class="text-center" colspan="2">部长处理意见</td>
-                <td colspan="7" >
+                <td colspan="8" >
                     <p> {{w.ministerSuggesttion}}</p>
                     <p class="text-right" ng-if="w.ministerName">签名：{{w.ministerName}}</p>
                     <p class="text-right" ng-if="w.ministerDate">日期：{{w.ministerDate}}</p>
@@ -192,7 +200,7 @@
             </tr>
             <tr>
                 <td style="height: 80px;" class="text-center" colspan="2">中心领导签批意见</td>
-                <td colspan="7" >
+                <td colspan="8" >
                     <p> {{w.leaderSuggesttion}}</p>
                     <p class="text-right" ng-if="w.leaderName">签名：{{w.leaderName}}</p>
                     <p class="text-right" ng-if="w.leaderDate">日期：{{w.leaderDate}}</p>
@@ -200,7 +208,10 @@
             </tr>
         </table>
     </div>
-    <button  class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(w.id,'WORKPROGRAM','STAGEIMPORT')">打印预览</button>
+    <button  class="form-control btn-sm btn-primary"  style="width: 100px; margin: auto;display: inline;margin-left: 45%" ng-click="printFile(w.id,'WORKPROGRAM','STAGEIMPORT')">打印预览</button>
+    <button ng-if="w.expertDtoList"  class="form-control btn-sm btn-primary"
+            style="width: 120px; margin: auto;display: inline"  ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+    </button>
 </div>
 <!-- end 主项目 -->
 
@@ -220,26 +231,26 @@
                 <td colspan="3" ng-show="vm.showTotalInvestment">{{w.projectName}}</td>
                 <td colspan="7" ng-hide="vm.showTotalInvestment">{{w.projectName}}</td>
                 <td class="text-center" style="width:10%;" ng-show="vm.showTotalInvestment">总投资</td>
-                <td colspan="3" ng-show="vm.showTotalInvestment">{{w.mainWorkProgramDto.appalyInvestment}} 万元</td>
+                <td colspan="4" ng-show="vm.showTotalInvestment">{{w.mainWorkProgramDto.appalyInvestment}} 万元</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">来文单位</td>
                 <td colspan="3">{{w.mainWorkProgramDto.sendFileUnit}}</td>
                 <td style="width:10%;" class="text-center">来文单位联系人</td>
-                <td colspan="3">{{w.mainWorkProgramDto.sendFileUser}}</td>
+                <td colspan="4">{{w.mainWorkProgramDto.sendFileUser}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">建设单位</td>
                 <td colspan="3">{{w.mainWorkProgramDto.buildCompany}}</td>
                 <td class="text-center">编制单位</td>
-                <td colspan="3">{{w.mainWorkProgramDto.designCompany}}</td>
+                <td colspan="4">{{w.mainWorkProgramDto.designCompany}}</td>
             </tr>
 
             <tr>
                 <td class="text-center" colspan="2">主管部门</td>
                 <td colspan="3">{{w.mainWorkProgramDto.mainDeptName}}</td>
                 <td class="text-center">是否有环评</td>
-                <td colspan="3">
+                <td colspan="4">
                     <input type="checkbox" ng-value="9" ng-disabled="true"  name="isHaveEIA" ng-checked="w.mainWorkProgramDto.isHaveEIA == '9' || w.mainWorkProgramDto.isHaveEIA == 9">是
                     <input type="checkbox" ng-value="0" ng-disabled="true"  name="isHaveEIA" ng-checked="!w.mainWorkProgramDto.isHaveEIA || w.mainWorkProgramDto.isHaveEIA == '0' || w.mainWorkProgramDto.isHaveEIA == 0">否
                 </td>
@@ -250,36 +261,36 @@
                 <td style="width:10%;" class="text-center">小类</td>
                 <td style="width:15%;">{{w.mainWorkProgramDto.projectSubType}}</td>
                 <td class="text-center">行业类别</td>
-                <td colspan="3">{{w.mainWorkProgramDto.industryType}}</td>
+                <td colspan="4">{{w.mainWorkProgramDto.industryType}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">联系人</td>
                 <td colspan="3">{{w.mainWorkProgramDto.contactPerson}}</td>
                 <td class="text-center">手机</td>
-                <td colspan="3">{{w.mainWorkProgramDto.contactPersonPhone}}</td>
+                <td colspan="4">{{w.mainWorkProgramDto.contactPersonPhone}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">电话</td>
                 <td colspan="3">{{w.mainWorkProgramDto.contactPersonTel}}</td>
                 <td class="text-center">传真</td>
-                <td colspan="3">{{w.mainWorkProgramDto.contactPersonFax}}</td>
+                <td colspan="4">{{w.mainWorkProgramDto.contactPersonFax}}</td>
             </tr>
             <tr>
                 <td rowspan="4" style="width:5%;vertical-align:middle;" class="text-center" >项目概况</td>
                 <td class="text-center" style="width:10%;">申报投资</td>
-                <td colspan="7">{{w.appalyInvestment}} 万元</td>
+                <td colspan="8">{{w.appalyInvestment}} 万元</td>
             </tr>
             <tr style="height: 80px;">
                 <td class="text-center">申报建设规模</td>
-                <td colspan="7">{{w.buildSize}}</td>
+                <td colspan="8">{{w.buildSize}}</td>
             </tr>
             <tr style="height: 80px;">
                 <td class="text-center">申报建设内容</td>
-                <td colspan="7">{{w.buildContent}}</td>
+                <td colspan="8">{{w.buildContent}}</td>
             </tr>
             <tr style="height: 80px;">
                 <td class="text-center">项目背景</td>
-                <td colspan="7">{{w.projectBackGround}}</td>
+                <td colspan="8">{{w.projectBackGround}}</td>
             </tr>
             <tr>
                 <td rowspan="2" colspan="2" class="text-center" style="vertical-align: middle;">评估部门</td>
@@ -287,13 +298,13 @@
                     {{w.mainWorkProgramDto.reviewOrgName}}
                 </td>
                 <td class="text-center">第一负责人</td>
-                <td colspan="3">
+                <td colspan="4">
                     {{w.mainWorkProgramDto.mianChargeUserName}}
                 </td>
             </tr>
             <tr>
                 <td class="text-center" >第二负责人</td>
-                <td colspan="3">
+                <td colspan="4">
                     {{w.mainWorkProgramDto.secondChargeUserName}}
                 </td>
             </tr>
@@ -308,21 +319,21 @@
                     </span>
                 </td>
                 <td class="text-center">补充资料函发文日期</td>
-                <td colspan="3">{{w.suppLetterDate}}</td>
+                <td colspan="4">{{w.suppLetterDate}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">调研时间</td>
-                <td colspan="7">
+                <td colspan="8">
                     {{w.studyAllDay}}<span ng-if="w.studyQuantum">,</span>{{w.studyQuantum}}<span ng-if="w.studyBeginTimeStr">,</span>{{w.studyBeginTimeStr}}<span ng-if="w.studyEndTimeStr">至</span>{{w.studyEndTimeStr}}
                 </td>
             </tr>
             <tr  ng-if="w.isSigle=='单个评审' || (w.isSigle=='合并评审' && w.isMainProject == 9)" >
                 <td class="text-center" colspan="2">专家费用</td>
-                <td colspan="7">{{w.expertCost}}</td>
+                <td colspan="8">{{w.expertCost}}</td>
             </tr>
             <tr  ng-if="w.reviewType == '专家函评'" >
                 <td class="text-center" colspan="2">函评会日期</td>
-                <td colspan="7">{{w.letterDate}}</td>
+                <td colspan="8">{{w.letterDate}}</td>
             </tr>
             <tr ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
                 <td class="text-center" style="width:20%;" colspan="2">评审会日期</td>
@@ -330,7 +341,7 @@
                 <td class="text-center" style="width:10%;">开始时间</td>
                 <td class="text-center" style="width:10%;">结束时间</td>
                 <td class="text-center" style="width:10%;">主持人</td>
-                <td class="text-center" colspan="3">会议内容</td>
+                <td class="text-center" colspan="4">会议内容</td>
             </tr>
             <tr ng-repeat="r in w.roomBookingDtos track by $index" ng-show="w.roomBookingDtos && w.roomBookingDtos.length > 0">
                 <td class="text-center" colspan="2">{{r.rbDate}}</td>
@@ -338,15 +349,16 @@
                 <td class="text-center">{{r.beginTimeStr}}</td>
                 <td class="text-center">{{r.endTimeStr}}</td>
                 <td class="text-center">{{r.host}}</td>
-                <td class="text-center" colspan="3">{{r.content}}</td>
+                <td class="text-center" colspan="4">{{r.content}}</td>
             </tr>
             <tr ng-show="w.expertDtoList && w.expertDtoList.length > 0">
                 <td class="text-center" style="width:10%;" colspan="2">拟聘请专家</td>
                 <td class="text-center" style="width:15%;">工作单位</td>
                 <td class="text-center" style="width:10%;">职务</td>
                 <td class="text-center" style="width:15%;">职称</td>
-                <td class="text-center" style="width:10%;">专业</td>
-                <td class="text-center" style="width:15%;">联系电话</td>
+                <td class="text-center" style="width:5%;">专业大类</td>
+                <td class="text-center" style="width:15%;">专业小类</td>
+                <td class="text-center" style="width:5%;">联系电话</td>
                 <td class="text-center" style="width:10%;">专家类别</td>
                 <td class="text-center" style="width:15%;">备注</td>
             </tr>
@@ -355,26 +367,33 @@
                 <td class="text-center">{{x.comPany}}</td>
                 <td class="text-center">{{x.job}}</td>
                 <td class="text-center">{{x.post}}</td>
-                <td class="text-center">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
+                <td align="center">
+                    <span ng-repeat="y in x.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}<br></span>
+                </td>
+                <td align="center">
+                    <span ng-repeat="y in x.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}<br></span>
+                </td>
                 <td class="text-center">{{x.userPhone}}</td>
-                <td class="text-center">{{x.expeRttype}}</td>
+                <td align="center">
+                    <span ng-repeat="y in x.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span>
+                </td>
                 <td class="text-center">{{x.remark}}</td>
             </tr>
             <tr style="height: 80px;">
                 <td class="text-center" colspan="2">拟邀请单位及领导</td>
-                <td colspan="7" >
+                <td colspan="8" >
                     {{w.inviteUnitLeader}}
                 </td>
             </tr>
             <tr style="height: 80px;">
                 <td class="text-center" colspan="2">拟评审重点问题</td>
-                <td colspan="7" >
+                <td colspan="8" >
                     {{w.mainPoint}}
                 </td>
             </tr>
             <tr style="height: 80px;">
                 <td  class="text-center" colspan="2">部长处理意见</td>
-                <td colspan="7" >
+                <td colspan="8" >
                     <p> {{w.ministerSuggesttion}}</p>
                     <p class="text-right" ng-if="w.ministerName">签名：{{w.ministerName}}</p>
                     <p class="text-right" ng-if="w.ministerDate">日期：{{w.ministerDate}}</p>
@@ -382,7 +401,7 @@
             </tr>
             <tr style="height: 80px;">
                 <td  class="text-center" colspan="2">中心领导签批意见</td>
-                <td colspan="7" >
+                <td colspan="8" >
                     <p> {{w.leaderSuggesttion}}</p>
                     <p class="text-right" ng-if="w.leaderName">签名：{{w.leaderName}}</p>
                     <p class="text-right" ng-if="w.leaderDate">日期：{{w.leaderDate}}</p>
@@ -390,5 +409,8 @@
             </tr>
         </table>
     </div>
-    <button  class="form-control btn-sm btn-primary" style="width: 100px; margin: auto;" ng-click="printFile(w.id,'WORKPROGRAM','STAGEIMPORT')">打印预览</button>
+    <button  class="form-control btn-sm btn-primary"  style="width: 100px; margin: auto;display: inline;margin-left: 45%" ng-click="printFile(w.id,'WORKPROGRAM','STAGEIMPORT')">打印预览</button>
+    <button ng-if="w.expertDtoList"  class="form-control btn-sm btn-primary"
+            style="width: 120px; margin: auto;display: inline"  ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+    </button>
 </div>

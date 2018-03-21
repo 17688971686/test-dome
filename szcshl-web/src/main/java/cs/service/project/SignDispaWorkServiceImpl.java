@@ -127,10 +127,25 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             }
             //对项目状态进行判断
             if(odataObj.getFilter().get(i).getField().equals("processState")){
+                //判断如果传过来的值是2时，就表示是暂停项目
                 if(odataObj.getFilter().get(i).getValue().equals(Constant.EnumState.STOP.getValue())){
                     odataObj.getFilter().get(i).setField("signState");
                 }
+                //判断如果转过来的值是19时，就表示曾经暂停或延时项目
+                if(odataObj.getFilter().get(i).getValue().equals("19")){
+                    odataObj.getFilter().get(i).setField("isProjectStop");
+                    odataObj.getFilter().get(i).setValue(Constant.EnumState.YES.getValue());
+                }
             }
+
+            //对评审方式的判断。是否是协审
+            if(odataObj.getFilter().get(i).getField().equals("reviewType")){
+                if(odataObj.getFilter().get(i).getValue().equals("协审")){
+                    odataObj.getFilter().get(i).setField("isassistproc");
+                    odataObj.getFilter().get(i).setValue(Constant.EnumState.YES.getValue());
+                }
+            }
+
 
 
         }

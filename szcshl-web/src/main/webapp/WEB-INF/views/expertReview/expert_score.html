@@ -67,7 +67,7 @@
     </tr>
     </tbody>
 </table>
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.unitScoreDto.id,'SIGN_UNIT' , 'SIGN_UNIT_SCORE')">打印预览</button>
+<button ng-if="vm.model.unitScoreDto" class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.unitScoreDto.id,'SIGN_UNIT' , 'SIGN_UNIT_SCORE')">打印预览</button>
 
 <!-- end 单位评分 -->
 
