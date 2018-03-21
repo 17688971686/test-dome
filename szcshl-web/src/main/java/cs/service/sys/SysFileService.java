@@ -59,4 +59,12 @@ public interface SysFileService {
      * @return
      */
     String getLocalUrl();
+
+
+    /**
+     * 通过业务ID和业务类型删除对应的文件
+     * @param businessId
+     * @param businessType
+     */
+    void deleteByBusinessIdAndBusinessType(String businessId , String businessType);
 }

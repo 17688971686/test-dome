@@ -378,6 +378,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     @Override
     public ResultMsg createDisPatchTemplate(String signId) {
         SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
+        sysFileService.deleteByBusinessIdAndBusinessType(signId , Constant.SysFileType.TEMOLATE.getValue());
 
         //获得拟聘专家信息
         List<Expert> expertList=expertRepo.findByBusinessId(signId);

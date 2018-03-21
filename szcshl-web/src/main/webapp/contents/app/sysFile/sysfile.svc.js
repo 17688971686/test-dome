@@ -458,8 +458,36 @@
                         var s = document.getElementById("zTree");
                         //当有ztree的id时开始赋值
                         if (s != null) {
-                            zTreeObj = $.fn.zTree.init($("#zTree"), setting, vm.zNodes);
+                            var treeObj1 = $.fn.zTree.getZTreeObj("zTree");
+                            if(treeObj1 != null){
+                                var seNodes = treeObj1.getSelectedNodes();
+                                if (seNodes.length>0) {
+                                    zTreeObj = $.fn.zTree.init($("#zTree"), setting, vm.zNodes);
+                                    var nodes = zTreeObj.getNodes();
+                                    if(nodes.length > 0){
+                                        for(var i =0 ; i < nodes.length ; i++){
+                                            if(nodes[i].tId == seNodes[0].tId ){
+                                                zTreeObj.selectNode(nodes[i]);
+                                                zTreeObj.expandNode(nodes[i] , true , false);
+                                                vm.sysFileList = nodes[i].children;
+                                            }
+                                        }
+                                    }
+                                }
+                            }else{
+                                zTreeObj = $.fn.zTree.init($("#zTree"), setting, vm.zNodes);
+                                //获取节点，判断节点长度，默认现在第一个节点，并且显示第一个节点
+                                var nodes = zTreeObj.getNodes();
+                                if(nodes.length > 0){
+                                    zTreeObj.selectNode(nodes[0]);
+                                    zTreeObj.expandNode(nodes[0] , true , false);
+                                    vm.sysFileList = nodes[0].children;
+                                }
+                            }
+
+
                             $interval.cancel(timer);//停止定时器
+
                         }
                     }, 500);   //间隔0.5秒定时执行
                 }

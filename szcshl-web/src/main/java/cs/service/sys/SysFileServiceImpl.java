@@ -1,6 +1,7 @@
 package cs.service.sys;
 
 import cs.common.Constant;
+import cs.common.HqlBuilder;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
@@ -246,6 +247,24 @@ public class SysFileServiceImpl implements SysFileService {
             localUrl = localUrl.substring(0, localUrl.length() - 1);
         }
         return localUrl;
+    }
+
+    /**
+     * 通过业务ID和业务类型删除对应的文件
+     * @param businessId
+     * @param businessType
+     */
+    @Override
+    public void deleteByBusinessIdAndBusinessType(String businessId, String businessType) {
+
+        HqlBuilder hqlBuilder =  HqlBuilder.create();
+        hqlBuilder.append("delete from " + SysFile.class.getSimpleName() + " where " + SysFile_.mainId.getName() + "=:mainId "  );
+        hqlBuilder.append(" and " + SysFile_.sysBusiType.getName() + "=:businessType");
+        hqlBuilder.setParam("mainId" , businessId);
+        hqlBuilder.setParam("businessType" , businessType);
+        sysFileRepo.executeHql(hqlBuilder);
+
+
     }
 
     /**
