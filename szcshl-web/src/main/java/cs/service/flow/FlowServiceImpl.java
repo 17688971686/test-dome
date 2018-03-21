@@ -64,6 +64,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.zip.ZipInputStream;
 
@@ -437,47 +438,54 @@ public class FlowServiceImpl implements FlowService {
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
         Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
-/*        String deptName = "";//部门名称
-        String sqlStr = "";*/
+        String deptName = "";//部门名称
+        String sqlStr = "";
         if (isUserDeal) {
             Disjunction dis = Restrictions.disjunction();
             dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
             dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
             criteria.add(dis);
-        }/*else{
+        }else{
               List<OrgDept> orgDeptList =  orgDeptService.queryAll();
+              Boolean isdirector=true;//是否是主任
               for(OrgDept orgDept : orgDeptList ){
-                  if(orgDept.getmLeaderID().equals(SessionUtil.getUserId())){
-                    break;
-                  }else if(orgDept.getDirectorID().equals(SessionUtil.getUserId())){
+                if(orgDept.getDirectorID().equals(SessionUtil.getUserId())){//部长
                       deptName = orgDept.getName();
                       break;
-                  }else if(orgDept.getsLeaderID().equals(SessionUtil.getUserId())){
+                  }else if(orgDept.getsLeaderID().equals(SessionUtil.getUserId())){//分管主任，副主任
                       deptName += orgDept.getName()+",";
-                  }else{
+                  }else if(orgDept.getmLeaderID().equals(SessionUtil.getUserId())){//主任
+                    isdirector=false;
+                    break;
+
+                }
+              }
+              if(isdirector) {//不是主任才执行里面
+                  if (StringUtil.isNoneBlank(deptName)) {
+                      if (deptName.contains(",")) {
+                          deptName = deptName.substring(0, deptName.length() - 1);
+                          deptName=deptName.replaceAll(",","','");//替换字符，完成in的格式
+                          /*String[] ss=deptName.split(",");*/
+                          sqlStr = " exists (select 1  from (SELECT u.DISPLAYNAME, o.name, u.id FROM cs_org o, cs_user u" +
+                                  " WHERE o.id = u.orgid and u.id not in(select DU.USERLIST_ID from cs_dept_cs_user du)UNION " +
+                                  " SELECT u.DISPLAYNAME, d.name, u.id FROM CS_DEPT d, cs_dept_cs_user du, cs_user u " +
+                                  " WHERE d.id = du.sysdeptlist_id AND du.userlist_id = u.id) t where t.name in('" + deptName + "')" +
+                                  " and instr(this_.displayName, t.DISPLAYNAME) > 0  )";
+                      } else {
+                          sqlStr = " exists (select 1  from (SELECT u.DISPLAYNAME, o.name, u.id FROM cs_org o, cs_user u" +
+                                  " WHERE o.id = u.orgid and u.id not in(select DU.USERLIST_ID from cs_dept_cs_user du)UNION " +
+                                  " SELECT u.DISPLAYNAME, d.name, u.id FROM CS_DEPT d, cs_dept_cs_user du, cs_user u " +
+                                  " WHERE d.id = du.sysdeptlist_id AND du.userlist_id = u.id) t where t.name= '" + deptName + "'" +
+                                  " and instr(this_.displayName, t.DISPLAYNAME) > 0  )";
+                      }
+                      criteria.add(Restrictions.sqlRestriction(sqlStr));
+                  } else {
                       criteria.add(ODataObjFilterStrategy.getStrategy("LIKE").getCriterion(RuProcessTask_.displayName.getName(), SessionUtil.getDisplayName()));
-                      break;
+
                   }
               }
-            if(StringUtil.isNoneBlank(deptName)){
-                  if(deptName.contains(",")){
-                      deptName = deptName.substring(0,deptName.length()-1);
-                      sqlStr = " exists (select 1  from (SELECT u.DISPLAYNAME, o.name, u.id FROM cs_org o, cs_user u" +
-                              " WHERE o.id = u.orgid and u.id not in(select DU.USERLIST_ID from cs_dept_cs_user du)UNION " +
-                              " SELECT u.DISPLAYNAME, d.name, u.id FROM CS_DEPT d, cs_dept_cs_user du, cs_user u " +
-                              " WHERE d.id = du.sysdeptlist_id AND du.userlist_id = u.id) t where t.name in('"+deptName+"')" +
-                              " and instr(this_.displayName, t.DISPLAYNAME) > 0  )";
-                  }else{
-                      sqlStr = " exists (select 1  from (SELECT u.DISPLAYNAME, o.name, u.id FROM cs_org o, cs_user u" +
-                              " WHERE o.id = u.orgid and u.id not in(select DU.USERLIST_ID from cs_dept_cs_user du)UNION " +
-                              " SELECT u.DISPLAYNAME, d.name, u.id FROM CS_DEPT d, cs_dept_cs_user du, cs_user u " +
-                              " WHERE d.id = du.sysdeptlist_id AND du.userlist_id = u.id) t where t.name= '"+deptName+"'" +
-                              " and instr(this_.displayName, t.DISPLAYNAME) > 0  )";
-                  }
-                criteria.add(Restrictions.sqlRestriction(sqlStr));
-            }
 
-        }*/
+        }
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);
