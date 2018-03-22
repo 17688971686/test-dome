@@ -10,9 +10,10 @@
         <tr class="active">
             <td width="5%" align="center"><input type='checkbox' ng-model="joinExpertList"/></td>
             <td width="10%" align="center">姓名</td>
-            <td width="20%" align="center">工作单位</td>
-            <td width="20%" align="center">职务/职称</td>
-            <td width="20%" align="center">专业</td>
+            <td width="10%" align="center">工作单位</td>
+            <td width="10%" align="center">职务/职称</td>
+            <td width="20%" align="center">专业大类</td>
+            <td width="20%" align="center">专业小类</td>
             <td width="15%" align="center">联系电话</td>
             <td width="10%" align="center">专家类别</td>
         </tr>
@@ -24,9 +25,16 @@
             <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
             <td align="center">{{x.expertDto.comPany}}</td>
             <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
-            <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>
+            <td align="center">
+                <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}<br></span>
+            </td>
+            <td align="center">
+                <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}<br></span>
+            </td>
             <td align="center">{{x.expertDto.userPhone}}</td>
-            <td align="center">{{x.expertDto.expertSort}}</td>
+            <td align="center">
+                <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span>
+            </td>
         </tr>
     </table>
     <p style="text-align:center;">
@@ -42,9 +50,10 @@
         <tr class="active">
             <td width="5%" align="center"><input type='checkbox' ng-model="notjoinExpertList"/></td>
             <td width="10%" align="center">姓名</td>
-            <td width="20%" align="center">工作单位</td>
-            <td width="20%" align="center">职务/职称</td>
-            <td width="20%" align="center">专业</td>
+            <td width="10%" align="center">工作单位</td>
+            <td width="10%" align="center">职务/职称</td>
+            <td width="20%" align="center">专业大类</td>
+            <td width="20%" align="center">专业小类</td>
             <td width="15%" align="center">联系电话</td>
             <td width="10%" align="center">专家类别</td>
         </tr>
@@ -55,9 +64,16 @@
             <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
             <td align="center">{{x.expertDto.comPany}}</td>
             <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
-            <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>
+            <td align="center">
+                <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}<br></span>
+            </td>
+            <td align="center">
+                <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}<br></span>
+            </td>
             <td align="center">{{x.expertDto.userPhone}}</td>
-            <td align="center">{{x.expertDto.expertSort}}</td>
+            <td align="center">
+                <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span>
+            </td>
         </tr>
     </table>
 </div>

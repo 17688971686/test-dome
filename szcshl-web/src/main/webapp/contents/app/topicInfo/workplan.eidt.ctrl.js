@@ -73,7 +73,7 @@
         //S_拟聘请专家
         vm.selectExpert = function () {
             if (vm.workplan.id) {
-                $state.go('expertReviewEdit', {businessId:$state.params.topicId,minBusinessId:vm.workplan.id,businessType:"TOPIC"});
+                $state.go('expertReviewEdit', {businessId:$state.params.topicId,minBusinessId:vm.workplan.id,businessType:"TOPIC",reviewType: vm.workplan.reviewType});
             } else {
                 bsWin.alert("请先保存当前信息，再继续操作！");
             }

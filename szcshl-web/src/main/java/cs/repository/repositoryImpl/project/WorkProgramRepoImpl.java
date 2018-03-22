@@ -191,18 +191,21 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
                 List<ExpertDto> expertDtoList = new ArrayList<>(expertNewList.size());
                 expertNewList.forEach( el ->{
                     ExpertDto expertDto = new ExpertDto();
-                   // el.setPhoto(null);
-                    BeanCopierUtils.copyProperties(el,expertDto);
-                    if(Validate.isList(el.getExpertType())){//添加专业类别
-                        List<ExpertTypeDto>  expertTypeDtoList= new ArrayList<ExpertTypeDto>(el.getExpertType().size());
-                        el.getExpertType().forEach(y -> {
-                            ExpertTypeDto expertTypeDto=new ExpertTypeDto();
-                            BeanCopierUtils.copyProperties(y, expertTypeDto);
-                            expertTypeDtoList.add(expertTypeDto);
-                        });
-                        expertDto.setExpertTypeDtoList(expertTypeDtoList);
+                    if(el.getIsJoin().equals(Constant.EnumState.YES.getValue())){ //判断是否是确认专家。是确认专家时才显示
+                        // el.setPhoto(null);
+                        BeanCopierUtils.copyProperties(el,expertDto);
+                        if(Validate.isList(el.getExpertType())){//添加专业类别
+                            List<ExpertTypeDto>  expertTypeDtoList= new ArrayList<ExpertTypeDto>(el.getExpertType().size());
+                            el.getExpertType().forEach(y -> {
+                                ExpertTypeDto expertTypeDto=new ExpertTypeDto();
+                                BeanCopierUtils.copyProperties(y, expertTypeDto);
+                                expertTypeDtoList.add(expertTypeDto);
+                            });
+                            expertDto.setExpertTypeDtoList(expertTypeDtoList);
+                        }
+                        expertDtoList.add(expertDto);
                     }
-                    expertDtoList.add(expertDto);
+
                 });
                 workProgramDto.setExpertDtoList(expertDtoList);
             }

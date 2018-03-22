@@ -23,6 +23,12 @@ public class ExpertNewInfoDto extends BaseDto {
 
     private String post;//职称
 
+    private String phone;//办公电话
+
+    private String addRess;//通讯地址
+
+    private String email;//电子邮箱
+
     private String userPhone;//手机号码
 
     private String remark;//备注
@@ -163,5 +169,29 @@ public class ExpertNewInfoDto extends BaseDto {
 
     public void setIsJoin(String isJoin) {
         this.isJoin = isJoin;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddRess() {
+        return addRess;
+    }
+
+    public void setAddRess(String addRess) {
+        this.addRess = addRess;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
