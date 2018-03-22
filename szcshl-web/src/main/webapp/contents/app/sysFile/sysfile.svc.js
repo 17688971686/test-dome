@@ -403,14 +403,21 @@
                 },
                 callback: {
                     onClick: function (event, treeId, treeNode) {
+                        vm.sysFileList = [];
                         //点击文件夹
                         if (treeNode.check_Child_State == 0) {
-                            vm.sysFileList = [];
                             if (treeNode.children) {
                                 vm.sysFileList = treeNode.children;
                             }
-                            $scope.$apply();
+
+                        }else{
+                            var parentId = treeNode.parentTId;
+                            var nodes = zTreeObj.getNodeByTId(parentId);
+                            if(nodes != null){
+                                vm.sysFileList = nodes.children;
+                            }
                         }
+                        $scope.$apply();
                     }
                 }
             };
@@ -459,19 +466,23 @@
                         //当有ztree的id时开始赋值
                         if (s != null) {
                             var treeObj1 = $.fn.zTree.getZTreeObj("zTree");
+                            //先通过Id获取树形，如果已经有树形，则默认展示正在展示的节点，如树形不存在则默认展开第一个节点
                             if(treeObj1 != null){
-                                var seNodes = treeObj1.getSelectedNodes();
-                                if (seNodes.length>0) {
+                                //获取被选的所有节点
+                                var selectedNodes = treeObj1.getSelectedNodes();
+                                if(selectedNodes != null && selectedNodes.length>0){
+                                    //获取父节点
+                                    var parentId = selectedNodes[0].tId;
+                                    //重新初始化树形图
                                     zTreeObj = $.fn.zTree.init($("#zTree"), setting, vm.zNodes);
-                                    var nodes = zTreeObj.getNodes();
-                                    if(nodes.length > 0){
-                                        for(var i =0 ; i < nodes.length ; i++){
-                                            if(nodes[i].tId == seNodes[0].tId ){
-                                                zTreeObj.selectNode(nodes[i]);
-                                                zTreeObj.expandNode(nodes[i] , true , false);
-                                                vm.sysFileList = nodes[i].children;
-                                            }
-                                        }
+                                    //通过父ID获取节点
+                                    var nodes = zTreeObj.getNodeByTId(parentId);
+                                    if(nodes != null){
+                                        vm.sysFileList = [];
+                                        vm.sysFileList = nodes.children;
+                                        //设置选中的节点并展开
+                                        zTreeObj.selectNode(nodes);
+                                        zTreeObj.expandNode(nodes , true , false);
                                     }
                                 }
                             }else{
