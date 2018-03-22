@@ -22,6 +22,8 @@
         var expertID = $state.params.expertID;   //专家ID
         vm.isSuperUser = isSuperUser;
         vm.saveNewExpertFlag = 0;   //保存新专家标志
+        vm.reviewType=$state.params.reviewType; //评审方式
+
 
         //S 查看专家详细
         vm.findExportDetail = function (id) {
@@ -124,35 +126,12 @@
             vm.selectIds = [];
             expertReviewSvc.initReview(businessId,minBusinessId,function(data){
                 vm.expertReview = data;
+
                 //获取已经抽取的专家
                 if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
 
                     $.each(vm.expertReview.expertSelectedDtoList,function(i, sep){
                         vm.selectIds.push(sep.expertDto.expertID);
-                        //判断是否有专业类别
-                        if(sep.expertDto.expertTypeDtoList){
-                            var expertTypeList=sep.expertDto.expertTypeDtoList;
-                            var major="";//专业
-                            var expertCategory=""//专业类别
-                            for(var i=0;i<expertTypeList.length;i++){
-                                if(i>0){
-                                    major+="、"
-                                }
-                                major+=expertTypeList[i].maJorBig+"、"+expertTypeList[i].maJorSmall;
-                                if(expertCategory!=expertTypeList[i].expertType){//如果专业类别一样。只显示一个就行了
-                                    if(i>0){
-                                        expertCategory+="、"
-                                    }
-                                    expertCategory+=expertTypeList[i].expertType;
-                                }
-
-                            }
-                            sep.expertDto.major=major;//专业
-                            sep.expertDto.expertCategory=expertCategory;//专业类别
-                        }else{
-                            sep.expertDto.major="";
-                            sep.expertDto.expertCategory="";
-                        }
                         vm.confirmEPList.push(sep);
                     })
                     if (vm.selectIds.length > 0) {
@@ -166,11 +145,19 @@
                   $.each(data,function (i,obj1) {
                         $.each(vm.confirmEPList,function (j,obj2) {
                             if(obj1.name == obj2.expertDto.name && obj2.isConfrim == '9' ){
+                                if("专家函评"==vm.reviewType && obj1.isLetterRw!= "9"){//是专家函评时就勾选完
+                                    obj2.isLetterRw=9;
+                                    vm.saveNewExpertFlag="1";//数据有变动
+                                }else if("专家评审会"==vm.reviewType && obj1.isLetterRw!= "0"){
+                                    obj2.isLetterRw=0;
+                                    vm.saveNewExpertFlag="1";//数据有变动
+                                }else{
+                                    obj2.isLetterRw = obj1.isLetterRw;
+                                }
                                 obj2.maJorBig = obj1.maJorBig;
                                 obj2.maJorSmall = obj1.maJorSmall;
                                 obj2.expeRttype = obj1.expeRttype;
                                 obj2.isJoin = obj1.isJoin;
-                                obj2.isLetterRw = obj1.isLetterRw;
                                 vm.confirmEPListReplace.push(obj2);
                             }
                         });

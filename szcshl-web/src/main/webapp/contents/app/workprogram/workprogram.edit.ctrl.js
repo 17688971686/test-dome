@@ -352,7 +352,8 @@
                             $state.go('expertReviewEdit', {
                                 businessId: vm.work.signId,
                                 minBusinessId: vm.work.id,
-                                businessType: "SIGN"
+                                businessType: "SIGN",
+                                reviewType: vm.work.reviewType
                             });
                         }
                     }else{

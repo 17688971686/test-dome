@@ -249,7 +249,7 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
         List<ExpertDto> resultList = new ArrayList<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" SELECT distinct ep.EXPERTID, ep.NAME, ep.COMPANY, ep.JOB, ep.POST, ep.EXPERTSORT ");
-        sqlBuilder.append(" , ep.USERPHONE, ep.MAJORSTUDY, ep.MAJORWORK,ep.REMARK,ep.COMPOSITESCORE ");
+        sqlBuilder.append(" , ep.USERPHONE, ep.MAJORSTUDY, ep.MAJORWORK,ep.REMARK,ep.COMPOSITESCORE,edp.expertType,edp.maJorSmall,edp.maJorBig");
         sqlBuilder.append(" FROM CS_EXPERT ep LEFT JOIN ( ");
         sqlBuilder.append(" SELECT WP.ID ID, WP.BUILDCOMPANY bcp, WP.DESIGNCOMPANY dcp FROM CS_WORK_PROGRAM wp ");
         sqlBuilder.append(" WHERE WP.ID = :minBusinessId) lwp").setParam("minBusinessId",minBusinessId);
@@ -296,10 +296,10 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
                 String comPany = obj[2] == null ? "" : obj[2].toString();
                 String job = obj[3] == null ? "" : obj[3].toString();
                 String post = obj[4] == null ? "" : obj[4].toString();
-                String expertSort = obj[5] == null ? "" : obj[5].toString();
+                String expertSort = obj[11] == null ? "" : obj[11].toString();
                 String userPhone = obj[6] == null ? "" : obj[6].toString();
-                String majorStudy = obj[7] == null ? "" : obj[7].toString();
-                String majorWork = obj[8] == null ? "" : obj[8].toString();
+                String majorStudy = obj[13] == null ? "" : obj[13].toString(); //专业大类
+                String majorWork = obj[12] == null ? "" : obj[12].toString(); //专业小类
                 String remark = obj[9] == null ? "" : obj[9].toString();
                 Double compositeScore = obj[10] == null ? null : Double.valueOf(obj[10].toString());
 

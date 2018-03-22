@@ -298,7 +298,8 @@
                     <td style="width:90px;" align="center">姓名</td>
                     <td align="center">工作单位</td>
                     <td width="15%" align="center">职务/职称</td>
-                    <td width="12%" align="center">专业</td>
+                    <td width="12%" align="center">专业大类</td>
+                    <td width="12%" align="center">专业小类</td>
                     <td width="12%" align="center">联系电话</td>
                     <td width="12%" align="center">专家类别</td>
                     <td width="15%" align="center">备注</td>
@@ -307,7 +308,8 @@
                     <td align="center"><a ng-click="vm.findExportDetail(x.expertID)">{{x.name}}</a></td>
                     <td align="center">{{x.comPany}}</td>
                     <td align="center">{{x.job}}/{{x.post}}</td>
-                    <td align="center">{{x.majorStudy}}、{{x.expertDto.majorWork}}</td>
+                    <td align="center">{{x.majorStudy}}</td>
+                    <td align="center">{{x.majorWork}}</td>
                     <td align="center">{{x.userPhone}}</td>
                     <td align="center">{{x.expertSort}}</td>
                     <td align="center">{{x.remark}}</td>

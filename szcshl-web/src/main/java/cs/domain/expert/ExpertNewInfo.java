@@ -31,6 +31,15 @@ public class ExpertNewInfo extends DomainBase {
     private String post;//职称
 
     @Column(columnDefinition = "varchar(50) ")
+    private String phone;//办公电话
+
+    @Column(columnDefinition = "varchar(225) ")
+    private String addRess;//通讯地址
+
+    @Column(columnDefinition = "varchar(50) ")
+    private String email;//电子邮箱
+
+    @Column(columnDefinition = "varchar(50) ")
     private String userPhone;//手机号码
 
     @Column(columnDefinition = "varchar(255) ")
@@ -179,5 +188,29 @@ public class ExpertNewInfo extends DomainBase {
 
     public void setIsJoin(String isJoin) {
         this.isJoin = isJoin;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddRess() {
+        return addRess;
+    }
+
+    public void setAddRess(String addRess) {
+        this.addRess = addRess;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
