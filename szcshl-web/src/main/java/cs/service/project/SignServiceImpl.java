@@ -58,6 +58,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
+
 @Service
 public class SignServiceImpl implements SignService {
     private static Logger log = Logger.getLogger(SignServiceImpl.class);
@@ -1175,6 +1177,8 @@ public class SignServiceImpl implements SignService {
                 break;
             //发文申请
             case FlowConstant.FLOW_SIGN_FW:
+                businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
+                dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 //如果有专家评审费，则要先办理专家评审费
                 if (expertReviewRepo.isHaveEPReviewCost(signid)) {
                     ExpertReview expertReview2 = expertReviewRepo.findById(ExpertReview_.businessId.getName(), signid);
@@ -1182,9 +1186,81 @@ public class SignServiceImpl implements SignService {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
                     }
                 }
+
+                //1、获取附件列表
+                boolean isUploadMainFile = false;
+                List<SysFile> fileList = sysFileRepo.findByMainId(signid);
+                //默认每个类型都没检测
+                String checFileName = "";
+                Map<String,Boolean> checkTypeMap = new HashMap<>();
+                SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
+                if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())){
+                    checFileName = Constant.DEFAULT_CHECK_FILE;
+                }else{
+                    checFileName = sysConfigDto.getConfigValue();
+                    if(checFileName.indexOf("；") > -1){
+                        checFileName = checFileName.replace("；",";");
+                    }
+                    if(checFileName.indexOf("，") > -1){
+                        checFileName = checFileName.replace("，",",");
+                    }
+                }
+                //需要检测的文件类型
+                List<String> typeFileList = StringUtil.getSplit(checFileName,";");
+                for(String fileType : typeFileList){
+                    checkTypeMap.put(fileType,false);
+                }
+
+                if(Validate.isList(fileList)){
+                    int checkCount = typeFileList.size(),successCount = 0;
+                    for(int i=0,l=fileList.size();i<l;i++){
+                        SysFile sysFile = fileList.get(i);
+                        String showName = sysFile.getShowName().substring(0,sysFile.getShowName().lastIndexOf("."));
+                        for (Map.Entry<String,Boolean> entry : checkTypeMap.entrySet()) {
+                            if(entry.getValue() == false){
+                                //项目概算不用上传投资匡算表或投资估算表
+                                if(Constant.STAGE_BUDGET.equals(dp.getDispatchStage()) ){
+                                    if("评审意见,审核意见".equals(entry.getKey())){
+                                        entry.setValue(true);
+                                        successCount++;
+                                        break;
+                                    }
+                                }else if(entry.getKey().contains(showName)){
+                                    entry.setValue(true);
+                                    successCount++;
+                                }
+                            }
+                        }
+                        if(Constant.STAGE_BUDGET.equals(dp.getDispatchStage()) && successCount == 1) {
+                            isUploadMainFile = true;
+                            break;
+                        }else if(successCount == checkCount){
+                            isUploadMainFile = true;
+                            break;
+                        }
+                    }
+                }
+                if(!isUploadMainFile){
+                    StringBuffer errorBuffer = new StringBuffer();
+                    for (Map.Entry<String,Boolean> entry : checkTypeMap.entrySet()) {
+                        //项目概算不用上传投资匡算表或投资估算表
+                        if(Constant.STAGE_BUDGET.equals(dp.getDispatchStage()) ){
+                            if("评审意见,审核意见".equals(entry.getKey()) && entry.getValue() == false){
+
+                                errorBuffer.append(entry.getKey().replaceAll(",","或者")+";");
+                            }
+                        }else{
+                            if(entry.getValue() == false){
+                                errorBuffer.append(entry.getKey().replaceAll(",","或者")+";");
+                            }
+                        }
+
+                    }
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传"+errorBuffer.toString()+"附件信息！");
+                }
+
+
                 //修改第一负责人意见
-                businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
-                dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 dp.setMianChargeSuggest(flowDto.getDealOption() + "<br>" + SessionUtil.getDisplayName() + " &nbsp; " + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
                 dp.setSecondChargeSuggest("");
                 dispatchDocRepo.save(dp);
@@ -1360,6 +1436,38 @@ public class SignServiceImpl implements SignService {
                 if (!Validate.isString(dp.getFileNum())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，该项目还没有发文编号，不能进行下一步操作！");
                 }
+
+                //专家评审方案,判断专家的一些信息是否完整
+                 expertReview = expertReviewRepo.findByBusinessId(signid);
+                if (Validate.isList(expertReview.getExpertSelectedList())){
+                    Boolean isDisplay=false;
+                    String prompt="专家";
+                    List<ExpertSelected> expertSelecteds=expertReview.getExpertSelectedList();
+                    for(int i=0; i<expertSelecteds.size();i++){
+                        if(Constant.EnumState.YES.getValue().equals(expertSelecteds.get(i).getIsConfrim()) &&
+                                Constant.EnumState.YES.getValue().equals(expertSelecteds.get(i).getIsJoin())){
+                             //银行账户和身份证号不能为空
+                            if(!Validate.isString(expertSelecteds.get(i).getExpert().getBankAccount()) ||
+                                    !Validate.isString(expertSelecteds.get(i).getExpert().getIdCard())){
+                                if(i>0 &&i+1!=expertSelecteds.size()){//第一位和最后一位不用加
+                                    prompt+="、";
+                                }
+                                //对提示信息的拼接
+                                prompt+=expertSelecteds.get(i).getExpert().getName();
+                                 isDisplay=true;
+
+                            }
+
+                        }
+
+                    }
+                    if (isDisplay) {
+                        prompt+="的身份证号和银行卡号不完整,不能进行下一步操作,请去完善专家信息！";
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), prompt);
+                    }
+
+                }
+
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
                 //如果有评审费或者是协审流程，则给财务部办理，没有，则直接到归档环节
                 if (expertReviewRepo.isHaveEPReviewCost(signid) || EnumState.YES.getValue().equals(sign.getIsassistflow())) {

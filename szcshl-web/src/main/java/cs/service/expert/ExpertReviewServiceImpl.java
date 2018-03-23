@@ -526,8 +526,17 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         if(Validate.isList(expertList)){
             expertList.forEach( el ->{
                 ExpertNewInfoDto expertDto = new ExpertNewInfoDto();
-               // el.setPhoto(null);
                 BeanCopierUtils.copyProperties(el,expertDto);
+                if(Validate.isList(el.getExpertType())){//是否有新的专家类别
+                    List<ExpertNewTypeDto> expertNewTypeDtoList = new ArrayList<>();
+                    for(ExpertNewType expertNewType:el.getExpertType()){
+                        ExpertNewTypeDto expertNewTypeDto=new ExpertNewTypeDto();
+                        BeanCopierUtils.copyPropertiesIgnoreNull(expertNewType,expertNewTypeDto);
+                        expertNewTypeDtoList.add(expertNewTypeDto);
+                    }
+                    expertDto.setExpertTypeDtoList(expertNewTypeDtoList);
+                }
+               // el.setPhoto(null);
                 expertDtoList.add(expertDto);
             });
         }
@@ -563,25 +572,25 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 expertNewInfo.setExpertNewInfoId(UUID.randomUUID().toString());
                 expertNewInfo.setCreatedDate(new Date());
                 expertNewInfo.setModifiedDate(new Date());
-                expertNewInfo.setMaJorBig(expertReviewNewInfoDtos[i].getMaJorBig());
-                expertNewInfo.setMaJorSmall(expertReviewNewInfoDtos[i].getMaJorSmall());
-                expertNewInfo.setExpeRttype(expertReviewNewInfoDtos[i].getExpeRttype());
                 expertNewInfo.setIsJoin(expertReviewNewInfoDtos[i].getIsJoin());
                 expertNewInfo.setIsLetterRw(expertReviewNewInfoDtos[i].getIsLetterRw());
                 expertNewInfoRepo.save(expertNewInfo);//保存新的专家信息
 
-                ExpertNewType expertNewType=new ExpertNewType();
-                expertNewType.setExpertNewInfo(expertNewInfo);//专家信息的关联
-                expertNewType.setId(UUID.randomUUID().toString());
-                expertNewType.setMaJorBig(expertReviewNewInfoDtos[i].getMaJorBig());
-                expertNewType.setMaJorSmall(expertReviewNewInfoDtos[i].getMaJorSmall());
-                expertNewType.setExpertType(expertReviewNewInfoDtos[i].getExpeRttype());
-                expertNewType.setBusinessId(expertNewInfoDto.getBusinessId());
-                expertNewType.setModifiedBy(SessionUtil.getDisplayName());
-                expertNewType.setModifiedDate(new Date());
-                expertNewType.setCreatedBy(SessionUtil.getDisplayName());
-                expertNewType.setCreatedDate(new Date());
-                expertNewTypeRepo.save(expertNewType);//保存专家类型
+                for(ExpertNewTypeDto expertNewTypeDto:expertReviewNewInfoDtos[i].getExpertDto().getExpertTypeDtoList()){
+                    ExpertNewType expertNewType=new ExpertNewType();
+                    expertNewType.setExpertNewInfo(expertNewInfo);//专家信息的关联
+                    expertNewType.setId(UUID.randomUUID().toString());
+                    expertNewType.setMaJorBig(expertNewTypeDto.getMaJorBig());
+                    expertNewType.setMaJorSmall(expertNewTypeDto.getMaJorSmall());
+                    expertNewType.setExpertType(expertNewTypeDto.getExpertType());
+                    expertNewType.setBusinessId(expertNewInfoDto.getBusinessId());
+                    expertNewType.setModifiedBy(SessionUtil.getDisplayName());
+                    expertNewType.setModifiedDate(new Date());
+                    expertNewType.setCreatedBy(SessionUtil.getDisplayName());
+                    expertNewType.setCreatedDate(new Date());
+                    expertNewTypeRepo.save(expertNewType);//保存专家类型
+                }
+
 
             }
         }catch (Exception e){

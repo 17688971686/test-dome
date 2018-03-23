@@ -75,7 +75,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         if(Validate.isString(dispatchDoc.getFileNum())){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该发文已经生成了发文编号！");
         }
-        //1、获取附件列表
+        /*//1、获取附件列表
         boolean isUploadMainFile = false;
         List<SysFile> fileList = sysFileRepo.findByMainId(signId);
         //默认每个类型都没检测
@@ -145,7 +145,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
             }
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传"+errorBuffer.toString()+"附件信息！");
-        }
+        }*/
         //获取发文最大编号
         int curYearMaxSeq = findCurMaxSeq(dispatchDoc.getDispatchDate());
         curYearMaxSeq = curYearMaxSeq + 1;
