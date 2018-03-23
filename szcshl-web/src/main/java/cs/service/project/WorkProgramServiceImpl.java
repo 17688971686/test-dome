@@ -499,6 +499,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         //获得会议信息
         List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(), workProgram.getId(), null);
         Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),sysFileService.findFtpId());
+
+        if(f == null){
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
+        }
         //2.1 生成签到表
         SysFile sysFile1 = CreateTemplateUtils.createtTemplateSignIn(f,sign, workProgram);
         if(sysFile1 != null && Validate.isString(sysFile1.getSysFileId())){

@@ -141,6 +141,11 @@
                         vm.showFlag.buttDisFileNum = true;
                     }
                 }
+                //完成工作方案时到发文环节，默认评审发放日期为当天
+                if( vm.model.processState == 3){
+                    vm.model.expertReviewDto.payDate = new Date().Format("yyyy-MM-dd");
+                }
+
                 //归档
                 if (vm.model.fileRecordDto) {
                     vm.showFlag.tabFilerecord = true;

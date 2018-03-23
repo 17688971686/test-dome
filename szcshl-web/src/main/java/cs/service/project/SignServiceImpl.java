@@ -1403,6 +1403,11 @@ public class SignServiceImpl implements SignService {
                 if (!expertReviewRepo.isFinishEPGrade(signid)) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
                 }
+                //如果没有完成单位评分，则不可以提交下一步
+                UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
+                if(unitScore != null && unitScore.getScore()==null){
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对单位进行评分,不能提交到下一步操作！");
+                }
 
                 if (flowDto.getBusinessMap().get("checkFileUser") != null) {
                     dealUser = JSON.parseObject(flowDto.getBusinessMap().get("checkFileUser").toString(), User.class);

@@ -61,6 +61,8 @@
         vm.dealWindow = function(businessId){
             reviewFeeSvc.findExpertReview(vm , businessId , function(data){
                 vm.expertReview = data ;
+                //默认初始化评审费发放日期为当天
+                vm.expertReview.payDate = new Date().Format("yyyy-MM-dd");
                 $("#payFromWindow").kendoWindow({
                     width: "70%",
                     height: "600px",
