@@ -15,7 +15,6 @@
         vm.confirmEPListReplace = [];                //已经调整过的聘请专家列表（已经经过确认的专家）
         vm.matchEPMap = {};                   //保存符合条件的专家信息
         vm.selectIds = [],                    //已经抽取的专家信息ID（用于排除查询）
-        vm.autoSelectedEPList = [];           //抽取结果列表，抽取方法在后面封装
         vm.businessId = $state.params.businessId;       //专家评审方案业务ID
         vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
         vm.businessType = $state.params.businessType;   //专家业务类型
@@ -51,7 +50,15 @@
                 vm.confirmEPList.push(obj);
                 if(vm.confirmEPListReplace.length > 0){
                     vm.confirmEPListReplace.push(obj);
+                    //保存拟聘专家
+                    if("专家函评"==vm.reviewType && obj.isLetterRw!= "9"){//是专家函评时就勾选完
+                        obj.isLetterRw=9;
+                    }else if("专家评审会"==vm.reviewType && obj.isLetterRw!= "0"){
+                        obj.isLetterRw=0;
+                    }
+                    vm.saveExpert(false);//进行保存最新的聘请专家列表
                 }
+
                 vm.selectIds.push(obj.expertDto.expertID);
             })
             vm.excludeIds = vm.selectIds.join(',');
@@ -154,9 +161,7 @@
                                 }else{
                                     obj2.isLetterRw = obj1.isLetterRw;
                                 }
-                                obj2.maJorBig = obj1.maJorBig;
-                                obj2.maJorSmall = obj1.maJorSmall;
-                                obj2.expeRttype = obj1.expeRttype;
+                                obj2.expertDto.expertTypeDtoList=obj1.expertTypeDtoList;//替换为最新修改的专业大类、小类，类别
                                 obj2.isJoin = obj1.isJoin;
                                 vm.confirmEPListReplace.push(obj2);
                             }
@@ -314,6 +319,7 @@
                         if(!vm.expertReview.id){
                             vm.expertReview.id = data.idCode;
                         }
+
                         vm.reFleshSelEPInfo(data.reObj);
                         bsWin.success("操作成功！",function(){
                             window.parent.$("#outExpertDiv").data("kendoWindow").close();
@@ -767,11 +773,15 @@
         /**
          * 保存新专家信息
          */
-        vm.saveExpert=function () {
+        vm.saveExpert=function (isDisplay) {
             vm.saveNewExpertFlag = '0';
             if(vm.confirmEPListReplace.length > 0){
                 expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
-                    bsWin.success("操作成功！");
+                    //在点击保存时需要提示。在经过别的添加时。不是点击保存按钮时，就不需要显示
+                    if(isDisplay){//用来判断是否显示提示信息
+                        bsWin.success("操作成功！");
+                    }
+
                 });
             }else{
                 $.each(vm.confirmEPList,function (j,obj2) {
@@ -780,7 +790,9 @@
                     }
                 });
                 expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
-                    bsWin.success("操作成功！");
+                    if(isDisplay){
+                        bsWin.success("操作成功！");
+                    }
                 });
 
             }

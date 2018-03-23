@@ -191,7 +191,7 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
                 List<ExpertDto> expertDtoList = new ArrayList<>(expertNewList.size());
                 expertNewList.forEach( el ->{
                     ExpertDto expertDto = new ExpertDto();
-                    if(el.getIsJoin().equals(Constant.EnumState.YES.getValue())){ //判断是否是确认专家。是确认专家时才显示
+                    if(Constant.EnumState.YES.getValue().equals(el.getIsJoin())){ //判断是否是确认专家。是确认专家时才显示
                         // el.setPhoto(null);
                         BeanCopierUtils.copyProperties(el,expertDto);
                         if(Validate.isList(el.getExpertType())){//添加专业类别

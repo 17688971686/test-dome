@@ -835,16 +835,18 @@
                 $.each(vm.users, function (i, u) {
                     if (u.id == selUserId) {
                         defaultOption += u.displayName;
+                        vm.selUserName=u.displayName;//用于判断是否要删除。
                         isSelMainUser = true;
                     }
                 })
             }
             //根据勾选的来加
              if($("input[name='"+displayName+"']").is(':checked')){//勾中的
-                 selUser.push(displayName)
+                 selUser.push(displayName);
              }else{//不勾中的
                  angular.forEach(selUser,function(su,index){
-                     if(su == displayName){
+                     if(su ==  vm.selUserName){
+                         //判断。如果第一负责人跟其他负责人相同时。进行删减。只保留一个意见
                          selUser.splice(index,1);
                      }
                  });
