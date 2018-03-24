@@ -360,35 +360,10 @@ public class SignRestServiceImpl implements SignRestService {
 
             //2、评审报告和投资匡算附件是必须上传的
             ArrayList<HashMap<String, Object>> fjList = new ArrayList<HashMap<String, Object>>();
-            List<SysFile> fileList = sysFileRepo.findByMainId(sign.getSignid());
+            List<SysFile> fileList = sysFileRepo.queryFileList(sign.getSignid(),"评审报告");
             if (Validate.isList(fileList)) {
                 List<String> checkNameArr = new ArrayList<>();
-                //评审报告附件
-                checkNameArr.add("评审意见");
-                checkNameArr.add("审核意见");
-                fjList = checkFile(fileList,checkNameArr,sysFileService.getLocalUrl());
-                if(Validate.isList(fjList)){
-                    dataMap.put("psbg", fjList);
-                }
-                //投资匡算附件
-                fjList = new ArrayList<HashMap<String, Object>>();
-                checkNameArr = new ArrayList<>();
-                checkNameArr.add("投资估算表");
-                checkNameArr.add("投资匡算表");
-                fjList = checkFile(fileList,checkNameArr,sysFileService.getLocalUrl());
-                if(Validate.isList(fjList)){
-                    dataMap.put("tzgsshb", fjList);
-                }
-
-                //评审组名单附件
-                fjList = new ArrayList<HashMap<String, Object>>();
-                checkNameArr = new ArrayList<>();
-                checkNameArr.add("评审组名单");
-                checkNameArr.add("评审组名单");
-                fjList = checkFile(fileList,checkNameArr,sysFileService.getLocalUrl());
-                if(Validate.isList(fjList)){
-                    dataMap.put("pszmd", fjList);
-                }
+                dataMap.put("psbg", fjList);
             }
             params.put("dataMap", JSON.toJSONString(dataMap));
             params.put("dataList", JSON.toJSONString(dataList));
