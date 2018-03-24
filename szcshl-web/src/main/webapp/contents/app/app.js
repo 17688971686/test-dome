@@ -1359,6 +1359,20 @@
                 }).data("kendoWindow").center().open();
             }
         }
+//评审费打印。判断开户行和银行账户信息完不完整
+        $rootScope.isBankCard=function (expertSelectedDtoList,signid) {
+
+            for(var i=0;i<expertSelectedDtoList.length;i++){
+                console.log(expertSelectedDtoList[i].expertDto.bankAccount);
+                if(expertSelectedDtoList[i].expertDto.bankAccount!=undefined && expertSelectedDtoList[i].expertDto.openingBank!=undefined ){
+
+                    $rootScope.printFile(signid,'SIGN_EXPERT' , 'SIGN_EXPERT_PAY');
+                }else{
+                    bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
+
+                }
+            }
+        }
 
         /**
          * 返回时列表状态不改变。

@@ -56,7 +56,7 @@
                     }else if("专家评审会"==vm.reviewType && obj.isLetterRw!= "0"){
                         obj.isLetterRw=0;
                     }
-                    vm.saveExpert(false);//进行保存最新的聘请专家列表
+                    /*vm.saveExpert(false);//进行保存最新的聘请专家列表*/
                 }
 
                 vm.selectIds.push(obj.expertDto.expertID);
