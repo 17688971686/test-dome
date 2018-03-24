@@ -48,9 +48,11 @@
                 下一环节名称
             </td>
             <td>
-                <div ng-repeat="x in vm.flow.nextNode">
+                <div ng-repeat="x in vm.flow.nextNode"  ng-if="vm.flow.curNode.activitiName != '项目负责人办理'">
                     <span>{{$index+1}}、{{x.activitiName}}</span>
                 </div>
+                <span ng-if="vm.flow.curNode.activitiName == '项目负责人办理' && vm.businessFlag.isNeedWP == 9 ">1、部长审批</span>
+                <span ng-if="vm.flow.curNode.activitiName == '项目负责人办理' && vm.businessFlag.isNeedWP != 9 ">1、发文申请</span>
             </td>
         </tr>
         <tr ng-if="vm.showFlag.businessNext">

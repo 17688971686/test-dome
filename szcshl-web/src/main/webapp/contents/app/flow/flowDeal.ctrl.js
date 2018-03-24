@@ -244,8 +244,6 @@
         vm.saveMark = function () {
             if(!vm.scoreExpert.score || vm.scoreExpert.score == 0){
                 bsWin.alert("请对专家进行评分！");
-            }else if(!vm.scoreExpert.describes){
-                bsWin.alert("请对专家进行评分描述！");
             }else{
                 expertReviewSvc.saveMark(vm.scoreExpert,function(data){
                     if(data.flag || data.reCode == 'ok'){
@@ -396,8 +394,23 @@
                         expertReview.reviewTaxes = (parseFloat(expertReview.reviewTaxes) + parseFloat(v.reviewTaxes)).toFixed(2);
                         expertReview.totalCost = (parseFloat(expertReview.reviewCost) + parseFloat(expertReview.reviewTaxes)).toFixed(2);
                     });
+                    //自动保存
+                    expertReviewSvc.savePayment(expertReview,vm.isCommit,function(data){
+                        if(data.flag || data.reCode == "ok"){
+                            bsWin.alert("操作成功！",function(){
+                                vm.isCommit = false;
+                            });
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
                 });
+
+
+            }else{
+                bsWin.alert("请正确填写专家评审费信息！");
             }
+
         }
 
         // S_countNum
@@ -422,7 +435,7 @@
         }
 
         // 保存专家费用
-        vm.savePayment = function (expertReview) {
+       /* vm.savePayment = function (expertReview) {
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
             if (isValid) {
@@ -438,7 +451,7 @@
             }else{
                 bsWin.alert("请正确填写专家评审费信息！");
             }
-        }
+        }*/
         /***************  E_专家评分，评审费发放  ***************/
 
         /*****************S_单位评分******************/
@@ -476,8 +489,6 @@
         vm.saveUnit=function () {
             if (!vm.model.unitScoreDto.score || vm.model.unitScoreDto.score == 0) {
                 bsWin.alert("请对单位进行评分！");
-            } else if (!vm.model.unitScoreDto.describes) {
-                bsWin.alert("请对单位进行评分描述！");
             } else {
                 companySvc.saveUnit(vm.model.unitScoreDto, function (data) {
                     if (data.flag || data.reCode == 'ok') {

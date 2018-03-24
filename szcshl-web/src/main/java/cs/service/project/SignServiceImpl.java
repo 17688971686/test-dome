@@ -1439,7 +1439,7 @@ public class SignServiceImpl implements SignService {
 
                 //专家评审方案,判断专家的一些信息是否完整
                  expertReview = expertReviewRepo.findByBusinessId(signid);
-                if (Validate.isList(expertReview.getExpertSelectedList())){
+                if (expertReview != null && Validate.isList(expertReview.getExpertSelectedList())){
                     Boolean isDisplay=false;
                     String prompt="专家";
                     List<ExpertSelected> expertSelecteds=expertReview.getExpertSelectedList();

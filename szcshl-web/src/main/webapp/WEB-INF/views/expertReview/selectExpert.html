@@ -60,7 +60,7 @@
                 <td style="width:40px;" align="center">序号</td>
                 <td style="width:20%;max-width: 200px;" align="center">突出专业<br>（大类）</td>
                 <td style="width:22%;max-width: 220px;" align="center">突出专业<br>（小类）</td>
-                <td style="width:12%;max-width: 120px;" align="center">专家类别</td>
+                <td style="width:12%;max-width: 120px;" align="center">专家类型</td>
                 <td style="width:12%;" align="center">综合评分</td>
                 <td style="width:6%;" align="center">正选<br>人数</td>
                 <td style="width:6%;" align="center">备选<br>人数</td>
@@ -171,7 +171,7 @@
                                 <td width="15%" align="center">姓名</td>
                                 <td width="20%" align="center">突出专业<br>（大类）</td>
                                 <td width="20%" align="center">突出专业<br>（小类）</td>
-                                <td width="20%" align="center">专家类别</td>
+                                <td width="20%" align="center">专家类型</td>
                                 <td width="15%" align="center">综合评分</td>
                             </tr>
                             <tr ng-repeat="x in vm.autoSelectedEPList|filter:{isConfrim:'0',show:true,official:true} track by $index ">
@@ -196,7 +196,7 @@
                                 <td width="15%" align="center">姓名</td>
                                 <td width="20%" align="center">突出专业<br>（大类）</td>
                                 <td width="20%" align="center">突出专业<br>（小类）</td>
-                                <td width="20%" align="center">专家类别</td>
+                                <td width="20%" align="center">专家类型</td>
                                 <td width="25%" align="center">综合评分</td>
                             </tr>
                             <tr ng-repeat="x in  vm.autoSelectedEPList|filter:{isConfrim:'0',show:true,official:false} track by $index">
@@ -227,7 +227,7 @@
                     <td width="10%" align="center">职务/职称</td>
                     <td width="10%" align="center">专业</td>
                     <td width="15%" align="center">联系电话</td>
-                    <td width="10%" align="center">专家类别</td>
+                    <td width="10%" align="center">专家类型</td>
                     <td width="15%" align="center">备注</td>
                 </tr>
                 <tr ng-repeat="x in  vm.confirmEPList|filter:{selectType:'1',isConfrim:'9'} track by $index">
@@ -267,7 +267,7 @@
                     <td width="15%" align="center">职务/职称</td>
                     <td width="16%" align="center">专业</td>
                     <td width="10%" align="center">联系电话</td>
-                    <td width="10%" align="center">专家类别</td>
+                    <td width="10%" align="center">专家类型</td>
                     <td width="8%" align="center">是否确认</td>
                     <td width="8%" align="center">抽取批次</td>
                     <td width="8%" align="center">备注</td>
@@ -301,7 +301,7 @@
                     <td width="12%" align="center">专业大类</td>
                     <td width="12%" align="center">专业小类</td>
                     <td width="12%" align="center">联系电话</td>
-                    <td width="12%" align="center">专家类别</td>
+                    <td width="12%" align="center">专家类型</td>
                     <td width="15%" align="center">备注</td>
                 </tr>
                 <tr ng-repeat="x in vm.matchExpertList track by $index">
@@ -339,7 +339,7 @@
                 <td width="10%" align="center">专业大类</td>
                 <td width="10%" align="center">专业小类</td>
                 <td width="15%" align="center">联系电话</td>
-                <td width="10%" align="center">专家类别</td>
+                <td width="10%" align="center">专家类型</td>
                 <td width="20%" align="center">备注</td>
             </tr>
             <tr ng-repeat="x in vm.confirmEPList|filter:{selectType:'2',isConfrim:'9'} track by $index">
@@ -385,7 +385,7 @@
                     <tr>
                         <td style="width: 80px;text-align: right;" >专家姓名:</td>
                         <td><input name="name" type="text"  operator="like" value=""></td>
-                        <td style="width: 80px;text-align: right;">专家类别:</td>
+                        <td style="width: 80px;text-align: right;">专家类型:</td>
                         <td>
                             <select name="expertTypeParam">
                                 <option value="">请选择</option>
@@ -447,7 +447,7 @@
                 <td width="10%" align="center">专业大类</td>
                 <td width="10%" align="center">专业小类</td>
                 <td width="15%" align="center">联系电话</td>
-                <td width="10%" align="center">专家类别</td>
+                <td width="10%" align="center">专家类型</td>
                 <td width="20%" align="center">备注</td>
             </tr>
             <tr ng-repeat="x in vm.confirmEPList|filter:{selectType:'3',isConfrim:'9'} track by $index ">
@@ -499,7 +499,7 @@
                     <tr>
                         <td style="width: 80px;text-align: right;" >专家姓名:</td>
                         <td><input name="name" type="text"  operator="like" value=""></td>
-                        <td style="width: 80px;text-align: right;">专家类别:</td>
+                        <td style="width: 80px;text-align: right;">专家类型:</td>
                         <td>
                             <select name="expertTypeParam">
                                 <option value="">请选择</option>
@@ -552,7 +552,7 @@
                 <td width="10%" align="center">职务/职称</td>
                 <td width="25%" align="center">专业</td>
                 <td width="10%" align="center">联系电话</td>
-                <td width="10%" align="center">专家类别</td>
+                <td width="10%" align="center">专家类型</td>
                 <td width="10%" align="center">是否函评</td>
                 <td width="10%" align="center">备注</td>
             </tr>

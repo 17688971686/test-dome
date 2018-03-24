@@ -386,7 +386,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             ExpertReview expertReview = expertReviewRepo.findById(experReviewId);
             //管理员可以维护
             if(expertReview.getPayDate() != null && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())){
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "已经进行评审费发送，不能再次保存！");
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "已经进行评审费发放，不能再次发放！");
             }
             //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存(或者超级管理员) 超级管理员发放，不做时间限制
             if ( !Constant.SUPER_USER.equals(SessionUtil.getLoginName()) &&  expertReview.getReviewDate() != null && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
