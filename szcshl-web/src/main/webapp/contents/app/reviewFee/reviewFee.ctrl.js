@@ -142,7 +142,24 @@
                            expertReview.totalCost = (parseFloat(expertReview.reviewCost) + parseFloat(expertReview.reviewTaxes)).toFixed(2);
                        }
                     });
+
+
+                    //自动保存
+                    expertReviewSvc.savePayment(expertReview,vm.isCommit,function(data){
+                        if(data.flag || data.reCode == "ok"){
+                            bsWin.alert("操作成功！",function(){
+                                vm.isCommit = false;
+                                window.parent.$("#payFromWindow").data("kendoWindow").close();
+                                vm.gridOptions.dataSource.read();
+                            });
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
                 });
+
+            }else{
+                bsWin.alert("请正确填写专家评审费信息！");
             }
         }
 

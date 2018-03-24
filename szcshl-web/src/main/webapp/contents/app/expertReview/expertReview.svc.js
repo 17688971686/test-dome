@@ -130,7 +130,7 @@
                     }
                 },{
                     field: "",
-                    title: "专家类别",
+                    title: "专家类型",
                     width: 100,
                     template : function(item) {
                         if(item.expertTypeDtoList){

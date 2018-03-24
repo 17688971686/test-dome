@@ -302,11 +302,17 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             dispatch.setDispatchScope(Constant.DIS_SCOPE_XSY+" "+sign.getMaindeptName()==null?"":sign.getMaindeptName()+" "+Constant.DIS_SCOPE_ZXLD);
             dispatch.setPrintCount(5);
             //发文标题
-            String fileTitle = "《";
+            String fileTitle = "深圳市投资项目评审中心关于";
             fileTitle += sign.getProjectname() == null ? "" : sign.getProjectname();
-            fileTitle += (sign.getReviewstage() == null ? "" : sign.getReviewstage());
-            fileTitle += "》";
-            fileTitle += (sign.getIsAdvanced() == null ? "" : sign.getIsAdvanced());
+            if(Constant.STAGE_BUDGET.equals(sign.getReviewstage())){
+                fileTitle += "项目的总概算的审核意见";
+            }else{
+                fileTitle += "项目的评审意见";
+            }
+//            fileTitle += sign.getProjectname() == null ? "" : sign.getProjectname();
+//            fileTitle += (sign.getReviewstage() == null ? "" : sign.getReviewstage());
+//            fileTitle += "》";
+//            fileTitle += (sign.getIsAdvanced() == null ? "" : sign.getIsAdvanced());
             dispatch.setFileTitle(fileTitle);
 
             // 获取当前用户信息

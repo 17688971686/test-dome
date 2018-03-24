@@ -63,9 +63,7 @@
         vm.saveMark = function () {
             if (!vm.scoreExpert.score || vm.scoreExpert.score == 0) {
                 bsWin.alert("请对专家进行评分！");
-            } else if (!vm.scoreExpert.describes) {
-                bsWin.alert("请对专家进行评分描述！");
-            } else {
+            }  else {
                 expertReviewSvc.saveMark(vm.scoreExpert, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         angular.forEach(vm.model.expertReviewDto.expertSelectedDtoList, function (scopeEP, index) {
@@ -120,9 +118,7 @@
         vm.saveUnit=function () {
             if (!vm.model.unitScoreDto.score || vm.model.unitScoreDto.score == 0) {
                 bsWin.alert("请对单位进行评分！");
-            } else if (!vm.model.unitScoreDto.describes) {
-                bsWin.alert("请对单位进行评分描述！");
-            } else {
+            }else {
                 companySvc.saveUnit(vm.model.unitScoreDto, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         bsWin.success("保存成功！", function () {
