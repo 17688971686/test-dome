@@ -571,7 +571,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 BeanCopierUtils.copyPropertiesIgnoreNull(expertNewInfoDto,expertNewInfo);
                 expertNewInfo.setExpertNewInfoId(UUID.randomUUID().toString());
                 expertNewInfo.setCreatedDate(new Date());
+                expertNewInfo.setCreatedBy(SessionUtil.getDisplayName());
                 expertNewInfo.setModifiedDate(new Date());
+                expertNewInfo.setModifiedBy(SessionUtil.getDisplayName());
                 expertNewInfo.setIsJoin(expertReviewNewInfoDtos[i].getIsJoin());
                 expertNewInfo.setIsLetterRw(expertReviewNewInfoDtos[i].getIsLetterRw());
                 expertNewInfoRepo.save(expertNewInfo);//保存新的专家信息

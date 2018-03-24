@@ -358,12 +358,10 @@ public class SignRestServiceImpl implements SignRestService {
             psgcMap.put("blsj", dispatchDoc.getViceDirectorDate().getTime());// 办理时间
             dataList.add(psgcMap);
 
-            //2、评审报告和投资匡算附件是必须上传的
-            ArrayList<HashMap<String, Object>> fjList = new ArrayList<HashMap<String, Object>>();
+            //上传评审报告附件
             List<SysFile> fileList = sysFileRepo.queryFileList(sign.getSignid(),"评审报告");
             if (Validate.isList(fileList)) {
-                List<String> checkNameArr = new ArrayList<>();
-                dataMap.put("psbg", fjList);
+                dataMap.put("psbg", fileList);
             }
             params.put("dataMap", JSON.toJSONString(dataMap));
             params.put("dataList", JSON.toJSONString(dataList));
