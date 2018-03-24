@@ -1359,6 +1359,20 @@
                 }).data("kendoWindow").center().open();
             }
         }
+//评审费打印。判断开户行和银行账户信息完不完整
+        $rootScope.isBankCard=function (expertSelectedDtoList,signid) {
+
+            for(var i=0;i<expertSelectedDtoList.length;i++){
+                console.log(expertSelectedDtoList[i].expertDto.bankAccount);
+                if(expertSelectedDtoList[i].expertDto.bankAccount!=undefined && expertSelectedDtoList[i].expertDto.openingBank!=undefined ){
+
+                    $rootScope.printFile(signid,'SIGN_EXPERT' , 'SIGN_EXPERT_PAY');
+                }else{
+                    bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
+
+                }
+            }
+        }
 
         /**
          * 返回时列表状态不改变。
@@ -1404,6 +1418,238 @@
     });
 })();
 
+(function () {
+    'use strict';
+
+
+    angular.module('app').controller('addRegisterFileCtrl', addRegisterFile);
+
+    addRegisterFile.$inject = ['bsWin', 'addRegisterFileSvc', '$state'];
+
+    function addRegisterFile(bsWin, addRegisterFileSvc, $state) {
+        var vm = this;
+        vm.title = '登记补充资料';
+        vm.sign = {};//收文对象
+        vm.addRegisters = [];//登记补充材料集合
+        vm.businessId = $state.params.businessId;
+
+        //新建登记补充材料
+        vm.addRegisterFile = function () {
+            vm.addRegister = {};
+            vm.addRegister.businessId = vm.businessId;
+            vm.addRegister.id = common.uuid();
+            vm.addRegisters.push(vm.addRegister);
+        }
+
+        //保存登记补充材料
+        vm.saveRegisterFile = function () {
+            addRegisterFileSvc.saveRegisterFile(vm.addRegisters,function(data){
+                if(data.flag || data.reCode=='ok'){
+                    bsWin.alert("操作成功");
+                    vm.addRegisters = data.reObj;
+                }else{
+                    bsWin.alert(data.reMsg);
+                }
+            });
+        }
+        //删除登记补充资料
+        vm.deleteRegisterFile = function () {
+            var isCheked = $("#addRegistersTable input[name='addRegistersCheck']:checked")
+            if (isCheked.length < 1) {
+                bsWin.alert("请选择要删除的记录！");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheked.length; i++) {
+                    vm.addRegisters.forEach(function (f, number) {
+                        if (f.id && isCheked[i].value == f.id) {
+                            ids.push(isCheked[i].value);
+                            vm.addRegisters.splice(number, 1);
+                        }
+                    });
+                }
+                if(ids.length > 0){
+                    addRegisterFileSvc.deleteByIds(ids.join(","), function (data) {
+                        bsWin.alert("删除成功！");
+                    });
+                }
+            }
+        }
+
+        //份数数字校验
+        vm.inputIntegerValue = function (checkValue, idSort) {
+            if (addRegisterFileSvc.isUnsignedInteger(checkValue)) {
+                $("#errorsUnmber" + idSort).html("");
+            } else {
+                $("#errorsUnmber" + idSort).html("只能输入数字");
+            }
+        }
+
+        activate();
+        function activate() {
+            if($state.params.businessId){
+                addRegisterFileSvc.initAddRegisterFile($state.params.businessId,function(data){
+                    if(data && data.length > 0){
+                        vm.addRegisters = data;
+                    }
+                });
+            }
+
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('addRegisterFileEditCtrl', addRegisterFile);
+
+    addRegisterFile.$inject = ['$location', 'addRegisterFileSvc', '$state'];
+
+    function addRegisterFile($location, addRegisterFileSvc, $state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '添加登记补充资料';
+        vm.isuserExist = false;
+        vm.id = $state.params.id;
+        if (vm.id) {
+            vm.isUpdate = true;
+            vm.title = '更新登记补充资料';
+        }
+
+        vm.create = function () {
+            addRegisterFileSvc.createAddRegisterFile(vm);
+        };
+        vm.update = function () {
+            addRegisterFileSvc.updateAddRegisterFile(vm);
+        };
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                addRegisterFileSvc.getAddRegisterFileById(vm);
+            }
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('addRegisterFileSvc', addRegisterFile);
+
+    addRegisterFile.$inject = ['$http'];
+
+    function addRegisterFile($http) {
+        var url_addRegisterFile = rootPath + "/addRegisterFile", url_back = '#/addRegisterFileList';
+        var service = {
+            initAddRegisterFile: initAddRegisterFile,		//初始化登记补充资料
+            saveRegisterFile: saveRegisterFile,				//保存登记补充材料
+            isUnsignedInteger: isUnsignedInteger,			//数字校验
+            initRegisterWinDow: initRegisterWinDow,			//初始化登记补充资料页面
+            deleteByIds: deleteByIds,                      // 根据ID删除补充资料函
+        };
+
+        return service;
+
+        function initRegisterWinDow(vm, opation) {
+            $("#addRegister").kendoWindow({
+                width: "70%",
+                height: "660px",
+                title: "意见选择",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        //检查是否为正整数
+        function isUnsignedInteger(value) {
+            if ((/^(\+|-)?\d+$/.test(value)) && value > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        //S 保存登记补充材料
+        function saveRegisterFile(addRegisters, callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/addRegisterFile/save",
+                headers: {
+                    "contentType": "application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType: "json",
+                data: angular.toJson(addRegisters),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        //E 保存登记补充材料
+
+        //刷新页面
+        function myrefresh() {
+            window.location.reload();
+        }
+
+        //S 初始化登记补充资料
+        function initAddRegisterFile(businessId, callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/addRegisterFile/findByBusinessId",
+                params: {
+                    businessId: businessId
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // E 初始化登记补充资料
+
+        //S_根据ID删除补充资料函
+        function deleteByIds(ids, callBack) {
+            var httpOptions = {
+                method: 'delete',
+                url: url_addRegisterFile + "/deleteFile",
+                params: {
+                    ids: ids
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+    }
+})();
 (function () {
     'use strict';
 
@@ -2710,237 +2956,6 @@
     }
 })();
 
-(function () {
-    'use strict';
-
-    angular.module('app').controller('addRegisterFileCtrl', addRegisterFile);
-
-    addRegisterFile.$inject = ['bsWin', 'addRegisterFileSvc', '$state'];
-
-    function addRegisterFile(bsWin, addRegisterFileSvc, $state) {
-        var vm = this;
-        vm.title = '登记补充资料';
-        vm.sign = {};//收文对象
-        vm.addRegisters = [];//登记补充材料集合
-        vm.businessId = $state.params.businessId;
-
-        //新建登记补充材料
-        vm.addRegisterFile = function () {
-            vm.addRegister = {};
-            vm.addRegister.businessId = vm.businessId;
-            vm.addRegister.id = common.uuid();
-            vm.addRegisters.push(vm.addRegister);
-        }
-
-        //保存登记补充材料
-        vm.saveRegisterFile = function () {
-            addRegisterFileSvc.saveRegisterFile(vm.addRegisters,function(data){
-                if(data.flag || data.reCode=='ok'){
-                    bsWin.alert("操作成功");
-                    vm.addRegisters = data.reObj;
-                }else{
-                    bsWin.alert(data.reMsg);
-                }
-            });
-        }
-        //删除登记补充资料
-        vm.deleteRegisterFile = function () {
-            var isCheked = $("#addRegistersTable input[name='addRegistersCheck']:checked")
-            if (isCheked.length < 1) {
-                bsWin.alert("请选择要删除的记录！");
-            } else {
-                var ids = [];
-                for (var i = 0; i < isCheked.length; i++) {
-                    vm.addRegisters.forEach(function (f, number) {
-                        if (f.id && isCheked[i].value == f.id) {
-                            ids.push(isCheked[i].value);
-                            vm.addRegisters.splice(number, 1);
-                        }
-                    });
-                }
-                if(ids.length > 0){
-                    addRegisterFileSvc.deleteByIds(ids.join(","), function (data) {
-                        bsWin.alert("删除成功！");
-                    });
-                }
-            }
-        }
-
-        //份数数字校验
-        vm.inputIntegerValue = function (checkValue, idSort) {
-            if (addRegisterFileSvc.isUnsignedInteger(checkValue)) {
-                $("#errorsUnmber" + idSort).html("");
-            } else {
-                $("#errorsUnmber" + idSort).html("只能输入数字");
-            }
-        }
-
-        activate();
-        function activate() {
-            if($state.params.businessId){
-                addRegisterFileSvc.initAddRegisterFile($state.params.businessId,function(data){
-                    if(data && data.length > 0){
-                        vm.addRegisters = data;
-                    }
-                });
-            }
-
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('addRegisterFileEditCtrl', addRegisterFile);
-
-    addRegisterFile.$inject = ['$location', 'addRegisterFileSvc', '$state'];
-
-    function addRegisterFile($location, addRegisterFileSvc, $state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '添加登记补充资料';
-        vm.isuserExist = false;
-        vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新登记补充资料';
-        }
-
-        vm.create = function () {
-            addRegisterFileSvc.createAddRegisterFile(vm);
-        };
-        vm.update = function () {
-            addRegisterFileSvc.updateAddRegisterFile(vm);
-        };
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                addRegisterFileSvc.getAddRegisterFileById(vm);
-            }
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('addRegisterFileSvc', addRegisterFile);
-
-    addRegisterFile.$inject = ['$http'];
-
-    function addRegisterFile($http) {
-        var url_addRegisterFile = rootPath + "/addRegisterFile", url_back = '#/addRegisterFileList';
-        var service = {
-            initAddRegisterFile: initAddRegisterFile,		//初始化登记补充资料
-            saveRegisterFile: saveRegisterFile,				//保存登记补充材料
-            isUnsignedInteger: isUnsignedInteger,			//数字校验
-            initRegisterWinDow: initRegisterWinDow,			//初始化登记补充资料页面
-            deleteByIds: deleteByIds,                      // 根据ID删除补充资料函
-        };
-
-        return service;
-
-        function initRegisterWinDow(vm, opation) {
-            $("#addRegister").kendoWindow({
-                width: "70%",
-                height: "660px",
-                title: "意见选择",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        //检查是否为正整数
-        function isUnsignedInteger(value) {
-            if ((/^(\+|-)?\d+$/.test(value)) && value > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        //S 保存登记补充材料
-        function saveRegisterFile(addRegisters, callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/addRegisterFile/save",
-                headers: {
-                    "contentType": "application/json;charset=utf-8"  //设置请求头信息
-                },
-                traditional: true,
-                dataType: "json",
-                data: angular.toJson(addRegisters),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        //E 保存登记补充材料
-
-        //刷新页面
-        function myrefresh() {
-            window.location.reload();
-        }
-
-        //S 初始化登记补充资料
-        function initAddRegisterFile(businessId, callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/addRegisterFile/findByBusinessId",
-                params: {
-                    businessId: businessId
-                }
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // E 初始化登记补充资料
-
-        //S_根据ID删除补充资料函
-        function deleteByIds(ids, callBack) {
-            var httpOptions = {
-                method: 'delete',
-                url: url_addRegisterFile + "/deleteFile",
-                params: {
-                    ids: ids
-                }
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-    }
-})();
 (function () {
     'use strict';
 
@@ -15653,7 +15668,7 @@
                     }else if("专家评审会"==vm.reviewType && obj.isLetterRw!= "0"){
                         obj.isLetterRw=0;
                     }
-                    vm.saveExpert(false);//进行保存最新的聘请专家列表
+                    /*vm.saveExpert(false);//进行保存最新的聘请专家列表*/
                 }
 
                 vm.selectIds.push(obj.expertDto.expertID);
@@ -16505,18 +16520,12 @@
                     width: 100,
                     template : function(item) {
                         if(item.expertTypeDtoList){
-                            var expertTypeList=item.expertTypeDtoList;
-                            var expertSortName="";
-                            for(var i=0;i<expertTypeList.length;i++){
-                                if(expertSortName.indexOf(expertTypeList[i].maJorBig) == -1 ){
-                                    if(i>0){
-                                        expertSortName+="<br>"
-                                    }
-                                    expertSortName+=expertTypeList[i].maJorBig;
-                                }
+                            if(item.expertTypeDtoList.length > 1){
+                                return "";
+                            }else if(item.expertTypeDtoList.length == 1){
 
+                                return item.expertTypeDtoList[0].maJorBig;
                             }
-                            return expertSortName;
                         }else{
                             return "";
                         }
@@ -16527,20 +16536,11 @@
                     width: 100,
                     template : function(item) {
                         if(item.expertTypeDtoList){
-                            var expertTypeList=item.expertTypeDtoList;
-                            var expertSortName="";
-                            for(var i=0;i<expertTypeList.length;i++){
-
-                                if(expertSortName.indexOf(expertTypeList[i].maJorSmall) == -1 ){//是否包含有重复
-                                    if(i>0){
-                                        expertSortName+="<br>"
-                                    }
-                                    expertSortName+=expertTypeList[i].maJorSmall;
-                                }
-
-
+                            if(item.expertTypeDtoList.length > 1){
+                                return "";
+                            }else if(item.expertTypeDtoList.length == 1){
+                                return item.expertTypeDtoList[0].maJorSmall;
                             }
-                            return expertSortName;
                         }else{
                             return "";
                         }
@@ -16551,18 +16551,11 @@
                     width: 100,
                     template : function(item) {
                         if(item.expertTypeDtoList){
-                            var expertTypeList=item.expertTypeDtoList;
-                            var expertSortName="";
-                            for(var i=0;i<expertTypeList.length;i++){
-                                if(expertSortName!=expertTypeList[i].expertType){
-                                    if(i>0){
-                                        expertSortName+="<br>"
-                                    }
-                                    expertSortName+=expertTypeList[i].expertType;
-                                }
-
+                            if(item.expertTypeDtoList.length > 1){
+                                return "";
+                            }else if(item.expertTypeDtoList.length == 1){
+                                return item.expertTypeDtoList[0].expertType;
                             }
-                            return expertSortName;
                         }else{
                             return "";
                         }
@@ -23492,15 +23485,40 @@
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
             if (isValid) {
-                expertReviewSvc.savePayment(expertReview,vm.isCommit,function(data){
-                    if(data.flag || data.reCode == "ok"){
-                        bsWin.alert("操作成功！",function(){
-                            vm.isCommit = false;
-                        });
-                    }else{
-                        bsWin.alert(data.reMsg);
+                if(expertReview.expertSelectedDtoList){
+                    var isAdopt=false;
+                    for(var i=0;i<expertReview.expertSelectedDtoList.length;i++){
+                        if(expertReview.expertSelectedDtoList[i].reviewCost==0){ //评审费为0时
+                            isAdopt=true;
+                        }else{//评审费不为0时
+                            if(expertReview.expertSelectedDtoList[i].expertDto.bankAccount!=undefined &&
+                                expertReview.expertSelectedDtoList[i].expertDto.openingBank!=undefined ){
+                                isAdopt=true;
+
+                            }else{
+                                isAdopt=false;
+                                break
+                            }
+                        }
+
                     }
-                });
+
+                }else{
+                    isAdopt=true;
+                }
+                if(isAdopt){
+                    expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
+                        if (data.flag || data.reCode == "ok") {
+                            bsWin.alert("操作成功！", function () {
+                                vm.isCommit = false;
+                            });
+                        } else {
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                }else{
+                    bsWin.alert("评审费不为0的专家，开户行和银行账户不完整，请写完整！");
+                }
             }else{
                 bsWin.alert("请正确填写专家评审费信息！");
             }
@@ -24917,15 +24935,40 @@
              var isValid = $('#payform').valid();
              if (isValid) {
                  if (expertReview.reviewCost) {
-                     expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
-                         if (data.flag || data.reCode == "ok") {
-                             bsWin.alert("操作成功！", function () {
-                                 vm.isCommit = false;
-                             });
-                         } else {
-                             bsWin.alert(data.reMsg);
+                     if(expertReview.expertSelectedDtoList){
+                         var isAdopt=false;
+                         for(var i=0;i<expertReview.expertSelectedDtoList.length;i++){
+                             if(expertReview.expertSelectedDtoList[i].reviewCost==0){ //评审费为0时
+                                 isAdopt=true;
+                             }else{//评审费不为0时
+                                 if(expertReview.expertSelectedDtoList[i].expertDto.bankAccount!=undefined &&
+                                     expertReview.expertSelectedDtoList[i].expertDto.openingBank!=undefined ){
+                                     isAdopt=true;
+
+                                 }else{
+                                     isAdopt=false;
+                                     break
+                                 }
+                             }
+
                          }
-                     });
+
+                     }else{
+                         isAdopt=true;
+                     }
+                     if(isAdopt){
+                         expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
+                             if (data.flag || data.reCode == "ok") {
+                                 bsWin.alert("操作成功！", function () {
+                                     vm.isCommit = false;
+                                 });
+                             } else {
+                                 bsWin.alert(data.reMsg);
+                             }
+                         });
+                     }else{
+                         bsWin.alert("评审费不为0的专家，开户行和银行账户不完整，请写完整！");
+                     }
                  } else {
                      bsWin.alert("请计算税率，再保存！");
                  }
@@ -30763,17 +30806,40 @@
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
             if (isValid) {
-                expertReviewSvc.savePayment(expertReview,vm.isCommit,function(data){
-                    if(data.flag || data.reCode == "ok"){
-                        bsWin.alert("操作成功！",function(){
-                            vm.isCommit = false;
-                            window.parent.$("#payFromWindow").data("kendoWindow").close();
-                            vm.gridOptions.dataSource.read();
-                        });
-                    }else{
-                        bsWin.alert(data.reMsg);
+                if(expertReview.expertSelectedDtoList){
+                    var isAdopt=false;
+                    for(var i=0;i<expertReview.expertSelectedDtoList.length;i++){
+                        if(expertReview.expertSelectedDtoList[i].reviewCost==0){ //评审费为0时
+                            isAdopt=true;
+                        }else{//评审费不为0时
+                            if(expertReview.expertSelectedDtoList[i].expertDto.bankAccount!=undefined &&
+                                expertReview.expertSelectedDtoList[i].expertDto.openingBank!=undefined ){
+                                isAdopt=true;
+
+                            }else{
+                                isAdopt=false;
+                                break
+                            }
+                        }
+
                     }
-                });
+
+                }else{
+                    isAdopt=true;
+                }
+                if(isAdopt){
+                    expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
+                        if (data.flag || data.reCode == "ok") {
+                            bsWin.alert("操作成功！", function () {
+                                vm.isCommit = false;
+                            });
+                        } else {
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                }else{
+                    bsWin.alert("评审费不为0的专家，开户行和银行账户不完整，请写完整！");
+                }
             }else{
                 bsWin.alert("请正确填写专家评审费信息！");
             }
@@ -34959,15 +35025,41 @@
             var isValid = $('#payform').valid();
             if (isValid) {
                 if (expertReview.reviewCost) {
-                    expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
-                        if (data.flag || data.reCode == "ok") {
-                            bsWin.alert("操作成功！", function () {
-                                vm.isCommit = false;
-                            });
-                        } else {
-                            bsWin.alert(data.reMsg);
+                    if(expertReview.expertSelectedDtoList){
+                        var isAdopt=false;
+                        for(var i=0;i<expertReview.expertSelectedDtoList.length;i++){
+                            if(expertReview.expertSelectedDtoList[i].reviewCost==0){ //评审费为0时
+                                isAdopt=true;
+                            }else{//评审费不为0时
+                                if(expertReview.expertSelectedDtoList[i].expertDto.bankAccount!=undefined &&
+                                    expertReview.expertSelectedDtoList[i].expertDto.openingBank!=undefined ){
+                                    isAdopt=true;
+
+                                }else{
+                                    isAdopt=false;
+                                    break
+                                }
+                            }
+
                         }
-                    });
+
+                    }else{
+                        isAdopt=true;
+                    }
+                    if(isAdopt){
+                        expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
+                         if (data.flag || data.reCode == "ok") {
+                         bsWin.alert("操作成功！", function () {
+                         vm.isCommit = false;
+                         });
+                         } else {
+                         bsWin.alert(data.reMsg);
+                         }
+                         });
+                    }else{
+                        bsWin.alert("评审费不为0的专家，开户行和银行账户不完整，请写完整！");
+                    }
+
                 } else {
                     bsWin.alert("请计算税率，再保存！");
                 }
@@ -36148,10 +36240,11 @@
 				    template: "<span class='row-number'></span>"  
 				 },
                 {
-                    field: "projectname",
-                    title: "项目名称",
+                    title: "",
                     width: 280,
-                    filterable: false
+                    template: function (item) {
+                        return '<a ng-click="vm.saveView()"  href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                    }
                 },
                 {
                     field: "filecode",

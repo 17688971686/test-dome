@@ -318,6 +318,7 @@
         </div>
         <!-- E 查看符合条件的专家信息 DIV -->
     </div>
+
     <!-- S 专家自选 DIV -->
     <div class="toolbar" style="min-height: 200px;">
         <p>
@@ -350,14 +351,17 @@
                 <td align="center">{{x.expertDto.comPany}}</td>
                 <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
                 <td align="center">
-                    <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}<br></span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length==1" ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}</span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length > 1"></span>
                 </td>
                 <td align="center">
-                    <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}<br></span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length==1" ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}</span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length>1" ></span>
                 </td>
                 <td align="center">{{x.expertDto.userPhone}}</td>
                 <td align="center">
-                    <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length==1" ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'expertType'">{{y.expertType}}</span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length>1" ></span>
                 </td>
                 <td align="center">{{x.expertDto.remark}}</td>
             </tr>
@@ -458,14 +462,17 @@
                 <td align="center">{{x.expertDto.comPany}}</td>
                 <td align="center">{{x.expertDto.job}} {{x.post}}</td>
                 <td align="center">
-                    <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}<br></span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length==1" ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}</span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length>1"></span>
                 </td>
                 <td align="center">
-                    <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}<br></span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length==1" ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}<br></span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length>1"></span>
                 </td>
                 <td align="center">{{x.expertDto.userPhone}}</td>
                 <td align="center">
-                    <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length==1" ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span>
+                    <span ng-if="x.expertDto.expertTypeDtoList.length>1"></span>
                 </td>
                 <td align="center">{{x.expertDto.remark}}</td>
             </tr>
@@ -631,25 +638,25 @@
                 <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
                 <td align="center">
                     <table class="table table-bordered">
-                        <tr  ng-repeat="y in x.expertDto.expertTypeDtoList">
+                        <tr>
                             <td style="width: 50%">
                                 <select class=" "  name="wide"
-                                        ng-model="y.maJorBig"
-                                        ng-change="y.majobSmallDicts = topSelectChange(y.maJorBig,DICT.MAJOR.dicts)"
+                                        ng-model="x.maJorBig"
+                                        ng-change="x.majobSmallDicts = topSelectChange(x.maJorBig,DICT.MAJOR.dicts)"
                                         data-val-required="必选" data-val="true">
                                     <option value="">请选择</option>
-                                    <option ng-repeat="z in DICT.MAJOR.dicts" value="{{z.dictName}}"
-                                            ng-selected="y.maJorBig == z.dictName">{{z.dictName}}
+                                    <option ng-repeat="y in DICT.MAJOR.dicts" value="{{y.dictName}}"
+                                            ng-selected="x.maJorBig == y.dictName">{{y.dictName}}
                                     </option>
                                 </select>
                             </td>
                             <td style="width: 50%">
-                                <select class="" ng-model="y.maJorSmall"
-                                        ng-init="y.majobSmallDicts = topSelectChange(y.maJorBig,DICT.MAJOR.dicts)"
+                                <select class="" ng-model="x.maJorSmall"
+                                        ng-init="x.majobSmallDicts = topSelectChange(x.maJorBig,DICT.MAJOR.dicts)"
                                         name="small" data-val-required="必选" data-val="true">
                                     <option value="">请选择</option>
-                                    <option ng-repeat="z in y.majobSmallDicts" value="{{z.dictName}}"
-                                            ng-selected="y.maJorSmall == z.dictName">{{z.dictName}}
+                                    <option ng-repeat="y in x.majobSmallDicts" value="{{y.dictName}}"
+                                            ng-selected="x.maJorSmall == y.dictName">{{y.dictName}}
                                     </option>
                                 </select>
                             </td>
@@ -659,19 +666,13 @@
                 </td>
                 <td align="center">{{x.expertDto.userPhone}}</td>
                 <td align="center">
-                    <table class="table table-bordered">
-                        <tr ng-repeat="y in x.expertDto.expertTypeDtoList">
-                            <td>
-                                <select name="expertType"  ng-model="y.expertType">
-                                    <option value="">请选择</option>
-                                    <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts"
-                                            ng-selected="y.expertType == dt.dictName"
-                                            value="{{dt.dictName}}">{{dt.dictName}}
-                                    </option>
-                                </select>
-                            </td>
-                        </tr>
-                    </table>
+                    <select name="expertTypeParam"  ng-model="x.expeRttype">
+                        <option value="">请选择</option>
+                        <option ng-repeat="dt in DICT.EXPERT_TYPE.dicts"
+                                ng-selected="x.expeRttype == dt.dictName"
+                                value="{{dt.dictName}}">{{dt.dictName}}
+                        </option>
+                    </select>
                 </td>
 
                 <td align="center"><input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="x.isLetterRw"

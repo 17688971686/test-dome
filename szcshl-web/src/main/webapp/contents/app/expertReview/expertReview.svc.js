@@ -32,7 +32,6 @@
         };
         return service;
 
-        
         //S_initReview
         function initReview(businessId,minBusinessId,callBack) {
             var httpOptions = {
@@ -104,18 +103,12 @@
                     width: 100,
                     template : function(item) {
                         if(item.expertTypeDtoList){
-                            var expertTypeList=item.expertTypeDtoList;
-                            var expertSortName="";
-                            for(var i=0;i<expertTypeList.length;i++){
-                                if(expertSortName.indexOf(expertTypeList[i].maJorBig) == -1 ){
-                                    if(i>0){
-                                        expertSortName+="<br>"
-                                    }
-                                    expertSortName+=expertTypeList[i].maJorBig;
-                                }
+                            if(item.expertTypeDtoList.length > 1){
+                                return "";
+                            }else if(item.expertTypeDtoList.length == 1){
 
+                                return item.expertTypeDtoList[0].maJorBig;
                             }
-                            return expertSortName;
                         }else{
                             return "";
                         }
@@ -126,20 +119,11 @@
                     width: 100,
                     template : function(item) {
                         if(item.expertTypeDtoList){
-                            var expertTypeList=item.expertTypeDtoList;
-                            var expertSortName="";
-                            for(var i=0;i<expertTypeList.length;i++){
-
-                                if(expertSortName.indexOf(expertTypeList[i].maJorSmall) == -1 ){//是否包含有重复
-                                    if(i>0){
-                                        expertSortName+="<br>"
-                                    }
-                                    expertSortName+=expertTypeList[i].maJorSmall;
-                                }
-
-
+                            if(item.expertTypeDtoList.length > 1){
+                                return "";
+                            }else if(item.expertTypeDtoList.length == 1){
+                                return item.expertTypeDtoList[0].maJorSmall;
                             }
-                            return expertSortName;
                         }else{
                             return "";
                         }
@@ -150,18 +134,11 @@
                     width: 100,
                     template : function(item) {
                         if(item.expertTypeDtoList){
-                            var expertTypeList=item.expertTypeDtoList;
-                            var expertSortName="";
-                            for(var i=0;i<expertTypeList.length;i++){
-                                if(expertSortName!=expertTypeList[i].expertType){
-                                    if(i>0){
-                                        expertSortName+="<br>"
-                                    }
-                                    expertSortName+=expertTypeList[i].expertType;
-                                }
-
+                            if(item.expertTypeDtoList.length > 1){
+                                return "";
+                            }else if(item.expertTypeDtoList.length == 1){
+                                return item.expertTypeDtoList[0].expertType;
                             }
-                            return expertSortName;
                         }else{
                             return "";
                         }
