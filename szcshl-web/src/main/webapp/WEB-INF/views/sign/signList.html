@@ -193,7 +193,8 @@
                         <select operator="eq" name="dispatchType"  class="form-control select-sm "
                                 ng-model="vm.project.dispatchType">
                             <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.DISPATCH_TYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.dispatchType==x.dictName">{{x.dictName}}
+                            <option value="非暂不实施项目">非暂不实施项目</option>
+                            <option value="非退文项目">非退文项目</option>
                             </option>
                         </select>
                     </td>
