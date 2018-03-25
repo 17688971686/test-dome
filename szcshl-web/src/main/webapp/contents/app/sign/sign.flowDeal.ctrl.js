@@ -719,6 +719,7 @@
                             };
                         }
                         signSvc.getAssociateSign(vm.searchAssociateSign, function (data) {
+                            console.log(data);
                             vm.associateSignList = [];
                             if (data) {
                                 vm.associateSignList = data;

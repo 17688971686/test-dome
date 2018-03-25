@@ -254,7 +254,7 @@
         vm.testAlert = function(){
             bsWin.confirm({
                 title: "询问提示",
-                message: "该项目已经关联其他合并评审会关联，您确定要改为单个评审吗？",
+                message: "该项目已关联其他项目，您确定要改为单个评审吗？",
                 onOk: function () {
                     alert("点击确认！");
                 },

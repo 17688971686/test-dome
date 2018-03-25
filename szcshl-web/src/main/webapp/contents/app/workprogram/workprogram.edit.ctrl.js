@@ -92,7 +92,7 @@
                     if(data.isSigle == '合并评审' && data.isMainProject == "9" && "单个评审" == vm.work.isSigle){
                         bsWin.confirm({
                             title: "询问提示",
-                            message: "该项目已经关联其他合并评审会关联，您确定要改为单个评审吗？",
+                            message: "该项目已关联其他项目，您确定要改为单个评审吗？",
                             onOk: function () {
                                 workprogramSvc.deleteAllMerge($state.params.signid,vm.work.id, function (data) {
                                     if (data.flag || data.reCode == 'ok') {
