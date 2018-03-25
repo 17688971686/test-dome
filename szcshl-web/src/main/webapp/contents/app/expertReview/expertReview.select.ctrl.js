@@ -56,7 +56,7 @@
                     }else if("专家评审会"==vm.reviewType && obj.isLetterRw!= "0"){
                         obj.isLetterRw=0;
                     }
-                    /*vm.saveExpert(false);//进行保存最新的聘请专家列表*/
+                    vm.saveExpert(false);//进行保存最新的聘请专家列表
                 }
 
                 vm.selectIds.push(obj.expertDto.expertID);
@@ -161,7 +161,10 @@
                                 }else{
                                     obj2.isLetterRw = obj1.isLetterRw;
                                 }
-                                obj2.expertDto.expertTypeDtoList=obj1.expertTypeDtoList;//替换为最新修改的专业大类、小类，类别
+                                //obj2.expertDto.expertTypeDtoList=obj1.expertTypeDtoList;//替换为最新修改的专业大类、小类，类别
+                                obj2.maJorBig = obj1.maJorBig;
+                                obj2.maJorSmall = obj1.maJorSmall;
+                                obj2.expeRttype = obj1.expeRttype;
                                 obj2.isJoin = obj1.isJoin;
                                 vm.confirmEPListReplace.push(obj2);
                             }

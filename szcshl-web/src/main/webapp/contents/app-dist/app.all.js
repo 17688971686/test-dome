@@ -1421,7 +1421,6 @@
 (function () {
     'use strict';
 
-
     angular.module('app').controller('addRegisterFileCtrl', addRegisterFile);
 
     addRegisterFile.$inject = ['bsWin', 'addRegisterFileSvc', '$state'];
@@ -15668,7 +15667,7 @@
                     }else if("专家评审会"==vm.reviewType && obj.isLetterRw!= "0"){
                         obj.isLetterRw=0;
                     }
-                    /*vm.saveExpert(false);//进行保存最新的聘请专家列表*/
+                    vm.saveExpert(false);//进行保存最新的聘请专家列表
                 }
 
                 vm.selectIds.push(obj.expertDto.expertID);
@@ -15761,6 +15760,8 @@
                 }
 
                 expertReviewSvc.initNewExpertInfo(vm.minBusinessId,function (data) {  //新专家调初始化
+                    console.log(data);
+                    console.log(vm.confirmEPList);
                   $.each(data,function (i,obj1) {
                         $.each(vm.confirmEPList,function (j,obj2) {
                             if(obj1.name == obj2.expertDto.name && obj2.isConfrim == '9' ){
@@ -15773,7 +15774,10 @@
                                 }else{
                                     obj2.isLetterRw = obj1.isLetterRw;
                                 }
-                                obj2.expertDto.expertTypeDtoList=obj1.expertTypeDtoList;//替换为最新修改的专业大类、小类，类别
+                                //obj2.expertDto.expertTypeDtoList=obj1.expertTypeDtoList;//替换为最新修改的专业大类、小类，类别
+                                obj2.maJorBig = obj1.maJorBig;
+                                obj2.maJorSmall = obj1.maJorSmall;
+                                obj2.expeRttype = obj1.expeRttype;
                                 obj2.isJoin = obj1.isJoin;
                                 vm.confirmEPListReplace.push(obj2);
                             }
@@ -16448,7 +16452,6 @@
         };
         return service;
 
-        
         //S_initReview
         function initReview(businessId,minBusinessId,callBack) {
             var httpOptions = {
@@ -16547,7 +16550,7 @@
                     }
                 },{
                     field: "",
-                    title: "专家类别",
+                    title: "专家类型",
                     width: 100,
                     template : function(item) {
                         if(item.expertTypeDtoList){
@@ -23303,8 +23306,6 @@
         vm.saveMark = function () {
             if(!vm.scoreExpert.score || vm.scoreExpert.score == 0){
                 bsWin.alert("请对专家进行评分！");
-            }else if(!vm.scoreExpert.describes){
-                bsWin.alert("请对专家进行评分描述！");
             }else{
                 expertReviewSvc.saveMark(vm.scoreExpert,function(data){
                     if(data.flag || data.reCode == 'ok'){
@@ -23455,8 +23456,23 @@
                         expertReview.reviewTaxes = (parseFloat(expertReview.reviewTaxes) + parseFloat(v.reviewTaxes)).toFixed(2);
                         expertReview.totalCost = (parseFloat(expertReview.reviewCost) + parseFloat(expertReview.reviewTaxes)).toFixed(2);
                     });
+                    //自动保存
+                    expertReviewSvc.savePayment(expertReview,vm.isCommit,function(data){
+                        if(data.flag || data.reCode == "ok"){
+                            bsWin.alert("操作成功！",function(){
+                                vm.isCommit = false;
+                            });
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
                 });
+
+
+            }else{
+                bsWin.alert("请正确填写专家评审费信息！");
             }
+
         }
 
         // S_countNum
@@ -23481,7 +23497,7 @@
         }
 
         // 保存专家费用
-        vm.savePayment = function (expertReview) {
+       /* vm.savePayment = function (expertReview) {
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
             if (isValid) {
@@ -23522,7 +23538,7 @@
             }else{
                 bsWin.alert("请正确填写专家评审费信息！");
             }
-        }
+        }*/
         /***************  E_专家评分，评审费发放  ***************/
 
         /*****************S_单位评分******************/
@@ -23560,8 +23576,6 @@
         vm.saveUnit=function () {
             if (!vm.model.unitScoreDto.score || vm.model.unitScoreDto.score == 0) {
                 bsWin.alert("请对单位进行评分！");
-            } else if (!vm.model.unitScoreDto.describes) {
-                bsWin.alert("请对单位进行评分描述！");
             } else {
                 companySvc.saveUnit(vm.model.unitScoreDto, function (data) {
                     if (data.flag || data.reCode == 'ok') {
@@ -25043,9 +25057,7 @@
         vm.saveMark = function () {
             if (!vm.scoreExpert.score || vm.scoreExpert.score == 0) {
                 bsWin.alert("请对专家进行评分！");
-            } else if (!vm.scoreExpert.describes) {
-                bsWin.alert("请对专家进行评分描述！");
-            } else {
+            }  else {
                 expertReviewSvc.saveMark(vm.scoreExpert, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         angular.forEach(vm.model.expertReviewDto.expertSelectedDtoList, function (scopeEP, index) {
@@ -25100,9 +25112,7 @@
         vm.saveUnit=function () {
             if (!vm.model.unitScoreDto.score || vm.model.unitScoreDto.score == 0) {
                 bsWin.alert("请对单位进行评分！");
-            } else if (!vm.model.unitScoreDto.describes) {
-                bsWin.alert("请对单位进行评分描述！");
-            } else {
+            }else {
                 companySvc.saveUnit(vm.model.unitScoreDto, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         bsWin.success("保存成功！", function () {
@@ -30778,7 +30788,24 @@
                            expertReview.totalCost = (parseFloat(expertReview.reviewCost) + parseFloat(expertReview.reviewTaxes)).toFixed(2);
                        }
                     });
+
+
+                    //自动保存
+                    expertReviewSvc.savePayment(expertReview,vm.isCommit,function(data){
+                        if(data.flag || data.reCode == "ok"){
+                            bsWin.alert("操作成功！",function(){
+                                vm.isCommit = false;
+                                window.parent.$("#payFromWindow").data("kendoWindow").close();
+                                vm.gridOptions.dataSource.read();
+                            });
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
                 });
+
+            }else{
+                bsWin.alert("请正确填写专家评审费信息！");
             }
         }
 
@@ -34671,8 +34698,11 @@
                     }
                 }
                 //完成工作方案时到发文环节，默认评审发放日期为当天
-                if( vm.model.processState == 3){
-                    vm.model.expertReviewDto.payDate = new Date().Format("yyyy-MM-dd");
+                if( vm.model.processState == 3 || vm.model.processState == 4){
+                    if( vm.model.expertReviewDto){
+
+                        vm.model.expertReviewDto.payDate = new Date().Format("yyyy-MM-dd");
+                    }
                 }
 
                 //归档
@@ -34899,9 +34929,7 @@
         vm.saveMark = function () {
             if (!vm.scoreExpert.score || vm.scoreExpert.score == 0) {
                 bsWin.alert("请对专家进行评分！");
-            } else if (!vm.scoreExpert.describes) {
-                bsWin.alert("请对专家进行评分描述！");
-            } else {
+            }  else {
                 expertReviewSvc.saveMark(vm.scoreExpert, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         angular.forEach(vm.model.expertReviewDto.expertSelectedDtoList, function (scopeEP, index) {
@@ -34986,7 +35014,22 @@
                             expertReview.totalCost = (parseFloat(expertReview.reviewCost) + parseFloat(expertReview.reviewTaxes)).toFixed(2);
                         }
                     });
+
+                    //自动保存
+                    expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
+                        if (data.flag || data.reCode == "ok") {
+                            bsWin.alert("操作成功！", function () {
+                                vm.isCommit = false;
+                            });
+                        } else {
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
                 });
+
+
+            }else{
+                bsWin.alert("请正确填写专家评审费信息！");
             }
         }
 
@@ -35020,7 +35063,7 @@
         }
 
         // 保存专家费用
-        vm.savePayment = function (expertReview) {
+        /*vm.savePayment = function (expertReview) {
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
             if (isValid) {
@@ -35066,7 +35109,7 @@
             } else {
                 bsWin.alert("请正确填写专家评审费信息！");
             }
-        }
+        }*/
         /***************  E_专家评分，评审费发放  ***************/
 
         /*****************S_单位评分******************/
@@ -35104,8 +35147,6 @@
         vm.saveUnit=function () {
             if (!vm.model.unitScoreDto.score || vm.model.unitScoreDto.score == 0) {
                 bsWin.alert("请对单位进行评分！");
-            } else if (!vm.model.unitScoreDto.describes) {
-                bsWin.alert("请对单位进行评分描述！");
             } else {
                 companySvc.saveUnit(vm.model.unitScoreDto, function (data) {
                     if (data.flag || data.reCode == 'ok') {
