@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
 <go-back ng-show="vm.showExpertScore"></go-back>
-<table class="table table-bordered">
+<table class="table table-bordered" ng-if="vm.model.expertReviewDto.expertSelectedDtoList">
     <caption class="text-center h3"><strong>专家评分</strong></caption><!--第一负责人才能评分-->
     <tr class="active">
         <td style="width: 5%;max-width: 70px;">序号</td>
@@ -33,7 +33,8 @@
     </tbody>
 </table>
 
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_SCORE')">打印预览</button>
+<button class="form-control btn-sm btn-primary" ng-if="vm.model.expertReviewDto.expertSelectedDtoList"
+        style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_SCORE')">打印预览</button>
 
 <!-- end 专家评分 -->
 

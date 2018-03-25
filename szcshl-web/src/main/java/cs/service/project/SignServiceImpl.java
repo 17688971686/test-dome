@@ -1291,11 +1291,28 @@ public class SignServiceImpl implements SignService {
                 if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
+                //获取第二负责人意见，如果负责人超过两个，则意见只显示人名+已审核
+                userList = signPrincipalService.getAllSecondPriUser(signid);
                 //修改第二负责人意见
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                String optionString = Validate.isString(dp.getSecondChargeSuggest()) ? (dp.getSecondChargeSuggest() + "<br>") : "";
-                dp.setSecondChargeSuggest(optionString + flowDto.getDealOption() + "              " + SessionUtil.getDisplayName() + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                if(userList.size() > 1){
+                    String options = dp.getSecondChargeSuggest();
+                    if("通过".equals(flowDto.getDealOption())){
+                        if(options != null && options.indexOf("已审核") > -1 ){
+                            options = options.replaceAll("已审核" , "，"+ SessionUtil.getDisplayName() + "已审核");
+                        }else{
+                            options = SessionUtil.getDisplayName() + "已审核";
+                        }
+                    }else{
+                        options += "<br/>" +  SessionUtil.getDisplayName() + "审核未通过";
+                    }
+
+                    dp.setSecondChargeSuggest(options);
+                }else{
+                    String optionString = Validate.isString(dp.getSecondChargeSuggest()) ? (dp.getSecondChargeSuggest() + "<br>") : "";
+                    dp.setSecondChargeSuggest(optionString + flowDto.getDealOption() + "              " + SessionUtil.getDisplayName() + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                }
 
                 dispatchDocRepo.save(dp);
 
@@ -1305,7 +1322,7 @@ public class SignServiceImpl implements SignService {
                     //判断是否有协办部门
                     if (signBranchRepo.allAssistCount(signid) > 0) {
                         variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), true);
-                        userList = signBranchRepo.findAssistOrgDirector(signid);
+//                        userList = signBranchRepo.findAssistOrgDirector(signid);
                         assigneeValue = buildUser(userList);
                         variables.put(FlowConstant.SignFlowParams.USER_XBBZ_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
                     } else {
@@ -2105,6 +2122,9 @@ public class SignServiceImpl implements SignService {
         sqlBuilder.append("select s.* from V_SIGN_DISP_WORK s where s." + SignDispaWork_.signid.getName() + " != :signid ");
         //sqlBuilder.append(" and (select count(cas.associate_signid) from CS_ASSOCIATE_SIGN cas where cas.signid = s." + SignDispaWork_.signid.getName() + ")=0 ");
         sqlBuilder.setParam("signid", signDispaWork.getSignid());
+        //只能是生成发文编号后的项目
+        sqlBuilder.append(" and s." + SignDispaWork_.processState.getName() + " >:processState " );
+        sqlBuilder.setParam("processState" ,  Constant.SignProcessState.END_DIS_NUM.getValue());
         if (Validate.isString(signDispaWork.getProjectname())) {
             sqlBuilder.append(" and s." + SignDispaWork_.projectname.getName() + " like :projectName");
             sqlBuilder.setParam("projectName", "%" + signDispaWork.getProjectname() + "%");
