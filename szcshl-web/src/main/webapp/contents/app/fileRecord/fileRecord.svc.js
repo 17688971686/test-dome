@@ -30,9 +30,9 @@
                     vm.isassistproc = (vm.fileRecord.isassistproc == '9')?true:false;
                     //其它资料信息
                     vm.fileRecord.registerFileDto.forEach(function(registerFile  , x){
-                        if(registerFile.businessType == 5 ||registerFile.businessType == 6 ||registerFile.businessType == 7){
+                        if(registerFile.businessType == "5" ||registerFile.businessType == "6" ||registerFile.businessType == "7"){
                             vm.otherFile.push(registerFile);
-                        }else if(registerFile.businessType == 2){
+                        }else if(registerFile.businessType == "2"){
                             vm.drawingFile.push(registerFile);
                         }
                         /*else if(registerFile.businessType == "XMJYS_DECLARE_FILE"){

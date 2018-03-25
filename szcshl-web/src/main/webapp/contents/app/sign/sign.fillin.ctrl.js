@@ -63,9 +63,9 @@
                 //其它资料信息
                 if(data.reObj.registerFileDtoDtoList!=undefined){
                     data.reObj.registerFileDtoDtoList.forEach(function(registerFile  , x){
-                        if(registerFile.businessType == 3){
+                        if(registerFile.businessType == "3"){
                             vm.supply.push(registerFile);
-                        }else if(registerFile.businessType == 2){
+                        }else if(registerFile.businessType == "2"){
                             vm.drawingFile.push(registerFile);
                         }else{
                             vm.otherFile.push(registerFile);

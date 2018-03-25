@@ -56,19 +56,18 @@ public class AddRegisterFile extends DomainBase {
 	 * 6为归档项目审核中的补充资料，
 	 * 7为归档其它特殊文件
 	 */
-	@Column(columnDefinition = "INTEGER")
-	private Integer businessType;
+	@Column(columnDefinition = "VARCHAR(2)")
+	private String businessType;
 
+	public String getBusinessType() {
+		return businessType;
+	}
 
-    public Integer getBusinessType() {
-        return businessType;
-    }
+	public void setBusinessType(String businessType) {
+		this.businessType = businessType;
+	}
 
-    public void setBusinessType(Integer businessType) {
-        this.businessType = businessType;
-    }
-
-    public String getId() {
+	public String getId() {
 		return id;
 	}
 

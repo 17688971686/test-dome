@@ -193,21 +193,21 @@ public class Constant {
      */
 
     public static enum AddRegisterFileType {
-        BSWJ(1),
-        GDTZ(2),
-        BCZL(3),
-        QTZL(4),
-        GBQT(5),
-        GXBZ(6),
-        GQTW(7);
+        BSWJ("1"),
+        GDTZ("2"),
+        BCZL("3"),
+        QTZL("4"),
+        GBQT("5"),
+        GXBZ("6"),
+        GQTW("7");
 
-        private Integer value;
+        private String value;
 
-        AddRegisterFileType(Integer value) {
+        AddRegisterFileType(String value) {
             this.value = value;
         }
 
-        public Integer getValue() {
+        public String getValue() {
             return value;
         }
     }

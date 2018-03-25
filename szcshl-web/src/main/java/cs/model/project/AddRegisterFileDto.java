@@ -41,14 +41,14 @@ public class AddRegisterFileDto extends BaseDto {
      * 6为归档项目审核中的补充资料，
      * 7为归档其它特殊文件
      */
-    private Integer businessType;
+    private String businessType;
 
 
-    public Integer getBusinessType() {
+    public String getBusinessType() {
         return businessType;
     }
 
-    public void setBusinessType(Integer businessType) {
+    public void setBusinessType(String businessType) {
         this.businessType = businessType;
     }
 
