@@ -40,6 +40,7 @@ import java.net.URL;
 import java.util.*;
 
 import static cs.common.Constant.EnumFlowNodeGroupName;
+import static cs.common.Constant.RevireStageKey.FGW_PRE_PROJECT_IFS;
 import static cs.common.Constant.RevireStageKey.LOCAL_URL;
 import static cs.common.Constant.RevireStageKey.RETURN_FGW_URL;
 import static cs.common.Constant.SUPER_USER;
@@ -286,6 +287,221 @@ public class SignRestServiceImpl implements SignRestService {
         return resultMsg;
     }
 
+
+
+    @Override
+    @Transactional
+    public ResultMsg pushPreProject(SignDto signDto) {
+        if (signDto == null) {
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
+        }
+        if (!Validate.isString(signDto.getFilecode())) {
+            return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_02.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_02.getValue());
+        }
+        ResultMsg resultMsg = new ResultMsg();
+        try {
+            String stageCode = "";
+            //1、判断项目阶段是否正确
+            if (Validate.isString(signDto.getReviewstage())) {
+                stageCode = signDto.getReviewstage();
+                String stageCHName = Constant.RevireStageKey.getZHCNName(stageCode);
+                if (!Validate.isString(stageCHName)) {
+                    StringBuffer msgBuffer = new StringBuffer("各阶段对应的标识如下：");
+                    msgBuffer.append("(" + Constant.RevireStageKey.KEY_SUG.getValue() + ":" + Constant.STAGE_SUG);
+                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_STUDY.getValue() + ":" + Constant.STAGE_STUDY);
+                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_BUDGET.getValue() + ":" + Constant.STAGE_BUDGET);
+                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_REPORT.getValue() + ":" + Constant.APPLY_REPORT);
+                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_HOMELAND.getValue() + ":" + Constant.DEVICE_BILL_HOMELAND);
+                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_IMPORT.getValue() + ":" + Constant.DEVICE_BILL_IMPORT);
+                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_DEVICE.getValue() + ":" + Constant.IMPORT_DEVICE);
+                    msgBuffer.append("|" + Constant.RevireStageKey.KEY_OTHER.getValue() + ":" + Constant.OTHERS + ")");
+                    return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_04.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_04.getValue() + msgBuffer.toString());
+                }
+                //对应系统的阶段名称
+                signDto.setReviewstage(stageCHName);
+                //是否是项目概算流程
+                if (Constant.RevireStageKey.KEY_BUDGET.getValue().equals(stageCode)
+                        || Validate.isString(signDto.getIschangeEstimate())) {
+                    signDto.setIsassistflow(Constant.EnumState.YES.getValue());
+                } else {
+                    signDto.setIsassistflow(Constant.EnumState.NO.getValue());
+                }
+            } else {
+                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
+            }
+            //1、根据收文编号获取项目信息
+            Sign sign = signRepo.findByFilecode(signDto.getFilecode(),signDto.getSignState());
+            Date now = new Date();
+            if (sign == null) {
+                sign = new Sign();
+                BeanCopierUtils.copyProperties(signDto, sign);
+                sign.setSignid(UUID.randomUUID().toString());
+                sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
+                sign.setCreatedDate(now);
+                sign.setCreatedBy(SUPER_USER);
+                //这里的送件人，默认为流程发起人，而不是委里项目的送件人
+                sign.setSendusersign("");
+            } else {
+                BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
+            }
+            sign.setModifiedBy(SUPER_USER);
+            sign.setModifiedDate(now);
+
+            //送来时间
+            if (Validate.isObject(sign.getReceivedate())) {
+                sign.setReceivedate(now);
+            }
+
+            //未签收的，改为预签收
+            if (!Validate.isString(sign.getIssign()) || Constant.EnumState.NO.getValue().equals(sign.getIssign())) {
+                //预签收
+                sign.setIssign(Constant.EnumState.NO.getValue());
+                sign.setSigndate(now);
+
+                /*//计算评审天数
+                Float totalReviewDays = Constant.WORK_DAY_15;
+                SysConfigDto sysConfigDto = sysConfigService.findByKey(stageCode);
+                if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
+                    totalReviewDays = Float.parseFloat(sysConfigDto.getConfigValue());
+                } else if ((Constant.RevireStageKey.KEY_SUG.getValue()).equals(stageCode) || (Constant.RevireStageKey.KEY_REPORT.getValue()).equals(stageCode)) {
+                    totalReviewDays = Constant.WORK_DAY_12;
+                }
+                //剩余评审天数
+                sign.setSurplusdays(totalReviewDays);
+                sign.setTotalReviewdays(totalReviewDays);
+                sign.setReviewdays(0f);*/
+            }
+
+            //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
+            if (!Validate.isString(sign.getDealOrgType())) {
+                if (Constant.STAGE_BUDGET.equals(sign.getReviewstage())) {
+                    sign.setDealOrgType(Constant.BusinessType.GX.getValue());
+                    sign.setLeaderhandlesug("请（概算一部 概算二部）组织评审。");
+                } else {
+                    sign.setDealOrgType(Constant.BusinessType.PX.getValue());
+                    sign.setLeaderhandlesug("请（评估一部 评估二部 评估一部信息化组）组织评审。");
+                }
+            }
+
+            if (!Validate.isString(sign.getLeaderId())) {
+                //5、综合部、分管副主任默认办理信息
+                List<User> roleList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
+                for (User user : roleList) {
+                    if (sign.getDealOrgType().equals(user.getMngOrgType())) {
+                        sign.setLeaderId(user.getId());
+                        sign.setLeaderName(user.getDisplayName());
+                        sign.setComprehensivehandlesug("请" + (user.getDisplayName()).substring(0, 1) + "主任阅示。");
+                        sign.setComprehensiveName("综合部");
+                        sign.setComprehensiveDate(new Date());
+                        break;
+                    }
+                }
+            }
+
+            //6、收文编号
+            if (!Validate.isString(sign.getSignNum())) {
+                sign.setSignNum(signService.findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate()));
+            }
+            signRepo.save(sign);
+
+            //获取传送过来的附件
+            if (Validate.isList(signDto.getSysFileDtoList())) {
+                StringBuffer fileBuffer = new StringBuffer();
+                int totalFileCount = signDto.getSysFileDtoList().size();
+                List<SysFile> saveFileList = new ArrayList<>();
+                //连接ftp
+                Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(), sysFileService.findFtpId());
+                FtpUtils ftpUtils = new FtpUtils();
+                FtpClientConfig k = ConfigProvider.getUploadConfig(f);
+
+                //读取附件
+                for (int i = 0, l = totalFileCount; i < l; i++) {
+                    SysFileDto sysFileDto = signDto.getSysFileDtoList().get(i);
+                    String showName = sysFileDto.getShowName();
+                    if (!Validate.isString(sysFileDto.getFileUrl())) {
+                        fileBuffer.append("【" + showName + "】附件接收失败，没有url!\r\n");
+                        continue;
+                    }
+
+                    URL url = new URL(sysFileDto.getFileUrl());
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    //设置超时间为3秒
+                    conn.setConnectTimeout(600000);
+                    //防止屏蔽程序抓取而返回403错误
+                    conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+                    //得到输入流
+
+                    boolean fileExist = false;
+                    String relativeFileUrl = File.separator + Constant.SysFileType.SIGN.getValue() + File.separator + sign.getSignid() + File.separator + Constant.SysFileType.FGW_FILE.getValue();
+                    String uploadFileName = "";
+                    //如果附件已存在，则覆盖，否则新增
+                    SysFile sysFile = sysFileRepo.isExistFile(relativeFileUrl, showName);
+                    if (null != sysFile) {
+                        String fileUrl = sysFile.getFileUrl();
+                        String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
+                        if (relativeFileUrl.equals(removeRelativeUrl)) {
+                            uploadFileName = fileUrl.substring(fileUrl.lastIndexOf(File.separator) + 1, fileUrl.length());
+                        }
+                        fileExist = true;
+                    } else {
+                        sysFile = new SysFile();
+                        sysFile.setMainId(sign.getSignid());
+                        sysFile.setBusinessId(sign.getSignid());
+                        sysFile.setMainType(Constant.SysFileType.SIGN.getValue());
+                        sysFile.setSysBusiType(Constant.SysFileType.FGW_FILE.getValue());
+                        sysFile.setFileSize(sysFileDto.getFileSize());
+                        sysFile.setShowName(showName);
+                        sysFile.setFileType(showName.substring(showName.lastIndexOf("."), showName.length()));
+                        uploadFileName = Tools.generateRandomFilename().concat(sysFile.getFileType());
+                    }
+                    //附件上传到ftp
+                    boolean uploadResult = ftpUtils.putFile(k,relativeFileUrl, uploadFileName, conn.getInputStream());
+                    if (uploadResult) {
+                        //保存数据库记录
+                        if (fileExist) {
+                            sysFile.setModifiedBy(SUPER_USER);
+                            sysFile.setModifiedDate(new Date());
+                        } else {
+                            sysFile.setFileUrl(relativeFileUrl + File.separator + uploadFileName);
+                            sysFile.setCreatedBy(SUPER_USER);
+                            sysFile.setModifiedBy(SUPER_USER);
+                            sysFile.setCreatedDate(now);
+                            sysFile.setModifiedDate(now);
+                            sysFile.setFtp(f);
+                            sysFile.setSysFileId(UUID.randomUUID().toString());
+                            sysFile.setBusinessId(sign.getSignid());
+                        }
+                        saveFileList.add(sysFile);
+                    } else {
+                        sysFile = null;
+                        fileBuffer.append("【" + showName + "】附件存储到文件服务器失败!\r\n");
+                    }
+                }
+                //保存附件
+                if (Validate.isList(saveFileList)) {
+                    sysFileService.bathSave(saveFileList);
+                }
+                if (Validate.isString(fileBuffer.toString())) {
+                    resultMsg.setReMsg(fileBuffer.toString());
+                }
+            }
+            resultMsg.setFlag(true);
+            if (Validate.isString(resultMsg.getReMsg())) {
+                //附件保存有错误
+                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SIGN_05.getCode());
+                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue() + resultMsg.getReMsg());
+            } else {
+                resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
+                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
+            }
+        } catch (Exception e) {
+            resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
+        } finally {
+
+        }
+        return resultMsg;
+    }
+
     /**
      * 回调数据给发改委
      *
@@ -359,9 +575,17 @@ public class SignRestServiceImpl implements SignRestService {
             dataList.add(psgcMap);
 
             //上传评审报告附件
+            ArrayList<HashMap<String, Object>> fjList = new ArrayList<HashMap<String, Object>>();
             List<SysFile> fileList = sysFileRepo.queryFileList(sign.getSignid(),"评审报告");
             if (Validate.isList(fileList)) {
-                dataMap.put("psbg", fileList);
+                    for (SysFile sf : fileList) {
+                        HashMap<String, Object> fjMap = new HashMap<String, Object>();
+                        fjMap.put("url", sysFileService.getLocalUrl() + "/file/remoteDownload/" + sf.getSysFileId());
+                        fjMap.put("filename", sf.getShowName());
+                        fjMap.put("tempName", sf.getCreatedBy());
+                        fjList.add(fjMap);
+                    }
+                dataMap.put("psbg", fjList);
             }
             params.put("dataMap", JSON.toJSONString(dataMap));
             params.put("dataList", JSON.toJSONString(dataList));
@@ -394,6 +618,23 @@ public class SignRestServiceImpl implements SignRestService {
         }else{
             PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
             returnUrl = propertyUtil.readProperty(IFResultCode.FGW_PROJECT_IFS);
+        }
+        return returnUrl;
+    }
+
+    /**
+     * 获取回预签收地址
+     * @return
+     */
+    @Override
+    public String getPreReturnUrl() {
+        String returnUrl = "";
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(FGW_PRE_PROJECT_IFS.getValue());
+        if(sysConfigDto != null) {
+            returnUrl = sysConfigDto.getConfigValue();
+        }else{
+            PropertyUtil propertyUtil = new PropertyUtil(Constant.businessPropertiesName);
+            returnUrl = propertyUtil.readProperty(IFResultCode.FGW_PRE_PROJECT_IFS);
         }
         return returnUrl;
     }

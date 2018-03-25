@@ -13,6 +13,7 @@
             getsignById: getsignById,                    //根据id查询
             reserveAdd: reserveAdd,                     //新增预签收记录
             deleteReserveSign: deleteReserveSign,       //删除预签收记录
+            getPreSignInfo : getPreSignInfo             //根据收文编号查询项目预签收信息
         };
 
         return service;
@@ -43,6 +44,26 @@
         }
         //end E_项目预签收
 
+        function getPreSignInfo(fileCode ,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/intfc/getPreSign",
+                params:{
+                    fileCode :fileCode
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
+        }
 
         // begin#deleteUser
         function deleteReserveSign(vm, id) {

@@ -40,6 +40,7 @@ import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.SysConfigService;
+import cs.service.sys.UserService;
 import cs.service.sys.WorkdayService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -58,6 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static cs.common.Constant.EMPTY_STRING;
 import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
 
 @Service
@@ -1356,9 +1358,29 @@ public class SignServiceImpl implements SignService {
                 variables.put(FlowConstant.SignFlowParams.HAVE_XB.getValue(), isHaveTwoSLeader);
                 //如果有协办
                 if (isHaveTwoSLeader) {
+                    //如果只有两个分管领导的情况，当另外一个是兼职主任时，自动跳过协审部长审批环节
+                    if(userList.size() == 1){
+                        dealUser = userList.get(0);
+                        Set<String> rolesName = userRepo.getUserRoles(dealUser.getLoginName());
+                        //如果是主任角色，自动处理协办分管主任环节信息
+                        boolean isDirector =false;
+                        for (Object str : rolesName) {//循环判断是否是部门负责人
+                            if(str.equals(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
+                                isDirector = true;
+                                break;
+                            }
+                        }
+                        if(isDirector){
+                            isNextUser = true;
+                            nextNodeKey = FlowConstant.FLOW_SIGN_FGLD_QRFW_XB;
+                            flowDto.getBusinessMap().put("AGREE",EMPTY_STRING); //暂留空
+                        }
+                    }
+
                     assigneeValue = buildUser(userList);
                     variables.put(FlowConstant.SignFlowParams.USER_XBFGLD_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
-                    //没有协办，则流转给主办分管领导审批
+
+                //没有协办，则流转给主办分管领导审批
                 } else {
                     assigneeValue = getMainSLeader(signid);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
@@ -1383,11 +1405,15 @@ public class SignServiceImpl implements SignService {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
                 //如果同意
-                if (EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
+                String agreeString = flowDto.getBusinessMap().get("AGREE").toString();
+                if (EnumState.YES.getValue().equals(agreeString) || EMPTY_STRING.equals(agreeString)) {
                     variables.put(FlowConstant.SignFlowParams.XBFZR_SP.getValue(), true);
                     assigneeValue = getMainSLeader(signid);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
-                    //不同意则回退到发文申请环节
+                    if(EMPTY_STRING.equals(agreeString)){
+                        flowDto.setDealOption(EMPTY_STRING);
+                    }
+                //不同意则回退到发文申请环节
                 } else {
                     variables.put(FlowConstant.SignFlowParams.XBFZR_SP.getValue(), false);
                     variables = buildMainPriUser(variables, signid, assigneeValue);

@@ -6,6 +6,7 @@ package cs.common;
  */
 public class IFResultCode {
     public static final String FGW_PROJECT_IFS = "FGW_PROJECT_IFS";
+    public static final String FGW_PRE_PROJECT_IFS = "FGW_PRE_PROJECT_IFS";
     public static final String LOCAL_URL = "LOCAL_URL";
     /**
      * 以下主要用于接口对接

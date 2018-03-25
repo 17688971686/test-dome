@@ -12,6 +12,7 @@ import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.sys.Log;
 import cs.model.project.SignDto;
+import cs.model.project.SignPreDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.SysFileDto;
 import cs.model.topic.TopicInfoDto;
@@ -21,6 +22,7 @@ import cs.service.sys.LogService;
 import cs.service.topic.TopicInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -86,6 +88,51 @@ public class SysRestController {
         logService.save(log);
 
         resultMsg.setReObj(null);
+        return resultMsg;
+    }
+
+    /**
+     * 根据收文编号查询预签收
+     * @return
+     */
+    @RequestMapping(name = "项目预签收信息", value = "/getPreSign", method = RequestMethod.GET)
+    public synchronized ResultMsg findPreSignByfileCode(@RequestParam String fileCode){
+        String signPreInfo = "";
+        ResultMsg resultMsg = null;
+        try{
+
+            String preUrl = signRestService.getPreReturnUrl();
+            preUrl = preUrl + "?swbh="+fileCode;
+            signPreInfo =  httpClientOperate.doGet(preUrl);
+            SignPreDto signPreDto = JSON.parseObject(signPreInfo, SignPreDto.class);
+            String msg = "项目【"+signPreDto.getData().getProjectname()+"("+signPreDto.getData().getFilecode()+")】，";
+            try{
+                //json转出对象
+                resultMsg = signRestService.pushPreProject(signPreDto.getData());
+            }catch (Exception e){
+                resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
+                e.printStackTrace();
+            }
+
+            //添加日记记录
+            Log log = new Log();
+            log.setCreatedDate(new Date());
+            log.setUserName(SUPER_USER);
+            log.setLogCode(resultMsg.getReCode());
+            log.setModule(Constant.LOG_MODULE.INTERFACE.getValue() + "【获取项目预签收信息接口】");
+            log.setMessage(msg+resultMsg.getReMsg());
+            log.setBuninessId(Validate.isObject(resultMsg.getReObj()) ? resultMsg.getReObj().toString() : "");
+            log.setBuninessType(Constant.BusinessType.SIGN.getValue());
+            log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
+            log.setLogger(this.getClass().getName() + ".pushProject");
+            //优先级别高
+            log.setLogLevel(Constant.EnumState.PROCESS.getValue());
+            logService.save(log);
+            resultMsg.setReObj(null);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return resultMsg;
     }
 

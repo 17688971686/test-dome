@@ -86,6 +86,20 @@
             });
         }
 
+        vm.getPreSignInfo = function () {
+            if(vm.model.filecode == "" || vm.model.filecode == null){
+                bsWin.alert("收文编号不能为空!");
+                return ;
+            }
+            reserveSignSvc.getPreSignInfo(vm.model.filecode,function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    $state.go('reserveList');
+                }else{
+                    bsWin.alert("获取委里预签收信息是失败，请核查！!");
+                }
+            });
+        }
+
 
         active();
         function active() {

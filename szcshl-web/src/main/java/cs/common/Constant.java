@@ -13,6 +13,7 @@ public class Constant {
      */
     public static final String SUPER_USER = "admin";
     public static final String SUPER_ROLE = "超级管理员";
+    public static final String EMPTY_STRING = " ";
 
     /**
      * 默认需要上传的文件
@@ -707,6 +708,7 @@ public class Constant {
         KEY_FTPIP("FTPIP"),            //文件服务器IP地址,
         RTX_ENABLED("RTX_ENABLED"),     //是否使用腾讯通账号
         RETURN_FGW_URL("RETURN_FGW_URL"),//回传给委里的接口配置
+        FGW_PRE_PROJECT_IFS("FGW_PRE_PROJECT_IFS"),//预签收接口配置
         LOCAL_URL("LOCAL_URL");         //系统访问地址
         private String value;
 

@@ -16,7 +16,10 @@
 	    	<input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">
 	    	
 	    	<span class="help-inline" style="margin-left:10px;">项目编号：</span>
-	    	<input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">	    		
+	    	<input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">
+
+            <span class="help-inline" style="margin-left:10px;">收文编号：</span>
+            <input type="text" ng-model="vm.model.filecode" operator="eq" name="filecode" id="filecode" placeholder="请输入">
 
             <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.querySign()">查询</a>
             <a class="btn btn-sm btn-primary" href="#/reserveAdd">项目预签收</a>

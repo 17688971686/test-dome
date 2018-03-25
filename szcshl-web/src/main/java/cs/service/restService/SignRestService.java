@@ -22,6 +22,14 @@ public interface SignRestService {
     ResultMsg pushProject(SignDto signDto);
 
     /**
+     * 接收委里传输过来的预签收数据
+     * @param signDto
+     * @return
+     */
+    ResultMsg pushPreProject(SignDto signDto);
+
+
+    /**
      * 回调项目信息给发改委
      * @param sign
      * @return
@@ -33,4 +41,10 @@ public interface SignRestService {
      * @return
      */
     String getReturnUrl();
+
+    /***
+     * 获取委里预签收接口地址
+     * @return
+     */
+    String getPreReturnUrl();
 }

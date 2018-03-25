@@ -15760,8 +15760,6 @@
                 }
 
                 expertReviewSvc.initNewExpertInfo(vm.minBusinessId,function (data) {  //新专家调初始化
-                    console.log(data);
-                    console.log(vm.confirmEPList);
                   $.each(data,function (i,obj1) {
                         $.each(vm.confirmEPList,function (j,obj2) {
                             if(obj1.name == obj2.expertDto.name && obj2.isConfrim == '9' ){
@@ -36108,6 +36106,20 @@
             });
         }
 
+        vm.getPreSignInfo = function () {
+            if(vm.model.filecode == "" || vm.model.filecode == null){
+                bsWin.alert("收文编号不能为空!");
+                return ;
+            }
+            reserveSignSvc.getPreSignInfo(vm.model.filecode,function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    $state.go('reserveList');
+                }else{
+                    bsWin.alert("获取委里预签收信息是失败，请核查！!");
+                }
+            });
+        }
+
 
         active();
         function active() {
@@ -36155,6 +36167,7 @@
             getsignById: getsignById,                    //根据id查询
             reserveAdd: reserveAdd,                     //新增预签收记录
             deleteReserveSign: deleteReserveSign,       //删除预签收记录
+            getPreSignInfo : getPreSignInfo             //根据收文编号查询项目预签收信息
         };
 
         return service;
@@ -36185,6 +36198,26 @@
         }
         //end E_项目预签收
 
+        function getPreSignInfo(fileCode ,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/intfc/getPreSign",
+                params:{
+                    fileCode :fileCode
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+
+        }
 
         // begin#deleteUser
         function deleteReserveSign(vm, id) {
