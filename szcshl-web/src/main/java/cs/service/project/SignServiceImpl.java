@@ -24,6 +24,7 @@ import cs.model.flow.FlowDto;
 import cs.model.project.*;
 import cs.model.sys.OrgDto;
 import cs.model.sys.SysConfigDto;
+import cs.model.sys.SysFileDto;
 import cs.model.sys.UserDto;
 import cs.quartz.unit.QuartzUnit;
 import cs.repository.odata.ODataObj;
@@ -40,6 +41,7 @@ import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.SysConfigService;
+import cs.service.sys.SysFileService;
 import cs.service.sys.WorkdayService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -137,6 +139,8 @@ public class SignServiceImpl implements SignService {
     private ExpertRepo expertRepo;
     @Autowired
     private UnitScoreRepo unitScoreRepo;
+    @Autowired
+    private SysFileService sysFileService;
 
     /**
      * 项目签收保存操作（这里的方法是正式签收）
@@ -1515,6 +1519,20 @@ public class SignServiceImpl implements SignService {
                 UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
                 if(unitScore != null && unitScore.getScore()==null){
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对单位进行评分,不能提交到下一步操作！");
+                }
+                //查询附件
+                List<SysFileDto> sysfileDtoList = sysFileService.findByMainId(signid);
+                Boolean isfile=true;//判断是否有存档电子文档
+                if(Validate.isList(sysfileDtoList)){
+                    for(SysFileDto sysFileDto:sysfileDtoList){
+                        if("存档电子文档".equals(sysFileDto.getSysBusiType())){
+                            isfile=false;
+                        }
+                    }
+                }
+                if(isfile){
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未上传存档电子文档,不能提交到下一步操作！");
+
                 }
 
                 if (flowDto.getBusinessMap().get("checkFileUser") != null) {

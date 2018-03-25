@@ -84,7 +84,7 @@
                         </tr>
                         <tr ng-repeat="x in vm.orgs">
                             <td align="center">{{x.name}}</td>
-                            <td align="center"><input type="checkbox" selectType="main" tit="{{x.name}}"
+                            <td align="center"><input type="checkbox" name="{{x.name}}" selectType="main" tit="{{x.name}}"
                                                       ng-click="vm.mainOrg($event)" value="{{x.id}}"/></td>
                             <td align="center"><input type="checkbox" selectType="assist" tit="{{x.name}}"
                                                       id="assist_{{x.id}}" ng-click="vm.initOption($event)" value="{{x.id}}"/>
@@ -297,10 +297,10 @@
                 </div>
 
                 <!-- 财务报销 -->
-                <div ng-if="vm.showFlag.financialCode">
+                <div ng-if="vm.showFlag.financialCode &&vm.model.workProgramDtoList[0].isMainProject!='0">
                     <!-- 评审项目阶段 -->
                     <button class="btn btn-xs btn-primary" ng-click="vm.addFinancialApply('signCostWindow')"
-                            ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-edit"></span>财务办理
+                            ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-edit"></span>财务办理{{}}
                     </button>
                 </div>
                 <!-- 归档 -->

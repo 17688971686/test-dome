@@ -830,6 +830,9 @@
             var selectType = obj.attr("selectType");
             var checked = checkbox.checked;
             if(checked && selectType == 'main'){
+                //先删除第一个
+                selOrg.splice(0, 1);
+                //添加（替换不了。变为了添加）
                 selOrg.splice(0, 0, obj.attr("tit"));
             }else if(!checked && selectType == 'main'){
                 selOrg[0]= "";
@@ -846,6 +849,12 @@
                 });
             }
             if (selOrg.length > 0) {
+               for(var i=0;i<selOrg.length;i++){
+                   if(selOrg[0]==selOrg[i] &&0!=i){//判断跟主办是否有重复
+                       selOrg.splice(i,1);
+                   }
+
+               }
                 vm.flow.dealOption = "请（" + selOrg.join('，') + "）组织评审";
             }
 

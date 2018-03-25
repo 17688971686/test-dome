@@ -35,7 +35,7 @@ public class AddRegisterFileRepoImpl extends AbstractRepository<AddRegisterFile,
      * @param businessType
      */
     @Override
-    public void deleteByBusIdAndBusType(String businessId, Integer businessType) {
+    public void deleteByBusIdAndBusType(String businessId, String businessType) {
         HqlBuilder hqlBuilder =  HqlBuilder.create();
         hqlBuilder.append("delete from cs_add_registerfile where " + AddRegisterFile_.businessId.getName() + "=:businessId");
         hqlBuilder.setParam("businessId" , businessId);

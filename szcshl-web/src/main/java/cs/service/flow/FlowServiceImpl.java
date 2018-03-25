@@ -445,7 +445,7 @@ public class FlowServiceImpl implements FlowService {
             dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
             dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
             criteria.add(dis);
-        }/*else{
+        }else{
               List<OrgDept> orgDeptList =  orgDeptService.queryAll();
               Boolean isdirector=true;//是否是主任
               for(OrgDept orgDept : orgDeptList ){
@@ -465,7 +465,6 @@ public class FlowServiceImpl implements FlowService {
                       if (deptName.contains(",")) {
                           deptName = deptName.substring(0, deptName.length() - 1);
                           deptName=deptName.replaceAll(",","','");//替换字符，完成in的格式
-                          *//*String[] ss=deptName.split(",");*//*
                           sqlStr = " exists (select 1  from (SELECT u.DISPLAYNAME, o.name, u.id FROM cs_org o, cs_user u" +
                                   " WHERE o.id = u.orgid and u.id not in(select DU.USERLIST_ID from cs_dept_cs_user du)UNION " +
                                   " SELECT u.DISPLAYNAME, d.name, u.id FROM CS_DEPT d, cs_dept_cs_user du, cs_user u " +
@@ -485,7 +484,7 @@ public class FlowServiceImpl implements FlowService {
                   }
               }
 
-        }*/
+        }
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);

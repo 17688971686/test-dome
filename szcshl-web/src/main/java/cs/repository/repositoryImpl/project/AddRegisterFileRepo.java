@@ -19,7 +19,7 @@ public interface AddRegisterFileRepo extends IRepository<AddRegisterFile, String
      * @param businessId
      * @param businessType
      */
-    void deleteByBusIdAndBusType(String businessId , Integer businessType);
+    void deleteByBusIdAndBusType(String businessId , String businessType);
 
     /**
      * 通过业务ID和业务类型查询
