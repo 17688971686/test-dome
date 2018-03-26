@@ -16,7 +16,7 @@ public class Quartz extends DomainBase {
 
     @Id
     @GeneratedValue(generator= "QuartzGenerator")
-    @GenericGenerator(name= "QuartzGenerator",strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name= "QuartzGenerator",strategy = "uuid2")
     private String id;
 
     /**

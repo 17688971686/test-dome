@@ -19,7 +19,7 @@ public class SysDept {
      */
     @Id
     @GeneratedValue(generator= "deptGenerator")
-    @GenericGenerator(name= "deptGenerator",strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name= "deptGenerator",strategy = "uuid2")
     private String id;
 
     /**

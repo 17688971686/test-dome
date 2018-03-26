@@ -94,22 +94,19 @@
                             </option>
                         </select>
                     </td>
-                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">项目类型</td>
-                    <td width="15%">
-                        <select name="projectType" operator="eq" class="form-controls select-sm "
-                                ng-model="vm.project.projectType" ng-change="vm.project.projectTypeDicts = topSelectChange(vm.project.projectType,DICT.PROJECTTYPE.dicts)">
+                    <td class="text-right">提前介入/正常</td>
+                    <td>
+                        <select  ng-model="vm.project.reviewstages"
+                                 class="form-control select-sm">
                             <option value="">请选择</option>
-                            <option  ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.projectType==x.dictName" >{{x.dictName}}
-                            </option>
-                        </select>
-                       -
-                        <select ng-model="vm.project.projectSubType" name="projectSubType" class="form-controls select-sm " >
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in vm.project.projectTypeDicts" value="{{x.dictName}}"
-                                    ng-selected="vm.project.projectSubType == x.dictName">{{x.dictName}}
-                            </option>
+                            <option value="提前介入">提前介入</option>
+                            <option value="正常">正常</option>
                         </select>
                     </td>
+                    <!--进行判断-->
+                    <input ng-if="vm.project.reviewstages=='正常'" name="reviewstage" operator="ne" value="提前介入" hidden/>
+                    <input ng-if="vm.project.reviewstages=='提前介入'" name="reviewstage" operator="eq" value="提前介入" hidden/>
+
                     <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">评审部门</td>
                     <td width="15%">
                         <select name="mOrgId" class="form-control select-sm " operator="eq"
@@ -128,45 +125,6 @@
                     </td>
                 </tr>
                 <tr class="hidetr changeTr">
-                    <td class="text-right">项目负责人</td>
-                    <td>
-                    <select class="form-controls select-sm" ng-model="vm.project.displayName" ng-change="vm.project.fztype='全部'" >
-                        <option value="">请选择</option>
-                        <option ng-repeat="r in vm.userlist" value="{{r.displayName}}">{{r.displayName}}</option>
-                    </select>
-                        &nbsp;
-                    <select class="form-controls select-sm" ng-model="vm.project.fztype">
-                        <option value="">请选择</option>
-                        <option value="全部">全部</option>
-                        <option value="第一负责人">第一负责人</option>
-                        <option value="第二负责人">第二负责人</option>
-                    </select>
-                        <input ng-if="vm.project.fztype=='第一负责人'" operator="eq" name="mUserName" value="{{vm.project.displayName}}" hidden/>
-                        <input ng-if="vm.project.fztype=='第二负责人'" operator="like" name="aUserName" value="{{vm.project.displayName}}" hidden/>
-                        <input ng-if="vm.project.fztype=='全部'" operator="like" name="allPriUser"  value="{{vm.project.displayName}}" hidden/>
-                        <input ng-if="vm.project.fztype==' '" operator="like" name="allPriUser"  value="{{vm.project.displayName}}" hidden/>
-                    </td>
-                    <td class="text-right">秘密等级</td>
-                    <td>
-                        <select operator="eq" name="secrectlevel" ng-model="vm.project.secrectlevel"
-                                class="form-control select-sm">
-                            <option value="">请选择</option>
-                            <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}" ng-selected="vm.project.secrectlevel==x.dictName">{{x.dictName}}
-                            </option>
-                        </select>
-                    </td>
-                    <td class="text-right">归档编号</td>
-                    <td>
-                        <input name="ffilenum" type="text" operator="like" ng-model="vm.project.ffilenum"
-                               class="form-control input-sm "/>
-                    </td>
-                    <td class="text-right">文件字号</td>
-                    <td>
-                        <input name="dfilenum" type="text" operator="like" class="form-control input-sm "
-                               ng-model="vm.project.dfilenum"/>
-                    </td>
-                </tr>
-                <tr class="hidetr changeTr">
                     <td class="text-right">评审阶段</td>
                     <td>
                         <select name="reviewstage" operator="eq" class="form-control select "
@@ -175,7 +133,6 @@
                             <option ng-repeat="x in DICT.PRO_STAGE.dicts" value="{{x.dictName}}" ng-selected="vm.project.reviewstage==x.dictName">{{x.dictName}}</option>
                         </select>
                     </td>
-
                     <td class="text-right">评审方式</td>
                     <td>
                         <select operator="eq" name="reviewType" class="form-control select-sm "
@@ -209,10 +166,74 @@
                         </select>
                     </td>
                 </tr>
-
+                <tr class="hidetr changeTr">
+                    <td class="text-right">项目负责人</td>
+                    <td colspan="3">
+                        <select class="form-controls select-sm" ng-model="vm.project.displayName" ng-change="vm.project.fztype='全部'" >
+                            <option value="">请选择</option>
+                            <option ng-repeat="r in vm.userlist" value="{{r.displayName}}">{{r.displayName}}</option>
+                        </select>
+                        &nbsp;
+                        <select class="form-controls select-sm" ng-model="vm.project.fztype">
+                            <option value="">请选择</option>
+                            <option value="全部">全部</option>
+                            <option value="第一负责人">第一负责人</option>
+                            <option value="第二负责人">第二负责人</option>
+                        </select>
+                        <input ng-if="vm.project.fztype=='第一负责人'" operator="eq" name="mUserName" value="{{vm.project.displayName}}" hidden/>
+                        <input ng-if="vm.project.fztype=='第二负责人'" operator="like" name="aUserName" value="{{vm.project.displayName}}" hidden/>
+                        <input ng-if="vm.project.fztype=='全部'" operator="like" name="allPriUser"  value="{{vm.project.displayName}}" hidden/>
+                        <input ng-if="vm.project.fztype==' '" operator="like" name="allPriUser"  value="{{vm.project.displayName}}" hidden/>
+                    </td>
+                    <td class="text-right" >项目类型</td>
+                    <td colspan="3">
+                        <select name="projectType" operator="eq" class="form-controls select-sm "
+                                ng-model="vm.project.projectType" ng-change="vm.project.projectTypeDicts = topSelectChange(vm.project.projectType,DICT.PROJECTTYPE.dicts)">
+                            <option value="">请选择</option>
+                            <option  ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.projectType==x.dictName" >{{x.dictName}}
+                            </option>
+                        </select>
+                        -
+                        <select ng-model="vm.project.projectSubType" name="projectSubType" class="form-controls select-sm " >
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in vm.project.projectTypeDicts" value="{{x.dictName}}"
+                                    ng-selected="vm.project.projectSubType == x.dictName">{{x.dictName}}
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="hidetr changeTr">
+                    <td class="text-right">秘密等级</td>
+                    <td>
+                        <select operator="eq" name="secrectlevel" ng-model="vm.project.secrectlevel"
+                                class="form-control select-sm">
+                            <option value="">请选择</option>
+                            <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" value="{{x.dictName}}" ng-selected="vm.project.secrectlevel==x.dictName">{{x.dictName}}
+                            </option>
+                        </select>
+                    </td>
+                    <td class="text-right">归档编号</td>
+                    <td>
+                        <input name="ffilenum" type="text" operator="like" ng-model="vm.project.ffilenum"
+                               class="form-control input-sm "/>
+                    </td>
+                    <td class="text-right">文件字号</td>
+                    <td>
+                        <input name="dfilenum" type="text" operator="like" class="form-control input-sm "
+                               ng-model="vm.project.dfilenum"/>
+                    </td>
+                    <td class="text-right">评审天数</td>
+                    <td>
+                        <input name="reviewdays" data-type='float' ng-model="vm.project.beginReviewdays"
+                               style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="ge"/>
+                        -
+                        <input name="reviewdays" data-type='float' ng-model="vm.project.endReviewdays"
+                               style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="le"/>
+                    </td>
+                </tr>
                 <tr class="hidetr changeTr">
                     <td class="text-right">签收日期</td>
-                    <td colspan="2">
+                    <td colspan="3">
                         <input type="text" name="signdate" style="width:45%;min-width: 115px;max-width: 150px;" operator="ge" ng-model="vm.project.signDateBegin"
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                         至
@@ -220,44 +241,22 @@
                                class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                     <td class="text-right">发文日期</td>
-                    <td colspan="2">
+                    <td colspan="3">
                         <input type="text" name="dispatchDate"  style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.dispatchDateBegin"
                                operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                         至
                         <input type="text" name="dispatchDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.dispatchdateEnd"
                                operator="le" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
-                    <td class="text-right">提前介入/正常</td>
-                    <td>
-                        <select  ng-model="vm.project.reviewstages"
-                                class="form-control select-sm">
-                            <option value="">请选择</option>
-                            <option value="提前介入">提前介入</option>
-                            <option value="正常">正常</option>
-                        </select>
-                    </td>
-                    <!--进行判断-->
-                    <input ng-if="vm.project.reviewstages=='正常'" name="reviewstage" operator="ne" value="提前介入" hidden/>
-                    <input ng-if="vm.project.reviewstages=='提前介入'" name="reviewstage" operator="eq" value="提前介入" hidden/>
-
                 </tr>
                 <tr class="hidetr changeTr">
                     <td class="text-right">归档日期</td>
-                    <td colspan="2">
+                    <td colspan="3">
                         <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateBegin"
-                               operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                                  operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                         至
                         <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateEnd"
-                               operator="le"
-                               class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
-                    </td>
-                   <td class="text-right">评审天数</td>
-                    <td>
-                        <input name="reviewdays" data-type='float' ng-model="vm.project.beginReviewdays"
-                               style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="ge"/>
-                        -
-                        <input name="reviewdays" data-type='float' ng-model="vm.project.endReviewdays"
-                               style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="le"/>
+                           operator="le" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
                     </td>
                     <td class="text-right">申报投资</td>
                     <td>
@@ -279,7 +278,6 @@
                         <input type="checkbox" operator="eq" name="isProjectStop" value="9" ng-model="vm.project.isProjectStop"
                                ng-true-value="9"/>
                     </td>
-
                     <td class="text-right">有补充资料函</td>
                     <td>
                         <input type="checkbox" name="isHaveSuppLetter" operator="eq" value="9"

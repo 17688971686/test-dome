@@ -16,7 +16,7 @@ public class ExpertSelected {
 
     @Id
     @GeneratedValue(generator = "epSelectedGenerator")
-    @GenericGenerator(name = "epSelectedGenerator", strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "epSelectedGenerator", strategy = "uuid2")
     private String id;
 
     //评分

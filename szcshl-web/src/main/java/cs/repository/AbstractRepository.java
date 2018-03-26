@@ -1,27 +1,22 @@
 package cs.repository;
 
-import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import cs.common.HqlBuilder;
+import cs.common.utils.Validate;
+import cs.repository.odata.ODataObj;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
-import org.hibernate.transform.Transformers;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import cs.common.HqlBuilder;
-import cs.common.utils.Validate;
-import cs.repository.odata.ODataObj;
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 public class AbstractRepository<T, ID extends Serializable> implements IRepository<T, ID> {
     protected static Logger logger = Logger.getLogger(AbstractRepository.class);
@@ -63,7 +58,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public T findByIdGet(ID id) {
         logger.debug("findByIdGet");
-        return  getSession().get(this.getPersistentClass(),id);
+        return getSession().get(this.getPersistentClass(), id);
 
     }
 
@@ -96,8 +91,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @SuppressWarnings({"unchecked", "deprecation"})
     public List<T> findByCriteria(Criterion... criterion) {
         logger.debug("findByCriteria");
-        Criteria crit = this.getSession().createCriteria(this.getPersistentClass());
-
+        Criteria crit = getExecutableCriteria();
         for (Criterion c : criterion) {
             crit.add(c);
         }
@@ -125,7 +119,6 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public void delete(T entity) {
         logger.debug("delete");
-
         this.getSession().delete(entity);
     }
 
@@ -206,6 +199,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
 
     /**
      * 返回Int的sql查询
+     *
      * @param sqlBuilder
      * @return
      */
@@ -264,19 +258,20 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public int deleteById(String idPropertyName, String idValue) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" delete from  " + getPersistentClass().getSimpleName()+" ");
-        hqlBuilder.bulidPropotyString(" where ",idPropertyName,idValue);
+        hqlBuilder.append(" delete from  " + getPersistentClass().getSimpleName() + " ");
+        hqlBuilder.bulidPropotyString(" where ", idPropertyName, idValue);
 
         return executeHql(hqlBuilder);
     }
 
     /**
      * 根据sql 返回一个数组列表
+     *
      * @param sqlBuilder
      * @return
      */
     @Override
-    public List<Object[]> getObjectArray(HqlBuilder sqlBuilder){
+    public List<Object[]> getObjectArray(HqlBuilder sqlBuilder) {
         NativeQuery<Object[]> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
         List<String> params = sqlBuilder.getParams();
         List<Object> values = sqlBuilder.getValues();
@@ -296,8 +291,8 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     @Override
     public List<T> findByIds(String idPropertyName, String idValue, String orderStr) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from  " + getPersistentClass().getSimpleName()+" ");
-        hqlBuilder.bulidPropotyString("where",idPropertyName,idValue);
+        hqlBuilder.append(" from  " + getPersistentClass().getSimpleName() + " ");
+        hqlBuilder.bulidPropotyString("where", idPropertyName, idValue);
 
         if (Validate.isString(orderStr)) {
             hqlBuilder.append(" order by " + orderStr);
@@ -307,6 +302,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
 
     /**
      * 取数据库的当前时间
+     *
      * @param format 日期格式
      * @return
      */

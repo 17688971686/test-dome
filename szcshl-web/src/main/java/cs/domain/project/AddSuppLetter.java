@@ -16,7 +16,7 @@ public class AddSuppLetter extends DomainBase {
 	//拟稿编号
 	@Id
 	@GeneratedValue(generator = "suppLetterGenerator")
-    @GenericGenerator(name = "suppLetterGenerator", strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name = "suppLetterGenerator", strategy = "uuid2")
 	private String id;
 
 	/**

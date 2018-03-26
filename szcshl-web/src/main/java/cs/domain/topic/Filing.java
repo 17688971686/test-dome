@@ -19,7 +19,7 @@ public class Filing extends DomainBase {
 
     @Id
     @GeneratedValue(generator= "filingGenerator")
-    @GenericGenerator(name= "filingGenerator",strategy = "org.hibernate.id.UUIDGenerator")
+    @GenericGenerator(name= "filingGenerator",strategy = "uuid2")
     private String id;
 
     /**
