@@ -52,39 +52,52 @@
                         }
                     });
                 }else if((oldValue == 0 || oldValue == '0')&& (newValue == 9 || newValue == '9') && (!vm.sign.isAssociate || vm.sign.isAssociate == 0)){
-                    bsWin.confirm({
-                        title: "询问提示",
-                        message: "您要进行项目关联么？",
-                        onOk: function () {
-                            //根据项目名称，查询要关联阶段的项目
-                            if(!vm.searchAssociateSign){
-                                vm.searchAssociateSign = {
-                                    signid : vm.sign.signid,
-                                    projectname : vm.sign.projectname,
-                                };
-                            }
-                            signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
-                                vm.currentAssociateSign = vm.sign;
-                                vm.associateSignList = [];
-                                if(data){
-                                    vm.associateSignList = data;
+
+                  //其它、设备、进口阶段不能进行关联
+                    if(signcommon.getReviewStage().OTHERS == vm.dispatchDoc.dispatchStage
+                    || signcommon.getReviewStage().DEVICE_BILL_HOMELAND == vm.dispatchDoc.dispatchStage
+                    || signcommon.getReviewStage().DEVICE_BILL_IMPORT == vm.dispatchDoc.dispatchStage
+                    || signcommon.getReviewStage().IMPORT_DEVICE == vm.dispatchDoc.dispatchStage){
+                        bsWin.alert("该阶段不能进行关联！");
+                        vm.dispatchDoc.isRelated = 0;
+                    }else{
+                        bsWin.confirm({
+                            title: "询问提示",
+                            message: "您要进行项目关联么？",
+                            onOk: function () {
+                                //根据项目名称，查询要关联阶段的项目
+                                if(!vm.searchAssociateSign){
+                                    vm.searchAssociateSign = {
+                                        signid : vm.sign.signid,
+                                        projectname : vm.sign.projectname,
+                                    };
                                 }
-                                //选中要关联的项目
-                                $("#associateWindow").kendoWindow({
-                                    width: "80%",
-                                    height: "620px",
-                                    title: "项目关联",
-                                    visible: false,
-                                    modal: true,
-                                    closable: true,
-                                    actions: ["Pin", "Minimize", "Maximize", "close"]
-                                }).data("kendoWindow").center().open();
-                            });
-                        },
-                        onCancel : function () {
-                            vm.dispatchDoc.isRelated = 0;
-                        }
-                    });
+                                vm.searchAssociateSign.reviewstage = vm.dispatchDoc.dispatchStage; //设置评审阶段
+                                signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
+                                    vm.currentAssociateSign = vm.sign;
+                                    vm.associateSignList = [];
+                                    if(data){
+                                        vm.associateSignList = data;
+                                    }
+                                    //选中要关联的项目
+                                    $("#associateWindow").kendoWindow({
+                                        width: "80%",
+                                        height: "620px",
+                                        title: "项目关联",
+                                        visible: false,
+                                        modal: true,
+                                        closable: true,
+                                        actions: ["Pin", "Minimize", "Maximize", "close"]
+                                    }).data("kendoWindow").center().open();
+                                });
+                            },
+                            onCancel : function () {
+                                vm.dispatchDoc.isRelated = 0;
+                            }
+                        });
+                    }
+
+
                 }
             });
         }

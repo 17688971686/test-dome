@@ -706,7 +706,8 @@
         vm.addDisPatch = function () {
             //如果是未关联，并且是可研或者概算阶段，提醒是否要关联
             if ((!vm.model.isAssociate || vm.model.isAssociate == 0) &&
-                (signcommon.getReviewStage().STAGE_STUDY == vm.model.reviewstage || signcommon.getReviewStage().STAGE_BUDGET == vm.model.reviewstage)) {
+                (signcommon.getReviewStage().STAGE_STUDY == vm.model.reviewstage
+                || signcommon.getReviewStage().STAGE_BUDGET == vm.model.reviewstage)) {
                 bsWin.confirm({
                     title: "询问提示",
                     message: "该项目还没进行项目关联，是否需要进行关联设置？",
@@ -718,6 +719,7 @@
                                 projectname: vm.model.projectname,
                             };
                         }
+                        vm.searchAssociateSign.reviewstage = vm.model.reviewstage; //设置评审阶段
                         signSvc.getAssociateSign(vm.searchAssociateSign, function (data) {
                             console.log(data);
                             vm.associateSignList = [];

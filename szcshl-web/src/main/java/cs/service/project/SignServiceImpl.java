@@ -2125,6 +2125,22 @@ public class SignServiceImpl implements SignService {
         //只能是生成发文编号后的项目
         sqlBuilder.append(" and s." + SignDispaWork_.processState.getName() + " >:processState " );
         sqlBuilder.setParam("processState" ,  Constant.SignProcessState.END_DIS_NUM.getValue());
+
+        //项目建议书 或资金申请
+        if(Constant.STAGE_SUG.equals(signDispaWork.getReviewstage())
+                || Constant.APPLY_REPORT.equals(signDispaWork.getReviewstage())){
+            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + "=:reviewStage ");
+            sqlBuilder.setParam("reviewStage" , signDispaWork.getReviewstage());
+        }
+        //可研
+        else if(Constant.STAGE_STUDY.equals(signDispaWork.getReviewstage())){
+            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + Constant.STAGE_STUDY + "','" + Constant.STAGE_SUG + "') ");
+        }
+        //概算
+        else if(Constant.STAGE_BUDGET.equals(signDispaWork.getReviewstage())){
+            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + Constant.STAGE_STUDY + "','" + Constant.STAGE_SUG + "','" + Constant.STAGE_BUDGET + "') ");
+        }
+
         if (Validate.isString(signDispaWork.getProjectname())) {
             sqlBuilder.append(" and s." + SignDispaWork_.projectname.getName() + " like :projectName");
             sqlBuilder.setParam("projectName", "%" + signDispaWork.getProjectname() + "%");

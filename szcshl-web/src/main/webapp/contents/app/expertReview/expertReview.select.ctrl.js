@@ -532,6 +532,8 @@
                                 vm.showAutoExpertWin();
                                 //显示抽取效果
                                 expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
+                                vm.init(vm.businessId,vm.minBusinessId);
+
                             }else{
                                 bsWin.error(data.reMsg);
                             }
