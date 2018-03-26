@@ -445,7 +445,7 @@ public class FlowServiceImpl implements FlowService {
             dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
             dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
             criteria.add(dis);
-        }else{
+        }/*else{
               List<OrgDept> orgDeptList =  orgDeptService.queryAll();
               Boolean isdirector=true;//是否是主任
               for(OrgDept orgDept : orgDeptList ){
@@ -484,7 +484,7 @@ public class FlowServiceImpl implements FlowService {
                   }
               }
 
-        }
+        }*/
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);

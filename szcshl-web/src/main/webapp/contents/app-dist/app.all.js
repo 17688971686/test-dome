@@ -5497,7 +5497,7 @@
         vm.testAlert = function(){
             bsWin.confirm({
                 title: "询问提示",
-                message: "该项目已经关联其他合并评审会关联，您确定要改为单个评审吗？",
+                message: "该项目已关联其他项目，您确定要改为单个评审吗？",
                 onOk: function () {
                     alert("点击确认！");
                 },
@@ -12895,6 +12895,8 @@
                 vm.sign = data.sign;
                 vm.dispatchDoc = data.dispatch;     //可编辑的发文对象
 
+                vm.dispatchDoc.authorizeValue =0;//默认审定金额为0
+
                 vm.dispatchDoc.signId = $state.params.signid;
                 if(vm.dispatchDoc.dispatchWay && vm.dispatchDoc.dispatchWay == 2){
                     vm.busiFlag.isMerge = true;     //合并发文
@@ -15658,8 +15660,13 @@
         //刷新已经选择的专家信息
         vm.reFleshSelEPInfo = function(explist) {
             $.each(explist,function(i, obj){
-                vm.confirmEPList.push(obj);
-                if(vm.confirmEPListReplace.length > 0){
+                if(obj.expertDto.expertTypeDtoList != undefined && obj.expertDto.expertTypeDtoList.length>0){
+                    obj.maJorBig = obj.expertDto.expertTypeDtoList[0].maJorBig;
+                    obj.maJorSmall = obj.expertDto.expertTypeDtoList[0].maJorSmall;
+                    obj.expeRttype = obj.expertDto.expertTypeDtoList[0].expertType;
+                }else{
+                    vm.confirmEPList.push(obj);
+                }
                     vm.confirmEPListReplace.push(obj);
                     //保存拟聘专家
                     if("专家函评"==vm.reviewType && obj.isLetterRw!= "9"){//是专家函评时就勾选完
@@ -15668,8 +15675,6 @@
                         obj.isLetterRw=0;
                     }
                     vm.saveExpert(false);//进行保存最新的聘请专家列表
-                }
-
                 vm.selectIds.push(obj.expertDto.expertID);
             })
             vm.excludeIds = vm.selectIds.join(',');
@@ -15701,13 +15706,13 @@
                         epObj.isJoin = state;
                     }
                 })
-                if(vm.confirmEPListReplace.length > 0){
+
                     $.each(vm.confirmEPListReplace,function(index, epObj){
                         if(obj == epObj.id){
                             epObj.isJoin = state;
                         }
                     })
-                }
+
             })
         }
 
@@ -15716,6 +15721,12 @@
             $.each(ids,function(i, obj){
                 //1、删除已确认的专家
                 $.each(vm.confirmEPList,function(index, epObj){
+                    if(obj == epObj.id){
+                        epObj.isConfrim = state;
+                    }
+                })
+
+                $.each(vm.confirmEPListReplace,function(index, epObj){
                     if(obj == epObj.id){
                         epObj.isConfrim = state;
                     }
@@ -18772,9 +18783,9 @@
                     vm.isassistproc = (vm.fileRecord.isassistproc == '9')?true:false;
                     //其它资料信息
                     vm.fileRecord.registerFileDto.forEach(function(registerFile  , x){
-                        if(registerFile.businessType == 5 ||registerFile.businessType == 6 ||registerFile.businessType == 7){
+                        if(registerFile.businessType == "5" ||registerFile.businessType == "6" ||registerFile.businessType == "7"){
                             vm.otherFile.push(registerFile);
-                        }else if(registerFile.businessType == 2){
+                        }else if(registerFile.businessType == "2"){
                             vm.drawingFile.push(registerFile);
                         }
                         /*else if(registerFile.businessType == "XMJYS_DECLARE_FILE"){
@@ -33650,9 +33661,9 @@
                 //其它资料信息
                 if(data.reObj.registerFileDtoDtoList!=undefined){
                     data.reObj.registerFileDtoDtoList.forEach(function(registerFile  , x){
-                        if(registerFile.businessType == 3){
+                        if(registerFile.businessType == "3"){
                             vm.supply.push(registerFile);
-                        }else if(registerFile.businessType == 2){
+                        }else if(registerFile.businessType == "2"){
                             vm.drawingFile.push(registerFile);
                         }else{
                             vm.otherFile.push(registerFile);
@@ -34004,13 +34015,13 @@
                     vm.drawingFile=[];//图纸资料
                     vm.otherFile=[];//归档的其他资料
                     vm.model.registerFileDtoDtoList.forEach(function(registerFile  , x){
-                        if(registerFile.businessType ==3){
+                        if(registerFile.businessType =="3"){
                             vm.supply.push(registerFile);
-                        }else if(registerFile.businessType ==2){
+                        }else if(registerFile.businessType =="2"){
                             vm.drawingFile.push(registerFile);
-                        }else if(registerFile.businessType ==1 ||registerFile.businessType ==4){
+                        }else if(registerFile.businessType =="1" ||registerFile.businessType =="4"){
                             vm.registerFile.push(registerFile);
-                        }else if(registerFile.businessType ==5 ||registerFile.businessType ==6||registerFile.businessType ==7){
+                        }else if(registerFile.businessType =="5" ||registerFile.businessType =="6"||registerFile.businessType =="7"){
                             vm.otherFile.push(registerFile);
                         }
                     })
@@ -35273,6 +35284,7 @@
                             };
                         }
                         signSvc.getAssociateSign(vm.searchAssociateSign, function (data) {
+                            console.log(data);
                             vm.associateSignList = [];
                             if (data) {
                                 vm.associateSignList = data;
@@ -35384,6 +35396,9 @@
             var selectType = obj.attr("selectType");
             var checked = checkbox.checked;
             if(checked && selectType == 'main'){
+                //先删除第一个
+                selOrg.splice(0, 1);
+                //添加（替换不了。变为了添加）
                 selOrg.splice(0, 0, obj.attr("tit"));
             }else if(!checked && selectType == 'main'){
                 selOrg[0]= "";
@@ -35400,6 +35415,12 @@
                 });
             }
             if (selOrg.length > 0) {
+               for(var i=0;i<selOrg.length;i++){
+                   if(selOrg[0]==selOrg[i] &&0!=i){//判断跟主办是否有重复
+                       selOrg.splice(i,1);
+                   }
+
+               }
                 vm.flow.dealOption = "请（" + selOrg.join('，') + "）组织评审";
             }
 
@@ -35943,13 +35964,13 @@
                     vm.drawingFile=[];//图纸资料
                     vm.otherFile=[];//归档的其他资料
                     vm.model.registerFileDtoDtoList.forEach(function(registerFile  , x){
-                        if(registerFile.businessType ==3){
+                        if(registerFile.businessType =="3"){
                             vm.supply.push(registerFile);
-                        }else if(registerFile.businessType ==2){
+                        }else if(registerFile.businessType =="2"){
                             vm.drawingFile.push(registerFile);
-                        }else if(registerFile.businessType ==1 ||registerFile.businessType ==4){
+                        }else if(registerFile.businessType =="1" ||registerFile.businessType =="4"){
                             vm.registerFile.push(registerFile);
-                        }else if(registerFile.businessType ==5 ||registerFile.businessType ==6||registerFile.businessType ==7){
+                        }else if(registerFile.businessType =="5" ||registerFile.businessType =="6"||registerFile.businessType =="7"){
                             vm.otherFile.push(registerFile);
                         }
                     })
@@ -36489,13 +36510,13 @@
                     vm.drawingFile=[];//图纸资料
                     vm.otherFile=[];//归档的其他资料
                     vm.model.registerFileDtoDtoList.forEach(function(registerFile  , x){
-                        if(registerFile.businessType ==3){
+                        if(registerFile.businessType =="3"){
                             vm.supply.push(registerFile);
-                        }else if(registerFile.businessType ==2){
+                        }else if(registerFile.businessType =="2"){
                             vm.drawingFile.push(registerFile);
-                        }else if(registerFile.businessType ==1 ||registerFile.businessType ==4){
+                        }else if(registerFile.businessType =="1" ||registerFile.businessType =="4"){
                             vm.registerFile.push(registerFile);
-                        }else if(registerFile.businessType ==5 ||registerFile.businessType ==6||registerFile.businessType ==7){
+                        }else if(registerFile.businessType =="5" ||registerFile.businessType =="6"||registerFile.businessType =="7"){
                             vm.otherFile.push(registerFile);
                         }
                     })
@@ -42051,7 +42072,7 @@
                     if(data.isSigle == '合并评审' && data.isMainProject == "9" && "单个评审" == vm.work.isSigle){
                         bsWin.confirm({
                             title: "询问提示",
-                            message: "该项目已经关联其他合并评审会关联，您确定要改为单个评审吗？",
+                            message: "该项目已关联其他项目，您确定要改为单个评审吗？",
                             onOk: function () {
                                 workprogramSvc.deleteAllMerge($state.params.signid,vm.work.id, function (data) {
                                     if (data.flag || data.reCode == 'ok') {

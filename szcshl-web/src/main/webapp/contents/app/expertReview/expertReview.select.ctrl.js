@@ -47,8 +47,13 @@
         //刷新已经选择的专家信息
         vm.reFleshSelEPInfo = function(explist) {
             $.each(explist,function(i, obj){
-                vm.confirmEPList.push(obj);
-                if(vm.confirmEPListReplace.length > 0){
+                if(obj.expertDto.expertTypeDtoList != undefined && obj.expertDto.expertTypeDtoList.length>0){
+                    obj.maJorBig = obj.expertDto.expertTypeDtoList[0].maJorBig;
+                    obj.maJorSmall = obj.expertDto.expertTypeDtoList[0].maJorSmall;
+                    obj.expeRttype = obj.expertDto.expertTypeDtoList[0].expertType;
+                }else{
+                    vm.confirmEPList.push(obj);
+                }
                     vm.confirmEPListReplace.push(obj);
                     //保存拟聘专家
                     if("专家函评"==vm.reviewType && obj.isLetterRw!= "9"){//是专家函评时就勾选完
@@ -57,8 +62,6 @@
                         obj.isLetterRw=0;
                     }
                     vm.saveExpert(false);//进行保存最新的聘请专家列表
-                }
-
                 vm.selectIds.push(obj.expertDto.expertID);
             })
             vm.excludeIds = vm.selectIds.join(',');
@@ -90,13 +93,13 @@
                         epObj.isJoin = state;
                     }
                 })
-                if(vm.confirmEPListReplace.length > 0){
+
                     $.each(vm.confirmEPListReplace,function(index, epObj){
                         if(obj == epObj.id){
                             epObj.isJoin = state;
                         }
                     })
-                }
+
             })
         }
 
@@ -105,6 +108,12 @@
             $.each(ids,function(i, obj){
                 //1、删除已确认的专家
                 $.each(vm.confirmEPList,function(index, epObj){
+                    if(obj == epObj.id){
+                        epObj.isConfrim = state;
+                    }
+                })
+
+                $.each(vm.confirmEPListReplace,function(index, epObj){
                     if(obj == epObj.id){
                         epObj.isConfrim = state;
                     }
