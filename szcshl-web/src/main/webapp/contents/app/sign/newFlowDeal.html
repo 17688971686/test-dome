@@ -109,7 +109,7 @@
                                 <select ng-model="vm.mainPriUser" id="selPrincipalMainUser"
                                         ng-change="vm.checkPrincipal();">
                                     <option value="">请选择</option>
-                                    <option ng-repeat="x in vm.users" value="{{x.id}}">{{x.displayName}}</option>
+                                    <option ng-repeat="x in vm.users | filter: {useState: '!停用'}" value="{{x.id}}">{{x.displayName}}</option>
                                 </select>
                             </td>
                         </tr>
@@ -119,7 +119,7 @@
                             </td>
                             <td>
                                 <div id="principalAssistUser">
-                                    <li ng-repeat="u in vm.users" style="float:left;width:80px;text-align: left;">
+                                    <li ng-repeat="u in vm.users | filter: {useState: '!停用'}" style="float:left;width:80px;text-align: left;">
                                         <input name="{{u.displayName}}" type="checkbox" selectType="assistUser" tit="{{u.displayName}}" value="{{u.id}}" ng-click="vm.initUserOption(u.displayName)" />{{u.displayName}}
                                     </li>
                                 </div>
@@ -297,7 +297,7 @@
                 </div>
 
                 <!-- 财务报销 -->
-                <div ng-if="vm.showFlag.financialCode &&vm.model.workProgramDtoList[0].isMainProject!='0">
+                <div ng-if="vm.showFlag.financialCode &&vm.model.workProgramDtoList[0].isMainProject!='0'">
                     <!-- 评审项目阶段 -->
                     <button class="btn btn-xs btn-primary" ng-click="vm.addFinancialApply('signCostWindow')"
                             ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-edit"></span>财务办理{{}}

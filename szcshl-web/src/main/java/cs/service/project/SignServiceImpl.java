@@ -40,12 +40,9 @@ import cs.repository.repositoryImpl.sys.*;
 import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
-import cs.service.sys.SysConfigService;
-import cs.service.sys.SysFileService;
+import cs.service.sys.*;
 import cs.service.sys.SysFileService;
 import cs.service.sys.UserService;
-import cs.service.sys.UserService;
-import cs.service.sys.WorkdayService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -143,6 +140,8 @@ public class SignServiceImpl implements SignService {
     private ExpertRepo expertRepo;
     @Autowired
     private UnitScoreRepo unitScoreRepo;
+    @Autowired
+    private CompanyService companyService;
 
     /**
      * 项目签收保存操作（这里的方法是正式签收）
@@ -173,6 +172,7 @@ public class SignServiceImpl implements SignService {
             sign.setSignState(EnumState.NORMAL.getValue());
             sign.setSigndate(now);
             sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
+
             //2、是否是项目概算流程
             if (Constant.STAGE_BUDGET.equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
                 sign.setIsassistflow(EnumState.YES.getValue());
@@ -212,6 +212,13 @@ public class SignServiceImpl implements SignService {
             BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
             sign.setModifiedDate(now);
             sign.setModifiedBy(SessionUtil.getDisplayName());
+        }
+        //如果单位是手动添加时就添加到数据库
+        if (Validate.isString(signDto.getBuiltcompanyName())) {//建设单位
+         companyService.createSignCompany(signDto.getBuiltcompanyName(),"建设单位");
+        }
+        if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
+            companyService.createSignCompany(signDto.getDesigncompanyName(),"编制单位");
         }
         //6、收文编号
         if (!Validate.isString(sign.getSignNum())) {
@@ -279,6 +286,17 @@ public class SignServiceImpl implements SignService {
 
 
         }
+
+        //如果单位是手动添加时就添加到数据库
+        if (Validate.isString(signDto.getBuiltcompanyName())) {//建设单位
+            companyService.createSignCompany(signDto.getBuiltcompanyName(),"建设单位");
+        }
+        if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
+            companyService.createSignCompany(signDto.getDesigncompanyName(),"编制单位");
+        }
+
+
+
         sign.setModifiedBy(SessionUtil.getUserId());
         sign.setModifiedDate(new Date());
         signRepo.save(sign);

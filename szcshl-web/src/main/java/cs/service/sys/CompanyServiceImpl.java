@@ -98,6 +98,27 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional
+    public void createSignCompany(String name,String comType) {
+        //判断单位名称是否添加
+        Criteria criteria = companyRepo.getSession().createCriteria(Company.class);
+        criteria.add(Restrictions.eq("coName", name));
+        List<Company> com = criteria.list();
+        if (com.isEmpty()) {
+            Company c = new Company();
+            c.setId(UUID.randomUUID().toString());
+            c.setCoName(name);
+            c.setCoType(comType);
+            c.setCreatedBy(SessionUtil.getLoginName());
+            c.setModifiedBy(SessionUtil.getLoginName());
+            companyRepo.save(c);
+
+        }
+
+
+    }
+
+    @Override
+    @Transactional
     public void deleteCompany(String id) {
 
         Company com = companyRepo.findById(id);
