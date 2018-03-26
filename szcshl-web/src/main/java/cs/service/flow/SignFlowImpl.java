@@ -101,6 +101,7 @@ public class SignFlowImpl implements IFlow {
                     if(!user.getId().equals(SessionUtil.getUserInfo().getId())){
                         UserDto uDto = new UserDto();
                         uDto.setId(user.getId());
+                        uDto.setUseState(user.getUseState());
                         uDto.setLoginName(user.getLoginName());
                         uDto.setDisplayName(user.getDisplayName());
                         resultList.add(uDto);

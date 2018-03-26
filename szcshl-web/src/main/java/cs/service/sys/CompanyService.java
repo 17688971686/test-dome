@@ -26,4 +26,12 @@ public interface CompanyService {
 	CompanyDto findByIdCompany(String id);
 
 	List<CompanyDto> findCompanys();
+
+	/**
+	 * 项目添加建设单位和编制单位
+	 * @param name
+	 * @param comType
+	 */
+	void createSignCompany(String name,String comType);
+
 }

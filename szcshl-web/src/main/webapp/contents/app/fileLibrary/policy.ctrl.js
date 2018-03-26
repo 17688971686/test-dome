@@ -284,7 +284,8 @@
                 fileLibrarySvc.saveFile(vm, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         bsWin.alert("保存成功！", function () {
-                            window.parent.$("#qualityEdit").data("kendoWindow").close();
+                           /* window.parent.$("#qualityEdit").data("kendoWindow").close();*/
+                            vm.isUpdate=true;
                             activate();
                             vm.policyList.push(data.reObj);
                             vm.fileId = data.reObj.fileId;
