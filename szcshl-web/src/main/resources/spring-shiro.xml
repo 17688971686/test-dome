@@ -136,6 +136,7 @@
                 /testRTX =anon
                 <!--接口-->
                 /intfc/** =anon
+                /file/printPreview/** =anon
                 <!--附件下载-->
                 /file/remoteDownload/** =anon
                 /account/login =authc
