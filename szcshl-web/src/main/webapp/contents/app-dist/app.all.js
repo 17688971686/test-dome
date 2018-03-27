@@ -12594,39 +12594,52 @@
                         }
                     });
                 }else if((oldValue == 0 || oldValue == '0')&& (newValue == 9 || newValue == '9') && (!vm.sign.isAssociate || vm.sign.isAssociate == 0)){
-                    bsWin.confirm({
-                        title: "询问提示",
-                        message: "您要进行项目关联么？",
-                        onOk: function () {
-                            //根据项目名称，查询要关联阶段的项目
-                            if(!vm.searchAssociateSign){
-                                vm.searchAssociateSign = {
-                                    signid : vm.sign.signid,
-                                    projectname : vm.sign.projectname,
-                                };
-                            }
-                            signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
-                                vm.currentAssociateSign = vm.sign;
-                                vm.associateSignList = [];
-                                if(data){
-                                    vm.associateSignList = data;
+
+                  //其它、设备、进口阶段不能进行关联
+                    if(signcommon.getReviewStage().OTHERS == vm.dispatchDoc.dispatchStage
+                    || signcommon.getReviewStage().DEVICE_BILL_HOMELAND == vm.dispatchDoc.dispatchStage
+                    || signcommon.getReviewStage().DEVICE_BILL_IMPORT == vm.dispatchDoc.dispatchStage
+                    || signcommon.getReviewStage().IMPORT_DEVICE == vm.dispatchDoc.dispatchStage){
+                        bsWin.alert("该阶段不能进行关联！");
+                        vm.dispatchDoc.isRelated = 0;
+                    }else{
+                        bsWin.confirm({
+                            title: "询问提示",
+                            message: "您要进行项目关联么？",
+                            onOk: function () {
+                                //根据项目名称，查询要关联阶段的项目
+                                if(!vm.searchAssociateSign){
+                                    vm.searchAssociateSign = {
+                                        signid : vm.sign.signid,
+                                        projectname : vm.sign.projectname,
+                                    };
                                 }
-                                //选中要关联的项目
-                                $("#associateWindow").kendoWindow({
-                                    width: "80%",
-                                    height: "620px",
-                                    title: "项目关联",
-                                    visible: false,
-                                    modal: true,
-                                    closable: true,
-                                    actions: ["Pin", "Minimize", "Maximize", "close"]
-                                }).data("kendoWindow").center().open();
-                            });
-                        },
-                        onCancel : function () {
-                            vm.dispatchDoc.isRelated = 0;
-                        }
-                    });
+                                vm.searchAssociateSign.reviewstage = vm.dispatchDoc.dispatchStage; //设置评审阶段
+                                signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
+                                    vm.currentAssociateSign = vm.sign;
+                                    vm.associateSignList = [];
+                                    if(data){
+                                        vm.associateSignList = data;
+                                    }
+                                    //选中要关联的项目
+                                    $("#associateWindow").kendoWindow({
+                                        width: "80%",
+                                        height: "620px",
+                                        title: "项目关联",
+                                        visible: false,
+                                        modal: true,
+                                        closable: true,
+                                        actions: ["Pin", "Minimize", "Maximize", "close"]
+                                    }).data("kendoWindow").center().open();
+                                });
+                            },
+                            onCancel : function () {
+                                vm.dispatchDoc.isRelated = 0;
+                            }
+                        });
+                    }
+
+
                 }
             });
         }
@@ -16154,6 +16167,8 @@
                                 vm.showAutoExpertWin();
                                 //显示抽取效果
                                 expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
+                                vm.init(vm.businessId,vm.minBusinessId);
+
                             }else{
                                 bsWin.error(data.reMsg);
                             }
@@ -17781,7 +17796,8 @@
                 fileLibrarySvc.saveFile(vm, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         bsWin.alert("保存成功！", function () {
-                            window.parent.$("#qualityEdit").data("kendoWindow").close();
+                           /* window.parent.$("#qualityEdit").data("kendoWindow").close();*/
+                            vm.isUpdate=true;
                             activate();
                             vm.policyList.push(data.reObj);
                             vm.fileId = data.reObj.fileId;
@@ -18338,7 +18354,8 @@
                 fileLibrarySvc.saveFile(vm, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         bsWin.alert("保存成功！", function () {
-                            window.parent.$("#qualityEdit").data("kendoWindow").close();
+                            /*window.parent.$("#qualityEdit").data("kendoWindow").close();*/
+                            vm.isUpdate=true;
                             vm.qualityList.push(data.reObj);
                             vm.fileId = data.reObj.fileId;
                             fileLibrarySvc.getFileUrlById(vm, vm.fileId);
@@ -35271,7 +35288,8 @@
         vm.addDisPatch = function () {
             //如果是未关联，并且是可研或者概算阶段，提醒是否要关联
             if ((!vm.model.isAssociate || vm.model.isAssociate == 0) &&
-                (signcommon.getReviewStage().STAGE_STUDY == vm.model.reviewstage || signcommon.getReviewStage().STAGE_BUDGET == vm.model.reviewstage)) {
+                (signcommon.getReviewStage().STAGE_STUDY == vm.model.reviewstage
+                || signcommon.getReviewStage().STAGE_BUDGET == vm.model.reviewstage)) {
                 bsWin.confirm({
                     title: "询问提示",
                     message: "该项目还没进行项目关联，是否需要进行关联设置？",
@@ -35283,6 +35301,7 @@
                                 projectname: vm.model.projectname,
                             };
                         }
+                        vm.searchAssociateSign.reviewstage = vm.model.reviewstage; //设置评审阶段
                         signSvc.getAssociateSign(vm.searchAssociateSign, function (data) {
                             console.log(data);
                             vm.associateSignList = [];
@@ -35459,6 +35478,8 @@
                         isSelMainUser = true;
                     }
                 })
+            }else{
+                vm.selUserName=displayName;
             }
             //根据勾选的来加
              if($("input[name='"+displayName+"']").is(':checked')){//勾中的
@@ -35466,6 +35487,7 @@
              }else{//不勾中的
                  angular.forEach(selUser,function(su,index){
                      if(su ==  vm.selUserName){
+
                          //判断。如果第一负责人跟其他负责人相同时。进行删减。只保留一个意见
                          selUser.splice(index,1);
                      }
