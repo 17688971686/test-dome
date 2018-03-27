@@ -1,14 +1,5 @@
 package cs.service.project;
 
-import cs.common.ResultMsg;
-import cs.domain.project.AddRegisterFile;
-import cs.domain.project.UnitScore;
-import cs.model.PageModelDto;
-import cs.model.project.AddRegisterFileDto;
-import cs.repository.odata.ODataObj;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Description: 单位评分 业务操作接口
