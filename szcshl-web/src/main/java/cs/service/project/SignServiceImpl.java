@@ -142,6 +142,8 @@ public class SignServiceImpl implements SignService {
     private UnitScoreRepo unitScoreRepo;
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private UnitScoreService unitScoreService;
 
     /**
      * 项目签收保存操作（这里的方法是正式签收）
@@ -217,8 +219,8 @@ public class SignServiceImpl implements SignService {
         if (Validate.isString(signDto.getBuiltcompanyName())) {//建设单位
          companyService.createSignCompany(signDto.getBuiltcompanyName(),"建设单位");
         }
-        if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
-            companyService.createSignCompany(signDto.getDesigncompanyName(),"编制单位");
+        if(Validate.isString(sign.getDesigncompanyName())){//添加单位评分(没有编制单位时也添加编制单位)
+            unitScoreService.decide(sign.getDesigncompanyName(),sign.getSignid());
         }
         //6、收文编号
         if (!Validate.isString(sign.getSignNum())) {
@@ -266,37 +268,13 @@ public class SignServiceImpl implements SignService {
     public void updateSign(SignDto signDto) {
         Sign sign = signRepo.findById(signDto.getSignid());
         BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-        if(Validate.isString(sign.getDesigncompanyName())){//添加单位评分
-            Company company=companyRepo.findCompany(sign.getDesigncompanyName());
-            UnitScore unitScore=unitScoreRepo.findUnitScore(sign.getSignid());
-            if(unitScore!=null){
-                unitScore.setCompany(company);
-                unitScoreRepo.save(unitScore);
-            }else{
-                UnitScore unitScores =new UnitScore();
-                unitScores.setSignid(sign.getSignid());
-                unitScores.setCompany(company);
-                unitScores.setId(UUID.randomUUID().toString());
-                unitScores.setCreatedBy(SessionUtil.getDisplayName());
-                unitScores.setCreatedDate(new Date());
-                unitScores.setModifiedBy(SessionUtil.getDisplayName());
-                unitScores.setCreatedDate(new Date());
-                unitScoreRepo.save(unitScores);
-            }
-
-
+        if(Validate.isString(sign.getDesigncompanyName())){//添加单位评分(没有编制单位时也添加编制单位)
+            unitScoreService.decide(sign.getDesigncompanyName(),sign.getSignid());
         }
-
         //如果单位是手动添加时就添加到数据库
         if (Validate.isString(signDto.getBuiltcompanyName())) {//建设单位
             companyService.createSignCompany(signDto.getBuiltcompanyName(),"建设单位");
         }
-        if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
-            companyService.createSignCompany(signDto.getDesigncompanyName(),"编制单位");
-        }
-
-
-
         sign.setModifiedBy(SessionUtil.getUserId());
         sign.setModifiedDate(new Date());
         signRepo.save(sign);
@@ -547,12 +525,24 @@ public class SignServiceImpl implements SignService {
                 signDto.setExpertReviewDto(expertReviewDto);
             }
             //单位评分
-            UnitScore unitScore=unitScoreRepo.findUnitScore(signid);
-            if(Validate.isObject(unitScore)){
-                UnitScoreDto unitScoreDto=new UnitScoreDto();
-                BeanCopierUtils.copyPropertiesIgnoreNull(unitScore,unitScoreDto);
-                signDto.setUnitScoreDto(unitScoreDto);
+            if(Validate.isString(sign.getDesigncompanyName())){
+                //查找单位评分列表
+                UnitScore unitScore=unitScoreRepo.findUnitScore(signid);
+                if(Validate.isObject(unitScore)){
+                    UnitScoreDto unitScoreDto=new UnitScoreDto();
+                    BeanCopierUtils.copyPropertiesIgnoreNull(unitScore,unitScoreDto);
+                    signDto.setUnitScoreDto(unitScoreDto);
+                }else{
+                    //添加
+                    unitScoreService.decide(sign.getDesigncompanyName(),signid);
+                    UnitScore unitScores=unitScoreRepo.findUnitScore(signid);
+                    UnitScoreDto unitScoreDto=new UnitScoreDto();
+                    BeanCopierUtils.copyPropertiesIgnoreNull(unitScores,unitScoreDto);
+                    signDto.setUnitScoreDto(unitScoreDto);
+
+                }
             }
+
 
             //拟补充资料函
             List<AddSuppLetter> suppLetterList = addSuppLetterRepo.findByIds(AddSuppLetter_.businessId.getName(), signid, null);

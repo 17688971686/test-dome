@@ -46,6 +46,22 @@
             });
         }
 
+        vm.query=function(){
+            var treeObj = $.fn.zTree.getZTreeObj("zTree");
+           treeObj.expandAll(false);
+            treeObj.cancelSelectedNode();
+            // var root = treeObj.getNodeByParam("id",1);
+            //    zTree.expandNode(root,false,true,false,false); //树折叠
+            var nodes = treeObj.getNodesByParamFuzzy("name", ""+vm.name+"", null);
+            for(var i=0, m=nodes.length; i<m; i++){
+                var node = treeObj.getNodeByParam("tId",nodes[i].tId , null);
+                treeObj.expandNode(node,true, true,true);
+                var parentNode = node.getParentNode();//找到父节点
+               if (parentNode != null) {
+                    treeObj.expandNode(parentNode, true,true,true);
+                }
+            }
+        }
         activate();
         function activate(){
             fileLibrarySvc.initFileFolder(vm, $scope , function(data){
@@ -93,7 +109,6 @@
                     zTreeObj.checkNode(treeNode, !treeNode.checked, true);
                     vm.parentFileId = treeNode.fileId;
                     if(treeNode.fileNature == "FOLDER" ){
-
                         vm.qualityList = [];
                         if(treeNode.children){
                             vm.qualityList = treeNode.children;
