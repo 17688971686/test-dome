@@ -217,17 +217,8 @@ public class SignServiceImpl implements SignService {
         }
         //如果单位是手动添加时就添加到数据库
         if (Validate.isString(signDto.getBuiltcompanyName())) {//建设单位
-
-            companyService.createSignCompany(signDto.getBuiltcompanyName(),"建设单位");
+         companyService.createSignCompany(signDto.getBuiltcompanyName(),"建设单位");
         }
-        if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
-            companyService.createSignCompany(signDto.getDesigncompanyName(),"编制单位");
-
-            companyService.createSignCompany(signDto.getBuiltcompanyName(),"建设单位");
-        }
-        if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
-            companyService.createSignCompany(signDto.getDesigncompanyName(),"编制单位");
-
         if(Validate.isString(sign.getDesigncompanyName())){//添加单位评分(没有编制单位时也添加编制单位)
             unitScoreService.decide(sign.getDesigncompanyName(),sign.getSignid());
         }
@@ -277,9 +268,27 @@ public class SignServiceImpl implements SignService {
     public void updateSign(SignDto signDto) {
         Sign sign = signRepo.findById(signDto.getSignid());
         BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-        if(Validate.isString(sign.getDesigncompanyName())){//添加单位评分(没有编制单位时也添加编制单位)
-            unitScoreService.decide(sign.getDesigncompanyName(),sign.getSignid());
+        if(Validate.isString(sign.getDesigncompanyName())){//添加单位评分
+            Company company=companyRepo.findCompany(sign.getDesigncompanyName());
+            UnitScore unitScore=unitScoreRepo.findUnitScore(sign.getSignid());
+            if(unitScore!=null){
+                unitScore.setCompany(company);
+                unitScoreRepo.save(unitScore);
+            }else{
+                UnitScore unitScores =new UnitScore();
+                unitScores.setSignid(sign.getSignid());
+                unitScores.setCompany(company);
+                unitScores.setId(UUID.randomUUID().toString());
+                unitScores.setCreatedBy(SessionUtil.getDisplayName());
+                unitScores.setCreatedDate(new Date());
+                unitScores.setModifiedBy(SessionUtil.getDisplayName());
+                unitScores.setCreatedDate(new Date());
+                unitScoreRepo.save(unitScores);
+            }
+
+
         }
+
         //如果单位是手动添加时就添加到数据库
         if (Validate.isString(signDto.getBuiltcompanyName())) {//建设单位
 
@@ -547,12 +556,24 @@ public class SignServiceImpl implements SignService {
                 signDto.setExpertReviewDto(expertReviewDto);
             }
             //单位评分
-            UnitScore unitScore=unitScoreRepo.findUnitScore(signid);
-            if(Validate.isObject(unitScore)){
-                UnitScoreDto unitScoreDto=new UnitScoreDto();
-                BeanCopierUtils.copyPropertiesIgnoreNull(unitScore,unitScoreDto);
-                signDto.setUnitScoreDto(unitScoreDto);
+            if(Validate.isString(sign.getDesigncompanyName())){
+                //查找单位评分列表
+                UnitScore unitScore=unitScoreRepo.findUnitScore(signid);
+                if(Validate.isObject(unitScore)){
+                    UnitScoreDto unitScoreDto=new UnitScoreDto();
+                    BeanCopierUtils.copyPropertiesIgnoreNull(unitScore,unitScoreDto);
+                    signDto.setUnitScoreDto(unitScoreDto);
+                }else{
+                    //添加
+                    unitScoreService.decide(sign.getDesigncompanyName(),signid);
+                    UnitScore unitScores=unitScoreRepo.findUnitScore(signid);
+                    UnitScoreDto unitScoreDto=new UnitScoreDto();
+                    BeanCopierUtils.copyPropertiesIgnoreNull(unitScores,unitScoreDto);
+                    signDto.setUnitScoreDto(unitScoreDto);
+
+                }
             }
+
 
             //拟补充资料函
             List<AddSuppLetter> suppLetterList = addSuppLetterRepo.findByIds(AddSuppLetter_.businessId.getName(), signid, null);
@@ -1411,7 +1432,7 @@ public class SignServiceImpl implements SignService {
                     assigneeValue = buildUser(userList);
                     variables.put(FlowConstant.SignFlowParams.USER_XBFGLD_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
 
-                    //没有协办，则流转给主办分管领导审批
+                //没有协办，则流转给主办分管领导审批
                 } else {
                     assigneeValue = getMainSLeader(signid);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
@@ -1432,15 +1453,13 @@ public class SignServiceImpl implements SignService {
                 break;
             //协办分管领导审批发文
             case FlowConstant.FLOW_SIGN_FGLD_QRFW_XB:
-
-                Boolean isDirector =  (Boolean) flowDto.getBusinessMap().get("isDirector");
-                if(isDirector){
-                }else{
-                    if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
-                    }
-                }
-
+               Boolean isDirector =  (Boolean) flowDto.getBusinessMap().get("isDirector");
+               if(isDirector){
+               }else{
+                   if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
+                       return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
+                   }
+               }
                 //如果同意
                 String agreeString = flowDto.getBusinessMap().get("AGREE").toString();
                 if (EnumState.YES.getValue().equals(agreeString) || EMPTY_STRING.equals(agreeString)) {
@@ -1450,7 +1469,7 @@ public class SignServiceImpl implements SignService {
                     if(EMPTY_STRING.equals(agreeString)){
                         flowDto.setDealOption(EMPTY_STRING);
                     }
-                    //不同意则回退到发文申请环节
+                //不同意则回退到发文申请环节
                 } else {
                     variables.put(FlowConstant.SignFlowParams.XBFZR_SP.getValue(), false);
                     variables = buildMainPriUser(variables, signid, assigneeValue);
@@ -1501,7 +1520,7 @@ public class SignServiceImpl implements SignService {
                 }
 
                 //专家评审方案,判断专家的一些信息是否完整
-                expertReview = expertReviewRepo.findByBusinessId(signid);
+                 expertReview = expertReviewRepo.findByBusinessId(signid);
                 if (expertReview != null && Validate.isList(expertReview.getExpertSelectedList())){
                     Boolean isDisplay=false;
                     String prompt="专家";
@@ -1509,7 +1528,7 @@ public class SignServiceImpl implements SignService {
                     for(int i=0; i<expertSelecteds.size();i++){
                         if(Constant.EnumState.YES.getValue().equals(expertSelecteds.get(i).getIsConfrim()) &&
                                 Constant.EnumState.YES.getValue().equals(expertSelecteds.get(i).getIsJoin())){
-                            //银行账户和身份证号不能为空
+                             //银行账户和身份证号不能为空
                             if(!Validate.isString(expertSelecteds.get(i).getExpert().getBankAccount()) ||
                                     !Validate.isString(expertSelecteds.get(i).getExpert().getIdCard())){
                                 if(i>0 &&i+1!=expertSelecteds.size()){//第一位和最后一位不用加
@@ -1517,7 +1536,7 @@ public class SignServiceImpl implements SignService {
                                 }
                                 //对提示信息的拼接
                                 prompt+=expertSelecteds.get(i).getExpert().getName();
-                                isDisplay=true;
+                                 isDisplay=true;
 
                             }
 
