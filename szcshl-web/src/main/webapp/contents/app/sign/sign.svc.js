@@ -207,7 +207,7 @@
                     width: 280,
                     filterable: false,
                     template: function (item) {
-                        return '<a ng-click="vm.saveView()"  href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                        return '<a ng-click="vm.saveView()"  href="#/fillSign/' + item.signid +'/" >' + item.projectname + '</a>';
                     }
                 },
                 {

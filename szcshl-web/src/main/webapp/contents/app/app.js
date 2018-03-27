@@ -1362,15 +1362,19 @@
 //评审费打印。判断开户行和银行账户信息完不完整
         $rootScope.isBankCard=function (expertSelectedDtoList,signid) {
 
+            var flag  = false;
             for(var i=0;i<expertSelectedDtoList.length;i++){
-                console.log(expertSelectedDtoList[i].expertDto.bankAccount);
-                if(expertSelectedDtoList[i].expertDto.bankAccount!=undefined && expertSelectedDtoList[i].expertDto.openingBank!=undefined ){
+                if(expertSelectedDtoList[i].expertDto.bankAccount ==undefined
+                    || expertSelectedDtoList[i].expertDto.openingBank ==undefined ){
 
-                    $rootScope.printFile(signid,'SIGN_EXPERT' , 'SIGN_EXPERT_PAY');
-                }else{
+                    flag = true;
                     bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
-
+                    break;
                 }
+            }
+
+            if(!flag){
+                $rootScope.printFile(signid,'SIGN_EXPERT' , 'SIGN_EXPERT_PAY');
             }
         }
 
