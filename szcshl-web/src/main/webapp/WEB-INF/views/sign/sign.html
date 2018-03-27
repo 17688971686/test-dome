@@ -5,7 +5,7 @@
     <li ng-show="vm.showFlag.tabDispatch"><a id="show_dispatch_a" data-toggle="tab" for-div="sign_dispatch">发文信息</a></li>
     <li ng-show="vm.showFlag.tabFilerecord"><a id="show_filerecord_a" data-toggle="tab" for-div="sign_filerecord">归档信息</a></li>
     <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab" for-div="expert_score">专家评分</a></li>
-    <li ng-show="!vm.model.expertReviewDto.expertSelectedDtoList && vm.model.designcompanyName"><a data-toggle="tab" for-div="expert_score">单位评分</a></li>
+    <li ng-show="vm.model.unitScoreDto"><a data-toggle="tab" for-div="expert_score">单位评分</a></li>
     <li ng-show="vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList"><a data-toggle="tab" for-div="expert_payment">评审费发放表</a></li>
     <li ng-show="vm.model.suppLetterDtoList"><a data-toggle="tab" for-div="suppLetter_list">拟补充资料函</a></li>
     <li ng-show="vm.supply"><a data-toggle="tab" for-div="registerFile_list">拟补充资料</a></li>

@@ -142,6 +142,8 @@ public class SignServiceImpl implements SignService {
     private UnitScoreRepo unitScoreRepo;
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private UnitScoreService unitScoreService;
 
     /**
      * 项目签收保存操作（这里的方法是正式签收）
@@ -226,6 +228,8 @@ public class SignServiceImpl implements SignService {
         if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
             companyService.createSignCompany(signDto.getDesigncompanyName(),"编制单位");
 
+        if(Validate.isString(sign.getDesigncompanyName())){//添加单位评分(没有编制单位时也添加编制单位)
+            unitScoreService.decide(sign.getDesigncompanyName(),sign.getSignid());
         }
         //6、收文编号
         if (!Validate.isString(sign.getSignNum())) {
@@ -273,27 +277,9 @@ public class SignServiceImpl implements SignService {
     public void updateSign(SignDto signDto) {
         Sign sign = signRepo.findById(signDto.getSignid());
         BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-        if(Validate.isString(sign.getDesigncompanyName())){//添加单位评分
-            Company company=companyRepo.findCompany(sign.getDesigncompanyName());
-            UnitScore unitScore=unitScoreRepo.findUnitScore(sign.getSignid());
-            if(unitScore!=null){
-                unitScore.setCompany(company);
-                unitScoreRepo.save(unitScore);
-            }else{
-                UnitScore unitScores =new UnitScore();
-                unitScores.setSignid(sign.getSignid());
-                unitScores.setCompany(company);
-                unitScores.setId(UUID.randomUUID().toString());
-                unitScores.setCreatedBy(SessionUtil.getDisplayName());
-                unitScores.setCreatedDate(new Date());
-                unitScores.setModifiedBy(SessionUtil.getDisplayName());
-                unitScores.setCreatedDate(new Date());
-                unitScoreRepo.save(unitScores);
-            }
-
-
+        if(Validate.isString(sign.getDesigncompanyName())){//添加单位评分(没有编制单位时也添加编制单位)
+            unitScoreService.decide(sign.getDesigncompanyName(),sign.getSignid());
         }
-
         //如果单位是手动添加时就添加到数据库
         if (Validate.isString(signDto.getBuiltcompanyName())) {//建设单位
 
