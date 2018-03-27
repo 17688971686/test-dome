@@ -65,24 +65,11 @@ public class FileRecordServiceImpl implements FileRecordService {
 
             //获取收文信息
             Sign sign = signRepo.findById(Sign_.signid.getName(),fileRecordDto.getSignId());
-/*            //设置归档编号  移到了确认归档的环节流程去了
-            if (!Validate.isString(fileRecord.getFileNo())) {
-                String fileNumValue = "";
-                int maxSeq = findCurMaxSeq(fileRecord.getFileDate());
-                if(maxSeq < 1000){
-                    fileNumValue = String.format("%03d", Integer.valueOf(maxSeq+1));
-                }else{
-                    fileNumValue = (maxSeq+1)+"";
-                }
-                //归档编号=发文年份+档案类型+存档年份+存档顺序号
-                fileNumValue = DateUtils.converToString(sign.getExpectdispatchdate(),"yyyy")+ ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
-                        +DateUtils.converToString(fileRecord.getFileDate(),"yy")+fileNumValue;
-                fileRecord.setFileNo(fileNumValue);
-            }*/
+
             //更新收文信息
             sign.setFilenum(fileRecord.getFileNo());
             sign.setFileRecord(fileRecord);
-            sign.setProcessState(Constant.SignProcessState.DO_FILE.getValue());
+            //sign.setProcessState(Constant.SignProcessState.DO_FILE.getValue()); //不用这个状态，用不到
             fileRecord.setSign(sign);
 
             //5、添加拟补充资料函

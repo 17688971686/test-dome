@@ -68,6 +68,8 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.zip.ZipInputStream;
 
+import static cs.common.Constant.SUPER_USER;
+
 @Service
 public class FlowServiceImpl implements FlowService {
     private static Logger log = Logger.getLogger(FlowServiceImpl.class);
@@ -397,7 +399,7 @@ public class FlowServiceImpl implements FlowService {
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
         criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(), Constant.EnumState.YES.getValue()));
-        if(Constant.SUPER_USER.equals(SessionUtil.getLoginName()) || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
+        if(SUPER_USER.equals(SessionUtil.getLoginName()) || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
 
         }else{
             if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) { //是部门负责人
@@ -428,7 +430,7 @@ public class FlowServiceImpl implements FlowService {
 
     /**
      * 在办任务查询
-     *
+     *（个人只能查询个人的，部长（组长）可以查询部门下人员办理的，分管领导可以查询分管部门办理的）
      * @param odataObj
      * @param isUserDeal 是否为个人待办
      * @return
@@ -445,46 +447,60 @@ public class FlowServiceImpl implements FlowService {
             dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
             dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
             criteria.add(dis);
-        }/*else{
-              List<OrgDept> orgDeptList =  orgDeptService.queryAll();
-              Boolean isdirector=true;//是否是主任
-              for(OrgDept orgDept : orgDeptList ){
-                if(orgDept.getDirectorID().equals(SessionUtil.getUserId())){//部长
-                      deptName = orgDept.getName();
-                      break;
-                  }else if(orgDept.getsLeaderID().equals(SessionUtil.getUserId())){//分管主任，副主任
-                      deptName += orgDept.getName()+",";
-                  }else if(orgDept.getmLeaderID().equals(SessionUtil.getUserId())){//主任
-                    isdirector=false;
-                    break;
-
+        }else{
+            String curUserId = SessionUtil.getUserId();
+            //分管的部门ID
+            List<String> orgIdList = null;
+            //定义领导标识参数（0标识不是领导，1表示主任，2表示分管领导，3表示部长或者组长）
+            int leaderFlag = SUPER_USER.equals(SessionUtil.getLoginName())?1:0;
+            if(leaderFlag ==0){
+                //查询所有的部门和组织
+                List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
+                for(OrgDept od : allOrgDeptList){
+                    if(leaderFlag == 0){
+                        if(curUserId.equals(od.getDirectorID())){
+                            leaderFlag = 3;
+                            orgIdList = new ArrayList<>(1);
+                            orgIdList.add(od.getId());
+                        }
+                        if(curUserId.equals(od.getsLeaderID())){
+                            leaderFlag = 2;
+                            if(orgIdList == null){
+                                orgIdList = new ArrayList<>();
+                            }
+                            orgIdList.add(od.getId());
+                        }
+                        if(curUserId.equals(od.getmLeaderID())){
+                            leaderFlag = 1;
+                        }
+                        //分管领导分管多个部门
+                    }else if(leaderFlag == 2 && curUserId.equals(od.getsLeaderID())){
+                        orgIdList.add(od.getId());
+                    }
+                    if(leaderFlag ==1 || leaderFlag == 3){
+                        break;
+                    }
                 }
-              }
-              if(isdirector) {//不是主任才执行里面
-                  if (StringUtil.isNoneBlank(deptName)) {
-                      if (deptName.contains(",")) {
-                          deptName = deptName.substring(0, deptName.length() - 1);
-                          deptName=deptName.replaceAll(",","','");//替换字符，完成in的格式
-                          sqlStr = " exists (select 1  from (SELECT u.DISPLAYNAME, o.name, u.id FROM cs_org o, cs_user u" +
-                                  " WHERE o.id = u.orgid and u.id not in(select DU.USERLIST_ID from cs_dept_cs_user du)UNION " +
-                                  " SELECT u.DISPLAYNAME, d.name, u.id FROM CS_DEPT d, cs_dept_cs_user du, cs_user u " +
-                                  " WHERE d.id = du.sysdeptlist_id AND du.userlist_id = u.id) t where t.name in('" + deptName + "')" +
-                                  " and instr(this_.displayName, t.DISPLAYNAME) > 0  )";
-                      } else {
-                          sqlStr = " exists (select 1  from (SELECT u.DISPLAYNAME, o.name, u.id FROM cs_org o, cs_user u" +
-                                  " WHERE o.id = u.orgid and u.id not in(select DU.USERLIST_ID from cs_dept_cs_user du)UNION " +
-                                  " SELECT u.DISPLAYNAME, d.name, u.id FROM CS_DEPT d, cs_dept_cs_user du, cs_user u " +
-                                  " WHERE d.id = du.sysdeptlist_id AND du.userlist_id = u.id) t where t.name= '" + deptName + "'" +
-                                  " and instr(this_.displayName, t.DISPLAYNAME) > 0  )";
-                      }
-                      criteria.add(Restrictions.sqlRestriction(sqlStr));
-                  } else {
-                      criteria.add(ODataObjFilterStrategy.getStrategy("LIKE").getCriterion(RuProcessTask_.displayName.getName(), SessionUtil.getDisplayName()));
+            }
 
-                  }
-              }
+            //开始查询
+            if(leaderFlag == 0){
+                //普通用户
+                criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mainUserId.getName(),curUserId), Restrictions.like(RuProcessTask_.aUserId.getName(), "%" + curUserId + "%")));
+            }else if(leaderFlag == 2){
+                //分管领导，查询所管辖的部门
+                Disjunction dis = Restrictions.disjunction();
+                for(String orgId:orgIdList){
+                    dis.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
+                }
+                criteria.add(dis);
 
-        }*/
+            }else if(leaderFlag == 3){
+                //部长
+                String orgId = orgIdList.get(0);
+                criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
+            }
+        }
 
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);

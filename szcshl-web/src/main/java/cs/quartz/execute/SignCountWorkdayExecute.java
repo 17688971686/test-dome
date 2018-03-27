@@ -179,7 +179,7 @@ public class SignCountWorkdayExecute implements Job {
             if(sign.getProcessState() < Constant.SignProcessState.END_DIS.getValue()){
                 sign.setIsLightUp(Constant.signEnumState.DISPAOVER.getValue());
             }else{
-                if ((sign.getProcessState() < Constant.SignProcessState.END_FILE.getValue()) ) {
+                if ((sign.getProcessState() != Constant.SignProcessState.FINISH.getValue()) ) {
                     //存档超期
                     sign.setIsLightUp(Constant.signEnumState.ARCHIVEOVER.getValue());
                     //超过25个工作日未存档(指发文之后，超过25个工作日未存档)

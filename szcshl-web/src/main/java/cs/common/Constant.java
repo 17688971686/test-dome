@@ -110,7 +110,7 @@ public class Constant {
 
     /**
      * 项目流程信息状态
-     * (1:已发起，2:正在做工作方案，3:已完成工作方案，4:正在做发文 5:已完成发文 6:已完成发文编号 7:正在归档，8:已完成归档，9:已确认归档)
+     * (1:已发起，2:正在做工作方案，3:已完成工作方案，4:正在做发文 5:已完成发文 6:已完成发文编号 7:已发送报销，8:已发送归档，9:已确认归档)
      */
     public static enum SignProcessState {
         IS_START(1),
@@ -119,8 +119,8 @@ public class Constant {
         DO_DIS(4),
         END_DIS(5),
         END_DIS_NUM(6),
-        DO_FILE(7),
-        END_FILE(8),
+        SEND_CW(7),
+        SEND_FILE(8),
         FINISH(9);
 
         private Integer value;

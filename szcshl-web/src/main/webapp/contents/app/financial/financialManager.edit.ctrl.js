@@ -1,13 +1,9 @@
-/**
- * 停用
- */
 (function () {
     'use strict';
 
     angular.module('app').controller('financialManagerEditCtrl', financialManager);
 
-    financialManager.$inject = ['$location', 'financialManagerSvc', '$state' , 'signSvc' , 'bsWin'
-        , 'expertReviewSvc' , 'adminSvc' , 'addCostSvc'];
+    financialManager.$inject = ['$location', 'financialManagerSvc', '$state' , 'signSvc' , 'bsWin', 'expertReviewSvc' , 'adminSvc' , 'addCostSvc'];
 
     function financialManager($location, financialManagerSvc, $state , signSvc , bsWin , expertReviewSvc , adminSvc , addCostSvc) {
         /* jshint validthis:true */
@@ -63,7 +59,7 @@
             //统计评审费信息
             financialManagerSvc.initfinancial(vm.model , function(data){
                 vm.stageCountList = data;
-            })
+            });
         }
 
         /**

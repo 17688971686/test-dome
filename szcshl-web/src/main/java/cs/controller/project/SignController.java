@@ -434,7 +434,7 @@ public class SignController {
     }
 
     @RequiresPermissions("sign#personDtasks#get")
-    @RequestMapping(name = "个人在审项目", path = "personDtasks")
+    @RequestMapping(name = "个人经办项目", path = "personDtasks")
     public String personDtasks(Model model) {
 
         return "admin/personDtasks";

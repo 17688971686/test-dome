@@ -1,9 +1,7 @@
 package cs.domain.flow;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import cs.domain.project.Sign;
 import cs.model.project.SignDto;
-import org.apache.ibatis.annotations.Many;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -142,16 +140,35 @@ public class RuProcessTask {
     @Column
     private String signState;
 
-    //第一负责人ID
-    @Column
-    private String mainUserId;
-
     /**
      * 评审方式【9表示合并评审主项目，0表示合并评审次项目，空表示单个评审】
      */
     @Column
     private String reviewType;
 
+    //主办部门ID
+    @Column
+    private String mOrgId;
+    @Column
+    private String mOrgName;
+    //协办部门
+    @Column
+    private String aOrgId;
+    @Column
+    private String aOrgName;
+    //第一负责人ID
+    @Column
+    private String mainUserId;
+    @Column
+    private String mainUserName;
+    //其它负责人
+    @Column
+    private String aUserId;
+    @Column
+    private String aUserName;
+    //所有负责人名称
+    @Column
+    private String allPriUser;
     /**
      * 合并评审项目
      */
@@ -375,5 +392,67 @@ public class RuProcessTask {
         this.signprocessState = signprocessState;
     }
 
+    public String getmOrgId() {
+        return mOrgId;
+    }
 
+    public void setmOrgId(String mOrgId) {
+        this.mOrgId = mOrgId;
+    }
+
+    public String getmOrgName() {
+        return mOrgName;
+    }
+
+    public void setmOrgName(String mOrgName) {
+        this.mOrgName = mOrgName;
+    }
+
+    public String getaOrgId() {
+        return aOrgId;
+    }
+
+    public void setaOrgId(String aOrgId) {
+        this.aOrgId = aOrgId;
+    }
+
+    public String getaOrgName() {
+        return aOrgName;
+    }
+
+    public void setaOrgName(String aOrgName) {
+        this.aOrgName = aOrgName;
+    }
+
+    public String getMainUserName() {
+        return mainUserName;
+    }
+
+    public void setMainUserName(String mainUserName) {
+        this.mainUserName = mainUserName;
+    }
+
+    public String getaUserId() {
+        return aUserId;
+    }
+
+    public void setaUserId(String aUserId) {
+        this.aUserId = aUserId;
+    }
+
+    public String getaUserName() {
+        return aUserName;
+    }
+
+    public void setaUserName(String aUserName) {
+        this.aUserName = aUserName;
+    }
+
+    public String getAllPriUser() {
+        return allPriUser;
+    }
+
+    public void setAllPriUser(String allPriUser) {
+        this.allPriUser = allPriUser;
+    }
 }

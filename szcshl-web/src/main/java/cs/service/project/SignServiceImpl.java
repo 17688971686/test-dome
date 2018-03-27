@@ -1599,18 +1599,20 @@ public class SignServiceImpl implements SignService {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对单位进行评分,不能提交到下一步操作！");
                 }
 
+                //如果有第二负责人审核
                 if (flowDto.getBusinessMap().get("checkFileUser") != null) {
                     dealUser = JSON.parseObject(flowDto.getBusinessMap().get("checkFileUser").toString(), User.class);
                     variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), true);
                     assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                     variables.put(FlowConstant.SignFlowParams.USER_A.getValue(), assigneeValue);
+                //没有第二负责人审核
                 } else {
                     variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), false);
                     //如果是回退，则保留之前的审核人
                     sign = signRepo.findById(Sign_.signid.getName(), signid);
                     if (Validate.isString(sign.getSecondPriUser())) {
                         dealUser = userRepo.getCacheUserById(sign.getSecondPriUser());
-                        //不是回退，则取第一个
+                    //不是回退，则取第一个
                     } else {
                         userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.FILER.getValue());
                         if (!Validate.isList(userList)) {
@@ -1620,8 +1622,10 @@ public class SignServiceImpl implements SignService {
                     }
                     assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                     variables.put(FlowConstant.SignFlowParams.USER_QRGD.getValue(), assigneeValue);
+
+                    //更新项目状态（已发送归档）
+                    signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_FILE.getValue());
                 }
-                signRepo.updateSignProcessState(signid, Constant.SignProcessState.END_FILE.getValue());
                 break;
 
             //第二负责人审批归档
@@ -1645,7 +1649,8 @@ public class SignServiceImpl implements SignService {
                 //发送存档日期为第二负责人审批意见后的日期，
                 fileRecord.setSendStoreDate(new Date());
                 fileRecordRepo.save(fileRecord);
-
+                //如果审批通过，则更新项目状态（已发送归档）
+                signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_FILE.getValue());
                 break;
             //确认归档
             case FlowConstant.FLOW_SIGN_QRGD:

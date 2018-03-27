@@ -223,7 +223,7 @@ public class SignDispaWorkController {
 
 
     @RequiresAuthentication
-    @RequestMapping(name="个人主办项目",path="html/personMainTasks",method=RequestMethod.POST)
+    @RequestMapping(name="个人经办项目",path="html/personMainTasks",method=RequestMethod.POST)
     @ResponseBody
     public PageModelDto<SignDispaWork> personMainTasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
