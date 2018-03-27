@@ -858,8 +858,9 @@ public class FlowAppServiceImpl implements FlowAppService {
                     }
                     assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                     variables.put(FlowConstant.SignFlowParams.USER_QRGD.getValue(), assigneeValue);
+
+                    signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_FILE.getValue());
                 }
-                signRepo.updateSignProcessState(signid, Constant.SignProcessState.END_FILE.getValue());
                 break;
 
             //第二负责人审批归档
@@ -883,7 +884,8 @@ public class FlowAppServiceImpl implements FlowAppService {
                 //发送存档日期为第二负责人审批意见后的日期，
                 fileRecord.setSendStoreDate(new Date());
                 fileRecordRepo.save(fileRecord);
-
+                //更新项目状态，已发送归档
+                signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_FILE.getValue());
                 break;
             //确认归档
             case FlowConstant.FLOW_SIGN_QRGD:

@@ -29,12 +29,16 @@
     </div>
     <!--操作说明提示框-->
     <div class="label-default" style="width: 100%;padding:5px 10px;">
-            个人待办项目列表（
-            <span id="span1"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>暂停
-            <span id="span2"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>少于3个工作日
-            <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
-            <span id="span4"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
-            <span id="span5"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>存档超期）
+        【
+        <span class="label-primary span_flag"></span> 已发文
+        <span class="label-info span_flag"></span> 已发送报销
+        <span class="label-success span_flag" ></span> 已发送存档
+        <span id="span1" style="margin-left: 15px;"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>暂停
+        <span id="span2"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>少于3个工作日
+        <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
+        <span id="span4"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
+        <span id="span5"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>存档超期
+        】
     </div>
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>
 </div>

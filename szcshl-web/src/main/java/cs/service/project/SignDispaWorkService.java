@@ -11,7 +11,7 @@ import java.util.Map;
 public interface SignDispaWorkService {
 
     /**
-     * 查询个人办理项目
+     * 查询个人经办项目
      * @param odataObj
      * @param isMianUser
      * @return

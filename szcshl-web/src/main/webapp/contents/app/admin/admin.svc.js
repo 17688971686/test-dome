@@ -301,16 +301,11 @@
                     field: "",
                     title: "序号",
                     width: 50,
-                    template: function (item) {
-                        if (item.signprocessState && item.signprocessState >= 6 && item.signprocessState <= 7) {
-                            return "<span class='row-number label label-primary'></span>";
-                        } else if (item.signprocessState && item.signprocessState == 9) {
-                            return "<span class='row-number label label-success'></span>";
-                        } else {
-                            return "<span class='row-number'></span>";
-                        }
-                    }
-
+                    attributes: {
+                        "class": "table-cell",
+                        style: "text-align: center"
+                    },
+                    template: "<span class='row-number'></span>",
                 },
                 {
                     field: "",
@@ -334,52 +329,8 @@
                 {
                     field: "nodeNameValue",
                     title: "当前环节",
-                    width: 100,
+                    width: 120,
                     filterable: false
-                },
-                {
-                    field: "",
-                    title: "合并评审",
-                    width: 140,
-                    filterable: false,
-                    template: function (item) {
-                        if (item.reviewType) {
-                            if (item.reviewType == 9 || item.reviewType == '9') {
-                                return "合并评审[主项目]";
-                            } else {
-                                return "合并评审[次项目]";
-                            }
-                        } else {
-                            return "否";
-                        }
-                    }
-                },
-                {
-                    field: "",
-                    title: "合并项目",
-                    width: 180,
-                    filterable: false,
-                    template: function (item) {
-                        if (item.reviewSignDtoList) {
-                            var projectName = '';
-                            angular.forEach(item.reviewSignDtoList, function (data, index, array) {
-                                if (index > 0) {
-                                    projectName += ",";
-                                }
-                                projectName += '<a href="#/signDetails/' + data.signid + '/'+ data.processInstanceId + '" >' + data.projectname + '</a>';
-                            });
-                            return projectName;
-                        } else {
-                            return "";
-                        }
-                    }
-                },
-                {
-                    field: "preSignDate",
-                    title: "预签收时间",
-                    width: 100,
-                    filterable: false,
-                    format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "signDate",
@@ -387,6 +338,12 @@
                     width: 100,
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "allPriUser",
+                    title: "项目负责人",
+                    width: 140,
+                    filterable: false,
                 },
                 {
                     field: "",
@@ -418,6 +375,50 @@
                             return '<span style="color:orange;">已暂停</span>';
                         } else {
                             return '<span style="color:green;">进行中</span>';
+                        }
+                    }
+                },
+                {
+                    field: "preSignDate",
+                    title: "预签收时间",
+                    width: 100,
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "",
+                    title: "合并评审",
+                    width: 120,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.reviewType) {
+                            if (item.reviewType == 9 || item.reviewType == '9') {
+                                return "合并评审[主项目]";
+                            } else {
+                                return "合并评审[次项目]";
+                            }
+                        } else {
+                            return "否";
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "合并项目",
+                    width: 180,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.reviewSignDtoList) {
+                            var projectName = '';
+                            angular.forEach(item.reviewSignDtoList, function (data, index, array) {
+                                if (index > 0) {
+                                    projectName += ",";
+                                }
+                                projectName += '<a href="#/signDetails/' + data.signid + '/'+ data.processInstanceId + '" >' + data.projectname + '</a>';
+                            });
+                            return projectName;
+                        } else {
+                            return "";
                         }
                     }
                 },
@@ -563,27 +564,6 @@
 
         //S_在办项目
         function dtasksGrid(vm) {
-    /*        var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform"),{filter: "signState ne 7"}),
-                schema: {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model: {
-                        id: "id"
-                    }
-                },
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });*/
             var dataSource = common.kendoGridDataSource(rootPath + "/flow/html/doingtasks",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
             var columns = [
                 {
@@ -625,8 +605,26 @@
                 {
                     field: "",
                     title: "序号",
-                    template: "<span class='row-number'></span>",
-                    width: 50
+                    width: 50,
+                    attributes: {
+                        style: "text-align: center;",
+                    },
+                    template: function (item) {
+                        if(item.signprocessState){
+                            if(item.signprocessState == 6){
+                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
+                            }
+                            else if(item.signprocessState == 7){
+                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
+                            }
+                            else if(item.signprocessState == 8){
+                                return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
+                            }else{
+                                return "<span class='row-number'></span>";
+                            }
+                        }
+                        return "<span class='row-number'></span>";
+                    }
                 },
                 {
                     field: "",
@@ -765,15 +763,25 @@
                 {
                     field: "",
                     title: "序号",
-                    width: 60,
+                    width: 50,
+                    attributes: {
+                         style: "text-align: center;",
+                    },
                     template: function (item) {
-                        if (item.processState && item.processState >= 6 && item.processState <= 7) {
-                            return "<span class='row-number label label-primary'></span>";
-                        } else if (item.processState && item.processState == 9) {
-                            return "<span class='row-number label label-success'></span>";
-                        } else {
-                            return "<span class='row-number'></span>";
+                        if(item.processState){
+                            if(item.processState == 6){
+                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
+                            }
+                            else if(item.processState == 7){
+                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
+                            }
+                            else if(item.processState == 8){
+                                return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
+                            }else{
+                                return "<span class='row-number'></span>";
+                            }
                         }
+                        return "<span class='row-number'></span>";
                     }
                 },
                 {
@@ -1055,16 +1063,25 @@
                     field: "",
                     title: "序号",
                     width: 50,
+                    attributes: {
+                        style: "text-align: center;",
+                    },
                     template: function (item) {
-                        if (item.processState && item.processState >= 6 && item.processState <= 7) {
-                            return "<span class='row-number label label-primary'></span>";
-                        } else if (item.processState && item.processState == 9) {
-                            return "<span class='row-number label label-success'></span>";
-                        } else {
-                            return "<span class='row-number'></span>";
+                        if(item.processState){
+                            if(item.processState == 6){
+                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
+                            }
+                            else if(item.processState == 7){
+                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
+                            }
+                            else if(item.processState == 8){
+                                return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
+                            }else{
+                                return "<span class='row-number'></span>";
+                            }
                         }
+                        return "<span class='row-number'></span>";
                     }
-
                 },
                 {
                     field: "",
@@ -1077,7 +1094,6 @@
                         } else {
                             return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/" >' + item.projectname + '</a>';
                         }
-
                     }
                 },
                 {

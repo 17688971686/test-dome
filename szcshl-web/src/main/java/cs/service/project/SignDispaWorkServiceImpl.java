@@ -9,17 +9,12 @@ import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelCondition;
-import cs.domain.expert.ExpertSelected;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.OrgDept;
 import cs.model.PageModelDto;
-import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
-import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
@@ -62,7 +57,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     private OrgDeptRepo orgDeptRepo;
 
     /**
-     * 查询个人办理项目
+     * 查询个人经办项目
      *
      * @param oDataObj
      * @param isMianUser
@@ -73,9 +68,9 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         criteria = oDataObj.buildFilterToCriteria(criteria);
-        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.mUserId.getName(), SessionUtil.getUserId()), Restrictions.like(SignDispaWork_.aUserID.getName(), "%"+SessionUtil.getUserId()+"%")));
-        criteria.add(Restrictions.ne(SignDispaWork_.signState.getName(),Constant.EnumState.DELETE.getValue()));
-     /*   criteria.add(Restrictions.like(SignDispaWork_.aUserID.getName() ,"%"+SessionUtil.getUserId()+"%"));*/
+        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.mUserId.getName(), SessionUtil.getUserId()), Restrictions.like(SignDispaWork_.aUserID.getName(), "%" + SessionUtil.getUserId() + "%")));
+        criteria.add(Restrictions.ne(SignDispaWork_.signState.getName(), Constant.EnumState.DELETE.getValue()));
+        /*   criteria.add(Restrictions.like(SignDispaWork_.aUserID.getName() ,"%"+SessionUtil.getUserId()+"%"));*/
         //统计总数
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         pageModelDto.setCount(totalResult);
@@ -87,7 +82,6 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         if (oDataObj.getTop() > 0) {
             criteria.setMaxResults(oDataObj.getTop());
         }
-
         //处理orderby
         if (Validate.isString(oDataObj.getOrderby())) {
             if (oDataObj.isOrderbyDesc()) {
@@ -96,11 +90,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 criteria.addOrder(Property.forName(oDataObj.getOrderby()).asc());
             }
         }
-
         List<SignDispaWork> signDispaWorkList = criteria.list();
-
         pageModelDto.setValue(signDispaWorkList);
-
 
         return pageModelDto;
     }
@@ -115,41 +106,40 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     public PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj) {
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
-        for(int i=0;i<odataObj.getFilter().size();i++){
+        for (int i = 0; i < odataObj.getFilter().size(); i++) {
             //对发文类型的查询
-            if(odataObj.getFilter().get(i).getField().equals("dispatchType")){
-                if(odataObj.getFilter().get(i).getValue().equals("非暂不实施项目")){
+            if (odataObj.getFilter().get(i).getField().equals("dispatchType")) {
+                if (odataObj.getFilter().get(i).getValue().equals("非暂不实施项目")) {
                     //非暂不实施项目=项目发文+退文
-                    criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(),"项目发文"),
-                            Restrictions.eq(SignDispaWork_.dispatchType.getName(),"项目退文") ));
-                }else{
+                    criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目发文"),
+                            Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目退文")));
+                } else {
                     //非退文项目=暂不实施+项目发文
-                    criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(),"项目发文"),
-                            Restrictions.eq(SignDispaWork_.dispatchType.getName(),"暂不实施") ));
+                    criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目发文"),
+                            Restrictions.eq(SignDispaWork_.dispatchType.getName(), "暂不实施")));
                 }
                 odataObj.getFilter().remove(i);//删除前台传过来的条件
             }
             //对项目状态进行判断
-            if(odataObj.getFilter().get(i).getField().equals("processState")){
+            if (odataObj.getFilter().get(i).getField().equals("processState")) {
                 //判断如果传过来的值是2时，就表示是暂停项目
-                if(odataObj.getFilter().get(i).getValue().equals(Constant.EnumState.STOP.getValue())){
+                if (odataObj.getFilter().get(i).getValue().equals(Constant.EnumState.STOP.getValue())) {
                     odataObj.getFilter().get(i).setField("signState");
                 }
                 //判断如果转过来的值是19时，就表示曾经暂停或延时项目
-                if(odataObj.getFilter().get(i).getValue().equals("19")){
+                if (odataObj.getFilter().get(i).getValue().equals("19")) {
                     odataObj.getFilter().get(i).setField("isProjectStop");
                     odataObj.getFilter().get(i).setValue(Constant.EnumState.YES.getValue());
                 }
             }
 
             //对评审方式的判断。是否是协审
-            if(odataObj.getFilter().get(i).getField().equals("reviewType")){
-                if(odataObj.getFilter().get(i).getValue().equals("协审")){
+            if (odataObj.getFilter().get(i).getField().equals("reviewType")) {
+                if (odataObj.getFilter().get(i).getValue().equals("协审")) {
                     odataObj.getFilter().get(i).setField("isassistproc");
                     odataObj.getFilter().get(i).setValue(Constant.EnumState.YES.getValue());
                 }
             }
-
 
 
         }
@@ -177,23 +167,23 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     @Override
     @Transactional
     public ResultMsg dtasksSign() {
-        List<Map<String, Object>> dtasks=signDispaWorkRepo.dataskCount();
-        List<OrgDept> orgDeptList=orgDeptRepo.findAllByCache();
-        Boolean isdisplay=false;
-        for(OrgDept orgDept:orgDeptList){
+        List<Map<String, Object>> dtasks = signDispaWorkRepo.dataskCount();
+        List<OrgDept> orgDeptList = orgDeptRepo.findAllByCache();
+        Boolean isdisplay = false;
+        for (OrgDept orgDept : orgDeptList) {
             //判断下登录人是否为部长、分管领导、主任
-            if(orgDept.getsLeaderID().equals(SessionUtil.getUserId()) ||orgDept.getDirectorID().equals(SessionUtil.getUserId()) ||
-                    orgDept.getmLeaderID().equals(SessionUtil.getUserId()) ){
-                isdisplay=true;
+            if (orgDept.getsLeaderID().equals(SessionUtil.getUserId()) || orgDept.getDirectorID().equals(SessionUtil.getUserId()) ||
+                    orgDept.getmLeaderID().equals(SessionUtil.getUserId())) {
+                isdisplay = true;
             }
         }
         //定义map
         Map map = new HashMap();
         //进行赋值。
-        map.put("isdisplays",isdisplay);
+        map.put("isdisplays", isdisplay);
         //添加到list，返回
         dtasks.add(map);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",dtasks);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", dtasks);
     }
 
     /**
@@ -204,8 +194,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     @Override
     @Transactional
     public ResultMsg dtasksLineSign() {
-        List<Map<String, Object>> dtasks=signDispaWorkRepo.dtasksLineSign();
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",dtasks);
+        List<Map<String, Object>> dtasks = signDispaWorkRepo.dtasksLineSign();
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", dtasks);
     }
 
     /**
@@ -230,14 +220,14 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         //排除自身
         hqlBuilder.append(" and sd." + SignDispaWork_.signid.getName() + " != :self ").setParam("self", signId);
         //排除已关联的项目(不管是主项目还是次项目)
-        hqlBuilder.append(" and sd." + SignDispaWork_.signid.getName() + " not in ( select " + SignMerge_.mergeId.getName() );
-        hqlBuilder.append(" from " + SignMerge.class.getSimpleName() +" where  " + SignMerge_.mergeType.getName() + " =:mergeType ) ");
+        hqlBuilder.append(" and sd." + SignDispaWork_.signid.getName() + " not in ( select " + SignMerge_.mergeId.getName());
+        hqlBuilder.append(" from " + SignMerge.class.getSimpleName() + " where  " + SignMerge_.mergeType.getName() + " =:mergeType ) ");
         hqlBuilder.setParam("mergeType", Constant.MergeType.WORK_PROGRAM.getValue());
-        hqlBuilder.append(" and sd." + SignDispaWork_.signid.getName() + " not in ( select distinct " + SignMerge_.signId.getName() );
-        hqlBuilder.append(" from " + SignMerge.class.getSimpleName() +" where  " + SignMerge_.mergeType.getName() + " =:mergeType2 )");
+        hqlBuilder.append(" and sd." + SignDispaWork_.signid.getName() + " not in ( select distinct " + SignMerge_.signId.getName());
+        hqlBuilder.append(" from " + SignMerge.class.getSimpleName() + " where  " + SignMerge_.mergeType.getName() + " =:mergeType2 )");
         hqlBuilder.setParam("mergeType2", Constant.MergeType.WORK_PROGRAM.getValue());
         //排除有分支的项目(合并评审的项目一般只有一个分支)
-        hqlBuilder.append(" and (select count(sh." + SignBranch_.signId.getName() + ") from " + SignBranch.class.getSimpleName() + " sh where sh." + SignBranch_.signId.getName() + " = sd."+SignDispaWork_.signid.getName()+") = 1");
+        hqlBuilder.append(" and (select count(sh." + SignBranch_.signId.getName() + ") from " + SignBranch.class.getSimpleName() + " sh where sh." + SignBranch_.signId.getName() + " = sd." + SignDispaWork_.signid.getName() + ") = 1");
 
         return signDispaWorkRepo.findByHql(hqlBuilder);
     }
@@ -335,14 +325,14 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             signMerge.setCreatedDate(now);
             signMerge.setModifiedDate(now);
             //如果是合并评审，要再次确认是否有其他分支，如果有其他分支，则不允许保存
-            if(Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)){
-                if(signBranchRepo.allAssistCount(mergeId) > 0){
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，选择的项目存在多个部门办理工作方案，不符合合并评审要求，请刷新重新选择！");
+            if (Constant.MergeType.WORK_PROGRAM.getValue().equals(mergeType)) {
+                if (signBranchRepo.allAssistCount(mergeId) > 0) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，选择的项目存在多个部门办理工作方案，不符合合并评审要求，请刷新重新选择！");
                 }
             }
             //如果已经合并的，也不能再次合并
-            if(signMergeRepo.checkIsMerege(mergeId,mergeType) || signMergeRepo.isHaveMerge(mergeId,mergeType)){
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，选择的项目已经是合并项目，不能再次合并，请刷新选择！");
+            if (signMergeRepo.checkIsMerege(mergeId, mergeType) || signMergeRepo.isHaveMerge(mergeId, mergeType)) {
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，选择的项目已经是合并项目，不能再次合并，请刷新选择！");
             }
             saveList.add(signMerge);
         }
@@ -560,16 +550,19 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
     /**
      * 通过条件查询统计
+     *
      * @param queryData
      * @param page
      * @return
      */
     @Override
-    public List<SignDispaWork> queryStatistics(String  queryData, int page) {
-        return signDispaWorkRepo.queryStatistics(queryData , page);
+    public List<SignDispaWork> queryStatistics(String queryData, int page) {
+        return signDispaWorkRepo.queryStatistics(queryData, page);
     }
+
     /**
      * 通过业务id，判断当前用户是否有权限查看项目详情----用于秘密项目
+     *
      * @param signId
      * @return
      */

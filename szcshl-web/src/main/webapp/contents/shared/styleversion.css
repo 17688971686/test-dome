@@ -583,3 +583,11 @@ input[disabled],input:disabled{
 .newcheckbox:focus{
     outline: none;
 }
+
+.span_flag{
+    width:20px;
+    height:16px;
+    vertical-align:middle;
+    display:-moz-inline-box;
+    display:inline-block;
+}

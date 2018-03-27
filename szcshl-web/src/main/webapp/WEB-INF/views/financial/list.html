@@ -60,11 +60,10 @@
 
     <div class="label-default" style="width: 100%;padding:5px 10px;">
         【
-        <span class="label-primary" style="padding:0px 13px;"></span> 已发文
-        <span class="label-success" style="padding:0px 13px;"></span> 已存档
-        】
-        【
-        <span id="span1"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>暂停
+        <span class="label-primary span_flag"></span> 已发文
+        <span class="label-info span_flag"></span> 已发送报销
+        <span class="label-success span_flag" ></span> 已发送存档
+        <span id="span1" style="margin-left: 15px;"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>暂停
         <span id="span2"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>少于3个工作日
         <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
         <span id="span4"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
@@ -86,18 +85,24 @@
             </tr>
             <tr ng-repeat="s in vm.stageCountList">
                 <td class="text-center">
-                    <span ng-if="s.isLightUp == 3">
-                        <img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;">
-                    </span>
                     <span ng-if="s.isLightUp == 4">
+                        <img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;">
+                    </span>
+                    <span ng-if="s.isLightUp == 5">
+                        <img src="${path}/contents/imagesgreen.png" style="width: 16px; height: 16px;">
+                    </span>
+                    <span ng-if="s.isLightUp == 6">
                         <img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;">
                     </span>
-                    <span ng-if="s.isLightUp == 2">
+                    <span ng-if="s.isLightUp == 7">
                         <img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;">
+                    </span>
+                    <span ng-if="s.isLightUp == 8">
+                        <img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;">
                     </span>
                 </td>
                 <td class="text-center">
-                    <span ng-class="{'label label-primary':(s.processState && s.processState >5 && s.processState< 9), 'label label-success': (s.processState && s.processState ==9 )}">
+                    <span style='width: 100%;display: inline-block;' ng-class="{'label-primary':(s.processState && s.processState == 6), 'label-info': (s.processState && s.processState ==7 ), 'label-success': (s.processState && s.processState ==8 )}">
                     {{$index + 1}}
                     </span>
                 </td>
