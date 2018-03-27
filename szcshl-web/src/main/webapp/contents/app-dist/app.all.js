@@ -33482,6 +33482,7 @@
 
     function sign(signSvc,$state,flowSvc,signFlowSvc,bsWin,$rootScope) {
         var vm = this;
+        vm.model = {};						//创建一个form对象
         //获取到当前的列表
         vm.stateName = $state.current.name;
         //查询参数
@@ -33518,6 +33519,26 @@
                 signSvc.signGrid(vm);
             }
 
+        }
+
+        //获取委里签收信息
+        vm.getSignInfo = function(){
+            if(vm.model.filecode == "" || vm.model.filecode == null){
+                bsWin.alert("收文编号不能为空!");
+                return ;
+            }
+            signSvc.getSignInfo(vm.model.filecode,'0',function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    if(data.reMsg!='保存成功！'){
+                        bsWin.alert(data.reMsg);
+                        return;
+                    }else{
+                        vm.gridOptions.dataSource.read();
+                    }
+                }else{
+                    bsWin.alert("该项目信息不存在或者网络异常获取委里签收信息是失败，请核查！!");
+                }
+            });
         }
 
         //收文查询
@@ -36154,11 +36175,16 @@
                 bsWin.alert("收文编号不能为空!");
                 return ;
             }
-            reserveSignSvc.getPreSignInfo(vm.model.filecode,function(data){
+            reserveSignSvc.getPreSignInfo(vm.model.filecode,'1',function(data){
                 if(data.flag || data.reCode == 'ok'){
-                    $state.go('reserveList');
+                    if(data.reMsg!='保存成功！'){
+                        bsWin.alert(data.reMsg);
+                        return ;
+                    }else{
+                        vm.gridOptions.dataSource.read();
+                    }
                 }else{
-                    bsWin.alert("获取委里预签收信息是失败，请核查！!");
+                    bsWin.alert("该项目信息不存在或者网络异常获取委里预签收信息是失败，请核查！!");
                 }
             });
         }
@@ -36241,12 +36267,13 @@
         }
         //end E_项目预签收
 
-        function getPreSignInfo(fileCode ,callBack) {
+        function getPreSignInfo(fileCode ,signType,callBack) {
             var httpOptions = {
-                method: 'post',
+                method: 'get',
                 url: rootPath + "/intfc/getPreSign",
                 params:{
-                    fileCode :fileCode
+                    fileCode :fileCode,
+                    signType : signType
                 }
             }
             var httpSuccess = function success(response) {
@@ -36619,6 +36646,7 @@
             MaintenanProjectGrid:MaintenanProjectGrid , //维护项目
             excelExport : excelExport ,                 //项目查询统计导出
             findExpertReview : findExpertReview,        //查询项目在办的专家抽取方案信息
+            getSignInfo : getSignInfo  //通过收文编号获取委里信息
         };
         return service;
 
@@ -36697,6 +36725,27 @@
         //end createDispatchTemplate
 
         //E 上传附件列表
+
+        function getSignInfo(fileCode,signType,callBack){
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/intfc/getPreSign",
+                params:{
+                    fileCode :fileCode,
+                    signType :signType
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         //S_初始化grid(过滤已签收和已经完成的项目)
         function signGrid(vm) {

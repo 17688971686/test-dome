@@ -117,6 +117,7 @@ public class SignRestServiceImpl implements SignRestService {
             //1、根据收文编号获取项目信息
             Sign sign = signRepo.findByFilecode(signDto.getFilecode(),signDto.getSignState());
             Date now = new Date();
+            boolean isExistPro = false;
             if (sign == null) {
                 sign = new Sign();
                 BeanCopierUtils.copyProperties(signDto, sign);
@@ -127,6 +128,7 @@ public class SignRestServiceImpl implements SignRestService {
                 //这里的送件人，默认为流程发起人，而不是委里项目的送件人
                 sign.setSendusersign("");
             } else {
+                isExistPro = true;
                 BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
             }
             sign.setModifiedBy(SUPER_USER);
@@ -277,7 +279,11 @@ public class SignRestServiceImpl implements SignRestService {
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue() + resultMsg.getReMsg());
             } else {
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
-                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
+                if(isExistPro){
+                    resultMsg.setReMsg("该项目基本信息更新完成！");
+                }else{
+                    resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
+                }
             }
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
@@ -331,6 +337,7 @@ public class SignRestServiceImpl implements SignRestService {
             }
             //1、根据收文编号获取项目信息
             Sign sign = signRepo.findByFilecode(signDto.getFilecode(),signDto.getSignState());
+            boolean isExistPro = false;
             Date now = new Date();
             if (sign == null) {
                 sign = new Sign();
@@ -342,6 +349,7 @@ public class SignRestServiceImpl implements SignRestService {
                 //这里的送件人，默认为流程发起人，而不是委里项目的送件人
                 sign.setSendusersign("");
             } else {
+                isExistPro = true;
                 BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
             }
             sign.setModifiedBy(SUPER_USER);
@@ -355,8 +363,13 @@ public class SignRestServiceImpl implements SignRestService {
             //未签收的，改为预签收
             if (!Validate.isString(sign.getIssign()) || Constant.EnumState.NO.getValue().equals(sign.getIssign())) {
                 //预签收
-                sign.setIssign(Constant.EnumState.NO.getValue());
-                sign.setSigndate(now);
+                sign.setIspresign(Constant.EnumState.NO.getValue());
+                sign.setSignState(Constant.EnumState.NORMAL.getValue());
+                //预签收日期
+                sign.setPresignDate(now);
+                //默认为不亮灯
+                sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
+                //sign.setSigndate(now);
 
                 /*//计算评审天数
                 Float totalReviewDays = Constant.WORK_DAY_15;
@@ -492,7 +505,11 @@ public class SignRestServiceImpl implements SignRestService {
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue() + resultMsg.getReMsg());
             } else {
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
-                resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
+                if(isExistPro){
+                    resultMsg.setReMsg("该项目基本信息更新完成！");
+                }else{
+                    resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
+                }
             }
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());

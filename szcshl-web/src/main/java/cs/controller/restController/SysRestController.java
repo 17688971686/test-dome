@@ -92,11 +92,12 @@ public class SysRestController {
     }
 
     /**
-     * 根据收文编号查询预签收
+     * 根据收文编号查询签收/预签收
      * @return
      */
     @RequestMapping(name = "项目预签收信息", value = "/getPreSign", method = RequestMethod.GET)
-    public synchronized ResultMsg findPreSignByfileCode(@RequestParam String fileCode){
+    @ResponseBody
+    public synchronized ResultMsg findPreSignByfileCode(@RequestParam String fileCode,@RequestParam String signType){
         String signPreInfo = "";
         ResultMsg resultMsg = null;
         try{
@@ -108,7 +109,12 @@ public class SysRestController {
             String msg = "项目【"+signPreDto.getData().getProjectname()+"("+signPreDto.getData().getFilecode()+")】，";
             try{
                 //json转出对象
-                resultMsg = signRestService.pushPreProject(signPreDto.getData());
+                if(Validate.isString(signType) && signType.equals("1")){
+                    resultMsg = signRestService.pushPreProject(signPreDto.getData()); //获取项目预签收信息
+                }else{
+                    resultMsg = signRestService.pushProject(signPreDto.getData());
+                }
+
             }catch (Exception e){
                 resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
                 e.printStackTrace();

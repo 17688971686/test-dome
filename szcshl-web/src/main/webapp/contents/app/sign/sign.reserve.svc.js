@@ -44,12 +44,13 @@
         }
         //end E_项目预签收
 
-        function getPreSignInfo(fileCode ,callBack) {
+        function getPreSignInfo(fileCode ,signType,callBack) {
             var httpOptions = {
-                method: 'post',
+                method: 'get',
                 url: rootPath + "/intfc/getPreSign",
                 params:{
-                    fileCode :fileCode
+                    fileCode :fileCode,
+                    signType : signType
                 }
             }
             var httpSuccess = function success(response) {

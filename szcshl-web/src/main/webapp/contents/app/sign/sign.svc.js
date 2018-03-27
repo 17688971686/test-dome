@@ -34,6 +34,7 @@
             MaintenanProjectGrid:MaintenanProjectGrid , //维护项目
             excelExport : excelExport ,                 //项目查询统计导出
             findExpertReview : findExpertReview,        //查询项目在办的专家抽取方案信息
+            getSignInfo : getSignInfo  //通过收文编号获取委里信息
         };
         return service;
 
@@ -112,6 +113,27 @@
         //end createDispatchTemplate
 
         //E 上传附件列表
+
+        function getSignInfo(fileCode,signType,callBack){
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/intfc/getPreSign",
+                params:{
+                    fileCode :fileCode,
+                    signType :signType
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         //S_初始化grid(过滤已签收和已经完成的项目)
         function signGrid(vm) {

@@ -6,6 +6,7 @@
 
     function sign(signSvc,$state,flowSvc,signFlowSvc,bsWin,$rootScope) {
         var vm = this;
+        vm.model = {};						//创建一个form对象
         //获取到当前的列表
         vm.stateName = $state.current.name;
         //查询参数
@@ -42,6 +43,26 @@
                 signSvc.signGrid(vm);
             }
 
+        }
+
+        //获取委里签收信息
+        vm.getSignInfo = function(){
+            if(vm.model.filecode == "" || vm.model.filecode == null){
+                bsWin.alert("收文编号不能为空!");
+                return ;
+            }
+            signSvc.getSignInfo(vm.model.filecode,'0',function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    if(data.reMsg!='保存成功！'){
+                        bsWin.alert(data.reMsg);
+                        return;
+                    }else{
+                        vm.gridOptions.dataSource.read();
+                    }
+                }else{
+                    bsWin.alert("该项目信息不存在或者网络异常获取委里签收信息是失败，请核查！!");
+                }
+            });
         }
 
         //收文查询

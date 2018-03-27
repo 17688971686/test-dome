@@ -91,11 +91,16 @@
                 bsWin.alert("收文编号不能为空!");
                 return ;
             }
-            reserveSignSvc.getPreSignInfo(vm.model.filecode,function(data){
+            reserveSignSvc.getPreSignInfo(vm.model.filecode,'1',function(data){
                 if(data.flag || data.reCode == 'ok'){
-                    $state.go('reserveList');
+                    if(data.reMsg!='保存成功！'){
+                        bsWin.alert(data.reMsg);
+                        return ;
+                    }else{
+                        vm.gridOptions.dataSource.read();
+                    }
                 }else{
-                    bsWin.alert("获取委里预签收信息是失败，请核查！!");
+                    bsWin.alert("该项目信息不存在或者网络异常获取委里预签收信息是失败，请核查！!");
                 }
             });
         }
