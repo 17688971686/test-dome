@@ -51,17 +51,18 @@
                     obj.maJorBig = obj.expertDto.expertTypeDtoList[0].maJorBig;
                     obj.maJorSmall = obj.expertDto.expertTypeDtoList[0].maJorSmall;
                     obj.expeRttype = obj.expertDto.expertTypeDtoList[0].expertType;
-                }else{
-                    vm.confirmEPList.push(obj);
                 }
-                    vm.confirmEPListReplace.push(obj);
+                vm.confirmEPList.push(obj);
                     //保存拟聘专家
                     if("专家函评"==vm.reviewType && obj.isLetterRw!= "9"){//是专家函评时就勾选完
                         obj.isLetterRw=9;
                     }else if("专家评审会"==vm.reviewType && obj.isLetterRw!= "0"){
                         obj.isLetterRw=0;
                     }
+                if(vm.confirmEPListReplace.length > 0){
+                    vm.confirmEPListReplace.push(obj);
                     vm.saveExpert(false);//进行保存最新的聘请专家列表
+                }
                 vm.selectIds.push(obj.expertDto.expertID);
             })
             vm.excludeIds = vm.selectIds.join(',');
@@ -90,41 +91,16 @@
                 //1、删除已确认的专家
                 $.each(vm.confirmEPList,function(index, epObj){
                     if(obj == epObj.id){
-                        if(state == '9'){
-                            epObj.isJoin = state;
-                            epObj.isConfrim = '9';
-                        }else if(state == '0'){
-                            epObj.isConfrim = '0';
-                            epObj.isJoin = '9';
-                        }
-                        $.each(vm.confirmEPListReplace,function(index, epObj2){
-                            if(obj == epObj2.id){
-                                if(state == 9){
-                                    epObj.isJoin = state;
-                                    epObj.isConfrim = 9;
-                                }else if(state == 0){
-                                    epObj.isConfrim = 0;
-                                    epObj.isJoin = 9;
-                                }
-                            }else{
-                                vm.confirmEPListReplace.push(epObj);
+                        epObj.isJoin = state;
+                    }
+                })
+                    if(vm.confirmEPListReplace.length > 0){
+                        $.each(vm.confirmEPListReplace,function(index, epObj){
+                            if(obj == epObj.id){
+                                epObj.isJoin = state;
                             }
                         })
                     }
-                })
-
-  /*                  $.each(vm.confirmEPListReplace,function(index, epObj){
-                        if(obj == epObj.id){
-                            if(state == 9){
-                                epObj.isJoin = state;
-                                epObj.isConfrim = 9;
-                            }else if(state == 0){
-                                epObj.isConfrim = 0;
-                                epObj.isJoin = 9;
-                            }
-                        }
-                    })*/
-
             })
         }
 
@@ -200,7 +176,6 @@
                                 obj2.maJorSmall = obj1.maJorSmall;
                                 obj2.expeRttype = obj1.expeRttype;
                                 obj2.isJoin = obj1.isJoin;
-                               // obj2.isConfrim = obj1.isConfrim;
                                 vm.confirmEPListReplace.push(obj2);
                             }
                         });
@@ -243,7 +218,7 @@
                         var ids = [];
                         $.each(vm.confirmEPList,function(i, obj){
                             if(obj.selectType == '2'){
-                                ids.push(obj.id)
+                                ids.push(obj.id);
                             }
                         })
                         if(!vm.expertReview.id){

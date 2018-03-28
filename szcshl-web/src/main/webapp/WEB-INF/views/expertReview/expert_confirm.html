@@ -58,7 +58,7 @@
             <td width="10%" align="center">专家类别</td>
         </tr>
 
-        <tr ng-repeat="x in vm.confirmEPList|filter:{isConfrim:'0',isJoin:'9'} track by $index">
+        <tr ng-repeat="x in vm.confirmEPList|filter:{isConfrim:'9',isJoin:'0'} track by $index">
             <td align="center"><input type="checkbox" name="notJoinExpert" ng-checked="notjoinExpertList"
                                       value="{{x.id}}"/></td>
             <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
