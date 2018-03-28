@@ -90,15 +90,40 @@
                 //1、删除已确认的专家
                 $.each(vm.confirmEPList,function(index, epObj){
                     if(obj == epObj.id){
-                        epObj.isJoin = state;
+                        if(state == '9'){
+                            epObj.isJoin = state;
+                            epObj.isConfrim = '9';
+                        }else if(state == '0'){
+                            epObj.isConfrim = '0';
+                            epObj.isJoin = '9';
+                        }
+                        $.each(vm.confirmEPListReplace,function(index, epObj2){
+                            if(obj == epObj2.id){
+                                if(state == 9){
+                                    epObj.isJoin = state;
+                                    epObj.isConfrim = 9;
+                                }else if(state == 0){
+                                    epObj.isConfrim = 0;
+                                    epObj.isJoin = 9;
+                                }
+                            }else{
+                                vm.confirmEPListReplace.push(epObj);
+                            }
+                        })
                     }
                 })
 
-                    $.each(vm.confirmEPListReplace,function(index, epObj){
+  /*                  $.each(vm.confirmEPListReplace,function(index, epObj){
                         if(obj == epObj.id){
-                            epObj.isJoin = state;
+                            if(state == 9){
+                                epObj.isJoin = state;
+                                epObj.isConfrim = 9;
+                            }else if(state == 0){
+                                epObj.isConfrim = 0;
+                                epObj.isJoin = 9;
+                            }
                         }
-                    })
+                    })*/
 
             })
         }
@@ -175,6 +200,7 @@
                                 obj2.maJorSmall = obj1.maJorSmall;
                                 obj2.expeRttype = obj1.expeRttype;
                                 obj2.isJoin = obj1.isJoin;
+                               // obj2.isConfrim = obj1.isConfrim;
                                 vm.confirmEPListReplace.push(obj2);
                             }
                         });

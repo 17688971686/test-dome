@@ -1362,15 +1362,19 @@
 //评审费打印。判断开户行和银行账户信息完不完整
         $rootScope.isBankCard=function (expertSelectedDtoList,signid) {
 
+            var flag  = false;
             for(var i=0;i<expertSelectedDtoList.length;i++){
-                console.log(expertSelectedDtoList[i].expertDto.bankAccount);
-                if(expertSelectedDtoList[i].expertDto.bankAccount!=undefined && expertSelectedDtoList[i].expertDto.openingBank!=undefined ){
+                if(expertSelectedDtoList[i].expertDto.bankAccount ==undefined
+                    || expertSelectedDtoList[i].expertDto.openingBank ==undefined ){
 
-                    $rootScope.printFile(signid,'SIGN_EXPERT' , 'SIGN_EXPERT_PAY');
-                }else{
+                    flag = true;
                     bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
-
+                    break;
                 }
+            }
+
+            if(!flag){
+                $rootScope.printFile(signid,'SIGN_EXPERT' , 'SIGN_EXPERT_PAY');
             }
         }
 
@@ -15732,15 +15736,40 @@
                 //1、删除已确认的专家
                 $.each(vm.confirmEPList,function(index, epObj){
                     if(obj == epObj.id){
-                        epObj.isJoin = state;
+                        if(state == '9'){
+                            epObj.isJoin = state;
+                            epObj.isConfrim = '9';
+                        }else if(state == '0'){
+                            epObj.isConfrim = '0';
+                            epObj.isJoin = '9';
+                        }
+                        $.each(vm.confirmEPListReplace,function(index, epObj2){
+                            if(obj == epObj2.id){
+                                if(state == 9){
+                                    epObj.isJoin = state;
+                                    epObj.isConfrim = 9;
+                                }else if(state == 0){
+                                    epObj.isConfrim = 0;
+                                    epObj.isJoin = 9;
+                                }
+                            }else{
+                                vm.confirmEPListReplace.push(epObj);
+                            }
+                        })
                     }
                 })
 
-                    $.each(vm.confirmEPListReplace,function(index, epObj){
+  /*                  $.each(vm.confirmEPListReplace,function(index, epObj){
                         if(obj == epObj.id){
-                            epObj.isJoin = state;
+                            if(state == 9){
+                                epObj.isJoin = state;
+                                epObj.isConfrim = 9;
+                            }else if(state == 0){
+                                epObj.isConfrim = 0;
+                                epObj.isJoin = 9;
+                            }
                         }
-                    })
+                    })*/
 
             })
         }
@@ -15817,6 +15846,7 @@
                                 obj2.maJorSmall = obj1.maJorSmall;
                                 obj2.expeRttype = obj1.expeRttype;
                                 obj2.isJoin = obj1.isJoin;
+                               // obj2.isConfrim = obj1.isConfrim;
                                 vm.confirmEPListReplace.push(obj2);
                             }
                         });
@@ -18102,6 +18132,22 @@
             });
         }
 
+        vm.query=function(){
+            var treeObj = $.fn.zTree.getZTreeObj("zTree");
+           treeObj.expandAll(false);
+            treeObj.cancelSelectedNode();
+            // var root = treeObj.getNodeByParam("id",1);
+            //    zTree.expandNode(root,false,true,false,false); //树折叠
+            var nodes = treeObj.getNodesByParamFuzzy("name", ""+vm.name+"", null);
+            for(var i=0, m=nodes.length; i<m; i++){
+                var node = treeObj.getNodeByParam("tId",nodes[i].tId , null);
+                treeObj.expandNode(node,true, true,true);
+                var parentNode = node.getParentNode();//找到父节点
+               if (parentNode != null) {
+                    treeObj.expandNode(parentNode, true,true,true);
+                }
+            }
+        }
         activate();
         function activate(){
             fileLibrarySvc.initFileFolder(vm, $scope , function(data){
@@ -18149,7 +18195,6 @@
                     zTreeObj.checkNode(treeNode, !treeNode.checked, true);
                     vm.parentFileId = treeNode.fileId;
                     if(treeNode.fileNature == "FOLDER" ){
-
                         vm.qualityList = [];
                         if(treeNode.children){
                             vm.qualityList = treeNode.children;
@@ -36831,7 +36876,7 @@
                     width: 280,
                     filterable: false,
                     template: function (item) {
-                        return '<a ng-click="vm.saveView()"  href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';
+                        return '<a ng-click="vm.saveView()"  href="#/fillSign/' + item.signid +'/" >' + item.projectname + '</a>';
                     }
                 },
                 {
