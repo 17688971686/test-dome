@@ -429,7 +429,7 @@ public class FlowServiceImpl implements FlowService {
     }
 
     /**
-     * 在办任务查询
+     * 在办任务查询(改成前端分页,后端分页效率太低)
      *（个人只能查询个人的，部长（组长）可以查询部门下人员办理的，分管领导可以查询分管部门办理的）
      * @param odataObj
      * @param isUserDeal 是否为个人待办
@@ -440,13 +440,25 @@ public class FlowServiceImpl implements FlowService {
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
         Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
-        String deptName = "";//部门名称
-        String sqlStr = "";
+        Integer totalResult = 0;
+        List<RuProcessTask> runProcessList = null;
         if (isUserDeal) {
             Disjunction dis = Restrictions.disjunction();
             dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
             dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
             criteria.add(dis);
+
+            runProcessList = criteria.list();
+            totalResult = runProcessList.size();
+            //合并评审项目处理
+            runProcessList.forEach(rl -> {
+                //如果是合并评审主项目，则查询次项目，如果是合并评审次项目，则查询主项目
+                if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
+                    rl.setReviewSignDtoList(signService.findReviewSign(rl.getBusinessKey()));
+                }else if (Constant.EnumState.NO.getValue().equals(rl.getReviewType())) {
+                    rl.setReviewSignDtoList(signService.findMainReviewSign(rl.getBusinessKey()));
+                }
+            });
         }else{
             String curUserId = SessionUtil.getUserId();
             //分管的部门ID
@@ -500,27 +512,9 @@ public class FlowServiceImpl implements FlowService {
                 String orgId = orgIdList.get(0);
                 criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
             }
+            runProcessList = criteria.list();
+            totalResult = runProcessList.size();
         }
-
-        Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-        criteria.setProjection(null);
-        // 处理分页
-        if (odataObj.getSkip() > 0) {
-            criteria.setFirstResult(odataObj.getSkip());
-        }
-        if (odataObj.getTop() > 0) {
-            criteria.setMaxResults(odataObj.getTop());
-        }
-        List<RuProcessTask> runProcessList = criteria.list();
-        //合并评审项目处理
-        runProcessList.forEach(rl -> {
-            //如果是合并评审主项目，则查询次项目，如果是合并评审次项目，则查询主项目
-            if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
-                rl.setReviewSignDtoList(signService.findReviewSign(rl.getBusinessKey()));
-            }else if (Constant.EnumState.NO.getValue().equals(rl.getReviewType())) {
-                rl.setReviewSignDtoList(signService.findMainReviewSign(rl.getBusinessKey()));
-            }
-        });
 
         pageModelDto.setCount(totalResult);
         pageModelDto.setValue(runProcessList);
