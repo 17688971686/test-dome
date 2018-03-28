@@ -250,9 +250,9 @@
                         }
                     }
                 },
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
+                serverPaging: false,
+                serverSorting: false,
+                serverFiltering: false,
                 pageSize: vm.queryParams.pageSize||10,
                 page:vm.queryParams.page||1,
                 sort: {
@@ -562,9 +562,24 @@
             };
         }//E_etasksGrid
 
-        //S_在办项目
+        //S_在办项目(改成页面分页)
         function dtasksGrid(vm) {
-            var dataSource = common.kendoGridDataSource(rootPath + "/flow/html/doingtasks",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform"),vm.gridParams),
+                schema: common.kendoGridConfig().schema({
+                    id: "id"
+                }),
+                serverPaging: false,
+                serverSorting: false,
+                serverFiltering: false,
+                pageSize : vm.queryParams.pageSize||10,
+                page:vm.queryParams.page||1,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
             var columns = [
                 {
                     field: "",
@@ -712,7 +727,6 @@
                 columns: columns,
                 resizable: true,
                 dataBound:common.kendoGridConfig(vm.queryParams).dataBound
-
             };
         }//E_dtasksGrid
 

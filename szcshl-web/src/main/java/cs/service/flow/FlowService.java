@@ -40,7 +40,7 @@ public interface FlowService {
     PageModelDto<SignDispaWork> queryETasks(ODataObj odataObj);
 
     /**
-     * 20170706 项目签收流程接口
+     * 在办任务查询
      **/
     PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, boolean isUserDeal);
 
