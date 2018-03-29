@@ -901,6 +901,54 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(1000)")
     private String lengthenExp;
 
+    /*********新增部门和负责人字段***********/
+    /**
+     * 主办部门ID
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String mOrgId;
+
+    /**
+     * 主办部门名称
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String mOrgName;
+
+    /**
+     * 协办部门ID
+     */
+    @Column(columnDefinition = "VARCHAR(512)")
+    private String aOrgId;
+
+    /**
+     * 协办部门名称
+     */
+    @Column(columnDefinition = "VARCHAR(512)")
+    private String aOrgName;
+
+    /**
+     * 主负责人ID
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String mUserId;
+
+    /**
+     * 主负责人名称
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String mUserName;
+
+    /**
+     * 负责人ID
+     */
+    @Column(columnDefinition = "VARCHAR(1024)")
+    private String aUserID;
+    /**
+     * 负责人名称
+     */
+    @Column(columnDefinition = "VARCHAR(512)")
+    private String aUserName;
+
 
     public Float getLengthenDays() {
         return lengthenDays;
@@ -2582,5 +2630,69 @@ public class Sign extends DomainBase {
 
     public void setTotalReviewdays(Float totalReviewdays) {
         this.totalReviewdays = totalReviewdays;
+    }
+
+    public String getmOrgId() {
+        return mOrgId;
+    }
+
+    public void setmOrgId(String mOrgId) {
+        this.mOrgId = mOrgId;
+    }
+
+    public String getmOrgName() {
+        return mOrgName;
+    }
+
+    public void setmOrgName(String mOrgName) {
+        this.mOrgName = mOrgName;
+    }
+
+    public String getaOrgId() {
+        return aOrgId;
+    }
+
+    public void setaOrgId(String aOrgId) {
+        this.aOrgId = aOrgId;
+    }
+
+    public String getaOrgName() {
+        return aOrgName;
+    }
+
+    public void setaOrgName(String aOrgName) {
+        this.aOrgName = aOrgName;
+    }
+
+    public String getmUserId() {
+        return mUserId;
+    }
+
+    public void setmUserId(String mUserId) {
+        this.mUserId = mUserId;
+    }
+
+    public String getmUserName() {
+        return mUserName;
+    }
+
+    public void setmUserName(String mUserName) {
+        this.mUserName = mUserName;
+    }
+
+    public String getaUserID() {
+        return aUserID;
+    }
+
+    public void setaUserID(String aUserID) {
+        this.aUserID = aUserID;
+    }
+
+    public String getaUserName() {
+        return aUserName;
+    }
+
+    public void setaUserName(String aUserName) {
+        this.aUserName = aUserName;
     }
 }

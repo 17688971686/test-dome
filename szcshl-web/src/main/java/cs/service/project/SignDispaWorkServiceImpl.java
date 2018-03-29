@@ -3,16 +3,14 @@ package cs.service.project;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.DateUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.OrgDept;
 import cs.model.PageModelDto;
+import cs.model.project.SignDispaWorkDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
@@ -110,8 +108,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
      * @return
      */
     @Override
-    public PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj) {
-        PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
+    public PageModelDto<SignDispaWorkDto> getCommQurySign(ODataObj odataObj) {
+        PageModelDto<SignDispaWorkDto> pageModelDto = new PageModelDto<SignDispaWorkDto>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         for (int i = 0; i < odataObj.getFilter().size(); i++) {
             //对发文类型的查询
@@ -161,8 +159,14 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             criteria.setMaxResults(odataObj.getTop());
         }
         List<SignDispaWork> signDispaWork = criteria.list();
+        List<SignDispaWorkDto> resultList = new ArrayList<>();
+        signDispaWork.forEach(sd ->{
+            SignDispaWorkDto signDispaWorkDto = new SignDispaWorkDto();
+            BeanCopierUtils.copyProperties(sd,signDispaWorkDto);
+            resultList.add(signDispaWorkDto);
+        });
         pageModelDto.setCount(totalResult);
-        pageModelDto.setValue(signDispaWork);
+        pageModelDto.setValue(resultList);
         return pageModelDto;
     }
 
@@ -527,7 +531,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
 
         String[] filterArr = filters.split(",");
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select * from V_SIGN_DISP_WORK  ");
+        hqlBuilder.append("select * from SIGN_DISP_WORK  ");
         if (filterArr.length > 0 && !"".equals(filterArr[0])) {
             hqlBuilder.append(" where ");
             for (int i = 0; i < filterArr.length; i++) {

@@ -66,6 +66,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 
 import static cs.common.Constant.SUPER_USER;
@@ -442,23 +443,13 @@ public class FlowServiceImpl implements FlowService {
         criteria = odataObj.buildFilterToCriteria(criteria);
         Integer totalResult = 0;
         List<RuProcessTask> runProcessList = null;
+        //在办任务也包含待办任务，所以要加上这个条件
         if (isUserDeal) {
             Disjunction dis = Restrictions.disjunction();
             dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
             dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
             criteria.add(dis);
-
             runProcessList = criteria.list();
-            totalResult = runProcessList.size();
-            //合并评审项目处理
-            runProcessList.forEach(rl -> {
-                //如果是合并评审主项目，则查询次项目，如果是合并评审次项目，则查询主项目
-                if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
-                    rl.setReviewSignDtoList(signService.findReviewSign(rl.getBusinessKey()));
-                }else if (Constant.EnumState.NO.getValue().equals(rl.getReviewType())) {
-                    rl.setReviewSignDtoList(signService.findMainReviewSign(rl.getBusinessKey()));
-                }
-            });
         }else{
             String curUserId = SessionUtil.getUserId();
             //分管的部门ID
@@ -495,29 +486,47 @@ public class FlowServiceImpl implements FlowService {
                 }
             }
 
-            //开始查询
-            if(leaderFlag == 0){
-                //普通用户
-                criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mainUserId.getName(),curUserId), Restrictions.like(RuProcessTask_.aUserId.getName(), "%" + curUserId + "%")));
-            }else if(leaderFlag == 2){
-                //分管领导，查询所管辖的部门
-                Disjunction dis = Restrictions.disjunction();
-                for(String orgId:orgIdList){
-                    dis.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
+            if(leaderFlag != 1){
+                criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId), Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" +curUserId + "%"),Restrictions.eq(RuProcessTask_.createdBy.getName(),curUserId)));
+                //开始查询
+                if(leaderFlag == 0){
+                    //普通用户,如果是项目签收人（流程发起人），也符合条件
+                    criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mainUserId.getName(),curUserId), Restrictions.like(RuProcessTask_.aUserId.getName(), "%" + curUserId + "%")));
+                }else if(leaderFlag == 2){
+                    //分管领导，查询所管辖的部门
+                    Disjunction dis2 = Restrictions.disjunction();
+                    for(String orgId:orgIdList){
+                        dis2.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
+                    }
+                    criteria.add(dis2);
+
+                }else if(leaderFlag == 3){
+                    //部长
+                    String orgId = orgIdList.get(0);
+                    criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
                 }
-                criteria.add(dis);
-
-            }else if(leaderFlag == 3){
-                //部长
-                String orgId = orgIdList.get(0);
-                criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
             }
-            runProcessList = criteria.list();
-            totalResult = runProcessList.size();
-        }
 
+
+            runProcessList = criteria.list();
+        }
+        //过滤掉已删除的项目
+        List<RuProcessTask> resultList = runProcessList.stream().filter((RuProcessTask rb) -> !(Constant.EnumState.DELETE.getValue()).equals(rb.getSignState()) )
+                .collect(Collectors.toList());
+        if(isUserDeal){
+            //合并评审项目处理
+            resultList.forEach(rl -> {
+                //如果是合并评审主项目，则查询次项目，如果是合并评审次项目，则查询主项目
+                if (Constant.EnumState.YES.getValue().equals(rl.getReviewType())) {
+                    rl.setReviewSignDtoList(signService.findReviewSign(rl.getBusinessKey()));
+                }else if (Constant.EnumState.NO.getValue().equals(rl.getReviewType())) {
+                    rl.setReviewSignDtoList(signService.findMainReviewSign(rl.getBusinessKey()));
+                }
+            });
+        }
+        totalResult = resultList.size();
         pageModelDto.setCount(totalResult);
-        pageModelDto.setValue(runProcessList);
+        pageModelDto.setValue(resultList);
         return pageModelDto;
     }
 

@@ -43,7 +43,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         List<Map<String , Object[]>> resultList = new ArrayList<>();
         if(DateUtils.daysBetween(start , end) >0){
             HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , count(projectcode) projectCount from v_sign_disp_work" );
+            hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , count(projectcode) projectCount from sign_disp_work" );
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
             //排除预签收项目
@@ -142,7 +142,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         Date end = DateUtils.converToDate(endTime , "yyyy-MM-dd");
         if(DateUtils.daysBetween(start , end) >0){
             HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append("select " + SignDispaWork_.reviewstage.getName() + "," + SignDispaWork_.projectType.getName() + ",count("+ SignDispaWork_.projectcode.getName() + ") projectNum from v_sign_disp_work ");
+            hqlBuilder.append("select " + SignDispaWork_.reviewstage.getName() + "," + SignDispaWork_.projectType.getName() + ",count("+ SignDispaWork_.projectcode.getName() + ") projectNum from sign_disp_work ");
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
             //排除预签项目
@@ -389,7 +389,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         HqlBuilder hqlBuilder = HqlBuilder.create();
         try{
             hqlBuilder.append("select * from (select a.* , rownum rn from (");
-            hqlBuilder.append("select * from V_SIGN_DISP_WORK where signstate != '7' " );
+            hqlBuilder.append("select * from SIGN_DISP_WORK where signstate != '7' " );
             if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
                 hqlBuilder.append(" and ");
                 for (int i = 0; i < queryArr.length; i++) {
@@ -456,7 +456,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
     @Override
     public ResultMsg findSecretProPermission(String signId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select " + SignDispaWork_.signid.getName() + " from V_SIGN_DISP_WORK where " + SignDispaWork_.signid.getName() + "=:signId" );
+        hqlBuilder.append("select " + SignDispaWork_.signid.getName() + " from SIGN_DISP_WORK where " + SignDispaWork_.signid.getName() + "=:signId" );
         hqlBuilder.setParam("signId" , signId);
 
         //部门负责人
@@ -491,49 +491,22 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
     //在办项目数量统计
     public List<Map<String,Object>> dataskCount(){
         //for mysql
-        String statisticsSql = " select COUNT(signid)  as SIGNNUMBER ,reviewstage   from V_SIGN_DISP_WORK t where signstate<>7 and signstate<>2 group by t.reviewstage";
+        String statisticsSql = " select COUNT(signid)  as SIGNNUMBER ,reviewstage   from SIGN_DISP_WORK t where signstate<>7 and signstate<>2 group by t.reviewstage";
         List<Map<String,Object>> statList=jdbcTemplate.queryForList(statisticsSql);
 
         return statList;
     }
 
+    /**
+     * 在办项目处理情况统计
+     * @return
+     */
     @Override
-    //在办项目处理情况统计(折线图)
-    public  List<Object[]> dtasksLineSign(String curUserId, List<String> orgIdList,int leaderFlag){
-        HqlBuilder sqlBuilder = HqlBuilder.create();
+    public List<Map<String,Object>> dtasksLineSign(){
+        //for mysql
+        String statisticsSql = " select t.signid, t.projectname,t.receivedate,t.surplusdays,t.processInstanceId from SIGN_DISP_WORK t where signstate<>7 and signstate<>2";
+        List<Map<String,Object>> statList=jdbcTemplate.queryForList(statisticsSql);
 
-
-
-
-        sqlBuilder.append("SELECT s.projectname AS projectname,s.reviewstage AS reviewstage, s.surplusdays AS surplusdays   FROM cs_sign s");
-        sqlBuilder.append("  LEFT JOIN cs_work_program w  ON s.signid = w.signid AND W.BRANCHID = '1'");
-       //主办部门
-        sqlBuilder.append("  LEFT JOIN (SELECT o.id oid, o.name oname, B.SIGNID bsignid  FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  ");
-        sqlBuilder.append("  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo ON mo.bsignid = s.signid");
-       //协办部门
-        sqlBuilder.append("  LEFT JOIN ( SELECT wm_concat (o.id) secondOrgid, wm_concat (o.name) secondOrgName, ab.SIGNID absignid  FROM V_ORG_DEPT o, CS_SIGN_BRANCH ab");
-        sqlBuilder.append("  WHERE O.ID = ab.ORGID AND ab.ISMAINBRABCH != '9' AND ab.ISNEEDWP = '9'  GROUP BY ab.signid");
-        sqlBuilder.append("    ) ao on ao.absignid = s.signid");
-        //第一负责人
-
-        sqlBuilder.append(" LEFT JOIN  (SELECT U.ID mUserId, u.displayname mUserName, csp1.signid csignid  FROM CS_USER u, CS_SIGN_PRINCIPAL2 csp1");
-        sqlBuilder.append("  WHERE csp1.userid = u.id AND csp1.ismainuser = '9' ");
-        if(leaderFlag==0){
-            //普通用户
-        sqlBuilder.append(" AND u.id='"+curUserId+"' ");
-        }
-        sqlBuilder.append(" ) csp ON csp.csignid = s.signid ");
-         //第二负责人
-        sqlBuilder.append("  LEFT JOIN  (SELECT wm_concat (u2.id) secondUserId, wm_concat (u2.displayname) secondUserName, csp2.signid c2signid ");
-        sqlBuilder.append("  FROM CS_USER u2, CS_SIGN_PRINCIPAL2 csp2  WHERE csp2.userid = u2.id AND csp2.ismainuser = '0'   ");
-        if(leaderFlag==0){
-            sqlBuilder.append(" AND u2.id='"+curUserId+"'");
-        }
-        sqlBuilder.append(" GROUP BY csp2.signid) csp22 ");
-        sqlBuilder.append("  ON csp22.c2signid = s.signid   ORDER BY S.CREATEDDATE DESC ");
-
-        List<Object[]> objectList = getObjectArray(sqlBuilder);
-        return objectList;
+        return statList;
     }
-
 }
