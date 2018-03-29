@@ -14,8 +14,7 @@ import java.util.Date;
  * @author ldm
  */
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "V_SIGN_DISP_WORK")
+@Table(name = "SIGN_DISP_WORK")
 public class SignDispaWork {
 
     /**
@@ -24,6 +23,17 @@ public class SignDispaWork {
     @Id
     private String signid;
 
+    /**
+     * 签收人（流程发起人）
+     */
+    @Column
+    private String createdBy;
+
+    /**
+     * 送件人签名，（流程发起人）
+     */
+    @Column
+    private String sendusersign;
     /**
      * 是否是优秀评审项目 9： 是    0或其他：否
      */
@@ -34,6 +44,7 @@ public class SignDispaWork {
     /**
      * 是否确认签收(9:是，其他 否)
      */
+    @Column
     private String issign;
 
     /**
@@ -268,16 +279,28 @@ public class SignDispaWork {
     private Date dispatchDate;
 
     /**
+     * 主办部门ID
+     */
+    @Column
+    private String mOrgId;
+
+    /**
      * 主办部门名称
      */
     @Column
     private String mOrgName;
 
     /**
-     * 主办部门ID
+     * 协办部门ID
      */
     @Column
-    private String mOrgId;
+    private String aOrgId;
+
+    /**
+     * 协办部门名称
+     */
+    @Column
+    private String aOrgName;
 
     /**
      * 归档日期
@@ -765,5 +788,37 @@ public class SignDispaWork {
 
     public void setProjectSubType(String projectSubType) {
         this.projectSubType = projectSubType;
+    }
+
+    public String getaOrgId() {
+        return aOrgId;
+    }
+
+    public void setaOrgId(String aOrgId) {
+        this.aOrgId = aOrgId;
+    }
+
+    public String getaOrgName() {
+        return aOrgName;
+    }
+
+    public void setaOrgName(String aOrgName) {
+        this.aOrgName = aOrgName;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getSendusersign() {
+        return sendusersign;
+    }
+
+    public void setSendusersign(String sendusersign) {
+        this.sendusersign = sendusersign;
     }
 }

@@ -10,6 +10,7 @@ import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
+import cs.model.project.SignDispaWorkDto;
 import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
@@ -59,9 +60,9 @@ public class SignDispaWorkController {
     @RequiresAuthentication
     @RequestMapping(name = "项目查询统计", path = "getSignList", method = RequestMethod.POST)
     @ResponseBody
-    public PageModelDto<SignDispaWork> getSignList(HttpServletRequest request) throws ParseException {
+    public PageModelDto<SignDispaWorkDto> getSignList(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<SignDispaWork> pageModelDto = signDispaWorkService.getCommQurySign(odataObj);
+        PageModelDto<SignDispaWorkDto> pageModelDto = signDispaWorkService.getCommQurySign(odataObj);
         return pageModelDto;
     }
 

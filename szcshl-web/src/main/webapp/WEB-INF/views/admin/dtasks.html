@@ -11,8 +11,9 @@
     </ol>
 
     <div class="well well-sm">
+        <!--ne 影响效率，直接在视图过滤就行-->
+        <!--<input type="text"  name="signState" operator="ne" value="7" hidden="hidden">-->
     <form id="searchform" name="searchform">
-        <input type="text"  name="signState" operator="ne" value="7" hidden="hidden">
         <span class="help-inline">项目名称：</span>
         <input type="text" ng-model="vm.model.projectname" operator="like" name="projectName" id="projectnam" placeholder="请输入">
         <span class="help-inline">项目阶段：</span>

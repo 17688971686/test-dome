@@ -9,8 +9,8 @@
         <li class="active">{{vm.title}}</li>
     </ol>
     <div class="well well-sm">
+        <!--<input type name="signState" operator="ne" value="7" hidden="hidden">-->
         <form id="searchform" name="searchform">
-            <input type name="signState" operator="ne" value="7" hidden="hidden">
             <span class="help-inline">项目名称：</span>
             <input type="text" ng-model="vm.model.projectName" operator="like" name="projectName" id="projectName" placeholder="请输入">
 

@@ -16,22 +16,25 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
 
     /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
+     *
      * @param startTime
      * @param endTime
      * @return
      */
-   ResultMsg findByTime(String startTime , String endTime);
+    ResultMsg findByTime(String startTime, String endTime);
 
     /**
      * 通过评审阶段，项目类别，统计项目信息
+     *
      * @param startTime
      * @param endTime
      * @return
      */
-    ResultMsg findByTypeAndReview(String startTime , String endTime);
+    ResultMsg findByTypeAndReview(String startTime, String endTime);
 
     /**
      * 通过收文id获取项目信息
+     *
      * @param signId
      * @return
      */
@@ -39,14 +42,16 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
 
     /**
      * 通过条件查询统计
+     *
      * @param queryData
      * @param page
      * @return
      */
-    List<SignDispaWork> queryStatistics(String  queryData , int page);
+    List<SignDispaWork> queryStatistics(String queryData, int page);
 
     /**
      * 通过业务id，判断当前用户是否有权限查看项目详情----用于秘密项目
+     *
      * @param signId
      * @return
      */
@@ -54,15 +59,16 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
 
     /**
      * 在办项目数量统计
+     *
      * @return
      */
-    List<Map<String,Object>> dataskCount();
+    List<Map<String, Object>> dataskCount();
 
- /**
-  * 在办项目处理情况统计
-  * @return
-  */
- List<Map<String,Object>> dtasksLineSign();
-
+    /**
+     * 在办项目处理情况统计
+     *
+     * @return
+     */
+    List<Map<String, Object>> dtasksLineSign();
 
 }

@@ -109,6 +109,18 @@ public class RuProcessTask {
     private String processState;
 
     /**********   以下是业务数据  **********/
+    /**
+     * 签收人（流程发起人ID）
+     */
+    @Column
+    private String createdBy;
+
+    /**
+     * 送件人签名，（流程发起人）
+     */
+    @Column
+    private String sendusersign;
+
     @Column
     private String projectName;
 
@@ -454,5 +466,21 @@ public class RuProcessTask {
 
     public void setAllPriUser(String allPriUser) {
         this.allPriUser = allPriUser;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getSendusersign() {
+        return sendusersign;
+    }
+
+    public void setSendusersign(String sendusersign) {
+        this.sendusersign = sendusersign;
     }
 }

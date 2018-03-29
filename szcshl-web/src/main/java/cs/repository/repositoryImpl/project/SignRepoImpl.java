@@ -287,6 +287,94 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
 
+    /**
+     * TODO
+     * 重新初始化协办部门和协办负责人信息
+     * @param sign
+     * @param signId
+     * @param branchId  排除的分支
+     */
+    @Override
+    public void initAOrgAndUser(Sign sign, String signId, String branchId) {
+        /**
+         * SELECT CASE WHEN aorgid IS NOT NULL
+         THEN TRIM (',' FROM REPLACE (REGEXP_REPLACE (aorgid, '[^@]+[,$]', ''),'@',','))
+         ELSE ''
+         END aorgid,
+         CASE
+         WHEN aorgid IS NOT NULL
+         THEN TRIM (',' FROM REPLACE (REGEXP_REPLACE (aorgid, '[^,]+[@$]', ''),'@'','))
+         ELSE
+         ''
+         END aorgname
+         FROM (SELECT ',' || SUBSTR (orgid, INSTR (orgid, ',') + 1) || ',' aorgid
+         FROM (  SELECT MAX (orgid) orgid
+         FROM (SELECT csb.SIGNID,
+         wm_concat (csb.ORGID || '@' || VOD.NAME) OVER (PARTITION BY csb.SIGNID ORDER BY csb.ISMAINBRABCH DESC) orgid
+         FROM V_ORG_DEPT vod, CS_SIGN_BRANCH csb
+         WHERE csb.signid = 'fdc903f6-0b0a-4bad-a4c0-8bc228c3c557' and csb.ISMAINBRABCH != '9' and VOD.ID = csb.ORGID)
+         ))
+         */
+        //1、查询除了主办部门外，排除分支的其它协办部门信息
+        HqlBuilder orgBuilder = HqlBuilder.create();
+        orgBuilder.append(" SELECT CASE WHEN aorgid IS NOT NULL THEN TRIM (',' FROM REPLACE (REGEXP_REPLACE (aorgid, '[^@]+[,$]', ''),'@',',')) ELSE '' END aorgid, ");
+        orgBuilder.append(" CASE WHEN aorgid IS NOT NULL THEN TRIM (',' FROM REPLACE (REGEXP_REPLACE (aorgid, '[^,]+[@$]', ''),'@'',')) ELSE '' END aorgname ");
+        orgBuilder.append(" FROM (SELECT ',' || SUBSTR (orgid, INSTR (orgid, ',') + 1) || ',' aorgid ");
+        orgBuilder.append(" FROM (  SELECT MAX (orgid) orgid ");
+        orgBuilder.append(" FROM (SELECT csb.SIGNID, wm_concat (csb.ORGID || '@' || VOD.NAME) OVER (PARTITION BY csb.SIGNID ORDER BY csb.ISMAINBRABCH DESC) orgid ");
+        orgBuilder.append(" FROM V_ORG_DEPT vod, CS_SIGN_BRANCH csb ");
+        orgBuilder.append(" WHERE csb.signid = :signid and csb.ISMAINBRABCH != :mainbranch  ");
+        orgBuilder.setParam("signid",signId).setParam("mainbranch", Constant.EnumState.YES.getValue());
+        if(Validate.isString(branchId)){
+            orgBuilder.append(" and csb.BRANCHID != :branchId ").setParam("branchId",branchId);
+        }
+        orgBuilder.append(" and VOD.ID = csb.ORGID) )) ");
+        List<Object[]> resultList = getObjectArray(orgBuilder);
+        if(!Validate.isList(resultList)){
+            sign.setaOrgId("");
+            sign.setaOrgName("");
+        }else{
+            for(Object[] obj : resultList){
+                sign.setaOrgId(obj[0]==null?"":obj[0].toString());
+                sign.setaOrgName(obj[1]==null?"":obj[1].toString());
+            }
+        }
+
+        //查询除了主办分支外的其它负责人
+        /**
+         * SELECT CASE WHEN auserid IS NOT NULL THEN TRIM (',' FROM REPLACE (REGEXP_REPLACE (auserid, '[^@]+[,$]', ''),'@', ',')) ELSE '' END auserid,
+         CASE WHEN auserid IS NOT NULL THEN TRIM ( ',' FROM REPLACE (REGEXP_REPLACE (auserid, '[^,]+[@$]', ''), '@', ',')) ELSE '' END ausername
+         FROM (SELECT ',' || SUBSTR (userid, INSTR (userid, ',') + 1) || ',' auserid
+         FROM (SELECT MAX (userId) userid
+         FROM (SELECT sp.signid, wm_concat ( SP.USERID || '@' || CU.DISPLAYNAME) OVER (PARTITION BY sp.SIGNID ORDER BY SP.ISMAINUSER DESC, sp.SORT) userId
+         FROM CS_SIGN_PRINCIPAL2 sp, cs_user cu
+         WHERE     sp.signid = 'fdc903f6-0b0a-4bad-a4c0-8bc228c3c557' AND SP.FLOWBRANCH != '1'
+         AND SP.USERID = CU.ID)));
+         */
+        HqlBuilder userBuilder = HqlBuilder.create();
+        userBuilder.append(" SELECT CASE WHEN auserid IS NOT NULL THEN TRIM (',' FROM REPLACE (REGEXP_REPLACE (auserid, '[^@]+[,$]', ''),'@', ',')) ELSE '' END auserid,");
+        userBuilder.append(" CASE WHEN auserid IS NOT NULL THEN TRIM ( ',' FROM REPLACE (REGEXP_REPLACE (auserid, '[^,]+[@$]', ''), '@', ',')) ELSE '' END ausername ");
+        userBuilder.append(" FROM (SELECT ',' || SUBSTR (userid, INSTR (userid, ',') + 1) || ',' auserid ");
+        userBuilder.append(" FROM (SELECT MAX (userId) userid ");
+        userBuilder.append(" FROM (SELECT sp.signid, wm_concat ( SP.USERID || '@' || CU.DISPLAYNAME) OVER (PARTITION BY sp.SIGNID ORDER BY SP.ISMAINUSER DESC, sp.SORT) userId ");
+        userBuilder.append(" FROM CS_SIGN_PRINCIPAL2 sp, cs_user cu ");
+        userBuilder.append(" WHERE sp.signid = :signid AND SP.FLOWBRANCH != '1'  ");
+        userBuilder.setParam("signid",signId);
+        if(Validate.isString(branchId)){
+            orgBuilder.append(" and SP.FLOWBRANCH != :branchId ").setParam("branchId",branchId);
+        }
+        userBuilder.append(" and AND SP.USERID = CU.ID) )) ");
+        resultList = getObjectArray(orgBuilder);
+        if(!Validate.isList(resultList)){
+            sign.setaUserID("");
+            sign.setaUserName("");
+        }else{
+            for(Object[] obj : resultList){
+                sign.setaUserID(obj[0]==null?"":obj[0].toString());
+                sign.setaUserName(obj[1]==null?"":obj[1].toString());
+            }
+        }
     }
 }

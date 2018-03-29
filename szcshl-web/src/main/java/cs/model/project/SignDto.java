@@ -677,6 +677,44 @@ public class SignDto extends BaseDto {
     private String lengthenExp;
 
     /**
+     * 主办部门ID
+     */
+    private String mOrgId;
+
+    /**
+     * 主办部门名称
+     */
+    private String mOrgName;
+
+    /**
+     * 协办部门ID
+     */
+    private String aOrgId;
+
+    /**
+     * 协办部门名称
+     */
+    private String aOrgName;
+
+    /**
+     * 主负责人ID
+     */
+    private String mUserId;
+
+    /**
+     * 主负责人名称
+     */
+    private String mUserName;
+
+    /**
+     * 负责人ID
+     */
+    private String aUserID;
+    /**
+     * 负责人名称
+     */
+    private String aUserName;
+    /**
      * 单位评分
      */
     private UnitScoreDto unitScoreDto;
@@ -2432,5 +2470,69 @@ public class SignDto extends BaseDto {
 
     public void setUnitScoreDto(UnitScoreDto unitScoreDto) {
         this.unitScoreDto = unitScoreDto;
+    }
+
+    public String getmOrgId() {
+        return mOrgId;
+    }
+
+    public void setmOrgId(String mOrgId) {
+        this.mOrgId = mOrgId;
+    }
+
+    public String getmOrgName() {
+        return mOrgName;
+    }
+
+    public void setmOrgName(String mOrgName) {
+        this.mOrgName = mOrgName;
+    }
+
+    public String getaOrgId() {
+        return aOrgId;
+    }
+
+    public void setaOrgId(String aOrgId) {
+        this.aOrgId = aOrgId;
+    }
+
+    public String getaOrgName() {
+        return aOrgName;
+    }
+
+    public void setaOrgName(String aOrgName) {
+        this.aOrgName = aOrgName;
+    }
+
+    public String getmUserId() {
+        return mUserId;
+    }
+
+    public void setmUserId(String mUserId) {
+        this.mUserId = mUserId;
+    }
+
+    public String getmUserName() {
+        return mUserName;
+    }
+
+    public void setmUserName(String mUserName) {
+        this.mUserName = mUserName;
+    }
+
+    public String getaUserID() {
+        return aUserID;
+    }
+
+    public void setaUserID(String aUserID) {
+        this.aUserID = aUserID;
+    }
+
+    public String getaUserName() {
+        return aUserName;
+    }
+
+    public void setaUserName(String aUserName) {
+        this.aUserName = aUserName;
     }
 }

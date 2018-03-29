@@ -85,4 +85,12 @@ public interface SignRepo extends IRepository<Sign, String> {
      * @param disapDate
      */
     void updateSuppLetterState(String businessId, String value, Date disapDate);
+
+    /**
+     * 重新初始化协办部门和负责人信息
+     * @param sign
+     * @param signId
+     * @param branchId  排除的分支
+     */
+    void initAOrgAndUser(Sign sign, String signId, String branchId);
 }

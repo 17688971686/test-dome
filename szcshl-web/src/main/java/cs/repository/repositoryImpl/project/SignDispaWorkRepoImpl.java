@@ -43,7 +43,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         List<Map<String , Object[]>> resultList = new ArrayList<>();
         if(DateUtils.daysBetween(start , end) >0){
             HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , count(projectcode) projectCount from v_sign_disp_work" );
+            hqlBuilder.append(" select reviewstage , sum(appalyinvestment) appalyinvestment , sum(authorizeValue) authorizeValue , count(projectcode) projectCount from sign_disp_work" );
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
             //排除预签收项目
@@ -142,7 +142,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         Date end = DateUtils.converToDate(endTime , "yyyy-MM-dd");
         if(DateUtils.daysBetween(start , end) >0){
             HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append("select " + SignDispaWork_.reviewstage.getName() + "," + SignDispaWork_.projectType.getName() + ",count("+ SignDispaWork_.projectcode.getName() + ") projectNum from v_sign_disp_work ");
+            hqlBuilder.append("select " + SignDispaWork_.reviewstage.getName() + "," + SignDispaWork_.projectType.getName() + ",count("+ SignDispaWork_.projectcode.getName() + ") projectNum from sign_disp_work ");
             hqlBuilder.append(" where " + SignDispaWork_.signdate.getName() + " >=:start and " + SignDispaWork_.signdate.getName() + "<=:end");
             hqlBuilder.append(" and " + SignDispaWork_.processState.getName() + ">=:processState");
             //排除预签项目
@@ -389,7 +389,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         HqlBuilder hqlBuilder = HqlBuilder.create();
         try{
             hqlBuilder.append("select * from (select a.* , rownum rn from (");
-            hqlBuilder.append("select * from V_SIGN_DISP_WORK where signstate != '7' " );
+            hqlBuilder.append("select * from SIGN_DISP_WORK where signstate != '7' " );
             if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
                 hqlBuilder.append(" and ");
                 for (int i = 0; i < queryArr.length; i++) {
@@ -456,7 +456,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
     @Override
     public ResultMsg findSecretProPermission(String signId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select " + SignDispaWork_.signid.getName() + " from V_SIGN_DISP_WORK where " + SignDispaWork_.signid.getName() + "=:signId" );
+        hqlBuilder.append("select " + SignDispaWork_.signid.getName() + " from SIGN_DISP_WORK where " + SignDispaWork_.signid.getName() + "=:signId" );
         hqlBuilder.setParam("signId" , signId);
 
         //部门负责人
@@ -491,20 +491,22 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
     //在办项目数量统计
     public List<Map<String,Object>> dataskCount(){
         //for mysql
-        String statisticsSql = " select COUNT(signid)  as SIGNNUMBER ,reviewstage   from V_SIGN_DISP_WORK t where signstate<>7 and signstate<>2 group by t.reviewstage";
+        String statisticsSql = " select COUNT(signid)  as SIGNNUMBER ,reviewstage   from SIGN_DISP_WORK t where signstate<>7 and signstate<>2 group by t.reviewstage";
         List<Map<String,Object>> statList=jdbcTemplate.queryForList(statisticsSql);
 
         return statList;
     }
 
+    /**
+     * 在办项目处理情况统计
+     * @return
+     */
     @Override
-    //在办项目处理情况统计
     public List<Map<String,Object>> dtasksLineSign(){
         //for mysql
-        String statisticsSql = " select t.signid, t.projectname,t.receivedate,t.surplusdays,t.processInstanceId from V_SIGN_DISP_WORK t where signstate<>7 and signstate<>2";
+        String statisticsSql = " select t.signid, t.projectname,t.receivedate,t.surplusdays,t.processInstanceId from SIGN_DISP_WORK t where signstate<>7 and signstate<>2";
         List<Map<String,Object>> statList=jdbcTemplate.queryForList(statisticsSql);
 
         return statList;
     }
-
 }

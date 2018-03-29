@@ -3,6 +3,7 @@ package cs.service.project;
 import cs.common.ResultMsg;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
+import cs.model.project.SignDispaWorkDto;
 import cs.repository.odata.ODataObj;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface SignDispaWorkService {
      * @param odataObj
      * @return
      */
-    PageModelDto<SignDispaWork> getCommQurySign(ODataObj odataObj);
+    PageModelDto<SignDispaWorkDto> getCommQurySign(ODataObj odataObj);
 
 
     /**
@@ -122,6 +123,5 @@ public interface SignDispaWorkService {
      * @return
      */
     ResultMsg findSecretProPermission(String signId);
-
 
 }
