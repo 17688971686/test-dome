@@ -60,9 +60,11 @@ public interface SignDispaWorkRepo extends IRepository<SignDispaWork, String> {
 
  /**
   * 在办项目处理情况统计
-  * @return
+  * @return  curUserId 用户id
+  * @return  orgIdList 部门数组
+  * @return  leaderFlag 领导标识参数
   */
- List<Map<String,Object>> dtasksLineSign();
+ List<Object[]> dtasksLineSign(String curUserId, List<String> orgIdList,int leaderFlag);
 
 
 }

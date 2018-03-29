@@ -279,6 +279,12 @@ public class SignDispaWork {
     @Column
     private String mOrgId;
 
+    //协办部门
+    @Column
+    private String aOrgId;
+    @Column
+    private String aOrgName;
+
     /**
      * 归档日期
      */
@@ -765,5 +771,21 @@ public class SignDispaWork {
 
     public void setProjectSubType(String projectSubType) {
         this.projectSubType = projectSubType;
+    }
+
+    public String getaOrgId() {
+        return aOrgId;
+    }
+
+    public void setaOrgId(String aOrgId) {
+        this.aOrgId = aOrgId;
+    }
+
+    public String getaOrgName() {
+        return aOrgName;
+    }
+
+    public void setaOrgName(String aOrgName) {
+        this.aOrgName = aOrgName;
     }
 }

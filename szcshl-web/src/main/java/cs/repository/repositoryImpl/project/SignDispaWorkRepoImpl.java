@@ -498,13 +498,42 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
     }
 
     @Override
-    //在办项目处理情况统计
-    public List<Map<String,Object>> dtasksLineSign(){
-        //for mysql
-        String statisticsSql = " select t.signid, t.projectname,t.receivedate,t.surplusdays,t.processInstanceId from V_SIGN_DISP_WORK t where signstate<>7 and signstate<>2";
-        List<Map<String,Object>> statList=jdbcTemplate.queryForList(statisticsSql);
+    //在办项目处理情况统计(折线图)
+    public  List<Object[]> dtasksLineSign(String curUserId, List<String> orgIdList,int leaderFlag){
+        HqlBuilder sqlBuilder = HqlBuilder.create();
 
-        return statList;
+
+
+
+        sqlBuilder.append("SELECT s.projectname AS projectname,s.reviewstage AS reviewstage, s.surplusdays AS surplusdays   FROM cs_sign s");
+        sqlBuilder.append("  LEFT JOIN cs_work_program w  ON s.signid = w.signid AND W.BRANCHID = '1'");
+       //主办部门
+        sqlBuilder.append("  LEFT JOIN (SELECT o.id oid, o.name oname, B.SIGNID bsignid  FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  ");
+        sqlBuilder.append("  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo ON mo.bsignid = s.signid");
+       //协办部门
+        sqlBuilder.append("  LEFT JOIN ( SELECT wm_concat (o.id) secondOrgid, wm_concat (o.name) secondOrgName, ab.SIGNID absignid  FROM V_ORG_DEPT o, CS_SIGN_BRANCH ab");
+        sqlBuilder.append("  WHERE O.ID = ab.ORGID AND ab.ISMAINBRABCH != '9' AND ab.ISNEEDWP = '9'  GROUP BY ab.signid");
+        sqlBuilder.append("    ) ao on ao.absignid = s.signid");
+        //第一负责人
+
+        sqlBuilder.append(" LEFT JOIN  (SELECT U.ID mUserId, u.displayname mUserName, csp1.signid csignid  FROM CS_USER u, CS_SIGN_PRINCIPAL2 csp1");
+        sqlBuilder.append("  WHERE csp1.userid = u.id AND csp1.ismainuser = '9' ");
+        if(leaderFlag==0){
+            //普通用户
+        sqlBuilder.append(" AND u.id='"+curUserId+"' ");
+        }
+        sqlBuilder.append(" ) csp ON csp.csignid = s.signid ");
+         //第二负责人
+        sqlBuilder.append("  LEFT JOIN  (SELECT wm_concat (u2.id) secondUserId, wm_concat (u2.displayname) secondUserName, csp2.signid c2signid ");
+        sqlBuilder.append("  FROM CS_USER u2, CS_SIGN_PRINCIPAL2 csp2  WHERE csp2.userid = u2.id AND csp2.ismainuser = '0'   ");
+        if(leaderFlag==0){
+            sqlBuilder.append(" AND u2.id='"+curUserId+"'");
+        }
+        sqlBuilder.append(" GROUP BY csp2.signid) csp22 ");
+        sqlBuilder.append("  ON csp22.c2signid = s.signid   ORDER BY S.CREATEDDATE DESC ");
+
+        List<Object[]> objectList = getObjectArray(sqlBuilder);
+        return objectList;
     }
 
 }

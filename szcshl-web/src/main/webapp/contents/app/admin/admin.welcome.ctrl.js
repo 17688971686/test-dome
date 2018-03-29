@@ -119,14 +119,14 @@
                 },
                 tooltip: {
                     trigger: 'axis',
-                    formatter: function (param) {
+                  /*  formatter: function (param) {
                        　//option.series[param[0].seriesIndex].rawdate[param[0].dataIndex]是rawdate传的值
                         //先进行切割，获取到项目名称
                         var ssArray=option.series[param[0].seriesIndex].rawdate[param[0].dataIndex].split(",");
                         var res ='签收日期：'+param[0].name + '<br/>'+'项目名称：'+ ssArray[0]+'<br/>'+param[0].seriesName+'：'+param[0].data;
 
                         return res;
-                    }
+                    }*/
                 },
 
 
@@ -143,6 +143,7 @@
                  data: vm.projectType
                  },*/
                 xAxis: {
+                    show:false,
                     type: 'category',
                     name: '签收日期',
                     splitLine: {show: false},
@@ -156,11 +157,11 @@
                     // interval: 20
 
                 },
-                dataZoom: [{
+             /*   dataZoom: [{
                     startValue: '2018-02-01'
                 }, {
                     type: 'inside'
-                }],
+                }],*/
                 series: [
                     {
                         name:'剩余工作日',
@@ -178,11 +179,11 @@
                 }
             };
             myChart.setOption(option);
-            myChart.on('click', function(param) {
+          /*  myChart.on('click', function(param) {
                 //进行分割。获取到signid
                 var ssArray=option.series[param.seriesIndex].rawdate[param.dataIndex].split(",");
                  $state.go('signDetails',{signid: ssArray[1],processInstanceId:ssArray[2]});
-            });
+            });*/
 
         }//end initLineChart
 
@@ -232,16 +233,22 @@
 
             });
             adminSvc.countLine(function (data) {
-                vm.linedatas=[];
-                vm.reviewdate=[];
+                //折线图数据
+                vm.linedatas=[];//纵轴(剩余工作日)
+                vm.reviewdate=[];//横轴(项目名称)
+                //柱状图数据
+                vm.review=[];//纵轴(数量)
+                vm.signNumber=[];//横轴(人员名称/部门)
                 vm.name=[];
                 for(var i=0;i<data.reObj.length;i++){
-                    if(data.reObj[i].RECEIVEDATE){
-                        vm.linedatas.push(data.reObj[i].SURPLUSDAYS);
-                        var dates=data.reObj[i].RECEIVEDATE.split(" ");//不要00:00:00
-                        vm.reviewdate.push(dates[0]);
+                    if(data.reObj[i].projectname){
+                        vm.linedatas.push(data.reObj[i].surplusdays);
+                        vm.reviewdate.push(data.reObj[i].projectname);
                         //自定义传参，先进行拼接需要的数据。后再拆分
-                        vm.name.push(data.reObj[i].PROJECTNAME+","+data.reObj[i].SIGNID+","+data.reObj[i].PROCESSINSTANCEID);
+                     /*   vm.name.push(data.reObj[i].projectname+","+data.reObj[i].SIGNID+","+data.reObj[i].PROCESSINSTANCEID);
+                   */
+
+
                     }
 
                 }
