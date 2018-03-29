@@ -539,7 +539,7 @@
                                 //刷新抽取次数
                                 vm.expertReview.state = '9';
                                 //弹框
-                                vm.showAutoExpertWin();
+                                vm.showAutoExpertWin(1);
                                 //显示抽取效果
                                 expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
                                 vm.init(vm.businessId,vm.minBusinessId);
@@ -558,7 +558,8 @@
         }
 
         //显示随机抽取框
-        vm.showAutoExpertWin = function () {
+        vm.showAutoExpertWin = function (showBtnFlag) {
+            vm.showBtnFlag = showBtnFlag;
             $("#aotuExpertDiv").kendoWindow({
                 width: "90%",
                 height: "700px",
@@ -607,7 +608,7 @@
                     //刷新抽取次数
                     vm.updateSelectedIndex(id);
                     //弹框
-                    vm.showAutoExpertWin();
+                    vm.showAutoExpertWin(1);
                     //显示抽取效果
                     expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
                 }else{
