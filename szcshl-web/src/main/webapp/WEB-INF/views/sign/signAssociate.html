@@ -38,6 +38,11 @@
                     <td>{{x.reviewOrgName}}</td>
                     <td><button class="btn btn btn-xs" ng-click="vm.saveAssociateSign(x.signid)" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-resize-small">关联</button></td>
                 </tr>
+                <tr ng-show="vm.noassociateSign">
+                    <td colspan="9" class="text-center">
+                        没有数据！
+                    </td>
+                </tr>
             </table>
         </div>
     </div>

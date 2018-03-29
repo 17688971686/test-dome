@@ -88,12 +88,12 @@
         <td class="text-center">是否有其他阶段关联</td>
         <td>
             <span>
-                <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated"
+                <input type="checkbox" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated"
                        ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'"
                        name="isRelated"/>是
             </span>
             <span style="margin-left:10px;">
-                <input type="checkbox" ng-disabled="true" ng-true-value="0" ng-false-value="9" ng-model="vm.dispatchDoc.isRelated"
+                <input type="checkbox" ng-true-value="0" ng-false-value="9" ng-model="vm.dispatchDoc.isRelated"
                        ng-checked="!vm.dispatchDoc.isRelated || vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'"
                        name="isRelated"/>否
             </span>

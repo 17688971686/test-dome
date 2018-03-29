@@ -1964,22 +1964,45 @@ public class SignServiceImpl implements SignService {
     @Override
     @Transactional
     public ResultMsg associate(String signId, String associateId) {
+        ResultMsg result = new ResultMsg(false, MsgCode.ERROR.getValue(), "");
         if (signId.equals(associateId)) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "不能关联自身项目");
+            result.setReMsg("不能关联自身项目");
+            return result;
         }
         Sign sign = signRepo.getById(signId);
         if (sign == null) {
-            return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目不存在");
+            result.setReMsg("项目不存在");
+            return result;
         }
         boolean isLink = Validate.isString(associateId) ? true : false;     //
         //如果associateId为空，解除关联
         if (isLink) {
             Sign associateSign = signRepo.findById(Sign_.signid.getName(), associateId);
             if (associateSign == null) {
-                return new ResultMsg(false, MsgCode.ERROR.getValue(), "关联项目不存在");
+                result.setReMsg("关联项目不存在");
+                return result;
             }
             sign.setAssociateSign(associateSign);
             sign.setIsAssociate(1);
+            //找出关联的项目
+            List<Sign> associateSigns = getAssociates(sign.getAssociateSign().getSignid());
+            if (associateSigns != null && associateSigns.size() > 0) {
+                List<DispatchDocDto> associateDispatchDtos = new ArrayList<DispatchDocDto>(associateSigns.size());
+                associateSigns.forEach(associateSign2 -> {
+                    Sign asSign = signRepo.getById(associateSign2.getSignid());
+                    DispatchDoc associateDispatch2 = asSign.getDispatchDoc();
+                    if (associateDispatch2 != null && associateDispatch2.getId() != null) {
+                        //关联发文
+                        DispatchDocDto associateDis = new DispatchDocDto();
+                        BeanCopierUtils.copyProperties(associateDispatch2, associateDis);
+                        SignDto signDto = new SignDto();
+                        signDto.setReviewstage(asSign.getReviewstage());
+                        associateDis.setSignDto(signDto);
+                        associateDispatchDtos.add(associateDis);
+                    }
+                });
+                result.setReObj(associateDispatchDtos);
+            }
         } else {
             //找出关联项目
             associateId = sign.getAssociateSign().getSignid();
@@ -1993,7 +2016,10 @@ public class SignServiceImpl implements SignService {
         dispatchDocRepo.updateIsRelatedState(signId);
         dispatchDocRepo.updateIsRelatedState(associateId);
 
-        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！");
+        result.setFlag(true);
+        result.setReCode(MsgCode.OK.getValue());
+        result.setReMsg("操作成功");
+        return result;
     }
 
     /**
@@ -2189,22 +2215,22 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 项目关联，每个项目只能关联一个前一阶段
+     * 不用设置阶段关联限制，
+     * 查询已经生成发文编号的项目，如果已经被关联，则排除
      * * @param projectName
-     *
      * @return
      */
     @Override
     public List<SignDispaWork> findAssociateSign(SignDispaWork signDispaWork) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select s.* from SIGN_DISP_WORK s where s." + SignDispaWork_.signid.getName() + " != :signid ");
-        //sqlBuilder.append(" and (select count(cas.associate_signid) from CS_ASSOCIATE_SIGN cas where cas.signid = s." + SignDispaWork_.signid.getName() + ")=0 ");
         sqlBuilder.setParam("signid", signDispaWork.getSignid());
         //只能是生成发文编号后的项目
-        sqlBuilder.append(" and s." + SignDispaWork_.processState.getName() + " >:processState " );
+        sqlBuilder.append(" and s." + SignDispaWork_.processState.getName() + " >= :processState " );
         sqlBuilder.setParam("processState" ,  Constant.SignProcessState.END_DIS_NUM.getValue());
-
-        //项目建议书 或资金申请
+        //排除已经进行了关联的项目
+        sqlBuilder.append(" and s.signid not in( select ASSOCIATE_SIGNID from CS_ASSOCIATE_SIGN) ");
+       //项目建议书 或资金申请
         if(Constant.STAGE_SUG.equals(signDispaWork.getReviewstage())
                 || Constant.APPLY_REPORT.equals(signDispaWork.getReviewstage())){
             sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + "=:reviewStage ");

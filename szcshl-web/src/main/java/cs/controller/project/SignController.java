@@ -248,9 +248,8 @@ public class SignController {
     @RequiresAuthentication
     //@RequiresPermissions("sign#associate#post")
     @RequestMapping(name = "项目关联", path = "associate", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public @ResponseBody
-    ResultMsg associatePost(@RequestParam(required = true) String signId, String associateId) {
+    @ResponseBody
+    public ResultMsg associatePost(@RequestParam(required = true) String signId, String associateId) {
         return signService.associate(signId, associateId);
     }
 

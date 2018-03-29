@@ -333,10 +333,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         dispatchDto.setSignId(signId);
         map.put("dispatch", dispatchDto);
 
-        //如果评审阶段是可研和概算的，才关联到前一阶段
+        //如果评审阶段是项目建议书、可研、概算和资金申请报告的，才关联到前一阶段
         String reviewStage = sign.getReviewstage();
         if (Validate.isString(reviewStage) && sign.getAssociateSign() != null &&
-          (Constant.STAGE_STUDY.equals(reviewStage) || Constant.STAGE_BUDGET.equals(reviewStage)) ) {
+          (Constant.STAGE_STUDY.equals(reviewStage) || Constant.STAGE_BUDGET.equals(reviewStage)
+           || Constant.STAGE_SUG.equals(reviewStage) || Constant.APPLY_REPORT.equals(reviewStage)) ) {
             List<Sign> associateSigns = signService.getAssociates(sign.getAssociateSign().getSignid());
             if (associateSigns != null && associateSigns.size() > 0) {
                 List<DispatchDocDto> associateDispatchDtos = new ArrayList<DispatchDocDto>(associateSigns.size());

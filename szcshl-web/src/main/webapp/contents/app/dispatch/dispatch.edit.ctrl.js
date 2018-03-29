@@ -52,7 +52,6 @@
                         }
                     });
                 }else if((oldValue == 0 || oldValue == '0')&& (newValue == 9 || newValue == '9') && (!vm.sign.isAssociate || vm.sign.isAssociate == 0)){
-
                   //其它、设备、进口阶段不能进行关联
                     if(signcommon.getReviewStage().OTHERS == vm.dispatchDoc.dispatchStage
                     || signcommon.getReviewStage().DEVICE_BILL_HOMELAND == vm.dispatchDoc.dispatchStage
@@ -76,8 +75,11 @@
                                 signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
                                     vm.currentAssociateSign = vm.sign;
                                     vm.associateSignList = [];
-                                    if(data){
+                                    vm.noassociateSign = false; //查询结果标识
+                                    if(data && data.length>0){
                                         vm.associateSignList = data;
+                                    }else{
+                                        vm.noassociateSign = true;  //没有关联数据
                                     }
                                     //选中要关联的项目
                                     $("#associateWindow").kendoWindow({
@@ -103,10 +105,14 @@
         }
         //关联项目条件查询
         vm.associateQuerySign = function(){
+            vm.noassociateSign = false;
             signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
                 vm.associateSignList = [];
-                if(data){
+                if(data && data.length>0){
                     vm.associateSignList = data;
+                }else{
+                    //没有关联数据
+                    vm.noassociateSign = true;
                 }
             });
         }
@@ -117,13 +123,22 @@
                 bsWin.alert("不能关联自身项目");
                 return ;
             }
-            signSvc.saveAssociateSign(vm.sign.signid,associateSignId,function(){
-                if(associateSignId){
-                    vm.sign.isAssociate = 1;
+            //保存成功之后，返回关联的项目信息
+            signSvc.saveAssociateSign(vm.sign.signid,associateSignId,function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    if(associateSignId){
+                        vm.sign.isAssociate = 1;
+                        vm.associateDispatchs = data.reObj;
+                    }else{
+                        vm.associateDispatchs = []; //解除关联也要重新设置值
+                    }
+                    bsWin.alert(associateSignId != undefined ? "项目关联成功" : "项目解除关联成功",function(){
+                        window.parent.$("#associateWindow").data("kendoWindow").close();
+                    });
+                }else{
+                    bsWin.alert(data.reMsg);
                 }
-                bsWin.alert(associateSignId != undefined ? "项目关联成功" : "项目解除关联成功",function(){
-                    window.parent.$("#associateWindow").data("kendoWindow").close();
-                });
+
             });
         }
 

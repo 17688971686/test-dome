@@ -487,24 +487,30 @@ public class FlowServiceImpl implements FlowService {
             }
 
             if(leaderFlag != 1){
-                criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId), Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" +curUserId + "%"),Restrictions.eq(RuProcessTask_.createdBy.getName(),curUserId)));
+                Disjunction dis2 = Restrictions.disjunction();
+                dis2.add(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId));
+                dis2.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" +curUserId + "%"));
+                dis2.add(Restrictions.eq(RuProcessTask_.createdBy.getName(),curUserId));
+                //criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId), Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" +curUserId + "%"),Restrictions.eq(RuProcessTask_.createdBy.getName(),curUserId)));
                 //开始查询
                 if(leaderFlag == 0){
                     //普通用户,如果是项目签收人（流程发起人），也符合条件
-                    criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mainUserId.getName(),curUserId), Restrictions.like(RuProcessTask_.aUserId.getName(), "%" + curUserId + "%")));
+                    //criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mainUserId.getName(),curUserId), Restrictions.like(RuProcessTask_.aUserId.getName(), "%" + curUserId + "%")));
+                    dis2.add(Restrictions.eq(RuProcessTask_.mainUserId.getName(),curUserId));
+                    dis2.add(Restrictions.like(RuProcessTask_.aUserId.getName(), "%" + curUserId + "%"));
                 }else if(leaderFlag == 2){
                     //分管领导，查询所管辖的部门
-                    Disjunction dis2 = Restrictions.disjunction();
                     for(String orgId:orgIdList){
                         dis2.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
                     }
-                    criteria.add(dis2);
-
                 }else if(leaderFlag == 3){
                     //部长
                     String orgId = orgIdList.get(0);
-                    criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
+                    dis2.add(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId));
+                    dis2.add(Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%"));
+                    //criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
                 }
+                criteria.add(dis2);
             }
 
 

@@ -584,7 +584,7 @@
             var httpSuccess = function success(response) {
                 //关闭项目关联窗口
                 if (callBack != undefined && typeof callBack == 'function') {
-                    callBack();
+                    callBack(response.data);
                 }
             }
             common.http({
