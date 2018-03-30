@@ -2,7 +2,7 @@
 <!-- start  主项目 （ 资金申请报告） -->
 <div ng-repeat="w in vm.model.workProgramDtoList"  ng-if="(w.workreviveStage=='资金申请报告' )&&(w.branchId == '1' || w.branchId == 1)">
     <a  data-toggle="collapse" data-target="#wp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
-        [{{w.titleName}}]
+        [主办工作方案]
     </a>
     <div id="wp_{{$index}}" class="collapse in" >
         <table  class="table table-bordered" style="margin-bottom: 0px;" >
@@ -73,7 +73,10 @@
                 <td colspan="4">{{w.contactPersonFax}}</td>
             </tr>
             <tr>
-                <td rowspan="4" style="width:5%;" class="text-center" style="vertical-align:middle;">项目概况</td>
+                <td rowspan="4" style="width:5%;" class="text-center" style="vertical-align:middle;">
+                    项目概况
+                    <span ng-if="vm.model.workProgramDtoList.length > 1">(主办)</span>
+                </td>
                 <td class="text-center" style="width:10%;">申报投资</td>
                 <td colspan="8" >{{w.appalyInvestment}} 万元</td>
 
@@ -214,7 +217,7 @@
 <div ng-repeat="w in vm.model.workProgramDtoList | orderBy:w.branchId"  style="margin-top:10px;"
      ng-if="(w.workreviveStage=='资金申请报告'  ) && (w.branchId != '1' && w.branchId != 1)">
     <a  data-toggle="collapse" data-target="#aswp_{{$index}}" ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
-        [协审分支_{{w.branchId}}_工作方案]
+        [协办工作方案]
     </a>
     <div id="aswp_{{$index}}" class="collapse in" >
         <table  class="table table-bordered"  >
@@ -273,7 +276,10 @@
                 <td colspan="4">{{w.mainWorkProgramDto.contactPersonFax}}</td>
             </tr>
             <tr>
-                <td rowspan="4" style="width:5%;vertical-align:middle;" class="text-center" >项目概况</td>
+                <td rowspan="4" style="width:5%;vertical-align:middle;" class="text-center" >
+                    项目概况
+                    <span ng-if="vm.model.workProgramDtoList.length > 1">(协办)</span>
+                </td>
                 <td class="text-center" style="width:10%;">申报投资</td>
                 <td colspan="8">{{w.appalyInvestment}} 万元</td>
             </tr>

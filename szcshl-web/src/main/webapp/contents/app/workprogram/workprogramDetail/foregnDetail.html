@@ -4,7 +4,7 @@
      ng-if="(w.workreviveStage=='进口设备' )&&(w.branchId == '1' || w.branchId == 1)">
     <a data-toggle="collapse" data-target="#wp_{{$index}}"
        ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
-        [{{w.titleName}}]
+        [主办工作方案]
     </a>
     <div id="wp_{{$index}}" class="collapse in">
         <table class="table table-bordered" style="margin-bottom: 0px;">
@@ -72,7 +72,10 @@
                 <td colspan="4">{{w.contactPersonFax}}</td>
             </tr>
             <tr>
-                <td style="width:10%;height: 80px;" colspan="2" class="text-center">项目概况</td>
+                <td style="width:10%;height: 80px;" colspan="2" class="text-center">
+                    项目概况
+                    <span ng-if="vm.model.workProgramDtoList.length > 1">(主办)</span>
+                </td>
                 <td colspan="8">{{w.projectBackGround}}</td>
             </tr>
             <tr>
@@ -230,7 +233,7 @@
      ng-if="(w.workreviveStage=='进口设备') && (w.branchId != '1' && w.branchId != 1)">
     <a data-toggle="collapse" data-target="#aswp_{{$index}}"
        ng-show="(vm.model.workProgramDtoList.length > 1) || vm.showAll">
-        [协办分支_{{w.branchId}}_工作方案]
+        [协办工作方案]
     </a>
     <div id="aswp_{{$index}}" class="collapse in" >
         <table  class="table table-bordered" style="margin-bottom: 0px;">
@@ -306,7 +309,10 @@
                 <td colspan="7">{{w.projectBackGround}}</td>
             </tr>-->
             <tr>
-                <td style="width:10%;height: 80px;" colspan="2" class="text-center">项目概况</td>
+                <td style="width:10%;height: 80px;" colspan="2" class="text-center">
+                    项目概况
+                    <span ng-if="vm.model.workProgramDtoList.length > 1">(协办)</span>
+                </td>
                 <td colspan="8">{{w.projectBackGround}}</td>
             </tr>
             <tr>

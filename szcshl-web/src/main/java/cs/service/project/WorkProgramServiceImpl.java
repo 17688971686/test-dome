@@ -527,12 +527,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         }
 
         //2.4 邀请函
-        for (Expert expert : expertList) {
-            SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f,sign, workProgram, expert, user, roomBookings);
+            SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f,sign, workProgram, expertList, user, roomBookings);
             if (invitation != null && Validate.isString(invitation.getSysFileId())) {
                 saveFile.add(invitation);
             }
-        }
 
         //2.5 会议通知
         SysFile notice = CreateTemplateUtils.createTemplateNotice(f,sign, workProgram, user, roomBookings);
@@ -540,8 +538,14 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             saveFile.add(notice);
         }
 
+        //专家评审意见书
+        SysFile expertReviewIdea = CreateTemplateUtils.createTemplateExpertReviewIdea(f,sign, workProgram);
+        if (expertReviewIdea != null && Validate.isString(expertReviewIdea.getSysFileId())) {
+            saveFile.add(expertReviewIdea);
+        }
+
         //2.6协审协议书
-        HqlBuilder queryaps = HqlBuilder.create();
+      /*  HqlBuilder queryaps = HqlBuilder.create();
         queryaps.append(" from " + AssistPlanSign.class.getSimpleName() + " where " + AssistPlanSign_.signId.getName() + " =:signID");
         queryaps.setParam("signID", signId);
         List<AssistPlanSign> apsList = assistPlanSignRepo.findByHql(queryaps);
@@ -558,7 +562,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         if(sysFile3 != null  && Validate.isString(sysFile3.getSysFileId())){
 
             saveFile.add(sysFile3);
-        }
+        }*/
 
         //3、保存文件信息
         if (saveFile.size() > 0) {
