@@ -8,7 +8,7 @@
     function expertPaymentCount($location, expertPaymentCountSvc, $state, $http) {
         var vm = this;
         vm.title = '专家缴税统计管理';
-        vm.financials = new Array;
+        vm.financials = [];
         vm.sign = {}; //收文对象
         vm.financial = {};//财务对象
         vm.model = {};
@@ -17,7 +17,11 @@
 
         vm.countExpertCost = function () {
             expertPaymentCountSvc.expertCostTotal(vm, function (data) {
-                vm.expertCostTotalInfo = data.reObj.expertCostTotalInfo
+                vm.expertCostTotalInfo = data.reObj.expertCostTotalInfo;
+                vm.tMonthReviewcost = data.reObj.tMonthReviewcost;
+                vm.tMonthReviewtaxes = data.reObj.tMonthReviewtaxes;
+                vm.tYearReviewcost = data.reObj.tYearReviewcost;
+                vm.tYearReviewtaxes = data.reObj.tYearReviewtaxes;
             });
         }
 
@@ -60,7 +64,11 @@
                 vm.model.month = month+'';
             }
             expertPaymentCountSvc.expertCostTotal(vm, function (data) {
-                vm.expertCostTotalInfo = data.reObj.expertCostTotalInfo
+                vm.expertCostTotalInfo = data.reObj.expertCostTotalInfo;
+                vm.tMonthReviewcost = data.reObj.tMonthReviewcost;
+                vm.tMonthReviewtaxes = data.reObj.tMonthReviewtaxes;
+                vm.tYearReviewcost = data.reObj.tYearReviewcost;
+                vm.tYearReviewtaxes = data.reObj.tYearReviewtaxes;
             });
         }
 

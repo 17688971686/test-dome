@@ -11,6 +11,7 @@ import cs.service.expert.ExpertSelectedService;
 import cs.service.sys.HeaderService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -106,8 +107,8 @@ public class ExpertSelectedController {
     public List<ProjectReviewCostDto> findProjectReviewCost( @RequestBody ProjectReviewCostDto projectReviewCostDto){
         return  expertSelectedService.findProjectRevireCost(projectReviewCostDto);
     }
-    @RequiresAuthentication
-    //@RequiresPermissions("expertSelected#expertCostTotal#post")
+
+    @RequiresPermissions("expertSelected#expertCostTotal#post")
     @RequestMapping(name = "项目评审费分类统计", path = "proCostClassifyTotal", method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg proCostClassifyTotal(@RequestBody ProjectReviewCostDto projectReviewCostDto,int page){
@@ -264,7 +265,7 @@ public class ExpertSelectedController {
                 file = TemplateUtil.createDoc(expertFileDatas, Constant.Template.EXPERT_PAYTAXES.getKey(), path);
 
                 if (file != null) {
-                    OfficeConverterUtil.convert2PDF(path, filePath);
+                    OfficeConverterUtil.convert2PDF(file.getAbsolutePath(), filePath);
                 }
                 printFile = new File(filePath);
                 inputStream = new BufferedInputStream(new FileInputStream(printFile));
@@ -335,7 +336,7 @@ public class ExpertSelectedController {
             file = TemplateUtil.createDoc(expertFileDatas, Constant.Template.EXPERT_PAYTAXESDETAIL.getKey(), path);
 
             if (file != null) {
-                OfficeConverterUtil.convert2PDF(path, filePath);
+                OfficeConverterUtil.convert2PDF(file.getAbsolutePath(), filePath);
             }
             printFile = new File(filePath);
             inputStream = new BufferedInputStream(new FileInputStream(printFile));

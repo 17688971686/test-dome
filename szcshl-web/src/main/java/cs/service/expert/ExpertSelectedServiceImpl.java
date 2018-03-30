@@ -3,10 +3,7 @@ package cs.service.expert;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.DateUtils;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.expert.*;
 import cs.domain.financial.FinancialManager;
 import cs.domain.financial.FinancialManager_;
@@ -209,21 +206,24 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
 
     /**
      * 专家评审费用统计
-     *
+     * @author ldm 修改月2018-03
+     SELECT e.name, e.idcard, e.userphone, me.reviewcost AS reviewcost, me.reviewtaxes AS reviewtaxes, ye.reviewcost AS yreviewcost, ye.reviewtaxes AS yreviewtaxes
+     FROM (  SELECT s.EXPERTID, SUM (s.reviewcost) reviewcost, SUM (s.reviewtaxes) reviewtaxes
+     FROM cs_expert_selected s, cs_expert_review r
+     WHERE s.expertreviewid = r.id AND s.isconfrim = '9' AND s.isjoin = '9' AND r.paydate IS NOT NULL
+     AND TO_CHAR (r.paydate, 'yyyy-mm') = '2017-03' GROUP BY s.expertid) me,
+     cs_expert e,
+     (  SELECT s.EXPERTID, SUM (s.reviewcost) reviewcost, SUM (s.reviewtaxes) reviewtaxes
+     FROM cs_expert_selected s, cs_expert_review r
+     WHERE s.expertreviewid = r.id AND s.isconfrim = '9' AND s.isjoin = '9' AND r.paydate IS NOT NULL
+     AND TO_CHAR (r.paydate, 'yyyy') = '2017' GROUP BY s.expertid) ye
+     where me.EXPERTID = e.EXPERTID and me.EXPERTID = ye.EXPERTID
      * @param
      * @return
      */
     @Override
     public ResultMsg expertCostTotal(ExpertCostCountDto expertCostDto) {
-        //odataObj.getFilter().get(0);
         Map<String, Object> resultMap = new HashMap<>();
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select t.name,t.idcard,t.userphone,sum(t.reviewcost)reviewcost,sum(t.reviewtaxes)reviewtaxes,sum(t.yreviewcost)yreviewcost,sum(t.yreviewtaxes)yreviewtaxes from( ");
-        sqlBuilder.append("select e.name,e.idcard,e.userphone,sum(s.reviewcost) reviewcost,sum(s.reviewtaxes)reviewtaxes,null yreviewcost,null yreviewtaxes from cs_expert_selected s ");
-        sqlBuilder.append("left join cs_expert e  on s.expertid = e.expertid ");
-        sqlBuilder.append("left join cs_expert_review r on s.expertreviewid = r.id ");
-        sqlBuilder.append("where 1=1 ");
-
         if(expertCostDto == null){
             expertCostDto = new ExpertCostCountDto();
         }
@@ -233,30 +233,25 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         if(!Validate.isString(expertCostDto.getMonth())){
             expertCostDto.setMonth(String.valueOf(DateUtils.getCurMonth()));
         }
-        String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(expertCostDto.getYear()),Integer.parseInt(expertCostDto.getMonth())) + "";
-        String bTime = expertCostDto.getYear()+"-"+expertCostDto.getMonth()+ "-01 00:00:00";
-        String eTime = expertCostDto.getYear()+"-"+expertCostDto.getMonth()+ "-" + day + " 23:59:59";
-        sqlBuilder.append("and r.paydate is not null  ");
-        sqlBuilder.append("and r.paydate >= to_date('" + bTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append(" and r.paydate <= to_date('" + eTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and s.isconfrim = '9' ");
-        sqlBuilder.append("and s.isjoin = '9' ");
+        String monthValue = String.format("%02d", Integer.parseInt(expertCostDto.getMonth()) );
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" SELECT e.name, e.idcard, e.userphone, me.reviewcost AS reviewcost, me.reviewtaxes AS reviewtaxes, ye.reviewcost AS yreviewcost, ye.reviewtaxes AS yreviewtaxes ");
+        sqlBuilder.append(" FROM (  SELECT s.EXPERTID, SUM (s.reviewcost) reviewcost, SUM (s.reviewtaxes) reviewtaxes ");
+        sqlBuilder.append(" FROM cs_expert_selected s, cs_expert_review r ");
+        sqlBuilder.append(" WHERE s.expertreviewid = r.id AND s.isconfrim = '9' AND s.isjoin = '9' AND r.paydate IS NOT NULL ");
+        sqlBuilder.append(" AND TO_CHAR (r.paydate, 'yyyy-mm') = :monthValue GROUP BY s.expertid) me, ");
+        sqlBuilder.setParam("monthValue",expertCostDto.getYear()+"-"+monthValue);
+        sqlBuilder.append(" cs_expert e, ");
+        sqlBuilder.append(" (  SELECT s.EXPERTID, SUM (s.reviewcost) reviewcost, SUM (s.reviewtaxes) reviewtaxes ");
+        sqlBuilder.append(" FROM cs_expert_selected s, cs_expert_review r ");
+        sqlBuilder.append(" WHERE s.expertreviewid = r.id AND s.isconfrim = '9' AND s.isjoin = '9' AND r.paydate IS NOT NULL ");
+        sqlBuilder.append(" AND TO_CHAR (r.paydate, 'yyyy') = :yearValue GROUP BY s.expertid) ye ");
+        sqlBuilder.setParam("yearValue",expertCostDto.getYear());
+        sqlBuilder.append(" where me.EXPERTID = e.EXPERTID and me.EXPERTID = ye.EXPERTID order by E.EXPERTNO ");
 
-        sqlBuilder.append("group by e.expertid,e.name,e.idcard,e.userphone ");
-        sqlBuilder.append("having sum(s.reviewcost)>0");
-        sqlBuilder.append("union  ");
-        sqlBuilder.append("select e.name,e.idcard,e.userphone,null reviewcost,null reviewtaxes,sum(s.reviewcost) yreviewcost,sum(s.reviewtaxes)yreviewtaxes from cs_expert_selected s  ");
-        sqlBuilder.append("left join cs_expert e  on s.expertid = e.expertid  ");
-        sqlBuilder.append("left join cs_expert_review r on s.expertreviewid = r.id ");
-        sqlBuilder.append("where r.paydate is not null and  r.paydate >= to_date('" + expertCostDto.getYear() + "-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and  r.paydate <= to_date('" + expertCostDto.getYear() + "-12-31 23:59:59','yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and s.isconfrim = '9' ");
-        sqlBuilder.append("and s.isjoin = '9' ");
-        sqlBuilder.append("group by e.expertid,e.name,e.idcard,e.userphone ");
-        sqlBuilder.append("having sum(s.reviewcost)>0 ) t ");
-        sqlBuilder.append("group by t.name,t.idcard,t.userphone ");
-        //List<ExpertCostCountDto> expertCostCountDtoList = expertCostCountRepo.findBySql(sqlBuilder);
         List<Object[]> expertCostCountDtoList = expertCostCountRepo.getObjectArray(sqlBuilder);
+        BigDecimal tMonthReviewcost = BigDecimal.ZERO,tMonthReviewtaxes = BigDecimal.ZERO,
+                tYearReviewcost = BigDecimal.ZERO,tYearReviewtaxes = BigDecimal.ZERO;
         List<ExpertCostCountDto> expertCostCountDtoList1 = new ArrayList<ExpertCostCountDto>();
         if (expertCostCountDtoList.size() > 0) {
             for (int i = 0; i < expertCostCountDtoList.size(); i++) {
@@ -273,21 +268,29 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                 }
                 if (null != expertCostCounts[3]) {
                     expertCostCountDto.setReviewcost((BigDecimal) expertCostCounts[3]);
+                    tMonthReviewcost = Arith.safeAdd(tMonthReviewcost,expertCostCountDto.getReviewcost());
                 }
                 if (null != expertCostCounts[4]) {
                     expertCostCountDto.setReviewtaxes((BigDecimal) expertCostCounts[4]);
+                    tMonthReviewtaxes = Arith.safeAdd(tMonthReviewtaxes,expertCostCountDto.getReviewtaxes());
                 }
                 if (null != expertCostCounts[5]) {
                     expertCostCountDto.setYreviewcost((BigDecimal) expertCostCounts[5]);
+                    tYearReviewcost = Arith.safeAdd(tYearReviewcost,expertCostCountDto.getYreviewcost());
                 }
                 if (null != expertCostCounts[6]) {
                     expertCostCountDto.setYreviewtaxes((BigDecimal) expertCostCounts[6]);
+                    tYearReviewtaxes = Arith.safeAdd(tYearReviewtaxes,expertCostCountDto.getYreviewtaxes());
                 }
-
                 expertCostCountDtoList1.add(expertCostCountDto);
             }
         }
         resultMap.put("expertCostTotalInfo", expertCostCountDtoList1);
+        resultMap.put("tMonthReviewcost", tMonthReviewcost);
+        resultMap.put("tMonthReviewtaxes", tMonthReviewtaxes);
+        resultMap.put("tYearReviewcost", tYearReviewcost);
+        resultMap.put("tYearReviewtaxes", tYearReviewtaxes);
+
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
     }
 

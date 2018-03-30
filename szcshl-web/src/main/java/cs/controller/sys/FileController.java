@@ -555,8 +555,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                          }else{
                              cc+=a[0]+",";
                          }
-
-
                         }
                         cc+="）组织办理";
                     }
@@ -986,7 +984,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             }
 
             if (file != null) {
-                OfficeConverterUtil.convert2PDF(path, filePath);
+                OfficeConverterUtil.convert2PDF(file.getAbsolutePath(), filePath);
             }
 
             printFile = new File(filePath);
