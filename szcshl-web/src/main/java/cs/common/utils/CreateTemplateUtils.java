@@ -464,32 +464,26 @@ public class CreateTemplateUtils {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
         dataMap.put("reviewStage", sign.getReviewstage());
-        dataMap.put("sendFileUnit", "深圳市人民检察院");
-        dataMap.put("studyBeginTime", DateUtils.converToString(workProgram.getStudyBeginTime(), "yyyy年MM月dd日"));
+        dataMap.put("builtcompanyName", sign.getBuiltcompanyName());
         dataMap.put("contactPerson", user.getDisplayName() == null ? "" : user.getDisplayName());//联系人
         dataMap.put("contactPersonTel", user.getUserPhone() == null ? "" : user.getUserPhone());//联系电话
-        dataMap.put("contactPersonFax", "83642081");//传真
         dataMap.put("contactPersonAddress", "深圳市政府投资项目评审中心");
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+
         //获得会议信息
         SysFile sysFile = new SysFile();
         if (rbList != null && rbList.size() > 0) {
-            Date compareDate = DateUtils.converToDate("12:00", "HH:MM");
-            for (RoomBooking roomBooking : rbList) {
+            RoomBooking roomBooking = rbList.get(0);
                 String[] str = roomBooking.getRbDate().split("-");
                 String[] str2 = str[2].split("\\(");
-                dataMap.put("rbDate", str[0] + "年" + str[1] + "月" + str2[0] + "日(" + str2[1]);
-                dataMap.put("beginTime", DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm"));
-                dataMap.put("endTime", DateUtils.converToString(roomBooking.getEndTime(), "HH:mm"));
-                dataMap.put("addressName", roomBooking.getAddressName()); //会议地点
 
-                if (DateUtils.compareIgnoreSecond(roomBooking.getBeginTime(), compareDate) == 1 &&
-                        DateUtils.compareIgnoreSecond(roomBooking.getEndTime(), compareDate) == -1) {
-                    dataMap.put("lastTime", "全");//天数
-                } else {
-                    dataMap.put("lastTime", "半");//天数
-                }
-            }
+                String meetTime = str[0] + "年" + str[1] + "月" + str2[0] + "日(" + str2[1]
+                        + DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm")
+                        + "至"
+                        + DateUtils.converToString(roomBooking.getEndTime(), "HH:mm");
+                dataMap.put("meetTime" , meetTime);
+
+                dataMap.put("addressName", roomBooking.getAddressName()); //会议地点
 
             sysFile = TemplateUtil.createTemplate(
                     f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
@@ -551,44 +545,51 @@ public class CreateTemplateUtils {
      *
      * @param sign
      * @param workProgram
-     * @param expert
+     * @param expertList
      * @return
      */
-    public static SysFile createTemplateInvitation(Ftp f,Sign sign, WorkProgram workProgram, Expert expert, User user,List<RoomBooking> rbList) {
+    public static SysFile createTemplateInvitation(Ftp f,Sign sign, WorkProgram workProgram, List<Expert> expertList, User user,List<RoomBooking> rbList) {
         Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("expertName", expert.getName());
-        dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("studyBeginTime", DateUtils.converToString(workProgram.getStudyBeginTime(), "yyyy年MM月dd日"));
-        dataMap.put("contactPerson", user.getDisplayName() == null ? "" : user.getDisplayName());//联系人
-        dataMap.put("contactPersonTel", user.getUserPhone() == null ? "" : user.getUserPhone());//联系电话
-        dataMap.put("contactPersonFax", "83642081");//传真
-        dataMap.put("contactPersonAddress", "深圳市政府投资项目评审中心");
-        dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-        //获得会议信息
-        SysFile sysFile = new SysFile();
-        if (rbList != null && rbList.size() > 0) {
-            Date compareDate = DateUtils.converToDate("12:00", "HH:mm");
-            for (RoomBooking roomBooking : rbList) {
+
+        List<String[]> resultList = new ArrayList<>();
+        for(Expert expert : expertList){
+            String[] resultArr = new String[10];
+            resultArr[0] = expert.getName();
+            resultArr[1] = expert.getSex() == "男" ? "先生" : "女士";
+            resultArr[2] = sign.getProjectname();
+            resultArr[3] = sign.getReviewstage();
+
+            String meetTime = ""; //会议时间
+            String meetRessadd = "";//会议地点
+            if (rbList != null && rbList.size() > 0) {
+                RoomBooking roomBooking = rbList.get(0);
                 String[] str = roomBooking.getRbDate().split("-");
                 String[] str2 = str[2].split("\\(");
-                dataMap.put("rbDate", str[0] + "年" + str[1] + "月" + str2[0] + "日(" + str2[1]);
-//                dataMap.put("beginTime", DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm"));
-                dataMap.put("addressName", roomBooking.getAddressName()); //会议地点
-//                dataMap.put("endTime", DateUtils.converToString(roomBooking.getEndTime(), "HH:mm"));
 
-                if (DateUtils.compareIgnoreSecond(roomBooking.getBeginTime(), compareDate) == 1 &&
-                        DateUtils.compareIgnoreSecond(roomBooking.getEndTime(), compareDate) == -1) {
-                    dataMap.put("lastTime", "全");//天数
-                } else {
-                    dataMap.put("lastTime", "半");//天数
-                }
+                meetTime = str[0] + "年" + str[1] + "月" + str2[0] + "日(" + str2[1]
+                        +  DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm")
+                        + "至"
+                        + DateUtils.converToString(roomBooking.getEndTime(), "HH:mm");
+
+                meetRessadd = roomBooking.getAddressName();
             }
-            sysFile = TemplateUtil.createTemplate(
-                    f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                    workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
-                    Constant.Template.INVITATION.getKey(), Constant.Template.INVITATION.getValue(),
-                    Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+            resultArr[4] = meetTime;
+            resultArr[5] = meetRessadd;
+            resultArr[6] = user.getDisplayName() == null ? "" : user.getDisplayName();
+            resultArr[7] = user.getUserPhone() == null ? "" : user.getUserPhone();
+            resultArr[8] = "深圳市政府投资项目评审中心";
+            resultArr[9] = DateUtils.converToString(new Date() , "yyyy年MM月dd日");
+            resultList.add(resultArr);
         }
+
+        dataMap.put("resultList" , resultList);
+        SysFile sysFile = new SysFile();
+
+        sysFile = TemplateUtil.createTemplate(
+                f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+                Constant.Template.INVITATION.getKey(), Constant.Template.INVITATION.getValue(),
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
 
         return sysFile;
     }
@@ -604,49 +605,27 @@ public class CreateTemplateUtils {
      */
     public static SysFile createTemplateCompere(Ftp f,Sign sign, WorkProgram workProgram, List<Expert> expertList) {
         Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("projectName", sign.getProjectname());
-        String expertName = "";
-        String expertType = "";
-        for (Expert expert : expertList) {
-            if (!StringUtil.isBlank(expertName) && expert.getName() != null) {
-                expertName += "、";
-            }
-            List<ExpertType> expertTypeList = expert.getExpertType();
-            for (ExpertType et : expertTypeList) {
-                if (!StringUtil.isBlank(expertType) && !StringUtil.isBlank(et.getExpertType()) && expertType.indexOf(et.getExpertType()) == -1) {
-                    expertType += "、";
-                }
-                if (expertType.indexOf(et.getExpertType()) == -1) {
+        dataMap.put("projectName", sign.getProjectname()); //项目名称
+        dataMap.put("reviewStage" , sign.getReviewstage());//评审阶段
+        dataMap.put("expertList" , expertList);//专家列表
+        dataMap.put("mOrgName" , sign.getMaindeptName() == null ? "" : sign.getMaindeptName() );//主办处室
+        dataMap.put("aOrgName" , sign.getAssistdeptName() == null ? "" : sign.getAssistdeptName() );//协办处室
+        dataMap.put("builtcompanyName" , sign.getBuiltcompanyName() == null ? "" : sign.getBuiltcompanyName());//建设单位
+        dataMap.put("designcompanyName" , sign.getDesigncompanyName() == null ? "" : sign.getDesigncompanyName());//编制单位
+        dataMap.put("projectBackGround" , workProgram.getProjectBackGround() == null ? "" : workProgram.getProjectBackGround()); //项目背景
+        dataMap.put("buildSize" , workProgram.getBuildSize() == null ? "" : workProgram.getBuildSize());//申报规模
+        dataMap.put("buildContent" , workProgram.getBuildContent() == null ? "" : workProgram.getBuildContent());//建设内容
+        dataMap.put("appalyInvestment" , workProgram.getAppalyInvestment() == null ? 0 : workProgram.getAppalyInvestment());//申报投资
+        dataMap.put("mainPoint" , workProgram.getMainPoint() == null ? "" : workProgram.getMainPoint());//重点问题
 
-                    expertType += et.getExpertType();
-                }
-            }
-            expertName += expert.getName();
-        }
-        dataMap.put("expertName", expertName);
-        dataMap.put("expertType", expertType);
-        dataMap.put("maindeptName", sign.getMaindeptName() == null ? "" : sign.getMaindeptName());//主办事处名称
-        dataMap.put("assistdeptName", sign.getAssistdeptName() == null ? "" : sign.getAssistdeptName());//协办事处名称
-        dataMap.put("mainDeptName", sign.getMaindeptName() == null ? "" : sign.getMaindeptName());//主管部门名称
-        dataMap.put("builtcompanyName", sign.getBuiltcompanyName() == null ? "" : sign.getBuiltcompanyName());//建设单位
-        dataMap.put("designcompanyName", sign.getDesigncompanyName() == null ? "" : sign.getDesigncompanyName());//编制单位
 
-        String reviewGroupmembers = "";
-        reviewGroupmembers += sign.getLeaderName() == null ? "" : sign.getLeaderName()
-                + workProgram.getMinisterName() == null ? "" : "," + workProgram.getMinisterName()
-                +workProgram.getMianChargeUserName() == null ? "" : "," + workProgram.getMianChargeUserName()
-                +workProgram.getSecondChargeUserName() == null ? "" : "," + workProgram.getSecondChargeUserName();
-        dataMap.put("reviewGroupmembers" , reviewGroupmembers);
-
-//        dataMap.put("leaderName", sign.getLeaderName() == null ? "" : sign.getLeaderName());//中心领导名
-//        dataMap.put("ministerName", workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName());//部长名
-//        dataMap.put("mianChargeUserName", workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName()); //第一负责人
-//        dataMap.put("secondChargeUserName", workProgram.getSecondChargeUserName() == null ? "" : workProgram.getSecondChargeUserName()); //第二负责人
-        dataMap.put("projectBackGround", workProgram.getProjectBackGround() == null ? "" : workProgram.getProjectBackGround());
-        dataMap.put("buildSize", workProgram.getBuildSize() == null ? "" : workProgram.getBuildSize());
-        dataMap.put("buildContent", workProgram.getBuildContent() == null ? "" : workProgram.getBuildContent());
-        dataMap.put("appalyInvestment", workProgram.getAppalyInvestment() == null ? 0 : workProgram.getAppalyInvestment());//申报金额
-        dataMap.put("mainPoint", workProgram.getMainPoint() == null ? "" : workProgram.getMainPoint());//拟评审重点问题
+        //中心领导、部长、项目负责人、第二负责人
+        String leaderName = workProgram.getLeaderName() == null ? "" : workProgram.getLeaderName();
+        String ministerName = workProgram.getMinisterName() == null ? "" : "," + workProgram.getMinisterName();
+        String mianChargeUserName = workProgram.getMianChargeUserName() == null ? "" : "," + workProgram.getMianChargeUserName();
+        String secondChargeUserName = workProgram.getSecondChargeUserName() == null ? "" : "," + workProgram.getSecondChargeUserName();
+        String reviewGroupmembers = leaderName + ministerName + mianChargeUserName + secondChargeUserName;
+        dataMap.put("projectGroupMeber" , reviewGroupmembers);
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
@@ -706,6 +685,26 @@ public class CreateTemplateUtils {
         return sysFile;
 
     }
+
+    /**
+     * 专家评审意见书
+     * @param f
+     * @param sign
+     * @param workProgram
+     * @return
+     */
+    public static SysFile createTemplateExpertReviewIdea(Ftp f , Sign sign , WorkProgram workProgram){
+        Map<String , Object> dataMap = new HashMap<>();
+        dataMap.put("projectName" , sign.getProjectname());
+        dataMap.put("reviewStage" , sign.getReviewstage());
+        SysFile sysFile = TemplateUtil.createTemplate(
+                f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+                Constant.Template.EXPERTREVIEWIDEA.getKey(), Constant.Template.EXPERTREVIEWIDEA.getValue(),
+                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+        return sysFile;
+    }
+
 
     /************************end会前准备材料******************************************/
 
@@ -1021,8 +1020,8 @@ public class CreateTemplateUtils {
         }
         //项目类别
         String projectTypeItem = monthlyNewsletterDto.getStaerTheMonths()+"至"+monthlyNewsletterDto.getTheMonths()+"月评审的项目中，";
-       // Float proCentf = 100f;
-       // Float temp1 = 0f;
+        // Float proCentf = 100f;
+        // Float temp1 = 0f;
         if(proReviewConditionByTypeList.size()>0){
             for(int i=0;i<proReviewConditionByTypeList.size();i++){
                 for(int j=0;j<projectType.length;j++){
