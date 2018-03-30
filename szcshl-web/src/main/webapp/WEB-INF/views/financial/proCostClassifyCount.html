@@ -11,15 +11,14 @@
 
             <div class="toolbar">
                 <button class="btn btn-sm btn-primary" ng-click="vm.proCostClassifyCount()" ng-disabled="vm.isSubmit">
-                    <span class="glyphicon glyphicon-search"></span>查询
+                    <span class="glyphicon glyphicon-search"></span>统计
                 </button>
                 <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
                     <span class="glyphicon glyphicon-repeat"></span>重置
                 </button>
-               <!-- <button class="btn btn-sm btn-primary" ng-click="vm.QueryStatistics()">
-                    <i class="fa fa-bar-chart" aria-hidden="true"></i>统计</button>-->
-                <button ng-click="vm.projectCostCountList()" class="btn btn-sm btn-primary"  value="saveCommonIdea">查看费用统计</button>
-
+                <!--
+                 <button ng-click="vm.projectCostCountList()" class="btn btn-sm btn-primary"  value="saveCommonIdea">查看费用统计</button>
+                 -->
           <!--      <span class="attentionDiv" style="padding:5px;font-size: 12px;">
         <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
         温馨提示：统计查询耗时较长，统计时，尽量不要进行大数据量的项目统计！
@@ -79,11 +78,13 @@
 		</div>
 		<div>
 			<table border="1px" style="width: 100%;">
-				<caption class="text-center h3">
-					<strong>深圳市政府投资项目评审中心<br>
-						项目评审费统计表
-					</strong>
-				</caption>
+                <tr>
+                    <td colspan="7" class="text-center">
+                        <h3><strong>深圳市政府投资项目评审中心<br>
+                        项目评审费统计表
+                        </strong></h3>
+                    </td>
+                </tr>
 				<tr >
 					<td style="width:20%"  class="text-center">项目名称</td>
 					<td style="width:15%"  class="text-center">建设单位</td>
@@ -111,7 +112,6 @@
 					<td class="text-center"><strong>{{c.totalCharge}}</strong></td>
 				</tr>
 				</tbody>
-
 			</table>
 		</div>
 	</form>

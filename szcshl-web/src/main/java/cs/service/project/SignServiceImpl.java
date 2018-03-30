@@ -208,7 +208,7 @@ public class SignServiceImpl implements SignService {
             ///6、创建人信息
             sign.setCreatedDate(now);
             sign.setModifiedDate(now);
-            sign.setCreatedBy(SessionUtil.getDisplayName());
+            sign.setCreatedBy(SessionUtil.getUserId());
             sign.setModifiedBy(SessionUtil.getDisplayName());
         } else {
             BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);

@@ -49,7 +49,6 @@
 
         }
 
-
         //重置查询表单
         vm.formReset = function(){
             vm.model = {};
@@ -62,15 +61,8 @@
                     vm.orgDeptList = data.reObj;
                 }
             });
-            /*vm.proCostCount();*/
-/*            projectCostCountSvc.projectCostClassifyCout(vm,function(data){
-                if(data.reObj.proReviewClassifyDetailDtoList.length!=0){
-                    vm.page++;
-                    vm.proCostClassifyCount();
-                }
-               /!* vm.proReviewClassifyDetailDtoList = data.reObj.proReviewClassifyDetailDtoList;
-                vm.proReviewClassifyCountDtoList = data.reObj.proReviewClassifyCountDtoList;*!/
-            });*/
+            vm.proCostCount();
+
         }
     }
 })();

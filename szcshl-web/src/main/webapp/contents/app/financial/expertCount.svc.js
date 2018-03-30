@@ -213,68 +213,63 @@
             // Begin:column
             var columns = [
                 {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-
-                },
-                {
 				    field: "rowNumber",
 				    title: "序号",
 				    width: 50,
 				    filterable : false,
+                    attributes: {
+                        "class": "table-cell",
+                        style: "text-align: center"
+                    },
 				    template: "<span class='row-number'></span>"
 				 },
                 {
                     field: "expertDto.name",
                     title: "姓名",
-                    width: 50,
+                    width: 80,
                     filterable: false
                 },
                
                 {
                     field: "expertDto.idCard",
                     title: "身份证号",
-                    width: 70,
+                    width: 170,
                     filterable: false,
                 },
                 {
                     field: "expertDto.openingBank",
                     title: "开户行",
-                    width: 70,
+                    width: 140,
                     filterable: false,
                 },
                 {
                     field: "expertDto.bankAccount",
                     title: "银行账号",
-                    width: 90,
+                    width: 200,
                     filterable: false,
                 },
                 {
                     field: "reviewCost",
                     title: "评审费",
-                    width: 50,
+                    width: 70,
                     filterable: false,
                 },
                 {
                     field: "reviewTaxes",
                     title: "应缴税",
-                    width: 50,
+                    width: 70,
                     filterable: false,
                 },
                 {
                     field: "expertReviewDto.reviewTitle",
                     title: "项目名称",
-                    width: 100,
+                    width: 380,
                     filterable: false,
                 },
                 {
                     field: "expertReviewDto.reviewDate",
                     title: "评审/函评日期",
-                    width: 70,
+                    width: 120,
                     filterable: false,
                 },
                 /*{
@@ -286,7 +281,7 @@
                 {
                     field: "principal",
                     title: "负责人",
-                    width: 50,
+                    width: 140,
                     filterable: false,
                 }
             ];

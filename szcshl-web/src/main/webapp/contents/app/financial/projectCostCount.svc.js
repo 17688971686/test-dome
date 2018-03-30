@@ -40,7 +40,7 @@
         function projectCostClassifyCout(vm,callBack) {
             var httpOptions = {
                 method: 'post',
-                url: rootPath + "/expertSelected/proCostClassifyTotal?page="+vm.page+"",
+                url: rootPath + "/expertSelected/proCostClassifyTotal?page="+vm.page,
                 data: vm.model,
                /* params : {queryData : vm.model ,  page : vm.page}*/
             }

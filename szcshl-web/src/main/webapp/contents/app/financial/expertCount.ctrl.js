@@ -8,7 +8,7 @@
     function exportCount($location, exportCountSvc,$state,$http) {
         var vm = this;
         vm.title = '专家费统计管理';
-        vm.financials = new Array;
+        vm.financials = [];
         vm.searchModel = {};
         vm.searchModel.beginTime = (new Date()).halfYearAgo();
         vm.searchModel.endTime = (new Date()).Format("yyyy-MM-dd");
