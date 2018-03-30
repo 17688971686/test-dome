@@ -1006,23 +1006,22 @@ public class SignServiceImpl implements SignService {
                 //是否需要做工作方案
                 businessId = flowDto.getBusinessMap().get("IS_NEED_WP").toString();
                 if (EnumState.YES.getValue().equals(businessId)) {
+                    //查找该分支做的工作方案
                     wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
                     //如果做工作方案，则要判断该分支工作方案是否完成
                     if (!Validate.isObject(wk) || !Validate.isString(wk.getId())) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没有完成工作方案，不能进行下一步操作！");
                     }
-
-                    //是否专家评审
-                    boolean isExpertReview = Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) || Constant.MergeType.REVIEW_LEETER.getValue().equals(wk.getReviewType());
-                    //是否单个评审
-                    boolean isSigle = Constant.MergeType.REVIEW_SIGNLE.getValue().equals(wk.getIsSigle());
-                    //是否合并评审主项目
-                    boolean isMergeMain = (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && EnumState.YES.getValue().equals(wk.getIsMainProject()));
                     //是否主分支
                     boolean isMainBranch = FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex);
-
                     //判断是否预定了会议室和选择了专家（只对主分支判断，因为协办分支以主分支为准，当然也可以自己选，但是不是强制要求）
                     if (isMainBranch) {
+                        //是否专家评审
+                        boolean isExpertReview = Constant.MergeType.REVIEW_MEETING.getValue().equals(wk.getReviewType()) || Constant.MergeType.REVIEW_LEETER.getValue().equals(wk.getReviewType());
+                        //是否单个评审
+                        boolean isSigle = Constant.MergeType.REVIEW_SIGNLE.getValue().equals(wk.getIsSigle());
+                        //是否合并评审主项目
+                        boolean isMergeMain = (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && EnumState.YES.getValue().equals(wk.getIsMainProject()));
                         //单个评审或者合并评审主项目；如果是专家评审会，则要选择专家和会议室
                         boolean needCheck = isExpertReview && (isSigle || isMergeMain);
                         if (needCheck) {
@@ -1040,6 +1039,11 @@ public class SignServiceImpl implements SignService {
                         //如果合并评审次项目没提交，不能进行下一步操作
                         if (!signRepo.isMergeSignEndWP(signid)) {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "合并评审次项目还未提交审批，主项目不能提交审批！");
+                        }
+                    }else{
+                        //协办分支要等主办提交之后才能提交，要不然工作方案的基本信息为可，无法打印
+                        if(!signBranchRepo.checkFinishWP(signid, FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue())){
+                            return new ResultMsg(false, MsgCode.ERROR.getValue(), "主办工作方案审批提交之后，协办分支的工作方案才能提交审批！");
                         }
                     }
 
@@ -1069,8 +1073,9 @@ public class SignServiceImpl implements SignService {
                     roomBookingRepo.updateStateByBusinessId(wk.getId(), EnumState.PROCESS.getValue());
                     //完成分支工作方案
                     signBranchRepo.finishWP(signid, wk.getBranchId());
-                    //不做工作方案
+
                 } else {
+                    //不做工作方案
                     dealUser = signPrincipalService.getMainPriUser(signid);
                     if (dealUser == null) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "项目还没分配主负责人，不能进行下一步操作！请联系主办部门进行负责人分配！");

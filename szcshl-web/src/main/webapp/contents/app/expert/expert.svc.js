@@ -195,7 +195,7 @@
 		
 		function getExpertColumns(vm){
 			var columns = [
-				{
+				/*{
 					template : function(item) {
 						if(item.state != '5'){
                             return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",item.expertID)
@@ -207,18 +207,22 @@
 					filterable : false,
 					width : 40,
 					title : "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-				},
+				},*/
 				{  
 				    field: "rowNumber",  
 				    title: "序号",  
 				    width: 50,
+                    attributes: {
+                        "class": "table-cell",
+                        style: "text-align: center"
+                    },
 				    template: "<span class='row-number'></span>",
                     filterable : false,
 			    },
 				{
 					field : "name",
 					title : "姓名",
-					width : "7%",
+					width : 80,
 					filterable : false,
                     template: function (item) {
                         return '<a  ng-click="vm.findExportDetail(\''+item.expertID+'\')">'+item.name+'</a>'
@@ -227,54 +231,57 @@
                 {
                     field : "comPany",
                     title : "工作单位",
-                    width : "18%",
+                    width : 300,
                     filterable : false
                 },
                 {
                     field : "phone",
                     title : "办公电话",
-                    width : "15%",
+                    width : 120,
                     filterable : false
                 },
 				{
 					field : "userPhone",
 					title : "手机号码",
-					width : "13%",
+					width : 120,
 					filterable : false
 				},
                 {
                     field : "job",
                     title : "职位",
-                    width : "15%",
+                    width : 150,
                     filterable : false
                 },
                 {
                     field : "post",
                     title : "职称",
-                    width : "10%",
+                    width : 120,
                     filterable : false
                 },
                 {
                     field : "expertSort",
                     title : "专家类型",
-                    width : "10%",
+                    width : 150,
+                    filterable : false
+                },
+                {
+                    field : "compositeScore",
+                    title : "评分",
+                    width : 60,
                     filterable : false
                 },
 				{
 					field : "",
 					title : "操作",
-					width : "8%",
+					width : 80,
 					template : function(item) {
 						var showDel = true;
                         if(item.state != '5'){
                             showDel = true;
 						}else{
                             showDel = false;
-
 						}
-                       return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.expertID + "')", item.expertID  , showDel);
-
+                       return common.format($('#columnBtns').html(),  "vm.del('" + item.expertID + "')", item.expertID  , showDel);
 					}
 				}
 			];			

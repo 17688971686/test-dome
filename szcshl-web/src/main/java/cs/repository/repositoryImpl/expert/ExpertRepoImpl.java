@@ -275,13 +275,13 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
         if(isHaveCondition){
             sqlBuilder.append(" AND edp.EXPERTID IS NOT NULL");
         }
-        boolean isHaveScore = Validate.isObject(epSelCondition) && (epSelCondition.getCompositeScore() != null || epSelCondition.getCompositeScoreEnd() != null);
-        if(isHaveScore){
-            if(epSelCondition.getCompositeScore() > -1){
+        boolean isHaveObj = Validate.isObject(epSelCondition);
+        if(isHaveObj){
+            if(epSelCondition.getCompositeScore() != null && epSelCondition.getCompositeScore() > -1){
                 sqlBuilder.append(" and  ep.compositeScore >= :compositeScore");
                 sqlBuilder.setParam("compositeScore", epSelCondition.getCompositeScore());
             }
-            if( epSelCondition.getCompositeScoreEnd() > -1){
+            if(epSelCondition.getCompositeScoreEnd() != null && epSelCondition.getCompositeScoreEnd() > -1){
                 sqlBuilder.append(" and  ep.compositeScore <= :compositeScoreEnd");
                 sqlBuilder.setParam("compositeScoreEnd", epSelCondition.getCompositeScoreEnd());
             }
