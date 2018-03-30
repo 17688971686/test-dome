@@ -185,14 +185,17 @@ public class TemplateUtil {
             Field[] fields = c.getDeclaredFields();
             if(fields != null && fields.length > 0 ) {
                 for(Field field : fields){
-
                     //获取属性名
                     String name = field.getName();
                     //将属性名的首字母转为大写，方便构造get、set方法
                     name = name.substring(0,1).toUpperCase()  + name.substring(1);
+                    Method method = null;
                     //构造get的方法
-                    Method method = c.getMethod("get" + name);
-
+                    try {
+                         method = c.getMethod("get" + name);
+                    }catch(Exception e){
+                        method = c.getMethod("get" + field.getName());
+                    }
                     //获取属性类型
                     String type = field.getGenericType().toString();
                     //如果数据类型是Date类型，则需要转换为yyyy年MM月dd日
