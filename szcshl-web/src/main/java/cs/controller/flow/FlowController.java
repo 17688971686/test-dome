@@ -31,6 +31,7 @@ import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
 import cs.service.sys.LogService;
+import cs.service.sys.UserService;
 import cs.service.topic.TopicInfoService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.HistoryService;
@@ -132,6 +133,8 @@ public class FlowController {
     @Autowired
     private LogService logService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private RTXService rtxService;
 
     //@RequiresPermissions("flow#html/tasks#post")
@@ -139,7 +142,10 @@ public class FlowController {
     @RequestMapping(name = "待办项目", path = "html/tasks", method = RequestMethod.POST)
     public @ResponseBody PageModelDto<RuProcessTask> tasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<RuProcessTask> pageModelDto = flowService.queryRunProcessTasks(odataObj,true);
+        List<RuProcessTask> resultList = flowService.queryRunProcessTasks(odataObj,true,null,null);
+        PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
+        pageModelDto.setCount(Validate.isList(resultList)?resultList.size():0);
+        pageModelDto.setValue(resultList);
         return pageModelDto;
     }
 
@@ -152,8 +158,8 @@ public class FlowController {
     //@RequiresPermissions("flow#queryMyAgendaTask#post")
     @RequiresAuthentication
     @RequestMapping(name = "我的待办任务", path = "queryMyAgendaTask", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<RuTask> queryMyAgendaTask(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<RuTask> queryMyAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryMyAgendaTask(odataObj);
         return pageModelDto;
@@ -162,8 +168,8 @@ public class FlowController {
     //@RequiresPermissions("flow#queryAgendaTask#post")
     @RequiresAuthentication
     @RequestMapping(name = "在办任务", path = "queryAgendaTask", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<RuTask> queryAgendaTask(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<RuTask> queryAgendaTask(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<RuTask> pageModelDto = flowService.queryAgendaTask(odataObj);
         return pageModelDto;
@@ -172,10 +178,16 @@ public class FlowController {
     //@RequiresPermissions("flow#html/doingtasks#post")
     @RequiresAuthentication
     @RequestMapping(name = "在办项目", path = "html/doingtasks", method = RequestMethod.POST)
-    public @ResponseBody
-    PageModelDto<RuProcessTask> doingtasks(HttpServletRequest request) throws ParseException {
+    @ResponseBody
+    public PageModelDto<RuProcessTask> doingtasks(HttpServletRequest request) throws ParseException {
         ODataObj odataObj = new ODataObj(request);
-        PageModelDto<RuProcessTask> pageModelDto = flowService.queryRunProcessTasks(odataObj,false);
+        Map<String,Object> authMap = userService.getUserSignAuth();
+        Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
+        List<String> orgIdList = (List<String>) authMap.get("orgIdList");
+        List<RuProcessTask> resultList = flowService.queryRunProcessTasks(odataObj,false,authFlag,orgIdList);
+        PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
+        pageModelDto.setCount(Validate.isList(resultList)?resultList.size():0);
+        pageModelDto.setValue(resultList);
         return pageModelDto;
     }
 

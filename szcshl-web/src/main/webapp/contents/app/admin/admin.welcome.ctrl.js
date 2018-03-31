@@ -27,7 +27,7 @@
             var option = {
                 title: {
                     text: "在办项目数量统计情况",
-                    subtext: '按评审阶段划分',
+                    subtext: '',
                     x: 'center'
                 },
                 tooltip: {//提示框设置
@@ -104,13 +104,11 @@
          */
         vm.initLineChart = function () {
             //当页面两个id相同时会发生冲突不显示。所以用两个id来分别显示部长以上和普通员工的显示
-            var myChart;
-            var  myChart = echarts.init(document.getElementById('lineChart'));
-
+            var myChart = echarts.init(document.getElementById('lineChart'));
             var option = {
                 title: {
                     text: '项目办理情况',
-                    subtext: '按签收日期划分',
+                    subtext: '',
                     x: 'center'
                 },
                 tooltip: {
@@ -139,8 +137,9 @@
                 xAxis: {
                     show: false,
                     type: 'category',
+                    boundaryGap: false,
                     name: '项目名称',
-                    splitLine: {show: false},
+                    axisLine: {onZero: false},
                     data: vm.reviewdate,
                 },
                 yAxis: {
@@ -148,18 +147,22 @@
                     name: '剩余工作日',
                     min: -3,
                     max: 15,
-                    // interval: 20
-
                 },
-                /*   dataZoom: [{
-                       startValue: '2018-02-01'
-                   }, {
-                       type: 'inside'
-                   }],*/
                 series: [
                     {
                         name: '剩余工作日',
                         type: 'line',
+                        markPoint: {
+                            data: [
+                                {type: 'max', name: '最大值'},
+                                {type: 'min', name: '最小值'}
+                            ]
+                        },
+                        markLine: {
+                            data: [
+                                {type: 'average', name: '平均值'}
+                            ]
+                        },
                         data: vm.linedatas,
                         rawdate: vm.name//自定义参数
                     }
@@ -178,10 +181,7 @@
                 var ssArray = option.series[param.seriesIndex].rawdate[param.dataIndex].split(",");
                 $state.go('signDetails', {signid: ssArray[1], processInstanceId: ssArray[2]});
             });
-
         }//end initLineChart
-
-
         activate();
 
         function activate() {
@@ -199,70 +199,43 @@
                     if (data.annountmentList) {
                         vm.annountmentList = data.annountmentList;
                     }
-                }
-            });
-
-            //首页柱状图数据
-            adminSvc.countDtasks(function (data) {
-                vm.review = [];  //横轴(人员名称/部门)
-                vm.signNumber = [];//纵轴(数量)
-                vm.isdisplays = data.reObj.isdisplay;
-                if(!vm.isdisplays){
-                    vm.signList = data.reObj.price;
-
-                    for (var i = 0; i < vm.signList.length; i++) {
-                        vm.signNumber.push( vm.signList[i][0]);
-                        vm.review.push( vm.signList[i][1]);
-                    }
-                    vm.initHistogram();//初始化柱状图
-                }
-            });
-            adminSvc.countLine(function (data) {
-                //折线图数据
-                vm.linedatas = [];//纵轴(剩余工作日)
-                vm.reviewdate = [];//横轴(项目名称)
-                vm.name = [];
-                vm.isdisplays = data.reObj.isdisplay;
-                if(!vm.isdisplays) {
-                    var day = "";
-                    for (var i = 0; i < data.reObj.price.length; i++) {
-                        if (data.reObj.price[i].surplusdays) {
-                            //赋值给横轴需要的数据
-                            day = data.reObj.price[i].surplusdays;
-                            if (data.reObj.price[i].surplusdays < -3) {
-                                day = -3;
+                    console.log(data);
+                    //是否显示图表
+                    vm.isdisplays = data.isdisplay;
+                    if(!data.isdisplay){
+                        //线性图数据
+                        vm.linedatas = [];//纵轴(剩余工作日)
+                        vm.reviewdate = [];//横轴(项目名称)
+                        vm.name = [];
+                        if(data.lineSign){
+                            var lineList = data.lineSign;
+                            for (var i = 0,l=lineList.length; i < l; i++) {
+                                //赋值给横轴需要的数据
+                                var day = lineList[i].surplusDays;
+                                if (day < -3) {
+                                    day = -3;
+                                }
+                                if (day > 15) {
+                                    day = 15;
+                                }
+                                vm.linedatas.push(day);
+                                vm.reviewdate.push(lineList[i].projectName);
+                                //自定义传参，先进行拼接需要的数据。后再拆分
+                                vm.name.push(lineList[i].surplusDays + "," + lineList[i].businessKey + "," + lineList[i].processInstanceId);
                             }
-                            if (data.reObj.price[i].surplusdays > 15) {
-                                day = 15;
-                            }
-                            vm.linedatas.push(day);
-                            vm.reviewdate.push(data.reObj.price[i].projectname);
-                            //自定义传参，先进行拼接需要的数据。后再拆分
-                            vm.name.push(data.reObj.price[i].surplusdays + "," + data.reObj.price[i].signid + "," + data.reObj.price[i].processInstanceId);
-
-
                         }
+                        vm.initLineChart();//初始化折线图
 
+                        //柱状图
+                        vm.review = data.histogram_x;  //横轴(人员名称/部门)
+                        vm.signNumber = data.histogram_y;//纵轴(数量)
+                        vm.initHistogram();//初始化柱状图
                     }
-                    vm.initLineChart();//初始化折线图
-                }
 
-            });
-
-        }
-
-
-        vm.testAlert = function () {
-            bsWin.confirm({
-                title: "询问提示",
-                message: "该项目已关联其他项目，您确定要改为单个评审吗？",
-                onOk: function () {
-                    alert("点击确认！");
-                },
-                onCancel: function () {
-                    alert("点击取消！");
+                    //显示柱状图信息
                 }
             });
         }
+
     }
 })();

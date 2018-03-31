@@ -6,10 +6,7 @@ import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
-import cs.model.flow.FlowDto;
-import cs.model.flow.FlowHistoryDto;
-import cs.model.flow.Node;
-import cs.model.flow.TaskDto;
+import cs.model.flow.*;
 import cs.repository.odata.ODataObj;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -42,7 +39,7 @@ public interface FlowService {
     /**
      * 在办任务查询
      **/
-    PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, boolean isUserDeal);
+    List<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, boolean isUserDeal, Integer powerFlag, List<String> mngOrgIdList);
 
     /**
      * 获取流程处理记录

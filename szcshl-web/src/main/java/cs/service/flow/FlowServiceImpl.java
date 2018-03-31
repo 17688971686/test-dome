@@ -3,22 +3,16 @@ package cs.service.flow;
 import cs.common.Constant;
 import cs.common.FlowConstant;
 import cs.common.ResultMsg;
-import cs.common.utils.ActivitiUtil;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.flow.*;
 import cs.domain.project.*;
 import cs.domain.sys.Log;
-import cs.domain.sys.OrgDept;
-import cs.domain.sys.User;
 import cs.domain.topic.WorkPlan;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
@@ -30,7 +24,6 @@ import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import cs.repository.repositoryImpl.topic.WorkPlanRepo;
 import cs.service.project.SignService;
 import cs.service.sys.LogService;
-import cs.service.sys.OrgDeptService;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -64,7 +57,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
@@ -138,9 +130,6 @@ public class FlowServiceImpl implements FlowService {
 
     @Autowired
     private LogService logService;
-
-    @Autowired
-    private OrgDeptService orgDeptService;
     /**
      * 回退到上一环节或者指定环节
      *
@@ -437,11 +426,21 @@ public class FlowServiceImpl implements FlowService {
      * @return
      */
     @Override
-    public PageModelDto<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, boolean isUserDeal) {
-        PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
+    public List<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, boolean isUserDeal, Integer leaderFlag, List<String> orgIdList) {
         Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
-        criteria = odataObj.buildFilterToCriteria(criteria);
-        Integer totalResult = 0;
+        if(odataObj != null){
+            criteria = odataObj.buildFilterToCriteria(criteria);
+        }
+        //排除合并评审阶段的次项目数据
+        Disjunction disj = Restrictions.disjunction();
+        disj.add(Restrictions.isNull(RuProcessTask_.reviewType.getName()));
+        disj.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), ""));
+        disj.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), Constant.EnumState.YES.getValue()));
+        disj.add(Restrictions.sqlRestriction(" ( {alias}." + RuProcessTask_.reviewType.getName() + "= '" + Constant.EnumState.NO.getValue()
+                + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_BMLD_SPW1
+                + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_FGLD_SPW1 + "' )"));
+        criteria.add(disj);
+
         List<RuProcessTask> runProcessList = null;
         //在办任务也包含待办任务，所以要加上这个条件
         if (isUserDeal) {
@@ -449,76 +448,40 @@ public class FlowServiceImpl implements FlowService {
             dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
             dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
             criteria.add(dis);
+            criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
             runProcessList = criteria.list();
         }else{
             String curUserId = SessionUtil.getUserId();
-            //分管的部门ID
-            List<String> orgIdList = null;
-            //定义领导标识参数（0标识不是领导，1表示主任，2表示分管领导，3表示部长或者组长）
-            int leaderFlag = SUPER_USER.equals(SessionUtil.getLoginName())?1:0;
-            if(leaderFlag ==0){
-                //查询所有的部门和组织
-                List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
-                for(OrgDept od : allOrgDeptList){
-                    if(leaderFlag == 0){
-                        if(curUserId.equals(od.getDirectorID())){
-                            leaderFlag = 3;
-                            orgIdList = new ArrayList<>(1);
-                            orgIdList.add(od.getId());
-                        }
-                        if(curUserId.equals(od.getsLeaderID())){
-                            leaderFlag = 2;
-                            if(orgIdList == null){
-                                orgIdList = new ArrayList<>();
-                            }
-                            orgIdList.add(od.getId());
-                        }
-                        if(curUserId.equals(od.getmLeaderID())){
-                            leaderFlag = 1;
-                        }
-                        //分管领导分管多个部门
-                    }else if(leaderFlag == 2 && curUserId.equals(od.getsLeaderID())){
-                        orgIdList.add(od.getId());
-                    }
-                    if(leaderFlag ==1 || leaderFlag == 3){
-                        break;
-                    }
-                }
-            }
-
             if(leaderFlag != 1){
                 Disjunction dis2 = Restrictions.disjunction();
                 dis2.add(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId));
                 dis2.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" +curUserId + "%"));
                 dis2.add(Restrictions.eq(RuProcessTask_.createdBy.getName(),curUserId));
-                //criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId), Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" +curUserId + "%"),Restrictions.eq(RuProcessTask_.createdBy.getName(),curUserId)));
-                //开始查询
+
                 if(leaderFlag == 0){
                     //普通用户,如果是项目签收人（流程发起人），也符合条件
-                    //criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mainUserId.getName(),curUserId), Restrictions.like(RuProcessTask_.aUserId.getName(), "%" + curUserId + "%")));
                     dis2.add(Restrictions.eq(RuProcessTask_.mainUserId.getName(),curUserId));
                     dis2.add(Restrictions.like(RuProcessTask_.aUserId.getName(), "%" + curUserId + "%"));
-                }else if(leaderFlag == 2){
+                }else if(leaderFlag == 2 && Validate.isList(orgIdList)){
                     //分管领导，查询所管辖的部门
                     for(String orgId:orgIdList){
                         dis2.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
                     }
-                }else if(leaderFlag == 3){
+                }else if(leaderFlag == 3 && Validate.isList(orgIdList)){
                     //部长
                     String orgId = orgIdList.get(0);
                     dis2.add(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId));
                     dis2.add(Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%"));
-                    //criteria.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
                 }
                 criteria.add(dis2);
+                criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
             }
-
-
             runProcessList = criteria.list();
         }
         //过滤掉已删除的项目
         List<RuProcessTask> resultList = runProcessList.stream().filter((RuProcessTask rb) -> !(Constant.EnumState.DELETE.getValue()).equals(rb.getSignState()) )
                 .collect(Collectors.toList());
+
         if(isUserDeal){
             //合并评审项目处理
             resultList.forEach(rl -> {
@@ -530,10 +493,7 @@ public class FlowServiceImpl implements FlowService {
                 }
             });
         }
-        totalResult = resultList.size();
-        pageModelDto.setCount(totalResult);
-        pageModelDto.setValue(resultList);
-        return pageModelDto;
+        return resultList;
     }
 
     /**

@@ -25,7 +25,7 @@
                         <tr>
                             <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
                             <th>最新待办<span ng-if="t.processState == '2'" style="color:red;">[已暂停]</span></th>
-                            <th >环节名称</th>
+                            <th style="min-width: 80px;">环节名称</th>
                             <th style="width: 100px" align="center">接收日期</th>
                         </tr>
                         <tr ng-repeat="t in vm.tasksList|limitTo:5">
@@ -36,7 +36,7 @@
                                 <a ng-if="t.processState == '2'"
                                    href="#/signFlowDetail/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a>
                             </td>
-                            <td>{{t.nodeNameValue}}</td>
+                            <td >{{t.nodeNameValue}}</td>
                             <td><span class="badge bg-red">{{t.createTime}}</span></td>
                         </tr>
                         </tbody>
@@ -62,7 +62,7 @@
                         <tr>
                             <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
                             <th>最新待办</th>
-                            <th >环节名称</th>
+                            <th style="min-width: 80px;">环节名称</th>
                             <th style="width: 100px" align="center">接收日期</th>
                         </tr>
                         <tr ng-repeat="t in vm.agendaTaskList|limitTo:5">

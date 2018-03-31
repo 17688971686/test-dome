@@ -30,8 +30,6 @@
             workName: workName,  //获取流程列表
             QueryStatistics: QueryStatistics, //通过条件，对项目进行查询统计
             signDetails: signDetails,
-            countDtasks: countDtasks,//统计在办项目数量
-            countLine: countLine//在办项目办理情况
         }
         return service;
 
@@ -1503,62 +1501,7 @@
                 httpOptions: httpOptions,
                 success: httpSuccess
             });
-
-
         }
-
-        /**
-         * 在办项目统计数量
-         * @param vm
-         */
-        function countDtasks(callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/signView/dtasksSign",
-            }
-
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof  callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-
-
-        }
-
-        /**
-         * 在办项目统计数量
-         * @param vm
-         */
-        function countLine(callBack) {
-
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/signView/dtasksLineSign",
-            }
-
-            var httpSuccess = function success(response) {
-
-                if (callBack != undefined && typeof  callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-
-
-        }
-
 
     }
 })();

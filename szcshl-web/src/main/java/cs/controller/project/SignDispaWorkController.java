@@ -67,22 +67,6 @@ public class SignDispaWorkController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name = "在办项目查询统计", path = "dtasksSign", method = RequestMethod.POST)
-    @ResponseBody
-    public ResultMsg dtasksSign() {
-        return signDispaWorkService.dtasksSign();
-    }
-
-    @RequiresAuthentication
-    @RequestMapping(name = "在办项目办理情况查询统计", path = "dtasksLineSign", method = RequestMethod.POST)
-    @ResponseBody
-    public ResultMsg dtasksLineSign() {
-        return signDispaWorkService.dtasksLineSign();
-    }
-
-
-
-    @RequiresAuthentication
     //@RequiresPermissions("signView#unMergeWPSign#post")
     @RequestMapping(name = "待选合并评审项目", path = "unMergeWPSign", method = RequestMethod.POST)
     @ResponseBody

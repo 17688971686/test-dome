@@ -11,6 +11,7 @@ import cs.repository.odata.ODataObj;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface UserService {
@@ -99,4 +100,10 @@ public interface UserService {
      * 移动端的登录
      */
     ResultMsg Login(HttpServletRequest request, HttpServletResponse response, String userName, String password);
+
+    /**
+     * 获取用户查看待办任务
+     * @return
+     */
+    Map<String,Object> getUserSignAuth();
 }

@@ -26,19 +26,6 @@ public interface SignDispaWorkService {
      */
     PageModelDto<SignDispaWorkDto> getCommQurySign(ODataObj odataObj);
 
-
-    /**
-     * 在办项目查询统计
-     * @return
-     */
-    ResultMsg dtasksSign();
-
-    /**
-     * 在办项目办理情况查询统计
-     * @return
-     */
-    ResultMsg dtasksLineSign();
-
     /**
      * 查询待合并评审的项目
      * @param signId

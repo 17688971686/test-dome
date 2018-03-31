@@ -390,11 +390,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             }
             //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存(或者超级管理员) 超级管理员发放，不做时间限制
             if ( !Constant.SUPER_USER.equals(SessionUtil.getLoginName()) &&  expertReview.getReviewDate() != null && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
-                //String sysDateString = expertReviewRepo.getDataBaseTime("yyyy-mm-dd");
-                //long diffDays = DateUtils.daysBetween(DateUtils.converToDate(sysDateString, "yyyy-MM-dd"), expertReview.getReviewDate());
                 long diffDays = DateUtils.daysBetween(new Date(), expertReview.getReviewDate());
                 if (diffDays > 1 || diffDays < -1) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "评分费只能在评审会时间的前一天，当天或者后一天才能计算！");
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "评审费只能在评审会时间的前一天，当天或者后一天才能计算！");
                 }
             }
 
