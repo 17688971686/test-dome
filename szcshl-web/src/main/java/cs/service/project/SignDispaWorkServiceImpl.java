@@ -212,7 +212,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         //如果是普通用户，不用查询
         Map<String, Object> reObj = new HashMap<>();
         if (leaderFlag == 0) {
-            reObj.put("isdisplay", false);
+            reObj.put("isdisplay", true);
         } else {
             Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
             //开始查询
@@ -238,7 +238,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 criteria.setProjection(plist);
             }
             List<Object> price = criteria.list();
-            reObj.put("isdisplay", true);
+            reObj.put("isdisplay", false);
             reObj.put("price", price);
         }
 
@@ -294,10 +294,11 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         /* List<Object[]> ss=signDispaWorkRepo.dtasksLineSign(curUserId,orgIdList,leaderFlag);*/
 
         //开始查询
+        Map<String, Object> reObj = new HashMap<>();
         if (leaderFlag == 0) {
             //普通用户
-            criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.mUserId.getName(), curUserId), Restrictions.like(SignDispaWork_.aUserID.getName(), "%" + curUserId + "%")));
-        } else if (leaderFlag == 2) {
+            reObj.put("isdisplay", true);
+        } else{ if (leaderFlag == 2) {
             //分管领导，查询所管辖的部门
             Disjunction dis = Restrictions.disjunction();
             for (String orgId : orgIdList) {
@@ -310,12 +311,17 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             String orgId = orgIdList.get(0);
             criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.mOrgId.getName(), orgId), Restrictions.like(SignDispaWork_.aOrgId.getName(), "%" + orgId + "%")));
         }
-        criteria.addOrder(Order.asc(SignDispaWork_.surplusdays.getName()));
-        runProcessList = criteria.list();
-        //过滤掉删除的项目
-        List<SignDispaWork> resultList = runProcessList.stream().filter((SignDispaWork rb) -> !(Constant.EnumState.DELETE.getValue()).equals(rb.getSignState()))
-                .collect(Collectors.toList());
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", resultList);
+            criteria.addOrder(Order.asc(SignDispaWork_.surplusdays.getName()));
+            runProcessList = criteria.list();
+            List<SignDispaWork> resultList = runProcessList.stream().filter((SignDispaWork rb) -> !(Constant.EnumState.DELETE.getValue()).equals(rb.getSignState()))
+                    .collect(Collectors.toList());
+            reObj.put("isdisplay", false);
+            reObj.put("price", runProcessList);
+     }
+
+
+
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", reObj);
     }
 
     /**

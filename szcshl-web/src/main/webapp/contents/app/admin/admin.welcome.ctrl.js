@@ -23,6 +23,7 @@
          */
         vm.initHistogram = function () {
             var myChart = echarts.init(document.getElementById('histogram')); //只能用javaScript获取节点，如用jquery方式则找不到节点
+
             var option = {
                 title: {
                     text: "在办项目数量统计情况",
@@ -104,13 +105,7 @@
         vm.initLineChart = function () {
             //当页面两个id相同时会发生冲突不显示。所以用两个id来分别显示部长以上和普通员工的显示
             var myChart;
-            if (vm.isdisplays) {
-                //普通员工
-                myChart = echarts.init(document.getElementById('lineChart'));
-            } else {
-                //部长以上
-                myChart = echarts.init(document.getElementById('lineChartss'));
-            }
+            var  myChart = echarts.init(document.getElementById('lineChart'));
 
             var option = {
                 title: {
@@ -212,10 +207,9 @@
                 vm.review = [];  //横轴(人员名称/部门)
                 vm.signNumber = [];//纵轴(数量)
                 vm.isdisplays = data.reObj.isdisplay;
-
-                if(vm.isdisplays){
+                if(!vm.isdisplays){
                     vm.signList = data.reObj.price;
-                    console.log(vm.signList);
+
                     for (var i = 0; i < vm.signList.length; i++) {
                         vm.signNumber.push( vm.signList[i][0]);
                         vm.review.push( vm.signList[i][1]);
@@ -228,27 +222,31 @@
                 vm.linedatas = [];//纵轴(剩余工作日)
                 vm.reviewdate = [];//横轴(项目名称)
                 vm.name = [];
-                var day = "";
-                for (var i = 0; i < data.reObj.length; i++) {
-                    if (data.reObj[i].projectname) {
-                        //赋值给横轴需要的数据
-                        day = data.reObj[i].surplusdays;
-                        if (data.reObj[i].surplusdays < -3) {
-                            day = -3;
-                        }
-                        if (data.reObj[i].surplusdays > 15) {
-                            day = 15;
-                        }
-                        vm.linedatas.push(day);
-                        vm.reviewdate.push(data.reObj[i].projectname);
-                        //自定义传参，先进行拼接需要的数据。后再拆分
-                        vm.name.push(data.reObj[i].surplusdays + "," + data.reObj[i].signid + "," + data.reObj[i].processInstanceId);
+                vm.isdisplays = data.reObj.isdisplay;
+                if(!vm.isdisplays) {
+                    var day = "";
+                    for (var i = 0; i < data.reObj.price.length; i++) {
+                        if (data.reObj.price[i].surplusdays) {
+                            //赋值给横轴需要的数据
+                            day = data.reObj.price[i].surplusdays;
+                            if (data.reObj.price[i].surplusdays < -3) {
+                                day = -3;
+                            }
+                            if (data.reObj.price[i].surplusdays > 15) {
+                                day = 15;
+                            }
+                            vm.linedatas.push(day);
+                            vm.reviewdate.push(data.reObj.price[i].projectname);
+                            //自定义传参，先进行拼接需要的数据。后再拆分
+                            vm.name.push(data.reObj.price[i].surplusdays + "," + data.reObj.price[i].signid + "," + data.reObj.price[i].processInstanceId);
 
+
+                        }
 
                     }
-
+                    vm.initLineChart();//初始化折线图
                 }
-                vm.initLineChart();//初始化折线图
+
             });
 
         }
