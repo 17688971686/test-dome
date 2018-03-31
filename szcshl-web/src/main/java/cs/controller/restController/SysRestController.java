@@ -101,25 +101,25 @@ public class SysRestController {
         String signPreInfo = "";
         ResultMsg resultMsg = null;
         try{
-
             String preUrl = signRestService.getPreReturnUrl();
             preUrl = preUrl + "?swbh="+fileCode;
             signPreInfo =  httpClientOperate.doGet(preUrl);
-            SignPreDto signPreDto = JSON.parseObject(signPreInfo, SignPreDto.class);
-            String msg = "项目【"+signPreDto.getData().getProjectname()+"("+signPreDto.getData().getFilecode()+")】，";
-            try{
+          //  JSON.
+            String msg = "";
+            Map resultMap = (Map)JSON.parse(signPreInfo);
+                    if(resultMap.get("data") != null && !resultMap.get("data").equals("null")){
+                SignPreDto signPreDto = JSON.parseObject(signPreInfo, SignPreDto.class);
+                 msg = "项目【"+signPreDto.getData().getProjectname()+"("+signPreDto.getData().getFilecode()+")】，";
                 //json转出对象
                 if(Validate.isString(signType) && signType.equals("1")){
                     resultMsg = signRestService.pushPreProject(signPreDto.getData()); //获取项目预签收信息
                 }else{
                     resultMsg = signRestService.pushProject(signPreDto.getData());
                 }
-
-            }catch (Exception e){
-                resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
-                e.printStackTrace();
+            }else{
+                msg = "该项目信息不存在请核查！";
+                resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),msg);
             }
-
             //添加日记记录
             Log log = new Log();
             log.setCreatedDate(new Date());
@@ -134,9 +134,8 @@ public class SysRestController {
             //优先级别高
             log.setLogLevel(Constant.EnumState.PROCESS.getValue());
             logService.save(log);
-            resultMsg.setReObj(null);
-
         }catch (Exception e){
+            resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
             e.printStackTrace();
         }
         return resultMsg;

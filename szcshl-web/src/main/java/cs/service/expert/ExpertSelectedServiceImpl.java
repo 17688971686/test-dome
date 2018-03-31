@@ -756,6 +756,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         sqlBuilder.append("and (s.ispresign != '0' or s.ispresign is null) ");//过滤预签收的
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文函' ");//过滤退文项目
 
         //todo:添加查询条件
         if (null != projectReviewConditionDto) {
@@ -765,24 +766,24 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
             } else if (StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())) {
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String beginTime = projectReviewConditionDto.getBeginTime() + "-01 00:00:00";
                 String endTime = projectReviewConditionDto.getBeginTime() + "-" + day + " 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
             } else if (StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())) {
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String beginTime = projectReviewConditionDto.getEndTime() + "-01 00:00:00";
                 String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('" + beginTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('" + endTime + "', 'yyyy-mm-dd hh24:mi:ss') ");
             }
         }
         sqlBuilder.append("group by s.reviewstage,s.isadvanced");
@@ -991,6 +992,28 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     @Override
     public ProReviewConditionDto proReviewConditionSum(ProReviewConditionDto projectReviewConditionDto) {
         return expertSelectedRepo.proReviewConditionSum(projectReviewConditionDto);
+    }
+
+    /**
+     * 项目退文汇总
+     *
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public ProReviewConditionDto getBackDispatchSum(ProReviewConditionDto projectReviewConditionDto) {
+        return expertSelectedRepo.getBackDispatchSum(projectReviewConditionDto);
+    }
+
+    /**
+     * 项目退文明细
+     *
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public List<ProReviewConditionDto> getBackDispatchInfo(ProReviewConditionDto projectReviewConditionDto) {
+        return expertSelectedRepo.getBackDispatchInfo(projectReviewConditionDto);
     }
 
     /**

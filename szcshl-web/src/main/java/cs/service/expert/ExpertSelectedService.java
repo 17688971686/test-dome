@@ -45,6 +45,20 @@ public interface ExpertSelectedService {
 	ResultMsg proReviewConditionCount(ProReviewConditionDto projectReviewConditionDto);
 
 	/**
+	 * 项目退文汇总
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	ProReviewConditionDto getBackDispatchSum(ProReviewConditionDto projectReviewConditionDto);
+
+	/**
+	 * 项目退文明细
+	 * @param projectReviewConditionDto
+	 * @return
+	 */
+	List<ProReviewConditionDto> getBackDispatchInfo(ProReviewConditionDto projectReviewConditionDto);
+
+	/**
 	 * 根据业务ID统计已经确认的抽取专家
 	 * @param minBusinessId
 	 * @return

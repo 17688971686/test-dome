@@ -464,6 +464,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("select p.projecttype,count(s.projectcode) from cs_sign s   ");
         sqlBuilder.append("left join cs_work_program p  ");
         sqlBuilder.append("on s.signid = p.signid  ");
+        sqlBuilder.append("left join cs_dispatch_doc d   ");
+        sqlBuilder.append("on s.signid = d.signid   ");
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
@@ -478,24 +480,24 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }
         }
         sqlBuilder.append("group by p.projecttype ");
@@ -541,6 +543,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("where 1 = 1 ");
 //        sqlBuilder.append("and s.signstate = '9'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
+        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文函' ");//过滤退文项目
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         //todo:添加查询条件
@@ -551,24 +554,24 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }
         }
         sqlBuilder.append("group by s.reviewstage ) ");
@@ -607,8 +610,93 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         return proReviewConditionDto;
     }
 
+
     /**
-     *完成项目评审次数
+     * 获取退文金额汇总
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public ProReviewConditionDto getBackDispatchSum(ProReviewConditionDto projectReviewConditionDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select sum(projectcount),sum(declarevalue),sum(authorizevalue),sum(ljhj), decode(sum(declarevalue),0,0,round(sum(ljhj) / sum(declarevalue), 4) * 100) hjl from (  ");
+        sqlBuilder.append("select s.reviewstage, count(s.projectcode) projectcount,sum(d.declarevalue)/10000 declarevalue,sum(d.authorizevalue)/10000 authorizevalue,(sum(d.declarevalue) -sum(d.authorizevalue))/10000 ljhj  from cs_sign s  ");
+        sqlBuilder.append("left join cs_dispatch_doc d   ");
+        sqlBuilder.append("on s.signid = d.signid   ");
+        sqlBuilder.append("where 1 = 1 ");
+//        sqlBuilder.append("and s.signstate = '9'  ");
+        sqlBuilder.append("and s.signstate != '7' ");//过滤删除
+        sqlBuilder.append("and D.DISPATCHTYPE = '项目退文函' ");
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
+        //todo:添加查询条件
+        if(null != projectReviewConditionDto){
+            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }
+        }
+        sqlBuilder.append("group by s.reviewstage ) ");
+        List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
+        ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+        if (projectReviewConList.size() > 0) {
+            Object[] projectReviewCon = projectReviewConList.get(0);
+
+            if (null != projectReviewCon[0]) {
+                proReviewConditionDto.setProCount((BigDecimal) projectReviewCon[0]);
+            }
+            if (null != projectReviewCon[1]) {
+                proReviewConditionDto.setDeclareValue((BigDecimal) projectReviewCon[1]);
+            }else{
+                proReviewConditionDto.setDeclareValue(null);
+            }
+            if (null != projectReviewCon[2]) {
+                proReviewConditionDto.setAuthorizeValue((BigDecimal) projectReviewCon[2]);
+            }else{
+                proReviewConditionDto.setAuthorizeValue(null);
+            }
+            if (null != projectReviewCon[3]) {
+                proReviewConditionDto.setLjhj((BigDecimal) projectReviewCon[3]);
+            }else{
+                proReviewConditionDto.setLjhj(null);
+            }
+            if (null != projectReviewCon[4]) {
+                proReviewConditionDto.setHjl((BigDecimal) projectReviewCon[4]);
+            }else{
+                proReviewConditionDto.setLjhj(null);
+            }
+            // projectReviewConDtoList.add(proReviewConditionDto);
+
+        }
+        return proReviewConditionDto;
+    }
+
+
+    /**
+     *获取完成项目评审数
      * @param projectReviewConditionDto
      * @return
      */
@@ -618,9 +706,12 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select count(s.projectcode) from cs_sign s ");
+        sqlBuilder.append("left join cs_dispatch_doc d   ");
+        sqlBuilder.append("on s.signid = d.signid   ");
         sqlBuilder.append("where 1 = 1 ");
        // sqlBuilder.append("and s.signstate='9'  ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         if(null != projectReviewConditionDto){
             if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
@@ -629,8 +720,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }
         }
         List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
@@ -712,6 +803,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         //sqlBuilder.append("and s.signstate = '9' ");
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and D.DISPATCHTYPE != '项目退文函' ");//过滤退文项目
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
         List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
         //todo:添加查询条件
@@ -722,24 +814,104 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
                 String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
                 String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
                 String day = "";
                 day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                 String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
                 String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }
+        }
+        sqlBuilder.append("order by s.reviewstage ");
+        List<Object[]> projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        if (projectReviewConList.size() > 0) {
+            for (int i = 0; i < projectReviewConList.size(); i++) {
+                Object[] projectReviewCon = projectReviewConList.get(i);
+                ProReviewConditionDto proReviewConditionDto = new ProReviewConditionDto();
+                if (null != projectReviewCon[1]) {
+                    proReviewConditionDto.setReviewStage((String) projectReviewCon[1]);
+                }else{
+                    proReviewConditionDto.setReviewStage(null);
+                }
+
+                if (null != projectReviewCon[2]) {
+                    proReviewConditionDto.setProjectName((String) projectReviewCon[2]);
+                }else{
+                    proReviewConditionDto.setProjectName(null);
+                }
+                if (null != projectReviewCon[3]) {
+                    proReviewConditionDto.setIsadvanced((String) projectReviewCon[3]);
+                    if(proReviewConditionDto.getIsadvanced().equals("9")){
+                        proReviewConditionDto.setReviewStage(proReviewConditionDto.getReviewStage()+"（提前介入）");
+                    }
+                }else{
+                    proReviewConditionDto.setIsadvanced(null);
+                }
+
+                projectReviewConDtoList.add(proReviewConditionDto);
+            }
+        }
+        return projectReviewConDtoList;
+    }
+
+
+    /**
+     * 获取退文项目详细情况
+     * @param projectReviewConditionDto
+     * @return
+     */
+    @Override
+    public List<ProReviewConditionDto> getBackDispatchInfo(ProReviewConditionDto projectReviewConditionDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select s.signid, s.reviewstage, s.projectname ,s.isadvanced   from cs_sign s   ");
+        sqlBuilder.append("left join cs_dispatch_doc d  ");
+        sqlBuilder.append("on s.signid = d.signid  ");
+        sqlBuilder.append("where 1 = 1 ");
+        //sqlBuilder.append("and s.signstate = '9' ");
+        sqlBuilder.append("and s.signstate != '7' ");//过滤删除
+        sqlBuilder.append("and s.processstate >= 6  ");//已发文
+        sqlBuilder.append("and D.DISPATCHTYPE ='项目退文函' ");
+        sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
+        List<ProReviewConditionDto> projectReviewConDtoList = new ArrayList<ProReviewConditionDto>();
+        //todo:添加查询条件
+        if(null != projectReviewConditionDto){
+            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
             }
         }
         sqlBuilder.append("order by s.reviewstage ");
@@ -801,8 +973,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
 //                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
 //                String day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]),(Integer.parseInt(timeArr[1])-1))+"";
 //                endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
-                sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-                sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
 
             }
 //        }
@@ -816,8 +988,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
-        sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 3000  and d.declarevalue < 10000   ");
         sqlBuilder.append("union all  ");
         sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
@@ -828,8 +1000,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
-        sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 10000  and d.declarevalue < 100000   ");
         sqlBuilder.append("union all  ");
         sqlBuilder.append("select count(s.projectcode) procount  from cs_sign s  ");
@@ -840,8 +1012,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append("and s.signstate != '7' ");//过滤删除
         sqlBuilder.append("and s.processstate >= 6  ");//已发文
         sqlBuilder.append("and  ( s.ispresign != '0' or s.ispresign is null )  "); //排除预签收
-        sqlBuilder.append("and s.signdate >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
-        sqlBuilder.append("and s.signdate <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+        sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
         sqlBuilder.append("and d.declarevalue >= 100000   ");
 
         List projectReviewConList = expertSelectedRepo.getObjectArray(sqlBuilder);
@@ -1113,6 +1285,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
        sqlBuilder.append("left join cs_dispatch_doc d  ");
        sqlBuilder.append(" on s.signid = d.signid  ");
        sqlBuilder.append("where s.processstate >= 6  and s.isadvanced = '9'  and  ( s.ispresign != '0' or s.ispresign is null )  ");
+       sqlBuilder.append("and D.DISPATCHTYPE != '项目退文函' ");
        sqlBuilder.append("and s.signstate != '7' ");//过滤删除
        if(null != projectReviewConditionDto){
            if (StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())) {
@@ -1121,24 +1294,24 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
                String day = "";
                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
-               sqlBuilder.append("and s.signdate >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
-               sqlBuilder.append("and s.signdate <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+               sqlBuilder.append("and D.DISPATCHDATE >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+               sqlBuilder.append("and D.DISPATCHDATE <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
            } else if (StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())) {
                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
                String day = "";
                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                String beginTime = projectReviewConditionDto.getBeginTime() + "-01 00:00:00";
                String endTime = projectReviewConditionDto.getBeginTime() + "-" + day + " 23:59:59";
-               sqlBuilder.append("and s.signdate >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
-               sqlBuilder.append("and s.signdate <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+               sqlBuilder.append("and D.DISPATCHDATE >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+               sqlBuilder.append("and D.DISPATCHDATE <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
            } else if (StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())) {
                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
                String day = "";
                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
                String beginTime = projectReviewConditionDto.getEndTime() + "-01 00:00:00";
                String endTime = projectReviewConditionDto.getEndTime() + "-" + day + " 23:59:59";
-               sqlBuilder.append("and s.signdate >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
-               sqlBuilder.append("and s.signdate <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+               sqlBuilder.append("and D.DISPATCHDATE >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+               sqlBuilder.append("and D.DISPATCHDATE <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
            }
        }
 

@@ -894,7 +894,7 @@ public class CreateTemplateUtils {
      * @param proReviewConditionDtoList
      * @return
      */
-    public static File createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto,Integer signCount,Integer reviewCount,List<ProReviewConditionDto> proReviewConditionDtoList,List<ProReviewConditionDto> proReviewConditionDtoAllList,List<ProReviewConditionDto> proReviewConditionByTypeList,Integer totalNum,ProReviewConditionDto proReviewConditionCur,ProReviewConditionDto proReviewConditionSum,Map<String,List<ProReviewConditionDto> > proReviewCondDetailMap,Integer[] proCountArr, ProReviewConditionDto acvanceCurDto,ProReviewConditionDto acvanceTotalDto) {
+    public static File createMonthTemplate(MonthlyNewsletterDto monthlyNewsletterDto,Integer signCount,Integer reviewCount,List<ProReviewConditionDto> proReviewConditionDtoList,List<ProReviewConditionDto> proReviewConditionDtoAllList,List<ProReviewConditionDto> proReviewConditionByTypeList,Integer totalNum,ProReviewConditionDto proReviewConditionCur,ProReviewConditionDto proReviewConditionSum,Map<String,List<ProReviewConditionDto> > proReviewCondDetailMap,Integer[] proCountArr, ProReviewConditionDto acvanceCurDto,ProReviewConditionDto acvanceTotalDto,ProReviewConditionDto backDispatchTotalCur,List<ProReviewConditionDto> backDispatchList) {
         Map<String, Object> dataMap = new HashMap<>();
         //报告年度
         dataMap.put("reportMultiyear", monthlyNewsletterDto.getReportMultiyear());
@@ -909,18 +909,20 @@ public class CreateTemplateUtils {
         }
         //todo:初始化参数
         dataMap.put("signTotal", signCount!=null?signCount:0);
-        dataMap.put("proTotal", proReviewConditionCur.getProCount()!=null?proReviewConditionCur.getProCount():0);
+        dataMap.put("proTotal", reviewCount!=null?reviewCount:0);
         dataMap.put("declareTotal", proReviewConditionCur.getDeclareValue()!=null?proReviewConditionCur.getDeclareValue()+"":0);
         dataMap.put("authorizeTotal",proReviewConditionCur.getAuthorizeValue()!=null?proReviewConditionCur.getAuthorizeValue()+"":0);
         dataMap.put("ljhjTotal", proReviewConditionCur.getLjhj()!=null?proReviewConditionCur.getLjhj()+"":0);
         dataMap.put("hjlTotal", proReviewConditionCur.getHjl()!=null?proReviewConditionCur.getHjl()+"%":0+"%");
-
+        dataMap.put("backTotal", backDispatchTotalCur.getDeclareValue()!=null?backDispatchTotalCur.getDeclareValue()+"":0);
+        dataMap.put("backDispatchList", backDispatchList);
+        dataMap.put("excludeBackPro", proReviewConditionCur.getProCount()!=null?proReviewConditionCur.getProCount()+"":0);
         dataMap.put("proAllTotal", proReviewConditionSum.getProCount()!=null?proReviewConditionSum.getProCount():0);
         dataMap.put("declareAllTotal", proReviewConditionSum.getDeclareValue()!=null?proReviewConditionSum.getDeclareValue()+"":0);
         dataMap.put("authorizeAllTotal", proReviewConditionSum.getAuthorizeValue()!=null?proReviewConditionSum.getAuthorizeValue()+"":0);
         dataMap.put("ljhjAllTotal",proReviewConditionSum.getLjhj()!=null?proReviewConditionSum.getLjhj()+"":0);
         dataMap.put("hjlAllTotal", proReviewConditionSum.getHjl()!=null?proReviewConditionSum.getHjl()+"%":0+"%");
-        dataMap.put("reviewCount",reviewCount!=null?reviewCount:0);//评审会次数
+        //dataMap.put("reviewCount",reviewCount!=null?reviewCount:0);//评审会次数
         List<ProReviewConditionDto> proReviewCondition = proReviewConditionDtoList;
         List<ProReviewConditionDto> proReviewConditionAll = proReviewConditionDtoAllList;
         dataMap.put("proReviewConditionList",proReviewCondition);

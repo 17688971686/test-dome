@@ -100,7 +100,7 @@
                         vm.gridOptions.dataSource.read();
                     }
                 }else{
-                    bsWin.alert("该项目信息不存在或者网络异常获取委里预签收信息是失败，请核查！!");
+                    bsWin.alert(data.reMsg);
                 }
             });
         }
