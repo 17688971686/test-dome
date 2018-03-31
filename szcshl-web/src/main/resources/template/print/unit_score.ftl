@@ -173,7 +173,7 @@
                                     </w:r>
                                 </w:p>
                             </w:tc>
-                            <w:tc>
+<!--                            <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1200" w:type="dxa"/>
                                     <w:vAlign w:val="top"/>
@@ -244,7 +244,7 @@
                                         <w:t>地址</w:t>
                                     </w:r>
                                 </w:p>
-                            </w:tc>
+                            </w:tc>-->
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1059" w:type="dxa"/>

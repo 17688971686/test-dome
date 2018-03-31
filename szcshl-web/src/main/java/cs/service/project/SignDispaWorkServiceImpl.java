@@ -19,10 +19,7 @@ import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.service.sys.OrgDeptService;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.hibernate.type.IntegerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -178,23 +175,86 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     @Override
     @Transactional
     public ResultMsg dtasksSign() {
-        List<Map<String, Object>> dtasks = signDispaWorkRepo.dataskCount();
-        List<OrgDept> orgDeptList = orgDeptRepo.findAllByCache();
-        Boolean isdisplay = false;
-        for (OrgDept orgDept : orgDeptList) {
-            //判断下登录人是否为部长、分管领导、主任
-            if (orgDept.getsLeaderID().equals(SessionUtil.getUserId()) || orgDept.getDirectorID().equals(SessionUtil.getUserId()) ||
-                    orgDept.getmLeaderID().equals(SessionUtil.getUserId())) {
-                isdisplay = true;
+        Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
+        String curUserId = SessionUtil.getUserId();
+        //分管的部门ID
+        List<String> orgIdList = null;
+        List<SignDispaWork> runProcessList = new ArrayList<>();
+        //定义领导标识参数（0标识不是领导，1表示主任，2表示分管领导，3表示部长或者组长）
+        int leaderFlag = SUPER_USER.equals(SessionUtil.getLoginName())?1:0;
+        if(leaderFlag ==0){
+            //查询所有的部门和组织
+            List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
+            for(OrgDept od : allOrgDeptList){
+                if(leaderFlag == 0){
+                    if(curUserId.equals(od.getDirectorID())){
+                        leaderFlag = 3;
+                        orgIdList = new ArrayList<>(1);
+                        orgIdList.add(od.getId());
+                    }
+                    if(curUserId.equals(od.getsLeaderID())){
+                        leaderFlag = 2;
+                        if(orgIdList == null){
+                            orgIdList = new ArrayList<>();
+                        }
+                        orgIdList.add(od.getId());
+                    }
+                    if(curUserId.equals(od.getmLeaderID())){
+                        leaderFlag = 1;
+                    }
+                    //分管领导分管多个部门
+                }else if(leaderFlag == 2 && curUserId.equals(od.getsLeaderID())){
+                    orgIdList.add(od.getId());
+                }
+                if(leaderFlag ==1 || leaderFlag == 3){
+                    break;
+                }
             }
         }
-        //定义map
-        Map map = new HashMap();
-        //进行赋值。
-        map.put("isdisplays", isdisplay);
-        //添加到list，返回
-        dtasks.add(map);
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", dtasks);
+
+       /* List<Object[]> ss=signDispaWorkRepo.dtasksLineSign(curUserId,orgIdList,leaderFlag);*/
+
+
+        Boolean isdisplay=true;
+        //开始查询
+       if(leaderFlag == 2){
+            //分管领导，查询所管辖的部门
+            Disjunction dis = Restrictions.disjunction();
+            for(String orgId:orgIdList){
+                dis.add(Restrictions.or(Restrictions.eq(SignDispaWork_.mOrgId.getName(),orgId)));
+
+            }
+           ProjectionList plist =Projections.projectionList();
+           plist.add(Projections.count(SignDispaWork_.signid.getName()));
+           plist.add(Projections.groupProperty(SignDispaWork_.mOrgName.getName()));
+           criteria.setProjection(plist);
+            criteria.add(dis);
+            isdisplay = false;
+
+        }else if(leaderFlag == 3){
+            //部长
+            String orgId = orgIdList.get(0);
+            criteria.add(Restrictions.eq(SignDispaWork_.mOrgId.getName(),orgId));
+            criteria.add(Restrictions.ne(SignDispaWork_.signState.getName(),Constant.EnumState.DELETE.getValue()));
+            ProjectionList plist =Projections.projectionList();
+            plist.add(Projections.count(SignDispaWork_.signid.getName()));
+            plist.add(Projections.groupProperty(SignDispaWork_.mUserName.getName()));
+            criteria.setProjection(plist);
+            isdisplay = false;
+        }
+
+        List<Object> price= criteria.list();
+       /*  runProcessList = criteria.list();
+       //过滤掉删除的项目
+        List<SignDispaWork> resultList = runProcessList.stream().filter((SignDispaWork rb) -> !(Constant.EnumState.DELETE.getValue()).equals(rb.getSignState()) )
+                .collect(Collectors.toList());*/
+
+
+     /* List<Map<String, Object>> dtasks = signDispaWorkRepo.dataskCount();*/
+        List<OrgDept> orgDeptList = orgDeptRepo.findAllByCache();
+
+        price.add(isdisplay);
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", price);
     }
 
     /**
@@ -205,6 +265,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     @Override
     @Transactional
     public ResultMsg dtasksLineSign() {
+
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         String curUserId = SessionUtil.getUserId();
         //分管的部门ID
@@ -261,6 +322,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             String orgId = orgIdList.get(0);
             criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.mOrgId.getName(),orgId), Restrictions.like(SignDispaWork_.aOrgId.getName(), "%" + orgId + "%")));
         }
+        criteria.addOrder(Order.asc(SignDispaWork_.surplusdays.getName()));
         runProcessList = criteria.list();
         //过滤掉删除的项目
         List<SignDispaWork> resultList = runProcessList.stream().filter((SignDispaWork rb) -> !(Constant.EnumState.DELETE.getValue()).equals(rb.getSignState()) )

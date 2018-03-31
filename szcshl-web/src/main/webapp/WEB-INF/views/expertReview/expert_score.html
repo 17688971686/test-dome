@@ -42,18 +42,18 @@
     <caption class="text-center h3"><strong>单位评分</strong></caption><!--第一负责人才能评分-->
     <tr class="active">
         <td width="18%">单位名称</td>
-        <td width="10%">单位电话</td>
+<!--        <td width="10%">单位电话</td>
         <td width="10%">邮编	</td>
-        <td width="10%">地址	</td>
+        <td width="10%">地址	</td>-->
         <td width="12%">单位评分</td>
         <td width="28%">评分描述</td>
         <td width="12%" ng-if="vm.showFlag.isMainPrinUser">操作</td>
     </tr>
     <tr >
         <td>{{vm.model.unitScoreDto.company.coName}}</td>
-        <td>{{vm.model.unitScoreDto.company.coPhone}}</td>
+       <!-- <td>{{vm.model.unitScoreDto.company.coPhone}}</td>
         <td>{{vm.model.unitScoreDto.company.coPC}}</td>
-        <td>{{vm.model.unitScoreDto.company.coAddress}}</td>
+        <td>{{vm.model.unitScoreDto.company.coAddress}}</td>-->
         <td>
             <span style='color:gold;font-size:20px;' ng-repeat="c in range(vm.model.unitScoreDto.score) track by $index ">
                 <i class='fa fa-star' aria-hidden='true'></i>

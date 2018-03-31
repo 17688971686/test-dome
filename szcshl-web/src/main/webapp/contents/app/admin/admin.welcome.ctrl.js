@@ -56,7 +56,7 @@
                 },
                 xAxis: {
                     type: 'category',
-                    name: '评审阶段',
+                    name: '人员/部门',
                     data: vm.review,
                     axisTick: {
                         alignWithLabel: true
@@ -119,14 +119,14 @@
                 },
                 tooltip: {
                     trigger: 'axis',
-                  /*  formatter: function (param) {
+                  formatter: function (param) {
                        　//option.series[param[0].seriesIndex].rawdate[param[0].dataIndex]是rawdate传的值
                         //先进行切割，获取到项目名称
                         var ssArray=option.series[param[0].seriesIndex].rawdate[param[0].dataIndex].split(",");
-                        var res ='签收日期：'+param[0].name + '<br/>'+'项目名称：'+ ssArray[0]+'<br/>'+param[0].seriesName+'：'+param[0].data;
 
+                       var res ='项目名称：'+ param[0].name +'<br/>'+'剩余工作日:'+ssArray[0];
                         return res;
-                    }*/
+                    }
                 },
 
 
@@ -145,7 +145,7 @@
                 xAxis: {
                     show:false,
                     type: 'category',
-                    name: '签收日期',
+                    name: '项目名称',
                     splitLine: {show: false},
                     data: vm.reviewdate,
                 },
@@ -179,11 +179,11 @@
                 }
             };
             myChart.setOption(option);
-          /*  myChart.on('click', function(param) {
+        myChart.on('click', function(param) {
                 //进行分割。获取到signid
                 var ssArray=option.series[param.seriesIndex].rawdate[param.dataIndex].split(",");
-                 $state.go('signDetails',{signid: ssArray[1],processInstanceId:ssArray[2]});
-            });*/
+                $state.go('signDetails',{signid: ssArray[1],processInstanceId:ssArray[2]});
+            });
 
         }//end initLineChart
 
@@ -210,24 +210,21 @@
             });
 
             adminSvc.countDtasks(function (data) {
-                vm.review=[];
-                vm.signNumber=[];
+                //柱状图数据
+                vm.review=[];  //横轴(人员名称/部门)
+                vm.signNumber=[];//纵轴(数量)
                 for(var i=0;i<data.reObj.length;i++){
-                    if(data.reObj[i].REVIEWSTAGE){
-                        vm.review.push(data.reObj[i].REVIEWSTAGE);
-                        vm.signNumber.push(data.reObj[i].SIGNNUMBER);
+                    if(data.reObj[i][1]!=null){
+                        vm.signNumber.push(data.reObj[i][0]);
+                        vm.review.push(data.reObj[i][1]);
                     }
-                    //判断。只有部长，分管领导，主任才会显示
-                   if(data.reObj[i].isdisplays){
-                        vm.isdisplays=false;//部长，分管领导，主任
 
-                   }else{
-                       vm.isdisplays=true;//普通员工
 
-                   }
 
                 }
-
+                //判断。只有部长，分管领导，主任才会显示
+                var j=data.reObj.length-1;
+                vm.isdisplays=data.reObj[j];//部长，分管领导，主任
                 vm.initHistogram();//初始化柱状图
 
 
@@ -236,17 +233,22 @@
                 //折线图数据
                 vm.linedatas=[];//纵轴(剩余工作日)
                 vm.reviewdate=[];//横轴(项目名称)
-                //柱状图数据
-                vm.review=[];//纵轴(数量)
-                vm.signNumber=[];//横轴(人员名称/部门)
                 vm.name=[];
+                var day="";
                 for(var i=0;i<data.reObj.length;i++){
                     if(data.reObj[i].projectname){
-                        vm.linedatas.push(data.reObj[i].surplusdays);
+                        //赋值给横轴需要的数据
+                        day=data.reObj[i].surplusdays;
+                        if(data.reObj[i].surplusdays<-3){
+                            day=-3;
+                        }
+                        if(data.reObj[i].surplusdays>15){
+                            day=15;
+                        }
+                        vm.linedatas.push(day);
                         vm.reviewdate.push(data.reObj[i].projectname);
                         //自定义传参，先进行拼接需要的数据。后再拆分
-                     /*   vm.name.push(data.reObj[i].projectname+","+data.reObj[i].SIGNID+","+data.reObj[i].PROCESSINSTANCEID);
-                   */
+                        vm.name.push(data.reObj[i].surplusdays+","+data.reObj[i].signid+","+data.reObj[i].processInstanceId);
 
 
                     }
