@@ -235,6 +235,141 @@
                             <w:t>评审情况</w:t>
                         </w:r>
                     </w:p>
+                <#if (backDispatchList?size>0) >
+                    <w:p w:rsidR="00C421B9" w:rsidRPr="00A3538E" w:rsidRDefault="009C65F0" w:rsidP="00C421B9">
+                        <w:pPr>
+                            <w:pStyle w:val="2"/>
+                            <w:snapToGrid w:val="0"/>
+                            <w:spacing w:line="600" w:lineRule="exact"/>
+                            <w:ind w:firstLine="640"/>
+                            <w:rPr>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r w:rsidRPr="00A3538E">
+                            <w:rPr>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${reportMultiyear!}</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00C421B9" w:rsidRPr="00A018BB">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>年</w:t>
+                        </w:r>
+                        <w:proofErr w:type="gramEnd"/>
+                        <w:r w:rsidRPr="00A3538E">
+                            <w:rPr>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${theMonths!}</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00C421B9" w:rsidRPr="00A018BB">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>月，深圳市政府投资项目评审中心签收项目</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00DD7106" w:rsidRPr="00A3538E">
+                            <w:rPr>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${signTotal!}</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00C421B9" w:rsidRPr="00A018BB">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>项</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00C421B9">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>；</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00C421B9" w:rsidRPr="00A018BB">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>完成项目评审${proTotal!}项其中，</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00C421B9">
+                            <w:t>
+                                <#list backDispatchList as backDispatch>
+                                ${backDispatch.projectName!}，
+                                </#list>
+                                建议均作退文处理，涉及金额${backTotal!}亿元，未列入申报投资总额和核减额。除去退文项目，其它${excludeBackPro!}个项目
+                            </w:t>
+                        </w:r>
+                        <w:r w:rsidR="00C421B9" w:rsidRPr="00A018BB">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>申报总投资</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00440E40" w:rsidRPr="00A3538E">
+                            <w:rPr>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${declareTotal!}</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00C421B9">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>亿元，审核后总投资</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00DA5098" w:rsidRPr="00A3538E">
+                            <w:rPr>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${authorizeTotal!}</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00C421B9">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>亿元，累计净核减投资</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00A80938" w:rsidRPr="00A3538E">
+                            <w:rPr>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${ljhjTotal!}</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00C421B9">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>亿元，核减率</w:t>
+                        </w:r>
+                        <w:r w:rsidR="004F36AA" w:rsidRPr="00A3538E">
+                            <w:rPr>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>${hjlTotal!}</w:t>
+                        </w:r>
+                        <w:r w:rsidR="00C421B9">
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:szCs w:val="32"/>
+                            </w:rPr>
+                            <w:t>。具体评审情况如下：</w:t>
+                        </w:r>
+                    </w:p>
+                </#if>
+                <#if (backDispatchList?size==0) >
                     <w:p w:rsidR="00C421B9" w:rsidRPr="00A3538E" w:rsidRDefault="009C65F0" w:rsidP="00C421B9">
                         <w:pPr>
                             <w:pStyle w:val="2"/>
@@ -379,6 +514,7 @@
                             <w:t>。具体评审情况如下：</w:t>
                         </w:r>
                     </w:p>
+                </#if>
                     <w:p w:rsidR="0093189F" w:rsidRPr="00A3538E" w:rsidRDefault="0093189F" w:rsidP="0093189F">
                         <w:pPr>
                             <w:spacing w:line="540" w:lineRule="exact"/>
@@ -2997,6 +3133,255 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
+                    <#list proReviewConditionList as proReviewCondition>
+                        <w:tr w:rsidR="00F15603" w:rsidRPr="00A96140" w:rsidTr="00C93B0C">
+                            <w:trPr>
+                                <w:cantSplit/>
+                                <w:trHeight w:val="595"/>
+                            </w:trPr>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1108" w:type="pct"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="28"/>
+                                            <w:szCs w:val="28"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewCondition.reviewStage!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="828" w:type="pct"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="nil"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:noWrap/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewCondition.proCount!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="860" w:type="pct"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="nil"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewCondition.declareValue!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="903" w:type="pct"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="nil"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewCondition.authorizeValue!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="655" w:type="pct"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="nil"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:noWrap/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewCondition.ljhj!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="645" w:type="pct"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="nil"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:noWrap/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewCondition.hjl!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                        </w:tr>
+                    </#list>
                         <w:tr w:rsidR="00F15603" w:rsidRPr="00A96140" w:rsidTr="00C93B0C">
                             <w:trPr>
                                 <w:cantSplit/>
@@ -3068,7 +3453,7 @@
                                             <w:sz w:val="32"/>
                                             <w:szCs w:val="32"/>
                                         </w:rPr>
-                                        <w:t>${proTotal!}</w:t>
+                                        <w:t>${excludeBackPro!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -3867,6 +4252,271 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
+                    <#list proReviewConditionAllList as proReviewConditionAll>
+                        <w:tr w:rsidR="00F15603" w:rsidRPr="00A96140" w:rsidTr="00C93B0C">
+                            <w:trPr>
+                                <w:trHeight w:val="595"/>
+                            </w:trPr>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1142" w:type="pct"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="400" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="28"/>
+                                            <w:szCs w:val="28"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="28"/>
+                                            <w:szCs w:val="28"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewConditionAll.reviewStage!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="793" w:type="pct"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="nil"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:noWrap/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewConditionAll.proCount!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="860" w:type="pct"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="nil"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewConditionAll.declareValue!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="903" w:type="pct"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="nil"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewConditionAll.authorizeValue!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="655" w:type="pct"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="nil"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:noWrap/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewConditionAll.ljhj!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="645" w:type="pct"/>
+                                    <w:tcBorders>
+                                        <w:top w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:left w:val="nil"/>
+                                        <w:bottom w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                        <w:right w:val="single" w:sz="4" w:space="0" w:color="auto"/>
+                                    </w:tcBorders>
+                                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                                    <w:noWrap/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00F15603">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${proReviewConditionAll.hjl!}</w:t>
+                                    </w:r>
+                                </w:p>
+                                <w:p w:rsidR="00F15603" w:rsidRPr="00F15603" w:rsidRDefault="00F15603"
+                                     w:rsidP="0091302B">
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:spacing w:line="560" w:lineRule="exact"/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="等线 Light" w:eastAsia="等线 Light" w:hAnsi="等线 Light"
+                                                      w:cs="宋体"/>
+                                            <w:b/>
+                                            <w:bCs/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
+                            </w:tc>
+                        </w:tr>
+                    </#list>
                         <w:tr w:rsidR="00F15603" w:rsidRPr="00F649F5" w:rsidTr="00C93B0C">
                             <w:trPr>
                                 <w:trHeight w:val="595"/>
@@ -4196,6 +4846,53 @@
                             <w:t>月评审项目列表</w:t>
                         </w:r>
                     </w:p>
+                <#list proReviewCondDetailMap?keys as key>
+                    <w:p w:rsidR="008E7CFC" w:rsidRDefault="008E7CFC" w:rsidP="008E7CFC">
+                        <w:pPr>
+                            <w:spacing w:before="100" w:beforeAutospacing="1" w:after="100" w:afterAutospacing="1"
+                                       w:line="540" w:lineRule="exact"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体" w:hAnsi="宋体" w:cs="宋体-18030"/>
+                                <w:sz w:val="32"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r w:rsidRPr="009A792F">
+                            <w:rPr>
+                                <w:rFonts w:ascii="黑体" w:eastAsia="黑体" w:hAnsi="宋体" w:cs="宋体-18030" w:hint="eastAsia"/>
+                                <w:sz w:val="32"/>
+                            </w:rPr>
+                            <w:t>${key!}</w:t>
+                        </w:r>
+                    </w:p>
+                    <#list proReviewCondDetailMap[key] as proReviewCondDetail>
+                        <w:p w:rsidR="008E7CFC" w:rsidRDefault="008E7CFC" w:rsidP="008E7CFC">
+                            <w:pPr>
+                                <w:spacing w:line="540" w:lineRule="exact"/>
+                                <w:ind w:firstLineChars="200" w:firstLine="640"/>
+                                <w:rPr>
+                                    <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312" w:hAnsi="宋体" w:cs="宋体-18030"/>
+                                    <w:sz w:val="32"/>
+                                </w:rPr>
+                            </w:pPr>
+                            <w:r>
+                                <w:rPr>
+                                    <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312" w:hAnsi="宋体" w:cs="宋体-18030"
+                                              w:hint="eastAsia"/>
+                                    <w:sz w:val="32"/>
+                                </w:rPr>
+                                <w:t>${proReviewCondDetail_index+1}.</w:t>
+                            </w:r>
+                            <w:r w:rsidRPr="00B411ED">
+                                <w:rPr>
+                                    <w:rFonts w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312" w:hAnsi="宋体" w:cs="宋体-18030"
+                                              w:hint="eastAsia"/>
+                                    <w:sz w:val="32"/>
+                                </w:rPr>
+                                <w:t>${proReviewCondDetail.projectName!}</w:t>
+                            </w:r>
+                        </w:p>
+                    </#list>
+                </#list>
                     <w:p w:rsidR="00567217" w:rsidRPr="00F15603" w:rsidRDefault="00567217"/>
                     <w:sectPr w:rsidR="00567217" w:rsidRPr="00F15603" w:rsidSect="0010390B">
                         <w:pgSz w:w="11906" w:h="16838"/>

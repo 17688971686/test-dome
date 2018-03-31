@@ -366,6 +366,7 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
         File docFile = null;
         ProReviewConditionDto proReviewConditionCur = new ProReviewConditionDto();//汇总当前月
         ProReviewConditionDto proReviewConditionSum = new ProReviewConditionDto();//累计至当前月
+        ProReviewConditionDto backDispatchTotalCur = new ProReviewConditionDto();//当前月退文汇总
         Integer reviewCount = 0;//当月专家评审会次数
         Integer signCount = 0;//当月签收项目数
         //当月月报
@@ -377,6 +378,10 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
             List<ProReviewConditionDto> proReviewConditionDtoList = (List<ProReviewConditionDto>) resultMap.get("protReviewConditionList");
             //当前月汇总
             proReviewConditionCur = expertSelectedService.proReviewConditionSum(proReviewConditionDto);
+            //获取退文汇总
+            backDispatchTotalCur = expertSelectedService.getBackDispatchSum(proReviewConditionDto);
+            //后取退文明细
+            List<ProReviewConditionDto>backDispatchList = expertSelectedService.getBackDispatchInfo(proReviewConditionDto);
             //获取提前介入项目信息
             ProReviewConditionDto acvanceCurDto =  expertSelectedService.getAdvancedCon(proReviewConditionDto);
             //专家评审明细
@@ -431,7 +436,7 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 proCountArr = expertSelectedService.proReviewCondByDeclare(beginTime, endTime);
             }
 
-            docFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto, signCount, reviewCount, proReviewConditionDtoList, proReviewConditionDtoAllList, proReviewConditionByTypeAllList, totalNum, proReviewConditionCur, proReviewConditionSum, proReviewCondDetailMap, proCountArr,acvanceCurDto,acvanceTotalDto);
+            docFile = CreateTemplateUtils.createMonthTemplate(monthlyNewsletterDto, signCount, reviewCount, proReviewConditionDtoList, proReviewConditionDtoAllList, proReviewConditionByTypeAllList, totalNum, proReviewConditionCur, proReviewConditionSum, proReviewCondDetailMap, proCountArr,acvanceCurDto,acvanceTotalDto,backDispatchTotalCur,backDispatchList);
         }
         return docFile;
     }

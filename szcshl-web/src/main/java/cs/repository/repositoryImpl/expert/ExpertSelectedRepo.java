@@ -100,6 +100,20 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
     List<ProReviewConditionDto> proReviewConditionDetail(ProReviewConditionDto projectReviewConditionDto);
 
     /**
+     * 获取退文项目详细情况
+     * @param projectReviewConditionDto
+     * @return
+     */
+     List<ProReviewConditionDto> getBackDispatchInfo(ProReviewConditionDto projectReviewConditionDto);
+
+    /**
+     * 项目退文汇总
+     * @param projectReviewConditionDto
+     * @return
+     */
+     ProReviewConditionDto getBackDispatchSum(ProReviewConditionDto projectReviewConditionDto);
+
+    /**
      * 项目评审情况汇总(按照申报投资金额)
      *
      * @param beginTime
