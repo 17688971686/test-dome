@@ -130,12 +130,13 @@ public class AdminController {
     @ResponseBody
     public Map<String, Object> initWelComePage(HttpServletRequest request) throws ParseException {
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        //根据不同的角色，初始化不同的页面（待实现）
-        /*if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())){
-            logger.info("副主任登录系统");
-        }else if(SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())){
-            logger.info("主任登录系统");
-        }*/
+        //admin用户不用查询待办信息
+        if(!Constant.SUPER_USER.equals(SessionUtil.getLoginName())){
+            //1、查询个人待办项目
+            resultMap.put("proTaskList", flowService.queryMyRunProcessTasks(6));
+            //2、查询个人待办任务
+            resultMap.put("comTaskList", flowService.queryMyHomeAgendaTask());
+        }
         /*******************   以下是普通用户的首页   ********************/
         //1、查询个人待办项目
         resultMap.put("proTaskList", flowService.queryMyRunProcessTasks(6));

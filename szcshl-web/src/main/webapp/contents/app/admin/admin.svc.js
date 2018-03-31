@@ -28,22 +28,21 @@
             excelExport: excelExport,                   //项目统计导出
             statisticalGrid: statisticalGrid,    //(停用)
             workName: workName,  //获取流程列表
-            QueryStatistics : QueryStatistics , //通过条件，对项目进行查询统计
-            signDetails : signDetails ,
-            countDtasks:countDtasks,//统计在办项目数量
-            countLine:countLine//在办项目办理情况
-
-
+            QueryStatistics: QueryStatistics, //通过条件，对项目进行查询统计
+            signDetails: signDetails,
+            countDtasks: countDtasks,//统计在办项目数量
+            countLine: countLine//在办项目办理情况
         }
         return service;
-        function signDetails(signId , callBack ){
+
+        function signDetails(signId, callBack) {
             var httpOptions = {
-                method : 'post',
-                url : rootPath + "/signView/findSecretProPermission",
-                params : {signId : signId}
+                method: 'post',
+                url: rootPath + "/signView/findSecretProPermission",
+                params: {signId: signId}
             }
-            var httpSuccess = function success(response){
-                if(callBack != undefined && typeof  callBack == 'function'){
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof  callBack == 'function') {
                     callBack(response.data);
                 }
             }
@@ -230,8 +229,8 @@
         function gtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks", $("#searchform"),vm.gridParams),
-                schema:  {
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks", $("#searchform"), vm.gridParams),
+                schema: {
                     data: "value",
                     total: function (data) {
                         if (data['count']) {
@@ -253,8 +252,8 @@
                 serverPaging: false,
                 serverSorting: false,
                 serverFiltering: false,
-                pageSize: vm.queryParams.pageSize||10,
-                page:vm.queryParams.page||1,
+                pageSize: vm.queryParams.pageSize || 10,
+                page: vm.queryParams.page || 1,
                 sort: {
                     field: "createdDate",
                     dir: "desc"
@@ -314,7 +313,7 @@
                     width: 200,
                     template: function (item) {
                         if (checkCanEdit(item)) {
-                            return  '<a ng-click="vm.saveView()" href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                         } else {
                             return '<a ng-click="vm.saveView()" href="#/signFlowDeal/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                         }
@@ -414,7 +413,7 @@
                                 if (index > 0) {
                                     projectName += ",";
                                 }
-                                projectName += '<a href="#/signDetails/' + data.signid + '/'+ data.processInstanceId + '" >' + data.projectname + '</a>';
+                                projectName += '<a href="#/signDetails/' + data.signid + '/' + data.processInstanceId + '" >' + data.projectname + '</a>';
                             });
                             return projectName;
                         } else {
@@ -442,8 +441,8 @@
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                pageable : common.kendoGridConfig(vm.queryParams).pageable,
-                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound
             };
         }//E_gtasksGrid
 
@@ -566,15 +565,15 @@
         function dtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform"),vm.gridParams),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform"), vm.gridParams),
                 schema: common.kendoGridConfig().schema({
                     id: "id"
                 }),
                 serverPaging: false,
                 serverSorting: false,
                 serverFiltering: false,
-                pageSize : vm.queryParams.pageSize||10,
-                page:vm.queryParams.page||1,
+                pageSize: vm.queryParams.pageSize || 10,
+                page: vm.queryParams.page || 1,
                 sort: {
                     field: "createdDate",
                     dir: "desc"
@@ -625,16 +624,16 @@
                         style: "text-align: center;",
                     },
                     template: function (item) {
-                        if(item.signprocessState){
-                            if(item.signprocessState == 6){
+                        if (item.signprocessState) {
+                            if (item.signprocessState == 6) {
                                 return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.signprocessState == 7){
+                            else if (item.signprocessState == 7) {
                                 return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.signprocessState == 8){
+                            else if (item.signprocessState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
-                            }else{
+                            } else {
                                 return "<span class='row-number'></span>";
                             }
                         }
@@ -722,17 +721,17 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound
             };
         }//E_dtasksGrid
 
         //begin_getSignList
         function getSignList(vm) {
-            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate", $("#searchform"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
 
             // End:dataSource
 
@@ -779,19 +778,19 @@
                     title: "序号",
                     width: 50,
                     attributes: {
-                         style: "text-align: center;",
+                        style: "text-align: center;",
                     },
                     template: function (item) {
-                        if(item.processState){
-                            if(item.processState == 6){
+                        if (item.processState) {
+                            if (item.processState == 6) {
                                 return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.processState == 7){
+                            else if (item.processState == 7) {
                                 return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.processState == 8){
+                            else if (item.processState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
-                            }else{
+                            } else {
                                 return "<span class='row-number'></span>";
                             }
                         }
@@ -804,13 +803,13 @@
                     width: 280,
                     filterable: false,
                     template: function (item) {
-                        if(item.secrectlevel == "秘密"){
+                        if (item.secrectlevel == "秘密") {
                             if (item.processInstanceId) {
-                                return '<a ng-click="vm.signDetails('+"'"+item.signid+"'," +"'" +item.processInstanceId +"'"+ ')" >' + item.projectname + '</a>';
+                                return '<a ng-click="vm.signDetails(' + "'" + item.signid + "'," + "'" + item.processInstanceId + "'" + ')" >' + item.projectname + '</a>';
                             } else {
-                                return '<a ng-click="vm.signDetails('+"'"+item.signid+"' , " +"'" +"'"+')" >' + item.projectname + '</a>';
+                                return '<a ng-click="vm.signDetails(' + "'" + item.signid + "' , " + "'" + "'" + ')" >' + item.projectname + '</a>';
                             }
-                        }else{
+                        } else {
                             if (item.processInstanceId) {
                                 return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
                             } else {
@@ -975,11 +974,11 @@
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
                 /*  pageable: common.kendoGridConfig().pageable,*/
-                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound:common.kendoGridConfig(vm.queryParams).dataBound /*function () {
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound /*function () {
 
                  /*                dataBound: function () {
                     var rows = this.items();
@@ -1014,28 +1013,28 @@
 
         //begin persontasksGrid
         function personMainTasksGrid(vm) {
-/*            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks", $("#searchform")),
-                schema: {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model: {
-                        id: "id"
-                    }
-                },
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "signdate",
-                    dir: "desc"
-                }
-            });*/
-            var dataSource = common.kendoGridDataSource(rootPath + "/signView/html/personMainTasks?$orderby=signdate desc",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+            /*            var dataSource = new kendo.data.DataSource({
+                            type: 'odata',
+                            transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks", $("#searchform")),
+                            schema: {
+                                data: "value",
+                                total: function (data) {
+                                    return data['count'];
+                                },
+                                model: {
+                                    id: "id"
+                                }
+                            },
+                            serverPaging: true,
+                            serverSorting: true,
+                            serverFiltering: true,
+                            pageSize: 10,
+                            sort: {
+                                field: "signdate",
+                                dir: "desc"
+                            }
+                        });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/html/personMainTasks?$orderby=signdate desc", $("#searchform"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
             var columns = [
                 {
                     field: "",
@@ -1081,16 +1080,16 @@
                         style: "text-align: center;",
                     },
                     template: function (item) {
-                        if(item.processState){
-                            if(item.processState == 6){
+                        if (item.processState) {
+                            if (item.processState == 6) {
                                 return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.processState == 7){
+                            else if (item.processState == 7) {
                                 return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.processState == 8){
+                            else if (item.processState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
-                            }else{
+                            } else {
                                 return "<span class='row-number'></span>";
                             }
                         }
@@ -1225,8 +1224,8 @@
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                pageable : common.kendoGridConfig(vm.queryParams).pageable,
-                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound,
             };
 
             // End:column
@@ -1274,8 +1273,8 @@
                     title: "任务名称",
                     filterable: false,
                     width: "25%",
-                    template:function (item) {
-                        return '<a href="#/flowDeal/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/'+item.instanceId+'" >' + item.instanceName + '</a>';
+                    template: function (item) {
+                        return '<a href="#/flowDeal/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/' + item.instanceId + '" >' + item.instanceName + '</a>';
                     }
                 },
                 {
@@ -1342,28 +1341,28 @@
 
         //S_所有在办任务
         function doingTaskGrid(vm) {
-      /*      var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask", $('#doingTaskForm')),
-                schema: {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model: {
-                        id: "taskId"
-                    }
-                },
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createTime",
-                    dir: "desc"
-                }
-            });*/
-            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask?$orderby=createTime desc",$("#doingTaskForm"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
+            /*      var dataSource = new kendo.data.DataSource({
+                      type: 'odata',
+                      transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask", $('#doingTaskForm')),
+                      schema: {
+                          data: "value",
+                          total: function (data) {
+                              return data['count'];
+                          },
+                          model: {
+                              id: "taskId"
+                          }
+                      },
+                      serverPaging: true,
+                      serverSorting: true,
+                      serverFiltering: true,
+                      pageSize: 10,
+                      sort: {
+                          field: "createTime",
+                          dir: "desc"
+                      }
+                  });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask?$orderby=createTime desc", $("#doingTaskForm"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
             var columns = [
                 {
                     field: "",
@@ -1427,8 +1426,8 @@
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                pageable : common.kendoGridConfig(vm.queryParams).pageable,
-                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound,
 
             };
         }//S_doingTaskGrid
@@ -1483,17 +1482,17 @@
          * 通过条件对项目进行查询统计分析
          * @param vm
          */
-        function QueryStatistics(vm , callBack){
+        function QueryStatistics(vm, callBack) {
 
             var httpOptions = {
-                method : 'post',
-                url : rootPath + "/signView/QueryStatistics",
+                method: 'post',
+                url: rootPath + "/signView/QueryStatistics",
                 // data : vm.project,
-                params : {queryData : vm.filters ,  page : vm.page}
+                params: {queryData: vm.filters, page: vm.page}
             }
 
-            var httpSuccess = function success(response){
-                if(callBack != undefined && typeof  callBack == 'function'){
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof  callBack == 'function') {
                     callBack(response.data);
                 }
             }
@@ -1512,16 +1511,14 @@
          * 在办项目统计数量
          * @param vm
          */
-        function countDtasks(callBack){
-
+        function countDtasks(callBack) {
             var httpOptions = {
-                method : 'post',
-                url : rootPath + "/signView/dtasksSign",
+                method: 'post',
+                url: rootPath + "/signView/dtasksSign",
             }
 
-            var httpSuccess = function success(response){
-
-                if(callBack != undefined && typeof  callBack == 'function'){
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof  callBack == 'function') {
                     callBack(response.data);
                 }
             }
@@ -1539,16 +1536,16 @@
          * 在办项目统计数量
          * @param vm
          */
-        function countLine(callBack){
+        function countLine(callBack) {
 
             var httpOptions = {
-                method : 'post',
-                url : rootPath + "/signView/dtasksLineSign",
+                method: 'post',
+                url: rootPath + "/signView/dtasksLineSign",
             }
 
-            var httpSuccess = function success(response){
+            var httpSuccess = function success(response) {
 
-                if(callBack != undefined && typeof  callBack == 'function'){
+                if (callBack != undefined && typeof  callBack == 'function') {
                     callBack(response.data);
                 }
             }
@@ -1561,7 +1558,6 @@
 
 
         }
-
 
 
     }

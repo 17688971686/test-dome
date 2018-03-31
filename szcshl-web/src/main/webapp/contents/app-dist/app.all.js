@@ -3737,22 +3737,21 @@
             excelExport: excelExport,                   //项目统计导出
             statisticalGrid: statisticalGrid,    //(停用)
             workName: workName,  //获取流程列表
-            QueryStatistics : QueryStatistics , //通过条件，对项目进行查询统计
-            signDetails : signDetails ,
-            countDtasks:countDtasks,//统计在办项目数量
-            countLine:countLine//在办项目办理情况
-
-
+            QueryStatistics: QueryStatistics, //通过条件，对项目进行查询统计
+            signDetails: signDetails,
+            countDtasks: countDtasks,//统计在办项目数量
+            countLine: countLine//在办项目办理情况
         }
         return service;
-        function signDetails(signId , callBack ){
+
+        function signDetails(signId, callBack) {
             var httpOptions = {
-                method : 'post',
-                url : rootPath + "/signView/findSecretProPermission",
-                params : {signId : signId}
+                method: 'post',
+                url: rootPath + "/signView/findSecretProPermission",
+                params: {signId: signId}
             }
-            var httpSuccess = function success(response){
-                if(callBack != undefined && typeof  callBack == 'function'){
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof  callBack == 'function') {
                     callBack(response.data);
                 }
             }
@@ -3939,8 +3938,8 @@
         function gtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks", $("#searchform"),vm.gridParams),
-                schema:  {
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/tasks", $("#searchform"), vm.gridParams),
+                schema: {
                     data: "value",
                     total: function (data) {
                         if (data['count']) {
@@ -3962,8 +3961,8 @@
                 serverPaging: false,
                 serverSorting: false,
                 serverFiltering: false,
-                pageSize: vm.queryParams.pageSize||10,
-                page:vm.queryParams.page||1,
+                pageSize: vm.queryParams.pageSize || 10,
+                page: vm.queryParams.page || 1,
                 sort: {
                     field: "createdDate",
                     dir: "desc"
@@ -4023,7 +4022,7 @@
                     width: 200,
                     template: function (item) {
                         if (checkCanEdit(item)) {
-                            return  '<a ng-click="vm.saveView()" href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
+                            return '<a ng-click="vm.saveView()" href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                         } else {
                             return '<a ng-click="vm.saveView()" href="#/signFlowDeal/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                         }
@@ -4123,7 +4122,7 @@
                                 if (index > 0) {
                                     projectName += ",";
                                 }
-                                projectName += '<a href="#/signDetails/' + data.signid + '/'+ data.processInstanceId + '" >' + data.projectname + '</a>';
+                                projectName += '<a href="#/signDetails/' + data.signid + '/' + data.processInstanceId + '" >' + data.projectname + '</a>';
                             });
                             return projectName;
                         } else {
@@ -4151,8 +4150,8 @@
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                pageable : common.kendoGridConfig(vm.queryParams).pageable,
-                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound
             };
         }//E_gtasksGrid
 
@@ -4275,15 +4274,15 @@
         function dtasksGrid(vm) {
             var dataSource = new kendo.data.DataSource({
                 type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform"),vm.gridParams),
+                transport: common.kendoGridConfig().transport(rootPath + "/flow/html/doingtasks", $("#searchform"), vm.gridParams),
                 schema: common.kendoGridConfig().schema({
                     id: "id"
                 }),
                 serverPaging: false,
                 serverSorting: false,
                 serverFiltering: false,
-                pageSize : vm.queryParams.pageSize||10,
-                page:vm.queryParams.page||1,
+                pageSize: vm.queryParams.pageSize || 10,
+                page: vm.queryParams.page || 1,
                 sort: {
                     field: "createdDate",
                     dir: "desc"
@@ -4334,16 +4333,16 @@
                         style: "text-align: center;",
                     },
                     template: function (item) {
-                        if(item.signprocessState){
-                            if(item.signprocessState == 6){
+                        if (item.signprocessState) {
+                            if (item.signprocessState == 6) {
                                 return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.signprocessState == 7){
+                            else if (item.signprocessState == 7) {
                                 return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.signprocessState == 8){
+                            else if (item.signprocessState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
-                            }else{
+                            } else {
                                 return "<span class='row-number'></span>";
                             }
                         }
@@ -4431,17 +4430,17 @@
             vm.gridOptions = {
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
-                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound:common.kendoGridConfig(vm.queryParams).dataBound
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound
             };
         }//E_dtasksGrid
 
         //begin_getSignList
         function getSignList(vm) {
-            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate", $("#searchform"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
 
             // End:dataSource
 
@@ -4488,19 +4487,19 @@
                     title: "序号",
                     width: 50,
                     attributes: {
-                         style: "text-align: center;",
+                        style: "text-align: center;",
                     },
                     template: function (item) {
-                        if(item.processState){
-                            if(item.processState == 6){
+                        if (item.processState) {
+                            if (item.processState == 6) {
                                 return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.processState == 7){
+                            else if (item.processState == 7) {
                                 return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.processState == 8){
+                            else if (item.processState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
-                            }else{
+                            } else {
                                 return "<span class='row-number'></span>";
                             }
                         }
@@ -4513,13 +4512,13 @@
                     width: 280,
                     filterable: false,
                     template: function (item) {
-                        if(item.secrectlevel == "秘密"){
+                        if (item.secrectlevel == "秘密") {
                             if (item.processInstanceId) {
-                                return '<a ng-click="vm.signDetails('+"'"+item.signid+"'," +"'" +item.processInstanceId +"'"+ ')" >' + item.projectname + '</a>';
+                                return '<a ng-click="vm.signDetails(' + "'" + item.signid + "'," + "'" + item.processInstanceId + "'" + ')" >' + item.projectname + '</a>';
                             } else {
-                                return '<a ng-click="vm.signDetails('+"'"+item.signid+"' , " +"'" +"'"+')" >' + item.projectname + '</a>';
+                                return '<a ng-click="vm.signDetails(' + "'" + item.signid + "' , " + "'" + "'" + ')" >' + item.projectname + '</a>';
                             }
-                        }else{
+                        } else {
                             if (item.processInstanceId) {
                                 return '<a ng-click="vm.saveView()" href="#/signDetails/' + item.signid + '/' + item.processInstanceId + '" >' + item.projectname + '</a>';
                             } else {
@@ -4684,11 +4683,11 @@
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
                 /*  pageable: common.kendoGridConfig().pageable,*/
-                pageable : common.kendoGridConfig(vm.queryParams).pageable,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound:common.kendoGridConfig(vm.queryParams).dataBound /*function () {
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound /*function () {
 
                  /*                dataBound: function () {
                     var rows = this.items();
@@ -4723,28 +4722,28 @@
 
         //begin persontasksGrid
         function personMainTasksGrid(vm) {
-/*            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks", $("#searchform")),
-                schema: {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model: {
-                        id: "id"
-                    }
-                },
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "signdate",
-                    dir: "desc"
-                }
-            });*/
-            var dataSource = common.kendoGridDataSource(rootPath + "/signView/html/personMainTasks?$orderby=signdate desc",$("#searchform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+            /*            var dataSource = new kendo.data.DataSource({
+                            type: 'odata',
+                            transport: common.kendoGridConfig().transport(rootPath + "/signView/html/personMainTasks", $("#searchform")),
+                            schema: {
+                                data: "value",
+                                total: function (data) {
+                                    return data['count'];
+                                },
+                                model: {
+                                    id: "id"
+                                }
+                            },
+                            serverPaging: true,
+                            serverSorting: true,
+                            serverFiltering: true,
+                            pageSize: 10,
+                            sort: {
+                                field: "signdate",
+                                dir: "desc"
+                            }
+                        });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/html/personMainTasks?$orderby=signdate desc", $("#searchform"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
             var columns = [
                 {
                     field: "",
@@ -4790,16 +4789,16 @@
                         style: "text-align: center;",
                     },
                     template: function (item) {
-                        if(item.processState){
-                            if(item.processState == 6){
+                        if (item.processState) {
+                            if (item.processState == 6) {
                                 return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.processState == 7){
+                            else if (item.processState == 7) {
                                 return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
-                            else if(item.processState == 8){
+                            else if (item.processState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
-                            }else{
+                            } else {
                                 return "<span class='row-number'></span>";
                             }
                         }
@@ -4934,8 +4933,8 @@
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                pageable : common.kendoGridConfig(vm.queryParams).pageable,
-                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound,
             };
 
             // End:column
@@ -4983,8 +4982,8 @@
                     title: "任务名称",
                     filterable: false,
                     width: "25%",
-                    template:function (item) {
-                        return '<a href="#/flowDeal/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/'+item.instanceId+'" >' + item.instanceName + '</a>';
+                    template: function (item) {
+                        return '<a href="#/flowDeal/' + item.businessKey + '/' + item.processKey + '/' + item.taskId + '/' + item.instanceId + '" >' + item.instanceName + '</a>';
                     }
                 },
                 {
@@ -5051,28 +5050,28 @@
 
         //S_所有在办任务
         function doingTaskGrid(vm) {
-      /*      var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask", $('#doingTaskForm')),
-                schema: {
-                    data: "value",
-                    total: function (data) {
-                        return data['count'];
-                    },
-                    model: {
-                        id: "taskId"
-                    }
-                },
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createTime",
-                    dir: "desc"
-                }
-            });*/
-            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask?$orderby=createTime desc",$("#doingTaskForm"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams );
+            /*      var dataSource = new kendo.data.DataSource({
+                      type: 'odata',
+                      transport: common.kendoGridConfig().transport(rootPath + "/flow/queryAgendaTask", $('#doingTaskForm')),
+                      schema: {
+                          data: "value",
+                          total: function (data) {
+                              return data['count'];
+                          },
+                          model: {
+                              id: "taskId"
+                          }
+                      },
+                      serverPaging: true,
+                      serverSorting: true,
+                      serverFiltering: true,
+                      pageSize: 10,
+                      sort: {
+                          field: "createTime",
+                          dir: "desc"
+                      }
+                  });*/
+            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask?$orderby=createTime desc", $("#doingTaskForm"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
             var columns = [
                 {
                     field: "",
@@ -5136,8 +5135,8 @@
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                pageable : common.kendoGridConfig(vm.queryParams).pageable,
-                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound,
 
             };
         }//S_doingTaskGrid
@@ -5192,17 +5191,17 @@
          * 通过条件对项目进行查询统计分析
          * @param vm
          */
-        function QueryStatistics(vm , callBack){
+        function QueryStatistics(vm, callBack) {
 
             var httpOptions = {
-                method : 'post',
-                url : rootPath + "/signView/QueryStatistics",
+                method: 'post',
+                url: rootPath + "/signView/QueryStatistics",
                 // data : vm.project,
-                params : {queryData : vm.filters ,  page : vm.page}
+                params: {queryData: vm.filters, page: vm.page}
             }
 
-            var httpSuccess = function success(response){
-                if(callBack != undefined && typeof  callBack == 'function'){
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof  callBack == 'function') {
                     callBack(response.data);
                 }
             }
@@ -5221,16 +5220,14 @@
          * 在办项目统计数量
          * @param vm
          */
-        function countDtasks(callBack){
-
+        function countDtasks(callBack) {
             var httpOptions = {
-                method : 'post',
-                url : rootPath + "/signView/dtasksSign",
+                method: 'post',
+                url: rootPath + "/signView/dtasksSign",
             }
 
-            var httpSuccess = function success(response){
-
-                if(callBack != undefined && typeof  callBack == 'function'){
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof  callBack == 'function') {
                     callBack(response.data);
                 }
             }
@@ -5248,16 +5245,16 @@
          * 在办项目统计数量
          * @param vm
          */
-        function countLine(callBack){
+        function countLine(callBack) {
 
             var httpOptions = {
-                method : 'post',
-                url : rootPath + "/signView/dtasksLineSign",
+                method: 'post',
+                url: rootPath + "/signView/dtasksLineSign",
             }
 
-            var httpSuccess = function success(response){
+            var httpSuccess = function success(response) {
 
-                if(callBack != undefined && typeof  callBack == 'function'){
+                if (callBack != undefined && typeof  callBack == 'function') {
                     callBack(response.data);
                 }
             }
@@ -5272,27 +5269,28 @@
         }
 
 
-
     }
 })();
 (function () {
     'use strict';
 
-    angular.module('app').controller('adminWelComeCtrl', adminWelCome).filter('FormatStrDate', function() {
-        return function(input) {
+    angular.module('app').controller('adminWelComeCtrl', adminWelCome).filter('FormatStrDate', function () {
+        return function (input) {
             var date = new Date(input);
-            var monthValue = (date.getMonth()+1) < 10 ?"0"+(date.getMonth()+1):(date.getMonth()+1);
-            var dayValue = (date.getDate()) < 10 ?"0"+(date.getDate()):(date.getDate());
-            var formatDate=date.getFullYear()+"/"+monthValue+"/"+dayValue;
-            return formatDate
+            var monthValue = (date.getMonth() + 1) < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
+            var dayValue = (date.getDate()) < 10 ? "0" + (date.getDate()) : (date.getDate());
+            var formatDate = date.getFullYear() + "/" + monthValue + "/" + dayValue;
+            return formatDate;
         }
     });
 
-    adminWelCome.$inject = ['bsWin','adminSvc','$state'];
+    adminWelCome.$inject = ['bsWin', 'adminSvc', '$state'];
 
-    function adminWelCome(bsWin, adminSvc,$state) {
+    function adminWelCome(bsWin, adminSvc, $state) {
         var vm = this;
         vm.title = '主页';
+        //默认用户是普通员工
+        vm.isdisplays = false;
         /**
          * 初始化柱状图数据
          */
@@ -5319,7 +5317,6 @@
                     data: vm.capital
                 },
 
-
                 //设置坐标
                 grid: {
                     // 这些是设置坐标边距
@@ -5333,7 +5330,7 @@
                 },
                 xAxis: {
                     type: 'category',
-                    name: '评审阶段',
+                    name: '人员/部门',
                     data: vm.review,
                     axisTick: {
                         alignWithLabel: true
@@ -5357,11 +5354,11 @@
                 },
                 series: [
                     {
-                        name:'数量',
-                        type:'bar',
+                        name: '数量',
+                        type: 'bar',
                         data: vm.signNumber
                     }
-                    ],
+                ],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -5379,14 +5376,14 @@
          */
         vm.initLineChart = function () {
             //当页面两个id相同时会发生冲突不显示。所以用两个id来分别显示部长以上和普通员工的显示
-            if(vm.isdisplays){
+            var myChart;
+            if (vm.isdisplays) {
                 //普通员工
-                var myChart = echarts.init(document.getElementById('lineChart'));
-            }else{
+                myChart = echarts.init(document.getElementById('lineChart'));
+            } else {
                 //部长以上
-                var myChart = echarts.init(document.getElementById('lineChartss'));
+                myChart = echarts.init(document.getElementById('lineChartss'));
             }
-
 
             var option = {
                 title: {
@@ -5396,16 +5393,14 @@
                 },
                 tooltip: {
                     trigger: 'axis',
-                  /*  formatter: function (param) {
-                       　//option.series[param[0].seriesIndex].rawdate[param[0].dataIndex]是rawdate传的值
+                    formatter: function (param) {
+                        //option.series[param[0].seriesIndex].rawdate[param[0].dataIndex]是rawdate传的值
                         //先进行切割，获取到项目名称
-                        var ssArray=option.series[param[0].seriesIndex].rawdate[param[0].dataIndex].split(",");
-                        var res ='签收日期：'+param[0].name + '<br/>'+'项目名称：'+ ssArray[0]+'<br/>'+param[0].seriesName+'：'+param[0].data;
-
+                        var ssArray = option.series[param[0].seriesIndex].rawdate[param[0].dataIndex].split(",");
+                        var res = '项目名称：' + param[0].name + '<br/>' + '剩余工作日:' + ssArray[0];
                         return res;
-                    }*/
+                    }
                 },
-
 
                 //设置坐标
                 grid: {
@@ -5414,15 +5409,15 @@
                     bottom: '10%',
                     containLabel: true,
                 },
-             /*   legend: {
-                 orient: 'vertical',
-                 left: 'left',
-                 data: vm.projectType
-                 },*/
+                /*   legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: vm.projectType
+                    },*/
                 xAxis: {
-                    show:false,
+                    show: false,
                     type: 'category',
-                    name: '签收日期',
+                    name: '项目名称',
                     splitLine: {show: false},
                     data: vm.reviewdate,
                 },
@@ -5430,21 +5425,21 @@
                     type: 'value',
                     name: '剩余工作日',
                     min: -3,
-                     max: 15,
+                    max: 15,
                     // interval: 20
 
                 },
-             /*   dataZoom: [{
-                    startValue: '2018-02-01'
-                }, {
-                    type: 'inside'
-                }],*/
+                /*   dataZoom: [{
+                       startValue: '2018-02-01'
+                   }, {
+                       type: 'inside'
+                   }],*/
                 series: [
                     {
-                        name:'剩余工作日',
-                        type:'line',
+                        name: '剩余工作日',
+                        type: 'line',
                         data: vm.linedatas,
-                        rawdate:vm.name//自定义参数
+                        rawdate: vm.name//自定义参数
                     }
                 ],
                 lineStyle: {
@@ -5456,74 +5451,71 @@
                 }
             };
             myChart.setOption(option);
-          /*  myChart.on('click', function(param) {
+            myChart.on('click', function (param) {
                 //进行分割。获取到signid
-                var ssArray=option.series[param.seriesIndex].rawdate[param.dataIndex].split(",");
-                 $state.go('signDetails',{signid: ssArray[1],processInstanceId:ssArray[2]});
-            });*/
+                var ssArray = option.series[param.seriesIndex].rawdate[param.dataIndex].split(",");
+                $state.go('signDetails', {signid: ssArray[1], processInstanceId: ssArray[2]});
+            });
 
         }//end initLineChart
 
 
-
-
         activate();
+
         function activate() {
-            adminSvc.initWelComePage(function(data){
-                if(data){
-                    if(data.proTaskList){
+            adminSvc.initWelComePage(function (data) {
+                if (data) {
+                    if (data.proTaskList) {
                         vm.tasksList = data.proTaskList;
                     }
-                    if(data.comTaskList){
+                    if (data.comTaskList) {
                         vm.agendaTaskList = data.comTaskList;
                     }
-                    if(data.endTaskList){
+                    if (data.endTaskList) {
                         vm.endTasksList = data.endTaskList;
                     }
-                    if(data.annountmentList){
+                    if (data.annountmentList) {
                         vm.annountmentList = data.annountmentList;
                     }
                 }
             });
 
+            //首页柱状图数据
             adminSvc.countDtasks(function (data) {
-                vm.review=[];
-                vm.signNumber=[];
-                for(var i=0;i<data.reObj.length;i++){
-                    if(data.reObj[i].REVIEWSTAGE){
-                        vm.review.push(data.reObj[i].REVIEWSTAGE);
-                        vm.signNumber.push(data.reObj[i].SIGNNUMBER);
+                vm.review = [];  //横轴(人员名称/部门)
+                vm.signNumber = [];//纵轴(数量)
+                vm.isdisplays = data.reObj.isdisplay;
+
+                if(vm.isdisplays){
+                    vm.signList = data.reObj.price;
+                    console.log(vm.signList);
+                    for (var i = 0; i < vm.signList.length; i++) {
+                        vm.signNumber.push( vm.signList[i][0]);
+                        vm.review.push( vm.signList[i][1]);
                     }
-                    //判断。只有部长，分管领导，主任才会显示
-                   if(data.reObj[i].isdisplays){
-                        vm.isdisplays=false;//部长，分管领导，主任
-
-                   }else{
-                       vm.isdisplays=true;//普通员工
-
-                   }
-
+                    vm.initHistogram();//初始化柱状图
                 }
-
-                vm.initHistogram();//初始化柱状图
-
-
             });
             adminSvc.countLine(function (data) {
                 //折线图数据
-                vm.linedatas=[];//纵轴(剩余工作日)
-                vm.reviewdate=[];//横轴(项目名称)
-                //柱状图数据
-                vm.review=[];//纵轴(数量)
-                vm.signNumber=[];//横轴(人员名称/部门)
-                vm.name=[];
-                for(var i=0;i<data.reObj.length;i++){
-                    if(data.reObj[i].projectname){
-                        vm.linedatas.push(data.reObj[i].surplusdays);
+                vm.linedatas = [];//纵轴(剩余工作日)
+                vm.reviewdate = [];//横轴(项目名称)
+                vm.name = [];
+                var day = "";
+                for (var i = 0; i < data.reObj.length; i++) {
+                    if (data.reObj[i].projectname) {
+                        //赋值给横轴需要的数据
+                        day = data.reObj[i].surplusdays;
+                        if (data.reObj[i].surplusdays < -3) {
+                            day = -3;
+                        }
+                        if (data.reObj[i].surplusdays > 15) {
+                            day = 15;
+                        }
+                        vm.linedatas.push(day);
                         vm.reviewdate.push(data.reObj[i].projectname);
                         //自定义传参，先进行拼接需要的数据。后再拆分
-                     /*   vm.name.push(data.reObj[i].projectname+","+data.reObj[i].SIGNID+","+data.reObj[i].PROCESSINSTANCEID);
-                   */
+                        vm.name.push(data.reObj[i].surplusdays + "," + data.reObj[i].signid + "," + data.reObj[i].processInstanceId);
 
 
                     }
@@ -5535,7 +5527,7 @@
         }
 
 
-        vm.testAlert = function(){
+        vm.testAlert = function () {
             bsWin.confirm({
                 title: "询问提示",
                 message: "该项目已关联其他项目，您确定要改为单个评审吗？",
@@ -43614,6 +43606,389 @@
 (function () {
     'use strict';
 
+    angular.module('app').controller('goodsDetailCtrl', goodsDetail);
+
+    goodsDetail.$inject = ['$location', 'goodsDetailSvc'];
+
+    function goodsDetail($location, goodsDetailSvc) {
+        var vm = this;
+        vm.title = '物品明细';
+
+        vm.del = function (id) {
+            common.confirm({
+                vm: vm,
+                title: "",
+                msg: "确认删除数据吗？",
+                fn: function () {
+                    $('.confirmDialog').modal('hide');
+                    goodsDetailSvc.deleteGoodsDetail(vm, id);
+                }
+            });
+        }
+        vm.dels = function () {
+            var selectIds = common.getKendoCheckId('.grid');
+            if (selectIds.length == 0) {
+                common.alert({
+                    vm: vm,
+                    msg: '请选择数据'
+                });
+            } else {
+                var ids = [];
+                for (var i = 0; i < selectIds.length; i++) {
+                    ids.push(selectIds[i].value);
+                }
+                var idStr = ids.join(',');
+                vm.del(idStr);
+            }
+        };
+
+        activate();
+        function activate() {
+            goodsDetailSvc.grid(vm);
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('goodsDetailEditCtrl', goodsDetail);
+
+    goodsDetail.$inject = ['$location', 'goodsDetailSvc', '$state'];
+
+    function goodsDetail($location, goodsDetailSvc, $state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '添加物品明细';
+        vm.isuserExist = false;
+        vm.id = $state.params.id;
+        if (vm.id) {
+            vm.isUpdate = true;
+            vm.title = '更新物品明细';
+        }
+
+        vm.create = function () {
+            goodsDetailSvc.createGoodsDetail(vm);
+        };
+        vm.update = function () {
+            goodsDetailSvc.updateGoodsDetail(vm);
+        };
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                goodsDetailSvc.getGoodsDetailById(vm);
+            }
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('goodsDetailSvc', goodsDetail);
+
+    goodsDetail.$inject = ['$http'];
+
+    function goodsDetail($http) {
+        var url_goodsDetail = rootPath + "/goodsDetail", url_back = '#/goodsDetailList';
+        var service = {
+            grid: grid,
+            getGoodsDetailById: getGoodsDetailById,
+            createGoodsDetail: createGoodsDetail,
+            deleteGoodsDetail: deleteGoodsDetail,
+            updateGoodsDetail: updateGoodsDetail,
+            getAllStoreAssert:getAllStoreAssert
+        };
+
+        return service;
+
+        // begin#updateGoodsDetail
+        function updateGoodsDetail(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+                vm.model.id = vm.id;// id
+
+                var httpOptions = {
+                    method: 'put',
+                    url: url_goodsDetail,
+                    data: vm.model
+                }
+
+                var httpSuccess = function success(response) {
+
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    $('.alertDialog').modal('hide');
+                                }
+                            })
+                        }
+
+                    })
+                }
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            } else {
+                // common.alert({
+                // vm:vm,
+                // msg:"您填写的信息不正确,请核对后提交!"
+                // })
+            }
+
+        }
+
+        // begin#deleteGoodsDetail
+        function deleteGoodsDetail(vm, id) {
+            vm.isSubmit = true;
+            var httpOptions = {
+                method: 'delete',
+                url: url_goodsDetail,
+                data: id
+            };
+
+            var httpSuccess = function success(response) {
+                common.requestSuccess({
+                    vm: vm,
+                    response: response,
+                    fn: function () {
+                    	common.alert({
+                            vm: vm,
+                            msg: "操作成功",
+                            closeDialog :true,
+                            fn: function () {
+                            	vm.isSubmit = false;
+                                vm.gridOptions.dataSource.read();
+                            }
+                        })
+                    }
+                });
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // begin#createGoodsDetail
+        function createGoodsDetail(vm) {
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                vm.isSubmit = true;
+
+                var httpOptions = {
+                    method: 'post',
+                    url: url_goodsDetail,
+                    data: vm.model
+                };
+
+                var httpSuccess = function success(response) {
+                    common.requestSuccess({
+                        vm: vm,
+                        response: response,
+                        fn: function () {
+                            common.alert({
+                                vm: vm,
+                                msg: "操作成功",
+                                closeDialog :true,
+                                fn: function () {
+                                    vm.isSubmit = false;
+                                    location.href = url_back;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                common.http({
+                    vm: vm,
+                    $http: $http,
+                    httpOptions: httpOptions,
+                    success: httpSuccess
+                });
+
+            }
+        }
+
+        // begin#getGoodsDetailById
+        function getGoodsDetailById(vm) {
+        	var httpOptions = {
+                method: 'get',
+                url: rootPath + "/goodsDetail/html/findById",
+                params:{id:vm.id}
+            };
+            var httpSuccess = function success(response) {
+                vm.model = response.data;
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });                       
+        }
+
+        //S_获取取入库资产信息
+        function getAllStoreAssert(callBack){
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/bookBuyBusiness/html/findById"
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+
+            common.http({
+                vm: vm,
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //End_获取入库资产信息
+
+        // begin#grid
+        function grid(vm) {
+
+            // Begin:dataSource
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(url_goodsDetail),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+
+            // End:dataSource
+
+            // Begin:column
+            var columns = [
+                {
+                    template: function (item) {
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
+                            item.id)
+                    },
+                    filterable: false,
+                    width: 40,
+                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
+                },
+                {
+                    field: "id",
+                    title: "id",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "goodsCode",
+                    title: "goodsCode",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "goodsName",
+                    title: "goodsName",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "specifications",
+                    title: "specifications",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "models",
+                    title: "models",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "goodsPrice",
+                    title: "goodsPrice",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "evaluate",
+                    title: "evaluate",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "goodsNumber",
+                    title: "goodsNumber",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "assertStorageBusiness",
+                    title: "assertStorageBusiness",
+                    width: 100,
+                    filterable: true
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 140,
+                    template: function (item) {
+                        return common.format($('#columnBtns').html(),
+                            "vm.del('" + item.id + "')", item.id);
+                    }
+                }
+            ];
+            // End:column
+
+            vm.gridOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                resizable: true
+            };
+
+        }// end fun grid
+
+    }
+})();
+(function () {
+    'use strict';
+
     angular.module('app').controller('userAssertDetailAddCtrl', userAssertDetail);
 
     userAssertDetail.$inject = ['$location', 'userAssertDetailSvc', '$state'];
@@ -43967,389 +44342,6 @@
                 {
                     field: "goodsNumber",
                     title: "goodsNumber",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "",
-                    title: "操作",
-                    width: 140,
-                    template: function (item) {
-                        return common.format($('#columnBtns').html(),
-                            "vm.del('" + item.id + "')", item.id);
-                    }
-                }
-            ];
-            // End:column
-
-            vm.gridOptions = {
-                dataSource: common.gridDataSource(dataSource),
-                filterable: common.kendoGridConfig().filterable,
-                pageable: common.kendoGridConfig().pageable,
-                noRecords: common.kendoGridConfig().noRecordMessage,
-                columns: columns,
-                resizable: true
-            };
-
-        }// end fun grid
-
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('goodsDetailCtrl', goodsDetail);
-
-    goodsDetail.$inject = ['$location', 'goodsDetailSvc'];
-
-    function goodsDetail($location, goodsDetailSvc) {
-        var vm = this;
-        vm.title = '物品明细';
-
-        vm.del = function (id) {
-            common.confirm({
-                vm: vm,
-                title: "",
-                msg: "确认删除数据吗？",
-                fn: function () {
-                    $('.confirmDialog').modal('hide');
-                    goodsDetailSvc.deleteGoodsDetail(vm, id);
-                }
-            });
-        }
-        vm.dels = function () {
-            var selectIds = common.getKendoCheckId('.grid');
-            if (selectIds.length == 0) {
-                common.alert({
-                    vm: vm,
-                    msg: '请选择数据'
-                });
-            } else {
-                var ids = [];
-                for (var i = 0; i < selectIds.length; i++) {
-                    ids.push(selectIds[i].value);
-                }
-                var idStr = ids.join(',');
-                vm.del(idStr);
-            }
-        };
-
-        activate();
-        function activate() {
-            goodsDetailSvc.grid(vm);
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('goodsDetailEditCtrl', goodsDetail);
-
-    goodsDetail.$inject = ['$location', 'goodsDetailSvc', '$state'];
-
-    function goodsDetail($location, goodsDetailSvc, $state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '添加物品明细';
-        vm.isuserExist = false;
-        vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新物品明细';
-        }
-
-        vm.create = function () {
-            goodsDetailSvc.createGoodsDetail(vm);
-        };
-        vm.update = function () {
-            goodsDetailSvc.updateGoodsDetail(vm);
-        };
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                goodsDetailSvc.getGoodsDetailById(vm);
-            }
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('goodsDetailSvc', goodsDetail);
-
-    goodsDetail.$inject = ['$http'];
-
-    function goodsDetail($http) {
-        var url_goodsDetail = rootPath + "/goodsDetail", url_back = '#/goodsDetailList';
-        var service = {
-            grid: grid,
-            getGoodsDetailById: getGoodsDetailById,
-            createGoodsDetail: createGoodsDetail,
-            deleteGoodsDetail: deleteGoodsDetail,
-            updateGoodsDetail: updateGoodsDetail,
-            getAllStoreAssert:getAllStoreAssert
-        };
-
-        return service;
-
-        // begin#updateGoodsDetail
-        function updateGoodsDetail(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-                vm.model.id = vm.id;// id
-
-                var httpOptions = {
-                    method: 'put',
-                    url: url_goodsDetail,
-                    data: vm.model
-                }
-
-                var httpSuccess = function success(response) {
-
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
-                        }
-
-                    })
-                }
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            } else {
-                // common.alert({
-                // vm:vm,
-                // msg:"您填写的信息不正确,请核对后提交!"
-                // })
-            }
-
-        }
-
-        // begin#deleteGoodsDetail
-        function deleteGoodsDetail(vm, id) {
-            vm.isSubmit = true;
-            var httpOptions = {
-                method: 'delete',
-                url: url_goodsDetail,
-                data: id
-            };
-
-            var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                    	common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                            	vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // begin#createGoodsDetail
-        function createGoodsDetail(vm) {
-            common.initJqValidation();
-            var isValid = $('form').valid();
-            if (isValid) {
-                vm.isSubmit = true;
-
-                var httpOptions = {
-                    method: 'post',
-                    url: url_goodsDetail,
-                    data: vm.model
-                };
-
-                var httpSuccess = function success(response) {
-                    common.requestSuccess({
-                        vm: vm,
-                        response: response,
-                        fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    location.href = url_back;
-                                }
-                            });
-                        }
-                    });
-                };
-
-                common.http({
-                    vm: vm,
-                    $http: $http,
-                    httpOptions: httpOptions,
-                    success: httpSuccess
-                });
-
-            }
-        }
-
-        // begin#getGoodsDetailById
-        function getGoodsDetailById(vm) {
-        	var httpOptions = {
-                method: 'get',
-                url: rootPath + "/goodsDetail/html/findById",
-                params:{id:vm.id}
-            };
-            var httpSuccess = function success(response) {
-                vm.model = response.data;
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });                       
-        }
-
-        //S_获取取入库资产信息
-        function getAllStoreAssert(callBack){
-            var httpOptions = {
-                method: 'get',
-                url: rootPath + "/bookBuyBusiness/html/findById"
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-
-            common.http({
-                vm: vm,
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-        //End_获取入库资产信息
-
-        // begin#grid
-        function grid(vm) {
-
-            // Begin:dataSource
-            var dataSource = new kendo.data.DataSource({
-                type: 'odata',
-                transport: common.kendoGridConfig().transport(url_goodsDetail),
-                schema: common.kendoGridConfig().schema({
-                    id: "id",
-                    fields: {
-                        createdDate: {
-                            type: "date"
-                        }
-                    }
-                }),
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                sort: {
-                    field: "createdDate",
-                    dir: "desc"
-                }
-            });
-
-            // End:dataSource
-
-            // Begin:column
-            var columns = [
-                {
-                    template: function (item) {
-                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                            item.id)
-                    },
-                    filterable: false,
-                    width: 40,
-                    title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
-                {
-                    field: "id",
-                    title: "id",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "goodsCode",
-                    title: "goodsCode",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "goodsName",
-                    title: "goodsName",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "specifications",
-                    title: "specifications",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "models",
-                    title: "models",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "goodsPrice",
-                    title: "goodsPrice",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "evaluate",
-                    title: "evaluate",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "goodsNumber",
-                    title: "goodsNumber",
-                    width: 100,
-                    filterable: true
-                },
-                {
-                    field: "assertStorageBusiness",
-                    title: "assertStorageBusiness",
                     width: 100,
                     filterable: true
                 },

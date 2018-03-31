@@ -1,21 +1,23 @@
 (function () {
     'use strict';
 
-    angular.module('app').controller('adminWelComeCtrl', adminWelCome).filter('FormatStrDate', function() {
-        return function(input) {
+    angular.module('app').controller('adminWelComeCtrl', adminWelCome).filter('FormatStrDate', function () {
+        return function (input) {
             var date = new Date(input);
-            var monthValue = (date.getMonth()+1) < 10 ?"0"+(date.getMonth()+1):(date.getMonth()+1);
-            var dayValue = (date.getDate()) < 10 ?"0"+(date.getDate()):(date.getDate());
-            var formatDate=date.getFullYear()+"/"+monthValue+"/"+dayValue;
-            return formatDate
+            var monthValue = (date.getMonth() + 1) < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
+            var dayValue = (date.getDate()) < 10 ? "0" + (date.getDate()) : (date.getDate());
+            var formatDate = date.getFullYear() + "/" + monthValue + "/" + dayValue;
+            return formatDate;
         }
     });
 
-    adminWelCome.$inject = ['bsWin','adminSvc','$state'];
+    adminWelCome.$inject = ['bsWin', 'adminSvc', '$state'];
 
-    function adminWelCome(bsWin, adminSvc,$state) {
+    function adminWelCome(bsWin, adminSvc, $state) {
         var vm = this;
         vm.title = '主页';
+        //默认用户是普通员工
+        vm.isdisplays = false;
         /**
          * 初始化柱状图数据
          */
@@ -41,7 +43,6 @@
                     left: 'left',
                     data: vm.capital
                 },
-
 
                 //设置坐标
                 grid: {
@@ -80,11 +81,11 @@
                 },
                 series: [
                     {
-                        name:'数量',
-                        type:'bar',
+                        name: '数量',
+                        type: 'bar',
                         data: vm.signNumber
                     }
-                    ],
+                ],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -102,14 +103,14 @@
          */
         vm.initLineChart = function () {
             //当页面两个id相同时会发生冲突不显示。所以用两个id来分别显示部长以上和普通员工的显示
-            if(vm.isdisplays){
+            var myChart;
+            if (vm.isdisplays) {
                 //普通员工
-                var myChart = echarts.init(document.getElementById('lineChart'));
-            }else{
+                myChart = echarts.init(document.getElementById('lineChart'));
+            } else {
                 //部长以上
-                var myChart = echarts.init(document.getElementById('lineChartss'));
+                myChart = echarts.init(document.getElementById('lineChartss'));
             }
-
 
             var option = {
                 title: {
@@ -119,16 +120,14 @@
                 },
                 tooltip: {
                     trigger: 'axis',
-                  formatter: function (param) {
-                       　//option.series[param[0].seriesIndex].rawdate[param[0].dataIndex]是rawdate传的值
+                    formatter: function (param) {
+                        //option.series[param[0].seriesIndex].rawdate[param[0].dataIndex]是rawdate传的值
                         //先进行切割，获取到项目名称
-                        var ssArray=option.series[param[0].seriesIndex].rawdate[param[0].dataIndex].split(",");
-
-                       var res ='项目名称：'+ param[0].name +'<br/>'+'剩余工作日:'+ssArray[0];
+                        var ssArray = option.series[param[0].seriesIndex].rawdate[param[0].dataIndex].split(",");
+                        var res = '项目名称：' + param[0].name + '<br/>' + '剩余工作日:' + ssArray[0];
                         return res;
                     }
                 },
-
 
                 //设置坐标
                 grid: {
@@ -137,13 +136,13 @@
                     bottom: '10%',
                     containLabel: true,
                 },
-             /*   legend: {
-                 orient: 'vertical',
-                 left: 'left',
-                 data: vm.projectType
-                 },*/
+                /*   legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: vm.projectType
+                    },*/
                 xAxis: {
-                    show:false,
+                    show: false,
                     type: 'category',
                     name: '项目名称',
                     splitLine: {show: false},
@@ -153,21 +152,21 @@
                     type: 'value',
                     name: '剩余工作日',
                     min: -3,
-                     max: 15,
+                    max: 15,
                     // interval: 20
 
                 },
-             /*   dataZoom: [{
-                    startValue: '2018-02-01'
-                }, {
-                    type: 'inside'
-                }],*/
+                /*   dataZoom: [{
+                       startValue: '2018-02-01'
+                   }, {
+                       type: 'inside'
+                   }],*/
                 series: [
                     {
-                        name:'剩余工作日',
-                        type:'line',
+                        name: '剩余工作日',
+                        type: 'line',
                         data: vm.linedatas,
-                        rawdate:vm.name//自定义参数
+                        rawdate: vm.name//自定义参数
                     }
                 ],
                 lineStyle: {
@@ -179,76 +178,71 @@
                 }
             };
             myChart.setOption(option);
-        myChart.on('click', function(param) {
+            myChart.on('click', function (param) {
                 //进行分割。获取到signid
-                var ssArray=option.series[param.seriesIndex].rawdate[param.dataIndex].split(",");
-                $state.go('signDetails',{signid: ssArray[1],processInstanceId:ssArray[2]});
+                var ssArray = option.series[param.seriesIndex].rawdate[param.dataIndex].split(",");
+                $state.go('signDetails', {signid: ssArray[1], processInstanceId: ssArray[2]});
             });
 
         }//end initLineChart
 
 
-
-
         activate();
+
         function activate() {
-            adminSvc.initWelComePage(function(data){
-                if(data){
-                    if(data.proTaskList){
+            adminSvc.initWelComePage(function (data) {
+                if (data) {
+                    if (data.proTaskList) {
                         vm.tasksList = data.proTaskList;
                     }
-                    if(data.comTaskList){
+                    if (data.comTaskList) {
                         vm.agendaTaskList = data.comTaskList;
                     }
-                    if(data.endTaskList){
+                    if (data.endTaskList) {
                         vm.endTasksList = data.endTaskList;
                     }
-                    if(data.annountmentList){
+                    if (data.annountmentList) {
                         vm.annountmentList = data.annountmentList;
                     }
                 }
             });
 
+            //首页柱状图数据
             adminSvc.countDtasks(function (data) {
-                //柱状图数据
-                vm.review=[];  //横轴(人员名称/部门)
-                vm.signNumber=[];//纵轴(数量)
-                for(var i=0;i<data.reObj.length;i++){
-                    if(data.reObj[i][1]!=null){
-                        vm.signNumber.push(data.reObj[i][0]);
-                        vm.review.push(data.reObj[i][1]);
+                vm.review = [];  //横轴(人员名称/部门)
+                vm.signNumber = [];//纵轴(数量)
+                vm.isdisplays = data.reObj.isdisplay;
+
+                if(vm.isdisplays){
+                    vm.signList = data.reObj.price;
+                    console.log(vm.signList);
+                    for (var i = 0; i < vm.signList.length; i++) {
+                        vm.signNumber.push( vm.signList[i][0]);
+                        vm.review.push( vm.signList[i][1]);
                     }
-
-
-
+                    vm.initHistogram();//初始化柱状图
                 }
-                //判断。只有部长，分管领导，主任才会显示
-                var j=data.reObj.length-1;
-                vm.isdisplays=data.reObj[j];//部长，分管领导，主任
-                vm.initHistogram();//初始化柱状图
-
-
             });
             adminSvc.countLine(function (data) {
                 //折线图数据
-                vm.linedatas=[];//纵轴(剩余工作日)
-                vm.reviewdate=[];//横轴(项目名称)
-                vm.name=[];
-                var day="";
-                for(var i=0;i<data.reObj.length;i++){
-                    if(data.reObj[i].projectname){
+                vm.linedatas = [];//纵轴(剩余工作日)
+                vm.reviewdate = [];//横轴(项目名称)
+                vm.name = [];
+                var day = "";
+                for (var i = 0; i < data.reObj.length; i++) {
+                    if (data.reObj[i].projectname) {
                         //赋值给横轴需要的数据
-                        day=data.reObj[i].surplusdays;
-                        if(data.reObj[i].surplusdays<-3){
-                            day=-3;
+                        day = data.reObj[i].surplusdays;
+                        if (data.reObj[i].surplusdays < -3) {
+                            day = -3;
                         }
-                        if(data.reObj[i].surplusdays>15){
-                            day=15;
+                        if (data.reObj[i].surplusdays > 15) {
+                            day = 15;
                         }
                         vm.linedatas.push(day);
                         vm.reviewdate.push(data.reObj[i].projectname);
                         //自定义传参，先进行拼接需要的数据。后再拆分
-                        vm.name.push(data.reObj[i].surplusdays+","+data.reObj[i].signid+","+data.reObj[i].processInstanceId);
+                        vm.name.push(data.reObj[i].surplusdays + "," + data.reObj[i].signid + "," + data.reObj[i].processInstanceId);
 
 
                     }
@@ -260,7 +254,7 @@
         }
 
 
-        vm.testAlert = function(){
+        vm.testAlert = function () {
             bsWin.confirm({
                 title: "询问提示",
                 message: "该项目已关联其他项目，您确定要改为单个评审吗？",
