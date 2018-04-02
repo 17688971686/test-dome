@@ -199,7 +199,7 @@ public class SignServiceImpl implements SignService {
                 if (sign.getDealOrgType().equals(user.getMngOrgType())) {
                     sign.setLeaderId(user.getId());
                     sign.setLeaderName(user.getDisplayName());
-                    sign.setComprehensivehandlesug("请" + (user.getDisplayName()).substring(0, 1) + "主任阅示。");
+                    sign.setComprehensivehandlesug("请" + user.getDisplayName() + "同志阅示。");
                     sign.setComprehensiveName("综合部");
                     sign.setComprehensiveDate(new Date());
                     break;
@@ -2277,6 +2277,60 @@ public class SignServiceImpl implements SignService {
         }
         List<SignDispaWork> signList = signDispaWorkRepo.findBySql(sqlBuilder);
         return signList;
+    }
+
+    /**
+     * 项目发文的关联项目，返回gird列表
+     * @param signid 项目id
+     * @param reviewstage 项目阶段
+     * @param projectname 项目名称
+     * @param skip 页码
+     * @param size 页数
+     * @return
+     */
+
+    @Override
+    @Transactional
+    public  PageModelDto<SignDispaWork> findAssociateSignList(String signid,String reviewstage,String projectname,String skip,String size){
+        PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        HqlBuilder sqlBuilders = HqlBuilder.create();
+        sqlBuilder.append("select s.*,rownum as num from SIGN_DISP_WORK s where s." + SignDispaWork_.signid.getName() + " != '"+signid+"' ");
+      /*  sqlBuilder.setParam("signid", signid);*/
+        //只能是生成发文编号后的项目
+        sqlBuilder.append(" and s." + SignDispaWork_.processState.getName() + " >= "+Constant.SignProcessState.END_DIS_NUM.getValue()+" " );
+       /* sqlBuilder.setParam("processState" ,  Constant.SignProcessState.END_DIS_NUM.getValue());*/
+        //排除已经进行了关联的项目
+        sqlBuilder.append(" and s.signid not in( select ASSOCIATE_SIGNID from CS_ASSOCIATE_SIGN) ");
+        //项目建议书 或资金申请
+        if(Constant.STAGE_SUG.equals(reviewstage)
+                || Constant.APPLY_REPORT.equals(reviewstage)){
+            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + "="+reviewstage+" ");
+            /*sqlBuilder.setParam("reviewStage" , reviewstage);*/
+        }
+        //可研
+        else if(Constant.STAGE_STUDY.equals(reviewstage)){
+            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + Constant.STAGE_STUDY + "','" + Constant.STAGE_SUG + "') ");
+        }
+        //概算
+        else if(Constant.STAGE_BUDGET.equals(reviewstage)){
+            sqlBuilder.append(" and s." + SignDispaWork_.reviewstage.getName() + " in('" + Constant.STAGE_STUDY + "','" + Constant.STAGE_SUG + "','" + Constant.STAGE_BUDGET + "') ");
+        }
+        if (Validate.isString(projectname)) {
+            sqlBuilder.append(" and s." + SignDispaWork_.projectname.getName() + " like "+"'%" +projectname + "%'"+"");
+           /* sqlBuilder.setParam("projectName", "%" +projectname + "%");*/
+        }
+
+        List<SignDispaWork> signLists=signDispaWorkRepo.findBySql(sqlBuilder);
+        int total=signLists.size();
+        sqlBuilders.append("select * from ( ");
+        sqlBuilders.append(sqlBuilder.getHqlString());
+        sqlBuilders.append( ") where num between "+skip+" and "+size+"");
+        List<SignDispaWork> signList = signDispaWorkRepo.findBySql(sqlBuilders);
+
+        pageModelDto.setCount(total);
+        pageModelDto.setValue(signList);
+        return pageModelDto;
     }
 
     @Override

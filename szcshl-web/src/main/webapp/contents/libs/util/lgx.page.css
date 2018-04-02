@@ -1,0 +1,90 @@
+.clear_left {
+	clear: left;
+}
+
+.lgx_page a.lgx_page_class{
+	padding: 8px 16px;
+}
+.lgx_page select.lgx_page_class{
+	float: left;
+	padding: 10px 5px;
+}
+.lgx_page input.lgx_page_class{
+	float: left;
+	padding: 10px 5px;
+	width: 3em;
+}
+
+.lgx_page_s a.lgx_page_class{
+	padding: 5px 10px;
+}
+.lgx_page_s select.lgx_page_class{
+	padding: 7px 5px;
+	float: left;
+}
+.lgx_page_s input.lgx_page_class{
+	width: 3em;
+	float: left;
+	padding: 7px 5px;
+}
+
+.lgx_page_m a.lgx_page_class{
+	padding: 8px 16px;
+}
+.lgx_page_m select.lgx_page_class{
+	padding: 10px 5px;
+	float: left;
+}
+.lgx_page_m input.lgx_page_class{
+	width: 3em;
+	padding: 10px 5px;
+	float: left;
+}
+
+.lgx_page_l a.lgx_page_class{
+	padding: 10px 20px;
+}
+.lgx_page_l select.lgx_page_class{
+	padding: 12px 8px;
+	float: left;
+}
+.lgx_page_l input.lgx_page_class{
+	width: 3em;
+	float: left;
+	padding: 12px 8px;
+}
+
+.m4 .lgx_page_class{
+	margin:0px 4px;
+}
+
+.m8 .lgx_page_class{
+	margin:0px 8px;
+}
+
+a.lgx_page_class{
+	color: black;
+	float: left;
+	text-decoration: none;
+	transition: background-color .3s;
+	border: 1px solid #ddd
+}
+
+a.lgx_page_class.active {
+	background-color: #4caf50;
+	color: white;
+	border: 1px solid #4caf50
+}
+
+a.lgx_page_class:not(.active)[lu-page=ban]  {
+	background-color: #ddd
+}
+
+a.lgx_page_class:hover:not(.active) {
+	background-color: #ddd
+}
+
+a.lgx_page_.active:hover {
+	cursor: not-allowed
+}
+

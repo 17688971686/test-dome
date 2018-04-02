@@ -1,8 +1,10 @@
 <!-- 项目关联弹出框 -->
+<script src="${path}/contents/libs/util/lgx.page.js"></script>
+<link rel="stylesheet" href="${path}/contents/libs/util/lgx.page.css">
 <div id="associateWindow" class="well well-sm" style="background:white;display:none;">
     <div class="well well-sm" style="background:white;margin-bottom: 0px;">
         <div class="well well-sm">
-            <form id="searchAssociateform" name="searchform">
+            <form id="searchform" name="searchform">
                 <input name="signid" ng-model="vm.searchAssociateSign.signid" operator="ne" ng-hide="true">
                 <span class="help-inline">项目名称：</span>
                 <input type="text" operator="like" ng-model="vm.searchAssociateSign.projectname" name="projectname" id="projectnam" placeholder="请输入">
@@ -14,7 +16,8 @@
             </form>
         </div>
 
-        <div style="max-height:460px;overflow-y: scroll;">
+       <!-- <div class="grid" kendo-grid="grid" k-options="vm.vm.associateGridOptions"></div>-->
+       <div style="max-height:460px;overflow-y: scroll;">
             <table class="table table-bordered" id="associateSignTable">
                 <tr>
                     <td width="12%">项目名称</td>
@@ -44,6 +47,20 @@
                     </td>
                 </tr>
             </table>
+           <div id="demo5" class="lgx_page_l">
+               <a lu-page="first">首页</a>
+               <a lu-page="prev">上一页</a>
+               <a lu-page="list"></a>
+               <a lu-page="next">下一页</a>
+               <a lu-page="last">尾页</a>
+               <div class="clear_left" style="margin-left: 85%">
+                   总页数：<span lu-page="record"></span>
+                   页码： <span lu-page="number"></span>/<span lu-page="total"></span>
+               </div>
+           </div>
         </div>
+
+
+
     </div>
 </div>

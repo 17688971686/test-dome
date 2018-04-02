@@ -98,8 +98,16 @@
                         <select name="processState" ng-model="vm.project.processState" operator="eq"
                                 class="form-control select-sm ">
                             <option value="">请选择</option>
-                            <option  ng-repeat="x in DICT.SIGN_STATE.dicts" value="{{x.dictKey}}" ng-selected="vm.project.processState==x.dictName" >{{x.dictName}}
-                            </option>
+                            <option value="1">在办项目</option>
+                            <option value="5">已发文项目</option>
+                            <option value="8">已发送存档</option>
+                            <option value="9">已办结项目</option>
+                            <option value="2">暂停项目</option>
+                            <option value="1">非暂停项目</option>
+                            <option value="19">曾经暂停或延时项目</option>
+                            <option value="6">已发文未存档</option>
+                            <option value="7">未发送存档项目</option>
+                            <option value="8">已发送存档未确认</option>
                         </select>
                     </td>
                     <td class="text-right">提前介入/正常</td>
