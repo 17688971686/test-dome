@@ -226,4 +226,15 @@ public interface SignService {
      * @return
      */
     public ResultMsg saveReview(SignDto signDto);
+
+    /**
+     * 项目发文关联获取关联项目的列表grid
+     * @param signid 项目id
+     * @param reviewstage 项目阶段
+     * @param projectname 项目名称
+     * @param skip 页码
+     * @param size 页数
+     * @return
+     */
+    PageModelDto<SignDispaWork> findAssociateSignList(String signid,String reviewstage,String projectname,String skip,String size);
 }

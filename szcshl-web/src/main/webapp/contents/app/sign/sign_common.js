@@ -72,10 +72,10 @@
         var resultOption = "";
         switch(businessType){
             case signBusinessType.PD:
-                resultOption = "请张主任阅示。";
+                resultOption = "请张一帆同志阅示。";
                 break;
             case signBusinessType.GD:
-                resultOption = "请李主任阅示。";
+                resultOption = "请李军同志阅示。";
                 break;
             default:
                 ;

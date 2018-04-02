@@ -18,6 +18,7 @@
             removeWP: removeWP,             //删除工作方案
             associateGrid: associateGrid,   //项目关联列表
             getAssociateSign : getAssociateSign, //获取项目关联阶段信息
+            getAssociateSignGrid:getAssociateSignGrid,//获取项目关联阶段信息的grid表格
             saveAssociateSign: saveAssociateSign,//保存项目关联
             initAssociateSigns: initAssociateSigns,//初始化项目关联信息
             meetingDoc: meetingDoc,             //生成会前准备材
@@ -549,6 +550,52 @@
                 resizable: true
             };
         }//E_初始化associateGrid
+
+
+
+        //getAssociateSignGrid
+        function getAssociateSignGrid(vm,callBack) {
+           /* var httpOptions = {
+                method: 'post',
+                url: rootPath + "/sign/findAssociateSignList",
+                params: {
+                    signid: vm.price.signid,
+                    reviewstage:vm.price.reviewstage,
+                    projectname:vm.price.projectname,
+                    skip:vm.price.skip,
+                    size:vm.price.size,
+
+                },
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });*/
+            $http({
+                method: 'get',
+                url: rootPath + "/sign/findAssociateSignList",
+                params: {
+                    signid: vm.price.signid,
+                    reviewstage:vm.price.reviewstage,
+                    projectname:vm.price.projectname,
+                    skip:vm.price.skip,
+                    size:vm.price.size,
+
+                },
+            }).then(function (r) {
+                if (typeof callBack == 'function') {
+                    callBack(r.data);
+                }
+            });
+        }//E_getAssociateSignGrid
+
 
         //S_获取关联项目
         function getAssociateSign(signModel,callBack){

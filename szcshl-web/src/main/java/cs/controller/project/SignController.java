@@ -162,6 +162,15 @@ public class SignController {
         return signService.findAssociateSign(signDispaWork);
     }
 
+
+    @RequiresAuthentication
+    @RequestMapping(name = "获取待关联的项目列表", path = "findAssociateSignList", method = RequestMethod.GET)
+    public @ResponseBody
+    PageModelDto<SignDispaWork> findAssociateSignList( String signid, String reviewstage, String projectname
+            , String skip, String size) {
+        return signService.findAssociateSignList(signid, reviewstage, projectname, skip, size);
+    }
+
     //编辑收文
     //@RequiresPermissions("sign##put")
     @RequiresAuthentication

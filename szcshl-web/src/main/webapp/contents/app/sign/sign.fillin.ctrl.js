@@ -88,7 +88,7 @@
                     if (leader.mngOrgType == checkboxValue) {
                         vm.model.leaderId = leader.id;
                         vm.model.leaderName = leader.displayName;
-                        vm.model.comprehensivehandlesug = "请" + (leader.displayName).substring(0, 1) + "主任阅示。";
+                        vm.model.comprehensivehandlesug = "请" + leader.displayName + "同志阅示。";
                     }
                 })
                 if (checkboxValue == signcommon.getBusinessType().GX) {
