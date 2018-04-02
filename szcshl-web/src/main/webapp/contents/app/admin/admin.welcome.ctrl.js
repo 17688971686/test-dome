@@ -199,7 +199,6 @@
                     if (data.annountmentList) {
                         vm.annountmentList = data.annountmentList;
                     }
-                    console.log(data);
                     //是否显示图表
                     vm.isdisplays = data.isdisplay;
                     if(!data.isdisplay){

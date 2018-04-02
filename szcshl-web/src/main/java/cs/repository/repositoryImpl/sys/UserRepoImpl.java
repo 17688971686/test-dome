@@ -7,20 +7,21 @@ import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.sys.Org_;
-import cs.domain.sys.Role_;
-import cs.domain.sys.User;
-import cs.domain.sys.User_;
+import cs.domain.sys.*;
 import cs.repository.AbstractRepository;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.SignBranchRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
 @Repository
 public class UserRepoImpl extends AbstractRepository<User, String> implements UserRepo {
+    @Autowired
+    private OrgDeptRepo orgDeptRepo;
     @Override
     public User findUserByName(String userName) {
         Criteria criteria = getExecutableCriteria();
@@ -47,7 +48,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     @Override
     public Set<String> getUserPermission(String userName) {
         User user = findUserByName(userName);
-        if(user == null || user.getRoles() == null) {
+        if (user == null || user.getRoles() == null) {
             return Collections.EMPTY_SET;
         }
         Set<String> permissions = new HashSet<>();
@@ -69,7 +70,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     @Override
     public Set<String> getUserRoles(String userName) {
         User user = findUserByName(userName);
-        if(user == null || user.getRoles() == null) {
+        if (user == null || user.getRoles() == null) {
             return Collections.EMPTY_SET;
         }
         Set<String> roles = new HashSet<String>();
@@ -83,7 +84,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     @Override
     public Set<String> getUserRole(String userId) {
         User user = findById(userId);
-        if(user == null || user.getRoles() == null) {
+        if (user == null || user.getRoles() == null) {
             return Collections.EMPTY_SET;
         }
         Set<String> roles = new HashSet<String>();
@@ -97,7 +98,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     @Override
     @SuppressWarnings("unchecked")
     public List<User> findUserByRoleName(String roleName) {
-         Criteria criteria = getExecutableCriteria();
+        Criteria criteria = getExecutableCriteria();
         List<User> list = criteria.createAlias(User_.roles.getName(), User_.roles.getName())
                 .add(Restrictions.eq(User_.roles.getName() + "." + Role_.roleName.getName(), roleName)).list();
 
@@ -106,6 +107,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 
     /**
      * 根据部门ID查询在职的人员
+     *
      * @param orgId
      * @return
      */
@@ -113,7 +115,7 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     @SuppressWarnings("unchecked")
     public List<User> findUserByOrgId(String orgId) {
         Criteria criteria = getExecutableCriteria();
-        criteria.add(Restrictions.eq(User_.jobState.getName(),"t"));
+        criteria.add(Restrictions.eq(User_.jobState.getName(), "t"));
         List<User> list = criteria.createAlias(User_.org.getName(), User_.org.getName())
                 .add(Restrictions.eq(User_.org.getName() + "." + Org_.id.getName(), orgId)).list();
         return list;
@@ -121,19 +123,20 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 
     /**
      * 根据用户ID查询部门领导
+     *
      * @param userId
      * @return
      */
     @Override
     public User findOrgDirector(String userId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select u.* from cs_user u where u."+User_.id.getName()+" = ");
-        sqlBuilder.append(" (select o."+Org_.orgDirector.getName()+" from cs_org o ");
-        sqlBuilder.append(" where o."+Org_.id.getName()+" = ");
-        sqlBuilder.append(" (select cu.orgid from cs_user cu where cu."+User_.id.getName()+" =:userId ))");
-        sqlBuilder.setParam("userId",userId);
+        sqlBuilder.append("select u.* from cs_user u where u." + User_.id.getName() + " = ");
+        sqlBuilder.append(" (select o." + Org_.orgDirector.getName() + " from cs_org o ");
+        sqlBuilder.append(" where o." + Org_.id.getName() + " = ");
+        sqlBuilder.append(" (select cu.orgid from cs_user cu where cu." + User_.id.getName() + " =:userId ))");
+        sqlBuilder.setParam("userId", userId);
         List<User> list = findBySql(sqlBuilder);
-        if(Validate.isList(list)){
+        if (Validate.isList(list)) {
             return list.get(0);
         }
         return null;
@@ -141,26 +144,94 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
 
     /**
      * 根据用户ID查询分管领导
+     *
      * @param userId
      * @return
      */
     @Override
     public User findOrgSLeader(String userId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select u.* from cs_user u where u."+User_.id.getName()+" = ");
-        sqlBuilder.append(" (select o."+Org_.orgSLeader.getName()+" from cs_org o ");
-        sqlBuilder.append(" where o."+Org_.id.getName()+" = ");
-        sqlBuilder.append(" (select cu.orgid from cs_user cu where cu."+User_.id.getName()+" =:userId ))");
-        sqlBuilder.setParam("userId",userId);
+        sqlBuilder.append("select u.* from cs_user u where u." + User_.id.getName() + " = ");
+        sqlBuilder.append(" (select o." + Org_.orgSLeader.getName() + " from cs_org o ");
+        sqlBuilder.append(" where o." + Org_.id.getName() + " = ");
+        sqlBuilder.append(" (select cu.orgid from cs_user cu where cu." + User_.id.getName() + " =:userId ))");
+        sqlBuilder.setParam("userId", userId);
         List<User> list = findBySql(sqlBuilder);
-        if(Validate.isList(list)){
+        if (Validate.isList(list)) {
             return list.get(0);
         }
         return null;
     }
 
     /**
+     * 验证待办人是否是当前分办部门的人员
+     *
+     * @param orgId
+     * @param userIdList
+     * @return
+     */
+    @Override
+    public boolean checkIsSignOrgDeptUser(String signId,String orgId, String userIdList) {
+        boolean result = false;
+        List<String> userIds = StringUtil.getSplit(userIdList, ",");
+        for (String userId : userIds) {
+            result = checkUser(signId,orgId,userId);
+            if (result) {
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 验证用户是否是部长下的管理人员
+     * @param orgType
+     * @param orgId
+     * @param mainUserId
+     * @return
+     */
+    @Override
+    public boolean checkIsMainSigUser(String orgType, String orgId, String mainUserId) {
+        //判断是部门还是组
+        boolean isOrg = "org".equals(orgType.toLowerCase());
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        if(isOrg){
+            sqlBuilder.append("SELECT COUNT (UF.ID) FROM CS_USER UF WHERE UF.ID=:userId AND UF.ORGID =:orgId ");
+        }else{
+            sqlBuilder.append("SELECT COUNT (UF.SYSDEPTLIST_ID) FROM CS_DEPT_CS_USER UF WHERE UF.USERLIST_ID = :userId AND UF.SYSDEPTLIST_ID =:orgId ");
+        }
+        sqlBuilder.setParam("userId",mainUserId).setParam("orgId",orgId);
+        int result = returnIntBySql(sqlBuilder);
+        return (result > 0);
+    }
+
+    private boolean checkUser(String signId,String orgId,String userId){
+        OrgDept orgDept = orgDeptRepo.findOrgDeptById(orgId);
+        //判断是部门还是组
+        boolean isOrg = "org".equals(orgDept.getType().toLowerCase());
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        if(isOrg){
+            sqlBuilder.append(" SELECT COUNT (UF.ID) FROM CS_USER UF, ");
+        }else{
+            sqlBuilder.append(" SELECT COUNT (UF.SYSDEPTLIST_ID) FROM CS_DEPT_CS_USER UF, ");
+        }
+        sqlBuilder.append(" (SELECT CS.ORGID, CS.SIGNID, CS.BRANCHID FROM CS_SIGN_BRANCH cs ");
+        sqlBuilder.append(" WHERE CS.SIGNID = :rosignid AND CS.ORGID = :roorgid) RO, ");
+        sqlBuilder.setParam("rosignid",signId).setParam("roorgid",orgId);
+        sqlBuilder.append(" (SELECT CP.SIGNID, CP.USERID, CP.FLOWBRANCH FROM CS_SIGN_PRINCIPAL2 cp ");
+        sqlBuilder.append(" WHERE CP.SIGNID = :rusignid AND CP.USERID = :ruuserid) RU ");
+        sqlBuilder.setParam("rusignid",signId).setParam("ruuserid",userId);
+        if(isOrg){
+            sqlBuilder.append("  WHERE  UF.ID = RU.USERID AND RO.ORGID = UF.ORGID AND RO.BRANCHID = RU.FLOWBRANCH AND RO.SIGNID = RU.SIGNID ");
+        }else{
+            sqlBuilder.append(" WHERE UF.SYSDEPTLIST_ID = RO.ORGID AND UF.USERLIST_ID = RU.USERID AND RO.BRANCHID = RU.FLOWBRANCH AND RO.SIGNID = RU.SIGNID ");
+        }
+        int result = returnIntBySql(sqlBuilder);
+        return (result > 0);
+    }
+    /**
      * 从缓存获取用户信息（主要用户流程处理，用到用户ID和用户登录名等信息）
+     *
      * @param userId
      * @return
      */
@@ -170,38 +241,39 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         ICache cache = CacheManager.getCache();
         List<User> userList = (List<User>) cache.get(CacheConstant.USER_CACHE);
         //查询所有在职用户
-        if(!Validate.isList(userList)){
+        if (!Validate.isList(userList)) {
             userList = findAllPostUser();
-            cache.put(CacheConstant.USER_CACHE,userList);
+            cache.put(CacheConstant.USER_CACHE, userList);
         }
-        for(User user:userList){
-            if(user.getId().equals(userId)){
+        for (User user : userList) {
+            if (user.getId().equals(userId)) {
                 cacheUser = user;
                 break;
             }
         }
-        if(cacheUser == null){
-            cacheUser = findById(User_.id.getName(),userId);
+        if (cacheUser == null) {
+            cacheUser = findById(User_.id.getName(), userId);
             userList.add(cacheUser);
-            cache.put(CacheConstant.USER_CACHE,userList);
+            cache.put(CacheConstant.USER_CACHE, userList);
         }
         return cacheUser;
     }
 
     /**
      * 查询所有在职员工
+     *
      * @return
      */
     @Override
     public List<User> findAllPostUser() {
         ICache cache = CacheManager.getCache();
-        List<User> resultList = (List<User>)cache.get(CacheConstant.USER_CACHE);
-        if(!Validate.isList(resultList)){
+        List<User> resultList = (List<User>) cache.get(CacheConstant.USER_CACHE);
+        if (!Validate.isList(resultList)) {
             HqlBuilder hqlBuilder = HqlBuilder.create();
-            hqlBuilder.append(" from "+User.class.getSimpleName()+" where "+User_.jobState.getName()+" = :jobState ");
-            hqlBuilder.setParam("jobState","t");
+            hqlBuilder.append(" from " + User.class.getSimpleName() + " where " + User_.jobState.getName() + " = :jobState ");
+            hqlBuilder.setParam("jobState", "t");
             resultList = findByHql(hqlBuilder);
-            cache.put(CacheConstant.USER_CACHE,resultList);
+            cache.put(CacheConstant.USER_CACHE, resultList);
         }
         return resultList;
     }
@@ -213,22 +285,23 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
     public void fleshPostUserCache() {
         ICache cache = CacheManager.getCache();
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from "+User.class.getSimpleName()+" where "+User_.jobState.getName()+" = :jobState ");
-        hqlBuilder.setParam("jobState","t");
+        hqlBuilder.append(" from " + User.class.getSimpleName() + " where " + User_.jobState.getName() + " = :jobState ");
+        hqlBuilder.setParam("jobState", "t");
         List<User> resultList = findByHql(hqlBuilder);
-        cache.put(CacheConstant.USER_CACHE,resultList);
+        cache.put(CacheConstant.USER_CACHE, resultList);
     }
 
     /**
      * 根据多个ID获取用户列表信息
+     *
      * @param userIds
      * @return
      */
     @Override
     public List<User> getCacheUserListById(String userIds) {
         List<User> userList = new ArrayList<>();
-        List<String> ids = StringUtil.getSplit(userIds,",");
-        for(String id : ids){
+        List<String> ids = StringUtil.getSplit(userIds, ",");
+        for (String id : ids) {
             userList.add(getCacheUserById(id));
         }
         return userList;

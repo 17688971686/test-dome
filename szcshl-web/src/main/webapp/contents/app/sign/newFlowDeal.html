@@ -141,10 +141,11 @@
                 <!------------  以下为协审流程业务  ------------->
                 <!-- 协审部门分办 -->
                 <div ng-show="vm.showFlag.nodeSelPrincipal && vm.model.isassistflow == 9" id="xs_bmfb">
-                    <div class="label-default" style="font-size: 12px;padding:5px 10px;">
-                        <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i> 温馨提示：总负责人由主工作方案选择，且只能选一人；其它负责人可以选多个。
-                    </div>
-                    <table class="table table-bordered">
+                    <p class="attentionDiv" style="padding:5px;border:none;margin-bottom: 0px;">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
+                        温馨提示：总负责人由主工作方案选择，且只能选一人；其它负责人可以选多个。
+                    </p>
+                    <table class="table table-bordered" style="">
                         <tr>
                             <td colspan="4">
                                 <ul>
@@ -160,9 +161,9 @@
                                 <span style="text-align:center;">
                                     负责分工:
                                     <select name="userType" id="userType">
+                                        <option value="所有">所有</option>
                                         <option value="土建">土建</option>
                                         <option value="安装">安装</option>
-                                        <option value="所有">所有</option>
                                     </select>
                                 </span>
                                 <span style="text-align:center;">
@@ -270,9 +271,10 @@
                 </div>
                 <!--项目负责人确认发文-->
                 <div ng-if="vm.showFlag.nodeConfirmDis">
-                    <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: #F39C12;"></i>
-                    <span style="font-size: 12px;">温馨提示：该环节只要有一人不通过，流程就会返回负责人填报发文申请环节！</span>
-
+                    <p class="attentionDiv" style="padding:5px;border:none;margin-bottom: 0px;">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true" ></i>
+                        <span>温馨提示：该环节只要有一人不通过，流程就会返回负责人填报发文申请环节！</span>
+                    </p>
                     <p style="margin-top:5px;">
                     <input type="checkbox" ng-model="vm.businessFlag.passDis" ng-true-value="9" ng-false-value="0"
                            ng-checked="vm.businessFlag.passDis == 9"><span>通过</span>

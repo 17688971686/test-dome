@@ -142,12 +142,11 @@
                     }
                 }
                 //完成工作方案时到发文环节，默认评审发放日期为当天
-                if( vm.model.processState == 3 || vm.model.processState == 4){
+                /*if( vm.model.processState == 3 || vm.model.processState == 4){
                     if( vm.model.expertReviewDto){
-
                         vm.model.expertReviewDto.payDate = new Date().Format("yyyy-MM-dd");
                     }
-                }
+                }*/
 
                 //归档
                 if (vm.model.fileRecordDto) {
@@ -393,17 +392,20 @@
             }
         }
 
-        // 计算应纳税额
+        /**
+         * 计算应纳税额(日期以【函评日期/评审会日期】为准)
+          * @param expertReview
+         */
         vm.countTaxes = function (expertReview) {
             if (expertReview == undefined) {
                 return;
             }
-            if (expertReview.payDate == undefined) {
-                bsWin.alert("请选择评审费发放日期");
+            if (expertReview.reviewDate == undefined) {
+                bsWin.alert("(函评/评审会)日期为空，无法进行专家纳税计算，请联系系统管理员处理！");
                 return;
             }
             var reg = /^(\d{4}-\d{1,2}-\d{1,2})$/;
-            if (!reg.exec(expertReview.payDate)) {
+            if (!reg.exec(expertReview.reviewDate)) {
                 bsWin.alert("请输入正确的日期格式");
                 return;
             }
@@ -411,42 +413,44 @@
                 bsWin.alert("该方案还没评审专家");
                 return;
             }
+            //设置一个评审费发放日期默认值
+            if(!expertReview.payDate){
+                expertReview.payDate = new Date().Format("yyyy-MM-dd");
+            }
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
             if (isValid) {
-                var len = expertReview.expertSelectedDtoList.length, ids = '', month;
+                var  epids = '';
                 $.each(expertReview.expertSelectedDtoList, function (i, v) {
-                    ids += "'" + v.id + "'";
-                    if (i != (len - 1)) {
-                        ids += ",";
+                    if ((v.isConfrim == '9' || v.isConfrim == 9) && (v.isJoin == '9' || v.isJoin == 9)) {
+                        epids +=  v.id + ",";
                     }
                 })
-                var payDate = expertReview.payDate;
-                month = payDate.substring(0, payDate.lastIndexOf('-'));
-                expertReviewSvc.countTaxes(ids, month, function (data) {
+
+                /**
+                 * 计算应交税费，然后自动保存
+                 */
+                expertReviewSvc.countTaxes(expertReview.id,epids, expertReview.reviewDate, function (data) {
                     var allExpertCost = data;
                     expertReview.reviewCost = 0;
                     expertReview.reviewTaxes = 0;
                     expertReview.totalCost = 0;
-
+                    console.log(allExpertCost);
                     $.each(expertReview.expertSelectedDtoList, function (i, v) {
                         //已经确认并确定参加的，才计算
                         if ((v.isConfrim == '9' || v.isConfrim == 9) && (v.isJoin == '9' || v.isJoin == 9)) {
                             var expertId = v.EXPERTID;
-                            var expertSelectedId = v.id;
                             var totalCost = 0;
                             //console.log("计算专家:"+expertDto.name);
                             if (allExpertCost != undefined && allExpertCost.length > 0) {
-                                //累加专家改月的评审费用
-                                allExpertCost.forEach(function (v, i) {
-                                    if (v.EXPERTID == expertId && v.ESID != expertSelectedId) {
-                                        v.REVIEWCOST = v.REVIEWCOST == undefined ? 0 : v.REVIEWCOST;
-                                        v.REVIEWCOST = parseFloat(v.REVIEWCOST);
-                                        totalCost = parseFloat(totalCost) + v.REVIEWCOST;
+                                $.each(allExpertCost,function (i, ec) {
+                                    if (expertId == ec.expertId ) {
+                                        ec.excost = ec.excost == undefined ? 0 : ec.excost;
+                                        totalCost = parseFloat(totalCost) + parseFloat(ec.excost);
                                     }
-                                });
-                            }
+                                })
 
+                            }
                             //计算评审费用
                             v.reviewCost = v.reviewCost == undefined ? 0 : v.reviewCost;
                             var reviewTaxesTotal = totalCost + parseFloat(v.reviewCost);

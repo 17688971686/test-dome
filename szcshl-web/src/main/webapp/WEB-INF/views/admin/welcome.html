@@ -25,7 +25,7 @@
                         <tr>
                             <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
                             <th>最新待办<span ng-if="t.processState == '2'" style="color:red;">[已暂停]</span></th>
-                            <th style="min-width: 80px;">环节名称</th>
+                            <th style="min-width: 115px;">环节名称</th>
                             <th style="width: 100px" align="center">接收日期</th>
                         </tr>
                         <tr ng-repeat="t in vm.tasksList|limitTo:5">
@@ -62,7 +62,7 @@
                         <tr>
                             <th style="width: 10px"><span class="fa fa-file-text-o"></span></th>
                             <th>最新待办</th>
-                            <th style="min-width: 80px;">环节名称</th>
+                            <th style="min-width:115px;">环节名称</th>
                             <th style="width: 100px" align="center">接收日期</th>
                         </tr>
                         <tr ng-repeat="t in vm.agendaTaskList|limitTo:5">
@@ -163,7 +163,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body no-padding">
-                    <div id="histogram" style=" height: 470px; ; margin: auto auto;"></div>
+                    <div id="histogram" style=" height: 420px; ; margin: auto auto;"></div>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -176,7 +176,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body no-padding">
-                    <div id="lineChart"  style=" height: 470px ; margin: auto auto;"></div>
+                    <div id="lineChart"  style=" height:  420px ; margin: auto auto;"></div>
                 </div>
                 <!-- /.box-body -->
             </div>

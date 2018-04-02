@@ -303,18 +303,26 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     /**
      * 获取指定专家，指定月份的评审费用
+     * 排除本次评审费的费用，统计出本月所得金额
      * @param expertIds 专家ID
-     * @param month 月份
+     * @param reviewDate 评审会日期
      * @return
      */
     @Override
-    public List<Map<String, Object>> getExpertReviewCost(String expertIds, String month) {
-        List<Map<String, Object>> experReviewCosts = null;
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select * from V_EXPERT_PAY_HIS t where t.expertid in (" + expertIds + ") and t.paydate = '" + month + "'");
-        NativeQuery nativeQuery = expertReviewRepo.getSession().createNativeQuery(hqlBuilder.getHqlString());
-        experReviewCosts = nativeQuery.list();
-        return experReviewCosts;
+    public List<Map<String, Object>> getExpertReviewCost(String reviewId,String expertIds, String reviewDate) {
+        String month = reviewDate.substring(0,reviewDate.lastIndexOf("-"));
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" SELECT expertid, SUM (REVIEWCOST) excost FROM (SELECT es.id esId, es.expertid,es.reviewcost ");
+        sqlBuilder.append(" FROM CS_EXPERT_SELECTED es, CS_EXPERT_REVIEW er ");
+        sqlBuilder.append(" WHERE es.isjoin = :isjoin AND es.ISCONFRIM = :isconfrim AND es.Expertreviewid = er.id AND ER.ID !=:reviewId ");
+        sqlBuilder.setParam("isjoin", Constant.EnumState.YES.getValue());
+        sqlBuilder.setParam("isconfrim",Constant.EnumState.YES.getValue());
+        sqlBuilder.setParam("reviewId",reviewId);
+        sqlBuilder.append(" AND TO_CHAR (er.REVIEWDATE, 'yyyy-mm') =:reviewmonth ").setParam("reviewmonth",month);
+        sqlBuilder.bulidPropotyString("AND","ES.EXPERTID",expertIds);
+        sqlBuilder.append(" )GROUP BY expertid ");
+        List<Map<String, Object>> resultList = expertReviewRepo.getMapListBySql(sqlBuilder);
+        return resultList;
     }
 
     @Override
@@ -391,8 +399,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存(或者超级管理员) 超级管理员发放，不做时间限制
             if ( !Constant.SUPER_USER.equals(SessionUtil.getLoginName()) &&  expertReview.getReviewDate() != null && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
                 long diffDays = DateUtils.daysBetween(new Date(), expertReview.getReviewDate());
-                if (diffDays > 1 || diffDays < -1) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "评审费只能在评审会时间的前一天，当天或者后一天才能计算！");
+                if (diffDays != 0 ) {
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "只能在评审/函评日期当天计算专家评审费！");
                 }
             }
 

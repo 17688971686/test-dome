@@ -6,10 +6,12 @@ import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
 import cs.common.utils.Validate;
 import cs.domain.sys.OrgDept;
+import cs.domain.sys.OrgDept_;
 import cs.domain.sys.User;
 import cs.domain.sys.User_;
 import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -75,7 +77,7 @@ public class OrgDeptRepoImpl extends AbstractRepository<OrgDept, String> impleme
         ICache cache = CacheManager.getCache();
         List<OrgDept> list = (List<OrgDept>) cache.get(CacheConstant.ORG_DEPT_CACHE);
         if(!Validate.isList(list)){
-            list = findAll();
+            list = findAllByOrder();
         }
         return list;
     }
@@ -86,11 +88,15 @@ public class OrgDeptRepoImpl extends AbstractRepository<OrgDept, String> impleme
     @Override
     public void fleshOrgDeptCache() {
         ICache cache = CacheManager.getCache();
-        List<OrgDept> allList = findAll();
+        List<OrgDept> allList = findAllByOrder();
         cache.put(CacheConstant.ORG_DEPT_CACHE,allList);
     }
 
-
+   private List<OrgDept> findAllByOrder(){
+       Criteria criteria = getExecutableCriteria();
+       criteria.addOrder(Order.asc(OrgDept_.sort.getName()));
+       return criteria.list();
+   }
 
     @Override
     public OrgDept findOrgDeptById(String id) {

@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.List;
@@ -58,6 +59,7 @@ public class ExpertReviewController {
 
     /**
      * 更改抽取专家是否参加会议状态
+     *
      * @param expertSelId
      * @param state
      */
@@ -65,42 +67,42 @@ public class ExpertReviewController {
     //@RequiresPermissions("expertReview#updateJoinState#post")
     @RequestMapping(name = "更改专家状态", path = "updateJoinState", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateExpertState( String minBusinessId,String businessType,@RequestParam(required = true) String expertSelId,
-             @RequestParam(required = true) String state) {
-        expertReviewService.updateExpertState(minBusinessId,businessType,expertSelId, state,false);
+    public void updateExpertState(String minBusinessId, String businessType, @RequestParam(required = true) String expertSelId,
+                                  @RequestParam(required = true) String state) {
+        expertReviewService.updateExpertState(minBusinessId, businessType, expertSelId, state, false);
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("expertReview#affirmAutoExpert#post")
     @RequestMapping(name = "确认抽取专家", path = "affirmAutoExpert", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg affirmAutoExpert(@RequestParam(required=true)String minBusinessId,@RequestParam(required=true)String businessType,
-                                 @RequestParam(required = true) String expertSelId,@RequestParam(required = true) String state){
+    public ResultMsg affirmAutoExpert(@RequestParam(required = true) String minBusinessId, @RequestParam(required = true) String businessType,
+                                      @RequestParam(required = true) String expertSelId, @RequestParam(required = true) String state) {
         //判断已经确认的专家，和设定的专家人数对比
         int totalCount = expertSelConditionService.getExtractEPCount(minBusinessId);
         int selectCount = expertSelectedService.getSelectEPCount(minBusinessId);
-        List<String> ids = StringUtil.getSplit(expertSelId,",");
-        if(selectCount + (Validate.isList(ids)?ids.size():0) > totalCount){
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue(),"操作失败，确认的专家人数超过了抽取设定人数！");
+        List<String> ids = StringUtil.getSplit(expertSelId, ",");
+        if (selectCount + (Validate.isList(ids) ? ids.size() : 0) > totalCount) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，确认的专家人数超过了抽取设定人数！");
         }
-        expertReviewService.updateExpertState(minBusinessId,businessType,expertSelId,state,true);
+        expertReviewService.updateExpertState(minBusinessId, businessType, expertSelId, state, true);
 
-        return new ResultMsg(true , Constant.MsgCode.OK.getValue(),"操作成功！");
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
     @RequiresAuthentication
     //@RequiresPermissions("expertReview#saveExpertReview#post")
     @RequestMapping(name = "保存抽取专家信息", path = "saveExpertReview", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg saveExpertReview( @RequestParam(required = true) String businessId,@RequestParam(required = true) String minBusinessId, String reviewId,
-           @RequestParam(required = true) String businessType , @RequestParam(required = true) String expertIds , @RequestParam(required = true) String selectType) {
-       return expertReviewService.save(businessId,minBusinessId,businessType,reviewId,expertIds,selectType);
+    public ResultMsg saveExpertReview(@RequestParam(required = true) String businessId, @RequestParam(required = true) String minBusinessId, String reviewId,
+                                      @RequestParam(required = true) String businessType, @RequestParam(required = true) String expertIds, @RequestParam(required = true) String selectType) {
+        return expertReviewService.save(businessId, minBusinessId, businessType, reviewId, expertIds, selectType);
     }
 
     @RequiresAuthentication
     @RequestMapping(name = "获取业务模块确认的专家", path = "refleshBusinessEP", method = RequestMethod.POST)
     @ResponseBody
-    public List<ExpertDto> refleshBusinessEP(@RequestParam(required = true) String businessId){
+    public List<ExpertDto> refleshBusinessEP(@RequestParam(required = true) String businessId) {
         return expertReviewService.refleshBusinessEP(businessId);
     }
 
@@ -131,8 +133,9 @@ public class ExpertReviewController {
     @RequiresAuthentication
     //@RequiresPermissions("expertReview#initBybusinessId#post")
     @RequestMapping(name = "专家抽取", path = "initBybusinessId", method = RequestMethod.POST)
-    public @ResponseBody ExpertReviewDto initBybusinessId(@RequestParam(required = true) String businessId,String minBusinessId) {
-        return expertReviewService.initBybusinessId(businessId,minBusinessId);
+    public @ResponseBody
+    ExpertReviewDto initBybusinessId(@RequestParam(required = true) String businessId, String minBusinessId) {
+        return expertReviewService.initBybusinessId(businessId, minBusinessId);
     }
 
     /*@RequiresPermissions("expertReview#expertMark#get")
@@ -154,9 +157,11 @@ public class ExpertReviewController {
     @RequiresAuthentication
     @RequestMapping(name = "获取专家某月的评审费用", path = "getExpertReviewCost", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String,Object>> getExpertReviewCost(@RequestParam(required = true) String expertIds,
-         @RequestParam(required = true) String month,HttpServletRequest request){
-        return expertReviewService.getExpertReviewCost(expertIds,month);
+    public List<Map<String, Object>> getExpertReviewCost(
+            @RequestParam(required = true) String reviewId,
+            @RequestParam(required = true) String expertIds,
+            @RequestParam(required = true) String month, HttpServletRequest request) {
+        return expertReviewService.getExpertReviewCost(reviewId, expertIds, month);
     }
 
     //保存评审费用(多个)
@@ -179,15 +184,16 @@ public class ExpertReviewController {
     @RequiresAuthentication
     @RequestMapping(name = "保存新的专家信息", path = "expertNewInfo", method = RequestMethod.POST)
     @ResponseBody
-    public  ResultMsg saveExpertReviewCostSingle(@RequestBody ExpertReviewNewInfoDto[] expertReviewNewInfoDtos) {
-        return  expertReviewService.saveExpertNewInfo(expertReviewNewInfoDtos);
+    public ResultMsg saveExpertReviewCostSingle(@RequestBody ExpertReviewNewInfoDto[] expertReviewNewInfoDtos) {
+        return expertReviewService.saveExpertNewInfo(expertReviewNewInfoDtos);
     }
+
     //保存新的专家信息
     @RequiresAuthentication
     @RequestMapping(name = "获取新的专家信息", path = "getExpertInfo", method = RequestMethod.POST)
     @ResponseBody
-    public  List<ExpertNewInfoDto> getExpertInfo(@RequestParam(required = true) String businessId) {
-        return  expertReviewService.getExpertInfo(businessId);
+    public List<ExpertNewInfoDto> getExpertInfo(@RequestParam(required = true) String businessId) {
+        return expertReviewService.getExpertInfo(businessId);
     }
 
     // begin#html

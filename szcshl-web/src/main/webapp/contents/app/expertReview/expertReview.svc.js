@@ -539,13 +539,13 @@
         }// E_savePayment
 
         // S_计算费用
-        function countTaxes(ids,month,callBack) {
-            var url = rootPath + "/expertReview/getExpertReviewCost?expertIds={0}&month={1}";
+        function countTaxes(reviewId,epIds,reviewDateStr,callBack) {
+            var url = rootPath + "/expertReview/getExpertReviewCost?reviewId={0}&expertIds={1}&month={2}";
             //取得该评审方案评审专家在这个月的所有评审费用
             var httpOptions = {
                 method: 'get',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                url: common.format(url, ids, month)
+                url: common.format(url, reviewId,epIds, reviewDateStr)
             }
             var httpSuccess = function success(response) {
                 if (callBack != undefined && typeof callBack == 'function') {

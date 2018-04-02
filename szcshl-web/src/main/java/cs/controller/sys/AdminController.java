@@ -235,9 +235,16 @@ public class AdminController {
                     }
                     //3、部长
                 } else if (authFlag == 3) {
+                    String orgId = orgIdList.get(0);
+                    OrgDept orgDpet = orgDeptService.findOrgDeptById(orgId);
+                    List<RuProcessTask> resultList = new ArrayList<>();
+                    //如果是部长，还要筛选出当前待办人是否是他管辖部门的人
+                    for(RuProcessTask rt : authRuSignTask){
+                        if(userService.checkIsMainSigUser(orgDpet.getType(),orgId,rt.getMainUserId())){
+                            resultList.add(rt);
+                        }
+                    }
                     //筛选出第一负责人的任务
-                    //过滤掉已删除的项目
-                    List<RuProcessTask> resultList = authRuSignTask.stream().filter((RuProcessTask rb) -> (Validate.isString(rb.getMainUserId()) && rb.getMainUserId().equals(rb.getAssignee()))).collect(Collectors.toList());
                     if (Validate.isList(resultList)) {
                         for (RuProcessTask rpt : resultList) {
                             setMapValue(dataMap, rpt.getMainUserId());
@@ -254,15 +261,16 @@ public class AdminController {
                         histogram_y.add(entry.getValue());
                     }
                 }else{
-                    for (Map.Entry<String, Integer> entry : dataMap.entrySet()) {
-                        if(unWorkId.equals(entry.getKey())){
-                            histogram_x.add("未分办");
-                            histogram_y.add(entry.getValue());
-                        }else{
-                            OrgDept orgDept = orgDeptService.findOrgDeptById(entry.getKey());
+                    List<OrgDept> allOrgDept = authMap.get("allOrgDeptList")==null?orgDeptService.queryAll(): (List<OrgDept>) authMap.get("allOrgDeptList");
+                    for(OrgDept orgDept : allOrgDept){
+                        if(dataMap.get(orgDept.getId()) != null){
                             histogram_x.add(orgDept.getName());
-                            histogram_y.add(entry.getValue());
+                            histogram_y.add(dataMap.get(orgDept.getId()));
                         }
+                    }
+                    if(dataMap.get(unWorkId) != null){
+                        histogram_x.add("未分办");
+                        histogram_y.add(dataMap.get(unWorkId));
                     }
                 }
                 resultMap.put("histogram_x", histogram_x);

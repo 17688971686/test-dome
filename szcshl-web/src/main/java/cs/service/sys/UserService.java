@@ -106,4 +106,13 @@ public interface UserService {
      * @return
      */
     Map<String,Object> getUserSignAuth();
+
+    /**
+     * 验证用户是否是部长下的管理人员
+     * @param orgType
+     * @param orgId
+     * @param mainUserId
+     * @return
+     */
+    boolean checkIsMainSigUser(String orgType, String orgId, String mainUserId);
 }

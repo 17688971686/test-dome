@@ -34,4 +34,21 @@ public interface UserRepo extends IRepository<User, String> {
     User findOrgDirector(String userId);
 
     User findOrgSLeader(String userId);
+
+    /**
+     * 验证待办人是否是当前分办部门的人员
+     * @param orgId
+     * @param userIdList
+     * @return
+     */
+    boolean checkIsSignOrgDeptUser(String signId,String orgId, String userIdList);
+
+    /**
+     * 验证用户是否是部长下的管理人员
+     * @param orgType
+     * @param orgId
+     * @param mainUserId
+     * @return
+     */
+    boolean checkIsMainSigUser(String orgType, String orgId, String mainUserId);
 }

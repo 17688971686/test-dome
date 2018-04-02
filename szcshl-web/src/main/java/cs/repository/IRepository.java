@@ -61,6 +61,6 @@ public interface IRepository<T, ID> {
     int deleteById(String idPropertyName, String idValue);
 
     List<Object[]> getObjectArray(HqlBuilder hqlBuilder);
-
+    List<Map<String, Object>> getMapListBySql(HqlBuilder sqlBuilder);
     String getDataBaseTime(String format);
 }

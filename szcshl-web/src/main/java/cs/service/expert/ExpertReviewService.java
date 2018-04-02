@@ -38,7 +38,7 @@ public interface ExpertReviewService {
      * @param month
      * @return
      */
-    List<Map<String,Object>> getExpertReviewCost(String expertIds, String month);
+    List<Map<String,Object>> getExpertReviewCost(String reviewId,String expertIds, String month);
 
 	//List<Map<String,Object>> getExpertInfo();
 
@@ -53,6 +53,11 @@ public interface ExpertReviewService {
 
     void saveExpertReviewCost(ExpertReviewDto[]  expertReviews);
 
+	/**
+	 * 保存专家评审费用
+	 * @param expertReview
+	 * @return
+	 */
 	ResultMsg saveExpertReviewCost(ExpertReviewDto  expertReview);
 
 	/**

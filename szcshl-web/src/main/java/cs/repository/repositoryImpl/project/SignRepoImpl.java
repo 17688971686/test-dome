@@ -317,7 +317,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
          WHERE csb.signid = 'fdc903f6-0b0a-4bad-a4c0-8bc228c3c557' and csb.ISMAINBRABCH != '9' and VOD.ID = csb.ORGID)
          ))
          */
-        //1、查询除了主办部门外，排除分支的其它协办部门信息
+        /*//1、查询除了主办部门外，排除分支的其它协办部门信息
         HqlBuilder orgBuilder = HqlBuilder.create();
         orgBuilder.append(" SELECT CASE WHEN aorgid IS NOT NULL THEN TRIM (',' FROM REPLACE (REGEXP_REPLACE (aorgid, '[^@]+[,$]', ''),'@',',')) ELSE '' END aorgid, ");
         orgBuilder.append(" CASE WHEN aorgid IS NOT NULL THEN TRIM (',' FROM REPLACE (REGEXP_REPLACE (aorgid, '[^,]+[@$]', ''),'@'',')) ELSE '' END aorgname ");
@@ -340,7 +340,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
                 sign.setaOrgId(obj[0]==null?"":obj[0].toString());
                 sign.setaOrgName(obj[1]==null?"":obj[1].toString());
             }
-        }
+        }*/
 
         //查询除了主办分支外的其它负责人
         /**
@@ -363,10 +363,10 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         userBuilder.append(" WHERE sp.signid = :signid AND SP.FLOWBRANCH != '1'  ");
         userBuilder.setParam("signid",signId);
         if(Validate.isString(branchId)){
-            orgBuilder.append(" and SP.FLOWBRANCH != :branchId ").setParam("branchId",branchId);
+            userBuilder.append(" and SP.FLOWBRANCH != :branchId ").setParam("branchId",branchId);
         }
         userBuilder.append(" and AND SP.USERID = CU.ID) )) ");
-        resultList = getObjectArray(orgBuilder);
+        List<Object[]> resultList = getObjectArray(userBuilder);
         if(!Validate.isList(resultList)){
             sign.setaUserID("");
             sign.setaUserName("");

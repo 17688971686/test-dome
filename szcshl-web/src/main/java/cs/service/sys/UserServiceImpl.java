@@ -727,6 +727,7 @@ public class UserServiceImpl implements UserService {
         if(leaderFlag ==0){
             //查询所有的部门和组织
             List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
+            resultMap.put("allOrgDeptList",allOrgDeptList);
             for(OrgDept od : allOrgDeptList){
                 if(leaderFlag == 0){
                     if(curUserId.equals(od.getDirectorID())){
@@ -758,6 +759,18 @@ public class UserServiceImpl implements UserService {
         resultMap.put("orgIdList",orgIdList);
 
         return resultMap;
+    }
+
+    /**
+     * 验证用户是否是部长下的管理人员
+     * @param orgType
+     * @param orgId
+     * @param mainUserId
+     * @return
+     */
+    @Override
+    public boolean checkIsMainSigUser(String orgType, String orgId, String mainUserId) {
+        return userRepo.checkIsMainSigUser(orgType, orgId, mainUserId);
     }
 }
 

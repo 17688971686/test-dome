@@ -369,8 +369,10 @@
                     vm.flow.businessMap.DIS_ID = vm.dispatchDoc.id;
                     break;
                 //部长审批发文
+                case flowcommon.getSignFlowNode().SIGN_BMLD_QRFW_XB:
                 case flowcommon.getSignFlowNode().SIGN_BMLD_QRFW:
                 //分管领导审批发文
+                case flowcommon.getSignFlowNode().SIGN_FGLD_QRFW_XB:
                 case flowcommon.getSignFlowNode().SIGN_FGLD_QRFW:
                 //主任审批发文
                 case flowcommon.getSignFlowNode().SIGN_ZR_QRFW:

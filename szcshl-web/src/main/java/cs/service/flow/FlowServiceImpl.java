@@ -21,6 +21,7 @@ import cs.repository.repositoryImpl.project.SignBranchRepo;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.repository.repositoryImpl.topic.WorkPlanRepo;
 import cs.service.project.SignService;
 import cs.service.sys.LogService;
@@ -130,6 +131,8 @@ public class FlowServiceImpl implements FlowService {
 
     @Autowired
     private LogService logService;
+    @Autowired
+    private UserRepo userRepo;
     /**
      * 回退到上一环节或者指定环节
      *
@@ -431,6 +434,7 @@ public class FlowServiceImpl implements FlowService {
         if(odataObj != null){
             criteria = odataObj.buildFilterToCriteria(criteria);
         }
+        criteria.addOrder(Order.desc(RuProcessTask_.signDate.getName()));
         //排除合并评审阶段的次项目数据
         Disjunction disj = Restrictions.disjunction();
         disj.add(Restrictions.isNull(RuProcessTask_.reviewType.getName()));
@@ -481,7 +485,6 @@ public class FlowServiceImpl implements FlowService {
         //过滤掉已删除的项目
         List<RuProcessTask> resultList = runProcessList.stream().filter((RuProcessTask rb) -> !(Constant.EnumState.DELETE.getValue()).equals(rb.getSignState()) )
                 .collect(Collectors.toList());
-
         if(isUserDeal){
             //合并评审项目处理
             resultList.forEach(rl -> {

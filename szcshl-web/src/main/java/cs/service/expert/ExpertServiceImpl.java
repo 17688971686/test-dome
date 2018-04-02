@@ -33,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static cs.common.Constant.SUPER_USER;
+
 @Service
 public class ExpertServiceImpl implements ExpertService {
     private static Logger logger = Logger.getLogger(UserServiceImpl.class);
@@ -59,15 +61,15 @@ public class ExpertServiceImpl implements ExpertService {
             ExpertDto expertDto = new ExpertDto();
             BeanCopierUtils.copyProperties(item, expertDto);
             //添加专家类别
-             if(Validate.isList(item.getExpertType())){
-                 List<ExpertTypeDto> expertTypeDtoList = new ArrayList<>();
-                 item.getExpertType().forEach(x -> {
-                     ExpertTypeDto expertTypeDto = new ExpertTypeDto();
-                     BeanCopierUtils.copyProperties(x, expertTypeDto);
-                     expertTypeDtoList.add(expertTypeDto);
-                 });
-                 expertDto.setExpertTypeDtoList(expertTypeDtoList);
-             }
+            if (Validate.isList(item.getExpertType())) {
+                List<ExpertTypeDto> expertTypeDtoList = new ArrayList<>();
+                item.getExpertType().forEach(x -> {
+                    ExpertTypeDto expertTypeDto = new ExpertTypeDto();
+                    BeanCopierUtils.copyProperties(x, expertTypeDto);
+                    expertTypeDtoList.add(expertTypeDto);
+                });
+                expertDto.setExpertTypeDtoList(expertTypeDtoList);
+            }
             listExpertDto.add(expertDto);
         }
         pageModelDto.setCount(odataObj.getCount());
@@ -76,14 +78,15 @@ public class ExpertServiceImpl implements ExpertService {
     }
 
     /**
-     *新专家、市外、境外专家
+     * 新专家、市外、境外专家
+     *
      * @param odataObj
      * @return
      */
     @Override
     public PageModelDto<ExpertDto> getExpertField(ODataObj odataObj) {
         PageModelDto<ExpertDto> pageModelDto = new PageModelDto<ExpertDto>();
-        String state1 = "", state2 = "", expertField1 = "",expertField2="",maJorBigParam = "",maJorSamllParam="",expertTypeParam="";
+        String state1 = "", state2 = "", expertField1 = "", expertField2 = "", maJorBigParam = "", maJorSamllParam = "", expertTypeParam = "";
         //Criteria 查询
         Criteria criteria = expertRepo.getExecutableCriteria();
         if (Validate.isList(odataObj.getFilter())) {
@@ -109,15 +112,15 @@ public class ExpertServiceImpl implements ExpertService {
                     expertField2 = item.getValue().toString();
                     continue;
                 }
-                if("maJorBigParam".equals(item.getField())){
+                if ("maJorBigParam".equals(item.getField())) {
                     maJorBigParam = item.getValue().toString();
                     continue;
                 }
-                if("maJorSamllParam".equals(item.getField())){
+                if ("maJorSamllParam".equals(item.getField())) {
                     maJorSamllParam = item.getValue().toString();
                     continue;
                 }
-                if("expertTypeParam".equals(item.getField())){
+                if ("expertTypeParam".equals(item.getField())) {
                     expertTypeParam = item.getValue().toString();
                     continue;
                 }
@@ -125,30 +128,30 @@ public class ExpertServiceImpl implements ExpertService {
             }
 
             //关联专家大类、小类和专业类型查询
-            if(Validate.isString(maJorBigParam) || Validate.isString(maJorSamllParam) || Validate.isString(expertTypeParam)){
+            if (Validate.isString(maJorBigParam) || Validate.isString(maJorSamllParam) || Validate.isString(expertTypeParam)) {
                 StringBuffer sqlSB = new StringBuffer();
-                sqlSB.append(" (select count(ept.ID) from CS_EXPERT_TYPE ept where EPT.EXPERTID = "+criteria.getAlias()+"_.EXPERTID ");
+                sqlSB.append(" (select count(ept.ID) from CS_EXPERT_TYPE ept where EPT.EXPERTID = " + criteria.getAlias() + "_.EXPERTID ");
                 //突出专业，大类
                 if (Validate.isString(maJorBigParam)) {
-                    sqlSB.append(" and ept.maJorBig = '"+maJorBigParam+"' ");
+                    sqlSB.append(" and ept.maJorBig = '" + maJorBigParam + "' ");
                 }
                 //突出专业，小类
                 if (Validate.isString(maJorSamllParam)) {
-                    sqlSB.append(" and ept.maJorSmall = '"+maJorSamllParam+"' ");
+                    sqlSB.append(" and ept.maJorSmall = '" + maJorSamllParam + "' ");
                 }
                 //专家类型
                 if (Validate.isString(expertTypeParam)) {
-                    sqlSB.append(" and ept.expertType = '"+expertTypeParam+"' ");
+                    sqlSB.append(" and ept.expertType = '" + expertTypeParam + "' ");
                 }
                 sqlSB.append(" ) > 0 ");
                 criteria.add(Restrictions.sqlRestriction(sqlSB.toString()));
             }
 
         }
-        if (Validate.isString(state1) && Validate.isString(state2)&& Validate.isString(expertField1)
-                && Validate.isString(expertField2) ) {
+        if (Validate.isString(state1) && Validate.isString(state2) && Validate.isString(expertField1)
+                && Validate.isString(expertField2)) {
             StringBuffer sqlSB = new StringBuffer();
-            sqlSB.append(" ( state = "+state1+"  or ( ( expertField = "+expertField1+" or EXPERTFIELD = "+expertField2+" ) and state <> "+state2+" ) )");
+            sqlSB.append(" ( state = " + state1 + "  or ( ( expertField = " + expertField1 + " or EXPERTFIELD = " + expertField2 + " ) and state <> " + state2 + " ) )");
             criteria.add(Restrictions.sqlRestriction(sqlSB.toString()));
         }
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
@@ -167,16 +170,15 @@ public class ExpertServiceImpl implements ExpertService {
             resultList.forEach(x -> {
                 ExpertDto modelDto = new ExpertDto();
                 BeanCopierUtils.copyProperties(x, modelDto);
-                if(Validate.isList(x.getExpertType())){
+                if (Validate.isList(x.getExpertType())) {
                     List<ExpertTypeDto> expertDtoList = new ArrayList<ExpertTypeDto>(x.getExpertType().size());
                     x.getExpertType().forEach(y -> {
-                        ExpertTypeDto expertTypeDto=new ExpertTypeDto();
+                        ExpertTypeDto expertTypeDto = new ExpertTypeDto();
                         BeanCopierUtils.copyProperties(y, expertTypeDto);
                         expertDtoList.add(expertTypeDto);
                     });
                     modelDto.setExpertTypeDtoList(expertDtoList);
                 }
-
 
 
                 resultDtoList.add(modelDto);
@@ -199,6 +201,7 @@ public class ExpertServiceImpl implements ExpertService {
         //重复专家判断
         boolean isFill = expertRepo.checkIsHaveIdCard(expertDto.getIdCard(), expertDto.getExpertID());
         if (isFill == false) {
+            String updateNo = Validate.isString(SessionUtil.getUserInfo().getUserNo())?SessionUtil.getUserInfo().getUserNo():SUPER_USER;
             Expert expert = null;
             if (Validate.isString(expertDto.getExpertID())) {
                 expert = expertRepo.findById(Expert_.expertID.getName(), expertDto.getExpertID());
@@ -216,10 +219,10 @@ public class ExpertServiceImpl implements ExpertService {
                 expert.setInputPerson(SessionUtil.getDisplayName());
                 expert.setCreatedDate(new Date());
                 //统一用用户编号，跟旧系统一致
-                expert.setCreatedBy(SessionUtil.getUserInfo().getUserNo());
+                expert.setCreatedBy(updateNo);
             }
             expert.setModifiedDate(new Date());
-            expert.setModifiedBy(SessionUtil.getUserInfo().getUserNo());
+            expert.setModifiedBy(updateNo);
             expertRepo.save(expert);
             //设置返回值
             BeanCopierUtils.copyProperties(expert, expertDto);
@@ -237,35 +240,36 @@ public class ExpertServiceImpl implements ExpertService {
     @Override
     @Transactional
     public ResultMsg deleteExpert(String id) {
-        try{
+        try {
             HqlBuilder hqlBuilder = HqlBuilder.create();
             hqlBuilder.append("update " + Expert.class.getSimpleName() + " set " + Expert_.state.getName() + "=:state ");
             hqlBuilder.setParam("state", EnumExpertState.REMOVE.getValue());
-            hqlBuilder.bulidPropotyString("where",Expert_.expertID.getName(),id);
+            hqlBuilder.bulidPropotyString("where", Expert_.expertID.getName(), id);
             expertRepo.executeHql(hqlBuilder);
 
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
-        }catch (Exception e){
-            logger.info("逻辑删除专家异常："+e.getMessage());
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！");
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        } catch (Exception e) {
+            logger.info("逻辑删除专家异常：" + e.getMessage());
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "删除失败！");
         }
     }
 
     /**
      * 物理删除专家
+     *
      * @param id
      * @return
      */
     @Override
     @Transactional
     public ResultMsg deleteExpertData(String id) {
-       try{
-           expertRepo.deleteById(Expert_.expertID.getName(),id);
-           return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
-       }catch (Exception e){
-           logger.info("物理删除专家异常："+e.getMessage());
-           return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！");
-       }
+        try {
+            expertRepo.deleteById(Expert_.expertID.getName(), id);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+        } catch (Exception e) {
+            logger.info("物理删除专家异常：" + e.getMessage());
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "删除失败！");
+        }
     }
 
     /**
@@ -437,7 +441,7 @@ public class ExpertServiceImpl implements ExpertService {
      */
     @Override
     public List<ExpertDto> countExpert(String minBusinessId, String reviewId, ExpertSelConditionDto epSelCondition) {
-        return  expertRepo.fingDrafExpert(minBusinessId,reviewId,epSelCondition);
+        return expertRepo.fingDrafExpert(minBusinessId, reviewId, epSelCondition);
     }
 
     /**
@@ -507,14 +511,14 @@ public class ExpertServiceImpl implements ExpertService {
         ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.id.getName(), reviewId);
         //如果是项目，则判断是否是专家函评
         if (Constant.BusinessType.SIGN.getValue().equals(expertReview.getBusinessType())) {
-            isLetterRw = workProgramRepo.checkReviewType(Constant.MergeType.REVIEW_LEETER.getValue(),minBusinessId);
+            isLetterRw = workProgramRepo.checkReviewType(Constant.MergeType.REVIEW_LEETER.getValue(), minBusinessId);
         }
 
         //如果是再次抽取(再次抽取是单个条件抽取)，要判断选定的专家是否已经满足条件，如已经满足，则不允许再次抽取
         if (paramArrary.length == 1 && Validate.isString(paramArrary[0].getId())) {
             ExpertSelCondition expertSelCondition = expertSelConditionRepo.findById(ExpertSelCondition_.id.getName(), paramArrary[0].getId());
             if (expertSelCondition != null && expertSelCondition.getSelectIndex() > 0) {
-                if (!Constant.SUPER_USER.equals(SessionUtil.getLoginName()) && (expertSelCondition.getSelectIndex() > 2)) {
+                if (!SUPER_USER.equals(SessionUtil.getLoginName()) && (expertSelCondition.getSelectIndex() > 2)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该条件已经进行3次专家抽取，不能再进行专家抽取！");
                 }
                 notFirstTime = true;

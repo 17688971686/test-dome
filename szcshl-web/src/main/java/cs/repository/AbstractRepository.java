@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.Map;
 
 public class AbstractRepository<T, ID extends Serializable> implements IRepository<T, ID> {
     protected static Logger logger = Logger.getLogger(AbstractRepository.class);
@@ -289,6 +290,24 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
     }
 
     @Override
+    public List<Map<String, Object>> getMapListBySql(HqlBuilder sqlBuilder) {
+        NativeQuery<Map<String, Object>> q = this.getCurrentSession().createNativeQuery(sqlBuilder.getHqlString());
+        List<String> params = sqlBuilder.getParams();
+        List<Object> values = sqlBuilder.getValues();
+        List<Type> types = sqlBuilder.getTypes();
+        if (params != null) {
+            for (int i = 0; i < params.size(); i++) {
+                if (types.get(i) == null) {
+                    q.setParameter(params.get(i), values.get(i));
+                } else {
+                    q.setParameter(params.get(i), values.get(i), types.get(i));
+                }
+            }
+        }
+        return q.list();
+    }
+
+    @Override
     public List<T> findByIds(String idPropertyName, String idValue, String orderStr) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from  " + getPersistentClass().getSimpleName() + " ");
@@ -306,6 +325,7 @@ public class AbstractRepository<T, ID extends Serializable> implements IReposito
      * @param format 日期格式
      * @return
      */
+    @Override
     public String getDataBaseTime(String format) {
         String dataBaseTime = "";
         String sql = "select to_char(sysdate,'" + format + "') from dual";
