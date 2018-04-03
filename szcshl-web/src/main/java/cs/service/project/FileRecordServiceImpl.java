@@ -45,22 +45,19 @@ public class FileRecordServiceImpl implements FileRecordService {
                 fileRecord = new FileRecord();
                 fileRecordDto.setFileDate(fileRecordDto.getFileDate() == null ? now : fileRecordDto.getFileDate());
                 fileRecordDto.setPrintDate(fileRecordDto.getPrintDate() == null ? now : fileRecordDto.getPrintDate());
-
                 BeanCopierUtils.copyProperties(fileRecordDto, fileRecord);
                 fileRecord.setFileRecordId(UUID.randomUUID().toString());
                 fileRecord.setCreatedBy(SessionUtil.getLoginName());
                 fileRecord.setCreatedDate(now);
                 fileRecord.setFileDate(now);
-
                 fileRecordDto.setFileRecordId(fileRecord.getFileRecordId());
             } else {
                 fileRecord = fileRecordRepo.findById(fileRecordDto.getFileRecordId());
                 BeanCopierUtils.copyPropertiesIgnoreNull(fileRecordDto, fileRecord);
-
                 //先删除拟补充资料函
 //                addRegisterFileRepo.deleteById(AddRegisterFile_.businessId.getName(), fileRecordDto.getSignId());
             }
-            fileRecord.setModifiedBy(SessionUtil.getLoginName());
+            fileRecord.setModifiedBy(SessionUtil.getUserId());
             fileRecord.setModifiedDate(now);
 
             //获取收文信息
@@ -89,9 +86,8 @@ public class FileRecordServiceImpl implements FileRecordService {
                 addRegisterFileRepo.bathUpdate(registerFileList);
             }*/
 
-
             fileRecordRepo.save(fileRecord);
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileRecordDto);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileRecord.getFileRecordId());
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，无法获取项目信息！");
         }
@@ -112,11 +108,9 @@ public class FileRecordServiceImpl implements FileRecordService {
         FileRecord fileRecord = fileRecordRepo.findById("signid",signid);
         if (fileRecord != null && Validate.isString(fileRecord.getFileRecordId())) {
             BeanCopierUtils.copyProperties(fileRecord, fileRecordDto);
-
             //查询补充资料函信息
             List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(),signid,null);
             if(Validate.isList(registerFileList)){
-
                 registerFileList.forEach(rgf -> {
                     AddRegisterFileDto dto = new AddRegisterFileDto();
                     BeanCopierUtils.copyProperties(rgf,dto);
@@ -149,8 +143,6 @@ public class FileRecordServiceImpl implements FileRecordService {
             fileRecordDto.setFileTitle(fileTitle);
             //是否协审
             fileRecordDto.setIsassistproc(sign.getIsassistproc());
-
-
         }
 
         fileRecordDto.setRegisterFileDto(dtoList);

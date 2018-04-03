@@ -52,9 +52,9 @@
             fileRecordSvc.saveFileRecord(vm,function(data){
                 vm.isCommit = false;
                 if(data.flag || data.reCode == 'ok'){
-                    vm.fileRecord = data.reObj;
-                    vm.fileRecord.signId = vm.signId;
-                    bsWin.success("操作成功！");
+                    //重新加载页面
+                    vm.fileRecord.fileRecordId = data.reObj;
+                    bsWin.alert("修改成功！");
                 }else{
                     bsWin.error(response.data.reMsg);
                 }
@@ -116,8 +116,8 @@
         vm.saveRegisterFile = function () {
             addRegisterFileSvc.saveRegisterFile(vm.addRegisters, function (data) {
                 if (data.flag || data.reCode == 'ok') {
-                    bsWin.alert("操作成功");
                     vm.addRegisters = data.reObj;
+                    bsWin.alert("操作成功");
                 } else {
                     bsWin.alert(data.reMsg);
                 }

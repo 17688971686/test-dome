@@ -9,7 +9,6 @@
         var service = {
             initFileRecordData: initFileRecordData,		//初始化流程数据
             saveFileRecord: saveFileRecord,				//保存
-
         };
         return service;
 
@@ -57,6 +56,7 @@
             common.initJqValidation($("#fileRecord_form"));
             var isValid = $("#fileRecord_form").valid();
             if (isValid) {
+                //查找选定的签收人
                 vm.signUserList.forEach(function(su,index){
                     if(vm.fileRecord.signUserid == su.id){
                         vm.fileRecord.signUserName = su.displayName;
