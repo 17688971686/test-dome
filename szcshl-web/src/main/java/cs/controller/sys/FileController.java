@@ -743,6 +743,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     String mianChargeSuggest = dispatchDoc.getMianChargeSuggest();
                     String main = null;
                     String second = null;
+                    String sugge=null;
+                    String vice=null;
                     if (Validate.isString(mianChargeSuggest)) {
                         main = mianChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
                     }
@@ -750,8 +752,19 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     if (Validate.isString(secondChargeSuggest)) {
                         second = secondChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
                     }
+                    String ministerSuggesttion=dispatchDoc.getMinisterSuggesttion();
+                    if(Validate.isString(ministerSuggesttion)){
+                        sugge = ministerSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
+
+                    }
+                    String viceDirectorSuggesttion=dispatchDoc.getViceDirectorSuggesttion();
+                    if(Validate.isString(viceDirectorSuggesttion)){
+                        vice = viceDirectorSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
+
+                    }
                     dispatchData.put("mianChargeSuggest", main);
                     dispatchData.put("secondChargeSuggest", second);
+                    dispatchData.put("ministerSuggesttion",sugge);
 
                     if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
                         //建议书

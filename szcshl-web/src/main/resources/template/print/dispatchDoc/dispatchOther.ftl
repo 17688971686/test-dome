@@ -1421,7 +1421,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">    签名：</w:t>
+                                        <w:t xml:space="preserve"></w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
