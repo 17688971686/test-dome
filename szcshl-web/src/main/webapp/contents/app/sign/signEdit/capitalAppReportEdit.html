@@ -141,7 +141,7 @@
                                ng-click="vm.model.sugProDealCount = initInputValue($event,vm.model.sugProDealCount)"
                                ng-model="vm.model.sugProDealOriginal"
                                name="sugProDealOriginal" id="addOriginal"
-                               ng-true-value="9" ng-false-value="0">
+                               ng-true-value="9" ng-false-value="0"  ng-checked="vm.model.sugProDealOriginal==9" >
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
@@ -158,7 +158,7 @@
                                ng-click="vm.model.capitalAppReportCount = initInputValue($event,vm.model.capitalAppReportCount)"
                                ng-model="vm.model.capitalAppReportOriginal"
                                id="capitalAppReportOriginal" ng-true-value="9"
-                               ng-false-value="0">
+                               ng-false-value="0"  ng-checked="vm.model.capitalAppReportOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;"
@@ -178,7 +178,7 @@
                                ng-click="vm.model.sugFileDealCount = initInputValue($event,vm.model.sugFileDealCount)"
                                ng-model="vm.model.sugFileDealOriginal"
                                id="sugFileDealOriginal" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0"  ng-checked="vm.model.sugFileDealOriginal==9"></td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm"
                                ng-model="vm.model.sugFileDealCount" id="sugFileDealCount"
@@ -206,7 +206,7 @@
                                ng-click="vm.model.sugOrgApplyCount = initInputValue($event,vm.model.sugOrgApplyCount)"
                                ng-model="vm.model.sugOrgApplyOriginal"
                                id="sugOrgApplyOriginal" ng-true-value="9"
-                               ng-false-value="0">
+                               ng-false-value="0"  ng-checked="vm.model.sugOrgApplyOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;"
@@ -224,7 +224,7 @@
                                ng-click="vm.model.sugMeetCount = initInputValue($event,vm.model.sugMeetCount)"
                                ng-model="vm.model.sugMeetOriginal"
                                id="sugMeetOriginal" ng-true-value="9"
-                               ng-false-value="0">
+                               ng-false-value="0" ng-checked="vm.model.sugMeetOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
@@ -242,7 +242,7 @@
                                ng-click="vm.model.sugOrgReqCount = initInputValue($event,vm.model.sugOrgReqCount)"
                                ng-model="vm.model.sugOrgReqOriginal"
                                id="sugOrgReqOriginal" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0" ng-checked="vm.model.sugOrgReqOriginal==9"></td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
                                ng-model="vm.model.sugOrgReqCount"

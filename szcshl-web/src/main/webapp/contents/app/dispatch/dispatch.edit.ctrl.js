@@ -64,34 +64,54 @@
                             title: "询问提示",
                             message: "您要进行项目关联么？",
                             onOk: function () {
-                                //根据项目名称，查询要关联阶段的项目
-                                if(!vm.searchAssociateSign){
-                                    vm.searchAssociateSign = {
-                                        signid : vm.sign.signid,
-                                        projectname : vm.sign.projectname,
-                                    };
+                                if(!vm.ss){
+                                    vm.page=lgx.page.init({id: "demo5",get:function(o){
+                                        //根据项目名称，查询要关联阶段的项目
+                                        if (!vm.price) {
+                                            vm.price = {
+                                                signid: vm.sign.signid,
+                                                projectname: vm.sign.projectname,
+                                            };
+                                        }
+                                        vm.price.reviewstage = vm.sign.reviewstage; //设置评审阶段
+                                        var skip;
+                                        //oracle的分页不一样。
+                                        if(o.skip!=0){
+                                            skip=o.skip+1
+                                        }else{
+                                            skip=o.skip
+                                        }
+                                        vm.price.skip=skip;//页码
+                                        vm.price.size=o.size+o.skip;//页数
+                                        signSvc.getAssociateSignGrid(vm, function (data) {
+                                            vm.associateSignList =[];
+                                            if (data) {
+                                                vm.associateSignList = data.value;
+                                                vm.page.callback(data.count);//请求回调时传入总记录数
+                                            }
+                                            vm.ss=true;
+                                        });
+                                        //alert("当前页："+o.number+"，从数据库的位置1"+o.skip+"起，查"+o.size+"条数据");
+                                        //需在这里发起ajax请求查询数据，请求成功后需调用callback方法重新计算分页
+
+                                    }});
+
+                                }else{
+                                    vm.page.selPage(1);
                                 }
-                                vm.searchAssociateSign.reviewstage = vm.dispatchDoc.dispatchStage; //设置评审阶段
-                                signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
-                                    vm.currentAssociateSign = vm.sign;
-                                    vm.associateSignList = [];
-                                    vm.noassociateSign = false; //查询结果标识
-                                    if(data && data.length>0){
-                                        vm.associateSignList = data;
-                                    }else{
-                                        vm.noassociateSign = true;  //没有关联数据
-                                    }
-                                    //选中要关联的项目
-                                    $("#associateWindow").kendoWindow({
-                                        width: "80%",
-                                        height: "620px",
-                                        title: "项目关联",
-                                        visible: false,
-                                        modal: true,
-                                        closable: true,
-                                        actions: ["Pin", "Minimize", "Maximize", "close"]
-                                    }).data("kendoWindow").center().open();
-                                });
+
+
+                                //选中要关联的项目
+                                $("#associateWindow").kendoWindow({
+                                    width: "75%",
+                                    height: "650px",
+                                    title: "项目关联",
+                                    visible: false,
+                                    modal: true,
+                                    closable: true,
+                                    actions: ["Pin", "Minimize", "Maximize", "close"],
+                                }).data("kendoWindow").center().open();
+
                             },
                             onCancel : function () {
                                 vm.dispatchDoc.isRelated = 0;

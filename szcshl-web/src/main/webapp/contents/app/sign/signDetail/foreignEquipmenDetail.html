@@ -78,11 +78,11 @@
                     <td style="border-top:none;text-align:right;">项目处理表</td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugProDealOriginal" ng-disabled="true"
-                               name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0">
+                               name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0"  ng-checked="vm.model.sugProDealOriginal==9">
                     </td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugProDealCopy" ng-disabled="true"
-                               name="sugProDealCopy" id="addCopy" ng-true-value="9" ng-false-value="0">
+                               name="sugProDealCopy" id="addCopy" ng-true-value="9" ng-false-value="0"  ng-checked="vm.model.sugProDealCopy==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;" class=" input-sm "
@@ -97,10 +97,10 @@
                         <input type="checkbox" class="newcheckbox"
                                ng-model="vm.model.officialDisposeOriginal" ng-disabled="true"
                                id="officialDisposeOriginal" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0"  ng-checked="vm.model.officialDisposeOriginal==9"></td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.officialDisposeCopy" ng-disabled="true"
-                               id="officialDisposeCopy" ng-true-value="9" ng-false-value="0"></td>
+                               id="officialDisposeCopy" ng-true-value="9" ng-false-value="0"  ng-checked="vm.model.officialDisposeCopy==9"></td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;" class=" input-sm " ng-disabled="true"
                                ng-model="vm.model.officialDisposeCount" name="officialDisposeCount"
@@ -116,13 +116,13 @@
                         <input type="checkbox" class="newcheckbox"
                                ng-model="vm.model.governmentPurchasOriginal"
                                id="governmentPurchasOriginal" ng-disabled="true"
-                               ng-true-value="9" ng-false-value="0">
+                               ng-true-value="9" ng-false-value="0" ng-checked="vm.model.governmentPurchasOriginal==9">
                     </td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.governmentPurchasCopy"
                                id="governmentPurchasCopy" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0" ng-checked="vm.model.governmentPurchasCopy==9"></td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;" class=" input-sm" ng-disabled="true"
                                ng-model="vm.model.governmentPurchasCount" id="governmentPurchasCount"
@@ -135,12 +135,12 @@
                         <input type="checkbox" class="newcheckbox"
                                ng-model="vm.model.managerDeptOriginal" ng-disabled="true"
                                id="managerDeptOriginal" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0"  ng-checked="vm.model.managerDeptOriginal==9"></td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.managerDeptCopy"
                                id="managerDeptCopy" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0"  ng-checked="vm.model.managerDeptCopy==9"></td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;" ng-disabled="true"
                                class=" input-sm "
@@ -157,13 +157,13 @@
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.expertArgumentOriginal"
                                id="expertArgumentOriginal"
-                               ng-true-value="9" ng-false-value="0">
+                               ng-true-value="9" ng-false-value="0" ng-checked="vm.model.expertArgumentOriginal==9">
                     </td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.expertArgumentCopy"
                                id="expertArgumentCopy" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0" ng-checked="vm.model.expertArgumentCopy==9"></td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;"
                                class=" input-sm " ng-disabled="true"
@@ -179,12 +179,12 @@
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.importProductOriginal"
                                id="importProductOriginal" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0" ng-checked="vm.model.importProductOriginal==9"></td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.importProductCopy"
                                id="importProductCopy" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0" ng-checked="vm.model.importProductCopy==9"></td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;"
                                class=" input-sm " ng-disabled="true"
@@ -201,12 +201,12 @@
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.developementOriginal"
                                id="developementOriginal" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0"  ng-checked="vm.model.developementOriginal==9"></td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox"
                                ng-model="vm.model.developementCopy" ng-disabled="true"
                                id="developementCopy" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0"  ng-checked="vm.model.developementCopy==9"></td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;"
                                class=" input-sm "
@@ -222,13 +222,13 @@
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.sprcialDevicesOriginal"
                                id="sprcialDevicesOriginal" ng-true-value="9"
-                               ng-false-value="0">
+                               ng-false-value="0"  ng-checked="vm.model.sprcialDevicesOriginal==9">
                     </td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.sprcialDevicesCopy"
                                id="sprcialDevicesCopy" ng-true-value="9"
-                               ng-false-value="0">
+                               ng-false-value="0"  ng-checked="vm.model.sprcialDevicesCopy==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;"
@@ -246,13 +246,13 @@
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.ortherProjectOriginal"
                                id="ortherProjectOriginal"
-                               ng-true-value="9" ng-false-value="0">
+                               ng-true-value="9" ng-false-value="0" ng-checked="vm.model.ortherProjectOriginal==9">
                     </td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-disabled="true"
                                ng-model="vm.model.ortherProjectCopy"
                                id="ortherProjectCopy" ng-true-value="9"
-                               ng-false-value="0"></td>
+                               ng-false-value="0" ng-checked="vm.model.ortherProjectCopy==9"></td>
                     <td style="border-top:none;">
                         <input type="text"  style="width:40px;text-align:center;border-radius:0px;"
                                class="input-sm " ng-disabled="true"

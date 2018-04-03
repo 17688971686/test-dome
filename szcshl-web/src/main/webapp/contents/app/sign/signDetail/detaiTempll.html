@@ -127,13 +127,13 @@
                     <tr>
                         <td class="item-name">委项目处理表</td>
                         <td>
-                            <input type="checkbox" ng-model="vm.model.sugProDealOriginal"ng-disabled="true" name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0">
+                            <input type="checkbox" ng-model="vm.model.sugProDealOriginal"ng-disabled="true" name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugProDealOriginal==9">
                         </td>
                         <td>
                             <input class="num" type="text" ng-model="vm.model.sugProAdviseCount" name="sugProAdviseCount" ng-readonly="true" id="sugProAdviseCount"data-val="true">
                         </td>
                         <td class="item-name">项目建议书</td>
-                        <td><input type="checkbox" ng-model="vm.model.sugProAdviseOriginal" ng-disabled="true" id="sugProAdviseOriginal" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-model="vm.model.sugProAdviseOriginal" ng-disabled="true" id="sugProAdviseOriginal" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugProAdviseOriginal==9"></td>
                         <td>
                             <input class="num" type="text" ng-model="vm.model.sugProAdviseCount" name="sugProAdviseCount" ng-readonly="true" id="sugProAdviseCount" data-val="true">
                         </td>
@@ -141,7 +141,7 @@
                     <tr>
                         <td class="item-name">委文件处理表</td>
                         <td>
-                            <input type="checkbox" ng-model="vm.model.sugFileDealOriginal" ng-disabled="true"id="sugFileDealOriginal" ng-true-value="9" ng-false-value="0">
+                            <input type="checkbox" ng-model="vm.model.sugFileDealOriginal" ng-disabled="true"id="sugFileDealOriginal" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugFileDealOriginal==9">
                         </td>
                         <td>
                             <input type="text" class="num"  ng-model="vm.model.sugFileDealCount" id="sugFileDealCount" name="sugFileDealCount" ng-readonly="true"
@@ -156,17 +156,17 @@
                     </tr>
                     <tr>
                         <td class="item-name">项目单位申报表</td>
-                        <td><input type="checkbox"  ng-model="vm.model.sugOrgApplyOriginal"id="sugOrgApplyOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox"  ng-model="vm.model.sugOrgApplyOriginal"id="sugOrgApplyOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugOrgApplyOriginal==9"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.studyOrgApplyCount" name="studyOrgApplyCount" ng-readonly="true"
                                    id="studyOrgApplyCount"data-val="true" 12></td>
                         <td class="item-name">相关会议纪要</td>
-                        <td><input type="checkbox"  ng-model="vm.model.sugMeetOriginal" id="sugMeetOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0" ></td>
+                        <td><input type="checkbox"  ng-model="vm.model.sugMeetOriginal" id="sugMeetOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0"  ng-checked="vm.model.sugMeetOriginal==9"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.sugMeetCount" name="sugMeetCount" ng-readonly="true"
                                    id="sugMeetCount"data-val="true"></td>
                     </tr>
                     <tr>
                         <td class="item-name">项目单位请示报告</td>
-                        <td><input type="checkbox" ng-model="vm.model.sugOrgReqOriginal" id="sugOrgReqOriginal" ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-model="vm.model.sugOrgReqOriginal" id="sugOrgReqOriginal" ng-disabled="true"ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugOrgReqOriginal==9"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.sugOrgReqCount" name="sugOrgReqCount" ng-readonly="true"
                                    id="sugOrgReqCount"data-val="true"></td>
                         <td colspan="3" class="item-name">其他（名称需备注）</td>
@@ -198,38 +198,38 @@
                     </tr>
                     <tr>
                         <td class="item-name">委项目处理表</td>
-                        <td><input type="checkbox"  ng-model="vm.model.studyPealOriginal" ng-disabled="true" id="studyPealOriginal"ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox"  ng-model="vm.model.studyPealOriginal" ng-disabled="true" id="studyPealOriginal"ng-true-value="9" ng-false-value="0" ng-checked="vm.model.studyPealOriginal==9"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.studyProDealCount" name="studyProDealCount" ng-readonly="true"
                                    id="studyProDealCount"data-val="true" data-val-digits="只能输入数字"></td>
                         <td colspan="2" class="item-name">环评批复文件</td>
-                        <td><input type="checkbox" ng-model="vm.model.envproReplyCopy" id="envproReplyCopy" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-model="vm.model.envproReplyCopy" id="envproReplyCopy" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.envproReplyCopy==9"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.envproReplyCount" name="envproReplyCount" ng-readonly="true"
                                    id="envproReplyCount"data-val="true" data-val-digits="只能输入数字"></td>
                     </tr>
                     <tr>
                         <td class="item-name">委文件处理表</td>
-                        <td><input type="checkbox" ng-model="vm.model.studyFileDealOriginal"id="studyFileDealOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-model="vm.model.studyFileDealOriginal"id="studyFileDealOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.studyFileDealOriginal==9"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.studyFileDealCount" name="studyFileDealCount" ng-readonly="true"
                                    id="studyFileDealCount"data-val="true" data-val-digits="只能输入数字"></td>
                         <td colspan="2" class="item-name">规划选址批文</td>
-                        <td><input type="checkbox" ng-model="vm.model.planAddrCopy" id="planAddrCopy" ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-model="vm.model.planAddrCopy" id="planAddrCopy" ng-disabled="true"ng-true-value="9" ng-false-value="0" ng-checked="vm.model.planAddrCopy==9"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.planAddrCount" name="planAddrCount" ng-readonly="true"
                                    id="planAddrCount"data-val="true" data-val-digits="只能输入数字"></td>
                     </tr>
                     <tr>
                         <td class="item-name">项目单位申报表</td>
-                        <td><input type="checkbox" ng-model="vm.model.studyOrgApplyOriginal" id="studyOrgApplyOriginal" ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-model="vm.model.studyOrgApplyOriginal" id="studyOrgApplyOriginal" ng-disabled="true"ng-true-value="9" ng-false-value="0" ng-checked="vm.model.studyOrgApplyOriginal==9"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.studyOrgApplyCount" name="studyOrgApplyCount" ng-readonly="true"
                                    id="studyOrgApplyCount"data-val="true" data-val-digits="只能输入数字"></td>
                         <td class="item-name">可研报告</td>
-                        <td><input type="checkbox" ng-model="vm.model.reportOrigin"id="reportOrigin" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
-                        <td><input type="checkbox" ng-model="vm.model.reportCopy"id="reportCopy" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-model="vm.model.reportOrigin"id="reportOrigin" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.reportOrigin==9"></td>
+                        <td><input type="checkbox" ng-model="vm.model.reportCopy"id="reportCopy" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.reportCopy==9"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.reportCount" name="reportCount" ng-readonly="true"
                                    id="reportCount"data-val="true" data-val-digits="只能输入数字"></td>
                     </tr>
                     <tr>
                         <td class="item-name">项目单位请示报告</td>
-                        <td><input type="checkbox" class="newcheckbox" ng-model="vm.model.studyOrgReqOriginal" id="studyOrgReqOriginal" ng-disabled="true"ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" class="newcheckbox" ng-model="vm.model.studyOrgReqOriginal" id="studyOrgReqOriginal" ng-disabled="true"ng-true-value="9" ng-false-value="0" ng-checked="vm.model.studyOrgReqOriginal==9"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.studyOrgReqCount" name="studyOrgReqCount" ng-readonly="true"
                                    id="studyOrgReqCount"data-val="true" data-val-digits="只能输入数字"></td>
                         <td colspan="3" class="item-name">可研报告电子文档</td>
@@ -238,18 +238,18 @@
                     </tr>
                     <tr>
                         <td class="item-name">项目建议书批复</td>
-                        <td><input type="checkbox"  ng-model="vm.model.studyProSugOriginal"id="studyProSugOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox"  ng-model="vm.model.studyProSugOriginal"id="studyProSugOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.studyProSugOriginal==9"></td>
                         <td><input type="text"  class="num"  ng-model="vm.model.studyProSugCount" name="studyProSugCount" ng-readonly="true"
                                    id="studyProSugCount"data-val="true" data-val-digits="只能输入数字"></td>
                         <td class="item-name">节能报告</td>
-                        <td><input type="checkbox" ng-model="vm.model.energyOriginal"  id="energyOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
+                        <td><input type="checkbox" ng-model="vm.model.energyOriginal"  id="energyOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.energyOriginal==9"></td>
                         <td><input type="checkbox" ng-model="vm.model.energyCopy" id="energyCopy" ng-disabled="true" ng-true-value="9" ng-false-value="0"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.energyCount" name="energyCount" ng-readonly="true"
                                    id="energyCount"data-val="true" data-val-digits="只能输入数字"></td>
                     </tr>
                     <tr>
                         <td class="item-name">相关会议纪要</td>
-                        <td><input type="checkbox" ng-model="vm.model.sugMeetOriginal" id="sugMeetOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0" ></td>
+                        <td><input type="checkbox" ng-model="vm.model.sugMeetOriginal" id="sugMeetOriginal" ng-disabled="true" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugMeetOriginal==9"></td>
                         <td><input type="text" class="num"  ng-model="vm.model.sugMeetCount" name="sugMeetCount" ng-readonly="true"
                                   id="sugMeetCount"data-val="true" data-val-digits="只能输入数字"></td>
                         <td colspan="3" class="item-name">其他（名称需备注）</td>
