@@ -55,13 +55,13 @@
             <span style="margin-right: 30px;">
 				<input type="checkbox" class="newcheckbox" ng-model="vm.fileRecord.projectProposalOriginal"
                        ng-click="vm.fileRecord.projectProposalCount = initInputValue($event,vm.fileRecord.projectProposalCount)"
-                       ng-true-value="9" ng-false-value="0">
+                       ng-checked="vm.fileRecord.projectProposalOriginal==9" ng-true-value="9" ng-false-value="0">
             </span>
             复印件 :
             <span style="margin-right: 30px;">
 				<input type="checkbox" class="newcheckbox" ng-model="vm.fileRecord.projectProposalCopy"
                        ng-click="vm.fileRecord.projectProposalCount = initInputValue($event,vm.fileRecord.projectProposalCount)"
-                       ng-true-value="9" ng-false-value="0">
+                       ng-checked="vm.fileRecord.projectProposalCopy==9" ng-true-value="9" ng-false-value="0">
             </span>
             份数 :
             <span>
@@ -81,13 +81,13 @@
             <span style="margin-right: 30px;">
 				<input type="checkbox" class="newcheckbox" ng-model="vm.fileRecord.feasibilityReplyOriginal"
                        ng-click="vm.fileRecord.feasibilityReplyCount = initInputValue($event,vm.fileRecord.feasibilityReplyCount)"
-                       ng-true-value="9" ng-false-value="0">
+                       ng-checked="vm.fileRecord.recordFormOriginal==9" ng-true-value="9" ng-false-value="0">
             </span>
             复印件 :
             <span style="margin-right: 30px;">
 				<input type="checkbox" class="newcheckbox" ng-model="vm.fileRecord.feasibilityReplyCopy"
                        ng-click="vm.fileRecord.feasibilityReplyCount = initInputValue($event,vm.fileRecord.feasibilityReplyCount)"
-                       ng-true-value="9" ng-false-value="0">
+                       ng-checked="vm.fileRecord.recordFormOriginal==9" ng-true-value="9" ng-false-value="0">
             </span>
             份数 :
             <span>

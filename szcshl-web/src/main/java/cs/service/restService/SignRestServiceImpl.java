@@ -540,7 +540,7 @@ public class SignRestServiceImpl implements SignRestService {
              * 4：发文
              */
             ArrayList<HashMap<String, Object>> dataList = new ArrayList<HashMap<String, Object>>();
-            //2.1 收文的办理意见
+            //2.1 收文的办理意见(分管主任意见)
             HashMap<String, Object> psgcMap = new HashMap<String, Object>();
             psgcMap.put("blhj", "1");// 办理环节
             psgcMap.put("psblyj",sign.getLeaderhandlesug());// 办理意见
@@ -560,7 +560,7 @@ public class SignRestServiceImpl implements SignRestService {
                 dataMap.put("sssj", (new Date()).getTime());// 送审日期
                 dataMap.put("psjssj", (new Date()).getTime());// 评审结束时间
 
-                //2.2工作方案环节处理意见
+                //2.2工作方案环节处理意见(主工作方案分管领导意见)
                 psgcMap = new HashMap<String, Object>();
                 psgcMap.put("blhj", "3");// 办理环节
                 psgcMap.put("psblyj",mainWP.getLeaderSuggesttion());// 办理意见
@@ -583,12 +583,12 @@ public class SignRestServiceImpl implements SignRestService {
             dataMap.put("tzksjzjly", dispatchDoc.getFundTotalOrigin());// 投资估算及资金来源
             dataMap.put("xyjdgzyq", dispatchDoc.getNextWorkPlan());// 下一阶段工作要求
 
-            //2.3 发文环节处理意见
+            //2.3 发文环节处理意见(主任意见)
             psgcMap = new HashMap<String, Object>();
             psgcMap.put("blhj", "4");// 办理环节
-            psgcMap.put("psblyj",dispatchDoc.getViceDirectorSuggesttion());// 办理意见
-            psgcMap.put("blr", dispatchDoc.getViceDirectorName());// 办理人
-            psgcMap.put("blsj", dispatchDoc.getViceDirectorDate().getTime());// 办理时间
+            psgcMap.put("psblyj",dispatchDoc.getDirectorSuggesttion());// 办理意见
+            psgcMap.put("blr", dispatchDoc.getDirectorName());// 办理人
+            psgcMap.put("blsj", dispatchDoc.getDirectorDate().getTime());// 办理时间
             dataList.add(psgcMap);
 
             //上传评审报告附件

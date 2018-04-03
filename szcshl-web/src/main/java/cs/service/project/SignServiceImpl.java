@@ -1443,7 +1443,7 @@ public class SignServiceImpl implements SignService {
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 String optionString2 = Validate.isString(dp.getMinisterSuggesttion()) ? (dp.getMinisterSuggesttion() + "<br>") : "";
                 dp.setMinisterSuggesttion(optionString2 + dirDealOption + "&nbsp;" + SessionUtil.getDisplayName() + " &nbsp; " + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-               /* dp.setMinisterDate(new Date());
+                /*dp.setMinisterDate(new Date());
                 dp.setMinisterName(SessionUtil.getDisplayName());*/
                 dispatchDocRepo.save(dp);
                 break;
