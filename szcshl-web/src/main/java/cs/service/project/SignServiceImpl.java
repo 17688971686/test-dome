@@ -885,6 +885,7 @@ public class SignServiceImpl implements SignService {
                     sign.setMinisterDate(new Date());
                     String optionString = Validate.isString(sign.getMinisterhandlesug()) ? (sign.getMinisterhandlesug() + "<br>") : "";
                     sign.setMinisterhandlesug(optionString + flowDto.getDealOption() + " <p style='text-align:right;'>签名：" + SessionUtil.getDisplayName() + "</p>" + "<p style='text-align:right;'> 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日") + "</p>");
+
                     //不是协审项目
                 } else {
                     //主流程处理，一定要有第一负责人
@@ -1442,8 +1443,11 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 String optionString2 = Validate.isString(dp.getMinisterSuggesttion()) ? (dp.getMinisterSuggesttion() + "<br>") : "";
-                dp.setMinisterSuggesttion(optionString2 + dirDealOption + "&nbsp;" + SessionUtil.getDisplayName() + " &nbsp; " + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-                /*dp.setMinisterDate(new Date());
+             /*   dp.setMinisterSuggesttion(optionString2 + dirDealOption + "&nbsp;" + SessionUtil.getDisplayName() + " &nbsp; " + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));*/
+                dp.setMinisterSuggesttion(optionString2 + dirDealOption + " <p style='text-align:right;'>签名：" + SessionUtil.getDisplayName() + "</p>" + "<p style='text-align:right;'> 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日") + "</p>");
+
+
+                /* dp.setMinisterDate(new Date());
                 dp.setMinisterName(SessionUtil.getDisplayName());*/
                 dispatchDocRepo.save(dp);
                 break;
@@ -1504,7 +1508,9 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 String optionString3 = Validate.isString(dp.getMinisterSuggesttion()) ? (dp.getMinisterSuggesttion() + "<br>") : "";
-                dp.setMinisterSuggesttion(optionString3 + flowDto.getDealOption() + "&nbsp;" + SessionUtil.getDisplayName() + "&nbsp;" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+               /* dp.setMinisterSuggesttion(optionString3 + flowDto.getDealOption() + "&nbsp;" + SessionUtil.getDisplayName() + "&nbsp;" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));*/
+                dp.setMinisterSuggesttion(optionString3 + flowDto.getDealOption() + " <p style='text-align:right;'>签名：" + SessionUtil.getDisplayName() + "</p>" + "<p style='text-align:right;'> 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日") + "</p>");
+
                /* dp.setMinisterDate(new Date());
                 dp.setMinisterName(SessionUtil.getDisplayName());*/
                 dispatchDocRepo.save(dp);
@@ -1537,7 +1543,9 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 String vdSugMin = Validate.isString(dp.getViceDirectorSuggesttion()) ? (dp.getViceDirectorSuggesttion() + "<br>") : "";
-                dp.setViceDirectorSuggesttion(vdSugMin + flowDto.getDealOption() + "&nbsp;" + SessionUtil.getDisplayName() + "&nbsp;" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+              /*  dp.setViceDirectorSuggesttion(vdSugMin + flowDto.getDealOption() + "&nbsp;" + SessionUtil.getDisplayName() + "&nbsp;" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+*/
+                dp.setViceDirectorSuggesttion(vdSugMin + flowDto.getDealOption() + " <p style='text-align:right;'>签名：" + SessionUtil.getDisplayName() + "</p>" + "<p style='text-align:right;'> 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日") + "</p>");
 
                 break;
             //分管领导审批发文
@@ -2293,9 +2301,11 @@ public class SignServiceImpl implements SignService {
     @Transactional
     public  PageModelDto<SignDispaWork> findAssociateSignList(String signid,String reviewstage,String projectname,String skip,String size){
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        HqlBuilder sqlBuilders = HqlBuilder.create();
-        sqlBuilder.append("select s.*,rownum as num from SIGN_DISP_WORK s where s." + SignDispaWork_.signid.getName() + " != '"+signid+"' ");
+        HqlBuilder sqlBuilder = HqlBuilder.create();   //基础语句
+        HqlBuilder sqlBuilders = HqlBuilder.create(); //返回list的语句
+        HqlBuilder sqlBuilder1 = HqlBuilder.create();//返回总页数的语句
+
+        sqlBuilder.append("  from SIGN_DISP_WORK s where s." + SignDispaWork_.signid.getName() + " != '"+signid+"' ");
       /*  sqlBuilder.setParam("signid", signid);*/
         //只能是生成发文编号后的项目
         sqlBuilder.append(" and s." + SignDispaWork_.processState.getName() + " >= "+Constant.SignProcessState.END_DIS_NUM.getValue()+" " );
@@ -2320,10 +2330,12 @@ public class SignServiceImpl implements SignService {
             sqlBuilder.append(" and s." + SignDispaWork_.projectname.getName() + " like "+"'%" +projectname + "%'"+"");
            /* sqlBuilder.setParam("projectName", "%" +projectname + "%");*/
         }
-
-        List<SignDispaWork> signLists=signDispaWorkRepo.findBySql(sqlBuilder);
-        int total=signLists.size();
-        sqlBuilders.append("select * from ( ");
+       //返回总页数
+        sqlBuilder1.append("select count(*)");
+        sqlBuilder1.append(sqlBuilder.getHqlString());
+        int total=signDispaWorkRepo.returnIntBySql(sqlBuilder1);
+        //返回list
+        sqlBuilders.append("select * from ( select s.*,rownum as num ");
         sqlBuilders.append(sqlBuilder.getHqlString());
         sqlBuilders.append( ") where num between "+skip+" and "+size+"");
         List<SignDispaWork> signList = signDispaWorkRepo.findBySql(sqlBuilders);

@@ -119,7 +119,7 @@
                     <td style="border-top:none;text-align:center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugProDealOriginal"
                                ng-click="vm.model.sugProDealCount = initInputValue($event,vm.model.sugProDealCount)"
-                               name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0">
+                               name="sugProDealOriginal" id="addOriginal" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugProDealOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm " ng-model="vm.model.sugProDealCount"
@@ -131,7 +131,7 @@
                     <td style="border-top:none;text-align:center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugProAdviseOriginal"
                                ng-click="vm.model.sugProAdviseCount = initInputValue($event,vm.model.sugProAdviseCount)"
-                               id="sugProAdviseOriginal" ng-true-value="9" ng-false-value="0">
+                               id="sugProAdviseOriginal" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugProAdviseOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "  ng-model="vm.model.sugProAdviseCount"
@@ -144,7 +144,7 @@
                     <td style="border-top:none;text-align:center;" >
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugFileDealOriginal"
                                ng-click="vm.model.sugFileDealCount = initInputValue($event,vm.model.sugFileDealCount)" id="sugFileDealOriginal"
-                               ng-true-value="9" ng-false-value="0">
+                               ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugFileDealOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm"
@@ -167,7 +167,7 @@
                     <td style="border-top:none;text-align:center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugOrgApplyOriginal"
                                ng-click="vm.model.sugOrgApplyCount = initInputValue($event,vm.model.sugOrgApplyCount)"
-                               id="sugOrgApplyOriginal" ng-true-value="9" ng-false-value="0">
+                               id="sugOrgApplyOriginal" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugOrgApplyOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
@@ -179,7 +179,7 @@
                     <td style="border-top:none;text-align:center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.sugMeetOriginal"
                                ng-click="vm.model.sugMeetCount = initInputValue($event,vm.model.sugMeetCount)"
-                               id="sugMeetOriginal" ng-true-value="9" ng-false-value="0" >
+                               id="sugMeetOriginal" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugMeetOriginal==9" >
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
@@ -194,7 +194,7 @@
                     <td style="border-top:none;text-align:center;">
                         <input type="checkbox" class="newcheckbox"  ng-model="vm.model.sugOrgReqOriginal"
                                ng-click="vm.model.sugOrgReqCount = initInputValue($event,vm.model.sugOrgReqCount)"
-                               id="sugOrgReqOriginal"ng-true-value="9" ng-false-value="0">
+                               id="sugOrgReqOriginal"ng-true-value="9" ng-false-value="0" ng-checked="vm.model.sugOrgReqOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
@@ -230,7 +230,7 @@
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.studyPealOriginal"
                                ng-click="vm.model.studyProDealCount = initInputValue($event,vm.model.studyProDealCount)"
-                               id="studyPealOriginal" ng-true-value="9" ng-false-value="0">
+                               id="studyPealOriginal" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.studyPealOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
@@ -245,7 +245,7 @@
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.envproReplyCopy"
                                ng-click="vm.model.envproReplyCount = initInputValue($event,vm.model.envproReplyCount)"
-                               id="envproReplyCopy"ng-true-value="9" ng-false-value="0">
+                               id="envproReplyCopy"ng-true-value="9" ng-false-value="0"  ng-checked="vm.model.envproReplyCopy==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "  ng-model="vm.model.envproReplyCount"
@@ -258,7 +258,7 @@
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox"  ng-model="vm.model.studyFileDealOriginal"
                                ng-click="vm.model.studyFileDealCount = initInputValue($event,vm.model.studyFileDealCount)"
-                               id="studyFileDealOriginal" ng-true-value="9" ng-false-value="0">
+                               id="studyFileDealOriginal" ng-true-value="9" ng-false-value="0"  ng-checked="vm.model.studyFileDealOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
@@ -272,7 +272,7 @@
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.planAddrCopy"
                                ng-click="vm.model.planAddrCount = initInputValue($event,vm.model.planAddrCount)"
-                               id="planAddrCopy"ng-true-value="9" ng-false-value="0">
+                               id="planAddrCopy"ng-true-value="9" ng-false-value="0" ng-checked="vm.model.planAddrCopy==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
@@ -286,7 +286,7 @@
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.studyOrgApplyOriginal"
                                ng-click="vm.model.studyOrgApplyCount = initInputValue($event,vm.model.studyOrgApplyCount)"
-                               id="studyOrgApplyOriginal"ng-true-value="9" ng-false-value="0">
+                               id="studyOrgApplyOriginal"ng-true-value="9" ng-false-value="0"  ng-checked="vm.model.studyOrgApplyOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
@@ -299,12 +299,12 @@
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.reportOrigin"
                                ng-click="vm.model.reportCount = initInputValue($event,vm.model.reportCount)"
-                               id="reportOrigin" ng-true-value="9" ng-false-value="0">
+                               id="reportOrigin" ng-true-value="9" ng-false-value="0"  ng-checked="vm.model.reportOrigin==9">
                     </td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.reportCopy"
                                ng-click="vm.model.reportCount = initInputValue($event,vm.model.reportCount)"
-                               id="reportCopy" ng-true-value="9" ng-false-value="0">
+                               id="reportCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.reportCopy==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
@@ -318,7 +318,7 @@
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.studyOrgReqOriginal"
                                ng-click="vm.model.studyOrgReqCount = initInputValue($event,vm.model.studyOrgReqCount)"
-                               id="studyOrgReqOriginal"ng-true-value="9" ng-false-value="0">
+                               id="studyOrgReqOriginal"ng-true-value="9" ng-false-value="0" ng-checked="vm.model.studyOrgReqOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "  ng-model="vm.model.studyOrgReqCount"
@@ -341,7 +341,7 @@
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox"  ng-model="vm.model.studyProSugOriginal"
                               ng-click="vm.model.studyProSugCount = initInputValue($event,vm.model.studyProSugCount)"
-                               id="studyProSugOriginal" ng-true-value="9" ng-false-value="0">
+                               id="studyProSugOriginal" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.studyProSugOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "  ng-model="vm.model.studyProSugCount"
@@ -353,12 +353,12 @@
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.energyOriginal"
                                ng-click="vm.model.energyCount = initInputValue($event,vm.model.energyCount)"
-                               id="energyOriginal"ng-true-value="9" ng-false-value="0">
+                               id="energyOriginal"ng-true-value="9" ng-false-value="0" ng-checked="vm.model.energyOriginal==9">
                     </td>
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.energyCopy"
                                ng-click="vm.model.energyCount = initInputValue($event,vm.model.energyCount)"
-                               id="energyCopy" ng-true-value="9" ng-false-value="0">
+                               id="energyCopy" ng-true-value="9" ng-false-value="0" ng-checked="vm.model.energyCopy==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "
@@ -372,7 +372,7 @@
                     <td style="border-top:none;text-align: center;">
                         <input type="checkbox" class="newcheckbox" ng-model="vm.model.studyMeetOriginal"
                                ng-click="vm.model.studyMeetCount = initInputValue($event,vm.model.studyMeetCount)"
-                               id="studyMeetOriginal"ng-true-value="9" ng-false-value="0">
+                               id="studyMeetOriginal"ng-true-value="9" ng-false-value="0"  ng-checked="vm.model.studyMeetOriginal==9">
                     </td>
                     <td style="border-top:none;">
                         <input type="text" style="width:40px;text-align:center;" class="form-control input-sm "  ng-model="vm.model.studyMeetCount"

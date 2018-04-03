@@ -750,21 +750,24 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }
                     String secondChargeSuggest = dispatchDoc.getSecondChargeSuggest();
                     if (Validate.isString(secondChargeSuggest)) {
-                        second = secondChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
+                        second = secondChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "")   ;
                     }
                     String ministerSuggesttion=dispatchDoc.getMinisterSuggesttion();
                     if(Validate.isString(ministerSuggesttion)){
-                        sugge = ministerSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
+                        sugge = ministerSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "")
+                                .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "").replaceAll(" ", "");
 
                     }
                     String viceDirectorSuggesttion=dispatchDoc.getViceDirectorSuggesttion();
                     if(Validate.isString(viceDirectorSuggesttion)){
-                        vice = viceDirectorSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
+                        vice = ministerSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "")
+                                .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "").replaceAll(" ", "");
 
                     }
                     dispatchData.put("mianChargeSuggest", main);
                     dispatchData.put("secondChargeSuggest", second);
                     dispatchData.put("ministerSuggesttion",sugge);
+                    dispatchData.put("viceDirectorSuggesttion",vice);
 
                     if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
                         //建议书
