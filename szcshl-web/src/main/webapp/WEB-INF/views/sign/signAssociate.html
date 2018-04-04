@@ -5,12 +5,12 @@
     <div class="well well-sm" style="background:white;margin-bottom: 0px;">
         <div class="well well-sm">
             <form id="searchform" name="searchform">
-                <input name="signid" ng-model="vm.searchAssociateSign.signid" operator="ne" ng-hide="true">
+                <input name="signid" ng-model="vm.price.signid" operator="ne" ng-hide="true">
                 <span class="help-inline">项目名称：</span>
-                <input type="text" operator="like" ng-model="vm.searchAssociateSign.projectname" name="projectname" id="projectnam" placeholder="请输入">
+                <input type="text" operator="like" ng-model="vm.price.projectname" name="projectname" id="projectnam" placeholder="请输入">
 
                 <span class="help-inline" style="margin-left:10px;">项目编号：</span>
-                <input type="text" operator="eq" name="projectcode" ng-model="vm.searchAssociateSign.projectcode" id="projectcode" placeholder="请输入">
+                <input type="text" operator="eq" name="projectcode" ng-model="vm.price.projectcode" id="projectcode" placeholder="请输入">
 
                 <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.associateQuerySign()">查询</a>
             </form>

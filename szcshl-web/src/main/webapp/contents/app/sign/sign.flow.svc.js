@@ -387,10 +387,10 @@
                     break;
                 //归档
                 case flowcommon.getSignFlowNode().SIGN_GD:
-                    if(vm.model.processState < 7 ){
+                /*    if(vm.model.processState < 7 ){
                         resultObj.resultTag = false;
                         resultObj.resultMsg = "您还没完成归档操作，不能进行下一步操作！";
-                    }
+                    }*/
                     break;
                 //第二负责人确认归档
                 case flowcommon.getSignFlowNode().SIGN_DSFZR_QRGD:

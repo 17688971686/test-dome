@@ -1670,6 +1670,11 @@ public class SignServiceImpl implements SignService {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对单位进行评分,不能提交到下一步操作！");
                 }
 
+                //如果没有完成归档信息，则不可以提交下一步
+                if (fileRecordRepo.isFileRecord(signid) ) {
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成归档操作，不能进行下一步操作！");
+                }
+
                 //如果有第二负责人审核
                 if (flowDto.getBusinessMap().get("checkFileUser") != null) {
                     dealUser = JSON.parseObject(flowDto.getBusinessMap().get("checkFileUser").toString(), User.class);

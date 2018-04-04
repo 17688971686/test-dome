@@ -52,6 +52,7 @@
             signSvc.initFlowPageData(vm.model.signid, function (data) {
                 vm.model = data;
                 vm.dispatchDoc=vm.model.dispatchDocDto;
+
                 vm.fileRecordDto=vm.model.fileRecordDto;
                 if(vm.model.workProgramDtoList){
                     for(var i=0;i<vm.model.workProgramDtoList.length;i++){

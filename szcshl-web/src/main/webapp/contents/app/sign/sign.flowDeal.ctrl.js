@@ -297,6 +297,12 @@
                                 vm.showFlag.tabSysFile = true;
                                 vm.sysFileList = data;
                                 sysfileSvc.initZtreeClient(vm, $scope);//树形图
+                            }else{
+                                vm.showFlag.tabSysFile=false;
+                                $('#myTab a:first').tab('show');// 选取第一个标签页
+                                //打开标签页
+                                $(".tab-pane").removeClass("active").removeClass("in");
+                                $("#sign_detail").addClass("active").addClass("in").show(500);
                             }
                         });
                     })
@@ -779,11 +785,13 @@
 
         //关联项目条件查询
         vm.associateQuerySign = function () {
-            signSvc.getAssociateSign(vm.searchAssociateSign, function (data) {
-                vm.associateSignList = [];
+            signSvc.getAssociateSignGrid(vm, function (data) {
+                vm.associateSignList =[];
                 if (data) {
-                    vm.associateSignList = data;
+                    vm.associateSignList = data.value;
+                    vm.page.callback(data.count);//请求回调时传入总记录数
                 }
+
             });
         }
 
