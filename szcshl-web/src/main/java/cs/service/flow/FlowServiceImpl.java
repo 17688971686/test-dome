@@ -446,16 +446,17 @@ public class FlowServiceImpl implements FlowService {
         criteria.add(disj);
 
         List<RuProcessTask> runProcessList = null;
+        String curUserId = SessionUtil.getUserId();
         //在办任务也包含待办任务，所以要加上这个条件
         if (isUserDeal) {
             Disjunction dis = Restrictions.disjunction();
-            dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), SessionUtil.getUserId()));
-            dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
+            dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId));
+            dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + curUserId + "%"));
             criteria.add(dis);
             criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
             runProcessList = criteria.list();
         }else{
-            String curUserId = SessionUtil.getUserId();
+
             if(leaderFlag != 1){
                 Disjunction dis2 = Restrictions.disjunction();
                 dis2.add(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId));
@@ -471,6 +472,8 @@ public class FlowServiceImpl implements FlowService {
                     for(String orgId:orgIdList){
                         dis2.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
                     }
+                    //分管领导id等于当前人
+                    dis2.add(Restrictions.sqlRestriction(" (select count(cs.signid) from cs_sign cs where cs.signid = this_.businessKey and cs.leaderId = '"+curUserId+"') > 0 "));
                 }else if(leaderFlag == 3 && Validate.isList(orgIdList)){
                     //部长
                     String orgId = orgIdList.get(0);

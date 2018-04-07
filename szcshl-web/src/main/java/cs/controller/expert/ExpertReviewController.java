@@ -154,7 +154,7 @@ public class ExpertReviewController {
 */
 
     //查找专家当月的评审费用
-    @RequiresAuthentication
+    /*@RequiresAuthentication
     @RequestMapping(name = "获取专家某月的评审费用", path = "getExpertReviewCost", method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String, Object>> getExpertReviewCost(
@@ -162,15 +162,7 @@ public class ExpertReviewController {
             @RequestParam(required = true) String expertIds,
             @RequestParam(required = true) String month, HttpServletRequest request) {
         return expertReviewService.getExpertReviewCost(reviewId, expertIds, month);
-    }
-
-    //保存评审费用(多个)
-    @RequiresAuthentication
-    @RequestMapping(name = "保存评审费用", path = "html/saveExpertReviewCost", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void saveExpertReviewCost(@RequestBody ExpertReviewDto[] expertReviews) throws ParseException {
-        expertReviewService.saveExpertReviewCost(expertReviews);
-    }
+    }*/
 
     //保存评审费用(单个)
     @RequiresAuthentication
@@ -179,6 +171,16 @@ public class ExpertReviewController {
     public ResultMsg saveExpertReviewCostSingle(@RequestBody ExpertReviewDto expertReview) {
         return expertReviewService.saveExpertReviewCost(expertReview);
     }
+
+    //保存评审费用(多个)
+   /* @RequiresAuthentication
+    @RequestMapping(name = "保存评审费用", path = "html/saveExpertReviewCost", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void saveExpertReviewCost(@RequestBody ExpertReviewDto[] expertReviews) throws ParseException {
+        expertReviewService.saveExpertReviewCost(expertReviews);
+    }*/
+
+
 
     //保存新的专家信息
     @RequiresAuthentication

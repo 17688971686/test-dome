@@ -38,7 +38,7 @@ public interface ExpertReviewService {
      * @param month
      * @return
      */
-    List<Map<String,Object>> getExpertReviewCost(String reviewId,String expertIds, String month);
+    List<Object[]> getExpertReviewCost(String reviewId,String expertIds, String month);
 
 	//List<Map<String,Object>> getExpertInfo();
 
@@ -49,9 +49,9 @@ public interface ExpertReviewService {
      * @param month
      * @return
      */
-    List<Object[]> countExpertReviewCost(String expertReviewId, String month);
+   /* List<Object[]> countExpertReviewCost(String expertReviewId, String month);*/
 
-    void saveExpertReviewCost(ExpertReviewDto[]  expertReviews);
+    //void saveExpertReviewCost(ExpertReviewDto[]  expertReviews);
 
 	/**
 	 * 保存专家评审费用
@@ -61,8 +61,14 @@ public interface ExpertReviewService {
 	ResultMsg saveExpertReviewCost(ExpertReviewDto  expertReview);
 
 	/**
+	 * 计算此次专家评审费用
+	 * @param expertReview
+	 * @return
+	 */
+	List<Map<String,Object>> countReviewExpense(ExpertReview expertReview);
+	/**
 	 * 保存最新的专家信息
-	 * @param expertNewInfoDto
+	 * @param expertReviewNewInfoDtos
 	 * @return
 	 */
 

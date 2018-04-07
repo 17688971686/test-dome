@@ -5,10 +5,10 @@
 
     sign.$inject = ['sysfileSvc', 'signSvc', 'workprogramSvc', '$state', 'flowSvc', 'signFlowSvc', 'ideaSvc',
         'addRegisterFileSvc', 'expertReviewSvc', '$scope', 'bsWin', 'financialManagerSvc', 'assistCostCountSvc',
-        'addCostSvc', 'templatePrintSvc','companySvc'];
+        'addCostSvc', 'templatePrintSvc', 'companySvc'];
 
     function sign(sysfileSvc, signSvc, workprogramSvc, $state, flowSvc, signFlowSvc, ideaSvc, addRegisterFileSvc,
-                  expertReviewSvc, $scope, bsWin, financialManagerSvc, assistCostCountSvc, addCostSvc, templatePrintSvc,companySvc) {
+                  expertReviewSvc, $scope, bsWin, financialManagerSvc, assistCostCountSvc, addCostSvc, templatePrintSvc, companySvc) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -18,9 +18,9 @@
         vm.dispatchDoc = {};    //发文
         vm.fileRecord = {};     //归档
         vm.expertReview = {};   //评审方案
-        vm.queryParams={};  //返回时。列表数据不变
+        vm.queryParams = {};  //返回时。列表数据不变
         vm.work = {};
-        vm.isDisplay=true;   //附件显示删除按钮
+        vm.isDisplay = true;   //附件显示删除按钮
         vm.expertList = new Array(15); //用于打印页面的专家列表，控制行数
         //按钮显示控制，全部归为这个对象控制
         vm.showFlag = {
@@ -108,7 +108,7 @@
             sysfileSvc.initUploadOptions({
                 inputId: "sysfileinput",
                 vm: vm,
-                uploadSuccess:function(){
+                uploadSuccess: function () {
                     sysfileSvc.findByMianId(vm.model.signid, function (data) {
                         if (data && data.length > 0) {
                             vm.showFlag.tabSysFile = true;
@@ -126,7 +126,7 @@
                 vm.model.showDiv = deObj.attr("for-div");
 
                 //判断是否有工作方案,并且是正在发文环节的，有工作方案则显示会前材料按钮
-                if( vm.model.processState == 3 || vm.model.processState == 4){
+                if (vm.model.processState == 3 || vm.model.processState == 4) {
                     vm.showMeterial = true;
                 }
                 //发文
@@ -144,10 +144,10 @@
                 }
                 //完成工作方案时到发文环节，默认评审发放日期为当天
                 /*if( vm.model.processState == 3 || vm.model.processState == 4){
-                    if( vm.model.expertReviewDto){
-                        vm.model.expertReviewDto.payDate = new Date().Format("yyyy-MM-dd");
-                    }
-                }*/
+                 if( vm.model.expertReviewDto){
+                 vm.model.expertReviewDto.payDate = new Date().Format("yyyy-MM-dd");
+                 }
+                 }*/
 
                 //归档
                 if (vm.model.fileRecordDto) {
@@ -159,67 +159,67 @@
                 //通过评估部门的个数来控制总投资字段  修改于（2018-01-16）
                 if (vm.model.workProgramDtoList && vm.model.workProgramDtoList.length > 0) {
                     var orgStr;
-                    if(vm.model.workProgramDtoList[0].branchId == '1' ||vm.model.workProgramDtoList[0].branchId == '1' ){
+                    if (vm.model.workProgramDtoList[0].branchId == '1' || vm.model.workProgramDtoList[0].branchId == '1') {
                         orgStr = vm.model.workProgramDtoList[0].reviewOrgName;
-                    }else{
+                    } else {
                         orgStr = vm.model.workProgramDtoList[0].mainWorkProgramDto.reviewOrgName;
                     }
-                    if(orgStr != '' && orgStr.split(',').length > 1){
+                    if (orgStr != '' && orgStr.split(',').length > 1) {
 
                         vm.showTotalInvestment = true;
                     }
 
                     //进行专家的专业类别拼接
-                    for(var i=0;i<vm.model.workProgramDtoList.length;i++){
-                        var workProgramDtoList=vm.model.workProgramDtoList;//进行存值
+                    for (var i = 0; i < vm.model.workProgramDtoList.length; i++) {
+                        var workProgramDtoList = vm.model.workProgramDtoList;//进行存值
                         //判断下是否有拟请的专家
-                         if(workProgramDtoList[i].expertDtoList){
-                             var expertDtoList=workProgramDtoList[i].expertDtoList;//进行存值
-                           for(var j=0;j<expertDtoList.length;j++){
-                               //判断下专家是否有专业类别
-                               if(expertDtoList[j].expertTypeDtoList){
-                                   var expertTypeList=expertDtoList[j].expertTypeDtoList;//进行存值
-                                   var major="";//专业
-                                   var expertCategory=""//专业类别
-                                   for(var k=0;k<expertTypeList.length;k++){
-                                       if(expertCategory.indexOf(expertTypeList[k].expertType)<0){
-                                           if(k>0){
-                                               expertCategory+="、"
-                                           }
-                                           expertCategory+=expertTypeList[k].expertType;
-                                       }
-                                       if(k>0){
-                                           major+="、"
-                                       }
-                                       major+=expertTypeList[k].maJorBig+"、"+expertTypeList[k].maJorSmall;
+                        if (workProgramDtoList[i].expertDtoList) {
+                            var expertDtoList = workProgramDtoList[i].expertDtoList;//进行存值
+                            for (var j = 0; j < expertDtoList.length; j++) {
+                                //判断下专家是否有专业类别
+                                if (expertDtoList[j].expertTypeDtoList) {
+                                    var expertTypeList = expertDtoList[j].expertTypeDtoList;//进行存值
+                                    var major = "";//专业
+                                    var expertCategory = ""//专业类别
+                                    for (var k = 0; k < expertTypeList.length; k++) {
+                                        if (expertCategory.indexOf(expertTypeList[k].expertType) < 0) {
+                                            if (k > 0) {
+                                                expertCategory += "、"
+                                            }
+                                            expertCategory += expertTypeList[k].expertType;
+                                        }
+                                        if (k > 0) {
+                                            major += "、"
+                                        }
+                                        major += expertTypeList[k].maJorBig + "、" + expertTypeList[k].maJorSmall;
 
-                                   }
-                                   expertDtoList[j].expertCategory=expertCategory;
-                                   expertDtoList[j].major=major;
-                               }
-                           }
+                                    }
+                                    expertDtoList[j].expertCategory = expertCategory;
+                                    expertDtoList[j].major = major;
+                                }
+                            }
 
-                         }
+                        }
                     }
 
 
-                   /* for (var i = 0; i < vm.model.workProgramDtoList.length; i++) {
-                        var reviewStage = vm.model.workProgramDtoList[i].reviewstage;
-                        if (reviewStage && reviewStage == '项目建议书') {
-                             = vm.model.workProgramDtoList[i];
-                        }
-                    vm.workProgramXmjys       if (reviewStage && reviewStage == '可行性研究报告') {
-                            vm.workProgramKxxyj = vm.model.workProgramDtoList[i];
-                        }
-                        if (reviewStage && reviewStage == '项目概算' &&
-                            (!vm.model.ischangeEstimate || vm.model.ischangeEstimate != 9 || vm.model.ischangeEstimate != '9')) {
-                            vm.workProgramXmgs = vm.model.workProgramDtoList[i];
-                        }
-                        if (reviewStage && reviewStage == '项目概算' &&
-                            vm.model.ischangeEstimate && (vm.model.ischangeEstimate == 9 || vm.model.ischangeEstimate == '9')) {
-                            vm.workProgramTg = vm.model.workProgramDtoList[i];
-                        }
-                    }*/
+                    /* for (var i = 0; i < vm.model.workProgramDtoList.length; i++) {
+                     var reviewStage = vm.model.workProgramDtoList[i].reviewstage;
+                     if (reviewStage && reviewStage == '项目建议书') {
+                     = vm.model.workProgramDtoList[i];
+                     }
+                     vm.workProgramXmjys       if (reviewStage && reviewStage == '可行性研究报告') {
+                     vm.workProgramKxxyj = vm.model.workProgramDtoList[i];
+                     }
+                     if (reviewStage && reviewStage == '项目概算' &&
+                     (!vm.model.ischangeEstimate || vm.model.ischangeEstimate != 9 || vm.model.ischangeEstimate != '9')) {
+                     vm.workProgramXmgs = vm.model.workProgramDtoList[i];
+                     }
+                     if (reviewStage && reviewStage == '项目概算' &&
+                     vm.model.ischangeEstimate && (vm.model.ischangeEstimate == 9 || vm.model.ischangeEstimate == '9')) {
+                     vm.workProgramTg = vm.model.workProgramDtoList[i];
+                     }
+                     }*/
 
                 }
 
@@ -235,19 +235,19 @@
                     vm.showSupperIndex = 0;
                 }
                 //拟补充资料信息
-                if(vm.model.registerFileDtoDtoList!=undefined){
-                    vm.supply=[];//拟补充资料
-                    vm.registerFile=[];//其他资料
-                    vm.drawingFile=[];//图纸资料
-                    vm.otherFile=[];//归档的其他资料
-                    vm.model.registerFileDtoDtoList.forEach(function(registerFile  , x){
-                        if(registerFile.businessType ==3){
+                if (vm.model.registerFileDtoDtoList != undefined) {
+                    vm.supply = [];//拟补充资料
+                    vm.registerFile = [];//其他资料
+                    vm.drawingFile = [];//图纸资料
+                    vm.otherFile = [];//归档的其他资料
+                    vm.model.registerFileDtoDtoList.forEach(function (registerFile, x) {
+                        if (registerFile.businessType == 3) {
                             vm.supply.push(registerFile);
-                        }else if(registerFile.businessType ==2){
+                        } else if (registerFile.businessType == 2) {
                             vm.drawingFile.push(registerFile);
-                        }else if(registerFile.businessType ==1 ||registerFile.businessType ==4){
+                        } else if (registerFile.businessType == 1 || registerFile.businessType == 4) {
                             vm.registerFile.push(registerFile);
-                        }else if(registerFile.businessType ==5 ||registerFile.businessType ==6||registerFile.businessType ==7){
+                        } else if (registerFile.businessType == 5 || registerFile.businessType == 6 || registerFile.businessType == 7) {
                             vm.otherFile.push(registerFile);
                         }
                     })
@@ -289,16 +289,16 @@
              * 删除附件
              * @param fileId
              */
-            vm.delFile = function(fileId){
+            vm.delFile = function (fileId) {
                 sysfileSvc.delSysFile(fileId, function () {
-                    bsWin.alert("删除成功",function () {
+                    bsWin.alert("删除成功", function () {
                         sysfileSvc.findByMianId(vm.model.signid, function (data) {
                             if (data && data.length > 0) {
                                 vm.showFlag.tabSysFile = true;
                                 vm.sysFileList = data;
                                 sysfileSvc.initZtreeClient(vm, $scope);//树形图
-                            }else{
-                                vm.showFlag.tabSysFile=false;
+                            } else {
+                                vm.showFlag.tabSysFile = false;
                                 $('#myTab a:first').tab('show');// 选取第一个标签页
                                 //打开标签页
                                 $(".tab-pane").removeClass("active").removeClass("in");
@@ -350,7 +350,7 @@
                 starHalf: '../contents/libs/raty/lib/images/star-half.png',
                 readOnly: false,
                 halfShow: true,
-                hints   : ['不合格','合格','中等','良好','优秀'],
+                hints: ['不合格', '合格', '中等', '良好', '优秀'],
                 size: 34,
                 click: function (score, evt) {
                     vm.scoreExpert.score = score;
@@ -369,7 +369,6 @@
         }
 
 
-
         // 关闭专家评分
         vm.closeEditMark = function () {
             window.parent.$("#score_win").data("kendoWindow").close();
@@ -379,7 +378,7 @@
         vm.saveMark = function () {
             if (!vm.scoreExpert.score || vm.scoreExpert.score == 0) {
                 bsWin.alert("请对专家进行评分！");
-            }  else {
+            } else {
                 expertReviewSvc.saveMark(vm.scoreExpert, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         angular.forEach(vm.model.expertReviewDto.expertSelectedDtoList, function (scopeEP, index) {
@@ -401,10 +400,14 @@
 
         /**
          * 计算应纳税额(日期以【函评日期/评审会日期】为准)
-          * @param expertReview
+         * @param expertReview
          */
         vm.countTaxes = function (expertReview) {
             if (expertReview == undefined) {
+                return;
+            }
+            if (expertReview.expertSelectedDtoList == undefined || expertReview.expertSelectedDtoList.length == 0) {
+                bsWin.alert("该方案还没有选择评审专家，请先选取评审专家！");
                 return;
             }
             if (expertReview.reviewDate == undefined) {
@@ -416,101 +419,53 @@
                 bsWin.alert("请输入正确的日期格式");
                 return;
             }
-            if (expertReview.expertSelectedDtoList == undefined || expertReview.expertSelectedDtoList.length == 0) {
-                bsWin.alert("该方案还没评审专家");
-                return;
-            }
             //设置一个评审费发放日期默认值
-            if(!expertReview.payDate){
+            if (!expertReview.payDate) {
                 expertReview.payDate = new Date().Format("yyyy-MM-dd");
             }
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
             if (isValid) {
-                var  epids = '';
-                $.each(expertReview.expertSelectedDtoList, function (i, v) {
-                    if ((v.isConfrim == '9' || v.isConfrim == 9) && (v.isJoin == '9' || v.isJoin == 9)) {
-                        epids +=  v.id + ",";
-                    }
-                })
-
-                /**
-                 * 计算应交税费，然后自动保存
-                 */
-                expertReviewSvc.countTaxes(expertReview.id,epids, expertReview.reviewDate, function (data) {
-                    var allExpertCost = data;
-                    expertReview.reviewCost = 0;
-                    expertReview.reviewTaxes = 0;
-                    expertReview.totalCost = 0;
-                    console.log(allExpertCost);
-                    $.each(expertReview.expertSelectedDtoList, function (i, v) {
-                        //已经确认并确定参加的，才计算
-                        if ((v.isConfrim == '9' || v.isConfrim == 9) && (v.isJoin == '9' || v.isJoin == 9)) {
-                            var expertId = v.EXPERTID;
-                            var totalCost = 0;
-                            //console.log("计算专家:"+expertDto.name);
-                            if (allExpertCost != undefined && allExpertCost.length > 0) {
-                                $.each(allExpertCost,function (i, ec) {
-                                    if (expertId == ec.expertId ) {
-                                        ec.excost = ec.excost == undefined ? 0 : ec.excost;
-                                        totalCost = parseFloat(totalCost) + parseFloat(ec.excost);
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确认提交么？提交之后不可修改，请核对正确。",
+                    onOk: function () {
+                        //自动保存
+                        expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
+                            if (data.flag || data.reCode == "ok") {
+                                var resultMap = data.reObj, totalCost = 0, totaoTaxes = 0;
+                                for (var k = 0, lk = expertReview.expertSelectedDtoList.length; k < lk; k++) {
+                                    var v = expertReview.expertSelectedDtoList[k];
+                                    if ((v.isConfrim == '9' || v.isConfrim == 9) && (v.isJoin == '9' || v.isJoin == 9)) {
+                                        for (var i = 0, l = resultMap.length; i < l; i++) {
+                                            var epId = resultMap[i].EXPERTID;
+                                            if (v.expertDto.expertID == epId) {
+                                                v.reviewTaxes = parseFloat(resultMap[i].MONTAXES == undefined ? 0 : resultMap[i].MONTAXES).toFixed(2);
+                                                v.totalCost = (parseFloat(v.reviewCost) + parseFloat(v.reviewTaxes)).toFixed(2);
+                                                totalCost = parseFloat(totalCost) + parseFloat(v.reviewCost);
+                                                totaoTaxes = parseFloat(totaoTaxes) + parseFloat(v.reviewTaxes);
+                                            }
+                                        }
                                     }
-                                })
+                                }
 
+                                expertReview.reviewCost = parseFloat(totalCost).toFixed(2);
+                                expertReview.reviewTaxes = parseFloat(totaoTaxes).toFixed(2);
+                                expertReview.totalCost = (parseFloat(totalCost) + parseFloat(totaoTaxes)).toFixed(2);
+                                bsWin.alert("操作成功！", function () {
+                                    vm.isCommit = false;
+                                    expertReview.state = '9';
+                                });
+                            } else {
+                                bsWin.alert(data.reMsg);
                             }
-                            //计算评审费用
-                            v.reviewCost = v.reviewCost == undefined ? 0 : v.reviewCost;
-                            var reviewTaxesTotal = totalCost + parseFloat(v.reviewCost);
-                            //console.log("专家当月累加加上本次:" + reviewTaxesTotal);
-                            v.reviewTaxes = countNum(reviewTaxesTotal).toFixed(2);
-                            v.totalCost = (parseFloat(v.reviewCost) + parseFloat(v.reviewTaxes)).toFixed(2);
-                            expertReview.reviewCost = (parseFloat(expertReview.reviewCost) + parseFloat(v.reviewCost)).toFixed(2);
-                            expertReview.reviewTaxes = (parseFloat(expertReview.reviewTaxes) + parseFloat(v.reviewTaxes)).toFixed(2);
-                            expertReview.totalCost = (parseFloat(expertReview.reviewCost) + parseFloat(expertReview.reviewTaxes)).toFixed(2);
-                        }
-                    });
-
-                    //自动保存
-                    expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
-                        if (data.flag || data.reCode == "ok") {
-                            bsWin.alert("操作成功！", function () {
-                                vm.isCommit = false;
-                            });
-                        } else {
-                            bsWin.alert(data.reMsg);
-                        }
-                    });
+                        });
+                    }
                 });
-
-
-            }else{
+            } else {
                 bsWin.alert("请正确填写专家评审费信息！");
             }
         }
-
-        // S_countNum
-        /**
-             800<X≤4000时：（所得额-800）*20%——如果是1000元，就是缴税40
-             4000<X≤20000时:所得额*(1-20%)*20%
-             20000＜X≤50000时：所得额*（1-20%）*30%-2000
-             超过50000忘记是多少了，我再问财务找一个那个文件
-         * @param reviewCost
-         * @returns {number}
-         */
-        function countNum(reviewCost) {
-            reviewCost = reviewCost == undefined ? 0 : reviewCost;
-            var reviewTaxes = 0;
-            if (reviewCost > 800 && reviewCost <= 4000) {
-                reviewTaxes = (reviewCost - 800) * 0.2;
-            } else if (reviewCost > 4000 && reviewCost <= 20000) {
-                reviewTaxes = reviewCost * (1 - 0.2) * 0.2
-            } else if (reviewCost > 20000 && reviewCost <= 50000) {
-                reviewTaxes = reviewCost * (1 - 0.2) * 0.3 - 2000;
-            } else if (reviewCost > 50000) {
-                reviewTaxes = reviewCost * (1 - 0.2) * 0.3 - 2755;
-            }
-            return reviewTaxes;
-        }// E_countNum
 
         // 关闭专家费用
         vm.closeEditPay = function () {
@@ -519,52 +474,52 @@
 
         // 保存专家费用
         /*vm.savePayment = function (expertReview) {
-            common.initJqValidation($('#payform'));
-            var isValid = $('#payform').valid();
-            if (isValid) {
-                if (expertReview.reviewCost) {
-                    if(expertReview.expertSelectedDtoList){
-                        var isAdopt=false;
-                        for(var i=0;i<expertReview.expertSelectedDtoList.length;i++){
-                            if(expertReview.expertSelectedDtoList[i].reviewCost==0){ //评审费为0时
-                                isAdopt=true;
-                            }else{//评审费不为0时
-                                if(expertReview.expertSelectedDtoList[i].expertDto.bankAccount!=undefined &&
-                                    expertReview.expertSelectedDtoList[i].expertDto.openingBank!=undefined ){
-                                    isAdopt=true;
+         common.initJqValidation($('#payform'));
+         var isValid = $('#payform').valid();
+         if (isValid) {
+         if (expertReview.reviewCost) {
+         if(expertReview.expertSelectedDtoList){
+         var isAdopt=false;
+         for(var i=0;i<expertReview.expertSelectedDtoList.length;i++){
+         if(expertReview.expertSelectedDtoList[i].reviewCost==0){ //评审费为0时
+         isAdopt=true;
+         }else{//评审费不为0时
+         if(expertReview.expertSelectedDtoList[i].expertDto.bankAccount!=undefined &&
+         expertReview.expertSelectedDtoList[i].expertDto.openingBank!=undefined ){
+         isAdopt=true;
 
-                                }else{
-                                    isAdopt=false;
-                                    break
-                                }
-                            }
+         }else{
+         isAdopt=false;
+         break
+         }
+         }
 
-                        }
+         }
 
-                    }else{
-                        isAdopt=true;
-                    }
-                    if(isAdopt){
-                        expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
-                         if (data.flag || data.reCode == "ok") {
-                         bsWin.alert("操作成功！", function () {
-                         vm.isCommit = false;
-                         });
-                         } else {
-                         bsWin.alert(data.reMsg);
-                         }
-                         });
-                    }else{
-                        bsWin.alert("评审费不为0的专家，开户行和银行账户不完整，请写完整！");
-                    }
+         }else{
+         isAdopt=true;
+         }
+         if(isAdopt){
+         expertReviewSvc.savePayment(expertReview, vm.isCommit, function (data) {
+         if (data.flag || data.reCode == "ok") {
+         bsWin.alert("操作成功！", function () {
+         vm.isCommit = false;
+         });
+         } else {
+         bsWin.alert(data.reMsg);
+         }
+         });
+         }else{
+         bsWin.alert("评审费不为0的专家，开户行和银行账户不完整，请写完整！");
+         }
 
-                } else {
-                    bsWin.alert("请计算税率，再保存！");
-                }
-            } else {
-                bsWin.alert("请正确填写专家评审费信息！");
-            }
-        }*/
+         } else {
+         bsWin.alert("请计算税率，再保存！");
+         }
+         } else {
+         bsWin.alert("请正确填写专家评审费信息！");
+         }
+         }*/
         /***************  E_专家评分，评审费发放  ***************/
 
         /*****************S_单位评分******************/
@@ -599,7 +554,7 @@
 
         }
         //保存单位评分
-        vm.saveUnit=function () {
+        vm.saveUnit = function () {
             if (!vm.model.unitScoreDto.score || vm.model.unitScoreDto.score == 0) {
                 bsWin.alert("请对单位进行评分！");
             } else {
@@ -714,7 +669,6 @@
         }
 
 
-
         // S_跳转到 发文 编辑页面
         vm.addDisPatch = function () {
             //如果是未关联，并且是可研或者概算阶段，提醒是否要关联
@@ -725,45 +679,47 @@
                     title: "询问提示",
                     message: "该项目还没进行项目关联，是否需要进行关联设置？",
                     onOk: function () {
-                        if(!vm.ss){
-                            vm.page=lgx.page.init({id: "demo5",get:function(o){
-                                //根据项目名称，查询要关联阶段的项目
-                                if (!vm.price) {
-                                    vm.price = {
-                                        signid: vm.model.signid,
-                                        projectname: vm.model.projectname,
-                                    };
-                                }
-                                vm.price.reviewstage = vm.model.reviewstage; //设置评审阶段
-                                var skip;
-                                //oracle的分页不一样。
-                                if(o.skip!=0){
-                                    skip=o.skip+1
-                                }else{
-                                    skip=o.skip
-                                }
-                                vm.price.skip=skip;//页码
-                                vm.price.size=o.size+o.skip;//页数
-                                signSvc.getAssociateSignGrid(vm, function (data) {
-                                    vm.associateSignList =[];
-                                    if (data) {
-                                        vm.associateSignList = data.value;
-                                        vm.page.callback(data.count);//请求回调时传入总记录数
+                        if (!vm.ss) {
+                            vm.page = lgx.page.init({
+                                id: "demo5", get: function (o) {
+                                    //根据项目名称，查询要关联阶段的项目
+                                    if (!vm.price) {
+                                        vm.price = {
+                                            signid: vm.model.signid,
+                                            projectname: vm.model.projectname,
+                                        };
                                     }
+                                    vm.price.reviewstage = vm.model.reviewstage; //设置评审阶段
+                                    var skip;
+                                    //oracle的分页不一样。
+                                    if (o.skip != 0) {
+                                        skip = o.skip + 1
+                                    } else {
+                                        skip = o.skip
+                                    }
+                                    vm.price.skip = skip;//页码
+                                    vm.price.size = o.size + o.skip;//页数
+                                    signSvc.getAssociateSignGrid(vm, function (data) {
+                                        vm.associateSignList = [];
+                                        if (data) {
+                                            vm.associateSignList = data.value;
+                                            vm.page.callback(data.count);//请求回调时传入总记录数
+                                        }
 
-                                });
-                                //alert("当前页："+o.number+"，从数据库的位置1"+o.skip+"起，查"+o.size+"条数据");
-                                //需在这里发起ajax请求查询数据，请求成功后需调用callback方法重新计算分页
+                                    });
+                                    //alert("当前页："+o.number+"，从数据库的位置1"+o.skip+"起，查"+o.size+"条数据");
+                                    //需在这里发起ajax请求查询数据，请求成功后需调用callback方法重新计算分页
 
-                            }});
-                            vm.ss=true;
-                        }else{
+                                }
+                            });
+                            vm.ss = true;
+                        } else {
                             vm.page.selPage(1);
                         }
 
 
                         //选中要关联的项目
-                       $("#associateWindow").kendoWindow({
+                        $("#associateWindow").kendoWindow({
                             width: "75%",
                             height: "650px",
                             title: "项目关联",
@@ -786,7 +742,7 @@
         //关联项目条件查询
         vm.associateQuerySign = function () {
             signSvc.getAssociateSignGrid(vm, function (data) {
-                vm.associateSignList =[];
+                vm.associateSignList = [];
                 if (data) {
                     vm.associateSignList = data.value;
                     vm.page.callback(data.count);//请求回调时传入总记录数
@@ -867,35 +823,35 @@
         var selOrg = [];
         vm.initOption = function ($event) {
             var checkbox = $event.target;
-            var obj =$(checkbox);
+            var obj = $(checkbox);
             var selectType = obj.attr("selectType");
             var checked = checkbox.checked;
-            if(checked && selectType == 'main'){
+            if (checked && selectType == 'main') {
                 //先删除第一个
                 selOrg.splice(0, 1);
                 //添加（替换不了。变为了添加）
                 selOrg.splice(0, 0, obj.attr("tit"));
-            }else if(!checked && selectType == 'main'){
-                selOrg[0]= "";
+            } else if (!checked && selectType == 'main') {
+                selOrg[0] = "";
             }
 
-            if(checked && selectType == 'assist'){
+            if (checked && selectType == 'assist') {
                 selOrg.push(obj.attr("tit"));
-            }else if(!checked && selectType == 'assist'){
+            } else if (!checked && selectType == 'assist') {
                 var title = obj.attr("tit");
-                angular.forEach(selOrg,function(tit,index){
-                    if(tit == title){
-                        selOrg.splice(index,1);
+                angular.forEach(selOrg, function (tit, index) {
+                    if (tit == title) {
+                        selOrg.splice(index, 1);
                     }
                 });
             }
             if (selOrg.length > 0) {
-               for(var i=0;i<selOrg.length;i++){
-                   if(selOrg[0]==selOrg[i] &&0!=i){//判断跟主办是否有重复
-                       selOrg.splice(i,1);
-                   }
+                for (var i = 0; i < selOrg.length; i++) {
+                    if (selOrg[0] == selOrg[i] && 0 != i) {//判断跟主办是否有重复
+                        selOrg.splice(i, 1);
+                    }
 
-               }
+                }
                 vm.flow.dealOption = "请（" + selOrg.join('，') + "）组织评审";
             }
 
@@ -930,25 +886,25 @@
                 $.each(vm.users, function (i, u) {
                     if (u.id == selUserId) {
                         defaultOption += u.displayName;
-                        vm.selUserName=u.displayName;//用于判断是否要删除。
+                        vm.selUserName = u.displayName;//用于判断是否要删除。
                         isSelMainUser = true;
                     }
                 })
-            }else{
-                vm.selUserName=displayName;
+            } else {
+                vm.selUserName = displayName;
             }
             //根据勾选的来加
-             if($("input[name='"+displayName+"']").is(':checked')){//勾中的
-                 selUser.push(displayName);
-             }else{//不勾中的
-                 angular.forEach(selUser,function(su,index){
-                     if(su ==  vm.selUserName){
+            if ($("input[name='" + displayName + "']").is(':checked')) {//勾中的
+                selUser.push(displayName);
+            } else {//不勾中的
+                angular.forEach(selUser, function (su, index) {
+                    if (su == vm.selUserName) {
 
-                         //判断。如果第一负责人跟其他负责人相同时。进行删减。只保留一个意见
-                         selUser.splice(index,1);
-                     }
-                 });
-             }
+                        //判断。如果第一负责人跟其他负责人相同时。进行删减。只保留一个意见
+                        selUser.splice(index, 1);
+                    }
+                });
+            }
 
             if (selUser.length > 0) {
                 if (isSelMainUser) {
@@ -1050,13 +1006,13 @@
             }
         }
         //排序的方法
-        var by = function(name){
-            return function(o, p){
+        var by = function (name) {
+            return function (o, p) {
                 var a, b;
                 if (typeof o === "object" && typeof p === "object" && o && p) {
                     a = o[name];
                     b = p[name];
-                    console.log(a,b);
+                    console.log(a, b);
                     if (a === b) {
                         return 0;
                     }
@@ -1104,7 +1060,7 @@
                     if (i > 0) {
                         defaultOption += ","
                     }
-                        defaultOption += u.userName;
+                    defaultOption += u.userName;
 
 
                 })
@@ -1290,7 +1246,7 @@
                 onOk: function () {
                     signSvc.createDispatchTemplate(vm, function (data) {
                         if (data.flag || data.reCode == 'ok') {
-                            bsWin.success("操作成功！",function(){
+                            bsWin.success("操作成功！", function () {
                                 sysfileSvc.findByMianId(vm.model.signid, function (data) {
                                     if (data || data.length > 0) {
                                         vm.showFlag.tabSysFile = true;

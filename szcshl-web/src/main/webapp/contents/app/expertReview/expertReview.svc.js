@@ -27,8 +27,8 @@
             countTaxes: countTaxes,                     // 计算应纳税额
             refleshBusinessEP : refleshBusinessEP,      //刷新业务的专家信息（已经确认和确定参加会议的专家）
 
-            saveNewExpert:saveNewExpert,              //保存新的聘请专家信息,
-            initNewExpertInfo:initNewExpertInfo                         // 初始化调整后的专家信息
+            saveNewExpert:saveNewExpert,                //保存新的聘请专家信息,
+            initNewExpertInfo:initNewExpertInfo         // 初始化调整后的专家信息
         };
         return service;
 
@@ -512,10 +512,6 @@
 
         // S_保存专家评审费
         function savePayment(expertReview,isCommit,callBack) {
-            if (!validateNum(expertReview)) {
-                bsWin.alert("应纳税额计算错误,保存失败！");
-                return;
-            }
             isCommit = true;
             var httpOptions = {
                 method: 'post',

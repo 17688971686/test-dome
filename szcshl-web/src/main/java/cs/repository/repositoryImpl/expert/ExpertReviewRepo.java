@@ -71,7 +71,7 @@ public interface ExpertReviewRepo extends IRepository<ExpertReview, String> {
      * @param month
      * @return
      */
-    List<Object[]> countExpertReviewCost(String expertReviewId, String month);
+    //List<Object[]> countExpertReviewCost(String expertReviewId, String month);
 
     /**
      * 查询未处理的评审方案

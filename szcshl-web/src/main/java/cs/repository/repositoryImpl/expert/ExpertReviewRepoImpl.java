@@ -234,7 +234,7 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
         return false;
     }
 
-    @Override
+    /*@Override
     public List<Object[]> countExpertReviewCost(String expertReviewId, String month) {
         List<Object[]> experReviewCosts = null;
         HqlBuilder hqlBuilder = HqlBuilder.create();
@@ -248,7 +248,7 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
         hqlBuilder.append(" GROUP BY veph.EXPERTID ");
         experReviewCosts = getObjectArray(hqlBuilder);
         return experReviewCosts;
-    }
+    }*/
 
     /**
      * 查询在发文环节，或者课题归档环节，未处理的专家评审费信息

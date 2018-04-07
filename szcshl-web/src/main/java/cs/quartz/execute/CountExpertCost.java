@@ -84,45 +84,7 @@ public class CountExpertCost implements Job {
                     if(null == expertReview.getReviewDate() || !Validate.isList(expertReview.getExpertSelectedList())){
                         continue;
                     }
-                    BigDecimal totalExpense = BigDecimal.ZERO;
-                    BigDecimal totalTaxes = BigDecimal.ZERO;
-                    List<Object[]> expCostList = expertReviewService.countExpertReviewCost(expertReview.getId(),DateUtils.converToString(expertReview.getReviewDate(),"yy-MM"));
-                    int totalCost = Validate.isList(expCostList)?expCostList.size():0;
-                    for(int n=0,m=expertReview.getExpertSelectedList().size();n<m;n++){
-                        ExpertSelected sl = expertReview.getExpertSelectedList().get(n);
-                        if(!Constant.EnumState.YES.getValue().equals(sl.getIsConfrim()) || !Constant.EnumState.YES.getValue().equals(sl.getIsJoin())){
-                            continue;
-                        }
-                        if(totalCost > 0){
-                            boolean isHaveCount = false;
-                            for(int index=0;index<totalCost;index++){
-                                Object[] costObj = expCostList.get(index);
-                                if(sl.getExpert().getExpertID().equals(costObj[1].toString())){
-                                    isHaveCount = true;
-                                    BigDecimal cost = new BigDecimal(costObj[0]==null?"0":costObj[0].toString());
-                                    sl.setReviewTaxes(Arith.countCost(Arith.safeAdd(sl.getReviewCost(),cost)));
-                                }
-                            }
-                            //如果没有，计税还是当前金额计算
-                            if(!isHaveCount){
-                                sl.setReviewTaxes(Arith.countCost(sl.getReviewCost()));
-                            }
-                        }else{
-                            sl.setReviewTaxes(Arith.countCost(sl.getReviewCost()));
-                        }
-                        //评审费
-                        totalExpense = Arith.safeAdd(totalExpense,sl.getReviewCost());
-                        //税
-                        totalTaxes = Arith.safeAdd(totalTaxes,sl.getReviewTaxes());
-                        //总费用
-                        sl.setTotalCost(Arith.safeAdd(sl.getReviewCost(),sl.getReviewTaxes()));
-                    }
-                    //评审费
-                    expertReview.setReviewCost(totalExpense);
-                    //税
-                    expertReview.setReviewTaxes(totalTaxes);
-                    //总费用
-                    expertReview.setTotalCost(Arith.safeAdd(totalExpense,totalTaxes));
+                    expertReviewService.countReviewExpense(expertReview);
                     //付款日期
                     expertReview.setPayDate(DateUtils.converToDate(DateUtils.converToString(new Date(),null),null));
                     expertReview.setState(Constant.EnumState.YES.getValue());

@@ -159,10 +159,10 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             ep.setPhoto(null);
             ExpertDto expertDto = new ExpertDto();
             BeanCopierUtils.copyProperties(ep, expertDto);
-            if(Validate.isList(ep.getExpertType())){
+            if (Validate.isList(ep.getExpertType())) {
                 List<ExpertTypeDto> expertDtoList = new ArrayList<ExpertTypeDto>(ep.getExpertType().size());
                 ep.getExpertType().forEach(y -> {
-                    ExpertTypeDto expertTypeDto=new ExpertTypeDto();
+                    ExpertTypeDto expertTypeDto = new ExpertTypeDto();
                     BeanCopierUtils.copyProperties(y, expertTypeDto);
                     expertDtoList.add(expertTypeDto);
                 });
@@ -251,10 +251,10 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             ep.setPhoto(null);
             ExpertDto expertDto = new ExpertDto();
             BeanCopierUtils.copyProperties(ep, expertDto);
-            if(Validate.isList(ep.getExpertType())){
+            if (Validate.isList(ep.getExpertType())) {
                 List<ExpertTypeDto> expertDtoList = new ArrayList<ExpertTypeDto>(ep.getExpertType().size());
                 ep.getExpertType().forEach(y -> {
-                    ExpertTypeDto expertTypeDto=new ExpertTypeDto();
+                    ExpertTypeDto expertTypeDto = new ExpertTypeDto();
                     BeanCopierUtils.copyProperties(y, expertTypeDto);
                     expertDtoList.add(expertTypeDto);
                 });
@@ -300,37 +300,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
     }
 
-
-    /**
-     * 获取指定专家，指定月份的评审费用
-     * 排除本次评审费的费用，统计出本月所得金额
-     * @param expertIds 专家ID
-     * @param reviewDate 评审会日期
-     * @return
-     */
-    @Override
-    public List<Map<String, Object>> getExpertReviewCost(String reviewId,String expertIds, String reviewDate) {
-        String month = reviewDate.substring(0,reviewDate.lastIndexOf("-"));
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" SELECT expertid, SUM (REVIEWCOST) excost FROM (SELECT es.id esId, es.expertid,es.reviewcost ");
-        sqlBuilder.append(" FROM CS_EXPERT_SELECTED es, CS_EXPERT_REVIEW er ");
-        sqlBuilder.append(" WHERE es.isjoin = :isjoin AND es.ISCONFRIM = :isconfrim AND es.Expertreviewid = er.id AND ER.ID !=:reviewId ");
-        sqlBuilder.setParam("isjoin", Constant.EnumState.YES.getValue());
-        sqlBuilder.setParam("isconfrim",Constant.EnumState.YES.getValue());
-        sqlBuilder.setParam("reviewId",reviewId);
-        sqlBuilder.append(" AND TO_CHAR (er.REVIEWDATE, 'yyyy-mm') =:reviewmonth ").setParam("reviewmonth",month);
-        sqlBuilder.bulidPropotyString("AND","ES.EXPERTID",expertIds);
-        sqlBuilder.append(" )GROUP BY expertid ");
-        List<Map<String, Object>> resultList = expertReviewRepo.getMapListBySql(sqlBuilder);
-        return resultList;
-    }
-
-    @Override
-    public List<Object[]> countExpertReviewCost(String expertReviewId, String month) {
-        return expertReviewRepo.countExpertReviewCost(expertReviewId,month);
-    }
-
-    @Override
+   /* @Override
     @Transactional
     @Deprecated
     public void saveExpertReviewCost(ExpertReviewDto[] expertReviews) {
@@ -378,7 +348,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
             }
         }
-    }
+    }*/
 
     /**
      * 保存单个评审方案的专家评审费
@@ -387,34 +357,30 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
      * @return
      */
     @Override
+    @Transactional
     public ResultMsg saveExpertReviewCost(ExpertReviewDto expertReviewDto) {
         //保存评审费用
         String experReviewId = expertReviewDto.getId();
         if (Validate.isString(experReviewId)) {
             ExpertReview expertReview = expertReviewRepo.findById(experReviewId);
             //管理员可以维护
-            if(expertReview.getPayDate() != null && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())){
+            if (expertReview.getPayDate() != null && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "已经进行评审费发放，不能再次发放！");
             }
             //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存(或者超级管理员) 超级管理员发放，不做时间限制
-            if ( !Constant.SUPER_USER.equals(SessionUtil.getLoginName()) &&  expertReview.getReviewDate() != null && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
+            if (!Constant.SUPER_USER.equals(SessionUtil.getLoginName()) && expertReview.getReviewDate() != null) {
                 long diffDays = DateUtils.daysBetween(new Date(), expertReview.getReviewDate());
-                if (diffDays != 0 ) {
+                if (diffDays < 0) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "只能在评审/函评日期当天计算专家评审费！");
                 }
             }
-
+            List<Map<String, Object>> resultObj = new ArrayList<>();
             if (expertReview != null) {
-                //设置评审方案的评审费用、税费和合计
+               /* //设置评审方案的评审费用、税费和合计
                 expertReview.setReviewCost(expertReviewDto.getReviewCost());
                 expertReview.setReviewTaxes(expertReviewDto.getReviewTaxes());
-                expertReview.setTotalCost(expertReviewDto.getTotalCost());
-                //设置标题
-                expertReview.setReviewTitle(expertReviewDto.getReviewTitle());
-                //设置评审费发放日期
-                expertReview.setPayDate(expertReviewDto.getPayDate());
-                //设置状态(已报评审费)
-                expertReview.setState(Constant.EnumState.YES.getValue());
+                expertReview.setTotalCost(expertReviewDto.getTotalCost());*/
+
                 //设置该评审方案所有专家的评审费用、税费和合计
                 List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
                 List<ExpertSelectedDto> expertSelectedDtos = expertReviewDto.getExpertSelectedDtoList();
@@ -423,17 +389,28 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                         expertSelectedDtos.forEach(expertSelectedDto -> {
                             if (expertSelectedDto.getId().equals(expertSelected.getId())) {
                                 expertSelected.setReviewCost(expertSelectedDto.getReviewCost());
+                               /*
+                                这两项是计算出来的
                                 expertSelected.setReviewTaxes(expertSelectedDto.getReviewTaxes());
                                 expertSelected.setTotalCost(expertSelectedDto.getTotalCost());
+                                */
                                 expertSelected.setIsLetterRw(expertSelectedDto.getIsLetterRw());
                                 return;
                             }
                         });
                     });
+                    //计算评审费和税
+                    resultObj = countReviewExpense(expertReview);
+                    //设置标题
+                    expertReview.setReviewTitle(expertReviewDto.getReviewTitle());
+                    //设置评审费发放日期
+                    expertReview.setPayDate(expertReviewDto.getPayDate());
+                    //设置状态(已报评审费)
+                    expertReview.setState(Constant.EnumState.YES.getValue());
                 }
                 //设置专家评审费用结束s
                 expertReviewRepo.save(expertReview);
-                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", resultObj);
             }
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该评审方案已被删除");
         } else {
@@ -441,8 +418,99 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
     }
 
+    @Override
+    public List<Map<String, Object>> countReviewExpense(ExpertReview expertReview) {
+        List<Map<String, Object>> resultObj = new ArrayList<>();
+        //筛选出已经确认的专家
+        List<ExpertSelected> selectList = new ArrayList<>();
+        String selectExpIds = "";
+        List<ExpertSelected> expertSelectedList = expertReview.getExpertSelectedList();
+        for (ExpertSelected expertSelected : expertSelectedList) {
+            if (Constant.EnumState.YES.getValue().equals(expertSelected.getIsJoin()) && Constant.EnumState.YES.getValue().equals(expertSelected.getIsConfrim())) {
+                if (Validate.isString(selectExpIds)) {
+                    selectExpIds += ",";
+                }
+                selectExpIds += expertSelected.getExpert().getExpertID();
+                selectList.add(expertSelected);
+            }
+        }
+        String reviewDateString = DateUtils.date2String(expertReview.getReviewDate(), "yyyy-MM-dd");
+        List<Object[]> countMapList = getExpertReviewCost(expertReview.getId(), selectExpIds, reviewDateString);
+        //如果之间有缴税，则本次的缴税还要减去之前的缴税；否则按本次计算的缴税结果计算
+        BigDecimal totalCount = BigDecimal.ZERO, totalTaxes = BigDecimal.ZERO;
+        for (ExpertSelected slEP : selectList) {
+            String epId = slEP.getExpert().getExpertID();
+            Map<String, Object> epMap = new HashMap<>();
+            boolean isHave = false;
+            BigDecimal monthCount = null, montTaxes = null;
+            for (Object[] countMap : countMapList) {
+                if (countMap[0] != null && epId.equals(countMap[0].toString())) {
+                    isHave = true;
+                    //本月除了本次之外的收入
+                    monthCount = countMap[1] == null ? BigDecimal.ZERO : new BigDecimal(countMap[1].toString());
+                    //本月所有收入
+                    monthCount = Arith.safeAdd(monthCount, slEP.getReviewCost());
+                    //计算出本月应缴税额
+                    montTaxes = Arith.countCost(monthCount);
+                    //计算本次应缴税额
+                    montTaxes = Arith.safeSubtract(montTaxes, countMap[2] == null ? BigDecimal.ZERO : new BigDecimal(countMap[2].toString()));
+                }
+            }
+            if (!isHave) {
+                monthCount = slEP.getReviewCost();
+                montTaxes = Arith.countCost(monthCount);
+            }
+            slEP.setReviewTaxes(montTaxes);
+            //此专家本次的花费，本次的评审费+本次的税费
+            slEP.setTotalCost(Arith.safeAdd(slEP.getReviewCost(), montTaxes));
+
+            totalCount = Arith.safeAdd(slEP.getReviewCost(), totalCount);
+            totalTaxes = Arith.safeAdd(montTaxes, totalTaxes);
+            //设置返回的数据
+            epMap.put("EXPERTID", epId);
+            epMap.put("MONTCOST", slEP.getReviewCost());
+            epMap.put("MONTAXES", montTaxes);
+            resultObj.add(epMap);
+        }
+        expertReview.setReviewCost(totalCount);
+        expertReview.setReviewTaxes(totalTaxes);
+        expertReview.setTotalCost(Arith.safeAdd(totalCount, totalTaxes));
+        return resultObj;
+    }
+
+    /**
+     * 获取指定专家，指定月份的评审费用
+     * 排除本次评审费的费用，统计出本月所得金额
+     *
+     * @param expertIds  专家ID
+     * @param reviewDate 评审会日期
+     * @return
+     */
+    @Override
+    public List<Object[]> getExpertReviewCost(String reviewId, String expertIds, String reviewDate) {
+        String month = reviewDate.substring(0, reviewDate.lastIndexOf("-"));
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" SELECT expertid, SUM (REVIEWCOST) excost, SUM (REVIEWTAXES) extaxes ");
+        sqlBuilder.append(" FROM (SELECT es.id esId, es.expertid,es.reviewcost,es.reviewTaxes FROM CS_EXPERT_SELECTED es, CS_EXPERT_REVIEW er ");
+        sqlBuilder.append(" WHERE es.isjoin = :isjoin AND es.ISCONFRIM = :isconfrim AND es.Expertreviewid = er.id AND ER.ID !=:reviewId ");
+        sqlBuilder.setParam("isjoin", Constant.EnumState.YES.getValue());
+        sqlBuilder.setParam("isconfrim", Constant.EnumState.YES.getValue());
+        sqlBuilder.setParam("reviewId", reviewId);
+        sqlBuilder.append(" AND TO_CHAR (er.REVIEWDATE, 'yyyy-mm') =:reviewmonth ").setParam("reviewmonth", month);
+        sqlBuilder.bulidPropotyString("AND", "ES.EXPERTID", expertIds);
+        sqlBuilder.append(" )GROUP BY expertid ");
+        List<Object[]> resultList = expertReviewRepo.getObjectArray(sqlBuilder);
+        return resultList;
+    }
+
+    /*@Override
+    public List<Object[]> countExpertReviewCost(String expertReviewId, String month) {
+        return expertReviewRepo.countExpertReviewCost(expertReviewId, month);
+    }*/
+
     /**
      * 查询专家评审费超期发放的信息
+     *
      * @param odataObj
      * @return
      */
@@ -457,20 +525,20 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 if (null == value) {
                     continue;
                 }
-                criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(),value));
+                criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
             }
         }
         //没有业务ID和评审日期的，过滤掉
         criteria.add(Restrictions.isNotNull(ExpertReview_.businessId.getName()));
         criteria.add(Restrictions.isNotNull(ExpertReview_.reviewDate.getName()));
         //未完成评审费发放
-        criteria.add(Restrictions.or(Restrictions.isNull(ExpertReview_.state.getName()),Restrictions.eq(ExpertReview_.state.getName(), Constant.EnumState.NO.getValue()),Restrictions.eq(ExpertReview_.state.getName(), "")));
+        criteria.add(Restrictions.or(Restrictions.isNull(ExpertReview_.state.getName()), Restrictions.eq(ExpertReview_.state.getName(), Constant.EnumState.NO.getValue()), Restrictions.eq(ExpertReview_.state.getName(), "")));
 //        String newDate = DateUtils.converToString(new Date(),"yyyy-MM-dd");
         //超期
 //        criteria.add(Restrictions.sqlRestriction( " ( (to_date('"+newDate+"','yyyy-mm-dd') - "+criteria.getAlias()+"_."+ExpertReview_.reviewDate.getName()+") > 0 and '"+newDate+"' != TO_CHAR("+criteria.getAlias()+"_."+ExpertReview_.reviewDate.getName()+", 'yyyy-mm-dd') )"));
 
         criteria.addOrder(Order.desc(ExpertReview_.reviewDate.getName()));
-        if(odataObj.isCount()){
+        if (odataObj.isCount()) {
             Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
             criteria.setProjection(null);
             odataObj.setCount(totalResult);
@@ -485,10 +553,10 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
         List<ExpertReview> expertReviewList = criteria.list();
         List<ExpertReviewDto> expertReviewDtoList = new ArrayList<>();
-        if(Validate.isList(expertReviewList)){
-            for(ExpertReview expertReview : expertReviewList){
+        if (Validate.isList(expertReviewList)) {
+            for (ExpertReview expertReview : expertReviewList) {
                 ExpertReviewDto expertReviewDto = new ExpertReviewDto();
-                BeanCopierUtils.copyProperties(expertReview , expertReviewDto);
+                BeanCopierUtils.copyProperties(expertReview, expertReviewDto);
                 expertReviewDtoList.add(expertReviewDto);
             }
         }
@@ -502,6 +570,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     /**
      * 查询业务的专家信息
+     *
      * @param businessId
      * @return
      */
@@ -509,11 +578,11 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     public List<ExpertDto> refleshBusinessEP(String businessId) {
         List<ExpertDto> expertDtoList = new ArrayList<>();
         List<Expert> expertList = expertRepo.findByBusinessId(businessId);
-        if(Validate.isList(expertList)){
-            expertList.forEach( el ->{
+        if (Validate.isList(expertList)) {
+            expertList.forEach(el -> {
                 ExpertDto expertDto = new ExpertDto();
                 el.setPhoto(null);
-                BeanCopierUtils.copyProperties(el,expertDto);
+                BeanCopierUtils.copyProperties(el, expertDto);
                 expertDtoList.add(expertDto);
             });
         }
@@ -522,6 +591,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     /**
      * 后去新专家信息
+     *
      * @param businessId
      * @return
      */
@@ -529,10 +599,10 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     public List<ExpertNewInfoDto> getExpertInfo(String businessId) {
         List<ExpertNewInfoDto> expertDtoList = new ArrayList<>();
         List<ExpertNewInfo> expertList = expertNewInfoRepo.findByBusinessId(businessId);
-        if(Validate.isList(expertList)){
-            expertList.forEach( el ->{
+        if (Validate.isList(expertList)) {
+            expertList.forEach(el -> {
                 ExpertNewInfoDto expertDto = new ExpertNewInfoDto();
-                BeanCopierUtils.copyProperties(el,expertDto);
+                BeanCopierUtils.copyProperties(el, expertDto);
                 expertDtoList.add(expertDto);
             });
         }
@@ -554,17 +624,17 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     @Override
     public ResultMsg saveExpertNewInfo(ExpertReviewNewInfoDto[] expertReviewNewInfoDtos) {
-        try{
-            if(expertReviewNewInfoDtos.length > 0){
-                expertNewTypeRepo.deleteById("businessId",expertReviewNewInfoDtos[0].getBusinessId());
-                expertNewInfoRepo.deleteById("businessId",expertReviewNewInfoDtos[0].getBusinessId());
+        try {
+            if (expertReviewNewInfoDtos.length > 0) {
+                expertNewTypeRepo.deleteById("businessId", expertReviewNewInfoDtos[0].getBusinessId());
+                expertNewInfoRepo.deleteById("businessId", expertReviewNewInfoDtos[0].getBusinessId());
             }
-            for(int i = 0 ; i < expertReviewNewInfoDtos.length; i++ ){
-                ExpertNewInfoDto expertNewInfoDto =  expertReviewNewInfoDtos[i].getExpertDto();
+            for (int i = 0; i < expertReviewNewInfoDtos.length; i++) {
+                ExpertNewInfoDto expertNewInfoDto = expertReviewNewInfoDtos[i].getExpertDto();
                 expertNewInfoDto.setBusinessId(expertReviewNewInfoDtos[i].getBusinessId());
                 //保存最新的专家信息
-                ExpertNewInfo expertNewInfo=new ExpertNewInfo();
-                BeanCopierUtils.copyPropertiesIgnoreNull(expertNewInfoDto,expertNewInfo);
+                ExpertNewInfo expertNewInfo = new ExpertNewInfo();
+                BeanCopierUtils.copyPropertiesIgnoreNull(expertNewInfoDto, expertNewInfo);
                 expertNewInfo.setExpertNewInfoId(UUID.randomUUID().toString());
                 expertNewInfo.setCreatedDate(new Date());
                 expertNewInfo.setCreatedBy(SessionUtil.getDisplayName());
@@ -577,7 +647,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 expertNewInfo.setIsLetterRw(expertReviewNewInfoDtos[i].getIsLetterRw());
                 expertNewInfoRepo.save(expertNewInfo);//保存新的专家信息
 
-                ExpertNewType expertNewType=new ExpertNewType();
+                ExpertNewType expertNewType = new ExpertNewType();
                 expertNewType.setExpertNewInfo(expertNewInfo);//专家信息的关联
                 expertNewType.setId(UUID.randomUUID().toString());
                 expertNewType.setMaJorBig(expertReviewNewInfoDtos[i].getMaJorBig());
@@ -591,7 +661,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 expertNewTypeRepo.save(expertNewType);//保存专家类型
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败！");
         }
