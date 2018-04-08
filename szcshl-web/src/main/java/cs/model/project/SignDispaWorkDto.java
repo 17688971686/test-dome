@@ -92,7 +92,7 @@ public class SignDispaWorkDto {
     /**
      * 项目进程状态
      */
-    private String processState;
+    private Integer processState;
 
     /**
      * 收文日期
@@ -403,11 +403,11 @@ public class SignDispaWorkDto {
         this.processInstanceId = processInstanceId;
     }
 
-    public String getProcessState() {
+    public Integer getProcessState() {
         return processState;
     }
 
-    public void setProcessState(String processState) {
+    public void setProcessState(Integer processState) {
         this.processState = processState;
     }
 

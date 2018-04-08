@@ -95,25 +95,20 @@
                 <tr>
                     <td class="text-right">项目状态</td>
                     <td width="15%">
-                        <select name="processState" ng-model="vm.project.processState" operator="eq"
-                                class="form-control select-sm ">
+                        <select name="processState" ng-model="vm.project.processState" operator="eq" class="form-control select-sm" >
                             <option value="">请选择</option>
                             <option value="1">在办项目</option>
-                            <option value="5">已发文项目</option>
-                            <option value="8">已发送存档</option>
-                            <option value="9">已办结项目</option>
-                            <option value="2">暂停项目</option>
-                            <option value="1">非暂停项目</option>
-                            <option value="19">曾经暂停或延时项目</option>
-                            <option value="6">已发文未存档</option>
-                            <option value="7">未发送存档项目</option>
+                            <option value="69">已发文项目</option><!-- 包括已发送存档和已存档-->
+                            <option value="89">已发送存档项目</option><!-- 包括已发送存档和已存档-->
+                            <option value="68">已发文未存档</option>
+                            <option value="17">未发送存档项目</option>
                             <option value="8">已发送存档未确认</option>
+                            <option value="9">已办结项目</option>
                         </select>
                     </td>
                     <td class="text-right">提前介入/正常</td>
                     <td>
-                        <select  ng-model="vm.project.reviewstages"
-                                 class="form-control select-sm">
+                        <select  ng-model="vm.project.reviewstages" class="form-control select-sm">
                             <option value="">请选择</option>
                             <option value="提前介入">提前介入</option>
                             <option value="正常">正常</option>
@@ -151,27 +146,24 @@
                     </td>
                     <td class="text-right">评审方式</td>
                     <td>
-                        <select operator="eq" name="reviewType" class="form-control select-sm "
-                                ng-model="vm.project.reviewType">
+                        <select operator="eq" name="reviewType" class="form-control select-sm" ng-model="vm.project.reviewType">
                             <option value="">请选择</option>
                             <option value="自评">自评</option>
                             <option value="专家函评">专家函评</option>
                             <option value="专家评审会">专家评审会</option>
-                            <option value="协审">协审</option>
                             </option>
                         </select>
                     </td>
                     <td class="text-right">发文类型</td>
                     <td>
-                        <select operator="eq" name="dispatchType"  class="form-control select-sm "
-                                ng-model="vm.project.dispatchType">
+                        <select operator="eq" name="dispatchType"  class="form-control select-sm" ng-model="vm.project.dispatchType">
                             <option value="">请选择</option>
-                            <option value="非暂不实施项目">非暂不实施项目</option>
-                            <option value="非退文项目">非退文项目</option>
+                            <option ng-repeat="x in DICT.DISPATCH_TYPE.dicts | orderBy:'dictSort':false" value="{{x.dictName}}" ng-selected="vm.project.reviewstage==x.dictName">{{x.dictName}}</option>
+                            <option value="非暂不实施项目" ng-selected="vm.project.reviewstage=='非暂不实施项目'">非暂不实施项目</option>
+                            <option value="非退文项目" ng-selected="vm.project.reviewstage=='非退文项目'">非退文项目</option>
                             </option>
                         </select>
                     </td>
-
                     <td class="text-right">行业类型</td>
                     <td>
                         <select operator="eq" name="industryType" ng-model="vm.project.industryType"

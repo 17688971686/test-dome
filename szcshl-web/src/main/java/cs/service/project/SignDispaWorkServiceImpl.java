@@ -13,7 +13,9 @@ import cs.domain.project.*;
 import cs.domain.sys.OrgDept;
 import cs.model.PageModelDto;
 import cs.model.project.SignDispaWorkDto;
+import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
+import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
@@ -110,7 +112,60 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     public PageModelDto<SignDispaWorkDto> getCommQurySign(ODataObj odataObj) {
         PageModelDto<SignDispaWorkDto> pageModelDto = new PageModelDto<SignDispaWorkDto>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
-        for (int i = 0; i < odataObj.getFilter().size(); i++) {
+        Integer processState = null;
+        String dispatchType = "";
+        if (Validate.isList(odataObj.getFilter())) {
+            Object value;
+            for (ODataFilterItem item : odataObj.getFilter()) {
+                value = item.getValue();
+                if (null == value) {
+                    continue;
+                }
+                //项目状态查询修改
+                if ("processState".equals(item.getField())) {
+                    processState = Integer.parseInt(item.getValue().toString());
+                    if(processState <10){
+                        criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(),processState));
+                    }else if(processState == 17){
+                        //未发送存档
+                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),1));
+                        criteria.add(Restrictions.le(SignDispaWork_.processState.getName(),7));
+                    }else if(processState == 68){
+                        //已发文未存档
+                        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.processState.getName(),6),
+                                     Restrictions.eq(SignDispaWork_.processState.getName(),7),
+                                     Restrictions.eq(SignDispaWork_.processState.getName(),8)));
+                    }else if(processState == 69){
+                        //已发文项目
+                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),6));
+                    }else if(processState == 89){
+                        //已发送存档
+                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),8));
+                    }
+                    continue;
+                }
+
+                //项目发文
+                if("dispatchType".equals(item.getField())){
+                    dispatchType = item.getValue().toString();
+                    if("非暂不实施项目".equals(dispatchType)){
+                        //非暂不实施项目=项目发文+退文
+                        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目发文"),
+                                Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目退文")));
+                    }else if("非退文项目".equals(dispatchType)){
+                        //非退文项目=暂不实施+项目发文
+                        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目发文"),
+                                Restrictions.eq(SignDispaWork_.dispatchType.getName(), "暂不实施")));
+                    }else{
+                        criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
+                    }
+                    continue;
+                }
+
+                criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
+            }
+        }
+        /*for (int i = 0; i < odataObj.getFilter().size(); i++) {
             //对发文类型的查询
             if (odataObj.getFilter().get(i).getField().equals("dispatchType")) {
                 if (odataObj.getFilter().get(i).getValue().equals("非暂不实施项目")) {
@@ -144,11 +199,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                     odataObj.getFilter().get(i).setValue(Constant.EnumState.YES.getValue());
                 }
             }
-
-
         }
-
-        criteria = odataObj.buildFilterToCriteria(criteria);
+        criteria = odataObj.buildFilterToCriteria(criteria);*/
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);
         if (odataObj.getSkip() > 0) {
