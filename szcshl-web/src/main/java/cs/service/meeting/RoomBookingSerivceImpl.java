@@ -409,6 +409,12 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
                 MeetingRoom meeting = meetingRoomRepo.findById(MeetingRoom_.id.getName(), roomDto.getMrID());
                 roomBooking.setAddressName(meeting.getAddr());
             }
+            if(null != roomDto && Validate.isString(roomDto.getBusinessId())){
+                RoomBooking rb = roomBookingRepo.findById("businessId",roomDto.getBusinessId());
+                if(Validate.isObject(rb)){
+                    roomBookingRepo.delete(rb);
+                }
+            }
             String strdate = DateUtils.toStringDay(roomDto.getRbDay());
             String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
             roomBooking.setRbDate(strdate + "(" + stageday + ")");//星期几

@@ -1518,7 +1518,7 @@ public class SignServiceImpl implements SignService {
             //协办分管领导审批发文
             case FlowConstant.FLOW_SIGN_FGLD_QRFW_XB:
                 Boolean isDirector = (Boolean) flowDto.getBusinessMap().get("isDirector");
-                if (isDirector) {
+                if (null != isDirector && isDirector) {
                 } else {
                     if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
