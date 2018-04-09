@@ -198,7 +198,7 @@ public class AdminController {
                 //线形图
                 resultMap.put(LINE_SIGN_LIST_FLAG, authRuSignTask);
                 //柱状图
-                Map<String, Integer> dataMap = new HashMap();
+                Map<String, Object[]> dataMap = new HashMap();
                 String unWorkId = UUID.randomUUID().toString();
                 //1、主任
                 if (authFlag == 1) {
@@ -207,18 +207,18 @@ public class AdminController {
                         //主办部门
                         if (Validate.isString(rpt.getmOrgId())) {
                             haveOrg = true;
-                            setMapValue(dataMap, rpt.getmOrgId());
+                            setMapValue(dataMap, rpt.getmOrgId() , rpt.getProjectName());
                         }
                         if (Validate.isString(rpt.getaOrgId())) {
                             haveOrg = true;
                             List<String> aOrgIdList = StringUtil.getSplit(rpt.getaOrgId(), ",");
                             for (String orgId : aOrgIdList) {
-                                setMapValue(dataMap, orgId);
+                                setMapValue(dataMap, orgId , rpt.getProjectName());
                             }
                         }
                         //没有分办的项目
                         if (!haveOrg) {
-                            setMapValue(dataMap, unWorkId);
+                            setMapValue(dataMap, unWorkId , rpt.getProjectName());
                         }
                     }
 
@@ -228,7 +228,7 @@ public class AdminController {
                         if (Validate.isList(orgIdList)) {
                             for (String orgId : orgIdList) {
                                 if (orgId.equals(rpt.getmOrgId()) || (rpt.getaOrgId() != null && rpt.getaOrgId().indexOf(orgId) > -1)) {
-                                    setMapValue(dataMap, orgId);
+                                    setMapValue(dataMap, orgId , rpt.getProjectName());
                                 }
                             }
                         }
@@ -247,34 +247,70 @@ public class AdminController {
                     //筛选出第一负责人的任务
                     if (Validate.isList(resultList)) {
                         for (RuProcessTask rpt : resultList) {
-                            setMapValue(dataMap, rpt.getMainUserId());
+                            setMapValue(dataMap, rpt.getMainUserId() , rpt.getProjectName());
                         }
                     }
                 }
                 //遍历map,如果是部长则查人员，否则查部门
                 List<String> histogram_x = new ArrayList<>();
                 List<Integer> histogram_y = new ArrayList<>();
+                Map<String , Object[]> histogramMap = new LinkedHashMap<>();
                 if(authFlag == 3){
-                    for (Map.Entry<String, Integer> entry : dataMap.entrySet()) {
+                    for (Map.Entry<String, Object[]> entry : dataMap.entrySet()) {
                         User user = userService.getCacheUserById(entry.getKey());
-                        histogram_x.add(user.getDisplayName());
-                        histogram_y.add(entry.getValue());
+                        histogramMap.put(user.getDisplayName() , entry.getValue());
+//                        histogram_x.add(user.getDisplayName());
+//                        histogram_y.add(entry.getValue());
                     }
                 }else{
                     List<OrgDept> allOrgDept = authMap.get("allOrgDeptList")==null?orgDeptService.queryAll(): (List<OrgDept>) authMap.get("allOrgDeptList");
+
+//                    histogramMap.put(Constant.OrgType.ORGZHB.getKey() , new Object[]{ 0 , ""});
+//                    histogramMap.put(Constant.OrgType.ORGPGYB.getKey() , new Object[]{ 0 , ""});
+//                    histogramMap.put(Constant.OrgType.ORGPGEB.getKey() , new Object[]{ 0 , ""});
+//                    histogramMap.put(Constant.OrgType.ORXXHZ.getKey() , new Object[]{ 0 , ""});
+//                    histogramMap.put(Constant.OrgType.ORGGSYB.getKey() , new Object[]{ 0 , ""});
+//                    histogramMap.put(Constant.OrgType.ORGGSEB.getKey() , new Object[]{ 0 , ""});
+//                    histogramMap.put("未分办" , new Object[]{ 0 , ""});
                     for(OrgDept orgDept : allOrgDept){
                         if(dataMap.get(orgDept.getId()) != null){
-                            histogram_x.add(orgDept.getName());
-                            histogram_y.add(dataMap.get(orgDept.getId()));
+                            //综合部
+                            if(Constant.OrgType.ORGZHB.getKey().equals(orgDept.getName())){
+                                histogramMap.put(Constant.OrgType.ORGZHB.getKey() , dataMap.get(orgDept.getId()));
+                            }
+                            //评估一部
+                            if(Constant.OrgType.ORGPGYB.getKey().equals(orgDept.getName())){
+                                histogramMap.put(Constant.OrgType.ORGPGYB.getKey() , dataMap.get(orgDept.getId()));
+                            }
+                            //评估二部
+                            if(Constant.OrgType.ORGPGEB.getKey().equals(orgDept.getName())){
+                                histogramMap.put(Constant.OrgType.ORGPGEB.getKey() , dataMap.get(orgDept.getId()));
+                            }
+                            //评估一部信息化
+                            if(Constant.OrgType.ORXXHZ.getKey().equals(orgDept.getName())){
+                                histogramMap.put(Constant.OrgType.ORXXHZ.getKey() , dataMap.get(orgDept.getId()));
+                            }
+                            //概算一部
+                            if(Constant.OrgType.ORGGSYB.getKey().equals(orgDept.getName())){
+                                histogramMap.put(Constant.OrgType.ORGGSYB.getKey() , dataMap.get(orgDept.getId()));
+                            }
+                            //概算二部
+                            if(Constant.OrgType.ORGGSEB.getKey().equals(orgDept.getName())){
+                                histogramMap.put(Constant.OrgType.ORGGSEB.getKey() , dataMap.get(orgDept.getId()));
+                            }
+//                            histogram_x.add(orgDept.getName());
+//                            histogram_y.add(dataMap.get(orgDept.getId()));
                         }
                     }
                     if(dataMap.get(unWorkId) != null){
-                        histogram_x.add("未分办");
-                        histogram_y.add(dataMap.get(unWorkId));
+                        histogramMap.put("未分办" , dataMap.get(unWorkId));
+//                        histogram_x.add("未分办");
+//                        histogram_y.add(dataMap.get(unWorkId));
                     }
                 }
-                resultMap.put("histogram_x", histogram_x);
-                resultMap.put("histogram_y", histogram_y);
+//                resultMap.put("histogram_x", histogram_x);
+//                resultMap.put("histogram_y", histogram_y);
+                resultMap.put("histogram" , histogramMap);
             } else {
                 resultMap.put(ISDISPLAY, true);
             }
@@ -285,12 +321,20 @@ public class AdminController {
         return resultMap;
     }
 
-    private void setMapValue(Map<String, Integer> dataMap, String key) {
+    private void setMapValue(Map<String, Object[]> dataMap, String key , String projectName) {
         if (dataMap.get(key) == null) {
-            dataMap.put(key, 1);
+            dataMap.put(key, new Object[]{1 , projectName});
         } else {
-            Integer newCount = new Integer(dataMap.get(key).toString());
-            dataMap.put(key, newCount + 1);
+            Object[] newValue = dataMap.get(key);
+            Integer oldCount = (Integer) newValue[0];
+            String oldProjectName = newValue[1].toString();
+            Integer newCount = oldCount + 1;
+            String newProjectName = oldProjectName + "," + projectName;
+
+            newValue = new Object[]{newCount , newProjectName};
+
+
+            dataMap.put(key, newValue);
         }
     }
 
