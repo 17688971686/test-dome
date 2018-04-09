@@ -719,6 +719,16 @@ public class SignDto extends BaseDto {
      */
     private UnitScoreDto unitScoreDto;
 
+    /**
+     * 当前日期
+     */
+    private String curDate;
+
+    /**
+     * 国家编码
+     */
+    private String countryCode;
+
     public SignDto() {
     }
 
@@ -2143,7 +2153,7 @@ public class SignDto extends BaseDto {
         this.comprehensiveId = comprehensiveId;
     }
 
-    
+
    /* public String getFinanciaStatus() {
         return financiaStatus;
 	}
@@ -2534,5 +2544,21 @@ public class SignDto extends BaseDto {
 
     public void setaUserName(String aUserName) {
         this.aUserName = aUserName;
+    }
+
+    public String getCurDate() {
+        return curDate;
+    }
+
+    public void setCurDate(String curDate) {
+        this.curDate = curDate;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 }

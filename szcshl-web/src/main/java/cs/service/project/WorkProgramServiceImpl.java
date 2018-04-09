@@ -269,6 +269,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         criteria.createAlias(WorkProgram_.sign.getName(), WorkProgram_.sign.getName());
         criteria.add(Restrictions.eq(WorkProgram_.sign.getName() + "." + Sign_.signid.getName(), signId));
         List<WorkProgram> wpList = criteria.list();
+        WorkProgramDto workProgramDto = new WorkProgramDto();
 
         //2、是否有当前用户负责的工作方案
         WorkProgram mainW = new WorkProgram();
@@ -291,13 +292,16 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         WorkProgramDto mainWPDto = new WorkProgramDto();
                         BeanCopierUtils.copyProperties(mainW,mainWPDto);
                         wpDto.setMainWorkProgramDto(mainWPDto);
-                    workProgramRepo.initWPMeetingExp(wpDto, wp);
-                    wpDtoList.add(wpDto);
-                }
+                }else{
+                        BeanCopierUtils.copyProperties(wp, workProgramDto);
+                        workProgramRepo.initWPMeetingExp(workProgramDto, wp);
+                    }
+                workProgramRepo.initWPMeetingExp(wpDto, wp);
+                wpDtoList.add(wpDto);
             }
             resultMap.put("WPList", wpDtoList);
         }
-        resultMap.put("eidtWP", mainW);
+        resultMap.put("eidtWP", workProgramDto);
         return resultMap;
     }
 

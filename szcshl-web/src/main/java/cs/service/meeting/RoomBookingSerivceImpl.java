@@ -409,20 +409,32 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
                 MeetingRoom meeting = meetingRoomRepo.findById(MeetingRoom_.id.getName(), roomDto.getMrID());
                 roomBooking.setAddressName(meeting.getAddr());
             }
-            if(null != roomDto && Validate.isString(roomDto.getBusinessId())){
-                RoomBooking rb = roomBookingRepo.findById("businessId",roomDto.getBusinessId());
-                if(Validate.isObject(rb)){
-                    roomBookingRepo.delete(rb);
-                }
-            }
+
             String strdate = DateUtils.toStringDay(roomDto.getRbDay());
             String stageday = GetWeekUtils.getWeek(roomDto.getRbDay());
             roomBooking.setRbDate(strdate + "(" + stageday + ")");//星期几
             roomBooking.setStageProject(Validate.isString(roomDto.getStageProject()) ? roomDto.getStageProject() : "" + "(" + strdate + "(" + stageday + ")" + ")");
             roomBooking.setModifiedDate(now);
             roomBooking.setModifiedBy(SessionUtil.getUserId());
-            roomBookingRepo.save(roomBooking);
+    /*        String beginTime = DateUtils.converToString(roomDto.getBeginTime(),"yyyy-MM-dd");
+            String endTime = DateUtils.converToString(roomDto.getEndTime(),"yyyy-MM-dd");
+            String rbDay = DateUtils.converToString(roomDto.getRbDay(),"yyyy-MM-dd");
 
+            if(null != roomDto && Validate.isString(roomDto.getBusinessId()) && Validate.isString(roomDto.getMainFlag())){
+               List<RoomBooking>  rbList = roomBookingRepo.findByIds("businessId",roomDto.getBusinessId(),"");
+                if(Validate.isList(rbList)){
+                    for (RoomBooking rb : rbList){
+                       String beginTimeTemp = DateUtils.converToString(rb.getBeginTime(),"yyyy-MM-dd");
+                       String endTimeTemp = DateUtils.converToString(rb.getEndTime(),"yyyy-MM-dd");
+                       String rbDayTemp = DateUtils.converToString(rb.getRbDay(),"yyyy-MM-dd");
+                        if(rb.getMrID().equals(roomDto.getMrID()) && rbDayTemp.equals(rbDay) && beginTimeTemp.equals(beginTime) && endTimeTemp.equals(endTime)){
+                            roomBookingRepo.delete(rb);
+                            break;
+                        }
+                    }
+                }
+            }*/
+            roomBookingRepo.save(roomBooking);
             BeanCopierUtils.copyProperties(roomBooking, roomDto);
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", roomDto);
         }
