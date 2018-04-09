@@ -32,11 +32,15 @@
                 },
                 tooltip: {//提示框设置
                     trigger: 'axis',
-                    axisPointer: {
-                        type: 'cross', //cross  line  shadow
-                        label: {
-                            backgroundColor: '#283b56'
+                    formatter: function(params){
+                        var projectNames = vm.histogram[params[0].name][1].split(",");
+
+                        var result = params[0].name + "(" + params[0].value + ")" + "<br/>"
+                        for(var i = 0 ; i < projectNames.length ; i++){
+                            result += i+1 + "、" + projectNames[i] + "<br/>"
                         }
+                        return result;
+
                     }
                 },
                 legend: { //头部显示说明，注意：data值要与series中的name一致，顺序可以不一致
@@ -65,7 +69,7 @@
                     },
                     axisLabel: {
                         interval: 0,
-                        rotate: 35,//倾斜度 -90 至 90 之间，默认为0
+                        rotate: 30,//倾斜度 -90 至 90 之间，默认为0
                         margin: 2,
                         textStyle: {
                             fontWeight: 'bolder',
@@ -152,6 +156,7 @@
                     {
                         name: '剩余工作日',
                         type: 'line',
+                        showAllSymbol: true, //标注所有的数据点
                         markPoint: {
                             data: [
                                 {type: 'max', name: '最大值'},
@@ -226,8 +231,24 @@
                         vm.initLineChart();//初始化折线图
 
                         //柱状图
-                        vm.review = data.histogram_x;  //横轴(人员名称/部门)
-                        vm.signNumber = data.histogram_y;//纵轴(数量)
+                        //固定x轴的值，通过x轴的值作为map的key去获取value，如果value不为undefined，则说明该map存在这个key，保存key与value
+                        var x = ["综合部" , "评估一部" , "评估二部"  , "评估一部信息化组" , "概算一部"  , "概算二部" , "未分办"];
+                        var histogram_x = [];
+                        var histogram_y = [];
+                        vm.histogram = data.histogram;
+                        if(vm.histogram != undefined){
+                            for(var i = 0 ; i < x.length ; i++){
+                                var histogramValue = vm.histogram[x[i]];
+
+                                if(histogramValue != undefined){
+                                    histogram_x.push(x[i]);
+                                    histogram_y.push(histogramValue[0]);
+                                }
+                            }
+                        }
+
+                        vm.review = histogram_x;  //横轴(人员名称/部门)
+                        vm.signNumber = histogram_y;//纵轴(数量)
                         vm.initHistogram();//初始化柱状图
                     }
 
