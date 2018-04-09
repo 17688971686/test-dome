@@ -106,17 +106,17 @@
                             <option value="9">已办结项目</option>
                         </select>
                     </td>
-                    <td class="text-right">提前介入/正常</td>
+                    <td class="text-right">提前介入</td>
                     <td>
                         <select  ng-model="vm.project.reviewstages" class="form-control select-sm">
                             <option value="">请选择</option>
-                            <option value="提前介入">提前介入</option>
-                            <option value="正常">正常</option>
+                            <option value="提前介入">是</option>
+                            <option value="正常">否</option>
                         </select>
                     </td>
                     <!--进行判断-->
-                    <input ng-if="vm.project.reviewstages=='正常'" name="reviewstage" operator="ne" value="提前介入" hidden/>
-                    <input ng-if="vm.project.reviewstages=='提前介入'" name="reviewstage" operator="eq" value="提前介入" hidden/>
+                    <input ng-if="vm.project.reviewstages=='正常'" name="isAdvanced" operator="ne" value="9" hidden/>
+                    <input ng-if="vm.project.reviewstages=='提前介入'" name="isAdvanced" operator="eq" value="9" hidden/>
 
                     <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">评审部门</td>
                     <td width="15%">

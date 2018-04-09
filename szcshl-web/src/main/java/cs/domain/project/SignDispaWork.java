@@ -358,6 +358,20 @@ public class SignDispaWork {
     @Column
     private String ispresign;
 
+    /**
+     * 是否提前介入
+     */
+    @Column
+    private String isAdvanced;
+
+    public String getIsAdvanced() {
+        return isAdvanced;
+    }
+
+    public void setIsAdvanced(String isAdvanced) {
+        this.isAdvanced = isAdvanced;
+    }
+
     public String getIspresign() {
         return ispresign;
     }

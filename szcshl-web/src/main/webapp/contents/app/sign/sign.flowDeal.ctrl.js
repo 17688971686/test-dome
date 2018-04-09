@@ -898,14 +898,12 @@
                 selUser.push(displayName);
             } else {//不勾中的
                 angular.forEach(selUser, function (su, index) {
-                    if (su == vm.selUserName) {
-
+                    if (su == displayName) {
                         //判断。如果第一负责人跟其他负责人相同时。进行删减。只保留一个意见
                         selUser.splice(index, 1);
                     }
                 });
             }
-
             if (selUser.length > 0) {
                 if (isSelMainUser) {
                     defaultOption += ', ';
