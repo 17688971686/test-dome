@@ -371,7 +371,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             if (!Constant.SUPER_USER.equals(SessionUtil.getLoginName()) && expertReview.getReviewDate() != null) {
                 long diffDays = DateUtils.daysBetween(new Date(), expertReview.getReviewDate());
                 if (diffDays < 0) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "只能在评审/函评日期当天计算专家评审费！");
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "只能在评审当天计算专家应纳税额！");
                 }
             }
             List<Map<String, Object>> resultObj = new ArrayList<>();
