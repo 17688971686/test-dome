@@ -97,7 +97,7 @@ public class IdeaServiceImpl implements IdeaService {
                 cache.put(SessionUtil.getUserId()+"_IDEA",resultDto);
             }
         }
-        return resultDto;
+        return resultDto==null?new ArrayList<>():resultDto;
     }
 
     @Override

@@ -370,7 +370,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存(或者超级管理员) 超级管理员发放，不做时间限制
             if (!Constant.SUPER_USER.equals(SessionUtil.getLoginName()) && expertReview.getReviewDate() != null) {
                 long diffDays = DateUtils.daysBetween(new Date(), expertReview.getReviewDate());
-                if (diffDays < 0) {
+                if (diffDays != 0) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "只能在评审当天计算专家应纳税额！");
                 }
             }
