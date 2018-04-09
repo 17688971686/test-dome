@@ -479,6 +479,9 @@ public class FlowServiceImpl implements FlowService {
                     String orgId = orgIdList.get(0);
                     dis2.add(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId));
                     dis2.add(Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%"));
+                    //如果是部长或组长，并且是项目负责人时，还需用户ID查询
+                    dis2.add(Restrictions.eq(RuProcessTask_.mainUserId.getName(),curUserId));
+                    dis2.add(Restrictions.like(RuProcessTask_.aUserId.getName(), "%" + curUserId + "%"));
                 }
                 criteria.add(dis2);
                 criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
