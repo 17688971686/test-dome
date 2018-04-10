@@ -80,6 +80,7 @@
 
         vm.signId = vm.model.signid;
         vm.expertList = new Array(10); //用于打印页面的专家列表，控制行数
+        vm.curDate = "";  //当前日期
 
         //用于打印发文，项目概况控制
         // vm.workProgramXmjys = {};//项目建议书
@@ -121,6 +122,7 @@
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid, function (data) {
                 vm.model = data;
+                vm.curDate = data.curDate;
                 var deActive = $("#myTab .active");
                 var deObj = $("a", deActive);
                 vm.model.showDiv = deObj.attr("for-div");
@@ -421,7 +423,7 @@
             }
             //设置一个评审费发放日期默认值
             if (!expertReview.payDate) {
-                expertReview.payDate = new Date().Format("yyyy-MM-dd");
+                expertReview.payDate = vm.curDate;
             }
             common.initJqValidation($('#payform'));
             var isValid = $('#payform').valid();
@@ -658,7 +660,7 @@
         }
         //E 拟补充资料函列表
 
-        //S_工作方案  --链接到  登记表补充资料 
+        //S_工作方案  --链接到  登记表补充资料
         vm.addRegisterFile = function () {
             $state.go('registerFile', {businessId: vm.model.signid});
         }// E_工作方案  --链接到  登记表补充资料

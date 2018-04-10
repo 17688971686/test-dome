@@ -78,7 +78,7 @@ public class RoomBookingDto extends BaseDto {
     private String beginTimeStr;
     private String endTimeStr;
     private String bookId;
-
+    private String mainFlag;
     public String getId() {
         return id;
     }
@@ -245,5 +245,13 @@ public class RoomBookingDto extends BaseDto {
 
     public void setBookId(String bookId) {
         this.bookId = bookId;
+    }
+
+    public String getMainFlag() {
+        return mainFlag;
+    }
+
+    public void setMainFlag(String mainFlag) {
+        this.mainFlag = mainFlag;
     }
 }

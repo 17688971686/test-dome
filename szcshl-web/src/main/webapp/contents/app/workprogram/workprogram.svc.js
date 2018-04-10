@@ -383,7 +383,6 @@
             var httpSuccess = function success(response) {
                 if (response.data != null && response.data != "") {
                     vm.work = response.data.eidtWP;//主办
-                    console.log(vm.work);
                     vm.assistant=response.data.WPList;//协办
                     //初始化部门，得到数组
                     if(vm.work.reviewOrgName){

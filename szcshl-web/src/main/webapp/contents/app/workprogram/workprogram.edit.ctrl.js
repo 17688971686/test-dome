@@ -267,6 +267,21 @@
                 bsWin.alert("请先保存！");
             }
         }
+        //会议预定添加弹窗维维护管理模块
+/*        vm.addTimeStageMain = function () {
+            if (vm.work.id) {
+                workprogramSvc.findById(vm.work.id,function(data){
+                    //2、如果已经保存，则弹框
+                    if(data.reviewType == '专家评审会'){
+                        $state.go('room', {businessId: vm.work.id, businessType: "SIGN_WP",mainFlag:"1"});
+                    }else{
+                        bsWin.alert("请先保存工作方案！");
+                    }
+                });
+            } else {
+                bsWin.alert("请先保存！");
+            }
+        }*/
         /*********************  E_会议室模块   *************************/
 
         //查询评估部门

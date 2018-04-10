@@ -167,7 +167,7 @@
                 model.rbDay = (model.start).Format("yyyy-MM-dd");
                 var endTime = (model.end).Format("hh:mm:ss");
                 model.endTime = model.rbDay+ " "+endTime;
-
+               // model.mainFlag = mainFlag;
                 var httpOptions = {
                     method: 'post',
                     url: rootPath + "/room/addRoom",

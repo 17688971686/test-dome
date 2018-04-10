@@ -869,19 +869,19 @@ public class Sign extends DomainBase {
      */
     @Column(columnDefinition = "VARCHAR(200)")
     private String palceStorage;
-    
+
     /**
      * 存放时间
      */
     @Column(columnDefinition = "Date")
     private Date palceTime;
-    
+
     /**
      * 联系人
      */
     @Column(columnDefinition = "VARCHAR(20)")
     private String contacts;
-    
+
     /**
      * 联系电话
      */
@@ -948,6 +948,12 @@ public class Sign extends DomainBase {
      */
     @Column(columnDefinition = "VARCHAR(512)")
     private String aUserName;
+
+    /**
+     * 国家编码
+     */
+    @Column(columnDefinition = "VARCHAR(50)")
+    private String countryCode;
 
 
     public Float getLengthenDays() {
@@ -2584,37 +2590,37 @@ public class Sign extends DomainBase {
         this.isAppraising = isAppraising;
     }
 
-	public String getPalceStorage() {
-		return palceStorage;
-	}
+    public String getPalceStorage() {
+        return palceStorage;
+    }
 
-	public void setPalceStorage(String palceStorage) {
-		this.palceStorage = palceStorage;
-	}
+    public void setPalceStorage(String palceStorage) {
+        this.palceStorage = palceStorage;
+    }
 
-	public Date getPalceTime() {
-		return palceTime;
-	}
+    public Date getPalceTime() {
+        return palceTime;
+    }
 
-	public void setPalceTime(Date palceTime) {
-		this.palceTime = palceTime;
-	}
+    public void setPalceTime(Date palceTime) {
+        this.palceTime = palceTime;
+    }
 
-	public String getContacts() {
-		return contacts;
-	}
+    public String getContacts() {
+        return contacts;
+    }
 
-	public void setContacts(String contacts) {
-		this.contacts = contacts;
-	}
+    public void setContacts(String contacts) {
+        this.contacts = contacts;
+    }
 
-	public String getContactsPhone() {
-		return contactsPhone;
-	}
+    public String getContactsPhone() {
+        return contactsPhone;
+    }
 
-	public void setContactsPhone(String contactsPhone) {
-		this.contactsPhone = contactsPhone;
-	}
+    public void setContactsPhone(String contactsPhone) {
+        this.contactsPhone = contactsPhone;
+    }
 
     public String getIsSendFGW() {
         return isSendFGW;
@@ -2694,5 +2700,13 @@ public class Sign extends DomainBase {
 
     public void setaUserName(String aUserName) {
         this.aUserName = aUserName;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 }

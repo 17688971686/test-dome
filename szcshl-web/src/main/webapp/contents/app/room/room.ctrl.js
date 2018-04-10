@@ -13,6 +13,7 @@
             businessId: $state.params.businessId,
             businessType: $state.params.businessType,
         };
+       // vm.mainFlag = $state.params.mainFlag;
         vm.startDateTime = new Date("2005/6/1 08:00");
         vm.startRbDate = new Date();
         vm.endDateTime = new Date("2030/6/1 21:00");

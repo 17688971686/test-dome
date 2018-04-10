@@ -606,6 +606,7 @@ public class SignServiceImpl implements SignService {
             }
 
         }
+        signDto.setCurDate(DateUtils.converToString(new Date(),"yyyy-MM-dd"));
         return signDto;
     }
 
@@ -1493,7 +1494,7 @@ public class SignServiceImpl implements SignService {
                     assigneeValue = buildUser(userList);
                     variables.put(FlowConstant.SignFlowParams.USER_XBFGLD_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
 
-                //没有协办，则流转给主办分管领导审批
+                    //没有协办，则流转给主办分管领导审批
                 } else {
                     assigneeValue = getMainSLeader(signid);
                     variables.put(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
@@ -1632,7 +1633,7 @@ public class SignServiceImpl implements SignService {
                     variables.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), true);
                     variables.put(FlowConstant.SignFlowParams.USER_CW.getValue(), assigneeValue);
 
-                //没有评审费，则直接到归档环节(还是当前人处理)
+                    //没有评审费，则直接到归档环节(还是当前人处理)
                 } else {
                     variables.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), false);
                     assigneeValue = SessionUtil.getUserId();
@@ -2335,7 +2336,7 @@ public class SignServiceImpl implements SignService {
             sqlBuilder.append(" and s." + SignDispaWork_.projectname.getName() + " like "+"'%" +projectname + "%'"+"");
            /* sqlBuilder.setParam("projectName", "%" +projectname + "%");*/
         }
-       //返回总页数
+        //返回总页数
         sqlBuilder1.append("select count(*)");
         sqlBuilder1.append(sqlBuilder.getHqlString());
         int total=signDispaWorkRepo.returnIntBySql(sqlBuilder1);
