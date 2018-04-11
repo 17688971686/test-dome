@@ -216,16 +216,21 @@
                             for (var i = 0,l=lineList.length; i < l; i++) {
                                 //赋值给横轴需要的数据
                                 var day = lineList[i].surplusDays;
+
                                 if (day < -3) {
                                     day = -3;
                                 }
                                 if (day > 15) {
                                     day = 15;
                                 }
+                                if(day==undefined){
+                                    day = 0;
+                                }
                                 vm.linedatas.push(day);
                                 vm.reviewdate.push(lineList[i].projectName);
                                 //自定义传参，先进行拼接需要的数据。后再拆分
                                 vm.name.push(lineList[i].surplusDays + "," + lineList[i].businessKey + "," + lineList[i].processInstanceId);
+
                             }
                         }
                         vm.initLineChart();//初始化折线图

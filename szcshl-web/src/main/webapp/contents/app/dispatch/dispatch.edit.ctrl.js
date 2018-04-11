@@ -104,7 +104,7 @@
                                 //选中要关联的项目
                                 $("#associateWindow").kendoWindow({
                                     width: "75%",
-                                    height: "650px",
+                                    height: "750px",
                                     title: "项目关联",
                                     visible: false,
                                     modal: true,
@@ -124,16 +124,14 @@
             });
         }
         //关联项目条件查询
-        vm.associateQuerySign = function(){
-            vm.noassociateSign = false;
-            signSvc.getAssociateSign(vm.searchAssociateSign,function(data){
+        vm.associateQuerySign = function () {
+            signSvc.getAssociateSignGrid(vm, function (data) {
                 vm.associateSignList = [];
-                if(data && data.length>0){
-                    vm.associateSignList = data;
-                }else{
-                    //没有关联数据
-                    vm.noassociateSign = true;
+                if (data) {
+                    vm.associateSignList = data.value;
+                    vm.page.callback(data.count);//请求回调时传入总记录数
                 }
+
             });
         }
 
@@ -225,7 +223,22 @@
             common.initJqValidation($('#dispatch_form'));
             var isValid = $('#dispatch_form').valid();
             if(isValid){
-                dispatchSvc.saveDispatch(vm);
+                dispatchSvc.saveDispatch(vm,function(data){
+                    vm.isCommit = false;
+                    if (data.flag || data.reCode == "ok") {
+                        if(vm.dispatchDoc.dispatchWay && vm.dispatchDoc.dispatchWay == 2){
+                            vm.busiFlag.isMerge = true;     //合并发文
+                        }
+                        if(vm.dispatchDoc.isMainProject && vm.dispatchDoc.isMainProject == 9){
+                            vm.busiFlag.isMain = true;     //主项目
+                        }
+
+                        if(!vm.dispatchDoc.id){
+                            vm.dispatchDoc.id = data.reObj.id;
+                        }
+                    }
+                    bsWin.alert(data.reMsg);
+                });
 /*                if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
                     $scope.$apply();
                 }*/

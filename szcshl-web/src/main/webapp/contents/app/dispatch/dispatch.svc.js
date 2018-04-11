@@ -81,7 +81,7 @@
         }// E_初始化
 
         // S_保存
-        function saveDispatch(vm) {
+        function saveDispatch(vm,callBack) {
             vm.isCommit = true;
             var httpOptions = {
                 method: 'post',
@@ -89,20 +89,10 @@
                 data: vm.dispatchDoc
             }
             var httpSuccess = function success(response) {
-                vm.isCommit = false;
-                if (response.data.flag || response.data.reCode == "ok") {
-                    if(vm.dispatchDoc.dispatchWay && vm.dispatchDoc.dispatchWay == 2){
-                        vm.busiFlag.isMerge = true;     //合并发文
-                    }
-                    if(vm.dispatchDoc.isMainProject && vm.dispatchDoc.isMainProject == 9){
-                        vm.busiFlag.isMain = true;     //主项目
-                    }
-
-                    if(!vm.dispatchDoc.id){
-                        vm.dispatchDoc.id = response.data.reObj.id;
-                    }
+                //关闭项目关联窗口
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
                 }
-                bsWin.alert(response.data.reMsg);
             }
             common.http({
                 $http: $http,
