@@ -15,10 +15,7 @@ import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
-import cs.repository.repositoryImpl.project.DispatchDocRepo;
-import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
-import cs.repository.repositoryImpl.project.SignMergeRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
+import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.sys.SysConfigService;
@@ -54,6 +51,10 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     private FtpRepo ftpRepo;
     @Autowired
     private SysFileService sysFileService;
+
+    @Autowired
+    private WorkProgramRepo workProgramRepo;
+
     /**
      * 生成发文编号，生成发文编号之前，要先上传项目评审意见
      * @param signId
@@ -386,9 +387,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
     public ResultMsg createDisPatchTemplate(String signId) {
         SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
         sysFileService.deleteByBusinessIdAndBusinessType(signId , Constant.SysFileType.TEMOLATE.getValue());
-
+        WorkProgram workProgram = workProgramRepo.findByPrincipalUser(signId);
         //获得拟聘专家信息
-        List<Expert> expertList=expertRepo.findByBusinessId(signId);
+        List<Expert> expertList=expertRepo.findByBusinessId(workProgram.getId());
 
         List<SysFile> sysFileList = new ArrayList<>();
         Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),sysFileService.findFtpId());

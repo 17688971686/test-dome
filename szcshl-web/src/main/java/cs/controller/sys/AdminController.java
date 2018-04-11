@@ -221,6 +221,7 @@ public class AdminController {
                             setMapValue(dataMap, unWorkId , rpt.getProjectName());
                         }
                     }
+                    resultMap.put("XTYPE" , "ORG");
 
                     //2、分管领导
                 } else if (authFlag == 2) {
@@ -233,6 +234,7 @@ public class AdminController {
                             }
                         }
                     }
+                    resultMap.put("XTYPE" , "ORG");
                     //3、部长
                 } else if (authFlag == 3) {
                     String orgId = orgIdList.get(0);
@@ -250,6 +252,7 @@ public class AdminController {
                             setMapValue(dataMap, rpt.getMainUserId() , rpt.getProjectName());
                         }
                     }
+                    resultMap.put("XTYPE" , "USER");
                 }
                 //遍历map,如果是部长则查人员，否则查部门
                 List<String> histogram_x = new ArrayList<>();
@@ -259,6 +262,7 @@ public class AdminController {
                     for (Map.Entry<String, Object[]> entry : dataMap.entrySet()) {
                         User user = userService.getCacheUserById(entry.getKey());
                         histogramMap.put(user.getDisplayName() , entry.getValue());
+
 //                        histogram_x.add(user.getDisplayName());
 //                        histogram_y.add(entry.getValue());
                     }

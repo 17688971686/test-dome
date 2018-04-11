@@ -236,16 +236,25 @@
                         var histogram_x = [];
                         var histogram_y = [];
                         vm.histogram = data.histogram;
-                        if(vm.histogram != undefined){
-                            for(var i = 0 ; i < x.length ; i++){
-                                var histogramValue = vm.histogram[x[i]];
-
-                                if(histogramValue != undefined){
-                                    histogram_x.push(x[i]);
-                                    histogram_y.push(histogramValue[0]);
-                                }
-                            }
+                        if("USER" == data.XTYPE){
+                            $.each(vm.histogram , function(key , value){
+                                histogram_x.push(key);
+                                histogram_y.push(value[0]);
+                            })
                         }
+                       if("ORG" == data.XTYPE){
+                           if(vm.histogram != undefined){
+                               for(var i = 0 ; i < x.length ; i++){
+                                   var histogramValue = vm.histogram[x[i]];
+
+                                   if(histogramValue != undefined){
+                                       histogram_x.push(x[i]);
+                                       histogram_y.push(histogramValue[0]);
+                                   }
+                               }
+                           }
+                       }
+
 
                         vm.review = histogram_x;  //横轴(人员名称/部门)
                         vm.signNumber = histogram_y;//纵轴(数量)

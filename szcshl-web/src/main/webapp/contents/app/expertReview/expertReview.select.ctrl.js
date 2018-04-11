@@ -790,6 +790,7 @@
          * 保存新专家信息
          */
         vm.saveExpert=function (isDisplay) {
+            console.log(345);
             vm.saveNewExpertFlag = '0';
             if(vm.confirmEPListReplace.length > 0){
                 expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
