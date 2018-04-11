@@ -30,10 +30,10 @@
                     <p id="comprehensivehandlesugCountx" style="text-align: right;"></p>
                 </td>
             </tr>
-            <tr >
+            <tr  >
                 <td  class="text-center" style="width: 20%;">部长处理意见：  </td>
                 <td>
-                    <textarea maxlength="120"  data-val-length-max="120"  data-val="true" name="ministerhandlesug"  rows="3" ng-model="vm.model.ministerhandlesug" ng-change="vm.model.ministerhandlesug=countCharacter(vm.model.ministerhandlesug,120,'ministerhandlesugCountx')"  ng-model="vm.model.ministerhandlesug" style="width: 98%">{{vm.model.ministerhandlesug}}</textarea>
+                    <textarea  maxlength="521"  data-val-length-max="521"  data-val="true" name="ministerhandlesug"  rows="3" ng-model="vm.model.ministerhandlesug" ng-change="vm.model.ministerhandlesug=countCharacter(vm.model.ministerhandlesug,521,'ministerhandlesugCountx')"  ng-model="vm.model.ministerhandlesug" style="width: 98%;height: 100px;">{{vm.model.ministerhandlesug}}</textarea>
                     <span data-valmsg-for="ministerhandlesug" data-valmsg-replace="true" class="errors"></span>
                     <p id="ministerhandlesugCountx" style="text-align: right;"></p>
                 </td>
@@ -54,7 +54,7 @@
                 <td  class="text-center" style="width: 20%;">部长处理意见：  </td>
 
                 <td>
-                    <textarea maxlength="120"  data-val-length-max="120"  data-val="true"   name="ministerSuggesttion"  ng-change="x.ministerSuggesttion=countCharacter(x.ministerSuggesttion,120,'{{$index}}ministerSuggesttionCount')"   rows="3"  ng-model="x.ministerSuggesttion" style="width: 98%">{{x.ministerSuggesttion }}</textarea>
+                    <textarea    maxlength="512"  data-val-length-max="512"  data-val="true"   name="ministerSuggesttion"  ng-change="x.ministerSuggesttion=countCharacter(x.ministerSuggesttion,512,'{{$index}}ministerSuggesttionCount')"   rows="3"  ng-model="x.ministerSuggesttion" style="width: 98%">{{x.ministerSuggesttion }}</textarea>
                     <span data-valmsg-for="ministerSuggesttion" data-valmsg-replace="true" class="errors"></span>
                     <p id="{{$index}}ministerSuggesttionCount"  style="text-align: right;"></p>
                 </td>
@@ -89,6 +89,7 @@
             <textarea maxlength="1000" data-val-length-max="1000"
                       ng-change="vm.dispatchDoc.ministerSuggesttion=countCharacter(vm.dispatchDoc.ministerSuggesttion,1000,'ministerSuggesttionCount')"
                       class="form-control input-sm "
+                      style="height: 100px;"
                       ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion"
                       name="ministerSuggesttion" >{{vm.dispatchDoc.ministerSuggesttion}}</textarea>
                     <span data-valmsg-for="ministerSuggesttion" data-valmsg-replace="true" class="errors"></span>

@@ -6,7 +6,8 @@
         'kendo.directives',
         'angular-loading-bar',
         'ngAnimate',
-        'ngFileSaver'
+        'ngFileSaver',
+        'angular-toArrayFilter'
     ]).filter('trust2Html', ['$sce', function ($sce) {
         return function (val) {
             return $sce.trustAsHtml(val);

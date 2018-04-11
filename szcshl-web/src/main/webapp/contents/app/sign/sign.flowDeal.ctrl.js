@@ -723,7 +723,7 @@
                         //选中要关联的项目
                         $("#associateWindow").kendoWindow({
                             width: "75%",
-                            height: "650px",
+                            height: "750px",
                             title: "项目关联",
                             visible: false,
                             modal: true,

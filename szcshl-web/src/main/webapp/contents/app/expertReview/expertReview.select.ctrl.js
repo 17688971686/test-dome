@@ -790,15 +790,28 @@
          * 保存新专家信息
          */
         vm.saveExpert=function (isDisplay) {
+           var isdisp=true;//用来判断专家类型
             vm.saveNewExpertFlag = '0';
             if(vm.confirmEPListReplace.length > 0){
-                expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
-                    //在点击保存时需要提示。在经过别的添加时。不是点击保存按钮时，就不需要显示
-                    if(isDisplay){//用来判断是否显示提示信息
-                        bsWin.success("操作成功！");
+                //查询是否有为空的
+                angular.forEach(vm.confirmEPListReplace, function (each) {
+                    if(each.expeRttype=="" ||each.expeRttype==undefined){
+                        isdisp=false;
                     }
 
                 });
+
+                if(isdisp){
+                    expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
+                        //在点击保存时需要提示。在经过别的添加时。不是点击保存按钮时，就不需要显示
+                        if(isDisplay){//用来判断是否显示提示信息
+                            bsWin.success("操作成功！");
+                        }
+
+                    });
+                }else{
+                    bsWin.alert("拟聘专家的专家类型不能为空");
+                }
             }else{
                 $.each(vm.confirmEPList,function (j,obj2) {
                     if(obj2.isConfrim == '9' ){
@@ -812,6 +825,7 @@
                 });
 
             }
+
 
         }
 
