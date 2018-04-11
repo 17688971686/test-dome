@@ -26,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
+
+import static cs.common.Constant.*;
 import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
 
 @Service
@@ -76,7 +78,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         if(Validate.isString(dispatchDoc.getFileNum())){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该发文已经生成了发文编号！");
         }
-        /*//1、获取附件列表
+        //1、获取附件列表
         boolean isUploadMainFile = false;
         List<SysFile> fileList = sysFileRepo.findByMainId(signId);
         //默认每个类型都没检测
@@ -135,7 +137,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 //项目概算不用上传投资匡算表或投资估算表
                 if(Constant.STAGE_BUDGET.equals(dispatchDoc.getDispatchStage()) ){
                     if("评审意见,审核意见".equals(entry.getKey()) && entry.getValue() == false){
-
                         errorBuffer.append(entry.getKey().replaceAll(",","或者")+";");
                     }
                 }else{
@@ -146,9 +147,14 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
             }
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传"+errorBuffer.toString()+"附件信息！");
-        }*/
+        }
+        //是否是设备清单（国产设备的发文编号为：深投审设[xxxx],其它阶段为：深投审[xxxx],）
+        boolean isEquiment = false;
+        if(DEVICE_BILL_HOMELAND.equals(dispatchDoc.getDispatchStage()) || DEVICE_BILL_IMPORT.equals(dispatchDoc.getDispatchStage())){
+            isEquiment = true;
+        }
         //获取发文最大编号
-        int curYearMaxSeq = findCurMaxSeq(dispatchDoc.getDispatchDate());
+        int curYearMaxSeq = findCurMaxSeq(dispatchDoc.getDispatchDate(),isEquiment);
         curYearMaxSeq = curYearMaxSeq + 1;
         String fileNumValue = "";
         if(curYearMaxSeq < 1000){
@@ -156,7 +162,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         }else{
             fileNumValue = curYearMaxSeq+"";
         }
-        fileNumValue = Constant.DISPATCH_PREFIX+"["+ DateUtils.converToString(dispatchDoc.getDispatchDate(),"yyyy")+"]"+fileNumValue;
+        String prefix = isEquiment?DISPATCH_EQUIPMENT_PREFIX:DISPATCH_PREFIX;
+        fileNumValue = prefix+"["+ DateUtils.converToString(dispatchDoc.getDispatchDate(),"yyyy")+"]"+fileNumValue;
         dispatchDoc.setFileNum(fileNumValue);
         dispatchDoc.setFileSeq(curYearMaxSeq);
         dispatchDocRepo.save(dispatchDoc);
@@ -183,20 +190,24 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         signRepo.save(sign);
 
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！",fileNumValue);
-
     }
 
     /**
      * 获取最大发文编号
-     * @param dispatchDate
+     * @param dispatchDate 发文日期
+     * @param isEquipment 是否是设备清单
+
      * @return
      */
-    private int findCurMaxSeq(Date dispatchDate) {
+    private int findCurMaxSeq(Date dispatchDate,boolean isEquipment ) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max("+DispatchDoc_.fileSeq.getName()+") from cs_dispatch_doc where "+DispatchDoc_.dispatchDate.getName()+" between ");
-        sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )");
-        sqlBuilder.setParam("beginTime", DateUtils.converToString(dispatchDate,"yyyy")+"-01-01 00:00:00");
-        sqlBuilder.setParam("endTime", DateUtils.converToString(dispatchDate,"yyyy")+"-12-31 23:59:59");
+        sqlBuilder.append(" select max("+DispatchDoc_.fileSeq.getName()+") from cs_dispatch_doc where ");
+        sqlBuilder.append(" to_char(dispatchDate,'yyyy') = :countdate ").setParam("countdate",DateUtils.converToString(dispatchDate,"yyyy"));
+        sqlBuilder.append(" and "+DispatchDoc_.dispatchStage.getName());
+        if(!isEquipment){
+            sqlBuilder.append(" not ");
+        }
+        sqlBuilder.append(" like '%设备清单%' ");
         return dispatchDocRepo.returnIntBySql(sqlBuilder);
     }
 

@@ -2072,9 +2072,9 @@ public class SignServiceImpl implements SignService {
     @Transactional
     public List<Sign> selectSignNotFinish() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" SELECT s FROM " + Sign.class.getSimpleName() + " s LEFT JOIN ");
-        hqlBuilder.append(RuProcessTask.class.getSimpleName() + " pt ON s." + Sign_.signid.getName() + " = pt." + RuProcessTask_.businessKey.getName());
-        hqlBuilder.append(" WHERE pt." + RuProcessTask_.taskId.getName() + " is not null AND pt." + RuProcessTask_.taskState.getName() + "=:taskState ");
+        hqlBuilder.append(" SELECT s FROM " + Sign.class.getSimpleName() + " s , ");
+        hqlBuilder.append(RuProcessTask.class.getSimpleName() + " pt WHERE s." + Sign_.signid.getName() + " = pt." + RuProcessTask_.businessKey.getName());
+        hqlBuilder.append(" and pt." + RuProcessTask_.taskId.getName() + " is not null AND pt." + RuProcessTask_.taskState.getName() + "=:taskState ");
         hqlBuilder.setParam("taskState", EnumState.PROCESS.getValue());
         List<Sign> signList = signRepo.findByHql(hqlBuilder);
         return signList;

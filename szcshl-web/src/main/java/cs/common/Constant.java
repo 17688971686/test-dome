@@ -56,6 +56,10 @@ public class Constant {
     public static String DISPATCH_PREFIX = "深投审";
 
     /**
+     * 设备清单(国产、进口设备)阶段的前缀
+     */
+    public static String DISPATCH_EQUIPMENT_PREFIX = "深投审设";
+    /**
      * 拟补充资料函文件字号
      */
     public static String ADDSUPPER_PREFIX = "深投审函";

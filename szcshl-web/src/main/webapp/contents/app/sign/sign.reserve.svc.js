@@ -161,7 +161,7 @@
 				    template: "<span class='row-number'></span>"  
 				 },
                 {
-                    title: "",
+                    title: "项目名称",
                     width: 280,
                     template: function (item) {
                         return '<a ng-click="vm.saveView()"  href="#/signDetails/' + item.signid +'/' + item.processInstanceId + '" >' + item.projectname + '</a>';

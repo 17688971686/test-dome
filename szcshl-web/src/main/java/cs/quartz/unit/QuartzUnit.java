@@ -3,10 +3,6 @@ package cs.quartz.unit;
 import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
 import cs.domain.sys.Workday;
-import cs.service.sys.WorkdayService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.util.ArrayList;
 import java.util.Calendar;

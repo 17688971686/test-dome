@@ -206,7 +206,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     public ResultMsg upload(HttpServletRequest request, @RequestParam(name = "file") MultipartFile[] multipartFileList,
                             @RequestParam(required = true) String businessId, String mainId, String mainType,
                             String sysfileType, String sysBusiType) {
-        ResultMsg resultMsg = null;
+        ResultMsg resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"");
         if (multipartFileList == null || multipartFileList.length == 0) {
             resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择要上传的附件");
             return resultMsg;
