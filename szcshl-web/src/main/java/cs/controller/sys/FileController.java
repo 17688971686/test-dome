@@ -543,7 +543,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
                     Map<String, Object> dataMap = TemplateUtil.entryAddMap(sign);
                     String ministerhandlesug=sign.getMinisterhandlesug();
-                    String cc=null;
+                    /*String cc=null;
                     //拼接部长意见
                     if (Validate.isString(ministerhandlesug)) {
                         cc="请（";
@@ -557,8 +557,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                          }
                         }
                         cc+="）组织办理";
-                    }
-                    dataMap.put("ministerhandlesug",cc);
+                    }*/
+//                    请（郭东东 )组织办理。 <p style='text-align:right;'>签名：陈洋波</p><p style='text-align:right;'> 日期：2018年03月25日</p>
+                    dataMap.put("ministerhandlesug",ministerhandlesug == null ? "" : ministerhandlesug.replaceAll("<br>", "<w:br />")
+                    .replaceAll("<p style='text-align:right;'>" , "").replaceAll("</p>" , ""));
                     if (stageType.equals(RevireStageKey.KEY_SUG.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_STUDY.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())) {

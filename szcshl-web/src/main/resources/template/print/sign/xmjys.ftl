@@ -741,6 +741,7 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
+
                         <w:tr>
                             <w:tblPrEx>
                                 <w:tblBorders>
@@ -760,7 +761,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="621" w:hRule="atLeast"/>
+                                <w:trHeight w:val="630" w:hRule="atLeast"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -787,7 +788,8 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2070" w:type="dxa"/>
+                                    <w:tcW w:w="3691" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -809,7 +811,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1621" w:type="dxa"/>
+                                    <w:tcW w:w="1800" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -831,7 +833,8 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1800" w:type="dxa"/>
+                                    <w:tcW w:w="2789" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -851,9 +854,32 @@
                                     </w:r>
                                 </w:p>
                             </w:tc>
+                        </w:tr>
+                        <w:tr>
+                            <w:tblPrEx>
+                                <w:tblBorders>
+                                    <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:bottom w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:right w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:insideH w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                    <w:insideV w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                                </w:tblBorders>
+                                <w:tblLayout w:type="fixed"/>
+                                <w:tblCellMar>
+                                    <w:top w:w="0" w:type="dxa"/>
+                                    <w:left w:w="108" w:type="dxa"/>
+                                    <w:bottom w:w="0" w:type="dxa"/>
+                                    <w:right w:w="108" w:type="dxa"/>
+                                </w:tblCellMar>
+                            </w:tblPrEx>
+                            <w:trPr>
+                                <w:trHeight w:val="630" w:hRule="atLeast"/>
+                                <w:jc w:val="center"/>
+                            </w:trPr>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1440" w:type="dxa"/>
+                                    <w:tcW w:w="1548" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -875,7 +901,8 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1349" w:type="dxa"/>
+                                    <w:tcW w:w="3691" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -895,7 +922,53 @@
                                     </w:r>
                                 </w:p>
                             </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1800" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>国家编码</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="2789" w:type="dxa"/>
+                                    <w:gridSpan w:val="2"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="left"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>${countryCode!}</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
                         </w:tr>
+
                         <w:tr>
                             <w:tblPrEx>
                                 <w:tblBorders>
@@ -3180,7 +3253,7 @@
                                 </w:tblCellMar>
                             </w:tblPrEx>
                             <w:trPr>
-                                <w:trHeight w:val="900" w:hRule="atLeast"/>
+                                <w:trHeight w:val="900" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -3243,7 +3316,7 @@
                                         <w:t>${ministerhandlesug!}</w:t>
                                     </w:r>
                                 </w:p>
-                                <w:p>
+                               <#-- <w:p>
                                     <w:pPr>
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4648"/>
@@ -3281,7 +3354,7 @@
                                         </w:rPr>
                                         <w:t xml:space="preserve">                                                ${ministerDate!}</w:t>
                                     </w:r>
-                                </w:p>
+                                </w:p>-->
                             </w:tc>
                         </w:tr>
                     </w:tbl>
