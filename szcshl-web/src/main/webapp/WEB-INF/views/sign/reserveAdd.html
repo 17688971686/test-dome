@@ -17,8 +17,8 @@
             <tr>
                 <td class="text-right" style="width: 180px;">委内收文编号：<span class="required">*</span> </td>
                 <td>
-                    <input  type="text" maxlength="9" class="form-control input-sm "  ng-model="vm.model.filecode" id="filecode" name="filecode" data-val="true"
-                             data-val-length-max="9"  data-val-required="收文编号不能为空" >
+                    <input  type="text" maxlength="10" class="form-control input-sm "  ng-model="vm.model.filecode" id="filecode" name="filecode"
+                            data-val-regex-pattern="^(a|b|c|d|A|B|C|D)+20[1-4]+[0-9]{6}" data-val="true" data-val-required="收文编号不能为空" data-val-length-max="10"  >
                 </td>
                 <td><span data-valmsg-for="filecode" data-valmsg-replace="true" class="errors"></span></td>
             </tr>

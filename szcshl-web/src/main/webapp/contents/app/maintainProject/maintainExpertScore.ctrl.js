@@ -1,8 +1,8 @@
 (function(){
     'use strict';
     angular.module('app').controller('maintainExpertScoreCtrl' , maintainExpertScore);
-    maintainExpertScore.$inject = ['expertReviewSvc' , 'bsWin' , 'signSvc' , '$state'];
-    function maintainExpertScore(expertReviewSvc , bsWin , signSvc , $state){
+    maintainExpertScore.$inject = ['expertReviewSvc' , 'bsWin' , 'signSvc' , '$state','companySvc'];
+    function maintainExpertScore(expertReviewSvc , bsWin , signSvc , $state,companySvc){
         var vm = this;
         vm.signid = $state.params.signid;
         vm.showExpertScore = true;
@@ -10,15 +10,27 @@
         vm.showFlag.isMainPrinUser = true;
         activate();
         function activate(){
-            signSvc.initFlowPageData(vm.signid, function (data) {
-                vm.model = data;
+            expertReviewSvc.initReview(vm.signid,"", function (data) {
+                if(data){
+                    vm.expertReviewDto = data;
+                }else{
+                    vm.expertReviewDto = {};
+                }
+            });
+
+            signSvc.findSignUnitScore(vm.signid, function (data) {
+                if(data){
+                    vm.unitScoreDto = data;
+                }else{
+                    vm.unitScoreDto = {};
+                }
             });
         }
 
         // 编辑专家评分
         vm.editSelectExpert = function (id) {
             vm.scoreExpert = {};
-            $.each(vm.model.expertReviewDto.expertSelectedDtoList, function (i, scopeEP) {
+            $.each(vm.expertReviewDto.expertSelectedDtoList, function (i, scopeEP) {
                 if (scopeEP.id == id) {
                     vm.scoreExpert = angular.copy(scopeEP);
                     return;
@@ -66,7 +78,7 @@
             }  else {
                 expertReviewSvc.saveMark(vm.scoreExpert, function (data) {
                     if (data.flag || data.reCode == 'ok') {
-                        angular.forEach(vm.model.expertReviewDto.expertSelectedDtoList, function (scopeEP, index) {
+                        angular.forEach(vm.expertReviewDto.expertSelectedDtoList, function (scopeEP, index) {
                             if (scopeEP.id == vm.scoreExpert.id) {
                                 scopeEP.score = vm.scoreExpert.score;
                                 scopeEP.describes = vm.scoreExpert.describes;
@@ -88,7 +100,7 @@
             $("#star").raty({
                 number: 5,
                 score: function () {
-                    $(this).attr("data-num", angular.isUndefined(vm.model.unitScoreDto.score) ? 0 : vm.model.unitScoreDto.score);
+                    $(this).attr("data-num", angular.isUndefined(vm.unitScoreDto.score) ? 0 : vm.unitScoreDto.score);
                     return $(this).attr("data-num");
                 },
                 starOn: '../contents/libs/raty/lib/images/star-on.png',
@@ -99,7 +111,7 @@
                 hints: ['不合格', '合格', '中等', '良好', '优秀'],
                 size: 34,
                 click: function (score, evt) {
-                    vm.model.unitScoreDto.score = score;
+                    vm.unitScoreDto.score = score;
                 }
             });
 
@@ -116,10 +128,10 @@
         }
         //保存单位评分
         vm.saveUnit=function () {
-            if (!vm.model.unitScoreDto.score || vm.model.unitScoreDto.score == 0) {
+            if (!vm.unitScoreDto.score || vm.unitScoreDto.score == 0) {
                 bsWin.alert("请对单位进行评分！");
             }else {
-                companySvc.saveUnit(vm.model.unitScoreDto, function (data) {
+                companySvc.saveUnit(vm.unitScoreDto, function (data) {
                     if (data.flag || data.reCode == 'ok') {
                         bsWin.success("保存成功！", function () {
                             vm.closeEditUnit();
@@ -127,7 +139,6 @@
                     } else {
                         bsWin.alert(data.reMsg);
                     }
-
                 });
             }
 

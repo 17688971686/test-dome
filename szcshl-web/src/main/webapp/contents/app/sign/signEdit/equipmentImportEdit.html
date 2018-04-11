@@ -106,8 +106,9 @@
                 <option ng-repeat="x in DICT.SECRECTLEVEL.dicts"  ng-selected="vm.model.secrectlevel == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
             </select>
         </td>
-        <td width="15%" class="text-center"></td>
+        <td class="text-center">国家编码</td>
         <td>
+            {{vm.model.countryCode}}
         </td>
     </tr>
 

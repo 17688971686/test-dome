@@ -113,7 +113,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         PageModelDto<SignDispaWorkDto> pageModelDto = new PageModelDto<SignDispaWorkDto>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         Integer processState = null;
-        String dispatchType = "";
+        String dispatchType = "",reviewType="";
         if (Validate.isList(odataObj.getFilter())) {
             Object value;
             for (ODataFilterItem item : odataObj.getFilter()) {
@@ -161,7 +161,16 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                     }
                     continue;
                 }
-
+                //是否协审
+                if("reviewType".equals(item.getField())){
+                    reviewType = item.getValue().toString();
+                    if("协审".equals(reviewType)){
+                        criteria.add(Restrictions.eq(SignDispaWork_.isassistproc.getName(),Constant.EnumState.YES.getValue()));
+                    }else{
+                        criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
+                    }
+                    continue;
+                }
                 criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
             }
         }
@@ -201,6 +210,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
             }
         }
         criteria = odataObj.buildFilterToCriteria(criteria);*/
+        criteria.addOrder(Order.desc(SignDispaWork_.signdate.getName()));
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);
         if (odataObj.getSkip() > 0) {

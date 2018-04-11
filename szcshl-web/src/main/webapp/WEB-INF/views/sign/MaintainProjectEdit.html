@@ -142,19 +142,18 @@
                     <li><a href="" ng-click="vm.addDoFile()">项目资料存档</a></li>
                     <li><a href="" ng-click="vm.relation()">关联项目其他阶段</a></li>
                 </ul>
-                <ul class="item-list">
-                    <li><a href="" ng-click="vm.scrap(vm.model.signid)">作废项目</a></li>
-                    <li><a href="#/maintainExpertScore/{{vm.model.signid}} ">专家评分</a></li>
-                    <li><a href="#/maintainExpertPayment/{{vm.model.signid}} ">评审费发放表</a></li>
-                    <li><a href="" ng-click="vm.pauseProject()">项目暂停管理</a></li>
+                <!-- 如果没有专家评审方案，则不显示 -->
+                <ul class="item-list" ng-if="vm.model.expertReviewDto && vm.model.expertReviewDto.id">
+                    <li><a href="" ng-click="vm.findExpertReview(vm.model.signid,vm.model.signState);">专家抽取方案维护</a></li>
+                    <li><a href="#/maintainExpertConfirm/{{vm.model.signid}}">修改确定的专家</a></li>
+                    <li><a href="#/maintainExpertPayment/{{vm.model.signid}}">评审费发放表</a></li>
+                    <li><a href="#/maintainExpertScore/{{vm.model.signid}}">专家评分</a></li>
                 </ul>
                 <ul class="item-list">
-                    <li><a href="#/reviewWorkday/{{vm.model.signid}} ">评审工作日维护</a></li>
-                    <li><a href="#/maintainExpertConfirm/{{vm.model.signid}}">修改确定的专家</a></li>
-                    <li><a href="" ng-click="vm.findExpertReview(vm.model.signid,vm.model.signState);">专家抽取方案维护</a></li>
-                    <li>
-                        <a href="" ng-click="vm.clickUploadBt();">附件上传</a>
-                    </li>
+                    <li><a href="" ng-click="vm.scrap(vm.model.signid)">作废项目</a></li>
+                    <li><a href="#/reviewWorkday/{{vm.model.signid}}">评审工作日维护</a></li>
+                    <li><a href="" ng-click="vm.pauseProject()">项目暂停管理</a></li>
+                    <li><a href="" ng-click="vm.clickUploadBt();">附件上传</a></li>
                 </ul>
             </div>
             <ul id="myTab" class="nav nav-tabs">
@@ -225,8 +224,6 @@
                                             <td>第二负责人</td>
                                             <td>{{x}}</td>
                                         </tr>
-
-
                                         </tbody>
                                     </table>
                                 </div>

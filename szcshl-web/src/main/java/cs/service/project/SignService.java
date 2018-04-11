@@ -8,6 +8,7 @@ import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.ProjectStopDto;
 import cs.model.project.SignDto;
+import cs.model.project.UnitScoreDto;
 import cs.model.sys.OrgDto;
 import cs.repository.odata.ODataObj;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -237,4 +238,11 @@ public interface SignService {
      * @return
      */
     PageModelDto<SignDispaWork> findAssociateSignList(String signid,String reviewstage,String projectname,String skip,String size);
+
+    /**
+     * 查找项目编制单位
+     * @param signId
+     * @return
+     */
+    UnitScoreDto findSignUnitScore(String signId);
 }

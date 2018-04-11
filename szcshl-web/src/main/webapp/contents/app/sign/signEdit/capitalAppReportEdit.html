@@ -96,10 +96,9 @@
         </td>
     </tr>
 
-
     <tr>
         <td width="15%" class="text-center">缓急程度</td>
-        <td width="20%">
+        <td colspan="2">
             <select ng-model="vm.model.urgencydegree" name="urgencydegree" id="urgencydegree">
                 <option ng-repeat="x in DICT.BAOMI.dicts" ng-selected="vm.model.urgencydegree == x.dictName"
                         value="{{x.dictName}}">{{x.dictName}}
@@ -108,19 +107,24 @@
         </td>
 
         <td width="15%" class="text-center">项目代码</td>
-        <td width="15%" class="text-center">
+        <td colspan="2" >
             {{vm.model.projectcode}}
         </td>
+    </tr>
+    <tr>
         <td width="15%" class="text-center">秘密等级</td>
-        <td width="20%">
+        <td colspan="2">
             <select ng-model="vm.model.secrectlevel" name="secrectlevel" id="secrectlevel">
                 <option ng-repeat="x in DICT.SECRECTLEVEL.dicts" ng-selected="vm.model.secrectlevel == x.dictName"
                         value="{{x.dictName}}">{{x.dictName}}
                 </option>
             </select>
         </td>
+        <td width="15%" class="text-center">国家编码</td>
+        <td colspan="2">
+            {{vm.model.countryCode}}
+        </td>
     </tr>
-
     <tr>
         <td width="15%" class="text-center"  style="vertical-align: middle;">备审资料</td>
         <td colspan="5">

@@ -5,7 +5,7 @@
         <tr >
             <td colspan="4">
                 <go-back></go-back>
-                <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(vm.model.expertReviewDto)" ng-disabled="vm.isCommit">
+                <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(vm.expertReviewDto)" ng-disabled="vm.isCommit">
                     <span class="glyphicon glyphicon-ok"></span>计税并保存
                 </button>
                <!-- <button class="btn btn-sm btn-success" ng-click="vm.savePayment(vm.model.expertReviewDto)" ng-disabled="vm.isCommit" >
@@ -19,26 +19,28 @@
                 <div >
                     <input type="text" style="width: 200px;"
                            class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
-                           ng-model="vm.model.expertReviewDto.payDate" data-val-date="必须为日期">
+                           ng-model="vm.expertReviewDto.payDate" data-val-date="必须为日期">
                 </div>
             </td>
             <td class="text-right" width="15%">评审/函评日期</td>
             <td width="35%">
-                {{vm.model.expertReviewDto.reviewDate}}
+                <input type="text" style="width: 200px;"
+                       class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'"
+                       ng-model="vm.expertReviewDto.reviewDate" data-val-date="必须为日期">
             </td>
         </tr>
         <tr>
             <td class="text-right">评审费发放标题</td>
             <td colspan="3">
                 <div >
-                    <input type="text" style="width: 600px;" class="form-control input-sm " ng-model="vm.model.expertReviewDto.reviewTitle">
+                    <input type="text" style="width: 600px;" class="form-control input-sm " ng-model="vm.expertReviewDto.reviewTitle">
                 </div>
             </td>
         </tr>
         <tr>
             <td colspan="4">
                 <table class="table table-bordered">
-                    <caption class="text-center h3"><strong>{{vm.model.expertReviewDto.reviewTitle}}</strong></caption>
+                    <caption class="text-center h3"><strong>{{vm.expertReviewDto.reviewTitle}}</strong></caption>
                     <tr class="active">
                         <td style="max-width: 60px;">序号</td>
                         <td style="max-width: 180px;">姓名</td>
@@ -49,33 +51,27 @@
                         <td style="max-width: 180px;">合计（元）</td>
                         <td style="max-width: 260px;">是否函评</td>
                     </tr>
-                    <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
+                    <tr ng-repeat="x in vm.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
                         <td>{{$index+1}}</td>
                         <td>{{x.expertDto.name}}</td>
                         <td>{{x.expertDto.idCard}}</td>
                         <td>{{x.expertDto.bankAccount}}/{{x.expertDto.openingBank}}</td>
                         <td>
-                            <div ng-show="vm.showFlag.isMainPrinUser && (!vm.model.expertReviewDto.state || vm.model.expertReviewDto.state==0)">
-                                <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
-                                       class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
-                                       data-val-regex="评审费用只能为正数" data-val="true" data-val-required="必填"
-                                       data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$" >
-                                <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true"class="errors"></span>
-                            </div>
-                            <div ng-show="vm.model.expertReviewDto.state==9">
-                                {{x.reviewCost}}
-                            </div>
+                            <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
+                                   class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
+                                   data-val-regex="评审费用只能为正数" data-val="true" data-val-required="必填"
+                                   data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$" >
+                            <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true"class="errors"></span>
                         </td>
                         <td> {{x.reviewTaxes}}</td>
                         <td> {{x.totalCost}}</td>
-                        <td><input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="x.isLetterRw"
-                                    ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
+                        <td><input type="checkbox" ng-model="x.isLetterRw" ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
                     </tr>
                     <tr>
                         <td colspan="4" class="text-right">总计：</td>
-                        <td>{{vm.model.expertReviewDto.reviewCost}}</td>
-                        <td>{{vm.model.expertReviewDto.reviewTaxes}}</td>
-                        <td>{{vm.model.expertReviewDto.totalCost}}</td>
+                        <td>{{vm.expertReviewDto.reviewCost}}</td>
+                        <td>{{vm.expertReviewDto.reviewTaxes}}</td>
+                        <td>{{vm.expertReviewDto.totalCost}}</td>
                         <td></td>
                     </tr>
                 </table>
@@ -86,4 +82,4 @@
 </form>
 <!--
 <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
-<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.model.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_PAY')">打印预览</button>
+<button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="printFile(vm.signid,'SIGN_EXPERT' , 'SIGN_EXPERT_PAY')">打印预览</button>

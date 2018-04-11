@@ -6,12 +6,17 @@
          var vm = this;
          vm.signid = $state.params.signid;
          vm.showExpertConfirm = true;
+
          activate();
          function activate(){
-             signSvc.initFlowPageData(vm.signid, function (data) {
-                 vm.model = data;
-                 if (vm.model.expertReviewDto && vm.model.expertReviewDto.expertSelectedDtoList) {
-                     vm.confirmEPList = vm.model.expertReviewDto.expertSelectedDtoList;
+             expertReviewSvc.initReview(vm.signid,"", function (data) {
+                 if(data){
+                     vm.expertReviewDto = data;
+                     if (vm.expertReviewDto && vm.expertReviewDto.expertSelectedDtoList) {
+                         vm.confirmEPList = vm.expertReviewDto.expertSelectedDtoList;
+                     }
+                 }else{
+                     vm.expertReviewDto = {};
                  }
              });
          }
@@ -61,12 +66,6 @@
                          epObj.isJoin = state;
                      }
                  })
-             })
-             //刷新工作方案的专家信息
-             $.each(vm.model.workProgramDtoList, function (i, wpObj) {
-                 expertReviewSvc.refleshBusinessEP(wpObj.id, function (data) {
-                     wpObj.expertDtoList = data;
-                 });
              })
          }
      }

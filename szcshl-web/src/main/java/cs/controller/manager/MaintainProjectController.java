@@ -60,7 +60,7 @@ public class MaintainProjectController {
     @RequestMapping(name = "专家评分", path = "html/maintainExpertScore", method = RequestMethod.GET)
     public String maintainExpertScore() {
 
-        return  "expertReview/expert_score";
+        return  ctrlName+"/maintainExpertScore";
     }
 
     @RequiresPermissions("maintainProject#html/maintainExpertPayment#get")
@@ -74,7 +74,7 @@ public class MaintainProjectController {
     @RequestMapping(name = "修改确定专家", path = "html/maintainExpertConfirm", method = RequestMethod.GET)
     public String maintainExpertConfirm() {
 
-        return  "expertReview/expert_confirm";
+        return  ctrlName + "/maintainExpertConfirm";
     }
 
 }

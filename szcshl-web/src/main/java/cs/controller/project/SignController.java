@@ -1,32 +1,25 @@
 package cs.controller.project;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
 import cs.common.FlowConstant;
-import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.flow.RuProcessTask;
-import cs.domain.project.*;
+import cs.domain.project.SignBranch;
+import cs.domain.project.SignDispaWork;
 import cs.domain.sys.OrgDept;
 import cs.domain.sys.OrgDept_;
-import cs.listener.SysStartUpListener;
+import cs.model.PageModelDto;
+import cs.model.project.SignDto;
+import cs.model.project.UnitScoreDto;
+import cs.model.sys.OrgDto;
+import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.service.flow.FlowService;
 import cs.service.project.SignBranchService;
-import cs.service.project.WorkProgramService;
+import cs.service.project.SignService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -35,20 +28,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
-import cs.common.ResultMsg;
-import cs.common.utils.Validate;
-import cs.model.PageModelDto;
-import cs.model.project.SignDto;
-import cs.model.sys.OrgDto;
-import cs.repository.odata.ODataObj;
-import cs.service.project.SignService;
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(name = "收文", path = "sign")
@@ -142,6 +127,13 @@ public class SignController {
         } else {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，你没有权限进行此操作！");
         }
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "获取评分单位信息", path = "findSignUnitScore", method = RequestMethod.POST)
+    @ResponseBody
+    public UnitScoreDto findSignUnitScore(@RequestParam(required = true) String signId) throws ParseException {
+        return  signService.findSignUnitScore(signId);
     }
 
     //@RequiresPermissions("sign#findBySignUser#post")

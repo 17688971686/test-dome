@@ -560,14 +560,14 @@ public class SignServiceImpl implements SignService {
                 UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
                 if (Validate.isObject(unitScore)) {
                     UnitScoreDto unitScoreDto = new UnitScoreDto();
-                    BeanCopierUtils.copyPropertiesIgnoreNull(unitScore, unitScoreDto);
+                    BeanCopierUtils.copyProperties(unitScore, unitScoreDto);
                     signDto.setUnitScoreDto(unitScoreDto);
                 } else {
                     //添加
                     unitScoreService.decide(sign.getDesigncompanyName(), signid);
                     UnitScore unitScores = unitScoreRepo.findUnitScore(signid);
                     UnitScoreDto unitScoreDto = new UnitScoreDto();
-                    BeanCopierUtils.copyPropertiesIgnoreNull(unitScores, unitScoreDto);
+                    BeanCopierUtils.copyProperties(unitScores, unitScoreDto);
                     signDto.setUnitScoreDto(unitScoreDto);
 
                 }
@@ -2349,6 +2349,20 @@ public class SignServiceImpl implements SignService {
         pageModelDto.setCount(total);
         pageModelDto.setValue(signList);
         return pageModelDto;
+    }
+
+    @Override
+    public UnitScoreDto findSignUnitScore(String signId) {
+        Sign sign = signRepo.findById(Sign_.signid.getName(),signId);
+        UnitScoreDto unitScoreDto = new UnitScoreDto();
+        //查找单位评分列表
+        UnitScore unitScore = unitScoreRepo.findUnitScore(signId);
+        if (!Validate.isObject(unitScore) && !Validate.isString(unitScore.getId())) {
+            unitScoreService.decide(sign.getDesigncompanyName(), signId);
+            unitScore = unitScoreRepo.findUnitScore(signId);
+        }
+        BeanCopierUtils.copyProperties(unitScore, unitScoreDto);
+        return unitScoreDto;
     }
 
     @Override
