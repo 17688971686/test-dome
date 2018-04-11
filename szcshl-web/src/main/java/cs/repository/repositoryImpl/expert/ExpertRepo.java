@@ -53,4 +53,11 @@ public interface ExpertRepo extends IRepository<Expert, String> {
      * @return
      */
     List<ExpertDto> fingDrafExpert(String minBusinessId, String reviewId, ExpertSelConditionDto epSelCondition);
+
+    /**
+     * 通过业务ID获取抽取的专家，并参与评审中的组长名称--主要用于会前准备材料的主持人手稿
+     * @param businessId
+     * @return
+     */
+    String findExpertGlByBusiness(String businessId);
 }

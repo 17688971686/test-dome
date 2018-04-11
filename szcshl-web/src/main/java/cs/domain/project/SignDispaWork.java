@@ -364,6 +364,20 @@ public class SignDispaWork {
     @Column
     private String isAdvanced;
 
+    /**
+     * 国家编码
+     */
+    @Column(columnDefinition = "VARCHAR(50)")
+    private String countryCode;
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
     public String getIsAdvanced() {
         return isAdvanced;
     }

@@ -76,6 +76,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
     /**
      * 保存工作方案
+     *
      * @param workProgramDto
      * @param isNeedWorkProgram
      * @return
@@ -125,15 +126,15 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             //只有主方案改了，才会更新
             if ((FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue()).equals(workProgram.getBranchId())) {
                 //如果有多个分支，则以总申报金额为准，否则，以该项目的申报金额为准
-                BigDecimal compareInvestment = workProgram.getTotalInvestment()==null?workProgram.getAppalyInvestment():workProgram.getTotalInvestment();
-                if(compareInvestment != null && (sign.getAppalyInvestment() == null ||  (sign.getAppalyInvestment().compareTo(compareInvestment) != 0))){
+                BigDecimal compareInvestment = workProgram.getTotalInvestment() == null ? workProgram.getAppalyInvestment() : workProgram.getTotalInvestment();
+                if (compareInvestment != null && (sign.getAppalyInvestment() == null || (sign.getAppalyInvestment().compareTo(compareInvestment) != 0))) {
                     sign.setAppalyInvestment(compareInvestment);
                 }
             }
             //表示正在做工作方案
             sign.setProcessState(Constant.SignProcessState.DO_WP.getValue());
             workProgram.setSign(sign);
-            if (Constant.MergeType.REVIEW_SELF.getValue().equals(workProgram.getReviewType())){
+            if (Constant.MergeType.REVIEW_SELF.getValue().equals(workProgram.getReviewType())) {
                 //清除专家费用，和协审会日期
                 workProgram.setExpertCost(null);
                 workProgram.setLetterDate(null);
@@ -153,7 +154,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
      * 根据收文ID初始化 用户待处理的工作方案
      */
     @Override
-    public Map<String, Object> initWorkProgram(String signId,String isShowNewExpert) {
+    public Map<String, Object> initWorkProgram(String signId, String isShowNewExpert) {
         Map<String, Object> resultMap = new HashMap<>();
         WorkProgramDto workProgramDto = new WorkProgramDto();
 
@@ -169,32 +170,32 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         if (Validate.isList(wpList)) {
             int totalL = wpList.size();
             //遍历第一遍，先找出主分支工作方案
-            for (int i=0;i<totalL;i++) {
+            for (int i = 0; i < totalL; i++) {
                 WorkProgram wp = wpList.get(i);
-                if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
                     mainW = wp;
                     break;
                 }
             }
             List<WorkProgramDto> wpDtoList = new ArrayList<>();
-            for (int i=0;i<totalL;i++) {
+            for (int i = 0; i < totalL; i++) {
                 WorkProgram wp = wpList.get(i);
                 if ((signPrincipal.getFlowBranch()).equals(wp.getBranchId())) {
                     BeanCopierUtils.copyProperties(wp, workProgramDto);
-                    if(Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                    if (Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
                         WorkProgramDto mainWPDto = new WorkProgramDto();
-                        BeanCopierUtils.copyProperties(mainW,mainWPDto);
+                        BeanCopierUtils.copyProperties(mainW, mainWPDto);
                         workProgramDto.setMainWorkProgramDto(mainWPDto);
                     }
-                        workProgramRepo.initWPMeetingExp(workProgramDto, wp);
+                    workProgramRepo.initWPMeetingExp(workProgramDto, wp);
 
                     isHaveCurUserWP = true;
                 } else {
                     WorkProgramDto wpDto = new WorkProgramDto();
                     BeanCopierUtils.copyProperties(wp, wpDto);
-                    if(Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                    if (Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
                         WorkProgramDto mainWPDto = new WorkProgramDto();
-                        BeanCopierUtils.copyProperties(mainW,mainWPDto);
+                        BeanCopierUtils.copyProperties(mainW, mainWPDto);
                         wpDto.setMainWorkProgramDto(mainWPDto);
                     }
                     workProgramRepo.initWPMeetingExp(wpDto, wp);
@@ -224,13 +225,13 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             //拟补充资料函发文日期
             workProgramDto.setSuppLetterDate(sign.getSuppLetterDate());
 
-            if(isMainFlowPri){
+            if (isMainFlowPri) {
                 //判断是否是分办给多个部门办理，如果是，则显示申报总投资金额
-                if(signBranchRepo.countBranch(sign.getSignid()) > 1){
+                if (signBranchRepo.countBranch(sign.getSignid()) > 1) {
                     workProgramDto.setTotalInvestment(sign.getDeclaration());
                     resultMap.put("showTotalInvestment", EnumState.YES.getValue());
                 }
-                copySignCommonInfo(workProgramDto,sign);
+                copySignCommonInfo(workProgramDto, sign);
                 //判断是否是关联次项目
                 boolean isMerge = signMergeRepo.checkIsMerege(signId, Constant.MergeType.WORK_PROGRAM.getValue());
                 if (isMerge) {
@@ -241,12 +242,12 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     workProgramDto.setIsSigle(Constant.MergeType.REVIEW_MERGE.getValue());
                     workProgramDto.setIsMainProject(EnumState.NO.getValue());
                 }
-            }else{
+            } else {
                 //通过主工作方案 初始化协办分支的公共部分
                 if (mainW != null && Validate.isString(mainW.getId())) {
-                    BeanCopierUtils.copyProperties(mainW,mainWPDto);
-                }else{
-                    copySignCommonInfo(mainWPDto,sign);
+                    BeanCopierUtils.copyProperties(mainW, mainWPDto);
+                } else {
+                    copySignCommonInfo(mainWPDto, sign);
                 }
             }
             workProgramDto.setMainWorkProgramDto(mainWPDto);
@@ -255,7 +256,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         resultMap.put("eidtWP", workProgramDto);
         return resultMap;
     }
-
 
 
     /**
@@ -276,26 +276,26 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         if (Validate.isList(wpList)) {
             int totalL = wpList.size();
             //遍历第一遍，先找出主分支工作方案
-            for (int i=0;i<totalL;i++) {
+            for (int i = 0; i < totalL; i++) {
                 WorkProgram wp = wpList.get(i);
-                if(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
+                if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
                     mainW = wp;
                     break;
                 }
             }
             List<WorkProgramDto> wpDtoList = new ArrayList<>();
-            for (int i=0;i<totalL;i++) {
+            for (int i = 0; i < totalL; i++) {
                 WorkProgram wp = wpList.get(i);
-                    WorkProgramDto wpDto = new WorkProgramDto();
-                    BeanCopierUtils.copyProperties(wp, wpDto);
-                    if(Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())){
-                        WorkProgramDto mainWPDto = new WorkProgramDto();
-                        BeanCopierUtils.copyProperties(mainW,mainWPDto);
-                        wpDto.setMainWorkProgramDto(mainWPDto);
-                }else{
-                        BeanCopierUtils.copyProperties(wp, workProgramDto);
-                        workProgramRepo.initWPMeetingExp(workProgramDto, wp);
-                    }
+                WorkProgramDto wpDto = new WorkProgramDto();
+                BeanCopierUtils.copyProperties(wp, wpDto);
+                if (Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
+                    WorkProgramDto mainWPDto = new WorkProgramDto();
+                    BeanCopierUtils.copyProperties(mainW, mainWPDto);
+                    wpDto.setMainWorkProgramDto(mainWPDto);
+                } else {
+                    BeanCopierUtils.copyProperties(wp, workProgramDto);
+                    workProgramRepo.initWPMeetingExp(workProgramDto, wp);
+                }
                 workProgramRepo.initWPMeetingExp(wpDto, wp);
                 wpDtoList.add(wpDto);
             }
@@ -307,11 +307,12 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
     /**
      * 拷贝主要属性
+     *
      * @param workProgramDto
      * @param sign
      */
     @Override
-    public void copySignCommonInfo(WorkProgramDto workProgramDto,Sign sign){
+    public void copySignCommonInfo(WorkProgramDto workProgramDto, Sign sign) {
         //来文单位默认全部是：深圳市发展和改革委员会，可改...
         //联系人，就是默认签收表的那个主办处室联系人，默认读取过来但是这边可以给他修改，和主办处室联系人都是独立的两个字段
         workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
@@ -413,9 +414,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             }
 
             //如果原先是合并评审主项目，还要修改对应的次项目信息
-            if(Constant.MergeType.REVIEW_MEETING.getValue().equals(workProgram.getReviewType())
-            && EnumState.YES.getValue().equals(workProgram.getIsMainProject())){
-                signDispaWorkService.deleteAllMerge(signId, Constant.MergeType.WORK_PROGRAM.getValue(),workprogramId);
+            if (Constant.MergeType.REVIEW_MEETING.getValue().equals(workProgram.getReviewType())
+                    && EnumState.YES.getValue().equals(workProgram.getIsMainProject())) {
+                signDispaWorkService.deleteAllMerge(signId, Constant.MergeType.WORK_PROGRAM.getValue(), workprogramId);
                 workProgram.setReviewType(Constant.MergeType.REVIEW_SIGNLE.getValue());
                 workProgram.setIsMainProject(EnumState.NO.getValue());
             }
@@ -486,106 +487,116 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         if (sign == null || StringUtil.isEmpty(sign.getSignid())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该项目已被删除");
         }
+        if (sign.getWorkProgramList() != null && sign.getWorkProgramList().size() > 0) {
 
-        WorkProgram workProgram = workProgramRepo.findByPrincipalUser(signId);
-        if (workProgram == null || StringUtil.isEmpty(workProgram.getId())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，请先填写工作方案");
-        }
-        sysFileService.deleteByBusinessIdAndBusinessType(signId , Constant.SysFileType.MEETING.getValue());
-        //2、生成会前准备材料
-        List<SysFile> saveFile = new ArrayList<>();
+            for (WorkProgram workProgram : sign.getWorkProgramList()) {
+                if ("专家评审会".equals(workProgram.getReviewType())) {
+                    sysFileService.deleteByBusinessIdAndBusinessType(signId, Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")");
+                    //2、生成会前准备材料
+                    List<SysFile> saveFile = new ArrayList<>();
 
-        //获得拟聘专家信息
-        List<Expert> expertList = expertRepo.findByBusinessId(signId);
-        //获取项目第一负责人
-        User user = signPrincipalService.getMainPriUser(signId);
+                    //获得拟聘专家信息
+                    List<Expert> expertList = expertRepo.findByBusinessId(workProgram.getId());
+                    //获取项目第一负责人
+                    User user = signPrincipalService.getMainPriUser(signId);
 
-        //获得会议信息
-        List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(), workProgram.getId(), null);
-        Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),sysFileService.findFtpId());
+                    //获得会议信息
+                    List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(), workProgram.getId(), null);
+                    Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), sysFileService.findFtpId());
 
-        if(f == null){
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
-        }
-        //2.1 生成签到表
-        SysFile sysFile1 = CreateTemplateUtils.createtTemplateSignIn(f,sign, workProgram);
-        if(sysFile1 != null && Validate.isString(sysFile1.getSysFileId())){
-            saveFile.add(sysFile1);
-        }
+                    if (f == null) {
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件服务器无法连接，文件无法生成，请联系管理员处理", null);
+                    }
+                    //2.1 生成签到表
+                    SysFile sysFile1 = CreateTemplateUtils.createtTemplateSignIn(f, sign, workProgram);
+                    if (sysFile1 != null && Validate.isString(sysFile1.getSysFileId())) {
+                        saveFile.add(sysFile1);
+                    }
 
 
-        //2.2 生成主持人表
-        SysFile sysFile2 = CreateTemplateUtils.createTemplateCompere(f,sign, workProgram, expertList);
-        if(sysFile2 != null && Validate.isString(sysFile2.getSysFileId())){
-            saveFile.add(sysFile2);
-        }
+                    //2.2 生成主持人稿
+                    String expertGl = expertRepo.findExpertGlByBusiness(workProgram.getId());
+                    SysFile sysFile2 = CreateTemplateUtils.createTemplateCompere(f, sign, workProgram, expertList, expertGl);
+                    if (sysFile2 != null && Validate.isString(sysFile2.getSysFileId())) {
+                        saveFile.add(sysFile2);
+                    }
 
-        //2.3 会议议程
-        List<SysFile> sList = CreateTemplateUtils.createTemplateMeeting(f,sign, workProgram, roomBookings);
-        if (sList != null && sList.size() > 0) {
-            for (SysFile sysFile : sList) {
-                if(saveFile !=null && Validate.isString(sysFile.getSysFileId())){
-                    saveFile.add(sysFile);
+                    //2.3 会议议程
+                    List<SysFile> sList = CreateTemplateUtils.createTemplateMeeting(f, sign, workProgram, roomBookings);
+                    if (sList != null && sList.size() > 0) {
+                        for (SysFile sysFile : sList) {
+                            if (saveFile != null && Validate.isString(sysFile.getSysFileId())) {
+                                saveFile.add(sysFile);
+                            }
+                        }
+                    }
+
+                    //2.4 邀请函
+                    SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f, sign, workProgram, expertList, user, roomBookings);
+                    if (invitation != null && Validate.isString(invitation.getSysFileId())) {
+                        saveFile.add(invitation);
+                    }
+
+
+                    //2.5 会议通知
+                    SysFile notice = CreateTemplateUtils.createTemplateNotice(f, sign, workProgram, user, roomBookings);
+                    if (notice != null && Validate.isString(notice.getSysFileId())) {
+                        saveFile.add(notice);
+                    }
+
+                    //专家评审意见书
+                    SysFile expertReviewIdea = CreateTemplateUtils.createTemplateExpertReviewIdea(f, sign, workProgram);
+                    if (expertReviewIdea != null && Validate.isString(expertReviewIdea.getSysFileId())) {
+                        saveFile.add(expertReviewIdea);
+                    }
+
+                    //2.6协审协议书
+                  /*  HqlBuilder queryaps = HqlBuilder.create();
+                    queryaps.append(" from " + AssistPlanSign.class.getSimpleName() + " where " + AssistPlanSign_.signId.getName() + " =:signID");
+                    queryaps.setParam("signID", signId);
+                    List<AssistPlanSign> apsList = assistPlanSignRepo.findByHql(queryaps);
+                    AssistUnit assistUnit = null;
+                    Org org = null;
+                    if (!StringUtil.isBlank(sign.getAssistdeptid())) {
+                        assistUnit = assistUnitRepo.findById(sign.getAssistdeptid());//乙方
+                    }
+                    if (!StringUtil.isBlank(sign.getMaindepetid())) {
+
+                        org = orgRepo.findById(sign.getMaindepetid());//甲方
+                    }
+                    SysFile sysFile3 = CreateTemplateUtils.createTemplateAssist(f,sign, workProgram, apsList, assistUnit, org);
+                    if(sysFile3 != null  && Validate.isString(sysFile3.getSysFileId())){
+
+                        saveFile.add(sysFile3);
+                    }*/
+
+                    //3、保存文件信息
+                    if (saveFile.size() > 0) {
+                        Date now = new Date();
+                        saveFile.forEach(sf -> {
+                            sf.setCreatedDate(now);
+                            sf.setModifiedDate(now);
+                            sf.setModifiedBy(SessionUtil.getLoginName());
+                            sf.setCreatedBy(SessionUtil.getLoginName());
+                            //先删除旧数据
+                            sysFileRepo.delete(sf.getMainId(), sf.getBusinessId(), sf.getSysBusiType(), sf.getShowName());
+                        });
+                        sysFileRepo.bathUpdate(saveFile);
+                    } else {
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件服务器无法连接，文件无法生成，请联系管理员处理", null);
+                    }
+                    //4、更改工作方案状态
+                    workProgram.setIsCreateDoc(EnumState.YES.getValue());
+                    workProgramRepo.save(workProgram);
                 }
             }
         }
 
-        //2.4 邀请函
-            SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f,sign, workProgram, expertList, user, roomBookings);
-            if (invitation != null && Validate.isString(invitation.getSysFileId())) {
-                saveFile.add(invitation);
-            }
-
-        //2.5 会议通知
-        SysFile notice = CreateTemplateUtils.createTemplateNotice(f,sign, workProgram, user, roomBookings);
-        if (notice != null && Validate.isString(notice.getSysFileId())) {
-            saveFile.add(notice);
-        }
-
-        //专家评审意见书
-        SysFile expertReviewIdea = CreateTemplateUtils.createTemplateExpertReviewIdea(f,sign, workProgram);
-        if (expertReviewIdea != null && Validate.isString(expertReviewIdea.getSysFileId())) {
-            saveFile.add(expertReviewIdea);
-        }
-
-        //2.6协审协议书
-      /*  HqlBuilder queryaps = HqlBuilder.create();
-        queryaps.append(" from " + AssistPlanSign.class.getSimpleName() + " where " + AssistPlanSign_.signId.getName() + " =:signID");
-        queryaps.setParam("signID", signId);
-        List<AssistPlanSign> apsList = assistPlanSignRepo.findByHql(queryaps);
-        AssistUnit assistUnit = null;
-        Org org = null;
-        if (!StringUtil.isBlank(sign.getAssistdeptid())) {
-            assistUnit = assistUnitRepo.findById(sign.getAssistdeptid());//乙方
-        }
-        if (!StringUtil.isBlank(sign.getMaindepetid())) {
-
-            org = orgRepo.findById(sign.getMaindepetid());//甲方
-        }
-        SysFile sysFile3 = CreateTemplateUtils.createTemplateAssist(f,sign, workProgram, apsList, assistUnit, org);
-        if(sysFile3 != null  && Validate.isString(sysFile3.getSysFileId())){
-
-            saveFile.add(sysFile3);
+        /*WorkProgram workProgram = workProgramRepo.findByPrincipalUser(signId);
+        if (workProgram == null || StringUtil.isEmpty(workProgram.getId())) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，请先填写工作方案");
         }*/
 
-        //3、保存文件信息
-        if (saveFile.size() > 0) {
-            Date now = new Date();
-            saveFile.forEach(sf -> {
-                sf.setCreatedDate(now);
-                sf.setModifiedDate(now);
-                sf.setModifiedBy(SessionUtil.getLoginName());
-                sf.setCreatedBy(SessionUtil.getLoginName());
-                //先删除旧数据
-                sysFileRepo.delete(sf.getMainId(),sf.getBusinessId(),sf.getSysBusiType(),sf.getShowName());
-            });
-            sysFileRepo.bathUpdate(saveFile);
-        }else{
-            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，文件无法生成，请联系管理员处理"  , null);
-        }
-        //4、更改工作方案状态
-        workProgram.setIsCreateDoc(EnumState.YES.getValue());
-        workProgramRepo.save(workProgram);
 
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");
     }
@@ -602,9 +613,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         WorkProgramDto workDto = new WorkProgramDto();
         workDto.setSignId(work.getSign().getSignid());
         BeanCopierUtils.copyProperties(work, workDto);
-        if(Validate.isString(work.getBranchId()) && !work.getBranchId().equals("1")){
-            WorkProgram mainWork =  workProgramRepo.findBySignIdAndBranchId(work.getSign().getSignid(),"1");
-            if(mainWork != null){
+        if (Validate.isString(work.getBranchId()) && !work.getBranchId().equals("1")) {
+            WorkProgram mainWork = workProgramRepo.findBySignIdAndBranchId(work.getSign().getSignid(), "1");
+            if (mainWork != null) {
 
                 workDto.setProjectName(mainWork.getProjectName());
                 workDto.setTotalInvestment(mainWork.getTotalInvestment());
@@ -626,11 +637,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                 workDto.setSecondChargeUserName(mainWork.getSecondChargeUserName());
             }
         }
-        if(Constant.EnumState.NO.getValue().equals(workDto.getIsMainProject()) && EnumState.NO.equals(workDto.getIsSigle())){//次项目
+        if (Constant.EnumState.NO.getValue().equals(workDto.getIsMainProject()) && EnumState.NO.equals(workDto.getIsSigle())) {//次项目
             //查找主项目信息，并且获取主项目的会议室信息和专家信息
             WorkProgram wp = workProgramRepo.findMainReviewWP(workDto.getSignId());
             workProgramRepo.initWPMeetingExp(workDto, wp);
-        }else{
+        } else {
             workProgramRepo.initWPMeetingExp(workDto, work);
         }
 

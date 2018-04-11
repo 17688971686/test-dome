@@ -320,4 +320,28 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
         }
         return resultList;
     }
+
+    /**
+     * 通过业务ID获取抽取的专家，并参与评审中的组长名称--主要用于会前准备材料的主持人手稿
+     * @param businessId
+     * @return
+     */
+    @Override
+    public String findExpertGlByBusiness(String businessId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select e.name from cs_expert e where e.expertID in (select expertID from cs_expert_selected  ");
+        sqlBuilder.append("  where "+ExpertSelected_.businessId.getName()+" = :businessId ");
+        sqlBuilder.setParam("businessId",businessId);
+        sqlBuilder.append(" and " + ExpertSelected_.expeRttype.getName() + " like '%组长%' ");
+        sqlBuilder.append(" and "+ ExpertSelected_.isConfrim.getName()+" = :isConfirm ");
+        sqlBuilder.setParam("isConfirm",Constant.EnumState.YES.getValue());
+        sqlBuilder.append(" and "+ ExpertSelected_.isJoin.getName()+" = :isJoin )");
+        sqlBuilder.setParam("isJoin",Constant.EnumState.YES.getValue());
+        List<Object[]> objList = this.getObjectArray(sqlBuilder);
+        String expertGl = "XXX";
+        if(objList != null && objList.size() > 0 && objList.get(0).length > 0){
+            expertGl = objList.get(0)[0].toString();
+        }
+        return expertGl;
+    }
 }

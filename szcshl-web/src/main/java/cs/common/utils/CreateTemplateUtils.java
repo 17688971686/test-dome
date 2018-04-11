@@ -66,7 +66,7 @@ public class CreateTemplateUtils {
         dataMap.put("projectName", signDispaWork.getProjectname());
         dataMap.put("generalCounsel", "市发改委分管副主任");
         dataMap.put("counselor", "市发改委主办处室处长");
-        dataMap.put("director", "主任");
+        dataMap.put("director", signDispaWork.getLeaderName());
         String leaderName = signDispaWork.getLeaderName() == null ? "" :signDispaWork.getLeaderName();
         dataMap.put("viceDirector", leaderName);
         String ministerName =  signDispaWork.getMinisterName() == null ? "" : signDispaWork.getMinisterName();
@@ -84,7 +84,7 @@ public class CreateTemplateUtils {
             expertName += expert.getName();
         }
 
-        String reviewGroup = "主任," + leaderName + "," + ministerName + "," + projectDirector;
+        String reviewGroup = leaderName + "," + ministerName + "," + projectDirector;
 
         if(!"".equals(expertName) && expertName.length() >0){
             reviewGroup += "," + expertName;
@@ -204,7 +204,7 @@ public class CreateTemplateUtils {
         dataMap.put("projectName", signDispaWork.getProjectname());
         dataMap.put("generalCounsel", "市发改委分管副主任");
         dataMap.put("counselor", "市发改委主办处室处长");
-        dataMap.put("director", "主任");
+        dataMap.put("director", signDispaWork.getLeaderName());
         String leanderName = signDispaWork.getLeaderName() == null ? "" : signDispaWork.getLeaderName();
         dataMap.put("viceDirector", leanderName);
         String ministerName = signDispaWork.getMinisterName() == null ? "" : signDispaWork.getMinisterName();
@@ -222,7 +222,7 @@ public class CreateTemplateUtils {
             expertName += expert.getName();
         }
 
-        String reviewGroup = "主任," + leanderName + "," + ministerName + "," + projectDirector ;
+        String reviewGroup = leanderName + "," + ministerName + "," + projectDirector ;
 
         if(!"".equals(expertName) && expertName.length() >0){
             reviewGroup += "," + expertName;
@@ -297,7 +297,7 @@ public class CreateTemplateUtils {
         dataMap.put("projectName", signDispaWork.getProjectname());
         dataMap.put("generalCounsel", "市发改委分管副主任");
         dataMap.put("counselor", "市发改委主办处室处长");
-        dataMap.put("director", "主任");
+        dataMap.put("director", signDispaWork.getLeaderName());
         String leanderName = signDispaWork.getLeaderName() == null ? "" : signDispaWork.getLeaderName();
         dataMap.put("viceDirector", leanderName);
         String ministerName = signDispaWork.getMinisterName() == null ? "" : signDispaWork.getMinisterName();
@@ -315,7 +315,7 @@ public class CreateTemplateUtils {
             expertName += expert.getName();
         }
 
-        String reviewGroup = "主任," + leanderName + "," + ministerName + "," + projectDirector ;
+        String reviewGroup =  leanderName + "," + ministerName + "," + projectDirector ;
 
         if(!"".equals(expertName) && expertName.length() >0){
             reviewGroup += "," + expertName;
@@ -389,7 +389,7 @@ public class CreateTemplateUtils {
         dataMap.put("projectName", signDispaWork.getProjectname());
         dataMap.put("generalCounsel", "市发改委分管副主任");
         dataMap.put("counselor", "市发改委主办处室处长");
-        dataMap.put("director", "主任");
+        dataMap.put("director", signDispaWork.getLeaderName());
         String leanderName = signDispaWork.getLeaderName() == null ? "" : signDispaWork.getLeaderName();
         dataMap.put("viceDirector", leanderName);
         String ministeName = signDispaWork.getMinisterName() == null ? "" : signDispaWork.getMinisterName();
@@ -407,7 +407,7 @@ public class CreateTemplateUtils {
             expertName += expert.getName();
         }
 
-        String reviewGroup = "主任," + leanderName + "," + ministeName + "," + projectDirector ;
+        String reviewGroup =  leanderName + "," + ministeName + "," + projectDirector ;
 
         if(!"".equals(expertName) && expertName.length() >0){
             reviewGroup += "," + expertName;
@@ -444,7 +444,7 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+                workProgram.getId(),Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")", Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.SIGN_IN.getKey(), Constant.Template.SIGN_IN.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
 
@@ -467,7 +467,7 @@ public class CreateTemplateUtils {
         dataMap.put("builtcompanyName", sign.getBuiltcompanyName());
         dataMap.put("contactPerson", user.getDisplayName() == null ? "" : user.getDisplayName());//联系人
         dataMap.put("contactPersonTel", user.getUserPhone() == null ? "" : user.getUserPhone());//联系电话
-        dataMap.put("contactPersonAddress", "深圳市政府投资项目评审中心");
+
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
         //获得会议信息
@@ -485,9 +485,11 @@ public class CreateTemplateUtils {
 
                 dataMap.put("addressName", roomBooking.getAddressName()); //会议地点
 
+            dataMap.put("contactPersonAddress", "福田区莲花支路公交大厦" + roomBooking.getAddressName().substring(0 , 3));
+
             sysFile = TemplateUtil.createTemplate(
                     f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                    workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+                    workProgram.getId(),Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")", Constant.SysFileType.WORKPROGRAM.getValue(),
                     Constant.Template.UNIT_NOTICE.getKey(), Constant.Template.UNIT_NOTICE.getValue(),
                     Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         }
@@ -521,7 +523,7 @@ public class CreateTemplateUtils {
                 if (DateUtils.compareIgnoreSecond(roomBooking.getBeginTime(), compareDate) == 1) {
                     sysFile = TemplateUtil.createTemplate(
                             f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                            workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+                            workProgram.getId(),Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")", Constant.SysFileType.WORKPROGRAM.getValue(),
                             Constant.Template.MEETING_AM.getKey(), Constant.Template.MEETING_AM.getValue(),
                             Constant.Template.WORD_SUFFIX.getKey(), dataMap);
                     sysFileList.add(sysFile);
@@ -530,7 +532,7 @@ public class CreateTemplateUtils {
 
                     sysFile = TemplateUtil.createTemplate(
                             f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                            workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+                            workProgram.getId(),Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")", Constant.SysFileType.WORKPROGRAM.getValue(),
                             Constant.Template.MEETING_PM.getKey(), Constant.Template.MEETING_PM.getValue(),
                             Constant.Template.WORD_SUFFIX.getKey(), dataMap);
                     sysFileList.add(sysFile);
@@ -555,7 +557,7 @@ public class CreateTemplateUtils {
         for(Expert expert : expertList){
             String[] resultArr = new String[10];
             resultArr[0] = expert.getName();
-            resultArr[1] = expert.getSex() == "男" ? "先生" : "女士";
+            resultArr[1] = "男".equals(expert.getSex()) ? "先生" : "女士";
             resultArr[2] = sign.getProjectname();
             resultArr[3] = sign.getReviewstage();
 
@@ -577,7 +579,7 @@ public class CreateTemplateUtils {
             resultArr[5] = meetRessadd;
             resultArr[6] = user.getDisplayName() == null ? "" : user.getDisplayName();
             resultArr[7] = user.getUserPhone() == null ? "" : user.getUserPhone();
-            resultArr[8] = "深圳市政府投资项目评审中心";
+            resultArr[8] = "福田区莲花支路公交大厦" + meetRessadd.substring(0 , 3);
             resultArr[9] = DateUtils.converToString(new Date() , "yyyy年MM月dd日");
             resultList.add(resultArr);
         }
@@ -587,7 +589,7 @@ public class CreateTemplateUtils {
 
         sysFile = TemplateUtil.createTemplate(
                 f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+                workProgram.getId(),Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")", Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.INVITATION.getKey(), Constant.Template.INVITATION.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
 
@@ -603,7 +605,7 @@ public class CreateTemplateUtils {
      * @param expertList
      * @return
      */
-    public static SysFile createTemplateCompere(Ftp f,Sign sign, WorkProgram workProgram, List<Expert> expertList) {
+    public static SysFile createTemplateCompere(Ftp f,Sign sign, WorkProgram workProgram, List<Expert> expertList , String expertGl) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname()); //项目名称
         dataMap.put("reviewStage" , sign.getReviewstage());//评审阶段
@@ -617,8 +619,7 @@ public class CreateTemplateUtils {
         dataMap.put("buildContent" , workProgram.getBuildContent() == null ? "" : workProgram.getBuildContent());//建设内容
         dataMap.put("appalyInvestment" , workProgram.getAppalyInvestment() == null ? 0 : workProgram.getAppalyInvestment());//申报投资
         dataMap.put("mainPoint" , workProgram.getMainPoint() == null ? "" : workProgram.getMainPoint());//重点问题
-
-
+        dataMap.put("expertGL" , expertGl);//专家组长
         //中心领导、部长、项目负责人、第二负责人
         String leaderName = workProgram.getLeaderName() == null ? "" : workProgram.getLeaderName();
         String ministerName = workProgram.getMinisterName() == null ? "" : "," + workProgram.getMinisterName();
@@ -629,7 +630,7 @@ public class CreateTemplateUtils {
 
         SysFile sysFile = TemplateUtil.createTemplate(
                 f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+                workProgram.getId(),Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")", Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.COMPERE.getKey(), Constant.Template.COMPERE.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -646,7 +647,7 @@ public class CreateTemplateUtils {
      * @param org
      * @return
      */
-    public static SysFile createTemplateAssist(Ftp f,Sign sign, WorkProgram workProgram, List<AssistPlanSign> apsList, AssistUnit assistUnit, Org org) {
+    /*public static SysFile createTemplateAssist(Ftp f,Sign sign, WorkProgram workProgram, List<AssistPlanSign> apsList, AssistUnit assistUnit, Org org) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("workreviveStage", "");
         if (org != null) {
@@ -684,7 +685,7 @@ public class CreateTemplateUtils {
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
 
-    }
+    }*/
 
     /**
      * 专家评审意见书
@@ -699,7 +700,7 @@ public class CreateTemplateUtils {
         dataMap.put("reviewStage" , sign.getReviewstage());
         SysFile sysFile = TemplateUtil.createTemplate(
                 f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                workProgram.getId(),Constant.SysFileType.MEETING.getValue(), Constant.SysFileType.WORKPROGRAM.getValue(),
+                workProgram.getId(),Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")", Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.EXPERTREVIEWIDEA.getKey(), Constant.Template.EXPERTREVIEWIDEA.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
