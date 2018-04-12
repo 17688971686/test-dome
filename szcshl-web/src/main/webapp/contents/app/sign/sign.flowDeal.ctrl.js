@@ -912,7 +912,7 @@
                 }
                 defaultOption += selUser.join(', ');
             }
-            defaultOption += " )组织办理。";
+            defaultOption += " )组织评审。";
 
             vm.flow.dealOption = defaultOption;
         }
@@ -1064,7 +1064,7 @@
 
 
                 })
-                defaultOption += " )组织办理。";
+                defaultOption += " )组织评审。";
                 vm.flow.dealOption = defaultOption;
             } else {
                 vm.flow.dealOption = "";

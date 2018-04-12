@@ -12,7 +12,7 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
 		parameter.userid=$rootScope.userInfo.id;
 	/*parameter.userid="1c41d130-32b4-4230-9d8a-1277727d3c60";*/
 	/*	parameter.userid="9746a99b-7629-472b-a233-cb3cf94a9da1";*/
-		
+
 	    $scope.isReveal=true;//提交按钮的显示
 			//返回
 			$scope.back = function() {
@@ -21,40 +21,40 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
 			//切换页面
 			$scope.switchPageM = function(index){
 				if(index!=0){
-                    $scope.isReveal=false;					
+                    $scope.isReveal=false;
 				}else{
 					$scope.isReveal=true;
 				}
 
 				$ionicTabsDelegate.select(index);
 			}
-		//流程提交	
+		//流程提交
 	$scope.submitProc=function(){
           	//提交时先进行表单检查
 			var checkResult = checkBusinessFill($scope);
 			if (checkResult.resultTag) {
 				signFlowDealService.commit($scope.flow,$rootScope.userInfo.loginName).then(function(response){
-					
+
 					if(response.data.flag){
 						Message.show(response.data.reMsg,function(){
-						$state.go('gtasks');		
+						$state.go('gtasks');
 			        });
 					}else{
 					    Message.show(response.data.reMsg);
 					}
-   
+
          		},function(response){
          			console.log('初始化失败');
-         		
+
          		}).finally(function(){
          			console.log('refresh complete event...');
-         		});		
-         		
+         		});
+
          	}else{
          		  Message.show(checkResult.resultMsg);
          	}
-			
-			
+
+
 		}
 	//检查相应的表单填写
 	function checkBusinessFill($scope) {
@@ -245,7 +245,7 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
     function initBusinessParams($scope) {
     	 $scope.showFlag={};
     	 $scope.businessFlag={};
-    	
+
             switch ($scope.flow.curNode.activitiId) {
                 //项目签收环节
                 case flowcommon.getSignFlowNode().SIGN_QS:
@@ -424,14 +424,14 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
                     ;
             }
         }//E_initBusinessParams
-			
+
     // 勾选主办部门判断
     $scope.mainOrg = function ($event) {
             var checkbox = $event.target;
             var checked = checkbox.checked;
             var checkboxValue = checkbox.value;
             if (checked) {
-            	
+
                 $('.frame input[selectType="main"]').each(
                     function () {
                         var value = $(this).attr("value");
@@ -458,11 +458,11 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
             $('.frame input[selectType="assist"]:checked').each(function () {
                 selOrg.push($(this).attr("tit"));
             });
-     
+
             if (selOrg.length > 0) {
                 $scope.flow.dealOption = "请（" + selOrg.join('，') + "）组织评审";
             }
-       
+
         }
 	//检查项目负责人
     $scope.checkPrincipal = function () {
@@ -506,10 +506,10 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
                 }
                 defaultOption += selUser.join(', ');
             }
-            defaultOption += " )组织办理。";
+            defaultOption += " )组织评审。";
 
             $scope.flow.dealOption = defaultOption;
-        }		
+        }
 	//协审部门分办选择负责人
     $scope.addPriUser = function () {
             var isCheck = $("#xs_bmfb input[name='unSelPriUser']:checked");
@@ -561,8 +561,8 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
                     $scope.initDealUserName($scope.businessFlag.principalUsers);
                 }
             }
-        }		
-	//初始化处理人  
+        }
+	//初始化处理人
     $scope.initDealUserName = function (userList) {
             if (userList && userList.length > 0) {
                 var defaultOption = "请（";
@@ -572,12 +572,12 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
                     }
                     defaultOption += u.userName;
                 })
-                defaultOption += " )组织办理。";
+                defaultOption += " )组织评审。";
                 $scope.flow.dealOption = defaultOption;
             } else {
                 $scope.flow.dealOption = "";
             }
-        }	
+        }
 	//删除负责人
 	$scope.delPriUser = function () {
             var isCheck = $("#xs_bmfb input[name='selPriUser']:checked");
@@ -603,7 +603,7 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
                 $scope.initDealUserName($scope.businessFlag.principalUsers);
             }
     }
-			
+
       //监听是否通过
     $scope.watchPassDis = function () {
             //监听是否关联事件
@@ -617,7 +617,7 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
         });
     }
 			activate();
-		
+
 			function activate(){
 				//详细信息
 				signFlowDealService.initFlowPageData($scope.signid).then(function(response){
@@ -625,14 +625,14 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
 					$scope.fileRecord=$scope.sign.fileRecord;
 					$scope.dispatchDoc=$scope.sign.dispatchDocDto;
 					$scope.workProgramList = $scope.sign.workProgramDtoList;
-   
+
          		},function(response){
          			console.log('初始化失败');
-         		
+
          		}).finally(function(){
          			console.log('refresh complete event...');
          		});
-         		
+
          		//流程信息
          		signFlowDealService.flowNodeInfo(parameter).then(function(response){
          		     $scope.flow=response.data;
@@ -640,14 +640,14 @@ angular.module('signFlowDeal.controller', ['signFlowDeal.service', 'common.servi
          		     initBusinessParams($scope);
          		},function(response){
          			console.log('初始化失败');
-         		
+
          		}).finally(function(){
          			console.log('refresh complete event...');
          		});
 
 			}
-	   
-	
+
+
 		}
 	])
 

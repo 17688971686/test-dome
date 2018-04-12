@@ -125,12 +125,13 @@
         <tr>
             <td style="vertical-align: middle;" class="text-center">部长审核意见</td>
             <td colspan="5">
-                <div style="min-height:100px;" ng-bind-html="vm.dispatchDoc.ministerSuggesttion | trust2Html">
-                    <!--
+                <div style="min-height: 50px;" ng-if="vm.dispatchDoc.branchCount==1">
                     <p> {{vm.dispatchDoc.ministerSuggesttion}}</p>
                     <p class="text-right" ng-if="vm.dispatchDoc.ministerName">签名：{{vm.dispatchDoc.ministerName}}</p>
                     <p class="text-right" ng-if="vm.dispatchDoc.ministerDate">日期：{{vm.dispatchDoc.ministerDate}}</p>
-                    -->
+                </div>
+                <div style="min-height: 50px;" ng-if="vm.dispatchDoc.branchCount>1">
+                    <div ng-bind-html="vm.dispatchDoc.ministerSuggesttion | trust2Html"></div>
                 </div>
             </td>
         </tr>
@@ -138,12 +139,13 @@
         <tr>
             <td style="vertical-align: middle;" class="text-center">分管副主任意见</td>
             <td colspan="5">
-                <div style="min-height:100px;" ng-bind-html="vm.dispatchDoc.viceDirectorSuggesttion | trust2Html">
-                    <!--
+                <div style="min-height: 50px;" ng-if="vm.dispatchDoc.moreLeader==0">
                     <p>{{vm.dispatchDoc.viceDirectorSuggesttion}}</p>
                     <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorName">签名：{{vm.dispatchDoc.viceDirectorName}}</p>
                     <p class="text-right" ng-if="vm.dispatchDoc.viceDirectorDate">日期：{{vm.dispatchDoc.viceDirectorDate}}</p>
-                    -->
+                </div>
+                <div style="min-height: 50px;" ng-if="vm.dispatchDoc.moreLeader==1">
+                    <div ng-bind-html="vm.dispatchDoc.viceDirectorSuggesttion | trust2Html"></div>
                 </div>
             </td>
         </tr>

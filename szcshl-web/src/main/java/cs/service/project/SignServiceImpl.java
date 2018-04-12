@@ -285,23 +285,18 @@ public class SignServiceImpl implements SignService {
                 unitScores.setCreatedDate(new Date());
                 unitScoreRepo.save(unitScores);
             }
-
-
         }
 
         //如果单位是手动添加时就添加到数据库
         if (Validate.isString(signDto.getBuiltcompanyName())) {//建设单位
-
             companyService.createSignCompany(signDto.getBuiltcompanyName(), "建设单位");
         }
         if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
             companyService.createSignCompany(signDto.getDesigncompanyName(), "编制单位");
-
             companyService.createSignCompany(signDto.getBuiltcompanyName(), "建设单位");
         }
         if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
             companyService.createSignCompany(signDto.getDesigncompanyName(), "编制单位");
-
         }
 
 
@@ -766,6 +761,7 @@ public class SignServiceImpl implements SignService {
                     businessId = flowDto.getBusinessMap().get("ASSIST_ORG").toString();
                     assistOrgIdList = StringUtil.getSplit(businessId, ",");
                 }
+                int branchCount = 1;
                 if (Validate.isList(assistOrgIdList)) {
                     if (assistOrgIdList.size() > 3) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "协办部门最多只能选择3个！");
@@ -804,6 +800,7 @@ public class SignServiceImpl implements SignService {
                             default:
                                 ;
                         }
+                        branchCount ++ ;
                     }
                     //协办部门信息
                     sign.setaOrgId(businessId);
@@ -815,6 +812,13 @@ public class SignServiceImpl implements SignService {
                 sign.setLeaderDate(new Date());
                 sign.setLeaderId(SessionUtil.getUserId());
                 sign.setLeaderName(SessionUtil.getDisplayName());
+                //清空部长审核意见
+                sign.setMinisterhandlesug("");
+                sign.setMinisterDate(null);
+                sign.setMinisterId("");
+                sign.setMinisterName("");
+                //记录总分支数
+                sign.setBranchCount(branchCount);
                 signRepo.save(sign);
 
                 break;
@@ -878,16 +882,7 @@ public class SignServiceImpl implements SignService {
                     sign.setmUserName(mUserName);
                     sign.setaUserID(aUserId);
                     sign.setaUserName(aUserName);
-                    //更改项目信息
-                   /* sign.setMinisterhandlesug(flowDto.getDealOption());
-                    sign.setMinisterDate(new Date());
-                    sign.setMinisterId(SessionUtil.getUserId());
-                    sign.setMinisterName(SessionUtil.getDisplayName());*/
-                    sign.setMinisterDate(new Date());
-                    String optionString = Validate.isString(sign.getMinisterhandlesug()) ? (sign.getMinisterhandlesug() + "<br>") : "";
-                    sign.setMinisterhandlesug(optionString + flowDto.getDealOption() + "<br>"+"签名：" + SessionUtil.getDisplayName()+ "  日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-
-                    //不是协审项目
+                //不是协审项目
                 } else {
                     //主流程处理，一定要有第一负责人
                     if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(branchIndex)) {
@@ -907,25 +902,9 @@ public class SignServiceImpl implements SignService {
                         //String signId, String userId, String flowBranch, String userType, Integer sort, String isMainUser
                         SignPrincipal mainPri = new SignPrincipal(signid, dealUser.getId(), branchIndex, "", null, EnumState.YES.getValue());
                         signPriList.add(mainPri);
-
-                        //更改项目信息
-                        /*sign.setMinisterhandlesug(flowDto.getDealOption());
-                        sign.setMinisterDate(new Date());
-                        sign.setMinisterId(SessionUtil.getUserId());
-                        sign.setMinisterName(SessionUtil.getDisplayName());
-
-                        String optionString = Validate.isString(sign.getMinisterhandlesug()) ? (sign.getMinisterhandlesug() + "<br>") : "";
-                        sign.setMinisterhandlesug(optionString + flowDto.getDealOption() + " <p style='text-align:right;'>签名：" + SessionUtil.getDisplayName()+ "</p>" +"<p style='text-align:right;'> 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日")+"</p>");
-                    */
                     }
                     //项目负责人
                     if (flowDto.getBusinessMap().get("A_USER_ID") != null) {
-                        //更改项目信息,部长意见
-                        String optionString = Validate.isString(sign.getMinisterhandlesug()) ? (sign.getMinisterhandlesug() + "<br>") : "";
-                        sign.setMinisterhandlesug(optionString + flowDto.getDealOption() +"<br>"+ "签名：" + SessionUtil.getDisplayName()  + "   日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-
-                        sign.setMinisterDate(new Date());
-
                         businessId = flowDto.getBusinessMap().get("A_USER_ID").toString();
                         userList = userRepo.getCacheUserListById(businessId);
                         if (signPriList == null) {
@@ -980,6 +959,19 @@ public class SignServiceImpl implements SignService {
                     variables.put(FlowConstant.SignFlowParams.USER_FZR3.getValue(), assigneeValue);
                 } else if (FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue().equals(branchIndex)) {
                     variables.put(FlowConstant.SignFlowParams.USER_FZR4.getValue(), assigneeValue);
+                }
+                //保存处理意见，单个分支按之前的格式，跟多分支的时候，拼接下
+                if(sign.getBranchCount() == 1){
+                    sign.setMinisterhandlesug(flowDto.getDealOption());
+                }else{
+                    String optionString = Validate.isString(sign.getMinisterhandlesug()) ? (sign.getMinisterhandlesug() + "<br>") : "";
+                    sign.setMinisterhandlesug(optionString + flowDto.getDealOption() + " 签名：" + SessionUtil.getDisplayName()+ "  日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                }
+                //主办部门意见也保存下
+                if(branchIndex.equals(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue())){
+                    sign.setMinisterDate(new Date());
+                    sign.setMinisterId(SessionUtil.getUserId());
+                    sign.setMinisterName(SessionUtil.getDisplayName());
                 }
                 //完成部门分办，表示正在做工作方案
                 sign.setProcessState(Constant.SignProcessState.DO_WP.getValue());
@@ -1364,8 +1356,18 @@ public class SignServiceImpl implements SignService {
                 }
 
                 //修改第一负责人意见
-                dp.setMianChargeSuggest(flowDto.getDealOption() + "       " + SessionUtil.getDisplayName() + " &nbsp; " + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                dp.setMianChargeSuggest(flowDto.getDealOption() + "  签名：" + SessionUtil.getDisplayName() + "  日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
                 dp.setSecondChargeSuggest("");
+                //清空部长或者分管领导意见，避免回退的时候，意见重叠
+                dp.setMinisterSuggesttion("");
+                dp.setMinisterDate(null);
+                dp.setMinisterName("");
+                dp.setViceDirectorSuggesttion("");
+                dp.setViceDirectorDate(null);
+                dp.setViceDirectorName("");
+                dp.setDirectorSuggesttion("");
+                dp.setDirectorDate(null);
+                dp.setDirectorName("");
                 dispatchDocRepo.save(dp);
 
                 //有项目负责人，则项目负责人审核
@@ -1392,8 +1394,7 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 String optionString = Validate.isString(dp.getSecondChargeSuggest()) ? (dp.getSecondChargeSuggest() + "<br>") : "";
-                dp.setSecondChargeSuggest(optionString + flowDto.getDealOption() + "              " + SessionUtil.getDisplayName() + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-
+                dp.setSecondChargeSuggest(optionString + flowDto.getDealOption() + " 签名：" + SessionUtil.getDisplayName() + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
                 dispatchDocRepo.save(dp);
 
                 //如果同意
@@ -1445,12 +1446,8 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 String optionString2 = Validate.isString(dp.getMinisterSuggesttion()) ? (dp.getMinisterSuggesttion() + "<br>") : "";
-             /*   dp.setMinisterSuggesttion(optionString2 + dirDealOption + "&nbsp;" + SessionUtil.getDisplayName() + " &nbsp; " + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));*/
-                dp.setMinisterSuggesttion(optionString2 + dirDealOption + "<br>"+ "签名：" + SessionUtil.getDisplayName() + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                dp.setMinisterSuggesttion(optionString2 + dirDealOption + " 签名：" + SessionUtil.getDisplayName() + " 日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
-
-                /* dp.setMinisterDate(new Date());
-                dp.setMinisterName(SessionUtil.getDisplayName());*/
                 dispatchDocRepo.save(dp);
                 break;
             //部长审批发文
@@ -1509,12 +1506,15 @@ public class SignServiceImpl implements SignService {
                 //修改发文信息
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                String optionString3 = Validate.isString(dp.getMinisterSuggesttion()) ? (dp.getMinisterSuggesttion() + "<br>") : "";
-               /* dp.setMinisterSuggesttion(optionString3 + flowDto.getDealOption() + "&nbsp;" + SessionUtil.getDisplayName() + "&nbsp;" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));*/
-                dp.setMinisterSuggesttion(optionString3 + flowDto.getDealOption()+ "<br>" + "签名：" + SessionUtil.getDisplayName() + "   日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-
-               /* dp.setMinisterDate(new Date());
-                dp.setMinisterName(SessionUtil.getDisplayName());*/
+                if(dp.getBranchCount() == 1){
+                    dp.setMinisterSuggesttion(flowDto.getDealOption());
+                }else{
+                    String optionString3 = Validate.isString(dp.getMinisterSuggesttion()) ? (dp.getMinisterSuggesttion() + "<br>") : "";
+                    dp.setMinisterSuggesttion(optionString3 + flowDto.getDealOption()+ " 签名：" + SessionUtil.getDisplayName() + "   日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                }
+                //发文日期也要保存下
+                dp.setMinisterDate(new Date());
+                dp.setMinisterName(SessionUtil.getDisplayName());
                 dispatchDocRepo.save(dp);
                 break;
             //协办分管领导审批发文
@@ -1545,10 +1545,9 @@ public class SignServiceImpl implements SignService {
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
                 String vdSugMin = Validate.isString(dp.getViceDirectorSuggesttion()) ? (dp.getViceDirectorSuggesttion() + "<br>") : "";
-              /*  dp.setViceDirectorSuggesttion(vdSugMin + flowDto.getDealOption() + "&nbsp;" + SessionUtil.getDisplayName() + "&nbsp;" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-*/
-                dp.setViceDirectorSuggesttion(vdSugMin + flowDto.getDealOption()+ "<br>" + "签名：" + SessionUtil.getDisplayName()  + "   日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-
+                dp.setViceDirectorSuggesttion(vdSugMin + flowDto.getDealOption()+ " 签名：" + SessionUtil.getDisplayName()  + "   日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                dp.setMoreLeader(1);
+                dispatchDocRepo.save(dp);
                 break;
             //分管领导审批发文
             case FlowConstant.FLOW_SIGN_FGLD_QRFW:
@@ -1563,12 +1562,14 @@ public class SignServiceImpl implements SignService {
                 //修改发文信息
                 businessId = flowDto.getBusinessMap().get("DIS_ID").toString();
                 dp = dispatchDocRepo.findById(DispatchDoc_.id.getName(), businessId);
-                String vdSug = Validate.isString(dp.getViceDirectorSuggesttion()) ? (dp.getViceDirectorSuggesttion() + "<br>") : "";
-                dp.setViceDirectorSuggesttion(vdSug + flowDto.getDealOption() + "<br>"+ "签名：" + SessionUtil.getDisplayName() + "   日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
-                /*
-                dp.setViceDirectorSuggesttion(flowDto.getDealOption());
+                if(dp.getMoreLeader() == 1){
+                    String vdSug = Validate.isString(dp.getViceDirectorSuggesttion()) ? (dp.getViceDirectorSuggesttion() + "<br>") : "";
+                    dp.setViceDirectorSuggesttion(vdSug + flowDto.getDealOption() + "  签名：" + SessionUtil.getDisplayName() + "   日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+                }else{
+                    dp.setViceDirectorSuggesttion(flowDto.getDealOption());
+                }
                 dp.setViceDirectorDate(new Date());
-                dp.setViceDirectorName(SessionUtil.getDisplayName());*/
+                dp.setViceDirectorName(SessionUtil.getDisplayName());
                 dispatchDocRepo.save(dp);
                 //下一环节还是自己处理
                 if (assigneeValue.equals(SessionUtil.getUserId())) {
@@ -2727,6 +2728,15 @@ public class SignServiceImpl implements SignService {
             sqlBuilder1.setParam("signId", signId);
             signBranchRepo.executeSql(sqlBuilder1);
 
+            sign.setLeaderhandlesug("");
+            sign.setLeaderDate(null);
+            sign.setLeaderId("");
+            sign.setLeaderName("");
+            sign.setMinisterhandlesug("");
+            sign.setMinisterDate(null);
+            sign.setMinisterId("");
+            sign.setMinisterName("");
+
             sign.setmOrgId("");
             sign.setmOrgName("");
             sign.setaOrgId("");
@@ -2812,7 +2822,6 @@ public class SignServiceImpl implements SignService {
                 workProgramRepo.delete(wp);
             }
         }
-
     }
 
     /**

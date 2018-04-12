@@ -251,7 +251,6 @@
                            if(vm.histogram != undefined){
                                for(var i = 0 ; i < x.length ; i++){
                                    var histogramValue = vm.histogram[x[i]];
-
                                    if(histogramValue != undefined){
                                        histogram_x.push(x[i]);
                                        histogram_y.push(histogramValue[0]);
@@ -259,8 +258,6 @@
                                }
                            }
                        }
-
-
                         vm.review = histogram_x;  //横轴(人员名称/部门)
                         vm.signNumber = histogram_y;//纵轴(数量)
                         vm.initHistogram();//初始化柱状图

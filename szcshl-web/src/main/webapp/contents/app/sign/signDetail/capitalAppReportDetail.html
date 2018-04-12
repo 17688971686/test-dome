@@ -234,7 +234,12 @@
     <tr>
         <td width="15%" class="text-center" style="vertical-align: middle;">部长处理意见</td>
         <td colspan="5">
-            <div style="min-height: 50px;">
+            <div style="min-height: 50px;" ng-if="vm.model.branchCount==1">
+                <p> {{vm.model.ministerhandlesug}}</p>
+                <p class="text-right" ng-if="vm.model.ministerName">签名：{{vm.model.ministerName}}</p>
+                <p class="text-right" ng-if="vm.model.ministerDate">日期：{{vm.model.ministerDate}}</p>
+            </div>
+            <div style="min-height: 50px;" ng-if="vm.model.branchCount>1">
                 <div ng-bind-html="vm.model.ministerhandlesug | trust2Html"></div>
             </div>
         </td>

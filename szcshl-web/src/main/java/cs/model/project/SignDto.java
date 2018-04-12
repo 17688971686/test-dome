@@ -729,6 +729,11 @@ public class SignDto extends BaseDto {
      */
     private String countryCode;
 
+    /**
+     * 总分支数
+     */
+    private int branchCount;
+
     public SignDto() {
     }
 
@@ -2560,5 +2565,13 @@ public class SignDto extends BaseDto {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
+    }
+
+    public int getBranchCount() {
+        return branchCount;
+    }
+
+    public void setBranchCount(int branchCount) {
+        this.branchCount = branchCount;
     }
 }

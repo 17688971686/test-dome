@@ -293,6 +293,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             //发文范围(艾传荣副巡视员（默认） + 投资处（获取收文主办室处） + 中心领导（默认）)
             dispatch.setDispatchScope(Constant.DIS_SCOPE_XSY + " " + sign.getMaindeptName() == null ? "" : sign.getMaindeptName() + " " + Constant.DIS_SCOPE_ZXLD);
             dispatch.setPrintCount(5);
+            dispatch.setBranchCount(sign.getBranchCount());
             //发文标题
             String fileTitle = "深圳市投资项目评审中心关于";
             fileTitle += sign.getProjectname() == null ? "" : sign.getProjectname();

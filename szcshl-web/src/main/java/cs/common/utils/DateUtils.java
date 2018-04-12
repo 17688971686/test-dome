@@ -84,7 +84,7 @@ public class DateUtils {
         String returnValue = "";
 
         if (aDate == null) {
-            log.error("aDate is null!");
+            return returnValue;
         } else {
             try {
                 df = new SimpleDateFormat(aMask);
@@ -93,8 +93,7 @@ public class DateUtils {
                 log.error("时间格式转换出错 " + e.getMessage());
             }
         }
-
-        return (returnValue);
+        return returnValue;
     }
 
     /**

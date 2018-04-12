@@ -180,6 +180,8 @@ public class AdminController {
              */
             if (authFlag > 0) {
                 resultMap.put(ISDISPLAY, false);
+                //过滤掉未签收的项目
+                authRuSignTask = authRuSignTask.stream().filter(x->(x.getSignDate() != null)).collect(Collectors.toList());
                 //先按剩余工作日排序
                 Collections.sort(authRuSignTask, new Comparator<RuProcessTask>() {
                     @Override
@@ -195,9 +197,22 @@ public class AdminController {
                         }
                     }
                 });
-                //线形图
-                resultMap.put(LINE_SIGN_LIST_FLAG, authRuSignTask);
+                List<String> existList = new ArrayList<>();
+                int totalLength = authRuSignTask.size();
+                //线性图
+                List<RuProcessTask> lineList = new ArrayList<>();
+                for(int i=0;i<totalLength;i++){
+                    RuProcessTask rpt = authRuSignTask.get(i);
+                    if(existList.contains(rpt.getBusinessKey())){
+                        continue;
+                    }else{
+                        existList.add(rpt.getBusinessKey());
+                        lineList.add(rpt);
+                    }
+                }
+                resultMap.put(LINE_SIGN_LIST_FLAG, lineList);
                 //柱状图
+                existList = new ArrayList<>();
                 Map<String, Object[]> dataMap = new HashMap();
                 String unWorkId = UUID.randomUUID().toString();
                 //1、主任
@@ -207,18 +222,18 @@ public class AdminController {
                         //主办部门
                         if (Validate.isString(rpt.getmOrgId())) {
                             haveOrg = true;
-                            setMapValue(dataMap, rpt.getmOrgId() , rpt.getProjectName());
+                            setMapValue(dataMap, rpt.getmOrgId(), rpt.getProjectName(),rpt.getBusinessKey(),existList);
                         }
                         if (Validate.isString(rpt.getaOrgId())) {
                             haveOrg = true;
                             List<String> aOrgIdList = StringUtil.getSplit(rpt.getaOrgId(), ",");
                             for (String orgId : aOrgIdList) {
-                                setMapValue(dataMap, orgId , rpt.getProjectName());
+                                setMapValue(dataMap, orgId, rpt.getProjectName(),rpt.getBusinessKey(),existList);
                             }
                         }
                         //没有分办的项目
                         if (!haveOrg) {
-                            setMapValue(dataMap, unWorkId , rpt.getProjectName());
+                            setMapValue(dataMap, unWorkId, rpt.getProjectName(),rpt.getBusinessKey(),existList);
                         }
                     }
                     resultMap.put("XTYPE" , "ORG");
@@ -229,7 +244,7 @@ public class AdminController {
                         if (Validate.isList(orgIdList)) {
                             for (String orgId : orgIdList) {
                                 if (orgId.equals(rpt.getmOrgId()) || (rpt.getaOrgId() != null && rpt.getaOrgId().indexOf(orgId) > -1)) {
-                                    setMapValue(dataMap, orgId , rpt.getProjectName());
+                                    setMapValue(dataMap, orgId, rpt.getProjectName(),rpt.getBusinessKey(),existList);
                                 }
                             }
                         }
@@ -249,33 +264,20 @@ public class AdminController {
                     //筛选出第一负责人的任务
                     if (Validate.isList(resultList)) {
                         for (RuProcessTask rpt : resultList) {
-                            setMapValue(dataMap, rpt.getMainUserId() , rpt.getProjectName());
+                            setMapValue(dataMap, rpt.getMainUserId(), rpt.getProjectName(),rpt.getBusinessKey(),existList);
                         }
                     }
                     resultMap.put("XTYPE" , "USER");
                 }
                 //遍历map,如果是部长则查人员，否则查部门
-                List<String> histogram_x = new ArrayList<>();
-                List<Integer> histogram_y = new ArrayList<>();
                 Map<String , Object[]> histogramMap = new LinkedHashMap<>();
                 if(authFlag == 3){
                     for (Map.Entry<String, Object[]> entry : dataMap.entrySet()) {
                         User user = userService.getCacheUserById(entry.getKey());
                         histogramMap.put(user.getDisplayName() , entry.getValue());
-
-//                        histogram_x.add(user.getDisplayName());
-//                        histogram_y.add(entry.getValue());
                     }
                 }else{
                     List<OrgDept> allOrgDept = authMap.get("allOrgDeptList")==null?orgDeptService.queryAll(): (List<OrgDept>) authMap.get("allOrgDeptList");
-
-//                    histogramMap.put(Constant.OrgType.ORGZHB.getKey() , new Object[]{ 0 , ""});
-//                    histogramMap.put(Constant.OrgType.ORGPGYB.getKey() , new Object[]{ 0 , ""});
-//                    histogramMap.put(Constant.OrgType.ORGPGEB.getKey() , new Object[]{ 0 , ""});
-//                    histogramMap.put(Constant.OrgType.ORXXHZ.getKey() , new Object[]{ 0 , ""});
-//                    histogramMap.put(Constant.OrgType.ORGGSYB.getKey() , new Object[]{ 0 , ""});
-//                    histogramMap.put(Constant.OrgType.ORGGSEB.getKey() , new Object[]{ 0 , ""});
-//                    histogramMap.put("未分办" , new Object[]{ 0 , ""});
                     for(OrgDept orgDept : allOrgDept){
                         if(dataMap.get(orgDept.getId()) != null){
                             //综合部
@@ -302,18 +304,12 @@ public class AdminController {
                             if(Constant.OrgType.ORGGSEB.getKey().equals(orgDept.getName())){
                                 histogramMap.put(Constant.OrgType.ORGGSEB.getKey() , dataMap.get(orgDept.getId()));
                             }
-//                            histogram_x.add(orgDept.getName());
-//                            histogram_y.add(dataMap.get(orgDept.getId()));
                         }
                     }
                     if(dataMap.get(unWorkId) != null){
                         histogramMap.put("未分办" , dataMap.get(unWorkId));
-//                        histogram_x.add("未分办");
-//                        histogram_y.add(dataMap.get(unWorkId));
                     }
                 }
-//                resultMap.put("histogram_x", histogram_x);
-//                resultMap.put("histogram_y", histogram_y);
                 resultMap.put("histogram" , histogramMap);
             } else {
                 resultMap.put(ISDISPLAY, true);
@@ -325,20 +321,21 @@ public class AdminController {
         return resultMap;
     }
 
-    private void setMapValue(Map<String, Object[]> dataMap, String key , String projectName) {
+    private void setMapValue(Map<String, Object[]> dataMap, String key , String projectName,String businessKey,List<String> existKey) {
         if (dataMap.get(key) == null) {
             dataMap.put(key, new Object[]{1 , projectName});
         } else {
-            Object[] newValue = dataMap.get(key);
-            Integer oldCount = (Integer) newValue[0];
-            String oldProjectName = newValue[1].toString();
-            Integer newCount = oldCount + 1;
-            String newProjectName = oldProjectName + "," + projectName;
-
-            newValue = new Object[]{newCount , newProjectName};
-
-
-            dataMap.put(key, newValue);
+            String mergeKey = key+businessKey;
+            if(!existKey.contains(mergeKey)){
+                Object[] newValue = dataMap.get(key);
+                Integer oldCount = (Integer) newValue[0];
+                String oldProjectName = newValue[1].toString();
+                Integer newCount = oldCount + 1;
+                String newProjectName = oldProjectName + "," + projectName;
+                newValue = new Object[]{newCount , newProjectName};
+                dataMap.put(key, newValue);
+                existKey.add(mergeKey);
+            }
         }
     }
 

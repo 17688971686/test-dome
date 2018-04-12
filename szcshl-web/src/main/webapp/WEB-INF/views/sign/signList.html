@@ -93,7 +93,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right">项目状态</td>
+                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">项目状态</td>
                     <td width="15%">
                         <select name="processState" ng-model="vm.project.processState" operator="eq" class="form-control select-sm" >
                             <option value="">请选择</option>
@@ -106,7 +106,7 @@
                             <option value="9">已办结项目</option>
                         </select>
                     </td>
-                    <td class="text-right">提前介入</td>
+                    <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">提前介入</td>
                     <td>
                         <select  ng-model="vm.project.reviewstages" class="form-control select-sm">
                             <option value="">请选择</option>
@@ -258,13 +258,16 @@
                     </td>
                 </tr>
                 <tr class="hidetr changeTr">
-                    <td class="text-right">归档日期</td>
-                    <td colspan="3">
-                        <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateBegin"
-                                  operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
-                        至
-                        <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateEnd"
-                           operator="le" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                    <td class="text-right">办理进度</td>
+                    <td>
+                        <select operator="eq" name="lightState" ng-model="vm.project.lightState"  class="form-control select-sm">
+                            <option value="">请选择</option>
+                            <option value="4">暂停</option>
+                            <option value="5">少于3个工作日</option>
+                            <option value="6">发文超期</option>
+                            <option value="7">超过25个工作日未存档</option>
+                            <option value="8">存档超期</option>
+                        </select>
                     </td>
                     <td class="text-right">申报投资</td>
                     <td>
@@ -274,27 +277,30 @@
                         <input name="appalyInvestment" data-type='bigDecimal' ng-model="vm.project.appalyInvestmentMax"
                                style="width: 40%;min-width: 40px;max-width: 80px;" type="text" operator="le"/>
                     </td>
+                    <td class="text-right">归档日期</td>
+                    <td colspan="3">
+                        <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateBegin"
+                                  operator="ge" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                        至
+                        <input type="text" name="fileDate" style="width:45%;min-width: 115px;max-width: 150px;" ng-model="vm.project.fileDateEnd"
+                           operator="le" class="form-control input-sm " kendo-date-picker k-format="'yyyy-MM-dd'">
+                    </td>
+                </tr>
+                <tr class="hidetr changeTr">
                     <td class="text-right">是否有关联</td>
                     <td>
                         <input type="checkbox" name="isRelated" operator="eq" ng-model="vm.project.isRelated" value="9"
                                ng-true-value="9">
                     </td>
-                </tr>
-                <tr class="hidetr changeTr">
-                    <td class="text-right">是否暂停</td>
+                    <td class="text-right">有补充资料</td>
                     <td>
-                        <input type="checkbox" operator="eq" name="isProjectStop" value="9" ng-model="vm.project.isProjectStop"
-                               ng-true-value="9"/>
+                        <input type="checkbox" name="isSupplementary" operator="eq" value="9"
+                               ng-model="vm.project.isSupplementary" ng-true-value="9"/>
                     </td>
                     <td class="text-right">有补充资料函</td>
                     <td>
                         <input type="checkbox" name="isHaveSuppLetter" operator="eq" value="9"
                                ng-model="vm.project.isHaveSuppLetter" ng-true-value="9"/>
-                    </td>
-                    <td class="text-right">有补充资料</td>
-                    <td>
-                        <input type="checkbox" name="isSupplementary" operator="eq" value="9"
-                               ng-model="vm.project.isSupplementary" ng-true-value="9"/>
                     </td>
                     <td class="text-right">是否有环评</td>
                     <td>

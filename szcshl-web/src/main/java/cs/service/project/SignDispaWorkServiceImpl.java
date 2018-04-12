@@ -113,7 +113,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         PageModelDto<SignDispaWorkDto> pageModelDto = new PageModelDto<SignDispaWorkDto>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         Integer processState = null;
-        String dispatchType = "",reviewType="";
+        String dispatchType = "",lightStateValue="";
         if (Validate.isList(odataObj.getFilter())) {
             Object value;
             for (ODataFilterItem item : odataObj.getFilter()) {
@@ -161,11 +161,11 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                     }
                     continue;
                 }
-                //是否协审
-                if("reviewType".equals(item.getField())){
-                    reviewType = item.getValue().toString();
-                    if("协审".equals(reviewType)){
-                        criteria.add(Restrictions.eq(SignDispaWork_.isassistproc.getName(),Constant.EnumState.YES.getValue()));
+                //办理进度
+                if("lightState".equals(item.getField())){
+                    lightStateValue = item.getValue().toString();
+                    if("4".equals(lightStateValue)){
+                        criteria.add(Restrictions.eq(SignDispaWork_.isProjectStop.getName(),Constant.EnumState.YES.getValue()));
                     }else{
                         criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
                     }
@@ -174,42 +174,6 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
             }
         }
-        /*for (int i = 0; i < odataObj.getFilter().size(); i++) {
-            //对发文类型的查询
-            if (odataObj.getFilter().get(i).getField().equals("dispatchType")) {
-                if (odataObj.getFilter().get(i).getValue().equals("非暂不实施项目")) {
-                    //非暂不实施项目=项目发文+退文
-                    criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目发文"),
-                            Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目退文")));
-                } else {
-                    //非退文项目=暂不实施+项目发文
-                    criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.dispatchType.getName(), "项目发文"),
-                            Restrictions.eq(SignDispaWork_.dispatchType.getName(), "暂不实施")));
-                }
-                odataObj.getFilter().remove(i);//删除前台传过来的条件
-            }
-            //对项目状态进行判断
-            if (odataObj.getFilter().get(i).getField().equals("processState")) {
-                //判断如果传过来的值是2时，就表示是暂停项目
-                if (odataObj.getFilter().get(i).getValue().equals(Constant.EnumState.STOP.getValue())) {
-                    odataObj.getFilter().get(i).setField("signState");
-                }
-                //判断如果转过来的值是19时，就表示曾经暂停或延时项目
-                if (odataObj.getFilter().get(i).getValue().equals("19")) {
-                    odataObj.getFilter().get(i).setField("isProjectStop");
-                    odataObj.getFilter().get(i).setValue(Constant.EnumState.YES.getValue());
-                }
-            }
-
-            //对评审方式的判断。是否是协审
-            if (odataObj.getFilter().get(i).getField().equals("reviewType")) {
-                if (odataObj.getFilter().get(i).getValue().equals("协审")) {
-                    odataObj.getFilter().get(i).setField("isassistproc");
-                    odataObj.getFilter().get(i).setValue(Constant.EnumState.YES.getValue());
-                }
-            }
-        }
-        criteria = odataObj.buildFilterToCriteria(criteria);*/
         criteria.addOrder(Order.desc(SignDispaWork_.signdate.getName()));
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
         criteria.setProjection(null);

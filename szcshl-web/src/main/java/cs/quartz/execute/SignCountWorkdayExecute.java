@@ -2,7 +2,6 @@ package cs.quartz.execute;
 
 import cs.common.Constant;
 import cs.common.utils.Validate;
-import cs.domain.project.ProjectStop;
 import cs.domain.project.Sign;
 import cs.domain.sys.Log;
 import cs.domain.sys.Workday;
@@ -88,18 +87,16 @@ public class SignCountWorkdayExecute implements Job {
                 if(sign.getReviewdays() == null){
                     Float reviewsDays = signService.getReviewDays(sign.getReviewstage());
                     if (reviewsDays > 0) {
-                        sign.setSurplusdays(reviewsDays);
+                        sign.setSurplusdays(reviewsDays-1);
                         sign.setTotalReviewdays(reviewsDays);
-                        sign.setReviewdays(0f);
+                        sign.setReviewdays(1f);
                     }
                 }
-
                 //2、如果没有亮灯的，则设置为默认亮灯状态,如果目前是暂停状态，则改为进行中状态
                 if (!Validate.isString(sign.getIsLightUp()) || Constant.EnumState.STOP.equals(sign.getSignState())
                         || Constant.signEnumState.PAUSE.getValue().equals(sign.getIsLightUp())) {
                     sign.setIsLightUp(Constant.signEnumState.PROCESS.getValue());
                 }
-
                 //3、通过收文ID查找 项目暂停情况,并计算项目总共暂停了几个工作日
                 List<ProjectStopDto> projectStopList = projectStopService.findProjectStopBySign(sign.getSignid());
                 float stopWorkday = 0;
@@ -109,7 +106,7 @@ public class SignCountWorkdayExecute implements Job {
                 }
                 //4、计算从正式签收到当前时间的工作日，再减掉暂停的工作日，并设置相对应的状态
                 float usedWorkDay = QuartzUnit.countWorkday(workdayList,sign.getSigndate()) - stopWorkday;
-                //剩余评审天数 = 评审天数-已用评审天数
+                //剩余评审天数 = 总评审天数-已用评审天数
                 sign.setSurplusdays(sign.getTotalReviewdays() - usedWorkDay);
                 //评审天数
                 sign.setReviewdays(usedWorkDay);

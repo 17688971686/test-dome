@@ -26,7 +26,7 @@ public class ProjMaxSeq {
     @Column(columnDefinition = "INTEGER")
     private int year;
     /**
-     * 类型（1：表示评审登记评估类，2：表示评估登记概算类，3：表示发文除了设备清单，4表示发文的设备清单，5表示补充资料函）
+     * 类型（1：表示评审登记评估类，2：表示评估登记概算类，3：表示发文除了设备清单，4表示发文的设备清单，5表示补充资料函,6表示归档）
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String type;

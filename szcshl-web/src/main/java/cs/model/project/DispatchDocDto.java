@@ -24,10 +24,10 @@ public class DispatchDocDto extends BaseDto {
 
     //文件标题
     private String fileTitle;
-    
+
     //评审方式
     private String dispatchStage;
-    
+
     //发文部门
     private String orgId;
 
@@ -97,7 +97,7 @@ public class DispatchDocDto extends BaseDto {
 
     private String directorName;//局长名称
 
-    private  String directorIssue;//意见
+    private String directorIssue;//意见
 
     //申报金额
     private BigDecimal declareValue;
@@ -160,6 +160,10 @@ public class DispatchDocDto extends BaseDto {
 
     //第二负责人意见
     private String secondChargeSuggest;
+
+    private int branchCount;
+
+    private int moreLeader;
 
     //关联阶段的发文申报信息
     private List<DispatchDocDto> associateDispatchs;
@@ -537,13 +541,13 @@ public class DispatchDocDto extends BaseDto {
         this.fileSeq = fileSeq;
     }
 
-	public String getDispatchStage() {
-		return dispatchStage;
-	}
+    public String getDispatchStage() {
+        return dispatchStage;
+    }
 
-	public void setDispatchStage(String dispatchStage) {
-		this.dispatchStage = dispatchStage;
-	}
+    public void setDispatchStage(String dispatchStage) {
+        this.dispatchStage = dispatchStage;
+    }
 
     public String getDirectorIssue() {
         return directorIssue;
@@ -551,5 +555,21 @@ public class DispatchDocDto extends BaseDto {
 
     public void setDirectorIssue(String directorIssue) {
         this.directorIssue = directorIssue;
+    }
+
+    public int getBranchCount() {
+        return branchCount;
+    }
+
+    public void setBranchCount(int branchCount) {
+        this.branchCount = branchCount;
+    }
+
+    public int getMoreLeader() {
+        return moreLeader;
+    }
+
+    public void setMoreLeader(int moreLeader) {
+        this.moreLeader = moreLeader;
     }
 }

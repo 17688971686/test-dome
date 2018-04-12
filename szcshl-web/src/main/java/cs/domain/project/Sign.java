@@ -955,6 +955,11 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "VARCHAR(50)")
     private String countryCode;
 
+    /**
+     * 总分支数，主要用户打印格式判断
+     */
+    @Column(columnDefinition = "INTEGER default 1")
+    private int branchCount;
 
     public Float getLengthenDays() {
         return lengthenDays;
@@ -2708,5 +2713,13 @@ public class Sign extends DomainBase {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
+    }
+
+    public int getBranchCount() {
+        return branchCount;
+    }
+
+    public void setBranchCount(int branchCount) {
+        this.branchCount = branchCount;
     }
 }

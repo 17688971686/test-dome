@@ -207,6 +207,17 @@ public class DispatchDoc extends DomainBase {
     @Column(columnDefinition = "VARCHAR(2000)")
     private String directorIssue;
 
+    /**
+     * 项目分支数
+     */
+    @Column(columnDefinition = "INTEGER default 1")
+    private int branchCount;
+
+    /**
+     * 是否有两个不同的分管领导审批(0表示否，1表示是)
+     */
+    @Column(columnDefinition = "INTEGER default 0")
+    private int moreLeader;
 
     public String getMianChargeSuggest() {
         return mianChargeSuggest;
@@ -582,6 +593,22 @@ public class DispatchDoc extends DomainBase {
 
     public void setDirectorIssue(String directorIssue) {
         this.directorIssue = directorIssue;
+    }
+
+    public int getBranchCount() {
+        return branchCount;
+    }
+
+    public void setBranchCount(int branchCount) {
+        this.branchCount = branchCount;
+    }
+
+    public int getMoreLeader() {
+        return moreLeader;
+    }
+
+    public void setMoreLeader(int moreLeader) {
+        this.moreLeader = moreLeader;
     }
 }
 
