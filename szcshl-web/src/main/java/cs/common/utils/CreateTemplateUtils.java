@@ -2,6 +2,7 @@ package cs.common.utils;
 
 import cs.common.Constant;
 import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertSelected;
 import cs.domain.expert.ExpertType;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.project.*;
@@ -23,19 +24,40 @@ import java.util.*;
  */
 public class CreateTemplateUtils {
 
+
+    /**
+     * 获取确认参与的专家名称进行拼接
+     * @param expertSelectedList
+     * @return
+     */
+    private static String getExpertName(List<ExpertSelected> expertSelectedList){
+        String expertName = "";
+        for (ExpertSelected expertSelected : expertSelectedList) {
+            if(Constant.EnumState.YES.getValue().equals( expertSelected.getIsConfrim())
+                    && Constant.EnumState.YES.getValue().equals(expertSelected.getIsJoin())){
+                Expert expert = expertSelected.getExpert();if (!StringUtil.isBlank(expertName)
+                        && expert.getName() != null) {
+                    expertName += ",";
+                }
+                expertName += expert.getName();
+            }
+
+        }
+        return expertName;
+    }
+
 /********************begin发文模板**************************************/
 
-/***********8*****study可行性研究报告模板区********************/
-
+/************** begin**study可行性研究报告模板区********************/
     /**
      * 评审意见
      *
-     * @param signDispaWork
+     * @param sign
      */
-    public static SysFile createStudyTemplateOpinion(Ftp f,SignDispaWork signDispaWork) {
+    public static SysFile createStudyTemplateOpinion(Ftp f,Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("projectName", signDispaWork.getProjectname());
-        dataMap.put("docNum", signDispaWork.getSignnum());
+        dataMap.put("projectName", sign.getProjectname());
+        dataMap.put("docNum", sign.getSignNum());
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -44,8 +66,8 @@ public class CreateTemplateUtils {
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
+                f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_OPINION.getKey(), Constant.Template.STUDY_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
 
@@ -56,33 +78,29 @@ public class CreateTemplateUtils {
     /**
      * 评审组名单
      *
-     * @param signDispaWork
+     * @param sign
      * @return
      */
-    public static SysFile createStudyTemplateRoster(Ftp f,SignDispaWork signDispaWork, List<Expert> expertList) {
+    public static SysFile createStudyTemplateRoster(Ftp f,Sign sign, List<ExpertSelected> expertSelectedList) {
         Map<String, Object> dataMap = new HashMap<>();
 
+        List<WorkProgram> workProgramList = sign.getWorkProgramList();
+        WorkProgram workProgram = workProgramList.get(0);
+
         dataMap.put("mdnum", "3");
-        dataMap.put("projectName", signDispaWork.getProjectname());
+        dataMap.put("projectName", sign.getProjectname());
         dataMap.put("generalCounsel", "市发改委分管副主任");
         dataMap.put("counselor", "市发改委主办处室处长");
-        dataMap.put("director", signDispaWork.getLeaderName());
-        String leaderName = signDispaWork.getLeaderName() == null ? "" :signDispaWork.getLeaderName();
+        dataMap.put("director", sign.getLeaderName());
+        String leaderName = sign.getLeaderName() == null ? "" :sign.getLeaderName();
         dataMap.put("viceDirector", leaderName);
-        String ministerName =  signDispaWork.getMinisterName() == null ? "" : signDispaWork.getMinisterName();
+        String ministerName =  workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
         dataMap.put("minister", ministerName);
-        String projectDirector = (signDispaWork.getmUserName() == null ? "" : signDispaWork.getmUserName())
-                + (signDispaWork.getAUserName() == null ? "" : ","+signDispaWork.getAUserName());
+        String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
+                + (workProgram.getSecondChargeUserName() == null ? "" : ","+workProgram.getSecondChargeUserName());
         dataMap.put("proojectDirector", projectDirector);
 
-        String expertName = "";
-        for (Expert expert : expertList) {
-            if (!StringUtil.isBlank(expertName) && expert.getName() != null) {
-                expertName += ",";
-            }
-            List<ExpertType> expertTypeList = expert.getExpertType();
-            expertName += expert.getName();
-        }
+        String expertName = getExpertName(expertSelectedList);
 
         String reviewGroup = leaderName + "," + ministerName + "," + projectDirector;
 
@@ -94,8 +112,8 @@ public class CreateTemplateUtils {
 
 
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
+                f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_ROSTER.getKey(), Constant.Template.STUDY_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
 
@@ -106,37 +124,39 @@ public class CreateTemplateUtils {
     /**
      * 投资估算表
      *
-     * @param signDispaWork
+     * @param sign
      * @return
      */
-    public static SysFile createStudyTemplateEstimate(Ftp f,SignDispaWork signDispaWork) {
+    public static SysFile createStudyTemplateEstimate(Ftp f,Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
 
         dataMap.put("gsnum", "2");
-        dataMap.put("projectName", signDispaWork.getProjectname());
+        dataMap.put("projectName", sign.getProjectname());
 
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
+                f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_STUDY,
                 Constant.Template.STUDY_ESTIMATE.getKey(), Constant.Template.STUDY_ESTIMATE.getValue().split("_")[1],
-                Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+                Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
 
+    /************** end**study可行性研究报告模板区********************/
 
-    /***********************dubget项目概算模板区*******************/
+
+    /**************begin*********dubget项目概算模板区*******************/
 
     /**
      * 审核意见
      *
-     * @param signDispaWork
+     * @param sign
      * @return
      */
-    public static SysFile createBudgetTemplateOpinion(Ftp f,SignDispaWork signDispaWork) {
+    public static SysFile createBudgetTemplateOpinion(Ftp f,Sign sign) {
 
         Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("projectName", signDispaWork.getProjectname());
-        dataMap.put("docNum", signDispaWork.getSignnum());
+        dataMap.put("projectName", sign.getProjectname());
+        dataMap.put("docNum", sign.getSignNum());
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -145,8 +165,8 @@ public class CreateTemplateUtils {
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
+                f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_OPINION.getKey(), Constant.Template.BUDGET_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -156,17 +176,17 @@ public class CreateTemplateUtils {
     /**
      * 建安工程费用
      *
-     * @param signDispaWork
+     * @param sign
      * @return
      */
-    public static SysFile createBudgetTemplateProjectCost(Ftp f,SignDispaWork signDispaWork) {
+    public static SysFile createBudgetTemplateProjectCost(Ftp f,Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("jagcfynum", "4");
-        dataMap.put("projectName", signDispaWork.getProjectname());
+        dataMap.put("projectName", sign.getProjectname());
 
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
+                f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_PROJECTCOST.getKey(), Constant.Template.BUDGET_PROJECTCOST.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -175,18 +195,18 @@ public class CreateTemplateUtils {
     /**
      * 概算汇总表和审核对照表
      *
-     * @param signDispaWork
+     * @param sign
      * @return
      */
-    public static SysFile createBudgetTemplateEstimate(Ftp f,SignDispaWork signDispaWork) {
+    public static SysFile createBudgetTemplateEstimate(Ftp f,Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("gsnum1", "1");
-        dataMap.put("projectName", signDispaWork.getProjectname());
+        dataMap.put("projectName", sign.getProjectname());
         dataMap.put("gsnum2", "2");
 
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
+                f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_ESTIMATE.getKey(), Constant.Template.BUDGET_ESTIMATE.getValue().split("_")[1],
                 Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -198,29 +218,23 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createBudgetTemplateRoster(Ftp f,SignDispaWork signDispaWork,  List<Expert> expertList) {
+    public static SysFile createBudgetTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList) {
         Map<String, Object> dataMap = new HashMap<>();
+        WorkProgram workProgram = sign.getWorkProgramList().get(0);
         dataMap.put("mdnum", "3");
-        dataMap.put("projectName", signDispaWork.getProjectname());
+        dataMap.put("projectName", sign.getProjectname());
         dataMap.put("generalCounsel", "市发改委分管副主任");
         dataMap.put("counselor", "市发改委主办处室处长");
-        dataMap.put("director", signDispaWork.getLeaderName());
-        String leanderName = signDispaWork.getLeaderName() == null ? "" : signDispaWork.getLeaderName();
+        dataMap.put("director", sign.getLeaderName());
+        String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);
-        String ministerName = signDispaWork.getMinisterName() == null ? "" : signDispaWork.getMinisterName();
+        String ministerName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
         dataMap.put("minister", ministerName);
-        String projectDirector = (signDispaWork.getmUserName() == null ? "" : signDispaWork.getmUserName())
-                + (signDispaWork.getAUserName() == null ? "" : ","+signDispaWork.getAUserName());
+        String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
+                + (workProgram.getSecondChargeUserName() == null ? "" : "," + workProgram.getSecondChargeUserName());
         dataMap.put("proojectDirector", projectDirector);
 
-        String expertName = "";
-        for (Expert expert : expertList) {
-            if (!StringUtil.isBlank(expertName) && expert.getName() != null) {
-                expertName += ",";
-            }
-            List<ExpertType> expertTypeList = expert.getExpertType();
-            expertName += expert.getName();
-        }
+        String expertName = getExpertName(expertSelectedList);
 
         String reviewGroup = leanderName + "," + ministerName + "," + projectDirector ;
 
@@ -230,26 +244,26 @@ public class CreateTemplateUtils {
         dataMap.put("reviewGroup", reviewGroup);
 
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
+                f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_BUDGET,
                 Constant.Template.BUDGET_ROSTER.getKey(), Constant.Template.BUDGET_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
+/**************end*********dubget项目概算模板区*******************/
 
-
-    /***************************sug项目建议书****************************/
+    /**************begin*************sug项目建议书****************************/
 
     /**
      * 评审意见
      *
-     * @param signDispaWork
+     * @param sign
      * @return
      */
-    public static SysFile createSugTemplateOpinion(Ftp f,SignDispaWork signDispaWork) {
+    public static SysFile createSugTemplateOpinion(Ftp f,Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("projectName", signDispaWork.getProjectname());
-        dataMap.put("docNum", signDispaWork.getSignnum());
+        dataMap.put("projectName", sign.getProjectname());
+        dataMap.put("docNum", sign.getSignNum());
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -259,8 +273,8 @@ public class CreateTemplateUtils {
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
+                f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
                 Constant.Template.SUG_OPINION.getKey(), Constant.Template.SUG_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -269,17 +283,17 @@ public class CreateTemplateUtils {
     /**
      * 投资匡算表
      *
-     * @param signDispaWork
+     * @param sign
      * @return
      */
-    public static SysFile createSugTemplateEstime(Ftp f,SignDispaWork signDispaWork) {
+    public static SysFile createSugTemplateEstime(Ftp f,Sign sign) {
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("ksnum", "2");
-        dataMap.put("projectName", signDispaWork.getProjectname());
+        dataMap.put("projectName", sign.getProjectname());
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
+                f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
                 Constant.Template.SUG_ESTIMATE.getKey(), Constant.Template.SUG_ESTIMATE.getValue().split("_")[1],
                 Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -288,32 +302,28 @@ public class CreateTemplateUtils {
     /**
      * 评审组名单
      *
-     * @param signDispaWork
+     * @param sign
+     * @param expertSelectedList
      * @return
      */
-    public static SysFile createSugTemplateRoster(Ftp f,SignDispaWork signDispaWork,  List<Expert> expertList) {
+    public static SysFile createSugTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList) {
+        List<WorkProgram> workProgramList = sign.getWorkProgramList();
+        WorkProgram workProgram = workProgramList.get(0);
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("psnum", "3");
-        dataMap.put("projectName", signDispaWork.getProjectname());
+        dataMap.put("projectName", sign.getProjectname());
         dataMap.put("generalCounsel", "市发改委分管副主任");
         dataMap.put("counselor", "市发改委主办处室处长");
-        dataMap.put("director", signDispaWork.getLeaderName());
-        String leanderName = signDispaWork.getLeaderName() == null ? "" : signDispaWork.getLeaderName();
+        dataMap.put("director", sign.getLeaderName());
+        String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);
-        String ministerName = signDispaWork.getMinisterName() == null ? "" : signDispaWork.getMinisterName();
+        String ministerName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
         dataMap.put("minister", ministerName);
-        String projectDirector = (signDispaWork.getmUserName() == null ? "" : signDispaWork.getmUserName())
-                + (signDispaWork.getAUserName() == null ? "" : ","+signDispaWork.getAUserName());
-        dataMap.put("proojectDirector", projectDirector);
+        String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
+                + (workProgram.getSecondChargeUserName() == null ? "" : "," + workProgram.getSecondChargeUserName());
+        dataMap.put("projectDirector", projectDirector);
 
-        String expertName = "";
-        for (Expert expert : expertList) {
-            if (!StringUtil.isBlank(expertName) && expert.getName() != null) {
-                expertName += ",";
-            }
-            List<ExpertType> expertTypeList = expert.getExpertType();
-            expertName += expert.getName();
-        }
+        String expertName = getExpertName(expertSelectedList);
 
         String reviewGroup =  leanderName + "," + ministerName + "," + projectDirector ;
 
@@ -324,26 +334,25 @@ public class CreateTemplateUtils {
         dataMap.put("reviewGroup", reviewGroup);
 
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(), Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
-                Constant.Template.BUDGET_ROSTER.getKey(), Constant.Template.SUG_ROSTER.getValue().split("_")[1],
+                f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.STAGE_SUG,
+                Constant.Template.SUG_ROSTER.getKey(), Constant.Template.SUG_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
+    /**************end*************sug项目建议书****************************/
 
-
-    /********************************资金申请报告**********************************/
-
+    /******************begin**************资金申请报告**********************************/
     /**
      * 评审意见
      *
-     * @param signDispaWork
+     * @param sign
      * @return
      */
-    public static SysFile createReportTemplateOpinion(Ftp f,SignDispaWork signDispaWork) {
+    public static SysFile createReportTemplateOpinion(Ftp f,Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("projectName", signDispaWork.getProjectname());
-        dataMap.put("docNum", signDispaWork.getSignnum());
+        dataMap.put("projectName", sign.getProjectname());
+        dataMap.put("docNum", sign.getSignNum());
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -352,8 +361,8 @@ public class CreateTemplateUtils {
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
+                f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_OPINION.getKey(), Constant.Template.REPORT_OPINION.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -362,16 +371,16 @@ public class CreateTemplateUtils {
     /**
      * 投资估算表
      *
-     * @param signDispaWork
+     * @param sign
      * @return
      */
-    public static SysFile createReportTemplateEstimate(Ftp f,SignDispaWork signDispaWork) {
+    public static SysFile createReportTemplateEstimate(Ftp f,Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("gsnum", "2");
-        dataMap.put("projectName", signDispaWork.getProjectname());
+        dataMap.put("projectName", sign.getProjectname());
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
+                f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(),Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_ESTIMATE.getKey(), Constant.Template.REPORT_ESTIMATE.getValue().split("_")[1],
                 Constant.Template.EXCEL_SUFFIX.getKey(), dataMap);
         return sysFile;
@@ -380,32 +389,28 @@ public class CreateTemplateUtils {
     /**
      * 评审组名单
      *
-     * @param signDispaWork
+     * @param sign
      * @return
      */
-    public static SysFile createReportTemplateRoster(Ftp f,SignDispaWork signDispaWork,  List<Expert> expertList) {
+    public static SysFile createReportTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList) {
         Map<String, Object> dataMap = new HashMap<>();
+
+        WorkProgram workProgram = sign.getWorkProgramList().get(0);
+
         dataMap.put("psnum", "3");
-        dataMap.put("projectName", signDispaWork.getProjectname());
+        dataMap.put("projectName", sign.getProjectname());
         dataMap.put("generalCounsel", "市发改委分管副主任");
         dataMap.put("counselor", "市发改委主办处室处长");
-        dataMap.put("director", signDispaWork.getLeaderName());
-        String leanderName = signDispaWork.getLeaderName() == null ? "" : signDispaWork.getLeaderName();
+        dataMap.put("director", sign.getLeaderName());
+        String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);
-        String ministeName = signDispaWork.getMinisterName() == null ? "" : signDispaWork.getMinisterName();
+        String ministeName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
         dataMap.put("minister", ministeName);
-        String projectDirector = (signDispaWork.getmUserName() == null ? "" : signDispaWork.getmUserName())
-                + (signDispaWork.getAUserName() == null ? "" : ","+signDispaWork.getAUserName());
+        String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
+                + (workProgram.getSecondChargeUserName() == null ? "" : "," + workProgram.getSecondChargeUserName());
         dataMap.put("proojectDirector", projectDirector);
 
-        String expertName = "";
-        for (Expert expert : expertList) {
-            if (!StringUtil.isBlank(expertName) && expert.getName() != null) {
-                expertName += ",";
-            }
-            List<ExpertType> expertTypeList = expert.getExpertType();
-            expertName += expert.getName();
-        }
+        String expertName = getExpertName(expertSelectedList);
 
         String reviewGroup =  leanderName + "," + ministeName + "," + projectDirector ;
 
@@ -416,13 +421,13 @@ public class CreateTemplateUtils {
         dataMap.put("reviewGroup", reviewGroup);
 
         SysFile sysFile = TemplateUtil.createTemplate(
-                f,signDispaWork.getSignid(),  Constant.SysFileType.SIGN.getValue(),
-                signDispaWork.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
+                f,sign.getSignid(),  Constant.SysFileType.SIGN.getValue(),
+                sign.getSignid(), Constant.SysFileType.TEMOLATE.getValue(), Constant.APPLY_REPORT,
                 Constant.Template.REPORT_ROSTER.getKey(), Constant.Template.REPORT_ROSTER.getValue().split("_")[1],
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         return sysFile;
     }
-
+/******************end**************资金申请报告**********************************/
 
     /********************end发文模板**************************************/
 
@@ -474,16 +479,16 @@ public class CreateTemplateUtils {
         SysFile sysFile = new SysFile();
         if (rbList != null && rbList.size() > 0) {
             RoomBooking roomBooking = rbList.get(0);
-                String[] str = roomBooking.getRbDate().split("-");
-                String[] str2 = str[2].split("\\(");
+            String[] str = roomBooking.getRbDate().split("-");
+            String[] str2 = str[2].split("\\(");
 
-                String meetTime = str[0] + "年" + str[1] + "月" + str2[0] + "日(" + str2[1]
-                        + DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm")
-                        + "至"
-                        + DateUtils.converToString(roomBooking.getEndTime(), "HH:mm");
-                dataMap.put("meetTime" , meetTime);
+            String meetTime = str[0] + "年" + str[1] + "月" + str2[0] + "日(" + str2[1]
+                    + DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm")
+                    + "至"
+                    + DateUtils.converToString(roomBooking.getEndTime(), "HH:mm");
+            dataMap.put("meetTime" , meetTime);
 
-                dataMap.put("addressName", roomBooking.getAddressName()); //会议地点
+            dataMap.put("addressName", roomBooking.getAddressName()); //会议地点
 
             dataMap.put("contactPersonAddress", "福田区莲花支路公交大厦" + roomBooking.getAddressName().substring(0 , 3));
 

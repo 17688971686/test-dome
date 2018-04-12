@@ -695,10 +695,10 @@
    <Column ss:StyleID="s112" ss:AutoFitWidth="0" ss:Width="89.25"/>
    <Column ss:StyleID="s112" ss:AutoFitWidth="0" ss:Width="57.75"/>
    <Row ss:AutoFitHeight="0" ss:Height="33.375">
-    <Cell ss:MergeAcross="6" ss:StyleID="s145"><Data ss:Type="String">附件${gsnum}:</Data></Cell>
+    <Cell ss:MergeAcross="6" ss:StyleID="s145"><Data ss:Type="String">附件${gsnum!}:</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="54.75">
-    <Cell ss:MergeAcross="6" ss:StyleID="s146"><Data ss:Type="String">${projectName}投资估算表</Data></Cell>
+    <Cell ss:MergeAcross="6" ss:StyleID="s146"><Data ss:Type="String">${projectName!}投资估算表</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="35.25">
     <Cell ss:StyleID="s113"><Data ss:Type="String">序号</Data></Cell>
