@@ -7,7 +7,7 @@
         'angular-loading-bar',
         'ngAnimate',
         'ngFileSaver',
-        'angular-toArrayFilter'
+        'angular-toArrayFilter',
     ]).filter('trust2Html', ['$sce', function ($sce) {
         return function (val) {
             return $sce.trustAsHtml(val);
@@ -386,7 +386,7 @@
                     controllerAs: 'vm'
                 })
                 .state('expertReviewEdit', {
-                    url: '/expertReview/:businessId/:minBusinessId/:businessType/:reviewType',
+                    url: '/expertReview/:businessId/:minBusinessId/:businessType/:reviewType/:isback',
                     templateUrl: rootPath + '/expertReview/html/selectExpert.html',
                     controller: 'expertSelectCtrl',
                     controllerAs: 'vm'
@@ -516,6 +516,15 @@
                     controllerAs: 'vm'
                 })
                 //end#workprogram
+
+                //begin#maintWorkprogram
+                .state('maintWorkprogramEdit', {
+                    url: '/maintWorkprogramEdit/:signid',
+                    templateUrl: rootPath + '/maintainProject/html/workprogramEdit.html',
+                    controller: 'maintWorkprogramEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#maintWorkprogram
 
                 //begin#dispatch
                 .state('dispatchEdit', {

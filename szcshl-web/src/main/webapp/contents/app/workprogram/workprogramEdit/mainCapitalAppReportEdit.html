@@ -84,7 +84,7 @@
         <td class="text-center">主管部门</td>
         <td colspan="3">
             <select ng-model="vm.work.mainDeptName" name="mainDeptName" style="width:220px;height:26px;">
-                <option ng-repeat="x in vm.companys" ng-selected="vm.work.mainDeptName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
+                <option ng-repeat="x in DICT.MAIN_DEPT.dicts" ng-selected="vm.work.mainDeptName == x.dictName" value="{{x.dictName}}">{{x.dictName}}</option>
             </select>
             <input type="text" ng-model="vm.work.mainDeptName" name="mainDeptName" id="mainDeptName" style="width:200px;height:26px;margin-left:-224px;">
         </td>
@@ -150,9 +150,7 @@
         <td class="text-center">传真<span class="required">*</span></td>
         <td colspan="4">
             <input maxlength="32" type="text" class="form-control input-sm " style="max-width: 200px;"
-                   ng-model="vm.work.contactPersonFax" name="contactPersonFax" id="contactPersonFax"
-                   data-val-digits="传真只能为数字" data-val="true" data-val-required="必填">
-            <span data-valmsg-for="contactPersonFax" data-valmsg-replace="true" class="errors"></span>
+                   ng-model="vm.work.contactPersonFax" name="contactPersonFax" id="contactPersonFax">
         </td>
     </tr>
     <tr>

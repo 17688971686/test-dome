@@ -19,6 +19,7 @@
         vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
         vm.businessType = $state.params.businessType;   //专家业务类型
         var expertID = $state.params.expertID;   //专家ID
+        vm.isback=$state.params.isback;   //用来判断返回的是否是维护页面的工作方案
         vm.isSuperUser = isSuperUser;
         vm.saveNewExpertFlag = 0;   //保存新专家标志
         vm.reviewType=$state.params.reviewType; //评审方式
@@ -676,7 +677,12 @@
                 bsWin.alert("拟聘请专家数据有改动，请保存后再返回！");
                 return;
             }
-            $state.go('workprogramEdit', {signid:vm.businessId ,minBusinessId:vm.minBusinessId,businessType:vm.businessType});
+            if(vm.isback){
+                $state.go('maintWorkprogramEdit', {signid:vm.businessId });
+            }else{
+                $state.go('workprogramEdit', {signid:vm.businessId ,minBusinessId:vm.minBusinessId,businessType:vm.businessType});
+            }
+
         }
 
 

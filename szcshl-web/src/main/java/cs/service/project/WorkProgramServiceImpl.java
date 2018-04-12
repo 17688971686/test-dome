@@ -104,7 +104,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，当前评审方式为合并评审次项目，请在主工作方案中挑选此工作方案为次工作方案再保存！");
                     }
                 }
-                workProgram = workProgramRepo.findById(workProgramDto.getId());
+                workProgram = workProgramRepo.findById(WorkProgram_.id.getName() ,workProgramDto.getId());
                 BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
 
             } else {

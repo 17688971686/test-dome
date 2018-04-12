@@ -86,7 +86,7 @@
         vm.addWorkProgram = function () {
             if (vm.model.processInstanceId) {
                 if (vm.model.workProgramDtoList) {
-                    $state.go('workprogramEdit', {signid: vm.model.signid, isControl: true});
+                    $state.go('maintWorkprogramEdit', {signid: vm.model.signid});
                 } else {
                     bsWin.alert("该项目还没有填写工作方案");
                 }
