@@ -1,0 +1,127 @@
+<#assign path=request.contextPath/>
+<meta charset="UTF-8">
+<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
+<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
+
+<div class="well well-sm" style="background:white;">
+	<ol class="breadcrumb">
+		<li><a>{{vm.title}}</a></li>
+	</ol>
+	<form id="form" name="form">
+		<div class="well well-print">
+			<span>年度：</span>
+			<select name="year" ng-model="vm.model.year" ng-change="">
+				<option ng-repeat="x in DICT.NDBG.dicts"
+						value="{{x.dictName}}">{{x.dictName}}
+				</option>
+			</select>
+			<select name="quarter" ng-model="vm.model.quarter">
+				<option value="0" ng-selected="vm.model.quarter == 0">全年</option>
+				<option value="1" ng-selected="vm.model.quarter == 1">第一季度</option>
+				<option value="2" ng-selected="vm.model.quarter == 2">第二季度</option>
+				<option value="3" ng-selected="vm.model.quarter == 3">第三季度</option>
+				<option value="4" ng-selected="vm.model.quarter == 4">第四季度</option>
+			</select>
+			<button ng-click="vm.countAchievementDetail()" class="btn btn-sm btn-primary">统计</button>
+			<button ng-click="vm.showMainDocDetail()" class="btn btn-sm btn-primary">主办人评审项目一览表</button>
+			<button ng-click="vm.showAssistDocDetail()" class="btn btn-sm btn-primary">协办人评审项目一览表</button>
+		</div>
+	</form>
+	<table class="table table-bordered" ng-if="vm.achievementSumList.length>0">
+		<caption class="text-center h4">
+			<strong>评审中心员工工作业绩统计表</strong>
+		</caption>
+		<tr>
+			<td style="width:20%;vertical-align: middle;"  class="text-center"></td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">主办人发文</td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">协办人发文</td>
+		</tr>
+
+		<tr>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">出文总数</td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">{{vm.mainDoc.disSum}}</td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">{{vm.assistDoc.disSum}}</td>
+		</tr>
+
+		<tr>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">报审投资金额</td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">{{vm.mainDoc.declarevalueSum}}</td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">{{vm.assistDoc.declarevalueSum}}</td>
+		</tr>
+
+		<tr>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">审核后投资金额</td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">{{vm.mainDoc.authorizevalueSum}}</td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">{{vm.assistDoc.authorizevalueSum}}</td>
+		</tr>
+
+		<tr>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">核减(核增)投资金额</td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">{{vm.mainDoc.extravalueSum}}</td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">{{vm.assistDoc.extravalueSum}}</td>
+		</tr>
+
+		<tr>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">核减(核增)投资率</td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">{{vm.mainDoc.extraRateSum}}%</td>
+			<td style="width:20%;vertical-align: middle;"  class="text-center">{{vm.assistDoc.extraRateSum}}%</td>
+		</tr>
+	</table>
+
+	<div id="mainDocDetail" class="well well-sm" style="display:none;">
+		<table class="table table-bordered">
+			<caption class="text-center h4">
+				<strong>主办人评审项目一览表</strong>
+			</caption>
+			<tr class="active">
+				<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
+				<td style="width:10%;vertical-align: middle;"  class="text-center">发文时间</td>
+				<td style="width:20%;vertical-align: middle;"  class="text-center">发文号</td>
+				<td style="width:14%;vertical-align: middle;"  class="text-center">项目名称</td>
+				<td style="width:14%;vertical-align: middle;"  class="text-center">报审投资额</td>
+				<td style="width:14%;vertical-align: middle;"  class="text-center">审核后投资额</td>
+				<td style="width:14%;vertical-align: middle;"  class="text-center">核增核减资额</td>
+				<td style="width:14%;vertical-align: middle;"  class="text-center">核增核减率</td>
+			</tr>
+			<tr  ng-repeat="x in vm.achievementMainList">
+				<td align="center">{{$index+1}}</td>
+				<td class="text-center">{{x.dispatchDate}}</td>
+				<td class="text-center">{{x.fileNum}}</td>
+				<td class="text-center">{{x.projectName}}</td>
+				<td class="text-center">{{x.declareValue}}</td>
+				<td class="text-center">{{x.authorizeValue}}</td>
+				<td class="text-center">{{x.extraValue}}</td>
+				<td class="text-center">{{x.extraRate}}%</td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="assistDocDetail" class="well well-sm" style="display:none;">
+		<table class="table table-bordered">
+			<caption class="text-center h4">
+				<strong>协办人评审项目一览表</strong>
+			</caption>
+			<tr class="active">
+				<td style="width:5%;vertical-align: middle;"  class="text-center">序号</td>
+				<td style="width:10%;vertical-align: middle;"  class="text-center">发文时间</td>
+				<td style="width:20%;vertical-align: middle;"  class="text-center">发文号</td>
+				<td style="width:14%;vertical-align: middle;"  class="text-center">项目名称</td>
+				<td style="width:14%;vertical-align: middle;"  class="text-center">报审投资额</td>
+				<td style="width:14%;vertical-align: middle;"  class="text-center">审核后投资额</td>
+				<td style="width:14%;vertical-align: middle;"  class="text-center">核增核减资额</td>
+				<td style="width:14%;vertical-align: middle;"  class="text-center">核增核减率</td>
+			</tr>
+			<tr  ng-repeat="x in vm.achievementAssistList">
+			<td align="center">{{$index+1}}</td>
+			<td class="text-center">{{x.dispatchDate}}</td>
+			<td class="text-center">{{x.fileNum}}</td>
+			<td class="text-center">{{x.projectName}}</td>
+			<td class="text-center">{{x.declareValue}}</td>
+			<td class="text-center">{{x.authorizeValue}}</td>
+			<td class="text-center">{{x.extraValue}}</td>
+			<td class="text-center">{{x.extraRate}}%</td>
+			</tr>
+		</table>
+	</div>
+</div>
+

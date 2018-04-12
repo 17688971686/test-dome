@@ -2,10 +2,7 @@ package cs.repository.repositoryImpl.expert;
 
 import cs.common.ResultMsg;
 import cs.domain.expert.ExpertSelected;
-import cs.model.expert.ExpertReviewConSimpleDto;
-import cs.model.expert.ExpertReviewCondDto;
-import cs.model.expert.ExpertSelectHis;
-import cs.model.expert.ProReviewConditionDto;
+import cs.model.expert.*;
 import cs.repository.IRepository;
 
 import java.util.List;
@@ -146,4 +143,18 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @param value
      */
     void updateExpertSelectState(String businessId, String propertyname, String value);
+
+    /**
+     * 业绩汇总
+     * @param achievementSumDto
+     * @return
+     */
+    List<AchievementSumDto> findAchievementSum(AchievementSumDto achievementSumDto);
+
+    /**
+     * 业绩明细
+     * @param achievementSumDto
+     * @return
+     */
+    List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto);
 }

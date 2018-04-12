@@ -1074,5 +1074,33 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         return expertSelectedRepo.getAdvancedCon(projectReviewConditionDto);
     }
 
+    /**
+     * 业绩汇总
+     * @param achievementSumDto
+     * @return
+     */
+    @Override
+    public ResultMsg findAchievementSum(AchievementSumDto achievementSumDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("achievementSumList", expertSelectedRepo.findAchievementSum(achievementSumDto));
+        achievementSumDto.setIsmainuser("9");
+        resultMap.put("achievementMainList",expertSelectedRepo.findAchievementDetail(achievementSumDto));
+        achievementSumDto.setIsmainuser("0");
+        resultMap.put("achievementAssistList",expertSelectedRepo.findAchievementDetail(achievementSumDto));
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+
+    }
+
+    /**
+     * 业绩明细
+     * @param achievementSumDto
+     * @return
+     */
+    @Override
+    public ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("achievementDetailList", expertSelectedRepo.findAchievementDetail(achievementSumDto));
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
+    }
 
 }

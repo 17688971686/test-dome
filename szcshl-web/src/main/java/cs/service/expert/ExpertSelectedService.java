@@ -141,4 +141,16 @@ public interface ExpertSelectedService {
 	 * @return
 	 */
 	ProReviewConditionDto getAdvancedCon(ProReviewConditionDto projectReviewConditionDto);
+
+	/**
+	 * 业绩汇总
+	 * @return
+	 */
+	ResultMsg findAchievementSum(AchievementSumDto achievementSumDto);
+
+	/**
+	 * 业绩明细
+	 * @return
+	 */
+	ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto);
 }

@@ -10,6 +10,7 @@ import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
+import cs.model.expert.AchievementSumDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
@@ -24,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -237,6 +237,14 @@ public class SignDispaWorkController {
     public ResultMsg findByTypeAndReview(@RequestParam String startTime , @RequestParam String endTime){
         return signDispaWorkService.findByTypeAndReview(startTime , endTime);
     }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "获取员工业绩汇总" , path = "getAchievementSum" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg getAchievementSum(@RequestBody AchievementSumDto achievementSumDto){
+        return expertSelectedService.findAchievementSum(achievementSumDto);
+    }
+
     @RequiresAuthentication
     @RequestMapping(name="项目评审情况汇总(按照申报投资金额)" , path="pieDate" , method = RequestMethod.POST)
     @ResponseBody
@@ -318,4 +326,12 @@ public class SignDispaWorkController {
     public String proReviewConditionCount() {
         return  "financial/proReviewConCount";
     }
+
+    @RequiresPermissions("signView#html/achievement#get")
+    @RequestMapping(name = "业绩统计表", path = "html/achievement", method = RequestMethod.GET)
+    public String achievementSum() {
+        return  "achievement/achievementSum";
+    }
+
+
 }
