@@ -623,6 +623,11 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     }
 
     @Override
+    public void saveSplit(ExpertSelectedDto expertSelectedDto) {
+        expertReviewRepo.saveSplit(expertSelectedDto);
+    }
+
+    @Override
     public ResultMsg saveExpertNewInfo(ExpertReviewNewInfoDto[] expertReviewNewInfoDtos) {
         try {
             if (expertReviewNewInfoDtos.length > 0) {

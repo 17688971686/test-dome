@@ -3,9 +3,9 @@
 
     angular.module('app').factory('expertReviewSvc', expertReview);
 
-    expertReview.$inject = ['$http', '$interval'];
+    expertReview.$inject = ['$http', '$interval' , 'bsWin'];
 
-    function expertReview($http, $interval) {
+    function expertReview($http, $interval , bsWin) {
         var service = {
             initExpertGrid: initExpertGrid,	            //初始化待抽取专家列表
             saveSelfExpert: saveSelfExpert,		        //保存自选专家
@@ -28,9 +28,30 @@
             refleshBusinessEP : refleshBusinessEP,      //刷新业务的专家信息（已经确认和确定参加会议的专家）
 
             saveNewExpert:saveNewExpert,                //保存新的聘请专家信息,
-            initNewExpertInfo:initNewExpertInfo         // 初始化调整后的专家信息
+            initNewExpertInfo:initNewExpertInfo,        // 初始化调整后的专家信息
+            saveSplit : saveSplit ,                     // 保存评审费发放打印方案信息
         };
         return service;
+
+        //S_saveSplit
+        function saveSplit(vm){
+            var httpOptions = {
+                method: 'put',
+                url: rootPath + "/expertReview/saveSplit",
+                data : vm.expertSelect
+            };
+            var httpSuccess = function success(response) {
+                bsWin.success("操作成功！", function(){
+                    window.parent.$("#splitPayment").data("kendoWindow").close();
+                });
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //E_saveSplit
 
         //S_initReview
         function initReview(businessId,minBusinessId,callBack) {

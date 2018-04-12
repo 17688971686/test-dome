@@ -3,6 +3,7 @@ package cs.repository.repositoryImpl.expert;
 import cs.common.Constant;
 import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
@@ -30,6 +31,7 @@ import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -289,5 +291,26 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
             er.getExpertSelectedList().removeAll(unconfirmList);
         });
         return criteria.list();
+    }
+
+    /**
+     * 保存专家评审费发放打印方案
+     * @param expertSelectedDto
+     * @return
+     */
+    @Override
+    @Transactional
+    public void saveSplit(ExpertSelectedDto expertSelectedDto) {
+
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("update " + ExpertSelected.class.getSimpleName() + " set " + ExpertSelected_.isSplit.getName() + "=:isSplit ");
+        hqlBuilder.append(" , " + ExpertSelected_.oneCost.getName() + "=:oneCost " );
+        hqlBuilder.append(" where " + ExpertSelected_.id.getName() + "=:id");
+        hqlBuilder.setParam("isSplit" , expertSelectedDto.getIsSplit());
+        hqlBuilder.setParam("oneCost" , expertSelectedDto.getOneCost());
+        hqlBuilder.setParam("id" , expertSelectedDto.getId());
+
+        executeHql(hqlBuilder);
+
     }
 }

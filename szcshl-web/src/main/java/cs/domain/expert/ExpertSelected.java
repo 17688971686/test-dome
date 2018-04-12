@@ -107,6 +107,34 @@ public class ExpertSelected {
     @Column(columnDefinition = "VARCHAR(64)")
     private String conditionId;
 
+    /**
+     * 专家评审费是否拆分打印
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isSplit;
+
+    /**
+     * 拆分的第一张表的费用
+     */
+    @Column(columnDefinition = "NUMBER" )
+    private BigDecimal oneCost;
+
+    public String getIsSplit() {
+        return isSplit;
+    }
+
+    public void setIsSplit(String isSplit) {
+        this.isSplit = isSplit;
+    }
+
+    public BigDecimal getOneCost() {
+        return oneCost;
+    }
+
+    public void setOneCost(BigDecimal oneCost) {
+        this.oneCost = oneCost;
+    }
+
     public String getId() {
         return id;
     }

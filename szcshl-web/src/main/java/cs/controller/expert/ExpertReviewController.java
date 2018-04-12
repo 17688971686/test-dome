@@ -6,10 +6,7 @@ import cs.common.ResultMsg;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.model.PageModelDto;
-import cs.model.expert.ExpertDto;
-import cs.model.expert.ExpertNewInfoDto;
-import cs.model.expert.ExpertReviewDto;
-import cs.model.expert.ExpertReviewNewInfoDto;
+import cs.model.expert.*;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertReviewService;
 import cs.service.expert.ExpertSelConditionService;
@@ -197,6 +194,14 @@ public class ExpertReviewController {
     public List<ExpertNewInfoDto> getExpertInfo(@RequestParam(required = true) String businessId) {
         return expertReviewService.getExpertInfo(businessId);
     }
+
+    @RequiresAuthentication
+    @RequestMapping(name="保存专家评审费发放打印方案信息" , path = "saveSplit" , method = RequestMethod.PUT)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void saveSplit(@RequestBody ExpertSelectedDto expertSelectedDto){
+        expertReviewService.saveSplit(expertSelectedDto);
+    }
+
 
     // begin#html
     @RequiresAuthentication

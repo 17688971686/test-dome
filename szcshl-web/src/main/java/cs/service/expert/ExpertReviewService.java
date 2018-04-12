@@ -101,4 +101,10 @@ public interface ExpertReviewService {
      * @param expertReview
      */
     void save(ExpertReview expertReview);
+
+	/**
+	 * 保存专家评审费发放打印方案
+	 * @param expertSelectedDto
+	 */
+	void saveSplit(ExpertSelectedDto expertSelectedDto);
 }

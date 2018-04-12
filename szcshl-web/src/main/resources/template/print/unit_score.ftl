@@ -74,17 +74,6 @@
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
                         </w:pPr>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="黑体" w:hAnsi="黑体" w:eastAsia="黑体" w:cs="黑体"/>
-                                <w:b/>
-                                <w:bCs/>
-                                <w:sz w:val="52"/>
-                                <w:szCs w:val="52"/>
-                                <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                            </w:rPr>
-                            <w:t>单位评分一</w:t>
-                        </w:r>
                         <w:bookmarkStart w:id="0" w:name="_GoBack"/>
                         <w:bookmarkEnd w:id="0"/>
                         <w:r>
@@ -96,7 +85,7 @@
                                 <w:szCs w:val="52"/>
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t>览表</w:t>
+                            <w:t>单位评分一览表</w:t>
                         </w:r>
                     </w:p>
                     <w:tbl>
@@ -105,7 +94,7 @@
                             <w:tblpPr w:leftFromText="180" w:rightFromText="180" w:vertAnchor="page" w:horzAnchor="page"
                                       w:tblpX="1728" w:tblpY="2478"/>
                             <w:tblOverlap w:val="never"/>
-                            <w:tblW w:w="8522" w:type="dxa"/>
+                            <w:tblW w:w="8504" w:type="dxa"/>
                             <w:tblInd w:w="0" w:type="dxa"/>
                             <w:tblBorders>
                                 <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
@@ -124,12 +113,9 @@
                             </w:tblCellMar>
                         </w:tblPr>
                         <w:tblGrid>
-                            <w:gridCol w:w="2234"/>
-                            <w:gridCol w:w="1200"/>
-                            <w:gridCol w:w="826"/>
-                            <w:gridCol w:w="1782"/>
-                            <w:gridCol w:w="1059"/>
-                            <w:gridCol w:w="1421"/>
+                            <w:gridCol w:w="4460"/>
+                            <w:gridCol w:w="2395"/>
+                            <w:gridCol w:w="1649"/>
                         </w:tblGrid>
                         <w:tr>
                             <w:tblPrEx>
@@ -142,17 +128,14 @@
                                     <w:insideV w:val="single" w:color="auto" w:sz="4" w:space="0"/>
                                 </w:tblBorders>
                                 <w:tblLayout w:type="fixed"/>
-                                <w:tblCellMar>
-                                    <w:top w:w="0" w:type="dxa"/>
-                                    <w:left w:w="108" w:type="dxa"/>
-                                    <w:bottom w:w="0" w:type="dxa"/>
-                                    <w:right w:w="108" w:type="dxa"/>
-                                </w:tblCellMar>
                             </w:tblPrEx>
+                            <w:trPr>
+                                <w:trHeight w:val="769" w:hRule="atLeast"/>
+                            </w:trPr>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2234" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:tcW w:w="4460" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
@@ -173,81 +156,9 @@
                                     </w:r>
                                 </w:p>
                             </w:tc>
-<!--                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1200" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsia="宋体"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>单位电话</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="826" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsia="宋体"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>邮编</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1782" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:eastAsia="宋体"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>地址</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>-->
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1059" w:type="dxa"/>
+                                    <w:tcW w:w="2395" w:type="dxa"/>
                                     <w:vAlign w:val="top"/>
                                 </w:tcPr>
                                 <w:p>
@@ -271,7 +182,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1421" w:type="dxa"/>
+                                    <w:tcW w:w="1649" w:type="dxa"/>
                                     <w:vAlign w:val="top"/>
                                 </w:tcPr>
                                 <w:p>
@@ -305,17 +216,14 @@
                                     <w:insideV w:val="single" w:color="auto" w:sz="4" w:space="0"/>
                                 </w:tblBorders>
                                 <w:tblLayout w:type="fixed"/>
-                                <w:tblCellMar>
-                                    <w:top w:w="0" w:type="dxa"/>
-                                    <w:left w:w="108" w:type="dxa"/>
-                                    <w:bottom w:w="0" w:type="dxa"/>
-                                    <w:right w:w="108" w:type="dxa"/>
-                                </w:tblCellMar>
                             </w:tblPrEx>
+                            <w:trPr>
+                                <w:trHeight w:val="769" w:hRule="atLeast"/>
+                            </w:trPr>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2234" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:tcW w:w="4460" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
@@ -323,22 +231,22 @@
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${coName}</w:t>
+                                        <w:t>${coName!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1200" w:type="dxa"/>
+                                    <w:tcW w:w="2395" w:type="dxa"/>
                                     <w:vAlign w:val="top"/>
                                 </w:tcPr>
                                 <w:p>
@@ -354,39 +262,15 @@
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                            <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${coPhone}</w:t>
+                                        <w:t>${score!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="826" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${coPC}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1782" w:type="dxa"/>
+                                    <w:tcW w:w="1649" w:type="dxa"/>
                                     <w:vAlign w:val="top"/>
                                 </w:tcPr>
                                 <w:p>
@@ -402,62 +286,22 @@
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${coAddress}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1059" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
                                             <w:lang w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${score}</w:t>
-                                    </w:r>
-                                </w:p>
-                            </w:tc>
-                            <w:tc>
-                                <w:tcPr>
-                                    <w:tcW w:w="1421" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
-                                </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia"/>
-                                            <w:vertAlign w:val="baseline"/>
-                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                                        </w:rPr>
-                                        <w:t>${describes}</w:t>
+                                        <w:t>${describes!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                         </w:tr>
                     </w:tbl>
+                    <w:p>
+                        <w:pPr>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia"/>
+                                <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                            </w:rPr>
+                        </w:pPr>
+                    </w:p>
                     <w:p>
                         <w:pPr>
                             <w:rPr>
@@ -537,7 +381,7 @@
                 <ScaleCrop>false</ScaleCrop>
                 <LinksUpToDate>false</LinksUpToDate>
                 <CharactersWithSpaces>0</CharactersWithSpaces>
-                <Application>WPS Office_10.1.0.6929_F1E327BC-269C-435d-A152-05C5408002CA</Application>
+                <Application>WPS Office_10.1.0.7224_F1E327BC-269C-435d-A152-05C5408002CA</Application>
                 <DocSecurity>0</DocSecurity>
             </Properties>
         </pkg:xmlData>
@@ -551,8 +395,8 @@
                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <dcterms:created xsi:type="dcterms:W3CDTF">2014-10-29T12:08:00Z</dcterms:created>
                 <dc:creator>Administrator</dc:creator>
-                <cp:lastModifiedBy>Administrator</cp:lastModifiedBy>
-                <dcterms:modified xsi:type="dcterms:W3CDTF">2018-03-12T06:28:04Z</dcterms:modified>
+                <cp:lastModifiedBy>巴黎雨悸</cp:lastModifiedBy>
+                <dcterms:modified xsi:type="dcterms:W3CDTF">2018-04-12T12:13:59Z</dcterms:modified>
             </cp:coreProperties>
         </pkg:xmlData>
     </pkg:part>
@@ -562,7 +406,7 @@
             <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/custom-properties"
                         xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
                 <property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="2" name="KSOProductBuildVer">
-                    <vt:lpwstr>2052-10.1.0.6929</vt:lpwstr>
+                    <vt:lpwstr>2052-10.1.0.7224</vt:lpwstr>
                 </property>
             </Properties>
         </pkg:xmlData>
@@ -630,14 +474,6 @@
                     <w:sig w:usb0="00000000" w:usb1="00000000" w:usb2="00000000" w:usb3="00000000" w:csb0="80000000"
                            w:csb1="00000000"/>
                 </w:font>
-                <w:font w:name="Cambria">
-                    <w:panose1 w:val="02040503050406030204"/>
-                    <w:charset w:val="00"/>
-                    <w:family w:val="roman"/>
-                    <w:pitch w:val="default"/>
-                    <w:sig w:usb0="E00002FF" w:usb1="400004FF" w:usb2="00000000" w:usb3="00000000" w:csb0="2000019F"
-                           w:csb1="00000000"/>
-                </w:font>
                 <w:font w:name="Calibri">
                     <w:panose1 w:val="020F0502020204030204"/>
                     <w:charset w:val="00"/>
@@ -702,8 +538,10 @@
                     <w:rsidRoot w:val="00000000"/>
                     <w:rsid w:val="0AF815DB"/>
                     <w:rsid w:val="18BA7F45"/>
+                    <w:rsid w:val="306E6365"/>
                     <w:rsid w:val="50F63EFC"/>
                     <w:rsid w:val="56A868DE"/>
+                    <w:rsid w:val="5E766E0F"/>
                     <w:rsid w:val="757B1B64"/>
                     <w:rsid w:val="77807E3E"/>
                 </w:rsids>
@@ -859,7 +697,8 @@
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="HTML Code"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="HTML Definition"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="HTML Keyboard"/>
-                    <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="HTML Preformatted"/>
+                    <w:lsdException w:qFormat="1" w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0"
+                                    w:name="HTML Preformatted"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="HTML Sample"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="HTML Typewriter"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="HTML Variable"/>
@@ -908,7 +747,8 @@
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Table Web 2"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Table Web 3"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Balloon Text"/>
-                    <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Table Grid"/>
+                    <w:lsdException w:qFormat="1" w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0"
+                                    w:name="Table Grid"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="0" w:semiHidden="0" w:name="Table Theme"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="60" w:semiHidden="0" w:name="Light Shading"/>
                     <w:lsdException w:unhideWhenUsed="0" w:uiPriority="61" w:semiHidden="0" w:name="Light List"/>
@@ -1119,7 +959,6 @@
                     <w:semiHidden/>
                     <w:uiPriority w:val="0"/>
                     <w:tblPr>
-                        <w:tblStyle w:val="4"/>
                         <w:tblLayout w:type="fixed"/>
                         <w:tblCellMar>
                             <w:top w:w="0" w:type="dxa"/>
@@ -1132,6 +971,7 @@
                 <w:style w:type="paragraph" w:styleId="2">
                     <w:name w:val="HTML Preformatted"/>
                     <w:basedOn w:val="1"/>
+                    <w:qFormat/>
                     <w:uiPriority w:val="0"/>
                     <w:pPr>
                         <w:tabs>
@@ -1165,13 +1005,13 @@
                 <w:style w:type="table" w:styleId="5">
                     <w:name w:val="Table Grid"/>
                     <w:basedOn w:val="4"/>
+                    <w:qFormat/>
                     <w:uiPriority w:val="0"/>
                     <w:pPr>
                         <w:widowControl w:val="0"/>
                         <w:jc w:val="both"/>
                     </w:pPr>
                     <w:tblPr>
-                        <w:tblStyle w:val="4"/>
                         <w:tblBorders>
                             <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
                             <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
