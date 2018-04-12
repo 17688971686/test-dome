@@ -2,6 +2,7 @@ package cs.service.project;
 
 import cs.common.ResultMsg;
 import cs.domain.flow.RuProcessTask;
+import cs.domain.project.ProjMaxSeq;
 import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
@@ -174,12 +175,11 @@ public interface SignService {
     Float getReviewDays(String reviewstage);
 
     /**
-     * 获取项目编号
-     * @param signType
-     * @param signdate
+     * 获取项目最大编号
+     * @param sign
      * @return
      */
-    String findSignMaxSeqByType(String signType, Date signdate);
+    void initSignNum(Sign sign);
     /**
      * 获取未发送给委里的项目
      * @return

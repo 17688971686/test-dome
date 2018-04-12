@@ -51,6 +51,14 @@ public class Constant {
     public static final String DIS_SCOPE_ZXLD = "中心领导";
 
     /**
+     * 项目评审登记表评估类标识
+     */
+    public static String SIGN_PX_PREFIX = "PX";
+    /**
+     * 项目评审登记表概算类标识
+     */
+    public static String SIGN_GX_PREFIX = "GX";
+    /**
      * 发文编号前缀
      */
     public static String DISPATCH_PREFIX = "深投审";
@@ -138,6 +146,24 @@ public class Constant {
         }
     }
 
+    public static enum SeqType {
+        SIGN_PX("1"),
+        SIGN_GX("2"),
+        DIS_STS("3"),
+        DIS_STSS("4"),
+        DIS_STSH("5"),
+        FILE_GD("6");
+
+        private String value;
+
+        SeqType(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
     /**
      * 以下是缓存参数
      */

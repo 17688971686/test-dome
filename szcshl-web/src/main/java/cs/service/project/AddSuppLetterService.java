@@ -1,6 +1,7 @@
 package cs.service.project;
 
 import cs.common.ResultMsg;
+import cs.domain.project.AddSuppLetter;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.AddSuppLetterDto;
@@ -98,5 +99,12 @@ public interface AddSuppLetterService {
 	 * @param dispaDate
 	 * @return
 	 */
+	@Deprecated
 	int findCurMaxSeq(Date dispaDate);
+
+	/**
+	 * 初始化最大收文编号
+	 * @param addSuppLetter
+	 */
+	void initFileNum(AddSuppLetter addSuppLetter);
 }

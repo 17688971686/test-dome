@@ -187,7 +187,7 @@ public class SignRestServiceImpl implements SignRestService {
 
             //6、收文编号
             if (!Validate.isString(sign.getSignNum())) {
-                sign.setSignNum(signService.findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate()));
+                signService.initSignNum(sign);
             }
             signRepo.save(sign);
 
@@ -293,8 +293,11 @@ public class SignRestServiceImpl implements SignRestService {
         return resultMsg;
     }
 
-
-
+    /**
+     * 预签收项目
+     * @param signDto
+     * @return
+     */
     @Override
     @Transactional
     public ResultMsg pushPreProject(SignDto signDto) {
@@ -359,7 +362,6 @@ public class SignRestServiceImpl implements SignRestService {
             if (Validate.isObject(sign.getReceivedate())) {
                 sign.setReceivedate(now);
             }
-
             //未签收的，改为预签收
             if (!Validate.isString(sign.getIssign()) || Constant.EnumState.NO.getValue().equals(sign.getIssign())) {
                 //预签收
@@ -369,20 +371,6 @@ public class SignRestServiceImpl implements SignRestService {
                 sign.setPresignDate(now);
                 //默认为不亮灯
                 sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
-                //sign.setSigndate(now);
-
-                /*//计算评审天数
-                Float totalReviewDays = Constant.WORK_DAY_15;
-                SysConfigDto sysConfigDto = sysConfigService.findByKey(stageCode);
-                if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
-                    totalReviewDays = Float.parseFloat(sysConfigDto.getConfigValue());
-                } else if ((Constant.RevireStageKey.KEY_SUG.getValue()).equals(stageCode) || (Constant.RevireStageKey.KEY_REPORT.getValue()).equals(stageCode)) {
-                    totalReviewDays = Constant.WORK_DAY_12;
-                }
-                //剩余评审天数
-                sign.setSurplusdays(totalReviewDays);
-                sign.setTotalReviewdays(totalReviewDays);
-                sign.setReviewdays(0f);*/
             }
 
             //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
@@ -411,10 +399,10 @@ public class SignRestServiceImpl implements SignRestService {
                 }
             }
 
-            //6、收文编号
-            if (!Validate.isString(sign.getSignNum())) {
-                sign.setSignNum(signService.findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate()));
-            }
+            //6、收文编号，没有正式收文，不生成收文编号
+           /* if (!Validate.isString(sign.getSignNum())) {
+                signService.initSignNum(sign);
+            }*/
             signRepo.save(sign);
 
             //获取传送过来的附件

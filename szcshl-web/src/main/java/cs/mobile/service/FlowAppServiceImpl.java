@@ -96,7 +96,6 @@ public class FlowAppServiceImpl implements FlowAppService {
     @Autowired
     private  AddSuppLetterService addSuppLetterService;
 
-
     @Override
     @Transactional
     public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto, UserDto userDto) {
@@ -1520,25 +1519,11 @@ public class FlowAppServiceImpl implements FlowAppService {
             case FlowConstant.FLOW_SPL_FGLD_SP:
                 //如果没有生成文件字号或者生成错的文件字号，则重新生成
                 if (!Validate.isString(addSuppLetter.getFilenum()) || !addSuppLetter.getFilenum().contains(Constant.ADDSUPPER_PREFIX)) {
-                    //获取拟稿最大编号
-                    int curYearMaxSeq = addSuppLetterService.findCurMaxSeq(addSuppLetter.getSuppLetterTime());
-                    curYearMaxSeq = (curYearMaxSeq + 1);
-                    String fileNumValue = "";
-                    if(curYearMaxSeq < 1000){
-                        fileNumValue = String.format("%03d", Integer.valueOf(curYearMaxSeq));
-                    }else{
-                        fileNumValue = curYearMaxSeq+"";
-                    }
-                    fileNumValue = Constant.ADDSUPPER_PREFIX + "[" + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yyyy") + "]" + fileNumValue;
-                    addSuppLetter.setFilenum(fileNumValue);
-                    addSuppLetter.setFileSeq(curYearMaxSeq);
-                    //补充资料函的发文日期
-                    addSuppLetter.setDisapDate(new Date());
+                    addSuppLetterService.initFileNum(addSuppLetter);
                 }
                 if(!Validate.isString(addSuppLetter.getFilenum())){
                     new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
                 }
-
                 addSuppLetter.setDeptSLeaderId(userDto.getId());
                 addSuppLetter.setDeptSLeaderName(userDto.getDisplayName());
                 addSuppLetter.setDeptSleaderDate(new Date());

@@ -155,6 +155,7 @@ public class FileRecordServiceImpl implements FileRecordService {
      * @return
      */
     @Override
+    @Deprecated
     public int findCurMaxSeq(Date fileRecordDate) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select max("+ FileRecord_.fileSeq.getName()+") from cs_file_record where "+FileRecord_.fileDate.getName()+" between ");

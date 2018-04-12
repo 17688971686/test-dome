@@ -24,7 +24,6 @@ import cs.model.flow.FlowDto;
 import cs.model.project.*;
 import cs.model.sys.OrgDto;
 import cs.model.sys.SysConfigDto;
-import cs.model.sys.SysFileDto;
 import cs.model.sys.UserDto;
 import cs.quartz.unit.QuartzUnit;
 import cs.repository.odata.ODataObj;
@@ -40,9 +39,9 @@ import cs.repository.repositoryImpl.sys.*;
 import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
 import cs.service.rtx.RTXSendMsgPool;
-import cs.service.sys.*;
-import cs.service.sys.SysFileService;
-import cs.service.sys.UserService;
+import cs.service.sys.CompanyService;
+import cs.service.sys.SysConfigService;
+import cs.service.sys.WorkdayService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -62,6 +61,7 @@ import java.util.*;
 
 import static cs.common.Constant.EMPTY_STRING;
 import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
+import static cs.common.Constant.SIGN_PX_PREFIX;
 
 @Service
 public class SignServiceImpl implements SignService {
@@ -144,7 +144,8 @@ public class SignServiceImpl implements SignService {
     private CompanyService companyService;
     @Autowired
     private UnitScoreService unitScoreService;
-
+    @Autowired
+    private ProjMaxSeqRepo projMaxSeqRepo;
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -224,7 +225,7 @@ public class SignServiceImpl implements SignService {
         }
         //6、收文编号
         if (!Validate.isString(sign.getSignNum())) {
-            sign.setSignNum(findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate()));
+            initSignNum(sign);
         }
         //7、正式签收
         if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
@@ -237,7 +238,6 @@ public class SignServiceImpl implements SignService {
                 sign.setTotalReviewdays(reviewsDays);
                 sign.setReviewdays(0f);
             }
-
         }
         signRepo.save(sign);
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);
@@ -1741,20 +1741,19 @@ public class SignServiceImpl implements SignService {
                 //纸质文件接受日期 ：为归档员陈春燕确认的归档日期
                 //设置归档编号
                 if (!Validate.isString(fileRecord.getFileNo())) {
-                    String fileNumValue = "";
-                    int maxSeq = fileRecordService.findCurMaxSeq(fileRecord.getFileDate());
-                    maxSeq = maxSeq + 1;
-                    if (maxSeq < 1000) {
-                        fileNumValue = String.format("%03d", maxSeq);
-                    } else {
-                        fileNumValue = String.valueOf(maxSeq);
-                    }
+                    String seqType = Constant.SeqType.FILE_GD.getValue();
+                    String yearName = DateUtils.converToString(fileRecord.getFileDate(),DateUtils.DATE_YEAR);
+                    ProjMaxSeq projMaxSeq = projMaxSeqRepo.findByDate(yearName,seqType);
+                    int maxSeq = projMaxSeq.getSeq()+1;
+                    String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
+                    //归档编号=发文年份+档案类型+存档年份+存档顺序号
+                    fileNum = DateUtils.converToString(sign.getExpectdispatchdate(), DateUtils.DATE_YEAR) + ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
+                            + DateUtils.converToString(fileRecord.getFileDate(), "yy") + fileNum;
                     //设置本次的发文序号
                     fileRecord.setFileSeq(maxSeq);
-                    //归档编号=发文年份+档案类型+存档年份+存档顺序号
-                    fileNumValue = DateUtils.converToString(sign.getExpectdispatchdate(), "yyyy") + ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
-                            + DateUtils.converToString(fileRecord.getFileDate(), "yy") + fileNumValue;
-                    fileRecord.setFileNo(fileNumValue);
+                    fileRecord.setFileNo(fileNum);
+                    projMaxSeq.setSeq(maxSeq);
+                    projMaxSeqRepo.save(projMaxSeq);
                 }
                 fileRecord.setPageDate(new Date());
                 fileRecordRepo.save(fileRecord);
@@ -2111,7 +2110,7 @@ public class SignServiceImpl implements SignService {
         }
         //6、收文编号
         if (!Validate.isString(sign.getSignNum())) {
-            sign.setSignNum(findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate()));
+            initSignNum(sign);
         }
         //7、正式签收
         if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
@@ -2409,10 +2408,7 @@ public class SignServiceImpl implements SignService {
         }
         /*预签收的项目，没有评审中心的收文编号
         if (!Validate.isString(sign.getSignNum())) {
-            int maxSeq = findSignMaxSeqByType(sign.getDealOrgType(), sign.getSigndate());
-            sign.setSignSeq(maxSeq + 1);
-            String signSeqString = (maxSeq + 1) > 999 ? (maxSeq + 1) + "" : String.format("%03d", Integer.valueOf(maxSeq + 1));
-            sign.setSignNum(DateUtils.converToString(new Date(), "yyyy") + sign.getDealOrgType() + signSeqString);
+           initSignNum(sign);
         }*/
 
         sign.setSignid(UUID.randomUUID().toString());
@@ -2514,24 +2510,26 @@ public class SignServiceImpl implements SignService {
     /**
      * 根据项目类型，获取项目最大收文编号
      *
-     * @param signType
+     * @param sign
      * @return
      */
     @Override
-    public String findSignMaxSeqByType(String signType, Date signdate) {
-        if (signdate == null) {
-            signdate = new Date();
+    public void initSignNum(Sign sign) {
+        if(sign.getSigndate() == null){
+            sign.setSigndate(new Date());
         }
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max(" + Sign_.signSeq.getName() + ") from cs_sign ");
-        sqlBuilder.append("where " + Sign_.dealOrgType.getName() + " =:signType and (" + Sign_.signdate.getName() + " between ");
-        sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )) ");
-        sqlBuilder.setParam("signType", signType);
-        sqlBuilder.setParam("beginTime", DateUtils.converToString(signdate, "yyyy") + "-01-01 00:00:00");
-        sqlBuilder.setParam("endTime", DateUtils.converToString(signdate, "yyyy") + "-12-31 23:59:59");
-        int maxSeq = signRepo.returnIntBySql(sqlBuilder) + 1;
-        String signSeqString = maxSeq > 999 ? maxSeq + "" : String.format("%03d", Integer.valueOf(maxSeq));
-        return (DateUtils.converToString(new Date(), "yyyy") + signType + signSeqString);
+        if(!Validate.isString(sign.getDealOrgType())){
+            sign.setDealOrgType(SIGN_PX_PREFIX);
+        }
+        String orgType = sign.getDealOrgType();
+        String seqType = SIGN_PX_PREFIX.equals(orgType)? Constant.SeqType.SIGN_PX.getValue():Constant.SeqType.SIGN_GX.getValue();
+        String yearName = DateUtils.converToString(sign.getSigndate(),DateUtils.DATE_YEAR);
+        ProjMaxSeq projMaxSeq = projMaxSeqRepo.findByDate(yearName,seqType);
+        int maxSeq = projMaxSeq.getSeq()+1;
+        String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
+        sign.setSignNum(yearName+ orgType + fileNum);
+        projMaxSeq.setSeq(maxSeq);
+        projMaxSeqRepo.save(projMaxSeq);
     }
 
     /**

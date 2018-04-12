@@ -21,6 +21,7 @@ public interface FileRecordService{
 	 * @param fileRecordDate
 	 * @return fileRecordDate
 	 */
+	@Deprecated
 	int findCurMaxSeq(Date fileRecordDate);
 
 }

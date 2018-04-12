@@ -20,10 +20,7 @@ import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.monthly.MonthlyNewsletterRepo;
-import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
-import cs.repository.repositoryImpl.project.SignBranchRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.rtx.RTXSendMsgPool;
@@ -72,7 +69,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     private SignBranchRepo signBranchRepo;
     @Autowired
     private WorkProgramRepo workProgramRepo;
-
+    @Autowired
+    private ProjMaxSeqRepo projMaxSeqRepo;
     /**
      * 保存补充资料函
      */
@@ -123,6 +121,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
      * @return
      */
     @Override
+    @Deprecated
     public int findCurMaxSeq(Date dispaDate) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select max(" + AddSuppLetter_.fileSeq.getName() + ") from cs_add_suppLetter where " + AddSuppLetter_.suppLetterTime.getName() + " between ");
@@ -496,20 +495,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             case FlowConstant.FLOW_SPL_FGLD_SP:
                 //如果没有生成文件字号或者生成错的文件字号，则重新生成
                 if (!Validate.isString(addSuppLetter.getFilenum()) || !addSuppLetter.getFilenum().contains(Constant.ADDSUPPER_PREFIX)) {
-                    //获取拟稿最大编号
-                    int curYearMaxSeq = findCurMaxSeq(addSuppLetter.getSuppLetterTime());
-                    curYearMaxSeq = (curYearMaxSeq + 1);
-                    String fileNumValue = "";
-                    if(curYearMaxSeq < 1000){
-                        fileNumValue = String.format("%03d", Integer.valueOf(curYearMaxSeq));
-                    }else{
-                        fileNumValue = curYearMaxSeq+"";
-                    }
-                    fileNumValue = Constant.ADDSUPPER_PREFIX + "[" + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yyyy") + "]" + fileNumValue;
-                    addSuppLetter.setFilenum(fileNumValue);
-                    addSuppLetter.setFileSeq(curYearMaxSeq);
-                    //补充资料函的发文日期
-                    addSuppLetter.setDisapDate(new Date());
+                   initFileNum(addSuppLetter);
                 }
                 if(!Validate.isString(addSuppLetter.getFilenum())){
                     new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
@@ -555,6 +541,24 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+    }
+
+    @Override
+    public void initFileNum(AddSuppLetter addSuppLetter) {
+        //补充资料函的发文日期
+        if(!Validate.isObject(addSuppLetter.getDisapDate())){
+            addSuppLetter.setDisapDate(new Date());
+        }
+        String yearName = DateUtils.converToString(addSuppLetter.getDisapDate(),DateUtils.DATE_YEAR);
+        String seqType = Constant.SeqType.DIS_STSH.getValue();
+        ProjMaxSeq projMaxSeq = projMaxSeqRepo.findByDate(yearName,seqType);
+        int maxSeq = projMaxSeq.getSeq()+1;
+        String fileNumValue =  Constant.ADDSUPPER_PREFIX+"["+yearName+"]"+(maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq));
+        addSuppLetter.setFilenum(fileNumValue);
+        addSuppLetter.setFileSeq(maxSeq);
+        //更新序号表
+        projMaxSeq.setSeq(maxSeq);
+        projMaxSeqRepo.save(projMaxSeq);
     }
 
     @Override
