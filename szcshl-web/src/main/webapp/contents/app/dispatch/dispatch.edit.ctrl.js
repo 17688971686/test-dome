@@ -38,17 +38,28 @@
                         title: "询问提示",
                         message: "该项目已经进行了关联，您要解除关联么？",
                         onOk: function () {
+                            vm.isdik=true;//控制勾选框的勾选
                             $('.confirmDialog').modal('hide');
                             signSvc.saveAssociateSign($state.params.signid,null,function(){
                                 bsWin.alert("项目解除关联成功");
-                                window.location.reload();
+                                /*window.location.reload();*/
                             });
                         },
                         onCancel : function () {
-                            vm.dispatchDoc.isRelated = 9;
+                            $scope.$apply(function(){//因为在窗口页面来改数据。数据不会作用到页面。所以需要重新加载
+                                vm.dispatchDoc.isRelated = 9;
+                            });
                         },
                         onClose : function () {
-                            vm.dispatchDoc.isRelated = 9;
+                            if(vm.isdik){//窗口关闭事件。判断。如果是点确定的关闭那状态就要改变
+                                $scope.$apply(function(){
+                                    vm.dispatchDoc.isRelated = 0;
+                                });
+                            }else{
+                                $scope.$apply(function(){//因为在窗口页面来改数据。数据不会作用到页面。所以需要重新加载
+                                    vm.dispatchDoc.isRelated = 9;
+                                });
+                            }
                         }
                     });
                 }else if((oldValue == 0 || oldValue == '0')&& (newValue == 9 || newValue == '9') && (!vm.sign.isAssociate || vm.sign.isAssociate == 0)){
@@ -91,6 +102,7 @@
                                             }
                                             vm.ss=true;
                                         });
+
                                         //alert("当前页："+o.number+"，从数据库的位置1"+o.skip+"起，查"+o.size+"条数据");
                                         //需在这里发起ajax请求查询数据，请求成功后需调用callback方法重新计算分页
 
@@ -99,8 +111,6 @@
                                 }else{
                                     vm.page.selPage(1);
                                 }
-
-
                                 //选中要关联的项目
                                 $("#associateWindow").kendoWindow({
                                     width: "75%",
@@ -114,7 +124,24 @@
 
                             },
                             onCancel : function () {
-                                vm.dispatchDoc.isRelated = 0;
+                                console.log(1);
+                                $scope.$apply(function(){
+                                    vm.dispatchDoc.isRelated = 0;
+                                });
+
+
+                            },
+                            onClose : function () {
+                                if(vm.ss){
+                                    $scope.$apply(function(){
+                                        vm.dispatchDoc.isRelated = 9;
+                                    });
+                                }else{
+                                    $scope.$apply(function(){//因为在窗口页面来改数据。数据不会作用到页面。所以需要重新加载
+                                        vm.dispatchDoc.isRelated = 0;
+                                    });
+                                }
+
                             }
                         });
                     }

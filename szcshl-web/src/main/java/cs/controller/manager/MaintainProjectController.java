@@ -77,4 +77,11 @@ public class MaintainProjectController {
         return  ctrlName + "/maintainExpertConfirm";
     }
 
+    @RequestMapping(name = "维护工作方案", path = "html/workprogramEdit", method = RequestMethod.GET)
+    public String workprogramEdit() {
+
+        return  ctrlName + "/workprogramEdit";
+    }
+
+
 }

@@ -156,33 +156,23 @@
     <tr style="height: 100px;">
         <td style="vertical-align: middle;" class="text-center">部长审核意见</td>
         <td colspan="5">
-                    <textarea  maxlength="1000"  data-val-length-max="1000" ng-change="vm.dispatchDoc.ministerSuggesttion=countCharacter(vm.dispatchDoc.ministerSuggesttion,1000,'ministerSuggesttionCountz')"   class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.ministerSuggesttion" id="ministerSuggesttion"
-                              name="ministerSuggesttion" ng-disabled="true"/>
-            <span data-valmsg-for="ministerSuggesttion" data-valmsg-replace="true" class="errors"></span>
-            <p id="ministerSuggesttionCountz" style="text-align: right;"></p>
+            <div style="min-height:100px;" ng-bind-html="vm.dispatchDoc.ministerSuggesttion | trust2Html"></div>
         </td>
     </tr>
 
     <tr style="height: 100px;">
         <td style="vertical-align: middle;" class="text-center">分管副主任意见</td>
         <td colspan="5">
-                    <textarea maxlength="1000" data-val-length-max="1000" ng-change="vm.dispatchDoc.viceDirectorSuggesttion=countCharacter(vm.dispatchDoc.viceDirectorSuggesttion,1000,'viceDirectorSuggesttionCountz')" class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.viceDirectorSuggesttion" id="viceDirectorSuggesttion"
-                              name="viceDirectorSuggesttion" ng-disabled="true"/>
-            <span data-valmsg-for="viceDirectorSuggesttion" data-valmsg-replace="true" class="errors"></span>
-            <p id="viceDirectorSuggesttionCountz" style="text-align: right;"></p>
+            <div style="min-height:100px;" ng-bind-html="vm.dispatchDoc.viceDirectorSuggesttion | trust2Html"></div>
         </td>
     </tr>
 
     <tr style="height: 100px;">
         <td style="vertical-align: middle;" class="text-center">主任签发</td>
         <td colspan="5">
-                    <textarea maxlength="1000" data-val-length-max="1000" ng-change="vm.dispatchDoc.directorIssue=countCharacter(vm.dispatchDoc.directorIssue,1000,'directorIssueCountz')" class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.directorIssue" id="directorIssue" name="directorIssue"
-                              ng-disabled="true"/>
-            <span data-valmsg-for="directorIssue" data-valmsg-replace="true" class="errors"></span>
-            <p id="directorIssueCountz" style="text-align: right;"></p>
+            {{vm.dispatchDoc.directorSuggesttion}}
+            <p class="text-right" ng-if="vm.dispatchDoc.directorName">签名：{{vm.dispatchDoc.directorName}}</p>
+            <p class="text-right" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
         </td>
     </tr>
 

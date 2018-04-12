@@ -391,6 +391,25 @@
             //保存工作方案的意见
             if (vm.assistant != undefined && vm.assistant.length != 0) {
                 for (var i = 0; i < vm.assistant.length; i++) {
+                    if(vm.work.studyQuantum=="全天") {
+                        vm.work.studyBeginTime="";
+                        vm.work.studyEndTime="";
+                    }
+                    else {
+                        if ($("#studyBeginTime").val()) {
+                            vm.assistant[i].studyBeginTimeStr = $("#studyBeginTime").val();
+                        }
+                        if ($("#studyEndTime").val()) {
+                            vm.assistant[i].studyEndTimeStr = $("#studyEndTime").val();
+                        }
+                        if ($("#studyAllDay").val() && $("#studyBeginTime").val()) {
+                            vm.assistant[i].studyBeginTime = $("#studyAllDay").val() + " " + $("#studyBeginTime").val() + ":00";
+                        }
+                        if ($("#studyAllDay").val() && $("#studyEndTime").val()) {
+                            vm.assistant[i].studyEndTime = $("#studyAllDay").val() + " " + $("#studyEndTime").val() + ":00";
+                        }
+                    }
+                    vm.assistant[i].signId=vm.work.signId;
                     workprogramSvc.createWP(vm.assistant[i], false, vm.iscommit);
                 }
             }
