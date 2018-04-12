@@ -1,8 +1,10 @@
 package cs.repository.repositoryImpl.expert;
 
 
+import cs.common.ResultMsg;
 import cs.domain.expert.ExpertReview;
 import cs.model.expert.ExpertReviewDto;
+import cs.model.expert.ExpertSelectedDto;
 import cs.repository.IRepository;
 
 import java.util.Date;
@@ -78,4 +80,10 @@ public interface ExpertReviewRepo extends IRepository<ExpertReview, String> {
      * @return
      */
     List<ExpertReview> queryUndealReview();
+
+    /**
+     * 保存专家评审费发放打印方案
+     * @param expertSelectedDto
+     */
+    void saveSplit(ExpertSelectedDto expertSelectedDto);
 }

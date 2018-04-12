@@ -53,6 +53,32 @@ public class ExpertSelectedDto {
      */
     private String conditionId;
 
+    /**
+     * 专家评审费是否拆分打印
+     */
+    private String isSplit;
+
+    /**
+     * 拆分的第一张表的费用
+     */
+    private BigDecimal oneCost;
+
+    public String getIsSplit() {
+        return isSplit;
+    }
+
+    public void setIsSplit(String isSplit) {
+        this.isSplit = isSplit;
+    }
+
+    public BigDecimal getOneCost() {
+        return oneCost;
+    }
+
+    public void setOneCost(BigDecimal oneCost) {
+        this.oneCost = oneCost;
+    }
+
     private ExpertReviewDto expertReviewDto;
     private ExpertDto expertDto;
 

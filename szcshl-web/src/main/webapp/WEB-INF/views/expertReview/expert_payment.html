@@ -7,9 +7,9 @@
                 <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(vm.model.expertReviewDto)" ng-disabled="vm.isCommit">
                     <span class="glyphicon glyphicon-ok"></span>计算应纳税额
                 </button>
-              <#--  <button class="btn btn-sm btn-success" ng-click="vm.savePayment(vm.model.expertReviewDto)" ng-disabled="vm.isCommit" >
-                    <span class="glyphicon glyphicon-ok"></span>保存
-                </button>-->
+            <#--  <button class="btn btn-sm btn-success" ng-click="vm.savePayment(vm.model.expertReviewDto)" ng-disabled="vm.isCommit" >
+                  <span class="glyphicon glyphicon-ok"></span>保存
+              </button>-->
             </td>
         </tr>
         <tr>
@@ -56,7 +56,8 @@
                     </tr>
                     <tr ng-repeat="x in vm.model.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
                         <td>{{$index+1}}</td>
-                        <td>{{x.expertDto.name}}</td>
+                        <td ng-if="x.reviewCost >1000" ng-dblclick="vm.splitPayment(x.id , x.expertDto , x.reviewCost)">{{x.expertDto.name}}</td>
+                        <td ng-if="x.reviewCost <=1000">{{x.expertDto.name}}</td>
                         <td>{{x.expertDto.idCard}}</td>
                         <td>{{x.expertDto.bankAccount}}/{{x.expertDto.openingBank}}</td>
                         <td>
@@ -74,7 +75,7 @@
                         <td> {{x.reviewTaxes}}</td>
                         <td> {{x.totalCost}}</td>
                         <td><input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="x.isLetterRw"
-                                    ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
+                                   ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
                     </tr>
                     <tr>
                         <td colspan="4" class="text-right">总计：</td>
@@ -92,3 +93,38 @@
 <!--
 <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" onclick="printpage(this)">打印</button>-->
 <button class="form-control btn-sm btn-primary" style="width: 200px; margin: auto;" ng-click="isBankCard(vm.model.expertReviewDto.expertSelectedDtoList,vm.model.signid)">打印预览</button>
+
+
+<div style="display: none;" id="splitPayment">
+    <form id="form" name="form">
+        <table class="table table-bordered">
+            <tr>
+                <td width="200px" class="text-right"><strong>专家姓名：</strong></td>
+                <td width="200px"><strong>{{vm.expertName}}</strong></td>
+                <td width="200px" class="text-right"><strong>评审费总额：</strong></td>
+                <td width="200px"><strong>{{vm.reviewCost}}</strong></td>
+            </tr>
+            <tr>
+                <td class="text-right">评审费发放表打印方案：</td>
+                <td colspan="3">
+                    <input type="checkbox" name="isSplit" ng-model="vm.expertSelect.isSplit"
+                           ng-true-value="0" ng-false-value="9" ng-checked="vm.isSplit == 0" /> <span>不拆分 </span>
+                    <input type="checkbox" name="isSplit" ng-model="vm.expertSelect.isSplit"
+                           ng-true-value="9" ng-false-value="0" ng-checked="vm.isSplit == 9" /> <span>拆分为两张打印表</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">第一张表的费用：<span class="required">*</span></td>
+                <td colspan="3">
+                    <input type="text" style="width: 200px;" class="form-control input-sm " id="oneCost" ng-model="vm.expertSelect.oneCost" data-val-digits="必须输入有效数字"
+                           data-val-regex="评审费用只能为正数" data-val="true" data-val-required="必填"
+                           data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$"/>
+                    <span data-valmsg-for="oneCost" data-valmsg-replace="true"class="errors"></span>
+                </td>
+            </tr>
+        </table>
+        <p style="text-align: center;">
+            <button class="btn btn-sm btn-success" ng-click="vm.saveSplit()" >保存</button>
+        </p>
+    </form>
+</div>

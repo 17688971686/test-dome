@@ -58,6 +58,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static cs.common.Constant.*;
@@ -833,28 +834,89 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     //项目环节的专家评分和专家评审费
                     Map<String, Object> expertData = new HashMap<>();
                     ExpertReview expertReview = expertReviewRepo.findByBusinessId(businessId);
+
                     List<ExpertSelectedDto> expertSelectedList = new ArrayList<>();
+                    List<ExpertSelectedDto> expertSelectedList1 = new ArrayList<>();
+                    List<ExpertSelectedDto> expertSelectedList2 = new ArrayList<>();
+
+                    Boolean isSplit = false;
+
+                    //合计 ： 评审费 税额  总计
+                    BigDecimal reviewCostSum1 = new BigDecimal(0);
+                    BigDecimal reviewTaxesSum1 = new BigDecimal(0);
+                    BigDecimal totalCostSum1 = new BigDecimal(0);
+
+                    BigDecimal reviewCostSum2 = new BigDecimal(0);
+                    BigDecimal reviewTaxesSum2 = new BigDecimal(0);
+                    BigDecimal totalCostSum2 = new BigDecimal(0);
+
                     if (Validate.isObject(expertReview)) {
                         ExpertReviewDto expertReviewDto = expertReviewRepo.formatReview(expertReview);
                         List<ExpertSelectedDto> expertSelectedDtoList = expertReviewDto.getExpertSelectedDtoList();
                         if (expertSelectedDtoList != null && expertSelectedDtoList.size() > 0) {
+
                             for (ExpertSelectedDto expertSelectedDto : expertSelectedDtoList) {
-                                ExpertSelectedDto expertSelected = new ExpertSelectedDto();
+                                ExpertSelectedDto expertSelected = new ExpertSelectedDto(); //不拆分时
+                                ExpertSelectedDto expertSelected1 = new ExpertSelectedDto(); //第一张表
+                                ExpertSelectedDto expertSelected2 = new ExpertSelectedDto(); //第二张表
+
                                 if (EnumState.YES.getValue().equals(expertSelectedDto.getIsJoin())
                                         && EnumState.YES.getValue().equals(expertSelectedDto.getIsConfrim())) {
+
                                     BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected);
+                                    BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected1);
+
+
+                                    if(EnumState.YES.getValue().equals(expertSelectedDto.getIsSplit())){
+                                        isSplit = true;
+
+                                        BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected2);
+
+                                        expertSelected1.setReviewCost(expertSelectedDto.getOneCost());
+
+                                        expertSelected1.setReviewTaxes( expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost() , 3 , BigDecimal.ROUND_HALF_UP).multiply(expertSelected1.getReviewCost()));
+                                        expertSelected1.setTotalCost(expertSelected1.getReviewCost().add(expertSelected1.getReviewTaxes()));
+
+                                        expertSelected2.setReviewCost(expertSelectedDto.getReviewCost().subtract(expertSelectedDto.getOneCost()));
+                                        expertSelected2.setReviewTaxes( expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost() , 3 , BigDecimal.ROUND_HALF_UP).multiply(expertSelected2.getReviewCost() ));
+                                        expertSelected2.setTotalCost(expertSelected2.getReviewCost().add(expertSelected2.getReviewTaxes()));
+
+                                        reviewCostSum2 =  reviewCostSum2.add(expertSelected2.getReviewCost());
+                                        reviewTaxesSum2 =  reviewTaxesSum2.add(expertSelected2.getReviewTaxes());
+                                        totalCostSum2 =  totalCostSum2.add(expertSelected2.getTotalCost());
+                                        expertSelectedList2.add(expertSelected2);
+                                    }
+                                    reviewCostSum1 = reviewCostSum1.add(expertSelected1.getReviewCost());
+                                    reviewTaxesSum1 =  reviewTaxesSum1.add(expertSelected1.getReviewTaxes());
+                                    totalCostSum1 = totalCostSum1.add(expertSelected1.getTotalCost());
+
                                     expertSelectedList.add(expertSelected);
+                                    expertSelectedList1.add(expertSelected1);
+
+
                                 }
                             }
                         }
                         expertData.put("projectName", expertReview.getReviewTitle());
-                        expertData.put("expertList", expertSelectedList);
+
+
+
+                        if(isSplit){
+                            expertData.put("expertList", expertSelectedList1);
+                            expertData.put("expertList2", expertSelectedList2);
+                        }else{
+                            expertData.put("expertList", expertSelectedList);
+                        }
                     }
                     //专家评审费发放表
                     if ("SIGN_EXPERT_PAY".equals(stageType)) {
-                        expertData.put("reviewCostSum", expertReview.getReviewCost());
-                        expertData.put("reviewTaxesSum", expertReview.getReviewTaxes());
-                        expertData.put("totalCostSum", expertReview.getTotalCost());
+                        expertData.put("reviewCostSum",isSplit ? reviewCostSum1 : expertReview.getReviewCost());
+                        expertData.put("reviewTaxesSum",isSplit ? reviewTaxesSum1 : expertReview.getReviewTaxes());
+                        expertData.put("totalCostSum",isSplit ? totalCostSum1 : expertReview.getTotalCost());
+
+                        expertData.put("reviewCostSum2",reviewCostSum2);
+                        expertData.put("reviewTaxesSum2", reviewTaxesSum2);
+                        expertData.put("totalCostSum2", totalCostSum2);
                         file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
                     }
                     //专家评分
