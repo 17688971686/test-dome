@@ -4,6 +4,7 @@ import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
@@ -788,13 +789,228 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     }
 
     /**
+     * 业绩汇总
+     * @param achievementSumDto
+     * @return
+     */
+    @Override
+    public List<AchievementSumDto> findAchievementSum(AchievementSumDto achievementSumDto) {
+        String beginTime = "";
+        String endTime = "";
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select count(1) disSum,round(sum(t.declarevalue)/10000,2) declarevalueSum ," +
+                " round(sum(t.authorizevalue)/10000,2) authorizevalueSum,");
+        sqlBuilder.append(" round((sum(t.declarevalue)-sum(t.authorizevalue))/10000,2) extravalueSum,");
+        sqlBuilder.append("  decode(sum(t.declarevalue),  0,  0," +
+                "  round(((sum(t.declarevalue) - sum(t.authorizevalue)) / 10000) /(sum(t.declarevalue) / 10000)," +
+                "  4) * 100) extraRateSum,ismainuser ");
+        sqlBuilder.append(" from ( select d.dispatchdate, s.projectname,d.filenum,d.declarevalue,d.authorizevalue," +
+                " d.extravalue,d.extrarate,p.ismainuser from cs_sign s ");
+        sqlBuilder.append(" left join cs_dispatch_doc d on s.signid = d.signid left join CS_SIGN_PRINCIPAL2 p");
+        sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and p.ismainuser is not null " +
+                " and p.userid = '"+ SessionUtil.getUserId()+"' ");
+        if(null != achievementSumDto){
+            if(Validate.isString(achievementSumDto.getYear()) && Validate.isString(achievementSumDto.getQuarter())){
+                if(achievementSumDto.getQuarter().equals("0")){
+                    beginTime = achievementSumDto.getYear()+"-01-01 00:00:00";
+                    endTime = achievementSumDto.getYear()+"-12-31 23:59:59";
+                    sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+                    sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+                }else if(achievementSumDto.getQuarter().equals("1")){
+                    beginTime = achievementSumDto.getYear()+"-01-01 00:00:00";
+                    endTime = achievementSumDto.getYear()+"-03-31 23:59:59";
+                    sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+                    sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+                }else if(achievementSumDto.getQuarter().equals("2")){
+                    beginTime = achievementSumDto.getYear()+"-04-01 00:00:00";
+                    endTime = achievementSumDto.getYear()+"-06-30 23:59:59";
+                    sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+                    sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+                }else if(achievementSumDto.getQuarter().equals("3")){
+                    beginTime = achievementSumDto.getYear()+"-07-31 00:00:00";
+                    endTime = achievementSumDto.getYear()+"-09-30 23:59:59";
+                    sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+                    sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+                }else if(achievementSumDto.getQuarter().equals("4")){
+                    beginTime = achievementSumDto.getYear()+"-10-01 00:00:00";
+                    endTime = achievementSumDto.getYear()+"-12-31 23:59:59";
+                    sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+                    sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+                }
+            }
+        }
+        sqlBuilder.append(" ) t  group by ismainuser ");
+        List<Object[]> achievementSumObjList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        List<AchievementSumDto> achievementSumDtoList = new ArrayList<AchievementSumDto>();
+        for(int i = 0; i < achievementSumObjList.size(); i++ ) {
+            AchievementSumDto achievementSumDto1 = new AchievementSumDto();
+            Object[] projectReviewCon = achievementSumObjList.get(i);
+            if (null != projectReviewCon[0]) {
+                achievementSumDto1.setDisSum(Integer.valueOf(String.valueOf(projectReviewCon[0])));
+            }else{
+                achievementSumDto1.setDisSum(null);
+            }
+            if (null != projectReviewCon[1]) {
+                achievementSumDto1.setDeclarevalueSum((BigDecimal) projectReviewCon[1]);
+            }else{
+                achievementSumDto1.setDeclarevalueSum(null);
+            }
+            if (null != projectReviewCon[2]) {
+                achievementSumDto1.setAuthorizevalueSum((BigDecimal) projectReviewCon[2]);
+            }else{
+                achievementSumDto1.setDeclarevalueSum(null);
+            }
+            if (null != projectReviewCon[3]) {
+                achievementSumDto1.setExtravalueSum((BigDecimal) projectReviewCon[3]);
+            }else{
+                achievementSumDto1.setExtravalueSum(null);
+            }
+            if (null != projectReviewCon[4]) {
+                achievementSumDto1.setExtraRateSum((BigDecimal) projectReviewCon[4]);
+            }else{
+                achievementSumDto1.setExtraRateSum(null);
+            }
+            achievementSumDtoList.add(achievementSumDto1);
+        }
+
+        return achievementSumDtoList;
+    }
+
+    /**
+     * 业绩明细
+     * @param achievementSumDto
+     * @return
+     */
+    @Override
+    public List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto) {
+        String beginTime = "";
+        String endTime = "";
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select d.dispatchdate, s.projectname,d.filenum,d.declarevalue,d.authorizevalue,d.extravalue," +
+                " d.extrarate from cs_sign s ");
+        sqlBuilder.append(" left join cs_dispatch_doc d on s.signid = d.signid left join CS_SIGN_PRINCIPAL2 p" +
+                " on s.signid = p.signid");
+        sqlBuilder.append(" where s.processstate >= 6  and p.userid = '"+SessionUtil.getUserId()+"' ");
+        if(null != achievementSumDto){
+            if(Validate.isString(achievementSumDto.getIsmainuser())){
+                sqlBuilder.append(" and p.ismainuser =:ismainuser ").setParam("ismainuser",achievementSumDto.getIsmainuser());
+            }
+            if(Validate.isString(achievementSumDto.getYear()) && Validate.isString(achievementSumDto.getQuarter())){
+                if(achievementSumDto.getQuarter().equals("0")){
+                    beginTime = achievementSumDto.getYear()+"-01-01 00:00:00";
+                    endTime = achievementSumDto.getYear()+"-12-31 23:59:59";
+                    sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+                    sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+                }else if(achievementSumDto.getQuarter().equals("1")){
+                    beginTime = achievementSumDto.getYear()+"-01-01 00:00:00";
+                    endTime = achievementSumDto.getYear()+"-03-31 23:59:59";
+                    sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+                    sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+                }else if(achievementSumDto.getQuarter().equals("2")){
+                    beginTime = achievementSumDto.getYear()+"-04-01 00:00:00";
+                    endTime = achievementSumDto.getYear()+"-06-30 23:59:59";
+                    sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+                    sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+                }else if(achievementSumDto.getQuarter().equals("3")){
+                    beginTime = achievementSumDto.getYear()+"-07-31 00:00:00";
+                    endTime = achievementSumDto.getYear()+"-09-30 23:59:59";
+                    sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+                    sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+                }else if(achievementSumDto.getQuarter().equals("4")){
+                    beginTime = achievementSumDto.getYear()+"-10-01 00:00:00";
+                    endTime = achievementSumDto.getYear()+"-12-31 23:59:59";
+                    sqlBuilder.append(" and D.DISPATCHDATE >= to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("beginTime",beginTime);
+                    sqlBuilder.append(" and D.DISPATCHDATE <= to_date(:endTime,'yyyy-mm-dd hh24:mi:ss') ").setParam("endTime",endTime);
+                }
+            }
+        }
+        List<Object[]> achievementDetailObjList = expertSelectedRepo.getObjectArray(sqlBuilder);
+        List<AchievementDetailDto> achievementDetailDtoList = new ArrayList<AchievementDetailDto>();
+        for(int i = 0; i < achievementDetailObjList.size(); i++ ) {
+            AchievementDetailDto achievementDetailDto1 = new AchievementDetailDto();
+            Object[] projectReviewCon = achievementDetailObjList.get(i);
+            if (null != projectReviewCon[0]) {
+                achievementDetailDto1.setDispatchDate((Date)projectReviewCon[0]);
+            }else{
+                achievementDetailDto1.setDispatchDate(null);
+            }
+            if (null != projectReviewCon[1]) {
+                achievementDetailDto1.setProjectName((String) projectReviewCon[1]);
+            }else{
+                achievementDetailDto1.setProjectName(null);
+            }
+            if (null != projectReviewCon[2]) {
+                achievementDetailDto1.setFileNum((String) projectReviewCon[2]);
+            }else{
+                achievementDetailDto1.setFileNum(null);
+            }
+            if (null != projectReviewCon[3]) {
+                achievementDetailDto1.setDeclareValue((BigDecimal) projectReviewCon[3]);
+            }else{
+                achievementDetailDto1.setDeclareValue(null);
+            }
+            if (null != projectReviewCon[4]) {
+                achievementDetailDto1.setAuthorizeValue((BigDecimal) projectReviewCon[4]);
+            }else{
+                achievementDetailDto1.setAuthorizeValue(null);
+            }
+            if (null != projectReviewCon[5]) {
+                achievementDetailDto1.setExtraValue((BigDecimal) projectReviewCon[5]);
+            }else{
+                achievementDetailDto1.setExtraValue(null);
+            }
+            if (null != projectReviewCon[6]) {
+                achievementDetailDto1.setExtraRate((BigDecimal) projectReviewCon[6]);
+            }else{
+                achievementDetailDto1.setExtraRate(null);
+            }
+
+            achievementDetailDtoList.add(achievementDetailDto1);
+        }
+
+
+
+        //todo:添加查询条件
+      /*  if(null != projectReviewConditionDto){
+            if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime())){
+                String[] timeArr = projectReviewConditionDto.getBeginTime().split("-");
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String beginTime = projectReviewConditionDto.getBeginTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getBeginTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }else if(StringUtil.isNotEmpty(projectReviewConditionDto.getEndTime()) && !StringUtil.isNotEmpty(projectReviewConditionDto.getBeginTime())){
+                String[] timeArr = projectReviewConditionDto.getEndTime().split("-");;
+                String day = "";
+                day = DateUtils.getMaxDayOfMonth(Integer.parseInt(timeArr[0]), (Integer.parseInt(timeArr[1]))) + "";
+                String beginTime = projectReviewConditionDto.getEndTime()+"-01 00:00:00";
+                String endTime = projectReviewConditionDto.getEndTime()+"-"+day+" 23:59:59";
+                sqlBuilder.append("and D.DISPATCHDATE >= to_date('"+beginTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.append("and D.DISPATCHDATE <= to_date('"+endTime+"', 'yyyy-mm-dd hh24:mi:ss') ");
+            }
+        }
+        sqlBuilder.append("group by s.reviewstage ) ");
+
+        return proReviewConditionDto;*/
+        return achievementDetailDtoList;
+    }
+
+    /**
      * 项目评审情况明细
      * @param projectReviewConditionDto
      * @return
      */
     @Override
     public List<ProReviewConditionDto> proReviewConditionDetail(ProReviewConditionDto projectReviewConditionDto) {
-        Map<String, Object> resultMap = new HashMap<>();
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select s.signid, s.reviewstage, s.projectname ,s.isadvanced   from cs_sign s   ");
         sqlBuilder.append("left join cs_dispatch_doc d  ");

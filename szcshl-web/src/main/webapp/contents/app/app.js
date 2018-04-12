@@ -750,6 +750,14 @@
                     controller: 'proReviewConditionCtrl',
                     controllerAs: 'vm'
                 })
+                //业绩统计表
+                .state('achievementList', {
+                    url: '/achievementList',
+                    templateUrl: rootPath + '/signView/html/achievement.html',
+                    params: {'year': (new Date()).getFullYear()+'','quarter':'0'},
+                    controller: 'achievementListCtrl',
+                    controllerAs: 'vm'
+                })
                 //E 项目费用管理
 
                 //S 月报简报管理
