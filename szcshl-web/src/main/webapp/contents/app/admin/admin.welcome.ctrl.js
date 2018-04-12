@@ -88,6 +88,7 @@
                     {
                         name: '数量',
                         type: 'bar',
+                        barWidth : 30,//柱图宽度，
                         data: vm.signNumber
                     }
                 ],
