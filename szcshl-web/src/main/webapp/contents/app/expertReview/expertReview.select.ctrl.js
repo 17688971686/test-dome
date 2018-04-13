@@ -23,7 +23,7 @@
         vm.isSuperUser = isSuperUser;
         vm.saveNewExpertFlag = 0;   //保存新专家标志
         vm.reviewType=$state.params.reviewType; //评审方式
-
+        vm.newMinBusinessId = ""; //新专家信息表方案id
 
         //S 查看专家详细
         vm.findExportDetail = function (id) {
@@ -71,6 +71,12 @@
 
         //删除后刷新
         vm.reFleshAfterRemove = function(ids){
+            if(vm.confirmEPListReplace.length > 0){
+                vm.newMinBusinessId = vm.confirmEPListReplace[0].businessId;
+            }
+            if(vm.confirmEPList.length > 0){
+                vm.newMinBusinessId = vm.confirmEPList[0].businessId;
+            }
             $.each(ids,function(i, obj){
                 //1、删除已确认的专家
                 $.each(vm.confirmEPList,function(index, epObj){
@@ -84,6 +90,13 @@
                     }
                 })
             })
+            if(vm.newMinBusinessId !=''&& vm.confirmEPListReplace.length == 0){
+                expertReviewSvc.deleteExpertNewInfo(vm.newMinBusinessId);
+                vm.saveNewExpertFlag = 0;
+            }
+            if(vm.newMinBusinessId !=''&& vm.confirmEPList.length == 0){
+                vm.saveNewExpertFlag = 0;
+            }
         }
 
         //更新参加未参加状态

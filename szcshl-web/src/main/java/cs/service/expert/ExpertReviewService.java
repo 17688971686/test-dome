@@ -75,6 +75,12 @@ public interface ExpertReviewService {
 	ResultMsg saveExpertNewInfo( ExpertReviewNewInfoDto[] expertReviewNewInfoDtos);
 
 	/**
+	 * 删除新专家信息
+	 * @param minBusinessId
+	 */
+	void deleteExpertNewInfo(String minBusinessId);
+
+	/**
 	 * 查询专家评审费超期发放的信息
 	 * @param oDataObj
 	 * @return

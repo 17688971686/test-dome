@@ -195,6 +195,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             expertReview.setModifiedDate(now);
             expertReview.setBusinessType(businessType);
 
+
             /*审批通过工作方案，再更新评审会日期
             if(expertReview.getReviewDate() == null){
                 if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
@@ -233,6 +234,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             expertSelected.setIsJoin(Constant.EnumState.YES.getValue());
             expertSelected.setIsConfrim(Constant.EnumState.YES.getValue());
             expertSelected.setSelectType(selectType);
+
             //如果是自选或者境外专家，默认已经确认
             if (Constant.EnumExpertSelectType.SELF.getValue().equals(expertSelected.getSelectType())
                     || Constant.EnumExpertSelectType.OUTSIDE.getValue().equals(expertSelected.getSelectType())) {
@@ -240,6 +242,14 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             }
             //保存专家映射
             expertSelected.setExpert(expertRepo.findById(Expert_.expertID.getName(), expertIdArr.get(i)));
+            Expert expert = expertRepo.findById(Expert_.expertID.getName(), expertIdArr.get(i));
+            if(null != expert && null != expert.getExpertType()){
+               if(expert.getExpertType().size() == 1){
+                   expertSelected.setMaJorBig(expert.getExpertType().get(0).getMaJorBig());
+                   expertSelected.setMaJorSmall(expert.getExpertType().get(0).getMaJorSmall());
+                   expertSelected.setExpeRttype(expert.getExpertType().get(0).getExpertType());
+               }
+            }
             //保存抽取条件映射
             expertSelected.setExpertReview(expertReview);
             expertSelectedRepo.save(expertSelected);
@@ -672,6 +682,18 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
 
+    }
+
+    /**
+     * 删除新专家信息
+     * @param minBusinessId
+     */
+    @Override
+    public void deleteExpertNewInfo(String minBusinessId) {
+        if(Validate.isString(minBusinessId)){
+            expertNewTypeRepo.deleteById("businessId",minBusinessId);
+            expertNewInfoRepo.deleteById("businessId",minBusinessId);
+        }
     }
 
 }

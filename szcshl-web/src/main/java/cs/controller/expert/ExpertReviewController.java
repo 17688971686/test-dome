@@ -69,6 +69,19 @@ public class ExpertReviewController {
         expertReviewService.updateExpertState(minBusinessId, businessType, expertSelId, state, false);
     }
 
+    /**
+     * 删除新专家信息
+     *
+     * @param minBusinessId
+     * @param
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "删除新专家信息", path = "deleteExpertNewInfo", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteExpertNewInfo(@RequestParam(required = true) String minBusinessId) {
+        expertReviewService.deleteExpertNewInfo(minBusinessId);
+    }
+
     @RequiresAuthentication
     //@RequiresPermissions("expertReview#affirmAutoExpert#post")
     @RequestMapping(name = "确认抽取专家", path = "affirmAutoExpert", method = RequestMethod.POST)
