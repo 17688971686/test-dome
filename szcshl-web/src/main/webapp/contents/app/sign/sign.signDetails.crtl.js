@@ -3,9 +3,9 @@
 
     angular.module('app').controller('signDetailsCtrl', sign);
 
-    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'templatePrintSvc', 'assistSvc'];
+    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'templatePrintSvc', 'assistSvc'  , 'expertReviewSvc'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, $scope, templatePrintSvc, assistSvc) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, $scope, templatePrintSvc, assistSvc , expertReviewSvc) {
         var vm = this;
         vm.model = {};							    //创建一个form对象
         vm.flow = {};                               //收文对象
@@ -144,5 +144,53 @@
             var reviewstage = escape(encodeURIComponent(vm.model.reviewstage));
             window.open(rootPath + "/sign/printSign?signId=" + vm.model.signid + "&reviewStage=" + reviewstage);
         }*/
+
+        /**
+         * 专家评审费大于1000的可以点击进行拆分打印
+         * @param expertId
+         */
+        vm.splitPayment = function(expertSelectId , expert , reviewCost){
+            vm.expertSelect = {};
+            vm.expertSelect.id = expertSelectId;
+            vm.expertSelect.isSplit = 9;
+            vm.expertSelect.oneCost = "1000";
+
+            vm.expertName = expert.name;
+            vm.reviewCost = reviewCost
+            $("#splitPayment").kendoWindow({
+                width: "50%",
+                height: "300px",
+                title: "专家评审费打印方案",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+
+            $scope.$watch("vm.expertSelect.isSplit",function (newValue, oldValue) {
+                //由关联改成未关联
+                if(newValue != oldValue ){
+                    if(vm.expertSelect.isSplit == 9){
+                        vm.expertSelect.oneCost = "1000";
+                    }
+                    if(vm.expertSelect.isSplit == 0){
+                        vm.expertSelect.oneCost = "0";
+                    }
+                }
+
+            });
+        }
+
+        /**
+         * 保存打印方案
+         */
+        vm.saveSplit = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                expertReviewSvc.saveSplit(vm);
+            }
+
+        }
     }
 })();

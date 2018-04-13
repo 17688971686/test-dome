@@ -864,35 +864,56 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                                         && EnumState.YES.getValue().equals(expertSelectedDto.getIsConfrim())) {
 
                                     BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected);
-                                    BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected1);
 
+                                    //是专家评审费才需要计算费用
+                                    if ("SIGN_EXPERT_PAY".equals(stageType)) {
 
-                                    if(EnumState.YES.getValue().equals(expertSelectedDto.getIsSplit())){
-                                        isSplit = true;
+                                        BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected1);
 
-                                        BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected2);
+                                        if(EnumState.YES.getValue().equals(expertSelectedDto.getIsSplit())){
+                                            isSplit = true;
 
-                                        expertSelected1.setReviewCost(expertSelectedDto.getOneCost());
+                                            BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected2);
 
-                                        expertSelected1.setReviewTaxes( expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost() , 3 , BigDecimal.ROUND_HALF_UP).multiply(expertSelected1.getReviewCost()));
-                                        expertSelected1.setTotalCost(expertSelected1.getReviewCost().add(expertSelected1.getReviewTaxes()));
+                                            //判断第一张表费用是否为空，为空默认为评审费总金额
+                                            expertSelected1.setReviewCost(expertSelectedDto.getOneCost() == null ? expertSelectedDto.getReviewCost() : expertSelectedDto.getOneCost());
 
-                                        expertSelected2.setReviewCost(expertSelectedDto.getReviewCost().subtract(expertSelectedDto.getOneCost()));
-                                        expertSelected2.setReviewTaxes( expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost() , 3 , BigDecimal.ROUND_HALF_UP).multiply(expertSelected2.getReviewCost() ));
-                                        expertSelected2.setTotalCost(expertSelected2.getReviewCost().add(expertSelected2.getReviewTaxes()));
+                                            //判断缴税金额不为空，并且评审费不为0，则计算缴税金额，否则缴税金额为0
+                                            if(expertSelectedDto.getReviewTaxes() != null &&
+                                                    expertSelectedDto.getReviewCost().compareTo(new BigDecimal(0)) != 0){
 
-                                        reviewCostSum2 =  reviewCostSum2.add(expertSelected2.getReviewCost());
-                                        reviewTaxesSum2 =  reviewTaxesSum2.add(expertSelected2.getReviewTaxes());
-                                        totalCostSum2 =  totalCostSum2.add(expertSelected2.getTotalCost());
-                                        expertSelectedList2.add(expertSelected2);
+                                                expertSelected1.setReviewTaxes( expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost() , 3 , BigDecimal.ROUND_HALF_UP)
+                                                        .multiply(expertSelected1.getReviewCost()));
+                                            }else{
+                                                expertSelected1.setReviewTaxes(new BigDecimal(0));
+                                            }
+                                            expertSelected1.setTotalCost(expertSelected1.getReviewCost().add(expertSelected1.getReviewTaxes()));
+
+                                            expertSelected2.setReviewCost(expertSelectedDto.getReviewCost().subtract(expertSelected1.getReviewCost()));
+                                            if(expertSelectedDto.getReviewTaxes() != null &&
+                                                    expertSelectedDto.getReviewCost().compareTo(new BigDecimal(0)) != 0){
+
+                                                expertSelected2.setReviewTaxes( expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost() , 3 , BigDecimal.ROUND_HALF_UP)
+                                                        .multiply(expertSelected2.getReviewCost() ));
+                                            }else{
+                                                expertSelected2.setReviewTaxes(new BigDecimal(0));
+                                            }
+                                            expertSelected2.setTotalCost(expertSelected2.getReviewCost().add(expertSelected2.getReviewTaxes()));
+
+                                            reviewCostSum2 =  reviewCostSum2.add(expertSelected2.getReviewCost());
+                                            reviewTaxesSum2 =  reviewTaxesSum2.add(expertSelected2.getReviewTaxes());
+                                            totalCostSum2 =  totalCostSum2.add(expertSelected2.getTotalCost());
+                                            expertSelectedList2.add(expertSelected2);
+                                        }
+
+                                        reviewCostSum1 = reviewCostSum1.add(expertSelected1.getReviewCost() == null ? new BigDecimal(0) : expertSelected1.getReviewCost());
+                                        reviewTaxesSum1 =  reviewTaxesSum1.add(expertSelected1.getReviewTaxes() == null ? new BigDecimal(0) : expertSelected1.getReviewTaxes());
+                                        totalCostSum1 = totalCostSum1.add(expertSelected1.getReviewTaxes() == null ? new BigDecimal(0) : expertSelected1.getReviewTaxes());
+
+                                        expertSelectedList1.add(expertSelected1);
                                     }
-                                    reviewCostSum1 = reviewCostSum1.add(expertSelected1.getReviewCost());
-                                    reviewTaxesSum1 =  reviewTaxesSum1.add(expertSelected1.getReviewTaxes());
-                                    totalCostSum1 = totalCostSum1.add(expertSelected1.getTotalCost());
 
                                     expertSelectedList.add(expertSelected);
-                                    expertSelectedList1.add(expertSelected1);
-
 
                                 }
                             }
@@ -917,6 +938,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         expertData.put("reviewCostSum2",reviewCostSum2);
                         expertData.put("reviewTaxesSum2", reviewTaxesSum2);
                         expertData.put("totalCostSum2", totalCostSum2);
+
+                        expertData.put("payDate" , expertReview.getReviewDate() == null ? "" : DateUtils.converToString(expertReview.getReviewDate() , "yyyy年MM月dd日"));
                         file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
                     }
                     //专家评分
