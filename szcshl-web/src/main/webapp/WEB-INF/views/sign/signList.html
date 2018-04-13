@@ -98,6 +98,8 @@
                         <select name="processState" ng-model="vm.project.processState" operator="eq" class="form-control select-sm" >
                             <option value="">请选择</option>
                             <option value="1">在办项目</option>
+                            <option value="2">正在暂停</option>
+                            <option value="24">曾经暂停</option>
                             <option value="69">已发文项目</option><!-- 包括已发送存档和已存档-->
                             <option value="89">已发送存档项目</option><!-- 包括已发送存档和已存档-->
                             <option value="68">已发文未存档</option>
@@ -262,7 +264,6 @@
                     <td>
                         <select operator="eq" name="lightState" ng-model="vm.project.lightState"  class="form-control select-sm">
                             <option value="">请选择</option>
-                            <option value="4">暂停</option>
                             <option value="5">少于3个工作日</option>
                             <option value="6">发文超期</option>
                             <option value="7">超过25个工作日未存档</option>

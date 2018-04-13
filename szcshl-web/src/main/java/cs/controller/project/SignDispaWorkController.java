@@ -328,7 +328,7 @@ public class SignDispaWorkController {
     }
 
     @RequiresPermissions("signView#html/achievement#get")
-    @RequestMapping(name = "业绩统计表", path = "html/achievement", method = RequestMethod.GET)
+    @RequestMapping(name = "业绩统计", path = "html/achievement", method = RequestMethod.GET)
     public String achievementSum() {
         return  "achievement/achievementSum";
     }

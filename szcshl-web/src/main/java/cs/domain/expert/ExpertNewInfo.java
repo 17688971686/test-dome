@@ -1,13 +1,12 @@
 package cs.domain.expert;
 
 import cs.domain.DomainBase;
-
 import javax.persistence.*;
 import java.util.List;
 
 /**
  * 新的拟聘请专家名单
- * Created by Administrator on 2018/3/18.
+ * Created by zsl on 2018/3/18.
  */
 @Entity
 @Table(name = "cs_expert_new_info")

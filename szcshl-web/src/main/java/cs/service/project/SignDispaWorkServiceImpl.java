@@ -142,6 +142,11 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                         //已发送存档
                         criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),8));
                     }
+                    else if(processState == 24){
+                        //曾经暂停
+                        criteria.add(Restrictions.eq(SignDispaWork_.isProjectStop.getName(),Constant.EnumState.YES.getValue()));
+                        criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(),Constant.EnumState.PROCESS.getValue()));
+                    }
                     continue;
                 }
 
@@ -162,7 +167,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                     continue;
                 }
                 //办理进度
-                if("lightState".equals(item.getField())){
+                /*if("lightState".equals(item.getField())){
                     lightStateValue = item.getValue().toString();
                     if("4".equals(lightStateValue)){
                         criteria.add(Restrictions.eq(SignDispaWork_.isProjectStop.getName(),Constant.EnumState.YES.getValue()));
@@ -170,7 +175,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                         criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
                     }
                     continue;
-                }
+                }*/
                 criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
             }
         }

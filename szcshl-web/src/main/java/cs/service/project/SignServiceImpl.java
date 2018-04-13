@@ -159,8 +159,11 @@ public class SignServiceImpl implements SignService {
         }
         Date now = new Date();
         Sign sign = null;
+        /**
+         * 之前委里收文编号年份后面+4位数，现在是5位数
+         */
         //如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
-        if (!signDto.getFilecode().endsWith("0000")) {
+        if (!signDto.getFilecode().endsWith("0000") && !signDto.getFilecode().endsWith("00000")) {
             signRepo.findByFilecode(signDto.getFilecode(), signDto.getSignState());
         }
         //1、根据收文编号获取项目信息

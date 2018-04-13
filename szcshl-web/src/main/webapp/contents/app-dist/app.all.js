@@ -7,7 +7,7 @@
         'angular-loading-bar',
         'ngAnimate',
         'ngFileSaver',
-        'angular-toArrayFilter'
+        'angular-toArrayFilter',
     ]).filter('trust2Html', ['$sce', function ($sce) {
         return function (val) {
             return $sce.trustAsHtml(val);
@@ -386,7 +386,7 @@
                     controllerAs: 'vm'
                 })
                 .state('expertReviewEdit', {
-                    url: '/expertReview/:businessId/:minBusinessId/:businessType/:reviewType',
+                    url: '/expertReview/:businessId/:minBusinessId/:businessType/:reviewType/:isback',
                     templateUrl: rootPath + '/expertReview/html/selectExpert.html',
                     controller: 'expertSelectCtrl',
                     controllerAs: 'vm'
@@ -516,6 +516,15 @@
                     controllerAs: 'vm'
                 })
                 //end#workprogram
+
+                //begin#maintWorkprogram
+                .state('maintWorkprogramEdit', {
+                    url: '/maintWorkprogramEdit/:signid',
+                    templateUrl: rootPath + '/maintainProject/html/workprogramEdit.html',
+                    controller: 'maintWorkprogramEditCtrl',
+                    controllerAs: 'vm'
+                })
+                //end#maintWorkprogram
 
                 //begin#dispatch
                 .state('dispatchEdit', {
@@ -748,6 +757,14 @@
                     url: '/proReviewConCountList',
                     templateUrl: rootPath + '/signView/html/proReviewConCount.html',
                     controller: 'proReviewConditionCtrl',
+                    controllerAs: 'vm'
+                })
+                //业绩统计表
+                .state('achievementList', {
+                    url: '/achievementList',
+                    templateUrl: rootPath + '/signView/html/achievement.html',
+                    params: {'year': (new Date()).getFullYear()+'','quarter':'0'},
+                    controller: 'achievementListCtrl',
                     controllerAs: 'vm'
                 })
                 //E 项目费用管理
@@ -1365,13 +1382,18 @@
 
             var flag  = false;
             for(var i=0;i<expertSelectedDtoList.length;i++){
-                if(expertSelectedDtoList[i].expertDto.bankAccount ==undefined
-                    || expertSelectedDtoList[i].expertDto.openingBank ==undefined ){
+                //必须是确认参与的专家
+                if(expertSelectedDtoList[i].isConfrim == "9"
+                    && expertSelectedDtoList[i].isJoin == "9"){
+                    if(expertSelectedDtoList[i].expertDto.bankAccount ==undefined
+                        || expertSelectedDtoList[i].expertDto.openingBank ==undefined ){
 
-                    flag = true;
-                    bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
-                    break;
+                        flag = true;
+                        bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
+                        break;
+                    }
                 }
+
             }
 
             if(!flag){
@@ -1423,6 +1445,116 @@
     });
 })();
 
+(function () {
+    'use strict';
+
+    angular.module('app').controller('achievementListCtrl', achievementList);
+
+    achievementList.$inject = ['$location', 'achievementSvc','$state','$http','bsWin'];
+
+    function achievementList($location, achievementSvc,$state,$http,bsWin) {
+        var vm = this;
+        vm.title = '工作业绩统计表';
+        vm.model={};
+        vm.mainDoc = {};
+        vm.assistDoc = {};
+        vm.model.year = $state.params.year;
+        vm.model.quarter = $state.params.quarter;
+        activate();
+        function activate() {
+            achievementSvc.achievementSum(vm,function (data) {
+                if(data.flag || data.reCode == 'ok'){
+                    vm.achievementSumList = data.reObj.achievementSumList;
+                    if(vm.achievementSumList.length > 0){
+                        vm.assistDoc = vm.achievementSumList[0];
+                        vm.mainDoc = vm.achievementSumList[1];
+                    }
+                    vm.achievementMainList =  data.reObj.achievementMainList;
+                    vm.achievementAssistList =  data.reObj.achievementAssistList;
+                }
+            })
+        }
+
+        /**
+         * 主办人评审项目一览表
+         */
+        vm.showMainDocDetail = function () {
+            $("#mainDocDetail").kendoWindow({
+                width: "80%",
+                height: "680px",
+                title: "主办人评审项目一览表",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        /**
+         * 协办人评审项目一览表
+         */
+        vm.showAssistDocDetail = function () {
+            $("#assistDocDetail").kendoWindow({
+                width: "80%",
+                height: "680px",
+                title: "协办人评审项目一览表",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        vm.countAchievementDetail = function () {
+            achievementSvc.achievementSum(vm,function (data) {
+                if(data.flag || data.reCode == 'ok'){
+                    vm.achievementSumList = data.reObj.achievementSumList;
+                    if(vm.achievementSumList.length > 0){
+                        vm.assistDoc = vm.achievementSumList[0];
+                        vm.mainDoc = vm.achievementSumList[1];
+                    }
+                    vm.achievementMainList =  data.reObj.achievementMainList;
+                    vm.achievementAssistList =  data.reObj.achievementAssistList;
+                }
+            })
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('achievementSvc', achievement);
+
+    achievement.$inject = ['$http'];
+
+    function achievement($http) {
+        var service = {
+            achievementSum: achievementSum,
+        };
+        return service;
+
+        //S_业绩汇总
+        function achievementSum(vm,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/signView/getAchievementSum",
+                data: vm.model
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_专家评审费用统计
+
+    }
+})();
 (function () {
     'use strict';
 
@@ -5304,6 +5436,7 @@
                     {
                         name: '数量',
                         type: 'bar',
+                        barWidth : 30,//柱图宽度，
                         data: vm.signNumber
                     }
                 ],
@@ -12556,17 +12689,28 @@
                         title: "询问提示",
                         message: "该项目已经进行了关联，您要解除关联么？",
                         onOk: function () {
+                            vm.isdik=true;//控制勾选框的勾选
                             $('.confirmDialog').modal('hide');
                             signSvc.saveAssociateSign($state.params.signid,null,function(){
                                 bsWin.alert("项目解除关联成功");
-                                window.location.reload();
+                                /*window.location.reload();*/
                             });
                         },
                         onCancel : function () {
-                            vm.dispatchDoc.isRelated = 9;
+                            $scope.$apply(function(){//因为在窗口页面来改数据。数据不会作用到页面。所以需要重新加载
+                                vm.dispatchDoc.isRelated = 9;
+                            });
                         },
                         onClose : function () {
-                            vm.dispatchDoc.isRelated = 9;
+                            if(vm.isdik){//窗口关闭事件。判断。如果是点确定的关闭那状态就要改变
+                                $scope.$apply(function(){
+                                    vm.dispatchDoc.isRelated = 0;
+                                });
+                            }else{
+                                $scope.$apply(function(){//因为在窗口页面来改数据。数据不会作用到页面。所以需要重新加载
+                                    vm.dispatchDoc.isRelated = 9;
+                                });
+                            }
                         }
                     });
                 }else if((oldValue == 0 || oldValue == '0')&& (newValue == 9 || newValue == '9') && (!vm.sign.isAssociate || vm.sign.isAssociate == 0)){
@@ -12609,6 +12753,7 @@
                                             }
                                             vm.ss=true;
                                         });
+
                                         //alert("当前页："+o.number+"，从数据库的位置1"+o.skip+"起，查"+o.size+"条数据");
                                         //需在这里发起ajax请求查询数据，请求成功后需调用callback方法重新计算分页
 
@@ -12617,8 +12762,6 @@
                                 }else{
                                     vm.page.selPage(1);
                                 }
-
-
                                 //选中要关联的项目
                                 $("#associateWindow").kendoWindow({
                                     width: "75%",
@@ -12632,7 +12775,24 @@
 
                             },
                             onCancel : function () {
-                                vm.dispatchDoc.isRelated = 0;
+                                console.log(1);
+                                $scope.$apply(function(){
+                                    vm.dispatchDoc.isRelated = 0;
+                                });
+
+
+                            },
+                            onClose : function () {
+                                if(vm.ss){
+                                    $scope.$apply(function(){
+                                        vm.dispatchDoc.isRelated = 9;
+                                    });
+                                }else{
+                                    $scope.$apply(function(){//因为在窗口页面来改数据。数据不会作用到页面。所以需要重新加载
+                                        vm.dispatchDoc.isRelated = 0;
+                                    });
+                                }
+
                             }
                         });
                     }
@@ -15666,6 +15826,7 @@
         vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
         vm.businessType = $state.params.businessType;   //专家业务类型
         var expertID = $state.params.expertID;   //专家ID
+        vm.isback=$state.params.isback;   //用来判断返回的是否是维护页面的工作方案
         vm.isSuperUser = isSuperUser;
         vm.saveNewExpertFlag = 0;   //保存新专家标志
         vm.reviewType=$state.params.reviewType; //评审方式
@@ -16323,7 +16484,12 @@
                 bsWin.alert("拟聘请专家数据有改动，请保存后再返回！");
                 return;
             }
-            $state.go('workprogramEdit', {signid:vm.businessId ,minBusinessId:vm.minBusinessId,businessType:vm.businessType});
+            if(vm.isback){
+                $state.go('maintWorkprogramEdit', {signid:vm.businessId });
+            }else{
+                $state.go('workprogramEdit', {signid:vm.businessId ,minBusinessId:vm.minBusinessId,businessType:vm.businessType});
+            }
+
         }
 
 
@@ -16484,9 +16650,9 @@
 
     angular.module('app').factory('expertReviewSvc', expertReview);
 
-    expertReview.$inject = ['$http', '$interval'];
+    expertReview.$inject = ['$http', '$interval' , 'bsWin'];
 
-    function expertReview($http, $interval) {
+    function expertReview($http, $interval , bsWin) {
         var service = {
             initExpertGrid: initExpertGrid,	            //初始化待抽取专家列表
             saveSelfExpert: saveSelfExpert,		        //保存自选专家
@@ -16509,9 +16675,30 @@
             refleshBusinessEP : refleshBusinessEP,      //刷新业务的专家信息（已经确认和确定参加会议的专家）
 
             saveNewExpert:saveNewExpert,                //保存新的聘请专家信息,
-            initNewExpertInfo:initNewExpertInfo         // 初始化调整后的专家信息
+            initNewExpertInfo:initNewExpertInfo,        // 初始化调整后的专家信息
+            saveSplit : saveSplit ,                     // 保存评审费发放打印方案信息
         };
         return service;
+
+        //S_saveSplit
+        function saveSplit(vm){
+            var httpOptions = {
+                method: 'put',
+                url: rootPath + "/expertReview/saveSplit",
+                data : vm.expertSelect
+            };
+            var httpSuccess = function success(response) {
+                bsWin.success("操作成功！", function(){
+                    window.parent.$("#splitPayment").data("kendoWindow").close();
+                });
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //E_saveSplit
 
         //S_initReview
         function initReview(businessId,minBusinessId,callBack) {
@@ -25137,6 +25324,380 @@
 
     }
 })();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('maintWorkprogramEditCtrl', mainworkprogram);
+
+    mainworkprogram.$inject = ['workprogramSvc', '$state', 'bsWin', 'sysfileSvc', '$scope', 'meetingSvc', 'roomSvc','signSvc'];
+
+    function mainworkprogram(workprogramSvc, $state, bsWin, sysfileSvc, $scope, meetingSvc, roomSvc,signSvc) {
+        var vm = this;
+        vm.work = {};						//创建一个form对象
+        vm.model = {};                      //项目对象
+        vm.title = '评审方案编辑';        	//标题
+        vm.startDateTime = new Date("2006/6/1 08:00");
+        vm.endDateTime = new Date("2030/6/1 21:00");
+        vm.work.signId = $state.params.signid;		//收文ID
+        vm.work.id = "";
+
+        vm.sign = {};						//创建收文对象
+        vm.unSeledWork = {};                //未选择的工作方案
+        vm.searchSign = {};                 //用于过滤
+
+        vm.businessFlag = {
+            isSelfReview: false,          //是否自评
+            isSingleReview: true,         //是否单个评审
+            isMainWorkProj: false,         //是否是合并评审主项目
+            isLoadMeetRoom: false,         //是否已经加载了会议室
+            isReveiwAWP: false,             //是否是合并评审次项目，如果是，则不允许修改，由主项目控制
+        }
+        vm.expertList =  new Array(15); //用于打印页面的专家列表，控制行数
+        //页面初始化
+        activate();
+        function activate() {
+            vm.showAll = true;
+            workprogramSvc.workMaintainList(vm);
+
+            $('#wpTab li').click(function (e) {
+                var aObj = $("a", this);
+                e.preventDefault();
+                aObj.tab('show');
+                var showDiv = aObj.attr("for-div");
+                $(".tab-pane").removeClass("active").removeClass("in");
+                $("#" + showDiv).addClass("active").addClass("in").show(500);
+            })
+            //查询会议列表
+        }
+
+        //初始化附件上传控件
+        vm.initFileUpload = function () {
+            if (!vm.work.id) {
+                //监听ID，如果有新值，则自动初始化上传控件
+                $scope.$watch("vm.work.id", function (newValue, oldValue) {
+                    if (newValue && newValue != oldValue && !vm.initUploadOptionSuccess) {
+                        vm.initFileUpload();
+                    }
+                });
+            }
+
+            //创建附件对象
+            vm.sysFile = {
+                businessId: vm.work.id,
+                mainId: vm.work.signId,
+                mainType: sysfileSvc.mainTypeValue().SIGN,
+                sysfileType: sysfileSvc.mainTypeValue().WORKPROGRAM,
+                sysBusiType: sysfileSvc.mainTypeValue().WORKPROGRAM,
+            };
+            sysfileSvc.initUploadOptions({
+                inputId: "sysfileinput",
+                vm: vm
+            });
+        }
+
+        //评审方式修改
+        vm.reviewTypeChange = function (id) {
+            if(vm.work.reviewType =='自评'){
+                vm.work.expertCost="";
+            }
+            if(vm.work.reviewType =='合并评审'){
+                vm.work.isMainProject = "9";
+            }
+            //如果已经保存了工作方案，则从数据库查找工作方案内容进行对比
+            if(id){
+                workprogramSvc.findById(id,function(data){
+                    if(data.expertCost!=undefined && vm.work.expertCost==""){
+                        vm.work.expertCost=data.expertCost;
+                    }
+                    //1、由合并评审改为单个评审
+                    if(data.isSigle == '合并评审' && data.isMainProject == "9" && "单个评审" == vm.work.isSigle){
+                        bsWin.confirm({
+                            title: "询问提示",
+                            message: "该项目已关联其他项目，您确定要改为单个评审吗？",
+                            onOk: function () {
+                                workprogramSvc.deleteAllMerge($state.params.signid,vm.work.id, function (data) {
+                                    if (data.flag || data.reCode == 'ok') {
+                                        bsWin.alert("操作成功！",function(){
+                                            vm.work.isMainProject = "0";
+                                        });
+                                    } else {
+                                        bsWin.error("操作失败！");
+                                    }
+                                });
+                            },
+                            onCancel: function () {
+                                vm.work.isSigle = "合并评审";
+                                vm.work.isMainProject = "9";
+                            }
+                        });
+                    //由专家评审会改成专家函评，并且已经预定了会议室
+                    }else if(data.reviewType =='专家评审会' && vm.work.reviewType =='专家函评' && vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0){
+                        bsWin.confirm({
+                            title: "询问提示",
+                            message: "改成专家函评，预定会议室将会删除，确定修改么？",
+                            onOk: function () {
+                                workprogramSvc.updateReviewType($state.params.signid,id,vm.work.reviewType, function (data) {
+                                    if (data.flag || data.reCode == 'ok') {
+                                        vm.work = data.reObj;
+                                        vm.work.signId = $state.params.signid;
+                                        bsWin.alert("操作成功！");
+                                    } else {
+                                        bsWin.error("操作失败！");
+                                    }
+                                });
+                            },
+                            onCancel: function () {
+                                vm.work.reviewType = data.reviewType;
+                            }
+                        });
+
+                    }else if((data.reviewType =='专家评审会' || data.reviewType =='专家函评') && vm.work.reviewType =='自评'){
+                        var isNeedUpdate = false;
+                        if(vm.work.roomBookingDtos && vm.work.roomBookingDtos.length > 0){
+                            isNeedUpdate = true;
+                        }else if(vm.work.expertDtoList &&vm.work.expertDtoList.length > 0){
+                            isNeedUpdate = true;
+                        }
+                        if(isNeedUpdate){
+                            bsWin.confirm({
+                                title: "询问提示",
+                                message: "评审方式改成自评，预定会议室和抽取专家将会删除，确定修改么？",
+                                onOk: function () {
+                                    workprogramSvc.updateReviewType($state.params.signid,id,vm.work.reviewType, function (data) {
+                                        if (data.flag || data.reCode == 'ok') {
+                                            vm.work = data.reObj;
+                                            vm.work.signId = $state.params.signid;
+                                            bsWin.alert("操作成功！");
+                                        } else {
+                                            bsWin.error("操作失败！");
+                                        }
+                                    });
+                                },
+                                onCancel: function () {
+                                    vm.work.reviewType = data.reviewType;
+                                }
+                            });
+                        }
+                    }
+
+                });
+            }
+        }
+
+        //关闭窗口
+        vm.onWorkClose = function () {
+            window.parent.$(".workPro").data("kendoWindow").close();
+        }
+
+        //重置合并发文
+        vm.formReset = function () {
+            vm.searchSign = {};
+        }
+        //过滤器
+        vm.filterSign = function (item) {
+            var isMatch = true;
+            if (vm.searchSign.projectname && (item.projectname).indexOf(vm.searchSign.projectname) == -1) {
+                isMatch = false;
+            }
+            if (isMatch && vm.searchSign.reviewstage && (item.reviewstage).indexOf(vm.searchSign.reviewstage) == -1) {
+                isMatch = false;
+            }
+            if (isMatch) {
+                return item;
+            }
+        }
+
+        //初始化合并评审弹框
+        vm.initMergeWP = function () {
+            if (!vm.work.id) {
+                bsWin.alert("请先保存工作方案！");
+            } else {
+                //1、先判断该工作方案是否已经保存
+                workprogramSvc.findById(vm.work.id,function(data){
+                    //2、如果已经保存，则弹框
+                    if(data.isSigle == '合并评审' && data.isMainProject == "9"){
+                        //初始化合并评审信息
+                        workprogramSvc.initMergeInfo(vm, vm.work.signId);
+                        $("#mergeSign").kendoWindow({
+                            width: "75%",
+                            height: "700px",
+                            title: "合并评审",
+                            visible: false,
+                            modal: true,
+                            closable: true,
+                            actions: ["Pin", "Minimize", "Maximize", "Close"]
+                        }).data("kendoWindow").center().open();
+                    }else{
+                        bsWin.alert("请先保存工作方案！");
+                    }
+                });
+            }
+        }
+
+        //选择项目
+        vm.chooseSign = function () {
+            var selIds = $("input[name='mergeSign']:checked");
+            if (selIds.length == 0) {
+                bsWin.alert("请选择要合并评审的项目！");
+            } else {
+                var signIdArr = [];
+                $.each(selIds, function (i, obj) {
+                    signIdArr.push(obj.value);
+                });
+                workprogramSvc.chooseSign(vm.work.signId, signIdArr.join(","), function (data) {
+                    if (data.flag || data.reCode == "ok") {
+                        workprogramSvc.initMergeInfo(vm, vm.work.signId);
+                    }
+                    bsWin.alert(data.reMsg);
+                });
+            }
+        }
+
+        //取消项目
+        vm.cancelSign = function () {
+            var selIds = $("input[name='cancelMergeSignid']:checked");
+            if (selIds.length == 0) {
+                bsWin.alert("请选择要取消合并评审的项目！");
+            } else {
+                var selSignIdArr = [];
+                $.each(selIds, function (i, obj) {
+                    selSignIdArr.push(obj.value);
+                });
+            }
+            workprogramSvc.cancelMergeSign(vm.work.signId, selSignIdArr.join(","), function (data) {
+                if (data.flag || data.reCode == "ok") {
+                    workprogramSvc.initMergeInfo(vm, vm.work.signId);
+                }
+                bsWin.alert(data.reMsg);
+            });
+        }
+
+        /*********************  S_会议室模块   *************************/
+        //会议预定添加弹窗
+        vm.addTimeStage = function (id) {
+            if (id) {
+                workprogramSvc.findById(id,function(data){
+                    //2、如果已经保存，则弹框
+                    if(data.reviewType == '专家评审会'){
+                        $state.go('room', {businessId: id, businessType: "SIGN_WP"});
+                    }else{
+                        bsWin.alert("请先保存工作方案！");
+                    }
+                });
+            } else {
+                bsWin.alert("请先保存！");
+            }
+        }
+        //会议预定添加弹窗维维护管理模块
+/*        vm.addTimeStageMain = function () {
+            if (vm.work.id) {
+                workprogramSvc.findById(vm.work.id,function(data){
+                    //2、如果已经保存，则弹框
+                    if(data.reviewType == '专家评审会'){
+                        $state.go('room', {businessId: vm.work.id, businessType: "SIGN_WP",mainFlag:"1"});
+                    }else{
+                        bsWin.alert("请先保存工作方案！");
+                    }
+                });
+            } else {
+                bsWin.alert("请先保存！");
+            }
+        }*/
+        /*********************  E_会议室模块   *************************/
+
+        //查询评估部门
+        vm.findUsersByOrgId = function (type) {
+            workprogramSvc.findUsersByOrgId(vm, type);
+        }
+
+         //判断调研时间的结束时间是否小于开始时间
+        vm.compare=function (studyBeginTimeStr1,studyEndTimeStr1) {
+            var studyBeginTimeStr = parseInt(studyBeginTimeStr1.split(":")[0]);
+            var studyEndTimeStr = parseInt(studyEndTimeStr1.split(":")[0]);
+            if(studyBeginTimeStr==studyEndTimeStr){//当“时”想等时，判断“分”
+                var beginTime = parseInt(studyBeginTimeStr1.split(":")[1]);
+                var endTime = parseInt(studyEndTimeStr1.split(":")[1]);
+                if(beginTime>endTime){ //判断“分”
+                    vm.isTime=true;
+                }else{
+                    vm.isTime=false;
+                }
+
+            }else{
+                if(studyBeginTimeStr>studyEndTimeStr){ //判断"时"
+                    vm.isTime=true;
+                }else{
+                    vm.isTime=false;
+                }
+            }
+
+        }
+
+        //拟聘请专家
+        vm.selectExpert = function (id,reviewType,roomBookingDtos) {
+            if (id) {
+                //2、如果已经保存，则弹框
+                workprogramSvc.findById(id,function(data){
+                    if(data.reviewType == '专家评审会' || data.reviewType == '专家函评'){
+                        //先让用户选择会议时间
+                        if(reviewType == '专家评审会' && (!roomBookingDtos || roomBookingDtos.length == 0) ){
+                            bsWin.alert("请先预定评审会日期！");
+                        }else if(reviewType == '专家函评' && !data.letterDate){
+                            bsWin.alert("请先选择函评日期并保存！");
+                        }else{
+                            $state.go('expertReviewEdit', {
+                                businessId: vm.work.signId,
+                                minBusinessId: id,
+                                businessType: "SIGN",
+                                reviewType: reviewType,
+                                isback:true
+                            });
+                        }
+                    }else{
+                        bsWin.alert("请先保存工作方案！");
+                    }
+                });
+            } else {
+                bsWin.alert("请先保存当前信息，再继续操作！");
+            }
+        }
+
+        //签收模板打印
+        vm.printpage = function ($event) {
+            var id =  $($event.target).attr("id");
+            signSvc.workProgramPrint(id);
+        }
+
+      //维护项目时的工作方案的保存
+        vm.createMaintain=function () {
+            common.initJqValidation($("#work_program_form"));
+            var isValid = $("#work_program_form").valid();
+            if (isValid) {
+            //保存工作方案的意见
+            if (vm.assistant != undefined && vm.assistant.length != 0) {
+                for (var i = 0; i < vm.assistant.length; i++) {
+                    if(vm.assistant[i].studyBeginTimeStr){
+                        vm.assistant[i].studyBeginTime= vm.assistant[i].studyAllDay + " " + vm.assistant[i].studyBeginTimeStr+ ":00";
+                    }
+                    if(vm.assistant[i].studyEndTimeStr){
+                        vm.assistant[i].studyEndTime=  vm.assistant[i].studyAllDay + " "+ vm.assistant[i].studyEndTimeStr+ ":00";
+                    }
+                    vm.assistant[i].signId=vm.work.signId;
+                    workprogramSvc.createWP(vm.assistant[i], false, vm.iscommit);
+                }
+            }
+            if(vm.work){
+               workprogramSvc.createWP(vm.work, false, vm.iscommit,function () {
+                    bsWin.alert("操作成功");
+                });
+            }
+            } else {
+                bsWin.alert("操作失败，有红色*号的选项为必填项，请按要求填写！");
+            }
+        }
+    }
+})();
+
 (function () {
     'use strict';
 
@@ -35884,6 +36445,54 @@
             templatePrintSvc.templatePage(id);
         }
 
+        /**
+         * 专家评审费大于1000的可以点击进行拆分打印
+         * @param expertId
+         */
+        vm.splitPayment = function(expertSelectId , expert , reviewCost){
+            vm.expertSelect = {};
+            vm.expertSelect.id = expertSelectId;
+            vm.expertSelect.isSplit = 9;
+            vm.expertSelect.oneCost = "1000";
+
+            vm.expertName = expert.name;
+            vm.reviewCost = reviewCost
+            $("#splitPayment").kendoWindow({
+                width: "50%",
+                height: "300px",
+                title: "专家评审费打印方案",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+
+            $scope.$watch("vm.expertSelect.isSplit",function (newValue, oldValue) {
+                //由关联改成未关联
+                if(newValue != oldValue ){
+                    if(vm.expertSelect.isSplit == 9){
+                        vm.expertSelect.oneCost = "1000";
+                    }
+                    if(vm.expertSelect.isSplit == 0){
+                        vm.expertSelect.oneCost = "0";
+                    }
+                }
+
+            });
+        }
+
+        /**
+         * 保存打印方案
+         */
+        vm.saveSplit = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                expertReviewSvc.saveSplit(vm);
+            }
+
+        }
+
     }
 })();
 
@@ -35892,9 +36501,9 @@
 
     angular.module('app').controller('signFlowDetailCtrl', sign);
 
-    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','signFlowSvc','$scope','templatePrintSvc'];
+    sign.$inject = ['sysfileSvc','signSvc','$state','flowSvc','signFlowSvc','$scope','templatePrintSvc' , 'expertReviewSvc'];
 
-    function sign(sysfileSvc,signSvc,$state,flowSvc,signFlowSvc,$scope,templatePrintSvc) {
+    function sign(sysfileSvc,signSvc,$state,flowSvc,signFlowSvc,$scope,templatePrintSvc , expertReviewSvc) {
         var vm = this;
         vm.title = "项目流程信息";
         vm.model = {};
@@ -36052,6 +36661,55 @@
         vm.templatePage = function(id){
             templatePrintSvc.templatePage(id);
         }
+
+        /**
+         * 专家评审费大于1000的可以点击进行拆分打印
+         * @param expertId
+         */
+        vm.splitPayment = function(expertSelectId , expert , reviewCost){
+            vm.expertSelect = {};
+            vm.expertSelect.id = expertSelectId;
+            vm.expertSelect.isSplit = 9;
+            vm.expertSelect.oneCost = "1000";
+
+            vm.expertName = expert.name;
+            vm.reviewCost = reviewCost
+            $("#splitPayment").kendoWindow({
+                width: "50%",
+                height: "300px",
+                title: "专家评审费打印方案",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+
+            $scope.$watch("vm.expertSelect.isSplit",function (newValue, oldValue) {
+                //由关联改成未关联
+                if(newValue != oldValue ){
+                    if(vm.expertSelect.isSplit == 9){
+                        vm.expertSelect.oneCost = "1000";
+                    }
+                    if(vm.expertSelect.isSplit == 0){
+                        vm.expertSelect.oneCost = "0";
+                    }
+                }
+
+            });
+        }
+
+        /**
+         * 保存打印方案
+         */
+        vm.saveSplit = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                expertReviewSvc.saveSplit(vm);
+            }
+
+        }
+
 
     }
 })();
@@ -38962,7 +39620,7 @@
         vm.addWorkProgram = function () {
             if (vm.model.processInstanceId) {
                 if (vm.model.workProgramDtoList) {
-                    $state.go('workprogramEdit', {signid: vm.model.signid, isControl: true});
+                    $state.go('maintWorkprogramEdit', {signid: vm.model.signid});
                 } else {
                     bsWin.alert("该项目还没有填写工作方案");
                 }
@@ -42611,6 +43269,25 @@
             //保存工作方案的意见
             if (vm.assistant != undefined && vm.assistant.length != 0) {
                 for (var i = 0; i < vm.assistant.length; i++) {
+                    if(vm.work.studyQuantum=="全天") {
+                        vm.work.studyBeginTime="";
+                        vm.work.studyEndTime="";
+                    }
+                    else {
+                        if ($("#studyBeginTime").val()) {
+                            vm.assistant[i].studyBeginTimeStr = $("#studyBeginTime").val();
+                        }
+                        if ($("#studyEndTime").val()) {
+                            vm.assistant[i].studyEndTimeStr = $("#studyEndTime").val();
+                        }
+                        if ($("#studyAllDay").val() && $("#studyBeginTime").val()) {
+                            vm.assistant[i].studyBeginTime = $("#studyAllDay").val() + " " + $("#studyBeginTime").val() + ":00";
+                        }
+                        if ($("#studyAllDay").val() && $("#studyEndTime").val()) {
+                            vm.assistant[i].studyEndTime = $("#studyAllDay").val() + " " + $("#studyEndTime").val() + ":00";
+                        }
+                    }
+                    vm.assistant[i].signId=vm.work.signId;
                     workprogramSvc.createWP(vm.assistant[i], false, vm.iscommit);
                 }
             }
