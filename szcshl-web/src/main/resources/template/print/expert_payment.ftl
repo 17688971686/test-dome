@@ -1063,6 +1063,7 @@
                             <w:t>${payDate!}</w:t>
                         </w:r>
                     </w:p>
+                <#if expertList2??>
                     <w:p>
                         <w:pPr>
                             <w:tabs>
@@ -1082,10 +1083,6 @@
 
 
 
-
-
-
-                <#if expertList2?exists>
                     <w:p>
                         <w:pPr>
                             <w:spacing w:before="120" w:beforeLines="50" w:after="120" w:afterLines="50"/>
@@ -2105,8 +2102,9 @@
                         <w:cols w:space="720" w:num="1"/>
                         <w:docGrid w:type="lines" w:linePitch="312" w:charSpace="0"/>
                     </w:sectPr>
-                </w:body>
                 </#if>
+                </w:body>
+
             </w:document>
         </pkg:xmlData>
     </pkg:part>

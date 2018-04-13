@@ -159,7 +159,7 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="2395" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
@@ -183,7 +183,7 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1649" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
@@ -247,7 +247,7 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="2395" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>
@@ -271,7 +271,7 @@
                             <w:tc>
                                 <w:tcPr>
                                     <w:tcW w:w="1649" w:type="dxa"/>
-                                    <w:vAlign w:val="top"/>
+                                    <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
                                     <w:pPr>

@@ -1385,6 +1385,8 @@
                 //必须是确认参与的专家
                 if(expertSelectedDtoList[i].isConfrim == "9"
                     && expertSelectedDtoList[i].isJoin == "9"){
+
+
                     if(expertSelectedDtoList[i].expertDto.bankAccount ==undefined
                         || expertSelectedDtoList[i].expertDto.openingBank ==undefined ){
 
@@ -1392,6 +1394,13 @@
                         bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
                         break;
                     }
+
+                    if(expertSelectedDtoList[i].reviewTaxes == undefined){
+                        flag = true;
+                        bsWin.alert("评审费未发放，打印失败！");
+                        break;
+                    }
+
                 }
 
             }
