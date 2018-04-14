@@ -84,7 +84,7 @@ public class ArchivesLibraryController {
 	}
 	
     @RequiresAuthentication
-    //@RequiresPermissions("archivesLibrary##delete")
+    //@RequiresPermissions("archivesLibrary#delete")
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
@@ -92,7 +92,7 @@ public class ArchivesLibraryController {
     }
     
     @RequiresAuthentication
-   // @RequiresPermissions("archivesLibrary##put")
+   // @RequiresPermissions("archivesLibrary#put")
     @RequestMapping(name = "更新记录", path = "", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void put(@RequestBody ArchivesLibraryDto record) {
@@ -113,7 +113,8 @@ public class ArchivesLibraryController {
         return ctrlName+"/archivesLibraryList"; 
     }
 
-    @RequiresPermissions("archivesLibrary#html/archivesLibraryView#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("archivesLibrary#html/archivesLibraryView#get")
     @RequestMapping(name = "档案借阅查看详情", path = "html/archivesLibraryView", method = RequestMethod.GET)
     public String archivesCenterView() {
         return ctrlName+"/archivesLibraryView";

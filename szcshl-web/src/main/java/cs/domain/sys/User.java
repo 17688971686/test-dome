@@ -94,7 +94,7 @@ public class User extends DomainBase {
     /**
      * 是否停用
      */
-    @Column(columnDefinition = "varchar(255) ")
+    @Column(columnDefinition = "varchar(255) default '在用'")
     private String useState;
 
     /**

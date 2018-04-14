@@ -1,5 +1,6 @@
 package cs.controller.asserts.userAssertDetail;
 
+import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;
@@ -24,7 +25,8 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "用户资产明细", path = "userAssertDetail")
-@MudoleAnnotation(name = "资产管理",value = "permission#assert")
+//@MudoleAnnotation(name = "资产管理",value = "permission#assert")
+@IgnoreAnnotation
 public class UserAssertDetailController {
 
 	String ctrlName = "asserts/userAssertDetail";

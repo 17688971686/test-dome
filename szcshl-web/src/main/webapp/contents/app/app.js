@@ -502,7 +502,7 @@
                     controllerAs: 'vm'
                 }).state('deletList', {	//作废项目列表
                     url: '/deletList',
-                    templateUrl: rootPath + '/sign/html/deletList.html',
+                    templateUrl: rootPath + '/maintainProject/html/deletList.html',
                     controller: 'signDeletCtrl',
                     controllerAs: 'vm'
                 })
@@ -1138,7 +1138,7 @@
                 /********************以下是项目维护***************************/
                 .state('MaintainProjectList', {	//维护项目列表
                     url: '/MaintainProjectList',
-                    templateUrl: rootPath + '/sign/html/MaintainProjectList.html',
+                    templateUrl: rootPath + '/maintainProject/html/MaintainProjectList.html',
                     controller: 'MaintainProjectCtrl',
                     controllerAs: 'vm'
                 })
@@ -1377,9 +1377,8 @@
                 }).data("kendoWindow").center().open();
             }
         }
-//评审费打印。判断开户行和银行账户信息完不完整
+        //评审费打印。判断开户行和银行账户信息完不完整
         $rootScope.isBankCard=function (expertSelectedDtoList,signid) {
-
             var flag  = false;
             for(var i=0;i<expertSelectedDtoList.length;i++){
                 //必须是确认参与的专家

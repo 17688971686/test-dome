@@ -38,6 +38,10 @@ public class Constant {
     /**
      * 停用
      */
+    public static final String USER = "在用";
+    /**
+     * 停用
+     */
     public static final String UNUSER = "停用";
 
     /**

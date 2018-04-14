@@ -4,12 +4,12 @@ import com.alibaba.fastjson.JSON;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
 import cs.ahelper.IgnoreAnnotation;
-import cs.common.*;
-import cs.common.utils.PropertyUtil;
+import cs.common.Constant;
+import cs.common.FGWResponse;
+import cs.common.IFResultCode;
+import cs.common.ResultMsg;
 import cs.common.utils.Validate;
-import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
-import cs.domain.project.WorkProgram;
 import cs.domain.sys.Log;
 import cs.model.project.SignDto;
 import cs.model.project.SignPreDto;
@@ -22,7 +22,6 @@ import cs.service.sys.LogService;
 import cs.service.topic.TopicInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -107,12 +106,13 @@ public class SysRestController {
           //  JSON.
             String msg = "";
             Map resultMap = (Map)JSON.parse(signPreInfo);
-                    if(resultMap.get("data") != null && !resultMap.get("data").equals("null")){
+            if(resultMap.get("data") != null && !resultMap.get("data").equals("null")){
                 SignPreDto signPreDto = JSON.parseObject(signPreInfo, SignPreDto.class);
                  msg = "项目【"+signPreDto.getData().getProjectname()+"("+signPreDto.getData().getFilecode()+")】，";
                 //json转出对象
                 if(Validate.isString(signType) && signType.equals("1")){
-                    resultMsg = signRestService.pushPreProject(signPreDto.getData()); //获取项目预签收信息
+                    //获取项目预签收信息
+                    resultMsg = signRestService.pushPreProject(signPreDto.getData());
                 }else{
                     resultMsg = signRestService.pushProject(signPreDto.getData());
                 }

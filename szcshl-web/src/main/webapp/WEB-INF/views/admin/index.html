@@ -455,7 +455,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </@shiro.hasPermission>
                     <!-- end 课题管理-->
 
-                    <!-- begin 图书管理 -->
+                    <!-- begin 图书管理
                 <@shiro.hasPermission name="permission#bookBuyBusiness">
                     <li class="treeview">
                         <a href="javascript:void(0)">
@@ -478,9 +478,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </ul>
                     </li>
                 </@shiro.hasPermission>
-                    <!-- end 图书管理 -->
+                 end 图书管理 -->
 
-                    <!-- begin 资产管理 -->
+                <!-- begin 资产管理
                 <@shiro.hasPermission name="permission#assert">
                     <li class="treeview">
                         <a href="javascript:void(0)">
@@ -500,10 +500,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </ul>
                     </li>
                 </@shiro.hasPermission>
+                 end 资产管理 -->
 
-                    <!-- end 资产管理 -->
-
-                    <!-- begin 党务管理-->
+                <!-- begin 党务管理-->
                 <@shiro.hasPermission name="permission#partyManager">
                     <li class="treeview">
                         <a href="javascript:void(0)">
@@ -570,19 +569,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="reviewFee#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="reviewFee">评审费发放</a></li>
                             </@shiro.hasPermission>
+                        <@shiro.hasPermission name="maintainProject#html/MaintainProjectList#get">
+                            <li><a href="javascript:void(0)" ui-sref="MaintainProjectList">维护项目</a></li>
+                        </@shiro.hasPermission>
+                        <@shiro.hasPermission name="maintainProject#html/deletList#get">
+                            <li><a href="javascript:void(0)" ui-sref="deletList">作废项目</a></li>
+                        </@shiro.hasPermission>
                            <!-- <@shiro.hasPermission name="signwork#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="signwork">抽取专家修改</a></li>
                             </@shiro.hasPermission>-->
                             <@shiro.hasPermission name="log#html/list#get">
-                                <li><a href="javascript:void(0)" ui-sref="log">日志记录</a></li>
+                                <li><a href="javascript:void(0)" ui-sref="log">日志查询</a></li>
                             </@shiro.hasPermission>
-                            <@shiro.hasPermission name="sign#html/deletList#get">
-                                <li><a href="javascript:void(0)" ui-sref="deletList">作废项目</a></li>
-                            </@shiro.hasPermission>
-                            <@shiro.hasPermission name="sign#html/MaintainProjectList#get">
-                                <li><a href="javascript:void(0)" ui-sref="MaintainProjectList">维护项目</a></li>
-                            </@shiro.hasPermission>
-
                         </ul>
                     </li>
                 </@shiro.hasPermission>

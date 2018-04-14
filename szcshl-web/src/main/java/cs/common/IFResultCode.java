@@ -33,8 +33,11 @@ public class IFResultCode {
         SZEC_SFGW_02("SFGW_02","项目编号为空！"),
         SZEC_SFGW_03("SFGW_03","发文信息为空！"),
         SZEC_SFGW_04("SFGW_04","项目编号为空！"),
-        SZEC_SFGW_05("SFGW_05","项目编号为空！");
-
+        SZEC_SFGW_05("SFGW_05","项目编号为空！"),
+        //以下是附件返回码
+        SZEC_FILE_EMPTY("FILE_01","没有附件信息"),
+        SZEC_FILE_NOT_DOWN("FILE_02","附件获取失败"),
+        SZEC_FILE_NOT_ALL("FILE_03","附件获取不全");
         private String code;
         private String value;
 
@@ -50,6 +53,7 @@ public class IFResultCode {
             return value;
         }
     }
+
 
     /**
      * 评审方式接口对照码

@@ -90,8 +90,6 @@ public class SignServiceImpl implements SignService {
     @Autowired
     private OfficeUserService officeUserService;
     @Autowired
-    private FileRecordService fileRecordService;
-    @Autowired
     private CompanyRepo companyRepo;
     @Autowired
     private SysFileRepo sysFileRepo;
@@ -160,11 +158,11 @@ public class SignServiceImpl implements SignService {
         Date now = new Date();
         Sign sign = null;
         /**
+         * 如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
          * 之前委里收文编号年份后面+4位数，现在是5位数
          */
-        //如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
         if (!signDto.getFilecode().endsWith("0000") && !signDto.getFilecode().endsWith("00000")) {
-            signRepo.findByFilecode(signDto.getFilecode(), signDto.getSignState());
+            sign = signRepo.findByFilecode(signDto.getFilecode(), signDto.getSignState());
         }
         //1、根据收文编号获取项目信息
         if (sign == null) {
@@ -187,28 +185,8 @@ public class SignServiceImpl implements SignService {
             }
             //3、送件人为当前签收人，
             sign.setSendusersign(SessionUtil.getDisplayName());
-
-            //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
-            if (Constant.STAGE_BUDGET.equals(sign.getReviewstage())) {
-                sign.setDealOrgType(Constant.BusinessType.GX.getValue());
-                sign.setLeaderhandlesug("请（概算一部 概算二部）组织评审。");
-            } else {
-                sign.setDealOrgType(Constant.BusinessType.PX.getValue());
-                sign.setLeaderhandlesug("请（评估一部 评估二部 评估一部信息化组）组织评审。");
-            }
-
-            //5、综合部、分管副主任默认办理信息
-            List<User> roleList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
-            for (User user : roleList) {
-                if (sign.getDealOrgType().equals(user.getMngOrgType())) {
-                    sign.setLeaderId(user.getId());
-                    sign.setLeaderName(user.getDisplayName());
-                    sign.setComprehensivehandlesug("请" + user.getDisplayName() + "同志阅示。");
-                    sign.setComprehensiveName("综合部");
-                    sign.setComprehensiveDate(new Date());
-                    break;
-                }
-            }
+            //初始化办理部门信息
+            initSignDeptInfo(sign);
             ///6、创建人信息
             sign.setCreatedDate(now);
             sign.setModifiedDate(now);
@@ -242,6 +220,52 @@ public class SignServiceImpl implements SignService {
                 sign.setReviewdays(0f);
             }
         }
+        signRepo.save(sign);
+        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);
+    }
+
+    /**
+     * 项目预签收
+     * @param signDto
+     * @return
+     */
+    @Override
+    @Transactional
+    public ResultMsg reserveAddSign(SignDto signDto) {
+        Sign sign = new Sign();
+        BeanCopierUtils.copyProperties(signDto, sign);
+        sign.setSignState(EnumState.NORMAL.getValue());
+        /**
+         * 如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
+         * 之前委里收文编号年份后面+4位数，现在是5位数
+         */
+        if (!signDto.getFilecode().endsWith("0000") && !signDto.getFilecode().endsWith("00000")) {
+            sign = signRepo.findByFilecode(signDto.getFilecode(), signDto.getSignState());
+        }
+        //0 用于区别签收和预签收页面实现送来资料存放位置
+        sign.setIspresign(Constant.EnumState.NO.getValue());
+        //2、是否是项目概算流程
+        if (Constant.STAGE_BUDGET.equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
+            sign.setIsassistflow(EnumState.YES.getValue());
+        } else {
+            sign.setIsassistflow(EnumState.NO.getValue());
+        }
+        Date now = new Date();
+
+        //3、送件人为当前签收人，
+        sign.setSendusersign(SessionUtil.getDisplayName());
+        //初始化办理部门信息
+        initSignDeptInfo(sign);
+
+        sign.setSignid(UUID.randomUUID().toString());
+        sign.setCreatedDate(now);
+        sign.setModifiedDate(now);
+        sign.setCreatedBy(SessionUtil.getLoginName());
+        sign.setModifiedBy(SessionUtil.getLoginName());
+        //预签收日期
+        sign.setPresignDate(now);
+        //默认为不亮灯
+        sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
         signRepo.save(sign);
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);
     }
@@ -769,7 +793,7 @@ public class SignServiceImpl implements SignService {
                     if (assistOrgIdList.size() > 3) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "协办部门最多只能选择3个！");
                     }
-                    String aOrgName = "";
+                    String aOrgId="", aOrgName = "";
                     for (int i = 2, l = (assistOrgIdList.size() + 2); i < l; i++) {
                         businessId = assistOrgIdList.get(i - 2);
                         SignBranch signBranch = new SignBranch(signid, String.valueOf(i), EnumState.YES.getValue(), EnumState.NO.getValue(), EnumState.NO.getValue(), businessId, EnumState.NO.getValue());
@@ -780,9 +804,11 @@ public class SignServiceImpl implements SignService {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置" + orgDept.getName() + "的部门负责人！");
                         }
                         if (i > 2) {
+                            aOrgId += ",";
                             aOrgName += ",";
                         }
-                        aOrgName = orgDept.getName();
+                        aOrgId += businessId;
+                        aOrgName += orgDept.getName();
 
                         dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
                         String userId = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
@@ -806,7 +832,7 @@ public class SignServiceImpl implements SignService {
                         branchCount ++ ;
                     }
                     //协办部门信息
-                    sign.setaOrgId(businessId);
+                    sign.setaOrgId(aOrgId);
                     sign.setaOrgName(aOrgName);
                 }
                 signBranchRepo.bathUpdate(saveBranchList);
@@ -2370,62 +2396,32 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    @Transactional
-    public ResultMsg reserveAddSign(SignDto signDto) {
-        Sign sign = new Sign();
-        BeanCopierUtils.copyProperties(signDto, sign);
-        sign.setSignState(EnumState.NORMAL.getValue());
-
-        //0 用于区别签收和预签收页面实现送来资料存放位置
-        sign.setIspresign(Constant.EnumState.NO.getValue());
-        //2、是否是项目概算流程
-        if (Constant.STAGE_BUDGET.equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
-            sign.setIsassistflow(EnumState.YES.getValue());
-        } else {
-            sign.setIsassistflow(EnumState.NO.getValue());
-        }
-        Date now = new Date();
-
-        //3、送件人为当前签收人，
-        sign.setSendusersign(SessionUtil.getDisplayName());
-
+    public void initSignDeptInfo(Sign sign) {
         //4、默认办理部门（项目建议书、可研为PX，概算为GX，其他为评估）
-        if (Constant.STAGE_BUDGET.equals(sign.getReviewstage())) {
-            sign.setDealOrgType(Constant.BusinessType.GX.getValue());
-            sign.setLeaderhandlesug("请（概算一部 概算二部）组织评审。");
-        } else {
-            sign.setDealOrgType(Constant.BusinessType.PX.getValue());
-            sign.setLeaderhandlesug("请（评估一部 评估二部 评估一部信息化组）组织评审。");
-        }
-
-        //5、综合部、分管副主任默认办理信息
-        List<User> roleList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
-        for (User user : roleList) {
-            if (sign.getDealOrgType().equals(user.getMngOrgType())) {
-                sign.setLeaderId(user.getId());
-                sign.setLeaderName(user.getDisplayName());
-                sign.setComprehensivehandlesug("请" + (user.getDisplayName()).substring(0, 1) + "主任阅示。");
-                sign.setComprehensiveName("综合部");
-                sign.setComprehensiveDate(new Date());
-                break;
+        if (!Validate.isString(sign.getDealOrgType())) {
+            if (Constant.STAGE_BUDGET.equals(sign.getReviewstage())) {
+                sign.setDealOrgType(Constant.BusinessType.GX.getValue());
+                sign.setLeaderhandlesug("请（概算一部 概算二部）组织评审。");
+            } else {
+                sign.setDealOrgType(Constant.BusinessType.PX.getValue());
+                sign.setLeaderhandlesug("请（评估一部 评估二部 评估一部信息化组）组织评审。");
             }
         }
-        /*预签收的项目，没有评审中心的收文编号
-        if (!Validate.isString(sign.getSignNum())) {
-           initSignNum(sign);
-        }*/
 
-        sign.setSignid(UUID.randomUUID().toString());
-        sign.setCreatedDate(now);
-        sign.setModifiedDate(now);
-        sign.setCreatedBy(SessionUtil.getLoginName());
-        sign.setModifiedBy(SessionUtil.getLoginName());
-        //预签收日期
-        sign.setPresignDate(now);
-        //默认为不亮灯
-        sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
-        signRepo.save(sign);
-        return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);
+        if (!Validate.isString(sign.getLeaderId())) {
+            //5、综合部、分管副主任默认办理信息
+            List<User> roleList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
+            for (User user : roleList) {
+                if (sign.getDealOrgType().equals(user.getMngOrgType())) {
+                    sign.setLeaderId(user.getId());
+                    sign.setLeaderName(user.getDisplayName());
+                    sign.setComprehensivehandlesug("请" + (user.getDisplayName()).substring(0, 1) + "主任阅示。");
+                    sign.setComprehensiveName("综合部");
+                    sign.setComprehensiveDate(new Date());
+                    break;
+                }
+            }
+        }
     }
 
     /**

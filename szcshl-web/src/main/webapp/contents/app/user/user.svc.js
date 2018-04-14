@@ -97,12 +97,10 @@
                 }
 
                 var httpSuccess = function success(response) {
-
                     common.requestSuccess({
                         vm: vm,
                         response: response,
                         fn: function () {
-
                             common.alert({
                                 vm: vm,
                                 msg: "操作成功",
@@ -112,7 +110,6 @@
                                 }
                             })
                         }
-
                     })
                 }
 

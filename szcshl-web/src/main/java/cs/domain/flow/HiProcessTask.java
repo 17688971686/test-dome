@@ -87,6 +87,7 @@ public class HiProcessTask {
      */
     @Column
     private String assigneeList;
+
     /**
      * 处理信息
      */

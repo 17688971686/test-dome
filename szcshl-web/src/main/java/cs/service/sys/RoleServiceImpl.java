@@ -40,7 +40,6 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional
     public PageModelDto<RoleDto> get(ODataObj odataObj) {
-
         List<Role> listRole = roleRepository.findByOdata(odataObj);
         List<RoleDto> roleDtoList = new ArrayList<RoleDto>();
         for (Role item : listRole) {

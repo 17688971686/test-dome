@@ -440,26 +440,16 @@ public class SignController {
         return "admin/personDtasks";
     }
 
-    @RequiresPermissions("sign#etasks#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("sign#etasks#get")
     @RequestMapping(name = "办结项目", path = "etasks")
     public String etasks(Model model) {
 
         return "admin/etasks";
     }
 
-    @RequiresPermissions("sign#html/deletList#get")
-    @RequestMapping(name = "作废项目", path = "html/deletList", method = RequestMethod.GET)
-    public String deletList() {
-
-        return ctrlName + "/deletList";
-    }
-    @RequiresPermissions("sign#html/MaintainProjectList#get")
-    @RequestMapping(name = "维护项目", path = "html/MaintainProjectList", method = RequestMethod.GET)
-    public String MaintainProjectList() {
-
-        return ctrlName + "/MaintainProjectList";
-    }
-    @RequiresPermissions("sign#html/MaintainProjectList#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("sign#html/MaintainProjectList#get")
     @RequestMapping(name = "维护项目的编辑", path = "html/MaintainProjectEdit", method = RequestMethod.GET)
     public String MaintainProjectEdit() {
 

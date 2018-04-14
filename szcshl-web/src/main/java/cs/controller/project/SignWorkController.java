@@ -28,7 +28,8 @@ public class SignWorkController {
     @Autowired
     private SignWorkService signWorkService;
 
-    @RequiresPermissions("signwork#html/list#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("signwork#html/list#get")
     @RequestMapping(name = "项目专家抽取", path = "html/list", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/list";

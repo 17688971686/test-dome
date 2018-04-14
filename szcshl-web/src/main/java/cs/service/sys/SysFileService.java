@@ -67,4 +67,11 @@ public interface SysFileService {
      * @param businessType
      */
     void deleteByBusinessIdAndBusinessType(String businessId , String businessType);
+
+    /**
+     * 保存远程连接的文件
+     * @param businessId
+     * @param sysFileDtoList
+     */
+    ResultMsg downRemoteFile(String businessId,List<SysFileDto> sysFileDtoList,String userId,String mainType,String busiType);
 }

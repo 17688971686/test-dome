@@ -1,11 +1,13 @@
 package cs.controller.achievement;
 
-import cs.ahelper.MudoleAnnotation;
+import cs.ahelper.IgnoreAnnotation;
 import cs.service.expert.ExpertReviewService;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 
 /**
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Controller
 @RequestMapping(name = "业绩管理", path = "achievementManager")
-@MudoleAnnotation(name = "业绩管理", value = "permission#achievement")
+@IgnoreAnnotation
 public class AchievementController {
 
     String ctrlName = "achievement";
@@ -24,7 +26,8 @@ public class AchievementController {
     private ExpertReviewService expertReviewService;
 
     // begin#html
-    @RequiresPermissions("achievementManager#html/achievement#get")
+    @RequiresAuthentication
+    //@RequiresPermissions("achievementManager#html/achievement#get")
     @RequestMapping(name = "员工业绩汇总", path = "html/achievement", method = RequestMethod.GET)
     public String list() {
         return ctrlName + "/achievementSum";

@@ -245,4 +245,6 @@ public interface SignService {
      * @return
      */
     UnitScoreDto findSignUnitScore(String signId);
+
+    void initSignDeptInfo(Sign sign);
 }

@@ -1,5 +1,6 @@
 package cs.controller.asserts.assertStorageBusiness;
 
+import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.domain.asserts.assertStorageBusiness.AssertStorageBusiness;
@@ -25,7 +26,8 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "固定资产申购流程", path = "assertStorageBusiness")
-@MudoleAnnotation(name = "资产管理",value = "permission#assert")
+//@MudoleAnnotation(name = "资产管理",value = "permission#assert")
+@IgnoreAnnotation
 public class AssertStorageBusinessController {
 
 	String ctrlName = "asserts/assertStorageBusiness";

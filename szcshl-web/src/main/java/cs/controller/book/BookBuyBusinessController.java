@@ -1,5 +1,6 @@
 package cs.controller.book;
 
+import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.domain.book.BookBuyBusiness;
@@ -25,7 +26,8 @@ import java.text.ParseException;
  */
 @Controller
 @RequestMapping(name = "图书采购申请业务信息", path = "bookBuyBusiness")
-@MudoleAnnotation(name = "图书管理",value = "permission#bookBuyBusiness")
+//@MudoleAnnotation(name = "图书管理",value = "permission#bookBuyBusiness")
+@IgnoreAnnotation
 public class BookBuyBusinessController {
 
 	String ctrlName = "bookBuyBusiness";

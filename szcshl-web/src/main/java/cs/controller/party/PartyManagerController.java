@@ -7,6 +7,7 @@ import cs.model.party.PartyManagerDto;
 import cs.repository.odata.ODataObj;
 import cs.service.party.PartyManagerService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -59,17 +60,19 @@ public class PartyManagerController {
         return partyManagerService.createParty(partyManagerDto);
     }
 
-
+    @RequiresPermissions("partyManager#html/partyList#get")
     @RequestMapping(name = "党员信息录入页" , path = "html/partyEdit" , method = RequestMethod.GET)
     public String edit(){
         return ctrlName + "/partyEdit";
     }
 
+    @RequiresPermissions("partyManager#html/partyList#get")
     @RequestMapping(name = "党员信息列表" , path = "html/partyList" , method = RequestMethod.GET)
     public String partyList(){
         return ctrlName + "/partyList";
     }
 
+    @RequiresPermissions("partyManager#html/addPartyMeeting#get")
     @RequestMapping(name = "党员会议添加" , path = "html/addPartyMeeting" , method = RequestMethod.GET )
     public String partyMeeting(){
         return ctrlName + "/addPartyMeeting";
