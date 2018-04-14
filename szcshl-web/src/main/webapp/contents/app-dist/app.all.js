@@ -1385,6 +1385,8 @@
                 //必须是确认参与的专家
                 if(expertSelectedDtoList[i].isConfrim == "9"
                     && expertSelectedDtoList[i].isJoin == "9"){
+
+
                     if(expertSelectedDtoList[i].expertDto.bankAccount ==undefined
                         || expertSelectedDtoList[i].expertDto.openingBank ==undefined ){
 
@@ -1392,6 +1394,13 @@
                         bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
                         break;
                     }
+
+                    if(expertSelectedDtoList[i].reviewTaxes == undefined){
+                        flag = true;
+                        bsWin.alert("评审费未发放，打印失败！");
+                        break;
+                    }
+
                 }
 
             }
@@ -15830,7 +15839,7 @@
         vm.isSuperUser = isSuperUser;
         vm.saveNewExpertFlag = 0;   //保存新专家标志
         vm.reviewType=$state.params.reviewType; //评审方式
-
+        vm.newMinBusinessId = ""; //新专家信息表方案id
 
         //S 查看专家详细
         vm.findExportDetail = function (id) {
@@ -15878,6 +15887,12 @@
 
         //删除后刷新
         vm.reFleshAfterRemove = function(ids){
+            if(vm.confirmEPListReplace.length > 0){
+                vm.newMinBusinessId = vm.confirmEPListReplace[0].businessId;
+            }
+            if(vm.confirmEPList.length > 0){
+                vm.newMinBusinessId = vm.confirmEPList[0].businessId;
+            }
             $.each(ids,function(i, obj){
                 //1、删除已确认的专家
                 $.each(vm.confirmEPList,function(index, epObj){
@@ -15891,6 +15906,13 @@
                     }
                 })
             })
+            if(vm.newMinBusinessId !=''&& vm.confirmEPListReplace.length == 0){
+                expertReviewSvc.deleteExpertNewInfo(vm.newMinBusinessId);
+                vm.saveNewExpertFlag = 0;
+            }
+            if(vm.newMinBusinessId !=''&& vm.confirmEPList.length == 0){
+                vm.saveNewExpertFlag = 0;
+            }
         }
 
         //更新参加未参加状态
@@ -16663,6 +16685,7 @@
             //以下为新方法
             initReview: initReview,                      //初始化评审方案信息
             delSelectedExpert: delSelectedExpert,        //删除已选专家信息
+            deleteExpertNewInfo:deleteExpertNewInfo,    //删除已选新专家信息
             queryAutoExpert: queryAutoExpert,            //查询符合抽取条件的专家
             validateAutoExpert: validateAutoExpert,      //显示抽取专家效果(抽取方法已在后台封装)
             affirmAutoExpert: affirmAutoExpert,	         //确认已经抽取的专家
@@ -17133,6 +17156,27 @@
                 }
             });
         }//E_delSelectedExpert
+
+        //deleteExpertNewInfo(删除最新已选专家)
+        function deleteExpertNewInfo(minBusinessId) {
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/expertReview/deleteExpertNewInfo",
+                params: {
+                    minBusinessId: minBusinessId,
+                }
+            }
+            var httpSuccess = function success(response) {
+
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess,
+                onError: function (response) {
+                }
+            });
+        }//deleteExpertNewInfo
 
 
         //S_根据业务ID查询评审方案信息
@@ -37129,9 +37173,9 @@
 
     angular.module('app').controller('signDetailsCtrl', sign);
 
-    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'templatePrintSvc', 'assistSvc'];
+    sign.$inject = ['sysfileSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'templatePrintSvc', 'assistSvc'  , 'expertReviewSvc'];
 
-    function sign(sysfileSvc, signSvc, $state, flowSvc, $scope, templatePrintSvc, assistSvc) {
+    function sign(sysfileSvc, signSvc, $state, flowSvc, $scope, templatePrintSvc, assistSvc , expertReviewSvc) {
         var vm = this;
         vm.model = {};							    //创建一个form对象
         vm.flow = {};                               //收文对象
@@ -37270,6 +37314,54 @@
             var reviewstage = escape(encodeURIComponent(vm.model.reviewstage));
             window.open(rootPath + "/sign/printSign?signId=" + vm.model.signid + "&reviewStage=" + reviewstage);
         }*/
+
+        /**
+         * 专家评审费大于1000的可以点击进行拆分打印
+         * @param expertId
+         */
+        vm.splitPayment = function(expertSelectId , expert , reviewCost){
+            vm.expertSelect = {};
+            vm.expertSelect.id = expertSelectId;
+            vm.expertSelect.isSplit = 9;
+            vm.expertSelect.oneCost = "1000";
+
+            vm.expertName = expert.name;
+            vm.reviewCost = reviewCost
+            $("#splitPayment").kendoWindow({
+                width: "50%",
+                height: "300px",
+                title: "专家评审费打印方案",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+
+            $scope.$watch("vm.expertSelect.isSplit",function (newValue, oldValue) {
+                //由关联改成未关联
+                if(newValue != oldValue ){
+                    if(vm.expertSelect.isSplit == 9){
+                        vm.expertSelect.oneCost = "1000";
+                    }
+                    if(vm.expertSelect.isSplit == 0){
+                        vm.expertSelect.oneCost = "0";
+                    }
+                }
+
+            });
+        }
+
+        /**
+         * 保存打印方案
+         */
+        vm.saveSplit = function(){
+            common.initJqValidation();
+            var isValid = $('form').valid();
+            if (isValid) {
+                expertReviewSvc.saveSplit(vm);
+            }
+
+        }
     }
 })();
 
