@@ -16,7 +16,7 @@
             //以下为新方法
             initReview: initReview,                      //初始化评审方案信息
             delSelectedExpert: delSelectedExpert,        //删除已选专家信息
-            deleteExpertNewInfo:deleteExpertNewInfo,     //删除已选新专家信息
+            deleteExpertNewInfo:deleteExpertNewInfo,    //删除已选新专家信息
             queryAutoExpert: queryAutoExpert,            //查询符合抽取条件的专家
             validateAutoExpert: validateAutoExpert,      //显示抽取专家效果(抽取方法已在后台封装)
             affirmAutoExpert: affirmAutoExpert,	         //确认已经抽取的专家
@@ -508,6 +508,7 @@
                 }
             });
         }//deleteExpertNewInfo
+
 
         //S_根据业务ID查询评审方案信息
         function findByBusinessId(businessId,callBack){

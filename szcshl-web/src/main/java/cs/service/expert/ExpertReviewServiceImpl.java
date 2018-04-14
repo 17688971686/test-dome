@@ -242,11 +242,11 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             expertSelected.setExpert(expertRepo.findById(Expert_.expertID.getName(), expertIdArr.get(i)));
             Expert expert = expertRepo.findById(Expert_.expertID.getName(), expertIdArr.get(i));
             if(null != expert && null != expert.getExpertType()){
-                if(expert.getExpertType().size() == 1){
-                    expertSelected.setMaJorBig(expert.getExpertType().get(0).getMaJorBig());
-                    expertSelected.setMaJorSmall(expert.getExpertType().get(0).getMaJorSmall());
-                    expertSelected.setExpeRttype(expert.getExpertType().get(0).getExpertType());
-                }
+               if(expert.getExpertType().size() == 1){
+                   expertSelected.setMaJorBig(expert.getExpertType().get(0).getMaJorBig());
+                   expertSelected.setMaJorSmall(expert.getExpertType().get(0).getMaJorSmall());
+                   expertSelected.setExpeRttype(expert.getExpertType().get(0).getExpertType());
+               }
             }
             //保存抽取条件映射
             expertSelected.setExpertReview(expertReview);
@@ -679,6 +679,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败！");
         }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+
     }
 
     /**
@@ -692,4 +693,5 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             expertNewInfoRepo.deleteById("businessId",minBusinessId);
         }
     }
+
 }
