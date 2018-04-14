@@ -288,7 +288,7 @@
     <tr ng-if="!vm.businessFlag.isReveiwAWP" ng-hide="vm.work.reviewType == '自评' ">
         <td class="text-center" colspan="2">拟聘请专家</td>
         <td colspan="8">
-            <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert(vm.work.id,vm.work.reviewType,vm.model.roomBookingDtos);"
+            <button class="btn btn-xs btn-primary" ng-click="vm.selectExpert(vm.work.id,vm.work.reviewType,vm.work.roomBookingDtos);"
                     ng-hide="vm.work.reviewType == '自评' || (vm.work.isMainProject == 0 && vm.work.isSigle=='合并评审')"
                     ng-show="vm.work.reviewType == '专家函评' || vm.work.reviewType == '专家评审会'|| (vm.work.isMainProject == 9 && vm.work.isSigle=='合并评审')">
                 <span class="glyphicon glyphicon-pencil"></span>编辑

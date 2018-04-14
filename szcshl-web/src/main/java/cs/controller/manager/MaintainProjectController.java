@@ -64,7 +64,7 @@ public class MaintainProjectController {
     }
 
     @RequiresPermissions("maintainProject#html/maintainExpertPayment#get")
-    @RequestMapping(name = "评审费发放", path = "html/maintainExpertPayment", method = RequestMethod.GET)
+    @RequestMapping(name = "维护项目的评审费发放", path = "html/maintainExpertPayment", method = RequestMethod.GET)
     public String maintainExpertPayment() {
 
         return  ctrlName + "/maintainExpertPayment";
