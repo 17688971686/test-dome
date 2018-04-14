@@ -225,7 +225,8 @@
                     <td width="15%" align="center">姓名</td>
                     <td width="15%" align="center">工作单位</td>
                     <td width="10%" align="center">职务/职称</td>
-                    <td width="10%" align="center">专业</td>
+                    <td width="10%" align="center">专业大类</td>
+                    <td width="10%" align="center">专业小类</td>
                     <td width="15%" align="center">联系电话</td>
                     <td width="10%" align="center">专家类型</td>
                     <td width="15%" align="center">备注</td>
@@ -233,10 +234,11 @@
                 <tr ng-repeat="x in  vm.confirmEPList|filter:{selectType:'1',isConfrim:'9'} track by $index">
                     <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
                     <td align="center">{{x.expertDto.comPany}}</td>
-                    <td align="center">{{x.expertDto.job}}/{{x.post}}</td>
-                    <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>
+                    <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
+                    <td align="center">{{x.maJorBig}}</td>
+                    <td align="center">{{x.maJorSmall}}</td>
                     <td align="center">{{x.expertDto.userPhone}}</td>
-                    <td align="center">{{x.expertDto.expertSort}}</td>
+                    <td align="center">{{x.expeRttype}}</td>
                     <td align="center">{{x.expertDto.remark}}</td>
                 </tr>
             </table>
@@ -247,9 +249,9 @@
         <div id="aotuMatchResultDiv" class="well well-sm" style="display:none;">
             <table class="table table-bordered" id="autoDraftExpertTable">
                 <tr >
-                    <td colspan="10" style="text-align: center;">
+                    <td colspan="11" style="text-align: center;">
                         <p style="width: 100%;padding: 0px; margin: 0px;">
-                            <h4><strong>专家抽取结果信息</strong></h4>
+                        <h4><strong>专家抽取结果信息</strong></h4>
                         </p>
                         <p ng-if="vm.isSuperUser" style="text-align:left;width: 100%;padding: 0px; margin: 0px;">
                             <button style="float: left;" class="btn btn-xs btn-danger" ng-click="vm.deleteAutoSelectEP()" ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.isCommit || vm.expertReview.state == 9 || vm.expertReview.state == '9')">
@@ -265,7 +267,8 @@
                     <td width="8%" align="center">姓名</td>
                     <td width="17%" align="center">工作单位</td>
                     <td width="15%" align="center">职务/职称</td>
-                    <td width="16%" align="center">专业</td>
+                    <td width="16%" align="center">专业大类</td>
+                    <td width="16%" align="center">专业小类</td>
                     <td width="10%" align="center">联系电话</td>
                     <td width="10%" align="center">专家类型</td>
                     <td width="8%" align="center">是否确认</td>
@@ -278,10 +281,11 @@
                     </td>
                     <td align="center">{{x.expertDto.name}}</td>
                     <td align="center">{{x.expertDto.comPany}}</td>
-                    <td align="center">{{x.expertDto.job}}/{{x.post}}</td>
-                    <td align="center">{{x.expertDto.majorStudy}}、{{x.expertDto.majorWork}}</td>
+                    <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
+                    <td align="center">{{x.maJorBig}}</td>
+                    <td align="center">{{x.maJorSmall}}</td>
                     <td align="center">{{x.expertDto.userPhone}}</td>
-                    <td align="center">{{x.expertDto.expertSort}}</td>
+                    <td align="center">{{x.expeRttype}}</td>
                     <td align="center">{{(x.isConfrim == '9')?'是':'否'}}</td>
                     <td align="center">{{(x.selectIndex)?x.selectIndex:1}}</td>
                     <td align="center">{{x.expertDto.remark}}</td>

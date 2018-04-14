@@ -107,4 +107,10 @@ public interface ExpertReviewService {
 	 * @param expertSelectedDto
 	 */
 	void saveSplit(ExpertSelectedDto expertSelectedDto);
+
+	/**
+	 * 删除新专家信息
+	 * @param minBusinessId
+	 */
+	void deleteExpertNewInfo(String minBusinessId);
 }

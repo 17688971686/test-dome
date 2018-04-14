@@ -103,11 +103,24 @@ public class ExpertReviewController {
         return expertReviewService.refleshBusinessEP(businessId);
     }
 
+    /**
+     * 删除新专家信息
+     *
+     * @param minBusinessId
+     * @param
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "删除新专家信息", path = "deleteExpertNewInfo", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteExpertNewInfo(@RequestParam(required = true) String minBusinessId) {
+        expertReviewService.deleteExpertNewInfo(minBusinessId);
+    }
+
     @RequiresAuthentication
     @RequestMapping(name = "主键查询", path = "html/findById", method = RequestMethod.GET)
     @Transactional
-    public @ResponseBody
-    ExpertReviewDto findById(@RequestParam(required = true) String id) {
+    @ResponseBody
+    public ExpertReviewDto findById(@RequestParam(required = true) String id) {
         return expertReviewService.findById(id);
     }
 
@@ -178,7 +191,6 @@ public class ExpertReviewController {
     }*/
 
 
-
     //保存新的专家信息
     @RequiresAuthentication
     @RequestMapping(name = "保存新的专家信息", path = "expertNewInfo", method = RequestMethod.POST)
@@ -196,9 +208,9 @@ public class ExpertReviewController {
     }
 
     @RequiresAuthentication
-    @RequestMapping(name="保存专家评审费发放打印方案信息" , path = "saveSplit" , method = RequestMethod.PUT)
+    @RequestMapping(name = "保存专家评审费发放打印方案信息", path = "saveSplit", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void saveSplit(@RequestBody ExpertSelectedDto expertSelectedDto){
+    public void saveSplit(@RequestBody ExpertSelectedDto expertSelectedDto) {
         expertReviewService.saveSplit(expertSelectedDto);
     }
 
