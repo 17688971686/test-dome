@@ -478,6 +478,7 @@ public class Constant {
 
         //专家评审费
         EXPERT_PAYMENT("print/expert_payment" , "专家评审费"),
+        EXPERT_PAYMENT_one("print/expert_payment_one" , "专家评审费"),
 
         //专家评分
         EXPERT_SCORD("print/expert_score" , "专家评分"),

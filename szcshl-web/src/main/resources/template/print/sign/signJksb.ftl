@@ -1411,7 +1411,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if sugProDealOriginal?? && sugProDealOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1430,7 +1430,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if sugProDealCopy?? && sugProDealCopy=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1544,7 +1544,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if officialDisposeOriginal?? && officialDisposeOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1563,7 +1563,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if officialDisposeCopy?? && officialDisposeCopy=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1717,7 +1717,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if governmentPurchasOriginal?? && governmentPurchasOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1736,7 +1736,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if governmentPurchasCopy?? && governmentPurchasCopy=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1869,7 +1869,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if managerDeptOriginal?? && managerDeptOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1888,7 +1888,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if managerDeptCopy?? && managerDeptCopy=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -2042,7 +2042,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if expertArgumentOriginal?? && expertArgumentOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -2061,7 +2061,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if expertArgumentCopy?? && expertArgumentCopy=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -2175,7 +2175,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if importProductOriginal?? && importProductOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -2194,7 +2194,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if importProductCopy?? && importProductCopy=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -2348,7 +2348,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if developementOriginal?? && developementOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -2367,7 +2367,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if developementCopy?? && developementCopy=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -2481,7 +2481,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if sprcialDevicesOriginal?? && sprcialDevicesOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -2500,7 +2500,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if sprcialDevicesCopy?? && sprcialDevicesCopy=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -2654,7 +2654,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if ortherProjectOriginal?? && ortherProjectOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -2673,7 +2673,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if ortherProjectCopy?? && ortherProjectCopy=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -3215,6 +3215,63 @@
                                         <w:t>${ministerhandlesug!}</w:t>
                                     </w:r>
                                 </w:p>
+                            <#if branchCount?? && branchCount == 1>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t xml:space="preserve">                      签名：</w:t>
+                                    </w:r>
+                                </w:p>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:widowControl/>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t xml:space="preserve">                                               </w:t>
+                                    </w:r>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                            <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                        </w:rPr>
+                                        <w:t>${ministerDate!}</w:t>
+                                    </w:r>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:cs="宋体"/>
+                                            <w:kern w:val="0"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>　</w:t>
+                                    </w:r>
+                                </w:p>
+                            </#if>
                             </w:tc>
                         </w:tr>
                     </w:tbl>

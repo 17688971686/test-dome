@@ -1378,32 +1378,38 @@
             }
         }
 //评审费打印。判断开户行和银行账户信息完不完整
-        $rootScope.isBankCard=function (expertSelectedDtoList,signid) {
+        $rootScope.isBankCard=function (expertSelectedDtoList,signid , payData) {
 
             var flag  = false;
-            for(var i=0;i<expertSelectedDtoList.length;i++){
-                //必须是确认参与的专家
-                if(expertSelectedDtoList[i].isConfrim == "9"
-                    && expertSelectedDtoList[i].isJoin == "9"){
+            if(payData == undefined){
+                flag = true ;
+                bsWin.alert("评审费未发放，打印失败！");
+            }else{
+                for(var i=0;i<expertSelectedDtoList.length;i++){
+                    //必须是确认参与的专家
+                    if(expertSelectedDtoList[i].isConfrim == "9"
+                        && expertSelectedDtoList[i].isJoin == "9"){
 
 
-                    if(expertSelectedDtoList[i].expertDto.bankAccount ==undefined
-                        || expertSelectedDtoList[i].expertDto.openingBank ==undefined ){
+                        if(expertSelectedDtoList[i].expertDto.bankAccount ==undefined
+                            || expertSelectedDtoList[i].expertDto.openingBank ==undefined ){
 
-                        flag = true;
-                        bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
-                        break;
-                    }
+                            flag = true;
+                            bsWin.alert("专家的开户行和银行账户信息不全，请填写完整！");
+                            break;
+                        }
 
-                    if(expertSelectedDtoList[i].reviewTaxes == undefined){
-                        flag = true;
-                        bsWin.alert("评审费未发放，打印失败！");
-                        break;
+                        if(expertSelectedDtoList[i].reviewTaxes == undefined){
+                            flag = true;
+                            bsWin.alert("评审费未计纳税额，打印失败！");
+                            break;
+                        }
+
                     }
 
                 }
-
             }
+
 
             if(!flag){
                 $rootScope.printFile(signid,'SIGN_EXPERT' , 'SIGN_EXPERT_PAY');

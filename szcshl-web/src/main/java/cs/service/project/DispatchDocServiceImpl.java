@@ -382,9 +382,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
      */
     @Override
     public ResultMsg createDisPatchTemplate(String signId) {
-//        SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
+
+        //先通过业务ID删除之前生成的评审报告文件
         sysFileService.deleteByBusinessIdAndBusinessType(signId , Constant.SysFileType.TEMOLATE.getValue());
-        WorkProgram workProgram = workProgramRepo.findByPrincipalUser(signId);
 
         Sign sign = signRepo.findById(Sign_.signid.getName() , signId);
 
@@ -393,81 +393,146 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
         List<SysFile> sysFileList = new ArrayList<>();
 
-        if(expertReview != null){
-            //获得拟聘专家信息
-//            List<Expert> expertList=expertRepo.findByBusinessId(workProgram.getId());
+        String result = "";
 
+        if(expertReview != null){
+
+            //获得拟聘专家信息
             List<ExpertSelected> expertSelectedList  = expertReview.getExpertSelectedList();
 
             Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(),sysFileService.findFtpId());
+
+            if(f == null){
+                return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
+            }
             //可行性研究报告
             if(Constant.STAGE_STUDY.equals(sign.getReviewstage())){
-                SysFile studyOpinion = CreateTemplateUtils.createStudyTemplateOpinion(f,sign );
-                if(studyOpinion != null && Validate.isString(studyOpinion.getSysFileId())){
-                    sysFileList.add(studyOpinion);
+                try{
+                    SysFile studyOpinion = CreateTemplateUtils.createStudyTemplateOpinion(f,sign );
+                    if(studyOpinion != null && Validate.isString(studyOpinion.getSysFileId())){
+                        sysFileList.add(studyOpinion);
+                    }
+
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",评审意见" : "评审意见";
                 }
 
-                SysFile studyEstimate = CreateTemplateUtils.createStudyTemplateEstimate(f,sign );
-                if(studyEstimate != null  && Validate.isString(studyEstimate.getSysFileId())){
-                    sysFileList.add(studyEstimate);
+
+                try {
+                    SysFile studyEstimate = CreateTemplateUtils.createStudyTemplateEstimate(f,sign );
+                    if(studyEstimate != null  && Validate.isString(studyEstimate.getSysFileId())){
+                        sysFileList.add(studyEstimate);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",投资估算表" : "投资估算表";
                 }
 
-                SysFile studyRoster = CreateTemplateUtils.createStudyTemplateRoster(f,sign , expertSelectedList);
-                if(studyRoster != null   && Validate.isString(studyRoster.getSysFileId())){
-                    sysFileList.add(studyRoster);
+
+                try {
+                    SysFile studyRoster = CreateTemplateUtils.createStudyTemplateRoster(f,sign , expertSelectedList);
+                    if(studyRoster != null   && Validate.isString(studyRoster.getSysFileId())){
+                        sysFileList.add(studyRoster);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",评审组名单" : "评审组名单";
                 }
+
             }else if(Constant.STAGE_BUDGET.equals(sign.getReviewstage())){//项目概算
 
-                SysFile budgetEstimate = CreateTemplateUtils.createBudgetTemplateEstimate(f,sign );
-                if(budgetEstimate != null && Validate.isString(budgetEstimate.getSysFileId())){
-                    sysFileList.add(budgetEstimate);
+                try{
+                    SysFile budgetEstimate = CreateTemplateUtils.createBudgetTemplateEstimate(f,sign );
+                    if(budgetEstimate != null && Validate.isString(budgetEstimate.getSysFileId())){
+                        sysFileList.add(budgetEstimate);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",投资估算表" : "投资估算表";
                 }
 
-                SysFile budgetOpinion = CreateTemplateUtils.createBudgetTemplateOpinion(f,sign );
-                if(budgetOpinion != null && Validate.isString(budgetOpinion.getSysFileId())){
-                    sysFileList.add(budgetOpinion);
+                try{
+                    SysFile budgetOpinion = CreateTemplateUtils.createBudgetTemplateOpinion(f,sign );
+                    if(budgetOpinion != null && Validate.isString(budgetOpinion.getSysFileId())){
+                        sysFileList.add(budgetOpinion);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",评审意见" : "评审意见";
                 }
 
-                SysFile budgetProjectCost = CreateTemplateUtils.createBudgetTemplateProjectCost(f,sign );
-                if(budgetProjectCost != null && Validate.isString(budgetProjectCost.getSysFileId())){
-                    sysFileList.add(budgetProjectCost);
+                try{
+                    SysFile budgetProjectCost = CreateTemplateUtils.createBudgetTemplateProjectCost(f,sign );
+                    if(budgetProjectCost != null && Validate.isString(budgetProjectCost.getSysFileId())){
+                        sysFileList.add(budgetProjectCost);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",建安工程费用" : "建安工程费用";
                 }
 
-                SysFile budgetRoster = CreateTemplateUtils.createBudgetTemplateRoster(f,sign  ,expertSelectedList);
-                if(budgetRoster != null && Validate.isString(budgetRoster.getSysFileId())){
-                    sysFileList.add(budgetRoster);
+                try{
+                    SysFile budgetRoster = CreateTemplateUtils.createBudgetTemplateRoster(f,sign  ,expertSelectedList);
+                    if(budgetRoster != null && Validate.isString(budgetRoster.getSysFileId())){
+                        sysFileList.add(budgetRoster);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",评审组名单" : "评审组名单";
                 }
+
             }else if(Constant.APPLY_REPORT.equals(sign.getReviewstage())){//资金申请报告
-                SysFile reportEstimate = CreateTemplateUtils.createReportTemplateEstimate(f,sign );
-                if(reportEstimate != null && Validate.isString(reportEstimate.getSysFileId())){
-                    sysFileList.add(reportEstimate);
+                try{
+                    SysFile reportEstimate = CreateTemplateUtils.createReportTemplateEstimate(f,sign );
+                    if(reportEstimate != null && Validate.isString(reportEstimate.getSysFileId())){
+                        sysFileList.add(reportEstimate);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",投资估算表" : "投资估算表";
                 }
 
-                SysFile reportOpinion = CreateTemplateUtils.createReportTemplateOpinion(f,sign );
-                if(reportOpinion != null  && Validate.isString(reportOpinion.getSysFileId())){
-                    sysFileList.add(reportOpinion);
+                try{
+                    SysFile reportOpinion = CreateTemplateUtils.createReportTemplateOpinion(f,sign );
+                    if(reportOpinion != null  && Validate.isString(reportOpinion.getSysFileId())){
+                        sysFileList.add(reportOpinion);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",评审意见" : "评审意见";
                 }
 
-                SysFile reportRoster = CreateTemplateUtils.createReportTemplateRoster(f,sign , expertSelectedList);
-                if(reportRoster != null  && Validate.isString(reportRoster.getSysFileId())){
-                    sysFileList.add(reportRoster);
+                try{
+                    SysFile reportRoster = CreateTemplateUtils.createReportTemplateRoster(f,sign , expertSelectedList);
+                    if(reportRoster != null  && Validate.isString(reportRoster.getSysFileId())){
+                        sysFileList.add(reportRoster);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",评审组名单" : "评审组名单";
                 }
+
             }else{//项目建议书以及其他评审阶段
-                SysFile sugEstimate = CreateTemplateUtils.createSugTemplateEstime(f,sign );
-                if(sugEstimate != null  && Validate.isString(sugEstimate.getSysFileId())){
-                    sysFileList.add(sugEstimate);
+                try{
+                    SysFile sugEstimate = CreateTemplateUtils.createSugTemplateEstime(f,sign );
+                    if(sugEstimate != null  && Validate.isString(sugEstimate.getSysFileId())){
+                        sysFileList.add(sugEstimate);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",投资估算表" : "投资估算表";
                 }
 
-                SysFile sugOpinion = CreateTemplateUtils.createSugTemplateOpinion(f,sign );
-                if(sugOpinion != null && Validate.isString(sugOpinion.getSysFileId())){
-                    sysFileList.add(sugOpinion);
+                try{
+                    SysFile sugOpinion = CreateTemplateUtils.createSugTemplateOpinion(f,sign );
+                    if(sugOpinion != null && Validate.isString(sugOpinion.getSysFileId())){
+                        sysFileList.add(sugOpinion);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",评审意见" : "评审意见";
                 }
 
-                SysFile sugRoster = CreateTemplateUtils.createSugTemplateRoster(f, sign , expertSelectedList);
-                if(sugRoster != null && Validate.isString(sugRoster.getSysFileId())){
-                    sysFileList.add(sugRoster);
+                try{
+                    SysFile sugRoster = CreateTemplateUtils.createSugTemplateRoster(f, sign , expertSelectedList);
+                    if(sugRoster != null && Validate.isString(sugRoster.getSysFileId())){
+                        sysFileList.add(sugRoster);
+                    }
+                }catch (Exception e){
+                    result += result.length() > 0 ? ",评审组名单" : "评审组名单";
                 }
             }
+        }else{
+            return new ResultMsg(false , MsgCode.ERROR.getValue() , "该项目没有评审会，生成评审报告失败。");
         }
 
         //3、保存文件信息
@@ -483,11 +548,14 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             });
             sysFileRepo.bathUpdate(sysFileList);
             signService.updateSignTemplate(signId);//修改是否生成发文模板状态
-            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "评审报告文件生成成功！" , null);
-        }else{
-            return  new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "文件服务器无法连接，评审报告文件无法自动生成，请联系管理员处理" , null);
-        }
 
+        }
+        if(result.length() > 0 ){
+            return new ResultMsg(true , MsgCode.OK.getValue() , result , null);
+        }else{
+
+            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "评审报告文件生成成功！" , null);
+        }
 
     }
 
