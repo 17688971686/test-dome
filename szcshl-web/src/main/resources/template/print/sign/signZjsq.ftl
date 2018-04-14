@@ -1088,7 +1088,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if sugProDealOriginal?? && sugProDealOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1205,7 +1205,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if capitalAppReportOriginal?? && capitalAppReportOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1323,7 +1323,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if sugFileDealOriginal?? && sugFileDealOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1504,7 +1504,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if sugOrgApplyOriginal?? && sugOrgApplyOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1600,7 +1600,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if sugMeetOriginal?? && sugMeetOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -1718,7 +1718,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if sugOrgReqOriginal?? && sugOrgReqOriginal=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -2202,7 +2202,8 @@
                                         <w:t xml:space="preserve">         </w:t>
                                     </w:r>
                                 </w:p>
-                                <#--<w:p>
+                            <#if branchCount?? && branchCount == 1>
+                                <w:p>
                                     <w:pPr>
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4648"/>
@@ -2274,7 +2275,8 @@
                                         </w:rPr>
                                         <w:t>${ministerDate!}</w:t>
                                     </w:r>
-                                </w:p>-->
+                                </w:p>
+                            </#if>
                             </w:tc>
                         </w:tr>
                     </w:tbl>

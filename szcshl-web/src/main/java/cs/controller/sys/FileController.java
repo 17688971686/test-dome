@@ -544,22 +544,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
                     Map<String, Object> dataMap = TemplateUtil.entryAddMap(sign);
                     String ministerhandlesug=sign.getMinisterhandlesug();
-                    /*String cc=null;
-                    //拼接部长意见
-                    if (Validate.isString(ministerhandlesug)) {
-                        cc="请（";
-                        String[] s= ministerhandlesug.split("（" );//截取字符串
-                        for(int i=1;i<s.length;i++){//循环拼接
-                         String[] a= s[i].split("\\)" );
-                         if(i+1==s.length){
-                             cc+=a[0];
-                         }else{
-                             cc+=a[0]+",";
-                         }
-                        }
-                        cc+="）组织办理";
-                    }*/
-//                    请（郭东东 )组织办理。 <p style='text-align:right;'>签名：陈洋波</p><p style='text-align:right;'> 日期：2018年03月25日</p>
                     dataMap.put("ministerhandlesug",ministerhandlesug == null ? "" : ministerhandlesug.replaceAll("<br>", "<w:br />")
                     .replaceAll("<p style='text-align:right;'>" , "").replaceAll("</p>" , ""));
                     if (stageType.equals(RevireStageKey.KEY_SUG.getValue())
@@ -763,7 +747,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }
                     String viceDirectorSuggesttion=dispatchDoc.getViceDirectorSuggesttion();
                     if(Validate.isString(viceDirectorSuggesttion)){
-                        vice = ministerSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "")
+                        vice = viceDirectorSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "")
                                 .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "").replaceAll(" ", "");
 
                     }
@@ -918,7 +902,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                                 }
                             }
                         }
-                        expertData.put("projectName", expertReview.getReviewTitle());
+
+                        String[] projectNames = expertReview.getReviewTitle().split("》");
+                        expertData.put("projectName", projectNames.length > 0 ? projectNames[0].substring(1,projectNames[0].length()) : expertReview.getReviewTitle());
 
 
 
@@ -940,7 +926,14 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         expertData.put("totalCostSum2", totalCostSum2);
 
                         expertData.put("payDate" , expertReview.getReviewDate() == null ? "" : DateUtils.converToString(expertReview.getReviewDate() , "yyyy年MM月dd日"));
-                        file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
+
+                        if(isSplit){
+                            file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
+                        }else{
+                            file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT_one.getKey(), path);
+                        }
+
+
                     }
                     //专家评分
                     if ("SIGN_EXPERT_SCORE".equals(stageType)) {

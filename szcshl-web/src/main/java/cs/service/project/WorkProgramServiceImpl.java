@@ -483,6 +483,9 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Override
     @Transactional
     public ResultMsg createMeetingDoc(String signId) {
+
+        String result = "";
+
         Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
         if (sign == null || StringUtil.isEmpty(sign.getSignid())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该项目已被删除");
@@ -508,46 +511,70 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "文件服务器无法连接，文件无法生成，请联系管理员处理", null);
                     }
                     //2.1 生成签到表
-                    SysFile sysFile1 = CreateTemplateUtils.createtTemplateSignIn(f, sign, workProgram);
-                    if (sysFile1 != null && Validate.isString(sysFile1.getSysFileId())) {
-                        saveFile.add(sysFile1);
+                    try{
+                        SysFile sysFile1 = CreateTemplateUtils.createtTemplateSignIn(f, sign, workProgram);
+                        if (sysFile1 != null && Validate.isString(sysFile1.getSysFileId())) {
+                            saveFile.add(sysFile1);
+                        }
+                    }catch (Exception e){
+                        result += result.length() > 0 ? ",签到表" : "签到表";
                     }
 
 
                     //2.2 生成主持人稿
-                    String expertGl = expertRepo.findExpertGlByBusiness(workProgram.getId());
-                    SysFile sysFile2 = CreateTemplateUtils.createTemplateCompere(f, sign, workProgram, expertList, expertGl);
-                    if (sysFile2 != null && Validate.isString(sysFile2.getSysFileId())) {
-                        saveFile.add(sysFile2);
+                    try{
+                        String expertGl = expertRepo.findExpertGlByBusiness(workProgram.getId());
+                        SysFile sysFile2 = CreateTemplateUtils.createTemplateCompere(f, sign, workProgram, expertList, expertGl);
+                        if (sysFile2 != null && Validate.isString(sysFile2.getSysFileId())) {
+                            saveFile.add(sysFile2);
+                        }
+                    }catch (Exception e){
+                        result += result.length() > 0 ? ",主持人手稿" : "主持人手稿";
                     }
 
                     //2.3 会议议程
-                    List<SysFile> sList = CreateTemplateUtils.createTemplateMeeting(f, sign, workProgram, roomBookings);
-                    if (sList != null && sList.size() > 0) {
-                        for (SysFile sysFile : sList) {
-                            if (saveFile != null && Validate.isString(sysFile.getSysFileId())) {
-                                saveFile.add(sysFile);
+                    try{
+                        List<SysFile> sList = CreateTemplateUtils.createTemplateMeeting(f, sign, workProgram, roomBookings);
+                        if (sList != null && sList.size() > 0) {
+                            for (SysFile sysFile : sList) {
+                                if (saveFile != null && Validate.isString(sysFile.getSysFileId())) {
+                                    saveFile.add(sysFile);
+                                }
                             }
                         }
+                    }catch (Exception e){
+                        result += result.length() > 0 ? ",会议议程" : "会议议程";
                     }
 
                     //2.4 邀请函
-                    SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f, sign, workProgram, expertList, user, roomBookings);
-                    if (invitation != null && Validate.isString(invitation.getSysFileId())) {
-                        saveFile.add(invitation);
+                    try{
+                        SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f, sign, workProgram, expertList, user, roomBookings);
+                        if (invitation != null && Validate.isString(invitation.getSysFileId())) {
+                            saveFile.add(invitation);
+                        }
+                    }catch (Exception e){
+                        result += result.length() > 0 ? ",邀请函" : "邀请函";
                     }
 
 
                     //2.5 会议通知
-                    SysFile notice = CreateTemplateUtils.createTemplateNotice(f, sign, workProgram, user, roomBookings);
-                    if (notice != null && Validate.isString(notice.getSysFileId())) {
-                        saveFile.add(notice);
+                    try{
+                        SysFile notice = CreateTemplateUtils.createTemplateNotice(f, sign, workProgram, user, roomBookings);
+                        if (notice != null && Validate.isString(notice.getSysFileId())) {
+                            saveFile.add(notice);
+                        }
+                    }catch (Exception e){
+                        result += result.length() > 0 ? ",会议通知" : "会议通知";
                     }
 
                     //专家评审意见书
-                    SysFile expertReviewIdea = CreateTemplateUtils.createTemplateExpertReviewIdea(f, sign, workProgram);
-                    if (expertReviewIdea != null && Validate.isString(expertReviewIdea.getSysFileId())) {
-                        saveFile.add(expertReviewIdea);
+                    try{
+                        SysFile expertReviewIdea = CreateTemplateUtils.createTemplateExpertReviewIdea(f, sign, workProgram);
+                        if (expertReviewIdea != null && Validate.isString(expertReviewIdea.getSysFileId())) {
+                            saveFile.add(expertReviewIdea);
+                        }
+                    }catch (Exception e){
+                        result += result.length() > 0 ? ",评审意见书" : "评审意见书";
                     }
 
                     //2.6协审协议书
@@ -588,17 +615,21 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     //4、更改工作方案状态
                     workProgram.setIsCreateDoc(EnumState.YES.getValue());
                     workProgramRepo.save(workProgram);
+                }else{
+                    return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该项目没有评审会，生成会前准备材料失败。" , null);
                 }
             }
+        }else{
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该项目没有工作方案，生成会前准备材料失败。" , null);
         }
 
-        /*WorkProgram workProgram = workProgramRepo.findByPrincipalUser(signId);
-        if (workProgram == null || StringUtil.isEmpty(workProgram.getId())) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，请先填写工作方案");
-        }*/
 
+        if(result.length() > 0){
+            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , result , null);
+        }else{
 
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功");
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功" , null);
+        }
     }
 
     /**

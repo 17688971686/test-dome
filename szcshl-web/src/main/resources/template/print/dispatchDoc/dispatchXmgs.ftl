@@ -599,7 +599,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if isRelated?? && isRelated=="9">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -617,7 +617,7 @@
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     <#if isRelated?? && isRelated=="0">
-                                        <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <w:sym w:font="Wingdings 2" w:char="F052"/>
                                     <#else>
                                         <w:t xml:space="preserve">□</w:t>
                                     </#if>
@@ -978,9 +978,10 @@
                                         <w:t>${ministerSuggesttion!}</w:t>
                                     </w:r>
                                 </w:p>
+                            <#if branchCount?? && branchCount == 1>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
                                     <w:pPr>
-                                        <w:jc w:val="left"/>
+                                        <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
@@ -1000,7 +1001,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
+                                        <w:t xml:space="preserve">                      签名：</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
@@ -1019,6 +1020,7 @@
                                         <w:t xml:space="preserve">                                                 ${ministerDate!}</w:t>
                                     </w:r>
                                 </w:p>
+                            </#if>
                             </w:tc>
                         </w:tr>
                         <w:tr w:rsidR="006E048B" w:rsidTr="00940F54">
@@ -1070,6 +1072,7 @@
                                         <w:t xml:space="preserve">${viceDirectorSuggesttion!}          </w:t>
                                     </w:r>
                                 </w:p>
+                            <#if moreLeader?? && moreLeader == 0>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
                                     <w:pPr>
                                         <w:jc w:val="center"/>
@@ -1111,6 +1114,7 @@
                                         <w:t xml:space="preserve">                                                 ${viceDirectorDate!}</w:t>
                                     </w:r>
                                 </w:p>
+                            </#if>
                             </w:tc>
                         </w:tr>
                         <w:tr w:rsidR="006E048B" w:rsidTr="00940F54">

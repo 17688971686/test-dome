@@ -1108,7 +1108,7 @@
                 onOk: function () {
                     signSvc.meetingDoc(vm, function (data) {
                         if (data.flag || data.reCode == 'ok') {
-                            bsWin.success("操作成功");
+                            bsWin.success(data.reMsg);
                             sysfileSvc.findByMianId(vm.model.signid, function (data) {
                                 if (data || data.length > 0) {
                                     vm.showFlag.tabSysFile = true;

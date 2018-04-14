@@ -3300,23 +3300,26 @@
                                     <w:gridSpan w:val="5"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:jc w:val="left"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t>${ministerhandlesug!}</w:t>
-                                    </w:r>
-                                </w:p>
-                               <#-- <w:p>
+
+
+                                    <w:p>
+                                        <w:pPr>
+                                            <w:jc w:val="left"/>
+                                            <w:rPr>
+                                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                                <w:sz w:val="24"/>
+                                            </w:rPr>
+                                        </w:pPr>
+                                        <w:r>
+                                            <w:rPr>
+                                                <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                                <w:sz w:val="24"/>
+                                            </w:rPr>
+                                            <w:t>${ministerhandlesug!}</w:t>
+                                        </w:r>
+                                    </w:p>
+                            <#if branchCount?? && branchCount == 1>
+                               <w:p>
                                     <w:pPr>
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4648"/>
@@ -3354,7 +3357,9 @@
                                         </w:rPr>
                                         <w:t xml:space="preserve">                                                ${ministerDate!}</w:t>
                                     </w:r>
-                                </w:p>-->
+                                </w:p>
+                                </#if>
+
                             </w:tc>
                         </w:tr>
                     </w:tbl>
