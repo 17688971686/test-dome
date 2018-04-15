@@ -31,6 +31,19 @@ public class ExpertNewType extends DomainBase {
     @JoinColumn(name = "expertNewInfoId")
     private ExpertNewInfo expertNewInfo;
 
+    /**
+     * 抽取条件ID，这里不做关联，只是保存
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String conditionId;
+
+    /**
+     * 抽取专家id
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String expertSelectedId;
+
+
     public String getId() {
         return id;
     }
@@ -78,4 +91,24 @@ public class ExpertNewType extends DomainBase {
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
     }
+
+    public String getConditionId() {
+        return conditionId;
+    }
+
+    public void setConditionId(String conditionId) {
+        this.conditionId = conditionId;
+    }
+
+    public String getExpertSelectedId() {
+        return expertSelectedId;
+    }
+
+    public void setExpertSelectedId(String expertSelectedId) {
+        this.expertSelectedId = expertSelectedId;
+    }
+
+
+
+
 }

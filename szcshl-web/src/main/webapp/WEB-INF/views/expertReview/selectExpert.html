@@ -618,7 +618,7 @@
                 <td align="center">{{x.expertDto.remark}}</td>
             </tr>
 
-            <tr ng-if="vm.confirmEPListReplace.length>0" ng-repeat="x in vm.confirmEPListReplace|filter:{isJoin:'9'}">
+            <tr ng-if="vm.confirmEPListReplace.length>0" ng-repeat="x in vm.confirmEPListReplace|filter:{isConfrim:'9',isJoin:'9'}">
                 <td>
                     <button class="btn btn-sm btn-default" ng-click="vm.upRecord(vm.confirmEPListReplace, $index)"><span
                             class="glyphicon glyphicon-arrow-up"></span>上移

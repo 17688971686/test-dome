@@ -4,25 +4,16 @@ import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
-import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.*;
-import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
-import cs.domain.topic.TopicInfo;
-import cs.domain.topic.TopicInfo_;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertSelConditionDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.expert.ExpertSelConditionRepo;
-import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
+import cs.repository.repositoryImpl.expert.*;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
-import cs.repository.repositoryImpl.topic.TopicInfoRepo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +41,11 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
     private WorkProgramRepo workProgramRepo;
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
+    @Autowired
+    private ExpertNewInfoRepo expertNewInfoRepo;
+
+    @Autowired
+    private ExpertNewTypeRepo expertNewTypeRepo;
 
     @Override
     public PageModelDto<ExpertSelConditionDto> get(ODataObj odataObj) {
@@ -107,6 +103,8 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
         try{
             expertSelConditionRepo.deleteById(ExpertSelCondition_.id.getName(), ids);
             expertSelectedRepo.deleteById(ExpertSelected_.conditionId.getName(),ids);
+            expertNewTypeRepo.deleteById(ExpertNewType_.conditionId.getName(),ids);
+            expertNewInfoRepo.deleteById(ExpertNewInfo_.conditionId.getName(),ids);
             resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
         }catch (Exception e){
             resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！");

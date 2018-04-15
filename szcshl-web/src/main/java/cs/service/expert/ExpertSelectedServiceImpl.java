@@ -14,10 +14,7 @@ import cs.model.financial.FinancialManagerDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
-import cs.repository.repositoryImpl.expert.ExpertCostCountRepo;
-import cs.repository.repositoryImpl.expert.ExpertRepo;
-import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
+import cs.repository.repositoryImpl.expert.*;
 import cs.repository.repositoryImpl.financial.FinancialManagerRepo;
 import cs.service.financial.FinancialManagerService;
 import cs.service.project.SignPrincipalService;
@@ -54,6 +51,11 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
 
     @Autowired
     private ExpertRepo expertRepo;
+    @Autowired
+    private ExpertNewInfoRepo expertNewInfoRepo;
+
+    @Autowired
+    private ExpertNewTypeRepo expertNewTypeRepo;
 
 
     @Override
@@ -112,6 +114,8 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             expertReviewRepo.delete(expertReview);
         } else {
             expertSelectedRepo.deleteById(ExpertSelected_.id.getName(), ids);
+            expertNewTypeRepo.deleteById(ExpertNewType_.expertSelectedId.getName(),ids);
+            expertNewInfoRepo.deleteById(ExpertNewInfo_.expertSelectedId.getName(),ids);
         }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "删除成功！");
     }

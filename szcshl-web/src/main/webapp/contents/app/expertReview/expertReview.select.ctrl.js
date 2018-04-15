@@ -154,6 +154,7 @@
         vm.init = function(businessId,minBusinessId){
             vm.expertReview = {};
             vm.confirmEPList = [];
+            vm.confirmEPListReplace = [];
             vm.selectIds = [];
             expertReviewSvc.initReview(businessId,minBusinessId,function(data){
                 vm.expertReview = data;
@@ -185,11 +186,11 @@
                                 }else{
                                     obj2.isLetterRw = obj1.isLetterRw;
                                 }
-                                //obj2.expertDto.expertTypeDtoList=obj1.expertTypeDtoList;//替换为最新修改的专业大类、小类，类别
                                 obj2.maJorBig = obj1.maJorBig;
                                 obj2.maJorSmall = obj1.maJorSmall;
                                 obj2.expeRttype = obj1.expeRttype;
                                 obj2.isJoin = obj1.isJoin;
+                                obj2.isConfrim = obj1.isConfrim;
                                 vm.confirmEPListReplace.push(obj2);
                             }
                         });
@@ -663,6 +664,7 @@
                         vm.reFleshConfirmState(ids,"9");
                         vm.checkAutoOfficeExpert = false;
                         vm.checkAutoAntiExpert = false;
+                        vm.init(vm.businessId,vm.minBusinessId);
                         bsWin.success(data.reMsg);
                     }else{
                         bsWin.error(data.reMsg);
