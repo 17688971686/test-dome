@@ -447,15 +447,7 @@ public class SignController {
 
         return "admin/etasks";
     }
-
-    @RequiresAuthentication
-    //@RequiresPermissions("sign#html/MaintainProjectList#get")
-    @RequestMapping(name = "维护项目的编辑", path = "html/MaintainProjectEdit", method = RequestMethod.GET)
-    public String MaintainProjectEdit() {
-
-        return ctrlName + "/MaintainProjectEdit";
-    }
-
+    
     /***************报审登记表导出***************/
    /* @RequiresAuthentication
     @RequestMapping(name="报审登记表导出" , path = "printSign" , method = RequestMethod.GET)

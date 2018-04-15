@@ -819,30 +819,28 @@
                     }
 
                 });
-
-                if(isdisp){
-                    expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
-                        //在点击保存时需要提示。在经过别的添加时。不是点击保存按钮时，就不需要显示
-                        if(isDisplay){//用来判断是否显示提示信息
-                            bsWin.success("操作成功！");
-                        }
-
-                    });
-                }else{
-                    bsWin.alert("拟聘专家的专家类型不能为空");
-                }
             }else{
+                console.log(vm.confirmEPList);
                 $.each(vm.confirmEPList,function (j,obj2) {
                     if(obj2.isConfrim == '9' ){
+                        if(obj2.expeRttype=="" ||obj2.expeRttype==undefined){
+                            isdisp=false;
+                        }
                         vm.confirmEPListReplace.push(obj2);
                     }
                 });
+            }
+
+            if(isdisp){
                 expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
-                    if(isDisplay){
+                    //在点击保存时需要提示。在经过别的添加时。不是点击保存按钮时，就不需要显示
+                    if(isDisplay){//用来判断是否显示提示信息
                         bsWin.success("操作成功！");
                     }
-                });
 
+                });
+            }else{
+                bsWin.alert("拟聘专家的专家类型不能为空");
             }
 
 

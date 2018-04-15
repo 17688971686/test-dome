@@ -97,4 +97,13 @@ public class MaintainProjectController {
 
         return "sign/deletList";
     }
+
+    @RequiresAuthentication
+    //@RequiresPermissions("sign#html/MaintainProjectList#get")
+    @RequestMapping(name = "维护项目的编辑", path = "html/MaintainProjectEdit", method = RequestMethod.GET)
+    public String MaintainProjectEdit() {
+
+        return  "sign/MaintainProjectEdit";
+    }
+
 }
