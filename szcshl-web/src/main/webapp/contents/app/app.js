@@ -1378,7 +1378,7 @@
             }
         }
         //评审费打印。判断开户行和银行账户信息完不完整
-        $rootScope.isBankCard=function (expertSelectedDtoList,signid) {
+        $rootScope.isBankCard=function (expertSelectedDtoList,signid , payData) {
             var flag  = false;
             if(payData == undefined){
                 flag = true ;

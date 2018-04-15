@@ -81,11 +81,8 @@ public class CreateTemplateUtils {
      * @param sign
      * @return
      */
-    public static SysFile createStudyTemplateRoster(Ftp f,Sign sign, List<ExpertSelected> expertSelectedList) {
+    public static SysFile createStudyTemplateRoster(Ftp f,Sign sign, List<ExpertSelected> expertSelectedList , WorkProgram workProgram) {
         Map<String, Object> dataMap = new HashMap<>();
-
-        List<WorkProgram> workProgramList = sign.getWorkProgramList();
-        WorkProgram workProgram = workProgramList.get(0);
 
         dataMap.put("mdnum", "3");
         dataMap.put("projectName", sign.getProjectname());
@@ -218,9 +215,8 @@ public class CreateTemplateUtils {
      * @param signDispaWork
      * @return
      */
-    public static SysFile createBudgetTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList) {
+    public static SysFile createBudgetTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList , WorkProgram workProgram) {
         Map<String, Object> dataMap = new HashMap<>();
-        WorkProgram workProgram = sign.getWorkProgramList().get(0);
         dataMap.put("mdnum", "3");
         dataMap.put("projectName", sign.getProjectname());
         dataMap.put("generalCounsel", "市发改委分管副主任");
@@ -306,9 +302,7 @@ public class CreateTemplateUtils {
      * @param expertSelectedList
      * @return
      */
-    public static SysFile createSugTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList) {
-        List<WorkProgram> workProgramList = sign.getWorkProgramList();
-        WorkProgram workProgram = workProgramList.get(0);
+    public static SysFile createSugTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList , WorkProgram workProgram) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("psnum", "3");
         dataMap.put("projectName", sign.getProjectname());
@@ -392,10 +386,8 @@ public class CreateTemplateUtils {
      * @param sign
      * @return
      */
-    public static SysFile createReportTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList) {
+    public static SysFile createReportTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList , WorkProgram workProgram) {
         Map<String, Object> dataMap = new HashMap<>();
-
-        WorkProgram workProgram = sign.getWorkProgramList().get(0);
 
         dataMap.put("psnum", "3");
         dataMap.put("projectName", sign.getProjectname());
