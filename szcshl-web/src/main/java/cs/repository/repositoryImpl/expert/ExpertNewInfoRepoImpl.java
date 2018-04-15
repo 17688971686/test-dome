@@ -1,13 +1,9 @@
 package cs.repository.repositoryImpl.expert;
 
-import cs.common.Constant;
-import cs.common.HqlBuilder;
-import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertNewInfo;
-import cs.domain.expert.ExpertOffer;
-import cs.domain.expert.ExpertSelected_;
-import cs.model.expert.ExpertNewInfoDto;
+import cs.domain.expert.*;
 import cs.repository.AbstractRepository;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -29,7 +25,11 @@ public class ExpertNewInfoRepoImpl extends AbstractRepository<ExpertNewInfo, Str
      */
     @Override
     public List<ExpertNewInfo> findByBusinessId(String businessId) {
-       return expertNewInfoRepo.findByIds("businessId",businessId,"");
+        Criteria criteria = expertNewInfoRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(ExpertNewInfo_.businessId.getName(),businessId));
+        criteria.add(Restrictions.eq(ExpertNewInfo_.isJoin.getName(),"9"));
+        criteria.add(Restrictions.eq(ExpertNewInfo_.isConfrim.getName(),"9"));
+       return criteria.list();
 
     }
 }

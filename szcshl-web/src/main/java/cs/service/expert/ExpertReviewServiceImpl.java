@@ -302,11 +302,36 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         sqlBuilder.setParam("state", state);
         sqlBuilder.bulidPropotyString("where", ExpertSelected_.id.getName(), expertSelId);
         expertReviewRepo.executeSql(sqlBuilder);
+        updateNewExpertState(minBusinessId,expertSelId,state,isConfirm);
         //更改专家评审费
         if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
             workProgramRepo.initExpertCost(minBusinessId);
         }
     }
+
+
+    /**
+     * 更新新专家状态
+     * @param minBusinessId
+     * @param expertSelId
+     * @param state
+     * @param isConfirm
+     */
+    public void updateNewExpertState(String minBusinessId, String expertSelId, String state, boolean isConfirm) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" update cs_expert_new_info ");
+        if (isConfirm) {
+            sqlBuilder.append("set " + ExpertSelected_.isConfrim.getName() + " =:state ");
+        } else {
+            sqlBuilder.append("set " + ExpertSelected_.isJoin.getName() + " =:state ");
+        }
+        sqlBuilder.setParam("state", state);
+        sqlBuilder.bulidPropotyString("where", ExpertNewInfo_.businessId.getName(), minBusinessId);
+        sqlBuilder.bulidPropotyString("and", ExpertNewInfo_.expertSelectedId.getName(), expertSelId);
+        expertReviewRepo.executeSql(sqlBuilder);
+
+    }
+
 
    /* @Override
     @Transactional
@@ -657,6 +682,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 expertNewInfo.setMaJorSmall(expertReviewNewInfoDtos[i].getMaJorSmall());
                 expertNewInfo.setExpeRttype(expertReviewNewInfoDtos[i].getExpeRttype());
                 expertNewInfo.setIsJoin(expertReviewNewInfoDtos[i].getIsJoin());
+                expertNewInfo.setIsConfrim(expertReviewNewInfoDtos[i].getIsConfrim());
+                expertNewInfo.setConditionId(expertReviewNewInfoDtos[i].getConditionId());
+                expertNewInfo.setExpertSelectedId(expertReviewNewInfoDtos[i].getId());
                 expertNewInfo.setIsLetterRw(expertReviewNewInfoDtos[i].getIsLetterRw());
                 expertNewInfoRepo.save(expertNewInfo);//保存新的专家信息
 
@@ -667,6 +695,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 expertNewType.setMaJorSmall(expertReviewNewInfoDtos[i].getMaJorSmall());
                 expertNewType.setExpertType(expertReviewNewInfoDtos[i].getExpeRttype());
                 expertNewType.setBusinessId(expertNewInfoDto.getBusinessId());
+                expertNewType.setConditionId(expertReviewNewInfoDtos[i].getConditionId());
+                expertNewType.setExpertSelectedId(expertReviewNewInfoDtos[i].getId());
                 expertNewType.setModifiedBy(SessionUtil.getDisplayName());
                 expertNewType.setModifiedDate(new Date());
                 expertNewType.setCreatedBy(SessionUtil.getDisplayName());

@@ -61,6 +61,21 @@ public class ExpertNewInfo extends DomainBase {
     @Column(columnDefinition="VARCHAR(10)")
     private String isJoin;
 
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isConfrim;
+
+    /**
+     * 抽取条件ID，这里不做关联，只是保存
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+    private String conditionId;
+
+    /**
+     * 抽取专家id
+     */
+    @Column(columnDefinition = "VARCHAR(64)")
+   private String expertSelectedId;
+
     /**
      * 是否函评
      */
@@ -211,5 +226,29 @@ public class ExpertNewInfo extends DomainBase {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getIsConfrim() {
+        return isConfrim;
+    }
+
+    public void setIsConfrim(String isConfrim) {
+        this.isConfrim = isConfrim;
+    }
+
+    public String getConditionId() {
+        return conditionId;
+    }
+
+    public void setConditionId(String conditionId) {
+        this.conditionId = conditionId;
+    }
+
+    public String getExpertSelectedId() {
+        return expertSelectedId;
+    }
+
+    public void setExpertSelectedId(String expertSelectedId) {
+        this.expertSelectedId = expertSelectedId;
     }
 }

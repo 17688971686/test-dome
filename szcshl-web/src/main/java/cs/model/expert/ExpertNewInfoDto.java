@@ -32,6 +32,8 @@ public class ExpertNewInfoDto extends BaseDto {
     private String userPhone;//手机号码
 
     private String remark;//备注
+
+    private String isConfrim;
     /**
      * 业务ID，如项目签收工作方案ID，课题工作方案ID等
      */
@@ -48,6 +50,10 @@ public class ExpertNewInfoDto extends BaseDto {
     private String maJorSmall;//突出专业（小类）
 
     private String isJoin;
+
+    private String conditionId;
+
+    private String expertSelectedId;
 
     private List<ExpertNewTypeDto> expertTypeDtoList;
 
@@ -193,5 +199,29 @@ public class ExpertNewInfoDto extends BaseDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getIsConfrim() {
+        return isConfrim;
+    }
+
+    public void setIsConfrim(String isConfrim) {
+        this.isConfrim = isConfrim;
+    }
+
+    public String getConditionId() {
+        return conditionId;
+    }
+
+    public void setConditionId(String conditionId) {
+        this.conditionId = conditionId;
+    }
+
+    public String getExpertSelectedId() {
+        return expertSelectedId;
+    }
+
+    public void setExpertSelectedId(String expertSelectedId) {
+        this.expertSelectedId = expertSelectedId;
     }
 }

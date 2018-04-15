@@ -16,6 +16,10 @@ public class ExpertNewTypeDto {
 
     private String  expertNewInfoId;
 
+    private String conditionId;
+
+    private String expertSelectedId;
+
     public String getId() {
         return id;
     }
@@ -54,5 +58,21 @@ public class ExpertNewTypeDto {
 
     public void setExpertNewInfoId(String expertNewInfoId) {
         this.expertNewInfoId = expertNewInfoId;
+    }
+
+    public String getConditionId() {
+        return conditionId;
+    }
+
+    public void setConditionId(String conditionId) {
+        this.conditionId = conditionId;
+    }
+
+    public String getExpertSelectedId() {
+        return expertSelectedId;
+    }
+
+    public void setExpertSelectedId(String expertSelectedId) {
+        this.expertSelectedId = expertSelectedId;
     }
 }
