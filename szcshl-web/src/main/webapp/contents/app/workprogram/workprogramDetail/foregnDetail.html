@@ -442,10 +442,14 @@
 
         </table>
     </div>
-    <button class="form-control btn-sm btn-primary"  style="width: 100px; margin: auto;display: inline;margin-left: 45%"
-            ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览
-    </button>
-    <button ng-if="w.expertDtoList"  class="form-control btn-sm btn-primary"
-            style="width: 120px; margin: auto;display: inline"  ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
-    </button>
+    <div style="width: 100%;text-align: center;margin-top:5px;">
+        <button class="form-control btn-sm btn-primary"
+                style="width: 100px; margin: auto;display: inline;margin-left: 45%"
+                ng-click="printFile(w.id,'WORKPROGRAM','STAGEDEVICE')">打印预览
+        </button>
+        <button ng-if="w.expertDtoList" class="form-control btn-sm btn-primary"
+                style="width: 120px; margin: auto;display: inline"
+                ng-click="printFile(w.id,'WORKPROGRAM','INFORMATION')">打印专家信息预览
+        </button>
+    </div>
 </div>

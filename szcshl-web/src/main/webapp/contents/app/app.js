@@ -1362,7 +1362,7 @@
         //打印预览，生成word模板直接预览
         $rootScope.printFile = function (businessId, businessType, stageType) {
             if (!businessId || !businessType || !stageType) {
-                bsWin.alert("打印预览失败，参数不正确！");
+                bsWin.alert("没有项目阶段，找不到对应的打印模板，打印预览失败！");
             } else {
                 var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/file/printPreview/" + businessId + "/" + businessType + "/" + stageType;
                 $("#iframePreview").attr("src", url);
@@ -1382,7 +1382,7 @@
             var flag  = false;
             if(payData == undefined){
                 flag = true ;
-                bsWin.alert("评审费未发放，打印失败！");
+                bsWin.alert("评审费未发放，不能进行打印操作！");
             }else{
                 for(var i=0;i<expertSelectedDtoList.length;i++){
                     //必须是确认参与的专家

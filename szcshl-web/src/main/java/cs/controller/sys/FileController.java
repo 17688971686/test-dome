@@ -605,7 +605,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         if (stageType.equals("STAGESUG")) {
                             workData.put("wpTile", "项目建议书评审工作方案");
                             workData.put("wpCode", " QR-4.3-02-A3");
-                        } else if (stageType.equals("STAGESTUDY")) {
+                        }else if (stageType.equals("STAGEOTHER")) {
+                            workData.put("wpTile", "其它评审工作方案");
+                            workData.put("wpCode", " QR-4.3-02-A3");
+                        }else if (stageType.equals("STAGESTUDY")) {
                             workData.put("wpTile", "可行性研究报告评审工作方案");
                             workData.put("wpCode", " QR-4.4-01-A3");
                         } else if (stageType.equals("STAGEBUDGET")) {

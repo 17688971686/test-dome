@@ -6,6 +6,7 @@
     <caption class="text-center">
         <p style="float:left;">
             <span ng-show="vm.work.workreviveStage=='项目建议书'">QR-4.3-02-A3</span>
+            <span ng-show="vm.work.workreviveStage=='其它'">QR-4.3-02-A3</span>
             <span ng-show="vm.work.workreviveStage=='可行性研究报告'">QR-4.4-01-A3</span>
             <span ng-show="vm.work.workreviveStage=='资金申请报告'">QR-4.11-02-A0</span>
             <span ng-show="vm.work.workreviveStage=='项目概算'">QR-4.7-01-A2</span>
@@ -13,7 +14,7 @@
         <p class="h3">
             <strong>{{vm.work.titleName}}</strong>
         </p>
-        <p style="margin-top: 50px;"">
+        <p style="margin-top: 50px;">
         <span style="float: left;padding: 0px 20px;">
                 评审方式：
                 <select ng-model="vm.work.reviewType" name="reviewType" ng-change="vm.reviewTypeChange()" id="reviewType" ng-disabled="vm.businessFlag.isReveiwAWP">
