@@ -492,8 +492,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         }
         if (sign.getWorkProgramList() != null && sign.getWorkProgramList().size() > 0) {
 
+            Boolean flag = false;
+
             for (WorkProgram workProgram : sign.getWorkProgramList()) {
                 if ("专家评审会".equals(workProgram.getReviewType())) {
+                    flag = true;
                     sysFileService.deleteByBusinessIdAndBusinessType(signId, Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")");
                     //2、生成会前准备材料
                     List<SysFile> saveFile = new ArrayList<>();
@@ -615,9 +618,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     //4、更改工作方案状态
                     workProgram.setIsCreateDoc(EnumState.YES.getValue());
                     workProgramRepo.save(workProgram);
-                }else{
-                    return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该项目没有评审会，生成会前准备材料失败。" , null);
                 }
+            }
+
+            if(!flag){
+                return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该项目没有评审会，生成会前准备材料失败。" , null);
             }
         }else{
             return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该项目没有工作方案，生成会前准备材料失败。" , null);

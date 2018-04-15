@@ -388,6 +388,17 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
         Sign sign = signRepo.findById(Sign_.signid.getName() , signId);
 
+        WorkProgram workProgram = null;
+        List<WorkProgram> workProgramList = sign.getWorkProgramList();
+        if(workProgramList != null && workProgramList.size() >0){
+            for(int i=0 ; i < workProgramList.size() ; i++){
+                if("1".equals(workProgramList.get(i).getBranchId())){
+                    workProgram = workProgramList.get(i);
+                    break;
+                }
+            }
+        }
+
         //获取专家评审方案
         ExpertReview expertReview = expertReviewRepo.findByBusinessId(signId);
 
@@ -395,7 +406,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
         String result = "";
 
-        if(expertReview != null){
+        if(workProgram != null && expertReview != null){
 
             //获得拟聘专家信息
             List<ExpertSelected> expertSelectedList  = expertReview.getExpertSelectedList();
@@ -429,7 +440,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
 
                 try {
-                    SysFile studyRoster = CreateTemplateUtils.createStudyTemplateRoster(f,sign , expertSelectedList);
+                    SysFile studyRoster = CreateTemplateUtils.createStudyTemplateRoster(f,sign , expertSelectedList , workProgram);
                     if(studyRoster != null   && Validate.isString(studyRoster.getSysFileId())){
                         sysFileList.add(studyRoster);
                     }
@@ -467,7 +478,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 }
 
                 try{
-                    SysFile budgetRoster = CreateTemplateUtils.createBudgetTemplateRoster(f,sign  ,expertSelectedList);
+                    SysFile budgetRoster = CreateTemplateUtils.createBudgetTemplateRoster(f,sign  ,expertSelectedList , workProgram);
                     if(budgetRoster != null && Validate.isString(budgetRoster.getSysFileId())){
                         sysFileList.add(budgetRoster);
                     }
@@ -495,7 +506,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 }
 
                 try{
-                    SysFile reportRoster = CreateTemplateUtils.createReportTemplateRoster(f,sign , expertSelectedList);
+                    SysFile reportRoster = CreateTemplateUtils.createReportTemplateRoster(f,sign , expertSelectedList , workProgram);
                     if(reportRoster != null  && Validate.isString(reportRoster.getSysFileId())){
                         sysFileList.add(reportRoster);
                     }
@@ -523,7 +534,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 }
 
                 try{
-                    SysFile sugRoster = CreateTemplateUtils.createSugTemplateRoster(f, sign , expertSelectedList);
+                    SysFile sugRoster = CreateTemplateUtils.createSugTemplateRoster(f, sign , expertSelectedList , workProgram);
                     if(sugRoster != null && Validate.isString(sugRoster.getSysFileId())){
                         sysFileList.add(sugRoster);
                     }
