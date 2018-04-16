@@ -63,6 +63,8 @@ public class ExpertSelectedDto {
      */
     private BigDecimal oneCost;
 
+    private Integer expertSeq;
+
     public String getIsSplit() {
         return isSplit;
     }
@@ -248,5 +250,13 @@ public class ExpertSelectedDto {
 
     public void setConditionId(String conditionId) {
         this.conditionId = conditionId;
+    }
+
+    public Integer getExpertSeq() {
+        return expertSeq;
+    }
+
+    public void setExpertSeq(Integer expertSeq) {
+        this.expertSeq = expertSeq;
     }
 }

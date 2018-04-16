@@ -5,6 +5,7 @@ import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
+import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.odata.ODataObj;
@@ -195,8 +196,8 @@ public class ExpertReviewController {
     @RequiresAuthentication
     @RequestMapping(name = "保存新的专家信息", path = "expertNewInfo", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg saveExpertReviewCostSingle(@RequestBody ExpertReviewNewInfoDto[] expertReviewNewInfoDtos) {
-        return expertReviewService.saveExpertNewInfo(expertReviewNewInfoDtos);
+    public ResultMsg saveExpertNewInfo(@RequestBody ExpertSelectedDto[] expertSelectedDtos) {
+        return expertReviewService.saveExpertNewInfo(expertSelectedDtos);
     }
 
     //保存新的专家信息

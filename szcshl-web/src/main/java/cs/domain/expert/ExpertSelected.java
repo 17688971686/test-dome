@@ -119,6 +119,12 @@ public class ExpertSelected {
     @Column(columnDefinition = "NUMBER" )
     private BigDecimal oneCost;
 
+    /**
+     * 排序号
+     */
+    @Column(columnDefinition="INTEGER")
+    private Integer expertSeq;
+
     public String getIsSplit() {
         return isSplit;
     }
@@ -293,5 +299,13 @@ public class ExpertSelected {
 
     public void setConditionId(String conditionId) {
         this.conditionId = conditionId;
+    }
+
+    public Integer getExpertSeq() {
+        return expertSeq;
+    }
+
+    public void setExpertSeq(Integer expertSeq) {
+        this.expertSeq = expertSeq;
     }
 }
