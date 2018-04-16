@@ -62,6 +62,11 @@ public class FtpUtils {
             checkCharset(ftp,k);
             // 内网设置为被动模式
             ftp.enterLocalPassiveMode();
+            if (remoteBaseDir.startsWith(File.separator) || remoteBaseDir.startsWith("/")) {
+                remoteBaseDir = File.separator + k.getFtpRoot() + remoteBaseDir;
+            } else {
+                remoteBaseDir = File.separator + k.getFtpRoot() + remoteBaseDir + File.separator;
+            }
             //涉及到中文问题 根据系统实际编码改变
             remoteBaseDir = new String(remoteBaseDir.getBytes(k.getChartset()==null?GHK_CHARSET:k.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);
             filename = new String(filename.getBytes(k.getChartset()==null?GHK_CHARSET:k.getChartset()), FTP.DEFAULT_CONTROL_ENCODING);

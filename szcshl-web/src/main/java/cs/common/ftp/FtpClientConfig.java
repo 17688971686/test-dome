@@ -10,17 +10,19 @@ public class FtpClientConfig {
     // 2=download
     private int transType;
     private String chartset;
+    private String ftpRoot;
 
     public FtpClientConfig() {
     }
 
     public FtpClientConfig(String host, int port, String username,
-                           String password, int transType) {
+                           String password, int transType,String ftpRoot) {
         this.host = host;
         this.port = port;
         this.username = username;
         this.password = password;
         this.transType = transType;
+        this.ftpRoot = ftpRoot;
     }
 
     public String getHost() {
@@ -62,48 +64,31 @@ public class FtpClientConfig {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((host == null) ? 0 : host.hashCode());
-        result = prime * result
-                + ((password == null) ? 0 : password.hashCode());
-        result = prime * result + port;
-        result = prime * result
-                + ((username == null) ? 0 : username.hashCode());
-        result = prime * result + transType;
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FtpClientConfig)) return false;
+
+        FtpClientConfig that = (FtpClientConfig) o;
+
+        if (port != that.port) return false;
+        if (transType != that.transType) return false;
+        if (host != null ? !host.equals(that.host) : that.host != null) return false;
+        if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        if (password != null ? !password.equals(that.password) : that.password != null) return false;
+        if (chartset != null ? !chartset.equals(that.chartset) : that.chartset != null) return false;
+        return ftpRoot != null ? ftpRoot.equals(that.ftpRoot) : that.ftpRoot == null;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        FtpClientConfig other = (FtpClientConfig) obj;
-        if (host == null) {
-            if (other.host != null)
-                return false;
-        } else if (!host.equals(other.host))
-            return false;
-        if (password == null) {
-            if (other.password != null)
-                return false;
-        } else if (!password.equals(other.password))
-            return false;
-        if (port != other.port)
-            return false;
-        if (transType != other.transType)
-            return false;
-        if (username == null) {
-            if (other.username != null)
-                return false;
-        } else if (!username.equals(other.username))
-            return false;
-        return true;
+    public int hashCode() {
+        int result = host != null ? host.hashCode() : 0;
+        result = 31 * result + port;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + transType;
+        result = 31 * result + (chartset != null ? chartset.hashCode() : 0);
+        result = 31 * result + (ftpRoot != null ? ftpRoot.hashCode() : 0);
+        return result;
     }
 
     public int getTransType() {
@@ -121,5 +106,13 @@ public class FtpClientConfig {
 
     public void setChartset(String chartset) {
         this.chartset = chartset;
+    }
+
+    public String getFtpRoot() {
+        return ftpRoot;
+    }
+
+    public void setFtpRoot(String ftpRoot) {
+        this.ftpRoot = ftpRoot;
     }
 }

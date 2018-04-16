@@ -48,7 +48,6 @@ public class SysFileUtil {
 
     /**
      * 根据业务类型(urlGenerator)生成不同规则的文件路径
-     *
      * @param fileLocation 文件存放的根目录
      */
     public static String generatRelativeUrl(String fileLocation,String mainType,String mainId, String sysBusiType, String fileName) {
@@ -70,8 +69,7 @@ public class SysFileUtil {
         //如果是本地
         if(Validate.isString(fileLocation)){
             String url = fileLocation;
-           File isFileExists = new File(url + File.separator + relativeUrl);
-
+            File isFileExists = new File(url + File.separator + relativeUrl);
             if (isFileExists.exists()) {
                 if (!isFileExists.isDirectory()) {
                     isFileExists.mkdirs();

@@ -52,6 +52,7 @@ import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.codec.binary.Base64;
+
 import java.io.ByteArrayInputStream;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -207,7 +208,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     public ResultMsg upload(HttpServletRequest request, @RequestParam(name = "file") MultipartFile[] multipartFileList,
                             @RequestParam(required = true) String businessId, String mainId, String mainType,
                             String sysfileType, String sysBusiType) {
-        ResultMsg resultMsg = new ResultMsg(false,MsgCode.ERROR.getValue(),"");
+        ResultMsg resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "");
         if (multipartFileList == null || multipartFileList.length == 0) {
             resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "请选择要上传的附件");
             return resultMsg;
@@ -228,9 +229,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
             for (MultipartFile multipartFile : multipartFileList) {
                 String fileName = multipartFile.getOriginalFilename();
-                if(fileName.indexOf(".") == -1){
+                if (fileName.indexOf(".") == -1) {
                     errorMsg.append("附件【" + fileName + "】没有后缀名，无法上传到文件服务器！");
-                    continue ;
+                    continue;
                 }
                 String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
                 SysFile sysFile = sysFileRepo.isExistFile(relativeFileUrl, fileName);
@@ -246,8 +247,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 } else {
                     uploadFileName = Tools.generateRandomFilename().concat(fileType);
                 }
-                //上传到ftp,
-
+                //上传到ftp,加上根路径
                 boolean uploadResult = ftpUtils.putFile(k, relativeFileUrl, uploadFileName, multipartFile.getInputStream());
                 if (uploadResult) {
                     //保存数据库记录
@@ -324,7 +324,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             Ftp f = sysFile.getFtp();
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
-            boolean checkResult = ftpUtils.checkFileExist(removeRelativeUrl,checkFileName,k);
+            boolean checkResult = ftpUtils.checkFileExist(removeRelativeUrl, checkFileName, k);
             if (checkResult) {
                 resultMsg = new ResultMsg(true, MsgCode.OK.getValue(), "附件存在，可以进行下载操作！");
             } else {
@@ -360,7 +360,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             Ftp f = sysFile.getFtp();
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
-            boolean downResult = ftpUtils.downLoadFile(removeRelativeUrl,fileName,k,out);
+            boolean downResult = ftpUtils.downLoadFile(removeRelativeUrl, fileName, k, out);
             if (downResult) {
 
             } else {
@@ -399,7 +399,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             Ftp f = sysFile.getFtp();
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
-            boolean downResult = ftpUtils.downLoadFile(removeRelativeUrl,fileName,k,out);
+            boolean downResult = ftpUtils.downLoadFile(removeRelativeUrl, fileName, k, out);
             if (downResult) {
 
             }
@@ -463,11 +463,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             //如果是pdf文件，直接输出流，否则要先转为pdf
             if (fileType.equals(".pdf") || fileType.equals(".png") || fileType.equals(".jpg") || fileType.equals(".gif")) {
                 out = response.getOutputStream();
-                ftpUtils.downLoadFile(removeRelativeUrl,storeFileName,k,out);
+                ftpUtils.downLoadFile(removeRelativeUrl, storeFileName, k, out);
             } else {
                 downFile = new File(SysFileUtil.getUploadPath() + File.separator + storeFileName);
                 out = new FileOutputStream(downFile);
-                ftpUtils.downLoadFile(removeRelativeUrl,storeFileName,k,out);
+                ftpUtils.downLoadFile(removeRelativeUrl, storeFileName, k, out);
                 String filePath = downFile.getAbsolutePath();
                 filePath = filePath.substring(0, filePath.lastIndexOf(".")) + Template.PDF_SUFFIX.getKey();
                 if (downFile != null) {
@@ -543,9 +543,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 case "SIGN":
                     Sign sign = signRepo.findById(Sign_.signid.getName(), businessId);
                     Map<String, Object> dataMap = TemplateUtil.entryAddMap(sign);
-                    String ministerhandlesug=sign.getMinisterhandlesug();
-                    dataMap.put("ministerhandlesug",ministerhandlesug == null ? "" : ministerhandlesug.replaceAll("<br>", "<w:br />")
-                    .replaceAll("<p style='text-align:right;'>" , "").replaceAll("</p>" , ""));
+                    String ministerhandlesug = sign.getMinisterhandlesug();
+                    dataMap.put("ministerhandlesug", ministerhandlesug == null ? "" : ministerhandlesug.replaceAll("<br>", "<w:br />")
+                            .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", ""));
                     if (stageType.equals(RevireStageKey.KEY_SUG.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_STUDY.getValue())
                             || stageType.equals(Constant.RevireStageKey.KEY_OTHER.getValue())) {
@@ -605,10 +605,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         if (stageType.equals("STAGESUG")) {
                             workData.put("wpTile", "项目建议书评审工作方案");
                             workData.put("wpCode", " QR-4.3-02-A3");
-                        }else if (stageType.equals("STAGEOTHER")) {
+                        } else if (stageType.equals("STAGEOTHER")) {
                             workData.put("wpTile", "其它评审工作方案");
                             workData.put("wpCode", " QR-4.3-02-A3");
-                        }else if (stageType.equals("STAGESTUDY")) {
+                        } else if (stageType.equals("STAGESTUDY")) {
                             workData.put("wpTile", "可行性研究报告评审工作方案");
                             workData.put("wpCode", " QR-4.4-01-A3");
                         } else if (stageType.equals("STAGEBUDGET")) {
@@ -628,7 +628,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         workData.put("wpTile", "设备清单工作方案");
                         workData.put("wpCode", "QR-4.9-02-A0");
                         file = TemplateUtil.createDoc(workData, Constant.Template.STAGE_HOMELAND_WORKPROGRAM.getKey(), path);
-                    }else if(null != stageType && stageType.equals("INFORMATION")){
+                    } else if (null != stageType && stageType.equals("INFORMATION")) {
 
                         file = TemplateUtil.createDoc(workData, Constant.Template.INFORMATION.getKey(), path);
                     }
@@ -733,31 +733,31 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     String mianChargeSuggest = dispatchDoc.getMianChargeSuggest();
                     String main = null;
                     String second = null;
-                    String sugge=null;
-                    String vice=null;
+                    String sugge = null;
+                    String vice = null;
                     if (Validate.isString(mianChargeSuggest)) {
                         main = mianChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
                     }
                     String secondChargeSuggest = dispatchDoc.getSecondChargeSuggest();
                     if (Validate.isString(secondChargeSuggest)) {
-                        second = secondChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "")   ;
+                        second = secondChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
                     }
-                    String ministerSuggesttion=dispatchDoc.getMinisterSuggesttion();
-                    if(Validate.isString(ministerSuggesttion)){
+                    String ministerSuggesttion = dispatchDoc.getMinisterSuggesttion();
+                    if (Validate.isString(ministerSuggesttion)) {
                         sugge = ministerSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "")
                                 .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "").replaceAll(" ", "");
 
                     }
-                    String viceDirectorSuggesttion=dispatchDoc.getViceDirectorSuggesttion();
-                    if(Validate.isString(viceDirectorSuggesttion)){
+                    String viceDirectorSuggesttion = dispatchDoc.getViceDirectorSuggesttion();
+                    if (Validate.isString(viceDirectorSuggesttion)) {
                         vice = viceDirectorSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "")
                                 .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "").replaceAll(" ", "");
 
                     }
                     dispatchData.put("mianChargeSuggest", main);
                     dispatchData.put("secondChargeSuggest", second);
-                    dispatchData.put("ministerSuggesttion",sugge);
-                    dispatchData.put("viceDirectorSuggesttion",vice);
+                    dispatchData.put("ministerSuggesttion", sugge);
+                    dispatchData.put("viceDirectorSuggesttion", vice);
 
                     if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
                         //建议书
@@ -857,7 +857,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                                         BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected1);
 
-                                        if(EnumState.YES.getValue().equals(expertSelectedDto.getIsSplit())){
+                                        if (EnumState.YES.getValue().equals(expertSelectedDto.getIsSplit())) {
                                             isSplit = true;
 
                                             BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected2);
@@ -866,35 +866,35 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                                             expertSelected1.setReviewCost(expertSelectedDto.getOneCost() == null ? expertSelectedDto.getReviewCost() : expertSelectedDto.getOneCost());
 
                                             //判断缴税金额不为空，并且评审费不为0，则计算缴税金额，否则缴税金额为0
-                                            if(expertSelectedDto.getReviewTaxes() != null &&
-                                                    expertSelectedDto.getReviewCost().compareTo(new BigDecimal(0)) != 0){
+                                            if (expertSelectedDto.getReviewTaxes() != null &&
+                                                    expertSelectedDto.getReviewCost().compareTo(new BigDecimal(0)) != 0) {
 
-                                                expertSelected1.setReviewTaxes( expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost() , 3 , BigDecimal.ROUND_HALF_UP)
+                                                expertSelected1.setReviewTaxes(expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost(), 3, BigDecimal.ROUND_HALF_UP)
                                                         .multiply(expertSelected1.getReviewCost()));
-                                            }else{
+                                            } else {
                                                 expertSelected1.setReviewTaxes(new BigDecimal(0));
                                             }
                                             expertSelected1.setTotalCost(expertSelected1.getReviewCost().add(expertSelected1.getReviewTaxes()));
 
                                             expertSelected2.setReviewCost(expertSelectedDto.getReviewCost().subtract(expertSelected1.getReviewCost()));
-                                            if(expertSelectedDto.getReviewTaxes() != null &&
-                                                    expertSelectedDto.getReviewCost().compareTo(new BigDecimal(0)) != 0){
+                                            if (expertSelectedDto.getReviewTaxes() != null &&
+                                                    expertSelectedDto.getReviewCost().compareTo(new BigDecimal(0)) != 0) {
 
-                                                expertSelected2.setReviewTaxes( expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost() , 3 , BigDecimal.ROUND_HALF_UP)
-                                                        .multiply(expertSelected2.getReviewCost() ));
-                                            }else{
+                                                expertSelected2.setReviewTaxes(expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost(), 3, BigDecimal.ROUND_HALF_UP)
+                                                        .multiply(expertSelected2.getReviewCost()));
+                                            } else {
                                                 expertSelected2.setReviewTaxes(new BigDecimal(0));
                                             }
                                             expertSelected2.setTotalCost(expertSelected2.getReviewCost().add(expertSelected2.getReviewTaxes()));
 
-                                            reviewCostSum2 =  reviewCostSum2.add(expertSelected2.getReviewCost());
-                                            reviewTaxesSum2 =  reviewTaxesSum2.add(expertSelected2.getReviewTaxes());
-                                            totalCostSum2 =  totalCostSum2.add(expertSelected2.getTotalCost());
+                                            reviewCostSum2 = reviewCostSum2.add(expertSelected2.getReviewCost());
+                                            reviewTaxesSum2 = reviewTaxesSum2.add(expertSelected2.getReviewTaxes());
+                                            totalCostSum2 = totalCostSum2.add(expertSelected2.getTotalCost());
                                             expertSelectedList2.add(expertSelected2);
                                         }
 
                                         reviewCostSum1 = reviewCostSum1.add(expertSelected1.getReviewCost() == null ? new BigDecimal(0) : expertSelected1.getReviewCost());
-                                        reviewTaxesSum1 =  reviewTaxesSum1.add(expertSelected1.getReviewTaxes() == null ? new BigDecimal(0) : expertSelected1.getReviewTaxes());
+                                        reviewTaxesSum1 = reviewTaxesSum1.add(expertSelected1.getReviewTaxes() == null ? new BigDecimal(0) : expertSelected1.getReviewTaxes());
                                         totalCostSum1 = totalCostSum1.add(expertSelected1.getReviewTaxes() == null ? new BigDecimal(0) : expertSelected1.getReviewTaxes());
 
                                         expertSelectedList1.add(expertSelected1);
@@ -907,32 +907,31 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         }
 
                         String[] projectNames = expertReview.getReviewTitle().split("》");
-                        expertData.put("projectName", projectNames.length > 0 ? projectNames[0].substring(1,projectNames[0].length()) : expertReview.getReviewTitle());
+                        expertData.put("projectName", projectNames.length > 0 ? projectNames[0].substring(1, projectNames[0].length()) : expertReview.getReviewTitle());
 
 
-
-                        if(isSplit){
+                        if (isSplit) {
                             expertData.put("expertList", expertSelectedList1);
                             expertData.put("expertList2", expertSelectedList2);
-                        }else{
+                        } else {
                             expertData.put("expertList", expertSelectedList);
                         }
                     }
                     //专家评审费发放表
                     if ("SIGN_EXPERT_PAY".equals(stageType)) {
-                        expertData.put("reviewCostSum",isSplit ? reviewCostSum1 : expertReview.getReviewCost());
-                        expertData.put("reviewTaxesSum",isSplit ? reviewTaxesSum1 : expertReview.getReviewTaxes());
-                        expertData.put("totalCostSum",isSplit ? totalCostSum1 : expertReview.getTotalCost());
+                        expertData.put("reviewCostSum", isSplit ? reviewCostSum1 : expertReview.getReviewCost());
+                        expertData.put("reviewTaxesSum", isSplit ? reviewTaxesSum1 : expertReview.getReviewTaxes());
+                        expertData.put("totalCostSum", isSplit ? totalCostSum1 : expertReview.getTotalCost());
 
-                        expertData.put("reviewCostSum2",reviewCostSum2);
+                        expertData.put("reviewCostSum2", reviewCostSum2);
                         expertData.put("reviewTaxesSum2", reviewTaxesSum2);
                         expertData.put("totalCostSum2", totalCostSum2);
 
-                        expertData.put("payDate" , expertReview.getReviewDate() == null ? "" : DateUtils.converToString(expertReview.getReviewDate() , "yyyy年MM月dd日"));
+                        expertData.put("payDate", expertReview.getReviewDate() == null ? "" : DateUtils.converToString(expertReview.getReviewDate(), "yyyy年MM月dd日"));
 
-                        if(isSplit){
+                        if (isSplit) {
                             file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT.getKey(), path);
-                        }else{
+                        } else {
                             file = TemplateUtil.createDoc(expertData, Template.EXPERT_PAYMENT_one.getKey(), path);
                         }
 
@@ -958,20 +957,20 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 case "SIGN_UNIT":
                     //单位评分
-                    if("SIGN_UNIT_SCORE".equals(stageType)){
-                       UnitScore unitScore=unitScoreRepo.findById(UnitScore_.id.getName(),businessId);
-                        Map<String, Object> unitScoerMap =new HashMap<>();
-                       if(Validate.isObject(unitScore)){
-                        unitScoerMap.put("coName",unitScore.getCompany().getCoName());
-                        unitScoerMap.put("coPhone",unitScore.getCompany().getCoPhone());
-                        unitScoerMap.put("coPC",unitScore.getCompany().getCoPC());
-                        unitScoerMap.put("coAddress",unitScore.getCompany().getCoAddress());
-                        unitScoerMap.put("score",unitScore.getScore());
-                        unitScoerMap.put("describes",unitScore.getDescribes());
-                       }
+                    if ("SIGN_UNIT_SCORE".equals(stageType)) {
+                        UnitScore unitScore = unitScoreRepo.findById(UnitScore_.id.getName(), businessId);
+                        Map<String, Object> unitScoerMap = new HashMap<>();
+                        if (Validate.isObject(unitScore)) {
+                            unitScoerMap.put("coName", unitScore.getCompany().getCoName());
+                            unitScoerMap.put("coPhone", unitScore.getCompany().getCoPhone());
+                            unitScoerMap.put("coPC", unitScore.getCompany().getCoPC());
+                            unitScoerMap.put("coAddress", unitScore.getCompany().getCoAddress());
+                            unitScoerMap.put("score", unitScore.getScore());
+                            unitScoerMap.put("describes", unitScore.getDescribes());
+                        }
                         file = TemplateUtil.createDoc(unitScoerMap, Template.UNIT_SCORE.getKey(), path);
                     }
-                     break;
+                    break;
                 case "EXPERT":
                     //专家申请表
                     ExpertDto expertDto = expertService.findById(businessId);
@@ -1003,18 +1002,18 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 case "EXPERTOFFER":
                     //专家聘书
-                    ExpertOffer expertOffer =expertOfferRepo.findById(ExpertOffer_.id.getName(), businessId);
-                    Map<String, Object> expertOfferDataMap =new HashMap<>();
-                    expertOfferDataMap.put("name",expertOffer.getExpert().getName());
-                    expertOfferDataMap.put("sex",expertOffer.getExpert().getSex());
-                    expertOfferDataMap.put("birthDay",expertOffer.getExpert().getBirthDay());
-                    expertOfferDataMap.put("idCard",expertOffer.getExpert().getIdCard());
-                    expertOfferDataMap.put("qualifiCations",expertOffer.getExpert().getQualifiCations());
-                    expertOfferDataMap.put("post",expertOffer.getExpert().getPost());
-                    expertOfferDataMap.put("sendCcieDate",expertOffer.getSendCcieDate());
-                    expertOfferDataMap.put("period",expertOffer.getPeriod());
-                    expertOfferDataMap.put("expertNo",expertOffer.getExpert().getExpertNo());
-                    expertOfferDataMap.put("fafang","深圳市政府投资项目评审中心");
+                    ExpertOffer expertOffer = expertOfferRepo.findById(ExpertOffer_.id.getName(), businessId);
+                    Map<String, Object> expertOfferDataMap = new HashMap<>();
+                    expertOfferDataMap.put("name", expertOffer.getExpert().getName());
+                    expertOfferDataMap.put("sex", expertOffer.getExpert().getSex());
+                    expertOfferDataMap.put("birthDay", expertOffer.getExpert().getBirthDay());
+                    expertOfferDataMap.put("idCard", expertOffer.getExpert().getIdCard());
+                    expertOfferDataMap.put("qualifiCations", expertOffer.getExpert().getQualifiCations());
+                    expertOfferDataMap.put("post", expertOffer.getExpert().getPost());
+                    expertOfferDataMap.put("sendCcieDate", expertOffer.getSendCcieDate());
+                    expertOfferDataMap.put("period", expertOffer.getPeriod());
+                    expertOfferDataMap.put("expertNo", expertOffer.getExpert().getExpertNo());
+                    expertOfferDataMap.put("fafang", "深圳市政府投资项目评审中心");
 
                     file = TemplateUtil.createDoc(expertOfferDataMap, Template.EXPERTOFFER.getKey(), path);
                     break;
@@ -1156,9 +1155,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
      */
     @RequiresAuthentication
     @RequestMapping(name = "在线编辑", path = "editFile", method = RequestMethod.GET)
-    public String editFile(Model model, @RequestParam(required = true) String sysFileId,@RequestParam(required = true)String fileType) {
+    public String editFile(Model model, @RequestParam(required = true) String sysFileId, @RequestParam(required = true) String fileType) {
         model.addAttribute("sysFileId", sysFileId);
-        String openType="";
+        String openType = "";
         //文件类型
         switch (fileType.toLowerCase()) {
             case ".doc":
@@ -1178,10 +1177,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         }
         model.addAttribute("fileType", openType);
         String fileUrl = sysFileService.getLocalUrl();
-        if(fileUrl.endsWith("/")){
-            fileUrl = fileUrl.substring(0,fileUrl.lastIndexOf("/"));
+        if (fileUrl.endsWith("/")) {
+            fileUrl = fileUrl.substring(0, fileUrl.lastIndexOf("/"));
         }
-        model.addAttribute("fileUrl",fileUrl);
+        model.addAttribute("fileUrl", fileUrl);
         model.addAttribute("pluginFilePath", Constant.plugin_file_path + "/weboffice.rar");
         return "weboffice/edit_dj";
     }
@@ -1189,6 +1188,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
     /**
      * 根据base64，保存文件
+     *
      * @param sysFileId
      * @param base64String
      * @return
@@ -1196,8 +1196,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @RequiresAuthentication
     @RequestMapping(name = "保存文件", path = "saveByFileBase64", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg saveByFileBase64(@RequestParam(required = true) String sysFileId,@RequestParam(required = true)String base64String) {
-        ResultMsg resultMsg ;
+    public ResultMsg saveByFileBase64(@RequestParam(required = true) String sysFileId, @RequestParam(required = true) String base64String) {
+        ResultMsg resultMsg;
         String errorMsg = "";
         try {
             SysFile sysFile = sysFileRepo.findById(sysFileId);
@@ -1209,17 +1209,17 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getUploadConfig(f);
             Base64 decoder = new Base64();
-            boolean uploadResult = ftpUtils.putFile(k, removeRelativeUrl, uploadFileName,new ByteArrayInputStream(decoder.decode(base64String)));
+            boolean uploadResult = ftpUtils.putFile(k, removeRelativeUrl, uploadFileName, new ByteArrayInputStream(decoder.decode(base64String)));
             if (uploadResult) {
                 //保存数据库记录
                 sysFile.setModifiedBy(SessionUtil.getDisplayName());
                 sysFile.setModifiedDate(new Date());
                 sysFileService.update(sysFile);
-                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "文件保存成功！修改的文件名是【"+sysFile.getShowName()+"】");
+                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "文件保存成功！修改的文件名是【" + sysFile.getShowName() + "】");
             } else {
-                resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "文件保存失败！修改的文件名是【"+sysFile.getShowName()+"】");
+                resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "文件保存失败！修改的文件名是【" + sysFile.getShowName() + "】");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             errorMsg += e.getMessage();
             resultMsg = new ResultMsg(false, MsgCode.ERROR.getValue(), "文件保存异常！");
         }
@@ -1229,10 +1229,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
         log.setUserName(SessionUtil.getDisplayName());
         log.setLogCode(resultMsg.getReCode());
         log.setBuninessId(sysFileId);
-        log.setMessage(resultMsg.getReMsg()+errorMsg);
+        log.setMessage(resultMsg.getReMsg() + errorMsg);
         log.setModule(Constant.LOG_MODULE.FILEUPDATE.getValue());
-        log.setResult(resultMsg.isFlag()? Constant.EnumState.YES.getValue(): Constant.EnumState.NO.getValue());
-        log.setLogger(this.getClass().getName()+".saveByFileBase64");
+        log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
+        log.setLogger(this.getClass().getName() + ".saveByFileBase64");
         log.setLogLevel(Constant.EnumState.PROCESS.getValue());
         logService.save(log);
         return resultMsg;

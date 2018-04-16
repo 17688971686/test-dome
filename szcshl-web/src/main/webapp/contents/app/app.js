@@ -1400,7 +1400,7 @@
 
                         if(expertSelectedDtoList[i].reviewTaxes == undefined){
                             flag = true;
-                            bsWin.alert("评审费未计纳税额，打印失败！");
+                            bsWin.alert("评审费未计纳税额，不能进行打印操作！");
                             break;
                         }
 

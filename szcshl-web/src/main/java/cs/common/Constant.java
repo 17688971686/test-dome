@@ -739,9 +739,10 @@ public class Constant {
         KEY_IMPORT("STAGEIMPORT"),     //设备清单（进口）
         KEY_DEVICE("STAGEDEVICE"),     //进口设备
         KEY_OTHER("STAGEOTHER"),       //其他
-        LAST_UNIT_MAXSORT("LAST_UNIT_MAXSORT"),     //上一个抽签单位的最大序号
+        LAST_UNIT_MAXSORT("LAST_UNIT_MAXSORT"),    //上一个抽签单位的最大序号
         KEY_CHECKFILE("CHECKFILE"),    //要检测的文件名名称
         KEY_FTPIP("FTPIP"),            //文件服务器IP地址,
+        KEY_FTPROOT("FTPROOT"),         //文件服务器根目录
         RTX_ENABLED("RTX_ENABLED"),     //是否使用腾讯通账号
         RETURN_FGW_URL("RETURN_FGW_URL"),//回传给委里的接口配置
         FGW_PRE_PROJECT_IFS("FGW_PRE_PROJECT_IFS"),//预签收接口配置

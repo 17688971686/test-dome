@@ -660,6 +660,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="content-wrapper">
             <section class="content">
                 <div ui-view></div>
+                <!--返回顶部按钮-->
+                <a id="btnTop" class="btnTop" style="display:none;position: fixed;bottom: 20px;right: 25px;z-index: 100;" href="javascript:void(0);" title="返回顶部">
+                    <img src="${path}/contents/images/back.png" style="width: 72px; height: 72px;">
+                </a>
             </section>
             <!-- /.content -->
         </div>
@@ -689,8 +693,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <form id="szecSysFileDownLoadForm" style="display:none;" >
             <input name="sysfileId" type="hidden">
         </form>
-    </div>
 
+    </div>
     <!-- ./wrapper -->
 
     <script src="${path}/contents/libs/kendoui/kendo.all.min.js"></script>
@@ -747,6 +751,55 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="${path}/contents/app-dist/app.all.js"></script>
     <script src="${path}/contents/shared/index.js"></script>
     <script type="text/javascript">
+        window.onload = function(){
+            var btnTop = document.getElementById("btnTop");
+            var timer = null;
+
+            window.onscroll = function(){
+                var backTop = getScrollTop();
+                if(backTop >= 20){ //当前视口顶端大于等于20时，显示返回顶部的按钮
+                    btnTop.style.display = "block";
+                }else {
+                    btnTop.style.display = "none";
+                }
+            };
+
+            btnTop.onclick = function(){
+                //定时执行
+                timer = setInterval(function(){
+                    var backTop = getScrollTop();
+                    var speedTop = backTop / 10;
+                    //修改当前视口的数值，产生向上活动的效果
+                    setScrollTop(backTop - speedTop);
+                    if(backTop == 0){
+                        //结束函数执行
+                        clearInterval(timer);
+                    }
+                },30);
+            };
+            //获取当前视口的顶端数值
+            var getScrollTop = function(){
+                var sTop ;
+                if (document.compatMode == "BackCompat")
+                {
+                    sTop = document.body.scrollTop;
+                }else{
+                    //document.compatMode == \"CSS1Compat\"
+                    sTop = document.documentElement.scrollTop == 0 ? document.body.scrollTop : document.documentElement.scrollTop;
+                }
+                return sTop;
+            };
+            //设置当前视口的顶端数值
+            var setScrollTop = function(top){
+                if (document.compatMode == "BackCompat"){
+                    document.body.scrollTop = top;
+                }else if(document.documentElement.scrollTop == 0){
+                        document.body.scrollTop = top;
+                }else{
+                        document.documentElement.scrollTop = top;
+                }
+            }
+        };
         function showNotice(noticeList){
             if(noticeList && noticeList.length > 0){
                 for(var i=0,l=noticeList.length;i<l;i++){

@@ -2415,7 +2415,7 @@ public class SignServiceImpl implements SignService {
                 if (sign.getDealOrgType().equals(user.getMngOrgType())) {
                     sign.setLeaderId(user.getId());
                     sign.setLeaderName(user.getDisplayName());
-                    sign.setComprehensivehandlesug("请" + (user.getDisplayName()).substring(0, 1) + "主任阅示。");
+                    sign.setComprehensivehandlesug("请" + user.getDisplayName() + "同志阅示。");
                     sign.setComprehensiveName("综合部");
                     sign.setComprehensiveDate(new Date());
                     break;

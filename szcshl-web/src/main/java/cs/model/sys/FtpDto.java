@@ -1,43 +1,39 @@
-package cs.domain.sys;
-import javax.persistence.*;
-
+package cs.model.sys;
 
 /**
- * ftp链接常量
+ * Created by shenning on 2018/4/16.
  */
-@Entity
-@Table(name = "cs_ftp")
-public class Ftp {
-    @Id
+public class FtpDto {
+
     private String ftpId;
 
     //ip地址
-    @Column(columnDefinition = "varchar(30)")
     private String ipAddr;
 
     //端口号
-    @Column(columnDefinition = "Integer")
     private Integer port;
 
     //用户名
-    @Column(columnDefinition = "varchar(30)")
     private String userName;
 
     //密码
-    @Column(columnDefinition = "varchar(60)")
     private String pwd;
 
-    /**
-     * 根路径
-     */
-    @Column(columnDefinition = "varchar(100)")
+    //路径
     private String path;
 
     /**
-     * 是否当前在用 9表示是，0表示否
+     * 是否在用
      */
-    @Column(columnDefinition = "varchar(2) default 0")
     private String enable;
+
+    public String getFtpId() {
+        return ftpId;
+    }
+
+    public void setFtpId(String ftpId) {
+        this.ftpId = ftpId;
+    }
 
     public String getIpAddr() {
         return ipAddr;
@@ -79,14 +75,6 @@ public class Ftp {
         this.path = path;
     }
 
-    public String getFtpId() {
-        return ftpId;
-    }
-
-    public void setFtpId(String ftpId) {
-        this.ftpId = ftpId;
-    }
-
     public String getEnable() {
         return enable;
     }
@@ -94,5 +82,4 @@ public class Ftp {
     public void setEnable(String enable) {
         this.enable = enable;
     }
-
 }

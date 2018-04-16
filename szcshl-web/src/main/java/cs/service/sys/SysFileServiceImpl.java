@@ -37,6 +37,7 @@ import java.util.UUID;
 
 import static cs.common.Constant.FTP_IP;
 import static cs.common.Constant.RevireStageKey.KEY_FTPIP;
+import static cs.common.Constant.RevireStageKey.KEY_FTPROOT;
 import static cs.common.Constant.RevireStageKey.LOCAL_URL;
 import static cs.common.Constant.SUPER_USER;
 
@@ -49,6 +50,8 @@ public class SysFileServiceImpl implements SysFileService {
     private SysConfigService sysConfigService;
     @Autowired
     private FtpRepo ftpRepo;
+    @Autowired
+    private SysFileService sysFileService;
 
     @Override
     @Transactional
@@ -241,6 +244,27 @@ public class SysFileServiceImpl implements SysFileService {
         }
     }
 
+    /**
+     * 获取文件服务器地址
+     * @param relativeFileUrl
+     * @return
+     */
+    @Override
+    public String getFtpRoot(String relativeFileUrl) {
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_FTPROOT.getValue());
+        if( !Validate.isObject(sysConfigDto) || !Validate.isString(sysConfigDto.getConfigValue())){
+            return null;
+        }else{
+            String ftpRoot  = sysConfigDto.getConfigValue();
+            if (relativeFileUrl.startsWith(File.separator) || relativeFileUrl.startsWith("/")) {
+                relativeFileUrl = File.separator + ftpRoot + relativeFileUrl;
+            } else {
+                relativeFileUrl = File.separator + ftpRoot + relativeFileUrl + File.separator;
+            }
+            return  relativeFileUrl;
+        }
+    }
+
     @Override
     public String getLocalUrl() {
         String localUrl = "";
@@ -270,8 +294,6 @@ public class SysFileServiceImpl implements SysFileService {
         hqlBuilder.setParam("mainId" , businessId);
         hqlBuilder.setParam("businessType" , businessType);
         sysFileRepo.executeHql(hqlBuilder);
-
-
     }
 
     /**

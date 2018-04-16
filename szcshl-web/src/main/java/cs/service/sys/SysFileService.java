@@ -55,6 +55,11 @@ public interface SysFileService {
     String findFtpId();
 
     /**
+     * 获取文件服务根目录
+     * @return
+     */
+    String getFtpRoot(String relativeUrl);
+    /**
      * 获取本地
      * @return
      */

@@ -15,6 +15,7 @@ public class ConfigProvider {
         config.setUsername(ftp.getUserName());
         config.setPassword(ftp.getPwd());
         config.setTransType(1);
+        config.setFtpRoot(ftp.getPath());
         return config;
     }
 
