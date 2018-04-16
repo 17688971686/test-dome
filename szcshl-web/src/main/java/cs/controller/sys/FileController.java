@@ -59,6 +59,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.*;
 
 import static cs.common.Constant.*;
@@ -850,6 +851,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                                 if (EnumState.YES.getValue().equals(expertSelectedDto.getIsJoin())
                                         && EnumState.YES.getValue().equals(expertSelectedDto.getIsConfrim())) {
 
+
+
                                     BeanCopierUtils.copyPropertiesIgnoreNull(expertSelectedDto, expertSelected);
 
                                     //是专家评审费才需要计算费用
@@ -880,8 +883,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                                             if(expertSelectedDto.getReviewTaxes() != null &&
                                                     expertSelectedDto.getReviewCost().compareTo(new BigDecimal(0)) != 0){
 
-                                                expertSelected2.setReviewTaxes( expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost() , 3 , BigDecimal.ROUND_HALF_UP)
-                                                        .multiply(expertSelected2.getReviewCost() ));
+                                                expertSelected2.setReviewTaxes(expertSelectedDto.getReviewTaxes().subtract(expertSelected1.getReviewTaxes()));
+
+//                                                expertSelected2.setReviewTaxes( expertSelectedDto.getReviewTaxes().divide(expertSelectedDto.getReviewCost() , 3 , BigDecimal.ROUND_HALF_UP)
+//                                                        .multiply(expertSelected2.getReviewCost() ));
                                             }else{
                                                 expertSelected2.setReviewTaxes(new BigDecimal(0));
                                             }
@@ -895,7 +900,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                                         reviewCostSum1 = reviewCostSum1.add(expertSelected1.getReviewCost() == null ? new BigDecimal(0) : expertSelected1.getReviewCost());
                                         reviewTaxesSum1 =  reviewTaxesSum1.add(expertSelected1.getReviewTaxes() == null ? new BigDecimal(0) : expertSelected1.getReviewTaxes());
-                                        totalCostSum1 = totalCostSum1.add(expertSelected1.getReviewTaxes() == null ? new BigDecimal(0) : expertSelected1.getReviewTaxes());
+                                        totalCostSum1 = totalCostSum1.add(expertSelected1.getTotalCost() == null ? new BigDecimal(0) : expertSelected1.getTotalCost());
 
                                         expertSelectedList1.add(expertSelected1);
                                     }
