@@ -141,7 +141,7 @@ public class AdminController {
         //3、查询通知公告
         resultMap.put("annountmentList", annService.getHomePageAnnountment());
         //4、查询办结任务
-        resultMap.put("endTaskList", flowService.queryMyEndTasks());
+        //resultMap.put("endTaskList", flowService.queryMyEndTasks());
         //5、查询可以查看的项目，包括待办和图表数据
         Map<String, Object> authMap = userService.getUserSignAuth();
         Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
@@ -215,9 +215,9 @@ public class AdminController {
                 existList = new ArrayList<>();
                 Map<String, Object[]> dataMap = new HashMap();
                 String unWorkId = UUID.randomUUID().toString();
-                //1、主任
+                //1、主任和副主任都是统计部门，所以直接用线性图统计就行了
                 if (authFlag == 1) {
-                    for (RuProcessTask rpt : authRuSignTask) {
+                    for (RuProcessTask rpt : lineList) {
                         boolean haveOrg = false;
                         //主办部门
                         if (Validate.isString(rpt.getmOrgId())) {
@@ -240,7 +240,7 @@ public class AdminController {
 
                     //2、分管领导
                 } else if (authFlag == 2) {
-                    for (RuProcessTask rpt : authRuSignTask) {
+                    for (RuProcessTask rpt : lineList) {
                         if (Validate.isList(orgIdList)) {
                             for (String orgId : orgIdList) {
                                 if (orgId.equals(rpt.getmOrgId()) || (rpt.getaOrgId() != null && rpt.getaOrgId().indexOf(orgId) > -1)) {
