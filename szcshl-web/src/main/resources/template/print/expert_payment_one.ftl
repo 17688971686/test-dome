@@ -253,7 +253,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2551" w:type="dxa"/>
+                                    <w:tcW w:w="2400" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -276,7 +276,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2268" w:type="dxa"/>
+                                    <w:tcW w:w="2600" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -298,7 +298,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1116" w:type="dxa"/>
+                                    <w:tcW w:w="900" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -321,7 +321,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1152" w:type="dxa"/>
+                                    <w:tcW w:w="800" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -344,7 +344,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1134" w:type="dxa"/>
+                                    <w:tcW w:w="900" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -367,7 +367,30 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1276" w:type="dxa"/>
+                                    <w:tcW w:w="800" w:type="dxa"/>
+                                    <w:vMerge w:val="restart"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:szCs w:val="21"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:szCs w:val="21"/>
+                                        </w:rPr>
+                                        <w:t>是否函评</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1095" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -446,7 +469,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2551" w:type="dxa"/>
+                                    <w:tcW w:w="2400" w:type="dxa"/>
                                     <w:vMerge w:val="continue"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -462,7 +485,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2268" w:type="dxa"/>
+                                    <w:tcW w:w="2600" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -484,7 +507,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1116" w:type="dxa"/>
+                                    <w:tcW w:w="900" w:type="dxa"/>
                                     <w:vMerge w:val="continue"/>
                                     <w:vAlign w:val="top"/>
                                 </w:tcPr>
@@ -500,7 +523,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1152" w:type="dxa"/>
+                                    <w:tcW w:w="800" w:type="dxa"/>
                                     <w:vMerge w:val="continue"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -516,7 +539,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1134" w:type="dxa"/>
+                                    <w:tcW w:w="900" w:type="dxa"/>
                                     <w:vMerge w:val="continue"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -532,7 +555,23 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1276" w:type="dxa"/>
+                                    <w:tcW w:w="800" w:type="dxa"/>
+                                    <w:vMerge w:val="continue"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1095" w:type="dxa"/>
                                     <w:vMerge w:val="continue"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -625,7 +664,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2551" w:type="dxa"/>
+                                    <w:tcW w:w="2400" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -651,7 +690,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2268" w:type="dxa"/>
+                                    <w:tcW w:w="2600" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -669,13 +708,13 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${(expert.expertDto.bankAccount)!}</w:t>
+                                        <w:t>${(expert.expertDto.openingBank)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1116" w:type="dxa"/>
+                                    <w:tcW w:w="900" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -692,13 +731,13 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${(expert.reviewCost)!}</w:t>
+                                        <w:t>${(expert.reviewCost)!?c}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1152" w:type="dxa"/>
+                                    <w:tcW w:w="800" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -715,13 +754,13 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${(expert.reviewTaxes)!}</w:t>
+                                        <w:t>${(expert.reviewTaxes)!?c}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1134" w:type="dxa"/>
+                                    <w:tcW w:w="900" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -738,13 +777,40 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${(expert.totalCost)!}</w:t>
+                                        <w:t>${(expert.totalCost)!?c}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1276" w:type="dxa"/>
+                                    <w:tcW w:w="800" w:type="dxa"/>
+                                    <w:vMerge w:val="restart"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <#if (expert.isLetterRw)?? && expert.isLetterRw=="9">
+                                            <w:sym w:font="Wingdings 2" w:char="F052" />
+                                        <#else>
+                                            <w:t xml:space="preserve">□</w:t>
+                                        </#if>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1095" w:type="dxa"/>
                                     <w:vMerge w:val="restart"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -816,7 +882,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2551" w:type="dxa"/>
+                                    <w:tcW w:w="2400" w:type="dxa"/>
                                     <w:vMerge w:val="continue"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -833,7 +899,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="2268" w:type="dxa"/>
+                                    <w:tcW w:w="2600" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -849,13 +915,13 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${(expert.expertDto.openingBank)!}</w:t>
+                                        <w:t>${(expert.expertDto.bankAccount)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1116" w:type="dxa"/>
+                                    <w:tcW w:w="900" w:type="dxa"/>
                                     <w:vMerge w:val="continue"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -871,7 +937,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1152" w:type="dxa"/>
+                                    <w:tcW w:w="800" w:type="dxa"/>
                                     <w:vMerge w:val="continue"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -887,7 +953,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1134" w:type="dxa"/>
+                                    <w:tcW w:w="900" w:type="dxa"/>
                                     <w:vMerge w:val="continue"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -903,7 +969,23 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1276" w:type="dxa"/>
+                                    <w:tcW w:w="800" w:type="dxa"/>
+                                    <w:vMerge w:val="continue"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1095" w:type="dxa"/>
                                     <w:vMerge w:val="continue"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
@@ -969,7 +1051,7 @@
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1116" w:type="dxa"/>
+                                    <w:tcW w:w="900" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -987,13 +1069,13 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${reviewCostSum!}</w:t>
+                                        <w:t>${reviewCostSum!?c}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1152" w:type="dxa"/>
+                                    <w:tcW w:w="800" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -1011,13 +1093,37 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${reviewTaxesSum!}</w:t>
+                                        <w:t>${reviewTaxesSum!?c}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
+                            <w:tcPr>
+                                <w:tcW w:w="900" w:type="dxa"/>
+                                <w:vAlign w:val="center"/>
+                            </w:tcPr>
+                            <w:p>
+                                <w:pPr>
+                                    <w:jc w:val="center"/>
+                                    <w:rPr>
+                                        <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                        <w:sz w:val="24"/>
+                                        <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                    </w:rPr>
+                                </w:pPr>
+                                <w:r>
+                                    <w:rPr>
+                                        <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                        <w:sz w:val="24"/>
+                                        <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
+                                    </w:rPr>
+                                    <w:t>${totalCostSum!?c}</w:t>
+                                </w:r>
+                            </w:p>
+                        </w:tc>
+                            <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1134" w:type="dxa"/>
+                                    <w:tcW w:w="800" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
@@ -1035,13 +1141,13 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${totalCostSum!}</w:t>
+                                        <w:t></w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
                             <w:tc>
                                 <w:tcPr>
-                                    <w:tcW w:w="1276" w:type="dxa"/>
+                                    <w:tcW w:w="1095" w:type="dxa"/>
                                     <w:vAlign w:val="center"/>
                                 </w:tcPr>
                                 <w:p>
