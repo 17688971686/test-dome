@@ -3,16 +3,16 @@ package cs.repository.repositoryImpl.expert;
 import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.DateUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.StringUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.expert.ExpertSelected_;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.AbstractRepository;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.DoubleType;
 import org.hibernate.type.StringType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1565,6 +1565,36 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
            }
         }
        return  proReviewConditionDto;
+    }
+
+    /**
+     * 根据工作方案id抽取专家信息
+     * @param businessID
+     * @return
+     */
+    @Override
+    public List<ExpertSelectedDto> findByBusinessId(String businessID) {
+        Criteria criteria = expertSelectedRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(ExpertSelected_.businessId.getName(),businessID));
+        criteria.add(Restrictions.eq(ExpertSelected_.isJoin.getName(),"9"));
+        criteria.add(Restrictions.eq(ExpertSelected_.isConfrim.getName(),"9"));
+        criteria.addOrder(Property.forName(ExpertSelected_.expertSeq.getName()).asc());
+        List<ExpertSelected> expertSelectedList = criteria.list();
+        List<ExpertSelectedDto> expertSelectedDtoList = new ArrayList<>();
+        if (Validate.isString(businessID)) {
+            if (expertSelectedList != null && expertSelectedList.size() > 0) {
+                expertSelectedList.forEach(x -> {
+                    ExpertSelectedDto expertSelectedDto = new ExpertSelectedDto();
+                    BeanCopierUtils.copyProperties(x, expertSelectedDto);
+                    ExpertDto expertDto = new ExpertDto();
+                    BeanCopierUtils.copyProperties(x.getExpert(), expertDto);
+                    expertSelectedDto.setExpertDto(expertDto);
+                    expertSelectedDtoList.add(expertSelectedDto);
+                });
+            }
+
+        }
+        return expertSelectedDtoList;
     }
 
 }

@@ -157,4 +157,6 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @return
      */
     List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto);
+
+    List<ExpertSelectedDto> findByBusinessId(String businessID);
 }

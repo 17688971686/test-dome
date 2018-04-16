@@ -41,11 +41,6 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
     private WorkProgramRepo workProgramRepo;
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
-    @Autowired
-    private ExpertNewInfoRepo expertNewInfoRepo;
-
-    @Autowired
-    private ExpertNewTypeRepo expertNewTypeRepo;
 
     @Override
     public PageModelDto<ExpertSelConditionDto> get(ODataObj odataObj) {
@@ -103,8 +98,6 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
         try{
             expertSelConditionRepo.deleteById(ExpertSelCondition_.id.getName(), ids);
             expertSelectedRepo.deleteById(ExpertSelected_.conditionId.getName(),ids);
-            expertNewTypeRepo.deleteById(ExpertNewType_.conditionId.getName(),ids);
-            expertNewInfoRepo.deleteById(ExpertNewInfo_.conditionId.getName(),ids);
             resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
         }catch (Exception e){
             resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！");

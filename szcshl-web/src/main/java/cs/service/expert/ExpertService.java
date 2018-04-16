@@ -1,9 +1,7 @@
 package cs.service.expert;
 
 import java.util.List;
-
 import cs.common.ResultMsg;
-import cs.domain.expert.Expert;
 import cs.model.PageModelDto;
 import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelConditionDto;

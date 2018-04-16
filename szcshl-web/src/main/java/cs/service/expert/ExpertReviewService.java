@@ -68,11 +68,11 @@ public interface ExpertReviewService {
 	List<Map<String,Object>> countReviewExpense(ExpertReview expertReview);
 	/**
 	 * 保存最新的专家信息
-	 * @param expertReviewNewInfoDtos
+	 * @param expertSelectedDtos
 	 * @return
 	 */
 
-	ResultMsg saveExpertNewInfo( ExpertReviewNewInfoDto[] expertReviewNewInfoDtos);
+	ResultMsg saveExpertNewInfo(ExpertSelectedDto[] expertSelectedDtos);
 
 	/**
 	 * 删除新专家信息

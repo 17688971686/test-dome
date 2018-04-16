@@ -51,11 +51,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
 
     @Autowired
     private ExpertRepo expertRepo;
-    @Autowired
-    private ExpertNewInfoRepo expertNewInfoRepo;
 
-    @Autowired
-    private ExpertNewTypeRepo expertNewTypeRepo;
 
 
     @Override
@@ -114,8 +110,6 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
             expertReviewRepo.delete(expertReview);
         } else {
             expertSelectedRepo.deleteById(ExpertSelected_.id.getName(), ids);
-            expertNewTypeRepo.deleteById(ExpertNewType_.expertSelectedId.getName(),ids);
-            expertNewInfoRepo.deleteById(ExpertNewInfo_.expertSelectedId.getName(),ids);
         }
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "删除成功！");
     }

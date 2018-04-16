@@ -579,13 +579,13 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         workProgram.setIsHaveEIA("0");
                     }
                     Map<String, Object> workData = TemplateUtil.entryAddMap(workProgram);
-                    List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
+             /*       List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                     ExpertDto[] expertDtos = new ExpertDto[10];
                     if (expertDtoList != null && expertDtoList.size() > 0) {
                         for (int i = 0; i < expertDtoList.size() && i < 10; i++) {
                             expertDtos[i] = expertDtoList.get(i);
                         }
-                    }
+                    }*/
                     String addressName = "";
                     String rbDate = "";
                     List<RoomBookingDto> roomBookingDtoList = workProgramDto.getRoomBookingDtos();
@@ -595,7 +595,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }
 
                     int count = signBranchRepo.countBranch(workProgramDto.getSignId());
-                    workData.put("expertList", expertDtos);//聘请专家
+                   // workData.put("expertList", expertDtos);//聘请专家
                     workData.put("works", count);//控制是否多个分支
                     workData.put("addressName", addressName);//会议室名称
                     workData.put("rbDate", rbDate);//评审会时间

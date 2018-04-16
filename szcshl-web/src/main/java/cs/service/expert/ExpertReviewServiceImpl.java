@@ -130,7 +130,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             //3、抽取专家
             if (expertReview.getExpertSelectedList() != null && expertReview.getExpertSelectedList().size() > 0) {
                 List<ExpertSelectedDto> selDtoList = new ArrayList<>();
-                for (ExpertSelected epSelted : expertReview.getExpertSelectedList()) {
+                List<ExpertSelected> expertSelectedList = initExpertOrder(expertReview.getExpertSelectedList());
+                for (ExpertSelected epSelted : expertSelectedList) {
                     if (isFilter) {
                         if (minBusinessId.equals(epSelted.getBusinessId())) {
                             selDtoList.add(initSelExpert(epSelted));//设置抽取专家Dto
@@ -148,6 +149,32 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
         }
         return expertReviewDto;
+    }
+
+    /**
+     * 初始化专家排序
+     * @return
+     */
+    private List<ExpertSelected> initExpertOrder(List<ExpertSelected> expertSelectedList){
+        List<ExpertSelected> expertSelectedList1 = new ArrayList<>();
+        List<ExpertSelected> expertSelectedList1Temp = new ArrayList<>();
+        for(int i = 0;i < expertSelectedList.size();i++){
+            for(int j = 0;j<expertSelectedList.size();j++){
+                if(null != expertSelectedList.get(i).getExpertSeq()){
+                    if(null != expertSelectedList.get(j).getExpertSeq()){
+                        if(i+1 == expertSelectedList.get(j).getExpertSeq()){
+                            expertSelectedList1.add(expertSelectedList.get(j));
+                            break;
+                        }
+                    }
+                }else{
+                    expertSelectedList1Temp.add(expertSelectedList.get(i));
+                    break;
+                }
+            }
+        }
+        expertSelectedList1.addAll(expertSelectedList1Temp);
+        return  expertSelectedList1;
     }
 
     private ExpertSelectedDto initSelExpert(ExpertSelected epSelted) {
@@ -302,7 +329,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         sqlBuilder.setParam("state", state);
         sqlBuilder.bulidPropotyString("where", ExpertSelected_.id.getName(), expertSelId);
         expertReviewRepo.executeSql(sqlBuilder);
-        updateNewExpertState(minBusinessId,expertSelId,state,isConfirm);
         //更改专家评审费
         if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
             workProgramRepo.initExpertCost(minBusinessId);
@@ -661,49 +687,21 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     }
 
     @Override
-    public ResultMsg saveExpertNewInfo(ExpertReviewNewInfoDto[] expertReviewNewInfoDtos) {
+    public ResultMsg saveExpertNewInfo(ExpertSelectedDto[] expertSelectedDtos) {
         try {
-            if (expertReviewNewInfoDtos.length > 0) {
-                expertNewTypeRepo.deleteById("businessId", expertReviewNewInfoDtos[0].getBusinessId());
-                expertNewInfoRepo.deleteById("businessId", expertReviewNewInfoDtos[0].getBusinessId());
+            List<ExpertSelected> expertSelectedList = new ArrayList<>();
+            for (int i = 0; i < expertSelectedDtos.length; i++) {
+                ExpertSelectedDto expertSelectedDto = (ExpertSelectedDto)expertSelectedDtos[i];
+                ExpertSelected expertSelected = expertSelectedRepo.findById(expertSelectedDto.getId());
+                //BeanCopierUtils.copyProperties(expertSelectedDto, expertSelected);
+                expertSelected.setMaJorBig(expertSelectedDto.getMaJorBig());
+                expertSelected.setMaJorSmall(expertSelectedDto.getMaJorSmall());
+                expertSelected.setExpeRttype(expertSelectedDto.getExpeRttype());
+                expertSelected.setIsLetterRw(expertSelectedDto.getIsLetterRw());
+                expertSelected.setExpertSeq(i+1);
+                expertSelectedList.add(expertSelected);
             }
-            for (int i = 0; i < expertReviewNewInfoDtos.length; i++) {
-                ExpertNewInfoDto expertNewInfoDto = expertReviewNewInfoDtos[i].getExpertDto();
-                expertNewInfoDto.setBusinessId(expertReviewNewInfoDtos[i].getBusinessId());
-                //保存最新的专家信息
-                ExpertNewInfo expertNewInfo = new ExpertNewInfo();
-                BeanCopierUtils.copyPropertiesIgnoreNull(expertNewInfoDto, expertNewInfo);
-                expertNewInfo.setExpertNewInfoId(UUID.randomUUID().toString());
-                expertNewInfo.setCreatedDate(new Date());
-                expertNewInfo.setCreatedBy(SessionUtil.getDisplayName());
-                expertNewInfo.setModifiedDate(new Date());
-                expertNewInfo.setModifiedBy(SessionUtil.getDisplayName());
-                expertNewInfo.setMaJorBig(expertReviewNewInfoDtos[i].getMaJorBig());
-                expertNewInfo.setMaJorSmall(expertReviewNewInfoDtos[i].getMaJorSmall());
-                expertNewInfo.setExpeRttype(expertReviewNewInfoDtos[i].getExpeRttype());
-                expertNewInfo.setIsJoin(expertReviewNewInfoDtos[i].getIsJoin());
-                expertNewInfo.setIsConfrim(expertReviewNewInfoDtos[i].getIsConfrim());
-                expertNewInfo.setConditionId(expertReviewNewInfoDtos[i].getConditionId());
-                expertNewInfo.setExpertSelectedId(expertReviewNewInfoDtos[i].getId());
-                expertNewInfo.setIsLetterRw(expertReviewNewInfoDtos[i].getIsLetterRw());
-                expertNewInfoRepo.save(expertNewInfo);//保存新的专家信息
-
-                ExpertNewType expertNewType = new ExpertNewType();
-                expertNewType.setExpertNewInfo(expertNewInfo);//专家信息的关联
-                expertNewType.setId(UUID.randomUUID().toString());
-                expertNewType.setMaJorBig(expertReviewNewInfoDtos[i].getMaJorBig());
-                expertNewType.setMaJorSmall(expertReviewNewInfoDtos[i].getMaJorSmall());
-                expertNewType.setExpertType(expertReviewNewInfoDtos[i].getExpeRttype());
-                expertNewType.setBusinessId(expertNewInfoDto.getBusinessId());
-                expertNewType.setConditionId(expertReviewNewInfoDtos[i].getConditionId());
-                expertNewType.setExpertSelectedId(expertReviewNewInfoDtos[i].getId());
-                expertNewType.setModifiedBy(SessionUtil.getDisplayName());
-                expertNewType.setModifiedDate(new Date());
-                expertNewType.setCreatedBy(SessionUtil.getDisplayName());
-                expertNewType.setCreatedDate(new Date());
-                expertNewTypeRepo.save(expertNewType);//保存专家类型
-
-            }
+            expertSelectedRepo.bathUpdate(expertSelectedList);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败！");

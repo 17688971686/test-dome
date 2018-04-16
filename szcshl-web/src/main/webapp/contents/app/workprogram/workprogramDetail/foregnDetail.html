@@ -160,7 +160,7 @@
                 <td class="text-center">{{r.host}}</td>
                 <td class="text-center" colspan="4">{{r.content}}</td>
             </tr>
-            <tr ng-show="w.expertDtoList && w.expertDtoList.length > 0">
+            <tr ng-show="w.expertSelectedDtoList && w.expertSelectedDtoList.length > 0">
                 <td class="text-center" style="width:10%;" colspan="2">拟聘请专家</td>
                 <td class="text-center" style="width:15%;">工作单位</td>
                 <td class="text-center" style="width:10%;">职务</td>
@@ -171,23 +171,16 @@
                 <td class="text-center" style="width:8%;">专家类别</td>
                 <td class="text-center" style="width:15%;">备注</td>
             </tr>
-            <tr ng-repeat="x in w.expertDtoList track by $index"
-                ng-show="w.expertDtoList && w.expertDtoList.length > 0">
-                <td class="text-center" colspan="2">{{x.name}}</td>
-                <td class="text-center">{{x.comPany}}</td>
-                <td class="text-center">{{x.job}}</td>
-                <td class="text-center">{{x.post}}</td>
-                <td align="center">
-                    <span ng-repeat="y in x.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}<br></span>
-                </td>
-                <td align="center">
-                    <span ng-repeat="y in x.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}<br></span>
-                </td>
-                <td class="text-center">{{x.userPhone}}</td>
-                <td align="center">
-                    <span ng-repeat="y in x.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span>
-                </td>
-                <td class="text-center">{{x.remark}}</td>
+            <tr ng-repeat="x in w.expertSelectedDtoList track by $index" ng-show="w.expertSelectedDtoList && w.expertSelectedDtoList.length > 0">
+                <td class="text-center" colspan="2">{{x.expertDto.name}}</td>
+                <td class="text-center">{{x.expertDto.comPany}}</td>
+                <td class="text-center">{{x.expertDto.job}}</td>
+                <td class="text-center">{{x.expertDto.post}}</td>
+                <td class="text-center">{{x.maJorBig}}</td>
+                <td class="text-center">{{x.maJorSmall}}</td>
+                <td class="text-center">{{x.expertDto.userPhone}}</td>
+                <td class="text-center">{{x.expeRttype}}</td>
+                <td class="text-center">{{x.expertDto.remark}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">拟邀请单位及领导</td>
@@ -384,7 +377,7 @@
                 <td class="text-center">{{r.host}}</td>
                 <td class="text-center" colspan="4">{{r.content}}</td>
             </tr>
-            <tr ng-show="w.expertDtoList && w.expertDtoList.length > 0">
+            <tr ng-show="w.expertSelectedDtoList && w.expertSelectedDtoList.length > 0">
                 <td class="text-center" style="width:10%;" colspan="2">拟聘请专家</td>
                 <td class="text-center" style="width:15%;">工作单位</td>
                 <td class="text-center" style="width:10%;">职务</td>
@@ -395,21 +388,16 @@
                 <td class="text-center" style="width:10%;">专家类别</td>
                 <td class="text-center" style="width:15%;">备注</td>
             </tr>
-            <tr ng-repeat="x in w.expertDtoList track by $index"
-                ng-show="w.expertDtoList && w.expertDtoList.length > 0">
-                <td class="text-center" colspan="2">{{x.name}}</td>
-                <td class="text-center">{{x.comPany}}</td>
-                <td class="text-center">{{x.job}}</td>
-                <td class="text-center">{{x.post}}</td>
-                <td align="center">
-                    <span ng-repeat="y in x.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}<br></span>
-                </td>
-                <td align="center">
-                    <span ng-repeat="y in x.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}<br></span>
-                </td>
-                <td class="text-center">{{x.userPhone}}</td>
-                <td class="text-center"><span ng-repeat="y in x.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span></td>
-                <td class="text-center">{{x.remark}}</td>
+            <tr ng-repeat="x in w.expertSelectedDtoList track by $index" ng-show="w.expertSelectedDtoList && w.expertSelectedDtoList.length > 0">
+                <td class="text-center" colspan="2">{{x.expertDto.name}}</td>
+                <td class="text-center">{{x.expertDto.comPany}}</td>
+                <td class="text-center">{{x.expertDto.job}}</td>
+                <td class="text-center">{{x.expertDto.post}}</td>
+                <td class="text-center">{{x.maJorBig}}</td>
+                <td class="text-center">{{x.maJorSmall}}</td>
+                <td class="text-center">{{x.expertDto.userPhone}}</td>
+                <td class="text-center">{{x.expeRttype}}</td>
+                <td class="text-center">{{x.expertDto.remark}}</td>
             </tr>
             <tr>
                 <td class="text-center" colspan="2">拟邀请单位及领导</td>

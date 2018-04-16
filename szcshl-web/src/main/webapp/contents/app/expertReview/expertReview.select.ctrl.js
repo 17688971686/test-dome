@@ -23,7 +23,7 @@
         vm.isSuperUser = isSuperUser;
         vm.saveNewExpertFlag = 0;   //保存新专家标志
         vm.reviewType=$state.params.reviewType; //评审方式
-        vm.newMinBusinessId = ""; //新专家信息表方案id
+
 
         //S 查看专家详细
         vm.findExportDetail = function (id) {
@@ -48,22 +48,16 @@
         //刷新已经选择的专家信息
         vm.reFleshSelEPInfo = function(explist) {
             $.each(explist,function(i, obj){
-                if(obj.expertDto.expertTypeDtoList != undefined && obj.expertDto.expertTypeDtoList.length>0){
-                    obj.maJorBig = obj.expertDto.expertTypeDtoList[0].maJorBig;
-                    obj.maJorSmall = obj.expertDto.expertTypeDtoList[0].maJorSmall;
-                    obj.expeRttype = obj.expertDto.expertTypeDtoList[0].expertType;
-                }
                 vm.confirmEPList.push(obj);
+                if(vm.confirmEPListReplace.length>0){
+                    vm.confirmEPListReplace.push(obj);
+                }
                     //保存拟聘专家
                     if("专家函评"==vm.reviewType && obj.isLetterRw!= "9"){//是专家函评时就勾选完
                         obj.isLetterRw=9;
                     }else if("专家评审会"==vm.reviewType && obj.isLetterRw!= "0"){
                         obj.isLetterRw=0;
                     }
-                if(vm.confirmEPListReplace.length > 0){
-                    vm.confirmEPListReplace.push(obj);
-                    vm.saveExpert(false);//进行保存最新的聘请专家列表
-                }
                 vm.selectIds.push(obj.expertDto.expertID);
             })
             vm.excludeIds = vm.selectIds.join(',');
@@ -71,12 +65,6 @@
 
         //删除后刷新
         vm.reFleshAfterRemove = function(ids){
-            if(vm.confirmEPListReplace.length > 0){
-                vm.newMinBusinessId = vm.confirmEPListReplace[0].businessId;
-            }
-            if(vm.confirmEPList.length > 0){
-                vm.newMinBusinessId = vm.confirmEPList[0].businessId;
-            }
             $.each(ids,function(i, obj){
                 //1、删除已确认的专家
                 $.each(vm.confirmEPList,function(index, epObj){
@@ -84,19 +72,14 @@
                         vm.confirmEPList.splice(index, 1);
                     }
                 })
-                $.each(vm.confirmEPListReplace,function(index, epObj){
-                    if(epObj && obj == epObj.id){
-                        vm.confirmEPListReplace.splice(index, 1);
-                    }
-                })
+                if(vm.confirmEPListReplace.length>0){
+                    $.each(vm.confirmEPListReplace,function(index, epObj){
+                        if(epObj && obj == epObj.id){
+                            vm.confirmEPListReplace.splice(index, 1);
+                        }
+                    })
+                }
             })
-            if(vm.newMinBusinessId !=''&& vm.confirmEPListReplace.length == 0){
-                expertReviewSvc.deleteExpertNewInfo(vm.newMinBusinessId);
-                vm.saveNewExpertFlag = 0;
-            }
-            if(vm.newMinBusinessId !=''&& vm.confirmEPList.length == 0){
-                vm.saveNewExpertFlag = 0;
-            }
         }
 
         //更新参加未参加状态
@@ -108,13 +91,13 @@
                         epObj.isJoin = state;
                     }
                 })
-                    if(vm.confirmEPListReplace.length > 0){
-                        $.each(vm.confirmEPListReplace,function(index, epObj){
-                            if(obj == epObj.id){
-                                epObj.isJoin = state;
-                            }
-                        })
-                    }
+                if(vm.confirmEPListReplace.length>0){
+                    $.each(vm.confirmEPListReplace,function(index, epObj){
+                        if(epObj && obj == epObj.id){
+                            epObj.isJoin = state;
+                        }
+                    })
+                }
             })
         }
 
@@ -127,12 +110,13 @@
                         epObj.isConfrim = state;
                     }
                 })
-
-                $.each(vm.confirmEPListReplace,function(index, epObj){
-                    if(obj == epObj.id){
-                        epObj.isConfrim = state;
-                    }
-                })
+                if(vm.confirmEPListReplace.length>0){
+                    $.each(vm.confirmEPListReplace,function(index, epObj){
+                        if(epObj && obj == epObj.id){
+                            epObj.isConfrim = state;
+                        }
+                    })
+                }
             })
         }
 
@@ -154,11 +138,9 @@
         vm.init = function(businessId,minBusinessId){
             vm.expertReview = {};
             vm.confirmEPList = [];
-            vm.confirmEPListReplace = [];
             vm.selectIds = [];
             expertReviewSvc.initReview(businessId,minBusinessId,function(data){
                 vm.expertReview = data;
-
                 //获取已经抽取的专家
                 if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
 
@@ -172,30 +154,6 @@
                         vm.excludeIds = '';
                     }
                 }
-
-                expertReviewSvc.initNewExpertInfo(vm.minBusinessId,function (data) {  //新专家调初始化
-                  $.each(data,function (i,obj1) {
-                        $.each(vm.confirmEPList,function (j,obj2) {
-                            if(obj1.name == obj2.expertDto.name && obj2.isConfrim == '9' ){
-                                if("专家函评"==vm.reviewType && obj1.isLetterRw!= "9"){//是专家函评时就勾选完
-                                    obj2.isLetterRw=9;
-                                    vm.saveNewExpertFlag="1";//数据有变动
-                                }else if("专家评审会"==vm.reviewType && obj1.isLetterRw!= "0"){
-                                    obj2.isLetterRw=0;
-                                    vm.saveNewExpertFlag="1";//数据有变动
-                                }else{
-                                    obj2.isLetterRw = obj1.isLetterRw;
-                                }
-                                obj2.maJorBig = obj1.maJorBig;
-                                obj2.maJorSmall = obj1.maJorSmall;
-                                obj2.expeRttype = obj1.expeRttype;
-                                obj2.isJoin = obj1.isJoin;
-                                obj2.isConfrim = obj1.isConfrim;
-                                vm.confirmEPListReplace.push(obj2);
-                            }
-                        });
-                    })
-                });
             });
         }
          activate();
@@ -221,7 +179,6 @@
 
         //保存自选的专家
         vm.saveSelfExpert = function () {
-            vm.saveNewExpertFlag = '1';
             var selectIds = common.getKendoCheckId('#selfExpertGrid');
             if (selectIds.length == 0) {
                 bsWin.alert("请先选择专家！");
@@ -254,7 +211,6 @@
 
         //删除自选专家
         vm.delertSelfExpert = function () {
-            vm.saveNewExpertFlag = '1';
             var isCheck = $("input[name='seletedEp']:checked");
             if (isCheck.length < 1) {
                 bsWin.alert("请选择要删除的专家");
@@ -304,7 +260,6 @@
 
         //删除选择的境外专家
         vm.delertOutSelfExpert = function () {
-            vm.saveNewExpertFlag = '1';
             var isCheck = $("input[name='seletedOutEp']:checked");
             if (isCheck.length < 1) {
                 bsWin.alert("请选择要删除的专家");
@@ -333,7 +288,6 @@
 
         //保存选择的境外专家
         vm.saveOutExpert = function () {
-            vm.saveNewExpertFlag = '1';
             var selectIds = common.getKendoCheckId('#outExpertGrid');
             if (selectIds.length == 0) {
                 bsWin.alert("请先选择专家！");
@@ -664,7 +618,6 @@
                         vm.reFleshConfirmState(ids,"9");
                         vm.checkAutoOfficeExpert = false;
                         vm.checkAutoAntiExpert = false;
-                        vm.init(vm.businessId,vm.minBusinessId);
                         bsWin.success(data.reMsg);
                     }else{
                         bsWin.error(data.reMsg);
@@ -789,6 +742,7 @@
 
         // 上移
         vm.upRecord = function(arr, $index) {
+            console.log(22);
             vm.saveNewExpertFlag = '1';
             if($index == 0) {
                 vm.confirmEPListReplace = arr;
@@ -810,7 +764,7 @@
         /**
          * 保存新专家信息
          */
-        vm.saveExpert=function (isDisplay) {
+        vm.saveExpert=function () {
            var isdisp=true;//用来判断专家类型
             vm.saveNewExpertFlag = '0';
             if(vm.confirmEPListReplace.length > 0){
@@ -818,15 +772,16 @@
                 angular.forEach(vm.confirmEPListReplace, function (each) {
                     if(each.expeRttype=="" ||each.expeRttype==undefined){
                         isdisp=false;
+                        vm.saveNewExpertFlag = '1';
                     }
 
                 });
             }else{
-                console.log(vm.confirmEPList);
                 $.each(vm.confirmEPList,function (j,obj2) {
-                    if(obj2.isConfrim == '9' ){
+                    if(obj2.isConfrim == '9' && obj2.isJoin == '9' ){
                         if(obj2.expeRttype=="" ||obj2.expeRttype==undefined){
                             isdisp=false;
+                            vm.saveNewExpertFlag = '1';
                         }
                         vm.confirmEPListReplace.push(obj2);
                     }
@@ -835,18 +790,11 @@
 
             if(isdisp){
                 expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
-                    //在点击保存时需要提示。在经过别的添加时。不是点击保存按钮时，就不需要显示
-                    if(isDisplay){//用来判断是否显示提示信息
-                        bsWin.success("操作成功！");
-                    }
-
+                    bsWin.success("操作成功！");
                 });
             }else{
                 bsWin.alert("拟聘专家的专家类型不能为空");
             }
-
-
         }
-
     }
 })();

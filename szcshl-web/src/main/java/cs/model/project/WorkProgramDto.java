@@ -5,6 +5,7 @@ import cs.common.utils.DateUtils;
 import cs.domain.meeting.RoomBooking;
 import cs.model.BaseDto;
 import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertSelectedDto;
 import cs.model.meeting.RoomBookingDto;
 
 import java.math.BigDecimal;
@@ -176,18 +177,13 @@ public class WorkProgramDto extends BaseDto {
     //拟聘请专家
     private List<ExpertDto> expertDtoList;
 
-    public List<ExpertDto> getExpertDtoList() {
-        return expertDtoList;
-    }
+    private List<ExpertSelectedDto> expertSelectedDtoList;
+
 
     /**
      * 主工作方案DTO
      */
     private WorkProgramDto mainWorkProgramDto;
-
-    public void setExpertDtoList(List<ExpertDto> expertDtoList) {
-        this.expertDtoList = expertDtoList;
-    }
 
     public String getId() {
         return id;
@@ -651,5 +647,21 @@ public class WorkProgramDto extends BaseDto {
 
     public void setMainWorkProgramDto(WorkProgramDto mainWorkProgramDto) {
         this.mainWorkProgramDto = mainWorkProgramDto;
+    }
+
+    public List<ExpertSelectedDto> getExpertSelectedDtoList() {
+        return expertSelectedDtoList;
+    }
+
+    public void setExpertSelectedDtoList(List<ExpertSelectedDto> expertSelectedDtoList) {
+        this.expertSelectedDtoList = expertSelectedDtoList;
+    }
+
+    public List<ExpertDto> getExpertDtoList() {
+        return expertDtoList;
+    }
+
+    public void setExpertDtoList(List<ExpertDto> expertDtoList) {
+        this.expertDtoList = expertDtoList;
     }
 }
