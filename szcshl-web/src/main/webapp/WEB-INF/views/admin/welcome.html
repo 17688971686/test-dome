@@ -82,6 +82,86 @@
     </div>
 </div>
 
+<!-- begin 在办项目详情 -->
+<div class="cared" style="margin-bottom: 15px;">
+    <div class="row">
+        <div class="col-xs-12" ng-hide="vm.isdisplays">
+            <div class="box" style="border:none;min-height:0px;">
+            <div class="box-body no-padding">
+                <table class="table table-bordered">
+                    <tr>
+                        <td colspan="6">
+                            <div class="box-header">
+                                <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 在办项目统计一览表</h3>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="active">
+                        <th style="width: 150px;">部门/人员</th>
+                        <th style="width: 80px;">在办数量</th>
+                        <th >项目名称</th>
+                        <th style="width: 180px;">办理环节</th>
+                        <th >项目负责人</th>
+                        <th style="width: 100px;">剩余工作日</th>
+                    </tr>
+                    <tbody ng-if="vm.histogram" ng-repeat="ruTaskMap in vm.histogram">
+                    <tr ng-repeat="ruTaskList in ruTaskMap.TASK_LIST">
+                        <td rowspan="{{ruTaskMap.COUNT}}" ng-show="$index == 0" style="vertical-align: middle;">{{ruTaskMap.HISTOGRAM_NAME}}</td>
+                        <td rowspan="{{ruTaskMap.COUNT}}" ng-show="$index == 0" style="vertical-align: middle;">{{ruTaskMap.COUNT}}</td>
+                        <td>{{ruTaskList.projectName}}</td>
+                        <td>{{ruTaskList.nodeNameValue}}</td>
+                        <td>{{ruTaskList.allPriUser}}</td>
+                        <td>{{ruTaskList.surplusDays}}</td>
+                    </tr>
+                    </tbody>
+                    <tr ng-if="!vm.histogram">
+                        <td colspan="6" class="text-center">
+                            <div style="height: 75px;">
+                                暂无数据
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end 在办项目详情 -->
+
+<!-- begin 图表显示 -->
+<div class="cared">
+    <div class="row">
+        <!--部长以上才能看到-->
+        <div class="col-xs-6 " ng-hide="vm.isdisplays">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 在办项目统计</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <div id="histogram" style=" height: 420px; ; margin: auto auto;"></div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <!--部长以上-->
+        <div class="col-xs-6 " ng-hide="vm.isdisplays">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 项目办理情况</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <div id="lineChart"  style=" height:  420px ; margin: auto auto;"></div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end 图表显示 -->
+
 <div class="cared">
     <div class="row">
         <div class="col-xs-6 ">
@@ -151,36 +231,3 @@
 
     </div>
 </div>
-
-<div class="cared">
-    <div class="row">
-        <!--部长以上才能看到-->
-        <div class="col-xs-6 " ng-hide="vm.isdisplays">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 在办项目统计</h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body no-padding">
-                    <div id="histogram" style=" height: 420px; ; margin: auto auto;"></div>
-                </div>
-                <!-- /.box-body -->
-            </div>
-        </div>
-        <!--部长以上-->
-        <div class="col-xs-6 " ng-hide="vm.isdisplays">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 项目办理情况</h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body no-padding">
-                    <div id="lineChart"  style=" height:  420px ; margin: auto auto;"></div>
-                </div>
-                <!-- /.box-body -->
-            </div>
-        </div>
-    </div>
-</div>
-
-

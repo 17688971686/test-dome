@@ -69,6 +69,7 @@ public class SignPrincipalServiceImpl implements SignPrincipalService {
 
     /**
      * 验证是否主项目负责人（第一负责人或者第二负责人）
+     *
      * @param userId
      * @param signId
      * @return
@@ -87,21 +88,22 @@ public class SignPrincipalServiceImpl implements SignPrincipalService {
 
     /**
      * 查询分支负责人
+     *
      * @param signId
      * @param branchId ，没有分支，则查询所有
      * @return
      */
     @Override
-    public List<User> getSignPriUser(String signId,String branchId) {
+    public List<User> getSignPriUser(String signId, String branchId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" select u from " + User.class.getSimpleName() + " u ");
-        hqlBuilder.append(" left join "+ SignPrincipal.class.getSimpleName() + " pu  on pu." + SignPrincipal_.userId.getName()+" = u."+User_.id.getName() );
+        hqlBuilder.append(" left join " + SignPrincipal.class.getSimpleName() + " pu  on pu." + SignPrincipal_.userId.getName() + " = u." + User_.id.getName());
         hqlBuilder.append(" where pu." + SignPrincipal_.signId.getName() + " =:signId ").setParam("signId", signId);
         //如果有分支，则查询分支负责人，否则查询所有
-        if(Validate.isString(branchId)){
-            hqlBuilder.append(" and pu."+SignPrincipal_.flowBranch.getName()+" =:branchId ").setParam("branchId",branchId);
+        if (Validate.isString(branchId)) {
+            hqlBuilder.append(" and pu." + SignPrincipal_.flowBranch.getName() + " =:branchId ").setParam("branchId", branchId);
         }
-        hqlBuilder.append(" order by pu."+SignPrincipal_.flowBranch.getName() +","+SignPrincipal_.isMainUser.getName()+" desc");
+        hqlBuilder.append(" order by pu." + SignPrincipal_.flowBranch.getName() + "," + SignPrincipal_.isMainUser.getName() + " desc");
 
         return userRepo.findByHql(hqlBuilder);
     }
@@ -120,11 +122,11 @@ public class SignPrincipalServiceImpl implements SignPrincipalService {
         hqlBuilder.append(" where pu." + SignPrincipal_.signId.getName() + " =:signId ").setParam("signId", signId);
         hqlBuilder.append(" and pu." + SignPrincipal_.isMainUser.getName() + " =:isMainUser ").setParam("isMainUser", Constant.EnumState.YES.getValue());
         hqlBuilder.append(" )");
-        List<User> userList=userRepo.findByHql(hqlBuilder);
-        if(Validate.isList(userList)){
-        	return userList.get(0);
-        }else{
-        	return null;
+        List<User> userList = userRepo.findByHql(hqlBuilder);
+        if (Validate.isList(userList)) {
+            return userList.get(0);
+        } else {
+            return null;
         }
     }
 
@@ -142,13 +144,14 @@ public class SignPrincipalServiceImpl implements SignPrincipalService {
         hqlBuilder.append(" where pu." + SignPrincipal_.signId.getName() + " =:signId ").setParam("signId", signId);
         hqlBuilder.append(" and (pu." + SignPrincipal_.isMainUser.getName() + " is null or pu." + SignPrincipal_.isMainUser.getName() + " =:isMainUser) ");
         hqlBuilder.setParam("isMainUser", Constant.EnumState.NO.getValue());
-        hqlBuilder.append(" order by pu."+SignPrincipal_.sort.getName()+" nulls last ");
+        hqlBuilder.append(" order by pu." + SignPrincipal_.sort.getName() + " nulls last ");
 
         return userRepo.findByHql(hqlBuilder);
     }
 
     /**
      * 查询项目负责人信息
+     *
      * @param userId
      * @param signId
      * @return
@@ -158,7 +161,19 @@ public class SignPrincipalServiceImpl implements SignPrincipalService {
         Criteria criteria = signPrincipalRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(SignPrincipal_.userId.getName(), userId));
         criteria.add(Restrictions.eq(SignPrincipal_.signId.getName(), signId));
-        return (SignPrincipal)criteria.uniqueResult();
+        return (SignPrincipal) criteria.uniqueResult();
+    }
+
+    @Override
+    public String prinUserName(String businessId, String orgId) {
+        List<User> userList = signPrincipalRepo.getPrinUserList(businessId, orgId);
+        String resultUser = "";
+        if (Validate.isList(userList)) {
+            for (User pUser : userList) {
+                resultUser += pUser.getDisplayName() + "  ";
+            }
+        }
+        return resultUser;
     }
 
 }

@@ -11,6 +11,7 @@ import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
 import cs.service.flow.FlowService;
+import cs.service.project.SignPrincipalService;
 import cs.service.project.SignService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
@@ -28,9 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,7 +58,8 @@ public class AdminController {
     private SignService signService;
     @Autowired
     private OrgDeptService orgDeptService;
-
+    @Autowired
+    private SignPrincipalService signPrincipalService;
     //@RequiresPermissions("admin#index#get")
     @RequiresAuthentication
     @RequestMapping(name = "首页", path = "index")
@@ -141,7 +141,7 @@ public class AdminController {
         //3、查询通知公告
         resultMap.put("annountmentList", annService.getHomePageAnnountment());
         //4、查询办结任务
-        //resultMap.put("endTaskList", flowService.queryMyEndTasks());
+        resultMap.put("endTaskList", flowService.queryMyEndTasks());
         //5、查询可以查看的项目，包括待办和图表数据
         Map<String, Object> authMap = userService.getUserSignAuth();
         Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
@@ -181,7 +181,7 @@ public class AdminController {
             if (authFlag > 0) {
                 resultMap.put(ISDISPLAY, false);
                 //过滤掉未签收的项目
-                authRuSignTask = authRuSignTask.stream().filter(x->(x.getSignDate() != null)).collect(Collectors.toList());
+                authRuSignTask = authRuSignTask.stream().filter(x -> (x.getSignDate() != null)).collect(Collectors.toList());
                 //先按剩余工作日排序
                 Collections.sort(authRuSignTask, new Comparator<RuProcessTask>() {
                     @Override
@@ -201,11 +201,11 @@ public class AdminController {
                 int totalLength = authRuSignTask.size();
                 //线性图
                 List<RuProcessTask> lineList = new ArrayList<>();
-                for(int i=0;i<totalLength;i++){
+                for (int i = 0; i < totalLength; i++) {
                     RuProcessTask rpt = authRuSignTask.get(i);
-                    if(existList.contains(rpt.getBusinessKey())){
+                    if (existList.contains(rpt.getBusinessKey())) {
                         continue;
-                    }else{
+                    } else {
                         existList.add(rpt.getBusinessKey());
                         lineList.add(rpt);
                     }
@@ -213,104 +213,120 @@ public class AdminController {
                 resultMap.put(LINE_SIGN_LIST_FLAG, lineList);
                 //柱状图
                 existList = new ArrayList<>();
-                Map<String, Object[]> dataMap = new HashMap();
+                Map<String, Map<String, Object>> dataMap = new HashMap();
                 String unWorkId = UUID.randomUUID().toString();
-                //1、主任和副主任都是统计部门，所以直接用线性图统计就行了
+                //1、主任
                 if (authFlag == 1) {
-                    for (RuProcessTask rpt : lineList) {
+                    for (RuProcessTask rpt : authRuSignTask) {
                         boolean haveOrg = false;
                         //主办部门
                         if (Validate.isString(rpt.getmOrgId())) {
                             haveOrg = true;
-                            setMapValue(dataMap, rpt.getmOrgId(), rpt.getProjectName(),rpt.getBusinessKey(),existList);
+                            setMapValue(dataMap, rpt.getmOrgId(), rpt, existList,rpt.getmOrgId());
                         }
                         if (Validate.isString(rpt.getaOrgId())) {
                             haveOrg = true;
                             List<String> aOrgIdList = StringUtil.getSplit(rpt.getaOrgId(), ",");
                             for (String orgId : aOrgIdList) {
-                                setMapValue(dataMap, orgId, rpt.getProjectName(),rpt.getBusinessKey(),existList);
+                                setMapValue(dataMap, orgId, rpt, existList,orgId);
                             }
                         }
                         //没有分办的项目
                         if (!haveOrg) {
-                            setMapValue(dataMap, unWorkId, rpt.getProjectName(),rpt.getBusinessKey(),existList);
+                            setMapValue(dataMap, unWorkId, rpt, existList,null);
                         }
                     }
-                    resultMap.put("XTYPE" , "ORG");
+                    resultMap.put("XTYPE", "ORG");
 
                     //2、分管领导
                 } else if (authFlag == 2) {
-                    for (RuProcessTask rpt : lineList) {
+                    for (RuProcessTask rpt : authRuSignTask) {
                         if (Validate.isList(orgIdList)) {
                             for (String orgId : orgIdList) {
                                 if (orgId.equals(rpt.getmOrgId()) || (rpt.getaOrgId() != null && rpt.getaOrgId().indexOf(orgId) > -1)) {
-                                    setMapValue(dataMap, orgId, rpt.getProjectName(),rpt.getBusinessKey(),existList);
+                                    setMapValue(dataMap, orgId, rpt, existList,orgId);
                                 }
                             }
                         }
                     }
-                    resultMap.put("XTYPE" , "ORG");
+                    resultMap.put("XTYPE", "ORG");
                     //3、部长
                 } else if (authFlag == 3) {
                     String orgId = orgIdList.get(0);
                     OrgDept orgDpet = orgDeptService.findOrgDeptById(orgId);
                     List<RuProcessTask> resultList = new ArrayList<>();
                     //如果是部长，还要筛选出当前待办人是否是他管辖部门的人
-                    for(RuProcessTask rt : authRuSignTask){
-                        if(userService.checkIsMainSigUser(orgDpet.getType(),orgId,rt.getMainUserId())){
+                    for (RuProcessTask rt : authRuSignTask) {
+                        if (userService.checkIsMainSigUser(orgDpet.getType(), orgId, rt.getMainUserId())) {
                             resultList.add(rt);
                         }
                     }
                     //筛选出第一负责人的任务
                     if (Validate.isList(resultList)) {
                         for (RuProcessTask rpt : resultList) {
-                            setMapValue(dataMap, rpt.getMainUserId(), rpt.getProjectName(),rpt.getBusinessKey(),existList);
+                            setMapValue(dataMap, rpt.getMainUserId(), rpt, existList,orgId);
                         }
                     }
-                    resultMap.put("XTYPE" , "USER");
+                    resultMap.put("XTYPE", "USER");
                 }
                 //遍历map,如果是部长则查人员，否则查部门
-                Map<String , Object[]> histogramMap = new LinkedHashMap<>();
-                if(authFlag == 3){
-                    for (Map.Entry<String, Object[]> entry : dataMap.entrySet()) {
+                Map<String, Map<String, Object>> histogramMap = new LinkedHashMap<>();
+                if (authFlag == 3) {
+                    for (Map.Entry<String, Map<String, Object>> entry : dataMap.entrySet()) {
                         User user = userService.getCacheUserById(entry.getKey());
-                        histogramMap.put(user.getDisplayName() , entry.getValue());
+                        Map<String, Object> runTaskInfoMap = entry.getValue();
+                        runTaskInfoMap.put("HISTOGRAM_NAME", user.getDisplayName());
+                        histogramMap.put(user.getDisplayName(), runTaskInfoMap);
                     }
-                }else{
-                    List<OrgDept> allOrgDept = authMap.get("allOrgDeptList")==null?orgDeptService.queryAll(): (List<OrgDept>) authMap.get("allOrgDeptList");
-                    for(OrgDept orgDept : allOrgDept){
-                        if(dataMap.get(orgDept.getId()) != null){
+                } else {
+                    List<OrgDept> allOrgDept = authMap.get("allOrgDeptList") == null ? orgDeptService.queryAll() : (List<OrgDept>) authMap.get("allOrgDeptList");
+                    for (OrgDept orgDept : allOrgDept) {
+                        if (dataMap.get(orgDept.getId()) != null) {
                             //综合部
-                            if(Constant.OrgType.ORGZHB.getKey().equals(orgDept.getName())){
-                                histogramMap.put(Constant.OrgType.ORGZHB.getKey() , dataMap.get(orgDept.getId()));
+                            if (Constant.OrgType.ORGZHB.getKey().equals(orgDept.getName())) {
+                                Map<String, Object> runTaskInfoMap = dataMap.get(orgDept.getId());
+                                runTaskInfoMap.put("HISTOGRAM_NAME", Constant.OrgType.ORGZHB.getKey());
+                                histogramMap.put(Constant.OrgType.ORGZHB.getKey(), runTaskInfoMap);
                             }
                             //评估一部
-                            if(Constant.OrgType.ORGPGYB.getKey().equals(orgDept.getName())){
-                                histogramMap.put(Constant.OrgType.ORGPGYB.getKey() , dataMap.get(orgDept.getId()));
+                            if (Constant.OrgType.ORGPGYB.getKey().equals(orgDept.getName())) {
+                                Map<String, Object> runTaskInfoMap = dataMap.get(orgDept.getId());
+                                runTaskInfoMap.put("HISTOGRAM_NAME", Constant.OrgType.ORGPGYB.getKey());
+                                histogramMap.put(Constant.OrgType.ORGPGYB.getKey(), runTaskInfoMap);
                             }
                             //评估二部
-                            if(Constant.OrgType.ORGPGEB.getKey().equals(orgDept.getName())){
-                                histogramMap.put(Constant.OrgType.ORGPGEB.getKey() , dataMap.get(orgDept.getId()));
+                            if (Constant.OrgType.ORGPGEB.getKey().equals(orgDept.getName())) {
+                                Map<String, Object> runTaskInfoMap = dataMap.get(orgDept.getId());
+                                runTaskInfoMap.put("HISTOGRAM_NAME", Constant.OrgType.ORGPGEB.getKey());
+                                histogramMap.put(Constant.OrgType.ORGPGEB.getKey(), runTaskInfoMap);
                             }
                             //评估一部信息化
-                            if(Constant.OrgType.ORXXHZ.getKey().equals(orgDept.getName())){
-                                histogramMap.put(Constant.OrgType.ORXXHZ.getKey() , dataMap.get(orgDept.getId()));
+                            if (Constant.OrgType.ORXXHZ.getKey().equals(orgDept.getName())) {
+                                Map<String, Object> runTaskInfoMap = dataMap.get(orgDept.getId());
+                                runTaskInfoMap.put("HISTOGRAM_NAME", Constant.OrgType.ORXXHZ.getKey());
+                                histogramMap.put(Constant.OrgType.ORXXHZ.getKey(), runTaskInfoMap);
                             }
                             //概算一部
-                            if(Constant.OrgType.ORGGSYB.getKey().equals(orgDept.getName())){
-                                histogramMap.put(Constant.OrgType.ORGGSYB.getKey() , dataMap.get(orgDept.getId()));
+                            if (Constant.OrgType.ORGGSYB.getKey().equals(orgDept.getName())) {
+                                Map<String, Object> runTaskInfoMap = dataMap.get(orgDept.getId());
+                                runTaskInfoMap.put("HISTOGRAM_NAME", Constant.OrgType.ORGGSYB.getKey());
+                                histogramMap.put(Constant.OrgType.ORGGSYB.getKey(), runTaskInfoMap);
                             }
                             //概算二部
-                            if(Constant.OrgType.ORGGSEB.getKey().equals(orgDept.getName())){
-                                histogramMap.put(Constant.OrgType.ORGGSEB.getKey() , dataMap.get(orgDept.getId()));
+                            if (Constant.OrgType.ORGGSEB.getKey().equals(orgDept.getName())) {
+                                Map<String, Object> runTaskInfoMap = dataMap.get(orgDept.getId());
+                                runTaskInfoMap.put("HISTOGRAM_NAME", Constant.OrgType.ORGGSEB.getKey());
+                                histogramMap.put(Constant.OrgType.ORGGSEB.getKey(), runTaskInfoMap);
                             }
                         }
                     }
-                    if(dataMap.get(unWorkId) != null){
-                        histogramMap.put("未分办" , dataMap.get(unWorkId));
+                    if (dataMap.get(unWorkId) != null) {
+                        Map<String, Object> runTaskInfoMap = dataMap.get(unWorkId);
+                        runTaskInfoMap.put("HISTOGRAM_NAME", "未分办");
+                        histogramMap.put("未分办", runTaskInfoMap);
                     }
                 }
-                resultMap.put("histogram" , histogramMap);
+                resultMap.put("histogram", histogramMap);
             } else {
                 resultMap.put(ISDISPLAY, true);
             }
@@ -321,22 +337,38 @@ public class AdminController {
         return resultMap;
     }
 
-    private void setMapValue(Map<String, Object[]> dataMap, String key , String projectName,String businessKey,List<String> existKey) {
-        if (dataMap.get(key) == null) {
-            dataMap.put(key, new Object[]{1 , projectName});
+    private void setMapValue(Map<String, Map<String, Object>> dataMap, String key, RuProcessTask runTask, List<String> existKey,String orgId) {
+        Map<String, Object> runTaskInfoMap = dataMap.get(key);
+        List<RuProcessTask> runTaskList = null;
+        String mergeKey = key + runTask.getBusinessKey();
+        int count = 0;
+        boolean haveNew = false;
+        if (runTaskInfoMap == null) {
+            haveNew = true;
+            runTaskInfoMap = new HashMap<>();
+            count = 1;
+            runTaskList = new ArrayList<>();
         } else {
-            String mergeKey = key+businessKey;
-            if(!existKey.contains(mergeKey)){
-                Object[] newValue = dataMap.get(key);
-                Integer oldCount = (Integer) newValue[0];
-                String oldProjectName = newValue[1].toString();
-                Integer newCount = oldCount + 1;
-                String newProjectName = oldProjectName + "," + projectName;
-                newValue = new Object[]{newCount , newProjectName};
-                dataMap.put(key, newValue);
-                existKey.add(mergeKey);
+            if (!existKey.contains(mergeKey)) {
+                haveNew = true;
+                runTaskList = (List<RuProcessTask>) runTaskInfoMap.get("TASK_LIST");
+                count = Integer.parseInt(runTaskInfoMap.get("COUNT").toString())+1;
             }
         }
+        if(haveNew){
+            runTaskInfoMap.put("COUNT", count);
+            runTaskInfoMap.put("TASK_LIST", runTaskList);
+            RuProcessTask countTask = new RuProcessTask();
+            BeanCopierUtils.copyProperties(runTask,countTask);
+            //如果是部门，只取该部门下的负责人
+            if(Validate.isString(orgId)){
+                countTask.setAllPriUser(signPrincipalService.prinUserName(countTask.getBusinessKey(),orgId));
+            }
+            runTaskList.add(countTask);
+            dataMap.put(key, runTaskInfoMap);
+            existKey.add(mergeKey);
+        }
+
     }
 
     @RequiresPermissions("admin#gtasks#get")

@@ -23,7 +23,6 @@
          */
         vm.initHistogram = function () {
             var myChart = echarts.init(document.getElementById('histogram')); //只能用javaScript获取节点，如用jquery方式则找不到节点
-
             var option = {
                 title: {
                     text: "在办项目数量统计情况",
@@ -31,16 +30,24 @@
                     x: 'center'
                 },
                 tooltip: {//提示框设置
-                    trigger: 'axis',
+                    trigger: 'item',
                     formatter: function(params){
-                        var projectNames = vm.histogram[params[0].name][1].split(",");
-
-                        var result = params[0].name + "(" + params[0].value + ")" + "<br/>"
-                        for(var i = 0 ; i < projectNames.length ; i++){
-                            result += i+1 + "、" + projectNames[i] + "<br/>"
+                        var keyName = params.name;
+                        var result = "";
+                        if(vm.histogram){
+                            $.each(vm.histogram , function(key , value){
+                                if(key == keyName){
+                                    for(var i=0,l=value.TASK_LIST.length;i<l;i++){
+                                        var projObj = value.TASK_LIST[i];
+                                        if(i>0){
+                                            result += "<br>";
+                                        }
+                                        result += projObj.projectName;
+                                    }
+                                }
+                            })
                         }
                         return result;
-
                     }
                 },
                 legend: { //头部显示说明，注意：data值要与series中的name一致，顺序可以不一致
@@ -242,28 +249,17 @@
                         var histogram_x = [];
                         var histogram_y = [];
                         vm.histogram = data.histogram;
-                        if("USER" == data.XTYPE){
+                        if(vm.histogram){
                             $.each(vm.histogram , function(key , value){
+                                var ruTaskMap = value;
                                 histogram_x.push(key);
-                                histogram_y.push(value[0]);
+                                histogram_y.push(ruTaskMap.COUNT);
                             })
                         }
-                       if("ORG" == data.XTYPE){
-                           if(vm.histogram != undefined){
-                               for(var i = 0 ; i < x.length ; i++){
-                                   var histogramValue = vm.histogram[x[i]];
-                                   if(histogramValue != undefined){
-                                       histogram_x.push(x[i]);
-                                       histogram_y.push(histogramValue[0]);
-                                   }
-                               }
-                           }
-                       }
                         vm.review = histogram_x;  //横轴(人员名称/部门)
                         vm.signNumber = histogram_y;//纵轴(数量)
                         vm.initHistogram();//初始化柱状图
                     }
-
                     //显示柱状图信息
                 }
             });

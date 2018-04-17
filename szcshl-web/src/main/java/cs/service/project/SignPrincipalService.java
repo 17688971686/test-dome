@@ -32,4 +32,11 @@ public interface SignPrincipalService {
 
     SignPrincipal getPrincipalInfo(String userId, String signId);
 
+    /**
+     * 获取项目部门的项目负责人名称
+     * @param businessId
+     * @param orgId
+     * @return
+     */
+    String prinUserName(String businessId,String orgId);
 }
