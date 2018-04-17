@@ -3,13 +3,15 @@ package cs.controller.sys;
 import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.RealPathResolver;
 import cs.common.Constant;
-import cs.common.FlowConstant;
 import cs.common.ResultMsg;
 import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
 import cs.common.ftp.FtpUtils;
 import cs.common.utils.*;
-import cs.domain.expert.*;
+import cs.domain.expert.Expert;
+import cs.domain.expert.ExpertOffer;
+import cs.domain.expert.ExpertOffer_;
+import cs.domain.expert.ExpertReview;
 import cs.domain.project.*;
 import cs.domain.sys.Ftp;
 import cs.domain.sys.Ftp_;
@@ -38,6 +40,7 @@ import cs.service.project.*;
 import cs.service.sys.LogService;
 import cs.service.sys.SysFileService;
 import cs.service.topic.TopicInfoService;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -49,15 +52,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartFile;
-import org.apache.commons.codec.binary.Base64;
-import java.io.ByteArrayInputStream;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.*;
 
 import static cs.common.Constant.*;
@@ -248,8 +249,14 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                 } else {
                     uploadFileName = Tools.generateRandomFilename().concat(fileType);
                 }
-                //上传到ftp,
-
+                //上传到ftp,如果有根目录，则加入根目录
+                if(Validate.isString(k.getFtpRoot())){
+                    if (relativeFileUrl.startsWith(File.separator) || relativeFileUrl.startsWith("/")) {
+                        relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
+                    } else {
+                        relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl + File.separator;
+                    }
+                }
                 boolean uploadResult = ftpUtils.putFile(k, relativeFileUrl, uploadFileName, multipartFile.getInputStream());
                 if (uploadResult) {
                     //保存数据库记录

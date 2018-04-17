@@ -353,7 +353,14 @@ public class SysFileServiceImpl implements SysFileService {
                         sysFile.setFileType(showName.substring(showName.lastIndexOf("."), showName.length()));
                         uploadFileName = Tools.generateRandomFilename().concat(sysFile.getFileType());
                     }
-                    //附件上传到ftp
+                    //上传到ftp,如果有根目录，则加入根目录
+                    if(Validate.isString(k.getFtpRoot())){
+                        if (relativeFileUrl.startsWith(File.separator) || relativeFileUrl.startsWith("/")) {
+                            relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
+                        } else {
+                            relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl + File.separator;
+                        }
+                    }
                     boolean uploadResult = ftpUtils.putFile(k,relativeFileUrl, uploadFileName, conn.getInputStream());
                     if (uploadResult) {
                         //保存数据库记录

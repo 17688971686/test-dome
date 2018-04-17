@@ -98,7 +98,7 @@
                     </tr>
                     <tr class="active">
                         <th style="width: 150px;">部门/人员</th>
-                        <th style="width: 80px;">在办数量</th>
+                        <th style="width: 80px;">项目总数</th>
                         <th >项目名称</th>
                         <th style="width: 180px;">办理环节</th>
                         <th >项目负责人</th>
@@ -108,10 +108,10 @@
                     <tr ng-repeat="ruTaskList in ruTaskMap.TASK_LIST">
                         <td rowspan="{{ruTaskMap.COUNT}}" ng-show="$index == 0" style="vertical-align: middle;">{{ruTaskMap.HISTOGRAM_NAME}}</td>
                         <td rowspan="{{ruTaskMap.COUNT}}" ng-show="$index == 0" style="vertical-align: middle;">{{ruTaskMap.COUNT}}</td>
-                        <td>{{ruTaskList.projectName}}</td>
+                        <td><a style="color: #72ACE3;" href="#/signFlowDetail/{{ruTaskList.businessKey}}/{{ruTaskList.taskId}}/{{ruTaskList.processInstanceId}}" >{{ruTaskList.projectName}}</a></td>
                         <td>{{ruTaskList.nodeNameValue}}</td>
                         <td>{{ruTaskList.allPriUser}}</td>
-                        <td>{{ruTaskList.surplusDays}}</td>
+                        <td><span style="color: #f39a0d;font-size: 15px;">{{ruTaskList.surplusDays}}</span></td>
                     </tr>
                     </tbody>
                     <tr ng-if="!vm.histogram">

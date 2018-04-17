@@ -149,6 +149,14 @@ public class TemplateUtil {
             //连接ftp
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getUploadConfig(f);
+            //上传到ftp,如果有根目录，则加入根目录
+            if(Validate.isString(k.getFtpRoot())){
+                if (relativeFileUrl.startsWith(File.separator) || relativeFileUrl.startsWith("/")) {
+                    relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
+                } else {
+                    relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl + File.separator;
+                }
+            }
             boolean upLoadSucess = ftpUtils.putFile(k,relativeFileUrl,uploadFileName,new FileInputStream(docFile));
             if(upLoadSucess){
                 Tools.deleteFile(docFile);

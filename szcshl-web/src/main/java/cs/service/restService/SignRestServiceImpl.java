@@ -108,7 +108,7 @@ public class SignRestServiceImpl implements SignRestService {
             Sign sign = signRepo.findByFilecode(signDto.getFilecode(),signDto.getSignState());
             Date now = new Date();
             boolean isExistPro = false, isLoginUser = Validate.isString(SessionUtil.getUserId());
-            if (sign == null) {
+            if (!Validate.isObject(sign) || !Validate.isString(sign.getSignid())) {
                 sign = new Sign();
                 BeanCopierUtils.copyProperties(signDto, sign);
                 sign.setSignid(UUID.randomUUID().toString());
@@ -116,7 +116,11 @@ public class SignRestServiceImpl implements SignRestService {
                 sign.setCreatedDate(now);
                 sign.setCreatedBy(isLoginUser?SessionUtil.getUserId():SUPER_USER);
                 //这里的送件人，默认为流程发起人，而不是委里项目的送件人
-                sign.setSendusersign(isLoginUser?SessionUtil.getDisplayName():SUPER_USER);
+                sign.setSendusersign(isLoginUser?SessionUtil.getDisplayName():"");
+                //送来时间
+                sign.setReceivedate(now);
+                //初始化办理部门信息
+                signService.initSignDeptInfo(sign);
             } else {
                 isExistPro = true;
                 BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
@@ -148,8 +152,6 @@ public class SignRestServiceImpl implements SignRestService {
                 sign.setTotalReviewdays(totalReviewDays);
                 sign.setReviewdays(0f);
             }
-
-            signService.initSignDeptInfo(sign);
 
             //6、收文编号
             if (!Validate.isString(sign.getSignNum())) {
@@ -225,7 +227,7 @@ public class SignRestServiceImpl implements SignRestService {
             Sign sign = signRepo.findByFilecode(signDto.getFilecode(),signDto.getSignState());
             boolean isExistPro = false, isLoginUser = Validate.isString(SessionUtil.getUserId());
             Date now = new Date();
-            if (sign == null) {
+            if (!Validate.isObject(sign) || !Validate.isString(sign.getSignid())) {
                 sign = new Sign();
                 BeanCopierUtils.copyProperties(signDto, sign);
                 sign.setSignid(UUID.randomUUID().toString());
@@ -239,6 +241,10 @@ public class SignRestServiceImpl implements SignRestService {
                 sign.setSignState(Constant.EnumState.NORMAL.getValue());
                 //预签收日期
                 sign.setPresignDate(now);
+                //初始化办理部门信息
+                signService.initSignDeptInfo(sign);
+                //送来时间
+                sign.setReceivedate(now);
             } else {
                 isExistPro = true;
                 BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
@@ -246,13 +252,6 @@ public class SignRestServiceImpl implements SignRestService {
             sign.setModifiedBy(isLoginUser?SessionUtil.getDisplayName():SUPER_USER);
             sign.setModifiedDate(now);
 
-            //送来时间
-            if (Validate.isObject(sign.getReceivedate())) {
-                sign.setReceivedate(now);
-            }
-
-            //初始化办理部门信息
-            signService.initSignDeptInfo(sign);
             signRepo.save(sign);
 
             //获取传送过来的附件

@@ -185,9 +185,21 @@ public class FlowController {
         Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
         List<String> orgIdList = (List<String>) authMap.get("orgIdList");
         List<RuProcessTask> resultList = flowService.queryRunProcessTasks(odataObj,false,authFlag,orgIdList);
+        //已项目未单位，要过滤掉重复的项目
+        List<RuProcessTask> finalList = new ArrayList<>();
+        List<String> existList = new ArrayList<>();
+        for (int i = 0,l=resultList.size(); i < l; i++) {
+            RuProcessTask rpt = resultList.get(i);
+            if (existList.contains(rpt.getBusinessKey())) {
+                continue;
+            } else {
+                existList.add(rpt.getBusinessKey());
+                finalList.add(rpt);
+            }
+        }
         PageModelDto<RuProcessTask> pageModelDto = new PageModelDto<RuProcessTask>();
-        pageModelDto.setCount(Validate.isList(resultList)?resultList.size():0);
-        pageModelDto.setValue(resultList);
+        pageModelDto.setCount(Validate.isList(finalList)?finalList.size():0);
+        pageModelDto.setValue(finalList);
         return pageModelDto;
     }
 

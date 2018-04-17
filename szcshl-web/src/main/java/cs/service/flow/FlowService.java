@@ -130,4 +130,11 @@ public interface FlowService {
      * @return
      */
     List<Map<String, Object>> getProc();
+
+    /**
+     * 根据流程实例，获取经办人ID
+     * @param processInstanceId
+     * @return
+     */
+    List<String> findUserIdByProcessInstanceId(String processInstanceId);
 }

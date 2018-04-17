@@ -332,6 +332,7 @@ public class AdminController {
             }
         } else {
             resultMap.put(PROTASKLIST, null);
+            resultMap.put(ISDISPLAY, true);
         }
 
         return resultMap;

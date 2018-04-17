@@ -26,10 +26,10 @@
              findtasks: findtasks,                      //待办项目列表
              findHomePluginFile :findHomePluginFile,    //获取首页安装文件*/
             excelExport: excelExport,                   //项目统计导出
-            statisticalGrid: statisticalGrid,    //(停用)
-            workName: workName,  //获取流程列表
-            QueryStatistics: QueryStatistics, //通过条件，对项目进行查询统计
-            signDetails: signDetails,
+            statisticalGrid: statisticalGrid,           //(停用)
+            workName: workName,                         //获取流程列表
+            QueryStatistics: QueryStatistics,           //通过条件，对项目进行查询统计
+            signDetails: signDetails,                   //获取项目查看权限
         }
         return service;
 
@@ -654,12 +654,6 @@
                     width: "10%"
                 },
                 {
-                    field: "nodeNameValue",
-                    title: "当前环节",
-                    width: "10%",
-                    filterable: false
-                },
-                {
                     field: "preSignDate",
                     title: "预签收时间",
                     width: "10%",
@@ -688,9 +682,9 @@
                     }
                 },
                 {
-                    field: "displayName",
-                    title: "处理人",
-                    width: "10%",
+                    field: "allPriUser",
+                    title: "项目负责人",
+                    width: "16%",
                     filterable: false,
                 },
                 {
@@ -729,10 +723,7 @@
 
         //begin_getSignList
         function getSignList(vm) {
-            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate", $("#searchform"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
-
-            // End:dataSource
-
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList", $("#searchform"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
             // Begin:column
             var columns = [
                 {
@@ -801,7 +792,8 @@
                     width: 280,
                     filterable: false,
                     template: function (item) {
-                        if (item.secrectlevel == "秘密") {
+                        //秘密项目和未发文的项目，都只有经办人能看
+                        if (item.secrectlevel == "秘密" || item.processState < 6) {
                             if (item.processInstanceId) {
                                 return '<a ng-click="vm.signDetails(' + "'" + item.signid + "'," + "'" + item.processInstanceId + "'" + ')" >' + item.projectname + '</a>';
                             } else {

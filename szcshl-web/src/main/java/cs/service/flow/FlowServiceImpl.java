@@ -2,6 +2,7 @@ package cs.service.flow;
 
 import cs.common.Constant;
 import cs.common.FlowConstant;
+import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.flow.*;
@@ -1055,5 +1056,23 @@ public class FlowServiceImpl implements FlowService {
     public List<Map<String, Object>> getProc() {
         List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT arp.NAME_,arp.KEY_ FROM act_re_procdef arp  GROUP BY arp.NAME_,arp.KEY_");
         return list;
+    }
+
+    /**
+     * 根据流程实例，获取经办人ID
+     * @param processInstanceId
+     * @return
+     */
+    @Override
+    public List<String> findUserIdByProcessInstanceId(String processInstanceId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select distinct ACT.USER_ID_ from ACT_HI_IDENTITYLINK act where act.PROC_INST_ID_ = :processInstanceId");
+        sqlBuilder.setParam("processInstanceId",processInstanceId);
+        List<Map<String, Object>> resultMapList = jdbcTemplate.queryForList("select distinct ACT.USER_ID_ USER_ID from ACT_HI_IDENTITYLINK act where act.PROC_INST_ID_ = '"+processInstanceId+"'");
+        List<String> resultList = new ArrayList<>();
+        for(Map<String, Object> map : resultMapList){
+            resultList.add(map.get("USER_ID")==null?"":map.get("USER_ID").toString());
+        }
+        return resultList;
     }
 }
