@@ -571,10 +571,10 @@
 
             <tr ng-if="vm.confirmEPListReplace.length==0" ng-repeat="x in vm.confirmEPList|filter:{isConfrim:'9',isJoin:'9'}|orderBy:x.index">
                 <td>
-                    <button  class="btn btn-sm btn-default" ng-click="vm.upRecord(vm.confirmEPList|filter:{isConfrim:'9'}, $index)"><span
+                    <button  class="btn btn-sm btn-default" ng-click="vm.upRecord(vm.confirmEPList|filter:{isConfrim:'9',isJoin:'9'}, $index)"><span
                             class="glyphicon glyphicon-arrow-up"></span>上移
                     </button>
-                    <button class="btn btn-sm btn-default" ng-click="vm.downRecord(vm.confirmEPList|filter:{isConfrim:'9'}, $index)"><span
+                    <button class="btn btn-sm btn-default" ng-click="vm.downRecord(vm.confirmEPList|filter:{isConfrim:'9',isJoin:'9'}, $index)"><span
                             class="glyphicon glyphicon-arrow-down"></span>下移
                     </button>
                 </td>
@@ -620,10 +620,10 @@
 
             <tr ng-if="vm.confirmEPListReplace.length>0" ng-repeat="x in vm.confirmEPListReplace|filter:{isConfrim:'9',isJoin:'9'}">
                 <td>
-                    <button class="btn btn-sm btn-default" ng-click="vm.upRecord(vm.confirmEPListReplace, $index)"><span
+                    <button class="btn btn-sm btn-default" ng-click="vm.upRecord(vm.confirmEPListReplace|filter:{isConfrim:'9',isJoin:'9'}, $index)"><span
                             class="glyphicon glyphicon-arrow-up"></span>上移
                     </button>
-                    <button class="btn btn-sm btn-default" ng-click="vm.downRecord(vm.confirmEPListReplace, $index)"><span
+                    <button class="btn btn-sm btn-default" ng-click="vm.downRecord(vm.confirmEPListReplace|filter:{isConfrim:'9',isJoin:'9'}, $index)"><span
                             class="glyphicon glyphicon-arrow-down"></span>下移
                     </button>
                 </td>

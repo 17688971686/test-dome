@@ -25,16 +25,10 @@
             <td align="center"><a ng-click="vm.findExportDetail(x.expertDto.expertID)">{{x.expertDto.name}}</a></td>
             <td align="center">{{x.expertDto.comPany}}</td>
             <td align="center">{{x.expertDto.job}}/{{x.expertDto.post}}</td>
-            <td align="center">
-                <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorBig'">{{y.maJorBig}}<br></span>
-            </td>
-            <td align="center">
-                <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'maJorSmall'">{{y.maJorSmall}}<br></span>
-            </td>
+            <td align="center">{{x.maJorBig}}</td>
+            <td align="center">{{x.maJorSmall}}</td>
             <td align="center">{{x.expertDto.userPhone}}</td>
-            <td align="center">
-                <span ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span>
-            </td>
+            <td align="center">{{x.expeRttype}}</td>
         </tr>
     </table>
     <p style="text-align:center;">
