@@ -2391,12 +2391,15 @@ public class SignServiceImpl implements SignService {
         UnitScoreDto unitScoreDto = new UnitScoreDto();
         //查找单位评分列表
         UnitScore unitScore = unitScoreRepo.findUnitScore(signId);
-        if (!Validate.isObject(unitScore) && !Validate.isString(unitScore.getId())) {
+        if (Validate.isObject(unitScore) && Validate.isString(unitScore.getId())) {
             unitScoreService.decide(sign.getDesigncompanyName(), signId);
             unitScore = unitScoreRepo.findUnitScore(signId);
+            BeanCopierUtils.copyProperties(unitScore, unitScoreDto);
+            return unitScoreDto;
+        }else{
+            return null;
         }
-        BeanCopierUtils.copyProperties(unitScore, unitScoreDto);
-        return unitScoreDto;
+
     }
 
     @Override

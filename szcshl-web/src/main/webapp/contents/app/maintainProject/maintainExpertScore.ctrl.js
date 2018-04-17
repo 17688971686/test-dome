@@ -21,8 +21,6 @@
             signSvc.findSignUnitScore(vm.signid, function (data) {
                 if(data){
                     vm.unitScoreDto = data;
-                }else{
-                    vm.unitScoreDto = {};
                 }
             });
         }

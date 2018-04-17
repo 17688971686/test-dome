@@ -32,7 +32,7 @@
                 <td><span data-valmsg-for="deptName" data-valmsg-replace="true" class="errors"></span></td>
             </tr>
              <tr>
-                <td class="formAlignRight">联系人：</td>
+                <td class="formAlignRight">负责人：</td>
                 <td>
                      <select ng-model="vm.model.deptOfficeId" id="deptOfficeId" name="deptOfficeId"class="form-control input-sm " data-val="true" data-val-required="必填">
 						<option ng-repeat="o in vm.offiecs" ng-selected="vm.model.deptOfficeId == o.officeID"  value="{{o.officeID}}" >{{o.officeUserName}}</option>

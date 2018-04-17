@@ -228,7 +228,7 @@
                 },
                 {
                     field: "deptUserName",
-                    title: "联系人",
+                    title: "负责人",
                     width: 100,
                     filterable: false
                 },
