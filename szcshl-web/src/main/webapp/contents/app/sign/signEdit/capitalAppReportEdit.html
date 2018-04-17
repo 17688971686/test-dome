@@ -279,12 +279,18 @@
 
         </td>
     </tr>
-    <tr>
+    <tr ng-hide="vm.isControl">
         <td width="15%" class="text-center" style="vertical-align: middle;">部长处理意见</td>
         <td colspan="5">
             <textarea maxlength="120" ng-disabled="true"  data-val-length-max="120"  data-val="true" name="ministerhandlesug"  rows="3" ng-model="vm.model.ministerhandlesug" ng-change="vm.model.ministerhandlesug=countCharacter(vm.model.ministerhandlesug,120,'ministerhandlesugCountz')"  ng-model="vm.model.ministerhandlesug" style="width: 98%">{{vm.model.ministerhandlesug}}</textarea>
             <span data-valmsg-for="ministerhandlesug" data-valmsg-replace="true" class="errors"></span>
             <p id="ministerhandlesugCountz" style="text-align: right;"></p>
+        </td>
+    </tr>
+    <tr ng-show="vm.isControl">
+        <td width="15%" class="text-center" style="vertical-align: middle;">部长处理意见</td>
+        <td colspan="5" >
+            <div ng-bind-html="vm.model.ministerhandlesug | trust2Html"></div>
         </td>
     </tr>
     </tbody>

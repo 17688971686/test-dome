@@ -266,7 +266,7 @@
                 
                 {
                     field: "officeUserName",
-                    title: "办事处联系人",
+                    title: "负责人",
                     width: 100,
                     filterable: false
                 },
@@ -345,7 +345,7 @@
                
                 {
                     field: "officeUserName",
-                    title: "办事处联系人",
+                    title: "负责人",
                     width: 100,
                     filterable: false
                 },
