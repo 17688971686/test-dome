@@ -9,10 +9,7 @@ import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
 import cs.common.ftp.FtpUtils;
 import cs.common.utils.*;
-import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertOffer;
-import cs.domain.expert.ExpertOffer_;
-import cs.domain.expert.ExpertReview;
+import cs.domain.expert.*;
 import cs.domain.project.*;
 import cs.domain.sys.Ftp;
 import cs.domain.sys.Ftp_;
@@ -31,6 +28,7 @@ import cs.model.topic.WorkPlanDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertOfferRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
+import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
@@ -136,6 +134,9 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     private ExpertOfferRepo expertOfferRepo;
     @Autowired
     private UnitScoreRepo unitScoreRepo;
+
+    @Autowired
+    private ExpertSelectedRepo expertSelectedRepo;
 
     @Override
     public void setServletContext(ServletContext servletContext) {
@@ -580,13 +581,21 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         workProgram.setIsHaveEIA("0");
                     }
                     Map<String, Object> workData = TemplateUtil.entryAddMap(workProgram);
-             /*       List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
+
+                    List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgram.getId());
+                    List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                     ExpertDto[] expertDtos = new ExpertDto[10];
-                    if (expertDtoList != null && expertDtoList.size() > 0) {
-                        for (int i = 0; i < expertDtoList.size() && i < 10; i++) {
-                            expertDtos[i] = expertDtoList.get(i);
+
+                    if (expertSelectedDtoLists != null && expertSelectedDtoLists.size() > 0) {
+                        for (int i = 0; i < expertSelectedDtoLists.size() && i < 10; i++) {
+                            ExpertDto expertDto = expertSelectedDtoLists.get(i).getExpertDto();
+                            //目前先改代码，后期有时间转换为改模板，直接遍历select表就可以的
+                            //重新设置专业和专家类别，其中专业对应select表的专家小类 ， 专家类别对应select的专家类别
+                            expertDto.setMajorStudy(expertSelectedDtoLists.get(i).getMaJorSmall());
+                            expertDto.setExpertSort(expertSelectedDtoLists.get(i).getExpeRttype());
+                            expertDtos[i] = expertDto;
                         }
-                    }*/
+                    }
                     String addressName = "";
                     String rbDate = "";
                     List<RoomBookingDto> roomBookingDtoList = workProgramDto.getRoomBookingDtos();
@@ -596,7 +605,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }
 
                     int count = signBranchRepo.countBranch(workProgramDto.getSignId());
-                   // workData.put("expertList", expertDtos);//聘请专家
+                    workData.put("expertList", expertDtos);//聘请专家
                     workData.put("works", count);//控制是否多个分支
                     workData.put("addressName", addressName);//会议室名称
                     workData.put("rbDate", rbDate);//评审会时间

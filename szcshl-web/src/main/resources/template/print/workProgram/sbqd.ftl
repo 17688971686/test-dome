@@ -2611,7 +2611,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${(ExpertDto.expeRttype)!}</w:t>
+                                        <w:t>${(ExpertDto.expertSort)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
