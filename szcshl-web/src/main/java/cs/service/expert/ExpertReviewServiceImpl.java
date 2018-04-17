@@ -159,18 +159,16 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         List<ExpertSelected> expertSelectedList1 = new ArrayList<>();
         List<ExpertSelected> expertSelectedList1Temp = new ArrayList<>();
         for(int i = 0;i < expertSelectedList.size();i++){
+            if(!Validate.isString(expertSelectedList.get(i).getExpertSeq())){
+                expertSelectedList1Temp.add((expertSelectedList.get(i)));
+            }
             for(int j = 0;j<expertSelectedList.size();j++){
-                if(null != expertSelectedList.get(i).getExpertSeq()){
                     if(null != expertSelectedList.get(j).getExpertSeq()){
                         if(i+1 == expertSelectedList.get(j).getExpertSeq()){
                             expertSelectedList1.add(expertSelectedList.get(j));
                             break;
                         }
                     }
-                }else{
-                    expertSelectedList1Temp.add(expertSelectedList.get(i));
-                    break;
-                }
             }
         }
         expertSelectedList1.addAll(expertSelectedList1Temp);

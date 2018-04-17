@@ -657,7 +657,6 @@
 
         //未参加改为参加
         vm.updateToJoin = function () {
-            vm.saveNewExpertFlag = '1';
             var isCheck = $("#notJoinExpertTable input[name='notJoinExpert']:checked");
             if (isCheck.length < 1) {
                 bsWin.alert("请选择要改为参加会议的专家");
@@ -675,7 +674,6 @@
 
         //参加改为未参加
         vm.updateToNotJoin = function () {
-            vm.saveNewExpertFlag = '1';
             var isCheck = $("#joinExpertTable input[name='joinExpert']:checked");
             if (isCheck.length < 1) {
                 bsWin.alert("请选择未参加会议的专家");
@@ -742,7 +740,6 @@
 
         // 上移
         vm.upRecord = function(arr, $index) {
-            console.log(22);
             vm.saveNewExpertFlag = '1';
             if($index == 0) {
                 vm.confirmEPListReplace = arr;
