@@ -500,8 +500,11 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
                     //获得拟聘专家信息
                     List<Expert> expertList = expertRepo.findByBusinessId(workProgram.getId());
+
                     //获取项目第一负责人
                     User user = signPrincipalService.getMainPriUser(signId);
+                    //获取所有第二负责人信息
+                    List<User> secondUserList = signPrincipalService.getAllSecondPriUser(signId);
 
                     //获得会议信息
                     List<RoomBooking> roomBookings = roomBookingRepo.findByIds(RoomBooking_.businessId.getName(), workProgram.getId(), null);
@@ -548,7 +551,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
                     //2.4 邀请函
                     try{
-                        SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f, sign, workProgram, expertList, user, roomBookings);
+                        SysFile invitation = CreateTemplateUtils.createTemplateInvitation(f, sign, workProgram, expertList, user, roomBookings ,  secondUserList);
                         if (invitation != null && Validate.isString(invitation.getSysFileId())) {
                             saveFile.add(invitation);
                         }
@@ -559,7 +562,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
                     //2.5 会议通知
                     try{
-                        SysFile notice = CreateTemplateUtils.createTemplateNotice(f, sign, workProgram, user, roomBookings);
+                        SysFile notice = CreateTemplateUtils.createTemplateNotice(f, sign, workProgram, user, roomBookings , secondUserList);
                         if (notice != null && Validate.isString(notice.getSysFileId())) {
                             saveFile.add(notice);
                         }

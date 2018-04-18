@@ -335,29 +335,7 @@
                                 <w:szCs w:val="28"/>
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t>${mOrgName!}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:hAnsi="宋体" w:eastAsia="仿宋_GB2312"/>
-                                <w:szCs w:val="28"/>
-                            </w:rPr>
-                            <w:t>、</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:hAnsi="宋体" w:eastAsia="仿宋_GB2312"/>
-                                <w:szCs w:val="28"/>
-                                <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
-                            </w:rPr>
-                            <w:t>${aOrgName!}</w:t>
-                        </w:r>
-                        <w:r>
-                            <w:rPr>
-                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:hAnsi="宋体" w:eastAsia="仿宋_GB2312"/>
-                                <w:szCs w:val="28"/>
-                            </w:rPr>
-                            <w:t>、深圳市人民政府办公厅</w:t>
+                            <w:t>${inviteUnitLeader!}</w:t>
                         </w:r>
                     </w:p>
                     <w:p>

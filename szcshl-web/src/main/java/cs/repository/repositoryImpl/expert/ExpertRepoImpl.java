@@ -330,20 +330,20 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
     @Override
     public String findExpertGlByBusiness(String businessId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        /*sqlBuilder.append(" select e.name from cs_expert e where e.expertID in (select expertID from cs_expert_selected  ");
+        sqlBuilder.append(" select e.name from cs_expert e where e.expertID in (select expertID from cs_expert_selected  ");
         sqlBuilder.append("  where "+ExpertSelected_.businessId.getName()+" = :businessId ");
         sqlBuilder.setParam("businessId",businessId);
         sqlBuilder.append(" and " + ExpertSelected_.expeRttype.getName() + " like '%组长%' ");
         sqlBuilder.append(" and "+ ExpertSelected_.isConfrim.getName()+" = :isConfirm ");
         sqlBuilder.setParam("isConfirm",Constant.EnumState.YES.getValue());
         sqlBuilder.append(" and "+ ExpertSelected_.isJoin.getName()+" = :isJoin )");
-        sqlBuilder.setParam("isJoin",Constant.EnumState.YES.getValue());*/
+        sqlBuilder.setParam("isJoin",Constant.EnumState.YES.getValue());
 
-        sqlBuilder.append("select expertID , name  from cs_expert_new_info where " + ExpertNewInfo_.businessId.getName() + "=:businessId");
-        sqlBuilder.append(" and " + ExpertNewInfo_.expeRttype.getName() + " like '%组长%' ");
+//        sqlBuilder.append("select expertID , name  from cs_expert_new_info where " + ExpertNewInfo_.businessId.getName() + "=:businessId");
+//        sqlBuilder.append(" and " + ExpertNewInfo_.expeRttype.getName() + " like '%组长%' ");
         sqlBuilder.setParam("businessId" , businessId);
         List<Object[]> objList = this.getObjectArray(sqlBuilder);
-        String expertGl = "XXX";
+        String expertGl = "";
         if(objList != null && objList.size() > 0){
             Object[] object =  objList.get(0);
             if(object.length > 0){

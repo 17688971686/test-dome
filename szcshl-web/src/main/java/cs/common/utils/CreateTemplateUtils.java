@@ -4,6 +4,7 @@ import cs.common.Constant;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.expert.ExpertType;
+import cs.domain.external.Dept;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.project.*;
 import cs.domain.sys.Ftp;
@@ -57,7 +58,8 @@ public class CreateTemplateUtils {
     public static SysFile createStudyTemplateOpinion(Ftp f,Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("docNum", sign.getSignNum());
+
+        dataMap.put("docNum", "深投审【" + DateUtils.converToString(new Date() , "yyyy") + "】" );
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -81,29 +83,33 @@ public class CreateTemplateUtils {
      * @param sign
      * @return
      */
-    public static SysFile createStudyTemplateRoster(Ftp f,Sign sign, List<ExpertSelected> expertSelectedList , WorkProgram workProgram) {
+    public static SysFile createStudyTemplateRoster(Ftp f,Sign sign, List<ExpertSelected> expertSelectedList , WorkProgram workProgram , String generalCounsel , String counselor) {
         Map<String, Object> dataMap = new HashMap<>();
 
         dataMap.put("mdnum", "3");
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("generalCounsel", "市发改委分管副主任");
-        dataMap.put("counselor", "市发改委主办处室处长");
+        dataMap.put("generalCounsel", "市发改" + generalCounsel + "主任");
+        dataMap.put("counselor", "市发改委" + counselor + "处长");
         dataMap.put("director", sign.getLeaderName());
         String leaderName = sign.getLeaderName() == null ? "" :sign.getLeaderName();
         dataMap.put("viceDirector", leaderName);
         String ministerName =  workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
         dataMap.put("minister", ministerName);
         String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
-                + (workProgram.getSecondChargeUserName() == null ? "" : ","+workProgram.getSecondChargeUserName());
+                + (workProgram.getSecondChargeUserName() == null ? "" : "   "+workProgram.getSecondChargeUserName().replaceAll(","  , "   "));
         dataMap.put("proojectDirector", projectDirector);
 
         String expertName = getExpertName(expertSelectedList);
 
-        String reviewGroup = leaderName + "," + ministerName + "," + projectDirector;
+        //排序为：总负责人、专业负责人、审核人、专家组 、项目负责人（人名还三个空格隔开）
+        String reviewGroup = leaderName + "   " + ministerName ;
 
         if(!"".equals(expertName) && expertName.length() >0){
-            reviewGroup += "," + expertName;
+
+            reviewGroup += "   " + expertName.replaceAll("," , "   ");
         }
+
+        reviewGroup += "   " + projectDirector;
 
         dataMap.put("reviewGroup", reviewGroup);
 
@@ -153,7 +159,7 @@ public class CreateTemplateUtils {
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("docNum", sign.getSignNum());
+        dataMap.put("docNum", "深投审【" + DateUtils.converToString(new Date() , "yyyy") + "】" );
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -211,32 +217,32 @@ public class CreateTemplateUtils {
 
     /**
      * 审核组名单
-     *
-     * @param signDispaWork
      * @return
      */
-    public static SysFile createBudgetTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList , WorkProgram workProgram) {
+    public static SysFile createBudgetTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList , WorkProgram workProgram  , String generalCounsel , String counselor) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("mdnum", "3");
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("generalCounsel", "市发改委分管副主任");
-        dataMap.put("counselor", "市发改委主办处室处长");
+        dataMap.put("generalCounsel", "市发改" + generalCounsel + "主任");
+        dataMap.put("counselor", "市发改委" + counselor + "处长");
         dataMap.put("director", sign.getLeaderName());
         String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);
         String ministerName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
         dataMap.put("minister", ministerName);
         String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
-                + (workProgram.getSecondChargeUserName() == null ? "" : "," + workProgram.getSecondChargeUserName());
+                + (workProgram.getSecondChargeUserName() == null ? "" : "   " + workProgram.getSecondChargeUserName().replaceAll(","  , "   "));
         dataMap.put("proojectDirector", projectDirector);
 
         String expertName = getExpertName(expertSelectedList);
 
-        String reviewGroup = leanderName + "," + ministerName + "," + projectDirector ;
+        String reviewGroup = leanderName + "   " + ministerName  ;
 
         if(!"".equals(expertName) && expertName.length() >0){
-            reviewGroup += "," + expertName;
+            reviewGroup += "   " + expertName.replaceAll("," , "   ");
         }
+        reviewGroup += "   " + projectDirector;
+
         dataMap.put("reviewGroup", reviewGroup);
 
         SysFile sysFile = TemplateUtil.createTemplate(
@@ -259,7 +265,7 @@ public class CreateTemplateUtils {
     public static SysFile createSugTemplateOpinion(Ftp f,Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("docNum", sign.getSignNum());
+        dataMap.put("docNum", "深投审【" + DateUtils.converToString(new Date() , "yyyy") + "】" );
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -302,29 +308,29 @@ public class CreateTemplateUtils {
      * @param expertSelectedList
      * @return
      */
-    public static SysFile createSugTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList , WorkProgram workProgram) {
+    public static SysFile createSugTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList , WorkProgram workProgram , String generalCounsel , String counselor) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("psnum", "3");
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("generalCounsel", "市发改委分管副主任");
-        dataMap.put("counselor", "市发改委主办处室处长");
+        dataMap.put("generalCounsel", "市发改" + generalCounsel + "主任");
+        dataMap.put("counselor", "市发改委" + counselor + "处长");
         dataMap.put("director", sign.getLeaderName());
         String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);
         String ministerName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
         dataMap.put("minister", ministerName);
         String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
-                + (workProgram.getSecondChargeUserName() == null ? "" : "," + workProgram.getSecondChargeUserName());
+                + (workProgram.getSecondChargeUserName() == null ? "" : "   " + workProgram.getSecondChargeUserName().replaceAll("," , "   "));
         dataMap.put("projectDirector", projectDirector);
 
         String expertName = getExpertName(expertSelectedList);
 
-        String reviewGroup =  leanderName + "," + ministerName + "," + projectDirector ;
+        String reviewGroup =  leanderName + "   " + ministerName  ;
 
         if(!"".equals(expertName) && expertName.length() >0){
-            reviewGroup += "," + expertName;
+            reviewGroup += "   " + expertName.replaceAll("," , "   ");
         }
-
+        reviewGroup += "   " + projectDirector;
         dataMap.put("reviewGroup", reviewGroup);
 
         SysFile sysFile = TemplateUtil.createTemplate(
@@ -346,7 +352,7 @@ public class CreateTemplateUtils {
     public static SysFile createReportTemplateOpinion(Ftp f,Sign sign) {
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("docNum", sign.getSignNum());
+        dataMap.put("docNum", "深投审【" + DateUtils.converToString(new Date() , "yyyy") + "】" );
         dataMap.put("explain", "xxxxx");
         dataMap.put("title1", "xxxxx");
         dataMap.put("content1", "xxxxx");
@@ -386,30 +392,30 @@ public class CreateTemplateUtils {
      * @param sign
      * @return
      */
-    public static SysFile createReportTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList , WorkProgram workProgram) {
+    public static SysFile createReportTemplateRoster(Ftp f,Sign sign,  List<ExpertSelected> expertSelectedList , WorkProgram workProgram , String generalCounsel , String counselor) {
         Map<String, Object> dataMap = new HashMap<>();
 
         dataMap.put("psnum", "3");
         dataMap.put("projectName", sign.getProjectname());
-        dataMap.put("generalCounsel", "市发改委分管副主任");
-        dataMap.put("counselor", "市发改委主办处室处长");
+        dataMap.put("generalCounsel", "市发改" + generalCounsel + "主任");
+        dataMap.put("counselor", "市发改委" + counselor + "处长");
         dataMap.put("director", sign.getLeaderName());
         String leanderName = sign.getLeaderName() == null ? "" : sign.getLeaderName();
         dataMap.put("viceDirector", leanderName);
         String ministeName = workProgram.getMinisterName() == null ? "" : workProgram.getMinisterName();
         dataMap.put("minister", ministeName);
         String projectDirector = (workProgram.getMianChargeUserName() == null ? "" : workProgram.getMianChargeUserName())
-                + (workProgram.getSecondChargeUserName() == null ? "" : "," + workProgram.getSecondChargeUserName());
+                + (workProgram.getSecondChargeUserName() == null ? "" : "   " + workProgram.getSecondChargeUserName().replaceAll("," , "   "));
         dataMap.put("proojectDirector", projectDirector);
 
         String expertName = getExpertName(expertSelectedList);
 
-        String reviewGroup =  leanderName + "," + ministeName + "," + projectDirector ;
+        String reviewGroup =  leanderName + "   " + ministeName  ;
 
         if(!"".equals(expertName) && expertName.length() >0){
-            reviewGroup += "," + expertName;
+            reviewGroup += "   " + expertName.replaceAll("," , "   ");
         }
-
+        reviewGroup += "   " + projectDirector;
         dataMap.put("reviewGroup", reviewGroup);
 
         SysFile sysFile = TemplateUtil.createTemplate(
@@ -456,14 +462,31 @@ public class CreateTemplateUtils {
      * @param workProgram
      * @return
      */
-    public static SysFile createTemplateNotice(Ftp f,Sign sign, WorkProgram workProgram, User user,List<RoomBooking> rbList) {
+    public static SysFile createTemplateNotice(Ftp f,Sign sign, WorkProgram workProgram, User user,List<RoomBooking> rbList , List<User> secondUserList) {
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("projectName", sign.getProjectname());
         dataMap.put("reviewStage", sign.getReviewstage());
         dataMap.put("builtcompanyName", sign.getBuiltcompanyName());
-        dataMap.put("contactPerson", user.getDisplayName() == null ? "" : user.getDisplayName());//联系人
-        dataMap.put("contactPersonTel", user.getUserPhone() == null ? "" : user.getUserPhone());//联系电话
+        //第一负责人
+        String contactPerson = user.getDisplayName() == null ? "" : user.getDisplayName();
+        String contactPersonTel = user.getUserPhone() == null ? "" : user.getUserPhone();
+        //第二负责人 , 负责人总共三个，第一负责人排第一，联系电话显示两个
+        if(secondUserList != null && secondUserList.size() > 0){
+            for(int i = 0 ; i < secondUserList.size() && i < 2 ; i++){
+                User secondUser = secondUserList.get(i);
+                if(secondUser !=null){
+
+                    contactPerson += secondUser.getDisplayName() == null ? "" : "," + secondUser.getDisplayName();
+
+                }
+            }
+            if(secondUserList.get(0) != null){
+                contactPersonTel += secondUserList.get(0).getUserPhone() == null ? "" : "," + secondUserList.get(0).getUserPhone();
+            }
+        }
+        dataMap.put("contactPerson", contactPerson);//联系人
+        dataMap.put("contactPersonTel", contactPersonTel);//联系电话
 
         dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
 
@@ -483,6 +506,19 @@ public class CreateTemplateUtils {
             dataMap.put("addressName", roomBooking.getAddressName()); //会议地点
 
             dataMap.put("contactPersonAddress", "福田区莲花支路公交大厦" + roomBooking.getAddressName().substring(0 , 3));
+
+            Date compareDate = DateUtils.converToDate("12:00", "HH:mm");
+
+            //如果开始时间大于12点或结束时间小于12点默认是半天，其它情况默认是全天
+            if(DateUtils.compareIgnoreSecond(DateUtils.converToDate(
+                    DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm"), "HH:mm") , compareDate) > 0
+                    || DateUtils.compareIgnoreSecond(
+                    DateUtils.converToDate(DateUtils.converToString(roomBooking.getEndTime(), "HH:mm"), "HH:mm") , compareDate) < 0){
+                dataMap.put("duration" , "半天");
+
+            }else{
+                dataMap.put("duration" , "全天");
+            }
 
             sysFile = TemplateUtil.createTemplate(
                     f,sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
@@ -547,8 +583,26 @@ public class CreateTemplateUtils {
      * @param expertList
      * @return
      */
-    public static SysFile createTemplateInvitation(Ftp f,Sign sign, WorkProgram workProgram, List<Expert> expertList, User user,List<RoomBooking> rbList) {
+    public static SysFile createTemplateInvitation(Ftp f,Sign sign, WorkProgram workProgram, List<Expert> expertList, User user,List<RoomBooking> rbList , List<User> secondUserList) {
         Map<String, Object> dataMap = new HashMap<>();
+
+        //第一负责人
+        String contactPerson = user.getDisplayName() == null ? "" : user.getDisplayName();
+        String contactPersonTel = user.getUserPhone() == null ? "" : user.getUserPhone();
+        //第二负责人 , 负责人总共三个，第一负责人排第一，联系电话显示两个
+        if(secondUserList != null && secondUserList.size() > 0){
+            for(int i = 0 ; i < secondUserList.size() && i < 2 ; i++){
+                User secondUser = secondUserList.get(i);
+                if(secondUser !=null){
+
+                    contactPerson += secondUser.getDisplayName() == null ? "" : "," + secondUser.getDisplayName();
+
+                }
+            }
+            if(secondUserList.get(0) != null){
+                contactPersonTel += secondUserList.get(0).getUserPhone() == null ? "" : "," + secondUserList.get(0).getUserPhone();
+            }
+        }
 
         List<String[]> resultList = new ArrayList<>();
         for(Expert expert : expertList){
@@ -574,8 +628,8 @@ public class CreateTemplateUtils {
             }
             resultArr[4] = meetTime;
             resultArr[5] = meetRessadd;
-            resultArr[6] = user.getDisplayName() == null ? "" : user.getDisplayName();
-            resultArr[7] = user.getUserPhone() == null ? "" : user.getUserPhone();
+            resultArr[6] = contactPerson;
+            resultArr[7] = contactPersonTel;
             resultArr[8] = "福田区莲花支路公交大厦" + meetRessadd.substring(0 , 3);
             resultArr[9] = DateUtils.converToString(new Date() , "yyyy年MM月dd日");
             resultList.add(resultArr);
@@ -607,8 +661,9 @@ public class CreateTemplateUtils {
         dataMap.put("projectName", sign.getProjectname()); //项目名称
         dataMap.put("reviewStage" , sign.getReviewstage());//评审阶段
         dataMap.put("expertList" , expertList);//专家列表
-        dataMap.put("mOrgName" , sign.getMaindeptName() == null ? "" : sign.getMaindeptName() );//主办处室
-        dataMap.put("aOrgName" , sign.getAssistdeptName() == null ? "" : sign.getAssistdeptName() );//协办处室
+//        dataMap.put("mOrgName" , sign.getMaindeptName() == null ? "" : sign.getMaindeptName() );//主办处室
+//        dataMap.put("aOrgName" , sign.getAssistdeptName() == null ? "" : sign.getAssistdeptName() );//协办处室
+        dataMap.put("inviteUnitLeader" , workProgram.getInviteUnitLeader() == null ? "" : workProgram.getInviteUnitLeader());//拟邀请单位及领导
         dataMap.put("builtcompanyName" , sign.getBuiltcompanyName() == null ? "" : sign.getBuiltcompanyName());//建设单位
         dataMap.put("designcompanyName" , sign.getDesigncompanyName() == null ? "" : sign.getDesigncompanyName());//编制单位
         dataMap.put("projectBackGround" , workProgram.getProjectBackGround() == null ? "" : workProgram.getProjectBackGround()); //项目背景

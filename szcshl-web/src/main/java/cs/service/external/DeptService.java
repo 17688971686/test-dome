@@ -2,6 +2,7 @@ package cs.service.external;
 
 import java.util.List;
 
+import cs.domain.external.Dept;
 import cs.domain.external.OfficeUser;
 import cs.model.PageModelDto;
 import cs.model.external.DeptDto;
@@ -31,6 +32,13 @@ public interface DeptService {
 	void removeOfficeUserDept(String officeId, String deptId);
 
 	PageModelDto<OfficeUserDto> getOfficeUsersNotInDept(String deptId, ODataObj odataObj);
+
+	/**
+	 * 通过处室名称获取处室信息
+	 * @param name
+	 * @return
+	 */
+	Dept findByDeptName(String name);
 	
 	
 }

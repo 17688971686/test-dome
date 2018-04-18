@@ -221,8 +221,8 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
                                         </w:rPr>
                                         <w:t>序号</w:t>
                                     </w:r>
@@ -244,8 +244,8 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
                                         </w:rPr>
                                         <w:t>姓 名</w:t>
                                     </w:r>
@@ -267,8 +267,8 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
                                         </w:rPr>
                                         <w:t>身份证号码</w:t>
                                     </w:r>
@@ -289,7 +289,7 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                         <w:t>开户行</w:t>
@@ -312,8 +312,8 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
                                         </w:rPr>
                                         <w:t>评审费</w:t>
                                     </w:r>
@@ -335,8 +335,8 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
                                         </w:rPr>
                                         <w:t>应纳税额</w:t>
                                     </w:r>
@@ -358,8 +358,8 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
                                         </w:rPr>
                                         <w:t>合计（元）</w:t>
                                     </w:r>
@@ -381,8 +381,8 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
                                         </w:rPr>
                                         <w:t>是否函评</w:t>
                                     </w:r>
@@ -404,8 +404,8 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
                                         </w:rPr>
                                         <w:t>领款人签名</w:t>
                                     </w:r>
@@ -498,8 +498,8 @@
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:szCs w:val="21"/>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
+                                            <w:sz w:val="24"/>
                                         </w:rPr>
                                         <w:t>银行账号</w:t>
                                     </w:r>

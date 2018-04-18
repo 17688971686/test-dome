@@ -202,7 +202,7 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
                             </w:rPr>
-                            <w:t>举行，会期半天。请贵单位派有关负责人出席会议并通知项目初步设计编制单位参加会议。</w:t>
+                            <w:t>举行，会期${duration!}。请贵单位派有关负责人出席会议并通知项目编制单位参加会议。</w:t>
                         </w:r>
                     </w:p>
                     <w:p>
