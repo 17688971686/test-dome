@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.UUID;
 
 import cs.common.utils.SessionUtil;
+import cs.domain.external.Dept_;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -205,6 +208,23 @@ public class DeptServiceImpl implements DeptService {
 		 
 		return pageModelDto;
 	}
+
+	/**
+	 * 通过处室名称获取处室信息
+	 * @param name
+	 * @return
+	 */
+    @Override
+    public Dept findByDeptName(String name) {
+		Criteria criteria = deptRepo.getExecutableCriteria();
+		criteria.add(Restrictions.eq(Dept_.deptName.getName() , name));
+		List<Dept> deptList = criteria.list();
+		if(deptList != null && deptList.size() >0){
+			return deptList.get(0);
+		}else{
+			return null;
+		}
+    }
 
 
 }

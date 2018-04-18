@@ -232,7 +232,7 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:hAnsi="宋体" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
                             </w:rPr>
-                            <w:t>总 顾 问：</w:t>
+                            <w:t>总  顾  问：</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -263,6 +263,13 @@
                         <w:r>
                             <w:rPr>
                                 <w:rFonts w:hint="default" w:ascii="仿宋_GB2312" w:hAnsi="宋体" w:eastAsia="仿宋_GB2312"/>
+                                <w:sz w:val="32"/>
+                            </w:rPr>
+                            <w:t xml:space="preserve">  </w:t>
+                        </w:r>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:hAnsi="宋体" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
                             </w:rPr>
                             <w:t xml:space="preserve">  </w:t>
@@ -312,7 +319,7 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
                             </w:rPr>
-                            <w:t>总负责人：</w:t>
+                            <w:t>总 负 责人：</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -386,6 +393,7 @@
                             </w:rPr>
                             <w:t xml:space="preserve"> </w:t>
                         </w:r>
+
                         <w:r>
                             <w:rPr>
                                 <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:eastAsia="仿宋_GB2312"/>

@@ -9,6 +9,7 @@ import cs.common.utils.*;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelected;
+import cs.domain.external.Dept;
 import cs.domain.project.*;
 import cs.domain.sys.Ftp;
 import cs.domain.sys.Ftp_;
@@ -18,9 +19,11 @@ import cs.model.project.SignDto;
 import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
+import cs.repository.repositoryImpl.external.DeptRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.service.external.DeptService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
 import org.apache.log4j.Logger;
@@ -62,6 +65,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
     @Autowired
     private ExpertReviewRepo expertReviewRepo;
+
+    @Autowired
+    private DeptService deptService;
 
     /**
      * 生成发文编号，生成发文编号之前，要先上传项目评审意见
@@ -399,6 +405,20 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             }
         }
 
+        //获取评审组名单中的总顾问和顾问
+        String generalCounsel = ""; //总顾问
+        String counselor = ""; //顾问
+        Dept generalDept = deptService.findByDeptName("分管副主任");
+        if(generalDept != null){
+            generalCounsel = generalDept.getDeptUserName() == null ? "" : generalDept.getDeptUserName();
+        }
+
+        Dept dept = deptService.findByDeptName(sign.getMaindeptName());
+        if(dept != null){
+            counselor = dept.getDeptUserName() == null ? "" : dept.getDeptUserName();
+        }
+
+
         //获取专家评审方案
         ExpertReview expertReview = expertReviewRepo.findByBusinessId(signId);
 
@@ -440,7 +460,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
 
                 try {
-                    SysFile studyRoster = CreateTemplateUtils.createStudyTemplateRoster(f,sign , expertSelectedList , workProgram);
+                    SysFile studyRoster = CreateTemplateUtils.createStudyTemplateRoster(f,sign , expertSelectedList , workProgram , generalCounsel , counselor);
                     if(studyRoster != null   && Validate.isString(studyRoster.getSysFileId())){
                         sysFileList.add(studyRoster);
                     }
@@ -478,7 +498,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 }
 
                 try{
-                    SysFile budgetRoster = CreateTemplateUtils.createBudgetTemplateRoster(f,sign  ,expertSelectedList , workProgram);
+                    SysFile budgetRoster = CreateTemplateUtils.createBudgetTemplateRoster(f,sign  ,expertSelectedList , workProgram , generalCounsel , counselor);
                     if(budgetRoster != null && Validate.isString(budgetRoster.getSysFileId())){
                         sysFileList.add(budgetRoster);
                     }
@@ -506,7 +526,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 }
 
                 try{
-                    SysFile reportRoster = CreateTemplateUtils.createReportTemplateRoster(f,sign , expertSelectedList , workProgram);
+                    SysFile reportRoster = CreateTemplateUtils.createReportTemplateRoster(f,sign , expertSelectedList , workProgram , generalCounsel , counselor);
                     if(reportRoster != null  && Validate.isString(reportRoster.getSysFileId())){
                         sysFileList.add(reportRoster);
                     }
@@ -534,7 +554,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 }
 
                 try{
-                    SysFile sugRoster = CreateTemplateUtils.createSugTemplateRoster(f, sign , expertSelectedList , workProgram);
+                    SysFile sugRoster = CreateTemplateUtils.createSugTemplateRoster(f, sign , expertSelectedList , workProgram , generalCounsel , counselor);
                     if(sugRoster != null && Validate.isString(sugRoster.getSysFileId())){
                         sysFileList.add(sugRoster);
                     }

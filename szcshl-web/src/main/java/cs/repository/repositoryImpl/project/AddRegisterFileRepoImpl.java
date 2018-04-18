@@ -59,7 +59,7 @@ public class AddRegisterFileRepoImpl extends AbstractRepository<AddRegisterFile,
         hqlBuilder.append(" from " +AddRegisterFile.class.getSimpleName() + " where " + AddRegisterFile_.businessId.getName() + "=:businessId");
         hqlBuilder.append(" and " + AddRegisterFile_.businessType.getName() + "=:businessType");
         hqlBuilder.setParam("businessId" , businessId);
-        hqlBuilder.setParam("businessType" , businessType);
+        hqlBuilder.setParam("businessType" , businessType.toString());
         List<AddRegisterFile> addRegisterFileList = findByHql(hqlBuilder);
         return addRegisterFileList;
     }

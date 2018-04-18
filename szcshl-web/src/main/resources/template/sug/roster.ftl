@@ -229,7 +229,7 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:hAnsi="宋体" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
                             </w:rPr>
-                            <w:t>总 顾 问：${generalCounsel!}</w:t>
+                            <w:t>总  顾  问：${generalCounsel!}</w:t>
                         </w:r>
                     </w:p>
                     <w:p>
@@ -244,7 +244,7 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:hAnsi="宋体" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
                             </w:rPr>
-                            <w:t>顾    问：${counselor!}</w:t>
+                            <w:t>顾      问：${counselor!}</w:t>
                         </w:r>
                     </w:p>
                     <w:p>
@@ -259,7 +259,7 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:hAnsi="宋体" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
                             </w:rPr>
-                            <w:t>总负责人：${director!}</w:t>
+                            <w:t>总 负 责人：${director!}</w:t>
                         </w:r>
                     </w:p>
                     <w:p>
@@ -289,7 +289,7 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:hAnsi="宋体" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
                             </w:rPr>
-                            <w:t>审 核 人：${minister!}</w:t>
+                            <w:t>审  核  人：${minister!}</w:t>
                         </w:r>
                     </w:p>
                     <w:p>
@@ -313,7 +313,7 @@
                                 <w:rFonts w:hint="eastAsia" w:ascii="仿宋_GB2312" w:hAnsi="宋体" w:eastAsia="仿宋_GB2312"/>
                                 <w:sz w:val="32"/>
                             </w:rPr>
-                            <w:t>评 审 组：${reviewGroup!}</w:t>
+                            <w:t>评  审  组：${reviewGroup!}</w:t>
                         </w:r>
                     </w:p>
                     <w:sectPr>
