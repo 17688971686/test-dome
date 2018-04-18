@@ -722,7 +722,7 @@ public class UserServiceImpl implements UserService {
         String curUserId = SessionUtil.getUserId();
         //分管的部门ID
         List<String> orgIdList = null;
-        //定义领导标识参数（0标识不是领导，1表示主任，2表示分管领导，3表示部长或者组长）
+        //定义领导标识参数（0表示普通用户，1表示主任，2表示分管领导，3表示部长或者组长）
         Integer leaderFlag = SUPER_USER.equals(SessionUtil.getLoginName())?1:0;
         if(leaderFlag ==0){
             //查询所有的部门和组织

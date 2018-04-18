@@ -554,12 +554,13 @@
         }// E_saveMark
 
         // S_保存专家评审费
-        function savePayment(expertReview,isCommit,callBack) {
+        function savePayment(expertReview,isCommit,countTaxes,callBack) {
             isCommit = true;
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expertReview/saveExpertReviewCostSingle",
-                data: expertReview
+                data: expertReview,
+                params:{isCountTaxes : countTaxes}
             }
             var httpSuccess = function success(response) {
                 isCommit = false;

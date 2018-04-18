@@ -82,6 +82,8 @@
                 financial.projectName = vm.financial.projectName;
                 financial.paymentData = vm.financial.paymentData;
                 financial.chargeType = vm.financial.chargeType;
+                financial.isNew = true;
+                financial.id = common.uuid();
                 if (!vm.financials) {
                     vm.financials = [];
                 }
@@ -96,6 +98,9 @@
                     //更新付款日期
                     angular.forEach(vm.financials, function (f, index) {
                         f.paymentData = vm.financial.paymentData;
+                        if(f.isNew){
+                            f.id = "";
+                        }
                     })
                     //保存
                     financialManagerSvc.savefinancial(vm.financials, function (data) {
@@ -127,18 +132,25 @@
                             var ids = [];
                             for (var i = 0; i < isChecked.length; i++) {
                                 vm.financials.forEach(function (f, number) {
-                                    if (isChecked[i].value == f.id || f.id == undefined) {
+                                    if (isChecked[i].value == f.id) {
                                         vm.financials.splice(number, 1);
+                                        if(isChecked[i].value){
+                                            ids.push(isChecked[i].value);
+                                        }
                                     }
-                                    ids.push(isChecked[i].value);
                                 });
-                                var idsStr = ids.join(",");
-
                             }
-                            financialManagerSvc.deleteFinancialManager(idsStr, function (data) {
-                                //删除成功后，总金额需要重新计算
-                                vm.countCost();
-                            });
+
+                            if(!vm.financials || vm.financials.length == 0){
+                                vm.financialsCheck = false;
+                            }
+                            if(ids.length > 0 ){
+                                var idsStr = ids.join(",");
+                                financialManagerSvc.deleteFinancialManager(idsStr, function (data) {
+                                    //删除成功后，总金额需要重新计算
+                                    vm.countCost();
+                                });
+                            }
                         }
                     });
 
@@ -167,7 +179,11 @@
                 //项目才有协审费，不是项目，没有协审费
                 if (costType == "ASSIST") {
                     assistCostCountSvc.findSignCostBySignId(vm.financial.businessId, function (data) {
-                        vm.signAssistCostCounList = data;
+                        if(data){
+                            vm.signAssistCostCounList = data;
+                        }else{
+                            vm.signAssistCostCounList = [];
+                        }
                     });
                 }
                 $("#" + id).kendoWindow({

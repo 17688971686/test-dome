@@ -180,6 +180,6 @@ public class AssistPlanRepoImpl extends AbstractRepository<AssistPlan, String> i
             }
             return resultList;
         }
-        return null;
+        return new ArrayList();
     }
 }

@@ -48,7 +48,7 @@
         <form id="fnFrom" >
         <table class="table table-bordered seleteTable" id="financialsTable">
             <tr>
-                <td width="5%" align="center"><input type='checkbox' ng-model="financialsCheck"/></td>
+                <td width="5%" align="center"><input type='checkbox' ng-model="vm.financialsCheck"/></td>
                 <td width="5%" align="center">序号</td>
                 <td width="15%">费用名称</td>
                 <td width="15%">费用</td>
@@ -56,7 +56,7 @@
             </tr>
             <tr ng-repeat="x in vm.financials">
                 <td width="5%" align="center">
-                    <input type="checkbox" ng-checked="financialsCheck" name="financialsCheck" value="{{vm.financials[$index].id}}"/>
+                    <input type="checkbox" ng-checked="vm.financialsCheck" name="financialsCheck" value="{{vm.financials[$index].id}}"/>
                 </td>
                 <td width="5%" align="center">{{$index+1}}</td>
                 <td>

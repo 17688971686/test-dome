@@ -409,13 +409,13 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     /**
      * 保存单个评审方案的专家评审费
-     *
      * @param expertReviewDto
+     * @param isCountTaxes 是否计税
      * @return
      */
     @Override
     @Transactional
-    public ResultMsg saveExpertReviewCost(ExpertReviewDto expertReviewDto) {
+    public ResultMsg saveExpertReviewCost(ExpertReviewDto expertReviewDto,boolean isCountTaxes) {
         //保存评审费用
         String experReviewId = expertReviewDto.getId();
         if (Validate.isString(experReviewId)) {
@@ -425,7 +425,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "已经进行评审费发放，不能再次发放！");
             }
             //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存(或者超级管理员) 超级管理员发放，不做时间限制
-            if (!Constant.SUPER_USER.equals(SessionUtil.getLoginName()) && expertReview.getReviewDate() != null) {
+            if (isCountTaxes && !Constant.SUPER_USER.equals(SessionUtil.getLoginName()) && expertReview.getReviewDate() != null) {
                 long diffDays = DateUtils.daysBetween(new Date(), expertReview.getReviewDate());
                 if (diffDays != 0) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "只能在评审当天计算专家应纳税额！");
@@ -433,11 +433,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             }
             List<Map<String, Object>> resultObj = new ArrayList<>();
             if (expertReview != null) {
-               /* //设置评审方案的评审费用、税费和合计
-                expertReview.setReviewCost(expertReviewDto.getReviewCost());
-                expertReview.setReviewTaxes(expertReviewDto.getReviewTaxes());
-                expertReview.setTotalCost(expertReviewDto.getTotalCost());*/
-
                 //设置该评审方案所有专家的评审费用、税费和合计
                 List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
                 List<ExpertSelectedDto> expertSelectedDtos = expertReviewDto.getExpertSelectedDtoList();
@@ -446,24 +441,26 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                         expertSelectedDtos.forEach(expertSelectedDto -> {
                             if (expertSelectedDto.getId().equals(expertSelected.getId())) {
                                 expertSelected.setReviewCost(expertSelectedDto.getReviewCost());
-                               /*
-                                这两项是计算出来的
-                                expertSelected.setReviewTaxes(expertSelectedDto.getReviewTaxes());
-                                expertSelected.setTotalCost(expertSelectedDto.getTotalCost());
-                                */
                                 expertSelected.setIsLetterRw(expertSelectedDto.getIsLetterRw());
+                                if(!isCountTaxes){
+                                    expertSelected.setReviewTaxes(expertSelectedDto.getReviewTaxes());
+                                }
                                 return;
                             }
                         });
                     });
-                    //计算评审费和税
-                    resultObj = countReviewExpense(expertReview);
+                    if(isCountTaxes){
+                        //计算评审费和税
+                        resultObj = countReviewExpense(expertReview);
+                        //设置评审费发放日期
+                        expertReview.setPayDate(expertReviewDto.getPayDate());
+                        //设置状态(已报评审费)
+                        expertReview.setState(Constant.EnumState.YES.getValue());
+                    }else{
+                        resultObj = countTotalExpense(expertReview);
+                    }
                     //设置标题
                     expertReview.setReviewTitle(expertReviewDto.getReviewTitle());
-                    //设置评审费发放日期
-                    expertReview.setPayDate(expertReviewDto.getPayDate());
-                    //设置状态(已报评审费)
-                    expertReview.setState(Constant.EnumState.YES.getValue());
                 }
                 //设置专家评审费用结束s
                 expertReviewRepo.save(expertReview);
@@ -475,6 +472,39 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
     }
 
+    /**
+     * 统计总数此次评审费总数，不包含计税
+     * @param expertReview
+     * @return
+     */
+    private List<Map<String,Object>> countTotalExpense(ExpertReview expertReview) {
+        List<Map<String, Object>> resultObj = new ArrayList<>();
+        List<ExpertSelected> expertSelectedList = expertReview.getExpertSelectedList();
+        BigDecimal totalCount = BigDecimal.ZERO, totalTaxes = BigDecimal.ZERO;
+        for (ExpertSelected slEP : expertSelectedList) {
+            Map<String, Object> epMap = new HashMap<>();
+            BigDecimal reviewCost = slEP.getReviewCost()== null?BigDecimal.ZERO:slEP.getReviewCost();
+            BigDecimal reviewTaxes = slEP.getReviewTaxes()== null?BigDecimal.ZERO:slEP.getReviewTaxes();
+            //设置返回的数据
+            epMap.put("EXPERTID", slEP.getExpert().getExpertID());
+            epMap.put("MONTCOST", reviewCost);
+            epMap.put("MONTAXES", reviewTaxes);
+
+            totalCount = Arith.safeAdd(reviewCost, totalCount);
+            totalTaxes = Arith.safeAdd(reviewTaxes, totalTaxes);
+            resultObj.add(epMap);
+        }
+        expertReview.setReviewCost(totalCount);
+        expertReview.setReviewTaxes(totalTaxes);
+        expertReview.setTotalCost(Arith.safeAdd(totalCount, totalTaxes));
+        return resultObj;
+    }
+
+    /**
+     * 计算此次专家评审费用
+     * @param expertReview
+     * @return
+     */
     @Override
     public List<Map<String, Object>> countReviewExpense(ExpertReview expertReview) {
         List<Map<String, Object>> resultObj = new ArrayList<>();

@@ -179,8 +179,8 @@ public class ExpertReviewController {
     @RequiresAuthentication
     @RequestMapping(name = "保存评审费用", path = "saveExpertReviewCostSingle", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg saveExpertReviewCostSingle(@RequestBody ExpertReviewDto expertReview) {
-        return expertReviewService.saveExpertReviewCost(expertReview);
+    public ResultMsg saveExpertReviewCostSingle(@RequestBody ExpertReviewDto expertReview,@RequestParam(defaultValue = "true")boolean isCountTaxes) {
+        return expertReviewService.saveExpertReviewCost(expertReview,isCountTaxes);
     }
 
     //保存评审费用(多个)

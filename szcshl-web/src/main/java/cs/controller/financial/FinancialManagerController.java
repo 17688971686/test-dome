@@ -5,6 +5,7 @@ import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.ExcelTools;
+import cs.common.utils.Validate;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
@@ -123,7 +124,9 @@ public class FinancialManagerController {
     @RequestMapping(name = "删除记录", path = "", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@RequestBody String id) {
-        financialManagerService.delete(id);
+        if(Validate.isString(id)){
+            financialManagerService.delete(id);
+        }
     }
 
     @RequiresAuthentication

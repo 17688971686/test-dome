@@ -94,6 +94,8 @@
                         vm.countCost();
                         bsWin.alert("操作成功！！");
                     });
+                }else{
+                    vm.countCost();
                 }
             }
         }

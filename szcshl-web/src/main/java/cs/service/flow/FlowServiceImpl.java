@@ -51,6 +51,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.NativeQuery;
+import org.hibernate.type.StringType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -457,24 +458,21 @@ public class FlowServiceImpl implements FlowService {
             criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
             runProcessList = criteria.list();
         }else{
-
             if(leaderFlag != 1){
                 Disjunction dis2 = Restrictions.disjunction();
                 dis2.add(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId));
                 dis2.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" +curUserId + "%"));
-                dis2.add(Restrictions.eq(RuProcessTask_.createdBy.getName(),curUserId));
+                //只要是经办人就能查看
+                String querySql = " (SELECT COUNT (ID_) FROM ACT_HI_IDENTITYLINK act WHERE act.USER_ID_ = ? AND act.PROC_INST_ID_ = {alias}.PROCESSINSTANCEID) > 0 ";
+                dis2.add(Restrictions.sqlRestriction(querySql,curUserId, StringType.INSTANCE));
 
-                if(leaderFlag == 0){
-                    //普通用户,如果是项目签收人（流程发起人），也符合条件
-                    dis2.add(Restrictions.eq(RuProcessTask_.mainUserId.getName(),curUserId));
-                    dis2.add(Restrictions.like(RuProcessTask_.aUserId.getName(), "%" + curUserId + "%"));
-                }else if(leaderFlag == 2 && Validate.isList(orgIdList)){
+                if(leaderFlag == 2 && Validate.isList(orgIdList)){
                     //分管领导，查询所管辖的部门
                     for(String orgId:orgIdList){
                         dis2.add(Restrictions.or(Restrictions.eq(RuProcessTask_.mOrgId.getName(),orgId), Restrictions.like(RuProcessTask_.aOrgId.getName(), "%" + orgId + "%")));
                     }
                     //分管领导id等于当前人
-                    dis2.add(Restrictions.sqlRestriction(" (select count(cs.signid) from cs_sign cs where cs.signid = this_.businessKey and cs.leaderId = '"+curUserId+"') > 0 "));
+                    //dis2.add(Restrictions.sqlRestriction(" (select count(cs.signid) from cs_sign cs where cs.signid = this_.businessKey and cs.leaderId = '"+curUserId+"') > 0 "));
                 }else if(leaderFlag == 3 && Validate.isList(orgIdList)){
                     //部长
                     String orgId = orgIdList.get(0);

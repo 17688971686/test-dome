@@ -56,9 +56,10 @@ public interface ExpertReviewService {
 	/**
 	 * 保存专家评审费用
 	 * @param expertReview
+	 * @param isCountTaxes 是否计税
 	 * @return
 	 */
-	ResultMsg saveExpertReviewCost(ExpertReviewDto  expertReview);
+	ResultMsg saveExpertReviewCost(ExpertReviewDto  expertReview,boolean isCountTaxes);
 
 	/**
 	 * 计算此次专家评审费用

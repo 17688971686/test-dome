@@ -209,6 +209,9 @@
                     vm.showFlag.tabWorkProgram = true;
                     vm.showFlag.tabDispatch = true;
                     vm.showFlag.tabFilerecord = true;
+                    //归档员也可以编辑归档信息
+                    vm.showFlag.businessTr = true;
+                    vm.showFlag.nodeFileRecord = true;
                     $("#show_filerecord_a").click();
                     vm.showFlag.buttBack = true;
                     vm.showFlag.nodeNext = false;
