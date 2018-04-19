@@ -582,7 +582,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
         }
         if(result.length() > 0 ){
-            return new ResultMsg(true , MsgCode.OK.getValue() , result , null);
+            return new ResultMsg(true , MsgCode.OK.getValue() , result + "生成失败！" , null);
         }else{
 
             return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "评审报告文件生成成功！" , null);
