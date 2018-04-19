@@ -775,6 +775,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     dispatchData.put("secondChargeSuggest", second);
                     dispatchData.put("ministerSuggesttion",sugge);
                     dispatchData.put("viceDirectorSuggesttion",vice);
+                    dispatchData.put("ischangeEstimate" , signDto.getIschangeEstimate());//是否调概
 
                     if (stageType.equals(RevireStageKey.KEY_SUG.getValue())) {
                         //建议书
@@ -810,6 +811,10 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         }
                         dispatchViewList.add(getDispatchStage("项目建议书", dispatchList));
                         dispatchViewList.add(getDispatchStage("可行性研究报告", dispatchList));
+                        if(signDto != null && signDto.getIschangeEstimate() != null
+                                &&"9".equals(signDto.getIschangeEstimate())){
+                            dispatchViewList.add(getDispatchStage("项目概算", dispatchList));
+                        }
                         dispatchData.put("dispatchList", dispatchViewList);
                         file = TemplateUtil.createDoc(dispatchData, Template.STAGE_BUDGET_DISPATCHDOC.getKey(), path);
 

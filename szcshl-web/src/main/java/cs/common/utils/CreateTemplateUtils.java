@@ -604,6 +604,8 @@ public class CreateTemplateUtils {
             }
         }
 
+        Date compareDate = DateUtils.converToDate("12:00", "HH:mm");
+
         List<String[]> resultList = new ArrayList<>();
         for(Expert expert : expertList){
             String[] resultArr = new String[10];
@@ -625,6 +627,17 @@ public class CreateTemplateUtils {
                         + DateUtils.converToString(roomBooking.getEndTime(), "HH:mm");
 
                 meetRessadd = roomBooking.getAddressName();
+
+                //如果开始时间大于12点或结束时间小于12点默认是半天，其它情况默认是全天
+                if(DateUtils.compareIgnoreSecond(DateUtils.converToDate(
+                        DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm"), "HH:mm") , compareDate) > 0
+                        || DateUtils.compareIgnoreSecond(
+                        DateUtils.converToDate(DateUtils.converToString(roomBooking.getEndTime(), "HH:mm"), "HH:mm") , compareDate) < 0){
+                    dataMap.put("duration" , "半天");
+
+                }else{
+                    dataMap.put("duration" , "全天");
+                }
             }
             resultArr[4] = meetTime;
             resultArr[5] = meetRessadd;

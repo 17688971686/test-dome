@@ -330,7 +330,7 @@ public class ExpertRepoImpl extends AbstractRepository<Expert, String> implement
     @Override
     public String findExpertGlByBusiness(String businessId) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append(" select e.name from cs_expert e where e.expertID in (select expertID from cs_expert_selected  ");
+        sqlBuilder.append(" select e.expertID ,e.name from cs_expert e where e.expertID in (select expertID from cs_expert_selected  ");
         sqlBuilder.append("  where "+ExpertSelected_.businessId.getName()+" = :businessId ");
         sqlBuilder.setParam("businessId",businessId);
         sqlBuilder.append(" and " + ExpertSelected_.expeRttype.getName() + " like '%组长%' ");
