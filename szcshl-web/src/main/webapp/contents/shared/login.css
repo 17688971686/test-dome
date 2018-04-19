@@ -3,7 +3,7 @@ html,body{
     height: 100%;
 }
 body{
-    background: url(../images/loginpage-bg.jpg) no-repeat;
+    background: url(../images/loginpage-bg.jpg) no-repeat left top/contain;
     background-size:100% 100%;
     padding-top:50px;
 }
@@ -19,7 +19,7 @@ body{
     position: absolute;
     background-color:#fff;
     right: 8%;
-    top: 25%;
+    top: 26%;
     box-shadow: 5px 5px 5px rgba(0,0,0,0.2);
     border-radius:10px;
 }
@@ -45,7 +45,7 @@ body{
 }
 .loginform .input-container input:focus{
     border: 1px solid #128471;
-    box-shadow: 0 0 10px #128471;
+    box-shadow: 0 0 10px #44cef3;
 }
 .loginform .input-container span{
     position: absolute;
@@ -60,7 +60,7 @@ body{
     width: 40px;
     top:0;
     font-size:16px;
-    color:#128471;
+    color:#44cef3;
 }
 .loginform-footer{
     height:100px;
@@ -72,7 +72,10 @@ body{
     width: 100%;
     height: 40px;
     border-radius:10px;
-    background: #03a98e;
+    background: #44cef3;
+    border:1px solid #fff;
+    font-size:20px ;
+    letter-spacing:5px;
 }
 .loginform-footer .btn:hover{
     background: #128471;
