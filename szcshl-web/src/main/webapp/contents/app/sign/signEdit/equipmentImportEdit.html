@@ -23,6 +23,7 @@
                 <span style="margin-left: 100px; width: 128px; overflow: hidden;">
                     <select ng-model="vm.model.maindeptName" ng-change="vm.findOfficeUsersByDeptName('main')" name="maindeptName"
                             style="width: 230px;height:26px; margin-left: -100px;">
+                        <option value="">请选择</option>
                         <option ng-repeat="md in vm.deptlist" ng-selected="vm.model.maindeptName == md.deptName" value="{{md.deptName}}">{{md.deptName}}</option>
                     </select>
                 </span>
@@ -35,6 +36,7 @@
                 <span style="margin-left: 100px; width: 128px; overflow: hidden;">
                     <select ng-model="vm.model.mainDeptUserName" name="mainDeptUserName"
                             id="mainDeptUserName" ng-click="vm.mainDeptUser()" style="width: 230px;height:26px; margin-left: -100px;">
+                        <option value="">请选择</option>
                         <option ng-repeat="mu in vm.mainOfficeList"  ng-selected="vm.model.mainDeptUserName == mu.officeUserName"
                                 value="{{mu.officeUserName}}">{{mu.officeUserName}} </option>
                     </select>
@@ -62,6 +64,7 @@
         <td width="15%" class="text-center">建设单位</td>
         <td>
             <select ng-model="vm.model.builtcompanyName" name="builtcompanyName" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="x in vm.companyList|filter:{coType:'建设单位'}"
                         ng-selected="vm.model.builtcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}
                 </option>
@@ -74,6 +77,7 @@
         <td width="15%" class="text-center">编制单位</td>
         <td>
             <select ng-model="vm.model.designcompanyName" name="designcompanyName" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="x in vm.companyList|filter:{coType:'编制单位'}"
                         ng-selected="vm.model.designcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}
                 </option>

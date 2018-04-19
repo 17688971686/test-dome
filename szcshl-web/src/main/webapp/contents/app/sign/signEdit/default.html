@@ -26,6 +26,7 @@
         <td width="15%" class="text-center">建设单位</td>
         <td>
            <select ng-model="vm.model.builtcompanyName"  name="builtcompanyName" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="x in vm.companyList|filter:{coType:'建设单位'}"  ng-selected="vm.model.builtcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}</option>
             </select>
             <input type="text" ng-model="vm.model.builtcompanyName" name="builtcompanyName"  style="width:200px;height:26px;margin-left:-224px;">
@@ -33,7 +34,8 @@
         <td width="15%" class="text-center">编制单位</td>
         <td>
              <select ng-model="vm.model.designcompanyName"  name="designcompanyName" style="width:220px;height:26px;">
-                <option ng-repeat="x in vm.companyList|filter:{coType:'编制单位'}" ng-selected="vm.model.designcompanyName == x.coName" value="{{x.coName}}" >{{x.coName}}</option>
+                 <option value="">请选择</option>
+                 <option ng-repeat="x in vm.companyList|filter:{coType:'编制单位'}" ng-selected="vm.model.designcompanyName == x.coName" value="{{x.coName}}" >{{x.coName}}</option>
             </select>
             <input type="text" ng-model="vm.model.designcompanyName" name="designcompanyName"  style="width:200px;height:26px;margin-left:-224px;">
         </td>
@@ -42,12 +44,14 @@
         <td width="15%" class="text-center">主办处室</td>
         <td>
             <select ng-model="vm.model.maindeptName" name="maindeptName" ng-change="vm.findOfficeUsersByDeptName('main')" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="md in vm.deptlist" ng-selected="vm.model.maindeptName == md.deptName" value="{{md.deptName}}" >{{md.deptName}}</option>
             </select>
             <input type="text" ng-model="vm.model.maindeptName" name="maindeptName"  style="width:200px;height:26px;margin-left:-224px;">
         <td width="15%" class="text-center">主办处室联系人</td>
         <td>
             <select ng-model="vm.model.mainDeptUserName" name="mainDeptUserName" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="mu in vm.mainOfficeList" ng-selected="vm.model.mainDeptUserName == mu.officeUserName"  value="{{mu.officeUserName}}">{{mu.officeUserName}} </option>
             </select>
             <input type="text" ng-model="vm.model.mainDeptUserName" name="mainDeptUserName"  style="width:200px;height:26px;margin-left:-224px;">
@@ -58,6 +62,7 @@
         <td width="15%" class="text-center">协办处室</td>
         <td>
             <select ng-model="vm.model.assistdeptName" ng-change="vm.findOfficeUsersByDeptName('assist')" name="assistdeptName" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="ad in vm.deptlist" ng-selected="vm.model.assistdeptName == ad.deptName" value="{{ad.deptName}}">{{ad.deptName}}</option>
             </select>
             <input type="text" ng-model="vm.model.assistdeptName" name="assistdeptName"  style="width:200px;height:26px;margin-left:-224px;">
@@ -65,6 +70,7 @@
         <td width="15%" class="text-center">协办处室联系人</td>
         <td>
             <select ng-model="vm.model.assistDeptUserName" name="assistDeptUserName" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="au in vm.assistOfficeList" ng-selected="vm.model.assistDeptUserName == au.officeUserName"  value="{{au.officeUserName}}">{{au.officeUserName}}</option>
             </select>
             <input type="text" ng-model="vm.model.assistDeptUserName" name="assistDeptUserName"  style="width:200px;height:26px;margin-left:-224px;">

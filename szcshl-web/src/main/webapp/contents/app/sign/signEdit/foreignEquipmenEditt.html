@@ -20,6 +20,7 @@
         <td>
             <select ng-model="vm.model.maindeptName" ng-change="vm.findOfficeUsersByDeptName('main')"
                     name="maindeptName" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="md in vm.deptlist" ng-selected="vm.model.maindeptName == md.deptName"
                         value="{{md.deptName}}">{{md.deptName}}
                 </option>
@@ -31,6 +32,7 @@
         <td>
             <select ng-model="vm.model.mainDeptUserName" name="mainDeptUserName"
                     ng-click="vm.mainDeptUser()" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="mu in vm.mainOfficeList" value="{{mu.officeUserName}}"
                         ng-selected="vm.model.mainDeptUserName == mu.officeUserName"
                 >{{mu.officeUserName}}
@@ -47,6 +49,7 @@
         <td>
             <select ng-model="vm.model.assistdeptName" ng-change="vm.findOfficeUsersByDeptName('assist')"
                     name="assistdeptName" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="ad in vm.deptlist" ng-selected="vm.model.assistdeptName == ad.deptName"
                         value="{{ad.deptName}}">{{ad.deptName}}
                 </option>
@@ -58,6 +61,7 @@
         <td>
             <select ng-model="vm.model.assistDeptUserName" ng-click="vm.assistDeptUser()" name="assistDeptUserName"
                     style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="au in vm.assistOfficeList"
                         ng-selected="vm.model.assistDeptUserName == au.officeUserName" value="{{au.officeUserName}}">
                     {{au.officeUserName}}

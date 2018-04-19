@@ -20,6 +20,7 @@
         <td>
             <select ng-model="vm.model.maindeptName" ng-change="vm.findOfficeUsersByDeptName('main')"
                     name="maindeptName" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="md in vm.deptlist" ng-selected="vm.model.maindeptName == md.deptName"
                         value="{{md.deptName}}">{{md.deptName}}
                 </option>
@@ -41,6 +42,7 @@
         <td width="15%" class="text-center">申请单位</td>
         <td>
             <select ng-model="vm.model.designcompanyName" name="designcompanyName" style="width:220px;height:26px;">
+                <option value="">请选择</option>
                 <option ng-repeat="x in vm.companyList|filter:{coType:'编制单位'}"
                         ng-selected="vm.model.designcompanyName == x.coName" value="{{x.coName}}">{{x.coName}}
                 </option>
