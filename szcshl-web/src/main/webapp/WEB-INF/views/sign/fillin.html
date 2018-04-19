@@ -91,7 +91,7 @@
 	<div class="navbar navbar-default navbar-fixed-bottom" style="padding: 0;margin: 0;">
         <div class="text-center" style="line-height: 50px;" ng-hide="vm.isControl">
             默认办理部门：<input type="radio" value="PX" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>评估</span> <input type="radio" value="GX" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>概算</span>
-            <button class="btn btn-sm btn-default" ng-click="vm.startNewFlow()"  ng-hide=" vm.model.processInstanceId ">发起流程</button>
+            <button class="btn btn-sm btn-default" ng-click="vm.startNewFlow()"  ng-hide=" vm.model.processInstanceId ">保存并发起流程</button>
             <button class="btn btn-sm btn-default" ng-click="vm.updateFillin()">{{vm.isControl}}保存</button>
             <button class="btn btn-sm btn-default" ng-click="backtoflow();" ng-if="vm.model.processInstanceId"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
           <!--  <button id="linksbtn" class="btn btn-sm btn-default"  ng-click="vm.signPreview()" >打印预览</button>-->
