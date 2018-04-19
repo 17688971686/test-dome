@@ -173,6 +173,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         int maxSeq = projMaxSeq.getSeq() + 1;
         fileNum = fileNum + "[" + yearName + "]" + (maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq));
         dispatchDoc.setFileNum(fileNum);
+        dispatchDoc.setFileSeq(maxSeq);
         //更新序号表
         projMaxSeq.setSeq(maxSeq);
         projMaxSeqRepo.save(projMaxSeq);
@@ -302,7 +303,14 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             //申报金额，与工作方案的、收文的一致，任何一个地方改了，都要同步更新
             dispatch.setDeclareValue(sign.getAppalyInvestment());
             //发文范围(艾传荣副巡视员（默认） + 投资处（获取收文主办室处） + 中心领导（默认）)
-            dispatch.setDispatchScope(Constant.DIS_SCOPE_XSY + " " + sign.getMaindeptName() == null ? "" : sign.getMaindeptName() + " " + Constant.DIS_SCOPE_ZXLD);
+            String dispatchScope = "";
+            Dept generalDept = deptService.findByDeptName("分管副主任");
+            if(generalDept != null){
+                dispatchScope = generalDept.getDeptUserName() == null ? "" : generalDept.getDeptUserName()+"  ";
+            }
+            dispatchScope += sign.getMaindeptName() == null ? "" : sign.getMaindeptName()+"  ";
+            dispatchScope += Constant.DIS_SCOPE_ZXLD;
+            dispatch.setDispatchScope(dispatchScope);
             dispatch.setPrintCount(5);
             dispatch.setBranchCount(sign.getBranchCount());
             //发文标题
@@ -410,14 +418,13 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         String counselor = ""; //顾问
         Dept generalDept = deptService.findByDeptName("分管副主任");
         if(generalDept != null){
-            generalCounsel = generalDept.getDeptUserName() == null ? "" : generalDept.getDeptUserName();
+            generalCounsel = generalDept.getDeptUserName() == null ? "XXX" : generalDept.getDeptUserName();
         }
 
         Dept dept = deptService.findByDeptName(sign.getMaindeptName());
         if(dept != null){
             counselor = dept.getDeptUserName() == null ? "" : dept.getDeptUserName();
         }
-
 
         //获取专家评审方案
         ExpertReview expertReview = expertReviewRepo.findByBusinessId(signId);

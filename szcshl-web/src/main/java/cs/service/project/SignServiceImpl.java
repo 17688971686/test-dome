@@ -2535,6 +2535,7 @@ public class SignServiceImpl implements SignService {
         int maxSeq = projMaxSeq.getSeq()+1;
         String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
         sign.setSignNum(yearName+ orgType + fileNum);
+        sign.setSignSeq(maxSeq);
         projMaxSeq.setSeq(maxSeq);
         projMaxSeqRepo.save(projMaxSeq);
     }

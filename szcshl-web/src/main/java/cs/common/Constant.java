@@ -47,7 +47,7 @@ public class Constant {
     /**
      * 发文范围默认值
      */
-    public static final String DIS_SCOPE_XSY = "艾传荣副巡视员";
+    //public static final String DIS_SCOPE_XSY = "艾传荣副巡视员";
 
     /**
      * 发文范围默认值
