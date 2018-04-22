@@ -11,8 +11,7 @@ import cs.domain.project.Sign_;
 import cs.domain.project.WorkProgram;
 import cs.domain.sys.OrgDept;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.project.DispatchDocService;
@@ -26,8 +25,6 @@ import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.User;
 import cs.model.sys.UserDto;
-import cs.repository.repositoryImpl.project.SignBranchRepo;
-import cs.repository.repositoryImpl.project.SignMergeRepo;
 import cs.service.project.SignPrincipalService;
 import cs.service.sys.OrgDeptService;
 import cs.service.sys.UserService;
@@ -57,6 +54,8 @@ public class SignFlowImpl implements IFlow {
     private OrgDeptRepo orgDeptRepo;
     @Autowired
     private ExpertReviewRepo expertReviewRepo;
+    @Autowired
+    private AssistUnitRepo assistUnitRepo;
     /**
      * 获取流程参数
      * @param businessKey
@@ -134,12 +133,6 @@ public class SignFlowImpl implements IFlow {
                 break;
             //发文申请
             case FlowConstant.FLOW_SIGN_FW:
-                //自动生成发文模板
-              /*  Sign sign = signRepo.findById(Sign_.signid.getName(), businessKey);
-                if(!Constant.EnumState.YES.getValue().equals(sign.getIsSignTemplate())){
-                    ResultMsg resultMsg = dispatchDocService.createDisPatchTemplate(businessKey);
-                    businessMap.put("resultMsg" , resultMsg);
-                }*/
                 userList = signPrincipalService.getAllSecondPriUser(businessKey);
                 if(Validate.isList(userList)){
                     List<UserDto> userDtoList = new ArrayList<>(userList.size());
@@ -183,9 +176,19 @@ public class SignFlowImpl implements IFlow {
                 //如果是合并发文次项目，则不生成发文编号
                 boolean isMerge =signMergeRepo.checkIsMerege(businessKey, Constant.MergeType.DISPATCH.getValue());
                 businessMap.put("needDISNum", !isMerge);
-                //如果有专家评审费，则显示财务环节，否则直接跳转到归档环节
-                if (expertReviewRepo.isHaveEPReviewCost(businessKey)){
+                //如果有评审费或者是协审流程(有协审单位才算)，则给财务部办理，没有，则直接到归档环节
+                boolean isGotoCW = expertReviewRepo.isHaveEPReviewCost(businessKey) ||
+                        (signRepo.checkAssistSign(businessKey) && assistUnitRepo.checkAssistUnitBySignId(businessKey));
+                if (isGotoCW){
                     businessMap.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), true);
+                }else{
+                    //发文环节也可以归档
+                    businessMap.put("isGotoGD", true);
+                    //如果有其它负责人，则还跳转
+                    userList = signPrincipalService.getAllSecondPriUser(businessKey);
+                    if(Validate.isList(userList)){
+                        businessMap.put("checkFileUser", userList.get(0));
+                    }
                 }
                 break;
             //项目归档

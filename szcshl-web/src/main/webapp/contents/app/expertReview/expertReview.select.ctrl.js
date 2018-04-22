@@ -52,12 +52,12 @@
                 if(vm.confirmEPListReplace.length>0){
                     vm.confirmEPListReplace.push(obj);
                 }
-                    //保存拟聘专家
-                    if("专家函评"==vm.reviewType && obj.isLetterRw!= "9"){//是专家函评时就勾选完
-                        obj.isLetterRw=9;
-                    }else if("专家评审会"==vm.reviewType && obj.isLetterRw!= "0"){
-                        obj.isLetterRw=0;
-                    }
+                //保存拟聘专家
+                if("专家函评"==vm.reviewType && obj.isLetterRw!= "9"){//是专家函评时就勾选完
+                    obj.isLetterRw=9;
+                }else if("专家评审会"==vm.reviewType && obj.isLetterRw!= "0"){
+                    obj.isLetterRw=0;
+                }
                 vm.selectIds.push(obj.expertDto.expertID);
             })
             vm.excludeIds = vm.selectIds.join(',');
@@ -178,34 +178,45 @@
         }
 
         //保存自选的专家
-        vm.saveSelfExpert = function () {
+        vm.saveSelfExpert = function (admin) {
+             var isAdmin = admin;
             var selectIds = common.getKendoCheckId('#selfExpertGrid');
             if (selectIds.length == 0) {
                 bsWin.alert("请先选择专家！");
-            } else if (selectIds.length > 1) {
-                bsWin.alert("自选专家最多只能选择一个！");
-            }else{
-                expertReviewSvc.saveSelfExpert(vm.businessId,vm.minBusinessId,vm.businessType,selectIds[0].value,vm.expertReview.id,vm.isCommit,function(data){
-                    if(data.flag || data.reCode == 'ok'){
-                        var ids = [];
-                        $.each(vm.confirmEPList,function(i, obj){
-                            if(obj.selectType == '2'){
-                                ids.push(obj.id);
+            } else{
+                if(!isAdmin && selectIds.length > 1){
+                    bsWin.alert("自选专家最多只能选择一个！");
+                }else{
+                    var selExpertIdArr = [];
+                    $.each(selectIds, function (i, obj) {
+                        selExpertIdArr.push(obj.value);
+                    });
+                    expertReviewSvc.saveSelfExpert(vm.businessId,vm.minBusinessId,vm.businessType,selExpertIdArr.join(","),vm.expertReview.id,vm.isCommit,function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            //如果是普通用户，还要删除之前选择的专家，因为他只能选一个
+                            if(!isAdmin){
+                                var ids = [];
+                                $.each(vm.confirmEPList,function(i, obj){
+                                    if(obj.selectType == '2' && obj.createBy != 'admin'){
+                                        ids.push(obj.id);
+                                    }
+                                })
+                                vm.reFleshAfterRemove(ids);
                             }
-                        })
-                        if(!vm.expertReview.id){
-                            vm.expertReview.id = data.idCode;
+
+                            if(!vm.expertReview.id){
+                                vm.expertReview.id = data.idCode;
+                            }
+                            //刷新
+                            vm.reFleshSelEPInfo(data.reObj);
+                            bsWin.success("操作成功！",function(){
+                                window.parent.$("#selfExpertDiv").data("kendoWindow").close();
+                            });
+                        }else{
+                            bsWin.error(data.reMsg);
                         }
-                        //刷新
-                        vm.reFleshSelEPInfo(data.reObj);
-                        vm.reFleshAfterRemove(ids);
-                        bsWin.success("操作成功！",function(){
-                            window.parent.$("#selfExpertDiv").data("kendoWindow").close();
-                        });
-                    }else{
-                        bsWin.error(data.reMsg);
-                    }
-                });
+                    });
+                }
             }
         }
 
@@ -508,7 +519,7 @@
                                 //刷新抽取次数
                                 vm.expertReview.state = '9';
                                 //弹框
-                                vm.showAutoExpertWin(1);
+                                vm.showAutoExpertWin();
                                 //显示抽取效果
                                 expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
                                 vm.init(vm.businessId,vm.minBusinessId);
@@ -527,8 +538,7 @@
         }
 
         //显示随机抽取框
-        vm.showAutoExpertWin = function (showBtnFlag) {
-            vm.showBtnFlag = showBtnFlag;
+        vm.showAutoExpertWin = function () {
             $("#aotuExpertDiv").kendoWindow({
                 width: "90%",
                 height: "700px",
@@ -561,29 +571,36 @@
                     condition.push(con);
                 }
             })
-            if(condition[0].selectIndex > 3){
+            if(condition[0].selectIndex >= 3){
                 bsWin.alert("该条件已经进行了3次抽取，不能再继续抽取！");
                 return ;
             }
-            expertReviewSvc.queryAutoExpert(condition,vm.minBusinessId,vm.expertReview.id,function(data){
-                if(data.flag || data.reCode == 'ok'){
-                    //刷新页面抽取的专家
-                    vm.reFleshSelEPInfo(data.reObj.autoEPList);
-                    //抽取次数加一
-                    vm.expertReview.state = '9';
-                    //抽取结果数组
-                    vm.autoSelectedEPList = [];
-                    vm.autoSelectedEPList = data.reObj.autoEPList;
-                    //刷新抽取次数
-                    vm.updateSelectedIndex(id);
-                    //弹框
-                    vm.showAutoExpertWin(1);
-                    //显示抽取效果
-                    expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
+            //先确认是否已经保存
+            expertReviewSvc.checkCondition(condition[0].id,function(data){
+                if(data && data.id){
+                    expertReviewSvc.queryAutoExpert(condition,vm.minBusinessId,vm.expertReview.id,function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            //刷新页面抽取的专家
+                            vm.reFleshSelEPInfo(data.reObj.autoEPList);
+                            //抽取次数加一
+                            vm.expertReview.state = '9';
+                            //抽取结果数组
+                            vm.autoSelectedEPList = [];
+                            vm.autoSelectedEPList = data.reObj.autoEPList;
+                            //刷新抽取次数
+                            vm.updateSelectedIndex(id);
+                            //弹框
+                            vm.showAutoExpertWin();
+                            //显示抽取效果
+                            expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
+                        }else{
+                            bsWin.error(data.reMsg);
+                        }
+                    });
                 }else{
-                    bsWin.error(data.reMsg);
+                    bsWin.alert("请先保存，再进行抽取！");
                 }
-            });
+            })
         }
 
         //确认已抽取的专家
@@ -728,6 +745,33 @@
                 });
             }else{
                 bsWin.alert("请选择要删除的抽取专家！");
+            }
+        }
+
+        //超级管理员选中之前抽取的专家
+        vm.adminSelectEP = function(){
+            var isCheck = $("#autoDraftExpertTable input[name='checkSelectExpert']:checked");
+            if (isCheck.length > 0) {
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确认对专家进行修改么？",
+                    onOk: function () {
+                        var ids = [];
+                        for (var i = 0; i < isCheck.length; i++) {
+                            ids.push(isCheck[i].value);
+                        }
+                        expertReviewSvc.affirmAutoExpert(vm.minBusinessId,vm.businessType,ids.join(","),'9',function(data){
+                            if(data.flag || data.reCode=='ok'){
+                                vm.reFleshConfirmState(ids,"9");
+                                bsWin.success(data.reMsg);
+                            }else{
+                                bsWin.error(data.reMsg);
+                            }
+                        })
+                    }
+                });
+            }else{
+                bsWin.alert("您还没选择任何专家！");
             }
         }
 

@@ -290,6 +290,10 @@
                             ng-hide="vm.dispatchDoc.fileNum  || (vm.dispatchDoc.dispatchWay=='2'&& vm.dispatchDoc.isMainProject=='0') ">
                         <span class="glyphicon glyphicon-edit"></span>生成发文字号
                     </button>
+                    <!-- 如果发文环节的下一环节还是项目存档，则在该环节可以填写 -->
+                    <button ng-if="vm.showFlag.showFilecodeBt" class="btn btn-xs btn-primary" ng-click="vm.addDoFile()" ng-disabled="vm.isCommit"><span
+                            class="glyphicon glyphicon-edit"></span>项目存档
+                    </button>
                     <button class="btn btn-xs btn-primary" ng-click="vm.addSuppLetter()" ng-disabled="vm.isCommit"><span
                             class="glyphicon glyphicon-edit"></span>拟补充资料函
                     </button>
@@ -302,7 +306,7 @@
                 <div ng-if="vm.showFlag.financialCode &&vm.model.workProgramDtoList[0].isMainProject!='0'">
                     <!-- 评审项目阶段 -->
                     <button class="btn btn-xs btn-primary" ng-click="vm.addFinancialApply('signCostWindow')"
-                            ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-edit"></span>财务办理{{}}
+                            ng-disabled="vm.isCommit"><span class="glyphicon glyphicon-edit"></span>财务办理
                     </button>
                 </div>
                 <!-- 归档 -->

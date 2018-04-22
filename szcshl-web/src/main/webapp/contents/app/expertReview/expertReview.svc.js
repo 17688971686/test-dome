@@ -12,11 +12,10 @@
             saveOutExpert: saveOutExpert,               //保存选择的境外专家
             countMatchExperts: countMatchExperts,       //计算符合条件的专家
             getReviewList: getReviewList,               //查询专家评分
-
             //以下为新方法
             initReview: initReview,                      //初始化评审方案信息
             delSelectedExpert: delSelectedExpert,        //删除已选专家信息
-            deleteExpertNewInfo:deleteExpertNewInfo,    //删除已选新专家信息
+            deleteExpertNewInfo:deleteExpertNewInfo,     //删除已选新专家信息
             queryAutoExpert: queryAutoExpert,            //查询符合抽取条件的专家
             validateAutoExpert: validateAutoExpert,      //显示抽取专家效果(抽取方法已在后台封装)
             affirmAutoExpert: affirmAutoExpert,	         //确认已经抽取的专家
@@ -31,8 +30,27 @@
             saveNewExpert:saveNewExpert,                //保存新的聘请专家信息,
             initNewExpertInfo:initNewExpertInfo,        // 初始化调整后的专家信息
             saveSplit : saveSplit ,                     // 保存评审费发放打印方案信息
+            checkCondition : checkCondition,            // 确认抽取条件是否存在（主要用户系统管理员抽取专家设定）
         };
         return service;
+
+        function checkCondition(id,callBack){
+            var httpOptions = {
+                method: 'get',
+                url: rootPath + "/expertSelCondition/html/findById",
+                params : {id : id}
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         //S_saveSplit
         function saveSplit(vm){

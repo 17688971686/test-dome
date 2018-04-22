@@ -2,6 +2,7 @@ package cs.repository.repositoryImpl.project;
 
 import java.util.List;
 
+import cs.common.HqlBuilder;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
@@ -20,35 +21,43 @@ import cs.repository.AbstractRepository;
 @Repository
 public class AssistUnitRepoImpl extends AbstractRepository<AssistUnit, String> implements AssistUnitRepo {
 
-	@Override
-	public int getUnitSortMax() {
-		Query query=this.getSession().createQuery("select max(a.unitSort) from AssistUnit a");
-		int max=0;
-		if(query.uniqueResult()!=null){
+    @Override
+    public int getUnitSortMax() {
+        Query query=this.getSession().createQuery("select max(a.unitSort) from "+AssistUnit.class.getSimpleName()+" a");
+        int max = 0;
+        if (query.uniqueResult() != null) {
+            max = (int) query.uniqueResult();
+        }
+        return max;
+    }
 
-			max=(int) query.uniqueResult();
-		}
-		return max;
+    @Override
+    public boolean isUnitExist(String unitName) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.add(Restrictions.eq(AssistUnit_.unitName.getName(), unitName));
+        List<AssistUnit> assistUnitList = criteria.list();
+        return !assistUnitList.isEmpty();
+    }
 
-	}
+    @Override
+    public List<AssistUnit> getAssistUnitByPlanId(String planId) {
+        Criteria criteria = getExecutableCriteria();
+        criteria.createAlias("assistPlanList", "assistPlanList").add(Restrictions.eq("assistPlanList.id", planId));
+        return criteria.list();
+    }
 
-	@Override
-	public boolean isUnitExist(String unitName) {
-		
-		Criteria criteria=this.getSession().createCriteria(AssistUnit.class);
-		
-		criteria.add(Restrictions.eq(AssistUnit_.unitName.getName(), unitName));
-		
-		List<AssistUnit> assistUnitList=criteria.list();
-		return !assistUnitList.isEmpty();
-	}
-
-	@Override
-	public List<AssistUnit> getAssistUnitByPlanId(String planId) {
-		
-		Criteria criteria=this.getSession().createCriteria(AssistUnit.class);
-		criteria.createAlias("assistPlanList", "assistPlanList").add(Restrictions.eq("assistPlanList.id", planId));
-		return criteria.list();
-	}
+    /**
+     * 校验有没有协审单位
+     *
+     * @param businessKey
+     * @return
+     */
+    @Override
+    public boolean checkAssistUnitBySignId(String businessKey) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("SELECT COUNT (csp.id) FROM CS_AS_PLANSIGN csp WHERE CSP.SIGNID =:signId AND ASSISTUNITID IS NOT NULL AND PLANID IS NOT NULL");
+        sqlBuilder.setParam("signId",businessKey);
+        return returnIntBySql(sqlBuilder) > 0 ? false : true;
+    }
 
 }

@@ -144,6 +144,8 @@ public class SignServiceImpl implements SignService {
     private UnitScoreService unitScoreService;
     @Autowired
     private ProjMaxSeqRepo projMaxSeqRepo;
+    @Autowired
+    private AssistUnitRepo assistUnitRepo;
     /**
      * 项目签收保存操作（这里的方法是正式签收）
      *
@@ -1656,10 +1658,10 @@ public class SignServiceImpl implements SignService {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), prompt);
                     }
                 }
-
-                sign = signRepo.findById(Sign_.signid.getName(), signid);
-                //如果有评审费或者是协审流程，则给财务部办理，没有，则直接到归档环节
-                if (expertReviewRepo.isHaveEPReviewCost(signid) || EnumState.YES.getValue().equals(sign.getIsassistflow())) {
+                //如果有评审费或者是协审流程(有协审单位才算)，则给财务部办理，没有，则直接到归档环节
+                boolean isGotoCW = expertReviewRepo.isHaveEPReviewCost(signid) ||
+                        (signRepo.checkAssistSign(signid) && assistUnitRepo.checkAssistUnitBySignId(signid));
+                if (isGotoCW) {
                     userList = userRepo.findUserByRoleName(EnumFlowNodeGroupName.FINANCIAL.getValue());
                     if (!Validate.isList(userList)) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + EnumFlowNodeGroupName.FINANCIAL.getValue() + "】角色用户！");
@@ -1667,48 +1669,59 @@ public class SignServiceImpl implements SignService {
                     assigneeValue = buildUser(userList);
                     variables.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), true);
                     variables.put(FlowConstant.SignFlowParams.USER_CW.getValue(), assigneeValue);
-
-                    //没有评审费，则直接到归档环节(还是当前人处理)
+                //没有评审费，则直接到归档环节(还是当前人处理)
                 } else {
                     variables.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), false);
                     assigneeValue = SessionUtil.getUserId();
                     variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
-                    //更改已发送存档字段值
-                    sign.setIsSendFileRecord(EnumState.YES.getValue());
-                    signRepo.save(sign);
+
+                    //如果没有完成专家评分，则不可以提交到下一步
+                    if (!expertReviewRepo.isFinishEPGrade(signid)) {
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
+                    }
+                    //如果没有完成单位评分，则不可以提交下一步
+                    UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
+                    if (unitScore != null && unitScore.getScore() == null) {
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对单位进行评分,不能提交到下一步操作！");
+                    }
+
+                    //如果没有完成归档信息，则不可以提交下一步
+                    if (fileRecordRepo.isFileRecord(signid) ) {
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成归档操作，不能进行下一步操作！");
+                    }
+                    //直接跳过归档环节
+                    isNextUser = true;
+                    nextNodeKey = FlowConstant.FLOW_SIGN_GD;
+                    flowDto.getBusinessMap().put("isFinishGD",true);
                 }
                 break;
 
             //财务办理
             case FlowConstant.FLOW_SIGN_CWBL:
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
-                /*if (EnumState.YES.getValue().equals(sign.getIsassistflow())) {
-                    //协审费录入状态 9 表示已办理
-                    sign.setAssistStatus(EnumState.YES.getValue());
-                } else {
-                    //评审费录入状态 9 表示已办理
-                    sign.setFinanciaStatus(EnumState.YES.getValue());
-                }*/
                 sign.setIsSendFileRecord(EnumState.YES.getValue());
+                sign.setProcessState(Constant.SignProcessState.SEND_FILE.getValue());
                 signRepo.save(sign);
                 variables = buildMainPriUser(variables, signid, assigneeValue);
                 break;
 
             //第一负责人归档
             case FlowConstant.FLOW_SIGN_GD:
-                //如果没有完成专家评分，则不可以提交到下一步
-                if (!expertReviewRepo.isFinishEPGrade(signid)) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
-                }
-                //如果没有完成单位评分，则不可以提交下一步
-                UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
-                if (unitScore != null && unitScore.getScore() == null) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对单位进行评分,不能提交到下一步操作！");
-                }
+                if(null == flowDto.getBusinessMap().get("isFinishGD")){
+                    //如果没有完成专家评分，则不可以提交到下一步
+                    if (!expertReviewRepo.isFinishEPGrade(signid)) {
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
+                    }
+                    //如果没有完成单位评分，则不可以提交下一步
+                    UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
+                    if (unitScore != null && unitScore.getScore() == null) {
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对单位进行评分,不能提交到下一步操作！");
+                    }
 
-                //如果没有完成归档信息，则不可以提交下一步
-                if (fileRecordRepo.isFileRecord(signid) ) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成归档操作，不能进行下一步操作！");
+                    //如果没有完成归档信息，则不可以提交下一步
+                    if (fileRecordRepo.isFileRecord(signid) ) {
+                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成归档操作，不能进行下一步操作！");
+                    }
                 }
 
                 //如果有第二负责人审核
@@ -1717,11 +1730,12 @@ public class SignServiceImpl implements SignService {
                     variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), true);
                     assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                     variables.put(FlowConstant.SignFlowParams.USER_A.getValue(), assigneeValue);
-                    //没有第二负责人审核
+                //没有第二负责人审核
                 } else {
                     variables.put(FlowConstant.SignFlowParams.HAVE_XMFZR.getValue(), false);
                     //如果是回退，则保留之前的审核人
                     sign = signRepo.findById(Sign_.signid.getName(), signid);
+                    sign.setIsSendFileRecord(EnumState.YES.getValue());
                     if (Validate.isString(sign.getSecondPriUser())) {
                         dealUser = userRepo.getCacheUserById(sign.getSecondPriUser());
                         //不是回退，则取第一个
@@ -1751,6 +1765,7 @@ public class SignServiceImpl implements SignService {
                 variables.put(FlowConstant.SignFlowParams.USER_QRGD.getValue(), assigneeValue);
                 //更新项目第二负责人
                 sign = signRepo.findById(Sign_.signid.getName(), signid);
+                sign.setIsSendFileRecord(EnumState.YES.getValue());
                 sign.setSecondPriUser(SessionUtil.getUserId());
                 signRepo.save(sign);
 

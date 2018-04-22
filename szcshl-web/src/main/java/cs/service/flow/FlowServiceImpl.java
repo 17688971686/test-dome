@@ -345,7 +345,7 @@ public class FlowServiceImpl implements FlowService {
                         nextNodeList.add(nextNode);
                     } else {
                         String taskType = (String) ac.getProperty("type");
-                        System.out.print(taskType);
+                        //System.out.print(taskType);
                     }
                 }
             }

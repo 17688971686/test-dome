@@ -188,7 +188,10 @@
             <table class="table table-bordered" style="text-align: center;">
                 <tbody ng-repeat="dispatchDoc in vm.associateDispatchs.slice().reverse()">
                 <tr>
-                    <td width="20%">{{dispatchDoc.signDto.reviewstage}}</td>
+                    <td width="20%">
+                        <div ng-if="dispatchDoc.signDto.ischangeEstimate && dispatchDoc.signDto.ischangeEstimate == '9'">调整概算阶段</div>
+                        <div ng-if="!dispatchDoc.signDto.ischangeEstimate || dispatchDoc.signDto.ischangeEstimate == '0'">{{dispatchDoc.signDto.reviewstage}}</div>
+                    </td>
                     <td width="14%">申报</td>
                     <td width="14%">审定</td>
                     <td width="14%">核减（增）</td>

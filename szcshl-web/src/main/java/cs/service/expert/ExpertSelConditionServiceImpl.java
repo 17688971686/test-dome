@@ -80,8 +80,10 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
     public ExpertSelConditionDto findById(String id) {
         ExpertSelConditionDto modelDto = new ExpertSelConditionDto();
         if (Validate.isString(id)) {
-            ExpertSelCondition domain = expertSelConditionRepo.findById(id);
-            BeanCopierUtils.copyProperties(domain, modelDto);
+            ExpertSelCondition domain = expertSelConditionRepo.findById(ExpertSelCondition_.id.getName(),id);
+            if(Validate.isObject(domain) && Validate.isString(domain.getId())){
+                BeanCopierUtils.copyProperties(domain, modelDto);
+            }
         }
         return modelDto;
     }

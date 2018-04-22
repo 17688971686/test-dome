@@ -26,6 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static cs.common.Constant.EXPERT_REVIEW_COST;
+import static cs.common.Constant.SUPER_USER;
+
 /**
  * Description: 专家评审 业务操作实现类 author: ldm Date: 2017-5-17 14:02:25
  */
@@ -219,20 +222,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             expertReview.setCreatedDate(now);
             expertReview.setModifiedDate(now);
             expertReview.setBusinessType(businessType);
-
-            /*审批通过工作方案，再更新评审会日期
-            if(expertReview.getReviewDate() == null){
-                if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
-                    WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),minBusinessId);
-                    if(Constant.MergeType.REVIEW_LEETER.getValue().equals(wp.getReviewType())){
-                        //函评日期
-                        expertReview.setReviewDate(wp.getLetterDate());
-                    }else{
-                        //获取评审会日期
-                        expertReview.setReviewDate(roomBookingRepo.getMeetingDateByBusinessId(minBusinessId));
-                    }
-                }
-            }*/
             //评审费发放标题
             expertReviewRepo.initReviewTitle(expertReview, businessId, businessType);
             expertReviewRepo.save(expertReview);
@@ -243,21 +232,36 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         List<ExpertSelectedDto> resultList = new ArrayList<>();
         //保存抽取专家
         List<String> expertIdArr = StringUtil.getSplit(expertIds, ",");
-        for (int i = 0, l = expertIdArr.size(); i < l; i++) {
-            //如果是专家自选，则要删除之前选择的专家信息
-            if (Constant.EnumExpertSelectType.SELF.getValue().equals(selectType) && Validate.isList(expertReview.getExpertSelectedList())) {
-                for (ExpertSelected epSelected : expertReview.getExpertSelectedList()) {
-                    if (Constant.EnumExpertSelectType.SELF.getValue().equals(epSelected.getSelectType())) {
-                        expertSelectedRepo.deleteById(ExpertSelected_.id.getName(), epSelected.getId());
+        int totalLength = expertIdArr.size();
+        boolean isSuper = SUPER_USER.equals(SessionUtil.getLoginName()),isSelf = Constant.EnumExpertSelectType.SELF.getValue().equals(selectType);
+        //如果是专家自选，系统管理员可以添加多个自选专家，其他人员则要删除之前选择的专家信息
+        if(!isSuper && isSelf){
+            if(totalLength > 1){
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), expertReview.getId(), "操作失败，只能选一个自选专家！");
+            }
+        }
+        for (int i = 0; i < totalLength; i++) {
+            if(!isSuper && isSelf){
+                if (Validate.isList(expertReview.getExpertSelectedList())) {
+                    //不是系统管理员，则要删除之前添加的自选专家
+                    for (ExpertSelected epSelected : expertReview.getExpertSelectedList()) {
+                        boolean isSelfType = Constant.EnumExpertSelectType.SELF.getValue().equals(epSelected.getSelectType());
+                        boolean isSuperCreate = SUPER_USER.equals(epSelected.getCreateBy());
+                        if (isSelfType && !isSuperCreate) {
+                            expertSelectedRepo.deleteById(ExpertSelected_.id.getName(), epSelected.getId());
+                        }
                     }
                 }
             }
             ExpertSelected expertSelected = new ExpertSelected();
-            expertSelected.setReviewCost(new BigDecimal(1000)); //每个专家默认评审费1000元
+            //每个专家默认评审费1000元
+            expertSelected.setReviewCost(new BigDecimal(EXPERT_REVIEW_COST));
             expertSelected.setBusinessId(minBusinessId);
             expertSelected.setIsJoin(Constant.EnumState.YES.getValue());
             expertSelected.setIsConfrim(Constant.EnumState.YES.getValue());
             expertSelected.setSelectType(selectType);
+            //添加创建人
+            expertSelected.setCreateBy(SessionUtil.getLoginName());
             //如果是自选或者境外专家，默认已经确认
             if (Constant.EnumExpertSelectType.SELF.getValue().equals(expertSelected.getSelectType())
                     || Constant.EnumExpertSelectType.OUTSIDE.getValue().equals(expertSelected.getSelectType())) {
@@ -421,11 +425,11 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         if (Validate.isString(experReviewId)) {
             ExpertReview expertReview = expertReviewRepo.findById(experReviewId);
             //管理员可以维护
-            if (expertReview.getPayDate() != null && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
+            if (expertReview.getPayDate() != null && !SUPER_USER.equals(SessionUtil.getLoginName())) {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "已经进行评审费发放，不能再次发放！");
             }
             //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存(或者超级管理员) 超级管理员发放，不做时间限制
-            if (isCountTaxes && !Constant.SUPER_USER.equals(SessionUtil.getLoginName()) && expertReview.getReviewDate() != null) {
+            if (isCountTaxes && !SUPER_USER.equals(SessionUtil.getLoginName()) && expertReview.getReviewDate() != null) {
                 long diffDays = DateUtils.daysBetween(new Date(), expertReview.getReviewDate());
                 if (diffDays != 0) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "只能在评审当天计算专家应纳税额！");

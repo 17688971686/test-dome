@@ -40,18 +40,21 @@
             </button>
             |
             <!--整体抽取方案只能抽取一次-->
-            <button class="btn btn-xs btn-primary" ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.expertReview.state == 9 || vm.expertReview.state == '9')"
-                    ng-click="vm.startAutoExpertWin()" ng-disabled="vm.isCommit || (vm.expertReview.selCount>=1) ">
+            <button class="btn btn-xs btn-primary" ng-click="vm.startAutoExpertWin()"
+                    ng-disabled="vm.isCommit || (('${CURRENT_USER.loginName}' !=  'admin') && (vm.expertReview.state == 9 || vm.expertReview.state == '9'))">
                 <span class="glyphicon glyphicon-asterisk"></span>开始随机抽取
             </button>
-            <button class="btn btn-xs btn-primary" ng-click="vm.showAutoExpertWin(0)">
+            <button class="btn btn-xs btn-primary" ng-click="vm.showAutoExpertWin()">
                 <span class="glyphicon glyphicon-check"></span>查看随机抽取结果
             </button>
             <button ng-show="vm.isSuperUser || (vm.confirmEPList.length > 0)" class="btn btn-xs btn-primary" ng-click="vm.showAutoMatchResultWin()">
                 <span class="glyphicon glyphicon-check"></span>查看所有抽取结果
             </button>
-            <div class="label-default" style="font-size: 12px; padding: 5px 10px;margin: 3px 0px;">
+            <div ng-if="('${CURRENT_USER.loginName}' !=  'admin')" class="label-default" style="font-size: 12px; padding: 5px 10px;margin: 3px 0px;">
                * 整体方案只能进行一次抽取！为了保证结果的正确性，请在每个条件抽取前，先保存已抽取的专家信息！ 已经抽取专家的抽取信息不可删除！
+            </div>
+            <div ng-if="('${CURRENT_USER.loginName}' ==  'admin')" class="label-default" style="font-size: 12px; padding: 5px 10px;margin: 3px 0px;" >
+                * 清空所有抽取条件，项目负责人可以重新进行专家抽取！*系统管理员可以选择多个自选专家
             </div>
         </div>
         <table class="table table-bordered" id="conditionTable" >
@@ -149,7 +152,7 @@
                             ng-disabled="vm.isCommit">查看
                     </button>
                     <!--整体抽取过的条件,并且抽取次数未达到3次才能再次抽取-->
-                    <button class="btn btn-xs btn-primary" ng-show="vm.isSuperUser ||(x.selectIndex > 0 && x.selectIndex < 3)"  ng-click="vm.repeatAutoExpert(x.id)" ng-disabled="vm.isCommit">
+                    <button class="btn btn-xs btn-primary" ng-show="vm.isSuperUser ||(x.selectIndex > 0 && x.selectIndex < 4)"  ng-click="vm.repeatAutoExpert(x.id)" ng-disabled="vm.isCommit">
                         再次抽取
                     </button>
                 </td>
@@ -214,7 +217,7 @@
                     </td>
                 </tr>
             </table>
-            <div ng-if="vm.showBtnFlag == 1 " class="toolbar text-right" style="margin:0px;padding:0px;">
+            <div class="toolbar text-right" style="margin:0px;padding:0px;">
                 <button class="btn btn-sm btn-primary" ng-disabled="vm.isCommit" ng-click="vm.affirmAutoExpert()">
                     <span class="glyphicon glyphicon-ok"></span>确认抽取结果
                 </button>
@@ -254,8 +257,11 @@
                         <h4><strong>专家抽取结果信息</strong></h4>
                         </p>
                         <p ng-if="vm.isSuperUser" style="text-align:left;width: 100%;padding: 0px; margin: 0px;">
-                            <button style="float: left;" class="btn btn-xs btn-danger" ng-click="vm.deleteAutoSelectEP()" ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.isCommit || vm.expertReview.state == 9 || vm.expertReview.state == '9')">
-                                <span class="glyphicon glyphicon-remove"></span>删除抽取专家
+                            <button style="float: left;" class="btn btn-xs btn-success" ng-click="vm.adminSelectEP()" ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.isCommit || vm.expertReview.state == 9 || vm.expertReview.state == '9')">
+                                <span class="glyphicon glyphicon-ok"></span>选择专家
+                            </button>
+                            <button style="float: left;margin-left:10px;" class="btn btn-xs btn-danger" ng-click="vm.deleteAutoSelectEP()" ng-disabled="('${CURRENT_USER.loginName}' !=  'admin') && (vm.isCommit || vm.expertReview.state == 9 || vm.expertReview.state == '9')">
+                                <span class="glyphicon glyphicon-remove"></span>删除专家
                             </button>
                         </p>
                     </td>
@@ -264,16 +270,16 @@
                     <td style="width: 40px;text-align: center;">
                         <input type='checkbox' ng-model="vm.removeSelectEP" name="expertSelectChecked" />
                     </td>
-                    <td width="8%" align="center">姓名</td>
+                    <td width="7%" align="center">姓名</td>
                     <td width="17%" align="center">工作单位</td>
-                    <td width="15%" align="center">职务/职称</td>
-                    <td width="16%" align="center">专业大类</td>
-                    <td width="16%" align="center">专业小类</td>
+                    <td width="16%" align="center">职务/职称</td>
+                    <td width="13%" align="center">专业大类</td>
+                    <td width="12%" align="center">专业小类</td>
                     <td width="10%" align="center">联系电话</td>
-                    <td width="10%" align="center">专家类型</td>
-                    <td width="8%" align="center">是否确认</td>
-                    <td width="8%" align="center">抽取批次</td>
-                    <td width="8%" align="center">备注</td>
+                    <td width="8%" align="center">专家类型</td>
+                    <td width="5%" align="center">是否确认</td>
+                    <td width="4%" align="center">批次</td>
+                    <td width="5%" align="center">备注</td>
                 </tr>
                 <tr ng-repeat="x in  vm.confirmEPList|filter:{selectType:'1'} track by $index">
                     <td class="text-center" >
@@ -374,9 +380,15 @@
 
         <div id="selfExpertDiv" class="well well-sm" style="display:none;">
             <div class="toolbar">
-                <button class="btn btn-sm btn-success" ng-disabled="vm.isCommit"  ng-click="vm.saveSelfExpert()">
+                <!-- 普通用户添加自选专家 -->
+                <button class="btn btn-sm btn-success" ng-if="('${CURRENT_USER.loginName}' !=  'admin')" ng-disabled="vm.isCommit"  ng-click="vm.saveSelfExpert()">
                     <span class="glyphicon glyphicon-ok">保存</span>
                 </button>
+                <!-- 系统管理员添加自选专家 -->
+                <button class="btn btn-sm btn-success" ng-if="('${CURRENT_USER.loginName}' ==  'admin')" ng-disabled="vm.isCommit"  ng-click="vm.saveSelfExpert('admin')">
+                    <span class="glyphicon glyphicon-ok">保存</span>
+                </button>
+
                 <button class="btn btn-sm btn-primary" ng-disabled="vm.isCommit"  ng-click="vm.querySelfExpert()">
                     <span  class="glyphicon glyphicon-search">查询</span>
                 </button>

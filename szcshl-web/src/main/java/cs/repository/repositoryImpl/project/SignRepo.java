@@ -93,4 +93,11 @@ public interface SignRepo extends IRepository<Sign, String> {
      * @param branchId  排除的分支
      */
     void initAOrgAndUser(Sign sign, String signId, String branchId);
+
+    /**
+     * 验证是否是调概项目
+     * @param businessKey
+     * @return
+     */
+    boolean checkAssistSign(String businessKey);
 }

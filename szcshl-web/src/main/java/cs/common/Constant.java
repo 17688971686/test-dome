@@ -15,6 +15,8 @@ public class Constant {
     public static final String SUPER_ROLE = "超级管理员";
     public static final String EMPTY_STRING = " ";
 
+    //专家默认费用
+    public static final int EXPERT_REVIEW_COST = 1000;
     /**
      * 默认需要上传的文件
      */

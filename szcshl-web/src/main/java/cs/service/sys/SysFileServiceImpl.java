@@ -314,6 +314,11 @@ public class SysFileServiceImpl implements SysFileService {
             Ftp f = ftpRepo.findById(cs.domain.sys.Ftp_.ipAddr.getName(), findFtpId());
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getUploadConfig(f);
+            String relativeFileUrl = File.separator +mainType + File.separator + businessId + File.separator + busiType;
+            //上传到ftp,如果有根目录，则加入根目录
+            if(Validate.isString(k.getFtpRoot())){
+                relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
+            }
             //读取附件
             for (int i = 0, l = totalFileCount; i < l; i++) {
                 try{
@@ -331,7 +336,6 @@ public class SysFileServiceImpl implements SysFileService {
                     //得到输入流
 
                     boolean fileExist = false;
-                    String relativeFileUrl = File.separator +mainType + File.separator + businessId + File.separator + busiType;
                     String uploadFileName = "";
                     //如果附件已存在，则覆盖，否则新增
                     SysFile sysFile = sysFileRepo.isExistFile(relativeFileUrl, showName);
@@ -353,14 +357,7 @@ public class SysFileServiceImpl implements SysFileService {
                         sysFile.setFileType(showName.substring(showName.lastIndexOf("."), showName.length()));
                         uploadFileName = Tools.generateRandomFilename().concat(sysFile.getFileType());
                     }
-                    //上传到ftp,如果有根目录，则加入根目录
-                    if(Validate.isString(k.getFtpRoot())){
-                        if (relativeFileUrl.startsWith(File.separator) || relativeFileUrl.startsWith("/")) {
-                            relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
-                        } else {
-                            relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl + File.separator;
-                        }
-                    }
+
                     boolean uploadResult = ftpUtils.putFile(k,relativeFileUrl, uploadFileName, conn.getInputStream());
                     if (uploadResult) {
                         //保存数据库记录

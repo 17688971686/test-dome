@@ -17,5 +17,12 @@ public interface AssistUnitRepo extends IRepository<AssistUnit, String> {
 	int getUnitSortMax();
 	
 	boolean isUnitExist(String unitName);
-	public List<AssistUnit> getAssistUnitByPlanId(String planId);
+	List<AssistUnit> getAssistUnitByPlanId(String planId);
+
+	/**
+	 * 校验有没有协审单位
+	 * @param businessKey
+	 * @return
+	 */
+    boolean checkAssistUnitBySignId(String businessKey);
 }

@@ -146,7 +146,10 @@
                 <table class="table table-bordered" style="text-align: center;">
                     <tbody ng-repeat="s in vm.model.associateSignDtoList.slice().reverse()">
                     <tr>
-                        <td width="20%">{{s.reviewstage}}</td>
+                        <td width="20%">
+                            <div ng-if="s.ischangeEstimate && s.ischangeEstimate == '9'">调整概算阶段</div>
+                            <div ng-if="!s.ischangeEstimate || s.ischangeEstimate == '0'">{{s.reviewstage}}</div>
+                        </td>
                         <td width="14%">申报</td>
                         <td width="14%">审定</td>
                         <td width="14%">核减（增）</td>
@@ -207,7 +210,10 @@
 
                     <tbody>
                     <tr>
-                        <td width="20%">{{vm.model.reviewstage}}</td>
+                        <td width="20%">
+                            <div ng-if="vm.model.ischangeEstimate && vm.model.ischangeEstimate == '9'">调整概算阶段</div>
+                            <div ng-if="!vm.model.ischangeEstimate || vm.model.ischangeEstimate == '0'">{{vm.model.reviewstage}}</div>
+                        </td>
                         <td width="14%">申报</td>
                         <td width="14%">审定</td>
                         <td width="14%">核减（增）</td>

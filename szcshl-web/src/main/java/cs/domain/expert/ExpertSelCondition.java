@@ -70,6 +70,13 @@ public class ExpertSelCondition {
      */
     @Column(columnDefinition = "VARCHAR(64)")
     private String businessId;
+
+    /**
+     * 创建人
+     */
+    @Column(columnDefinition="VARCHAR(64)")
+    private String createBy;
+
     /**
      * 专家评审方案
      */
@@ -171,5 +178,13 @@ public class ExpertSelCondition {
 
     public void setCompositeScoreEnd(Integer compositeScoreEnd) {
         this.compositeScoreEnd = compositeScoreEnd;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 }

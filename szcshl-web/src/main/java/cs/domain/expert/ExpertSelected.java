@@ -125,6 +125,12 @@ public class ExpertSelected {
     @Column(columnDefinition="INTEGER")
     private Integer expertSeq;
 
+    /**
+     * 创建人
+     */
+    @Column(columnDefinition="VARCHAR(64)")
+    private String createBy;
+
     public String getIsSplit() {
         return isSplit;
     }
@@ -307,5 +313,13 @@ public class ExpertSelected {
 
     public void setExpertSeq(Integer expertSeq) {
         this.expertSeq = expertSeq;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 }

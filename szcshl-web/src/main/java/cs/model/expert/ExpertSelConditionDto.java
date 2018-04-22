@@ -62,6 +62,18 @@ public class ExpertSelConditionDto {
      */
     private ExpertReviewDto expertReviewDto;
 
+    /**
+     * 创建人
+     */
+    private String createBy;
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
     public ExpertSelConditionDto() {
     }
 

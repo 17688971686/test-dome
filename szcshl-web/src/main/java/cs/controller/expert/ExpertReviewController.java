@@ -94,10 +94,9 @@ public class ExpertReviewController {
         int selectCount = expertSelectedService.getSelectEPCount(minBusinessId);
         List<String> ids = StringUtil.getSplit(expertSelId, ",");
         if (selectCount + (Validate.isList(ids) ? ids.size() : 0) > totalCount) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，确认的专家人数超过了抽取设定人数！");
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，选择专家人数已经超过了抽取设定人数！");
         }
         expertReviewService.updateExpertState(minBusinessId, businessType, expertSelId, state, true);
-
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 

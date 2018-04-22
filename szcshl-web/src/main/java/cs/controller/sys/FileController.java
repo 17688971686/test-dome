@@ -228,6 +228,14 @@ public class FileController implements ServletConfigAware, ServletContextAware {
             Ftp f = ftpRepo.findById(Ftp_.ipAddr.getName(), sysFileService.findFtpId());
             FtpUtils ftpUtils = new FtpUtils();
             FtpClientConfig k = ConfigProvider.getUploadConfig(f);
+            //上传到ftp,如果有根目录，则加入根目录
+            if(Validate.isString(k.getFtpRoot())){
+                if (relativeFileUrl.startsWith(File.separator)) {
+                    relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
+                } else {
+                    relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl + File.separator;
+                }
+            }
 
             for (MultipartFile multipartFile : multipartFileList) {
                 String fileName = multipartFile.getOriginalFilename();
@@ -236,10 +244,11 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     continue ;
                 }
                 String fileType = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-                SysFile sysFile = sysFileRepo.isExistFile(relativeFileUrl, fileName);
                 //统一转成小写
                 fileType = fileType.toLowerCase();
                 String uploadFileName = "";
+                SysFile sysFile = sysFileRepo.isExistFile(relativeFileUrl, fileName);
+                //如果附件已存在
                 if (null != sysFile) {
                     String fileUrl = sysFile.getFileUrl();
                     String removeRelativeUrl = fileUrl.substring(0, fileUrl.lastIndexOf(File.separator));
@@ -248,14 +257,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     }
                 } else {
                     uploadFileName = Tools.generateRandomFilename().concat(fileType);
-                }
-                //上传到ftp,如果有根目录，则加入根目录
-                if(Validate.isString(k.getFtpRoot())){
-                    if (relativeFileUrl.startsWith(File.separator) || relativeFileUrl.startsWith("/")) {
-                        relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
-                    } else {
-                        relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl + File.separator;
-                    }
                 }
                 boolean uploadResult = ftpUtils.putFile(k, relativeFileUrl, uploadFileName, multipartFile.getInputStream());
                 if (uploadResult) {
@@ -269,7 +270,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                         resultMsg = sysFileService.saveToFtp(multipartFile.getSize(), fileName, businessId, fileType,
                                 relativeFileUrl + File.separator + uploadFileName, mainId, mainType, sysfileType, sysBusiType, f);
                     }
-
                 } else {
                     errorMsg.append("附件【" + fileName + "】上传失败，无法上传到文件服务器！");
                 }

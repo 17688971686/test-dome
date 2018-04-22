@@ -17,16 +17,18 @@ public interface SignRestService {
     /**
      * 接收委里传输过来的数据
      * @param signDto
+     * @param isGetFiles 是否接受附件
      * @return
      */
-    ResultMsg pushProject(SignDto signDto);
+    ResultMsg pushProject(SignDto signDto,boolean isGetFiles);
 
     /**
      * 接收委里传输过来的预签收数据
      * @param signDto
+     * @param isGetFiles 是否接受附件
      * @return
      */
-    ResultMsg pushPreProject(SignDto signDto);
+    ResultMsg pushPreProject(SignDto signDto,boolean isGetFiles);
 
 
     /**

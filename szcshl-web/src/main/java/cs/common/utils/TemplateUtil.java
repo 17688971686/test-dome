@@ -151,7 +151,7 @@ public class TemplateUtil {
             FtpClientConfig k = ConfigProvider.getUploadConfig(f);
             //上传到ftp,如果有根目录，则加入根目录
             if(Validate.isString(k.getFtpRoot())){
-                if (relativeFileUrl.startsWith(File.separator) || relativeFileUrl.startsWith("/")) {
+                if (relativeFileUrl.startsWith(File.separator)) {
                     relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl;
                 } else {
                     relativeFileUrl = File.separator + k.getFtpRoot() + relativeFileUrl + File.separator;

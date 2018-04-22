@@ -24,6 +24,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class SignRepoImpl extends AbstractRepository<Sign, String> implements SignRepo {
@@ -180,11 +181,9 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         //已经生成发文编号
         criteria.add(Restrictions.ge(Sign_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));
 
-       /* //以下是测试用
-        criteria.add(Restrictions.eq(Sign_.signid.getName(), "4a2271a6-5908-4d05-b609-c48ed49d6e3f"));
-        */
-        List<Sign> resultList = criteria.list();
-
+        List<Sign> signList = criteria.list();
+        //过滤掉手工签收的项目，即收文编号为0000结尾的项目
+        List<Sign> resultList = signList.stream().filter(s->(!s.getFilecode().endsWith("0000"))).collect(Collectors.toList());
         return resultList;
     }
 
@@ -260,13 +259,9 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
      */
     @Override
     public ResultMsg saveReview(SignDto signDto) {
-
         Sign sign = this.findById(Sign_.signid.getName(), signDto.getSignid());
-
         BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-
         this.save(sign);
-
 //        HqlBuilder hqlBuilder = HqlBuilder.create();
 //        hqlBuilder.append("  update cs_sign set  " + Sign_.reviewdays.getName() + "=:reviewDays , ");
 //        hqlBuilder.append(Sign_.surplusdays.getName() + "=:surplusdays , ");
@@ -346,6 +341,19 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
             sign.setaUserID("");
             sign.setaUserName("");
         }
+    }
 
+    /**
+     * 校验是否是调概项目
+     * @param businessKey
+     * @return
+     */
+    @Override
+    public boolean checkAssistSign(String businessKey) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select count(signid) from cs_sign where signid =:signid and isassistflow =:isassistflow ");
+        sqlBuilder.setParam("signid",businessKey);
+        sqlBuilder.setParam("isassistflow", Constant.EnumState.YES.getValue());
+        return returnIntBySql(sqlBuilder) > 0 ? false : true;
     }
 }

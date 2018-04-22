@@ -65,7 +65,7 @@ public class SysRestController {
         String msg = "项目【"+signDto.getProjectname()+"("+signDto.getFilecode()+")】，";
         try{
             //json转出对象
-            resultMsg = signRestService.pushProject(signDto);
+            resultMsg = signRestService.pushProject(signDto,true);
         }catch (Exception e){
             resultMsg = new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(),e.getMessage());
             e.printStackTrace();
@@ -112,9 +112,9 @@ public class SysRestController {
                 //json转出对象
                 if(Validate.isString(signType) && signType.equals("1")){
                     //获取项目预签收信息
-                    resultMsg = signRestService.pushPreProject(signPreDto.getData());
+                    resultMsg = signRestService.pushPreProject(signPreDto.getData(),false);
                 }else{
-                    resultMsg = signRestService.pushProject(signPreDto.getData());
+                    resultMsg = signRestService.pushProject(signPreDto.getData(),false);
                 }
             }else{
                 msg = "该项目信息不存在请核查！";

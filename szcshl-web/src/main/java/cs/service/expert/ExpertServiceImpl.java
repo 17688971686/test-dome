@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static cs.common.Constant.EXPERT_REVIEW_COST;
 import static cs.common.Constant.SUPER_USER;
 
 @Service
@@ -648,7 +649,7 @@ public class ExpertServiceImpl implements ExpertService {
             aExpertSelected.setSelectIndex(epConditon.getSelectIndex() == null ? 1 : (epConditon.getSelectIndex() + 1));
             aExpertSelected.setExpeRttype(epConditon.getExpeRttype());
             //默认专家费用，每个专家1000元
-            aExpertSelected.setReviewCost(new BigDecimal(1000));
+            aExpertSelected.setReviewCost(new BigDecimal(EXPERT_REVIEW_COST));
             Expert aEP = new Expert();
             BeanCopierUtils.copyProperties(saveEPList.get(saveEPList.size() - 1), aEP);
             aExpertSelected.setExpert(aEP);                 //保存专家映射

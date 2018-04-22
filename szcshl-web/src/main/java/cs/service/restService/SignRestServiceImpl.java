@@ -17,6 +17,7 @@ import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.SysConfigDto;
+import cs.model.sys.SysFileDto;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
@@ -48,15 +49,11 @@ public class SignRestServiceImpl implements SignRestService {
     @Autowired
     private SignService signService;
     @Autowired
-    private UserRepo userRepo;
-    @Autowired
     private HttpClientOperate httpClientOperate;
     @Autowired
     private SysFileRepo sysFileRepo;
     @Autowired
     private SysFileService sysFileService;
-    @Autowired
-    private FtpRepo ftpRepo;
 
     /**
      * 项目推送
@@ -66,7 +63,7 @@ public class SignRestServiceImpl implements SignRestService {
      */
     @Override
     @Transactional
-    public ResultMsg pushProject(SignDto signDto) {
+    public ResultMsg pushProject(SignDto signDto,boolean isGetFiles) {
         if (signDto == null) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
         }
@@ -104,8 +101,9 @@ public class SignRestServiceImpl implements SignRestService {
             } else {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
             }
+
             //1、根据收文编号获取项目信息
-            Sign sign = signRepo.findByFilecode(signDto.getFilecode(),signDto.getSignState());
+            Sign sign = signRepo.findByFilecode(signDto.getFilecode(),Constant.EnumState.DELETE.getValue());
             Date now = new Date();
             boolean isExistPro = false, isLoginUser = Validate.isString(SessionUtil.getUserId());
             if (!Validate.isObject(sign) || !Validate.isString(sign.getSignid())) {
@@ -121,6 +119,8 @@ public class SignRestServiceImpl implements SignRestService {
                 sign.setReceivedate(now);
                 //初始化办理部门信息
                 signService.initSignDeptInfo(sign);
+                //设定状态
+                sign.setSignState(Constant.EnumState.NORMAL.getValue());
             } else {
                 isExistPro = true;
                 BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
@@ -159,8 +159,21 @@ public class SignRestServiceImpl implements SignRestService {
             }
             signRepo.save(sign);
 
+            checkDownLoadFile(resultMsg,isGetFiles,sign.getSignid(),signDto.getSysFileDtoList(),isLoginUser?SessionUtil.getUserId():SUPER_USER,Constant.SysFileType.SIGN.getValue(),Constant.SysFileType.FGW_FILE.getValue());
+
+        } catch (Exception e) {
+            resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
+        } finally {
+
+        }
+        return resultMsg;
+    }
+
+    public void checkDownLoadFile(ResultMsg resultMsg, boolean isGetFiles, String businessId, List<SysFileDto> sysFileDtoList, String userId, String mainType, String busiType){
+        //如果获取附件
+        if(isGetFiles){
             //获取传送过来的附件
-            ResultMsg fileResult = sysFileService.downRemoteFile(sign.getSignid(),signDto.getSysFileDtoList(),isLoginUser?SessionUtil.getUserId():SUPER_USER,Constant.SysFileType.SIGN.getValue(),Constant.SysFileType.FGW_FILE.getValue());
+            ResultMsg fileResult = sysFileService.downRemoteFile(businessId,sysFileDtoList,userId,mainType,busiType);
             if(fileResult.isFlag()){
                 resultMsg.setFlag(true);
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
@@ -170,14 +183,13 @@ public class SignRestServiceImpl implements SignRestService {
                 resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SIGN_05.getCode());
                 resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue());
             }
-        } catch (Exception e) {
-            resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
-        } finally {
-
+            //不接收附件
+        }else{
+            resultMsg.setFlag(true);
+            resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
+            resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
         }
-        return resultMsg;
     }
-
     /**
      * 预签收项目
      * @param signDto
@@ -185,7 +197,7 @@ public class SignRestServiceImpl implements SignRestService {
      */
     @Override
     @Transactional
-    public ResultMsg pushPreProject(SignDto signDto) {
+    public ResultMsg pushPreProject(SignDto signDto,boolean isGetFiles) {
         if (signDto == null) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_01.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_01.getValue());
         }
@@ -224,7 +236,7 @@ public class SignRestServiceImpl implements SignRestService {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
             }
             //1、根据收文编号获取项目信息
-            Sign sign = signRepo.findByFilecode(signDto.getFilecode(),signDto.getSignState());
+            Sign sign = signRepo.findByFilecode(signDto.getFilecode(),Constant.EnumState.DELETE.getValue());
             boolean isExistPro = false, isLoginUser = Validate.isString(SessionUtil.getUserId());
             Date now = new Date();
             if (!Validate.isObject(sign) || !Validate.isString(sign.getSignid())) {
@@ -251,20 +263,9 @@ public class SignRestServiceImpl implements SignRestService {
             }
             sign.setModifiedBy(isLoginUser?SessionUtil.getDisplayName():SUPER_USER);
             sign.setModifiedDate(now);
-
             signRepo.save(sign);
 
-            //获取传送过来的附件
-           ResultMsg fileResult = sysFileService.downRemoteFile(sign.getSignid(),signDto.getSysFileDtoList(),isLoginUser?SessionUtil.getUserId():SUPER_USER,Constant.SysFileType.SIGN.getValue(),Constant.SysFileType.FGW_FILE.getValue());
-           if(fileResult.isFlag()){
-               resultMsg.setFlag(true);
-               resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getCode());
-               resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SAVE_OK.getValue());
-           }else{
-               resultMsg.setFlag(false);
-               resultMsg.setReCode(IFResultCode.IFMsgCode.SZEC_SIGN_05.getCode());
-               resultMsg.setReMsg(IFResultCode.IFMsgCode.SZEC_SIGN_05.getValue());
-           }
+            checkDownLoadFile(resultMsg,isGetFiles,sign.getSignid(),signDto.getSysFileDtoList(),isLoginUser?SessionUtil.getUserId():SUPER_USER,Constant.SysFileType.SIGN.getValue(),Constant.SysFileType.FGW_FILE.getValue());
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
         } finally {
