@@ -642,7 +642,7 @@
                     field: "",
                     title: "项目名称",
                     filterable: false,
-                    width: "18%",
+                    width: 260,
                     template: function (item) {
                         return '<a ng-click="vm.saveView()" href="#/signFlowDetail/' + item.businessKey + '/' + item.taskId + '/' + item.processInstanceId + '" >' + item.projectName + '</a>';
                     }
@@ -651,32 +651,48 @@
                     field: "reviewStage",
                     title: "项目阶段",
                     filterable: false,
-                    width: "10%"
+                    width: 120
                 },
                 {
                     field: "preSignDate",
                     title: "预签收时间",
-                    width: "10%",
+                    width: 100,
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "signDate",
                     title: "签收时间",
-                    width: "10%",
+                    width: 100,
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "",
                     title: "剩余工作日",
-                    width: "10%",
+                    width: 100,
                     filterable: false,
                     template: function (item) {
                         if (item.surplusDays != undefined) {
                             return item.surplusDays;
-                            // return (item.surplusDays > 0) ? item.surplusDays : 0;
                         } else {
+                            return "";
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "评审部门",
+                    width: 160,
+                    filterable: false,
+                    template: function (item) {
+                        if(item.mOrgName){
+                            if (item.aOrgName) {
+                                return item.mOrgName+","+item.aOrgName;
+                            } else {
+                                return item.mOrgName;
+                            }
+                        }else{
                             return "";
                         }
                     }
@@ -684,13 +700,13 @@
                 {
                     field: "allPriUser",
                     title: "项目负责人",
-                    width: "16%",
+                    width: 160,
                     filterable: false,
                 },
                 {
                     field: "",
-                    title: "流程状态",
-                    width: "10%",
+                    title: "状态",
+                    width: 70,
                     filterable: false,
                     template: function (item) {
                         if (item.processState && item.processState == 2) {
@@ -703,7 +719,7 @@
                 {
                     field: "",
                     title: "操作",
-                    width: "10%",
+                    width: 130,
                     template: function (item) {
                         return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId);
                     }

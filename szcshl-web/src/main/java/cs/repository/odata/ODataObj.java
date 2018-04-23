@@ -184,8 +184,13 @@ public class ODataObj {
                         oDataFilterItem.setValue(DateUtils.parseDate(value.substring("datetime'".length(), value.length() - 1).replace("T", " "), "yyyy-MM-dd hh:mm:ss"));
                     } else if (StringUtil.startsWithIgnoreCase(value, "date'") && value.endsWith("'")) {// 如果是datetime
                         oDataFilterItem = new ODataFilterItem<Date>();
+                        String operate = filterItems[1];
+                        if("le".equals(operate.toLowerCase())){
+                            oDataFilterItem.setValue(DateUtils.parseDate(value.substring("date'".length(), value.length() - 1)+" 23:59:59", "yyyy-MM-dd mm:HH:ss"));
+                        }else{
+                            oDataFilterItem.setValue(DateUtils.parseDate(value.substring("date'".length(), value.length() - 1), "yyyy-MM-dd"));
+                        }
 
-                        oDataFilterItem.setValue(DateUtils.parseDate(value.substring("date'".length(), value.length() - 1), "yyyy-MM-dd"));
                     } else if (StringUtil.startsWithIgnoreCase(value, "guid'") && value.endsWith("'")) {// 如果是guid
                         oDataFilterItem = new ODataFilterItem<UUID>();
 

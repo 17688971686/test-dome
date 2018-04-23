@@ -41,7 +41,7 @@
             |
             <!--整体抽取方案只能抽取一次-->
             <button class="btn btn-xs btn-primary" ng-click="vm.startAutoExpertWin()"
-                    ng-disabled="vm.isCommit || (('${CURRENT_USER.loginName}' !=  'admin') && (vm.expertReview.state == 9 || vm.expertReview.state == '9'))">
+                    ng-disabled="vm.isCommit || (vm.expertReview.state == 9 || vm.expertReview.state == '9'))">
                 <span class="glyphicon glyphicon-asterisk"></span>开始随机抽取
             </button>
             <button class="btn btn-xs btn-primary" ng-click="vm.showAutoExpertWin()">

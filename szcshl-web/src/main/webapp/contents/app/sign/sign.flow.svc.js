@@ -173,10 +173,9 @@
                     vm.showFlag.nodeCreateDisNum = true;
                     vm.showFlag.isMainPrinUser = true;      //可以进行专家评分
                     //有第二负责人确认
-                    if(vm.flow.businessMap.isGotoGD){  //可以进行归档编辑
+                    /*if(vm.flow.businessMap.isGotoGD){  //可以进行归档编辑
                         vm.showFlag.showFilecodeBt = true;
-                    }
-                    console.log( vm.showFlag.showFilecodeBt);
+                    }*/
                     break;
                 //财务办理
                 case flowcommon.getSignFlowNode().SIGN_CWBL:

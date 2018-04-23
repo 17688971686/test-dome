@@ -1,6 +1,7 @@
 package cs.domain.project;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
 import cs.domain.DomainBase;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -206,6 +207,7 @@ public class Sign extends DomainBase {
 
     //项目签收时间
     @Column(columnDefinition = "DATE")
+    @JSONField(format = "yyyy-MM-dd")
     private Date signdate;
 
     //剩余工作日

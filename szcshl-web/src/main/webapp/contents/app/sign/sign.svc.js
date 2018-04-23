@@ -846,7 +846,7 @@
                 {
                     field: "",
                     title: "合并评审",
-                    width: "15%",
+                    width: "12%",
                     filterable: false,
                     template: function (item) {
                         if (item.reviewType) {
@@ -875,7 +875,7 @@
                 {
                     field: "",
                     title: "操作",
-                    width: "10%",
+                    width: "12%",
                     template: function (item) {
                         return common.format($('#columnBtns').html(), "signFlowDetail", item.businessKey, item.taskId, item.processInstanceId, "vm.getBack");
                     }
@@ -1066,7 +1066,7 @@
         //begin editSignState
         //维护项目列表
         function MaintenanProjectGrid(vm) {
-            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList?$orderby=receivedate", $("#Maintenanform"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
+            var dataSource = common.kendoGridDataSource(rootPath + "/signView/getSignList", $("#Maintenanform"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
             // Begin:column
             var columns = [
                 {

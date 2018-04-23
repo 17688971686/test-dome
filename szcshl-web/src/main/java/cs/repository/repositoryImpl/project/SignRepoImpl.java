@@ -354,6 +354,7 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         sqlBuilder.append(" select count(signid) from cs_sign where signid =:signid and isassistflow =:isassistflow ");
         sqlBuilder.setParam("signid",businessKey);
         sqlBuilder.setParam("isassistflow", Constant.EnumState.YES.getValue());
-        return returnIntBySql(sqlBuilder) > 0 ? false : true;
+        int resultInt = returnIntBySql(sqlBuilder);
+        return resultInt > 0 ? true : false;
     }
 }

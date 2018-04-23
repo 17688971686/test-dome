@@ -19,12 +19,12 @@
     <form id="searchform" name="searchform">
         <span class="help-inline">项目名称：</span>
         <input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectnam" placeholder="请输入">
-        <span class="help-inline" style="margin-left:10px;">收文编号：</span>
-        <input type="text" ng-model="vm.model.filecode" operator="eq" name="filecode" id="filecode" placeholder="请输入">
+        <span class="help-inline" style="margin-left:10px;">委内收文编号</span>
+        <input type="text" maxlength="10" ng-model="vm.model.filecode" operator="eq" name="filecode" id="filecode" placeholder="请输入" onkeyup="this.value=this.value.toUpperCase()">
         <br>
         <div style="margin-top: 10px;"></div>
-        <span class="help-inline">委内收文编号：</span>
-        <input type="text" maxlength="10" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入">
+        <span class="help-inline">项目代码：</span>
+        <input type="text" ng-model="vm.model.projectcode" operator="eq" name="projectcode" id="projectcode" placeholder="请输入" >
         <span style="margin-left: 10px;"></span>
         <span class="help-inline">签收日期：</span>
         <input type="text" style="width: 120px;" kendo-date-picker k-format="'yyyy-MM-dd'" operator="ge" name="signdate">

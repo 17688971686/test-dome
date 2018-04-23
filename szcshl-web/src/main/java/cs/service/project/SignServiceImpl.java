@@ -1672,10 +1672,9 @@ public class SignServiceImpl implements SignService {
                 //没有评审费，则直接到归档环节(还是当前人处理)
                 } else {
                     variables.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), false);
-                    assigneeValue = SessionUtil.getUserId();
-                    variables.put(FlowConstant.SignFlowParams.USER_FZR1.getValue(), assigneeValue);
+                    variables = buildMainPriUser(variables, signid, assigneeValue);
 
-                    //如果没有完成专家评分，则不可以提交到下一步
+                    /*//如果没有完成专家评分，则不可以提交到下一步
                     if (!expertReviewRepo.isFinishEPGrade(signid)) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
                     }
@@ -1689,10 +1688,11 @@ public class SignServiceImpl implements SignService {
                     if (fileRecordRepo.isFileRecord(signid) ) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成归档操作，不能进行下一步操作！");
                     }
+
                     //直接跳过归档环节
                     isNextUser = true;
                     nextNodeKey = FlowConstant.FLOW_SIGN_GD;
-                    flowDto.getBusinessMap().put("isFinishGD",true);
+                    flowDto.getBusinessMap().put("isFinishGD",true);*/
                 }
                 break;
 
@@ -1707,21 +1707,19 @@ public class SignServiceImpl implements SignService {
 
             //第一负责人归档
             case FlowConstant.FLOW_SIGN_GD:
-                if(null == flowDto.getBusinessMap().get("isFinishGD")){
-                    //如果没有完成专家评分，则不可以提交到下一步
-                    if (!expertReviewRepo.isFinishEPGrade(signid)) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
-                    }
-                    //如果没有完成单位评分，则不可以提交下一步
-                    UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
-                    if (unitScore != null && unitScore.getScore() == null) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对单位进行评分,不能提交到下一步操作！");
-                    }
+                //如果没有完成专家评分，则不可以提交到下一步
+                if (!expertReviewRepo.isFinishEPGrade(signid)) {
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");
+                }
+                //如果没有完成单位评分，则不可以提交下一步
+                UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
+                if (unitScore != null && unitScore.getScore() == null) {
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对单位进行评分,不能提交到下一步操作！");
+                }
 
-                    //如果没有完成归档信息，则不可以提交下一步
-                    if (fileRecordRepo.isFileRecord(signid) ) {
-                        return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成归档操作，不能进行下一步操作！");
-                    }
+                //如果没有完成归档信息，则不可以提交下一步
+                if (fileRecordRepo.isFileRecord(signid) ) {
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还没完成归档操作，不能进行下一步操作！");
                 }
 
                 //如果有第二负责人审核
@@ -2685,12 +2683,14 @@ public class SignServiceImpl implements SignService {
             criteria.add(Restrictions.sqlRestriction(sBuffer.toString()));
             //除去部门分办环节
             criteria.add(Restrictions.not(Restrictions.like(RuProcessTask_.nodeDefineKey.getName(), "%" + FlowConstant.FLOW_SIGN_BMFB1.substring(0, FlowConstant.FLOW_SIGN_BMFB1.length() - 1) + "%")));
-            //是副主任，只要没发文，均可取回
+        //是副主任，只要没发文，均可取回(只能取自己分管的项目)
         } else {
-            sBuffer.append(" ( ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue() + "' ");
+            sBuffer.append(" (SELECT count(cs.signid) FROM cs_sign cs WHERE cs.signid = {alias}.businessKey and cs.leaderId = '" + SessionUtil.getUserId() + "') > 0 ");
+            sBuffer.append(" AND ( ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue() + "' ");
             sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX2.getValue() + "' ");
             sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX3.getValue() + "' ");
             sBuffer.append(" OR ( SUBSTR (NODEDEFINEKEY, -1)) = '" + FlowConstant.SignFlowParams.BRANCH_INDEX4.getValue() + "' ) ");
+
             //合并评审的工作方案，部长没审批时可以回退
             criteria.add(Restrictions.ge(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.IS_START.getValue()));
             criteria.add(Restrictions.le(RuProcessTask_.signprocessState.getName(), Constant.SignProcessState.END_WP.getValue()));

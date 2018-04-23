@@ -57,7 +57,8 @@ public class AssistUnitRepoImpl extends AbstractRepository<AssistUnit, String> i
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("SELECT COUNT (csp.id) FROM CS_AS_PLANSIGN csp WHERE CSP.SIGNID =:signId AND ASSISTUNITID IS NOT NULL AND PLANID IS NOT NULL");
         sqlBuilder.setParam("signId",businessKey);
-        return returnIntBySql(sqlBuilder) > 0 ? false : true;
+        int resultInt = returnIntBySql(sqlBuilder);
+        return resultInt > 0 ? true : false;
     }
 
 }

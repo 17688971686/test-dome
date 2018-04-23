@@ -182,13 +182,13 @@ public class SignFlowImpl implements IFlow {
                 if (isGotoCW){
                     businessMap.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), true);
                 }else{
-                    //发文环节也可以归档
+                    /*//发文环节也可以归档
                     businessMap.put("isGotoGD", true);
                     //如果有其它负责人，则还跳转
                     userList = signPrincipalService.getAllSecondPriUser(businessKey);
                     if(Validate.isList(userList)){
                         businessMap.put("checkFileUser", userList.get(0));
-                    }
+                    }*/
                 }
                 break;
             //项目归档

@@ -3,9 +3,9 @@
 
     angular.module('app').factory('officeUserSvc', officeUser);
 
-    officeUser.$inject = ['$http'];
+    officeUser.$inject = ['$http','bsWin'];
 
-    function officeUser($http) {
+    function officeUser($http,bsWin) {
         var url_officeUser = rootPath + "/officeUser", url_back = '#/officeUserList';
         var service = {
             grid: grid,
@@ -62,16 +62,9 @@
                         vm: vm,
                         response: response,
                         fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    $('.alertDialog').modal('hide');
-                                }
-                            })
+                            bsWin.alert("操作成功");
+                            vm.isSubmit = false;
                         }
-
                     })
                 }
 
@@ -105,15 +98,8 @@
                     vm: vm,
                     response: response,
                     fn: function () {
-                    	common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog :true,
-                            fn: function () {
-                            	vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
+                        bsWin.alert("操作成功");
+                        vm.isSubmit = false;
                     }
                 });
             };
@@ -129,30 +115,21 @@
         // begin#createOfficeUser
         function createOfficeUser(vm) {
             common.initJqValidation();
-            var isValid = $('form').valid();
+            var isValid = $('#form').valid();
             if (isValid) {
                 vm.isSubmit = true;
-
                 var httpOptions = {
                     method: 'post',
                     url: url_officeUser,
                     data: vm.model
                 };
-
                 var httpSuccess = function success(response) {
                     common.requestSuccess({
                         vm: vm,
                         response: response,
                         fn: function () {
-                            common.alert({
-                                vm: vm,
-                                msg: "操作成功",
-                                closeDialog :true,
-                                fn: function () {
-                                    vm.isSubmit = false;
-                                    location.href = url_back;
-                                }
-                            });
+                            bsWin.alert("操作成功");
+                            vm.isSubmit = false;
                         }
                     });
                 };
@@ -176,10 +153,6 @@
             };
             var httpSuccess = function success(response) {
             	if(response.data.dept){
-					//vm.depts = {}
-					//vm.depts = response.data.depts;
-					//console.log(vm.depts);
-					
 				}
                 vm.model = response.data;
             };

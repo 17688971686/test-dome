@@ -619,7 +619,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     workProgram.setIsCreateDoc(EnumState.YES.getValue());
                     workProgramRepo.save(workProgram);
                 }else{
-                    return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该项目没有评审会，生成会前准备材料失败。" , null);
+                    return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "该项目没有评审会，不用生成会签准备材料！" , null);
                 }
             }
         }else{

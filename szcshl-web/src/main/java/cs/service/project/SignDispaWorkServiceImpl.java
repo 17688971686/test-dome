@@ -113,7 +113,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
         PageModelDto<SignDispaWorkDto> pageModelDto = new PageModelDto<SignDispaWorkDto>();
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         Integer processState = null;
-        String dispatchType = "",lightStateValue="";
+        String dispatchType = "",signDateValue = "";
         if (Validate.isList(odataObj.getFilter())) {
             Object value;
             for (ODataFilterItem item : odataObj.getFilter()) {
@@ -122,7 +122,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                     continue;
                 }
                 //项目状态查询修改
-                if ("processState".equals(item.getField())) {
+                if (SignDispaWork_.processState.getName().equals(item.getField())) {
                     processState = Integer.parseInt(item.getValue().toString());
                     if(processState <10){
                         criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(),processState));
@@ -151,7 +151,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 }
 
                 //项目发文
-                if("dispatchType".equals(item.getField())){
+                if(SignDispaWork_.dispatchType.getName().equals(item.getField())){
                     dispatchType = item.getValue().toString();
                     if("非暂不实施项目".equals(dispatchType)){
                         //非暂不实施项目=项目发文+退文
@@ -167,15 +167,6 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                     continue;
                 }
                 //办理进度
-                /*if("lightState".equals(item.getField())){
-                    lightStateValue = item.getValue().toString();
-                    if("4".equals(lightStateValue)){
-                        criteria.add(Restrictions.eq(SignDispaWork_.isProjectStop.getName(),Constant.EnumState.YES.getValue()));
-                    }else{
-                        criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
-                    }
-                    continue;
-                }*/
                 criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
             }
         }
