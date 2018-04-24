@@ -6,10 +6,10 @@
 
     <caption class="text-center">
         <p style="padding: 5px 10px;">
-            <span style="float: left;">  QR-4.7-19-A2</span>
+            <span style="float: left;">  QR-4.7-19-A3</span>
         </p>
         <p class="h3">
-            <strong>深圳市政府投资项目评审中心<br/>项目发文审批表</strong>
+            <strong>深圳市政府投资项目评审中心<br/>项目概算发文审批表</strong>
         </p>
         <p>
             <span style="padding: 5px 10px;float: left;">
@@ -19,28 +19,6 @@
                 <option value="1">单个发文</option>
             </select>
         </span>
-        <!--
-        <span>
-            发文方式：
-            <select ng-model="vm.dispatchDoc.dispatchWay" name="dispatchWay" id="dispatchWay"
-                    ng-change="vm.sigleProject()" ng-disabled="vm.showFlag.isReveiwDS">
-                <option ng-repeat="x in DICT.DISPATCH_WAY.dicts | orderBy:'dictSort':false"
-                        value="{{x.dictKey}}"
-                        ng-selected="vm.dispatchDoc.dispatchWay==x.dictKey">{{x.dictName}}</option>
-            </select>
-        </span>
-        <span ng-show="vm.dispatchDoc.dispatchWay == 2" style="margin-left:10px;">
-            <input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="vm.showFlag.isReveiwDS"
-                   ng-value="9" ng-checked="vm.dispatchDoc.isMainProject==9">主项目
-
-            <input type="radio" ng-model="vm.dispatchDoc.isMainProject" ng-disabled="vm.showFlag.isReveiwDS"
-                   ng-value="0" ng-checked="vm.dispatchDoc.isMainProject==0">次项目
-
-            <button class="btn btn-xs btn-default" ng-click="vm.gotoMergePage()" ng-disabled="vm.isCommit"
-                    ng-show="vm.dispatchDoc.dispatchWay == 2 && vm.dispatchDoc.isMainProject == 9"
-                    ng-hide="vm.dispatchDoc.dispatchWay == 1 || vm.dispatchDoc.isMainProject == 0">关联项目</button>
-        </span>
-        -->
         <span style="padding: 5px 10px;float:right;">发文类型： <span class="required">*</span>
 		  		<select ng-model="vm.dispatchDoc.dispatchType" name="dispatchType" id="dispatchType" data-val="true"
                         data-val-required="必填">
@@ -51,40 +29,31 @@
         </p>
     </caption>
     <tbody>
-
     <tr>
-        <td width="16%" class="text-center" rowspan="2">发文部门<br/>拟稿人</td>
-        <td width="24%" colspan="2" class="text-center">
-            {{vm.dispatchDoc.orgName}}
-        </td>
-        <td width="12%" rowspan="2" class="text-center">校对人</td>
-        <td width="12%" rowspan="2" class="text-center">
-            {{ vm.proofread }}
-        </td>
-        <td width="12%" rowspan="2" class="text-center">拟稿时间</td>
-        <td width="12%" rowspan="2" class="text-center">
-            {{vm.dispatchDoc.draftDate}}
+        <td class="text-center">文件标题 <span class="required">*</span></td>
+        <td colspan="6">
+            <input type="text" maxlength="200" data-val-length-max="200" data-val="true"
+                   class="form-control input-sm " ng-disabled="vm.isnotEdit"
+                   ng-model="vm.dispatchDoc.fileTitle" id="fileTitle" name="fileTitle"
+                   data-val-required="必填" placeholder="《项目名称+阶段》+评审意见">
+            <span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>
         </td>
     </tr>
+
     <tr>
-        <td colspan="2" class="text-center">
-            {{vm.dispatchDoc.userName}}
-        </td>
+        <td class="text-center" style="width: 15%;">发文部门</td>
+        <td style="width: 20%;">{{vm.dispatchDoc.orgName}}</td>
+        <td class="text-center" style="width: 15%;">发文日期</td>
+        <td style="width: 15%;">{{vm.dispatchDoc.dispatchDate}}</td>
+        <td class="text-center"style="width: 15%;">文号</td>
+        <td style="width: 20%;">{{vm.dispatchDoc.fileNum}}</td>
     </tr>
     <tr>
         <td class="text-center">秘密等级</td>
-        <td colspan="2">{{vm.dispatchDoc.secretLevel}}</td>
-        <td class="text-center">年底计划</td>
-        <td>{{vm.dispatchDoc.yearPlan}}</td>
+        <td >{{vm.dispatchDoc.secretLevel}}</td>
         <td class="text-center">急缓程度</td>
         <td>{{vm.dispatchDoc.urgentLevel}}</td>
-    </tr>
-    <tr>
-        <td class="text-center">发文日期</td>
-        <td colspan="2">{{vm.dispatchDoc.dispatchDate}}</td>
-        <td class="text-center">文件字号</td>
-        <td>{{vm.dispatchDoc.fileNum}}</td>
-        <td class="text-center">是否有其他阶段关联</td>
+        <td class="text-center">是否与其它<br/>阶段关联</td>
         <td>
             <span>
                 <input type="checkbox" ng-true-value="9" ng-false-value="0" ng-model="vm.dispatchDoc.isRelated"
@@ -99,23 +68,13 @@
         </td>
     </tr>
     <tr>
-        <td class="text-center">文件标题 <span class="required">*</span></td>
-        <td colspan="6">
-            <input type="text" maxlength="200" data-val-length-max="200" data-val="true"
-                   class="form-control input-sm " ng-disabled="vm.isnotEdit"
-                   ng-model="vm.dispatchDoc.fileTitle" id="fileTitle" name="fileTitle"
-                   data-val-required="必填" placeholder="《项目名称+阶段》+评审意见">
-            <span data-valmsg-for="fileTitle" data-valmsg-replace="true" class="errors"></span>
-        </td>
-    </tr>
-    <tr>
         <td style="vertical-align: middle;" class="text-center">发行范围</td>
         <td colspan="6">
             <textarea maxlength="250" data-val-length-max="250" data-val="true"
                       class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
                       ng-model="vm.dispatchDoc.dispatchScope" id="dispatchScope" name="dispatchScope"
                       ng-change="vm.dispatchDoc.dispatchScope=countCharacter(vm.dispatchDoc.dispatchScope,250,'dispatchScopeCount')"
-                      ></textarea>
+            ></textarea>
             <span style="float: right;">
                 (印<input type="text" name="printCount" ng-model="vm.dispatchDoc.printCount" style="width: 50px">份)
             </span>
@@ -132,7 +91,7 @@
                    name="isRelated"/>
         </td>
         <td class="text-center">协审单位</td>
-        <td colspan="2">{{vm.assistPlanSign.unitNameStr}}</td>
+        <td >{{vm.assistPlanSign.unitNameStr}}</td>
         <td class="text-center">协审金额</td>
         <td>{{vm.assistPlanSign.assistCost}}</td>
     </tr>
@@ -143,7 +102,7 @@
                       class="form-control input-sm " rows="3" ng-disabled="vm.isnotEdit"
                       ng-model="vm.dispatchDoc.description" id="description" name="description"
                       ng-change="vm.dispatchDoc.description=countCharacter(vm.dispatchDoc.description,1000,'descriptionCount')"
-             />
+            />
             <span data-valmsg-for="description" data-valmsg-replace="true" class="errors"></span>
             <p id="descriptionCount" style="text-align: right;"></p>
         </td>
@@ -158,6 +117,17 @@
                               ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
             <span data-valmsg-for="reviewAbstract" data-valmsg-replace="true" class="errors"></span>
             <p id="reviewAbstractCount" style="text-align: right;"></p>
+        </td>
+    </tr>
+    <tr >
+        <td class="text-center" style="vertical-align: middle;">项目负责人<br>拟稿意见</td>
+        <td colspan="3" style="min-height: 50px;">
+            拟稿人:
+            <div ng-bind-html="vm.dispatchDoc.mianChargeSuggest | trust2Html"></div>
+        </td>
+        <td colspan="2" style="min-height: 50px;">
+            校对人:
+            <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
         </td>
     </tr>
 
@@ -185,6 +155,9 @@
             </div>
         </td>
     </tr>
+
+
+
     <tr>
         <td style="vertical-align: middle;" class="text-center">项目概况</td>
         <td colspan="6">

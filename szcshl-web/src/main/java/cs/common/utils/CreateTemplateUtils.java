@@ -649,6 +649,7 @@ public class CreateTemplateUtils {
         }
 
         dataMap.put("resultList" , resultList);
+        dataMap.put("resultListSize" , resultList == null? 0 : resultList.size());
         SysFile sysFile = new SysFile();
 
         sysFile = TemplateUtil.createTemplate(

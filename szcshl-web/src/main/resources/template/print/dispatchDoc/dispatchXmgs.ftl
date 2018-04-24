@@ -102,7 +102,7 @@
                                 <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                 <w:sz w:val="24"/>
                             </w:rPr>
-                            <w:t>QR-4.3-10-A3</w:t>
+                            <w:t>QR-4.7-19-A3</w:t>
                         </w:r>
                     </w:p>
                     <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
@@ -871,7 +871,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">第一负责人：                      </w:t>
+                                        <w:t xml:space="preserve">拟稿人：                      </w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
@@ -909,7 +909,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>第二负责人：</w:t>
+                                        <w:t>校对人：</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
