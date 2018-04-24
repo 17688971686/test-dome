@@ -6,10 +6,10 @@
         <table class="table table-bordered" >
             <caption class="text-center">
                 <p style="padding: 5px 10px;">
-                    <span style="float: left;">  QR-4.7-19-A2</span>
+                    <span style="float: left;">  QR-4.7-19-A3</span>
                 </p>
                 <p class="h3">
-                    <strong>深圳市政府投资项目评审中心<br/>项目发文审批表</strong>
+                    <strong>深圳市政府投资项目评审中心<br/>项目概算发文审批表</strong>
                 </p>
                 <p>
                     <span style="padding: 5px 10px;float: left;">发文方式：{{(vm.dispatchDoc.dispatchWay==1)?"单个发文":"合并发文"}}</span>
@@ -20,71 +20,60 @@
 
             </caption>
 
-        <tr>
-            <td class="text-center" rowspan="2" width="15%">发文部门 <br/> 拟稿人</td>
-            <td colspan="2" width="25%">{{vm.dispatchDoc.orgName}}</td>
-            <td rowspan="2" class="text-center" width="15%">校对人</td>
-            <td rowspan="2" width="15%">{{vm.dispatchDoc.proofreadName}}</td>
-            <td rowspan="2" class="text-center" width="15%">拟稿时间</td>
-            <td rowspan="2" width="15%">{{vm.dispatchDoc.draftDate}}</td>
-        </tr>
-        <tr>
-            <td colspan="2">{{vm.dispatchDoc.userName}}</td>
-        </tr>
-
-        <tr>
-            <td class="text-center">秘密等级</td>
-            <td colspan="2">{{vm.dispatchDoc.secretLevel}}</td>
-            <td class="text-center">年底计划</td>
-            <td>{{vm.dispatchDoc.yearPlan}}</td>
-            <td class="text-center">急缓程度</td>
-            <td>{{vm.dispatchDoc.urgentLevel}}</td>
-        </tr>
-        <tr>
-            <td class="text-center">发文日期</td>
-            <td colspan="2">{{vm.dispatchDoc.dispatchDate}}</td>
-            <td class="text-center">文件字号</td>
-            <td>{{vm.dispatchDoc.fileNum}}</td>
-            <td class="text-center">是否有其他阶段关联</td>
-            <td>
+            <tr>
+                <td class="text-center">文件标题</td>
+                <td colspan="6">{{vm.dispatchDoc.fileTitle}}</td>
+            </tr>
+            <tr>
+                <td class="text-center"  width="15%">发文部门 </td>
+                <td  width="20%">{{vm.dispatchDoc.orgName}}</td>
+                <td class="text-center" width="15%">发文日期</td>
+                <td width="15%">{{vm.dispatchDoc.dispatchDate}}</td>
+                <td class="text-center" width="15%">文号</td>
+                <td width="20%">{{vm.dispatchDoc.fileNum}}</td>
+            </tr>
+            <tr>
+                <td class="text-center">秘密等级</td>
+                <td >{{vm.dispatchDoc.secretLevel}}</td>
+                <td class="text-center">急缓程度</td>
+                <td>{{vm.dispatchDoc.urgentLevel}}</td>
+                <td class="text-center">是否与其它<br/>阶段关联</td>
+                <td>
                 <span>
                     <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0"
                            ng-model="vm.dispatchDoc.isRelated"
                            ng-checked="vm.dispatchDoc.isRelated==9 || vm.dispatchDoc.isRelated=='9'"
                            name="isRelated"/>是
                 </span>
-                <span style="margin-left:10px;">
+                    <span style="margin-left:10px;">
                     <input type="checkbox" ng-disabled="true" ng-true-value="0" ng-false-value="9"
                            ng-model="vm.dispatchDoc.isRelated"
                            ng-checked="!vm.dispatchDoc.isRelated || vm.dispatchDoc.isRelated==0 || vm.dispatchDoc.isRelated=='0'"
                            name="isRelated"/>否
                 </span>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center">文件标题</td>
-            <td colspan="6">{{vm.dispatchDoc.fileTitle}}</td>
-        </tr>
-        <tr>
-            <td class="text-center" style="vertical-align: middle;">发行范围</td>
-            <td colspan="6" >
-                <div style="min-height:30px;">
-                {{vm.dispatchDoc.dispatchScope}}
-                <p style="float: right;">(印{{vm.dispatchDoc.printCount}}份)</p>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center">是否协审</td>
-            <td colspan="2">
-                <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0"
-                       ng-checked="vm.model.isassistproc && (vm.model.isassistproc==9 || vm.model.isassistproc=='9')"/>
-            </td>
-            <td class="text-center">协审单位</td>
-            <td>{{vm.assistPlanSign.unitNameStr}}</td>
-            <td class="text-center">协审金额</td>
-            <td>{{vm.assistPlanSign.assistCost}}</td>
-        </tr>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center" style="vertical-align: middle;">发行范围</td>
+                <td colspan="6" >
+                    <div style="min-height:30px;">
+                        {{vm.dispatchDoc.dispatchScope}}
+                        <p style="float: right;">(印{{vm.dispatchDoc.printCount}}份)</p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center">是否协审</td>
+                <td >
+                    <input type="checkbox" ng-disabled="true" ng-true-value="9" ng-false-value="0"
+                           ng-checked="vm.model.isassistproc && (vm.model.isassistproc==9 || vm.model.isassistproc=='9')"/>
+                </td>
+                <td class="text-center">协审单位</td>
+                <td>{{vm.assistPlanSign.unitNameStr}}</td>
+                <td class="text-center">协审金额</td>
+                <td>{{vm.assistPlanSign.assistCost}}</td>
+            </tr>
+
         <tr>
             <td class="text-center" style="vertical-align: middle;">相关说明</td>
             <td colspan="6">
@@ -102,6 +91,19 @@
                 </div>
             </td>
         </tr>
+
+            <tr>
+                <td class="text-center" style="vertical-align: middle;">项目负责人<br>拟稿意见</td>
+                <td colspan="3" style="min-height: 50px;">
+                    拟稿人：
+                    <div ng-bind-html="vm.dispatchDoc.mianChargeSuggest | trust2Html"></div>
+                </td>
+                <td colspan="2" style="min-height: 30px;">
+                    校对人：
+                    <div ng-bind-html="vm.dispatchDoc.secondChargeSuggest | trust2Html"></div>
+                </td>
+            </tr>
+
         <tr>
             <td class="text-center" style="vertical-align: middle;">部长审核意见</td>
             <td colspan="6" >

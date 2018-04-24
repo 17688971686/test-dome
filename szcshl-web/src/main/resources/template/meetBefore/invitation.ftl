@@ -63,6 +63,7 @@
                         mc:Ignorable="w14 w15 wp14">
                 <w:body>
                     <#list resultList as invitate>
+                    <#if invitate_index ==0>
                     <w:p>
                         <w:pPr>
                             <w:pStyle w:val="3"/>
@@ -73,6 +74,7 @@
                             </w:rPr>
                         </w:pPr>
                     </w:p>
+                    </#if>
                     <w:p>
                         <w:pPr>
                             <w:spacing w:line="360" w:lineRule="auto"/>
@@ -456,7 +458,7 @@
                             <w:t xml:space="preserve">  </w:t>
                         </w:r>
                     </w:p>
-                    <w:p>
+                   <w:p>
                         <w:pPr>
                             <w:spacing w:line="360" w:lineRule="auto"/>
                             <w:rPr>
@@ -465,14 +467,29 @@
                             </w:rPr>
                         </w:pPr>
                     </w:p>
-                    <w:p>
-                        <w:pPr>
-                            <w:pStyle w:val="3"/>
-                            <w:spacing w:line="360" w:lineRule="auto"/>
-                        </w:pPr>
-                        <w:bookmarkStart w:id="0" w:name="_GoBack"/>
-                        <w:bookmarkEnd w:id="0"/>
-                    </w:p>
+                    <#if invitate_index != (resultListSize-1)>
+                        <w:p>
+                            <w:pPr>
+                                <w:pStyle w:val="3"/>
+                                <w:spacing w:line="360" w:lineRule="auto"/>
+                                <w:jc w:val="center"/>
+                                <w:rPr>
+                                    <w:rFonts w:hint="eastAsia" w:ascii="宋体"/>
+                                </w:rPr>
+                            </w:pPr>
+                            <w:r>
+                                <w:br w:type="page"/>
+                            </w:r>
+                        </w:p>
+                    </#if>
+                    </#list>
+                        <w:p>
+                            <w:pPr>
+                                <w:pStyle w:val="3"/>
+                                <w:spacing w:line="360" w:lineRule="auto"/>
+                            </w:pPr>
+                        </w:p>
+
                     <w:sectPr>
                         <w:pgSz w:w="11906" w:h="16838"/>
                         <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="851" w:footer="992"
@@ -480,7 +497,7 @@
                         <w:cols w:space="720" w:num="1"/>
                         <w:docGrid w:type="lines" w:linePitch="312" w:charSpace="0"/>
                     </w:sectPr>
-                    </#list>
+
                 </w:body>
             </w:document>
         </pkg:xmlData>
