@@ -111,7 +111,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
     public ResultMsg save(TopicInfoDto record) {
         if (!Validate.isString(record.getId())) {
             record.setId(UUID.randomUUID().toString());
-        }else{
+        } else {
             flowPrincipalRepo.deletePriUserByBusiId(record.getId());
         }
 
@@ -123,16 +123,16 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         domain.setCreatedDate(now);
         domain.setModifiedDate(now);
         //课题代码(课题代码2017KT001，归档编号2016KD17001)
-        if(!Validate.isString(domain.getTopicCode())){
-            String yearString = DateUtils.converToString(domain.getCreatedDate(),"yyyy");
+        if (!Validate.isString(domain.getTopicCode())) {
+            String yearString = DateUtils.converToString(domain.getCreatedDate(), "yyyy");
             String fileNumValue;
-            int maxSeq = findCurMaxSeq(yearString);
-            if(maxSeq < 1000){
-                fileNumValue = String.format("%03d", Integer.valueOf(maxSeq+1));
-            }else{
-                fileNumValue = (maxSeq+1)+"";
+            int maxSeq = topicInfoRepo.findCurMaxSeq(yearString);
+            if (maxSeq < 1000) {
+                fileNumValue = String.format("%03d", Integer.valueOf(maxSeq + 1));
+            } else {
+                fileNumValue = (maxSeq + 1) + "";
             }
-            domain.setTopicCode(yearString+Constant.FILE_RECORD_KEY.KT.getValue()+fileNumValue);
+            domain.setTopicCode(yearString + Constant.FILE_RECORD_KEY.KT.getValue() + fileNumValue);
         }
         topicInfoRepo.save(domain);
         //修改流程负责人
@@ -220,25 +220,25 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         TopicInfo domain = topicInfoRepo.findById(id);
         BeanCopierUtils.copyProperties(domain, modelDto);
         //工作方案
-        if(domain.getWorkPlan() != null){
+        if (domain.getWorkPlan() != null) {
             WorkPlan workPlan = domain.getWorkPlan();
             WorkPlanDto workPlanDto = new WorkPlanDto();
-            BeanCopierUtils.copyProperties(workPlan,workPlanDto);
-            workPlanDto = workPlanService.findLinkBusiness(workPlan,workPlanDto);
+            BeanCopierUtils.copyProperties(workPlan, workPlanDto);
+            workPlanDto = workPlanService.findLinkBusiness(workPlan, workPlanDto);
             modelDto.setWorkPlanDto(workPlanDto);
         }
         //归档
-        if(domain.getFiling() != null){
+        if (domain.getFiling() != null) {
             Filing filing = domain.getFiling();
             FilingDto filingDto = new FilingDto();
-            BeanCopierUtils.copyProperties(filing,filingDto);
+            BeanCopierUtils.copyProperties(filing, filingDto);
             //查询补充资料函信息
-            List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(),filing.getId(),null);
-            if(Validate.isList(registerFileList)){
+            List<AddRegisterFile> registerFileList = addRegisterFileRepo.findByIds(AddRegisterFile_.businessId.getName(), filing.getId(), null);
+            if (Validate.isList(registerFileList)) {
                 List<AddRegisterFileDto> dtoList = new ArrayList<>(registerFileList.size());
                 registerFileList.forEach(rgf -> {
                     AddRegisterFileDto dto = new AddRegisterFileDto();
-                    BeanCopierUtils.copyProperties(rgf,dto);
+                    BeanCopierUtils.copyProperties(rgf, dto);
                     dtoList.add(dto);
                 });
                 filingDto.setRegisterFileDto(dtoList);
@@ -247,7 +247,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         }
         //专家评审方案
         ExpertReview expertReview = expertReviewRepo.findByBusinessId(id);
-        if(Validate.isObject(expertReview)){
+        if (Validate.isObject(expertReview)) {
             ExpertReviewDto expertReviewDto = expertReviewRepo.formatReview(expertReview);
             modelDto.setExpertReviewDto(expertReviewDto);
         }
@@ -256,43 +256,45 @@ public class TopicInfoServiceImpl implements TopicInfoService {
 
     /**
      * 删除操作
+     *
      * @param id
      * @return
      */
     @Override
     @Transactional
     public ResultMsg delete(String id) {
-        TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(),id);
-        if(Validate.isString(topicInfo.getProcessInstanceId())){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"您已经发起了流程，不能对数据进行删除！");
+        TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), id);
+        if (Validate.isString(topicInfo.getProcessInstanceId())) {
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您已经发起了流程，不能对数据进行删除！");
         }
-        topicInfoRepo.deleteById(TopicInfo_.id.getName(),id);
+        topicInfoRepo.deleteById(TopicInfo_.id.getName(), id);
         flowPrincipalRepo.deletePriUserByBusiId(id);
 
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "删除成功！");
     }
 
     /**
      * 查询详情
+     *
      * @param id
      * @return
      */
     @Override
     public TopicInfoDto findDetailById(String id) {
-        TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(),id);
-        if(topicInfo == null ){
+        TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), id);
+        if (topicInfo == null) {
             return null;
         }
         TopicInfoDto topicInfoDto = new TopicInfoDto();
-        BeanCopierUtils.copyProperties(topicInfo,topicInfoDto);
+        BeanCopierUtils.copyProperties(topicInfo, topicInfoDto);
         //获取项目负责人
         List<FlowPrincipal> list = flowPrincipalRepo.getFlowPrinInfoByBusiId(id);
-        if(Validate.isList(list)){
-            list.forEach(l->{
-                if(Constant.EnumState.YES.getValue().equals(l.getIsMainUser())){
+        if (Validate.isList(list)) {
+            list.forEach(l -> {
+                if (Constant.EnumState.YES.getValue().equals(l.getIsMainUser())) {
                     topicInfoDto.setMainPrinUserId(l.getUserId());
-                }else{
-                    topicInfoDto.setPrinUserIds(topicInfoDto.getPrinUserIds()+l.getUserId()+",");
+                } else {
+                    topicInfoDto.setPrinUserIds(topicInfoDto.getPrinUserIds() + l.getUserId() + ",");
                 }
             });
         }
@@ -301,16 +303,17 @@ public class TopicInfoServiceImpl implements TopicInfoService {
 
     /**
      * 流程处理
+     *
      * @param processInstance
      * @param flowDto
      * @return ResultMsg
      */
     @Override
     @Transactional
-    public ResultMsg dealFlow(ProcessInstance processInstance,Task task, FlowDto flowDto) {
+    public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
-        assigneeValue = "";                             //流程处理人
-        Map<String,Object> variables = null;                   //流程参数
+                assigneeValue = "";                             //流程处理人
+        Map<String, Object> variables = null;                   //流程参数
         User dealUser = null;                                  //用户
         List<User> dealUserList = null;                        //用户列表
         TopicInfo topicInfo = null;                            //课题研究
@@ -322,9 +325,9 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         switch (task.getTaskDefinitionKey()) {
             //部长审核计划
             case FlowConstant.TOPIC_BZSH_JH:
-                variables = findOrgLeader(businessId,true,assigneeValue);
+                variables = findOrgLeader(businessId, true, assigneeValue);
                 //下一环节还是自己处理
-                if(assigneeValue.equals(SessionUtil.getUserId())){
+                if (assigneeValue.equals(SessionUtil.getUserId())) {
                     isNextUser = true;
                     nextNodeKey = FlowConstant.TOPIC_FGLD_JH;
                 }
@@ -336,36 +339,36 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 dealUser = dealUserList.get(0);
-                assigneeValue= Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),assigneeValue);
+                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(), assigneeValue);
 
                 //下一环节还是自己处理
-                if(assigneeValue.equals(SessionUtil.getUserId())){
+                if (assigneeValue.equals(SessionUtil.getUserId())) {
                     isNextUser = true;
                     nextNodeKey = FlowConstant.TOPIC_ZRSH_JH;
                 }
                 break;
             //主任审核计划
             case FlowConstant.TOPIC_ZRSH_JH:
-                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(),businessId);
+                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
                 //如果送发改委
-                if(Constant.EnumState.YES.getValue().equals(topicInfo.getSendFgw()) || topicInfo.getSendFgw()==null){
-                    variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ADMIN.getValue(),SUPER_USER);
+                if (Constant.EnumState.YES.getValue().equals(topicInfo.getSendFgw()) || topicInfo.getSendFgw() == null) {
+                    variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ADMIN.getValue(), SUPER_USER);
                     variables.put(FlowConstant.FlowParams.SEND_FGW.getValue(), true);
                     //下一环节还是自己处理
-                    if(assigneeValue.equals(SessionUtil.getUserId())){
+                    if (assigneeValue.equals(SessionUtil.getUserId())) {
                         isNextUser = true;
                         nextNodeKey = FlowConstant.TOPIC_BFGW;
                     }
 
-                }else{
-                    variables = findPrinUser(businessId,assigneeValue);
+                } else {
+                    variables = findPrinUser(businessId, assigneeValue);
                     variables.put(FlowConstant.FlowParams.SEND_FGW.getValue(), false);
                 }
                 break;
             //报发改委
-            case FlowConstant.TOPIC_BFGW :
-                variables = findPrinUser(businessId,assigneeValue);
+            case FlowConstant.TOPIC_BFGW:
+                variables = findPrinUser(businessId, assigneeValue);
                 break;
 
            /* //联系合作单位
@@ -385,48 +388,48 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 variables = findPrinUser(businessId,assigneeValue);
                 break;*/
             //提出成果鉴定会
-            case FlowConstant.TOPIC_GZFA :
+            case FlowConstant.TOPIC_GZFA:
                 workPlan = workPlanRepo.findById("topId", businessId);
-                if(workPlan == null || !Validate.isString(workPlan.getId())){
+                if (workPlan == null || !Validate.isString(workPlan.getId())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没完成工作方案，不能进行下一步操作！");
                 }
                 //更改预定会议室状态
                 roomBookingRepo.updateStateByBusinessId(workPlan.getId(), Constant.EnumState.PROCESS.getValue());
-                variables = findOrgLeader(businessId,false,assigneeValue);
+                variables = findOrgLeader(businessId, false, assigneeValue);
                 break;
             //部长审核方案
-            case FlowConstant.TOPIC_BZSH_FA :
+            case FlowConstant.TOPIC_BZSH_FA:
                 workPlan = workPlanRepo.findById("topId", businessId);
                 workPlan.setDirectorName(SessionUtil.getDisplayName());
                 workPlan.setDirectorOption(flowDto.getDealOption());
-                workPlan.setDirectorDate( new Date());
+                workPlan.setDirectorDate(new Date());
                 workPlanRepo.save(workPlan);
-                variables = findOrgLeader(businessId,true,assigneeValue);
+                variables = findOrgLeader(businessId, true, assigneeValue);
                 break;
             //分管副主任审核方案
-            case FlowConstant.TOPIC_FGLD_FA :
-                variables = findOrgLeader(businessId,true,assigneeValue);
+            case FlowConstant.TOPIC_FGLD_FA:
+                variables = findOrgLeader(businessId, true, assigneeValue);
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(dealUserList)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 dealUser = dealUserList.get(0);
-                assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),assigneeValue);
+                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(), assigneeValue);
                 //下一环节还是自己处理
-                if(assigneeValue.equals(SessionUtil.getUserId())){
+                if (assigneeValue.equals(SessionUtil.getUserId())) {
                     isNextUser = true;
                     nextNodeKey = FlowConstant.TOPIC_ZRSH_FA;
                 }
                 workPlan = workPlanRepo.findById("topId", businessId);
                 workPlan.setLeaderName(SessionUtil.getDisplayName());
                 workPlan.setLeaderOption(flowDto.getDealOption());
-                workPlan.setLeaderDate( new Date());
+                workPlan.setLeaderDate(new Date());
                 workPlanRepo.save(workPlan);
                 break;
             //主任审定
-            case FlowConstant.TOPIC_ZRSH_FA :
-                variables = findPrinUser(businessId,assigneeValue);
+            case FlowConstant.TOPIC_ZRSH_FA:
+                variables = findPrinUser(businessId, assigneeValue);
 
                 workPlan = workPlanRepo.findById("topId", businessId);
                 workPlan.setMleaderName(SessionUtil.getDisplayName());
@@ -442,70 +445,70 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 variables = findPrinUser(businessId,assigneeValue);
                 break;*/
             //完成课题报告
-            case FlowConstant.TOPIC_KTBG :
-                variables = findOrgLeader(businessId,false,assigneeValue);
+            case FlowConstant.TOPIC_KTBG:
+                variables = findOrgLeader(businessId, false, assigneeValue);
                 break;
             //部长审核
-            case FlowConstant.TOPIC_BZSH_BG :
-                variables = findOrgLeader(businessId,true,assigneeValue);
+            case FlowConstant.TOPIC_BZSH_BG:
+                variables = findOrgLeader(businessId, true, assigneeValue);
                 break;
             //分管副主任审核
-            case FlowConstant.TOPIC_FGLD_BG :
+            case FlowConstant.TOPIC_FGLD_BG:
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(dealUserList)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 dealUser = dealUserList.get(0);
-                assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),assigneeValue);
+                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(), assigneeValue);
                 //下一环节还是自己处理
-                if(assigneeValue.equals(SessionUtil.getUserId())){
+                if (assigneeValue.equals(SessionUtil.getUserId())) {
                     isNextUser = true;
                     nextNodeKey = FlowConstant.TOPIC_ZRSH_BG;
                 }
                 break;
             //主任审核
-            case FlowConstant.TOPIC_ZRSH_BG :
-                variables = findPrinUser(businessId,assigneeValue);
+            case FlowConstant.TOPIC_ZRSH_BG:
+                variables = findPrinUser(businessId, assigneeValue);
                 break;
             //课题结题
-            case FlowConstant.TOPIC_KTJT :
-                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(),businessId);
+            case FlowConstant.TOPIC_KTJT:
+                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
                 topicInfo.setEndTime(new Date());
                 topicInfoRepo.save(topicInfo);
-                variables = findOrgLeader(businessId,false,assigneeValue);
+                variables = findOrgLeader(businessId, false, assigneeValue);
                 break;
             //部长审核
-            case FlowConstant.TOPIC_BZSH_JT :
-                variables = findOrgLeader(businessId,true,assigneeValue);
+            case FlowConstant.TOPIC_BZSH_JT:
+                variables = findOrgLeader(businessId, true, assigneeValue);
                 break;
             //分管副主任审核
-            case FlowConstant.TOPIC_FGLD_JT :
+            case FlowConstant.TOPIC_FGLD_JT:
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                 if (!Validate.isList(dealUserList)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                 }
                 dealUser = dealUserList.get(0);
-                assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(),assigneeValue);
+                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ZR.getValue(), assigneeValue);
                 //下一环节还是自己处理
-                if(assigneeValue.equals(SessionUtil.getUserId())){
+                if (assigneeValue.equals(SessionUtil.getUserId())) {
                     isNextUser = true;
                     nextNodeKey = FlowConstant.TOPIC_ZRSH_JT;
                 }
                 break;
             //主任审核
-            case FlowConstant.TOPIC_ZRSH_JT :
-                variables = findPrinUser(businessId,assigneeValue);
+            case FlowConstant.TOPIC_ZRSH_JT:
+                variables = findPrinUser(businessId, assigneeValue);
                 break;
             /*//印发资料
             case FlowConstant.TOPIC_YFZL :
                 variables = findMainPrinUser(businessId,assigneeValue);
                 break;*/
             //资料归档
-            case FlowConstant.TOPIC_ZLGD :
+            case FlowConstant.TOPIC_ZLGD:
                 filing = filingRepo.findById("topId", businessId);
-                if(filing == null || !Validate.isString(filing.getId())){
+                if (filing == null || !Validate.isString(filing.getId())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没完成课题归档，不能进行下一步操作！");
                 }
                 //如果没有完成专家评分，则不可以提交到下一步
@@ -519,19 +522,19 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您还没完成专家评审费发放，不能进行下一步操作！");
                     }
                 }
-                variables = findOrgLeader(businessId,false,assigneeValue);
+                variables = findOrgLeader(businessId, false, assigneeValue);
                 break;
             //部长审核归档
-            case FlowConstant.TOPIC_BZSH_GD :
+            case FlowConstant.TOPIC_BZSH_GD:
                 dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.FILER.getValue());
                 if (!Validate.isList(dealUserList)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
                 }
                 dealUser = dealUserList.get(0);
-                assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
-                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_GDY.getValue(),assigneeValue);
+                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_GDY.getValue(), assigneeValue);
                 //下一环节还是自己处理
-                if(assigneeValue.equals(SessionUtil.getUserId())){
+                if (assigneeValue.equals(SessionUtil.getUserId())) {
                     isNextUser = true;
                     nextNodeKey = FlowConstant.TOPIC_GDY_QR;
                 }
@@ -540,12 +543,12 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 filingRepo.save(filing);
                 break;
             //归档员确认
-            case FlowConstant.TOPIC_GDY_QR :
+            case FlowConstant.TOPIC_GDY_QR:
                 filing = filingRepo.findById("topId", businessId);
                 filing.setFilingUser(SessionUtil.getDisplayName());
                 filingRepo.save(filing);
 
-                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(),businessId);
+                topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
                 topicInfo.setState(Constant.EnumState.YES.getValue());
                 topicInfoRepo.save(topicInfo);
                 break;
@@ -553,18 +556,18 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 ;
         }
 
-        taskService.addComment(task.getId(), processInstance.getId(),(flowDto == null)?"":flowDto.getDealOption());    //添加处理信息
+        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
         if (flowDto.isEnd()) {
             taskService.complete(task.getId());
         } else {
             taskService.complete(task.getId(), variables);
             //如果下一环节还是自己
-            if(isNextUser){
+            if (isNextUser) {
                 List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
-                for(Task t:nextTaskList){
-                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
-                        ResultMsg returnMsg = dealFlow(processInstance,t,flowDto);
-                        if(returnMsg.isFlag() == false){
+                for (Task t : nextTaskList) {
+                    if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
+                        ResultMsg returnMsg = dealFlow(processInstance, t, flowDto);
+                        if (returnMsg.isFlag() == false) {
                             return returnMsg;
                         }
                         break;
@@ -573,25 +576,26 @@ public class TopicInfoServiceImpl implements TopicInfoService {
             }
         }
         //放入腾讯通消息缓冲池
-        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(),assigneeValue);
+        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
     /**
      * 处理发改委返回的结果
+     *
      * @param resultMsg
      * @param topicInfoDto
      * @return
      */
     @Override
-    public ResultMsg dealReturnAudit(ResultMsg resultMsg,TopicInfoDto topicInfoDto) {
+    public ResultMsg dealReturnAudit(ResultMsg resultMsg, TopicInfoDto topicInfoDto) {
         ResultMsg resultObj = null;
-        try{
+        try {
 
-            if(topicInfoDto == null){
+            if (topicInfoDto == null) {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_TOPIC_01.getCode(), IFResultCode.IFMsgCode.SZEC_TOPIC_01.getValue());
             }
-            if(!Validate.isString(topicInfoDto.getProcessInstanceId())){
+            if (!Validate.isString(topicInfoDto.getProcessInstanceId())) {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_TOPIC_02.getCode(), IFResultCode.IFMsgCode.SZEC_TOPIC_02.getValue());
             }
             ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(topicInfoDto.getProcessInstanceId()).singleResult();
@@ -602,15 +606,15 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
             }
             if (task == null) {
-                return new ResultMsg(false,IFResultCode.IFMsgCode.SZEC_TOPIC_03.getCode(), IFResultCode.IFMsgCode.SZEC_TOPIC_03.getValue());
+                return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_TOPIC_03.getCode(), IFResultCode.IFMsgCode.SZEC_TOPIC_03.getValue());
             }
             //方案通过，进行下一步处理
-            if(resultMsg.isFlag() || "01".equals(resultMsg.getReCode())){
+            if (resultMsg.isFlag() || "01".equals(resultMsg.getReCode())) {
                 FlowDto flowDto = new FlowDto();
                 flowDto.setDealOption(resultMsg.getReMsg());
-                return dealFlow(processInstance, task,flowDto);
-            }else{
-                switch (resultMsg.getReCode()){
+                return dealFlow(processInstance, task, flowDto);
+            } else {
+                switch (resultMsg.getReCode()) {
                     case "02":              //方案修改,流程回退
                         FlowDto flowDto = new FlowDto();
                         flowDto.setTaskId(task.getId());
@@ -628,79 +632,68 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 }
             }
             return resultObj;
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getValue());
         }
     }
 
     /**
      * 获取部门领导
+     *
      * @param assigneeValue
      * @param businessId
      * @param isSLeader(true:返回分管领导，false:返回部门负责人)
      * @return
      */
-    private Map<String,Object> findOrgLeader(String businessId,boolean isSLeader,String assigneeValue) {
-        Map<String,Object> resultMap = null;
-        TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(),businessId);
+    private Map<String, Object> findOrgLeader(String businessId, boolean isSLeader, String assigneeValue) {
+        Map<String, Object> resultMap = null;
+        TopicInfo topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
         OrgDept orgDept = orgDeptRepo.findOrgDeptById(topicInfo.getOrgId());
-        if(isSLeader){
+        if (isSLeader) {
             User dealUser = userRepo.getCacheUserById(orgDept.getsLeaderID());
-            assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
-            resultMap = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_FGLD.getValue(),assigneeValue);
+            assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+            resultMap = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);
             return resultMap;
-        }else{
+        } else {
             User dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
-            assigneeValue= Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
-            resultMap = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(),assigneeValue);
+            assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+            resultMap = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(), assigneeValue);
             return resultMap;
         }
     }
 
     /**
      * 获取项目负责人
+     *
      * @param businessId
      * @param assigneeValue
      * @return
      */
-    private Map<String,Object> findPrinUser(String businessId, String assigneeValue) {
-        Map<String,Object> resultMap = null;
+    private Map<String, Object> findPrinUser(String businessId, String assigneeValue) {
+        Map<String, Object> resultMap = null;
         List<User> dealUserList = flowPrincipalRepo.getFlowAllPrinByBusiId(businessId);
-        for(User pu : dealUserList){
-            if(Validate.isString(assigneeValue)){
+        for (User pu : dealUserList) {
+            if (Validate.isString(assigneeValue)) {
                 assigneeValue += ",";
             }
-            assigneeValue += Validate.isString(pu.getTakeUserId())?pu.getTakeUserId():pu.getId();
+            assigneeValue += Validate.isString(pu.getTakeUserId()) ? pu.getTakeUserId() : pu.getId();
         }
-        resultMap = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USERS.getValue(),assigneeValue);
-       return resultMap;
-    }
-
-    /**
-     * 获取项目负责人
-     * @param businessId
-     * @param assigneeValue
-     * @return
-     */
-    private Map<String,Object> findMainPrinUser(String businessId, String assigneeValue) {
-        Map<String,Object> resultMap = null;
-        User user = flowPrincipalRepo.getFlowMainPrinByBusiId(businessId);
-        assigneeValue = Validate.isString(user.getTakeUserId())?user.getTakeUserId():user.getId();
-        resultMap = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER.getValue(),assigneeValue);
+        resultMap = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USERS.getValue(), assigneeValue);
         return resultMap;
     }
 
     /**
-     * 根据归档日期，获取存最大序号
-     * @param yearString
+     * 获取项目负责人
+     *
+     * @param businessId
+     * @param assigneeValue
      * @return
      */
-    private int findCurMaxSeq(String yearString) {
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max("+ TopicInfo_.topicSeq.getName()+") from cs_topic_info where "+TopicInfo_.createdDate.getName()+" between ");
-        sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )");
-        sqlBuilder.setParam("beginTime", yearString+"-01-01 00:00:00");
-        sqlBuilder.setParam("endTime", yearString+"-12-31 23:59:59");
-        return topicInfoRepo.returnIntBySql(sqlBuilder);
+    private Map<String, Object> findMainPrinUser(String businessId, String assigneeValue) {
+        Map<String, Object> resultMap = null;
+        User user = flowPrincipalRepo.getFlowMainPrinByBusiId(businessId);
+        assigneeValue = Validate.isString(user.getTakeUserId()) ? user.getTakeUserId() : user.getId();
+        resultMap = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER.getValue(), assigneeValue);
+        return resultMap;
     }
 }

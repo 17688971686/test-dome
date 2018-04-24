@@ -92,7 +92,7 @@ public class FilingServiceImpl implements FilingService {
         if (!Validate.isString(domain.getFileNo())) {
             String year = DateUtils.converToString(domain.getFilingDate(), "yyyy");
             String fileNumValue;
-            int maxSeq = findCurMaxSeq(year);
+            int maxSeq = filingRepo.findCurMaxSeq(year);
             if (maxSeq < 1000) {
                 fileNumValue = String.format("%03d", Integer.valueOf(maxSeq + 1));
             } else {
@@ -191,20 +191,5 @@ public class FilingServiceImpl implements FilingService {
         }
         BeanCopierUtils.copyProperties(filing, result);
         return result;
-    }
-
-    /**
-     * 根据归档日期，获取存档顺序号
-     *
-     * @param yearString
-     * @return
-     */
-    private int findCurMaxSeq(String yearString) {
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max(" + Filing_.filingSeq.getName() + ") from cs_topic_filing where " + Filing_.filingDate.getName() + " between ");
-        sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )");
-        sqlBuilder.setParam("beginTime", yearString + "-01-01 00:00:00");
-        sqlBuilder.setParam("endTime", yearString + "-12-31 23:59:59");
-        return filingRepo.returnIntBySql(sqlBuilder);
     }
 }

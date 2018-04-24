@@ -13,4 +13,12 @@ public interface FileRecordRepo extends IRepository<FileRecord, String> {
      * @return
      */
     boolean isFileRecord(String businessId);
+
+    /**
+     * 获取最大归档编号
+     * @param yearName
+     * @param seqType
+     * @return
+     */
+    int getMaxSeq(String yearName, String seqType);
 }

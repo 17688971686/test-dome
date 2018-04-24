@@ -1,8 +1,10 @@
 package cs.repository.repositoryImpl.project;
 
 import cs.common.HqlBuilder;
+import cs.common.utils.DateUtils;
 import cs.domain.project.AddSuppLetter;
 import cs.domain.project.AddSuppLetter_;
+import cs.domain.topic.Filing_;
 import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
@@ -41,10 +43,22 @@ public class AddSuppLetterRepoImpl extends AbstractRepository<AddSuppLetter, Str
      * @return
      */
     @Override
-    public  Integer findybMaxSeq(String fileType){
+    public int findybMaxSeq(String fileType){
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select max(" + AddSuppLetter_.monthlySeq.getName() + ") from cs_add_suppLetter" );
         sqlBuilder.append(" where " + AddSuppLetter_.fileType.getName() + " =:fileType ").setParam("fileType", fileType);
+        return addSuppLetterRepo.returnIntBySql(sqlBuilder);
+    }
+
+    /**
+     * 归档最大序号
+     * @param yearName
+     * @return
+     */
+    @Override
+    public int findCurMaxSeq(String yearName) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select max(" + AddSuppLetter_.fileSeq.getName() + ") from cs_add_suppLetter where to_char(" + AddSuppLetter_.suppLetterTime.getName()+" , 'yyyy') = :yearName ");
         return addSuppLetterRepo.returnIntBySql(sqlBuilder);
     }
 

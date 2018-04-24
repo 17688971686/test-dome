@@ -898,7 +898,9 @@ public class FlowAppServiceImpl implements FlowAppService {
                 //设置归档编号
                 if (!Validate.isString(fileRecord.getFileNo())) {
                     String fileNumValue = "";
-                    int maxSeq = fileRecordService.findCurMaxSeq(fileRecord.getFileDate());
+                    String seqType = ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage());
+                    String yearName = DateUtils.converToString(fileRecord.getFileDate(),DateUtils.DATE_YEAR);
+                    int maxSeq = fileRecordRepo.getMaxSeq(yearName,seqType);
                     maxSeq = maxSeq + 1;
                     if (maxSeq < 1000) {
                         fileNumValue = String.format("%03d", maxSeq);

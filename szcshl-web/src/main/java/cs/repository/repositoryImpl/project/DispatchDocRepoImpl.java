@@ -16,6 +16,9 @@ import cs.domain.project.DispatchDoc_;
 import cs.domain.project.Sign_;
 import cs.repository.AbstractRepository;
 
+import static cs.common.Constant.DEVICE_BILL_HOMELAND;
+import static cs.common.Constant.DEVICE_BILL_IMPORT;
+
 @Repository
 public class DispatchDocRepoImpl extends AbstractRepository<DispatchDoc, String> implements DispatchDocRepo {
     @Autowired
@@ -70,5 +73,26 @@ public class DispatchDocRepoImpl extends AbstractRepository<DispatchDoc, String>
                 save(dispatchDoc);
             }
         }
+    }
+
+    /**
+     * 获取最大发文编号
+     * @param yearName
+     * @param seqType 1是表示其它发文，2是设备清单发文（国产设备的发文编号为：深投审设[xxxx],其它阶段为：深投审[xxxx],）
+     * @return
+     */
+    @Override
+    public int getMaxSeq(String yearName, String seqType) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select max("+ DispatchDoc_.fileSeq.getName()+") from cs_dispatch_doc where to_char("+DispatchDoc_.dispatchDate.getName()+", 'yyyy') = :yearName ");
+        sqlBuilder.setParam("yearName",yearName);
+        if(Constant.EnumState.PROCESS.getValue().equals(seqType)){
+            sqlBuilder.append(" and "+DispatchDoc_.dispatchStage.getName() +" != :dispatchStage1 and  "+DispatchDoc_.dispatchStage.getName() +" != :dispatchStage2 ");
+            sqlBuilder.setParam("dispatchStage1",DEVICE_BILL_HOMELAND).setParam("dispatchStage2",DEVICE_BILL_IMPORT);
+        }else{
+            sqlBuilder.append(" and ("+DispatchDoc_.dispatchStage.getName() +" != :dispatchStage1 or "+DispatchDoc_.dispatchStage.getName() +" != :dispatchStage2 )");
+            sqlBuilder.setParam("dispatchStage1",DEVICE_BILL_HOMELAND).setParam("dispatchStage2",DEVICE_BILL_IMPORT);
+        }
+        return returnIntBySql(sqlBuilder);
     }
 }

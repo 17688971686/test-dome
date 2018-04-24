@@ -1492,6 +1492,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      * @param projectReviewConditionDto
      * @return
      */
+    @Override
    public ProReviewConditionDto getAdvancedCon(ProReviewConditionDto projectReviewConditionDto){
        HqlBuilder sqlBuilder = HqlBuilder.create();
        sqlBuilder.append("select  count(s.projectcode),sum(d.declarevalue) / 10000 declarevalue,sum(d.authorizevalue) / 10000 authorizevalue, " +
@@ -1557,7 +1558,6 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
            }else{
                proReviewConditionDto.setLjhj(null);
            }
-
            if (null != projectReviewCon[4]) {
                proReviewConditionDto.setHjl((BigDecimal) projectReviewCon[4]);
            }else{
@@ -1576,8 +1576,8 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
     public List<ExpertSelectedDto> findByBusinessId(String businessID) {
         Criteria criteria = expertSelectedRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(ExpertSelected_.businessId.getName(),businessID));
-        criteria.add(Restrictions.eq(ExpertSelected_.isJoin.getName(),"9"));
-        criteria.add(Restrictions.eq(ExpertSelected_.isConfrim.getName(),"9"));
+        criteria.add(Restrictions.eq(ExpertSelected_.isConfrim.getName(), Constant.EnumState.YES.getValue()));
+        criteria.add(Restrictions.or(Restrictions.eq(ExpertSelected_.isJoin.getName(),Constant.EnumState.YES.getValue()),Restrictions.eq(ExpertSelected_.isJoin.getName(),Constant.EnumState.STOP.getValue())));
         criteria.addOrder(Property.forName(ExpertSelected_.expertSeq.getName()).asc());
         List<ExpertSelected> expertSelectedList = criteria.list();
         List<ExpertSelectedDto> expertSelectedDtoList = new ArrayList<>();

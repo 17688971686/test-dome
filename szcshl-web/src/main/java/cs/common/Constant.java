@@ -93,6 +93,10 @@ public class Constant {
     public static Float WORK_DAY_25 = 25f;
 
     /**
+     * 归档工作日
+     */
+    public static Float WORK_DAY_30 = 30f;
+    /**
      * 3
      */
     public static Float WORK_DAY_3 = 3f;
@@ -152,24 +156,6 @@ public class Constant {
         }
     }
 
-    public static enum SeqType {
-        SIGN_PX("1"),
-        SIGN_GX("2"),
-        DIS_STS("3"),
-        DIS_STSS("4"),
-        DIS_STSH("5"),
-        FILE_GD("6");
-
-        private String value;
-
-        SeqType(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
     /**
      * 以下是缓存参数
      */
@@ -807,9 +793,9 @@ public class Constant {
         KT("KT"),                //课题编号
         KD("KD"),                //课题归档编号
         YD("YD"),                //月报简报
-        PD("PD"),
-        GD("GD"),
-        SD("SD");
+        PD("PD"),                //评估类，资金申请报告，其它类
+        GD("GD"),                //概算类
+        SD("SD");                //设备类
         private String value;
 
         FILE_RECORD_KEY(String value) {

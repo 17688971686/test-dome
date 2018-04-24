@@ -149,19 +149,4 @@ public class FileRecordServiceImpl implements FileRecordService {
         return fileRecordDto;
     }
 
-    /**
-     * 根据归档日期，获取存档顺序号
-     * @param fileRecordDate
-     * @return
-     */
-    @Override
-    @Deprecated
-    public int findCurMaxSeq(Date fileRecordDate) {
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max("+ FileRecord_.fileSeq.getName()+") from cs_file_record where "+FileRecord_.fileDate.getName()+" between ");
-        sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )");
-        sqlBuilder.setParam("beginTime", DateUtils.converToString(fileRecordDate,"yyyy")+"-01-01 00:00:00");
-        sqlBuilder.setParam("endTime", DateUtils.converToString(fileRecordDate,"yyyy")+"-12-31 23:59:59");
-        return fileRecordRepo.returnIntBySql(sqlBuilder);
-    }
 }

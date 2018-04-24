@@ -19,8 +19,7 @@
                         //如果已经发起流程，则不允许再修改
                         if(data.reObj.processInstanceId){
                             bsWin.alert("操作成功！");
-                        }
-                        else{
+                        } else{
                             bsWin.success("操作成功，请继续填写项目审核登记表",function(){
                                 $state.go('fillSign', {signid: data.reObj.signid}, {reload: true});
                             });

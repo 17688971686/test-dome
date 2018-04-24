@@ -5,9 +5,11 @@ import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import cs.domain.expert.ExpertSelected;
 import cs.model.PageModelDto;
-import cs.model.expert.*;
+import cs.model.expert.ExpertDto;
+import cs.model.expert.ExpertNewInfoDto;
+import cs.model.expert.ExpertReviewDto;
+import cs.model.expert.ExpertSelectedDto;
 import cs.repository.odata.ODataObj;
 import cs.service.expert.ExpertReviewService;
 import cs.service.expert.ExpertSelConditionService;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Description: 专家评审 控制层
@@ -63,11 +64,11 @@ public class ExpertReviewController {
      */
     @RequiresAuthentication
     //@RequiresPermissions("expertReview#updateJoinState#post")
-    @RequestMapping(name = "更改专家状态", path = "updateJoinState", method = RequestMethod.POST)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateExpertState(String minBusinessId, String businessType, @RequestParam(required = true) String expertSelId,
+    @RequestMapping(name = "更改抽取专家状态", path = "updateJoinState", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg updateExpertState( @RequestParam(required = true)String reviewId,String minBusinessId, String businessType, @RequestParam(required = true) String expertSelId,
                                   @RequestParam(required = true) String state) {
-        expertReviewService.updateExpertState(minBusinessId, businessType, expertSelId, state, false);
+        return expertReviewService.updateJoinState(reviewId,minBusinessId, businessType, expertSelId, state);
     }
 
     /**
@@ -96,7 +97,7 @@ public class ExpertReviewController {
         if (selectCount + (Validate.isList(ids) ? ids.size() : 0) > totalCount) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，选择专家人数已经超过了抽取设定人数！");
         }
-        expertReviewService.updateExpertState(minBusinessId, businessType, expertSelId, state, true);
+        expertReviewService.updateConfirmState(minBusinessId, businessType, expertSelId, state);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 

@@ -674,8 +674,9 @@
                     </select>
                 </td>
 
-                <td align="center"><input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="x.isLetterRw"
-                                          ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
+                <td align="center">
+                    <input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="x.isLetterRw"
+                    ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
                 <td align="center">{{x.expertDto.remark}}</td>
             </tr>
         </table>

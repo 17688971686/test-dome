@@ -94,15 +94,6 @@ public interface AddSuppLetterService {
 	void updateSuppLetterState(String businessId, String businessType, Date disapDate);
 
 	/**
-	 * 获取最大拟稿编号
-	 *
-	 * @param dispaDate
-	 * @return
-	 */
-	@Deprecated
-	int findCurMaxSeq(Date dispaDate);
-
-	/**
 	 * 初始化最大收文编号
 	 * @param addSuppLetter
 	 */

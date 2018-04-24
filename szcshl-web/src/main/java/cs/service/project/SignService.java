@@ -237,7 +237,7 @@ public interface SignService {
      * @param size 页数
      * @return
      */
-    PageModelDto<SignDispaWork> findAssociateSignList(String signid,String reviewstage,String projectname,String skip,String size);
+    PageModelDto<SignDispaWork> findAssociateSignList(String signid,String reviewstage,String projectname,String mUserName,String skip,String size);
 
     /**
      * 查找项目编制单位

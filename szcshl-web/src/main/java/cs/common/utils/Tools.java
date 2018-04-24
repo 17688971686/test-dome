@@ -5,25 +5,15 @@ package cs.common.utils;
  * <p>Title: Tools.java</p>
  * <p>Description: 通用工具,主要为类型转换</p>
  */
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+
+import org.apache.log4j.Logger;
+
+import java.io.*;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Properties;
 import java.util.Random;
 import java.util.Vector;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import org.apache.log4j.Logger;
 
 public class Tools {
 

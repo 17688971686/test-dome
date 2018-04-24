@@ -607,9 +607,9 @@
                     signid: vm.price.signid,
                     reviewstage: vm.price.reviewstage,
                     projectname: vm.price.projectname,
+                    mUserName : vm.price.mUserName,
                     skip: vm.price.skip,
                     size: vm.price.size,
-
                 },
             }).then(function (r) {
                 if (typeof callBack == 'function') {

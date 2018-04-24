@@ -18,5 +18,12 @@ public interface AddSuppLetterRepo extends IRepository<AddSuppLetter, String> {
      * @param fileType
      * @return
      */
-    Integer findybMaxSeq(String fileType);
+    int findybMaxSeq(String fileType);
+
+    /**
+     * 获取最大序号
+     * @param yearName
+     * @return
+     */
+    int findCurMaxSeq(String yearName);
 }

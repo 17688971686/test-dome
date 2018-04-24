@@ -18,7 +18,6 @@
         http: http,                                 // http请求
         gridDataSource: gridDataSource,             // gridDataSource
         buildOdataFilter: buildOdataFilter,         // 创建多条件查询的filter
-        //initDictData: initDictData,                 // 初始化数字字典
         kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
         getTaskCount: getTaskCount,                 // 用户待办总数
         uuid : uuid,                                // js

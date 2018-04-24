@@ -425,12 +425,13 @@
         }//E_validateAutoExpert
 
         //S_updateJoinState
-        function updateJoinState(minBusinessId,businessType,ids, joinState,isCommit,callBack) {
+        function updateJoinState(reviewId,minBusinessId,businessType,ids, joinState,isCommit,callBack) {
             isCommit = true;
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expertReview/updateJoinState",
                 params: {
+                    reviewId : reviewId,
                     minBusinessId : minBusinessId,
                     businessType : businessType,
                     expertSelId: ids,

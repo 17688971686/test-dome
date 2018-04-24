@@ -165,21 +165,17 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传"+errorBuffer.toString()+"附件信息！");
         }*/
         //是否是设备清单（国产设备的发文编号为：深投审设[xxxx],其它阶段为：深投审[xxxx],）
-        String seqType = SeqType.DIS_STS.getValue();
+        String seqType = EnumState.PROCESS.getValue();
         String fileNum = DISPATCH_PREFIX;
         if (DEVICE_BILL_HOMELAND.equals(dispatchDoc.getDispatchStage()) || DEVICE_BILL_IMPORT.equals(dispatchDoc.getDispatchStage())) {
-            seqType = SeqType.DIS_STSS.getValue();
+            seqType = EnumState.STOP.getValue();
             fileNum = DISPATCH_EQUIPMENT_PREFIX;
         }
         String yearName = DateUtils.converToString(dispatchDoc.getDispatchDate(), DateUtils.DATE_YEAR);
-        ProjMaxSeq projMaxSeq = projMaxSeqRepo.findByDate(yearName, seqType);
-        int maxSeq = projMaxSeq.getSeq() + 1;
+        int maxSeq = dispatchDocRepo.getMaxSeq(yearName,seqType) + 1;
         fileNum = fileNum + "[" + yearName + "]" + (maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq));
         dispatchDoc.setFileNum(fileNum);
         dispatchDoc.setFileSeq(maxSeq);
-        //更新序号表
-        projMaxSeq.setSeq(maxSeq);
-        projMaxSeqRepo.save(projMaxSeq);
         dispatchDocRepo.save(dispatchDoc);
         //如果是合并发文，则更新所有关联的发文编号
         if (Constant.MergeType.DIS_MERGE.getValue().equals(dispatchDoc.getDispatchWay())) {
@@ -189,7 +185,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             sqlBuilder.append(" where signId in (select mergeId from cs_sign_merge where signId = :signId ");
             sqlBuilder.setParam("signId", signId);
             sqlBuilder.append(" and mergeType =:mergeType )").setParam("mergeType", Constant.MergeType.DISPATCH.getValue());
-
             dispatchDocRepo.executeSql(sqlBuilder);
         }
         //更改项目信息

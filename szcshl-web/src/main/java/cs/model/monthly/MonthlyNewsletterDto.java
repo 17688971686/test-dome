@@ -71,6 +71,9 @@ public class MonthlyNewsletterDto extends BaseDto{
 	//备注
 	private String remark;
 
+	//数据迁移数据新加的字段
+	private int bgId;
+
 	public String getId() {
 		return id;
 	}
@@ -225,9 +228,12 @@ public class MonthlyNewsletterDto extends BaseDto{
 	public void setMonthlyType(String monthlyType) {
 		this.monthlyType = monthlyType;
 	}
-	
-	
-	
-	
-	
+
+    public int getBgId() {
+        return bgId;
+    }
+
+    public void setBgId(int bgId) {
+        this.bgId = bgId;
+    }
 }

@@ -100,4 +100,12 @@ public interface SignRepo extends IRepository<Sign, String> {
      * @return
      */
     boolean checkAssistSign(String businessKey);
+
+    /**
+     * 根据签收日期和类型，获取最大的收文编号
+     * @param yearName
+     * @param signType
+     * @return
+     */
+    int getMaxSignSeq(String yearName,String signType);
 }

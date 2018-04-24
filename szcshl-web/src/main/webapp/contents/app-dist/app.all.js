@@ -386,7 +386,7 @@
                     controllerAs: 'vm'
                 })
                 .state('expertReviewEdit', {
-                    url: '/expertReview/:businessId/:minBusinessId/:businessType/:reviewType/:isback',
+                    url: '/expertReview/:businessId/:minBusinessId/:businessType/:reviewType/:isback/:processInstanceId',
                     templateUrl: rootPath + '/expertReview/html/selectExpert.html',
                     controller: 'expertSelectCtrl',
                     controllerAs: 'vm'
@@ -1459,347 +1459,6 @@
     });
 })();
 
-(function () {
-    'use strict';
-
-    angular.module('app').controller('achievementListCtrl', achievementList);
-
-    achievementList.$inject = ['$location', 'achievementSvc','$state','$http','bsWin'];
-
-    function achievementList($location, achievementSvc,$state,$http,bsWin) {
-        var vm = this;
-        vm.title = '工作业绩统计表';
-        vm.model={};
-        vm.mainDoc = {};
-        vm.assistDoc = {};
-        vm.model.year = $state.params.year;
-        vm.model.quarter = $state.params.quarter;
-        activate();
-        function activate() {
-            achievementSvc.achievementSum(vm,function (data) {
-                if(data.flag || data.reCode == 'ok'){
-                    vm.achievementSumList = data.reObj.achievementSumList;
-                    if(vm.achievementSumList.length > 0){
-                        vm.assistDoc = vm.achievementSumList[0];
-                        vm.mainDoc = vm.achievementSumList[1];
-                    }
-                    vm.achievementMainList =  data.reObj.achievementMainList;
-                    vm.achievementAssistList =  data.reObj.achievementAssistList;
-                }
-            })
-        }
-
-        /**
-         * 主办人评审项目一览表
-         */
-        vm.showMainDocDetail = function () {
-            $("#mainDocDetail").kendoWindow({
-                width: "80%",
-                height: "680px",
-                title: "主办人评审项目一览表",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        /**
-         * 协办人评审项目一览表
-         */
-        vm.showAssistDocDetail = function () {
-            $("#assistDocDetail").kendoWindow({
-                width: "80%",
-                height: "680px",
-                title: "协办人评审项目一览表",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        vm.countAchievementDetail = function () {
-            achievementSvc.achievementSum(vm,function (data) {
-                if(data.flag || data.reCode == 'ok'){
-                    vm.achievementSumList = data.reObj.achievementSumList;
-                    if(vm.achievementSumList.length > 0){
-                        vm.assistDoc = vm.achievementSumList[0];
-                        vm.mainDoc = vm.achievementSumList[1];
-                    }
-                    vm.achievementMainList =  data.reObj.achievementMainList;
-                    vm.achievementAssistList =  data.reObj.achievementAssistList;
-                }
-            })
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('achievementSvc', achievement);
-
-    achievement.$inject = ['$http'];
-
-    function achievement($http) {
-        var service = {
-            achievementSum: achievementSum,
-        };
-        return service;
-
-        //S_业绩汇总
-        function achievementSum(vm,callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/signView/getAchievementSum",
-                data: vm.model
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_专家评审费用统计
-
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('addRegisterFileCtrl', addRegisterFile);
-
-    addRegisterFile.$inject = ['bsWin', 'addRegisterFileSvc', '$state'];
-
-    function addRegisterFile(bsWin, addRegisterFileSvc, $state) {
-        var vm = this;
-        vm.title = '登记补充资料';
-        vm.sign = {};//收文对象
-        vm.addRegisters = [];//登记补充材料集合
-        vm.businessId = $state.params.businessId;
-
-        //新建登记补充材料
-        vm.addRegisterFile = function () {
-            vm.addRegister = {};
-            vm.addRegister.businessId = vm.businessId;
-            vm.addRegister.id = common.uuid();
-            vm.addRegisters.push(vm.addRegister);
-        }
-
-        //保存登记补充材料
-        vm.saveRegisterFile = function () {
-            addRegisterFileSvc.saveRegisterFile(vm.addRegisters,function(data){
-                if(data.flag || data.reCode=='ok'){
-                    bsWin.alert("操作成功");
-                    vm.addRegisters = data.reObj;
-                }else{
-                    bsWin.alert(data.reMsg);
-                }
-            });
-        }
-        //删除登记补充资料
-        vm.deleteRegisterFile = function () {
-            var isCheked = $("#addRegistersTable input[name='addRegistersCheck']:checked")
-            if (isCheked.length < 1) {
-                bsWin.alert("请选择要删除的记录！");
-            } else {
-                var ids = [];
-                for (var i = 0; i < isCheked.length; i++) {
-                    vm.addRegisters.forEach(function (f, number) {
-                        if (f.id && isCheked[i].value == f.id) {
-                            ids.push(isCheked[i].value);
-                            vm.addRegisters.splice(number, 1);
-                        }
-                    });
-                }
-                if(ids.length > 0){
-                    addRegisterFileSvc.deleteByIds(ids.join(","), function (data) {
-                        bsWin.alert("删除成功！");
-                    });
-                }
-            }
-        }
-
-        //份数数字校验
-        vm.inputIntegerValue = function (checkValue, idSort) {
-            if (addRegisterFileSvc.isUnsignedInteger(checkValue)) {
-                $("#errorsUnmber" + idSort).html("");
-            } else {
-                $("#errorsUnmber" + idSort).html("只能输入数字");
-            }
-        }
-
-        activate();
-        function activate() {
-            if($state.params.businessId){
-                addRegisterFileSvc.initAddRegisterFile($state.params.businessId,function(data){
-                    if(data && data.length > 0){
-                        vm.addRegisters = data;
-                    }
-                });
-            }
-
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').controller('addRegisterFileEditCtrl', addRegisterFile);
-
-    addRegisterFile.$inject = ['$location', 'addRegisterFileSvc', '$state'];
-
-    function addRegisterFile($location, addRegisterFileSvc, $state) {
-        /* jshint validthis:true */
-        var vm = this;
-        vm.title = '添加登记补充资料';
-        vm.isuserExist = false;
-        vm.id = $state.params.id;
-        if (vm.id) {
-            vm.isUpdate = true;
-            vm.title = '更新登记补充资料';
-        }
-
-        vm.create = function () {
-            addRegisterFileSvc.createAddRegisterFile(vm);
-        };
-        vm.update = function () {
-            addRegisterFileSvc.updateAddRegisterFile(vm);
-        };
-
-        activate();
-        function activate() {
-            if (vm.isUpdate) {
-                addRegisterFileSvc.getAddRegisterFileById(vm);
-            }
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('addRegisterFileSvc', addRegisterFile);
-
-    addRegisterFile.$inject = ['$http'];
-
-    function addRegisterFile($http) {
-        var url_addRegisterFile = rootPath + "/addRegisterFile", url_back = '#/addRegisterFileList';
-        var service = {
-            initAddRegisterFile: initAddRegisterFile,		//初始化登记补充资料
-            saveRegisterFile: saveRegisterFile,				//保存登记补充材料
-            isUnsignedInteger: isUnsignedInteger,			//数字校验
-            initRegisterWinDow: initRegisterWinDow,			//初始化登记补充资料页面
-            deleteByIds: deleteByIds,                      // 根据ID删除补充资料函
-        };
-
-        return service;
-
-        function initRegisterWinDow(vm, opation) {
-            $("#addRegister").kendoWindow({
-                width: "70%",
-                height: "660px",
-                title: "意见选择",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        //检查是否为正整数
-        function isUnsignedInteger(value) {
-            if ((/^(\+|-)?\d+$/.test(value)) && value > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        //S 保存登记补充材料
-        function saveRegisterFile(addRegisters, callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/addRegisterFile/save",
-                headers: {
-                    "contentType": "application/json;charset=utf-8"  //设置请求头信息
-                },
-                traditional: true,
-                dataType: "json",
-                data: angular.toJson(addRegisters),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        //E 保存登记补充材料
-
-        //刷新页面
-        function myrefresh() {
-            window.location.reload();
-        }
-
-        //S 初始化登记补充资料
-        function initAddRegisterFile(businessId, callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/addRegisterFile/findByBusinessId",
-                params: {
-                    businessId: businessId
-                }
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-        // E 初始化登记补充资料
-
-        //S_根据ID删除补充资料函
-        function deleteByIds(ids, callBack) {
-            var httpOptions = {
-                method: 'delete',
-                url: url_addRegisterFile + "/deleteFile",
-                params: {
-                    ids: ids
-                }
-            };
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            };
-
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }
-
-    }
-})();
 (function () {
     'use strict';
 
@@ -3106,6 +2765,347 @@
     }
 })();
 
+(function () {
+    'use strict';
+
+    angular.module('app').controller('addRegisterFileCtrl', addRegisterFile);
+
+    addRegisterFile.$inject = ['bsWin', 'addRegisterFileSvc', '$state'];
+
+    function addRegisterFile(bsWin, addRegisterFileSvc, $state) {
+        var vm = this;
+        vm.title = '登记补充资料';
+        vm.sign = {};//收文对象
+        vm.addRegisters = [];//登记补充材料集合
+        vm.businessId = $state.params.businessId;
+
+        //新建登记补充材料
+        vm.addRegisterFile = function () {
+            vm.addRegister = {};
+            vm.addRegister.businessId = vm.businessId;
+            vm.addRegister.id = common.uuid();
+            vm.addRegisters.push(vm.addRegister);
+        }
+
+        //保存登记补充材料
+        vm.saveRegisterFile = function () {
+            addRegisterFileSvc.saveRegisterFile(vm.addRegisters,function(data){
+                if(data.flag || data.reCode=='ok'){
+                    bsWin.alert("操作成功");
+                    vm.addRegisters = data.reObj;
+                }else{
+                    bsWin.alert(data.reMsg);
+                }
+            });
+        }
+        //删除登记补充资料
+        vm.deleteRegisterFile = function () {
+            var isCheked = $("#addRegistersTable input[name='addRegistersCheck']:checked")
+            if (isCheked.length < 1) {
+                bsWin.alert("请选择要删除的记录！");
+            } else {
+                var ids = [];
+                for (var i = 0; i < isCheked.length; i++) {
+                    vm.addRegisters.forEach(function (f, number) {
+                        if (f.id && isCheked[i].value == f.id) {
+                            ids.push(isCheked[i].value);
+                            vm.addRegisters.splice(number, 1);
+                        }
+                    });
+                }
+                if(ids.length > 0){
+                    addRegisterFileSvc.deleteByIds(ids.join(","), function (data) {
+                        bsWin.alert("删除成功！");
+                    });
+                }
+            }
+        }
+
+        //份数数字校验
+        vm.inputIntegerValue = function (checkValue, idSort) {
+            if (addRegisterFileSvc.isUnsignedInteger(checkValue)) {
+                $("#errorsUnmber" + idSort).html("");
+            } else {
+                $("#errorsUnmber" + idSort).html("只能输入数字");
+            }
+        }
+
+        activate();
+        function activate() {
+            if($state.params.businessId){
+                addRegisterFileSvc.initAddRegisterFile($state.params.businessId,function(data){
+                    if(data && data.length > 0){
+                        vm.addRegisters = data;
+                    }
+                });
+            }
+
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').controller('addRegisterFileEditCtrl', addRegisterFile);
+
+    addRegisterFile.$inject = ['$location', 'addRegisterFileSvc', '$state'];
+
+    function addRegisterFile($location, addRegisterFileSvc, $state) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = '添加登记补充资料';
+        vm.isuserExist = false;
+        vm.id = $state.params.id;
+        if (vm.id) {
+            vm.isUpdate = true;
+            vm.title = '更新登记补充资料';
+        }
+
+        vm.create = function () {
+            addRegisterFileSvc.createAddRegisterFile(vm);
+        };
+        vm.update = function () {
+            addRegisterFileSvc.updateAddRegisterFile(vm);
+        };
+
+        activate();
+        function activate() {
+            if (vm.isUpdate) {
+                addRegisterFileSvc.getAddRegisterFileById(vm);
+            }
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('addRegisterFileSvc', addRegisterFile);
+
+    addRegisterFile.$inject = ['$http'];
+
+    function addRegisterFile($http) {
+        var url_addRegisterFile = rootPath + "/addRegisterFile", url_back = '#/addRegisterFileList';
+        var service = {
+            initAddRegisterFile: initAddRegisterFile,		//初始化登记补充资料
+            saveRegisterFile: saveRegisterFile,				//保存登记补充材料
+            isUnsignedInteger: isUnsignedInteger,			//数字校验
+            initRegisterWinDow: initRegisterWinDow,			//初始化登记补充资料页面
+            deleteByIds: deleteByIds,                      // 根据ID删除补充资料函
+        };
+
+        return service;
+
+        function initRegisterWinDow(vm, opation) {
+            $("#addRegister").kendoWindow({
+                width: "70%",
+                height: "660px",
+                title: "意见选择",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        //检查是否为正整数
+        function isUnsignedInteger(value) {
+            if ((/^(\+|-)?\d+$/.test(value)) && value > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        //S 保存登记补充材料
+        function saveRegisterFile(addRegisters, callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/addRegisterFile/save",
+                headers: {
+                    "contentType": "application/json;charset=utf-8"  //设置请求头信息
+                },
+                traditional: true,
+                dataType: "json",
+                data: angular.toJson(addRegisters),//将Json对象序列化成Json字符串，JSON.stringify()原生态方法
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        //E 保存登记补充材料
+
+        //刷新页面
+        function myrefresh() {
+            window.location.reload();
+        }
+
+        //S 初始化登记补充资料
+        function initAddRegisterFile(businessId, callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/addRegisterFile/findByBusinessId",
+                params: {
+                    businessId: businessId
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+        // E 初始化登记补充资料
+
+        //S_根据ID删除补充资料函
+        function deleteByIds(ids, callBack) {
+            var httpOptions = {
+                method: 'delete',
+                url: url_addRegisterFile + "/deleteFile",
+                params: {
+                    ids: ids
+                }
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+
+    }
+})();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('achievementListCtrl', achievementList);
+
+    achievementList.$inject = ['$location', 'achievementSvc','$state','$http','bsWin'];
+
+    function achievementList($location, achievementSvc,$state,$http,bsWin) {
+        var vm = this;
+        vm.title = '工作业绩统计表';
+        vm.model={};
+        vm.mainDoc = {};
+        vm.assistDoc = {};
+        vm.model.year = $state.params.year;
+        vm.model.quarter = $state.params.quarter;
+        activate();
+        function activate() {
+            achievementSvc.achievementSum(vm,function (data) {
+                if(data.flag || data.reCode == 'ok'){
+                    vm.achievementSumList = data.reObj.achievementSumList;
+                    if(vm.achievementSumList.length > 0){
+                        vm.assistDoc = vm.achievementSumList[0];
+                        vm.mainDoc = vm.achievementSumList[1];
+                    }
+                    vm.achievementMainList =  data.reObj.achievementMainList;
+                    vm.achievementAssistList =  data.reObj.achievementAssistList;
+                }
+            })
+        }
+
+        /**
+         * 主办人评审项目一览表
+         */
+        vm.showMainDocDetail = function () {
+            $("#mainDocDetail").kendoWindow({
+                width: "80%",
+                height: "680px",
+                title: "主办人评审项目一览表",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        /**
+         * 协办人评审项目一览表
+         */
+        vm.showAssistDocDetail = function () {
+            $("#assistDocDetail").kendoWindow({
+                width: "80%",
+                height: "680px",
+                title: "协办人评审项目一览表",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        vm.countAchievementDetail = function () {
+            achievementSvc.achievementSum(vm,function (data) {
+                if(data.flag || data.reCode == 'ok'){
+                    vm.achievementSumList = data.reObj.achievementSumList;
+                    if(vm.achievementSumList.length > 0){
+                        vm.assistDoc = vm.achievementSumList[0];
+                        vm.mainDoc = vm.achievementSumList[1];
+                    }
+                    vm.achievementMainList =  data.reObj.achievementMainList;
+                    vm.achievementAssistList =  data.reObj.achievementAssistList;
+                }
+            })
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('achievementSvc', achievement);
+
+    achievement.$inject = ['$http'];
+
+    function achievement($http) {
+        var service = {
+            achievementSum: achievementSum,
+        };
+        return service;
+
+        //S_业绩汇总
+        function achievementSum(vm,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/signView/getAchievementSum",
+                data: vm.model
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_专家评审费用统计
+
+    }
+})();
 (function () {
     'use strict';
 
@@ -10234,7 +10234,6 @@
         http: http,                                 // http请求
         gridDataSource: gridDataSource,             // gridDataSource
         buildOdataFilter: buildOdataFilter,         // 创建多条件查询的filter
-        //initDictData: initDictData,                 // 初始化数字字典
         kendoGridDataSource: kendoGridDataSource,   // 获取gridDataSource
         getTaskCount: getTaskCount,                 // 用户待办总数
         uuid : uuid,                                // js
@@ -15828,9 +15827,9 @@
 
     angular.module('app').controller('expertSelectCtrl', expertReview);
 
-    expertReview.$inject = [ 'expertReviewSvc', 'expertConditionSvc', 'expertSvc','$state','bsWin','$scope'];
+    expertReview.$inject = ['expertReviewSvc', 'expertConditionSvc', 'expertSvc', '$state', 'bsWin', '$scope'];
 
-    function expertReview(expertReviewSvc, expertConditionSvc,expertSvc, $state,bsWin,$scope) {
+    function expertReview(expertReviewSvc, expertConditionSvc, expertSvc, $state, bsWin, $scope) {
         var vm = this;
         vm.title = '选择专家';
         vm.conMaxIndex = 0;                   //条件号
@@ -15844,10 +15843,11 @@
         vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
         vm.businessType = $state.params.businessType;   //专家业务类型
         var expertID = $state.params.expertID;   //专家ID
-        vm.isback=$state.params.isback;   //用来判断返回的是否是维护页面的工作方案
+        vm.isback = $state.params.isback;   //用来判断返回的是否是维护页面的工作方案
+        vm.processInstanceId = $state.params.processInstanceId;
         vm.isSuperUser = isSuperUser;
         vm.saveNewExpertFlag = 0;   //保存新专家标志
-        vm.reviewType=$state.params.reviewType; //评审方式
+        vm.reviewType = $state.params.reviewType; //评审方式
 
 
         //S 查看专家详细
@@ -15860,7 +15860,7 @@
                     title: "专家详细信息",
                     visible: false,
                     modal: true,
-                    open:function(){
+                    open: function () {
                         $("#expertPhotoSrc").attr("src", rootPath + "/expert/transportImg?expertId=" + vm.model.expertID + "&t=" + Math.random());
                     },
                     closable: true,
@@ -15871,17 +15871,17 @@
         //S 查看专家详细
 
         //刷新已经选择的专家信息
-        vm.reFleshSelEPInfo = function(explist) {
-            $.each(explist,function(i, obj){
+        vm.reFleshSelEPInfo = function (explist) {
+            $.each(explist, function (i, obj) {
                 vm.confirmEPList.push(obj);
-                if(vm.confirmEPListReplace.length>0){
+                if (vm.confirmEPListReplace.length > 0) {
                     vm.confirmEPListReplace.push(obj);
                 }
                 //保存拟聘专家
-                if("专家函评"==vm.reviewType && obj.isLetterRw!= "9"){//是专家函评时就勾选完
-                    obj.isLetterRw=9;
-                }else if("专家评审会"==vm.reviewType && obj.isLetterRw!= "0"){
-                    obj.isLetterRw=0;
+                if ("专家函评" == vm.reviewType && obj.isLetterRw != "9") {//是专家函评时就勾选完
+                    obj.isLetterRw = 9;
+                } else if ("专家评审会" == vm.reviewType && obj.isLetterRw != "0") {
+                    obj.isLetterRw = 0;
                 }
                 vm.selectIds.push(obj.expertDto.expertID);
             })
@@ -15889,17 +15889,17 @@
         }
 
         //删除后刷新
-        vm.reFleshAfterRemove = function(ids){
-            $.each(ids,function(i, obj){
+        vm.reFleshAfterRemove = function (ids) {
+            $.each(ids, function (i, obj) {
                 //1、删除已确认的专家
-                $.each(vm.confirmEPList,function(index, epObj){
-                    if(epObj && obj == epObj.id){
+                $.each(vm.confirmEPList, function (index, epObj) {
+                    if (epObj && obj == epObj.id) {
                         vm.confirmEPList.splice(index, 1);
                     }
                 })
-                if(vm.confirmEPListReplace.length>0){
-                    $.each(vm.confirmEPListReplace,function(index, epObj){
-                        if(epObj && obj == epObj.id){
+                if (vm.confirmEPListReplace.length > 0) {
+                    $.each(vm.confirmEPListReplace, function (index, epObj) {
+                        if (epObj && obj == epObj.id) {
                             vm.confirmEPListReplace.splice(index, 1);
                         }
                     })
@@ -15908,17 +15908,17 @@
         }
 
         //更新参加未参加状态
-        vm.reFleshJoinState = function(ids,state){
-            $.each(ids,function(i, obj){
+        vm.reFleshJoinState = function (ids, state) {
+            $.each(ids, function (i, obj) {
                 //1、删除已确认的专家
-                $.each(vm.confirmEPList,function(index, epObj){
-                    if(obj == epObj.id){
+                $.each(vm.confirmEPList, function (index, epObj) {
+                    if (obj == epObj.id) {
                         epObj.isJoin = state;
                     }
                 })
-                if(vm.confirmEPListReplace.length>0){
-                    $.each(vm.confirmEPListReplace,function(index, epObj){
-                        if(epObj && obj == epObj.id){
+                if (vm.confirmEPListReplace.length > 0) {
+                    $.each(vm.confirmEPListReplace, function (index, epObj) {
+                        if (epObj && obj == epObj.id) {
                             epObj.isJoin = state;
                         }
                     })
@@ -15927,17 +15927,17 @@
         }
 
         //更新是否确认状态
-        vm.reFleshConfirmState = function(ids,state){
-            $.each(ids,function(i, obj){
+        vm.reFleshConfirmState = function (ids, state) {
+            $.each(ids, function (i, obj) {
                 //1、删除已确认的专家
-                $.each(vm.confirmEPList,function(index, epObj){
-                    if(obj == epObj.id){
+                $.each(vm.confirmEPList, function (index, epObj) {
+                    if (obj == epObj.id) {
                         epObj.isConfrim = state;
                     }
                 })
-                if(vm.confirmEPListReplace.length>0){
-                    $.each(vm.confirmEPListReplace,function(index, epObj){
-                        if(epObj && obj == epObj.id){
+                if (vm.confirmEPListReplace.length > 0) {
+                    $.each(vm.confirmEPListReplace, function (index, epObj) {
+                        if (epObj && obj == epObj.id) {
                             epObj.isConfrim = state;
                         }
                     })
@@ -15946,30 +15946,30 @@
         }
 
         //更新抽取条件的抽取次数
-        vm.updateSelectedIndex = function(id){
-            if(id){
-                $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
-                    if(con.id == id){
-                        con.selectIndex = (!con.selectIndex)?1:con.selectIndex+1;
+        vm.updateSelectedIndex = function (id) {
+            if (id) {
+                $.each(vm.expertReview.expertSelConditionDtoList, function (i, con) {
+                    if (con.id == id) {
+                        con.selectIndex = (!con.selectIndex) ? 1 : con.selectIndex + 1;
                     }
                 })
-            }else{
-                $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
-                    con.selectIndex = (!con.selectIndex)?1:con.selectIndex+1;
+            } else {
+                $.each(vm.expertReview.expertSelConditionDtoList, function (i, con) {
+                    con.selectIndex = (!con.selectIndex) ? 1 : con.selectIndex + 1;
                 })
             }
         }
 
-        vm.init = function(businessId,minBusinessId){
+        vm.init = function (businessId, minBusinessId) {
             vm.expertReview = {};
             vm.confirmEPList = [];
             vm.selectIds = [];
-            expertReviewSvc.initReview(businessId,minBusinessId,function(data){
+            expertReviewSvc.initReview(businessId, minBusinessId, function (data) {
                 vm.expertReview = data;
                 //获取已经抽取的专家
                 if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
 
-                    $.each(vm.expertReview.expertSelectedDtoList,function(i, sep){
+                    $.each(vm.expertReview.expertSelectedDtoList, function (i, sep) {
                         vm.selectIds.push(sep.expertDto.expertID);
                         vm.confirmEPList.push(sep);
                     })
@@ -15981,15 +15981,15 @@
                 }
             });
         }
-         activate();
-         function activate() {
-             expertReviewSvc.initExpertGrid(vm);
-             vm.init(vm.businessId,vm.minBusinessId);
-         }
+        activate();
+        function activate() {
+            expertReviewSvc.initExpertGrid(vm);
+            vm.init(vm.businessId, vm.minBusinessId);
+        }
 
-                     //弹出自选专家框
+        //弹出自选专家框
         vm.showSelfExpertGrid = function () {
-            vm.selfExpertOptions.dataSource._skip=0;
+            vm.selfExpertOptions.dataSource._skip = 0;
             vm.selfExpertOptions.dataSource.read();
             $("#selfExpertDiv").kendoWindow({
                 width: "80%",
@@ -16004,40 +16004,40 @@
 
         //保存自选的专家
         vm.saveSelfExpert = function (admin) {
-             var isAdmin = admin;
+            var isAdmin = admin;
             var selectIds = common.getKendoCheckId('#selfExpertGrid');
             if (selectIds.length == 0) {
                 bsWin.alert("请先选择专家！");
-            } else{
-                if(!isAdmin && selectIds.length > 1){
+            } else {
+                if (!isAdmin && selectIds.length > 1) {
                     bsWin.alert("自选专家最多只能选择一个！");
-                }else{
+                } else {
                     var selExpertIdArr = [];
                     $.each(selectIds, function (i, obj) {
                         selExpertIdArr.push(obj.value);
                     });
-                    expertReviewSvc.saveSelfExpert(vm.businessId,vm.minBusinessId,vm.businessType,selExpertIdArr.join(","),vm.expertReview.id,vm.isCommit,function(data){
-                        if(data.flag || data.reCode == 'ok'){
+                    expertReviewSvc.saveSelfExpert(vm.businessId, vm.minBusinessId, vm.businessType, selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
+                        if (data.flag || data.reCode == 'ok') {
                             //如果是普通用户，还要删除之前选择的专家，因为他只能选一个
-                            if(!isAdmin){
+                            if (!isAdmin) {
                                 var ids = [];
-                                $.each(vm.confirmEPList,function(i, obj){
-                                    if(obj.selectType == '2' && obj.createBy != 'admin'){
+                                $.each(vm.confirmEPList, function (i, obj) {
+                                    if (obj.selectType == '2' && obj.createBy != 'admin') {
                                         ids.push(obj.id);
                                     }
                                 })
                                 vm.reFleshAfterRemove(ids);
                             }
 
-                            if(!vm.expertReview.id){
+                            if (!vm.expertReview.id) {
                                 vm.expertReview.id = data.idCode;
                             }
                             //刷新
                             vm.reFleshSelEPInfo(data.reObj);
-                            bsWin.success("操作成功！",function(){
+                            bsWin.success("操作成功！", function () {
                                 window.parent.$("#selfExpertDiv").data("kendoWindow").close();
                             });
-                        }else{
+                        } else {
                             bsWin.error(data.reMsg);
                         }
                     });
@@ -16060,11 +16060,11 @@
                         for (var i = 0; i < isCheck.length; i++) {
                             ids.push(isCheck[i].value);
                         }
-                        expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','),vm.isCommit,function(data){
-                            if(data.flag || data.reCode == 'ok'){
+                        expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','), vm.isCommit, function (data) {
+                            if (data.flag || data.reCode == 'ok') {
                                 vm.reFleshAfterRemove(ids);
                                 bsWin.success("操作成功！");
-                            }else{
+                            } else {
                                 bsWin.error(data.reMsg);
                             }
                         });
@@ -16074,14 +16074,14 @@
         }
 
         //自选专家查询
-        vm.querySelfExpert = function(){
-            vm.selfExpertOptions.dataSource._skip=0;
+        vm.querySelfExpert = function () {
+            vm.selfExpertOptions.dataSource._skip = 0;
             vm.selfExpertOptions.dataSource.read();
         }
 
         //境外专家
         vm.showOutExpertGrid = function () {
-            vm.outExpertOptions.dataSource._skip=0;
+            vm.outExpertOptions.dataSource._skip = 0;
             vm.outExpertOptions.dataSource.read();
             $("#outExpertDiv").kendoWindow({
                 width: "70%",
@@ -16109,11 +16109,11 @@
                         for (var i = 0; i < isCheck.length; i++) {
                             ids.push(isCheck[i].value);
                         }
-                        expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','),vm.isCommit,function(data){
-                            if(data.flag || data.reCode == 'ok'){
+                        expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','), vm.isCommit, function (data) {
+                            if (data.flag || data.reCode == 'ok') {
                                 vm.reFleshAfterRemove(ids);
                                 bsWin.success("操作成功！");
-                            }else{
+                            } else {
                                 bsWin.error(data.reMsg);
                             }
                         });
@@ -16132,17 +16132,17 @@
                 $.each(selectIds, function (i, obj) {
                     selExpertIdArr.push(obj.value);
                 });
-                expertReviewSvc.saveOutExpert(vm.businessId,vm.minBusinessId,vm.businessType,selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
-                    if(data.flag || data.reCode == 'ok'){
-                        if(!vm.expertReview.id){
+                expertReviewSvc.saveOutExpert(vm.businessId, vm.minBusinessId, vm.businessType, selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        if (!vm.expertReview.id) {
                             vm.expertReview.id = data.idCode;
                         }
 
                         vm.reFleshSelEPInfo(data.reObj);
-                        bsWin.success("操作成功！",function(){
+                        bsWin.success("操作成功！", function () {
                             window.parent.$("#outExpertDiv").data("kendoWindow").close();
                         });
-                    }else{
+                    } else {
                         bsWin.error(data.reMsg);
                     }
                 });
@@ -16150,8 +16150,8 @@
         }
 
         //境外专家查询
-        vm.queryOutExpert = function(){
-            vm.outExpertOptions.dataSource._skip=0;
+        vm.queryOutExpert = function () {
+            vm.outExpertOptions.dataSource._skip = 0;
             vm.outExpertOptions.dataSource.read();
         }
 
@@ -16164,7 +16164,7 @@
                         postData = t;
                     }
                 });
-                expertReviewSvc.countMatchExperts(postData,vm.minBusinessId,vm.expertReview.id,function(data){
+                expertReviewSvc.countMatchExperts(postData, vm.minBusinessId, vm.expertReview.id, function (data) {
                     vm.matchEPMap[id] = data;
                     $("#expertCount" + id).html(data.length);
                 });
@@ -16174,7 +16174,7 @@
         }
 
         //查看符合条件的专家信息
-        vm.showMatchExperts = function(sortIndex){
+        vm.showMatchExperts = function (sortIndex) {
             vm.matchExpertList = [];
             vm.matchExpertList = vm.matchEPMap[sortIndex];
             $("#matchExpertDiv").kendoWindow({
@@ -16196,7 +16196,7 @@
             } else {
                 $("#errorsOfficialNum" + idSort).html("只能填写数字");
                 $("#errorsAlternativeNum" + idSort).html("只能填写数字");
-                return ;
+                return;
             }
         }
 
@@ -16205,7 +16205,7 @@
             if (!vm.isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
             } else {
-                if(!vm.expertReview.expertSelConditionDtoList){
+                if (!vm.expertReview.expertSelConditionDtoList) {
                     vm.expertReview.expertSelConditionDtoList = [];
                 }
                 vm.condition = {};
@@ -16229,28 +16229,28 @@
                         onOk: function () {
                             var ids = [];
                             for (var i = 0; i < isCheck.length; i++) {
-                                $.each(vm.expertReview.expertSelConditionDtoList,function(c,con){
+                                $.each(vm.expertReview.expertSelConditionDtoList, function (c, con) {
                                     if (isCheck[i].value == con.id) {
                                         ids.push(con.id);
                                     }
                                 })
                             }
-                            if(ids.length > 0){
-                                expertConditionSvc.deleteSelConditions(ids.join(","),vm.isCommit,function(data){
-                                    if(data.flag || data.reCode == 'ok'){
-                                        bsWin.success("操作成功！",function(){
-                                            vm.init(vm.businessId,vm.minBusinessId);
+                            if (ids.length > 0) {
+                                expertConditionSvc.deleteSelConditions(ids.join(","), vm.isCommit, function (data) {
+                                    if (data.flag || data.reCode == 'ok') {
+                                        bsWin.success("操作成功！", function () {
+                                            vm.init(vm.businessId, vm.minBusinessId);
                                         });
-                                    }else{
+                                    } else {
                                         bsWin.error(data.reMsg);
                                     }
                                 });
-                            }else{
+                            } else {
                                 bsWin.success("操作成功！");
                             }
                         },
                     });
-                }else{
+                } else {
                     bsWin.alert("请选择要删除的抽取条件！");
                 }
             }
@@ -16298,16 +16298,16 @@
         vm.saveCondition = function () {
             if (!vm.isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
-            }else {
+            } else {
                 if (buildCondition()) {
-                    expertConditionSvc.saveCondition(vm.businessId,vm.minBusinessId,vm.businessType,vm.expertReview.id,vm.expertReview.expertSelConditionDtoList,function(data){
-                        if(data.flag || data.reCode == 'ok'){
+                    expertConditionSvc.saveCondition(vm.businessId, vm.minBusinessId, vm.businessType, vm.expertReview.id, vm.expertReview.expertSelConditionDtoList, function (data) {
+                        if (data.flag || data.reCode == 'ok') {
                             vm.expertReview.expertSelConditionDtoList = data.reObj;
-                            if(!vm.expertReview.id){
+                            if (!vm.expertReview.id) {
                                 vm.expertReview.id = vm.expertReview.expertSelConditionDtoList[0].expertReviewId;
                             }
                             bsWin.success("保存成功！");
-                        }else{
+                        } else {
                             bsWin.error(data.reMsg);
                         }
                     });
@@ -16319,23 +16319,23 @@
 
         //（整体方案抽取）开始随机抽取
         vm.startAutoExpertWin = function () {
-            if(!vm.expertReview.id){
+            if (!vm.expertReview.id) {
                 bsWin.alert("请先进行整体专家抽取条件设置并保存！");
-                return ;
+                return;
             }
             if (!isSuperUser && (vm.expertReview.state == 9 || vm.expertReview.state == '9')) {
                 bsWin.alert("当前项目已经进行整体专家方案的抽取，不能再修改方案！");
-                return ;
+                return;
             }
             if (buildCondition()) {
-                expertConditionSvc.saveCondition(vm.businessId,vm.minBusinessId,vm.businessType,vm.expertReview.id,vm.expertReview.expertSelConditionDtoList,function(data){
-                    if(data.flag || data.reCode == 'ok'){
+                expertConditionSvc.saveCondition(vm.businessId, vm.minBusinessId, vm.businessType, vm.expertReview.id, vm.expertReview.expertSelConditionDtoList, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
                         vm.expertReview.expertSelConditionDtoList = data.reObj;
-                        if(!vm.expertReview.id){
+                        if (!vm.expertReview.id) {
                             vm.expertReview.id = vm.expertReview.expertSelConditionDtoList[0].expertReviewId;
                         }
-                        expertReviewSvc.queryAutoExpert(vm.expertReview.expertSelConditionDtoList,vm.minBusinessId,vm.expertReview.id,function(data){
-                            if(data.flag || data.reCode == 'ok'){
+                        expertReviewSvc.queryAutoExpert(vm.expertReview.expertSelConditionDtoList, vm.minBusinessId, vm.expertReview.id, function (data) {
+                            if (data.flag || data.reCode == 'ok') {
                                 //刷新页面抽取的专家
                                 vm.reFleshSelEPInfo(data.reObj.autoEPList);
                                 //抽取结果数组
@@ -16346,14 +16346,14 @@
                                 //弹框
                                 vm.showAutoExpertWin();
                                 //显示抽取效果
-                                expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
-                                vm.init(vm.businessId,vm.minBusinessId);
+                                expertReviewSvc.validateAutoExpert(data.reObj.allEPList, vm);
+                                vm.init(vm.businessId, vm.minBusinessId);
 
-                            }else{
+                            } else {
                                 bsWin.error(data.reMsg);
                             }
                         });
-                    }else{
+                    } else {
                         bsWin.error(data.reMsg);
                     }
                 });
@@ -16389,22 +16389,22 @@
         }
 
         //再次抽取专家
-        vm.repeatAutoExpert = function(id) {
+        vm.repeatAutoExpert = function (id) {
             var condition = [];
-            $.each(vm.expertReview.expertSelConditionDtoList,function(i,con){
-                if(con.id == id){
+            $.each(vm.expertReview.expertSelConditionDtoList, function (i, con) {
+                if (con.id == id) {
                     condition.push(con);
                 }
             })
-            if(condition[0].selectIndex >= 3){
+            if (condition[0].selectIndex >= 3) {
                 bsWin.alert("该条件已经进行了3次抽取，不能再继续抽取！");
-                return ;
+                return;
             }
             //先确认是否已经保存
-            expertReviewSvc.checkCondition(condition[0].id,function(data){
-                if(data && data.id){
-                    expertReviewSvc.queryAutoExpert(condition,vm.minBusinessId,vm.expertReview.id,function(data){
-                        if(data.flag || data.reCode == 'ok'){
+            expertReviewSvc.checkCondition(condition[0].id, function (data) {
+                if (data && data.id) {
+                    expertReviewSvc.queryAutoExpert(condition, vm.minBusinessId, vm.expertReview.id, function (data) {
+                        if (data.flag || data.reCode == 'ok') {
                             //刷新页面抽取的专家
                             vm.reFleshSelEPInfo(data.reObj.autoEPList);
                             //抽取次数加一
@@ -16417,12 +16417,12 @@
                             //弹框
                             vm.showAutoExpertWin();
                             //显示抽取效果
-                            expertReviewSvc.validateAutoExpert(data.reObj.allEPList,vm);
-                        }else{
+                            expertReviewSvc.validateAutoExpert(data.reObj.allEPList, vm);
+                        } else {
                             bsWin.error(data.reMsg);
                         }
                     });
-                }else{
+                } else {
                     bsWin.alert("请先保存，再进行抽取！");
                 }
             })
@@ -16431,17 +16431,17 @@
         //确认已抽取的专家
         vm.affirmAutoExpert = function () {
             var isCheck = $("#allAutoEPTable input[name='autoEPCheck']:checked");
-            if(isCheck.length < 1){
+            if (isCheck.length < 1) {
                 bsWin.confirm({
                     title: "询问提示",
                     message: "您还没选择专家，确定没有合适的专家么？",
                     onOk: function () {
-                        $scope.$apply(function(){
+                        $scope.$apply(function () {
                             //每个抽取条件的抽取次数加1
                             $.each(vm.expertReview.expertSelConditionDtoList, function (c, con) {
-                                if(!con.selectIndex || con.selectIndex < 1){
+                                if (!con.selectIndex || con.selectIndex < 1) {
                                     con.selectIndex = 1;
-                                }else{
+                                } else {
                                     con.selectIndex = con.selectIndex + 1;
                                 }
                                 con.showDraftBt = true;
@@ -16450,18 +16450,18 @@
                         window.parent.$("#aotuExpertDiv").data("kendoWindow").close();
                     }
                 });
-            }else{
+            } else {
                 var ids = [];
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.affirmAutoExpert(vm.minBusinessId,vm.businessType,ids.join(","),'9',function(data){
-                    if(data.flag || data.reCode=='ok'){
-                        vm.reFleshConfirmState(ids,"9");
+                expertReviewSvc.affirmAutoExpert(vm.minBusinessId, vm.businessType, ids.join(","), '9', function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        vm.reFleshConfirmState(ids, "9");
                         vm.checkAutoOfficeExpert = false;
                         vm.checkAutoAntiExpert = false;
                         bsWin.success(data.reMsg);
-                    }else{
+                    } else {
                         bsWin.error(data.reMsg);
                     }
                 })
@@ -16483,18 +16483,21 @@
 
         //拟聘请专家信息返回
         vm.expertBack = function () {
-            if(vm.saveNewExpertFlag == '1'){
+            if (vm.saveNewExpertFlag == '1') {
                 bsWin.alert("拟聘请专家数据有改动，请保存后再返回！");
                 return;
             }
-            if(vm.isback){
-                $state.go('maintWorkprogramEdit', {signid:vm.businessId });
-            }else{
-                $state.go('workprogramEdit', {signid:vm.businessId ,minBusinessId:vm.minBusinessId,businessType:vm.businessType});
+            if (vm.isback) {
+                $state.go('MaintainProjectEdit', {signid: vm.businessId,processInstanceId:vm.processInstanceId});
+            } else {
+                $state.go('workprogramEdit', {
+                    signid: vm.businessId,
+                    minBusinessId: vm.minBusinessId,
+                    businessType: vm.businessType
+                });
             }
 
         }
-
 
 
         //未参加改为参加
@@ -16507,9 +16510,14 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState(vm.minBusinessId,vm.businessType, ids.join(','), '9',vm.isCommit,function(data){
-                    bsWin.success("操作成功！");
-                    vm.reFleshJoinState(ids,'9');
+                expertReviewSvc.updateJoinState(vm.expertReview.id, vm.minBusinessId, vm.businessType, ids.join(','), '9', vm.isCommit, function (data) {
+                    if (data.flag || data.reCode == 'ok') {
+                        //1、更改专家评分和评审费发放的专家
+                        vm.reFleshJoinState(ids, '9');
+                        bsWin.success("操作成功！");
+                    } else {
+                        bsWin.success(data.reMsg);
+                    }
                 });
             }
         }
@@ -16524,29 +16532,29 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState(vm.minBusinessId,vm.businessType, ids.join(','), '0',vm.isCommit,function(data){
+                expertReviewSvc.updateJoinState(vm.expertReview.id, vm.minBusinessId, vm.businessType, ids.join(','), '2', vm.isCommit, function (data) {
                     bsWin.success("操作成功！");
-                    vm.reFleshJoinState(ids,'0');
+                    vm.reFleshJoinState(ids, '2');
                 });
             }
         }
 
         //判断分值大小
-        vm.checkScore = function(expertSelObj){
-            if(expertSelObj.compositeScoreEnd){
-                if(expertSelObj.compositeScore && (expertSelObj.compositeScore>expertSelObj.compositeScoreEnd)){
-                    $("#compositeScoreEnd_"+expertSelObj.id).html("分值设置错误");
+        vm.checkScore = function (expertSelObj) {
+            if (expertSelObj.compositeScoreEnd) {
+                if (expertSelObj.compositeScore && (expertSelObj.compositeScore > expertSelObj.compositeScoreEnd)) {
+                    $("#compositeScoreEnd_" + expertSelObj.id).html("分值设置错误");
                     expertSelObj.compositeScoreEnd = "";
-                }else{
-                    $("#compositeScoreEnd_"+expertSelObj.id).html("");
+                } else {
+                    $("#compositeScoreEnd_" + expertSelObj.id).html("");
                 }
-            }else{
-                $("#compositeScoreEnd_"+expertSelObj.id).html("");
+            } else {
+                $("#compositeScoreEnd_" + expertSelObj.id).html("");
             }
         }
 
         //超级管理员删除抽取的专家
-        vm.deleteAutoSelectEP = function(){
+        vm.deleteAutoSelectEP = function () {
             var isCheck = $("#autoDraftExpertTable input[name='checkSelectExpert']:checked");
             if (isCheck.length > 0) {
                 bsWin.confirm({
@@ -16557,24 +16565,24 @@
                         for (var i = 0; i < isCheck.length; i++) {
                             ids.push(isCheck[i].value);
                         }
-                        expertReviewSvc.delSelectedExpert(vm.expertReview.id,ids.join(","),vm.isCommit,function (data) {
-                            if(data.flag || data.reCode == 'ok'){
-                                bsWin.alert("删除成功！",function () {
+                        expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(","), vm.isCommit, function (data) {
+                            if (data.flag || data.reCode == 'ok') {
+                                bsWin.alert("删除成功！", function () {
                                     vm.reFleshAfterRemove(ids);
                                 });
-                            }else{
+                            } else {
                                 bsWin.alert(data.reMsg);
                             }
                         })
                     }
                 });
-            }else{
+            } else {
                 bsWin.alert("请选择要删除的抽取专家！");
             }
         }
 
         //超级管理员选中之前抽取的专家
-        vm.adminSelectEP = function(){
+        vm.adminSelectEP = function () {
             var isCheck = $("#autoDraftExpertTable input[name='checkSelectExpert']:checked");
             if (isCheck.length > 0) {
                 bsWin.confirm({
@@ -16585,32 +16593,32 @@
                         for (var i = 0; i < isCheck.length; i++) {
                             ids.push(isCheck[i].value);
                         }
-                        expertReviewSvc.affirmAutoExpert(vm.minBusinessId,vm.businessType,ids.join(","),'9',function(data){
-                            if(data.flag || data.reCode=='ok'){
-                                vm.reFleshConfirmState(ids,"9");
+                        expertReviewSvc.affirmAutoExpert(vm.minBusinessId, vm.businessType, ids.join(","), '9', function (data) {
+                            if (data.flag || data.reCode == 'ok') {
+                                vm.reFleshConfirmState(ids, "9");
                                 bsWin.success(data.reMsg);
-                            }else{
+                            } else {
                                 bsWin.error(data.reMsg);
                             }
                         })
                     }
                 });
-            }else{
+            } else {
                 bsWin.alert("您还没选择任何专家！");
             }
         }
 
         // 交换数组元素
-        var swapItems = function(arr, index1, index2) {
+        var swapItems = function (arr, index1, index2) {
             arr[index1] = arr.splice(index2, 1, arr[index1])[0];
             return arr;
         };
 
 
         // 上移
-        vm.upRecord = function(arr, $index) {
+        vm.upRecord = function (arr, $index) {
             vm.saveNewExpertFlag = '1';
-            if($index == 0) {
+            if ($index == 0) {
                 vm.confirmEPListReplace = arr;
                 return;
             }
@@ -16618,35 +16626,35 @@
         };
 
         // 下移
-        vm.downRecord = function(arr, $index) {
+        vm.downRecord = function (arr, $index) {
             vm.saveNewExpertFlag = '1';
-            if($index == arr.length -1) {
+            if ($index == arr.length - 1) {
                 vm.confirmEPListReplace = arr;
                 return;
             }
-            vm.confirmEPListReplace =  swapItems(arr, $index, $index + 1);
+            vm.confirmEPListReplace = swapItems(arr, $index, $index + 1);
         };
 
         /**
          * 保存新专家信息
          */
-        vm.saveExpert=function () {
-           var isdisp=true;//用来判断专家类型
+        vm.saveExpert = function () {
+            var isdisp = true;//用来判断专家类型
             vm.saveNewExpertFlag = '0';
-            if(vm.confirmEPListReplace.length > 0){
+            if (vm.confirmEPListReplace.length > 0) {
                 //查询是否有为空的
                 angular.forEach(vm.confirmEPListReplace, function (each) {
-                    if(each.expeRttype=="" ||each.expeRttype==undefined){
-                        isdisp=false;
+                    if (each.expeRttype == "" || each.expeRttype == undefined) {
+                        isdisp = false;
                         vm.saveNewExpertFlag = '1';
                     }
 
                 });
-            }else{
-                $.each(vm.confirmEPList,function (j,obj2) {
-                    if(obj2.isConfrim == '9' && obj2.isJoin == '9' ){
-                        if(obj2.expeRttype=="" ||obj2.expeRttype==undefined){
-                            isdisp=false;
+            } else {
+                $.each(vm.confirmEPList, function (j, obj2) {
+                    if (obj2.isConfrim == '9' && obj2.isJoin == '9') {
+                        if (obj2.expeRttype == "" || obj2.expeRttype == undefined) {
+                            isdisp = false;
                             vm.saveNewExpertFlag = '1';
                         }
                         vm.confirmEPListReplace.push(obj2);
@@ -16654,11 +16662,11 @@
                 });
             }
 
-            if(isdisp){
-                expertReviewSvc.saveNewExpert(vm.confirmEPListReplace,function (data) {
+            if (isdisp) {
+                expertReviewSvc.saveNewExpert(vm.confirmEPListReplace, function (data) {
                     bsWin.success("操作成功！");
                 });
-            }else{
+            } else {
                 bsWin.alert("拟聘专家的专家类型不能为空");
             }
         }
@@ -17092,12 +17100,13 @@
         }//E_validateAutoExpert
 
         //S_updateJoinState
-        function updateJoinState(minBusinessId,businessType,ids, joinState,isCommit,callBack) {
+        function updateJoinState(reviewId,minBusinessId,businessType,ids, joinState,isCommit,callBack) {
             isCommit = true;
             var httpOptions = {
                 method: 'post',
                 url: rootPath + "/expertReview/updateJoinState",
                 params: {
+                    reviewId : reviewId,
                     minBusinessId : minBusinessId,
                     businessType : businessType,
                     expertSelId: ids,
@@ -23684,9 +23693,14 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState("","", ids.join(','), '9',vm.isCommit,function(data){
-                    vm.reFleshJoinState(ids,'9');
-                    bsWin.success("操作成功！");
+                expertReviewSvc.updateJoinState(vm.expertReviewDto.id,"","", ids.join(','), '9',vm.isCommit,function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        //1、更改专家评分和评审费发放的专家
+                        vm.reFleshJoinState(ids,'9');
+                        bsWin.success("操作成功！");
+                    }else{
+                        bsWin.success(data.reMsg);
+                    }
                 });
             }
         }
@@ -23701,11 +23715,13 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState("","", ids.join(','), '0',vm.isCommit,function(data){
-                    //1、更改专家评分和评审费发放的专家
-                    vm.reFleshJoinState(ids,'0');
-                    //2、
-                    bsWin.success("操作成功！");
+                expertReviewSvc.updateJoinState(vm.expertReviewDto.id,"","", ids.join(','), '2',vm.isCommit,function(data){
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.reFleshJoinState(ids,'2');
+                        bsWin.success("操作成功！");
+                    }else{
+                        bsWin.success(data.reMsg);
+                    }
                 });
             }
         }
@@ -25090,9 +25106,13 @@
                  for (var i = 0; i < isCheck.length; i++) {
                      ids.push(isCheck[i].value);
                  }
-                 expertReviewSvc.updateJoinState("", "", ids.join(','), '9', vm.isCommit, function (data) {
-                     vm.reFleshJoinState(ids, '9');
-                     bsWin.success("操作成功！");
+                 expertReviewSvc.updateJoinState(vm.expertReviewDto.id,"", "", ids.join(','), '9', vm.isCommit, function (data) {
+                     if(data.flag || data.reCode == 'ok'){
+                         vm.reFleshJoinState(ids, '9');
+                         bsWin.success("操作成功！");
+                     }else{
+                         bsWin.success(data.reMsg);
+                     }
                  });
              }
          }
@@ -25107,11 +25127,15 @@
                  for (var i = 0; i < isCheck.length; i++) {
                      ids.push(isCheck[i].value);
                  }
-                 expertReviewSvc.updateJoinState("", "", ids.join(','), '0', vm.isCommit, function (data) {
-                     //1、更改专家评分和评审费发放的专家
-                     vm.reFleshJoinState(ids, '0');
-                     //2、
-                     bsWin.success("操作成功！");
+                 expertReviewSvc.updateJoinState(vm.expertReviewDto.id,"", "", ids.join(','), '2', vm.isCommit, function (data) {
+                     if(data.flag || data.reCode == 'ok'){
+                         //1、更改专家评分和评审费发放的专家
+                         vm.reFleshJoinState(ids, '2');
+                         bsWin.success("操作成功！");
+                     }else{
+                         bsWin.success(data.reMsg);
+                     }
+
                  });
              }
          }
@@ -25213,7 +25237,6 @@
         vm.closeEditPay = function () {
             window.parent.$("#payment").data("kendoWindow").close();
         }
-
 
         /**
          * 保存评审费，不包括计税
@@ -35104,8 +35127,7 @@
                         //如果已经发起流程，则不允许再修改
                         if(data.reObj.processInstanceId){
                             bsWin.alert("操作成功！");
-                        }
-                        else{
+                        } else{
                             bsWin.success("操作成功，请继续填写项目审核登记表",function(){
                                 $state.go('fillSign', {signid: data.reObj.signid}, {reload: true});
                             });
@@ -36341,11 +36363,6 @@
         vm.expertList = new Array(10); //用于打印页面的专家列表，控制行数
         vm.curDate = "";  //当前日期
 
-        //用于打印发文，项目概况控制
-        // vm.workProgramXmjys = {};//项目建议书
-        // vm.workProgramKxxyj = {};//可行性研究
-        // vm.workProgramXmgs = {};//项目概算
-        // vm.workProgramTg = {}; //调概
         active();
         function active() {
             $('#myTab li').click(function (e) {
@@ -36947,7 +36964,7 @@
                                     if (!vm.price) {
                                         vm.price = {
                                             signid: vm.model.signid,
-                                            projectname: vm.model.projectname,
+                                            mUserName: vm.model.mUserName,
                                         };
                                     }
                                     vm.price.reviewstage = vm.model.reviewstage; //设置评审阶段
@@ -36963,8 +36980,11 @@
                                     signSvc.getAssociateSignGrid(vm, function (data) {
                                         vm.associateSignList = [];
                                         if (data) {
+                                            vm.noassociateSign = false;
                                             vm.associateSignList = data.value;
                                             vm.page.callback(data.count);//请求回调时传入总记录数
+                                        }else{
+                                            vm.noassociateSign = true;
                                         }
 
                                     });
@@ -36977,12 +36997,10 @@
                         } else {
                             vm.page.selPage(1);
                         }
-
-
                         //选中要关联的项目
                         $("#associateWindow").kendoWindow({
-                            width: "75%",
-                            height: "750px",
+                            width: "80%",
+                            height: "800px",
                             title: "项目关联",
                             visible: false,
                             modal: true,
@@ -37005,10 +37023,12 @@
             signSvc.getAssociateSignGrid(vm, function (data) {
                 vm.associateSignList = [];
                 if (data) {
+                    vm.noassociateSign = false;
                     vm.associateSignList = data.value;
                     vm.page.callback(data.count);//请求回调时传入总记录数
+                }else{
+                    vm.noassociateSign = true;
                 }
-
             });
         }
 
@@ -37409,11 +37429,10 @@
             //监听是否关联事件
             $scope.$watch("vm.businessFlag.passDis", function (newValue, oldValue) {
                 if (newValue == 9) {
-                    vm.flow.dealOption = "通过";
+                    vm.flow.dealOption = "核稿无误";
                 } else {
-                    vm.flow.dealOption = "不通过";
+                    vm.flow.dealOption = "核稿有误";
                 }
-
             });
         }
 
@@ -37445,9 +37464,13 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState("", "", ids.join(','), '9', vm.isCommit, function (data) {
-                    vm.reFleshJoinState(ids, '9');
-                    bsWin.success("操作成功！");
+                expertReviewSvc.updateJoinState(vm.expertReview.id,"", "", ids.join(','), '9', vm.isCommit, function (data) {
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.reFleshJoinState(ids, '9');
+                        bsWin.success("操作成功！");
+                    }else{
+                        bsWin.success(data.reMsg);
+                    }
                 });
             }
         }
@@ -37462,11 +37485,13 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState("", "", ids.join(','), '0', vm.isCommit, function (data) {
-                    //1、更改专家评分和评审费发放的专家
-                    vm.reFleshJoinState(ids, '0');
-                    //2、
-                    bsWin.success("操作成功！");
+                expertReviewSvc.updateJoinState(vm.expertReview.id,"", "", ids.join(','), '2', vm.isCommit, function (data) {
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.reFleshJoinState(ids, '9');
+                        bsWin.success("操作成功！");
+                    }else{
+                        bsWin.success(data.reMsg);
+                    }
                 });
             }
         }
@@ -39014,9 +39039,9 @@
                     signid: vm.price.signid,
                     reviewstage: vm.price.reviewstage,
                     projectname: vm.price.projectname,
+                    mUserName : vm.price.mUserName,
                     skip: vm.price.skip,
                     size: vm.price.size,
-
                 },
             }).then(function (r) {
                 if (typeof callBack == 'function') {

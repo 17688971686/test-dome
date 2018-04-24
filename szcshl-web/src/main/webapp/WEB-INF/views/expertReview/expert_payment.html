@@ -73,7 +73,7 @@
                             </div>
                         </td>
                         <td> {{x.reviewTaxes}}</td>
-                        <td> {{x.totalCost}}</td>
+                        <td> {{x.reviewCost+x.reviewTaxes}}</td>
                         <td><input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="x.isLetterRw"
                                    ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
                     </tr>
@@ -81,7 +81,7 @@
                         <td colspan="4" class="text-right">总计：</td>
                         <td>{{vm.model.expertReviewDto.reviewCost}}</td>
                         <td>{{vm.model.expertReviewDto.reviewTaxes}}</td>
-                        <td>{{vm.model.expertReviewDto.totalCost}}</td>
+                        <td>{{vm.model.expertReviewDto.reviewCost + vm.model.expertReviewDto.reviewTaxes}}</td>
                         <td></td>
                     </tr>
                 </table>

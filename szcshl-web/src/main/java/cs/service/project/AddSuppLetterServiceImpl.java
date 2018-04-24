@@ -115,24 +115,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
 
 
     /**
-     * 获取最大拟稿编号
-     *
-     * @param dispaDate
-     * @return
-     */
-    @Override
-    @Deprecated
-    public int findCurMaxSeq(Date dispaDate) {
-        HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max(" + AddSuppLetter_.fileSeq.getName() + ") from cs_add_suppLetter where " + AddSuppLetter_.suppLetterTime.getName() + " between ");
-        sqlBuilder.append(" to_date(:beginTime,'yyyy-mm-dd hh24:mi:ss') and to_date(:endTime,'yyyy-mm-dd hh24:mi:ss' )");
-        sqlBuilder.setParam("beginTime", DateUtils.converToString(dispaDate, "yyyy") + "-01-01 00:00:00");
-        sqlBuilder.setParam("endTime", DateUtils.converToString(dispaDate, "yyyy") + "-12-31 23:59:59");
-        return addSuppLetterRepo.returnIntBySql(sqlBuilder);
-    }
-
-
-    /**
      * 新增初始化
      *
      * @param businessId
@@ -500,7 +482,6 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 if(!Validate.isString(addSuppLetter.getFilenum())){
                     new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
                 }
-
                 addSuppLetter.setDeptSLeaderId(SessionUtil.getUserId());
                 addSuppLetter.setDeptSLeaderName(SessionUtil.getDisplayName());
                 addSuppLetter.setDeptSleaderDate(new Date());
@@ -550,15 +531,10 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             addSuppLetter.setDisapDate(new Date());
         }
         String yearName = DateUtils.converToString(addSuppLetter.getDisapDate(),DateUtils.DATE_YEAR);
-        String seqType = Constant.SeqType.DIS_STSH.getValue();
-        ProjMaxSeq projMaxSeq = projMaxSeqRepo.findByDate(yearName,seqType);
-        int maxSeq = projMaxSeq.getSeq()+1;
+        int maxSeq = addSuppLetterRepo.findCurMaxSeq(yearName)+1;
         String fileNumValue =  Constant.ADDSUPPER_PREFIX+"["+yearName+"]"+(maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq));
         addSuppLetter.setFilenum(fileNumValue);
         addSuppLetter.setFileSeq(maxSeq);
-        //更新序号表
-        projMaxSeq.setSeq(maxSeq);
-        projMaxSeqRepo.save(projMaxSeq);
     }
 
     @Override

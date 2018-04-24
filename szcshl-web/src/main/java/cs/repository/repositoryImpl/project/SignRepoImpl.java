@@ -357,4 +357,19 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         int resultInt = returnIntBySql(sqlBuilder);
         return resultInt > 0 ? true : false;
     }
+
+    /**
+     * 获取最大的收文编号
+     * @param yearName
+     * @param signType
+     * @return
+     */
+    @Override
+    public int getMaxSignSeq(String yearName, String signType) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select max("+ Sign_.signSeq.getName()+") from cs_sign where to_char("+Sign_.signdate.getName()+", 'yyyy') = :yearName ");
+        sqlBuilder.setParam("yearName",yearName);
+        sqlBuilder.append(" and "+ Sign_.dealOrgType.getName()+" =:signType ").setParam("signType",signType);
+        return returnIntBySql(sqlBuilder);
+    }
 }

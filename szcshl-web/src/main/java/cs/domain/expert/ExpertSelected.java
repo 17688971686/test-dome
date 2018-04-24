@@ -51,7 +51,7 @@ public class ExpertSelected {
     @Column(columnDefinition = "VARCHAR(256)")
     private String describes;
 
-    //是否参加
+    //是否参加(9表示是，0表示否，2表示由是改成否)
     @Column(columnDefinition = "VARCHAR(2)")
     private String isJoin;
 

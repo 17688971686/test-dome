@@ -1,34 +1,33 @@
 <!-- 项目关联弹出框 -->
-<script src="${path}/contents/libs/util/lgx.page.js"></script>
-<link rel="stylesheet" href="${path}/contents/libs/util/lgx.page.css">
+
 <div id="associateWindow" class="well well-sm" style="background:white;display:none;">
     <div class="well well-sm" style="background:white;margin-bottom: 0px;">
-        <div class="well well-sm">
+        <div class="well well-sm" style="margin-bottom: 5px;">
             <form id="searchform" name="searchform">
                 <input name="signid" ng-model="vm.price.signid" operator="ne" ng-hide="true">
                 <span class="help-inline">项目名称：</span>
                 <input type="text" operator="like" ng-model="vm.price.projectname" name="projectname" id="projectnam" placeholder="请输入">
 
-                <span class="help-inline" style="margin-left:10px;">项目编号：</span>
-                <input type="text" operator="eq" name="projectcode" ng-model="vm.price.projectcode" id="projectcode" placeholder="请输入">
+                <span class="help-inline" style="margin-left:10px;">主负责人：</span>
+                <input type="text" operator="eq" name="mUserName" ng-model="vm.price.mUserName" id="mUserName" placeholder="请输入">
 
                 <a class="btn btn-sm btn-primary" style="margin-left:10px;" ng-click="vm.associateQuerySign()">查询</a>
             </form>
         </div>
 
        <!-- <div class="grid" kendo-grid="grid" k-options="vm.vm.associateGridOptions"></div>-->
-       <div style="max-height:660px;overflow-y: scroll;">
-            <table class="table table-bordered" id="associateSignTable">
+       <div >
+            <table class="table table-bordered" id="associateSignTable" style="margin-top: 5px;">
                 <tr>
-                    <td width="12%">项目名称</td>
+                    <td width="22%">项目名称</td>
                     <td width="10%">评审阶段</td>
-                    <td width="10%">签收日期</td>
+                    <td width="8%">签收日期</td>
                     <td width="15%">建设单位</td>
-                    <td width="12%">项目类型</td>
-                    <td width="10%">主负责人</td>
-                    <td width="12%">项目负责人</td>
-                    <td width="12%">评审部门</td>
-                    <td width="10%">操作</td>
+                    <td width="8%">项目类型</td>
+                    <td width="7%">主负责人</td>
+                    <td width="10%">项目负责人</td>
+                    <td width="10%">评审部门</td>
+                    <td width="8%">操作</td>
                 </tr>
                 <tr ng-repeat="x in vm.associateSignList">
                     <td>{{x.projectname}}</td>
@@ -39,28 +38,26 @@
                     <td>{{x.mUserName}}</td>
                     <td>{{x.aUserName}}</td>
                     <td>{{x.reviewOrgName}}</td>
-                    <td><button class="btn btn btn-xs" ng-click="vm.saveAssociateSign(x.signid)" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-resize-small">关联</button></td>
+                    <td><button class="btn btn btn-xs" ng-click="vm.saveAssociateSign(x.signid)" ng-disabled="vm.isSubmit"><span class="glyphicon glyphicon-resize-small">关联</span></button></td>
                 </tr>
                 <tr ng-show="vm.noassociateSign">
                     <td colspan="9" class="text-center">
                         没有数据！
                     </td>
                 </tr>
+                <tr>
+                    <td colspan="9">
+                        <div id="demo5" class="lgx_page_l"  style="clear: both;">
+                            <a lu-page="first">首页</a>
+                            <a lu-page="prev">上一页</a>
+                            <a lu-page="list"></a>
+                            <a lu-page="next">下一页</a>
+                            <a lu-page="last">尾页</a>
+                        </div>
+                    </td>
+                </tr>
             </table>
-           <div id="demo5" class="lgx_page_l">
-               <a lu-page="first">首页</a>
-               <a lu-page="prev">上一页</a>
-               <a lu-page="list"></a>
-               <a lu-page="next">下一页</a>
-               <a lu-page="last">尾页</a>
-               <div class="clear_left" style="margin-left: 85%">
-                   总页数：<span lu-page="record"></span>
-                   页码： <span lu-page="number"></span>/<span lu-page="total"></span>
-               </div>
-           </div>
+
         </div>
-
-
-
     </div>
 </div>

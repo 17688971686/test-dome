@@ -83,11 +83,6 @@
         vm.expertList = new Array(10); //用于打印页面的专家列表，控制行数
         vm.curDate = "";  //当前日期
 
-        //用于打印发文，项目概况控制
-        // vm.workProgramXmjys = {};//项目建议书
-        // vm.workProgramKxxyj = {};//可行性研究
-        // vm.workProgramXmgs = {};//项目概算
-        // vm.workProgramTg = {}; //调概
         active();
         function active() {
             $('#myTab li').click(function (e) {
@@ -689,7 +684,7 @@
                                     if (!vm.price) {
                                         vm.price = {
                                             signid: vm.model.signid,
-                                            projectname: vm.model.projectname,
+                                            mUserName: vm.model.mUserName,
                                         };
                                     }
                                     vm.price.reviewstage = vm.model.reviewstage; //设置评审阶段
@@ -705,8 +700,11 @@
                                     signSvc.getAssociateSignGrid(vm, function (data) {
                                         vm.associateSignList = [];
                                         if (data) {
+                                            vm.noassociateSign = false;
                                             vm.associateSignList = data.value;
                                             vm.page.callback(data.count);//请求回调时传入总记录数
+                                        }else{
+                                            vm.noassociateSign = true;
                                         }
 
                                     });
@@ -719,12 +717,10 @@
                         } else {
                             vm.page.selPage(1);
                         }
-
-
                         //选中要关联的项目
                         $("#associateWindow").kendoWindow({
-                            width: "75%",
-                            height: "750px",
+                            width: "80%",
+                            height: "800px",
                             title: "项目关联",
                             visible: false,
                             modal: true,
@@ -747,10 +743,12 @@
             signSvc.getAssociateSignGrid(vm, function (data) {
                 vm.associateSignList = [];
                 if (data) {
+                    vm.noassociateSign = false;
                     vm.associateSignList = data.value;
                     vm.page.callback(data.count);//请求回调时传入总记录数
+                }else{
+                    vm.noassociateSign = true;
                 }
-
             });
         }
 
@@ -1151,11 +1149,10 @@
             //监听是否关联事件
             $scope.$watch("vm.businessFlag.passDis", function (newValue, oldValue) {
                 if (newValue == 9) {
-                    vm.flow.dealOption = "通过";
+                    vm.flow.dealOption = "核稿无误";
                 } else {
-                    vm.flow.dealOption = "不通过";
+                    vm.flow.dealOption = "核稿有误";
                 }
-
             });
         }
 
@@ -1187,9 +1184,13 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState("", "", ids.join(','), '9', vm.isCommit, function (data) {
-                    vm.reFleshJoinState(ids, '9');
-                    bsWin.success("操作成功！");
+                expertReviewSvc.updateJoinState(vm.expertReview.id,"", "", ids.join(','), '9', vm.isCommit, function (data) {
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.reFleshJoinState(ids, '9');
+                        bsWin.success("操作成功！");
+                    }else{
+                        bsWin.success(data.reMsg);
+                    }
                 });
             }
         }
@@ -1204,11 +1205,13 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState("", "", ids.join(','), '0', vm.isCommit, function (data) {
-                    //1、更改专家评分和评审费发放的专家
-                    vm.reFleshJoinState(ids, '0');
-                    //2、
-                    bsWin.success("操作成功！");
+                expertReviewSvc.updateJoinState(vm.expertReview.id,"", "", ids.join(','), '2', vm.isCommit, function (data) {
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.reFleshJoinState(ids, '9');
+                        bsWin.success("操作成功！");
+                    }else{
+                        bsWin.success(data.reMsg);
+                    }
                 });
             }
         }

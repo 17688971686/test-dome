@@ -16,4 +16,11 @@ public interface TopicInfoRepo extends IRepository<TopicInfo, String> {
      * @return
      */
     TopicInfo findTopByBusinessId(String businessId);
+
+    /**
+     * 获取最大课题代码编号
+     * @param yearString
+     * @return
+     */
+    int findCurMaxSeq(String yearString);
 }

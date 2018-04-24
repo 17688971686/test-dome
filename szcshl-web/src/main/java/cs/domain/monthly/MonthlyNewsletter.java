@@ -1,14 +1,13 @@
 package cs.domain.monthly;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import cs.domain.DomainBase;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import cs.domain.DomainBase;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 
@@ -103,7 +102,10 @@ public class MonthlyNewsletter extends DomainBase {
 	//备注
 	@Column(columnDefinition="varchar(255)")
 	private String remark;
-	
+
+    //数据迁移数据新加的字段
+	@Column(columnDefinition="int")
+	private int bgId;
 
 	public String getId() {
 		return id;
@@ -259,7 +261,12 @@ public class MonthlyNewsletter extends DomainBase {
 	public void setBusinessId(String businessId) {
 		this.businessId = businessId;
 	}
-	
-	
-	
+
+    public int getBgId() {
+        return bgId;
+    }
+
+    public void setBgId(int bgId) {
+        this.bgId = bgId;
+    }
 }

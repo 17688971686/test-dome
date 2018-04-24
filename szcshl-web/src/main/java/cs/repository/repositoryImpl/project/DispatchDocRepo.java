@@ -12,4 +12,12 @@ public interface DispatchDocRepo extends IRepository<DispatchDoc,String>{
     void updateRWType(String reviewType, String isMain, String signIds);
 
     void updateIsRelatedState(String signId);
+
+    /**
+     * 获取最大发文编号
+     * @param yearName
+     * @param seqType
+     * @return
+     */
+    int getMaxSeq(String yearName, String seqType);
 }

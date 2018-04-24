@@ -386,7 +386,7 @@
                     controllerAs: 'vm'
                 })
                 .state('expertReviewEdit', {
-                    url: '/expertReview/:businessId/:minBusinessId/:businessType/:reviewType/:isback',
+                    url: '/expertReview/:businessId/:minBusinessId/:businessType/:reviewType/:isback/:processInstanceId',
                     templateUrl: rootPath + '/expertReview/html/selectExpert.html',
                     controller: 'expertSelectCtrl',
                     controllerAs: 'vm'

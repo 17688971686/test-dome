@@ -30,8 +30,24 @@ public interface ExpertReviewService {
 
 	ResultMsg save(String businessId,String minBusinessId,String businessType,String reviewId, String expertIds, String selectType);
 
-	void updateExpertState(String minBusinessId,String businessType,String expertSelId,String state,boolean isConfirm);
+	/**
+	 * 更改专家是否参加状态
+	 * @param reviewId
+	 * @param minBusinessId
+	 * @param businessType
+	 * @param expertSelId
+	 * @param state
+	 */
+    ResultMsg updateJoinState(String reviewId,String minBusinessId,String businessType,String expertSelId,String state);
 
+	/**
+     * 更改专家抽取是否确认字段
+     * @param minBusinessId
+     * @param businessType
+     * @param expertSelId
+     * @param state
+     */
+    void updateConfirmState(String minBusinessId, String businessType, String expertSelId, String state);
     /**
      * 根据专家ID和月份，获取对应月份的评审费
      * @param expertIds
@@ -114,4 +130,12 @@ public interface ExpertReviewService {
 	 * @param expertSelectedDto
 	 */
 	void saveSplit(ExpertSelectedDto expertSelectedDto);
+
+
+    /**
+     * 并不是按计算公式算，只是单纯计算评审费，税费，和总费用
+     * @param expertReview
+     * @return
+     */
+    List<Map<String,Object>> countTotalExpense(ExpertReview expertReview);
 }

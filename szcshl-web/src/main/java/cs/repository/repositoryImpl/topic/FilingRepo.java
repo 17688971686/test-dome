@@ -9,4 +9,10 @@ import cs.repository.IRepository;
  * Date: 2017-9-4 15:40:48
  */
 public interface FilingRepo extends IRepository<Filing, String> {
+    /**
+     * 获取归档最大编号
+     * @param year
+     * @return
+     */
+    int findCurMaxSeq(String year);
 }

@@ -5,8 +5,7 @@
         <tr >
             <td colspan="4">
                 <go-back></go-back>
-                <!-- 如果已经计税，不能重复计税，要不然会报错 -->
-                <button ng-hide="vm.expertReviewDto.payDate" class="btn btn-sm btn-success" ng-click="vm.countTaxes(vm.expertReviewDto)" ng-disabled="vm.isCommit">
+                <button class="btn btn-sm btn-success" ng-click="vm.countTaxes(vm.expertReviewDto)" ng-disabled="vm.isCommit">
                     <span class="glyphicon glyphicon-ok"></span>计税并保存
                 </button>
                 <!-- 如果已经计税，则只能保存 -->
@@ -44,14 +43,14 @@
                 <table class="table table-bordered">
                     <caption class="text-center h3"><strong>{{vm.expertReviewDto.reviewTitle}}</strong></caption>
                     <tr class="active">
-                        <td style="max-width: 60px;">序号</td>
-                        <td style="max-width: 180px;">姓名</td>
-                        <td style="max-width: 360px;">身份证号码</td>
+                        <td style="width: 60px;">序号</td>
+                        <td style="width: 80px;">姓名</td>
+                        <td style="width: 260px;">身份证号码</td>
                         <td>开户行/银行账号</td>
-                        <td style="max-width: 180px;">评审费</td>
-                        <td style="max-width: 180px;">应纳税额</td>
-                        <td style="max-width: 180px;">合计（元）</td>
-                        <td style="max-width: 260px;">是否函评</td>
+                        <td style="width: 100px;">评审费</td>
+                        <td style="width: 100px;">应纳税额</td>
+                        <td style="width: 70px;">合计[元]</td>
+                        <td style="width: 80px;">是否函评</td>
                     </tr>
                     <tr ng-repeat="x in vm.expertReviewDto.expertSelectedDtoList | filter:{isConfrim:'9',isJoin:'9'}">
                         <td>{{$index+1}}</td>
@@ -72,14 +71,14 @@
                                    data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$" >
                             <span data-valmsg-for="reviewTaxes_{{$index}}" data-valmsg-replace="true"class="errors"></span>
                         </td>
-                        <td> {{x.totalCost}}</td>
+                        <td> {{x.reviewCost + x.reviewTaxes}}</td>
                         <td><input type="checkbox" ng-model="x.isLetterRw" ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
                     </tr>
                     <tr>
                         <td colspan="4" class="text-right">总计：</td>
                         <td>{{vm.expertReviewDto.reviewCost}}</td>
                         <td>{{vm.expertReviewDto.reviewTaxes}}</td>
-                        <td>{{vm.expertReviewDto.totalCost}}</td>
+                        <td>{{vm.expertReviewDto.reviewCost + vm.expertReviewDto.reviewTaxes}}</td>
                         <td></td>
                     </tr>
                 </table>

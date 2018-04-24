@@ -311,23 +311,67 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     /**
      * 更改抽取专家状态(直接用sql更新)
-     *
+     * @param reviewId 专家抽取方案ID
      * @param minBusinessId 业务ID
      * @param expertSelId   专家ID
      * @param businessType  业务类型
      * @param state         状态值
-     * @param isConfirm     是否是确认值状态（true:是，否:更改的是是否参加会议状态）
      */
     @Override
-    @Transactional
-    public void updateExpertState(String minBusinessId, String businessType, String expertSelId, String state, boolean isConfirm) {
+    @Transactional(rollbackFor = Exception.class)
+    public ResultMsg updateJoinState(String reviewId,String minBusinessId, String businessType, String expertSelId, String state) {
+        if(!Validate.isString(reviewId)){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！");
+        }
+        //是否更新工作方案中的专家费用
+        ExpertReview expertReview = expertReviewRepo.findById(reviewId);
+        if(!Validate.isObject(expertReview)){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！该评审方案已被删除！");
+        }
+        boolean isSuperUser = SUPER_USER.equals(SessionUtil.getLoginName());
+        boolean isPay = false;
+        if(expertReview.getPayDate() != null){
+            //如果当前日期大于评审会日期，则不能进行修改
+            if((new Date()).after(expertReview.getReviewDate())){
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"已开评审会，不能对专家信息调整！");
+            }else if(!isSuperUser){
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"评审费已发放，不能对专家信息调整！请联系系统管理员进行调整！");
+            }
+            isPay = true;
+        }
+
+        //如果已经发送评审费，判断是否要重新计算
+        if(isPay){
+            //系统管理员修改，要重新计算评审费，
+            //如果是从确认到未确认，则重新计算该方案总数
+            //如果是从未确认到确认，则重置总数，让系统管理员重新录入
+            if( Constant.EnumState.STOP.getValue().equals(state)){
+               List<Map<String,Object>> resultObj = countTotalExpense(expertReview);
+                resultObj = null;
+            }else{
+                expertReview.setReviewCost(null);
+                expertReview.setReviewTaxes(null);
+                expertReview.setTotalCost(null);
+            }
+            //设置专家评审费用结束s
+            expertReviewRepo.save(expertReview);
+        }
+
+        return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+    }
+    /**
+     * 更改专家是否确认状态
+     * @param minBusinessId
+     * @param businessType
+     * @param expertSelId
+     * @param state
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateConfirmState(String minBusinessId, String businessType, String expertSelId, String state) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append(" update cs_expert_selected ");
-        if (isConfirm) {
-            sqlBuilder.append("set " + ExpertSelected_.isConfrim.getName() + " =:state ");
-        } else {
-            sqlBuilder.append("set " + ExpertSelected_.isJoin.getName() + " =:state ");
-        }
+        sqlBuilder.append("set " + ExpertSelected_.isConfrim.getName() + " =:state ");
         sqlBuilder.setParam("state", state);
         sqlBuilder.bulidPropotyString("where", ExpertSelected_.id.getName(), expertSelId);
         expertReviewRepo.executeSql(sqlBuilder);
@@ -336,7 +380,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             workProgramRepo.initExpertCost(minBusinessId);
         }
     }
-
 
     /**
      * 更新新专家状态
@@ -481,22 +524,27 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
      * @param expertReview
      * @return
      */
-    private List<Map<String,Object>> countTotalExpense(ExpertReview expertReview) {
+    @Override
+    public List<Map<String,Object>> countTotalExpense(ExpertReview expertReview) {
         List<Map<String, Object>> resultObj = new ArrayList<>();
         List<ExpertSelected> expertSelectedList = expertReview.getExpertSelectedList();
         BigDecimal totalCount = BigDecimal.ZERO, totalTaxes = BigDecimal.ZERO;
         for (ExpertSelected slEP : expertSelectedList) {
-            Map<String, Object> epMap = new HashMap<>();
-            BigDecimal reviewCost = slEP.getReviewCost()== null?BigDecimal.ZERO:slEP.getReviewCost();
-            BigDecimal reviewTaxes = slEP.getReviewTaxes()== null?BigDecimal.ZERO:slEP.getReviewTaxes();
-            //设置返回的数据
-            epMap.put("EXPERTID", slEP.getExpert().getExpertID());
-            epMap.put("MONTCOST", reviewCost);
-            epMap.put("MONTAXES", reviewTaxes);
+            //过滤掉参加的专家
+            if(Constant.EnumState.YES.getValue().equals(slEP.getIsJoin()) && Constant.EnumState.YES.getValue().equals(slEP.getIsConfrim())){
+                Map<String, Object> epMap = new HashMap<>();
+                BigDecimal reviewCost = slEP.getReviewCost()== null?BigDecimal.ZERO:slEP.getReviewCost();
+                BigDecimal reviewTaxes = slEP.getReviewTaxes()== null?BigDecimal.ZERO:slEP.getReviewTaxes();
+                slEP.setTotalCost(Arith.safeAdd(reviewCost, reviewTaxes));
+                //设置返回的数据
+                epMap.put("EXPERTID", slEP.getExpert().getExpertID());
+                epMap.put("MONTCOST", reviewCost);
+                epMap.put("MONTAXES", reviewTaxes);
 
-            totalCount = Arith.safeAdd(reviewCost, totalCount);
-            totalTaxes = Arith.safeAdd(reviewTaxes, totalTaxes);
-            resultObj.add(epMap);
+                totalCount = Arith.safeAdd(reviewCost, totalCount);
+                totalTaxes = Arith.safeAdd(reviewTaxes, totalTaxes);
+                resultObj.add(epMap);
+            }
         }
         expertReview.setReviewCost(totalCount);
         expertReview.setReviewTaxes(totalTaxes);
@@ -525,7 +573,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 selectList.add(expertSelected);
             }
         }
-        String reviewDateString = DateUtils.date2String(expertReview.getReviewDate(), "yyyy-MM-dd");
+        String reviewDateString = DateUtils.date2String(expertReview.getReviewDate(), DateUtils.DATE_PATTERN);
         List<Object[]> countMapList = getExpertReviewCost(expertReview.getId(), selectExpIds, reviewDateString);
         //如果之间有缴税，则本次的缴税还要减去之前的缴税；否则按本次计算的缴税结果计算
         BigDecimal totalCount = BigDecimal.ZERO, totalTaxes = BigDecimal.ZERO;
@@ -717,6 +765,8 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     public void saveSplit(ExpertSelectedDto expertSelectedDto) {
         expertReviewRepo.saveSplit(expertSelectedDto);
     }
+
+
 
     @Override
     public ResultMsg saveExpertNewInfo(ExpertSelectedDto[] expertSelectedDtos) {
