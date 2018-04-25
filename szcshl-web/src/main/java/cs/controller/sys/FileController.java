@@ -752,23 +752,25 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     String second = null;
                     String sugge = null;
                     String vice = null;
+                    //项目第一负责人
                     if (Validate.isString(mianChargeSuggest)) {
-                        main = mianChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
+                        main = mianChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ");
                     }
+                    //第二负责人
                     String secondChargeSuggest = dispatchDoc.getSecondChargeSuggest();
                     if (Validate.isString(secondChargeSuggest)) {
-                        second = secondChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "").replaceAll(" ", "");
+                        second = secondChargeSuggest.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ");
                     }
                     String ministerSuggesttion = dispatchDoc.getMinisterSuggesttion();
                     if (Validate.isString(ministerSuggesttion)) {
-                        sugge = ministerSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "")
-                                .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "").replaceAll(" ", "");
+                        sugge = ministerSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ")
+                                .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "");
 
                     }
                     String viceDirectorSuggesttion = dispatchDoc.getViceDirectorSuggesttion();
                     if (Validate.isString(viceDirectorSuggesttion)) {
-                        vice = viceDirectorSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", "")
-                                .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "").replaceAll(" ", "");
+                        vice = viceDirectorSuggesttion.replaceAll("<br>", "<w:br />").replaceAll("&nbsp;", " ")
+                                .replaceAll("<p style='text-align:right;'>", "").replaceAll("</p>", "");
 
                     }
                     dispatchData.put("mianChargeSuggest", main);

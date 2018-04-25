@@ -2291,7 +2291,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                      签名：</w:t>
+                                        <w:t xml:space="preserve">                      签名：${ministerName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -2416,7 +2416,7 @@
                                             <w:rFonts w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                      签名：</w:t>
+                                        <w:t xml:space="preserve">                      签名：${leaderName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>

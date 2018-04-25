@@ -1208,7 +1208,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>签名：</w:t>
+                                        <w:t>签名：${ministerName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1343,7 +1343,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>签名：</w:t>
+                                        <w:t>签名：${viceDirectorName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -1485,7 +1485,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                      签名：</w:t>
+                                        <w:t xml:space="preserve">                      签名：${directorName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
