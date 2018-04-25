@@ -990,7 +990,8 @@
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
                                     <w:pPr>
-                                        <w:jc w:val="center"/>
+                                        <w:ind w:left="5500"/>
+                                        <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
@@ -1001,11 +1002,12 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                      签名：${ministerName!}</w:t>
+                                        <w:t xml:space="preserve">签名：${ministerName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
                                     <w:pPr>
+                                        <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
@@ -1017,7 +1019,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                                 ${ministerDate!}</w:t>
+                                        <w:t xml:space="preserve">${ministerDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </#if>
@@ -1084,7 +1086,8 @@
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
                                     <w:pPr>
-                                        <w:jc w:val="center"/>
+                                        <w:ind w:left="5500"/>
+                                        <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
@@ -1095,12 +1098,13 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                      签名：${viceDirectorName!}</w:t>
+                                        <w:t xml:space="preserve">签名：${viceDirectorName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
                                     <w:pPr>
-                                        <w:jc w:val="center"/>
+                                        <w:ind w:left="5500"/>
+                                        <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1111,7 +1115,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                                 ${viceDirectorDate!}</w:t>
+                                        <w:t xml:space="preserve">${viceDirectorDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </#if>
@@ -1193,7 +1197,8 @@
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
                                     <w:pPr>
-                                        <w:jc w:val="center"/>
+                                        <w:ind w:left="5500"/>
+                                        <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
@@ -1204,12 +1209,13 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                      签名：${directorName!}</w:t>
+                                        <w:t xml:space="preserve">签名：${directorName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="006E048B" w:rsidRDefault="006E048B">
                                     <w:pPr>
-                                        <w:jc w:val="center"/>
+                                        <w:ind w:left="5500"/>
+                                        <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -1220,7 +1226,7 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                                 ${directorDate!}</w:t>
+                                        <w:t xml:space="preserve">${directorDate!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
