@@ -19,7 +19,7 @@ public class DateUtils {
     public static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final String TIME_PATTERN = "HH:mm";
     public static final long DAY_MILLI = 24 * 60 * 60 * 1000;
-
+    public static final long MUN_MILLI = 60 * 1000;
     public static final int DAY_OF_MONTH[] = {
             31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
     };
@@ -121,6 +121,20 @@ public class DateUtils {
             return 0;
         }
         return (db.getTime() - da.getTime()) / DAY_MILLI;
+    }
+
+    /**
+     * 取得两个日期之间的分钟数
+     *
+     * @param da 日期
+     * @param db 日期
+     * @return da到db间的日数，如果db 在 da之后，返回正数，否则返回负数
+     */
+    public static long minBetween(Date da, Date db) {
+        if (da == null || db == null) {
+            return 0;
+        }
+        return (db.getTime() - da.getTime()) / MUN_MILLI;
     }
 
 
@@ -785,6 +799,6 @@ public class DateUtils {
 
     public static void main(String[] args) throws ParseException {
         //long totalDay = DateUtils.daysBetween(DateUtils.converToDate("2017-11-12","yyyy-MM-dd"),DateUtils.converToDate("2017-11-26","yyyy-MM-dd"));
-        System.out.println(System.getProperty("java.library.path"));
+        System.out.println(DateUtils.minBetween(DateUtils.converToDate("2018-04-25 22:01:00","yyyy-MM-dd HH:mm:ss"),new Date()));
     }
 }

@@ -55,6 +55,17 @@ public class FtpUtils {
         return content;
     }
 
+    public boolean checkLink(FtpClientConfig k){
+        try{
+           FTPClient client = ftpClientPool.borrowObject(k);
+           if(client != null){
+               return true;
+           }
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
     public boolean putFile(FtpClientConfig k,String remoteBaseDir,String filename, InputStream in) throws IOException {
         boolean result = false;
         try {

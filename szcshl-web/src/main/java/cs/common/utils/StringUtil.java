@@ -110,11 +110,34 @@ public class StringUtil extends StringUtils {
 		return "";
 	}
 
+	public static String listToString(List<String> stringList){
+		if (stringList == null) {
+			return null;
+		}
+		StringBuilder result=new StringBuilder();
+		boolean flag=false;
+		for (String string : stringList) {
+			if (flag) {
+				result.append(","); // 分隔符
+			}else {
+				flag=true;
+			}
+			result.append(string);
+		}
+		return result.toString();
+	}
+
 	public static void main(String[] args){
 		System.out.print("李安".substring(0,1));
 		String str = "integer'2'";
 		String rgex = "integer'(.*?)'";
 		System.out.println(getSubUtilSimple(str, rgex));
+		List<String> nodeList = new ArrayList<>(4);
+		nodeList.add("12");
+		nodeList.add("ste");
+		nodeList.add("ttt");
+		nodeList.add("ddt");
+		System.out.println(listToString(nodeList));
 	}
 
 

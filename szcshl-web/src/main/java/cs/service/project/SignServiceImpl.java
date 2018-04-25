@@ -160,11 +160,13 @@ public class SignServiceImpl implements SignService {
         }
         Date now = new Date();
         Sign sign = null;
+
         /**
          * 如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
          * 之前委里收文编号年份后面+4位数，现在是5位数
          */
-        if (!signDto.getFilecode().endsWith("0000") && !signDto.getFilecode().endsWith("00000")) {
+        boolean isSelfProj = signDto.getFilecode().endsWith("0000") || signDto.getFilecode().endsWith("00000");
+        if (!isSelfProj) {
             sign = signRepo.findByFilecode(signDto.getFilecode(), signDto.getSignState());
         }
         //1、根据收文编号获取项目信息
@@ -223,6 +225,10 @@ public class SignServiceImpl implements SignService {
                 sign.setReviewdays(0f);
             }
         }
+        //如果是自己的项目,则不用回传给委里(2表示不用回传给委里)
+        if(isSelfProj){
+            sign.setIsSendFGW(EnumState.STOP.getValue());
+        }
         signRepo.save(sign);
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);
     }
@@ -238,13 +244,16 @@ public class SignServiceImpl implements SignService {
     public ResultMsg reserveAddSign(SignDto signDto) {
         Sign sign = null;
         Date now = new Date();
+
         /**
          * 如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
          * 之前委里收文编号年份后面+4位数，现在是5位数
          */
-        if (!signDto.getFilecode().endsWith("0000") && !signDto.getFilecode().endsWith("00000")) {
+        boolean isSelfProj = signDto.getFilecode().endsWith("0000") || signDto.getFilecode().endsWith("00000");
+        if (!isSelfProj) {
             sign = signRepo.findByFilecode(signDto.getFilecode(), signDto.getSignState());
         }
+
         if (Validate.isObject(sign) && Validate.isString(sign.getSignid())) {
             BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
         } else {
@@ -273,6 +282,11 @@ public class SignServiceImpl implements SignService {
         }
         sign.setModifiedDate(now);
         sign.setModifiedBy(SessionUtil.getLoginName());
+
+        //如果是自己的项目,则不用回传给委里(2表示不用回传给委里)
+        if(isSelfProj){
+            sign.setIsSendFGW(EnumState.STOP.getValue());
+        }
         signRepo.save(sign);
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);
     }
@@ -687,10 +701,8 @@ public class SignServiceImpl implements SignService {
             sign.setSignState(EnumState.PROCESS.getValue());
             sign.setProcessState(Constant.SignProcessState.IS_START.getValue());
             //送件人,默认为流程发起人
-            if (!Validate.isString(sign.getSendusersign())) {
-                sign.setSendusersign(SessionUtil.getDisplayName());
-                sign.setCreatedBy(SessionUtil.getUserId());
-            }
+            sign.setSendusersign(SessionUtil.getDisplayName());
+            sign.setCreatedBy(SessionUtil.getUserId());
             signRepo.save(sign);
 
             //4、跳过第一环节（主任审核）
@@ -2842,6 +2854,9 @@ public class SignServiceImpl implements SignService {
         if (Validate.isList(listSign)) {
             for (int i = 0, l = listSign.size(); i < l; i++) {
                 Sign sign = listSign.get(i);
+                if(EnumState.STOP.getValue().equals(sign.getIsSendFGW())){
+                    continue;
+                }
                 SignDto signDto = new SignDto();
                 BeanCopierUtils.copyProperties(sign, signDto);
                 //只获取主工作方案

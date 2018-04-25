@@ -7,6 +7,7 @@ import cs.domain.expert.ExpertSign_;
 import cs.model.expert.ExpertSignDto;
 import cs.repository.repositoryImpl.expert.ExpertSignRepo;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class ExpertSignServiceImpl implements ExpertSignService {
     public List<ExpertSignDto> reviewProject(String expertId) {
         Criteria criteria = expertSignRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(ExpertSign_.expertId.getName(),expertId));
+        criteria.addOrder(Order.desc(ExpertSign_.reviewDate.getName()));
         List<ExpertSign> expertSignList = criteria.list();
         List<ExpertSignDto> resultList = new ArrayList<>();
         if(Validate.isList(expertSignList)){

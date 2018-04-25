@@ -61,6 +61,9 @@ public class SignDto extends BaseDto {
 
     private String projectcode;
 
+    /**
+     * 报审概算，总投资金额
+     */
     private BigDecimal declaration;
 
     private String reviewstage;
@@ -733,6 +736,46 @@ public class SignDto extends BaseDto {
      * 总分支数
      */
     private int branchCount;
+
+    //以下几个字段主要是生成委内处理表
+    /**
+     * 建设单位负责人
+     */
+    private String builtCompUserName;
+
+    /**
+     * 窗口受理时间
+     */
+    private Date acceptDate;
+
+    /**
+     * 主办室处意见
+     */
+    private String maindeptOpinion;
+
+    public String getBuiltCompUserName() {
+        return builtCompUserName;
+    }
+
+    public void setBuiltCompUserName(String builtCompUserName) {
+        this.builtCompUserName = builtCompUserName;
+    }
+
+    public Date getAcceptDate() {
+        return acceptDate;
+    }
+
+    public void setAcceptDate(Date acceptDate) {
+        this.acceptDate = acceptDate;
+    }
+
+    public String getMaindeptOpinion() {
+        return maindeptOpinion;
+    }
+
+    public void setMaindeptOpinion(String maindeptOpinion) {
+        this.maindeptOpinion = maindeptOpinion;
+    }
 
     public SignDto() {
     }

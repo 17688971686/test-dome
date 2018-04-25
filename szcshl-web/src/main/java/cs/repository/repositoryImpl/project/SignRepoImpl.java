@@ -12,13 +12,9 @@ import cs.model.project.SignDto;
 import cs.repository.AbstractRepository;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.type.DateType;
-import org.hibernate.type.DoubleType;
 import org.hibernate.type.IntegerType;
-import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -180,10 +176,11 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
                 Restrictions.eq(Sign_.signState.getName(), Constant.EnumState.YES.getValue())));
         //已经生成发文编号
         criteria.add(Restrictions.ge(Sign_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));
-
+        //排除不要回传的项目
+        criteria.add(Restrictions.ne(Sign_.isSendFGW.getName(), Constant.EnumState.STOP.getValue()));
         List<Sign> signList = criteria.list();
         //过滤掉手工签收的项目，即收文编号为0000结尾的项目
-        List<Sign> resultList = signList.stream().filter(s->(!s.getFilecode().endsWith("0000"))).collect(Collectors.toList());
+        List<Sign> resultList = signList.stream().filter(s->(!s.getFilecode().endsWith("0000") || !Constant.EnumState.STOP.getValue().equals(s.getIsSendFGW()))).collect(Collectors.toList());
         return resultList;
     }
 

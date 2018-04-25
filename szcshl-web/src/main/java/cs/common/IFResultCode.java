@@ -86,7 +86,7 @@ public class IFResultCode {
                     return enums[i].getCode();
                 }
             }
-            return null;
+            return "2";
         }
     }
 

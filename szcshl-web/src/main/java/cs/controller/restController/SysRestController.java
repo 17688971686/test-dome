@@ -307,56 +307,5 @@ public class SysRestController {
         System.out.println(hst.toString());
     }
 
-    @RequestMapping(name = "项目签收信息", value = "/testFGWJson")
-    public void testFGWJson() throws IOException {
-        //1、查询还未发送给发改委的项目信息（在办或者已办结，未发送的项目）
-        List<SignDto> unSendList = signService.findUnSendFGWList();
-        if (Validate.isList(unSendList)) {
-            //部分参数
-            int sucessCount = 0, errorCount = 0, totalCount = unSendList.size();
-            StringBuffer errorBuffer = new StringBuffer();
-            List<String> sucessIdList = new ArrayList<>();
-            ResultMsg resultMsg = null;
-            // 接口地址
-            for(int i=0,l=unSendList.size();i<l;i++){
-                SignDto signDto = unSendList.get(i);
-                WorkProgramDto mainWP = null;
-                if (Validate.isList(signDto.getWorkProgramDtoList())) {
-                    mainWP = signDto.getWorkProgramDtoList().get(0);
-                }
-                resultMsg = signRestService.setToFGW(signDto,mainWP,signDto.getDispatchDocDto(),signRestService.getReturnUrl());
-                if(resultMsg.isFlag()){
-                    sucessCount ++ ;
-                }else{
-                    errorCount ++;
-                    errorBuffer.append(resultMsg.getReMsg()+"\r\n");
-                }
-            }
 
-            if(sucessCount == 0){
-                resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), errorBuffer.toString());
-            }else if(errorCount == 0){
-                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "本次回传数据成功，总共回传【"+sucessCount+"】个项目数据！");
-            }else {
-                String msg = "本次总共回传【"+totalCount+"】，成功【"+sucessCount+"】个，失败"+errorCount+"】个；"+errorBuffer.toString();
-                resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), msg);
-            }
-            //更改成功发送的项目状态
-            if(Validate.isList(sucessIdList)){
-                signService.updateSignState(StringUtils.join(sucessIdList,","), Sign_.isSendFGW.getName(), Constant.EnumState.YES.getValue());
-            }
-
-            //添加日记记录
-            Log log = new Log();
-            log.setCreatedDate(new Date());
-            log.setLogCode(resultMsg.getReCode());
-            log.setMessage(resultMsg.getReMsg());
-            log.setModule(Constant.LOG_MODULE.INTERFACE.getValue() + "【项目回调接口】");
-            log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
-            log.setLogger(this.getClass().getName() + ".execute");
-            //优先级别高
-            log.setLogLevel(Constant.EnumState.PROCESS.getValue());
-            logService.save(log);
-        }
-    }
 }

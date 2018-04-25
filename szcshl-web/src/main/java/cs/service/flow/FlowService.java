@@ -7,6 +7,7 @@ import cs.domain.flow.RuTask;
 import cs.domain.project.SignDispaWork;
 import cs.model.PageModelDto;
 import cs.model.flow.*;
+import cs.model.project.CommentDto;
 import cs.repository.odata.ODataObj;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -137,4 +138,20 @@ public interface FlowService {
      * @return
      */
     List<String> findUserIdByProcessInstanceId(String processInstanceId);
+
+
+    /**
+     * 根据流程实例获取办理意见信息
+     * @param procInstId
+     * @param nodeKeys
+     * @return
+     */
+    List<CommentDto> findCommentByProcInstId(String procInstId,List<String> nodeKeys);
+
+    /**
+     * 只要最新的评审意见
+     * @param nodeKeys
+     * @return
+     */
+    Map<String,CommentDto> filterComents(List<CommentDto> commentList,List<String> nodeKeys);
 }

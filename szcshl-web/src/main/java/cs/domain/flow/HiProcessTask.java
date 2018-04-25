@@ -4,8 +4,6 @@ package cs.domain.flow;
  * Created by ldm
  */
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import javax.persistence.*;
 import java.util.Date;
 

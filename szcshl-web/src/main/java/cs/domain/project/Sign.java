@@ -963,6 +963,49 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "INTEGER default 1")
     private int branchCount;
 
+    //以下几个字段主要是生成委内处理表
+    /**
+     * 建设单位负责人
+     */
+    @Column(columnDefinition = "VARCHAR(32)")
+    private String builtCompUserName;
+
+    /**
+     * 窗口受理时间
+     */
+    @Column(columnDefinition = "DATE")
+    private Date acceptDate;
+
+    /**
+     * 主办室处意见
+     */
+    @Column(columnDefinition = "CLOB")
+    private String maindeptOpinion;
+
+    public String getBuiltCompUserName() {
+        return builtCompUserName;
+    }
+
+    public void setBuiltCompUserName(String builtCompUserName) {
+        this.builtCompUserName = builtCompUserName;
+    }
+
+    public Date getAcceptDate() {
+        return acceptDate;
+    }
+
+    public void setAcceptDate(Date acceptDate) {
+        this.acceptDate = acceptDate;
+    }
+
+    public String getMaindeptOpinion() {
+        return maindeptOpinion;
+    }
+
+    public void setMaindeptOpinion(String maindeptOpinion) {
+        this.maindeptOpinion = maindeptOpinion;
+    }
+
     public Float getLengthenDays() {
         return lengthenDays;
     }

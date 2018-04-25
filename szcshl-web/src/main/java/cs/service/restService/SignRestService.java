@@ -4,9 +4,12 @@ import cs.common.ResultMsg;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
+import cs.model.project.CommentDto;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
+
+import java.util.Map;
 
 /**
  * 项目接收数据接口
@@ -36,7 +39,7 @@ public interface SignRestService {
      * @param sign
      * @return
      */
-    ResultMsg setToFGW(SignDto sign, WorkProgramDto mainWP, DispatchDocDto dispatchDoc, String fgwUrl);
+    ResultMsg setToFGW(SignDto sign, WorkProgramDto mainWP, DispatchDocDto dispatchDoc, String fgwUrl, Map<String,CommentDto> commentDtoMap);
 
     /**
      * 获取回传给委里的接口地址
