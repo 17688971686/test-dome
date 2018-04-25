@@ -86,10 +86,10 @@
                                 <w:sz w:val="36"/>
                                 <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                             </w:rPr>
-                            <w:t>${projectName!}${reviewStage!}</w:t>
+                            <w:t>${projectName!}${reviewStage!}专家评审意见书</w:t>
                         </w:r>
                     </w:p>
-                    <w:p>
+                   <#-- <w:p>
                         <w:pPr>
                             <w:jc w:val="center"/>
                             <w:rPr>
@@ -104,9 +104,9 @@
                                 <w:b/>
                                 <w:sz w:val="36"/>
                             </w:rPr>
-                            <w:t>专家评审意见书</w:t>
+                            <w:t></w:t>
                         </w:r>
-                    </w:p>
+                    </w:p>-->
                     <w:p>
                         <w:pPr>
                             <w:rPr>
@@ -172,7 +172,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="690" w:hRule="atLeast"/>
+                                <w:trHeight w:val="690" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -270,7 +270,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="690" w:hRule="atLeast"/>
+                                <w:trHeight w:val="690" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -332,7 +332,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="690" w:hRule="atLeast"/>
+                                <w:trHeight w:val="690" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -394,7 +394,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="9118" w:hRule="atLeast"/>
+                                <w:trHeight w:val="7500" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
@@ -532,7 +532,7 @@
                             </w:tblPrEx>
                             <w:trPr>
                                 <w:cantSplit/>
-                                <w:trHeight w:val="9953" w:hRule="atLeast"/>
+                                <w:trHeight w:val="9953" w:hRule="exact"/>
                                 <w:jc w:val="center"/>
                             </w:trPr>
                             <w:tc>
