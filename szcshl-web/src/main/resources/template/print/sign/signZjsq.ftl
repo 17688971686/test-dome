@@ -1912,6 +1912,8 @@
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
+                                        <w:ind w:left="5500"/>
+                                        <w:jc w:val="left"/>
                                         <w:spacing w:line="280" w:lineRule="exact"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
@@ -1923,23 +1925,18 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                                                      综合部   </w:t>
+                                        <w:t xml:space="preserve">签名：综合部</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
                                     <w:pPr>
+                                        <w:ind w:left="5500"/>
+                                        <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve">                                               </w:t>
-                                    </w:r>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
@@ -2064,8 +2061,8 @@
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4648"/>
                                         </w:tabs>
-                                        <w:ind w:right="960"/>
-                                        <w:jc w:val="center"/>
+                                        <w:ind w:left="5500"/>
+                                        <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
@@ -2076,7 +2073,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                      签名：${leaderName!}</w:t>
+                                        <w:t xml:space="preserve">签名：${leaderName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -2084,19 +2081,13 @@
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4648"/>
                                         </w:tabs>
-                                        <w:jc w:val="center"/>
+                                        <w:ind w:left="5500"/>
+                                        <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve">                                            </w:t>
-                                    </w:r>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
@@ -2208,7 +2199,7 @@
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4648"/>
                                         </w:tabs>
-                                        <w:ind w:right="960"/>
+                                        <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
@@ -2221,32 +2212,19 @@
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4648"/>
                                         </w:tabs>
-                                        <w:ind w:right="960"/>
+                                        <w:ind w:left="5500"/>
                                         <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     </w:pPr>
-                                </w:p>
-                                <w:p>
-                                    <w:pPr>
-                                        <w:tabs>
-                                            <w:tab w:val="left" w:pos="4648"/>
-                                        </w:tabs>
-                                        <w:ind w:right="960"/>
-                                        <w:jc w:val="center"/>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                    </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t xml:space="preserve">                      签名：${ministerName!}</w:t>
+                                        <w:t xml:space="preserve">签名：${ministerName!}</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p>
@@ -2254,19 +2232,13 @@
                                         <w:tabs>
                                             <w:tab w:val="left" w:pos="4648"/>
                                         </w:tabs>
-                                        <w:jc w:val="center"/>
+                                        <w:ind w:left="5500"/>
+                                        <w:jc w:val="left"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
                                     </w:pPr>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve">                                            </w:t>
-                                    </w:r>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
