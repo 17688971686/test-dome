@@ -72,7 +72,6 @@
                         }
                     })
                 }
-
             });
         }
 
@@ -324,17 +323,19 @@
                 }
             }
         }
-
         /******以下是其它资料添加END*****/
-        //项目签收编辑模板打印
-        vm.editPrint = function () {
-            var LODOP = getLodop();
-            var strStylePath = rootPath +"/contents/shared/templatePrint.css";
-            var strStyleCSS="<style>"+document.getElementById("xxxx").innerHTML+"</style>";
-            var strFormHtml=strStyleCSS+"<body>"+$("#sign_fill_xmjys_templ").html()+"</body>";
-            LODOP.PRINT_INIT("");
-            LODOP.ADD_PRINT_HTM(10,20,"100%","100%",strFormHtml);
-            LODOP.PREVIEW();
+
+        //弹出修改文号信息框
+        vm.updateProjCode = function(){
+            $("#projCodeWin").kendoWindow({
+                width: "660px",
+                height: "400px",
+                title: "项目文号编辑",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Close"]
+            }).data("kendoWindow").center().open();
         }
 
     }

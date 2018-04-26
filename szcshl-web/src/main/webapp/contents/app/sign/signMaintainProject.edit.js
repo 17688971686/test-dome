@@ -11,6 +11,9 @@
         vm.model = {};
         vm.model.signid = $state.params.signid;   //业务ID
         vm.model.processInstanceId = $state.params.processInstanceId;	//流程实例ID
+        vm.isHaveWork = false;
+        vm.isHaveDis = false;
+        vm.isHaveFile = false;
         vm.signWorkList = {};
         //初始化附件上传控件
         vm.initFileUpload = function () {
@@ -51,10 +54,16 @@
             // 初始化业务信息
             signSvc.initFlowPageData(vm.model.signid, function (data) {
                 vm.model = data;
-                vm.dispatchDoc = vm.model.dispatchDocDto;
-                vm.fileRecordDto = vm.model.fileRecordDto;
-
+                if(vm.model.dispatchDocDto){
+                    vm.dispatchDoc = vm.model.dispatchDocDto;
+                    vm.isHaveDis = true;
+                }
+                if(vm.model.fileRecordDto){
+                    vm.fileRecordDto = vm.model.fileRecordDto;
+                    vm.isHaveFile = true;
+                }
                 if (vm.model.workProgramDtoList) {
+                    vm.isHaveWork = true;
                     for (var i = 0; i < vm.model.workProgramDtoList.length; i++) {
                         if (vm.model.workProgramDtoList[i].branchId == "1") {
                             vm.work = vm.model.workProgramDtoList[i];//主的工作方案
@@ -66,9 +75,9 @@
                     }
                 }
                 //5、附件
-                sysfileSvc.findByMianId( vm.model.signid,function(data){
-                    if(data && data.length > 0){
-                        vm.isDisplay=true;//删除附件按钮
+                sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                    if (data && data.length > 0) {
+                        vm.isDisplay = true;//删除附件按钮
                         vm.sysFileList = data;
                         sysfileSvc.initZtreeClient(vm, $scope);//树形图
                     }
@@ -84,96 +93,26 @@
         }
         // S_跳转到 工作方案 编辑页面
         vm.addWorkProgram = function () {
-            if (vm.model.processInstanceId) {
-                if (vm.model.workProgramDtoList) {
-                    $state.go('maintWorkprogramEdit', {signid: vm.model.signid});
-                } else {
-                    bsWin.alert("该项目还没有填写工作方案");
-                }
-
-            } else {
-                bsWin.alert("该项目还没有发起流程");
+            if( vm.isHaveWork){
+                $state.go('maintWorkprogramEdit', {signid: vm.model.signid});
+            }else{
+                bsWin.alert("该项目没有工作方案！");
             }
         }
         // E_跳转到 工作方案 编辑页面
 
         // S_跳转到 发文 编辑页面
         vm.addDisPatch = function () {
-         if( vm.model.processInstanceId){
-          if(vm.model.dispatchDocDto){
-            //如果是未关联，并且是可研或者概算阶段，提醒是否要关联
-            if ((!vm.model.isAssociate || vm.model.isAssociate == 0) &&
-                (signcommon.getReviewStage().STAGE_STUDY == vm.model.reviewstage || signcommon.getReviewStage().STAGE_BUDGET == vm.model.reviewstage)) {
-                bsWin.confirm({
-                    title: "询问提示",
-                    message: "该项目还没进行项目关联，是否需要进行关联设置？",
-                    onOk: function () {
-                        if(!vm.ss){
-                            vm.page=lgx.page.init({id: "demo5",get:function(o){
-                                //根据项目名称，查询要关联阶段的项目
-                                if (!vm.price) {
-                                    vm.price = {
-                                        signid: vm.model.signid,
-                                        projectname: vm.model.projectname,
-                                    };
-                                }
-                                vm.price.reviewstage = vm.model.reviewstage; //设置评审阶段
-                                var skip;
-                                //oracle的分页不一样。
-                                if(o.skip!=0){
-                                    skip=o.skip+1
-                                }else{
-                                    skip=o.skip
-                                }
-                                vm.price.skip=skip;//页码
-                                vm.price.size=o.size+o.skip;//页数
-                                signSvc.getAssociateSignGrid(vm, function (data) {
-                                    vm.associateSignList =[];
-                                    if (data) {
-                                        vm.associateSignList = data.value;
-                                        vm.page.callback(data.count);//请求回调时传入总记录数
-                                    }
-                                    vm.ss=true;
-                                });
-                                //alert("当前页："+o.number+"，从数据库的位置1"+o.skip+"起，查"+o.size+"条数据");
-                                //需在这里发起ajax请求查询数据，请求成功后需调用callback方法重新计算分页
-
-                            }});
-
-                        }else{
-                            vm.page.selPage(1);
-                        }
-
-
-                        //选中要关联的项目
-                        $("#associateWindow").kendoWindow({
-                            width: "75%",
-                            height: "750px",
-                            title: "项目关联",
-                            visible: false,
-                            modal: true,
-                            closable: true,
-                            actions: ["Pin", "Minimize", "Maximize", "close"],
-                        }).data("kendoWindow").center().open();
-                    },
-                    onCancel: function () {
-                        $state.go('dispatchEdit', {signid: vm.model.signid,isControl:true});
-                    }
-                });
-            } else {
-                $state.go('dispatchEdit', {signid: vm.model.signid,isControl:true});
-            }
-           }else{
-              bsWin.alert("该项目还没有填写发文");
-             }
-         }else{
-                bsWin.alert("该项目还没有发起流程");
+            if( vm.isHaveDis) {
+                $state.go('dispatchEdit', {signid: vm.model.signid, isControl: true});
+            }else{
+                bsWin.alert("该项目没有发文！");
             }
         }// E_跳转到 发文 编辑页面
 
         //跳转到归档页面
         vm.addDoFile = function () {
-            if (vm.model.fileRecordDto) {
+            if (vm.isHaveFile) {
                 $state.go('fileRecordEdit', {signid: vm.model.signid, isControl: true});
             } else {
                 bsWin.alert("该项目还没有填写归档");
@@ -214,8 +153,8 @@
         // E_跳转到 拟补充资料函 编辑页面
 
         //关联其他项目阶段
-        vm.relation=function () {
-            if(vm.model.dispatchDocDto) {
+        vm.relation = function () {
+            if (vm.model.dispatchDocDto) {
                 if (!vm.ss) {
                     vm.page = lgx.page.init({
                         id: "demo5", get: function (o) {
@@ -266,7 +205,7 @@
                     actions: ["Pin", "Minimize", "Maximize", "close"],
                 }).data("kendoWindow").center().open();
 
-            }else{
+            } else {
                 bsWin.alert("该项目还没有填写发文");
             }
         }
@@ -333,24 +272,24 @@
         }
 
         //start 保存项目关联
-        vm.saveAssociateSign = function(associateSignId){
-            if(vm.model.signid == associateSignId){
+        vm.saveAssociateSign = function (associateSignId) {
+            if (vm.model.signid == associateSignId) {
                 bsWin.alert("不能关联自身项目");
-                return ;
+                return;
             }
             //保存成功之后，返回关联的项目信息
-            signSvc.saveAssociateSign(vm.model.signid,associateSignId,function(data){
-                if(data.flag || data.reCode == 'ok'){
-                    if(associateSignId){
+            signSvc.saveAssociateSign(vm.model.signid, associateSignId, function (data) {
+                if (data.flag || data.reCode == 'ok') {
+                    if (associateSignId) {
                         vm.model.isAssociate = 1;
                         vm.associateDispatchs = data.reObj;
-                    }else{
+                    } else {
                         vm.associateDispatchs = []; //解除关联也要重新设置值
                     }
-                    bsWin.alert(associateSignId != undefined ? "项目关联成功" : "项目解除关联成功",function(){
+                    bsWin.alert(associateSignId != undefined ? "项目关联成功" : "项目解除关联成功", function () {
                         window.parent.$("#associateWindow").data("kendoWindow").close();
                     });
-                }else{
+                } else {
                     bsWin.alert(data.reMsg);
                 }
 

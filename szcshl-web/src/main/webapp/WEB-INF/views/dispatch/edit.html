@@ -33,6 +33,9 @@
     <button class="btn btn-sm btn-success" ng-click="vm.create()" ng-disabled="vm.isCommit">
         <span class="glyphicon glyphicon-ok"></span>保存
     </button>
+    <button class="btn btn-sm btn-primary" ng-click="vm.updateDisCode()"><span
+            class="glyphicon glyphicon-edit"></span>修改文号
+    </button>
     <go-back></go-back>
 </div>
 
@@ -89,10 +92,41 @@
         <#--<div id="domesticEdit_sbqd_templ" style="display: none;" > <#include "/templatePrint/dispatch/projectDetailSbqd.html"/></div>-->
         </div>
         <!-- E 设备清单（国产）/设备清单（进口） -->
-        <!---S 发文打印模板 引入-->
 
-        <!---E 发文打印模板 引入-->
 
         <!--S 发文编辑页面 -->
     </form> <!-- end form -->
 </div>
+
+<!--begn 修改文号-->
+<div class="well well-sm" style="background:white;display: none;" id="disCodeWin">
+    <table class="table table-bordered" >
+        <tr>
+            <td style="width: 30%;text-align: right;">发文时间</td>
+            <td>
+                <input type="text" style="width:220px;" kendo-date-picker k-format="'yyyy-MM-dd'" class="form-control input-sm " ng-model="vm.dispatchDoc.dispatchDate" name="dispatchDate" id="dispatchDate" data-val="true" data-val-required="必填">
+                <span data-valmsg-for="dispatchDate" data-valmsg-replace="true" class="errors"></span>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 30%;text-align: right;">发文编号</td>
+            <td>
+                <input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.dispatchDoc.fileNum" name="fileNum" id="fileNum" data-val="true" data-val-required="必填">
+                <span data-valmsg-for="fileNum" data-valmsg-replace="true" class="errors"></span>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 30%;text-align: right;">发文序号</td>
+            <td>
+                <input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.dispatchDoc.fileSeq" name="fileSeq" id="fileSeq" data-val="true" data-val-required="必填">
+                <span data-valmsg-for="fileSeq" data-valmsg-replace="true" class="errors"></span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <button class="btn btn-sm btn-success" ng-click="vm.create()"><span class="glyphicon glyphicon-ok"></span>保存</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<!--  E修改文号 -->

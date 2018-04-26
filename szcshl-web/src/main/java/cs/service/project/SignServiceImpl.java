@@ -216,7 +216,10 @@ public class SignServiceImpl implements SignService {
         //7、正式签收
         if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
             sign.setSigndate(now);
-            sign.setIssign(EnumState.YES.getValue());       //正式签收
+            //预签收状态也要改
+            sign.setIspresign(Constant.EnumState.YES.getValue());
+            //正式签收
+            sign.setIssign(EnumState.YES.getValue());
 
             Float reviewsDays = getReviewDays(sign.getReviewstage());
             if (reviewsDays > 0) {
@@ -597,25 +600,25 @@ public class SignServiceImpl implements SignService {
                 ExpertReviewDto expertReviewDto = expertReviewRepo.formatReview(expertReview);
                 signDto.setExpertReviewDto(expertReviewDto);
             }
-            //单位评分
-            if (Validate.isString(sign.getDesigncompanyName())) {
-                //查找单位评分列表
-                UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
-                if (Validate.isObject(unitScore)) {
-                    UnitScoreDto unitScoreDto = new UnitScoreDto();
-                    BeanCopierUtils.copyProperties(unitScore, unitScoreDto);
-                    signDto.setUnitScoreDto(unitScoreDto);
-                } else {
-                    //添加
-                    unitScoreService.decide(sign.getDesigncompanyName(), signid);
-                    UnitScore unitScores = unitScoreRepo.findUnitScore(signid);
-                    UnitScoreDto unitScoreDto = new UnitScoreDto();
-                    BeanCopierUtils.copyProperties(unitScores, unitScoreDto);
-                    signDto.setUnitScoreDto(unitScoreDto);
-
+            //单位评分（新系统才有）
+            if(!Validate.isString(sign.getOldProjectId())){
+                if (Validate.isString(sign.getDesigncompanyName())) {
+                    //查找单位评分列表
+                    UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
+                    if (Validate.isObject(unitScore) && Validate.isString(unitScore.getCompany())) {
+                        UnitScoreDto unitScoreDto = new UnitScoreDto();
+                        BeanCopierUtils.copyProperties(unitScore, unitScoreDto);
+                        signDto.setUnitScoreDto(unitScoreDto);
+                    } else {
+                        //添加
+                        unitScoreService.decide(sign.getDesigncompanyName(), signid);
+                        UnitScore unitScores = unitScoreRepo.findUnitScore(signid);
+                        UnitScoreDto unitScoreDto = new UnitScoreDto();
+                        BeanCopierUtils.copyProperties(unitScores, unitScoreDto);
+                        signDto.setUnitScoreDto(unitScoreDto);
+                    }
                 }
             }
-
 
             //拟补充资料函
             List<AddSuppLetter> suppLetterList = addSuppLetterRepo.findByIds(AddSuppLetter_.businessId.getName(), signid, null);
@@ -2854,32 +2857,34 @@ public class SignServiceImpl implements SignService {
         if (Validate.isList(listSign)) {
             for (int i = 0, l = listSign.size(); i < l; i++) {
                 Sign sign = listSign.get(i);
-                if(EnumState.STOP.getValue().equals(sign.getIsSendFGW())){
+                if(EnumState.STOP.getValue().equals(sign.getIsSendFGW()) || sign.getFilecode().endsWith("0000")){
                     continue;
-                }
-                SignDto signDto = new SignDto();
-                BeanCopierUtils.copyProperties(sign, signDto);
-                //只获取主工作方案
-                if (Validate.isList(sign.getWorkProgramList())) {
-                    int totalW = sign.getWorkProgramList().size();
-                    List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
-                    for (int j = 0; j < totalW; j++) {
-                        WorkProgram workProgram = sign.getWorkProgramList().get(j);
-                        if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())) {
-                            WorkProgramDto workProgramDto = new WorkProgramDto();
-                            BeanCopierUtils.copyProperties(workProgram, workProgramDto);
-                            workProgramDtoList.add(workProgramDto);
-                            signDto.setWorkProgramDtoList(workProgramDtoList);
-                            break;
+                }else{
+                    SignDto signDto = new SignDto();
+                    BeanCopierUtils.copyProperties(sign, signDto);
+                    //只获取主工作方案
+                    if (Validate.isList(sign.getWorkProgramList())) {
+                        int totalW = sign.getWorkProgramList().size();
+                        List<WorkProgramDto> workProgramDtoList = new ArrayList<>();
+                        for (int j = 0; j < totalW; j++) {
+                            WorkProgram workProgram = sign.getWorkProgramList().get(j);
+                            if (FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(workProgram.getBranchId())) {
+                                WorkProgramDto workProgramDto = new WorkProgramDto();
+                                BeanCopierUtils.copyProperties(workProgram, workProgramDto);
+                                workProgramDtoList.add(workProgramDto);
+                                signDto.setWorkProgramDtoList(workProgramDtoList);
+                                break;
+                            }
                         }
                     }
+                    if (sign.getDispatchDoc() != null && Validate.isString(sign.getDispatchDoc().getId())) {
+                        DispatchDocDto dispatchDocDto = new DispatchDocDto();
+                        BeanCopierUtils.copyProperties(sign.getDispatchDoc(), dispatchDocDto);
+                        signDto.setDispatchDocDto(dispatchDocDto);
+                    }
+                    listSignDto.add(signDto);
                 }
-                if (sign.getDispatchDoc() != null && Validate.isString(sign.getDispatchDoc().getId())) {
-                    DispatchDocDto dispatchDocDto = new DispatchDocDto();
-                    BeanCopierUtils.copyProperties(sign.getDispatchDoc(), dispatchDocDto);
-                    signDto.setDispatchDocDto(dispatchDocDto);
-                }
-                listSignDto.add(signDto);
+
             }
         }
         return listSignDto;

@@ -166,8 +166,9 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         //正式签收
         criteria.add(Restrictions.eq(Sign_.issign.getName(), Constant.EnumState.YES.getValue()));
         criteria.add(Restrictions.isNotNull(Sign_.filecode.getName()));
-        //未发送给发改委的项目
-        criteria.add(Restrictions.or(Restrictions.isNull(Sign_.isSendFGW.getName()), Restrictions.ne(Sign_.isSendFGW.getName(), Constant.EnumState.YES.getValue())));
+        //未发送给发改委的项目,或者不用回传的数据
+        criteria.add(Restrictions.sqlRestriction("(("+Sign_.isSendFGW.getName()+" != '9' and "+Sign_.isSendFGW.getName()+" != '2') or "+Sign_.isSendFGW.getName()+" is null )"));
+        //criteria.add(Restrictions.or(Restrictions.isNull(Sign_.isSendFGW.getName()), Restrictions.ne(Sign_.isSendFGW.getName(), Constant.EnumState.YES.getValue())));
         //排除旧项目
         criteria.add(Restrictions.isNull(Sign_.oldProjectId.getName()));
         criteria.add(Restrictions.isNotNull(Sign_.processInstanceId.getName()));
@@ -176,11 +177,10 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
                 Restrictions.eq(Sign_.signState.getName(), Constant.EnumState.YES.getValue())));
         //已经生成发文编号
         criteria.add(Restrictions.ge(Sign_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));
-        //排除不要回传的项目
-        criteria.add(Restrictions.ne(Sign_.isSendFGW.getName(), Constant.EnumState.STOP.getValue()));
+
         List<Sign> signList = criteria.list();
         //过滤掉手工签收的项目，即收文编号为0000结尾的项目
-        List<Sign> resultList = signList.stream().filter(s->(!s.getFilecode().endsWith("0000") || !Constant.EnumState.STOP.getValue().equals(s.getIsSendFGW()))).collect(Collectors.toList());
+        List<Sign> resultList = signList.stream().filter(s->(!s.getFilecode().endsWith("0000"))).collect(Collectors.toList());
         return resultList;
     }
 

@@ -8,11 +8,6 @@
         var vm = this;
         vm.title = "维护项目列表";
         vm.model={};
-        vm.model.signdatebigen = (new Date()).oneMonthAgo();
-        vm.model.signdateend = (new Date()).Format("yyyy-MM-dd");
-        $("#signdatebigen").val("");
-        $("#signdateend").val("");
-        //需要赋值给value才会去查询
 
         //获取到当前的列表
         vm.stateName = $state.current.name;
@@ -63,8 +58,6 @@
                 //清除返回页面数据
                 $rootScope.view[vm.stateName] = undefined;
             }else {
-                $("#signdatebigen").val(vm.model.signdatebigen);
-                $("#signdateend").val(vm.model.signdateend);
                 signSvc.MaintenanProjectGrid(vm);
             }
 

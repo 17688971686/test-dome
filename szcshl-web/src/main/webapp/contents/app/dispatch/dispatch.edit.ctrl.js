@@ -266,9 +266,6 @@
                     }
                     bsWin.alert(data.reMsg);
                 });
-/*                if ($scope.$root.$$phase != '$apply' && $scope.$root.$$phase != '$digest') {
-                    $scope.$apply();
-                }*/
             }else{
                 bsWin.alert("提交失败，有红色标识的是必填项，请确认是否填写！");
             }
@@ -378,6 +375,18 @@
         //重置合并发文
         vm.formReset = function () {
             vm.searchSign = {};
+        }
+
+        vm.updateDisCode = function(){
+            $("#disCodeWin").kendoWindow({
+                width: "660px",
+                height: "400px",
+                title: "发文文号编辑",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Close"]
+            }).data("kendoWindow").center().open();
         }
 
         /**

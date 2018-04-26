@@ -182,11 +182,9 @@
     <tr style="height:100px;">
         <td class="text-center" style="vertical-align: middle;">主任签发</td>
         <td colspan="5">
-        <td colspan="5">
             {{vm.dispatchDoc.directorSuggesttion}}
             <p class="text-right" ng-if="vm.dispatchDoc.directorName">签名：{{vm.dispatchDoc.directorName}}</p>
             <p class="text-right" ng-if="vm.dispatchDoc.directorDate">日期：{{vm.dispatchDoc.directorDate}}</p>
-        </td>
         </td>
     </tr>
     <tr>
@@ -281,21 +279,11 @@
                                data-val-required="必填">
                         <span data-valmsg-for="declareValue" data-valmsg-replace="true" class="errors"></span>
                     </td>
-                   <!-- <td ng-if="vm.dispatchDoc.dispatchType=='项目发文'">
-                        <input type="txt" maxlength="200" class="form-control input-sm "
-                               ng-model="vm.dispatchDoc.authorizeValue" id="authorizeValue" name="authorizeValue"
-                               ng-blur="vm.count()"
-                               data-val-regex="金额格式不正确"
-                               data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true"
-                               data-val-required="必填">
-                        <span data-valmsg-for="authorizeValue" data-valmsg-replace="true" class="errors"></span>
-                    </td>-->
                     <td >
                         <input type="txt" maxlength="200" class="form-control input-sm "
                                ng-model="vm.dispatchDoc.authorizeValue" id="authorizeValue" name="authorizeValue"
                                ng-blur="vm.count()"
                         >
-
                     </td>
                     <td>
                         {{vm.dispatchDoc.extraValue}}

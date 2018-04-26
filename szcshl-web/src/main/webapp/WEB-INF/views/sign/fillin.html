@@ -11,106 +11,186 @@
     }
 </style>
 <style>
-	.printbody{
-		border: 0px;
-		width: 100%;
-		left: 0px;
-		top:0px;
-	}
-	.nomargin{
-		margin:0;
-	}
-    .noborder{
-		border: 0px !important;
-	}
-	.printmesge{
-		display: none;
-	}
+    .printbody {
+        border: 0px;
+        width: 100%;
+        left: 0px;
+        top: 0px;
+    }
 
-	.tableBOX{ border-right:1px solid #000;border-bottom:1px solid #000; background:#fff;}
-	.tableBOX td{
-		border-left: 1px solid #000;
-		border-top: 1px solid #000;
-		padding: 2px;
-		word-break:break-all;
-		word-wrap:break-word;
+    .nomargin {
+        margin: 0;
+    }
 
-	}
-	table tr td div input{
-		top:0px;
-	}
-	.tableBOX table>tbody>tr>td{white-space : nowrap; padding:0px !important; text-align: center;}
+    .noborder {
+        border: 0px !important;
+    }
+
+    .printmesge {
+        display: none;
+    }
+
+    .tableBOX {
+        border-right: 1px solid #000;
+        border-bottom: 1px solid #000;
+        background: #fff;
+    }
+
+    .tableBOX td {
+        border-left: 1px solid #000;
+        border-top: 1px solid #000;
+        padding: 2px;
+        word-break: break-all;
+        word-wrap: break-word;
+
+    }
+
+    table tr td div input {
+        top: 0px;
+    }
+
+    .tableBOX table > tbody > tr > td {
+        white-space: nowrap;
+        padding: 0px !important;
+        text-align: center;
+    }
 </style>
 <div class="well well-sm" style="background:white;margin-bottom: 50px;">
     <!-- s form -->
     <form id="sign_fill_form" name="sign_fill_form">
-		<!-- S 编辑页面 -->
-		<!--S_ 项目建议书/可行性研究报告 -->
+        <!-- S 编辑页面 -->
+        <!--S_ 项目建议书/可行性研究报告 -->
         <div ng-if="vm.model.reviewstage=='项目建议书' || vm.model.reviewstage=='可行性研究报告' || vm.model.reviewstage=='其它'">
-            <div id="sign_fill_xmjys"  ng-include src="'${path}/contents/app/sign/signEdit/default.html'"></div>
+            <div id="sign_fill_xmjys" ng-include src="'${path}/contents/app/sign/signEdit/default.html'"></div>
             <!-- 打印模板-->
-           <#-- <div id="sign_fill_xmjys_templ" style="display: none;"> <#include "/templatePrint/sign/detaiXmjys.html"/></div>-->
+            <#--
+            <
+            div id="sign_fill_xmjys_templ" style="display: none;">
+            <#include "/templatePrint/sign/detaiXmjys.html"/>
         </div>
-        <!--E_ 项目建议书/可行性研究报告 -->
+        -->
+</div>
+<!--E_ 项目建议书/可行性研究报告 -->
 
-		<!-- S 资金申请报告 -->
-        <div ng-if="vm.model.reviewstage=='资金申请报告'">
-            <div id="sign_fill_zjsq"  ng-include src="'${path}/contents/app/sign/signEdit/capitalAppReportEdit.html?version=${.now}'"></div>
-            <#--<div id="sign_fill_zjsq_templ" style="display: none;"><#include "/templatePrint/sign/capitalAppReportZjsq.html"/></div>-->
-        </div>
-        <!-- S 资金申请报告 -->
-        
-		<!-- S 进口设备 -->
-        <div ng-if="vm.model.reviewstage=='进口设备'">
-            <div id="sign_fill_jksb"  ng-include src="'${path}/contents/app/sign/signEdit/foreignEquipmenEditt.html'"></div>
-           <#-- <div id="sign_fill_jksb_templ" style="display: none;"><#include "/templatePrint/sign/foreignEquipmenDetail.html"/></div>-->
-        </div>
-        <!-- S 进口设备 -->
-        
-         <!-- S_设备清单（国产） -->
-        <div ng-if="vm.model.reviewstage=='设备清单（国产）' || vm.model.reviewstage=='设备清单（进口）'">
-            <div id="sign_fill_sbqd"  ng-include src="'${path}/contents/app/sign/signEdit/equipmenDomesticEdit.html'"></div>
-            <#--<div id="sign_fill_sbqd_templ" style="display: none;"><#include "/templatePrint/sign/equipmenDomesticDetail.html"/></div>-->
-        </div>
-        <!-- E_设备清单（国产） -->
-    	
-    	<!-- S 项目概算  -->
-        <div ng-if="vm.model.reviewstage=='项目概算'">
-            <div id="sign_fill_xmgs"  ng-include src="'${path}/contents/app/sign/signEdit/projectBudgetEidt.html'"></div>
-            <#--<div id="sign_fill_xmgs_templ" style="display: none;"> <#include "/templatePrint/sign/detailXmgs.html"/></div>-->
-        </div>
-        <!-- E 项目概算  -->
-    	
-    	 <!-- S_设备清单（进口） -->
-       <!--  <div ng-show="vm.model.reviewstage=='设备清单（进口）'" ng-include src="'${path}/contents/app/sign/signEdit/equipmentImportEdit.html'"></div> -->
-    	<!-- E_设备清单（进口） -->
+<!-- S 资金申请报告 -->
+<div ng-if="vm.model.reviewstage=='资金申请报告'">
+    <div id="sign_fill_zjsq" ng-include
+         src="'${path}/contents/app/sign/signEdit/capitalAppReportEdit.html?version=${.now}'"></div>
+    <#--
+    <
+    div id="sign_fill_zjsq_templ" style="display: none;">
+    <#include "/templatePrint/sign/capitalAppReportZjsq.html"/>
+</div>-->
+</div>
+<!-- S 资金申请报告 -->
 
+<!-- S 进口设备 -->
+<div ng-if="vm.model.reviewstage=='进口设备'">
+    <div id="sign_fill_jksb" ng-include src="'${path}/contents/app/sign/signEdit/foreignEquipmenEditt.html'"></div>
+    <#--
+    <
+    div id="sign_fill_jksb_templ" style="display: none;">
+    <#include "/templatePrint/sign/foreignEquipmenDetail.html"/>
+</div>-->
+</div>
+<!-- S 进口设备 -->
 
-    </form> <!-- end form -->
+<!-- S_设备清单（国产） -->
+<div ng-if="vm.model.reviewstage=='设备清单（国产）' || vm.model.reviewstage=='设备清单（进口）'">
+    <div id="sign_fill_sbqd" ng-include src="'${path}/contents/app/sign/signEdit/equipmenDomesticEdit.html'"></div>
+    <#--
+    <
+    div id="sign_fill_sbqd_templ" style="display: none;">
+    <#include "/templatePrint/sign/equipmenDomesticDetail.html"/>
+</div>-->
+</div>
+<!-- E_设备清单（国产） -->
 
-	<div class="navbar navbar-default navbar-fixed-bottom" style="padding: 0;margin: 0;">
-        <div class="text-center" style="line-height: 50px;" ng-hide="vm.isControl">
-            默认办理部门：<input type="radio" value="PX" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>评估</span> <input type="radio" value="GX" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>概算</span>
-            <button class="btn btn-sm btn-default" ng-click="vm.startNewFlow()"  ng-hide=" vm.model.processInstanceId ">保存并发起流程</button>
-            <button class="btn btn-sm btn-default" ng-click="vm.updateFillin()">{{vm.isControl}}保存</button>
-            <button class="btn btn-sm btn-default" ng-click="backtoflow();" ng-if="vm.model.processInstanceId"><span class="glyphicon glyphicon-chevron-left"></span>返回</button>
-          <!--  <button id="linksbtn" class="btn btn-sm btn-default"  ng-click="vm.signPreview()" >打印预览</button>-->
-            <button class="btn btn-sm btn-default" type="button"   ng-click="printFile(vm.model.signid,'SIGN' , vm.stageType)" >打印预览</button>
-            <button class="btn btn-sm btn-default" type="button"   ng-click="printFile(vm.model.signid,'SIGN_OTHERFILE' , 'OTHER_FILE')" >打印其他资料</button>
-            <button class="btn btn-sm btn-default" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
-            <button class="btn btn-sm btn-default" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
-           <!--  <button class="btn btn-sm btn-default"  ng-click="vm.startNewFlow()" >发起流程</button> -->
-            </div>
-        <div class="text-center" style="line-height: 50px;" ng-show="vm.isControl">
-            <button class="btn btn-sm btn-default" ng-click="vm.updateFillin()">保存</button>
-            <a class="btn btn-sm btn-default" href="#/MaintainProjectEdit/{{vm.model.signid}}/{{vm.model.processInstanceId}}" ><span class="glyphicon glyphicon-chevron-left"></span>返回</a>
-        </div>
+<!-- S 项目概算  -->
+<div ng-if="vm.model.reviewstage=='项目概算'">
+    <div id="sign_fill_xmgs" ng-include src="'${path}/contents/app/sign/signEdit/projectBudgetEidt.html'"></div>
+    <#--
+    <
+    div id="sign_fill_xmgs_templ" style="display: none;">
+    <#include "/templatePrint/sign/detailXmgs.html"/>
+</div>-->
+</div>
+<!-- E 项目概算  -->
 
-	</div>
+</form> <!-- end form -->
 
-	<!--E 打印预览 -->
-    <!--引入 添加其它资料 弹出框-->
-    <#include "/addRegisterFile/addOtherFile.html"/>
+<div class="navbar navbar-default navbar-fixed-bottom" style="padding: 0;margin: 0;">
+    <div class="text-center" style="line-height: 50px;" ng-hide="vm.isControl">
+        默认办理部门：<input type="radio" value="PX" ng-model="vm.model.dealOrgType" ng-click="vm.checkOrgType($event)"><span>评估</span>
+        <input type="radio" value="GX" ng-model="vm.model.dealOrgType"
+               ng-click="vm.checkOrgType($event)"><span>概算</span>
+        <button class="btn btn-sm btn-default" ng-click="vm.startNewFlow()" ng-hide=" vm.model.processInstanceId ">
+            保存并发起流程
+        </button>
+        <button class="btn btn-sm btn-default" ng-click="vm.updateFillin()">{{vm.isControl}}保存</button>
+        <button class="btn btn-sm btn-default" ng-click="backtoflow();" ng-if="vm.model.processInstanceId"><span
+                class="glyphicon glyphicon-chevron-left"></span>返回
+        </button>
+        <!--  <button id="linksbtn" class="btn btn-sm btn-default"  ng-click="vm.signPreview()" >打印预览</button>-->
+        <button class="btn btn-sm btn-default" type="button"
+                ng-click="printFile(vm.model.signid,'SIGN' , vm.stageType)">打印预览
+        </button>
+        <button class="btn btn-sm btn-default" type="button"
+                ng-click="printFile(vm.model.signid,'SIGN_OTHERFILE' , 'OTHER_FILE')">打印其他资料
+        </button>
+        <button class="btn btn-sm btn-default" ng-click="vm.clickUploadBt();" id="upload_file_bt">上传附件</button>
+        <button class="btn btn-sm btn-default" ng-click="vm.clickDetailBt();" id="detail_file_bt">查看附件</button>
+        <!--  <button class="btn btn-sm btn-default"  ng-click="vm.startNewFlow()" >发起流程</button> -->
+    </div>
+    <div class="text-center" style="line-height: 50px;" ng-show="vm.isControl">
+        <button class="btn btn-sm btn-primary" ng-click="vm.updateFillin()"><span class="glyphicon glyphicon-ok"></span>保存
+        </button>
+        <button class="btn btn-sm btn-primary" ng-click="vm.updateProjCode()"><span
+                class="glyphicon glyphicon-edit"></span>修改文号
+        </button>
+        <a class="btn btn-sm btn-primary"
+           href="#/MaintainProjectEdit/{{vm.model.signid}}/{{vm.model.processInstanceId}}"><span
+                class="glyphicon glyphicon-chevron-left"></span>返回</a>
+    </div>
+
+</div>
+
+<!--E 打印预览 -->
+<!--引入 添加其它资料 弹出框-->
+<#include "/addRegisterFile/addOtherFile.html"/>
+
+<!--begn 修改文号-->
+<div class="well well-sm" style="background:white;display: none;" id="projCodeWin">
+    <table class="table table-bordered" >
+        <tr>
+            <td style="width: 30%;text-align: right;">委内收文编号</td>
+            <td>
+                <input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.filecode" name="filecode" id="filecode" data-val="true" data-val-required="必填">
+                <span data-valmsg-for="filecode" data-valmsg-replace="true" class="errors"></span>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 30%;text-align: right;">中心收文编号</td>
+            <td>
+                <input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.signNum" name="signNum" id="signNum" data-val="true" data-val-required="必填">
+                <span data-valmsg-for="signNum" data-valmsg-replace="true" class="errors"></span>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 30%;text-align: right;">中心收文序号</td>
+            <td>
+                <input type="text" style="width:90%;" class="form-control input-sm " ng-model="vm.model.signSeq" name="signSeq" id="signSeq" data-val="true" data-val-required="必填">
+                <span data-valmsg-for="signSeq" data-valmsg-replace="true" class="errors"></span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <button class="btn btn-sm btn-success" ng-click="vm.updateFillin()"><span class="glyphicon glyphicon-ok"></span>保存</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<!--  E修改文号 -->
 </div>
 	 
 	

@@ -63,7 +63,7 @@ public class Sign extends DomainBase {
     private Integer signSeq;
 
     //项目代码
-    @Column(columnDefinition = "VARCHAR(32)")
+    @Column(columnDefinition = "VARCHAR(100)")
     private String projectcode;
 
     //评审阶段

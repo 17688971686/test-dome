@@ -59,6 +59,7 @@ public class AddSuppLetterRepoImpl extends AbstractRepository<AddSuppLetter, Str
     public int findCurMaxSeq(String yearName) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select max(" + AddSuppLetter_.fileSeq.getName() + ") from cs_add_suppLetter where to_char(" + AddSuppLetter_.suppLetterTime.getName()+" , 'yyyy') = :yearName ");
+        sqlBuilder.setParam("yearName",yearName);
         return addSuppLetterRepo.returnIntBySql(sqlBuilder);
     }
 

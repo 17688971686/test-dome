@@ -144,7 +144,6 @@
                 vm.expertReview = data;
                 //获取已经抽取的专家
                 if (!angular.isUndefined(vm.expertReview.expertSelectedDtoList) && angular.isArray(vm.expertReview.expertSelectedDtoList)) {
-
                     $.each(vm.expertReview.expertSelectedDtoList, function (i, sep) {
                         vm.selectIds.push(sep.expertDto.expertID);
                         vm.confirmEPList.push(sep);
@@ -744,7 +743,9 @@
                         expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(","), vm.isCommit, function (data) {
                             if (data.flag || data.reCode == 'ok') {
                                 bsWin.alert("删除成功！", function () {
-                                    vm.reFleshAfterRemove(ids);
+                                    vm.removeSelectEP = false;
+                                   //重新查询专家
+                                    vm.init(vm.businessId, vm.minBusinessId);
                                 });
                             } else {
                                 bsWin.alert(data.reMsg);

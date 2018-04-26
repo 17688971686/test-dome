@@ -138,6 +138,8 @@ public class SignRestServiceImpl implements SignRestService {
 
             //未签收的，改为正式签收
             if (!Validate.isString(sign.getIssign()) || Constant.EnumState.NO.getValue().equals(sign.getIssign())) {
+                //预签收状态也要改
+                sign.setIspresign(Constant.EnumState.YES.getValue());
                 //正式签收
                 sign.setIssign(Constant.EnumState.YES.getValue());
                 sign.setSigndate(now);
@@ -291,6 +293,7 @@ public class SignRestServiceImpl implements SignRestService {
         try {
             //1、评审意见对象
             Map<String, Object> dataMap = new HashMap<>();
+            dataMap.put("swbh", sign.getFilecode());// 收文编号
             //2、办理意见
             /**
              * 评审过程办理环节接口对照码
@@ -308,22 +311,12 @@ public class SignRestServiceImpl implements SignRestService {
             psgcMap.put("blsj", sign.getSigndate().getTime());// 办理时间
             dataList.add(psgcMap);
 
-            dataMap.put("swbh", sign.getFilecode());// 收文编号
             //2.1 分办意见（分管领导分办和部门分办）
-            CommentDto commentDto = null;
-            for (Map.Entry<String, CommentDto> entry : commentDtoMap.entrySet()) {
-                String key = entry.getKey();
-                if (FLOW_SIGN_FGLD_FB.equals(key) || FLOW_SIGN_BMFB1.equals(key) || FLOW_SIGN_BMFB2.equals(key)
-                        || FLOW_SIGN_BMFB3.equals(key) || FLOW_SIGN_BMFB4.equals(key)) {
-                    commentDto = commentDtoMap.get(key);
-                    HashMap<String, Object> fgldMap = new HashMap<String, Object>();
-                    fgldMap.put("blhj", "2");// 办理环节
-                    fgldMap.put("psblyj", commentDto.getComments());// 办理意见
-                    fgldMap.put("blr", commentDto.getUserName());// 办理人
-                    fgldMap.put("blsj", commentDto.getCommentDate().getTime());// 办理时间
-                    dataList.add(fgldMap);
-                }
-            }
+            setBlyj(commentDtoMap,FLOW_SIGN_FGLD_FB,dataList);
+            setBlyj(commentDtoMap,FLOW_SIGN_BMFB1,dataList);
+            setBlyj(commentDtoMap,FLOW_SIGN_BMFB2,dataList);
+            setBlyj(commentDtoMap,FLOW_SIGN_BMFB3,dataList);
+            setBlyj(commentDtoMap,FLOW_SIGN_BMFB4,dataList);
 
             /**
              * 2018-01-12
@@ -397,6 +390,24 @@ public class SignRestServiceImpl implements SignRestService {
         } catch (Exception e) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
                     "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委异常！" + e.getMessage());
+        }
+    }
+
+    /**
+     * 封装办理意见
+     * @param commentDtoMap
+     * @param nodeKey
+     * @param dataList
+     */
+    private void setBlyj(Map<String, CommentDto> commentDtoMap, String nodeKey, ArrayList<HashMap<String, Object>> dataList) {
+        if(commentDtoMap.get(nodeKey) != null){
+            CommentDto commentDto = commentDtoMap.get(nodeKey);
+            HashMap<String, Object> fgldMap = new HashMap<String, Object>();
+            fgldMap.put("blhj", "2");// 办理环节
+            fgldMap.put("psblyj", commentDto.getComments());// 办理意见
+            fgldMap.put("blr", commentDto.getUserName());// 办理人
+            fgldMap.put("blsj", commentDto.getCommentDate().getTime());// 办理时间
+            dataList.add(fgldMap);
         }
     }
 

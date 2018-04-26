@@ -1,6 +1,8 @@
 <meta charset="UTF-8">
 <#assign path=request.contextPath/>
-<link rel="stylesheet" href="${path}/szcshl-web/contents/libs/bootstrap/css/bootstrap.css">
+<link rel="stylesheet" href="${path}/contents/libs/bootstrap/css/bootstrap.css">
+<script src="${path}/contents/libs/util/lgx.page.js"></script>
+<link rel="stylesheet" href="${path}/contents/libs/util/lgx.page.css">
 <style>
     * {
         margin: 0;
@@ -125,22 +127,18 @@
             <h3>【{{vm.model.projectname}}】项目维护</h3>
         </div>
         <div class="panel-body" style="padding:10px 15px">
-            <div style="margin-bottom: 5px;text-align: left;">
-                <a class="btn btn-sm btn-primary" href="#/MaintainProjectList"><span
-                        class="glyphicon glyphicon-chevron-left"></span>返回</a>
-            </div>
             <div class="well well-sm">
                 <ul class="item-list">
                     <li><a href="#/fillSign/{{vm.model.signid}}/true ">报审登记表</a></li>
-                    <li><a href="" ng-click="vm.addRegisterFile()">登记补充材料</a></li>
-                    <li><a href="" ng-click="vm.addSuppLetter()">拟补充材料函</a></li>
-                    <li><a href="#/reviewOpinion/{{vm.model.signid}}/{{vm.model.processInstanceId}}">修改意见</a></li>
-                </ul>
-                <ul class="item-list">
                     <li><a href="" ng-click="vm.addWorkProgram()">拟工作方案</a></li>
                     <li><a href="" ng-click="vm.addDisPatch()">拟评审报告</a></li>
                     <li><a href="" ng-click="vm.addDoFile()">项目资料存档</a></li>
+                </ul>
+                <ul class="item-list">
+                    <li><a href="" ng-click="vm.addRegisterFile()">登记补充材料</a></li>
+                    <li><a href="" ng-click="vm.addSuppLetter()">拟补充材料函</a></li>
                     <li><a href="" ng-click="vm.relation()">关联项目其他阶段</a></li>
+                    <li><a href="#/reviewWorkday/{{vm.model.signid}}">评审工作日维护</a></li>
                 </ul>
                 <!-- 如果没有专家评审方案，则不显示 -->
                 <ul class="item-list" ng-if="vm.model.expertReviewDto && vm.model.expertReviewDto.id">
@@ -151,9 +149,9 @@
                 </ul>
                 <ul class="item-list">
                     <li><a href="" ng-click="vm.scrap(vm.model.signid)">作废项目</a></li>
-                    <li><a href="#/reviewWorkday/{{vm.model.signid}}">评审工作日维护</a></li>
                     <li><a href="" ng-click="vm.pauseProject()">项目暂停管理</a></li>
                     <li><a href="" ng-click="vm.clickUploadBt();">附件上传</a></li>
+                    <li><a href="#/MaintainProjectList">返回列表</a></li>
                 </ul>
             </div>
             <ul id="myTab" class="nav nav-tabs">

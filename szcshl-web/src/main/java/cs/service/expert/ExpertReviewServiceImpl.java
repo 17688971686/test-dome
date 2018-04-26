@@ -321,7 +321,10 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     @Transactional(rollbackFor = Exception.class)
     public ResultMsg updateJoinState(String reviewId,String minBusinessId, String businessType, String expertSelId, String state) {
         if(!Validate.isString(reviewId)){
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！");
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！请联系管理员处理！");
+        }
+        if(!Validate.isString(expertSelId)){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"请选择要更改的专家！");
         }
         //是否更新工作方案中的专家费用
         ExpertReview expertReview = expertReviewRepo.findById(reviewId);
@@ -338,6 +341,16 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"评审费已发放，不能对专家信息调整！请联系系统管理员进行调整！");
             }
             isPay = true;
+        }
+        //更改抽取专家状态
+        List<ExpertSelected> selectedList = expertReview.getExpertSelectedList();
+        List<String> expIds = StringUtil.getSplit(expertSelId,",");
+        for(ExpertSelected es : selectedList){
+            for(String epId : expIds){
+                if(epId.equals(es.getId())){
+                    es.setIsJoin(state);
+                }
+            }
         }
 
         //如果已经发送评审费，判断是否要重新计算
@@ -356,7 +369,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             //设置专家评审费用结束s
             expertReviewRepo.save(expertReview);
         }
-
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
     /**
@@ -402,57 +414,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         expertReviewRepo.executeSql(sqlBuilder);
 
     }
-
-
-   /* @Override
-    @Transactional
-    @Deprecated
-    public void saveExpertReviewCost(ExpertReviewDto[] expertReviews) {
-        if (expertReviews != null && expertReviews.length > 0) {
-            for (int i = 0; i < expertReviews.length; i++) {
-                ExpertReviewDto expertReviewDto = expertReviews[i];
-                List<ExpertSelectedDto> expertSelectedDtos = expertReviewDto.getExpertSelectedDtoList();
-                //保存评审费用
-                String experReviewId = expertReviewDto.getId();
-                if (Validate.isString(experReviewId)) {
-                    ExpertReview expertReview = expertReviewRepo.findById(experReviewId);
-                    if (expertReview != null) {
-                        //设置评审方案的评审费用、税费和合计
-                        expertReview.setReviewCost(expertReviewDto.getReviewCost());
-                        expertReview.setReviewTaxes(expertReviewDto.getReviewTaxes());
-                        expertReview.setTotalCost(expertReviewDto.getTotalCost());
-                        //设置标题
-                        expertReview.setReviewTitle(expertReviewDto.getReviewTitle());
-                        //设置评审费发放日期
-                        expertReview.setPayDate(expertReviewDto.getPayDate());
-                        //设置该评审方案所有专家的评审费用、税费和合计
-                        List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
-                        if (expertSelecteds != null && expertSelecteds.size() > 0
-                                && expertSelectedDtos != null && expertSelectedDtos.size() > 0) {
-                            expertSelecteds.forEach(expertSelected -> {
-                                expertSelectedDtos.forEach(expertSelectedDto -> {
-                                    if (expertSelectedDto.getId().equals(expertSelected.getId())) {
-                                        expertSelected.setReviewCost(expertSelectedDto.getReviewCost());
-                                        expertSelected.setReviewTaxes(expertSelectedDto.getReviewTaxes());
-                                        expertSelected.setTotalCost(expertSelectedDto.getTotalCost());
-                                        expertSelected.setIsLetterRw(expertSelectedDto.getIsLetterRw());
-                                        return;
-                                    }
-
-                                });
-                            });
-                        }
-                        //设置专家评审费用结束s
-
-                        expertReviewRepo.save(expertReview);
-                    }
-
-                }
-                //保存评审费用
-
-            }
-        }
-    }*/
 
     /**
      * 保存单个评审方案的专家评审费

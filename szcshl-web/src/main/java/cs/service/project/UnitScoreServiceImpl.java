@@ -27,20 +27,21 @@ public class UnitScoreServiceImpl implements UnitScoreService {
     private UnitScoreRepo unitScoreRepo;
 
     @Override
-    public void decide(String designcompanyName,String singid){
+    public void decide(String designcompanyName, String singid) {
         //查找单位
-        Company company=companyRepo.findCompany(designcompanyName);
-        if(company==null){
+        Company company = companyRepo.findCompany(designcompanyName);
+        if (company == null) {
             //没有时进行添加单位
-            companyService.createSignCompany(designcompanyName,"编制单位");
+            companyService.createSignCompany(designcompanyName, "编制单位");
         }
         //查找单位评分表数据
-        UnitScore unitScore=unitScoreRepo.findUnitScore(singid);
-        if(unitScore!=null){
+        UnitScore unitScore = unitScoreRepo.findUnitScore(singid);
+        if (unitScore != null) {
             unitScore.setCompany(company);
             unitScoreRepo.save(unitScore);
-        }else{//没有就添加
-            UnitScore unitScores =new UnitScore();
+        } else {
+            //没有就添加
+            UnitScore unitScores = new UnitScore();
             unitScores.setSignid(singid);
             unitScores.setCompany(company);
             unitScores.setId(UUID.randomUUID().toString());

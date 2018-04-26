@@ -330,11 +330,35 @@
                     filterable: false
                 },
                 {
+                    field: "preSignDate",
+                    title: "预签收时间",
+                    width: 100,
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
                     field: "signDate",
                     title: "签收时间",
                     width: 100,
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "",
+                    title: "签收状态",
+                    width: 100,
+                    filterable: false,
+                    template: function (item) {
+                        if (!item.signDate) {
+                            if(item.preSignDate){
+                                return "<span style='color:#ff0000;'>预签收</span>";
+                            }else{
+                                return "";
+                            }
+                        } else {
+                            return "<span style='color: #2b9d00;'>正式签收</span>";
+                        }
+                    }
                 },
                 {
                     field: "allPriUser",
@@ -374,13 +398,6 @@
                             return '<span style="color:green;">进行中</span>';
                         }
                     }
-                },
-                {
-                    field: "preSignDate",
-                    title: "预签收时间",
-                    width: 100,
-                    filterable: false,
-                    format: "{0: yyyy-MM-dd}"
                 },
                 {
                     field: "",
@@ -666,6 +683,23 @@
                     width: 100,
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "",
+                    title: "签收状态",
+                    width: 100,
+                    filterable: false,
+                    template: function (item) {
+                        if (!item.signDate) {
+                           if(item.preSignDate){
+                               return "<span style='color:#ff0000;'>预签收</span>";
+                           }else{
+                               return "";
+                           }
+                        } else {
+                            return "<span style='color: #2b9d00;'>正式签收</span>";
+                        }
+                    }
                 },
                 {
                     field: "",

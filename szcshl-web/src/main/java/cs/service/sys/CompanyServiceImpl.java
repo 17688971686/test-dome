@@ -1,6 +1,7 @@
 package cs.service.sys;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.UnitScore;
 import cs.domain.project.UnitScore_;
+import cs.domain.sys.Company_;
 import cs.model.project.UnitScoreDto;
 import cs.repository.repositoryImpl.project.UnitScoreRepo;
 import org.apache.log4j.Logger;
@@ -97,21 +99,22 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void createSignCompany(String name,String comType) {
         //判断单位名称是否添加
-        Criteria criteria = companyRepo.getSession().createCriteria(Company.class);
-        criteria.add(Restrictions.eq("coName", name));
+        Criteria criteria = companyRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(Company_.coName.getName(), name));
         List<Company> com = criteria.list();
         if (com.isEmpty()) {
             Company c = new Company();
             c.setId(UUID.randomUUID().toString());
             c.setCoName(name);
             c.setCoType(comType);
-            c.setCreatedBy(SessionUtil.getLoginName());
+            c.setCreatedBy(SessionUtil.getUserId());
             c.setModifiedBy(SessionUtil.getLoginName());
+            c.setCreatedDate(new Date());
+            c.setModifiedDate(new Date());
             companyRepo.save(c);
-
         }
 
 

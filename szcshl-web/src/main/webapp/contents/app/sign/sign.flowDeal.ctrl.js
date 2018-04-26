@@ -1184,6 +1184,7 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
+                console.log(ids.join(','));
                 expertReviewSvc.updateJoinState(vm.expertReview.id,"", "", ids.join(','), '9', vm.isCommit, function (data) {
                     if(data.flag || data.reCode == 'ok'){
                         vm.reFleshJoinState(ids, '9');
@@ -1207,7 +1208,7 @@
                 }
                 expertReviewSvc.updateJoinState(vm.expertReview.id,"", "", ids.join(','), '2', vm.isCommit, function (data) {
                     if(data.flag || data.reCode == 'ok'){
-                        vm.reFleshJoinState(ids, '9');
+                        vm.reFleshJoinState(ids, '2');
                         bsWin.success("操作成功！");
                     }else{
                         bsWin.success(data.reMsg);
@@ -1306,7 +1307,6 @@
                         vm.expertSelect.oneCost = "0";
                     }
                 }
-
             });
         }
 
@@ -1319,7 +1319,6 @@
             if (isValid) {
                 expertReviewSvc.saveSplit(vm);
             }
-
         }
 
     }

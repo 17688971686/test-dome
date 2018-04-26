@@ -41,7 +41,7 @@
             |
             <!--整体抽取方案只能抽取一次-->
             <button class="btn btn-xs btn-primary" ng-click="vm.startAutoExpertWin()"
-                    ng-disabled="vm.isCommit || (vm.expertReview.state == 9 || vm.expertReview.state == '9'))">
+                    ng-disabled="vm.isCommit || (vm.expertReview.state == 9 || vm.expertReview.state == '9')">
                 <span class="glyphicon glyphicon-asterisk"></span>开始随机抽取
             </button>
             <button class="btn btn-xs btn-primary" ng-click="vm.showAutoExpertWin()">
@@ -281,7 +281,7 @@
                     <td width="4%" align="center">批次</td>
                     <td width="5%" align="center">备注</td>
                 </tr>
-                <tr ng-repeat="x in  vm.confirmEPList|filter:{selectType:'1'} track by $index">
+                <tr ng-repeat="x in vm.confirmEPList|filter:{selectType:'1'} track by $index">
                     <td class="text-center" >
                         <input type="checkbox" name="checkSelectExpert" ng-checked="vm.removeSelectEP" value="{{x.id}}" />
                     </td>
@@ -570,7 +570,7 @@
                         <span class="glyphicon glyphicon-ok"></span>保存
                     </button>
                 </td>
-                <td style="width:5%" align="center">姓名</td>
+                <td style="width:8%" align="center">姓名</td>
                 <td style="width:15%" align="center">工作单位</td>
                 <td style="width:10%" align="center">职务/职称</td>
                 <td style="width:15%" align="center">专业大类</td>
