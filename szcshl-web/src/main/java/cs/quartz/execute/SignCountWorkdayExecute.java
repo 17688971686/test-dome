@@ -174,6 +174,7 @@ public class SignCountWorkdayExecute implements Job {
             }
         //计算存档(发文到存档，有30天日期)
         }else{
+            sign.setDaysafterdispatch(usedWorkDay);
             if(usedWorkDay > WORK_DAY_30){
                 sign.setIsLightUp(Constant.signEnumState.ARCHIVEOVER.getValue());
             }else if(usedWorkDay > WORK_DAY_25){
