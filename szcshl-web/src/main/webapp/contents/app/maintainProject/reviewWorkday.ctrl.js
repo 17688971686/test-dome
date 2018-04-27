@@ -17,8 +17,15 @@
         function activate(){
             reviewWorkdaysSvc.initReviewWorkDays(vm , function(data){
                 vm.sign = data;
+
+                //记录上一次总评审天数
                 vm.totalReviewDays = vm.sign.totalReviewdays;
+
+                //记录上一次延长的天数
                 vm.lengthenDays = vm.sign.lengthenDays;
+
+                //计算已逝工作日  已逝工作日 = 总评审天数 - 剩余工作日
+                vm.sign.reviewdays = vm.totalReviewDays - vm.sign.surplusdays;
             });
         }
 
