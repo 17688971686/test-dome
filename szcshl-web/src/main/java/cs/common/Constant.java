@@ -489,7 +489,9 @@ public class Constant {
 
         //专家缴费
         EXPERT_PAYTAXES("print/expert_paytaxes" , "专家缴费"),
-        EXPERT_PAYTAXESDETAIL("print/expert_paytaxesDetail" , "专家缴费详细页");
+        EXPERT_PAYTAXESDETAIL("print/expert_paytaxesDetail" , "专家缴费详细页"),
+
+        ADD_REGISTER_FILE("print/registerFile" , "拟补充资料清单");
 
         private String key;
         private String value;

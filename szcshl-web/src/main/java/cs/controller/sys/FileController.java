@@ -139,6 +139,7 @@ public class FileController implements ServletConfigAware, ServletContextAware {
     @Autowired
     private ExpertSelectedRepo expertSelectedRepo;
 
+
     @Override
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
@@ -1089,6 +1090,22 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     Map<String, Object> archivesData = TemplateUtil.entryAddMap(archivesLibraryDto);
                     file = TemplateUtil.createDoc(archivesData, Template.ARCHIVES_DETAIL.getKey(), path);
                     break;
+
+                    //补充资料清单
+                case "ADDSUPPLEFILE":
+                    Sign signss = signRepo.findById(Sign_.signid.getName(), businessId);
+                    List<AddRegisterFile> addRegisterFileList2 = addRegisterFileService.findByBusIdAndBusType(businessId, 3);
+                    Map<String , Object> addFileData = new HashMap<>();
+                    addFileData.put("addFileList" , addRegisterFileList2);
+                    addFileData.put("signNum" , signss.getSignNum());
+                    addFileData.put("projectname" , signss.getProjectname());
+                    addFileData.put("builtcompanyName" , signss.getBuiltcompanyName());
+                    addFileData.put("projectcode" , signss.getProjectcode());
+                    addFileData.put("strDate" , DateUtils.converToString(new Date() , "yyyy年MM月dd日"));
+                    file = TemplateUtil.createDoc(addFileData, Template.ADD_REGISTER_FILE.getKey(), path);
+
+                    break;
+
                 default:
                     ;
             }
