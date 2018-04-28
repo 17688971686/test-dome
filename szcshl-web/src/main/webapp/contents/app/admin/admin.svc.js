@@ -1014,7 +1014,19 @@
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
                 /*  pageable: common.kendoGridConfig().pageable,*/
-                pageable: common.kendoGridConfig(vm.queryParams).pageable,
+                /*pageable: common.kendoGridConfig(vm.queryParams).pageable,*/
+                pageable: {
+                    pageSize: 10,
+                    previousNext: true,
+                    buttonCount: 5,
+                    refresh: true,
+                    pageSizes: [10, 20, 30,50],
+                    change: function () {
+                        if (vm.queryParams && vm.queryParams.page) {
+                            vm.queryParams.page = this.dataSource.page();
+                        }
+                    }
+                },
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,

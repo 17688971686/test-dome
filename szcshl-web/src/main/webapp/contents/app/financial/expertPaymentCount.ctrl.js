@@ -31,9 +31,7 @@
 
         //打印
         vm.printFile = function () {
-
-            var time = vm.model.year + vm.model.month;
-            var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/expertSelected/printPreview/" + time;
+            var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/expertSelected/printPreview/" + vm.model.year+"/"+vm.model.month;
             $("#iframePreview").attr("src", url);
             $("#previewModal").kendoWindow({
                 width: "80%",
@@ -50,8 +48,7 @@
          * 专家评审费统计导出
          */
         vm.excelExport = function () {
-            vm.fileName = "专家缴税统计汇总表" + vm.model.year + "-" + vm.model.month;
-            expertPaymentCountSvc.excelExport(vm.expertCostTotalInfo, vm.fileName);
+            expertPaymentCountSvc.excelExport(vm.expertCostTotalInfo, vm.model.year,vm.model.month);
         }
 
         activate();

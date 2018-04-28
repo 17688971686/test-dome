@@ -344,10 +344,10 @@ public class SignRestServiceImpl implements SignRestService {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_03.getCode(), IFResultCode.IFMsgCode.SZEC_SFGW_03.getValue());
             }
             dataMap.put("xmpsyd", dispatchDoc.getReviewAbstract());// 项目评审要点
-            dataMap.put("sb", (dispatchDoc.getDeclareValue() == null ? BigDecimal.ZERO : dispatchDoc.getDeclareValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 申报投资额（万元）
-            dataMap.put("sd", (dispatchDoc.getAuthorizeValue() == null ? BigDecimal.ZERO : dispatchDoc.getAuthorizeValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 审定投资额（万元）
-            dataMap.put("hjz", (dispatchDoc.getExtraValue() == null ? BigDecimal.ZERO : dispatchDoc.getExtraValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 核减（增）投资额（万元）
-            dataMap.put("hjzl", (dispatchDoc.getExtraRate() == null ? BigDecimal.ZERO : dispatchDoc.getExtraRate()).setScale(2, BigDecimal.ROUND_HALF_UP));// 核减（增）率
+            dataMap.put("sb", (dispatchDoc.getDeclareValue() == null ? null : dispatchDoc.getDeclareValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 申报投资额（万元）
+            dataMap.put("sd", (dispatchDoc.getAuthorizeValue() == null ? null : dispatchDoc.getAuthorizeValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 审定投资额（万元）
+            dataMap.put("hjz", (dispatchDoc.getExtraValue() == null ? null : dispatchDoc.getExtraValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 核减（增）投资额（万元）
+            dataMap.put("hjzl", (dispatchDoc.getExtraRate() == null ? null : dispatchDoc.getExtraRate()).setScale(2, BigDecimal.ROUND_HALF_UP));// 核减（增）率
             dataMap.put("psbz", dispatchDoc.getRemark());// 备注
             dataMap.put("xmjsbyx", dispatchDoc.getProjectBuildNecess());// 项目建设必要性
             dataMap.put("jsnrjgm", dispatchDoc.getBuildSizeContent());// 建设内容及规模

@@ -60,10 +60,11 @@
         }//E_专家评审费用明细统计
 
         //begin excelExport
-        function excelExport(exportData,fileName){
+        function excelExport(exportData,year,month){
+            var fileName = "专家缴税统计汇总表(" + year + "-" + month+")";
             var httpOptions ={
                 method : 'post',
-                url : rootPath + "/expertSelected/excelExport",
+                url : rootPath + "/expertSelected/excelExport/"+year+"/"+month,
                 headers : {
                     "contentType" : "application/json;charset=utf-8"
                 },

@@ -465,8 +465,14 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
      */
     @Override
     public ResultMsg findSecretProPermission(String signId) {
-        //如果是主任和超级管理员，则不用做判断
-        if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue()) || SessionUtil.hashRole(SUPER_ROLE) || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {
+        /**
+         * 如果是主任和超级管理员，则不用做判断
+         * 归档员也可以查看所有项目（2018-04-28）
+         */
+        boolean isHaveAuth = SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.FILER.getValue())
+                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue()) || SessionUtil.hashRole(SUPER_ROLE)
+                || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
+        if (isHaveAuth) {
             return new ResultMsg(true, Constant.MsgCode.OK.getValue(), null);
         }
         boolean isHavePermission = false;
@@ -495,11 +501,12 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         }
     }
 
-
+    /**
+     * 在办项目数量统计
+     * @return
+     */
     @Override
-    //在办项目数量统计
     public List<Map<String, Object>> dataskCount() {
-        //for mysql
         String statisticsSql = " select COUNT(signid)  as SIGNNUMBER ,reviewstage   from SIGN_DISP_WORK t where signstate<>7 and signstate<>2 group by t.reviewstage";
         List<Map<String, Object>> statList = jdbcTemplate.queryForList(statisticsSql);
 
