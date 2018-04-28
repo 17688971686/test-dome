@@ -1206,9 +1206,9 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState(vm.expertReview.id,"", "", ids.join(','), '2', vm.isCommit, function (data) {
+                expertReviewSvc.updateJoinState(vm.expertReview.id,"", "", ids.join(','), '0', vm.isCommit, function (data) {
                     if(data.flag || data.reCode == 'ok'){
-                        vm.reFleshJoinState(ids, '2');
+                        vm.reFleshJoinState(ids, '0');
                         bsWin.success("操作成功！");
                     }else{
                         bsWin.success(data.reMsg);

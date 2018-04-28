@@ -707,9 +707,13 @@
                 for (var i = 0; i < isCheck.length; i++) {
                     ids.push(isCheck[i].value);
                 }
-                expertReviewSvc.updateJoinState(vm.expertReview.id, vm.minBusinessId, vm.businessType, ids.join(','), '2', vm.isCommit, function (data) {
-                    bsWin.success("操作成功！");
-                    vm.reFleshJoinState(ids, '2');
+                expertReviewSvc.updateJoinState(vm.expertReview.id, vm.minBusinessId, vm.businessType, ids.join(','), '0', vm.isCommit, function (data) {
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.reFleshJoinState(ids,'0');
+                        bsWin.success("操作成功！");
+                    }else{
+                        bsWin.success(data.reMsg);
+                    }
                 });
             }
         }
