@@ -830,4 +830,16 @@ public class Constant {
             return value;
         }
     }
+
+    /**
+     * 专家抽取类型
+     */
+    public enum ExpertSelectType {
+        自选,
+        正选,
+        备选,
+        境外专家,
+        市外专家,
+        新专家
+    }
 }

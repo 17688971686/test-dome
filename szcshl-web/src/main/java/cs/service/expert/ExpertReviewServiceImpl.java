@@ -227,8 +227,10 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             expertReviewRepo.save(expertReview);
         } else {
             expertReview = expertReviewRepo.findById(ExpertReview_.id.getName(), reviewId);
+            if( null != expertReview.getPayDate() && null != expertReview.getReviewDate() && (new Date()).after(expertReview.getReviewDate())){
+                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"已发送专家评审费，不能对方案再修改！");
+            }
         }
-
         List<ExpertSelectedDto> resultList = new ArrayList<>();
         //保存抽取专家
         List<String> expertIdArr = StringUtil.getSplit(expertIds, ",");
@@ -260,23 +262,33 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             expertSelected.setIsJoin(Constant.EnumState.YES.getValue());
             expertSelected.setIsConfrim(Constant.EnumState.YES.getValue());
             expertSelected.setSelectType(selectType);
-            //添加创建人
             expertSelected.setCreateBy(SessionUtil.getLoginName());
+            //获取专家信息
+            Expert expert = expertRepo.findById(Expert_.expertID.getName(), expertIdArr.get(i));
             //如果是自选或者境外专家，默认已经确认
-            if (Constant.EnumExpertSelectType.SELF.getValue().equals(expertSelected.getSelectType())
-                    || Constant.EnumExpertSelectType.OUTSIDE.getValue().equals(expertSelected.getSelectType())) {
+            if(Constant.EnumExpertSelectType.SELF.getValue().equals(expertSelected.getSelectType())){
+                expertSelected.setRemark(Constant.ExpertSelectType.自选.name());
                 expertSelected.setIsConfrim(Constant.EnumState.YES.getValue());
+            }else if( Constant.EnumExpertSelectType.OUTSIDE.getValue().equals(expertSelected.getSelectType())){
+                expertSelected.setIsConfrim(Constant.EnumState.YES.getValue());
+                //设定备注信息，优先 （境外专家<-市外专家<-新专家）
+                if(expert.getExpertField() == "2"){
+                    expertSelected.setRemark(Constant.ExpertSelectType.境外专家.name());
+                }else if(expert.getExpertField() == "1"){
+                    expertSelected.setRemark(Constant.ExpertSelectType.市外专家.name());
+                }else{
+                    expertSelected.setRemark(Constant.ExpertSelectType.新专家.name());
+                }
             }
             //保存专家映射
-            expertSelected.setExpert(expertRepo.findById(Expert_.expertID.getName(), expertIdArr.get(i)));
-            Expert expert = expertRepo.findById(Expert_.expertID.getName(), expertIdArr.get(i));
-            if(null != expert && null != expert.getExpertType()){
+            expertSelected.setExpert(expert);
+            /*if(null != expert && null != expert.getExpertType()){
                if(expert.getExpertType().size() == 1){
                    expertSelected.setMaJorBig(expert.getExpertType().get(0).getMaJorBig());
                    expertSelected.setMaJorSmall(expert.getExpertType().get(0).getMaJorSmall());
                    expertSelected.setExpeRttype(expert.getExpertType().get(0).getExpertType());
                }
-            }
+            }*/
             //保存抽取条件映射
             expertSelected.setExpertReview(expertReview);
             expertSelectedRepo.save(expertSelected);

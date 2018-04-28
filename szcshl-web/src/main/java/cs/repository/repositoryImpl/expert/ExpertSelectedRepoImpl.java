@@ -1577,7 +1577,7 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         Criteria criteria = expertSelectedRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(ExpertSelected_.businessId.getName(),businessID));
         criteria.add(Restrictions.eq(ExpertSelected_.isConfrim.getName(), Constant.EnumState.YES.getValue()));
-        criteria.add(Restrictions.or(Restrictions.eq(ExpertSelected_.isJoin.getName(),Constant.EnumState.YES.getValue()),Restrictions.eq(ExpertSelected_.isJoin.getName(),Constant.EnumState.STOP.getValue())));
+        criteria.add(Restrictions.eq(ExpertSelected_.isJoin.getName(), Constant.EnumState.YES.getValue()));
         criteria.addOrder(Property.forName(ExpertSelected_.expertSeq.getName()).asc());
         List<ExpertSelected> expertSelectedList = criteria.list();
         List<ExpertSelectedDto> expertSelectedDtoList = new ArrayList<>();

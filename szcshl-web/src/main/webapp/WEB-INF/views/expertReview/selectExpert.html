@@ -19,7 +19,7 @@
         <button class="btn btn-sm btn-primary" ng-click="vm.expertBack();" ng-disabled="vm.isCommit"><span
                 class="glyphicon glyphicon-chevron-left"></span>返回
         </button>
-        <!--确认抽取的专家之后再显示-->
+        <!-- 已经发放评审费的专家，不能再修改 -->
         <button ng-show="(vm.confirmEPList && vm.confirmEPList.length>=1)" class="btn btn-sm btn-success" ng-click="vm.affirmJoinExpert();" ng-disabled="vm.isCommit">
             确认实际参加评审的专家名称
         </button>
@@ -242,7 +242,7 @@
                     <td align="center">{{x.maJorSmall}}</td>
                     <td align="center">{{x.expertDto.userPhone}}</td>
                     <td align="center">{{x.expeRttype}}</td>
-                    <td align="center">{{x.expertDto.remark}}</td>
+                    <td align="center">{{x.remark}}</td>
                 </tr>
             </table>
         </div>
@@ -294,7 +294,7 @@
                     <td align="center">{{x.expeRttype}}</td>
                     <td align="center">{{(x.isConfrim == '9')?'是':'否'}}</td>
                     <td align="center">{{(x.selectIndex)?x.selectIndex:1}}</td>
-                    <td align="center">{{x.expertDto.remark}}</td>
+                    <td align="center">{{x.remark}}</td>
                 </tr>
             </table>
         </div>
@@ -677,7 +677,7 @@
                 <td align="center">
                     <input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="x.isLetterRw"
                     ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
-                <td align="center">{{x.expertDto.remark}}</td>
+                <td align="center">{{x.remark}}</td>
             </tr>
         </table>
     </div>

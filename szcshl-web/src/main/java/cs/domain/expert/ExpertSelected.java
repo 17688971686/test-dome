@@ -126,6 +126,12 @@ public class ExpertSelected {
     private Integer expertSeq;
 
     /**
+     * 抽取专家备注信息
+     */
+    @Column(columnDefinition = "varchar(32) ")
+    private String remark;
+
+    /**
      * 创建人
      */
     @Column(columnDefinition="VARCHAR(64)")
@@ -321,5 +327,13 @@ public class ExpertSelected {
 
     public void setCreateBy(String createBy) {
         this.createBy = createBy;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

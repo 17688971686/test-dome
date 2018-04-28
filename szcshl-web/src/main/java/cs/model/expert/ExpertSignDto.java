@@ -1,5 +1,7 @@
 package cs.model.expert;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 /**
@@ -19,8 +21,10 @@ public class ExpertSignDto {
 
     private String builtcompanyname;
 
+    @JSONField(format = "yyyy-MM-dd")
     private Date signdate;
 
+    @JSONField(format = "yyyy-MM-dd")
     private Date reviewDate;
 
     private String processInstanceId;

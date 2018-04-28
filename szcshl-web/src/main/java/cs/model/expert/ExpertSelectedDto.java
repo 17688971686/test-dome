@@ -66,6 +66,10 @@ public class ExpertSelectedDto {
     private Integer expertSeq;
 
     /**
+     * 专家抽取备注
+     */
+    private String remark;
+    /**
      * 创建人
      */
     private String createBy;
@@ -270,5 +274,13 @@ public class ExpertSelectedDto {
 
     public void setExpertSeq(Integer expertSeq) {
         this.expertSeq = expertSeq;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

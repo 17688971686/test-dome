@@ -121,6 +121,9 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
             ExpertReview reviewObj = new ExpertReview();
             if (Validate.isString(reviewId)) {
                 reviewObj = expertReviewRepo.findById(ExpertReview_.id.getName(), reviewId);
+                if( null != reviewObj.getPayDate() && null != reviewObj.getReviewDate() && (new Date()).after(reviewObj.getReviewDate())){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"已发送专家评审费，不能对方案再修改！");
+                }
             } else {
                 Date now = new Date();
                 reviewObj.setBusinessId(businessId);    //设置业务ID
@@ -134,7 +137,8 @@ public class ExpertSelConditionServiceImpl implements ExpertSelConditionService 
                 //获取评审会日期
                 if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
                     WorkProgram wp = workProgramRepo.findById(WorkProgram_.id.getName(),minBusinessId);
-                    if("专家函评".equals(wp.getReviewType())){
+                    //专家函评
+                    if(Constant.MergeType.REVIEW_LEETER.getValue().equals(wp.getReviewType())){
                         reviewObj.setReviewDate(wp.getLetterDate());
                     }
                 }

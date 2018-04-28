@@ -10,8 +10,8 @@
             <th >项目名称</th>
             <th style="width: 15%;">评审阶段</th>
             <th style="width: 25%;">建设单位</th>
-            <th style="width: 15%;">评审时间</th>
             <th style="width: 15%;">签收时间</th>
+            <th style="width: 15%;">评审时间</th>
         </tr>
         <tr ng-repeat="s in vm.reviewProjectList">
             <td class="text-center">{{$index+1}}</td>
@@ -19,8 +19,8 @@
             <td><a ng-click="vm.queryDetail(s.signid,s.processInstanceId)">{{s.projectname}}</a></td>
             <td>{{s.reviewstage}}</td>
             <td>{{s.builtcompanyname}}</td>
-            <td>{{s.reviewDate}}</td>
             <td>{{s.signdate}}</td>
+            <td>{{s.reviewDate}}</td>
         </tr>
         <tr ng-show="vm.noData" ng-hide="!vm.noData">
             <td colspan="7">

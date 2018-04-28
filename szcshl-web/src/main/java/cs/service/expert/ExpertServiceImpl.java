@@ -510,6 +510,10 @@ public class ExpertServiceImpl implements ExpertService {
         int selectedEPCount = -1;       //符合条件的专家
         List<ExpertDto> officialEPList = new ArrayList<>(), alternativeEPList = new ArrayList<>(), allEPList = new ArrayList<>();
         ExpertReview expertReview = expertReviewRepo.findById(ExpertReview_.id.getName(), reviewId);
+        if( null != expertReview.getPayDate() && null != expertReview.getReviewDate() && (new Date()).after(expertReview.getReviewDate())){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"已发送专家评审费，不能对方案再修改！");
+        }
+
         //如果是项目，则判断是否是专家函评
         if (Constant.BusinessType.SIGN.getValue().equals(expertReview.getBusinessType())) {
             isLetterRw = workProgramRepo.checkReviewType(Constant.MergeType.REVIEW_LEETER.getValue(), minBusinessId);
@@ -545,7 +549,7 @@ public class ExpertServiceImpl implements ExpertService {
                 selectedEPCount = expertSelectedRepo.findConfirmSeletedEP(reviewId, epConditon.getMaJorBig(), epConditon.getMaJorSmall(), epConditon.getExpeRttype(), epConditon.getCompositeScore(), epConditon.getCompositeScoreEnd());
                 chooseCount = (selectedEPCount > -1) ? (chooseCount - selectedEPCount) : chooseCount;
                 if (chooseCount < 1) {
-                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该条件抽取的专家已经达到设定数，不能再次抽取！");
+                    resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该条件抽取的专家已经达到设定人数，不能再次抽取！");
                     return resultMsg;
                 }
             }
@@ -569,11 +573,11 @@ public class ExpertServiceImpl implements ExpertService {
 
             //3、开始抽取
             for (int i = 0; i < chooseCount; i++) {
-                if (!addAutoExpert(officialEPList, matchEPList, saveList, epConditon, expertReview, minBusinessId, isLetterRw)) {
+                if (!addAutoExpert(officialEPList, matchEPList, saveList, epConditon, expertReview, minBusinessId, isLetterRw,true)) {
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的正选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
-                if (!addAutoExpert(alternativeEPList, matchEPList, saveList, epConditon, expertReview, minBusinessId, isLetterRw)) {
+                if (!addAutoExpert(alternativeEPList, matchEPList, saveList, epConditon, expertReview, minBusinessId, isLetterRw,false)) {
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "条件号【" + (k + 1) + "】抽取的备选专家人数不够，抽取无效！请重新设置抽取条件！");
                     break;
                 }
@@ -616,7 +620,7 @@ public class ExpertServiceImpl implements ExpertService {
      * @return
      */
     private boolean addAutoExpert(List<ExpertDto> saveEPList, List<ExpertDto> randomEPList, List<ExpertSelected> saveList,
-                                  ExpertSelConditionDto epConditon, ExpertReview expertReview, String minBusinessId, boolean isLetterRw) {
+                                  ExpertSelConditionDto epConditon, ExpertReview expertReview, String minBusinessId, boolean isLetterRw,boolean isOfficial) {
         if (randomEPList.size() == 0) {
             return false;
         }
@@ -634,7 +638,7 @@ public class ExpertServiceImpl implements ExpertService {
         }
         //如果不满足，则继续抽
         if (success == false) {
-            return addAutoExpert(saveEPList, randomEPList, saveList, epConditon, expertReview, minBusinessId, isLetterRw);
+            return addAutoExpert(saveEPList, randomEPList, saveList, epConditon, expertReview, minBusinessId, isLetterRw,isOfficial);
         } else {
             saveEPList.add(randomEP);
             //保存抽取记录
@@ -648,6 +652,12 @@ public class ExpertServiceImpl implements ExpertService {
             aExpertSelected.setMaJorSmall(epConditon.getMaJorSmall());
             aExpertSelected.setSelectIndex(epConditon.getSelectIndex() == null ? 1 : (epConditon.getSelectIndex() + 1));
             aExpertSelected.setExpeRttype(epConditon.getExpeRttype());
+            //抽取专家备注信息
+            if(isOfficial){
+                aExpertSelected.setRemark(Constant.ExpertSelectType.正选.name());
+            }else{
+                aExpertSelected.setRemark(Constant.ExpertSelectType.备选.name());
+            }
             //默认专家费用，每个专家1000元
             aExpertSelected.setReviewCost(new BigDecimal(EXPERT_REVIEW_COST));
             Expert aEP = new Expert();
