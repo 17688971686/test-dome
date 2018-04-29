@@ -580,6 +580,16 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         result += result.length() > 0 ? ",评审意见书" : "评审意见书";
                     }
 
+                    //相关单位会议通知
+                    try{
+                        SysFile notice = CreateTemplateUtils.createTemplateUnitNotice(f, sign, workProgram, user, roomBookings , secondUserList);
+                        if (notice != null && Validate.isString(notice.getSysFileId())) {
+                            saveFile.add(notice);
+                        }
+                    }catch (Exception e){
+                        result += result.length() > 0 ? ",相关单位会议通知" : "相关单位会议通知";
+                    }
+
                     //2.6协审协议书
                   /*  HqlBuilder queryaps = HqlBuilder.create();
                     queryaps.append(" from " + AssistPlanSign.class.getSimpleName() + " where " + AssistPlanSign_.signId.getName() + " =:signID");

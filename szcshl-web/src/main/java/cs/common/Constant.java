@@ -378,9 +378,11 @@ public class Constant {
         ASSIST("assist", "协审协议书"),
         SIGN_IN("signIn", "签到表"),
         INVITATION("meetBefore/invitation", "邀请函"),
-        UNIT_NOTICE("meetBefore/notice", "项目单位会议通知"),
+        PROJECR_NOTICE("meetBefore/notice", "项目单位会议通知"),
         THIS_STAGE_MEETING("thisStageMeeing", "本周评审会议安排"),
         NEXT_STAGE_MEETING("nextStageMeeting", "下周评审会议安排"),
+        UNIT_NOTICE("meetBefore/unitNotice" , "相关单位会议通知"),
+
 
 
         //可行性研究报告

@@ -527,7 +527,7 @@ public class CreateTemplateUtils {
             sysFile = TemplateUtil.createTemplate(
                     f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
                     workProgram.getId(), Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")", Constant.SysFileType.WORKPROGRAM.getValue(),
-                    Constant.Template.UNIT_NOTICE.getKey(), Constant.Template.UNIT_NOTICE.getValue(),
+                    Constant.Template.PROJECR_NOTICE.getKey(), Constant.Template.PROJECR_NOTICE.getValue(),
                     Constant.Template.WORD_SUFFIX.getKey(), dataMap);
         }
         return sysFile;
@@ -774,6 +774,88 @@ public class CreateTemplateUtils {
                 workProgram.getId(), Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")", Constant.SysFileType.WORKPROGRAM.getValue(),
                 Constant.Template.EXPERTREVIEWIDEA.getKey(), Constant.Template.EXPERTREVIEWIDEA.getValue(),
                 Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+        return sysFile;
+    }
+
+    /**
+     * 相关单位会议通知
+     * @param f
+     * @param sign
+     * @param workProgram
+     * @param user
+     * @param rbList
+     * @param secondUserList
+     * @return
+     */
+    public static SysFile createTemplateUnitNotice(Ftp f, Sign sign, WorkProgram workProgram, User user, List<RoomBooking> rbList, List<User> secondUserList) {
+
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("projectName", sign.getProjectname());
+        dataMap.put("reviewStage", sign.getReviewstage());
+        String inviteUnitLeader = workProgram.getInviteUnitLeader() == null ? "" : workProgram.getInviteUnitLeader();
+
+        String[] inviteUnitLeaderArr = inviteUnitLeader.split("[;,；，、]");
+
+        dataMap.put("inviteUnitLeaderArr", inviteUnitLeaderArr );
+        dataMap.put("inviteUnitLeaderArrSize" , inviteUnitLeaderArr == null ? 0 : inviteUnitLeaderArr.length);
+        //第一负责人
+        String contactPerson = user.getDisplayName() == null ? "" : user.getDisplayName();
+        String contactPersonTel = user.getUserPhone() == null ? "" : user.getUserPhone();
+        //第二负责人 , 负责人总共三个，第一负责人排第一，联系电话显示两个
+        if (secondUserList != null && secondUserList.size() > 0) {
+            for (int i = 0; i < secondUserList.size() && i < 2; i++) {
+                User secondUser = secondUserList.get(i);
+                if (secondUser != null) {
+
+                    contactPerson += secondUser.getDisplayName() == null ? "" : "," + secondUser.getDisplayName();
+
+                }
+            }
+            if (secondUserList.get(0) != null) {
+                contactPersonTel += secondUserList.get(0).getUserPhone() == null ? "" : "," + secondUserList.get(0).getUserPhone();
+            }
+        }
+        dataMap.put("contactPerson", contactPerson);//联系人
+        dataMap.put("contactPersonTel", contactPersonTel);//联系电话
+
+        dataMap.put("dateStr", DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
+
+        //获得会议信息
+        SysFile sysFile = new SysFile();
+        if (rbList != null && rbList.size() > 0) {
+            RoomBooking roomBooking = rbList.get(0);
+            String[] str = roomBooking.getRbDate().split("-");
+            String[] str2 = str[2].split("\\(");
+
+            String meetTime = str[0] + "年" + str[1] + "月" + str2[0] + "日(" + str2[1]
+                    + DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm")
+                    + "至"
+                    + DateUtils.converToString(roomBooking.getEndTime(), "HH:mm");
+            dataMap.put("meetTime", meetTime);
+
+            dataMap.put("addressName", roomBooking.getAddressName()); //会议地点
+
+            dataMap.put("contactPersonAddress", "福田区莲花支路公交大厦" + roomBooking.getAddressName().substring(0, 3));
+
+            Date compareDate = DateUtils.converToDate("12:00", "HH:mm");
+
+            //如果开始时间大于12点或结束时间小于12点默认是半天，其它情况默认是全天
+            if (DateUtils.compareIgnoreSecond(DateUtils.converToDate(
+                    DateUtils.converToString(roomBooking.getBeginTime(), "HH:mm"), "HH:mm"), compareDate) > 0
+                    || DateUtils.compareIgnoreSecond(
+                    DateUtils.converToDate(DateUtils.converToString(roomBooking.getEndTime(), "HH:mm"), "HH:mm"), compareDate) < 0) {
+                dataMap.put("duration", "半天");
+
+            } else {
+                dataMap.put("duration", "全天");
+            }
+
+            sysFile = TemplateUtil.createTemplate(
+                    f, sign.getSignid(), Constant.SysFileType.SIGN.getValue(),
+                    workProgram.getId(), Constant.SysFileType.MEETING.getValue() + "(" + workProgram.getBranchId() + ")", Constant.SysFileType.WORKPROGRAM.getValue(),
+                    Constant.Template.UNIT_NOTICE.getKey(), Constant.Template.UNIT_NOTICE.getValue(),
+                    Constant.Template.WORD_SUFFIX.getKey(), dataMap);
+        }
         return sysFile;
     }
 
