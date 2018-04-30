@@ -24,29 +24,15 @@ public class QuartzUnit {
     public static int countWorkday(List<Workday> workdayList, Date signDate) {
         Date now = new Date();
         String signDateString = DateUtils.date2String(signDate, DateUtils.DATE_PATTERN);
+        //去掉时分秒
+        Date newSignDate = DateUtils.converToDate(signDateString,DateUtils.DATE_PATTERN);
         String nowDateString = DateUtils.date2String(now, DateUtils.DATE_PATTERN);
         //签进来第二天才开始计数
         int result = getWorkDayNum(signDateString, nowDateString, DateUtils.DATE_PATTERN)-1;
         //2、是否计算当前日期
         if (Validate.isList(workdayList)) {
-            int l = workdayList.size();
-            //判断今天是否要计算工作日
-            Workday workday = workdayList.get(l - 1);
-            String workdayString = DateUtils.date2String(workday.getDates(), DateUtils.DATE_PATTERN);
-            //如果今天已经计算日工作日，则先计算
-            if (workdayString.equals(nowDateString)) {
-                l = l - 1;
-                //将工作日改为休息日，则日期减1
-                if (!isWeekend(workday.getDates()) && "1".equals(workday.getStatus())) {
-                    result--;
-                    //将休息日改成工作日的，日期加1
-                } else if (isWeekend(workday.getDates()) && "2".equals(workday.getStatus())) {
-                    result++;
-                }
-            }
-
             //过滤工作日，只要从签收日期之后的即可
-            workdayList = filterWorkDay(workdayList, signDate);
+            workdayList = filterWorkDay(workdayList,newSignDate,now);
             if (Validate.isList(workdayList)) {
                 for (int i = 0; i < workdayList.size(); i++) {
                     Workday checkWordDay = workdayList.get(i);
@@ -70,19 +56,13 @@ public class QuartzUnit {
      * @param signDate
      * @return
      */
-    private static List<Workday> filterWorkDay(List<Workday> workdayList, Date signDate) {
-        //签收日期
-        Calendar c1 = Calendar.getInstance();
-        c1.setTime(signDate);
-        cleanHMSM(c1);
-
+    private static List<Workday> filterWorkDay(List<Workday> workdayList, Date signDate,Date endDate) {
         List<Workday> resultList = new ArrayList<>();
         for (int i = 0, l = workdayList.size(); i < l; i++) {
             Workday workday = workdayList.get(i);
-            Calendar cw = Calendar.getInstance();
-            cw.setTime(workday.getDates());
-            cleanHMSM(cw);
-            if (cw.compareTo(c1) > -1) {
+            Date checkDate = workday.getDates();
+            if(DateUtils.daysBetween(signDate,checkDate) >= 0
+                    && DateUtils.daysBetween(checkDate,endDate) >= 0 ){
                 resultList.add(workday);
             }
         }
@@ -186,11 +166,16 @@ public class QuartzUnit {
         workdayList.add(workday);
 
         Workday workday2 = new Workday();
-        workday2.setDates(DateUtils.converToDate("2018-04-01", "yyyy-MM-dd"));
-        workday2.setStatus("1");
+        workday2.setDates(DateUtils.converToDate("2018-04-28", "yyyy-MM-dd"));
+        workday2.setStatus("2");
         workdayList.add(workday2);
+
+        Workday workday3 = new Workday();
+        workday3.setDates(DateUtils.converToDate("2018-04-30", "yyyy-MM-dd"));
+        workday3.setStatus("1");
+        workdayList.add(workday3);
         //int i = getSundayNum("2018-4-9", "2018-04-12", "yyyy-MM-dd");
         //System.out.println(i);
-        System.out.println(countWorkday(workdayList, DateUtils.converToDate("2018-04-12", "yyyy-MM-dd")));
+        System.out.println(countWorkday(workdayList, DateUtils.converToDate("2018-04-10", "yyyy-MM-dd")));
     }
 }

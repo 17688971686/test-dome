@@ -124,8 +124,9 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                 //项目状态查询修改
                 if (SignDispaWork_.processState.getName().equals(item.getField())) {
                     processState = Integer.parseInt(item.getValue().toString());
-                    if(processState <10){
-                        criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(),processState));
+                    //在办项目或者暂停项目
+                    if(processState == 1 || processState == 2){
+                        criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),String.valueOf(processState)));
                     }else if(processState == 17){
                         //未发送存档
                         criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),1));
@@ -145,7 +146,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                     else if(processState == 24){
                         //曾经暂停
                         criteria.add(Restrictions.eq(SignDispaWork_.isProjectStop.getName(),Constant.EnumState.YES.getValue()));
-                        criteria.add(Restrictions.eq(SignDispaWork_.processState.getName(),Constant.EnumState.PROCESS.getValue()));
+                        criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),Constant.EnumState.PROCESS.getValue()));
                     }
                     continue;
                 }
