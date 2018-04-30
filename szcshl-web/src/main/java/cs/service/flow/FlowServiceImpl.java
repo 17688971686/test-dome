@@ -19,10 +19,7 @@ import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
-import cs.repository.repositoryImpl.project.SignBranchRepo;
-import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
-import cs.repository.repositoryImpl.project.SignMergeRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
+import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.repository.repositoryImpl.topic.WorkPlanRepo;
 import cs.service.project.SignService;
@@ -136,7 +133,7 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     private LogService logService;
     @Autowired
-    private UserRepo userRepo;
+    private DispatchDocRepo dispatchDocRepo;
 
     /**
      * 回退到上一环节或者指定环节
@@ -214,15 +211,60 @@ public class FlowServiceImpl implements FlowService {
                         }
                     }
                     //如果是回退到工作方案环节，还要修改预定会议室状态和重置分支工作方案状态
-                    if (FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR2.equals(backActivitiId)
+                    else if (FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR2.equals(backActivitiId)
                             || FlowConstant.FLOW_SIGN_XMFZR3.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR4.equals(backActivitiId)) {
-                        WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(instance.getBusinessKey(), backActivitiId.substring(backActivitiId.length() - 1, backActivitiId.length()));
+                        WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(businessKey, backActivitiId.substring(backActivitiId.length() - 1, backActivitiId.length()));
                         if (Validate.isObject(wk) && Validate.isString(wk.getId())) {
                             roomBookingRepo.updateStateByBusinessId(wk.getId(), Constant.EnumState.NO.getValue());
-                            signService.updateSignProcessState(instance.getBusinessKey(), Constant.SignProcessState.DO_WP.getValue());
-                            signBranchRepo.resetBranchState(instance.getBusinessKey(), wk.getBranchId());
+                            signService.updateSignProcessState(businessKey, Constant.SignProcessState.DO_WP.getValue());
+                            signBranchRepo.resetBranchState(businessKey, wk.getBranchId());
+                        }
+                        //清空审批意见
+                        wk.setMinisterSuggesttion("");
+                        wk.setMinisterDate(null);
+                        wk.setMinisterName("");
+                        wk.setLeaderSuggesttion("");
+                        wk.setLetterDate(null);
+                        wk.setLeaderName("");
+                        workProgramRepo.save(wk);
+                    //如果是发文环节回退，还要清空发文审批表的审批意见
+                    }else if(FlowConstant.FLOW_SIGN_BMLD_QRFW.equals(backActivitiId) || FlowConstant.FLOW_SIGN_FGLD_QRFW.equals(backActivitiId)){
+                        DispatchDoc dispatchDoc = dispatchDocRepo.findById("signid", businessKey);
+                        if(Validate.isObject(dispatchDoc) && Validate.isString(dispatchDoc.getId())){
+                            dispatchDoc.setMinisterSuggesttion("");
+                            dispatchDoc.setMinisterDate(null);
+                            dispatchDoc.setMinisterName("");
+
+                            dispatchDoc.setViceDirectorSuggesttion("");
+                            dispatchDoc.setViceDirectorDate(null);
+                            dispatchDoc.setViceDirectorName("");
+
+                            dispatchDoc.setDirectorSuggesttion("");
+                            dispatchDoc.setDirectorDate(null);
+                            dispatchDoc.setDirectorName("");
+                            dispatchDocRepo.save(dispatchDoc);
+                        }
+                    //回退到发文环节
+                    }else if(FlowConstant.FLOW_SIGN_FW.equals(backActivitiId)){
+                        DispatchDoc dispatchDoc = dispatchDocRepo.findById("signid", businessKey);
+                        if(Validate.isObject(dispatchDoc) && Validate.isString(dispatchDoc.getId())){
+                            dispatchDoc.setSecondChargeSuggest("");
+                            dispatchDoc.setMinisterSuggesttion("");
+                            dispatchDoc.setMinisterDate(null);
+                            dispatchDoc.setMinisterName("");
+
+                            dispatchDoc.setViceDirectorSuggesttion("");
+                            dispatchDoc.setViceDirectorDate(null);
+                            dispatchDoc.setViceDirectorName("");
+
+                            dispatchDoc.setDirectorSuggesttion("");
+                            dispatchDoc.setDirectorDate(null);
+                            dispatchDoc.setDirectorName("");
+                            dispatchDocRepo.save(dispatchDoc);
                         }
                     }
+
+
                     break;
                 case FlowConstant.TOPIC_FLOW:
                     backActivitiId = topicFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
@@ -1149,6 +1191,5 @@ public class FlowServiceImpl implements FlowService {
         }
         return resultMap;
     }
-
 
 }

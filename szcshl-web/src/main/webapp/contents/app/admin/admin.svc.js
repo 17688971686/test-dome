@@ -716,7 +716,7 @@
                 {
                     field: "",
                     title: "项目状态",
-                    width: 70,
+                    width: 90,
                     filterable: false,
                     template: function (item) {
                         if (item.processState && item.processState == 2) {
