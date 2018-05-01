@@ -276,7 +276,7 @@
             vm.saveView();
             adminSvc.signDetails(signid, function (data) {
                 if (data.flag) {
-                    $state.go("signDetails", {signid: signid}, {processInstanceId: processInstanceId});
+                    $state.go("signDetails", {signid:signid,processInstanceId:processInstanceId});
                 } else {
                     bsWin.alert(data.reMsg);
                 }

@@ -847,7 +847,7 @@
                             if (item.processInstanceId) {
                                 return '<a ng-click="vm.signDetails(' + "'" + item.signid + "'," + "'" + item.processInstanceId + "'" + ')" >' + item.projectname + '</a>';
                             } else {
-                                return '<a ng-click="vm.signDetails(' + "'" + item.signid + "' , " + "'" + "'" + ')" >' + item.projectname + '</a>';
+                                return '<a ng-click="vm.signDetails(' + "'" + item.signid + "'," + "'" + "'" + ')" >' + item.projectname + '</a>';
                             }
                         } else {
                             if (item.processInstanceId) {

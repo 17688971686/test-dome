@@ -27,12 +27,13 @@ public class QuartzUnit {
         //去掉时分秒
         Date newSignDate = DateUtils.converToDate(signDateString,DateUtils.DATE_PATTERN);
         String nowDateString = DateUtils.date2String(now, DateUtils.DATE_PATTERN);
+        Date newNowDate = DateUtils.converToDate(nowDateString,DateUtils.DATE_PATTERN);
         //签进来第二天才开始计数
         int result = getWorkDayNum(signDateString, nowDateString, DateUtils.DATE_PATTERN)-1;
         //2、是否计算当前日期
         if (Validate.isList(workdayList)) {
             //过滤工作日，只要从签收日期之后的即可
-            workdayList = filterWorkDay(workdayList,newSignDate,now);
+            workdayList = filterWorkDay(workdayList,newSignDate,newNowDate);
             if (Validate.isList(workdayList)) {
                 for (int i = 0; i < workdayList.size(); i++) {
                     Workday checkWordDay = workdayList.get(i);
@@ -91,13 +92,12 @@ public class QuartzUnit {
     }
 
     /**
-     * 获取2个日期之间周六，周日的天数
+     * 获取2个日期之间周一周五的天数
      *
      * @param startDate
      * @param endDate
      * @param format
      * @return
-     * @author zhaigx
      * @date 2013-3-13
      */
     public static int getWorkDayNum(String startDate, String endDate, String format) {
@@ -123,9 +123,8 @@ public class QuartzUnit {
             calendarTemp.add(Calendar.DAY_OF_YEAR, 1);
         }
         Collections.sort(yearMonthDayList);
-        int num = 0;//周六，周日的总天数
+        int num = 0;
         int size = yearMonthDayList.size();
-        int week = 0;
         for (int i = 0; i < size; i++) {
             String day = (String) yearMonthDayList.get(i);
             if (isWorkDay(day, DateUtils.DATE_PATTERN)) {
@@ -174,8 +173,16 @@ public class QuartzUnit {
         workday3.setDates(DateUtils.converToDate("2018-04-30", "yyyy-MM-dd"));
         workday3.setStatus("1");
         workdayList.add(workday3);
+
+        Workday workday4 = new Workday();
+        workday4.setDates(DateUtils.converToDate("2018-05-01", "yyyy-MM-dd"));
+        workday4.setStatus("1");
+        workdayList.add(workday4);
         //int i = getSundayNum("2018-4-9", "2018-04-12", "yyyy-MM-dd");
         //System.out.println(i);
-        System.out.println(countWorkday(workdayList, DateUtils.converToDate("2018-04-10", "yyyy-MM-dd")));
+        //System.out.println(countWorkday(workdayList, DateUtils.converToDate("2018-04-26", "yyyy-MM-dd")));
+        Date endDate = new Date();
+        Date beginDate = DateUtils.addDay(endDate,-365);
+        System.out.println( DateUtils.converToString(beginDate,DateUtils.DATE_PATTERN));
     }
 }

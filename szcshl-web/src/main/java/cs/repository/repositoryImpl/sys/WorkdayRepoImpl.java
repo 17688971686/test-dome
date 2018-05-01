@@ -35,10 +35,10 @@ public class WorkdayRepoImpl extends AbstractRepository<Workday, String> impleme
         if(!Validate.isString(endTime)){
             criteria.add(Restrictions.le(Workday_.dates.getName(),new Date()));
         }else{
-            criteria.add(Restrictions.le(Workday_.dates.getName(),DateUtils.converToDate(endTime,DateUtils.DATE_YEAR)));
+            criteria.add(Restrictions.le(Workday_.dates.getName(),DateUtils.converToDate(endTime,DateUtils.DATE_PATTERN)));
         }
         if(Validate.isString(beginTime)){
-            criteria.add(Restrictions.ge(Workday_.dates.getName(),DateUtils.converToDate(beginTime,DateUtils.DATE_YEAR)));
+            criteria.add(Restrictions.ge(Workday_.dates.getName(),DateUtils.converToDate(beginTime,DateUtils.DATE_PATTERN)));
         }
         //按添加的日期排序
         criteria.addOrder(Order.asc(Workday_.dates.getName()));

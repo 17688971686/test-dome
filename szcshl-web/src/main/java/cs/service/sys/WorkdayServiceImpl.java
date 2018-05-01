@@ -117,7 +117,7 @@ public class WorkdayServiceImpl implements WorkdayService {
     public List<Workday> findWorkDayByNow() {
         Date endDate = new Date();
         Date beginDate = DateUtils.addDay(endDate,-365);
-        return workdayRepo.findWorkDay(DateUtils.converToString(beginDate,DateUtils.DATE_YEAR),DateUtils.converToString(endDate,DateUtils.DATE_YEAR));
+        return workdayRepo.findWorkDay(DateUtils.converToString(beginDate,DateUtils.DATE_PATTERN),DateUtils.converToString(endDate,DateUtils.DATE_PATTERN));
     }
 
 }

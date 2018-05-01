@@ -373,7 +373,7 @@
                     <span ng-if="x.expertDto.expertTypeDtoList.length==1" ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'expertType'">{{y.expertType}}</span>
                     <span ng-if="x.expertDto.expertTypeDtoList.length>1" ></span>
                 </td>
-                <td align="center">{{x.expertDto.remark}}</td>
+                <td align="center">{{x.remark}}</td>
             </tr>
         </table>
         <!-- E 自选专家列表  -->
@@ -490,7 +490,7 @@
                     <span ng-if="x.expertDto.expertTypeDtoList.length==1" ng-repeat="y in x.expertDto.expertTypeDtoList | unique:'expertType'">{{y.expertType}}<br></span>
                     <span ng-if="x.expertDto.expertTypeDtoList.length>1"></span>
                 </td>
-                <td align="center">{{x.expertDto.remark}}</td>
+                <td align="center">{{x.remark}}</td>
             </tr>
         </table>
         <!-- E 专家列表  -->
@@ -627,7 +627,7 @@
                 </td>
                 <td align="center"><input type="checkbox" ng-disabled="vm.model.expertReviewDto.state==9" ng-model="x.isLetterRw"
                                           ng-true-value="9" ng-false-value="0" ng-checked="x.isLetterRw==9"></td>
-                <td align="center">{{x.expertDto.remark}}</td>
+                <td align="center">{{x.remark}}</td>
             </tr>
 
             <tr ng-if="vm.confirmEPListReplace.length>0" ng-repeat="x in vm.confirmEPListReplace|filter:{isConfrim:'9',isJoin:'9'}">

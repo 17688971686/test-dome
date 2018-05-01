@@ -246,11 +246,14 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
             //完成发文
             Sign sign = signRepo.findById(Sign_.signid.getName(), dispatchDocDto.getSignId());
-            //如果是以生成发文编号的，要更新发文编号
+            //如果是未生成发文编号的，要更新发文大日
             if(null != dispatchDoc.getDispatchDate() && null != sign.getExpectdispatchdate() && sign.getProcessState() > SignProcessState.END_DIS_NUM.getValue()){
                 sign.setExpectdispatchdate(dispatchDoc.getDispatchDate());
             }
-            sign.setProcessState(Constant.SignProcessState.DO_DIS.getValue());
+            //如果还没更新状态，则更新，已更新状态的，则不做改动
+            if(sign.getProcessState() < Constant.SignProcessState.DO_DIS.getValue()){
+                sign.setProcessState(Constant.SignProcessState.DO_DIS.getValue());
+            }
             sign.setDispatchDoc(dispatchDoc);
             // 收文、工作方案(主项目)、发文的报审金额一致
             List<WorkProgram> workProgrmList = sign.getWorkProgramList();

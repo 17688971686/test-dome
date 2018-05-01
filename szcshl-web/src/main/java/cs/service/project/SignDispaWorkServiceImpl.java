@@ -127,21 +127,22 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                     //在办项目或者暂停项目
                     if(processState == 1 || processState == 2){
                         criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),String.valueOf(processState)));
+                        criteria.add(Restrictions.le(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));
                     }else if(processState == 17){
                         //未发送存档
-                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),1));
-                        criteria.add(Restrictions.le(SignDispaWork_.processState.getName(),7));
+                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(), Constant.SignProcessState.IS_START.getValue()));
+                        criteria.add(Restrictions.le(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()));
                     }else if(processState == 68){
                         //已发文未存档
-                        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.processState.getName(),6),
-                                     Restrictions.eq(SignDispaWork_.processState.getName(),7),
-                                     Restrictions.eq(SignDispaWork_.processState.getName(),8)));
+                        criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()),
+                                     Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()),
+                                     Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue())));
                     }else if(processState == 69){
                         //已发文项目
-                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),6));
+                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.END_DIS_NUM.getValue()));
                     }else if(processState == 89){
                         //已发送存档
-                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),8));
+                        criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue()));
                     }
                     else if(processState == 24){
                         //曾经暂停

@@ -792,6 +792,7 @@ public class SignServiceImpl implements SignService {
                 if (orgDept == null || !Validate.isString(orgDept.getDirectorID())) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "请设置" + orgDept.getName() + "的部门负责人！");
                 }
+                int branchCount = 1;
                 //主办部门信息
                 sign.setmOrgId(businessId);
                 sign.setmOrgName(orgDept.getName());
@@ -810,7 +811,7 @@ public class SignServiceImpl implements SignService {
                     businessId = flowDto.getBusinessMap().get("ASSIST_ORG").toString();
                     assistOrgIdList = StringUtil.getSplit(businessId, ",");
                 }
-                int branchCount = 1;
+
                 if (Validate.isList(assistOrgIdList)) {
                     if (assistOrgIdList.size() > 3) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "协办部门最多只能选择3个！");

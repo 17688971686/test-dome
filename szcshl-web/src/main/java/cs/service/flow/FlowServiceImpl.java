@@ -209,6 +209,11 @@ public class FlowServiceImpl implements FlowService {
                                 }
                             }
                         }
+                        //清空审批意见
+                        wk.setMinisterSuggesttion("");
+                        wk.setMinisterDate(null);
+                        wk.setMinisterName("");
+                        workProgramRepo.save(wk);
                     }
                     //如果是回退到工作方案环节，还要修改预定会议室状态和重置分支工作方案状态
                     else if (FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR2.equals(backActivitiId)
@@ -228,7 +233,19 @@ public class FlowServiceImpl implements FlowService {
                         wk.setLeaderName("");
                         workProgramRepo.save(wk);
                     //如果是发文环节回退，还要清空发文审批表的审批意见
-                    }else if(FlowConstant.FLOW_SIGN_BMLD_QRFW.equals(backActivitiId) || FlowConstant.FLOW_SIGN_FGLD_QRFW.equals(backActivitiId)){
+                    }else if(FlowConstant.FLOW_SIGN_FGLD_QRFW.equals(backActivitiId)){
+                        DispatchDoc dispatchDoc = dispatchDocRepo.findById("signid", businessKey);
+                        if(Validate.isObject(dispatchDoc) && Validate.isString(dispatchDoc.getId())){
+                            dispatchDoc.setViceDirectorSuggesttion("");
+                            dispatchDoc.setViceDirectorDate(null);
+                            dispatchDoc.setViceDirectorName("");
+
+                            dispatchDoc.setDirectorSuggesttion("");
+                            dispatchDoc.setDirectorDate(null);
+                            dispatchDoc.setDirectorName("");
+                            dispatchDocRepo.save(dispatchDoc);
+                        }
+                    }else if(FlowConstant.FLOW_SIGN_BMLD_QRFW.equals(backActivitiId)){
                         DispatchDoc dispatchDoc = dispatchDocRepo.findById("signid", businessKey);
                         if(Validate.isObject(dispatchDoc) && Validate.isString(dispatchDoc.getId())){
                             dispatchDoc.setMinisterSuggesttion("");
@@ -263,8 +280,6 @@ public class FlowServiceImpl implements FlowService {
                             dispatchDocRepo.save(dispatchDoc);
                         }
                     }
-
-
                     break;
                 case FlowConstant.TOPIC_FLOW:
                     backActivitiId = topicFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
