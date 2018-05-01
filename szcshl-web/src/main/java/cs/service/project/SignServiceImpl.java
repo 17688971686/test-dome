@@ -1687,7 +1687,9 @@ public class SignServiceImpl implements SignService {
                     assigneeValue = buildUser(userList);
                     variables.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), true);
                     variables.put(FlowConstant.SignFlowParams.USER_CW.getValue(), assigneeValue);
-                    //没有评审费，则直接到归档环节(还是当前人处理)
+
+                    signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_CW.getValue());
+                //没有评审费，则直接到归档环节(还是当前人处理)
                 } else {
                     variables.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), false);
                     variables = buildMainPriUser(variables, signid, assigneeValue);
