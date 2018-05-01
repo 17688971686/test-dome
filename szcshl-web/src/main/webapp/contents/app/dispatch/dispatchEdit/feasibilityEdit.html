@@ -131,6 +131,18 @@
         </td>
     </tr>
 
+    <tr style="height:100px;">
+        <td class="text-center" style="vertical-align: middle;">评审意见摘要</td>
+        <td colspan="5">
+                    <textarea maxlength="1000" data-val-length-max="1000"
+                              ng-change="vm.dispatchDoc.reviewAbstract=countCharacter(vm.dispatchDoc.reviewAbstract,1000,'reviewAbstractCountk')"
+                              class="form-control input-sm " rows="5"
+                              ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
+            <span data-valmsg-for="reviewAbstract" data-valmsg-replace="true" class="errors"></span>
+            <p id="reviewAbstractCountk" style="text-align: right;"></p>
+        </td>
+    </tr>
+
     <tr>
         <td class="text-center" style="vertical-align: middle;">项目负责人<br>拟稿意见</td>
         <td colspan="3">
@@ -153,17 +165,7 @@
         </td>
     </tr>
 
-    <tr style="height:100px;">
-        <td class="text-center" style="vertical-align: middle;">评审意见摘要</td>
-        <td colspan="5">
-                    <textarea maxlength="1000" data-val-length-max="1000"
-                              ng-change="vm.dispatchDoc.reviewAbstract=countCharacter(vm.dispatchDoc.reviewAbstract,1000,'reviewAbstractCountk')"
-                              class="form-control input-sm " rows="5"
-                              ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
-            <span data-valmsg-for="reviewAbstract" data-valmsg-replace="true" class="errors"></span>
-            <p id="reviewAbstractCountk" style="text-align: right;"></p>
-        </td>
-    </tr>
+
 
     <tr style="height:100px;">
         <td class="text-center" style="vertical-align: middle;">部长审核意见</td>
