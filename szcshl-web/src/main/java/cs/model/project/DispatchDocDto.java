@@ -161,7 +161,7 @@ public class DispatchDocDto extends BaseDto {
     //第二负责人意见
     private String secondChargeSuggest;
 
-    private int branchCount;
+    private Integer branchCount;
 
     private int moreLeader;
 
@@ -557,11 +557,11 @@ public class DispatchDocDto extends BaseDto {
         this.directorIssue = directorIssue;
     }
 
-    public int getBranchCount() {
+    public Integer getBranchCount() {
         return branchCount;
     }
 
-    public void setBranchCount(int branchCount) {
+    public void setBranchCount(Integer branchCount) {
         this.branchCount = branchCount;
     }
 

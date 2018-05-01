@@ -1693,7 +1693,7 @@ public class SignServiceImpl implements SignService {
                 } else {
                     variables.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), false);
                     variables = buildMainPriUser(variables, signid, assigneeValue);
-
+                    signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_FILE.getValue());
                     /*//如果没有完成专家评分，则不可以提交到下一步
                     if (!expertReviewRepo.isFinishEPGrade(signid)) {
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对专家进行评分,不能提交到下一步操作！");

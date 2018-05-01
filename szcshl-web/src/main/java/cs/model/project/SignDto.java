@@ -735,7 +735,7 @@ public class SignDto extends BaseDto {
     /**
      * 总分支数
      */
-    private int branchCount;
+    private Integer branchCount;
 
     //以下几个字段主要是生成委内处理表
     /**
@@ -2610,11 +2610,11 @@ public class SignDto extends BaseDto {
         this.countryCode = countryCode;
     }
 
-    public int getBranchCount() {
+    public Integer getBranchCount() {
         return branchCount;
     }
 
-    public void setBranchCount(int branchCount) {
+    public void setBranchCount(Integer branchCount) {
         this.branchCount = branchCount;
     }
 }

@@ -961,7 +961,7 @@ public class Sign extends DomainBase {
      * 总分支数，主要用户打印格式判断
      */
     @Column(columnDefinition = "INTEGER default 1")
-    private int branchCount;
+    private Integer branchCount;
 
     //以下几个字段主要是生成委内处理表
     /**
@@ -2760,11 +2760,11 @@ public class Sign extends DomainBase {
         this.countryCode = countryCode;
     }
 
-    public int getBranchCount() {
+    public Integer getBranchCount() {
         return branchCount;
     }
 
-    public void setBranchCount(int branchCount) {
+    public void setBranchCount(Integer branchCount) {
         this.branchCount = branchCount;
     }
 }

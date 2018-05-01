@@ -1462,6 +1462,116 @@
 (function () {
     'use strict';
 
+    angular.module('app').controller('achievementListCtrl', achievementList);
+
+    achievementList.$inject = ['$location', 'achievementSvc','$state','$http','bsWin'];
+
+    function achievementList($location, achievementSvc,$state,$http,bsWin) {
+        var vm = this;
+        vm.title = '工作业绩统计表';
+        vm.model={};
+        vm.mainDoc = {};
+        vm.assistDoc = {};
+        vm.model.year = $state.params.year;
+        vm.model.quarter = $state.params.quarter;
+        activate();
+        function activate() {
+            achievementSvc.achievementSum(vm,function (data) {
+                if(data.flag || data.reCode == 'ok'){
+                    vm.achievementSumList = data.reObj.achievementSumList;
+                    if(vm.achievementSumList.length > 0){
+                        vm.assistDoc = vm.achievementSumList[0];
+                        vm.mainDoc = vm.achievementSumList[1];
+                    }
+                    vm.achievementMainList =  data.reObj.achievementMainList;
+                    vm.achievementAssistList =  data.reObj.achievementAssistList;
+                }
+            })
+        }
+
+        /**
+         * 主办人评审项目一览表
+         */
+        vm.showMainDocDetail = function () {
+            $("#mainDocDetail").kendoWindow({
+                width: "80%",
+                height: "680px",
+                title: "主办人评审项目一览表",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        /**
+         * 协办人评审项目一览表
+         */
+        vm.showAssistDocDetail = function () {
+            $("#assistDocDetail").kendoWindow({
+                width: "80%",
+                height: "680px",
+                title: "协办人评审项目一览表",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+        }
+
+        vm.countAchievementDetail = function () {
+            achievementSvc.achievementSum(vm,function (data) {
+                if(data.flag || data.reCode == 'ok'){
+                    vm.achievementSumList = data.reObj.achievementSumList;
+                    if(vm.achievementSumList.length > 0){
+                        vm.assistDoc = vm.achievementSumList[0];
+                        vm.mainDoc = vm.achievementSumList[1];
+                    }
+                    vm.achievementMainList =  data.reObj.achievementMainList;
+                    vm.achievementAssistList =  data.reObj.achievementAssistList;
+                }
+            })
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
+    angular.module('app').factory('achievementSvc', achievement);
+
+    achievement.$inject = ['$http'];
+
+    function achievement($http) {
+        var service = {
+            achievementSum: achievementSum,
+        };
+        return service;
+
+        //S_业绩汇总
+        function achievementSum(vm,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/signView/getAchievementSum",
+                data: vm.model
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//E_专家评审费用统计
+
+    }
+})();
+(function () {
+    'use strict';
+
     angular.module('app').controller('addRegisterFileCtrl', addRegisterFile);
 
     addRegisterFile.$inject = ['bsWin', 'addRegisterFileSvc', '$state'];
@@ -1687,116 +1797,6 @@
                 success: httpSuccess
             });
         }
-
-    }
-})();
-(function () {
-    'use strict';
-
-    angular.module('app').controller('achievementListCtrl', achievementList);
-
-    achievementList.$inject = ['$location', 'achievementSvc','$state','$http','bsWin'];
-
-    function achievementList($location, achievementSvc,$state,$http,bsWin) {
-        var vm = this;
-        vm.title = '工作业绩统计表';
-        vm.model={};
-        vm.mainDoc = {};
-        vm.assistDoc = {};
-        vm.model.year = $state.params.year;
-        vm.model.quarter = $state.params.quarter;
-        activate();
-        function activate() {
-            achievementSvc.achievementSum(vm,function (data) {
-                if(data.flag || data.reCode == 'ok'){
-                    vm.achievementSumList = data.reObj.achievementSumList;
-                    if(vm.achievementSumList.length > 0){
-                        vm.assistDoc = vm.achievementSumList[0];
-                        vm.mainDoc = vm.achievementSumList[1];
-                    }
-                    vm.achievementMainList =  data.reObj.achievementMainList;
-                    vm.achievementAssistList =  data.reObj.achievementAssistList;
-                }
-            })
-        }
-
-        /**
-         * 主办人评审项目一览表
-         */
-        vm.showMainDocDetail = function () {
-            $("#mainDocDetail").kendoWindow({
-                width: "80%",
-                height: "680px",
-                title: "主办人评审项目一览表",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        /**
-         * 协办人评审项目一览表
-         */
-        vm.showAssistDocDetail = function () {
-            $("#assistDocDetail").kendoWindow({
-                width: "80%",
-                height: "680px",
-                title: "协办人评审项目一览表",
-                visible: false,
-                modal: true,
-                closable: true,
-                actions: ["Pin", "Minimize", "Maximize", "Close"]
-            }).data("kendoWindow").center().open();
-        }
-
-        vm.countAchievementDetail = function () {
-            achievementSvc.achievementSum(vm,function (data) {
-                if(data.flag || data.reCode == 'ok'){
-                    vm.achievementSumList = data.reObj.achievementSumList;
-                    if(vm.achievementSumList.length > 0){
-                        vm.assistDoc = vm.achievementSumList[0];
-                        vm.mainDoc = vm.achievementSumList[1];
-                    }
-                    vm.achievementMainList =  data.reObj.achievementMainList;
-                    vm.achievementAssistList =  data.reObj.achievementAssistList;
-                }
-            })
-        }
-    }
-})();
-
-(function () {
-    'use strict';
-
-    angular.module('app').factory('achievementSvc', achievement);
-
-    achievement.$inject = ['$http'];
-
-    function achievement($http) {
-        var service = {
-            achievementSum: achievementSum,
-        };
-        return service;
-
-        //S_业绩汇总
-        function achievementSum(vm,callBack) {
-            var httpOptions = {
-                method: 'post',
-                url: rootPath + "/signView/getAchievementSum",
-                data: vm.model
-            }
-            var httpSuccess = function success(response) {
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-            }
-            common.http({
-                $http: $http,
-                httpOptions: httpOptions,
-                success: httpSuccess
-            });
-        }//E_专家评审费用统计
 
     }
 })();

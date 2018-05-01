@@ -211,7 +211,7 @@ public class DispatchDoc extends DomainBase {
      * 项目分支数
      */
     @Column(columnDefinition = "INTEGER default 1")
-    private int branchCount;
+    private Integer branchCount;
 
     /**
      * 是否有两个不同的分管领导审批(0表示否，1表示是)
@@ -595,11 +595,11 @@ public class DispatchDoc extends DomainBase {
         this.directorIssue = directorIssue;
     }
 
-    public int getBranchCount() {
+    public Integer getBranchCount() {
         return branchCount;
     }
 
-    public void setBranchCount(int branchCount) {
+    public void setBranchCount(Integer branchCount) {
         this.branchCount = branchCount;
     }
 
