@@ -59,16 +59,16 @@
                         <td>{{x.expertDto.bankAccount}}/{{x.expertDto.openingBank}}</td>
                         <td>
                             <input type="text" name="reviewCost_{{$index}}" id="reviewCost_{{$index}}"
-                                   class="form-control input-sm " ng-model="x.reviewCost" data-val-digits="必须输入有效数字"
-                                   data-val-regex="评审费用只能为正数" data-val="true" data-val-required="必填"
-                                   data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$" >
+                                   class="form-control input-sm " ng-model="x.reviewCost"
+                                   data-val-regex="评审费用不能为负数" data-val="true" data-val-required="必填"
+                                   data-val-regex-pattern="^(0|\d+(\.\d+)?)$" >
                             <span data-valmsg-for="reviewCost_{{$index}}" data-valmsg-replace="true"class="errors"></span>
                         </td>
                         <td>
-                            <input type="text" name="reviewCost_{{$index}}" id="reviewTaxes_{{$index}}"
-                                   class="form-control input-sm " ng-model="x.reviewTaxes" data-val-digits="必须输入有效数字"
-                                   data-val-regex="评审费用只能为正数" data-val="true" data-val-required="必填"
-                                   data-val-regex-pattern="^(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*))$" >
+                            <input type="text" name="reviewTaxes_{{$index}}" id="reviewTaxes_{{$index}}"
+                                   class="form-control input-sm " ng-model="x.reviewTaxes"
+                                   data-val-regex="税费不能为负数" data-val="true" data-val-required="必填"
+                                   data-val-regex-pattern="^(0|\d+(\.\d+)?)$" >
                             <span data-valmsg-for="reviewTaxes_{{$index}}" data-valmsg-replace="true"class="errors"></span>
                         </td>
                         <td> {{x.totalCost}}</td>
