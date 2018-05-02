@@ -8,11 +8,13 @@ body{
     padding-top:50px;
 }
 .logo{
-    text-align: center;
+    position: absolute;
+    left:8%;
+    top:28%;
+
 }
 .logo img{
-    width: 90%;
-    max-width: 1110px;
+
 }
 .loginform{
     width: 450px;
@@ -89,4 +91,39 @@ body{
     text-align: center;
     line-height: 40px;
     color: #fff;
+}
+@media (max-width: 1400px){
+    .loginform{
+        width: 350px;
+        right: 10%;
+    }
+    .loginform form{
+        padding:20px;
+    }
+    .logotitle img{
+        width: 95%;
+        max-width: 1132px;
+    }
+    .loginform h3{
+        margin-bottom:15px;
+        font-size:20px;
+        margin-top:0;
+    }
+    .loginform .input-container{
+        margin:15px 0;
+    }
+    .loginform-footer{
+        padding:20px 20px 0;
+    }
+    .loginform-footer p{
+        font-size:12px;
+        margin-top: 15px !important;
+    }
+    .logo{
+        left: 10%;
+        top:33%;
+    }
+    .logo img{
+        width: 250px;
+    }
 }

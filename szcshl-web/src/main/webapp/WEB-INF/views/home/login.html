@@ -37,6 +37,9 @@
 <div class="logotitle" style="text-align: center;">
     <img src="${path}/contents/images/loginpage-title.png" alt="">
 </div>
+<div class="logo">
+    <img src="${path}/contents/images/logo.png" alt="LOGO">
+</div>
 <div class="loginform" ng-app="loginApp" ng-controller="LoginCtrl as vm">
     <form method="post" id="form" name="form" ng-keypress="vm.keyEnter($event)" >
         <h3>用户登录</h3>
@@ -55,7 +58,7 @@
     <div class="loginform-footer" style="">
         <button ng-click="vm.submit()" ng-disabled="vm.isSubmit" class="btn btn-success" type="submit" value="登录">登录</button>
         <p style="margin-top: 10px;">温馨提示：系统常见问题请<a href="javascript:;" ng-click="vm.sysInfo()">点击这里</a>
-        <a style="margin-left: 40px;" ng-click="vm.openQrcode()">扫一扫下载app</a>
+        <a style="float:right" ng-click="vm.openQrcode()">app下载</a>
         </p>
 
     </div>
