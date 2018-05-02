@@ -121,7 +121,7 @@ public class SignCountWorkdayExecute implements Job {
                     sign.setReviewdays(usedWorkDay);
                     totalDays = sign.getTotalReviewdays();
                 }else{
-                    Date disPatchDate = Validate.isObject(sign.getExpectdispatchdate())?sign.getExpectdispatchdate():new Date();
+                    Date disPatchDate = Validate.isObject(sign.getDispatchdate())?sign.getDispatchdate():new Date();
                     usedWorkDay = QuartzUnit.countWorkday(workdayList,disPatchDate);
                     totalDays = WORK_DAY_30;
                 }

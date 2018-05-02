@@ -910,7 +910,7 @@ public class FlowAppServiceImpl implements FlowAppService {
                     //设置本次的发文序号
                     fileRecord.setFileSeq(maxSeq);
                     //归档编号=发文年份+档案类型+存档年份+存档顺序号
-                    fileNumValue = DateUtils.converToString(sign.getExpectdispatchdate(), "yyyy") + ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
+                    fileNumValue = DateUtils.converToString(sign.getDispatchdate(), "yyyy") + ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
                             + DateUtils.converToString(fileRecord.getFileDate(), "yy") + fileNumValue;
                     fileRecord.setFileNo(fileNumValue);
                 }

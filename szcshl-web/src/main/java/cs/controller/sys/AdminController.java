@@ -180,8 +180,8 @@ public class AdminController {
              */
             if (authFlag > 0) {
                 resultMap.put(ISDISPLAY, false);
-                //过滤掉未签收的项目
-                authRuSignTask = authRuSignTask.stream().filter(x -> (x.getSignDate() != null)).collect(Collectors.toList());
+                //过滤掉未签收和过滤掉已发文的项目
+                authRuSignTask = authRuSignTask.stream().filter(x -> (x.getSignDate() != null && x.getSignprocessState() < Constant.SignProcessState.END_DIS_NUM.getValue())).collect(Collectors.toList());
                 //先按剩余工作日排序
                 Collections.sort(authRuSignTask, new Comparator<RuProcessTask>() {
                     @Override

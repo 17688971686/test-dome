@@ -65,7 +65,7 @@ public class SendProjectInfoToFGW implements Job {
                 if (Validate.isList(unSendList)) {
                     //部分参数
                     int sucessCount = 0, errorCount = 0, totalCount = unSendList.size();
-                    StringBuffer errorBuffer = new StringBuffer();
+                    StringBuffer stringBuffer = new StringBuffer();
                     List<String> sucessIdList = new ArrayList<>();
                     List<CommentDto> commentDtoList = null;
                     Map<String,CommentDto> commentDtoMap = null;
@@ -75,7 +75,7 @@ public class SendProjectInfoToFGW implements Job {
                     for (int i = 0, l = unSendList.size(); i < l; i++) {
                         SignDto signDto = unSendList.get(i);
                         //如果发文时间跟现在时间对比，在8分钟内，则不急回传委里，避免没填写发文编号
-                        if (DateUtils.minBetween(signDto.getExpectdispatchdate(),new Date()) < 8) {
+                        if (DateUtils.minBetween(signDto.getDispatchdate(),new Date()) < 8) {
                             continue;
                         }
                         WorkProgramDto mainWP = null;
@@ -95,15 +95,15 @@ public class SendProjectInfoToFGW implements Job {
                             sucessCount++;
                         } else {
                             errorCount++;
-                            errorBuffer.append(resultMsg.getReMsg() + "\r\n");
                         }
+                        stringBuffer.append(resultMsg.getReMsg() + "\r\n");
                     }
                     if (sucessCount == 0) {
-                        resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), errorBuffer.toString());
+                        resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), stringBuffer.toString());
                     } else if (errorCount == 0) {
-                        resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "本次回传数据成功，总共回传【" + sucessCount + "】个项目数据！");
+                        resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), "本次回传数据成功，总共回传【" + sucessCount + "】个项目数据！\r\n"+stringBuffer.toString());
                     } else {
-                        String msg = "本次总共回传【" + totalCount + "】，成功【" + sucessCount + "】个，失败" + errorCount + "】个；" + errorBuffer.toString();
+                        String msg = "本次总共回传【" + totalCount + "】，成功【" + sucessCount + "】个，失败" + errorCount + "】个！\r\n" + stringBuffer.toString();
                         resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(), msg);
                     }
                     //更改成功发送的项目状态
@@ -115,7 +115,7 @@ public class SendProjectInfoToFGW implements Job {
                     log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
                 } else {
                     log.setLogCode(Constant.MsgCode.OK.getValue());
-                    log.setMessage("没有回传数据");
+                    log.setMessage("系统没有检测到要回传的项目信息！");
                     log.setResult(Constant.EnumState.YES.getValue());
                 }
             } catch (Exception e) {
@@ -125,10 +125,9 @@ public class SendProjectInfoToFGW implements Job {
             }
         } else {
             log.setLogCode(Constant.MsgCode.ERROR.getValue());
-            log.setMessage("没有设置回传给委里的接口地址！");
+            log.setMessage("系统没有设置回传给委里的接口地址！");
             log.setResult(Constant.EnumState.NO.getValue());
         }
-
         //添加日记记录
         logService.save(log);
     }

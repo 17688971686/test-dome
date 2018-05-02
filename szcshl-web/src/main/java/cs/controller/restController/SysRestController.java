@@ -62,7 +62,7 @@ public class SysRestController {
     public synchronized ResultMsg pushProject(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
-        String msg = "项目【"+signDto.getProjectname()+"("+signDto.getFilecode()+")】，";
+        String msg = "项目【"+signDto.getProjectname()+"("+signDto.getFilecode()+")json="+signDtoJson+"】";
         try{
             //json转出对象
             resultMsg = signRestService.pushProject(signDto,true);

@@ -214,9 +214,13 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "NUMBER")
     private Float surplusdays;
 
-    //发文时间
+    //预计发文时间
     @Column(columnDefinition = "DATE")
     private Date expectdispatchdate;
+
+    //发文日期
+    @Column(columnDefinition = "DATE")
+    private Date dispatchdate;
 
     //送来时间
     @Column(columnDefinition = "DATE")
@@ -2766,5 +2770,13 @@ public class Sign extends DomainBase {
 
     public void setBranchCount(Integer branchCount) {
         this.branchCount = branchCount;
+    }
+
+    public Date getDispatchdate() {
+        return dispatchdate;
+    }
+
+    public void setDispatchdate(Date dispatchdate) {
+        this.dispatchdate = dispatchdate;
     }
 }

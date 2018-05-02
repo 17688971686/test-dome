@@ -438,18 +438,23 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     public ResultMsg saveExpertReviewCost(ExpertReviewDto expertReviewDto,boolean isCountTaxes) {
         //保存评审费用
         String experReviewId = expertReviewDto.getId();
+        boolean isSuperUser = SUPER_USER.equals(SessionUtil.getLoginName());
         if (Validate.isString(experReviewId)) {
             ExpertReview expertReview = expertReviewRepo.findById(experReviewId);
             //管理员可以维护
-            if (expertReview.getPayDate() != null && !SUPER_USER.equals(SessionUtil.getLoginName())) {
+            if (expertReview.getPayDate() != null && !isSuperUser) {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "已经进行评审费发放，不能再次发放！");
             }
             //日期比较(跟系统的日期比较)，只有评审会前一天或者后一天才能保存(或者超级管理员) 超级管理员发放，不做时间限制
-            if (isCountTaxes && !SUPER_USER.equals(SessionUtil.getLoginName()) && expertReview.getReviewDate() != null) {
+            if (isCountTaxes && !isSuperUser && expertReview.getReviewDate() != null) {
                 long diffDays = DateUtils.daysBetween(new Date(), expertReview.getReviewDate());
                 if (diffDays != 0) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "只能在评审当天计算专家应纳税额！");
                 }
+            }
+            //如果是超级管理员，还可以修改评审日期
+            if(isSuperUser){
+                expertReview.setReviewDate(expertReviewDto.getReviewDate());
             }
             List<Map<String, Object>> resultObj = new ArrayList<>();
             if (expertReview != null) {

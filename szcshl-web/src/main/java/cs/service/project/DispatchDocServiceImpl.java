@@ -198,8 +198,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
         //1、流程状态修改
         sign.setProcessState(Constant.SignProcessState.END_DIS_NUM.getValue());
-        //2、发文日期等修改
-        sign.setExpectdispatchdate(now);
+        //2、发文日期
+        sign.setDispatchdate(now);
         sign.setDocnum(fileNum);
         //3、发文后剩余工作日
         sign.setDaysafterdispatch(sign.getSurplusdays());
@@ -247,8 +247,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             //完成发文
             Sign sign = signRepo.findById(Sign_.signid.getName(), dispatchDocDto.getSignId());
             //如果是未生成发文编号的，要更新发文大日
-            if(null != dispatchDoc.getDispatchDate() && null != sign.getExpectdispatchdate() && sign.getProcessState() > SignProcessState.END_DIS_NUM.getValue()){
-                sign.setExpectdispatchdate(dispatchDoc.getDispatchDate());
+            if(null != dispatchDoc.getDispatchDate() && null != sign.getDispatchdate() && sign.getProcessState() > SignProcessState.END_DIS_NUM.getValue()){
+                sign.setDispatchdate(dispatchDoc.getDispatchDate());
             }
             //如果还没更新状态，则更新，已更新状态的，则不做改动
             if(sign.getProcessState() < Constant.SignProcessState.DO_DIS.getValue()){

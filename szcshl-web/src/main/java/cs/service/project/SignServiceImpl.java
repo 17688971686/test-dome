@@ -1813,7 +1813,7 @@ public class SignServiceImpl implements SignService {
                     int maxSeq = fileRecordRepo.getMaxSeq(yearName, seqType) + 1;
                     String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
                     //归档编号=发文年份+档案类型+存档年份+存档顺序号
-                    fileNum = DateUtils.converToString(sign.getExpectdispatchdate(), DateUtils.DATE_YEAR) + seqType
+                    fileNum = DateUtils.converToString(sign.getDispatchdate(), DateUtils.DATE_YEAR) + seqType
                             + DateUtils.converToString(fileRecord.getFileDate(), "yy") + fileNum;
                     //设置本次的发文序号
                     fileRecord.setFileSeq(maxSeq);

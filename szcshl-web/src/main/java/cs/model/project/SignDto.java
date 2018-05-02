@@ -753,6 +753,11 @@ public class SignDto extends BaseDto {
      */
     private String maindeptOpinion;
 
+    /**
+     * 发文日期
+     */
+    private Date dispatchdate;
+
     public String getBuiltCompUserName() {
         return builtCompUserName;
     }
@@ -2616,5 +2621,13 @@ public class SignDto extends BaseDto {
 
     public void setBranchCount(Integer branchCount) {
         this.branchCount = branchCount;
+    }
+
+    public Date getDispatchdate() {
+        return dispatchdate;
+    }
+
+    public void setDispatchdate(Date dispatchdate) {
+        this.dispatchdate = dispatchdate;
     }
 }
