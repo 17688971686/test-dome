@@ -18,6 +18,7 @@ import cs.repository.repositoryImpl.expert.*;
 import cs.repository.repositoryImpl.financial.FinancialManagerRepo;
 import cs.service.financial.FinancialManagerService;
 import cs.service.project.SignPrincipalService;
+import cs.service.sys.UserService;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -48,7 +49,8 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     private FinancialManagerRepo financialManagerRepo;
     @Autowired
     private FinancialManagerService financialManagerService;
-
+    @Autowired
+    private UserService userService;
     @Autowired
     private ExpertRepo expertRepo;
 
@@ -1080,11 +1082,12 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     @Override
     public ResultMsg findAchievementSum(AchievementSumDto achievementSumDto) {
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("achievementSumList", expertSelectedRepo.findAchievementSum(achievementSumDto));
+        Map<String, Object> levelMap = userService.getUserLevel();
+        resultMap.put("achievementSumList", expertSelectedRepo.findAchievementSum(achievementSumDto,levelMap));
         achievementSumDto.setIsmainuser("9");
-        resultMap.put("achievementMainList",expertSelectedRepo.findAchievementDetail(achievementSumDto));
+        resultMap.put("achievementMainList",expertSelectedRepo.findAchievementDetail(achievementSumDto,levelMap));
         achievementSumDto.setIsmainuser("0");
-        resultMap.put("achievementAssistList",expertSelectedRepo.findAchievementDetail(achievementSumDto));
+        resultMap.put("achievementAssistList",expertSelectedRepo.findAchievementDetail(achievementSumDto,levelMap));
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
 
     }
@@ -1095,9 +1098,9 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
      * @return
      */
     @Override
-    public ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto) {
+    public ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto,Map<String,Object> levelMap) {
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("achievementDetailList", expertSelectedRepo.findAchievementDetail(achievementSumDto));
+        resultMap.put("achievementDetailList", expertSelectedRepo.findAchievementDetail(achievementSumDto,levelMap));
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
     }
 

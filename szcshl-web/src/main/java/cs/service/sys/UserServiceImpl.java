@@ -772,6 +772,51 @@ public class UserServiceImpl implements UserService {
     public boolean checkIsMainSigUser(String orgType, String orgId, String mainUserId) {
         return userRepo.checkIsMainSigUser(orgType, orgId, mainUserId);
     }
+
+    /***
+     * 获取当前用户级别
+     * 0表示普通用户，1表示主任，2表示分管领导，3表示部长 4.表示组长）
+     * @return
+     */
+    public Map<String,Object> getUserLevel(){
+        Map<String,Object> resultMap = new HashMap<>();
+        String curUserId = SessionUtil.getUserId();
+        //部门ID
+        String orgIdStr = "";
+        Integer leaderFlag = SUPER_USER.equals(SessionUtil.getLoginName())?1:0;
+        if(leaderFlag ==0){
+            //查询所有的部门和组织
+            List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
+            for(OrgDept od : allOrgDeptList){
+                if(leaderFlag == 0){
+                    if(curUserId.equals(od.getDirectorID())){
+                        if(!od.getName().equals("评估一部信息化组")){
+                            leaderFlag = 3;
+                            orgIdStr = od.getId();
+                        }else{
+                            leaderFlag = 4;
+                        }
+
+                    }
+                    if(curUserId.equals(od.getsLeaderID())){
+                        leaderFlag = 2;
+                        orgIdStr += "'"+ od.getId() + "'" +",";
+                    }
+                    if(curUserId.equals(od.getmLeaderID())){
+                        leaderFlag = 1;
+                    }
+                }else if(leaderFlag == 2 && curUserId.equals(od.getsLeaderID())){
+                    orgIdStr += "'"+ od.getId() + "'" +",";
+                }
+            }
+        }
+        if(leaderFlag.equals(2)){
+            orgIdStr = orgIdStr.substring(0,orgIdStr.length()-1);
+        }
+        resultMap.put("leaderFlag",leaderFlag);
+        resultMap.put("orgIdStr",orgIdStr);
+        return resultMap;
+    }
 }
 
 
