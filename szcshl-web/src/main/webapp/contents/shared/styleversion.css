@@ -84,12 +84,9 @@ input,textarea{ outline:none;}
     position: relative;
     max-height: 100px;
     z-index: 1030;
-    /*  background-image:url("../images/black-linen.png");*/
 }
 .header{
-    background-image:url("../images/headerbg.png");
-    background-repeat:repeat-y;
-    background-size: cover;
+    background-color: #1b9ade;
 }
 .navbar-custom-menu > .navbar-nav > li {
     background: rgba(0, 0, 0, 0.14);
@@ -110,10 +107,13 @@ input,textarea{ outline:none;}
     text-align: center;
     width: 50px;
     height: 47px;
-    background: #03004c;
+}
+.main-sidebar{
+    margin-top: 55px;
+    padding-top: 0;
+    background-color: #25abf2;
 }
 .menu{
-    background: #03004c;
     margin-top: 5px !important;
 }
 .menu>a{
@@ -141,11 +141,17 @@ input,textarea{ outline:none;}
     color: #03004c;
     font-size: 16px;
 }
+.menu-open{
+    background-color: #6ac6f8;
+}
 .sidebar-menu > li > a {
-    border-bottom: 1px solid #e1e1e1;
-    background: #fff;
+    border-bottom: 1px solid #6ac6f8;
     margin-left: 3px;
-    color:#222222;
+    color:#fff;
+    font-size:16px;
+}
+.sidebar-menu > li > a >i{
+    margin-right:8px;
 }
 .banner{
     margin: 5px 0px;
@@ -448,8 +454,11 @@ div.k-grid-footer, div.k-grid-header {
 .box-show{
     display: block;
 }
+.sidebar-menu .treeview-menu{
+    padding-left: 0;
+}
 .sidebar-menu .treeview-menu > li > a {
-    color: #03004c;
+    color: #fff;
     padding-left: 32px;
     margin: 0px;
 }
@@ -457,8 +466,9 @@ div.k-grid-footer, div.k-grid-header {
     border-bottom: 1px solid #e1e1e1;
 }*/
 .sidebar-menu .treeview-menu > li > a:hover{
-    color: #222222;
+    color: #6ac6f8;
     font-weight: bold;
+    background-color: rgba(0,0,0,.2);
 }
 .active .title{
     font-weight: bold;
@@ -470,10 +480,13 @@ div.k-grid-footer, div.k-grid-header {
     text-align: left;
 }
 .treeview-menu{
-    background: #fff;
+    background: #6ac6f8;
 }
 .select-sm{
     line-height: inherit;
+}
+.sidebar-menu li.active > a > .pull-right-container > .fa-angle-right{
+    transform: rotate(90deg);
 }
 /*折叠后二级菜单*/
 @media (min-width: 768px){
