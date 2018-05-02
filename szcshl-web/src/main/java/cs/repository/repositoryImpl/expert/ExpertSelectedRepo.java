@@ -6,6 +6,7 @@ import cs.model.expert.*;
 import cs.repository.IRepository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 抽取专家 数据操作实现接口
@@ -149,14 +150,14 @@ public interface ExpertSelectedRepo extends IRepository<ExpertSelected, String> 
      * @param achievementSumDto
      * @return
      */
-    List<AchievementSumDto> findAchievementSum(AchievementSumDto achievementSumDto);
+    List<AchievementSumDto> findAchievementSum(AchievementSumDto achievementSumDto,Map<String,Object> levelMap);
 
     /**
      * 业绩明细
      * @param achievementSumDto
      * @return
      */
-    List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto);
+    List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto,Map<String,Object> levelMap);
 
     List<ExpertSelectedDto> findByBusinessId(String businessID);
 }

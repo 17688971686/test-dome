@@ -115,4 +115,11 @@ public interface UserService {
      * @return
      */
     boolean checkIsMainSigUser(String orgType, String orgId, String mainUserId);
+
+    /***
+     * 获取当前用户级别
+     * 0表示普通用户，1表示主任，2表示分管领导，3表示部长 4.表示组长）
+     * @return
+     */
+    Map<String, Object>  getUserLevel();
 }

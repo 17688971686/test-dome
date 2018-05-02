@@ -794,9 +794,13 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      * @return
      */
     @Override
-    public List<AchievementSumDto> findAchievementSum(AchievementSumDto achievementSumDto) {
+    public List<AchievementSumDto> findAchievementSum(AchievementSumDto achievementSumDto,Map<String,Object> levelMap) {
         String beginTime = "";
         String endTime = "";
+        Integer level = 0;
+        if(null != levelMap && null!= levelMap.get("leaderFlag")){
+            level = (Integer) levelMap.get("leaderFlag");
+        }
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select count(1) disSum,round(sum(t.declarevalue)/10000,2) declarevalueSum ," +
                 " round(sum(t.authorizevalue)/10000,2) authorizevalueSum,");
@@ -807,8 +811,29 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
         sqlBuilder.append(" from ( select d.dispatchdate, s.projectname,d.filenum,d.declarevalue,d.authorizevalue," +
                 " d.extravalue,d.extrarate,p.ismainuser from cs_sign s ");
         sqlBuilder.append(" left join cs_dispatch_doc d on s.signid = d.signid left join CS_SIGN_PRINCIPAL2 p");
-        sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and p.ismainuser is not null " +
-                " and p.userid = '"+ SessionUtil.getUserId()+"' ");
+        if(level == 0){
+            sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and p.ismainuser is not null " +
+                    " and p.userid = '"+ SessionUtil.getUserId()+"' ");
+        }else if(level==1){
+            sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and p.ismainuser is not null " +
+                    " and exists(select 1 from cs_user u where u.id = p.userid ) ");
+        }else if(level==2){
+            String orgIdStr = levelMap.get("orgIdStr").toString();
+            sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and p.ismainuser is not null " +
+                    " and exists(select 1 from cs_user u " +
+                    "  where u.orgid in ("+orgIdStr+") " +
+                    "  and u.id = p.userid) ");
+        }else if(level==3){
+            String orgIdStr = levelMap.get("orgIdStr").toString();
+            sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and p.ismainuser is not null " +
+                    " and exists(select 1 from cs_user u " +
+                    "  where u.orgid = '"+orgIdStr+"' " +
+                    "  and u.id = p.userid) ");
+        }else if(level==4){
+            sqlBuilder.append(" on s.signid = p.signid where s.processstate >= 6 and p.ismainuser is not null " +
+                    " and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
+        }
+
         if(null != achievementSumDto){
             if(Validate.isString(achievementSumDto.getYear()) && Validate.isString(achievementSumDto.getQuarter())){
                 if(achievementSumDto.getQuarter().equals("0")){
@@ -882,15 +907,38 @@ public class ExpertSelectedRepoImpl extends AbstractRepository<ExpertSelected, S
      * @return
      */
     @Override
-    public List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto) {
+    public List<AchievementDetailDto> findAchievementDetail(AchievementSumDto achievementSumDto,Map<String,Object> levelMap) {
         String beginTime = "";
         String endTime = "";
+        Integer level = 0;
+        if(null != levelMap && null!= levelMap.get("leaderFlag")){
+            level = (Integer) levelMap.get("leaderFlag");
+        }
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("select d.dispatchdate, s.projectname,d.filenum,d.declarevalue,d.authorizevalue,d.extravalue," +
                 " d.extrarate from cs_sign s ");
         sqlBuilder.append(" left join cs_dispatch_doc d on s.signid = d.signid left join CS_SIGN_PRINCIPAL2 p" +
                 " on s.signid = p.signid");
-        sqlBuilder.append(" where s.processstate >= 6  and p.userid = '"+SessionUtil.getUserId()+"' ");
+        //sqlBuilder.append(" where s.processstate >= 6  and p.userid = '"+SessionUtil.getUserId()+"' ");
+        if(level == 0){
+            sqlBuilder.append(" where s.processstate >= 6 and p.userid = '"+ SessionUtil.getUserId()+"' ");
+        }else if(level==1){
+            sqlBuilder.append(" where s.processstate >= 6 and exists(select 1 from cs_user u where u.id = p.userid ) ");
+        }else if(level==2){
+            String orgIdStr = levelMap.get("orgIdStr").toString();
+            sqlBuilder.append(" where s.processstate >= 6 " +
+                    " and exists(select 1 from cs_user u " +
+                    "  where u.orgid in ("+orgIdStr+") " +
+                    "  and u.id = p.userid) ");
+        }else if(level==3){
+            String orgIdStr = levelMap.get("orgIdStr").toString();
+            sqlBuilder.append(" where s.processstate >= 6 " +
+                    " and exists(select 1 from cs_user u " +
+                    "  where u.orgid = '"+orgIdStr+"' " +
+                    "  and u.id = p.userid) ");
+        }else if(level==4){
+            sqlBuilder.append(" where s.processstate >= 6 and exists(select 1 from CS_DEPT_CS_USER u where u.userlist_id = p.userid ) ");
+        }
         if(null != achievementSumDto){
             if(Validate.isString(achievementSumDto.getIsmainuser())){
                 sqlBuilder.append(" and p.ismainuser =:ismainuser ").setParam("ismainuser",achievementSumDto.getIsmainuser());

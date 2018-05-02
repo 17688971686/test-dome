@@ -7,6 +7,7 @@ import cs.model.financial.FinancialManagerDto;
 import cs.repository.odata.ODataObj;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description: 抽取专家 业务操作接口
@@ -152,5 +153,5 @@ public interface ExpertSelectedService {
 	 * 业绩明细
 	 * @return
 	 */
-	ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto);
+	ResultMsg findAchievementDetail(AchievementSumDto achievementSumDto,Map<String,Object> levelMap);
 }
