@@ -1428,7 +1428,23 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>批复 金额</w:t>
+                                        <w:t>批复</w:t>
+                                    </w:r>
+                                </w:p>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>金额</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1631,7 +1647,23 @@
                                                 <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                                 <w:sz w:val="24"/>
                                             </w:rPr>
-                                            <w:t>批复 金额</w:t>
+                                            <w:t>批复</w:t>
+                                        </w:r>
+                                    </w:p>
+                                    <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                        <w:pPr>
+                                            <w:jc w:val="center"/>
+                                            <w:rPr>
+                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                                <w:sz w:val="24"/>
+                                            </w:rPr>
+                                        </w:pPr>
+                                        <w:r>
+                                            <w:rPr>
+                                                <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                                <w:sz w:val="24"/>
+                                            </w:rPr>
+                                            <w:t>金额</w:t>
                                         </w:r>
                                     </w:p>
                                 </w:tc>
@@ -1835,7 +1867,23 @@
                                                     <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                                     <w:sz w:val="24"/>
                                                 </w:rPr>
-                                                <w:t>批复 金额</w:t>
+                                                <w:t>批复</w:t>
+                                            </w:r>
+                                        </w:p>
+                                        <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                            <w:pPr>
+                                                <w:jc w:val="center"/>
+                                                <w:rPr>
+                                                    <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                                    <w:sz w:val="24"/>
+                                                </w:rPr>
+                                            </w:pPr>
+                                            <w:r>
+                                                <w:rPr>
+                                                    <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                                    <w:sz w:val="24"/>
+                                                </w:rPr>
+                                                <w:t>金额</w:t>
                                             </w:r>
                                         </w:p>
                                     </w:tc>
@@ -1939,15 +1987,15 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${(dispatch.declareValue)!}</w:t>
+                                        <w:t>${((dispatch.declareValue)?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1962,15 +2010,15 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${(dispatch.authorizeValue)!}</w:t>
+                                        <w:t>${((dispatch.authorizeValue)?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1985,15 +2033,15 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${(dispatch.extraValue)!}</w:t>
+                                        <w:t>${((dispatch.extraValue)?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2008,20 +2056,20 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                         <w:t xml:space="preserve">${(dispatch.extraRate)!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                         <w:t>%</w:t>
                                     </w:r>
@@ -2038,15 +2086,15 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${(dispatch.approveValue)!}</w:t>
+                                        <w:t>${((dispatch.approveValue)?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2061,13 +2109,13 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                         <w:t>${(dispatch.remark)!}</w:t>
                                     </w:r>
@@ -2635,7 +2683,23 @@
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>批复 金额</w:t>
+                                        <w:t>批复</w:t>
+                                    </w:r>
+                                </w:p>
+                                <w:p w:rsidR="009652E8" w:rsidRDefault="009652E8">
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>金额</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2736,15 +2800,15 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${declareValue!}</w:t>
+                                        <w:t>${(declareValue?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2759,15 +2823,15 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${authorizeValue!}</w:t>
+                                        <w:t>${(authorizeValue?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2782,15 +2846,15 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${extraValue!}</w:t>
+                                        <w:t>${(extraValue?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2805,20 +2869,20 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                         <w:t xml:space="preserve">   ${extraRate!}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                         <w:t>%</w:t>
                                     </w:r>
@@ -2835,15 +2899,15 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
-                                        <w:t>${approveValue!}</w:t>
+                                        <w:t>${(approveValue?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2858,13 +2922,13 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:hint="eastAsia"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                         <w:t>${remark!}</w:t>
                                     </w:r>

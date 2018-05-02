@@ -1745,7 +1745,23 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>批复 金额</w:t>
+                                        <w:t>批复</w:t>
+                                    </w:r>
+                                </w:p>
+                                <w:p>
+                                    <w:pPr>
+                                        <w:jc w:val="center"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r>
+                                        <w:rPr>
+                                            <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
+                                            <w:sz w:val="24"/>
+                                        </w:rPr>
+                                        <w:t>金额</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1860,17 +1876,17 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${declareValue!}</w:t>
+                                        <w:t>${(declareValue?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1885,17 +1901,17 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${authorizeValue!}</w:t>
+                                        <w:t>${(authorizeValue?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1910,17 +1926,17 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${extraValue!}</w:t>
+                                        <w:t>${(extraValue?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1940,14 +1956,14 @@
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                         <w:t xml:space="preserve">  </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                         <w:t xml:space="preserve">${extraRate!} </w:t>
@@ -1955,7 +1971,7 @@
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                         </w:rPr>
                                         <w:t>%</w:t>
                                     </w:r>
@@ -1972,17 +1988,17 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${approveValue!}</w:t>
+                                        <w:t>${(approveValue?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1996,14 +2012,14 @@
                                         <w:jc w:val="center"/>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
-                                            <w:sz w:val="24"/>
+                                            <w:sz w:val="18"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                         <w:t>${remark!}</w:t>

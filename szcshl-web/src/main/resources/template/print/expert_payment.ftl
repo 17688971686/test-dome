@@ -731,7 +731,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${(expert.reviewCost)!?c}</w:t>
+                                        <w:t>${((expert.reviewCost)?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -754,7 +754,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${(expert.reviewTaxes)!?c}</w:t>
+                                        <w:t>${((expert.reviewTaxes)?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -777,7 +777,7 @@
                                             <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体"/>
                                             <w:sz w:val="24"/>
                                         </w:rPr>
-                                        <w:t>${(expert.totalCost)!?c}</w:t>
+                                        <w:t>${((expert.totalCost)?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1069,7 +1069,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${reviewCostSum!?c}</w:t>
+                                        <w:t>${(reviewCostSum?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1093,7 +1093,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${reviewTaxesSum!?c}</w:t>
+                                        <w:t>${(reviewTaxesSum?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1117,7 +1117,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${totalCostSum!?c}</w:t>
+                                        <w:t>${(totalCostSum?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2069,7 +2069,7 @@
                                                 <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                                 <w:sz w:val="24"/>
                                             </w:rPr>
-                                            <w:t>${(expert2.reviewCost)!?c}</w:t>
+                                            <w:t>${((expert2.reviewCost)?c)!}</w:t>
                                         </w:r>
                                     </w:p>
                                 </w:tc>
@@ -2101,7 +2101,7 @@
                                                 <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                                 <w:sz w:val="24"/>
                                             </w:rPr>
-                                            <w:t>${(expert2.reviewTaxes)!?c}</w:t>
+                                            <w:t>${((expert2.reviewTaxes)?c)!}</w:t>
                                         </w:r>
                                     </w:p>
                                 </w:tc>
@@ -2133,7 +2133,7 @@
                                                 <w:rFonts w:hint="eastAsia" w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体"/>
                                                 <w:sz w:val="24"/>
                                             </w:rPr>
-                                            <w:t>${(expert2.totalCost)!?c}</w:t>
+                                            <w:t>${((expert2.totalCost)?c)!}</w:t>
                                         </w:r>
                                     </w:p>
                                 </w:tc>
@@ -2542,7 +2542,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${reviewCostSum2!?c}</w:t>
+                                        <w:t>${(reviewCostSum2?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2575,7 +2575,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${reviewTaxesSum2!?c}</w:t>
+                                        <w:t>${(reviewTaxesSum2?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -2608,7 +2608,7 @@
                                             <w:sz w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${totalCostSum2!?c}</w:t>
+                                        <w:t>${(totalCostSum2?c)!}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>

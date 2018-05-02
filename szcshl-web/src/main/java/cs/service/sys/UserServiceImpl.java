@@ -123,6 +123,10 @@ public class UserServiceImpl implements UserService {
             if (!Validate.isString(user.getUserNo())) {
                 user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo()) + 1));
             }
+
+            if(userDto != null && userDto.getLoginFailCount() == null){
+                user.setLoginFailCount(0);
+            }
             user.setCreatedBy(SessionUtil.getLoginName());
             user.setCreatedDate(new Date());
             user.setModifiedDate(new Date());
