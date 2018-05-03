@@ -15,6 +15,7 @@
         vm.project = {};
         vm.headerType = "项目类型";
         vm.fileName = "项目统计报表";//报表标题，初始化
+        vm.formatErrorCount = 0; //统计日期不规范个数
         // vm.filters ={};
         vm.signList = [];
         vm.page = 0;
@@ -181,6 +182,9 @@
                 if (data != undefined) {
                     data.forEach(function (obj, x) {
                         vm.signList.push(obj);
+                        if(obj.receivedate == undefined){
+                            vm.formatErrorCount ++;
+                        }
                     });
                 }
                 if (vm.isContinue) {
@@ -191,6 +195,7 @@
 
                     }
                 }
+                vm.countProject = vm.signList.length ; // 列表项目总数
             });
 
         }
@@ -198,6 +203,20 @@
 
         //以下是项目查询统计（最新版-2017-12-28）
         vm.QueryStatistics = function () {
+            //重置值
+            vm.formatErrorCount = 0 ;
+            vm.countReviewDay = 0 ;
+            vm.notSelectedProject = 0;
+            vm.selectedProject = 0 ;
+            vm.totalReviewDas = 0;
+            vm.averageDay = 0;
+            vm.avgWorkDay = 0;
+
+            vm.countProject = 0;
+            vm.selectProject = 0;
+            vm.averageDay = 0;
+
+            vm.isopens = false;
             vm.isContinue = true;
             //判断条件是否为空
             if (!vm.filters || vm.filters == undefined) {
@@ -215,7 +234,11 @@
                 open: function () {
                     //统计平均天数
                     vm.countDay = function () {
+                        vm.countReviewDay = 0;//总共评审天数
+                        vm.stopDay = 0 ;//暂停天数
                         var isCheck = $("#countSignDayTable input[name='sumSignDay']:checked");
+                        vm.selectedProject = isCheck.length; //统计个数
+                        vm.notSelectedProject = vm.countProject - vm.selectedProject; //未统计个数
                         vm.averageDay = 0;
                         if (isCheck.length == 0) {
                             bsWin.alert("请选择要统计的数据");
@@ -225,7 +248,8 @@
                             for (var i = 0; i < totalLength; i++) {
                                 signIds.push(isCheck[i].id);
                             }
-                            signSvc.sumExistDays(signIds.join(","),function (data) {
+                           /* signSvc.sumExistDays(signIds.join(","),function (data) {
+                                console.log(data);
                                 if(data.flag || data.reCode == 'ok'){
                                     vm.averageDay = (Number(data.reObj)/ totalLength).toFixed(2);
                                     vm.isopens = true;
@@ -233,12 +257,23 @@
                                 }else{
                                     bsWin.alert(data.reMsg);
                                 }
-                            });
+                            });*/
+
+                            signSvc.findAVGDayById(signIds , function(data){
+                                vm.isopens = true;
+                                vm.isDay = true;
+                                vm.totalReviewDas = data.reObj[0];
+                                vm.averageDay = data.reObj[1];
+                                vm.avgWorkDay = data.reObj[2];
+
+                            })
+
                         }
                     }
                     //统计工作日
                     vm.countWork = function () {
                         var isCheck = $("#countSignDayTable input[name='sumSignDay']:checked");
+                        vm.selectProject = isCheck.length;
                         vm.averageDay = 0;
                         if (isCheck.length == 0) {
                             bsWin.alert("请选择要统计的数据");

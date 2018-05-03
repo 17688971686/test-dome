@@ -2472,6 +2472,16 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
+     * 通过signId查询平均评审天数和工作日
+     * @param signIds
+     * @return
+     */
+    @Override
+    public ResultMsg findAVGDayId(String signIds) {
+        return signRepo.findAVGDayId(signIds);
+    }
+
+    /**
      * 查询项目预签收信息
      *
      * @param odataObj
