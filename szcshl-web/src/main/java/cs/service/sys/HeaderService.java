@@ -16,12 +16,12 @@ public interface HeaderService {
 
     ResultMsg createHeader(HeaderDto headerDto);
 
-    List<HeaderDto> findHeaderListNoSelected(String headerType);
+    List<HeaderDto> findHeaderList(String headerType,String headState);
 
     void updateSelectedHeader(String idStr);
 
     void updateCancelHeader(String idStr);
-    List<HeaderDto> findHeaderListSelected(String headerType);
+    /*List<HeaderDto> findHeaderListSelected(String headerType);*/
 
     PageModelDto<HeaderDto> get(ODataObj oDataObj);
 

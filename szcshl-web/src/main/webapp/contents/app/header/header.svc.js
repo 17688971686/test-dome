@@ -95,31 +95,6 @@
         }
         //end getHeaderById
 
-        //begin findHeaderListByState
-        function findHeaderListSelected(vm , callBack){
-            var httpOptions={
-                method : 'post',
-                url : rootPath + "/header/findHeaderListSelected",
-                params : {headerType : vm.headerType}
-            }
-            var httpSuccess = function success(response){
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-                // vm.selectedHeaderList = response.data;
-                // vm.header = true;
-            }
-
-            common.http({
-                vm : vm,
-                $http :$http ,
-                httpOptions : httpOptions ,
-                success : httpSuccess
-            });
-
-        }
-        //end findHeaderListByState
-
         //begin updateHeader
         function updateSelectedHeader(vm,idStr){
             var httpOptions ={
@@ -199,12 +174,12 @@
         //begin getHeaderList
         function findHeaderListNoSelected(vm){
             vm.header = {};
-            // vm.header.headerType = vm.headerType;
+            vm.header.headerType = vm.headerType;
             var httpOptions ={
                 method : 'post',
                 url : rootPath + '/header/findHeaderListNoSelected',
-                // data : vm.header.headerType
-                params : {headerType : vm.headerType}
+                data : vm.header
+               // params : {headerType : encodeURIComponent(vm.headerType)},
             }
             var httpSuccess = function success(response){
                 vm.allHeaderList = response.data;
@@ -218,6 +193,30 @@
         }
         //end getHeaderList
 
+        //begin findHeaderListByState
+        function findHeaderListSelected(vm , callBack){
+            vm.header = {};
+            vm.header.headerType = vm.headerType;
+            var httpOptions={
+                method : 'post',
+                url : rootPath + "/header/findHeaderListSelected",
+                data : vm.header
+                //params : {headerType : encodeURIComponent(vm.headerType)},      //中文会乱码
+            }
+            var httpSuccess = function success(response){
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                vm : vm,
+                $http :$http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end findHeaderListByState
 
         //begin headerGrid
         function headerGrid(vm){
@@ -325,11 +324,18 @@
         }
         //end headerGrid
 
+        /**
+         * 查询
+         * @param vm
+         * @param headerType
+         */
         function selectHeaderWindow(vm,headerType){
             findHeaderListNoSelected(vm);
             findHeaderListSelected(vm , function(data){
                 vm.selectedHeaderList = data;
                 vm.header = true;
+
+                console.log(vm.selectedHeaderList);
             });
 
             $("#selectHeaderWindow").kendoWindow({
@@ -348,7 +354,6 @@
                 $.each(tab , function(i , obj){
                     obj.checked = true;
                 });
-
             }
 
             //全取消

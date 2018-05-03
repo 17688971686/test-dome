@@ -1,6 +1,7 @@
 package cs.controller.sys;
 
 import cs.ahelper.MudoleAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
 import cs.domain.sys.Header;
 import cs.model.PageModelDto;
@@ -57,16 +58,16 @@ public class HeaderController {
     @RequiresAuthentication
     @RequestMapping(name="获取未选中表头列表" , path="findHeaderListNoSelected" , method = RequestMethod.POST)
     @ResponseBody
-    public List<HeaderDto> findHeaderListNoSelected(@RequestParam  String headerType){
-        return headerService.findHeaderListNoSelected(headerType);
+    public List<HeaderDto> findHeaderListNoSelected(@RequestBody  HeaderDto headerDto){
+        return headerService.findHeaderList(headerDto.getHeaderType(), Constant.EnumState.NO.getValue());
     }
 
     //@RequiresPermissions("header#findHeaderListSelected#post")
     @RequiresAuthentication
     @RequestMapping(name="获取选中的表头列表" ,path="findHeaderListSelected" , method = RequestMethod.POST)
     @ResponseBody
-    public List<HeaderDto> findHeaderListSelected(@RequestParam  String headerType){
-        return headerService.findHeaderListSelected(headerType);
+    public List<HeaderDto> findHeaderListSelected(@RequestBody  HeaderDto headerDto){
+        return headerService.findHeaderList(headerDto.getHeaderType(), Constant.EnumState.YES.getValue());
     }
 
     //@RequiresPermissions("header#updateSelectedHeader#put")

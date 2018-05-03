@@ -3597,6 +3597,7 @@
         vm.project = {};
         vm.headerType = "项目类型";
         vm.fileName = "项目统计报表";//报表标题，初始化
+        vm.formatErrorCount = 0; //统计日期不规范个数
         // vm.filters ={};
         vm.signList = [];
         vm.page = 0;
@@ -3763,6 +3764,9 @@
                 if (data != undefined) {
                     data.forEach(function (obj, x) {
                         vm.signList.push(obj);
+                        if(obj.receivedate == undefined){
+                            vm.formatErrorCount ++;
+                        }
                     });
                 }
                 if (vm.isContinue) {
@@ -3773,6 +3777,7 @@
 
                     }
                 }
+                vm.countProject = vm.signList.length ; // 列表项目总数
             });
 
         }
@@ -3780,6 +3785,20 @@
 
         //以下是项目查询统计（最新版-2017-12-28）
         vm.QueryStatistics = function () {
+            //重置值
+            vm.formatErrorCount = 0 ;
+            vm.countReviewDay = 0 ;
+            vm.notSelectedProject = 0;
+            vm.selectedProject = 0 ;
+            vm.totalReviewDas = 0;
+            vm.averageDay = 0;
+            vm.avgWorkDay = 0;
+
+            vm.countProject = 0;
+            vm.selectProject = 0;
+            vm.averageDay = 0;
+
+            vm.isopens = false;
             vm.isContinue = true;
             //判断条件是否为空
             if (!vm.filters || vm.filters == undefined) {
@@ -3797,7 +3816,11 @@
                 open: function () {
                     //统计平均天数
                     vm.countDay = function () {
+                        vm.countReviewDay = 0;//总共评审天数
+                        vm.stopDay = 0 ;//暂停天数
                         var isCheck = $("#countSignDayTable input[name='sumSignDay']:checked");
+                        vm.selectedProject = isCheck.length; //统计个数
+                        vm.notSelectedProject = vm.countProject - vm.selectedProject; //未统计个数
                         vm.averageDay = 0;
                         if (isCheck.length == 0) {
                             bsWin.alert("请选择要统计的数据");
@@ -3807,7 +3830,8 @@
                             for (var i = 0; i < totalLength; i++) {
                                 signIds.push(isCheck[i].id);
                             }
-                            signSvc.sumExistDays(signIds.join(","),function (data) {
+                           /* signSvc.sumExistDays(signIds.join(","),function (data) {
+                                console.log(data);
                                 if(data.flag || data.reCode == 'ok'){
                                     vm.averageDay = (Number(data.reObj)/ totalLength).toFixed(2);
                                     vm.isopens = true;
@@ -3815,12 +3839,23 @@
                                 }else{
                                     bsWin.alert(data.reMsg);
                                 }
-                            });
+                            });*/
+
+                            signSvc.findAVGDayById(signIds , function(data){
+                                vm.isopens = true;
+                                vm.isDay = true;
+                                vm.totalReviewDas = data.reObj[0];
+                                vm.averageDay = data.reObj[1];
+                                vm.avgWorkDay = data.reObj[2];
+
+                            })
+
                         }
                     }
                     //统计工作日
                     vm.countWork = function () {
                         var isCheck = $("#countSignDayTable input[name='sumSignDay']:checked");
+                        vm.selectProject = isCheck.length;
                         vm.averageDay = 0;
                         if (isCheck.length == 0) {
                             bsWin.alert("请选择要统计的数据");
@@ -24496,31 +24531,6 @@
         }
         //end getHeaderById
 
-        //begin findHeaderListByState
-        function findHeaderListSelected(vm , callBack){
-            var httpOptions={
-                method : 'post',
-                url : rootPath + "/header/findHeaderListSelected",
-                params : {headerType : vm.headerType}
-            }
-            var httpSuccess = function success(response){
-                if (callBack != undefined && typeof callBack == 'function') {
-                    callBack(response.data);
-                }
-                // vm.selectedHeaderList = response.data;
-                // vm.header = true;
-            }
-
-            common.http({
-                vm : vm,
-                $http :$http ,
-                httpOptions : httpOptions ,
-                success : httpSuccess
-            });
-
-        }
-        //end findHeaderListByState
-
         //begin updateHeader
         function updateSelectedHeader(vm,idStr){
             var httpOptions ={
@@ -24600,12 +24610,12 @@
         //begin getHeaderList
         function findHeaderListNoSelected(vm){
             vm.header = {};
-            // vm.header.headerType = vm.headerType;
+            vm.header.headerType = vm.headerType;
             var httpOptions ={
                 method : 'post',
                 url : rootPath + '/header/findHeaderListNoSelected',
-                // data : vm.header.headerType
-                params : {headerType : vm.headerType}
+                data : vm.header
+               // params : {headerType : encodeURIComponent(vm.headerType)},
             }
             var httpSuccess = function success(response){
                 vm.allHeaderList = response.data;
@@ -24619,6 +24629,30 @@
         }
         //end getHeaderList
 
+        //begin findHeaderListByState
+        function findHeaderListSelected(vm , callBack){
+            vm.header = {};
+            vm.header.headerType = vm.headerType;
+            var httpOptions={
+                method : 'post',
+                url : rootPath + "/header/findHeaderListSelected",
+                data : vm.header
+                //params : {headerType : encodeURIComponent(vm.headerType)},      //中文会乱码
+            }
+            var httpSuccess = function success(response){
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                vm : vm,
+                $http :$http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end findHeaderListByState
 
         //begin headerGrid
         function headerGrid(vm){
@@ -24726,11 +24760,18 @@
         }
         //end headerGrid
 
+        /**
+         * 查询
+         * @param vm
+         * @param headerType
+         */
         function selectHeaderWindow(vm,headerType){
             findHeaderListNoSelected(vm);
             findHeaderListSelected(vm , function(data){
                 vm.selectedHeaderList = data;
                 vm.header = true;
+
+                console.log(vm.selectedHeaderList);
             });
 
             $("#selectHeaderWindow").kendoWindow({
@@ -24749,7 +24790,6 @@
                 $.each(tab , function(i , obj){
                     obj.checked = true;
                 });
-
             }
 
             //全取消
@@ -37559,8 +37599,27 @@
             findExpertReview: findExpertReview,         //查询项目在办的专家抽取方案信息
             getSignInfo: getSignInfo ,                  //通过收文编号获取委里信息
             findSignUnitScore : findSignUnitScore,      //获取评分单位信息
+            findAVGDayById : findAVGDayById ,                  //获取平均评审天数和工作日
         };
         return service;
+
+        function findAVGDayById(isgnIds , callBack){
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/sign/findAVGDayId",
+                params: {signIds: isgnIds}
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         function findSignUnitScore(signId, callBack){
             var httpOptions = {

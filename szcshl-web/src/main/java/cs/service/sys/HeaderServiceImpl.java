@@ -5,12 +5,15 @@ import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.sys.Header;
 import cs.domain.sys.Header_;
 import cs.model.PageModelDto;
 import cs.model.sys.HeaderDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.HeaderRepo;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,18 +55,20 @@ public class HeaderServiceImpl implements  HeaderService {
     }
 
     @Override
-    public List<HeaderDto> findHeaderListNoSelected(String headerType) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select h from " + Header.class.getSimpleName() + " h where " + Header_.headerType.getName() + "=:headerType ");
-        hqlBuilder.append(" and " + Header_.headerstate.getName() + " =:headerState");
-        if(headerType ==null || "".equals(headerType)){
+    public List<HeaderDto> findHeaderList(String headerType,String headState) {
+        if(!Validate.isString(headerType)){
             headerType="项目类型";
         }
-        hqlBuilder.setParam("headerType" , headerType);
-        hqlBuilder.setParam("headerState" , Constant.EnumState.NO.getValue());
-        List<Header> headerList = headerRepo.findByHql(hqlBuilder);
+        if(!Validate.isString(headState)){
+            headState= Constant.EnumState.NO.getValue();
+        }
+        Criteria criteria = headerRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(Header_.headerType.getName(),headerType));
+        criteria.add(Restrictions.eq(Header_.headerstate.getName(), headState));
+
+        List<Header> headerList = criteria.list();
         List<HeaderDto> headerDtoList = new ArrayList<>();
-        if(headerList !=null && headerList.size()>0){
+        if(Validate.isList(headerList)){
             for(Header header : headerList){
                 HeaderDto headerDto = new HeaderDto();
                 BeanCopierUtils.copyProperties(header,headerDto);
@@ -100,7 +105,7 @@ public class HeaderServiceImpl implements  HeaderService {
         }
     }
 
-    @Override
+   /* @Override
     public List<HeaderDto> findHeaderListSelected(String headerType) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append("select h from " + Header.class.getSimpleName() + " h where "+ Header_.headerstate.getName()+ "=:headerState and ");
@@ -117,7 +122,7 @@ public class HeaderServiceImpl implements  HeaderService {
         }
 
         return headerDtoList;
-    }
+    }*/
 
     @Override
     public PageModelDto<HeaderDto> get(ODataObj oDataObj) {
@@ -171,10 +176,8 @@ public class HeaderServiceImpl implements  HeaderService {
 
     @Override
     public List<Header> findHeaderByType(String type) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("  from " + Header.class.getSimpleName() + " where " + Header_.headerType.getName() + "=:headerType");
-      hqlBuilder.setParam("headerType" , type);
-        List<Header> headerList = headerRepo.findByHql(hqlBuilder);
-        return headerList;
+        Criteria criteria = headerRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(Header_.headerType.getName(),type));
+        return criteria.list();
     }
 }

@@ -142,7 +142,7 @@ public class SignDispaWorkController {
             String title = java.net.URLDecoder.decode(fileName,"UTF-8");
 //            String filters = java.net.URLDecoder.decode(filterData,"UTF-8");
             ServletOutputStream sos = resp.getOutputStream();
-            List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("项目类型");//选中的表字段
+            List<HeaderDto> headerDtoList = headerService.findHeaderList("项目类型", Constant.EnumState.YES.getValue());//选中的表字段
             List<Header> headerList = headerService.findHeaderByType("项目类型");//所有 表字段
 
           /*  Boolean flag = true;

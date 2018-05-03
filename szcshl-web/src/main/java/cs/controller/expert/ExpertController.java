@@ -81,7 +81,7 @@ public class ExpertController {
             odataObj.setTop(0);
             odataObj.setCount(false);
             PageModelDto<ExpertDto> expertDtoList = expertService.get(odataObj);
-            List<HeaderDto> headerDtoList = headerService.findHeaderListSelected("专家类型");//选中的表字段
+            List<HeaderDto> headerDtoList = headerService.findHeaderList("专家类型", Constant.EnumState.YES.getValue());//选中的表字段
             List<Header> headerList = headerService.findHeaderByType("专家类型");//所有 表字段
             ExcelTools excelTools = new ExcelTools();
             String[] headerPair ;
