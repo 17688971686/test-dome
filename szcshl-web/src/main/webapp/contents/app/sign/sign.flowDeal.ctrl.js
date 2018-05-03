@@ -288,24 +288,30 @@
              * @param fileId
              */
             vm.delFile = function (fileId) {
-                sysfileSvc.delSysFile(fileId, function () {
-                    bsWin.alert("删除成功", function () {
-                        sysfileSvc.findByMianId(vm.model.signid, function (data) {
-                            if (data && data.length > 0) {
-                                vm.showFlag.tabSysFile = true;
-                                vm.sysFileList = data;
-                                sysfileSvc.initZtreeClient(vm, $scope);//树形图
-                            } else {
-                                vm.showFlag.tabSysFile = false;
-                                $('#myTab a:first').tab('show');// 选取第一个标签页
-                                //打开标签页
-                                $(".tab-pane").removeClass("active").removeClass("in");
-                                $("#sign_detail").addClass("active").addClass("in").show(500);
-                            }
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确认删除么？",
+                    onOk: function () {
+                        sysfileSvc.delSysFile(fileId, function () {
+                            bsWin.alert("删除成功", function () {
+                                sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                                    if (data && data.length > 0) {
+                                        vm.showFlag.tabSysFile = true;
+                                        vm.sysFileList = data;
+                                        sysfileSvc.initZtreeClient(vm, $scope);//树形图
+                                    } else {
+                                        vm.showFlag.tabSysFile = false;
+                                        $('#myTab a:first').tab('show');// 选取第一个标签页
+                                        //打开标签页
+                                        $(".tab-pane").removeClass("active").removeClass("in");
+                                        $("#sign_detail").addClass("active").addClass("in").show(500);
+                                    }
+                                });
+                            })
                         });
-                    })
-
+                    }
                 });
+
             }
             //初始化个人常用意见
             ideaSvc.initIdea(vm);

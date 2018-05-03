@@ -532,7 +532,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         }
         String yearName = DateUtils.converToString(addSuppLetter.getDisapDate(),DateUtils.DATE_YEAR);
         int maxSeq = addSuppLetterRepo.findCurMaxSeq(yearName)+1;
-        String fileNumValue =  Constant.ADDSUPPER_PREFIX+"["+yearName+"]"+(maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq));
+        //String fileNum = maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq);
+        String fileNumValue =  Constant.ADDSUPPER_PREFIX+"["+yearName+"]"+maxSeq;
         addSuppLetter.setFilenum(fileNumValue);
         addSuppLetter.setFileSeq(maxSeq);
     }

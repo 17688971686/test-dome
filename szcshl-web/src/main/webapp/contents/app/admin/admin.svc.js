@@ -267,17 +267,17 @@
                             case "4":          //暂停
                                 return $('#span1').html();
                                 break;
-                            case "8":         	//存档超期
-                                return $('#span5').html();
-                                break;
-                            case "7":           //超过25个工作日未存档
-                                return $('#span4').html();
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
                                 break;
                             case "6":          	//发文超期
                                 return $('#span3').html();
                                 break;
-                            case "5":          //少于3个工作日
-                                return $('#span2').html();
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
                                 break;
                             case "1":          //在办
                                 return "";
@@ -604,17 +604,17 @@
                             case "4":          //暂停
                                 return $('#span1').html();
                                 break;
-                            case "8":         	//存档超期
-                                return $('#span5').html();
-                                break;
-                            case "7":           //超过25个工作日未存档
-                                return $('#span4').html();
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
                                 break;
                             case "6":          	//发文超期
                                 return $('#span3').html();
                                 break;
-                            case "5":          //少于3个工作日
-                                return $('#span2').html();
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
                                 break;
                             case "1":          //在办
                                 return "";
@@ -641,10 +641,10 @@
                     template: function (item) {
                         if (item.signprocessState) {
                             if (item.signprocessState == 6) {
-                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.signprocessState == 7) {
-                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.signprocessState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
@@ -785,17 +785,17 @@
                             case "4":          //暂停
                                 return $('#span1').html();
                                 break;
-                            case "8":         	//存档超期
-                                return $('#span5').html();
-                                break;
-                            case "7":           //超过25个工作日未存档
-                                return $('#span4').html();
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
                                 break;
                             case "6":          	//发文超期
                                 return $('#span3').html();
                                 break;
-                            case "5":          //少于3个工作日
-                                return $('#span2').html();
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
                                 break;
                             case "1":          //在办
                                 return "";
@@ -822,10 +822,10 @@
                     template: function (item) {
                         if (item.processState) {
                             if (item.processState == 6) {
-                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.processState == 7) {
-                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.processState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
@@ -1097,17 +1097,17 @@
                             case "4":          //暂停
                                 return $('#span1').html();
                                 break;
-                            case "8":         	//存档超期
-                                return $('#span5').html();
-                                break;
-                            case "7":           //超过25个工作日未存档
-                                return $('#span4').html();
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
                                 break;
                             case "6":          	//发文超期
                                 return $('#span3').html();
                                 break;
-                            case "5":          //少于3个工作日
-                                return $('#span2').html();
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
                                 break;
                             case "1":          //在办
                                 return "";
@@ -1134,10 +1134,10 @@
                     template: function (item) {
                         if (item.processState) {
                             if (item.processState == 6) {
-                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.processState == 7) {
-                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.processState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
@@ -1151,7 +1151,7 @@
                 {
                     field: "",
                     title: "项目名称",
-                    width: 160,
+                    width: 320,
                     filterable: false,
                     template: function (item) {
                         if (item.processInstanceId) {
@@ -1242,13 +1242,13 @@
                 {
                     field: "builtcompanyname",
                     title: "建设单位",
-                    width: 150,
+                    width: 250,
                     filterable: false
                 },
                 {
                     field: "",
                     title: "操作",
-                    width: 140,
+                    width: 100,
                     template: function (item) {
                         var isstart = false, applyArrrais = true, isStop = false;
                         if (item.signState == "2") {

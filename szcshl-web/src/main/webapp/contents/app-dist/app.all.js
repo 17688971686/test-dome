@@ -3237,9 +3237,11 @@
         }
         activate();
         function activate() {
+            //默认不显示发文
             vm.showwin = false;
             if($rootScope.view[vm.stateName]){
                 var preView = $rootScope.view[vm.stateName];
+                console.log(preView);
                 //恢复grid
                 if(preView.gridParams){
                     vm.gridParams = preView.gridParams;
@@ -3302,6 +3304,18 @@
         vm.querySign = function(){
             vm.gridOptions.dataSource._skip="";
             vm.gridOptions.dataSource.read();
+        }
+
+        // 业务判断
+        vm.filterRuTask = function ($event) {
+            var checkbox = $event.target;
+            var checked = checkbox.checked;
+            if (checked) {
+                $("#query_signprocessState").val(9);
+            } else {
+                $("#query_signprocessState").val(6);
+            }
+            vm.querySign();
         }
         /**
          * 重置查询条件
@@ -4122,17 +4136,17 @@
                             case "4":          //暂停
                                 return $('#span1').html();
                                 break;
-                            case "8":         	//存档超期
-                                return $('#span5').html();
-                                break;
-                            case "7":           //超过25个工作日未存档
-                                return $('#span4').html();
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
                                 break;
                             case "6":          	//发文超期
                                 return $('#span3').html();
                                 break;
-                            case "5":          //少于3个工作日
-                                return $('#span2').html();
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
                                 break;
                             case "1":          //在办
                                 return "";
@@ -4459,17 +4473,17 @@
                             case "4":          //暂停
                                 return $('#span1').html();
                                 break;
-                            case "8":         	//存档超期
-                                return $('#span5').html();
-                                break;
-                            case "7":           //超过25个工作日未存档
-                                return $('#span4').html();
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
                                 break;
                             case "6":          	//发文超期
                                 return $('#span3').html();
                                 break;
-                            case "5":          //少于3个工作日
-                                return $('#span2').html();
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
                                 break;
                             case "1":          //在办
                                 return "";
@@ -4496,10 +4510,10 @@
                     template: function (item) {
                         if (item.signprocessState) {
                             if (item.signprocessState == 6) {
-                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.signprocessState == 7) {
-                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.signprocessState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
@@ -4640,17 +4654,17 @@
                             case "4":          //暂停
                                 return $('#span1').html();
                                 break;
-                            case "8":         	//存档超期
-                                return $('#span5').html();
-                                break;
-                            case "7":           //超过25个工作日未存档
-                                return $('#span4').html();
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
                                 break;
                             case "6":          	//发文超期
                                 return $('#span3').html();
                                 break;
-                            case "5":          //少于3个工作日
-                                return $('#span2').html();
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
                                 break;
                             case "1":          //在办
                                 return "";
@@ -4677,10 +4691,10 @@
                     template: function (item) {
                         if (item.processState) {
                             if (item.processState == 6) {
-                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.processState == 7) {
-                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.processState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
@@ -4952,17 +4966,17 @@
                             case "4":          //暂停
                                 return $('#span1').html();
                                 break;
-                            case "8":         	//存档超期
-                                return $('#span5').html();
-                                break;
-                            case "7":           //超过25个工作日未存档
-                                return $('#span4').html();
+                            case "5":          //少于3个工作日
+                                return $('#span2').html();
                                 break;
                             case "6":          	//发文超期
                                 return $('#span3').html();
                                 break;
-                            case "5":          //少于3个工作日
-                                return $('#span2').html();
+                            case "7":           //超过25个工作日未存档
+                                return $('#span4').html();
+                                break;
+                            case "8":         	//存档超期
+                                return $('#span5').html();
                                 break;
                             case "1":          //在办
                                 return "";
@@ -4989,10 +5003,10 @@
                     template: function (item) {
                         if (item.processState) {
                             if (item.processState == 6) {
-                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.processState == 7) {
-                                return "<span class='row-number label-info' style='width: 100%;display: inline-block;'></span>";
+                                return "<span class='row-number label-primary' style='width: 100%;display: inline-block;'></span>";
                             }
                             else if (item.processState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
@@ -5006,7 +5020,7 @@
                 {
                     field: "",
                     title: "项目名称",
-                    width: 160,
+                    width: 320,
                     filterable: false,
                     template: function (item) {
                         if (item.processInstanceId) {
@@ -5097,13 +5111,13 @@
                 {
                     field: "builtcompanyname",
                     title: "建设单位",
-                    width: 150,
+                    width: 250,
                     filterable: false
                 },
                 {
                     field: "",
                     title: "操作",
-                    width: 140,
+                    width: 100,
                     template: function (item) {
                         var isstart = false, applyArrrais = true, isStop = false;
                         if (item.signState == "2") {
@@ -19646,6 +19660,7 @@
                 //2、查找专家评审费
                 expertReviewSvc.initReview(vm.financial.businessId, "", function (data) {
                     vm.expertReview = data;
+                    console.log(vm.expertReview);
                 });
 
                 //项目才有协审费，不是项目，没有协审费
@@ -35638,24 +35653,30 @@
              * @param fileId
              */
             vm.delFile = function (fileId) {
-                sysfileSvc.delSysFile(fileId, function () {
-                    bsWin.alert("删除成功", function () {
-                        sysfileSvc.findByMianId(vm.model.signid, function (data) {
-                            if (data && data.length > 0) {
-                                vm.showFlag.tabSysFile = true;
-                                vm.sysFileList = data;
-                                sysfileSvc.initZtreeClient(vm, $scope);//树形图
-                            } else {
-                                vm.showFlag.tabSysFile = false;
-                                $('#myTab a:first').tab('show');// 选取第一个标签页
-                                //打开标签页
-                                $(".tab-pane").removeClass("active").removeClass("in");
-                                $("#sign_detail").addClass("active").addClass("in").show(500);
-                            }
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确认删除么？",
+                    onOk: function () {
+                        sysfileSvc.delSysFile(fileId, function () {
+                            bsWin.alert("删除成功", function () {
+                                sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                                    if (data && data.length > 0) {
+                                        vm.showFlag.tabSysFile = true;
+                                        vm.sysFileList = data;
+                                        sysfileSvc.initZtreeClient(vm, $scope);//树形图
+                                    } else {
+                                        vm.showFlag.tabSysFile = false;
+                                        $('#myTab a:first').tab('show');// 选取第一个标签页
+                                        //打开标签页
+                                        $(".tab-pane").removeClass("active").removeClass("in");
+                                        $("#sign_detail").addClass("active").addClass("in").show(500);
+                                    }
+                                });
+                            })
                         });
-                    })
-
+                    }
                 });
+
             }
             //初始化个人常用意见
             ideaSvc.initIdea(vm);
@@ -39999,16 +40020,21 @@
          * @param fileId
          */
         vm.delFile = function (fileId) {
-            sysfileSvc.delSysFile(fileId, function () {
-                bsWin.alert("删除成功", function () {
-                    sysfileSvc.findByMianId(vm.model.signid, function (data) {
-                        if (data && data.length > 0) {
-                            vm.sysFileList = data;
-                            sysfileSvc.initZtreeClient(vm, $scope);//树形图
-                        }
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确认删除么？",
+                onOk: function () {
+                    sysfileSvc.delSysFile(fileId, function () {
+                        bsWin.alert("删除成功", function () {
+                            sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                                if (data && data.length > 0) {
+                                    vm.sysFileList = data;
+                                    sysfileSvc.initZtreeClient(vm, $scope);//树形图
+                                }
+                            });
+                        })
                     });
-                })
-
+                }
             });
         }
 
@@ -40869,13 +40895,19 @@
             }
             //附件删除方法
             options.vm.delSysFile = function (id) {
-                delSysFile(id, function (data) {
-                    bsWin.alert(data.reMsg || "删除成功！");
-                    $.each(options.vm.sysFilelists, function (i, sf) {
-                        if (!angular.isUndefined(sf) && sf.sysFileId == id) {
-                            options.vm.sysFilelists.splice(i, 1);
-                        }
-                    })
+                bsWin.confirm({
+                    title: "询问提示",
+                    message: "确认删除么？",
+                    onOk: function () {
+                        delSysFile(id, function (data) {
+                            bsWin.alert(data.reMsg || "删除成功！");
+                            $.each(options.vm.sysFilelists, function (i, sf) {
+                                if (!angular.isUndefined(sf) && sf.sysFileId == id) {
+                                    options.vm.sysFilelists.splice(i, 1);
+                                }
+                            })
+                        });
+                    }
                 });
             }
             options.vm.clickUploadBt = function () {

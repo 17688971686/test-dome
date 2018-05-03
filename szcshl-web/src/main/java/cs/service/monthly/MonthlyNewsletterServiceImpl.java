@@ -581,19 +581,19 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
                 addSuppLetter.setDeptDirectorIdeaContent(flowDto.getDealOption());
                 addSuppLetter.setAppoveStatus(EnumState.YES.getValue());
                 //判断生成序号
-                String seq = "";
-                int curYearMaxSeq = addSuppLetterRepo.findybMaxSeq(addSuppLetter.getFileType());
-                if(curYearMaxSeq < 1000){
-                    seq = String.format("%03d", Integer.valueOf(curYearMaxSeq+1));
+                //String seq = "";
+                int curYearMaxSeq = addSuppLetterRepo.findybMaxSeq(addSuppLetter.getFileType())+1;
+                /*if(curYearMaxSeq < 1000){
+                    seq = String.format("%03d", Integer.valueOf(curYearMaxSeq));
                 }else{
-                    seq = (curYearMaxSeq+1)+"";
-                }
-                addSuppLetter.setMonthlySeq(curYearMaxSeq+1);
+                    seq = (curYearMaxSeq)+"";
+                }*/
+                addSuppLetter.setMonthlySeq(curYearMaxSeq);
 
                 //查询年份
                 String year = DateUtils.converToString(addSuppLetter.getSuppLetterTime(),"yyyy");
                 //生成存档编号,年份+类型+存档年份+存档序号
-                String fileNumber = year + Constant.FILE_RECORD_KEY.YD.getValue() + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yy") + seq;
+                String fileNumber = year + Constant.FILE_RECORD_KEY.YD.getValue() + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yy") + curYearMaxSeq;
                 addSuppLetter.setFileCode(fileNumber);
                 addSuppLetterRepo.save(addSuppLetter);
                 break;

@@ -900,18 +900,17 @@ public class FlowAppServiceImpl implements FlowAppService {
                     String fileNumValue = "";
                     String seqType = ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage());
                     String yearName = DateUtils.converToString(fileRecord.getFileDate(),DateUtils.DATE_YEAR);
-                    int maxSeq = fileRecordRepo.getMaxSeq(yearName,seqType);
-                    maxSeq = maxSeq + 1;
-                    if (maxSeq < 1000) {
+                    int maxSeq = fileRecordRepo.getMaxSeq(yearName,seqType)+ 1;
+                    /*if (maxSeq < 1000) {
                         fileNumValue = String.format("%03d", maxSeq);
                     } else {
                         fileNumValue = String.valueOf(maxSeq);
-                    }
+                    }*/
                     //设置本次的发文序号
                     fileRecord.setFileSeq(maxSeq);
                     //归档编号=发文年份+档案类型+存档年份+存档顺序号
                     fileNumValue = DateUtils.converToString(sign.getDispatchdate(), "yyyy") + ProjectUtils.getFileRecordTypeByStage(sign.getReviewstage())
-                            + DateUtils.converToString(fileRecord.getFileDate(), "yy") + fileNumValue;
+                            + DateUtils.converToString(fileRecord.getFileDate(), "yy") + maxSeq;
                     fileRecord.setFileNo(fileNumValue);
                 }
                 fileRecord.setPageDate(new Date());
@@ -1216,19 +1215,18 @@ public class FlowAppServiceImpl implements FlowAppService {
                 addSuppLetter.setDeptDirectorIdeaContent(flowDto.getDealOption());
                 addSuppLetter.setAppoveStatus(Constant.EnumState.YES.getValue());
                 //判断生成序号
-                String seq = "";
-                int curYearMaxSeq = addSuppLetterRepo.findybMaxSeq(addSuppLetter.getFileType());
-                if(curYearMaxSeq < 1000){
+                int curYearMaxSeq = addSuppLetterRepo.findybMaxSeq(addSuppLetter.getFileType())+1;
+                /*if(curYearMaxSeq < 1000){
                     seq = String.format("%03d", Integer.valueOf(curYearMaxSeq+1));
                 }else{
                     seq = (curYearMaxSeq+1)+"";
-                }
-                addSuppLetter.setMonthlySeq(curYearMaxSeq+1);
+                }*/
+                addSuppLetter.setMonthlySeq(curYearMaxSeq);
 
                 //查询年份
                 String year = DateUtils.converToString(addSuppLetter.getSuppLetterTime(),"yyyy");
                 //生成存档编号,年份+类型+存档年份+存档序号
-                String fileNumber = year + Constant.FILE_RECORD_KEY.YD.getValue() + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yy") + seq;
+                String fileNumber = year + Constant.FILE_RECORD_KEY.YD.getValue() + DateUtils.converToString(addSuppLetter.getSuppLetterTime(), "yy") + curYearMaxSeq;
                 addSuppLetter.setFileCode(fileNumber);
                 addSuppLetterRepo.save(addSuppLetter);
                 break;

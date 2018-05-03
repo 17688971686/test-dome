@@ -21,9 +21,11 @@
         }
         activate();
         function activate() {
+            //默认不显示发文
             vm.showwin = false;
             if($rootScope.view[vm.stateName]){
                 var preView = $rootScope.view[vm.stateName];
+                console.log(preView);
                 //恢复grid
                 if(preView.gridParams){
                     vm.gridParams = preView.gridParams;
@@ -86,6 +88,18 @@
         vm.querySign = function(){
             vm.gridOptions.dataSource._skip="";
             vm.gridOptions.dataSource.read();
+        }
+
+        // 业务判断
+        vm.filterRuTask = function ($event) {
+            var checkbox = $event.target;
+            var checked = checkbox.checked;
+            if (checked) {
+                $("#query_signprocessState").val(9);
+            } else {
+                $("#query_signprocessState").val(6);
+            }
+            vm.querySign();
         }
         /**
          * 重置查询条件

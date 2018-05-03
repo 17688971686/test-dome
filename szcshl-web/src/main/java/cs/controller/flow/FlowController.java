@@ -185,7 +185,7 @@ public class FlowController {
         Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
         List<String> orgIdList = (List<String>) authMap.get("orgIdList");
         List<RuProcessTask> resultList = flowService.queryRunProcessTasks(odataObj,false,authFlag,orgIdList);
-        //已项目未单位，要过滤掉重复的项目
+        //已项目为单位，要过滤掉重复的项目
         List<RuProcessTask> finalList = new ArrayList<>();
         List<String> existList = new ArrayList<>();
         for (int i = 0,l=resultList.size(); i < l; i++) {

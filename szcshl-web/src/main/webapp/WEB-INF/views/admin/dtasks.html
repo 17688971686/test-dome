@@ -11,18 +11,24 @@
     </ol>
 
     <div class="well well-sm">
-        <!--ne 影响效率，直接在视图过滤就行-->
-        <!--<input type="text"  name="signState" operator="ne" value="7" hidden="hidden">-->
     <form id="searchform" name="searchform">
+        <input type="hidden" name="signprocessState" operator="lt" data-type="integer" id="query_signprocessState" value="6" />
         <span class="help-inline">项目名称：</span>
         <input type="text" ng-model="vm.model.projectname" operator="like" name="projectName" id="projectnam" placeholder="请输入">
+
         <span class="help-inline">项目阶段：</span>
         <select name="reviewStage" operator="eq" ng-model="vm.model.reviewStage" >
             <option value="">请选择</option>
             <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}" ng-selected="vm.model.reviewStage==x.dictName">{{x.dictName}}</option>
         </select>
+
         <span class="help-inline">处理人：</span>
         <input type="text" ng-model="vm.model.displayName" operator="like" name="displayName" id="displayName" placeholder="请输入">
+
+        <span class="help-inline">
+            含已发文
+            <input type="checkbox" ng-checked="vm.model.signprocessState==9" ng-click="vm.filterRuTask($event)" />
+        </span>
 
         <button class="btn btn-sm btn-primary" ng-click="vm.querySign()"><span class="glyphicon glyphicon-search"></span>查询</button>
         <button class="btn btn-sm btn-primary" ng-click="vm.formReset()"><span class="glyphicon glyphicon-repeat"></span>重置</button>
@@ -31,14 +37,14 @@
     <!--操作说明提示框-->
     <div class="label-default" style="width: 100%;padding:5px 10px;">
         【
-        <span class="label-primary span_flag"></span> 已发文
-        <span class="label-info span_flag"></span> 已发送报销
+        <span class="label-info span_flag"></span>已发文
+        <span class="label-primary span_flag"></span> 已发送报销
         <span class="label-success span_flag" ></span> 已发送存档
-        <span id="span1" style="margin-left: 15px;"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>暂停
-        <span id="span2"><img src="${path}/contents/images/green.png" style="width: 16px; height: 16px;"></span>少于3个工作日
+        <span id="span1" style="margin-left: 15px;"><img src="${path}/contents/images/purple.png" style="width: 16px; height: 16px;"></span>暂停
+        <span id="span2"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>少于3个工作日
         <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
-        <span id="span4"><img src="${path}/contents/images/blue.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
-        <span id="span5"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>存档超期
+        <span id="span4"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
+        <span id="span5"><img src="${path}/contents/images/black.png" style="width: 16px; height: 16px;"></span>存档超期
         】
     </div>
     <div class="grid" kendo-grid="grid" k-options="vm.gridOptions"></div>

@@ -5,6 +5,7 @@ import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.*;
+import cs.domain.flow.RuProcessTask;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.odata.ODataFilterItem;
@@ -113,7 +114,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         if (expertReview != null && Validate.isString(expertReview.getId())) {
             BeanCopierUtils.copyProperties(expertReview, expertReviewDto);
             //2、专家抽取条件信息
-            if (expertReview.getExpertSelConditionList() != null && expertReview.getExpertSelConditionList().size() > 0) {
+            if (Validate.isList(expertReview.getExpertSelConditionList())) {
                 List<ExpertSelConditionDto> conditionDtoList = new ArrayList<>();
                 for (ExpertSelCondition condition : expertReview.getExpertSelConditionList()) {
                     if (isFilter) {
@@ -130,10 +131,23 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 }
                 expertReviewDto.setExpertSelConditionDtoList(conditionDtoList); //设置抽取条件列表Dto
             }
+            List<ExpertSelected> expertSelectedList = expertReview.getExpertSelectedList();
             //3、抽取专家
-            if (expertReview.getExpertSelectedList() != null && expertReview.getExpertSelectedList().size() > 0) {
+            if (Validate.isList(expertSelectedList)) {
                 List<ExpertSelectedDto> selDtoList = new ArrayList<>();
-                List<ExpertSelected> expertSelectedList = initExpertOrder(expertReview.getExpertSelectedList());
+                Collections.sort(expertSelectedList, new Comparator<ExpertSelected>() {
+                    @Override
+                    public int compare(ExpertSelected e1, ExpertSelected e2) {
+                        if(e2.getExpertSeq() == null){
+                            return -1;
+                        }else if(e1.getExpertSeq() == null){
+                            return 1;
+                        }else if(e2.getExpertSeq()>e1.getExpertSeq()){
+                            return 1;
+                        }
+                        return 0;
+                    }
+                });
                 for (ExpertSelected epSelted : expertSelectedList) {
                     if (isFilter) {
                         if (minBusinessId.equals(epSelted.getBusinessId())) {
@@ -158,7 +172,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
      * 初始化专家排序
      * @return
      */
-    private List<ExpertSelected> initExpertOrder(List<ExpertSelected> expertSelectedList){
+    /*private List<ExpertSelected> initExpertOrder(List<ExpertSelected> expertSelectedList){
         List<ExpertSelected> expertSelectedList1 = new ArrayList<>();
         List<ExpertSelected> expertSelectedList1Temp = new ArrayList<>();
         for(int i = 0;i < expertSelectedList.size();i++){
@@ -176,7 +190,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         }
         expertSelectedList1.addAll(expertSelectedList1Temp);
         return  expertSelectedList1;
-    }
+    }*/
 
     private ExpertSelectedDto initSelExpert(ExpertSelected epSelted) {
         ExpertSelectedDto selDto = new ExpertSelectedDto();

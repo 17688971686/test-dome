@@ -174,6 +174,7 @@
                 //2、查找专家评审费
                 expertReviewSvc.initReview(vm.financial.businessId, "", function (data) {
                     vm.expertReview = data;
+                    console.log(vm.expertReview);
                 });
 
                 //项目才有协审费，不是项目，没有协审费

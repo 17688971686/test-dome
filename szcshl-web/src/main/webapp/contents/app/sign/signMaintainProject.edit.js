@@ -246,16 +246,21 @@
          * @param fileId
          */
         vm.delFile = function (fileId) {
-            sysfileSvc.delSysFile(fileId, function () {
-                bsWin.alert("删除成功", function () {
-                    sysfileSvc.findByMianId(vm.model.signid, function (data) {
-                        if (data && data.length > 0) {
-                            vm.sysFileList = data;
-                            sysfileSvc.initZtreeClient(vm, $scope);//树形图
-                        }
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确认删除么？",
+                onOk: function () {
+                    sysfileSvc.delSysFile(fileId, function () {
+                        bsWin.alert("删除成功", function () {
+                            sysfileSvc.findByMianId(vm.model.signid, function (data) {
+                                if (data && data.length > 0) {
+                                    vm.sysFileList = data;
+                                    sysfileSvc.initZtreeClient(vm, $scope);//树形图
+                                }
+                            });
+                        })
                     });
-                })
-
+                }
             });
         }
 

@@ -125,14 +125,13 @@ public class TopicInfoServiceImpl implements TopicInfoService {
         //课题代码(课题代码2017KT001，归档编号2016KD17001)
         if (!Validate.isString(domain.getTopicCode())) {
             String yearString = DateUtils.converToString(domain.getCreatedDate(), "yyyy");
-            String fileNumValue;
-            int maxSeq = topicInfoRepo.findCurMaxSeq(yearString);
-            if (maxSeq < 1000) {
-                fileNumValue = String.format("%03d", Integer.valueOf(maxSeq + 1));
+            int maxSeq = topicInfoRepo.findCurMaxSeq(yearString) + 1;
+            /*if (maxSeq < 1000) {
+                fileNumValue = String.format("%03d", Integer.valueOf(maxSeq));
             } else {
-                fileNumValue = (maxSeq + 1) + "";
-            }
-            domain.setTopicCode(yearString + Constant.FILE_RECORD_KEY.KT.getValue() + fileNumValue);
+                fileNumValue = (maxSeq) + "";
+            }*/
+            domain.setTopicCode(yearString + Constant.FILE_RECORD_KEY.KT.getValue() + maxSeq);
         }
         topicInfoRepo.save(domain);
         //修改流程负责人

@@ -92,15 +92,15 @@ public class FilingServiceImpl implements FilingService {
         if (!Validate.isString(domain.getFileNo())) {
             String year = DateUtils.converToString(domain.getFilingDate(), "yyyy");
             String fileNumValue;
-            int maxSeq = filingRepo.findCurMaxSeq(year);
-            if (maxSeq < 1000) {
-                fileNumValue = String.format("%03d", Integer.valueOf(maxSeq + 1));
+            int maxSeq = filingRepo.findCurMaxSeq(year)+1;
+            /*if (maxSeq < 1000) {
+                fileNumValue = String.format("%03d", Integer.valueOf(maxSeq));
             } else {
-                fileNumValue = (maxSeq + 1) + "";
-            }
+                fileNumValue = maxSeq + "";
+            }*/
             //课题代码(课题代码2017KT001，归档编号2016KD17001)
             fileNumValue = domain.getFilingCode().substring(0, 4) + Constant.FILE_RECORD_KEY.KD.getValue()
-                    + year.substring(2, 4) + fileNumValue;
+                    + year.substring(2, 4) + maxSeq;
             domain.setFileNo(fileNumValue);
         }
 

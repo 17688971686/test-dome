@@ -98,18 +98,19 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
         ResultMsg resultMsg ;
         if (Validate.isString(sysFileId)) {
             SysFile fl = findById(sysFileId);
+            delete(fl);
                 try {
                     //删除ftp上的文件
                     Ftp f = fl.getFtp();
                     FtpUtils ftpUtils = new FtpUtils();
                     FtpClientConfig k = ConfigProvider.getDownloadConfig(f);
                     boolean deleteResult = ftpUtils.remove(fl.getFileUrl(),k);
-                    if (deleteResult) {
-                        delete(fl);
+                    resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
+                    /*if (deleteResult) {
                         resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
                     } else {
                         resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！无法连接文件服务器，请联系管理员查看！");
-                    }
+                    }*/
                 } catch (Exception e) {
                     resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，错误信息已记录，请联系管理员查看！");
                     logger.info("删除ftp附件【" + fl.getShowName() + "】异常：" + e.getMessage());

@@ -178,7 +178,8 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         }
         String yearName = DateUtils.converToString(dispatchDoc.getDispatchDate(), DateUtils.DATE_YEAR);
         int maxSeq = dispatchDocRepo.getMaxSeq(yearName,seqType) + 1;
-        fileNum = fileNum + "[" + yearName + "]" + (maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq));
+        //(maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq))
+        fileNum = fileNum + "[" + yearName + "]" + maxSeq;
         dispatchDoc.setFileNum(fileNum);
         dispatchDoc.setFileSeq(maxSeq);
         //更新发文日期
