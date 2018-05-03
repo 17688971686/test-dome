@@ -108,4 +108,12 @@ public interface SignRepo extends IRepository<Sign, String> {
      * @return
      */
     int getMaxSignSeq(String yearName,String signType);
+
+    /**
+     * 通过signId查询平均评审天数和工作日
+     * @param signIds
+     * @return
+     */
+    ResultMsg findAVGDayId(String signIds);
+
 }

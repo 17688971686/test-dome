@@ -369,4 +369,46 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
         sqlBuilder.append(" and "+ Sign_.dealOrgType.getName()+" =:signType ").setParam("signType",signType);
         return returnIntBySql(sqlBuilder);
     }
+
+    /**
+     * 通过signId查询平均评审天数和工作日
+     * @param signIds
+     * @return
+     */
+    @Override
+    public ResultMsg findAVGDayId(String signIds) {
+        double totalReviewDays = 0 , reviewDays = 0 , stopDay = 0;
+        double[] reslut = new double[]{0 , 0 , 0};
+        if(Validate.isString(signIds)){
+            String[] ids = signIds.split(",");
+            if(ids != null && ids.length > 0){
+                for(String id : ids){
+                    Sign sign = this.findById(Sign_.signid.getName() , id);
+                    if(sign != null){
+                        if(sign.getSigndate() != null && sign.getDispatchdate() != null){
+                            totalReviewDays += DateUtils.daysBetween(sign.getSigndate() , sign.getDispatchdate());
+                        }else if(sign.getSigndate() != null && sign.getDispatchdate() == null){
+                            totalReviewDays += DateUtils.daysBetween(sign.getSigndate() , new Date());
+                        }
+                        reviewDays += sign.getReviewdays();
+                        if(sign.getProjectStopList() != null && sign.getProjectStopList().size() > 0 ){
+                            for(ProjectStop ps : sign.getProjectStopList()){
+                                if(ps != null){
+                                    stopDay += ps.getPausedays();
+                                }
+                            }
+                        }
+                    }
+
+                }
+                reslut[0] = totalReviewDays;
+                reslut[1] = totalReviewDays / ids.length;
+                reslut[2] = (reviewDays + stopDay) /ids.length;
+            }
+            return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功！" , reslut);
+        }else{
+
+            return new ResultMsg(false , Constant.MsgCode.ERROR.getValue() , "操作失败！" , null);
+        }
+    }
 }

@@ -37,8 +37,27 @@
             findExpertReview: findExpertReview,         //查询项目在办的专家抽取方案信息
             getSignInfo: getSignInfo ,                  //通过收文编号获取委里信息
             findSignUnitScore : findSignUnitScore,      //获取评分单位信息
+            findAVGDayById : findAVGDayById ,                  //获取平均评审天数和工作日
         };
         return service;
+
+        function findAVGDayById(isgnIds , callBack){
+            var httpOptions = {
+                method: "post",
+                url: rootPath + "/sign/findAVGDayId",
+                params: {signIds: isgnIds}
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         function findSignUnitScore(signId, callBack){
             var httpOptions = {

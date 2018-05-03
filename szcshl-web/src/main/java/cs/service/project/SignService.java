@@ -247,4 +247,11 @@ public interface SignService {
     UnitScoreDto findSignUnitScore(String signId);
 
     void initSignDeptInfo(Sign sign);
+
+    /**
+     * 通过signId查询平均评审天数和工作日
+     * @param signIds
+     * @return
+     */
+    ResultMsg findAVGDayId(String signIds);
 }

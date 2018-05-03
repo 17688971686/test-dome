@@ -10,8 +10,21 @@
         <button class="btn btn-sm btn-primary" ng-click="vm.excelExport()">导出</button>
     </div>
     <div ng-show="vm.isopens">
-        <span ng-show="vm.isDay">统计项目的平均天数为：{{vm.averageDay | number:0}}</span>
-        <span ng-hide="vm.isDay">统计工作日为：{{vm.averageDay | number:0}}</span>
+        <p ng-show="vm.isDay">
+            列表中总共<span style="font-size: 20px;">{{vm.countProject | number : 0}}</span>个项目，
+            其中<span style="font-size: 20px;">{{vm.notSelectedProject | number : 0}}</span>个项目选择不统计，
+            <span style="font-size: 20px;">{{vm.formatErrorCount | number : 0}}</span>个项目日期不规范不纳入统计，
+            共统计了<span style="font-size: 20px;">{{vm.selectedProject | number : 0}}</span>个项目，
+            评审天数总共<span style="font-size: 20px;">{{vm.totalReviewDas | number : 0}}</span>天，
+            平均每个项目评审天数为：<span style="font-size: 20px;">{{vm.averageDay | number:0}}</span>天，
+            大约每个项目评审<span style="font-size: 20px;">{{vm.avgWorkDay | number : 0 }}</span>个工作日！
+
+
+        <p ng-hide="vm.isDay">
+            列表中总共<span style="font-size: 20px;">{{vm.countProject | number : 0 }}</span>个项目，
+            共统计了<span style="font-size: 20px;">{{vm.selectProject | number : 0 }}</span>个项目，
+            平均评审工作日为：<span style="font-size: 20px;">{{vm.averageDay | number:0}}</span>个工作日！
+        </p>
     </div>
 
     <div style="height:580px; overflow-y: scroll;">

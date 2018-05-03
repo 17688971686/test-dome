@@ -363,6 +363,13 @@ public class SignController {
     }
 
     @RequiresAuthentication
+    @RequestMapping(name = "通过signId获取平均评审天数和工作日" , path = "findAVGDayId" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg findAVGDayId(@RequestParam  String signIds){
+        return signService.findAVGDayId(signIds);
+    }
+
+    @RequiresAuthentication
     //@RequiresPermissions("sign#startNewFlow#post")
     @RequestMapping(name = "发起流程", path = "startNewFlow", method = RequestMethod.POST)
     @ResponseBody

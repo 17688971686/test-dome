@@ -6,8 +6,10 @@ import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
+import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
 import cs.domain.project.SignDispaWork_;
+import cs.domain.project.Sign_;
 import cs.repository.AbstractRepository;
 import cs.service.flow.FlowService;
 import org.hibernate.Criteria;
@@ -398,7 +400,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         HqlBuilder hqlBuilder = HqlBuilder.create();
         try {
             hqlBuilder.append("select * from (select a.* , rownum rn from (");
-            hqlBuilder.append("select * from SIGN_DISP_WORK where signstate != '7' ");
+            hqlBuilder.append("select * from szec_clean.SIGN_DISP_WORK where signstate != '7' and issign = 9 ");
             if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
                 hqlBuilder.append(" and ");
                 for (int i = 0; i < queryArr.length; i++) {
@@ -438,11 +440,60 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                     } else if ("appalyInvestmentMax".equals(params[0].substring(1, params[0].length() - 1))) {
                         hqlBuilder.append("appalyInvestment<=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
 
-                    } else {
+                    }
+
+                    //项目状态查询修改
+                   else if (SignDispaWork_.processState.getName().equals(params[0].substring(1, params[0].length() - 1))) {
+                       int  processState = Integer.parseInt(value);
+                        //未发文项目或者暂停项目
+                        if(processState == 1 || processState == 2){
+                            hqlBuilder.append(" signState=" + processState);
+                            hqlBuilder.append(" and processState <" + Constant.SignProcessState.DO_DIS.getValue());
+                        }else if(processState == 17){
+                            //未发送存档
+                            hqlBuilder.append(" processState=" + Constant.SignProcessState.IS_START.getValue());
+                            hqlBuilder.append(" and processState <=" + Constant.SignProcessState.SEND_CW.getValue());
+                        }else if(processState == 68){
+                            //已发文未存档
+                            hqlBuilder.append(" processState=" + Constant.SignProcessState.END_DIS_NUM.getValue());
+                            hqlBuilder.append(" or processState =" + Constant.SignProcessState.SEND_CW.getValue());
+                            hqlBuilder.append(" or processState =" + Constant.SignProcessState.SEND_FILE.getValue());
+
+                        }else if(processState == 69){
+                            //已发文项目
+                            hqlBuilder.append(" processState >=" + Constant.SignProcessState.END_DIS_NUM.getValue());
+                        }else if(processState == 89){
+                            //已发送存档
+                            hqlBuilder.append(" processState >=" + Constant.SignProcessState.SEND_FILE.getValue());
+                        }
+                        else if(processState == 24){
+                            //曾经暂停
+                            hqlBuilder.append(" isProjectStop =" + Constant.EnumState.YES.getValue());
+                            hqlBuilder.append(" signState =" + Constant.EnumState.PROCESS.getValue());
+                        }
+                        continue;
+                    }
+
+                    //项目发文
+                   else if(SignDispaWork_.dispatchType.getName().equals(params[0].substring(1, params[0].length() - 1))){
+                     String   dispatchType = value;
+                        if("非暂不实施项目".equals(dispatchType)){
+                            //非暂不实施项目=项目发文+退文
+                            hqlBuilder.append(" dispatchType ='项目发文'");
+                            hqlBuilder.append(" or dispatchType ='项目退文'");
+                        }else if("非退文项目".equals(dispatchType)){
+                            //非退文项目=暂不实施+项目发文
+                            hqlBuilder.append(" dispatchType ='项目发文'");
+                            hqlBuilder.append(" or dispatchType ='暂不实施'");
+                        }
+                        continue;
+                    }
+
+                    else {
 
                         hqlBuilder.append(params[0].substring(1, params[0].length() - 1) + " like '%" + value + "%'");
-//                        hqlBuilder.setParam(params[0].substring(1, params[0].length() - 1), value);
                     }
+
                     if (i < queryArr.length - 1) {
                         hqlBuilder.append(" and ");
                     }
@@ -526,4 +577,6 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
 
         return statList;
     }
+
+
 }

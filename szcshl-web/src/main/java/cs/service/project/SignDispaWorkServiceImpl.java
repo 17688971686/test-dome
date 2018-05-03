@@ -127,7 +127,7 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                     //在办项目或者暂停项目
                     if(processState == 1 || processState == 2){
                         criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(),String.valueOf(processState)));
-                        criteria.add(Restrictions.le(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()));
+                        criteria.add(Restrictions.le(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_WP.getValue()));
                     }else if(processState == 17){
                         //未发送存档
                         criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(), Constant.SignProcessState.IS_START.getValue()));
