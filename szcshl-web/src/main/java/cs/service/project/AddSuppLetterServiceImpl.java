@@ -538,6 +538,17 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         addSuppLetter.setFileSeq(maxSeq);
     }
 
+    /**
+     * 检查是否还有正在审批的拟补充资料函
+     * @param signId
+     * @param fileType
+     * @return
+     */
+    @Override
+    public ResultMsg checkIsApprove(String signId, String fileType) {
+        return addSuppLetterRepo.checkIsApprove(signId, fileType);
+    }
+
     @Override
     public void updateSuppLetterState(String businessId, String businessType, Date disapDate) {
         //如果是项目，则更新项目补充资料函状态

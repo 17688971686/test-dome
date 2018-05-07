@@ -98,4 +98,12 @@ public interface AddSuppLetterService {
 	 * @param addSuppLetter
 	 */
 	void initFileNum(AddSuppLetter addSuppLetter);
+
+	/**
+	 * 检查是否还有正在审批的拟补充资料函
+	 * @param signId
+	 * @param fileType
+	 * @return
+	 */
+    ResultMsg checkIsApprove(String signId, String fileType);
 }

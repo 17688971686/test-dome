@@ -1,5 +1,6 @@
 package cs.repository.repositoryImpl.project;
 
+import cs.common.ResultMsg;
 import cs.domain.project.AddSuppLetter;
 import cs.repository.IRepository;
 
@@ -26,4 +27,12 @@ public interface AddSuppLetterRepo extends IRepository<AddSuppLetter, String> {
      * @return
      */
     int findCurMaxSeq(String yearName);
+
+    /**
+     * 检查是否还有正在审批的拟补充资料函
+     * @param signId
+     * @param fileType
+     * @return
+     */
+    ResultMsg checkIsApprove(String signId, String fileType);
 }

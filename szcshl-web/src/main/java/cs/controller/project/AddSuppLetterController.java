@@ -53,6 +53,29 @@ public class AddSuppLetterController {
     }
 
     @RequiresAuthentication
+    @RequestMapping(name = "根据ID删除", path = "deleteById", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg deleteById(@RequestParam(required = true) String id) {
+        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除失败！");
+        try {
+            addSuppLetterService.delete(id);
+            resultMsg.setFlag(true);
+            resultMsg.setReCode(Constant.MsgCode.OK.getValue());
+            resultMsg.setReMsg("删除成功!");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return resultMsg;
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "检查是否还有正在审批的拟补充资料函", path = "checkIsApprove", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg checkIsApprove(@RequestParam(required = true) String signId,@RequestParam(required = true) String fileType){
+        return addSuppLetterService.checkIsApprove(signId,fileType);
+    }
+
+    @RequiresAuthentication
     //@RequiresPermissions("addSuppLetter#initSuppListDate#post")
     @RequestMapping(name = "初始化拟补充资料函列表", path = "initSuppListDate", method = RequestMethod.POST)
     public @ResponseBody List<AddSuppLetterDto> initSuppListDate(@RequestParam String businessId){
@@ -74,7 +97,6 @@ public class AddSuppLetterController {
     @RequestMapping(name = "获取拟补充资料函审批处理列表", path = "addSuppApproveList", method = RequestMethod.POST)
     @ResponseBody
     public  PageModelDto<AddSuppLetterDto> getAddSuppApprove(HttpServletRequest request) throws ParseException {
-
         ODataObj odataObj = new ODataObj(request);
         PageModelDto<AddSuppLetterDto> addSuppLetterDtos = addSuppLetterService.addSuppApproveList(odataObj);
         return addSuppLetterDtos;

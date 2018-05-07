@@ -1,5 +1,7 @@
 package cs.repository.repositoryImpl.project;
 
+import cs.common.HqlBuilder;
+import cs.domain.project.SignBranch_;
 import cs.domain.project.SignPrincipal;
 import cs.domain.project.SignPrincipal_;
 import cs.domain.sys.User;
@@ -28,14 +30,21 @@ public class SignPrincipalRepoImpl extends AbstractRepository<SignPrincipal, Str
     @Autowired
     private UserRepo userRepo;
 
+    /**
+     * 根据项目和部门ID查询对应的项目负责人
+     * @param businessId
+     * @param orgId
+     * @return
+     */
     @Override
     public List<User> getPrinUserList(String businessId, String orgId) {
-        String querySql = " SELECT cp2.USERID FROM CS_SIGN_PRINCIPAL2 cp2, CS_SIGN_BRANCH cb WHERE cp2.SIGNID = cb.SIGNID AND CP2.FLOWBRANCH = CB.BRANCHID ";
-        querySql += "AND CP2.SIGNID = ? AND CB.ORGID = ?";
-        Object[] values = new Object[]{businessId,orgId};
-        Criteria criteria = userRepo.getExecutableCriteria();
-        Type[] types = new Type[]{StringType.INSTANCE,StringType.INSTANCE};
-        criteria.add(Restrictions.sqlRestriction(" {alias}."+ User_.id.getName()+" in ( "+querySql+")",values, types));
-        return criteria.list();
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select u.* from cs_user u,cs_sign_principal2 pu,CS_SIGN_BRANCH b ");
+        sqlBuilder.append(" WHERE u.id = pu.userId AND PU.FLOWBRANCH = B.BRANCHID AND PU.SIGNID = B.SIGNID");
+        sqlBuilder.append(" and pu."+SignPrincipal_.signId.getName()+" =:signId ").setParam("signId",businessId);
+        sqlBuilder.append(" and b."+ SignBranch_.orgId.getName()+" =:orgId ").setParam("orgId",orgId);
+        sqlBuilder.append(" order by pu."+SignPrincipal_.isMainUser.getName()+" desc,pu."+SignPrincipal_.sort.getName());
+        List<User> resultList = userRepo.findBySql(sqlBuilder);
+        return resultList;
     }
 }

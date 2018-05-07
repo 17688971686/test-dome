@@ -48,8 +48,8 @@
             addSuppLetterQuerySvc.getaddSuppLetterQueryById(vm,function (data) {
                 vm.suppletter =data;
                 $("#suppLetterDetailDiv").kendoWindow({
-                    width: "70%",
-                    height: "620px",
+                    width: "1072px",
+                    height: "800px",
                     title: "拟补充资料函详情",
                     visible: false,
                     modal: true,
@@ -57,8 +57,28 @@
                     actions: ["Pin", "Minimize", "Maximize", "Close"]
                 }).data("kendoWindow").center().open();
             });
-
         }
 
+        /**
+         * 删除拟补充资料函
+         * @param id
+         */
+        vm.deleteById = function(id){
+            bsWin.confirm({
+                title: "询问提示",
+                message: "确定删除么？",
+                onOk: function () {
+                    addSuppLetterQuerySvc.deleteaddSuppLetterQuery(id,function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert("删除成功！",function(){
+                                vm.quarySuppContent();
+                            });
+                        }else {
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                }
+            });
+        }
     }
 })();
