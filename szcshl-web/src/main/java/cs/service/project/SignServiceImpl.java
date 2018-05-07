@@ -25,6 +25,7 @@ import cs.model.project.*;
 import cs.model.sys.OrgDto;
 import cs.model.sys.SysConfigDto;
 import cs.model.sys.UserDto;
+import cs.quartz.unit.DispathUnit;
 import cs.quartz.unit.QuartzUnit;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
@@ -220,6 +221,28 @@ public class SignServiceImpl implements SignService {
             sign.setIspresign(Constant.EnumState.YES.getValue());
             //正式签收
             sign.setIssign(EnumState.YES.getValue());
+
+            //计算预发文日期
+            //1、先获取从签收日期后的30天之间的工作日情况
+            List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate() , DateUtils.addDay(sign.getSigndate() , 30));
+
+            Date expectdispatchdate = null;
+            switch (sign.getReviewstage()){
+                case Constant.STAGE_SUG:
+                case Constant.APPLY_REPORT:
+                    expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() , Constant.WORK_DAY_12.intValue());
+                    break;
+
+                case Constant.DEVICE_BILL_HOMELAND:
+                case Constant.DEVICE_BILL_IMPORT:
+                case Constant.IMPORT_DEVICE:
+                case Constant.OTHERS:
+                case Constant.STAGE_BUDGET:
+                case Constant.STAGE_STUDY:
+                    expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() , Constant.WORK_DAY_15.intValue());
+                    break;
+            }
+            sign.setExpectdispatchdate(expectdispatchdate);
 
             Float reviewsDays = getReviewDays(sign.getReviewstage());
             if (reviewsDays > 0) {
@@ -689,6 +712,20 @@ public class SignServiceImpl implements SignService {
         }
         if (!Validate.isString(sign.getLeaderId())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，请先设置默认办理部门！");
+        }
+        //建设单位(builtcompanyName)、编制单位(designcompanyName)、
+        // 主办处室(maindeptName)、缓急程度(urgencydegree)、秘密等级(secrectlevel)
+        if(!Validate.isString(sign.getBuiltcompanyName()) || !Validate.isString(sign.getDesigncompanyName())
+                || !Validate.isString(sign.getMaindeptName()) || !Validate.isString(sign.getUrgencydegree())
+                || !Validate.isString(sign.getSecrectlevel())){
+            String resultStr = sign.getBuiltcompanyName() == null ? "建设单位," : "";
+            resultStr += sign.getDesigncompanyName() == null ?  "编制单位," : "";
+            resultStr += sign.getMaindeptName() == null ? "主办处室," : "";
+            resultStr += sign.getUrgencydegree() == null ? "缓急程度," : "";
+            resultStr += sign.getSecrectlevel() == null ? "秘密等级," : "";
+
+            return new ResultMsg(false , MsgCode.ERROR.getValue() , resultStr.substring(0 , resultStr.length() -1
+            ) + "不能为空");
         }
 
         try {
@@ -1689,7 +1726,7 @@ public class SignServiceImpl implements SignService {
                     variables.put(FlowConstant.SignFlowParams.USER_CW.getValue(), assigneeValue);
 
                     signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_CW.getValue());
-                //没有评审费，则直接到归档环节(还是当前人处理)
+                    //没有评审费，则直接到归档环节(还是当前人处理)
                 } else {
                     variables.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), false);
                     variables = buildMainPriUser(variables, signid, assigneeValue);

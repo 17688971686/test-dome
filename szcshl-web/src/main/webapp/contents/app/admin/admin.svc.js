@@ -671,8 +671,21 @@
                     width: 120
                 },
                 {
+                    field: "nodeNameValue",
+                    title: "办理环节",
+                    filterable: false,
+                    width: 120
+                },
+                {
                     field: "signDate",
                     title: "签收时间",
+                    width: 100,
+                    filterable: false,
+                    format: "{0: yyyy-MM-dd}"
+                },
+                {
+                    field: "expectdispatchdate",
+                    title: "预发文时间",
                     width: 100,
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"

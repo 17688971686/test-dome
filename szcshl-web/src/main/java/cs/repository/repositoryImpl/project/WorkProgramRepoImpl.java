@@ -219,4 +219,18 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
         sqlBuilder.append(" and "+ WorkProgram_.isHaveSuppLetter.getName() +" is null or "+ WorkProgram_.isHaveSuppLetter.getName() +" != '9'");
         executeSql(sqlBuilder);
     }
+
+
+    /**
+     * 通过业务ID判断是不是主分支
+     * @param signId
+     * @return
+     */
+    @Override
+    public Boolean mainBranch(String signId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" select id from cs_work_program where signid =:signid ").setParam("signid" , signId);
+        hqlBuilder.append(" and branchId = '1'");
+        return this.executeSql(hqlBuilder) > 0 ? true : false;
+    }
 }

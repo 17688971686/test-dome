@@ -77,4 +77,11 @@ public interface WorkProgramService {
      * @param sign
      */
     void copySignCommonInfo(WorkProgramDto workProgramDto,Sign sign);
+
+    /**
+     * 通过业务ID判断是不是主分支
+     * @param signId
+     * @return
+     */
+    Boolean mainBranch(String signId);
 }

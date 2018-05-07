@@ -370,6 +370,13 @@ public class SignDispaWork {
     @Column(columnDefinition = "VARCHAR(50)")
     private String countryCode;
 
+    /**
+     * 预发文日期
+     */
+    @Column(columnDefinition = "DATE")
+    private Date expectdispatchdate;
+
+
     public String getCountryCode() {
         return countryCode;
     }
@@ -848,5 +855,13 @@ public class SignDispaWork {
 
     public void setSendusersign(String sendusersign) {
         this.sendusersign = sendusersign;
+    }
+
+    public Date getExpectdispatchdate() {
+        return expectdispatchdate;
+    }
+
+    public void setExpectdispatchdate(Date expectdispatchdate) {
+        this.expectdispatchdate = expectdispatchdate;
     }
 }
