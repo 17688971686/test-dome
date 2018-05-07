@@ -346,6 +346,16 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     }
 
     /**
+     * 通过业务ID判断是不是主分支
+     * @param signId
+     * @return
+     */
+    @Override
+    public Boolean mainBranch(String signId) {
+        return workProgramRepo.mainBranch(signId);
+    }
+
+    /**
      * 通过项目负责人获取项目信息
      *
      * @param signId

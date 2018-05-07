@@ -15,4 +15,11 @@ public interface WorkdayRepo extends IRepository<Workday, String>{
      * @return
      */
     List<Workday> findWorkDay(String beginTime,String endTime);
+
+    /**
+     * 通过时间段获取
+     * @param startDate
+     * @return
+     */
+    List<Workday> getBetweenTimeDay(Date startDate   , Date endDate);
 }

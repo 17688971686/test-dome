@@ -35,4 +35,11 @@ public interface WorkdayService {
      * @return
      */
 	List<Workday> findWorkDayByNow();
+
+	/**
+	 * 通过时间段获取
+	 * @param startDate
+	 * @return
+	 */
+	List<Workday> getBetweenTimeDay(Date startDate   , Date endDate);
 }

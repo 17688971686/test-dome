@@ -61,4 +61,11 @@ public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
      * @param disapDate
      */
     void updateSuppLetterState(String businessId, String value, Date disapDate);
+
+    /**
+     * 通过业务ID判断是不是主分支
+     * @param signId
+     * @return
+     */
+    Boolean mainBranch(String signId);
 }
