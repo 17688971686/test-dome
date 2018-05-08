@@ -79,7 +79,7 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
     }
 
     /**
-     * 初始化专家评审费，默认每个专家1000元
+     * 初始化专家评审费，默认每个专家1000元(未评审的情况下才能改)
      * @param id
      */
     @Override
@@ -92,7 +92,7 @@ public class WorkProgramRepoImpl extends AbstractRepository<WorkProgram,String> 
         sqlBuilder.append(" AND es."+ ExpertSelected_.isJoin.getName()+" = :isJoin ");
         sqlBuilder.setParam("isJoin", Constant.EnumState.YES.getValue());
         sqlBuilder.append(" AND es."+ExpertSelected_.businessId.getName()+" = wp.id ) ");
-        sqlBuilder.append(" WHERE wp.id = :id");
+        sqlBuilder.append(" WHERE wp.id = :id and (wp.ministerName is null or wp.ministerName = '') ");
         sqlBuilder.setParam("id",id);
         executeSql(sqlBuilder);
     }

@@ -4,7 +4,10 @@ import cs.common.Constant;
 import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.*;
+import cs.common.utils.ActivitiUtil;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
+import cs.common.utils.Validate;
 import cs.domain.flow.*;
 import cs.domain.project.*;
 import cs.domain.sys.Log;
@@ -14,15 +17,12 @@ import cs.model.flow.FlowDto;
 import cs.model.flow.Node;
 import cs.model.flow.TaskDto;
 import cs.model.project.CommentDto;
-import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
-import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.flow.HiProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.flow.RuTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.repository.repositoryImpl.topic.WorkPlanRepo;
 import cs.service.project.SignService;
 import cs.service.sys.LogService;
@@ -60,7 +60,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
@@ -193,38 +192,32 @@ public class FlowServiceImpl implements FlowService {
             switch (module) {
                 case FlowConstant.SIGN_FLOW:
                     backActivitiId = signFlowBackImpl.backActivitiId(instance.getBusinessKey(), task.getTaskDefinitionKey());
-                    //如果是合并评审环节，还要合并回退
-                    if (FlowConstant.FLOW_SIGN_BMLD_SPW1.equals(task.getTaskDefinitionKey()) || FlowConstant.FLOW_SIGN_FGLD_SPW1.equals(task.getTaskDefinitionKey())) {
-                        WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(instance.getBusinessKey(), FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
-                        if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && Constant.EnumState.YES.getValue().equals(wk.getIsMainProject())) {
-                            List<SignMerge> mergeList = signMergeRepo.findByIds(SignMerge_.signId.getName(), instance.getBusinessKey(), null);
-                            if (Validate.isList(mergeList)) {
-                                FlowDto flowDto2 = new FlowDto();
-                                flowDto2.setDealOption(flowDto.getDealOption());
-                                for (SignMerge s : mergeList) {
-                                    Task task2 = taskService.createTaskQuery().processInstanceBusinessKey(s.getMergeId()).active().singleResult();
-                                    flowDto2.setTaskId(task2.getId());
-                                    resultMsg = rollBackLastNode(flowDto2);
-                                    if (!resultMsg.isFlag() || Constant.MsgCode.ERROR.getValue().equals(resultMsg.getReCode())) {
-                                        return resultMsg;
-                                    }
-                                }
-                            }
-                        }
-                        //清空审批意见
-                        wk.setMinisterSuggesttion("");
-                        wk.setMinisterDate(null);
-                        wk.setMinisterName("");
-                        workProgramRepo.save(wk);
-                    }
                     //如果是回退到工作方案环节，还要修改预定会议室状态和重置分支工作方案状态
-                    else if (FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR2.equals(backActivitiId)
+                    if (FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR2.equals(backActivitiId)
                             || FlowConstant.FLOW_SIGN_XMFZR3.equals(backActivitiId) || FlowConstant.FLOW_SIGN_XMFZR4.equals(backActivitiId)) {
                         WorkProgram wk = workProgramRepo.findBySignIdAndBranchId(businessKey, backActivitiId.substring(backActivitiId.length() - 1, backActivitiId.length()));
                         if (Validate.isObject(wk) && Validate.isString(wk.getId())) {
                             roomBookingRepo.updateStateByBusinessId(wk.getId(), Constant.EnumState.NO.getValue());
                             signService.updateSignProcessState(businessKey, Constant.SignProcessState.DO_WP.getValue());
                             signBranchRepo.resetBranchState(businessKey, wk.getBranchId());
+                        }
+                        if(FlowConstant.FLOW_SIGN_XMFZR1.equals(backActivitiId) ){
+                            //如果是合并评审环节，还要合并回退
+                            if (Constant.MergeType.REVIEW_MERGE.getValue().equals(wk.getIsSigle()) && Constant.EnumState.YES.getValue().equals(wk.getIsMainProject())) {
+                                List<SignMerge> mergeList = signMergeRepo.findByIds(SignMerge_.signId.getName(), instance.getBusinessKey(), null);
+                                if (Validate.isList(mergeList)) {
+                                    FlowDto flowDto2 = new FlowDto();
+                                    flowDto2.setDealOption(flowDto.getDealOption());
+                                    for (SignMerge s : mergeList) {
+                                        Task task2 = taskService.createTaskQuery().processInstanceBusinessKey(s.getMergeId()).active().singleResult();
+                                        flowDto2.setTaskId(task2.getId());
+                                        resultMsg = rollBackLastNode(flowDto2);
+                                        if (!resultMsg.isFlag() || Constant.MsgCode.ERROR.getValue().equals(resultMsg.getReCode())) {
+                                            return resultMsg;
+                                        }
+                                    }
+                                }
+                            }
                         }
                         //清空审批意见
                         wk.setMinisterSuggesttion("");

@@ -600,7 +600,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="dict#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="dict">字典管理</a></li>
                             </@shiro.hasPermission>
-                                <@shiro.hasPermission name="dict#html/list#get">
+                            <@shiro.hasPermission name="dict#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="config">配置管理</a></li>
                             </@shiro.hasPermission>
                             <@shiro.hasPermission name="company#html/list#get">
@@ -637,6 +637,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <span class="pull-right-container"><i class="fa fa-angle-right pull-right"></i></span>
                         </a>
                         <ul class="treeview-menu">
+                            <!--
+                            <@shiro.hasPermission name="message#html/edit#get">
+                                <li><a href="javascript:void(0)" ui-sref="msgEdit">短信编辑</a></li>
+                            </@shiro.hasPermission>
+                            -->
                             <@shiro.hasPermission name="header#html/list#get">
                                 <li><a href="javascript:void(0)" ui-sref="header">表字段管理</a></li>
                             </@shiro.hasPermission>

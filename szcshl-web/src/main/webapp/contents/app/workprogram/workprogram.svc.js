@@ -13,7 +13,7 @@
             findUsersByOrgId: findUsersByOrgId,     //查询评估部门
             deleteBookRoom: deleteBookRoom,          //删除会议室
             findAllMeeting: findAllMeeting,         //查找会议室地点
-            workMaintainList:workMaintainList,      //根据signid查询工作方案
+            workMaintainList: workMaintainList,      //根据signid查询工作方案
             initMergeInfo: initMergeInfo,          //初始化合并项目信息
             getMergeSignBySignId: getMergeSignBySignId,   //初始化已选项目列表
             unMergeWPSign: unMergeWPSign,			//待选项目列表
@@ -24,9 +24,26 @@
 
             findById: findById,                    //根据主键查询
             updateReviewType: updateReviewType,        //工作方案由专家评审会改成专家函评
+            updateWPExpertCost : updateWPExpertCost,    //更新工作方案中拟评审专家评审费
         };
 
         return service;
+
+        function updateWPExpertCost(wpId){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/updateWPExpertCost",
+                params: {wpId : wpId},
+            }
+            var httpSuccess = function success(response) {
+
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         //S_工作方案由专家评审会改成专家函评
         function updateReviewType(signId, workprogramId, reviewType, callBack) {
@@ -294,10 +311,10 @@
                     vm.work = response.data.eidtWP;
                     //如果没有赋值，则初始化一种类型，否则按照默认的类型
                     //因为合并评审次项目是不可以修改的
-                    if(!vm.work.reviewType){
+                    if (!vm.work.reviewType) {
                         vm.work.reviewType = "自评";
                     }
-                    if(!vm.work.isSigle){
+                    if (!vm.work.isSigle) {
                         vm.work.isSigle = '单个评审';
                     }
 
@@ -308,34 +325,34 @@
                         }
                         //进行专家的专业类别拼接
                         //    var workProgramDtoList = vm.work.expertDtoList;//进行存值
-                            //判断下是否有拟请的专家
-                            if(vm.work.expertDtoList){
-                                var expertDtoList=vm.work.expertDtoList;//进行存值
-                                for(var j=0;j<expertDtoList.length;j++){
-                                    //判断下专家是否有专业类别
-                                    if(expertDtoList[j].expertTypeDtoList){
-                                        var expertTypeList=expertDtoList[j].expertTypeDtoList;//进行存值
-                                        var major="";//专业
-                                        var expertCategory=""//专业类别
-                                        for(var k=0;k<expertTypeList.length;k++){
-                                            if(expertCategory.indexOf(expertTypeList[k].expertType)<0){
-                                                if(k>0){
-                                                    expertCategory+="、"
-                                                }
-                                                expertCategory+=expertTypeList[k].expertType;
+                        //判断下是否有拟请的专家
+                        if (vm.work.expertDtoList) {
+                            var expertDtoList = vm.work.expertDtoList;//进行存值
+                            for (var j = 0; j < expertDtoList.length; j++) {
+                                //判断下专家是否有专业类别
+                                if (expertDtoList[j].expertTypeDtoList) {
+                                    var expertTypeList = expertDtoList[j].expertTypeDtoList;//进行存值
+                                    var major = "";//专业
+                                    var expertCategory = ""//专业类别
+                                    for (var k = 0; k < expertTypeList.length; k++) {
+                                        if (expertCategory.indexOf(expertTypeList[k].expertType) < 0) {
+                                            if (k > 0) {
+                                                expertCategory += "、"
                                             }
-                                            if(k>0){
-                                                major+="、"
-                                            }
-                                            major+=expertTypeList[k].maJorBig+"、"+expertTypeList[k].maJorSmall;
-
+                                            expertCategory += expertTypeList[k].expertType;
                                         }
-                                        expertDtoList[j].expertCategory=expertCategory;
-                                        expertDtoList[j].major=major;
-                                    }
-                                }
+                                        if (k > 0) {
+                                            major += "、"
+                                        }
+                                        major += expertTypeList[k].maJorBig + "、" + expertTypeList[k].maJorSmall;
 
+                                    }
+                                    expertDtoList[j].expertCategory = expertCategory;
+                                    expertDtoList[j].major = major;
+                                }
                             }
+
+                        }
 
                     }
                     vm.model.workProgramDtoList = {};
@@ -383,28 +400,28 @@
             var httpSuccess = function success(response) {
                 if (response.data != null && response.data != "") {
                     vm.work = response.data.eidtWP;//主办
-                    vm.assistant=response.data.WPList;//协办
+                    vm.assistant = response.data.WPList;//协办
                     //初始化部门，得到数组
-                    if(vm.work.reviewOrgName){
-                        vm.reviewOrgName=vm.work.reviewOrgName.split(",");
-                        vm.work.orgName=vm.reviewOrgName[0];
-
+                    if (vm.work.reviewOrgName) {
+                        vm.reviewOrgName = vm.work.reviewOrgName.split(",");
+                        vm.work.orgName = vm.reviewOrgName[0];
                     }
-                    if(vm.assistant&&vm.assistant.length>0){
+                    vm.model.workProgramDtoList = {};
+                    if (vm.assistant && vm.assistant.length > 0) {
+                        vm.model.workProgramDtoList = response.data.WPList;
+                        //有协办部门的时候，才显示总投资金额
                         //重新赋值个各个工作方案的所属部门
-                        for(var i=0;i< vm.assistant.length;i++){
-
-                                vm.assistant[i].orgName=vm.reviewOrgName[vm.assistant[i].branchId-1];
-
+                        for (var i = 0; i < vm.assistant.length; i++) {
+                            vm.assistant[i].orgName = vm.reviewOrgName[vm.assistant[i].branchId - 1];
                         }
                     }
 
                     //如果没有赋值，则初始化一种类型，否则按照默认的类型
                     //因为合并评审次项目是不可以修改的
-                    if(!vm.work.reviewType){
+                    if (!vm.work.reviewType) {
                         vm.work.reviewType = "自评";
                     }
-                    if(!vm.work.isSigle){
+                    if (!vm.work.isSigle) {
                         vm.work.isSigle = '单个评审';
                     }
 
@@ -414,12 +431,12 @@
                             vm.work.expertCost = 1000 * (vm.work.expertDtoList.length);
                         }
                     }
-                    vm.model.workProgramDtoList = {};
+
                     //如果存在多个分支的情况，则显示项目总投资
-                    if ((response.data.showTotalInvestment == '9' || response.data.showTotalInvestment == 9)
-                        || (response.data.WPList && response.data.WPList.length > 0)) {
-                        vm.model.workProgramDtoList = response.data.WPList;
+                    if (response.data.showTotalInvestment == '9' || response.data.showTotalInvestment == 9){
                         vm.showTotalInvestment = true;
+                    }else{
+                        vm.showTotalInvestment = false;
                     }
 
                     if (vm.work.branchId == "1") {

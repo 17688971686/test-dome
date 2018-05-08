@@ -84,4 +84,10 @@ public interface WorkProgramService {
      * @return
      */
     Boolean mainBranch(String signId);
+
+    /**
+     * 更新工作方案专家评审费用
+     * @param wpId
+     */
+    void initExpertCost(String wpId);
 }
