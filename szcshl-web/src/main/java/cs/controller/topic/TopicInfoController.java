@@ -113,6 +113,19 @@ public class TopicInfoController {
     public String myList() {
         return ctrlName + "/myList";
     }
+
+    @RequiresPermissions("topicInfo#html/queryTopic#get")
+    @RequestMapping(name = "课题查询", path = "html/queryTopic", method = RequestMethod.GET)
+    public String queryTopic() {
+        return ctrlName + "/queryTopic";
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "课题详情页", path = "html/topicDetail", method = RequestMethod.GET)
+    public String topicDetail() {
+        return ctrlName + "/topicDetail";
+    }
+
     // end#html
 
 }

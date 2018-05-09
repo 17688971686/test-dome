@@ -450,6 +450,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <@shiro.hasPermission name="topicInfo#html/myList#get">
                                 <li><a href="javascript:void(0)" ui-sref="myTopic">我的课题</a></li>
                             </@shiro.hasPermission>
+                            <@shiro.hasPermission name="topicInfo#html/queryTopic#get">
+                                <li><a href="javascript:void(0)" ui-sref="queryTopic">课题查询</a></li>
+                            </@shiro.hasPermission>
                         </ul>
                     </li>
                 </@shiro.hasPermission>
