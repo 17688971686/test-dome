@@ -1031,6 +1031,18 @@
                     controller: 'myTopicCtrl',
                     controllerAs: 'vm'
                 })
+                .state('queryTopic', {
+                    url: '/queryTopic',
+                    templateUrl: rootPath + '/topicInfo/html/queryTopic.html',
+                    controller: 'queryTopicCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('topicDetail', {
+                    url: '/topicDetail/:businessId/:processInstanceId',
+                    templateUrl: rootPath + '/topicInfo/html/topicDetail.html',
+                    controller: 'topicDetailCtrl',
+                    controllerAs: 'vm'
+                })
                 //表头设置
                 .state('header', {
                     url: '/header',
