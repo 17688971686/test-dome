@@ -7,19 +7,18 @@ import cs.common.Constant;
 import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
-import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.PropertyUtil;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.Validate;
+import cs.common.utils.*;
 import cs.domain.project.Sign;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
+import cs.domain.sys.Workday;
 import cs.model.project.CommentDto;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
+import cs.quartz.unit.DispathUnit;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
@@ -27,6 +26,7 @@ import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.project.SignService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
+import cs.service.sys.WorkdayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +57,9 @@ public class SignRestServiceImpl implements SignRestService {
     private SysFileRepo sysFileRepo;
     @Autowired
     private SysFileService sysFileService;
+
+    @Autowired
+    private WorkdayService workdayService;
 
     /**
      * 项目推送
@@ -143,6 +146,29 @@ public class SignRestServiceImpl implements SignRestService {
                 //正式签收
                 sign.setIssign(Constant.EnumState.YES.getValue());
                 sign.setSigndate(now);
+
+                //计算预发文日期
+                //1、先获取从签收日期后的30天之间的工作日情况
+                List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate() , DateUtils.addDay(sign.getSigndate() , 30));
+
+                Date expectdispatchdate = null;
+                switch (sign.getReviewstage()){
+                    case Constant.STAGE_SUG:
+                    case Constant.APPLY_REPORT:
+                        expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() , Constant.WORK_DAY_12.intValue());
+                        break;
+
+                    case Constant.DEVICE_BILL_HOMELAND:
+                    case Constant.DEVICE_BILL_IMPORT:
+                    case Constant.IMPORT_DEVICE:
+                    case Constant.OTHERS:
+                    case Constant.STAGE_BUDGET:
+                    case Constant.STAGE_STUDY:
+                        expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() , Constant.WORK_DAY_15.intValue());
+                        break;
+                    default: break;
+                }
+                sign.setExpectdispatchdate(expectdispatchdate);
 
                 //计算评审天数
                 Float totalReviewDays = Constant.WORK_DAY_15;

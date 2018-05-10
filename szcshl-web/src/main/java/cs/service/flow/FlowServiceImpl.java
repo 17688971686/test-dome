@@ -498,20 +498,23 @@ public class FlowServiceImpl implements FlowService {
             criteria = odataObj.buildFilterToCriteria(criteria);
         }
         criteria.addOrder(Order.desc(RuProcessTask_.signDate.getName()));
-        //排除合并评审阶段的次项目数据
-        Disjunction disj = Restrictions.disjunction();
-        disj.add(Restrictions.isNull(RuProcessTask_.reviewType.getName()));
-        disj.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), ""));
-        disj.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), Constant.EnumState.YES.getValue()));
-        disj.add(Restrictions.sqlRestriction(" ( {alias}." + RuProcessTask_.reviewType.getName() + "= '" + Constant.EnumState.NO.getValue()
-                + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_BMLD_SPW1
-                + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_FGLD_SPW1 + "' )"));
-        criteria.add(disj);
+
 
         List<RuProcessTask> runProcessList = null;
         String curUserId = SessionUtil.getUserId();
         //在办任务也包含待办任务，所以要加上这个条件
         if (isUserDeal) {
+
+            //排除合并评审阶段的次项目数据
+            Disjunction disj = Restrictions.disjunction();
+            disj.add(Restrictions.isNull(RuProcessTask_.reviewType.getName()));
+            disj.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), ""));
+            disj.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), Constant.EnumState.YES.getValue()));
+            disj.add(Restrictions.sqlRestriction(" ( {alias}." + RuProcessTask_.reviewType.getName() + "= '" + Constant.EnumState.NO.getValue()
+                    + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_BMLD_SPW1
+                    + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_FGLD_SPW1 + "' )"));
+            criteria.add(disj);
+
             Disjunction dis = Restrictions.disjunction();
             dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId));
             dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + curUserId + "%"));

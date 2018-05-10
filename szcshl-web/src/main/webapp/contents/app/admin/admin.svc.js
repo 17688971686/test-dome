@@ -684,6 +684,23 @@
                     format: "{0: yyyy-MM-dd}"
                 },
                 {
+                    field: "",
+                    title: "签收状态",
+                    width: 100,
+                    filterable: false,
+                    template: function (item) {
+                        if (!item.signDate) {
+                            if(item.preSignDate){
+                                return "<span style='color:#ff0000;'>预签收</span>";
+                            }else{
+                                return "";
+                            }
+                        } else {
+                            return "<span style='color: #2b9d00;'>正式签收</span>";
+                        }
+                    }
+                },
+                {
                     field: "expectdispatchdate",
                     title: "预发文时间",
                     width: 100,
@@ -745,23 +762,6 @@
                     width: 100,
                     filterable: false,
                     format: "{0: yyyy-MM-dd}"
-                },
-                {
-                    field: "",
-                    title: "签收状态",
-                    width: 100,
-                    filterable: false,
-                    template: function (item) {
-                        if (!item.signDate) {
-                            if(item.preSignDate){
-                                return "<span style='color:#ff0000;'>预签收</span>";
-                            }else{
-                                return "";
-                            }
-                        } else {
-                            return "<span style='color: #2b9d00;'>正式签收</span>";
-                        }
-                    }
                 },
                 {
                     field: "",
@@ -842,6 +842,9 @@
                             }
                             else if (item.processState == 8) {
                                 return "<span class='row-number label-success' style='width: 100%;display: inline-block;'></span>";
+                            }else if(item.processState == 9){
+
+                                return "<span class='row-number label-default' style='width: 100%;display: inline-block;'></span>";
                             } else {
                                 return "<span class='row-number'></span>";
                             }
