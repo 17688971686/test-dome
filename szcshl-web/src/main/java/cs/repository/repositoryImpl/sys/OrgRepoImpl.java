@@ -36,4 +36,14 @@ public class OrgRepoImpl extends AbstractRepository<Org, String> implements OrgR
         return returnIntBySql(sqlBuilder);
     }
 
+    @Override
+    public boolean checkIsOrgUer(String orgId, String userId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select count(id) from cs_user where orgId =:orgId ");
+        sqlBuilder.setParam("orgId",orgId);
+        sqlBuilder.bulidPropotyString("and","id",userId);
+        int count = returnIntBySql(sqlBuilder);
+        return (count)>0;
+    }
+
 }

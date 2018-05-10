@@ -15,4 +15,12 @@ public interface OrgRepo extends IRepository<Org, String> {
      * @return
      */
     int checkMngOrg(String oldOrgSLeader);
+
+    /**
+     * 验证是否是部门用户
+     * @param orgId
+     * @param userId
+     * @return
+     */
+    boolean checkIsOrgUer(String orgId, String userId);
 }

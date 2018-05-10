@@ -107,7 +107,7 @@
 					},
 					{
 						field : "orgSLeaderName",
-						title : "分管领导",
+						title : "分管副领导",
 						width : 100,						
 						filterable : false
 					},

@@ -318,7 +318,6 @@ public class OrgServiceImpl implements OrgService {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<OrgDto> listAll() {
         Criteria criteria = orgRepo.getExecutableCriteria();
         criteria.addOrder(Order.asc(Org_.sort.getName()));
@@ -334,6 +333,17 @@ public class OrgServiceImpl implements OrgService {
             return orgDtoList;
         }
         return null;
+    }
+
+    /**
+     * 验证是否是部门用户
+     * @param orgId
+     * @param userIdStr
+     * @return
+     */
+    @Override
+    public boolean checkIsOrgUer(String orgId, String userIdStr) {
+        return orgRepo.checkIsOrgUer(orgId,userIdStr);
     }
 
 }

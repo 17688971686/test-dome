@@ -62,12 +62,12 @@ public class ProjectStopServiceImp implements ProjectStopService {
 
         HqlBuilder hqlBuilder = HqlBuilder.create();
 
-        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId" + " order by  createdDate desc");
+        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId"+" order by  createdDate desc");
         hqlBuilder.setParam("signId", signId);
         List<ProjectStop> psList = projectStopRepo.findByHql(hqlBuilder);
         List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
-        for (ProjectStop pt : psList) {
-            ProjectStopDto projectStopDto = new ProjectStopDto();
+        for(ProjectStop pt : psList){
+            ProjectStopDto projectStopDto=new ProjectStopDto();
             BeanCopierUtils.copyPropertiesIgnoreNull(pt, projectStopDto);
             projectStopDtoList.add(projectStopDto);
         }
@@ -76,13 +76,12 @@ public class ProjectStopServiceImp implements ProjectStopService {
 
     /**
      * 根据项目ID，初始化项目暂停信息
-     *
      * @param signId
      * @return
      */
     @Override
     public SignDispaWork findSignBySignId(String signId) {
-        return signDispaWorkRepo.findById("signid", signId);
+        return signDispaWorkRepo.findById("signid",signId);
     }
 
     /*@Override
@@ -102,14 +101,13 @@ public class ProjectStopServiceImp implements ProjectStopService {
 
     /**
      * 保存发起项目暂停信息
-     *
      * @param projectStopDto
      * @return
      */
     @Override
     @Transactional
     public ResultMsg savePauseProject(ProjectStopDto projectStopDto) {
-        try {
+        try{
             ProjectStop projectStop = new ProjectStop();
  /*           //判断是否是更新(这步基本没用到)
             if(Validate.isString(projectStopDto.getStopid())){
@@ -117,101 +115,105 @@ public class ProjectStopServiceImp implements ProjectStopService {
                 BeanCopierUtils.copyPropertiesIgnoreNull(projectStopDto, projectStop);
                 projectStopRepo.save(projectStop);
             }*/
-            Sign sign = signRepo.findById(projectStopDto.getSignid());
-            //1、判断项目当前的状态
-            if (Constant.EnumState.STOP.getValue().equals(sign.getSignState())) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，项目目前已是暂停状态！");
-            }
-            boolean isHaveApproveing = false;
-            //2、判断项目目前是否有正在申请的暂停信息
-            List<ProjectStop> stopList = projectStopRepo.findProjectStop(sign.getSignid(), null, null);
-            for (ProjectStop st : stopList) {
-                if (Validate.isString(st.getProcessInstanceId()) && !Validate.isString(st.getLeaderId())) {
-                    isHaveApproveing = true;
-                } else if (Constant.EnumState.YES.getValue().equals(st.getIsactive()) && Constant.EnumState.PROCESS.getValue().equals(st.getIsOverTime())) {
-                    isHaveApproveing = true;
+                Sign sign = signRepo.findById(projectStopDto.getSignid());
+                //1、判断项目当前的状态
+                if(Constant.EnumState.STOP.getValue().equals(sign.getSignState())){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，项目目前已是暂停状态！");
                 }
-                if (isHaveApproveing) {
-                    break;
+                boolean isHaveApproveing = false;
+                //2、判断项目目前是否有正在申请的暂停信息
+                List<ProjectStop> stopList = projectStopRepo.findProjectStop(sign.getSignid(),null,null);
+                for(ProjectStop st : stopList){
+                    if(Validate.isString(st.getProcessInstanceId()) && !Validate.isString(st.getLeaderId())){
+                        isHaveApproveing = true;
+                    }else if(Constant.EnumState.YES.getValue().equals(st.getIsactive()) && Constant.EnumState.PROCESS.getValue().equals(st.getIsOverTime())){
+                        isHaveApproveing = true;
+                    }
+                    if(isHaveApproveing){
+                        break;
+                    }
                 }
-            }
-            if (isHaveApproveing) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该项目已有暂停记录在处理！");
-            }
+                if(isHaveApproveing){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，该项目已有暂停记录在处理！");
+                }
 
-            BeanCopierUtils.copyProperties(projectStopDto, projectStop);
-            if (!Validate.isObject(projectStop.getExpectpausedays())) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，没填写预计暂停天数！");
-            }
-            Date now = new Date();
-            projectStop.setCreatedBy(SessionUtil.getDisplayName());
-            projectStop.setCreatedDate(now);
-            projectStop.setModifiedBy(SessionUtil.getDisplayName());
-            projectStop.setModifiedDate(now);
-            projectStop.setStopid(UUID.randomUUID().toString());
-            //设置默认值
-            projectStop.setIsactive(Constant.EnumState.NO.getValue());
-            projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
+                BeanCopierUtils.copyProperties(projectStopDto, projectStop);
+                if(!Validate.isObject(projectStop.getExpectpausedays())){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，没填写预计暂停天数！");
+                }
+                Date now = new Date();
+                projectStop.setCreatedBy(SessionUtil.getDisplayName());
+                projectStop.setCreatedDate(now);
+                projectStop.setModifiedBy(SessionUtil.getDisplayName());
+                projectStop.setModifiedDate(now);
+                projectStop.setStopid(UUID.randomUUID().toString());
+                //设置默认值
+                projectStop.setIsactive(Constant.EnumState.NO.getValue());
+                projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
 
-            //1、启动流程
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.PROJECT_STOP_FLOW, projectStop.getStopid(),
-                    ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER.getValue(), SessionUtil.getUserId()));
+                //1、启动流程
+                ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.PROJECT_STOP_FLOW, projectStop.getStopid(),
+                        ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER.getValue(), SessionUtil.getUserId()));
 
-            //2、设置流程实例名称
-            processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), projectStopDto.getProcessName());
-            //4、跳过第一环节（主任审核）
-            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
-            taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
-            String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null ? SessionUtil.getUserId() : SessionUtil.getUserInfo().getOrg().getOrgDirector();
-            taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_BZ1.getValue(), userId));
+                //2、设置流程实例名称
+                processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), projectStopDto.getProcessName());
+                //4、跳过第一环节（主任审核）
+                Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+                taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
+                String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null?SessionUtil.getUserId():SessionUtil.getUserInfo().getOrg().getOrgDirector();
+                taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_BZ1.getValue(), userId));
 
-            //设置流程实例ID
-            projectStop.setProcessInstanceId(processInstance.getId());
-            projectStop.setSign(sign);
-            projectStopRepo.save(projectStop);
+                //设置流程实例ID
+                projectStop.setProcessInstanceId(processInstance.getId());
+                projectStop.setSign(sign);
+                projectStopRepo.save(projectStop);
 
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
-        } catch (Exception e) {
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "保存失败，错误信息已记录，请联系管理员处理！");
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
+        }catch(Exception e){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"保存失败，错误信息已记录，请联系管理员处理！");
         }
 
     }
 
     /**
      * 保存项目暂停信息
-     *
      * @param projectStopDto
      * @return
      */
     @Override
     @Transactional
     public ResultMsg saveProjectStop(ProjectStopDto projectStopDto) {
-        ProjectStop projectStop = new ProjectStop();
-        //判断是否是更新(这步基本没用到)
-        if (Validate.isString(projectStopDto.getStopid())) {
-            projectStop = projectStopRepo.findById(projectStopDto.getStopid());
-            BeanCopierUtils.copyPropertiesIgnoreNull(projectStopDto, projectStop);
-            projectStopRepo.save(projectStop);
-        } else {
-            Sign sign = signRepo.findById(projectStopDto.getSignid());
-            BeanCopierUtils.copyProperties(projectStopDto, projectStop);
-            if (!Validate.isObject(projectStop.getExpectpausedays())) {
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，没填写预计暂停天数！");
+
+
+            ProjectStop projectStop = new ProjectStop();
+            //判断是否是更新(这步基本没用到)
+            if(Validate.isString(projectStopDto.getStopid())){
+                projectStop = projectStopRepo.findById(projectStopDto.getStopid());
+                BeanCopierUtils.copyPropertiesIgnoreNull(projectStopDto, projectStop);
+                projectStopRepo.save(projectStop);
+            }else{
+                Sign sign = signRepo.findById(projectStopDto.getSignid());
+                BeanCopierUtils.copyProperties(projectStopDto, projectStop);
+                if(!Validate.isObject(projectStop.getExpectpausedays())){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败，没填写预计暂停天数！");
+                }
+                Date now = new Date();
+                projectStop.setCreatedBy(SessionUtil.getDisplayName());
+                projectStop.setCreatedDate(now);
+                projectStop.setModifiedBy(SessionUtil.getDisplayName());
+                projectStop.setModifiedDate(now);
+                projectStop.setStopid(UUID.randomUUID().toString());
+                //设置默认值
+                projectStop.setIsactive(Constant.EnumState.NO.getValue());
+                projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
+                projectStop.setSign(sign);
+                projectStopRepo.save(projectStop);
             }
-            Date now = new Date();
-            projectStop.setCreatedBy(SessionUtil.getDisplayName());
-            projectStop.setCreatedDate(now);
-            projectStop.setModifiedBy(SessionUtil.getDisplayName());
-            projectStop.setModifiedDate(now);
-            projectStop.setStopid(UUID.randomUUID().toString());
-            //设置默认值
-            projectStop.setIsactive(Constant.EnumState.NO.getValue());
-            projectStop.setApproveStatus(Constant.EnumState.NO.getValue());//默认处于：未处理环节
-            projectStop.setSign(sign);
-            projectStopRepo.save(projectStop);
-        }
-        return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！", projectStop);
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！",projectStop);
+
     }
+
+
 
     @Override
     public PageModelDto<ProjectStopDto> findProjectStopByStopId(ODataObj oDataObj) {
@@ -266,7 +268,6 @@ public class ProjectStopServiceImp implements ProjectStopService {
 
     /**
      * 根据ID获取项目暂停信息
-     *
      * @param stopId
      * @return
      */
@@ -275,15 +276,14 @@ public class ProjectStopServiceImp implements ProjectStopService {
         ProjectStop projectStop = projectStopRepo.findById(stopId);
         ProjectStopDto projectStopDto = new ProjectStopDto();
         BeanCopierUtils.copyProperties(projectStop, projectStopDto);
-        if (projectStop.getSign() != null) {
-            projectStopDto.setSignDispaWork(signDispaWorkRepo.findById("signid", projectStop.getSign().getSignid()));
+        if(projectStop.getSign() != null ){
+            projectStopDto.setSignDispaWork(signDispaWorkRepo.findById("signid",projectStop.getSign().getSignid()));
         }
         return projectStopDto;
     }
 
     /**
      * 查询正在执行的暂停项目(要加上事务，否则定时器那边查询有错误)
-     *
      * @return
      */
     @Override
@@ -304,7 +304,6 @@ public class ProjectStopServiceImp implements ProjectStopService {
 
     /**
      * 项目暂停申请流程
-     *
      * @param processInstance
      * @param task
      * @param flowDto
@@ -314,8 +313,8 @@ public class ProjectStopServiceImp implements ProjectStopService {
     @Transactional
     public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
-                assigneeValue = "";                             //流程处理人
-        Map<String, Object> variables = null;                   //流程参数
+               assigneeValue = "";                             //流程处理人
+        Map<String,Object> variables = null;                   //流程参数
         User dealUser = null;                                  //用户
         ProjectStop projectStop = null;                        //项目暂停对象
         boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
@@ -330,7 +329,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
                 break;
             //部长审批
             case FlowConstant.FLOW_STOP_BZ_SP:
-                projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(), businessId);
+                projectStop = projectStopRepo.findById(ProjectStop_.stopid.getName(),businessId);
                 projectStop.setDirectorId(SessionUtil.getUserId());
                 projectStop.setDirectorName(SessionUtil.getDisplayName());
                 projectStop.setDirectorIdeaContent(flowDto.getDealOption());
@@ -338,10 +337,10 @@ public class ProjectStopServiceImp implements ProjectStopService {
                 projectStop.setApproveStatus(Constant.EnumState.PROCESS.getValue());
                 projectStopRepo.save(projectStop);
                 dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
-                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                assigneeValue= Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.SignFlowParams.USER_FGLD1.getValue(), assigneeValue);
                 //下一环节还是自己处理
-                if (assigneeValue.equals(SessionUtil.getUserId())) {
+                if(assigneeValue.equals(SessionUtil.getUserId())){
                     isNextUser = true;
                     nextNodeKey = FlowConstant.FLOW_STOP_FGLD_SP;
                 }
@@ -352,18 +351,18 @@ public class ProjectStopServiceImp implements ProjectStopService {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
                 String isactive = flowDto.getBusinessMap().get("AGREE").toString();
-                isactive = Constant.EnumState.YES.getValue().equals(isactive) ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue();
+                isactive = Constant.EnumState.YES.getValue().equals(isactive)?Constant.EnumState.YES.getValue():Constant.EnumState.NO.getValue();
                 projectStop = projectStopRepo.findById(businessId);
                 //审批通过，暂停还未开始执行，由定时器去启动
                 //暂停时间，如果没有，就按审批通过算起。有就按暂停日期算起
-                if (null == projectStop.getPausetime() || DateUtils.daysBetween(new Date(), projectStop.getPausetime()) == 0) {
+                if(null == projectStop.getPausetime() || DateUtils.daysBetween(new Date(),projectStop.getPausetime()) == 0){
                     projectStop.setPausetime(new Date());
                     projectStop.setIsOverTime(Constant.EnumState.YES.getValue());
                     Sign sign = projectStop.getSign();
                     //如果领导同意，则将流程暂停
-                    if (Constant.EnumState.YES.getValue().equals(isactive) || isactive == null) {
+                    if(Constant.EnumState.YES.getValue().equals(isactive) ||isactive==null){
                         ResultMsg stopResult = flowService.stopFlow(projectStop.getSign().getSignid());
-                        if (!stopResult.isFlag()) {
+                        if(!stopResult.isFlag()){
                             return stopResult;
                         }
                         //更改项目状态
@@ -373,7 +372,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
                         signRepo.save(sign);
 
                     }
-                } else {
+                }else{
                     projectStop.setIsOverTime(Constant.EnumState.PROCESS.getValue());
                 }
                 projectStop.setLeaderId(SessionUtil.getUserId());
@@ -388,18 +387,18 @@ public class ProjectStopServiceImp implements ProjectStopService {
             default:
                 break;
         }
-        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
+        taskService.addComment(task.getId(), processInstance.getId(),(flowDto == null)?"":flowDto.getDealOption());    //添加处理信息
         if (flowDto.isEnd()) {
             taskService.complete(task.getId());
         } else {
             taskService.complete(task.getId(), variables);
             //如果下一环节还是自己
-            if (isNextUser) {
+            if(isNextUser){
                 List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
-                for (Task t : nextTaskList) {
-                    if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
-                        ResultMsg returnMsg = dealFlow(processInstance, t, flowDto);
-                        if (returnMsg.isFlag() == false) {
+                for(Task t:nextTaskList){
+                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
+                        ResultMsg returnMsg = dealFlow(processInstance,t,flowDto);
+                        if(returnMsg.isFlag() == false){
                             return returnMsg;
                         }
                         break;
@@ -408,13 +407,12 @@ public class ProjectStopServiceImp implements ProjectStopService {
             }
         }
         //放入腾讯通消息缓冲池
-        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(),assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
     /**
      * 通过收文ID获取审批通过的项目暂停信息
-     *
      * @param signId
      * @return
      */
@@ -425,7 +423,6 @@ public class ProjectStopServiceImp implements ProjectStopService {
 
     /**
      * 根据项目暂停ID，获取项目信息
-     *
      * @param stopid
      * @return
      */
@@ -433,11 +430,11 @@ public class ProjectStopServiceImp implements ProjectStopService {
     @Transactional
     public Sign findSignByStopId(String stopid) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append(" from " + Sign.class.getSimpleName() + " s where s." + Sign_.signid.getName() + " = ");
-        hqlBuilder.append(" (select ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + " from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.stopid.getName() + " =:stopid ) ");
-        hqlBuilder.setParam("stopid", stopid);
+        hqlBuilder.append(" from "+Sign.class.getSimpleName()+" s where s."+Sign_.signid.getName()+" = ");
+        hqlBuilder.append(" (select ps."+ProjectStop_.sign.getName()+"."+Sign_.signid.getName()+" from "+ProjectStop.class.getSimpleName()+" ps where ps."+ProjectStop_.stopid.getName()+" =:stopid ) ");
+        hqlBuilder.setParam("stopid",stopid);
         List<Sign> signList = signRepo.findByHql(hqlBuilder);
-        if (Validate.isList(signList)) {
+        if(Validate.isList(signList)){
             return signList.get(0);
         }
         return null;

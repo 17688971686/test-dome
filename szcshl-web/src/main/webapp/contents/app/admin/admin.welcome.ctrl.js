@@ -259,6 +259,16 @@
                         vm.review = histogram_x;  //横轴(人员名称/部门)
                         vm.signNumber = histogram_y;//纵轴(数量)
                         vm.initHistogram();//初始化柱状图
+
+                        //预签收项目
+                        if(data.preHistogram){
+                            vm.preHistogram =  data.preHistogram;
+                            if(vm.preHistogram != undefined && undefined != 'undefined' && vm.preHistogram.length > 0){
+                                vm.hidePreTable = false;
+                            }
+                        }else{
+                            vm.hidePreTable = true;
+                        }
                     }
                     //显示柱状图信息
                 }

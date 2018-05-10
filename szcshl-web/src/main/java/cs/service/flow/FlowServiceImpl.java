@@ -26,6 +26,8 @@ import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.topic.WorkPlanRepo;
 import cs.service.project.SignService;
 import cs.service.sys.LogService;
+import cs.service.sys.OrgService;
+import cs.service.sys.UserService;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -101,7 +103,10 @@ public class FlowServiceImpl implements FlowService {
     private WorkPlanRepo workPlanRepo;
     @Autowired
     private SignBranchRepo signBranchRepo;
-
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private OrgService orgService;
     @Autowired
     @Qualifier("signFlowBackImpl")
     private IFlowBack signFlowBackImpl;
@@ -709,10 +714,48 @@ public class FlowServiceImpl implements FlowService {
      */
     @Override
     public PageModelDto<RuTask> queryAgendaTask(ODataObj odataObj) {
-        PageModelDto<RuTask> pageModelDto = new PageModelDto<RuTask>();
-        List<RuTask> runProcessList = ruTaskRepo.findByOdata(odataObj);
-        pageModelDto.setCount(odataObj.getCount());
-        pageModelDto.setValue(runProcessList);
+        PageModelDto<RuTask> pageModelDto = new PageModelDto<>();
+        Criteria criteria = ruTaskRepo.getExecutableCriteria();
+        if (odataObj != null) {
+            criteria = odataObj.buildFilterToCriteria(criteria);
+        }
+        criteria.addOrder(Order.desc(RuTask_.createTime.getName()));
+        List<RuTask> runProcessList = criteria.list();
+
+        List<RuTask> resultList = new ArrayList<>();
+        //查找用户权限
+        Map<String, Object> authMap = userService.getUserSignAuth();
+        Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
+        List<String> orgIdList = (List<String>) authMap.get("orgIdList");
+        if (authFlag != 1) {
+            String curUserId = SessionUtil.getUserId();
+            for(RuTask ruTask : runProcessList){
+                List<String> userIdList = findUserIdByProcessInstanceId(ruTask.getInstanceId());
+                //如果是经办人，则可以查看
+                if(userIdList.contains(curUserId)){
+                    resultList.add(ruTask);
+                    continue;
+                }
+                //如果当前代办人，可以查看
+                if(curUserId.equals(ruTask.getAssignee()) || (ruTask.getAssigneeList() != null && ruTask.getAssigneeList().contains(curUserId))){
+                    resultList.add(ruTask);
+                    continue;
+                }
+                //分管领导或者部长
+                if(authFlag != 0 ){
+                    for(String orgId : orgIdList){
+                        boolean isOrgUser = orgService.checkIsOrgUer(orgId,Validate.isString(ruTask.getAssignee())?ruTask.getAssignee():ruTask.getAssigneeList());
+                        if(isOrgUser){
+                            resultList.add(ruTask);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        pageModelDto.setCount(resultList.size());
+        pageModelDto.setValue(resultList);
         return pageModelDto;
     }
 

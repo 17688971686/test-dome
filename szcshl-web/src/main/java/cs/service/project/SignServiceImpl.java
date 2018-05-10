@@ -1225,7 +1225,7 @@ public class SignServiceImpl implements SignService {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "你还没设置所属部门！");
                 }
                 if (!Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgSLeader())) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的分管领导！");
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的分管副主任！");
                 }
                 //更改工作方案信息
                 wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);

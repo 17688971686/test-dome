@@ -1031,6 +1031,18 @@
                     controller: 'myTopicCtrl',
                     controllerAs: 'vm'
                 })
+                .state('queryTopic', {
+                    url: '/queryTopic',
+                    templateUrl: rootPath + '/topicInfo/html/queryTopic.html',
+                    controller: 'queryTopicCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('topicDetail', {
+                    url: '/topicDetail/:businessId/:processInstanceId',
+                    templateUrl: rootPath + '/topicInfo/html/topicDetail.html',
+                    controller: 'topicDetailCtrl',
+                    controllerAs: 'vm'
+                })
                 //表头设置
                 .state('header', {
                     url: '/header',
@@ -3414,7 +3426,6 @@
 
         activate();
         function activate() {
-
             if($rootScope.view[vm.stateName]){
                 var preView = $rootScope.view[vm.stateName];
                 //恢复grid
@@ -5354,7 +5365,7 @@
                           dir: "desc"
                       }
                   });*/
-            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask?$orderby=createTime desc", $("#doingTaskForm"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
+            var dataSource = common.kendoGridDataSource(rootPath + "/flow/queryAgendaTask", $("#doingTaskForm"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
             var columns = [
                 {
                     field: "",
@@ -5760,6 +5771,16 @@
                         vm.review = histogram_x;  //横轴(人员名称/部门)
                         vm.signNumber = histogram_y;//纵轴(数量)
                         vm.initHistogram();//初始化柱状图
+
+                        //预签收项目
+                        if(data.preHistogram){
+                            vm.preHistogram =  data.preHistogram;
+                            if(vm.preHistogram != undefined && undefined != 'undefined' && vm.preHistogram.length > 0){
+                                vm.hidePreTable = false;
+                            }
+                        }else{
+                            vm.hidePreTable = true;
+                        }
                     }
                     //显示柱状图信息
                 }
@@ -29572,7 +29593,7 @@
 					},
 					{
 						field : "orgSLeaderName",
-						title : "分管领导",
+						title : "分管副领导",
 						width : 100,						
 						filterable : false
 					},
@@ -41857,6 +41878,36 @@
 (function () {
     'use strict';
 
+    angular.module('app').controller('queryTopicCtrl', queryTopic);
+
+    queryTopic.$inject = ['bsWin', '$scope', 'sysfileSvc', 'topicSvc'];
+
+    function queryTopic(bsWin, $scope, sysfileSvc, topicSvc) {
+        var vm = this;
+        vm.title = '课题查询';
+
+        activate();
+        function activate() {
+            topicSvc.queryGrid(vm);
+        }
+
+
+        //表单查询
+        vm.searchForm = function(){
+            vm.queryTopicOptions.dataSource._skip=0;
+            vm.queryTopicOptions.dataSource.read();
+        }
+
+        //重置查询表单
+        vm.formReset = function(){
+            vm.searchModel = {};
+        }
+    }
+})();
+
+(function () {
+    'use strict';
+
     angular.module('app').factory('topicSvc', topicService);
 
     topicService.$inject = ['$http','bsWin','sysfileSvc'];
@@ -41870,6 +41921,7 @@
             initFlowNode : initFlowNode,                //初始化流程环节信息
             initMyGird : initMyGird,                    //初始化我的课题列表
             initDetail : initDetail,                    //初始化详情信息
+            queryGrid : queryGrid ,                     //初始化课题查询列表
         };
 
         return service;
@@ -42137,8 +42189,151 @@
             }
         }//E_initFlowNode
 
+        //begin queryGrid
+        function queryGrid(vm){
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/topicInfo/findByOData", $("#queryTopicForm")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+            //S_序号
+            var  dataBound=function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
+            // Begin:column
+            var columns = [
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    filterable : false,
+                    template: "<span class='row-number'></span>"
+                },
+                {
+                    field: "",
+                    title: "课题名称",
+                    width: 200,
+                    filterable: false,
+                    template : function(item){
+                        if(item.processInstanceId){
+                            return '<a href="#/topicDetail/'+ item.id
+                                + '/'  + item.processInstanceId +'">' + item.topicName + '</a>';
+                        }else{
+                            return '<a href="#/topicDetail/'+ item.id
+                                + '/">' + item.topicName + '</a>';
+                        }
+
+                    }
+                },
+                {
+                    field: "cooperator",
+                    title: "合作单位",
+                    width: 200,
+                    filterable: false,
+                },
+                {
+                    field: "createdDate",
+                    title: "创建日期",
+                    width: 100,
+                    filterable: false,
+                    format: "{0:yyyy/MM/dd}"
+                },
+                {
+                    field: "endTime",
+                    title: "结题日期",
+                    width: 100,
+                    filterable: false,
+                    format: "{0:yyyy/MM/dd}"
+                },
+                {
+                    field: "orgName",
+                    title: "申报部门",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 100,
+                    template: function (item) {
+                        return "";
+                    }
+                }
+            ];
+            // End:column
+
+            vm.queryTopicOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound:dataBound,
+                resizable: true
+            };
+        }
+        //end queryGrid
+
     }
 })();
+(function () {
+    'use strict';
+
+    angular.module('app').controller('topicDetailCtrl', topicDetail);
+
+    topicDetail.$inject = ['bsWin', '$scope' , '$state' , 'flowSvc', 'topicSvc'];
+
+    function topicDetail(bsWin, $scope, $state , flowSvc, topicSvc) {
+        var vm = this;
+
+        vm.businessKey = $state.params.businessId;
+        vm.flow = {};
+        vm.flow.processInstanceId = $state.params.processInstanceId;
+        activate();
+        function activate() {
+            $('#myTab li').click(function (e) {
+                var aObj = $("a", this);
+                e.preventDefault();
+                aObj.tab('show');
+                var showDiv = aObj.attr("for-div");
+                $(".tab-pane").removeClass("active").removeClass("in");
+                $("#" + showDiv).addClass("active").addClass("in").show(500);
+            })
+
+            //流程图和流程处理记录信息
+            if ($state.params.processInstanceId) {
+                flowSvc.initFlowData(vm);
+            }
+
+            topicSvc.initFlowDeal(vm);
+        }
+    }
+})();
+
 (function () {
     'use strict';
 

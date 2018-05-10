@@ -154,6 +154,55 @@
 </div>
 <!-- end 在办项目详情 -->
 
+<!-- begin 预签收项目详情 -->
+<div class="cared" style="margin-bottom: 15px;">
+    <div class="row">
+        <div class="col-xs-12" ng-hide="vm.hidePreTable">
+            <div class="box" style="border:none;min-height:0px;">
+                <div class="box-body no-padding">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td colspan="6">
+                                <div class="box-header">
+                                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 预签收项目统计一览表</h3>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr class="active">
+                            <th style="width: 150px;">部门/人员</th>
+                            <th style="width: 80px;">项目总数</th>
+                            <th >项目名称</th>
+                            <th style="width: 180px;">办理环节</th>
+                            <th >项目负责人</th>
+                            <th style="width: 150px;">预签收日期</th>
+                        </tr>
+                        <tbody ng-if="vm.preHistogram " ng-repeat="ruTaskMap in vm.preHistogram">
+                        <tr ng-repeat="ruTaskList in ruTaskMap.TASK_LIST">
+                            <td rowspan="{{ruTaskMap.COUNT}}" ng-show="$index == 0" style="vertical-align: middle;">{{ruTaskMap.HISTOGRAM_NAME}}</td>
+                            <td rowspan="{{ruTaskMap.COUNT}}" ng-show="$index == 0" style="vertical-align: middle;">{{ruTaskMap.COUNT}}</td>
+                            <td>
+                                <a style="color: #72ACE3;" href="#/signFlowDetail/{{ruTaskList.businessKey}}/{{ruTaskList.taskId}}/{{ruTaskList.processInstanceId}}" >{{ruTaskList.projectName}}</a></td>
+                            <td>{{ruTaskList.nodeNameValue}}</td>
+                            <td>{{ruTaskList.allPriUser}}</td>
+                            <td><span style="color: #f39a0d;font-size: 15px;">{{ruTaskList.preSignDate}}</span></td>
+                        </tr>
+                        </tbody>
+                        <tr ng-if="!vm.histogram">
+                            <td colspan="6" class="text-center">
+                                <div style="height: 75px;">
+                                    暂无数据
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end 在办项目详情 -->
+
 <!-- begin 图表显示 -->
 <div class="cared">
     <div class="row">

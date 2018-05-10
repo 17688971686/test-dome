@@ -26,7 +26,6 @@
 
         activate();
         function activate() {
-
             if($rootScope.view[vm.stateName]){
                 var preView = $rootScope.view[vm.stateName];
                 //恢复grid
