@@ -222,33 +222,18 @@ public class SignServiceImpl implements SignService {
             //正式签收
             sign.setIssign(EnumState.YES.getValue());
 
-            //计算预发文日期
-            //1、先获取从签收日期后的30天之间的工作日情况
-            List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate() , DateUtils.addDay(sign.getSigndate() , 30));
-
-            Date expectdispatchdate = null;
-            switch (sign.getReviewstage()){
-                case Constant.STAGE_SUG:
-                case Constant.APPLY_REPORT:
-                    expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() , Constant.WORK_DAY_12.intValue());
-                    break;
-
-                case Constant.DEVICE_BILL_HOMELAND:
-                case Constant.DEVICE_BILL_IMPORT:
-                case Constant.IMPORT_DEVICE:
-                case Constant.OTHERS:
-                case Constant.STAGE_BUDGET:
-                case Constant.STAGE_STUDY:
-                    expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() , Constant.WORK_DAY_15.intValue());
-                    break;
-            }
-            sign.setExpectdispatchdate(expectdispatchdate);
-
             Float reviewsDays = getReviewDays(sign.getReviewstage());
             if (reviewsDays > 0) {
                 sign.setSurplusdays(reviewsDays);
                 sign.setTotalReviewdays(reviewsDays);
                 sign.setReviewdays(0f);
+
+                //计算预发文日期
+                //1、先获取从签收日期后的30天之间的工作日情况
+                List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate() , DateUtils.addDay(sign.getSigndate() , 30));
+                int totalDays = (new Float(reviewsDays)).intValue();
+                Date expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() ,totalDays);
+                sign.setExpectdispatchdate(expectdispatchdate);
             }
         }
         //如果是自己的项目,则不用回传给委里(2表示不用回传给委里)

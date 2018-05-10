@@ -147,29 +147,6 @@ public class SignRestServiceImpl implements SignRestService {
                 sign.setIssign(Constant.EnumState.YES.getValue());
                 sign.setSigndate(now);
 
-                //计算预发文日期
-                //1、先获取从签收日期后的30天之间的工作日情况
-                List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate() , DateUtils.addDay(sign.getSigndate() , 30));
-
-                Date expectdispatchdate = null;
-                switch (sign.getReviewstage()){
-                    case Constant.STAGE_SUG:
-                    case Constant.APPLY_REPORT:
-                        expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() , Constant.WORK_DAY_12.intValue());
-                        break;
-
-                    case Constant.DEVICE_BILL_HOMELAND:
-                    case Constant.DEVICE_BILL_IMPORT:
-                    case Constant.IMPORT_DEVICE:
-                    case Constant.OTHERS:
-                    case Constant.STAGE_BUDGET:
-                    case Constant.STAGE_STUDY:
-                        expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() , Constant.WORK_DAY_15.intValue());
-                        break;
-                    default: break;
-                }
-                sign.setExpectdispatchdate(expectdispatchdate);
-
                 //计算评审天数
                 Float totalReviewDays = Constant.WORK_DAY_15;
                 SysConfigDto sysConfigDto = sysConfigService.findByKey(stageCode);
@@ -182,6 +159,13 @@ public class SignRestServiceImpl implements SignRestService {
                 sign.setSurplusdays(totalReviewDays);
                 sign.setTotalReviewdays(totalReviewDays);
                 sign.setReviewdays(0f);
+
+                //计算预发文日期
+                //1、先获取从签收日期后的30天之间的工作日情况
+                List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate() , DateUtils.addDay(sign.getSigndate() , 30));
+                int totalDays = (new Float(totalReviewDays)).intValue();
+                Date expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() ,totalDays);
+                sign.setExpectdispatchdate(expectdispatchdate);
             }
 
             //6、收文编号
