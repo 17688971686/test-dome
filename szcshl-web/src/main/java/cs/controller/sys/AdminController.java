@@ -3,6 +3,7 @@ package cs.controller.sys;
 import com.alibaba.fastjson.JSON;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.Constant;
+import cs.common.FlowConstant;
 import cs.common.utils.*;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.sys.OrgDept;
@@ -155,12 +156,24 @@ public class AdminController {
                 List<RuProcessTask> userProcessList = new ArrayList<>();
                 for (int i = 0; i < totalCount; i++) {
                     RuProcessTask rt = authRuSignTask.get(i);
-                    if (curUserId.equals(rt.getAssignee()) || (rt.getAssigneeList() != null && rt.getAssigneeList().indexOf(curUserId) > -1)) {
-                        RuProcessTask newrt = new RuProcessTask();
-                        BeanCopierUtils.copyProperties(rt, newrt);
-                        userProcessList.add(newrt);
-                        filterCount++;
+                    //过滤掉合并项目的次项目
+                    if(rt.getReviewType() == null
+                            || "".equals(rt.getReviewType())
+                            || Constant.EnumState.YES.getValue().equals(rt.getReviewType())
+                            ||(Constant.EnumState.NO.getValue().equals(rt.getReviewType())
+                            && !FlowConstant.FLOW_SIGN_BMLD_SPW1.equals(rt.getNodeDefineKey())
+                            && !FlowConstant.FLOW_SIGN_FGLD_SPW1.equals(rt.getNodeDefineKey()))
+                     ){
+                        if (curUserId.equals(rt.getAssignee())
+                                || (rt.getAssigneeList() != null && rt.getAssigneeList().indexOf(curUserId) > -1)){
+
+                            RuProcessTask newrt = new RuProcessTask();
+                            BeanCopierUtils.copyProperties(rt, newrt);
+                            userProcessList.add(newrt);
+                            filterCount++;
+                        }
                     }
+
                     if (filterCount == 6) {
                         break;
                     }
