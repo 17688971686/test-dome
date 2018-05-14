@@ -48,8 +48,6 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
     @Autowired
     private FinancialManagerRepo financialManagerRepo;
     @Autowired
-    private FinancialManagerService financialManagerService;
-    @Autowired
     private UserService userService;
     @Autowired
     private ExpertRepo expertRepo;
@@ -496,12 +494,13 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                 sqlBuilder.setParam("deptName", projectReviewCostDto.getDeptName());
             }
         }
-        sqlBuilder.append(" ORDER BY CFM.PAYMENTDATA DESC,SDK.SIGNID ");
+        sqlBuilder.append(" ORDER BY CFM.PAYMENTDATA DESC,SDK.SIGNDATE DESC ");
         List<Object[]> projectReviewCostList = expertCostCountRepo.getObjectArray(sqlBuilder);
         List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<ProjectReviewCostDto>();
         List<FinancialManagerDto> financialManagerDtoList = null;
         String oldSignid = "";
         ProjectReviewCostDto reviewCostDto = null;
+        BigDecimal totalCost = BigDecimal.ZERO;
         boolean isNew = false;
         if (Validate.isList(projectReviewCostList)) {
             for (int i = 0, l = projectReviewCostList.size(); i < l; i++) {
@@ -511,6 +510,8 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                 if (!oldSignid.equals(signId)) {
                     if(i>0){
                         reviewCostDto.setFinancialManagerDtoList(financialManagerDtoList);
+                        reviewCostDto.setTotalCost(totalCost);
+                        totalCost = BigDecimal.ZERO;
                         projectReviewCostDtoList.add(reviewCostDto);
                     }
                     reviewCostDto = new ProjectReviewCostDto();
@@ -532,16 +533,20 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                     reviewCostDto.setSigndate(projectReviewCost[7] == null ? null : (Date) projectReviewCost[7]);
                     reviewCostDto.setDeptName(projectReviewCost[8] == null ? "" : projectReviewCost[8].toString());
                     reviewCostDto.setPrincipal(projectReviewCost[9] == null ? "" : projectReviewCost[9].toString());
-                    reviewCostDto.setTotalCost(projectReviewCost[12] == null ? null : (BigDecimal) projectReviewCost[12]);
+                    //reviewCostDto.setTotalCost(projectReviewCost[12] == null ? null : (BigDecimal) projectReviewCost[12]);
                     reviewCostDto.setPayDate(projectReviewCost[13] == null ? null : (Date) projectReviewCost[13]);
                 }
                 FinancialManagerDto financialManagerDto = new FinancialManagerDto();
                 financialManagerDto.setChargeName(projectReviewCost[10] == null ? null :projectReviewCost[10].toString());
                 financialManagerDto.setCharge(projectReviewCost[11] == null ? null : (BigDecimal) projectReviewCost[11]);
                 financialManagerDtoList.add(financialManagerDto);
+                //计算总数
+                totalCost = Arith.safeAdd(totalCost,projectReviewCost[11] == null ?  BigDecimal.ZERO : (BigDecimal) projectReviewCost[11]);
                 //最后一个
                 if (i == l-1) {
                     reviewCostDto.setFinancialManagerDtoList(financialManagerDtoList);
+                    reviewCostDto.setTotalCost(totalCost);
+                    totalCost = BigDecimal.ZERO;
                     projectReviewCostDtoList.add(reviewCostDto);
                 }
 
@@ -838,82 +843,84 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "查询数据成功", resultMap);
     }
 
+    /**
+     * 评审费发送
+     * @param projectReviewCostDto
+     * @return
+     */
     @Override
-    public List<ProjectReviewCostDto> findProjectRevireCost(ProjectReviewCostDto projectReviewCost) {
-//		PageModelDto<ProjectReviewCostDto> pageModelDto = new PageModelDto<ProjectReviewCostDto>();
+    public List<ProjectReviewCostDto> findProjectRevireCost(ProjectReviewCostDto projectReviewCostDto) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select s.projectcode,s.projectname,s.builtcompanyname,s.reviewstage,r.totalcost,r.paydate,d.declarevalue,d.authorizevalue,s.signdate,r.businessid , s.processstate , s.islightup from cs_sign s  ");
-        sqlBuilder.append(" left join cs_expert_review r  ");
-        sqlBuilder.append("on s.signid = r.businessid  ");
-        sqlBuilder.append("left join cs_dispatch_doc d  ");
-        sqlBuilder.append("on s.signid = d.signid  ");
-        sqlBuilder.append("LEFT JOIN ( SELECT o.id oid, o.name oname, B.SIGNID bsignid FROM V_ORG_DEPT o, CS_SIGN_BRANCH b  WHERE O.ID = B.ORGID AND B.ISMAINBRABCH = '9') mo  ");
-        sqlBuilder.append("ON s.signid = mo.bsignid  ");
-        sqlBuilder.append("where r.paydate is not null ");
-        //添加过滤条件。过滤删除和暂停的
-        sqlBuilder.append("and s.signState <> '" + Constant.EnumState.DELETE.getValue() + "' ");
-        sqlBuilder.append("and s.signState <> '" + Constant.EnumState.STOP.getValue() + "' ");
-        //todo:添加查询条件
-        if (projectReviewCost != null) {
-            if (StringUtil.isNotEmpty(projectReviewCost.getProjectname())) {
-                sqlBuilder.append("and s.projectname like '%" + projectReviewCost.getProjectname() + "%' ");
+        sqlBuilder.append(" SELECT sdk.signid,sdk.projectcode,sdk.projectname,sdk.builtcompanyname,sdk.reviewstage, ");
+        sqlBuilder.append(" sdk.appalyInvestment,sdk.authorizevalue,sdk.signdate,sdk.MORGNAME,sdk.ALLPRIUSER, ");
+        sqlBuilder.append(" CFM.CHARGENAME,CFM.CHARGE,CFM.STAGECOUNT,CFM.PAYMENTDATA ");
+        sqlBuilder.append(" FROM SIGN_DISP_WORK sdk LEFT JOIN CS_FINANCIAL_MANAGER cfm on CFM.BUSINESSID = SDK.SIGNID ");
+        sqlBuilder.append(" WHERE sdk.signState !=:signState1 and sdk.signState !=:signState2 ");
+        sqlBuilder.setParam("signState1",Constant.EnumState.STOP.getValue());
+        sqlBuilder.setParam("signState2",Constant.EnumState.DELETE.getValue());
+        sqlBuilder.append(" AND (sdk.isassistproc is null or sdk.isassistproc = :assistproc) ");
+        sqlBuilder.setParam("assistproc",Constant.EnumState.NO.getValue());
+        sqlBuilder.append(" AND CFM.CHARGETYPE = :chageType AND CFM.CHARGENAME = :chageName AND CFM.PAYMENTDATA IS NOT NULL ");
+        sqlBuilder.setParam("chageType",Constant.EnumState.PROCESS.getValue());
+        sqlBuilder.setParam("chageName","专家评审费");
+
+        //查询条件
+        if (Validate.isObject(projectReviewCostDto)) {
+            if (StringUtil.isNotEmpty(projectReviewCostDto.getProjectname())) {
+                sqlBuilder.append("and sdk.projectname like :projectName ");
+                sqlBuilder.setParam("projectName", "%" + projectReviewCostDto.getProjectname() + "%");
             }
 
-            if (StringUtil.isNotEmpty(projectReviewCost.getBuiltcompanyname())) {
-                sqlBuilder.append("and s.builtcompanyname like '%" + projectReviewCost.getBuiltcompanyname() + "%' ");
+            if (StringUtil.isNotEmpty(projectReviewCostDto.getBuiltcompanyname())) {
+                sqlBuilder.append("and sdk.builtcompanyname like :projectCode ");
+                sqlBuilder.setParam("projectCode", "%" + projectReviewCostDto.getBuiltcompanyname() + "%");
             }
 
-            if (StringUtil.isNotEmpty(projectReviewCost.getReviewstage())) {
-                sqlBuilder.append("and s.reviewstage = '" + projectReviewCost.getReviewstage() + "' ");
+            if (StringUtil.isNotEmpty(projectReviewCostDto.getReviewstage())) {
+                sqlBuilder.append("and sdk.reviewstage = :stage ");
+                sqlBuilder.setParam("stage", projectReviewCostDto.getReviewstage());
             }
 
-
-            if (StringUtil.isNotEmpty(projectReviewCost.getBeginTime())) {
-                sqlBuilder.append("and r.paydate >= to_date('" + projectReviewCost.getBeginTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
+            if (StringUtil.isNotEmpty(projectReviewCostDto.getBeginTime())) {
+                sqlBuilder.append("and CFM.PAYMENTDATA >= to_date(:beginTime, 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.setParam("beginTime", projectReviewCostDto.getBeginTime());
             }
 
-            if (StringUtil.isNotEmpty(projectReviewCost.getEndTime())) {
-                sqlBuilder.append("and r.paydate <= to_date('" + projectReviewCost.getEndTime() + "', 'yyyy-mm-dd hh24:mi:ss') ");
+            if (StringUtil.isNotEmpty(projectReviewCostDto.getEndTime())) {
+                sqlBuilder.append("and CFM.PAYMENTDATA <= to_date(:endTime, 'yyyy-mm-dd hh24:mi:ss') ");
+                sqlBuilder.setParam("endTime", projectReviewCostDto.getEndTime());
             }
 
-            if (StringUtil.isNotEmpty(projectReviewCost.getDeptName())) {
-                sqlBuilder.append("and mo.oname = '" + projectReviewCost.getDeptName() + "' ");
+            if (StringUtil.isNotEmpty(projectReviewCostDto.getDeptName())) {
+                sqlBuilder.append("and SDK.MORGNAME = :deptName ");
+                sqlBuilder.setParam("deptName", projectReviewCostDto.getDeptName());
             }
         }
+        sqlBuilder.append(" ORDER BY CFM.PAYMENTDATA DESC nulls first,SDK.SIGNDATE DESC ");
         List<Object[]> projectReviewCostList = expertSelectedRepo.getObjectArray(sqlBuilder);
 
         List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<>();
-        if (projectReviewCostList.size() > 0) {
+        if (Validate.isList(projectReviewCostList)) {
             for (int i = 0; i < projectReviewCostList.size(); i++) {
-                Object obj = projectReviewCostList.get(i);
-                Object[] result = (Object[]) obj;
-                ProjectReviewCostDto projectReviewCostDto = new ProjectReviewCostDto();
-                projectReviewCostDto.setProjectcode((String) result[0]);
-                projectReviewCostDto.setProjectname((String) result[1]);
-                projectReviewCostDto.setBuiltcompanyname((String) result[2]);
-                projectReviewCostDto.setReviewstage((String) result[3]);
-                projectReviewCostDto.setTotalCost((BigDecimal) result[4]);
-                projectReviewCostDto.setPayDate((Date) result[5]);
-                projectReviewCostDto.setDeclareValue((BigDecimal) result[6]);
-                projectReviewCostDto.setAuthorizeValue((BigDecimal) result[7]);
-                projectReviewCostDto.setSigndate((Date) result[8]);
-                projectReviewCostDto.setBusinessId((String) result[9]);
-                projectReviewCostDto.setIsLightUp((String) result[11]);
-                projectReviewCostDto.setProcessState(new Integer(result[10].toString()));
+                Object[] reObj = projectReviewCostList.get(i);
+                ProjectReviewCostDto projCostDto = new ProjectReviewCostDto();
+                projCostDto.setBusinessId(reObj[0].toString());
+                projCostDto.setProjectcode(reObj[1] == null ? "" : reObj[1].toString());
+                projCostDto.setProjectname(reObj[2] == null ? "" : reObj[2].toString());
+                projCostDto.setBuiltcompanyname(reObj[3] == null ? "" : reObj[3].toString());
+                projCostDto.setReviewstage(reObj[4] == null ? "" : reObj[4].toString());
+                projCostDto.setDeclareValue(reObj[5] == null ? null : (BigDecimal) reObj[5]);
+                projCostDto.setAuthorizeValue(reObj[6] == null ? null : (BigDecimal) reObj[6]);
+                projCostDto.setSigndate(reObj[7] == null ? null : (Date) reObj[7]);
+                projCostDto.setDeptName(reObj[8] == null ? "" : reObj[8].toString());
+                projCostDto.setPrincipal(reObj[9] == null ? "" : reObj[9].toString());
+                //费用只取专家评审费
+                projCostDto.setTotalCost(reObj[11] == null ? null : (BigDecimal) reObj[11]);
+                projCostDto.setPayDate(reObj[13] == null ? null : (Date) reObj[13]);
 
-                projectReviewCostDtoList.add(projectReviewCostDto);
-
-                BigDecimal totalCost = financialManagerService.sunCount(projectReviewCostDto.getBusinessId());
-                if (null != totalCost) {
-                    projectReviewCostDto.setTotalCost(totalCost);
-                }
-                User u = signPrincipalService.getMainPriUser(projectReviewCostDto.getBusinessId());
-                projectReviewCostDto.setPrincipal(u == null ? "" : u.getDisplayName());
+                projectReviewCostDtoList.add(projCostDto);
             }
         }
-//		pageModelDto.setCount(projectReviewCostDtoList.size());
-//		pageModelDto.setValue(projectReviewCostDtoList);
-
 
         return projectReviewCostDtoList;
     }

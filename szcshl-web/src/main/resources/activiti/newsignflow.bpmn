@@ -5,7 +5,7 @@
     <userTask id="SIGN_ZR" name="主任" activiti:assignee="${user_zr}"></userTask>
     <userTask id="SIGN_QS" name="项目签收" activiti:assignee="${user_qs}"></userTask>
     <userTask id="SIGN_ZHB" name="综合部拟办" activiti:assignee="${user_zhb}"></userTask>
-    <userTask id="SIGN_FGLD_FB" name="分管领导分办" activiti:assignee="${user_fgld}"></userTask>
+    <userTask id="SIGN_FGLD_FB" name="分管副主任分办" activiti:assignee="${user_fgld}"></userTask>
     <userTask id="SIGN_BMFB1" name="部门分办" activiti:assignee="${user_bz1}"></userTask>
     <userTask id="SIGN_BMFB2" name="部门分办" activiti:assignee="${user_bz2}"></userTask>
     <userTask id="SIGN_BMFB3" name="部门分办" activiti:assignee="${user_bz3}"></userTask>
@@ -15,10 +15,10 @@
     <userTask id="SIGN_BMLD_SPW1" name="部长审批" activiti:assignee="${user_bz1}"></userTask>
     <userTask id="SIGN_BMLD_SPW2" name="部长审批" activiti:assignee="${user_bz2}"></userTask>
     <userTask id="SIGN_BMLD_SPW3" name="部长审批" activiti:assignee="${user_bz3}"></userTask>
-    <userTask id="SIGN_FGLD_SPW1" name="分管领导审批" activiti:assignee="${user_fgld1}"></userTask>
-    <userTask id="SIGN_FGLD_SPW2" name="分管领导审批" activiti:assignee="${user_fgld2}"></userTask>
-    <userTask id="SIGN_FGLD_SPW3" name="分管领导审批" activiti:assignee="${user_fgld3}"></userTask>
-    <userTask id="SIGN_FGLD_SPW4" name="分管领导审批" activiti:assignee="${user_fgld4}"></userTask>
+    <userTask id="SIGN_FGLD_SPW1" name="分管副主任审批" activiti:assignee="${user_fgld1}"></userTask>
+    <userTask id="SIGN_FGLD_SPW2" name="分管副主任审批" activiti:assignee="${user_fgld2}"></userTask>
+    <userTask id="SIGN_FGLD_SPW3" name="分管副主任审批" activiti:assignee="${user_fgld3}"></userTask>
+    <userTask id="SIGN_FGLD_SPW4" name="分管副主任审批" activiti:assignee="${user_fgld4}"></userTask>
     <userTask id="SIGN_FW" name="发文申请" activiti:candidateUsers="${users1}"></userTask>
     <userTask id="SIGN_ZR_QRFW" name="主任审批" activiti:assignee="${user_zr}"></userTask>
     <userTask id="SIGN_FWBH" name="生成发文编号" activiti:candidateUsers="${users1}"></userTask>
@@ -125,7 +125,7 @@
     </userTask>
     <exclusiveGateway id="exclusivegateway10" name="协办部长审批网关"></exclusiveGateway>
     <exclusiveGateway id="exclusivegateway11" name="协办副主任判断网关"></exclusiveGateway>
-    <userTask id="SIGN_FGLD_QRFW_XB" name="协办副主任审批" activiti:assignee="${user_xbfgld}">
+    <userTask id="SIGN_FGLD_QRFW_XB" name="分管副主任审批" activiti:assignee="${user_xbfgld}">
       <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="user_xbfgld_list" activiti:elementVariable="user_xbfgld">
         <completionCondition>${confirmDisMulitiTask.sLeaderAudit(execution)}</completionCondition>
       </multiInstanceLoopCharacteristics>
@@ -139,7 +139,7 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${xb==true}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow62" sourceRef="SIGN_FGLD_QRFW_XB" targetRef="exclusivegateway12"></sequenceFlow>
-    <userTask id="SIGN_FGLD_QRFW" name="主办副主任审批" activiti:assignee="${user_fgld1}"></userTask>
+    <userTask id="SIGN_FGLD_QRFW" name="分管副主任审批" activiti:assignee="${user_fgld1}"></userTask>
     <sequenceFlow id="flow66" sourceRef="exclusivegateway12" targetRef="SIGN_FGLD_QRFW">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${xbfzrsp==true}]]></conditionExpression>
     </sequenceFlow>

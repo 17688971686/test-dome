@@ -77,4 +77,17 @@ public interface WorkProgramService {
      * @param sign
      */
     void copySignCommonInfo(WorkProgramDto workProgramDto,Sign sign);
+
+    /**
+     * 通过业务ID判断是不是主分支
+     * @param signId
+     * @return
+     */
+    Boolean mainBranch(String signId);
+
+    /**
+     * 更新工作方案专家评审费用
+     * @param wpId
+     */
+    void initExpertCost(String wpId);
 }

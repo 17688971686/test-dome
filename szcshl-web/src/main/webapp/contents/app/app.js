@@ -1031,6 +1031,18 @@
                     controller: 'myTopicCtrl',
                     controllerAs: 'vm'
                 })
+                .state('queryTopic', {
+                    url: '/queryTopic',
+                    templateUrl: rootPath + '/topicInfo/html/queryTopic.html',
+                    controller: 'queryTopicCtrl',
+                    controllerAs: 'vm'
+                })
+                .state('topicDetail', {
+                    url: '/topicDetail/:businessId/:processInstanceId',
+                    templateUrl: rootPath + '/topicInfo/html/topicDetail.html',
+                    controller: 'topicDetailCtrl',
+                    controllerAs: 'vm'
+                })
                 //表头设置
                 .state('header', {
                     url: '/header',
@@ -1198,7 +1210,17 @@
                     controller: 'partyMeetingCtrl',
                     controllerAs: 'vm'
                 })
-            // end 党务管理
+                // end 党务管理
+
+                //begin 短信模块
+                .state('msgEdit', {
+                    url: '/msgEdit',
+                    templateUrl: rootPath + "/message/html/edit.html",
+                    controller: 'msgEditCtrl',
+                    controllerAs: 'vm'
+                })
+
+                //end 短信编辑
         }]).run(function ($rootScope, $http, $state, $stateParams, bsWin) {
         $rootScope.rootPath = rootPath;
         $rootScope.DICT = DICTOBJ;

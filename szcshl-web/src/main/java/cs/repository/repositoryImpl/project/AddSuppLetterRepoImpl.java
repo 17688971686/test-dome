@@ -1,6 +1,8 @@
 package cs.repository.repositoryImpl.project;
 
+import cs.common.Constant;
 import cs.common.HqlBuilder;
+import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
 import cs.domain.project.AddSuppLetter;
 import cs.domain.project.AddSuppLetter_;
@@ -61,6 +63,27 @@ public class AddSuppLetterRepoImpl extends AbstractRepository<AddSuppLetter, Str
         sqlBuilder.append("select max(" + AddSuppLetter_.fileSeq.getName() + ") from cs_add_suppLetter where to_char(" + AddSuppLetter_.suppLetterTime.getName()+" , 'yyyy') = :yearName ");
         sqlBuilder.setParam("yearName",yearName);
         return addSuppLetterRepo.returnIntBySql(sqlBuilder);
+    }
+
+    /**
+     * 检查是否还有正在审批的拟补充资料函
+     * @param businessId
+     * @param fileType
+     * @return
+     */
+    @Override
+    public ResultMsg checkIsApprove(String businessId, String fileType) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append("select count(ID) from cs_add_suppLetter where BUSINESSID =:businessId ");
+        sqlBuilder.setParam("businessId",businessId);
+        sqlBuilder.append(" and fileType = :fileType ").setParam("fileType",fileType);
+        sqlBuilder.append(" and (processInstanceId is null or APPOVESTATUS != :status) ").setParam("status", Constant.EnumState.YES.getValue());
+        int countValue = addSuppLetterRepo.returnIntBySql(sqlBuilder);
+        if(countValue > 0){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"该项目还有拟补充资料函未审批完成！");
+        }else{
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"该项目没有拟补充资料函待审！");
+        }
     }
 
 }

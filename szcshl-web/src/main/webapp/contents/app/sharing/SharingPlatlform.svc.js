@@ -154,7 +154,6 @@
                             vm.model.privilegeDtoList.push(shareUser);
                         }
                     }
-
                 }
                 var httpOptions = {
                     method: 'post',

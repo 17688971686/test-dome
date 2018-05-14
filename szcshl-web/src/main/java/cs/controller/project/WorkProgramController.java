@@ -95,6 +95,14 @@ public class WorkProgramController {
 
 
     @RequiresAuthentication
+    @RequestMapping(name = "更新工作方案专家评审费用", path = "updateWPExpertCost", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void updateWPExpertCost(@RequestParam String wpId) {
+        workProgramService.initExpertCost(wpId);
+    }
+
+
+    @RequiresAuthentication
     //@RequiresPermissions("workprogram#html/edit#get")
     @RequestMapping(name = "工作方案编辑", path = "html/edit", method = RequestMethod.GET)
     public String edit() {

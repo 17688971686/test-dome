@@ -25,6 +25,7 @@ import cs.model.project.*;
 import cs.model.sys.OrgDto;
 import cs.model.sys.SysConfigDto;
 import cs.model.sys.UserDto;
+import cs.quartz.unit.DispathUnit;
 import cs.quartz.unit.QuartzUnit;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
@@ -226,6 +227,13 @@ public class SignServiceImpl implements SignService {
                 sign.setSurplusdays(reviewsDays);
                 sign.setTotalReviewdays(reviewsDays);
                 sign.setReviewdays(0f);
+
+                //计算预发文日期
+                //1、先获取从签收日期后的30天之间的工作日情况
+                List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate() , DateUtils.addDay(sign.getSigndate() , 30));
+                int totalDays = (new Float(reviewsDays)).intValue();
+                Date expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() ,totalDays);
+                sign.setExpectdispatchdate(expectdispatchdate);
             }
         }
         //如果是自己的项目,则不用回传给委里(2表示不用回传给委里)
@@ -689,6 +697,20 @@ public class SignServiceImpl implements SignService {
         }
         if (!Validate.isString(sign.getLeaderId())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "操作失败，请先设置默认办理部门！");
+        }
+        //建设单位(builtcompanyName)、编制单位(designcompanyName)、
+        // 主办处室(maindeptName)、缓急程度(urgencydegree)、秘密等级(secrectlevel)
+        if(!Validate.isString(sign.getBuiltcompanyName()) || !Validate.isString(sign.getDesigncompanyName())
+                || !Validate.isString(sign.getMaindeptName()) || !Validate.isString(sign.getUrgencydegree())
+                || !Validate.isString(sign.getSecrectlevel())){
+            String resultStr = sign.getBuiltcompanyName() == null ? "建设单位," : "";
+            resultStr += sign.getDesigncompanyName() == null ?  "编制单位," : "";
+            resultStr += sign.getMaindeptName() == null ? "主办处室," : "";
+            resultStr += sign.getUrgencydegree() == null ? "缓急程度," : "";
+            resultStr += sign.getSecrectlevel() == null ? "秘密等级," : "";
+
+            return new ResultMsg(false , MsgCode.ERROR.getValue() , resultStr.substring(0 , resultStr.length() -1
+            ) + "不能为空");
         }
 
         try {
@@ -1188,7 +1210,7 @@ public class SignServiceImpl implements SignService {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "你还没设置所属部门！");
                 }
                 if (!Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgSLeader())) {
-                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的分管领导！");
+                    return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置该部门的分管副主任！");
                 }
                 //更改工作方案信息
                 wk = workProgramRepo.findBySignIdAndBranchId(signid, branchIndex);
@@ -1689,7 +1711,7 @@ public class SignServiceImpl implements SignService {
                     variables.put(FlowConstant.SignFlowParams.USER_CW.getValue(), assigneeValue);
 
                     signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_CW.getValue());
-                //没有评审费，则直接到归档环节(还是当前人处理)
+                    //没有评审费，则直接到归档环节(还是当前人处理)
                 } else {
                     variables.put(FlowConstant.SignFlowParams.HAVE_ZJPSF.getValue(), false);
                     variables = buildMainPriUser(variables, signid, assigneeValue);

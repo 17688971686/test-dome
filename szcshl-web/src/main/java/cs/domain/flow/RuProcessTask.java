@@ -181,6 +181,14 @@ public class RuProcessTask {
     //所有负责人名称
     @Column
     private String allPriUser;
+
+    /**
+     * 预发文日期
+     */
+    @Column(columnDefinition = "DATE")
+    @JSONField(format = "yyyy-MM-dd")
+    private Date expectdispatchdate;
+
     /**
      * 合并评审项目
      */
@@ -482,5 +490,13 @@ public class RuProcessTask {
 
     public void setSendusersign(String sendusersign) {
         this.sendusersign = sendusersign;
+    }
+
+    public Date getExpectdispatchdate() {
+        return expectdispatchdate;
+    }
+
+    public void setExpectdispatchdate(Date expectdispatchdate) {
+        this.expectdispatchdate = expectdispatchdate;
     }
 }

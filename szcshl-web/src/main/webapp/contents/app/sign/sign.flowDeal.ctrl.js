@@ -4,11 +4,11 @@
     angular.module('app').controller('signFlowDealCtrl', sign);
 
     sign.$inject = ['sysfileSvc', 'signSvc', 'workprogramSvc', '$state', 'flowSvc', 'signFlowSvc', 'ideaSvc',
-        'addRegisterFileSvc', 'expertReviewSvc', '$scope', 'bsWin', 'financialManagerSvc', 'assistCostCountSvc',
+        'addRegisterFileSvc', 'expertReviewSvc', '$scope', 'bsWin', 'financialManagerSvc', 'addSuppLetterQuerySvc',
         'addCostSvc', 'templatePrintSvc', 'companySvc'];
 
     function sign(sysfileSvc, signSvc, workprogramSvc, $state, flowSvc, signFlowSvc, ideaSvc, addRegisterFileSvc,
-                  expertReviewSvc, $scope, bsWin, financialManagerSvc, assistCostCountSvc, addCostSvc, templatePrintSvc, companySvc) {
+                  expertReviewSvc, $scope, bsWin, financialManagerSvc, addSuppLetterQuerySvc, addCostSvc, templatePrintSvc, companySvc) {
         var vm = this;
         vm.title = "项目流程处理";
         vm.model = {};          //收文对象
@@ -653,7 +653,21 @@
 
         //S_链接到拟补充资料函
         vm.addSuppLetter = function () {
-            $state.go('addSupp', {businessId: vm.model.signid, businessType: "SIGN"});
+            addSuppLetterQuerySvc.checkIsApprove(vm.model.signid,"1",function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    $state.go('addSupp', {businessId: vm.model.signid, businessType: "SIGN"});
+                }else{
+                    bsWin.confirm({
+                        title: "询问提示",
+                        message: "该项目还有拟补充资料函未审批完成，确定要新增拟补充资料函么？如果要修改拟补充资料函，请到“查询统计”->“拟补充资料函查询”菜单进行修改即可！",
+                        onOk: function () {
+                            $state.go('addSupp', {businessId: vm.model.signid, businessType: "SIGN"});
+                        }
+                    });
+                }
+            });
+
+
         }// E_跳转到 拟补充资料函 编辑页面
 
         //S 拟补充资料函列表

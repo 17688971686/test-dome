@@ -273,8 +273,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
         //2、是否有当前用户负责的工作方案
         WorkProgram mainW = new WorkProgram();
+        //工作方案个数
         if (Validate.isList(wpList)) {
             int totalL = wpList.size();
+            resultMap.put("showTotalInvestment", (totalL)>1?"9":"0");
             //遍历第一遍，先找出主分支工作方案
             for (int i = 0; i < totalL; i++) {
                 WorkProgram wp = wpList.get(i);
@@ -343,6 +345,25 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             }
             workProgramDto.setSecondChargeUserName(seUserName.substring(0, seUserName.length() - 1));
         }
+    }
+
+    /**
+     * 通过业务ID判断是不是主分支
+     * @param signId
+     * @return
+     */
+    @Override
+    public Boolean mainBranch(String signId) {
+        return workProgramRepo.mainBranch(signId);
+    }
+
+    /**
+     * 更新工作方案专家评审费用
+     * @param wpId
+     */
+    @Override
+    public void initExpertCost(String wpId) {
+        workProgramRepo.initExpertCost(wpId);
     }
 
     /**

@@ -15,6 +15,7 @@
             initSuppLetter: initSuppLetter,             //初始化补充资料函
             createFilenum: createFilenum,               //生成文件字号
             initSuppListDate: initSuppListDate,         //初始化拟补充资料函列表
+            checkIsApprove:checkIsApprove,              //检查
         };
 
         return service;
@@ -102,12 +103,10 @@
                 }
 
                 var httpSuccess = function success(response) {
-
                     common.requestSuccess({
                         vm: vm,
                         response: response,
                         fn: function () {
-
                             common.alert({
                                 vm: vm,
                                 msg: "操作成功",
@@ -134,38 +133,21 @@
                 // msg:"您填写的信息不正确,请核对后提交!"
                 // })
             }
-
         }
 
         // begin#deleteaddSuppLetterQuery
-        function deleteaddSuppLetterQuery(vm, id) {
-            vm.isSubmit = true;
+        function deleteaddSuppLetterQuery(id,callBack) {
             var httpOptions = {
-                method: 'delete',
-                url: url_addSuppLetterQuery,
-                data: id
+                method: 'post',
+                url: rootPath + "/addSuppLetter/deleteById",
+                params: {id:id}
             };
-
             var httpSuccess = function success(response) {
-                common.requestSuccess({
-                    vm: vm,
-                    response: response,
-                    fn: function () {
-                        common.alert({
-                            vm: vm,
-                            msg: "操作成功",
-                            closeDialog: true,
-                            fn: function () {
-                                vm.isSubmit = false;
-                                vm.gridOptions.dataSource.read();
-                            }
-                        })
-                    }
-                });
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
             };
-
             common.http({
-                vm: vm,
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess
@@ -301,17 +283,11 @@
                     template: function (item) {
                         //如果拟补充资料函还未发起流程（保存异常或者提交附件失败）
                         //则这里可以编辑
-                        var isShow = false;
-                        if(item.createdBy == curUserId && (angular.isUndefined(item.appoveStatus) || item.appoveStatus == null)){
-
-                            isShow = true;
-                        }
-                        if(isShow){
-                            return "<a class='btn btn-xs btn-primary' href='#addSuppLetterEdit/"+item.id+"'><span class='glyphicon glyphicon-pencil'></span>编辑</a>";
+                        if(item.createdBy == curUserId && (!item.processInstanceId)){
+                            return "<a class='btn btn-xs btn-primary' href='#addSuppLetterEdit/"+item.id+"'><span class='glyphicon glyphicon-pencil'></span>编辑</a><a class='btn btn-xs btn-danger' ng-click='vm.deleteById(\""+item.id+"\")'><span class='glyphicon glyphicon-remove'></span>删除</a>";
                         }else{
                             return "";
                         }
-
                     }
                 }
             ];
@@ -436,8 +412,25 @@
                 columns: columns,
                 resizable: true
             };
-
         }// end fun grid
 
+        //begin 检查是否有未完成审批的拟补充资料函
+        function checkIsApprove(signId,fileType,callBack) {
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/addSuppLetter/checkIsApprove",
+                params: {signId: signId,fileType:fileType}
+            };
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }//end 检查是否有未完成审批的拟补充资料函
     }
 })();

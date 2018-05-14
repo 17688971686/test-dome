@@ -20,6 +20,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sharing.SharingPlatlformRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.repository.repositoryImpl.sys.SysFileRepoImpl;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -48,9 +49,10 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
     @Autowired
     private UserRepo userRepo;
     @Autowired
-    private SysFileRepo sysFileRepo;
+    private SysFileRepoImpl sysFileRepoImpl;
     @Autowired
     private OrgRepo orgRepo;
+
 
     @Override
     public PageModelDto<SharingPlatlformDto> get(ODataObj odataObj) {
@@ -281,11 +283,11 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         //2、删除记录信息
         sharingPlatlformRepo.deleteById(SharingPlatlform_.sharId.getName(),id);
         //3、删除附件
-        List<SysFile> fileList = sysFileRepo.findByIds(SysFile_.businessId.getName(),id,null);
+        List<SysFile> fileList = sysFileRepoImpl.findByIds(SysFile_.businessId.getName(),id,null);
         if(Validate.isList(fileList)){
             fileList.forEach(f->{
-                sysFileRepo.delete(f);
-                SysFileUtil.deleteFile(SysFileUtil.getUploadPath() + f.getFileUrl());
+                sysFileRepoImpl.deleteByFileId(f.getSysFileId());
+                //SysFileUtil.deleteFile(SysFileUtil.getUploadPath() + f.getFileUrl());
             });
         }
     }

@@ -1,15 +1,13 @@
 package cs.domain;
 
-import cs.domain.project.WorkProgram;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
-
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.Date;
 
 
 @MappedSuperclass

@@ -120,4 +120,14 @@ public class WorkdayServiceImpl implements WorkdayService {
         return workdayRepo.findWorkDay(DateUtils.converToString(beginDate,DateUtils.DATE_PATTERN),DateUtils.converToString(endDate,DateUtils.DATE_PATTERN));
     }
 
+    /**
+     * 通过时间段获取
+     * @param startDate
+     * @return
+     */
+    @Override
+    public List<Workday> getBetweenTimeDay(Date startDate, Date endDate) {
+        return workdayRepo.getBetweenTimeDay(startDate , endDate);
+    }
+
 }

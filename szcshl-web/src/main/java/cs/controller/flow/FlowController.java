@@ -27,6 +27,7 @@ import cs.service.monthly.MonthlyNewsletterService;
 import cs.service.project.AddSuppLetterService;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
+import cs.service.project.WorkProgramService;
 import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
@@ -58,10 +59,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(name = "流程", path = "flow")
@@ -111,6 +109,9 @@ public class FlowController {
     @Autowired
     @Qualifier("monthFlowImpl")
     private IFlow monthFlowImpl;
+
+    @Autowired
+    private WorkProgramService workProgramService;
 
     @Autowired
     private TopicInfoService topicInfoService;
@@ -191,7 +192,19 @@ public class FlowController {
         for (int i = 0,l=resultList.size(); i < l; i++) {
             RuProcessTask rpt = resultList.get(i);
             if (existList.contains(rpt.getBusinessKey())) {
-                continue;
+                //判断是否是主分支，是则替换为主分支
+                if(workProgramService.mainBranch(rpt.getBusinessKey())){
+                    for(int j = 0 ; j < finalList.size() ; j++){
+                        RuProcessTask r = finalList.get(j);
+                        if(rpt.getBusinessKey().equals(r.getBusinessKey())){
+                            finalList.set(j , r);
+                            break;
+                        }
+                    }
+                }else{
+
+                    continue;
+                }
             } else {
                 existList.add(rpt.getBusinessKey());
                 finalList.add(rpt);

@@ -100,16 +100,20 @@ public class ProjectStopController {
 	//@RequiresPermissions("projectStop#findPausingProject#get")
 	@RequestMapping(name="判断该项目是否已申请暂停而未处理完",path="findPausingProject",method = RequestMethod.POST)
 	@ResponseBody
-	public String findPausingProject(@RequestParam  String signId){
+	public ResultMsg findPausingProject(@RequestParam  String signId){
+		ResultMsg resultMsg = null;
 		List<ProjectStopDto> projectStopList = projectStopService.findProjectStopBySign(signId);
-		String result =null;
 		for(ProjectStopDto p : projectStopList){
-			if(Constant.EnumState.NO.getValue().equals(p.getIsactive()) && !Validate.isString(p.getIsOverTime())){
-				result= "pausingProject";
+			//有流程实例，但是还没完成
+			if(Validate.isString(p.getProcessInstanceId()) && !Constant.EnumState.YES.getValue().equals(p.getIsOverTime())){
+				resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"该项目已发起暂停流程并且未处理完成！");
 				break;
 			}
 		}
-		return result;
+		if(resultMsg == null){
+			resultMsg = new ResultMsg(true, Constant.MsgCode.OK.getValue(),"没有暂停未处理项目");
+		}
+		return resultMsg;
 	}
 
 	@RequiresAuthentication

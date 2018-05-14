@@ -43,11 +43,12 @@
             </tr>
         </table>
     </div>
-    <div class="label-default" style="width: 100%;padding:5px 10px;">
+    <div  style="width: 100%;padding:5px 10px;">
         【
         <span class="label-info span_flag"></span> 已发文
         <span class="label-primary span_flag"></span> 已发送报销
         <span class="label-success span_flag" ></span> 已发送存档
+        <span class="label-default span_flag" ></span> 已办结
         <span id="span1" style="margin-left: 15px;"><img src="${path}/contents/images/purple.png" style="width: 16px; height: 16px;"></span></span>暂停
         <span id="span2"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;">少于3个工作日
         <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
@@ -90,7 +91,7 @@
                     </span>
                 </td>
                 <td class="text-center">
-                     <span style='width: 100%;display: inline-block;' ng-class="{'label-info':(s.processState && s.processState == 6), 'label-primary': (s.processState && s.processState ==7 ), 'label-success': (s.processState && s.processState ==8 )}">
+                     <span style='width: 100%;display: inline-block;' ng-class="{'label-info':(s.processState && s.processState == 6), 'label-primary': (s.processState && s.processState ==7 ), 'label-success': (s.processState && s.processState ==8 ), 'label-default': (s.processState && s.processState ==9 )}">
                     {{$index + 1}}
                     </span>
                 </td>

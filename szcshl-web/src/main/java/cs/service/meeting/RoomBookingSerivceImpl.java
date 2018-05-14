@@ -308,33 +308,39 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
         if (roomBooking == null) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该会议室预定信息已被删除！");
         } else {
-            //业务预定的会议室
-            if (Validate.isString(roomBooking.getBusinessId())) {
-                if (Constant.EnumState.YES.getValue().equals(roomBooking.getRbStatus()) || Constant.EnumState.PROCESS.getValue().equals(roomBooking.getRbStatus())) {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "会议室已经提交审核，不能进行删除操作！");
-                }
-                if (Constant.EnumState.NO.getValue().equals(roomBooking.getRbStatus())) {
-                    if (SessionUtil.getUserId().equals(roomBooking.getCreatedBy()) || SessionUtil.getLoginName().equals(Constant.SUPER_USER)) {
+            boolean isSuper = SessionUtil.getLoginName().equals(Constant.SUPER_USER);
+            if(isSuper){
+                roomBookingRepo.delete(roomBooking);
+                return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+            }else{
+                //业务预定的会议室
+                if (Validate.isString(roomBooking.getBusinessId())) {
+                    if (Constant.EnumState.YES.getValue().equals(roomBooking.getRbStatus()) || Constant.EnumState.PROCESS.getValue().equals(roomBooking.getRbStatus())) {
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "会议室已经提交审核，不能进行删除操作！");
+                    }
+                    if (Constant.EnumState.NO.getValue().equals(roomBooking.getRbStatus())) {
+                        if (SessionUtil.getUserId().equals(roomBooking.getCreatedBy())) {
+                            roomBookingRepo.delete(roomBooking);
+                            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
+                        } else {
+                            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您没有删除权限！");
+                        }
+                    }
+                    //旧数据默认不可删除
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "预定的会议室不可删除！");
+                    //普通预定的会议室
+                } else {
+                    if ((new Date()).after(roomBooking.getBeginTime()) || Constant.EnumState.YES.getValue().equals(roomBooking.getRbStatus())) {
+                        roomBooking.setRbStatus(Constant.EnumState.YES.getValue());
+                        roomBookingRepo.save(roomBooking);
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，只能在预定会议的时间段之前进行删除操作！");
+                    }
+                    if (SessionUtil.getUserId().equals(roomBooking.getCreatedBy())) {
                         roomBookingRepo.delete(roomBooking);
                         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
                     } else {
-                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您没有删除权限！");
+                        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您没有该权限，删除失败！", null);
                     }
-                }
-                //旧数据默认不可删除
-                return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "预定的会议室不可删除！");
-                //普通预定的会议室
-            } else {
-                if ((new Date()).after(roomBooking.getBeginTime()) || Constant.EnumState.YES.getValue().equals(roomBooking.getRbStatus())) {
-                    roomBooking.setRbStatus(Constant.EnumState.YES.getValue());
-                    roomBookingRepo.save(roomBooking);
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，只能在预定会议的时间段之前进行删除操作！");
-                }
-                if (SessionUtil.getUserId().equals(roomBooking.getCreatedBy()) || SessionUtil.getLoginName().equals(Constant.SUPER_USER)) {
-                    roomBookingRepo.delete(roomBooking);
-                    return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
-                } else {
-                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您没有该权限，删除失败！", null);
                 }
             }
         }

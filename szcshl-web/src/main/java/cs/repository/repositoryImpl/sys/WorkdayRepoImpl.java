@@ -3,6 +3,7 @@ package cs.repository.repositoryImpl.sys;
 import java.util.Date;
 import java.util.List;
 
+import cs.common.HqlBuilder;
 import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
 import org.hibernate.Criteria;
@@ -44,5 +45,20 @@ public class WorkdayRepoImpl extends AbstractRepository<Workday, String> impleme
         criteria.addOrder(Order.asc(Workday_.dates.getName()));
 		return criteria.list();
 	}
+
+
+	/**
+	 * 通过时间段获取
+	 * @param startDate
+	 * @return
+	 */
+    @Override
+    public List<Workday> getBetweenTimeDay(Date startDate , Date endDate) {
+		HqlBuilder hqlBuilder = HqlBuilder.create();
+		hqlBuilder.append("select * from cs_workday where dates > to_date('" + DateUtils.converToString(startDate , "yyyy-MM-dd") + "' , 'yyyy-MM-dd')");
+		hqlBuilder.append(" and dates < to_date('" + DateUtils.converToString(endDate , "yyyy-MM-dd") + "' , 'yyyy-MM-dd')");
+		List<Workday> workdayList = this.findBySql(hqlBuilder);
+        return workdayList;
+    }
 
 }

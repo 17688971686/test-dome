@@ -5,20 +5,12 @@ import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
-import cs.domain.flow.RuProcessTask;
-import cs.domain.flow.RuProcessTask_;
 import cs.domain.project.*;
-import cs.domain.sys.Role;
 import cs.domain.sys.User;
-import cs.domain.topic.TopicInfo_;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
 import cs.model.project.ProjectStopDto;
-import cs.model.project.SignDto;
-import cs.quartz.execute.CountExpertCost;
-import cs.quartz.unit.QuartzUnit;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.project.ProjectStopRepo;
 import cs.repository.repositoryImpl.project.SignDispaWorkRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
@@ -30,19 +22,16 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.apache.commons.collections.ArrayStack;
-import org.apache.commons.collections.BagUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.*;
-import org.hibernate.hql.internal.ast.HqlParser;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-
-import static cs.common.Constant.SUPER_USER;
 
 @Service
 public class ProjectStopServiceImp implements ProjectStopService {

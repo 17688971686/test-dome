@@ -23,7 +23,7 @@ public class FilingRepoImpl extends AbstractRepository<Filing, String> implement
     @Override
     public int findCurMaxSeq(String yearName) {
         HqlBuilder sqlBuilder = HqlBuilder.create();
-        sqlBuilder.append("select max(" + TopicInfo_.topicSeq.getName() + ") from cs_topic_filing where to_char(" + Filing_.filingDate.getName()+" , 'yyyy') = :yearName ");
+        sqlBuilder.append("select max(" + Filing_.filingSeq.getName() + ") from cs_topic_filing where to_char(" + Filing_.filingDate.getName()+" , 'yyyy') = :yearName ");
         sqlBuilder.setParam("yearName",yearName);
         return returnIntBySql(sqlBuilder);
 

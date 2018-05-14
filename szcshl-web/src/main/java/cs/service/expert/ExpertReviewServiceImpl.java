@@ -168,30 +168,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         return expertReviewDto;
     }
 
-    /**
-     * 初始化专家排序
-     * @return
-     */
-    /*private List<ExpertSelected> initExpertOrder(List<ExpertSelected> expertSelectedList){
-        List<ExpertSelected> expertSelectedList1 = new ArrayList<>();
-        List<ExpertSelected> expertSelectedList1Temp = new ArrayList<>();
-        for(int i = 0;i < expertSelectedList.size();i++){
-            if(!Validate.isString(expertSelectedList.get(i).getExpertSeq())){
-                expertSelectedList1Temp.add((expertSelectedList.get(i)));
-            }
-            for(int j = 0;j<expertSelectedList.size();j++){
-                    if(null != expertSelectedList.get(j).getExpertSeq()){
-                        if(i+1 == expertSelectedList.get(j).getExpertSeq()){
-                            expertSelectedList1.add(expertSelectedList.get(j));
-                            break;
-                        }
-                    }
-            }
-        }
-        expertSelectedList1.addAll(expertSelectedList1Temp);
-        return  expertSelectedList1;
-    }*/
-
     private ExpertSelectedDto initSelExpert(ExpertSelected epSelted) {
         ExpertSelectedDto selDto = new ExpertSelectedDto();
         BeanCopierUtils.copyProperties(epSelted, selDto);
@@ -296,13 +272,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             }
             //保存专家映射
             expertSelected.setExpert(expert);
-            /*if(null != expert && null != expert.getExpertType()){
-               if(expert.getExpertType().size() == 1){
-                   expertSelected.setMaJorBig(expert.getExpertType().get(0).getMaJorBig());
-                   expertSelected.setMaJorSmall(expert.getExpertType().get(0).getMaJorSmall());
-                   expertSelected.setExpeRttype(expert.getExpertType().get(0).getExpertType());
-               }
-            }*/
+
             //保存抽取条件映射
             expertSelected.setExpertReview(expertReview);
             expertSelectedRepo.save(expertSelected);
@@ -325,10 +295,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             }
             dto.setExpertDto(expertDto);//设置专家信息Dto
             resultList.add(dto);
-        }
-        //更改专家评审费
-        if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
-            workProgramRepo.initExpertCost(minBusinessId);
         }
 
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), expertReview.getId(), "操作成功！", resultList);
@@ -395,6 +361,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
             //设置专家评审费用结束s
             expertReviewRepo.save(expertReview);
         }
+
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"操作成功！");
     }
     /**
@@ -413,10 +380,6 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         sqlBuilder.setParam("state", state);
         sqlBuilder.bulidPropotyString("where", ExpertSelected_.id.getName(), expertSelId);
         expertReviewRepo.executeSql(sqlBuilder);
-        //更改专家评审费
-        if (Constant.BusinessType.SIGN.getValue().equals(businessType)) {
-            workProgramRepo.initExpertCost(minBusinessId);
-        }
     }
 
     /**

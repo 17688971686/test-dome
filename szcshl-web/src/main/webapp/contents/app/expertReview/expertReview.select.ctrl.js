@@ -3,9 +3,9 @@
 
     angular.module('app').controller('expertSelectCtrl', expertReview);
 
-    expertReview.$inject = ['expertReviewSvc', 'expertConditionSvc', 'expertSvc', '$state', 'bsWin', '$scope'];
+    expertReview.$inject = ['expertReviewSvc', 'expertConditionSvc', 'expertSvc', '$state', 'bsWin', '$scope','workprogramSvc'];
 
-    function expertReview(expertReviewSvc, expertConditionSvc, expertSvc, $state, bsWin, $scope) {
+    function expertReview(expertReviewSvc, expertConditionSvc, expertSvc, $state, bsWin, $scope,workprogramSvc) {
         var vm = this;
         vm.title = '选择专家';
         vm.conMaxIndex = 0;                   //条件号
@@ -193,6 +193,10 @@
                     });
                     expertReviewSvc.saveSelfExpert(vm.businessId, vm.minBusinessId, vm.businessType, selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
                         if (data.flag || data.reCode == 'ok') {
+                            //更新专家评审费用
+                            if(vm.businessType == "SIGN"){
+                                workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                            }
                             //如果是普通用户，还要删除之前选择的专家，因为他只能选一个
                             if (!isAdmin) {
                                 var ids = [];
@@ -237,6 +241,10 @@
                         }
                         expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','), vm.isCommit, function (data) {
                             if (data.flag || data.reCode == 'ok') {
+                                //更新专家评审费用
+                                if(vm.businessType == "SIGN"){
+                                    workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                                }
                                 vm.reFleshAfterRemove(ids);
                                 bsWin.success("操作成功！");
                             } else {
@@ -286,6 +294,10 @@
                         }
                         expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(','), vm.isCommit, function (data) {
                             if (data.flag || data.reCode == 'ok') {
+                                //更新专家评审费用
+                                if(vm.businessType == "SIGN"){
+                                    workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                                }
                                 vm.reFleshAfterRemove(ids);
                                 bsWin.success("操作成功！");
                             } else {
@@ -309,6 +321,11 @@
                 });
                 expertReviewSvc.saveOutExpert(vm.businessId, vm.minBusinessId, vm.businessType, selExpertIdArr.join(","), vm.expertReview.id, vm.isCommit, function (data) {
                     if (data.flag || data.reCode == 'ok') {
+                        //更新专家评审费用
+                        if(vm.businessType == "SIGN"){
+                            workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                        }
+
                         if (!vm.expertReview.id) {
                             vm.expertReview.id = data.idCode;
                         }
@@ -413,6 +430,10 @@
                             if (ids.length > 0) {
                                 expertConditionSvc.deleteSelConditions(ids.join(","), vm.isCommit, function (data) {
                                     if (data.flag || data.reCode == 'ok') {
+                                        //更新专家评审费用
+                                        if(vm.businessType == "SIGN"){
+                                            workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                                        }
                                         bsWin.success("操作成功！", function () {
                                             vm.init(vm.businessId, vm.minBusinessId);
                                         });
@@ -511,6 +532,10 @@
                         }
                         expertReviewSvc.queryAutoExpert(vm.expertReview.expertSelConditionDtoList, vm.minBusinessId, vm.expertReview.id, function (data) {
                             if (data.flag || data.reCode == 'ok') {
+                                //更新专家评审费用
+                                if(vm.businessType == "SIGN"){
+                                    workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                                }
                                 //刷新页面抽取的专家
                                 vm.reFleshSelEPInfo(data.reObj.autoEPList);
                                 //抽取结果数组
@@ -580,6 +605,10 @@
                 if (data && data.id) {
                     expertReviewSvc.queryAutoExpert(condition, vm.minBusinessId, vm.expertReview.id, function (data) {
                         if (data.flag || data.reCode == 'ok') {
+                            //更新专家评审费用
+                            if(vm.businessType == "SIGN"){
+                                workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                            }
                             //刷新页面抽取的专家
                             vm.reFleshSelEPInfo(data.reObj.autoEPList);
                             //抽取次数加一
@@ -632,6 +661,10 @@
                 }
                 expertReviewSvc.affirmAutoExpert(vm.minBusinessId, vm.businessType, ids.join(","), '9', function (data) {
                     if (data.flag || data.reCode == 'ok') {
+                        //更新专家评审费用
+                        if(vm.businessType == "SIGN"){
+                            workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                        }
                         vm.reFleshConfirmState(ids, "9");
                         vm.checkAutoOfficeExpert = false;
                         vm.checkAutoAntiExpert = false;
@@ -687,6 +720,10 @@
                 }
                 expertReviewSvc.updateJoinState(vm.expertReview.id, vm.minBusinessId, vm.businessType, ids.join(','), '9', vm.isCommit, function (data) {
                     if (data.flag || data.reCode == 'ok') {
+                        //更新专家评审费用
+                        if(vm.businessType == "SIGN"){
+                            workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                        }
                         //1、更改专家评分和评审费发放的专家
                         vm.reFleshJoinState(ids, '9');
                         bsWin.success("操作成功！");
@@ -709,6 +746,10 @@
                 }
                 expertReviewSvc.updateJoinState(vm.expertReview.id, vm.minBusinessId, vm.businessType, ids.join(','), '0', vm.isCommit, function (data) {
                     if(data.flag || data.reCode == 'ok'){
+                        //更新专家评审费用
+                        if(vm.businessType == "SIGN"){
+                            workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                        }
                         vm.reFleshJoinState(ids,'0');
                         bsWin.success("操作成功！");
                     }else{
@@ -746,6 +787,10 @@
                         }
                         expertReviewSvc.delSelectedExpert(vm.expertReview.id, ids.join(","), vm.isCommit, function (data) {
                             if (data.flag || data.reCode == 'ok') {
+                                //更新专家评审费用
+                                if(vm.businessType == "SIGN"){
+                                    workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                                }
                                 bsWin.alert("删除成功！", function () {
                                     vm.removeSelectEP = false;
                                    //重新查询专家
@@ -776,6 +821,10 @@
                         }
                         expertReviewSvc.affirmAutoExpert(vm.minBusinessId, vm.businessType, ids.join(","), '9', function (data) {
                             if (data.flag || data.reCode == 'ok') {
+                                //更新专家评审费用
+                                if(vm.businessType == "SIGN"){
+                                    workprogramSvc.updateWPExpertCost(vm.minBusinessId);
+                                }
                                 vm.reFleshConfirmState(ids, "9");
                                 bsWin.success(data.reMsg);
                             } else {

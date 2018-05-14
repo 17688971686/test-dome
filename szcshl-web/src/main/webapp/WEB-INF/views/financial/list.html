@@ -17,37 +17,38 @@
     <div class="well well-sm">
         <table style="width: 100%">
             <tr style="height: 40px;">
-                <td class="text-right" style="width:82px;"><span class="help-inline">项目名称：</span></td>
-                <td>
-                    <input type="text" ng-model="vm.model.projectname" operator="like" name="projectname" id="projectname"
+                <td class="text-right" style="width:120px;"><span class="help-inline">项目名称：</span></td>
+                <td style="width: 35%" >
+                    <input type="text" class="form-control input-sm " ng-model="vm.model.projectname" operator="like" name="projectname" id="projectname"
                            placeholder="请输入">
                 </td>
-                <td class="text-right" style="width:82px;"><span class="help-inline">建设单位：</span></td>
-                <td>
-                    <input type="text" ng-model="vm.model.builtcompanyname" operator="like" name="builtcompanyname"
+                <td class="text-right" style="width:120px;"><span class="help-inline">建设单位：</span></td>
+                <td colspan="2">
+                    <input type="text" class="form-control input-sm " ng-model="vm.model.builtcompanyname" operator="like" name="builtcompanyname"
                            id="builtcompanyname" placeholder="请输入">
                 </td>
-                <td class="text-right" style="width:82px;"><span class="help-inline">评审部门：</span></td>
-                <td>
-                    <select ng-model="vm.model.deptName" operator="eq">
-                        <option value="">请选择</option>
-                        <option ng-repeat="x in vm.orgDeptList" value="{{x.name}}">{{x.name}}</option>
-                    </select>
-                </td>
             </tr>
-            <tr>
+            <tr style="height: 40px;">
                 <td class="text-right">
-                    <span class="help-inline">签收日期：</span>
+                    <span class="help-inline">付款日期：</span>
                 </td>
-                <td colspan="3">
+                <td >
                     <input name="beginTime" kendo-date-picker k-format="'yyyy-MM-dd'"
                            ng-model="vm.model.beginTime" value="" type="text" operator="ge"/>
                     至
                     <input name="endTime"kendo-date-picker k-format="'yyyy-MM-dd'"
                            ng-model="vm.model.endTime" value="" type="text" operator="le"/>
                 </td>
-                <td colspan="2">
-                    <button class="btn btn-sm btn-primary" ng-click="vm.queryFinancl()" ng-disabled="vm.isSubmit">
+
+                <td class="text-right" style="width: 10%;"><span class="help-inline">评审部门：</span></td>
+                <td style="width: 25%;">
+                    <select ng-model="vm.model.deptName" operator="eq" class="form-control select-sm ">
+                        <option value="">请选择</option>
+                        <option ng-repeat="x in vm.orgDeptList" value="{{x.name}}">{{x.name}}</option>
+                    </select>
+                </td>
+                <td >
+                    <button style="margin-left: 15px;" class="btn btn-sm btn-primary" ng-click="vm.queryFinancl()" ng-disabled="vm.isSubmit">
                         <span class="glyphicon glyphicon-search"></span>查询
                     </button>
                     <button class="btn btn-sm btn-primary" ng-click="vm.resetQuery()">
@@ -58,11 +59,12 @@
         </table>
     </div>
 
-    <div class="label-default" style="width: 100%;padding:5px 10px;">
+    <div  style="width: 100%;padding:5px 10px;">
         【
         <span class="label-info span_flag"></span> 已发文
         <span class="label-primary span_flag"></span> 已发送报销
         <span class="label-success span_flag" ></span> 已发送存档
+        <span class="label-default span_flag" ></span> 已办结
         <span id="span1" style="margin-left: 15px;"><img src="${path}/contents/images/purple.png" style="width: 16px; height: 16px;"></span></span>暂停
         <span id="span2"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;">少于3个工作日
         <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
@@ -81,7 +83,7 @@
                 <th class="text-center" style="width:13%">项目阶段</th>
                 <th class="text-center" style="width:10%">项目负责人</th>
                 <th class="text-center" style="width:10%">计划专家费用</th>
-                <th class="text-center" style="width:10%;">签收日期</th>
+                <th class="text-center" style="width:10%;">付款日期</th>
             </tr>
             <tr ng-repeat="s in vm.stageCountList">
                 <td class="text-center">
@@ -102,7 +104,7 @@
                     </span>
                 </td>
                 <td class="text-center">
-                    <span style='width: 100%;display: inline-block;' ng-class="{'label-info':(s.processState && s.processState == 6), 'label-primary': (s.processState && s.processState ==7 ), 'label-success': (s.processState && s.processState ==8 )}">
+                    <span style='width: 100%;display: inline-block;' ng-class="{'label-info':(s.processState && s.processState == 6), 'label-primary': (s.processState && s.processState ==7 ), 'label-success': (s.processState && s.processState ==8 ), 'label-default': (s.processState && s.processState ==9 )}">
                     {{$index + 1}}
                     </span>
                 </td>
@@ -111,7 +113,7 @@
                 <td class="text-center">{{s.reviewstage}}</td>
                 <td class="text-center">{{s.principal}}</td>
                 <td class="text-center">{{s.totalCost}}</td>
-                <td class="text-center">{{s.signdate}}</td>
+                <td class="text-center">{{s.payDate}}</td>
             </tr>
         </table>
     </div>

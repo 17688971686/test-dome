@@ -14,6 +14,7 @@
             initFlowNode : initFlowNode,                //初始化流程环节信息
             initMyGird : initMyGird,                    //初始化我的课题列表
             initDetail : initDetail,                    //初始化详情信息
+            queryGrid : queryGrid ,                     //初始化课题查询列表
         };
 
         return service;
@@ -280,6 +281,115 @@
                     break;
             }
         }//E_initFlowNode
+
+        //begin queryGrid
+        function queryGrid(vm){
+            var dataSource = new kendo.data.DataSource({
+                type: 'odata',
+                transport: common.kendoGridConfig().transport(rootPath + "/topicInfo/findByOData", $("#queryTopicForm")),
+                schema: common.kendoGridConfig().schema({
+                    id: "id",
+                    fields: {
+                        createdDate: {
+                            type: "date"
+                        }
+                    }
+                }),
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                sort: {
+                    field: "createdDate",
+                    dir: "desc"
+                }
+            });
+            // End:dataSource
+            //S_序号
+            var  dataBound=function () {
+                var rows = this.items();
+                var page = this.pager.page() - 1;
+                var pagesize = this.pager.pageSize();
+                $(rows).each(function () {
+                    var index = $(this).index() + 1 + page * pagesize;
+                    var rowLabel = $(this).find(".row-number");
+                    $(rowLabel).html(index);
+                });
+            }
+            //S_序号
+            // Begin:column
+            var columns = [
+                {
+                    field: "rowNumber",
+                    title: "序号",
+                    width: 50,
+                    filterable : false,
+                    template: "<span class='row-number'></span>"
+                },
+                {
+                    field: "",
+                    title: "课题名称",
+                    width: 200,
+                    filterable: false,
+                    template : function(item){
+                        if(item.processInstanceId){
+                            return '<a href="#/topicDetail/'+ item.id
+                                + '/'  + item.processInstanceId +'">' + item.topicName + '</a>';
+                        }else{
+                            return '<a href="#/topicDetail/'+ item.id
+                                + '/">' + item.topicName + '</a>';
+                        }
+
+                    }
+                },
+                {
+                    field: "cooperator",
+                    title: "合作单位",
+                    width: 200,
+                    filterable: false,
+                },
+                {
+                    field: "createdDate",
+                    title: "创建日期",
+                    width: 100,
+                    filterable: false,
+                    format: "{0:yyyy/MM/dd}"
+                },
+                {
+                    field: "endTime",
+                    title: "结题日期",
+                    width: 100,
+                    filterable: false,
+                    format: "{0:yyyy/MM/dd}"
+                },
+                {
+                    field: "orgName",
+                    title: "申报部门",
+                    width: 100,
+                    filterable: false
+                },
+                {
+                    field: "",
+                    title: "操作",
+                    width: 100,
+                    template: function (item) {
+                        return "";
+                    }
+                }
+            ];
+            // End:column
+
+            vm.queryTopicOptions = {
+                dataSource: common.gridDataSource(dataSource),
+                filterable: common.kendoGridConfig().filterable,
+                pageable: common.kendoGridConfig().pageable,
+                noRecords: common.kendoGridConfig().noRecordMessage,
+                columns: columns,
+                dataBound:dataBound,
+                resizable: true
+            };
+        }
+        //end queryGrid
 
     }
 })();
