@@ -199,6 +199,8 @@
 
         function activate() {
             adminSvc.initWelComePage(function (data) {
+                vm.hidePreTable = true;
+                vm.isdisplays = true;
                 if (data) {
                     if (data.proTaskList) {
                         vm.tasksList = data.proTaskList;
@@ -263,7 +265,7 @@
                         //预签收项目
                         if(data.preHistogram){
                             vm.preHistogram =  data.preHistogram;
-                            if(vm.preHistogram != undefined && undefined != 'undefined' && vm.preHistogram.length > 0){
+                            if(vm.preHistogram){
                                 vm.hidePreTable = false;
                             }
                         }else{

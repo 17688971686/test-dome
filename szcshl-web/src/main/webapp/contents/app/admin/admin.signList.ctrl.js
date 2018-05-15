@@ -81,7 +81,9 @@
             vm.project = {};
         }
 
-        //項目查詢統計
+        /**
+         * 查询统计
+         */
         vm.searchSignList = function () {
             vm.signListOptions.dataSource._skip = 0;
             vm.signListOptions.dataSource.read();

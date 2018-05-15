@@ -22,6 +22,15 @@
             <option ng-repeat="x in DICT.PRO_STAGE.dicts|orderBy:'dictSort'" value="{{x.dictName}}" ng-selected="vm.model.reviewStage==x.dictName">{{x.dictName}}</option>
         </select>
 
+        <span class="help-inline">提前介入</span>
+        <select ng-model="vm.project.reviewstages">
+            <option value="">请选择</option>
+            <option value="9">是</option>
+            <option value="0">否</option>
+        </select>
+        <!--进行判断-->
+        <input ng-if="vm.project.reviewstages=='9'" name="isAdvanced" operator="eq" value="9" hidden/>
+
         <span class="help-inline">处理人：</span>
         <input type="text" ng-model="vm.model.displayName" operator="like" name="displayName" id="displayName" placeholder="请输入">
 

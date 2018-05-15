@@ -3,7 +3,6 @@ package cs.repository.odata;
 import cs.common.utils.ObjectUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
@@ -13,7 +12,7 @@ import org.hibernate.criterion.Restrictions;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.text.NumberFormat;
+import cs.common.utils.DateUtils;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -181,14 +180,18 @@ public class ODataObj {
                     }
                     else if (StringUtil.startsWithIgnoreCase(value, "datetime'") && value.endsWith("'")) {// 如果是datetime
                         oDataFilterItem = new ODataFilterItem<Date>();
-                        oDataFilterItem.setValue(DateUtils.parseDate(value.substring("datetime'".length(), value.length() - 1).replace("T", " "), "yyyy-MM-dd hh:mm:ss"));
+                        String rgex = "datetime'(.*?)'";
+                        String dateString = StringUtil.getSubUtilSimple(value, rgex);
+                        oDataFilterItem.setValue(DateUtils.converToDate(dateString.replace("T", " "), DateUtils.DATE_TIME_PATTERN));
                     } else if (StringUtil.startsWithIgnoreCase(value, "date'") && value.endsWith("'")) {// 如果是datetime
                         oDataFilterItem = new ODataFilterItem<Date>();
                         String operate = filterItems[1];
+                        String rgex = "date'(.*?)'";
+                        String dateString = StringUtil.getSubUtilSimple(value, rgex);
                         if("le".equals(operate.toLowerCase())){
-                            oDataFilterItem.setValue(DateUtils.parseDate(value.substring("date'".length(), value.length() - 1)+" 23:59:59", "yyyy-MM-dd mm:HH:ss"));
+                            oDataFilterItem.setValue(DateUtils.converToDate((dateString+" 23:59:59"), DateUtils.DATE_TIME_PATTERN));
                         }else{
-                            oDataFilterItem.setValue(DateUtils.parseDate(value.substring("date'".length(), value.length() - 1), "yyyy-MM-dd"));
+                            oDataFilterItem.setValue(DateUtils.converToDate(dateString, DateUtils.DATE_PATTERN));
                         }
 
                     } else if (StringUtil.startsWithIgnoreCase(value, "guid'") && value.endsWith("'")) {// 如果是guid

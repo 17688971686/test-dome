@@ -44,6 +44,10 @@ public class AccountController {
      */
     @RequestMapping(name = "登录", path = "login")
     public String login(HttpServletRequest request, Model model) throws Exception {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject != null && subject.isAuthenticated()) {
+            return "forward:/admin/index";
+        }
         // 如果登陆失败从request中获取认证异常信息，shiroLoginFailure就是shiro异常类的全限定名
         String exception = (String) request.getAttribute(DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
         String msg = "";

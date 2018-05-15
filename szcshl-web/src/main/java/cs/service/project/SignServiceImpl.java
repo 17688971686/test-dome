@@ -2162,7 +2162,10 @@ public class SignServiceImpl implements SignService {
         criteria.add(Restrictions.ne(Sign_.signState.getName(), EnumState.DELETE.getValue()));
         criteria.add(Restrictions.ne(Sign_.signState.getName(), EnumState.STOP.getValue()));
         criteria.add(Restrictions.ne(Sign_.signState.getName(), EnumState.YES.getValue()));
-        criteria.add(Restrictions.ne(Sign_.processState.getName(), Constant.SignProcessState.FINISH.getValue()));
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.isNull(Sign_.processState.getName()));
+        dis.add(Restrictions.ne(Sign_.processState.getName(), Constant.SignProcessState.FINISH.getValue()));
+        criteria.add(dis);
         List<Sign> signList = criteria.list();
         return signList;
     }

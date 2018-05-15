@@ -183,6 +183,11 @@ public class RuProcessTask {
     private String allPriUser;
 
     /**
+     * 是否提前介入
+     */
+    @Column
+    private String isAdvanced;
+    /**
      * 预发文日期
      */
     @Column(columnDefinition = "DATE")
@@ -498,5 +503,13 @@ public class RuProcessTask {
 
     public void setExpectdispatchdate(Date expectdispatchdate) {
         this.expectdispatchdate = expectdispatchdate;
+    }
+
+    public String getIsAdvanced() {
+        return isAdvanced;
+    }
+
+    public void setIsAdvanced(String isAdvanced) {
+        this.isAdvanced = isAdvanced;
     }
 }

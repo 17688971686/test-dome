@@ -70,7 +70,7 @@ public class RoomBookingDto extends BaseDto {
      */
     private String businessId;
     /**
-     * 业务类型（为了方便初始化【SIGN:表示项目，TOPIC:表示课题研究】）
+     * 业务类型（为了方便初始化【SIGN_WP:表示项目，TOPIC_WP:表示课题研究】）
      */
     private String businessType;
 
