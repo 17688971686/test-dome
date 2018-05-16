@@ -1667,6 +1667,39 @@
             }
 
         }
+
+        /**
+         * 重写打印预览
+         */
+        vm.printFile = function(businessId){
+
+            var isCheck = $("input[name='addRegistersCheck']:checked");
+            console.log(isCheck);
+            if(isCheck.length == 0){
+                bsWin.alert("请选择数据！");
+            }else{
+                var ids = [];
+                for(var i = 0 ; i < isCheck.length ; i++){
+                    ids.push(isCheck[i].value);
+                }
+                var ids = ids.join(",");
+
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/addRegisterFile/printAddRegisterFile/" + businessId + "/" + ids ;
+                $("#iframePreview").attr("src", url);
+                $("#previewModal").kendoWindow({
+                    width: "80%",
+                    height: "730px",
+                    title: "",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }
+
+
+
+        }
     }
 })();
 
@@ -3703,6 +3736,19 @@
         vm.searchSignList = function () {
             vm.signListOptions.dataSource._skip = 0;
             vm.signListOptions.dataSource.read();
+
+            //对项目负责人查询统计进行处理
+            var mUserName = $("input[name='mUserName']").val();
+            var aUserName = $("input[name='aUserName']").val();
+            var allPriUser = $("input[name='allPriUser']").val();
+            if(mUserName){
+                vm.project.mUserName = mUserName;
+            }else if(aUserName){
+                vm.project.aUserName = aUserName;
+            }else if(allPriUser){
+                vm.project.allPriUser = allPriUser;
+            }
+
             vm.filters = vm.project;
             if (vm.filters && vm.filters != undefined) {
                 var queryData = JSON.stringify(vm.filters);
@@ -37901,6 +37947,11 @@
             getSignInfo: getSignInfo ,                  //通过收文编号获取委里信息
             findSignUnitScore : findSignUnitScore,      //获取评分单位信息
             findAVGDayById : findAVGDayById ,                  //获取平均评审天数和工作日
+            addAOrg : addAOrg ,                                //  添加评审部门（项目维护）
+            deleteAOrg : deleteAOrg ,                           //移除评审部门（项目维护）
+            addSecondUser : addSecondUser ,                     //保存添加负责人（项目维护）
+            deleteSecondUser : deleteSecondUser ,               //删除添加的负责人（项目维护）
+            saveMoreExpert : saveMoreExpert                     //保存是否能多个自选专家
         };
         return service;
 
@@ -39078,6 +39129,114 @@
         }
 
         //end editSignState
+
+        //begin addAOrg
+        function addAOrg(orgIds , signId , callBack){
+            var httpOptions = {
+                method : "post" ,
+                url : rootPath + "/sign/addAOrg",
+                params : {signId : signId  , orgIds : orgIds }
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined || typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end addAOrg
+
+        //begin deleteAOrg
+        function deleteAOrg(orgId  , signId , callBack){
+            var httpOptions = {
+                method : "delete" ,
+                url : rootPath + "/sign/deleteOrg",
+                params : {orgIds : orgId  , signId : signId}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined || typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end deleteAOrg
+
+        //begin addSecondUser
+        function addSecondUser(userId ,  signId , callBack){
+            var httpOptions = {
+                method : "post" ,
+                url : rootPath + "/sign/addSecondUser",
+                params : {userId : userId  ,   signId : signId}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined || typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end addSecondUser
+
+        //begin deleteSecondUser
+        function deleteSecondUser(userId , signId , callBack){
+            var httpOptions = {
+                method : "delete" ,
+                url : rootPath + "/sign/deleteSecondUser",
+                params : {userId : userId  ,   signId : signId}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined || typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end deleteSecondUser
+
+        //begin saveMoreExpert
+        function saveMoreExpert(signId , isMoreExpert , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/sign/saveMoreExpert",
+                params : {signId : signId , isMoreExpert : isMoreExpert}
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end saveMoreExpert
     }
 })();
 (function () {
@@ -40137,9 +40296,11 @@
 
     angular.module('app').controller('MaintainProjectEditCtrl', MaintainProjectEdit);
 
-    MaintainProjectEdit.$inject = ['pauseProjectSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'sysfileSvc', 'addRegisterFileSvc', 'bsWin'];
+    MaintainProjectEdit.$inject = ['pauseProjectSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'sysfileSvc',
+        'addRegisterFileSvc', 'bsWin' , 'orgSvc' , 'userSvc'];
 
-    function MaintainProjectEdit(pauseProjectSvc, signSvc, $state, flowSvc, $scope, sysfileSvc, addRegisterFileSvc, bsWin) {
+    function MaintainProjectEdit(pauseProjectSvc, signSvc, $state, flowSvc, $scope, sysfileSvc,
+                                 addRegisterFileSvc, bsWin , orgSvc , userSvc) {
         var vm = this;
         vm.title = "维护项目修改";
         vm.model = {};
@@ -40202,12 +40363,26 @@
                         if (vm.model.workProgramDtoList[i].branchId == "1") {
                             vm.work = vm.model.workProgramDtoList[i];//主的工作方案
                             //初始化第二负责人
-                            if (vm.work.secondChargeUserName) {
-                                vm.secondChargeUserName = vm.work.secondChargeUserName.split(",")
-                            }
+                            // if (vm.work.secondChargeUserName) {
+                            //     vm.secondChargeUserName = vm.work.secondChargeUserName.split(",")
+                            // }
                         }
                     }
                 }
+
+                //评审部门，主办部门 + 协办部门
+                vm.orgName = vm.model.mOrgName
+                if(vm.orgName){
+                    vm.orgName += vm.model.aOrgName == undefined ? "" : "," + vm.model.aOrgName;
+                }else{
+                    vm.orgName = vm.model.aOrgName;
+                }
+                vm.secondChargeUserName = [] ;
+                //项目负责人
+                if(vm.model.aUserName){
+                    vm.secondChargeUserName = vm.model.aUserName.split(",")
+                }
+
                 //5、附件
                 sysfileSvc.findByMianId(vm.model.signid, function (data) {
                     if (data && data.length > 0) {
@@ -40433,6 +40608,187 @@
                 }
 
             });
+        }
+
+        /**
+         * 添加评审部门弹框
+         */
+        vm.addReviewDept = function(){
+
+            $("#addReviewDeptWindow").kendoWindow({
+                width: "600px",
+                height: "400px",
+                title: "评审部门管理",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+
+            orgSvc.queryOrgList(vm , function(data){
+                vm.orgs = data;
+                if(vm.work.reviewOrgName){
+                    var reviewOrgName = vm.work.reviewOrgName.split(',');
+                    for(var i = 0 ; i < reviewOrgName.length ; i++){
+                        $.each(vm.orgs , function(x , obj){
+                            if(obj.name == reviewOrgName[i]){
+                                var inputId = obj.id;
+                                $("#" + inputId).attr("disabled", "disabled");
+                            }
+                        })
+                    }
+                }
+            });
+
+        }
+
+        /**
+         * 保存添加的评审部门
+         */
+        vm.saveReviewDept = function(orgId , orgName){
+
+            // var isCheck = $("input[selectType='assist']:checked");
+
+            // if(isCheck.length == 0){
+            //     bsWin.alert("请选择添加的部门！");
+            // }else{
+            //     var ids = [];
+            //     var names = [];
+            //     for(var i = 0 ; i < isCheck.length ; i++){
+            //         ids.push(isCheck[i].value);
+            //         names.push(isCheck[i].name)
+            //     }
+            //     var idStr = ids.join(',');
+            //     var nameStr = names.join(',');
+            signSvc.addAOrg(  orgId , vm.work.signId  , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.alert(data.reMsg);
+                    vm.orgName += (vm.orgName == undefined ? "" : "," ) + orgName;
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+
+            });
+            //     }
+        }
+
+        /**
+         * 移除添加的评审部门
+         * @param orgId
+         * @param orgName
+         */
+        vm.deleteReviewDept = function(orgId , orgName){
+            signSvc.deleteAOrg(orgId ,  vm.work.signId , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.alert(data.reMsg);
+                    var reviewOrgName = vm.orgName.split(',');
+                    for(var i = 0 ; i < reviewOrgName.length ; i++){
+                        if(reviewOrgName[i] == orgName){
+                            reviewOrgName.splice(i , 1);
+                            break;
+                        }
+                    }
+
+                    vm.orgName = reviewOrgName.join(',');
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+            });
+        }
+
+        /**
+         * 添加项目负责人弹出框
+         */
+        vm.addSecondChargeUser = function(){
+            $("#addSecondChargeUserWindow").kendoWindow({
+                width: "600px",
+                height: "400px",
+                title: "负责人管理",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+
+            userSvc.findUserAndOrg(function(data){
+                vm.user = data;
+            })
+        }
+
+        /**
+         * 保存添加的负责人
+         * @param user
+         */
+        vm.saveSecondUser = function (user){
+            signSvc.addSecondUser(user.id , vm.work.signId , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.alert(data.reMsg);
+                    vm.secondChargeUserName.push(user.displayName);
+                    var orgNames = vm.orgName.split(",");
+                    var b = true;
+                   for(var i =0 ; i < orgNames.length ; i++){
+                       if(orgNames[i] == user.orgDto.name){
+                           b = false;
+                           break;
+                       }
+                   }
+                   if(b){
+                       orgNames.push(user.orgDto.name);
+                       vm.orgName = orgNames.join(",");
+                   }
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+            });
+
+        }
+
+        /**
+         * 移除添加的负责人
+         * @param user
+         */
+        vm.deleteSecondUser = function(user){
+            signSvc.deleteSecondUser(user.id , vm.work.signId , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.alert(data.reMsg);
+                    for(var i = 0 ; i < vm.secondChargeUserName.length ; i++){
+                        if(vm.secondChargeUserName[i] == user.displayName){
+                            vm.secondChargeUserName.splice(i , 1);
+                            break;
+                        }
+                    }
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+
+            });
+        }
+
+        /**
+         * 是否能自选多个专家
+         */
+        vm.addMoreExp = function(){
+
+            var selected = $("#isMoreExpert").is(':checked');
+            if(selected){
+                bsWin.confirm("确认能自选多个专家？" , function(){
+                    signSvc.saveMoreExpert(vm.model.signid , vm.model.isMoreExpert , function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                });
+            }else{
+                bsWin.confirm("确认取消自选多个专家？" , function(){
+                    console.log(vm.model.isMoreExpert);
+                    signSvc.saveMoreExpert(vm.model.signid , vm.model.isMoreExpert , function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                });
+            }
+
         }
     }
 })();
@@ -42767,10 +43123,31 @@
             getZtreeChecked: getZtreeChecked,
             //initUserNo : initUserNo//初始化 员工工号
             resetPwd: resetPwd, //重置密码
+            findUserAndOrg : findUserAndOrg,  //获取部门下的所有用户
         };
 
         return service;
 
+        //begin findUserAndOrg
+        function findUserAndOrg(callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/user/findUserAndOrg"
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end findUserAndOrg
 
         //begin resetPwd
         function resetPwd(vm, ids) {
