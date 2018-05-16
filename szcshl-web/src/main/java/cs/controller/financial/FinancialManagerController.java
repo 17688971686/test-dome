@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Description: 财务管理 控制层
@@ -212,9 +213,10 @@ public class FinancialManagerController {
             sheet.setColumnWidth(0, 3766);
             sheet.setColumnWidth(1, 3766);
             sheet.setColumnWidth(2, 6766);
-            sheet.setColumnWidth(3, 3766);
+            sheet.setColumnWidth(3, 6766);
             sheet.setColumnWidth(4, 3766);
             sheet.setColumnWidth(5, 3766);
+            sheet.setColumnWidth(6, 3766);
             // 第三步，在sheet中添加表头第2行,注意老版本poi对Excel的行数列数有限制short
             HSSFRow row = sheet.createRow((int) 3);
             // 设置值表头 设置表头居中
@@ -227,7 +229,7 @@ public class FinancialManagerController {
             styless.setFont(font);
             styless.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
             //合并单元格
-            CellRangeAddress region1 = new CellRangeAddress(0, 2, (short) 0, (short) 5); //参数1：起始行 参数2：终止行 参数3：起始列 参数4：终止列
+            CellRangeAddress region1 = new CellRangeAddress(0, 2, 0,6); //参数1：起始行 参数2：终止行 参数3：起始列 参数4：终止列
             sheet.addMergedRegion(region1);
             //设置标题
             HSSFRow titleRow = sheet.createRow((int) 0);
@@ -243,58 +245,54 @@ public class FinancialManagerController {
             titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
             titleCell.setCellStyle(titleStyle);
             //设置第一行
-            HSSFCell cell = row.createCell((short) 0);
+            HSSFCell cell = row.createCell( 0);
             cell.setCellValue("姓名");
             cell.setCellStyle(style);
-            cell = row.createCell((short) 1);
+            cell = row.createCell(1);
             cell.setCellValue("是否外地");
             cell.setCellStyle(style);
-            cell = row.createCell((short) 2);
-            cell.setCellValue("开户行/银行账号");
+            cell = row.createCell(2);
+            cell.setCellValue("银行账号");
             cell.setCellStyle(style);
-            cell = row.createCell((short) 3);
+            cell = row.createCell(3);
+            cell.setCellValue("开户行");
+            cell.setCellStyle(style);
+            cell = row.createCell(4);
             cell.setCellValue("评审费");
             cell.setCellStyle(style);
-            cell = row.createCell((short) 4);
+            cell = row.createCell(5);
             cell.setCellValue("应纳税额");
             cell.setCellStyle(style);
-            cell = row.createCell((short) 5);
+            cell = row.createCell(6);
             cell.setCellValue("合计（元）");
             cell.setCellStyle(style);
             //要先进行过滤。取出需要的数据。
             //如果没有先进行过滤时。直接循环赋值。会造成有一些行会空白的。（也就是说有多少条数据就有多少行,过滤的那行会变成空。所以先进行过滤）
-            List<ExpertSelectedDto> expertSelectedDtoList=new ArrayList<>();
-            for (int i = 0; i < expertReviewDto.getExpertSelectedDtoList().size(); i++) {
-                //把未确认和未参加会议的专家过滤掉
-                if(Constant.EnumState.YES.getValue().equals(expertReviewDto.getExpertSelectedDtoList().get(i).getIsConfrim()) &&
-                        Constant.EnumState.YES.getValue(). equals(expertReviewDto.getExpertSelectedDtoList().get(i).getIsJoin())){
-                    expertSelectedDtoList.add(expertReviewDto.getExpertSelectedDtoList().get(i));
-                }
-            }
+            List<ExpertSelectedDto> expertSelectedDtoList =  expertReviewDto.getExpertSelectedDtoList();
+            //把未确认和未参加会议的专家过滤掉
+            expertSelectedDtoList = expertSelectedDtoList.stream().filter(es ->(Constant.EnumState.YES.getValue().equals(es.getIsJoin()) && Constant.EnumState.YES.getValue().equals(es.getIsConfrim()))).collect(Collectors.toList());
             //然后再进行赋值
-            for (int i = 0; i < expertSelectedDtoList.size(); i++) {
+            for (int i = 0,l=expertSelectedDtoList.size(); i <l; i++) {
+                ExpertSelectedDto expertSelectedDto = expertSelectedDtoList.get(i);
                 row = sheet.createRow((int) i + 4);//用来控制数据在第几行开始
                 //定义实体类
-                ExpertDto expertDto = expertSelectedDtoList.get(i).getExpertDto();
-                Expert expert = new Expert();
-                ExpertSelected expertSelected = new ExpertSelected();
-                BeanCopierUtils.copyProperties(expertDto, expert);
-                BeanCopierUtils.copyProperties(expertSelectedDtoList.get(i), expertSelected);
+                ExpertDto expertDto = expertSelectedDto.getExpertDto();
                 // 第四步，创建单元格，并设置值
                 //先定义单元格。方便写入样式
-                HSSFCell NameCells = row.createCell((short) 0);//名字
-                HSSFCell cells = row.createCell((short) 1);//是否外境
-                HSSFCell OpeningCells = row.createCell((short) 2);//定义开户银行
-                HSSFCell costCells = row.createCell((short) 3);//定义评审费
-                HSSFCell ReviewCells = row.createCell((short) 4);//应纳税额
-                HSSFCell TotalCells = row.createCell((short) 5);//合计
+                HSSFCell NameCells = row.createCell(0);//名字
+                HSSFCell cells = row.createCell(1);//是否外境
+                HSSFCell bankCells = row.createCell( 2);//定义银行账号
+                HSSFCell OpeningCells = row.createCell( 3);//定义开户银行
+                HSSFCell costCells = row.createCell(4);//定义评审费
+                HSSFCell ReviewCells = row.createCell(5);//应纳税额
+                HSSFCell TotalCells = row.createCell(6);//合计
                 //写入数据和样式
                 //名字
-                NameCells.setCellValue(expert.getName() == null ? "" :expert.getName());
+                NameCells.setCellValue(expertDto.getName() == null ? "" :expertDto.getName());
                 NameCells.setCellStyle(style);
 
                 //是否外境
-                if ((Constant.EnumState.STOP.getValue()).equals(expert.getExpertField())) {//判断是否是外境。就是红字字体
+                if ((Constant.EnumState.STOP.getValue()).equals(expertDto.getExpertField())) {//判断是否是外境。就是红字字体
                     cells.setCellValue("是");
                     cells.setCellStyle(styless);//加样式
                 } else {
@@ -302,30 +300,31 @@ public class FinancialManagerController {
                     cells.setCellStyle(style);//加样式
 
                 }
+                //定义银行账号
+                bankCells.setCellValue(expertDto.getBankAccount()==null?"":expertDto.getBankAccount());
                 //定义开户银行
-                OpeningCells.setCellValue((expert.getOpeningBank() == null ? "" : expert.getOpeningBank()) + "/" + (expert.getBankAccount() == null ? "" : expert.getBankAccount()));
+                OpeningCells.setCellValue((expertDto.getOpeningBank() == null ? "" : expertDto.getOpeningBank()));
                 OpeningCells.setCellStyle(style);//居中
                 //定义评审费
                 BigDecimal b = new BigDecimal("2000");//定义评审费的额度
-                if(expertSelected.getReviewCost()==null){
+                if(expertSelectedDto.getReviewCost()==null){
                     costCells.setCellValue("");
                     costCells.setCellStyle(style);
                 }else{
-                    if (expertSelected.getReviewCost().compareTo(b) >= 0) {//判断，当评审费的额度大于或等于2000时，字体红色
-                        costCells.setCellValue(expertSelected.getReviewCost().toString());
+                    if (expertSelectedDto.getReviewCost().compareTo(b) >= 0) {//判断，当评审费的额度大于或等于2000时，字体红色
+                        costCells.setCellValue(expertSelectedDto.getReviewCost().toString());
                         costCells.setCellStyle(styless);
                     } else {
-                        costCells.setCellValue(expertSelected.getReviewCost().toString());
+                        costCells.setCellValue(expertSelectedDto.getReviewCost().toString());
                         costCells.setCellStyle(style);
                     }
                 }
 
-
                 //应纳税额
-                ReviewCells.setCellValue(expertSelected.getReviewTaxes()== null ? "":expertSelected.getReviewTaxes().toString());
+                ReviewCells.setCellValue(expertSelectedDto.getReviewTaxes()== null ? "":expertSelectedDto.getReviewTaxes().toString());
                 ReviewCells.setCellStyle(style);
                 //合计
-                TotalCells.setCellValue(expertSelected.getTotalCost()== null ? "" :expertSelected.getTotalCost().toString());
+                TotalCells.setCellValue(expertSelectedDto.getTotalCost()== null ? "" :expertSelectedDto.getTotalCost().toString());
                 TotalCells.setCellStyle(style);
 
             }

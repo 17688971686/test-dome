@@ -30,12 +30,12 @@
                     }
                 });
             }
-
             //创建附件对象
             vm.sysFile = {
                 businessId : vm.model.sharId,
                 mainId : vm.model.sharId,
                 mainType : sysfileSvc.mainTypeValue().SHARE,
+                showBusiType: false,
             };
             sysfileSvc.initUploadOptions({
                 inputId:"sysfileinput",
@@ -84,7 +84,10 @@
             sharingPlatlformSvc.createSharingPlatlform(vm);
         };
 
-        // 业务判断
+        /**
+         * 选择用户
+         * @param $event
+         */
         vm.checkBox = function ($event) {
             var checkbox = $event.target;
             var checked = checkbox.checked;
@@ -100,7 +103,33 @@
                 });
             }
         }
-        
+        /**
+         * 选择组别
+         * @param $event
+         * @param deptObj
+         */
+        vm.checkDeptBox = function($event,deptObj){
+            var checkbox = $event.target;
+            var checked = checkbox.checked;
+            var userIdList = [];
+            for(var i=0,l=deptObj.userDtoList.length;i<l;i++){
+                userIdList.push(deptObj.userDtoList[i].id);
+            }
+            if (checked) {
+                $('input[name="shareUser"]').each(function (i,Obj) {
+                    if(jQuery.inArray(Obj.value, userIdList ) > -1){
+                        $(this).attr("disabled", "disabled");
+                        $(this).removeAttr("checked");
+                    }
+                });
+            } else {
+                $('input[name="shareUser"]').each(function (i,Obj) {
+                    if(jQuery.inArray(Obj.value, userIdList ) > -1){
+                        $(this).removeAttr("disabled");
+                    }
+                });
+            }
+        }
 
     }
 })();

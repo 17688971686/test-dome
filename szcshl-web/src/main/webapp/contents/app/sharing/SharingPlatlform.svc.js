@@ -30,6 +30,7 @@
             if((vm.shareOrgList && vm.shareOrgList.length > 0)){
                 //1、先计算选择的部门
                 if(vm.model.privilegeDtoList && vm.model.privilegeDtoList.length > 0){
+                    var userList = [];
                     vm.shareOrgList.forEach(function (so,i){
                         vm.model.privilegeDtoList.forEach(function (p,index) {
                             if(p.businessType == 1 || p.businessType == "1"){
@@ -37,6 +38,7 @@
                                     so.isChecked = true;
                                     so.userDtos.forEach(function (u,k){
                                         u.isDisabled = true;
+                                        userList.push(u);
                                     });
                                 }
                             }else if(p.businessType == 2 || p.businessType == "2"){
@@ -47,8 +49,34 @@
                                 });
                             }
                         })
-
                     });
+                    var groupUserIdList = [];
+                    vm.deptDtoList.forEach(function (dp,i){
+                        vm.model.privilegeDtoList.forEach(function (p,index) {
+                            if(p.businessType == 3 || p.businessType == "3"){
+                                if(p.businessId == dp.id){
+                                    dp.isChecked = true;
+                                    dp.userDtoList.forEach(function (u,k){
+                                        groupUserIdList.push(u.id);
+                                    });
+                                }
+                            }
+                        })
+                    });
+
+                    if(groupUserIdList && groupUserIdList.length > 0){
+                        vm.shareOrgList.forEach(function (so,i) {
+                            so.userDtos.forEach(function (u,k){
+                                userList.push(u);
+                            });
+                        });
+                    }
+                    //组别用户
+                    userList.forEach(function (u,index) {
+                        if(jQuery.inArray(u.id, groupUserIdList ) > -1){
+                            u.isDisabled = true;
+                        }
+                    })
                 }
 
                 if(vm.noOrgUsetList && vm.noOrgUsetList.length > 0 &&  vm.model.privilegeDtoList!=undefined){
@@ -72,6 +100,7 @@
             };
             var httpSuccess = function success(response) {
                 vm.shareOrgList = response.data.orgDtoList;
+                vm.deptDtoList = response.data.deptDtoList;
                 vm.noOrgUsetList = response.data.noOrgUserList;
                 vm.businessFlag.isLoadOrgUser = true;
                 initSeleObj(vm);
@@ -102,7 +131,6 @@
             });
         }
 
-
         // begin#deleteSharingPlatlform
         function deleteSharingPlatlform(vm, id) {
             vm.isSubmit = true;
@@ -111,13 +139,11 @@
                 url: url_sharingPlatlform + "/sharingDelete",
                 data: id
             };
-
             var httpSuccess = function success(response) {
                 vm.isSubmit = false;
                 vm.gridOptions.dataSource.read();
                 bsWin.alert("操作成功");
             };
-
             common.http({
                 vm: vm,
                 $http: $http,
@@ -152,6 +178,16 @@
                             shareUser.businessId = uCheck[i].value;
                             shareUser.businessType = "2";
                             vm.model.privilegeDtoList.push(shareUser);
+                        }
+                    }
+                    //3、计算组别
+                    var dCheck = $("input[name='shareDept']:checked");
+                    if (dCheck.length > 0) {
+                        for (var i = 0; i < dCheck.length; i++) {
+                            var shareDept = {};
+                            shareDept.businessId = dCheck[i].value;
+                            shareDept.businessType = "3";
+                            vm.model.privilegeDtoList.push(shareDept);
                         }
                     }
                 }

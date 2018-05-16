@@ -6,6 +6,7 @@ import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
 import cs.common.ftp.FtpUtils;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;
@@ -36,7 +37,8 @@ public class SysFileRepoImpl extends AbstractRepository<SysFile, String> impleme
     public List<SysFile> queryFileList(String mainId, String sysBusiType) {
         Criteria criteria = getExecutableCriteria();
         criteria.add(Restrictions.eq(SysFile_.mainId.getName(), mainId));
-        criteria.add(Restrictions.eq(SysFile_.sysBusiType.getName(), sysBusiType));
+        criteria.add(Restrictions.like(SysFile_.sysBusiType.getName(), "%"+sysBusiType+"%"));
+
         List<SysFile> sysFiles = criteria.list();
         return sysFiles;
     }

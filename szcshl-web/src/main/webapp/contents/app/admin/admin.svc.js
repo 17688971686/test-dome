@@ -910,7 +910,6 @@
                     template: function (item) {
                         if (item.surplusdays != undefined) {
                             return item.surplusdays;
-                            // return (item.surplusdays > 0) ? item.surplusdays : 0;
                         } else {
                             return "";
                         }
@@ -1046,9 +1045,8 @@
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: common.kendoGridConfig(vm.queryParams).dataBound /*function () {
-
-                 /*                dataBound: function () {
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound
+                 /* dataBound: function () {
                     var rows = this.items();
                     var page = this.pager.page() - 1;
                     var pagesize = this.pager.pageSize();

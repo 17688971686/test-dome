@@ -15,18 +15,19 @@ import cs.model.PageModelDto;
 import cs.model.sharing.SharingPlatlformDto;
 import cs.model.sharing.SharingPrivilegeDto;
 import cs.model.sys.OrgDto;
+import cs.model.sys.SysDeptDto;
 import cs.model.sys.UserDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sharing.SharingPlatlformRepo;
-import cs.repository.repositoryImpl.sys.OrgRepo;
-import cs.repository.repositoryImpl.sys.SysFileRepo;
-import cs.repository.repositoryImpl.sys.SysFileRepoImpl;
-import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.repository.repositoryImpl.sys.*;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.StringType;
+import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +53,8 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
     private SysFileRepoImpl sysFileRepoImpl;
     @Autowired
     private OrgRepo orgRepo;
-
+    @Autowired
+    private SysDeptRepo sysDeptRepo;
 
     @Override
     public PageModelDto<SharingPlatlformDto> get(ODataObj odataObj) {
@@ -129,15 +131,27 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         Criteria criteria = sharingPlatlformRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
         //查询个人接收到的记录信息（全局、部分和个人）
+        String userId = SessionUtil.getUserId();
+        Object[] objects = null;
+        Type[] types = null;
+        boolean isOrgUser = Validate.isObject(SessionUtil.getUserInfo().getOrg()) && Validate.isString(SessionUtil.getUserInfo().getOrg().getId());
         criteria.add(Restrictions.eq(SharingPlatlform_.isPublish.getName(),Constant.EnumState.YES.getValue()));
-        StringBuilder linkSql = new StringBuilder("(isnopermission = '9' or sharid in ");
-        linkSql.append(" ( select sharid from cs_sharing_privilege where (businesstype = '2' and  businessId ='"+SessionUtil.getUserId()+"') ");
-        if(Validate.isObject(SessionUtil.getUserInfo().getOrg()) && Validate.isString(SessionUtil.getUserInfo().getOrg().getId())){
-            linkSql.append(" or (businesstype = '1' and  businessId ='"+SessionUtil.getUserInfo().getOrg().getId()+"')" );
+        StringBuilder linkSql = new StringBuilder("(isnopermission = ? or sharid in ");
+        linkSql.append(" ( select sharid from cs_sharing_privilege where (businesstype = ? and  businessId =?) ");
+        if(isOrgUser){
+            linkSql.append(" or (businesstype =? and  businessId =?)" );
+            linkSql.append(" or (businesstype =? and  businessId in (select SYSDEPTLIST_ID from CS_DEPT_CS_USER where USERLIST_ID = ?))" );
         }
         linkSql.append(" ) )");
+        if(isOrgUser){
+            objects = new Object[]{EnumState.YES.getValue(),"2",userId,"1",SessionUtil.getUserInfo().getOrg().getId(),"3",userId};
+            types = new Type[]{StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE};
+        }else {
+            objects = new Object[]{EnumState.YES.getValue(),"2",userId};
+            types = new Type[]{StringType.INSTANCE,StringType.INSTANCE,StringType.INSTANCE};
+        }
 
-        criteria.add(Restrictions.sqlRestriction(linkSql.toString()));
+        criteria.add(Restrictions.sqlRestriction(linkSql.toString(),objects,types));
 
         //统计总数
         Integer totalResult = ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
@@ -329,18 +343,18 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
      * @return
      */
     @Override
-    public Map<String, Object> initOrgAndUser() {
+    public Map<String, Object> initOrgAndUser(boolean isInCludeGroup) {
         Map<String, Object> resultMap = new HashMap<>();
-
         //1、查询用户和部门
         Criteria criteria = orgRepo.getExecutableCriteria();
+        criteria.addOrder(Order.asc(Org_.sort.getName()));
         List<Org> orgList = criteria.list();
-        List<OrgDto> orgDtoList = new ArrayList<>(orgList == null?0:orgList.size());
+        List<OrgDto> orgDtoList = new ArrayList<>(Validate.isList(orgList)?orgList.size():0);
         orgList.forEach(ol -> {
             OrgDto orgDto = new OrgDto();
             List<UserDto> userDtoList = new ArrayList<>();
             BeanCopierUtils.copyProperties(ol,orgDto);
-            if(ol.getUsers() != null && ol.getUsers().size() > 0){
+            if(Validate.isList(ol.getUsers())){
                 ol.getUsers().forEach( ul ->{
                     if("t".equals(ul.getJobState()) && !Constant.SUPER_USER.equals(ul.getLoginName())){
                         UserDto userDto = new UserDto();
@@ -349,7 +363,6 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
                         userDto.setLoginName(ul.getLoginName());
                         userDtoList.add(userDto);
                     }
-
                 });
             }
             orgDto.setUserDtos(userDtoList);
@@ -375,6 +388,35 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         }
         resultMap.put("noOrgUserList",userDtoList2);
 
+
+        //判断是否包含组别
+        if(isInCludeGroup){
+            criteria = sysDeptRepo.getExecutableCriteria();
+            List<SysDept> deptList = criteria.list();
+            if(Validate.isList(deptList)){
+                List<SysDeptDto> deptDtoList = new ArrayList<>();
+                deptList.forEach(dl -> {
+                    SysDeptDto sysDeptDto = new SysDeptDto();
+                    List<UserDto> userDtoList = new ArrayList<>();
+                    BeanCopierUtils.copyProperties(dl,sysDeptDto);
+                    if(Validate.isList(dl.getUserList())){
+                        dl.getUserList().forEach( ul ->{
+                            if("t".equals(ul.getJobState()) && !Constant.SUPER_USER.equals(ul.getLoginName())){
+                                UserDto userDto = new UserDto();
+                                userDto.setDisplayName(ul.getDisplayName());
+                                userDto.setId(ul.getId());
+                                userDto.setLoginName(ul.getLoginName());
+                                userDtoList.add(userDto);
+                            }
+                        });
+                    }
+                    sysDeptDto.setUserDtoList(userDtoList);
+                    deptDtoList.add(sysDeptDto);
+
+                });
+                resultMap.put("deptDtoList",deptDtoList);
+            }
+        }
         return resultMap;
     }
 

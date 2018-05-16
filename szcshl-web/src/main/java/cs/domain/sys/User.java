@@ -182,7 +182,7 @@ public class User extends DomainBase {
     private String mngOrgType;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    private List<Role> roles = new ArrayList<>();
+    private List<Role> roles ;
 
     @ManyToOne
     @JoinColumn(name = "orgID")
@@ -192,7 +192,7 @@ public class User extends DomainBase {
      * 组（内部部门）
      */
     @ManyToMany(mappedBy="userList",fetch = FetchType.LAZY)
-    private List<SysDept> sysDeptList = new ArrayList<>();
+    private List<SysDept> sysDeptList;
 
     public Org getOrg() {
         return org;

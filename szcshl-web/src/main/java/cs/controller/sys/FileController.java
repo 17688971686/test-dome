@@ -582,7 +582,6 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 case "WORKPROGRAM":
                     WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
-//                  SignDto signDto =  signService.findById(workProgramDto.getSignId(), true);
                     WorkProgram workProgram = new WorkProgram();
                     BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
                     if (!Validate.isString(workProgram.getIsHaveEIA())) {

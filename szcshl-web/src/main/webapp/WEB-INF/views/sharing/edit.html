@@ -34,7 +34,7 @@
                 <td class="text-right">立即发布：</td>
                 <td>
                     <input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.model.isPublish"
-                           name="isPublish" ng-true-value="9" ng-false-value="0">是
+                           name="isPublish" ng-checked="vm.model.isPublish == 9" ng-true-value="9" ng-false-value="0">是
                     <span data-valmsg-for="pubDept" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
@@ -42,7 +42,7 @@
                 <td class="text-right">全员可看：</td>
                 <td>
                     <input class="text-right" type="checkbox" style="width:20px;" ng-model="vm.model.isNoPermission"
-                           name="isNoPermission" ng-true-value="9" ng-false-value="0">是
+                           name="isNoPermission" ng-checked="vm.model.isNoPermission == 9"  ng-true-value="9" ng-false-value="0">是
                     <span data-valmsg-for="pubDept" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
@@ -52,6 +52,9 @@
                 <td>
                     <span ng-repeat="o in vm.shareOrgList">
                         <input type="checkbox" name="shareOrg" value="{{o.id}}" ng-click="vm.checkBox($event)" ng-checked="{{o.isChecked}}"/>{{o.name}}</span>
+                    </span>
+                    <span ng-repeat="d in vm.deptDtoList">
+                        <input type="checkbox" name="shareDept" value="{{d.id}}" ng-click="vm.checkDeptBox($event,d)" ng-checked="{{d.isChecked}}"/>{{d.name}}</span>
                     </span>
                 </td>
             </tr>

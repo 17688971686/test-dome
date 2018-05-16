@@ -202,7 +202,9 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         //2、发文日期
         sign.setDispatchdate(now);
         sign.setDocnum(fileNum);
-        //3、发文后剩余工作日
+        //3、把亮灯状态去掉
+        sign.setIsLightUp(signEnumState.NOLIGHT.getValue());
+        //4、发文后剩余工作日
         sign.setDaysafterdispatch(sign.getSurplusdays());
         signRepo.save(sign);
 
@@ -236,7 +238,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 dispatchDoc.setDraftDate(now);
                 dispatchDoc.setCreatedBy(SessionUtil.getLoginName());
                 dispatchDoc.setCreatedDate(now);
-
                 dispatchDocDto.setId(dispatchDoc.getId());
             } else {
                 dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(), dispatchDocDto.getId());
@@ -247,10 +248,19 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
             //完成发文
             Sign sign = signRepo.findById(Sign_.signid.getName(), dispatchDocDto.getSignId());
-            //如果是未生成发文编号的，要更新发文大日
-            if(null != dispatchDoc.getDispatchDate() && null != sign.getDispatchdate() && sign.getProcessState() > SignProcessState.END_DIS_NUM.getValue()){
-                sign.setDispatchdate(dispatchDoc.getDispatchDate());
+            //如果是未生成发文编号的，没有发文日期
+            if(null != dispatchDoc.getDispatchDate()){
+                boolean isSuperUser = SUPER_USER.equals(SessionUtil.getLoginName());
+                //如果是负责人提交，则要更新填报的发文日期
+                if(!isSuperUser){
+                    dispatchDoc.setDispatchDate(now);
+                }
+                //如果已经生成发文编号，则要更新
+                if(sign.getProcessState() >= SignProcessState.END_DIS_NUM.getValue()){
+                    sign.setDispatchdate(dispatchDoc.getDispatchDate());
+                }
             }
+
             //如果还没更新状态，则更新，已更新状态的，则不做改动
             if(sign.getProcessState() < Constant.SignProcessState.DO_DIS.getValue()){
                 sign.setProcessState(Constant.SignProcessState.DO_DIS.getValue());
@@ -307,7 +317,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             //是否已经有阶段关联
             dispatch.setIsRelated(signRepo.checkIsLink(signId) ? EnumState.YES.getValue() : EnumState.NO.getValue());
             dispatch.setDraftDate(now);
-            dispatch.setDispatchDate(now);
+            //dispatch.setDispatchDate(now);
             dispatch.setDispatchType("项目发文");
             //年度计划、紧急程度
             dispatch.setYearPlan(sign.getYearplantype());

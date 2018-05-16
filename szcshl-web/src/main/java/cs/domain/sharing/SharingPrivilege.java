@@ -21,7 +21,7 @@ public class SharingPrivilege {
     @Column(columnDefinition = "VARCHAR(64)")
     private String businessId;
     /**
-     * 业务类型（用户或者部门,1是部分，2是用户）
+     * 业务类型（用户或者部门,1是部门，2是用户，3是组）
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String businessType;

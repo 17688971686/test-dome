@@ -591,6 +591,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         sqlBuilder.setParam("isconfrim", Constant.EnumState.YES.getValue());
         sqlBuilder.setParam("reviewId", reviewId);
         sqlBuilder.append(" AND TO_CHAR (er.REVIEWDATE, 'yyyy-mm') =:reviewmonth ").setParam("reviewmonth", month);
+        sqlBuilder.append(" AND ER.PAYDATE is not null ");
         sqlBuilder.bulidPropotyString("AND", "ES.EXPERTID", expertIds);
         sqlBuilder.append(" )GROUP BY expertid ");
         List<Object[]> resultList = expertReviewRepo.getObjectArray(sqlBuilder);

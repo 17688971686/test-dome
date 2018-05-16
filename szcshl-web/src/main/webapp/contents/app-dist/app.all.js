@@ -4850,7 +4850,6 @@
                     template: function (item) {
                         if (item.surplusdays != undefined) {
                             return item.surplusdays;
-                            // return (item.surplusdays > 0) ? item.surplusdays : 0;
                         } else {
                             return "";
                         }
@@ -4986,9 +4985,8 @@
                 noRecords: common.kendoGridConfig().noRecordMessage,
                 columns: columns,
                 resizable: true,
-                dataBound: common.kendoGridConfig(vm.queryParams).dataBound /*function () {
-
-                 /*                dataBound: function () {
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound
+                 /* dataBound: function () {
                     var rows = this.items();
                     var page = this.pager.page() - 1;
                     var pagesize = this.pager.pageSize();
@@ -33904,12 +33902,12 @@
                     }
                 });
             }
-
             //创建附件对象
             vm.sysFile = {
                 businessId : vm.model.sharId,
                 mainId : vm.model.sharId,
                 mainType : sysfileSvc.mainTypeValue().SHARE,
+                showBusiType: false,
             };
             sysfileSvc.initUploadOptions({
                 inputId:"sysfileinput",
@@ -33958,7 +33956,10 @@
             sharingPlatlformSvc.createSharingPlatlform(vm);
         };
 
-        // 业务判断
+        /**
+         * 选择用户
+         * @param $event
+         */
         vm.checkBox = function ($event) {
             var checkbox = $event.target;
             var checked = checkbox.checked;
@@ -33974,7 +33975,33 @@
                 });
             }
         }
-        
+        /**
+         * 选择组别
+         * @param $event
+         * @param deptObj
+         */
+        vm.checkDeptBox = function($event,deptObj){
+            var checkbox = $event.target;
+            var checked = checkbox.checked;
+            var userIdList = [];
+            for(var i=0,l=deptObj.userDtoList.length;i<l;i++){
+                userIdList.push(deptObj.userDtoList[i].id);
+            }
+            if (checked) {
+                $('input[name="shareUser"]').each(function (i,Obj) {
+                    if(jQuery.inArray(Obj.value, userIdList ) > -1){
+                        $(this).attr("disabled", "disabled");
+                        $(this).removeAttr("checked");
+                    }
+                });
+            } else {
+                $('input[name="shareUser"]').each(function (i,Obj) {
+                    if(jQuery.inArray(Obj.value, userIdList ) > -1){
+                        $(this).removeAttr("disabled");
+                    }
+                });
+            }
+        }
 
     }
 })();
@@ -34011,6 +34038,7 @@
             if((vm.shareOrgList && vm.shareOrgList.length > 0)){
                 //1、先计算选择的部门
                 if(vm.model.privilegeDtoList && vm.model.privilegeDtoList.length > 0){
+                    var userList = [];
                     vm.shareOrgList.forEach(function (so,i){
                         vm.model.privilegeDtoList.forEach(function (p,index) {
                             if(p.businessType == 1 || p.businessType == "1"){
@@ -34018,6 +34046,7 @@
                                     so.isChecked = true;
                                     so.userDtos.forEach(function (u,k){
                                         u.isDisabled = true;
+                                        userList.push(u);
                                     });
                                 }
                             }else if(p.businessType == 2 || p.businessType == "2"){
@@ -34028,8 +34057,34 @@
                                 });
                             }
                         })
-
                     });
+                    var groupUserIdList = [];
+                    vm.deptDtoList.forEach(function (dp,i){
+                        vm.model.privilegeDtoList.forEach(function (p,index) {
+                            if(p.businessType == 3 || p.businessType == "3"){
+                                if(p.businessId == dp.id){
+                                    dp.isChecked = true;
+                                    dp.userDtoList.forEach(function (u,k){
+                                        groupUserIdList.push(u.id);
+                                    });
+                                }
+                            }
+                        })
+                    });
+
+                    if(groupUserIdList && groupUserIdList.length > 0){
+                        vm.shareOrgList.forEach(function (so,i) {
+                            so.userDtos.forEach(function (u,k){
+                                userList.push(u);
+                            });
+                        });
+                    }
+                    //组别用户
+                    userList.forEach(function (u,index) {
+                        if(jQuery.inArray(u.id, groupUserIdList ) > -1){
+                            u.isDisabled = true;
+                        }
+                    })
                 }
 
                 if(vm.noOrgUsetList && vm.noOrgUsetList.length > 0 &&  vm.model.privilegeDtoList!=undefined){
@@ -34053,6 +34108,7 @@
             };
             var httpSuccess = function success(response) {
                 vm.shareOrgList = response.data.orgDtoList;
+                vm.deptDtoList = response.data.deptDtoList;
                 vm.noOrgUsetList = response.data.noOrgUserList;
                 vm.businessFlag.isLoadOrgUser = true;
                 initSeleObj(vm);
@@ -34083,7 +34139,6 @@
             });
         }
 
-
         // begin#deleteSharingPlatlform
         function deleteSharingPlatlform(vm, id) {
             vm.isSubmit = true;
@@ -34092,13 +34147,11 @@
                 url: url_sharingPlatlform + "/sharingDelete",
                 data: id
             };
-
             var httpSuccess = function success(response) {
                 vm.isSubmit = false;
                 vm.gridOptions.dataSource.read();
                 bsWin.alert("操作成功");
             };
-
             common.http({
                 vm: vm,
                 $http: $http,
@@ -34133,6 +34186,16 @@
                             shareUser.businessId = uCheck[i].value;
                             shareUser.businessType = "2";
                             vm.model.privilegeDtoList.push(shareUser);
+                        }
+                    }
+                    //3、计算组别
+                    var dCheck = $("input[name='shareDept']:checked");
+                    if (dCheck.length > 0) {
+                        for (var i = 0; i < dCheck.length; i++) {
+                            var shareDept = {};
+                            shareDept.businessId = dCheck[i].value;
+                            shareDept.businessType = "3";
+                            vm.model.privilegeDtoList.push(shareDept);
                         }
                     }
                 }

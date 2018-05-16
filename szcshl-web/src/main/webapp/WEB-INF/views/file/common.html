@@ -25,7 +25,7 @@
             <td bgcolor="#eeeeee">文件名称</td>
             <td style="width: 80px;" align="center" bgcolor="#eeeeee">文件大小</td>
             <td style="width: 120px;" align="center" bgcolor="#eeeeee">附件类型</td>
-            <td style="width: 100px;" align="center" bgcolor="#eeeeee">上传人</td>
+            <!--<td style="width: 100px;" align="center" bgcolor="#eeeeee">上传人</td>-->
             <td style="width: 150px;" align="center" bgcolor="#eeeeee">时间</td>
             <td style="width: 250px;" align="center" bgcolor="#eeeeee">操作</td>
         </tr>
@@ -39,7 +39,7 @@
             </td>
             <td style="text-align: center;">{{ x.fileSizeStr }}</td>
             <td style="text-align: center;">{{ x.sysBusiType }}</td>
-            <td style="text-align: center;">{{ x.createdBy }}</td>
+            <!--<td style="text-align: center;">{{ x.createdBy }}</td>-->
             <td style="text-align: center;">{{ x.createdDate }}</td>
             <td style="text-align: center;">
                 <button ng-click="vm.downloadSysFile(x.sysFileId)" id="linksbtn" class="btn btn-xs btn-primary"><i class="fa fa-cloud-download" aria-hidden="true"></i>下载</button>

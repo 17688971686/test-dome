@@ -494,7 +494,7 @@ public class ExpertSelectedServiceImpl implements ExpertSelectedService {
                 sqlBuilder.setParam("deptName", projectReviewCostDto.getDeptName());
             }
         }
-        sqlBuilder.append(" ORDER BY CFM.PAYMENTDATA DESC,SDK.SIGNDATE DESC ");
+        sqlBuilder.append(" ORDER BY CFM.PAYMENTDATA DESC,SDK.SIGNDATE DESC,SDK.SIGNID ");
         List<Object[]> projectReviewCostList = expertCostCountRepo.getObjectArray(sqlBuilder);
         List<ProjectReviewCostDto> projectReviewCostDtoList = new ArrayList<ProjectReviewCostDto>();
         List<FinancialManagerDto> financialManagerDtoList = null;

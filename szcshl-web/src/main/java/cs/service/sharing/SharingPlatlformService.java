@@ -30,7 +30,12 @@ public interface SharingPlatlformService {
 
     UserDto findUser(String loginName);
 
-    Map<String, Object> initOrgAndUser();
+    /**
+     * 查询用户部门信息
+     * @param isInCludeGroup  是否包含组
+     * @return
+     */
+    Map<String, Object> initOrgAndUser(boolean isInCludeGroup);
 
     PageModelDto<SharingPlatlformDto> findByReception(ODataObj odataObj);
 }
