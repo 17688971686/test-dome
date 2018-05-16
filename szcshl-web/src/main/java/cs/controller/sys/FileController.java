@@ -582,14 +582,15 @@ public class FileController implements ServletConfigAware, ServletContextAware {
 
                 case "WORKPROGRAM":
                     WorkProgramDto workProgramDto = workProgramService.initWorkProgramById(businessId);
-                    WorkProgram workProgram = new WorkProgram();
-                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
-                    if (!Validate.isString(workProgram.getIsHaveEIA())) {
-                        workProgram.setIsHaveEIA("0");
+//                  SignDto signDto =  signService.findById(workProgramDto.getSignId(), true);
+//                    WorkProgram workProgram = new WorkProgram();
+//                    BeanCopierUtils.copyPropertiesIgnoreNull(workProgramDto, workProgram);
+                    if (!Validate.isString(workProgramDto.getIsHaveEIA())) {
+                        workProgramDto.setIsHaveEIA("0");
                     }
-                    Map<String, Object> workData = TemplateUtil.entryAddMap(workProgram);
+                    Map<String, Object> workData = TemplateUtil.entryAddMap(workProgramDto);
 
-                    List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgram.getId());
+                    List<ExpertSelectedDto> expertSelectedDtoLists = expertSelectedRepo.findByBusinessId(workProgramDto.getId());
                     List<ExpertDto> expertDtoList = workProgramDto.getExpertDtoList();
                     ExpertDto[] expertDtos = new ExpertDto[10];
 
@@ -616,8 +617,8 @@ public class FileController implements ServletConfigAware, ServletContextAware {
                     workData.put("works", count);//控制是否多个分支
                     workData.put("addressName", addressName);//会议室名称
                     workData.put("rbDate", rbDate);//评审会时间
-                    workData.put("studyBeginTimeStr", DateUtils.getTimeNow(workProgram.getStudyBeginTime()));//调研开始时间
-                    workData.put("studyEndTimeStr", DateUtils.getTimeNow(workProgram.getStudyEndTime()));//调研结束时间
+                    workData.put("studyBeginTimeStr", DateUtils.getTimeNow(workProgramDto.getStudyBeginTime()));//调研开始时间
+                    workData.put("studyEndTimeStr", DateUtils.getTimeNow(workProgramDto.getStudyEndTime()));//调研结束时间
                     if (null != stageType && (stageType.equals("STAGESUG") || stageType.equals("STAGESTUDY") || stageType.equals("STAGEBUDGET") || stageType.equals("STAGEOTHER"))) {
                         if (stageType.equals("STAGESUG")) {
                             workData.put("wpTile", "项目建议书评审工作方案");

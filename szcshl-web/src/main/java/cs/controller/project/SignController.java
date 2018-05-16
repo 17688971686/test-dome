@@ -384,6 +384,43 @@ public class SignController {
         return signService.realSign(signid);
     }
 
+
+    @RequiresAuthentication
+    @RequestMapping(name="在维护项目中添加评审部门" , path = "addAOrg" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg addOrg(@RequestParam String signId , @RequestParam String orgIds ){
+        return signService.addAOrg(signId , orgIds );
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "移除项目维护中所添加的评审部门" , path = "deleteOrg" , method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResultMsg deleteOrg(@RequestParam String signId , @RequestParam String orgIds){
+        return signService.deleteAOg(signId , orgIds);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "添加项目维护中的添加负责人" , path = "addSecondUser" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg addSecondUser(@RequestParam String signId , @RequestParam String userId){
+        return signService.addSecondUser(signId ,  userId);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "删除项目维护中添加的负责人" , path = "deleteSecondUser" , method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResultMsg deleteSecondUser(@RequestParam String signId ,  @RequestParam String userId){
+        return signService.deleteSecondUser(signId ,  userId);
+    }
+
+    @RequiresAuthentication
+    @RequestMapping(name = "保存是否能自选多个专家" , path = "saveMoreExpert" , method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg saveMoreExpert(@RequestParam String signId , @RequestParam String isMoreExpert){
+        return signService.saveMoreExpert(signId , isMoreExpert);
+    }
+
+
     @RequiresAuthentication
     //@RequiresPermissions("sign#html/flowDeal#get")
     @RequestMapping(name = "项目流程处理", path = "html/flowDeal", method = RequestMethod.GET)

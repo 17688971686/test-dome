@@ -1,11 +1,17 @@
 package cs.controller.project;
 
 import cs.ahelper.IgnoreAnnotation;
+import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.*;
+import cs.domain.project.AddRegisterFile;
+import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
 import cs.model.PageModelDto;
 import cs.model.project.AddRegisterFileDto;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.project.AddRegisterFileService;
 
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -24,11 +30,12 @@ import com.alibaba.fastjson.JSON;
 
 import javax.management.modelmbean.ModelMBeanInfoSupport;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
 
 /**
  * Description: 登记补充资料 控制层 author: ldm Date: 2017-8-3 15:26:51
@@ -41,6 +48,9 @@ public class AddRegisterFileController {
 	String ctrlName = "addRegisterFile";
 	@Autowired
 	private AddRegisterFileService addRegisterFileService;
+
+	@Autowired
+	private SignRepo signRepo;
 
     @RequiresAuthentication
     //@RequiresPermissions("addRegisterFile#findByOData#post")
@@ -105,6 +115,71 @@ public class AddRegisterFileController {
 	public @ResponseBody List<AddRegisterFileDto> findbySuppdate(@RequestParam String suppDate) throws ParseException {
 		List<AddRegisterFileDto> list = addRegisterFileService.findbySuppdate(suppDate);
 		return list;
+	}
+
+	@RequiresAuthentication
+	@RequestMapping(name = "打印补充资料列表" , path = "printAddRegisterFile/{businessId}/{ids}" , method = RequestMethod.GET)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void printAddRegisterFile(@PathVariable  String businessId , @PathVariable String ids , HttpServletResponse response){
+		InputStream inputStream = null;
+		File file = null;
+		File printFile = null;
+
+		try {
+			String path = SysFileUtil.getUploadPath() + File.separator + Tools.generateRandomFilename() + Constant.Template.WORD_SUFFIX.getKey();
+			String filePath = path.substring(0, path.lastIndexOf(".")) + Constant.Template.PDF_SUFFIX.getKey();
+			String fileName = "";
+
+			Sign signss = signRepo.findById(Sign_.signid.getName(), businessId);
+			List<AddRegisterFile> addRegisterFileList2 = addRegisterFileService.findByIdAndBusType(ids , 3);
+			Map<String , Object> addFileData = new HashMap<>();
+			addFileData.put("addFileList" , addRegisterFileList2);
+			addFileData.put("signNum" , signss.getSignNum());
+			addFileData.put("projectname" , signss.getProjectname());
+			addFileData.put("builtcompanyName" , signss.getBuiltcompanyName());
+			addFileData.put("projectcode" , signss.getProjectcode());
+			addFileData.put("strDate" , DateUtils.converToString(new Date() , "yyyy年MM月dd日"));
+			file = TemplateUtil.createDoc(addFileData, Constant.Template.ADD_REGISTER_FILE.getKey(), path);
+
+			if (file != null) {
+				OfficeConverterUtil.convert2PDF(file.getAbsolutePath(), filePath);
+			}
+
+			printFile = new File(filePath);
+			inputStream = new BufferedInputStream(new FileInputStream(printFile));
+
+			byte[] buffer = new byte[inputStream.available()];
+			inputStream.read(buffer);  //读取文件流
+			inputStream.close();
+
+			response.reset();  //重置结果集
+			response.setContentType("application/pdf");
+			response.addHeader("Content-Length", "" + printFile.length());  //返回头 文件大小
+			response.setHeader("Content-Disposition", "inline;filename=" + new String(fileName.getBytes(), "ISO-8859-1"));
+
+			//获取返回体输出权
+			OutputStream os = new BufferedOutputStream(response.getOutputStream());
+			os.write(buffer); // 输出文件
+			os.flush();
+			os.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (inputStream != null) {
+					inputStream.close();
+				}
+				if (file != null) {
+					Tools.deleteFile(file);
+				}
+				if (printFile != null) {
+					Tools.deleteFile(printFile);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	// begin#html

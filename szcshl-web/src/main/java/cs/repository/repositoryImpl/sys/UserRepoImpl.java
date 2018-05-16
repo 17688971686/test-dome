@@ -5,9 +5,12 @@ import cs.common.HqlBuilder;
 import cs.common.cache.CacheConstant;
 import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
+import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.*;
+import cs.model.sys.OrgDto;
+import cs.model.sys.UserDto;
 import cs.repository.AbstractRepository;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignBranchRepo;
@@ -203,6 +206,32 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         sqlBuilder.setParam("userId",mainUserId).setParam("orgId",orgId);
         int result = returnIntBySql(sqlBuilder);
         return (result > 0);
+    }
+
+    /**
+     * 查询在职的部门用户
+     * @return
+     */
+    @Override
+    public List<UserDto> findUserAndOrg() {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select * from cs_user where " + User_.jobState.getName() + " = 't'  and (orgid is not null or orgid <> '') order by orgid desc");
+        List<User> userList = this.findBySql(hqlBuilder);
+        List<UserDto> userDtoList = new ArrayList<>();
+        if(userList != null && userList.size() >0 ){
+            for(User user : userList){
+                UserDto userDto = new UserDto();
+                BeanCopierUtils.copyPropertiesIgnoreNull(user , userDto);
+                if(user.getOrg()!= null){
+                    Org org = user.getOrg();
+                    OrgDto orgDto = new OrgDto();
+                    BeanCopierUtils.copyPropertiesIgnoreNull(org , orgDto);
+                    userDto.setOrgDto(orgDto);
+                }
+                userDtoList.add(userDto);
+            }
+        }
+        return userDtoList;
     }
 
     private boolean checkUser(String signId,String orgId,String userId){

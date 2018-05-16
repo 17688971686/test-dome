@@ -3,9 +3,11 @@
 
     angular.module('app').controller('MaintainProjectEditCtrl', MaintainProjectEdit);
 
-    MaintainProjectEdit.$inject = ['pauseProjectSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'sysfileSvc', 'addRegisterFileSvc', 'bsWin'];
+    MaintainProjectEdit.$inject = ['pauseProjectSvc', 'signSvc', '$state', 'flowSvc', '$scope', 'sysfileSvc',
+        'addRegisterFileSvc', 'bsWin' , 'orgSvc' , 'userSvc'];
 
-    function MaintainProjectEdit(pauseProjectSvc, signSvc, $state, flowSvc, $scope, sysfileSvc, addRegisterFileSvc, bsWin) {
+    function MaintainProjectEdit(pauseProjectSvc, signSvc, $state, flowSvc, $scope, sysfileSvc,
+                                 addRegisterFileSvc, bsWin , orgSvc , userSvc) {
         var vm = this;
         vm.title = "维护项目修改";
         vm.model = {};
@@ -68,12 +70,26 @@
                         if (vm.model.workProgramDtoList[i].branchId == "1") {
                             vm.work = vm.model.workProgramDtoList[i];//主的工作方案
                             //初始化第二负责人
-                            if (vm.work.secondChargeUserName) {
-                                vm.secondChargeUserName = vm.work.secondChargeUserName.split(",")
-                            }
+                            // if (vm.work.secondChargeUserName) {
+                            //     vm.secondChargeUserName = vm.work.secondChargeUserName.split(",")
+                            // }
                         }
                     }
                 }
+
+                //评审部门，主办部门 + 协办部门
+                vm.orgName = vm.model.mOrgName
+                if(vm.orgName){
+                    vm.orgName += vm.model.aOrgName == undefined ? "" : "," + vm.model.aOrgName;
+                }else{
+                    vm.orgName = vm.model.aOrgName;
+                }
+                vm.secondChargeUserName = [] ;
+                //项目负责人
+                if(vm.model.aUserName){
+                    vm.secondChargeUserName = vm.model.aUserName.split(",")
+                }
+
                 //5、附件
                 sysfileSvc.findByMianId(vm.model.signid, function (data) {
                     if (data && data.length > 0) {
@@ -299,6 +315,187 @@
                 }
 
             });
+        }
+
+        /**
+         * 添加评审部门弹框
+         */
+        vm.addReviewDept = function(){
+
+            $("#addReviewDeptWindow").kendoWindow({
+                width: "600px",
+                height: "400px",
+                title: "评审部门管理",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+
+            orgSvc.queryOrgList(vm , function(data){
+                vm.orgs = data;
+                if(vm.work.reviewOrgName){
+                    var reviewOrgName = vm.work.reviewOrgName.split(',');
+                    for(var i = 0 ; i < reviewOrgName.length ; i++){
+                        $.each(vm.orgs , function(x , obj){
+                            if(obj.name == reviewOrgName[i]){
+                                var inputId = obj.id;
+                                $("#" + inputId).attr("disabled", "disabled");
+                            }
+                        })
+                    }
+                }
+            });
+
+        }
+
+        /**
+         * 保存添加的评审部门
+         */
+        vm.saveReviewDept = function(orgId , orgName){
+
+            // var isCheck = $("input[selectType='assist']:checked");
+
+            // if(isCheck.length == 0){
+            //     bsWin.alert("请选择添加的部门！");
+            // }else{
+            //     var ids = [];
+            //     var names = [];
+            //     for(var i = 0 ; i < isCheck.length ; i++){
+            //         ids.push(isCheck[i].value);
+            //         names.push(isCheck[i].name)
+            //     }
+            //     var idStr = ids.join(',');
+            //     var nameStr = names.join(',');
+            signSvc.addAOrg(  orgId , vm.work.signId  , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.alert(data.reMsg);
+                    vm.orgName += (vm.orgName == undefined ? "" : "," ) + orgName;
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+
+            });
+            //     }
+        }
+
+        /**
+         * 移除添加的评审部门
+         * @param orgId
+         * @param orgName
+         */
+        vm.deleteReviewDept = function(orgId , orgName){
+            signSvc.deleteAOrg(orgId ,  vm.work.signId , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.alert(data.reMsg);
+                    var reviewOrgName = vm.orgName.split(',');
+                    for(var i = 0 ; i < reviewOrgName.length ; i++){
+                        if(reviewOrgName[i] == orgName){
+                            reviewOrgName.splice(i , 1);
+                            break;
+                        }
+                    }
+
+                    vm.orgName = reviewOrgName.join(',');
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+            });
+        }
+
+        /**
+         * 添加项目负责人弹出框
+         */
+        vm.addSecondChargeUser = function(){
+            $("#addSecondChargeUserWindow").kendoWindow({
+                width: "600px",
+                height: "400px",
+                title: "负责人管理",
+                visible: false,
+                modal: true,
+                closable: true,
+                actions: ["Pin", "Minimize", "Maximize", "Close"]
+            }).data("kendoWindow").center().open();
+
+            userSvc.findUserAndOrg(function(data){
+                vm.user = data;
+            })
+        }
+
+        /**
+         * 保存添加的负责人
+         * @param user
+         */
+        vm.saveSecondUser = function (user){
+            signSvc.addSecondUser(user.id , vm.work.signId , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.alert(data.reMsg);
+                    vm.secondChargeUserName.push(user.displayName);
+                    var orgNames = vm.orgName.split(",");
+                    var b = true;
+                   for(var i =0 ; i < orgNames.length ; i++){
+                       if(orgNames[i] == user.orgDto.name){
+                           b = false;
+                           break;
+                       }
+                   }
+                   if(b){
+                       orgNames.push(user.orgDto.name);
+                       vm.orgName = orgNames.join(",");
+                   }
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+            });
+
+        }
+
+        /**
+         * 移除添加的负责人
+         * @param user
+         */
+        vm.deleteSecondUser = function(user){
+            signSvc.deleteSecondUser(user.id , vm.work.signId , function(data){
+                if(data.flag || data.reCode == 'ok'){
+                    bsWin.alert(data.reMsg);
+                    for(var i = 0 ; i < vm.secondChargeUserName.length ; i++){
+                        if(vm.secondChargeUserName[i] == user.displayName){
+                            vm.secondChargeUserName.splice(i , 1);
+                            break;
+                        }
+                    }
+                }else{
+                    bsWin.error(data.reMsg);
+                }
+
+            });
+        }
+
+        /**
+         * 是否能自选多个专家
+         */
+        vm.addMoreExp = function(){
+
+            var selected = $("#isMoreExpert").is(':checked');
+            if(selected){
+                bsWin.confirm("确认能自选多个专家？" , function(){
+                    signSvc.saveMoreExpert(vm.model.signid , vm.model.isMoreExpert , function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                });
+            }else{
+                bsWin.confirm("确认取消自选多个专家？" , function(){
+                    console.log(vm.model.isMoreExpert);
+                    signSvc.saveMoreExpert(vm.model.signid , vm.model.isMoreExpert , function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                });
+            }
+
         }
     }
 })();

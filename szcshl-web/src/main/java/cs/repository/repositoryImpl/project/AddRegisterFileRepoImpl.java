@@ -43,7 +43,7 @@ public class AddRegisterFileRepoImpl extends AbstractRepository<AddRegisterFile,
             hqlBuilder.append(" and businessType=:businessType").setParam("businessType" , businessType);
         }
 
-       executeSql(hqlBuilder);
+        executeSql(hqlBuilder);
 
     }
 
@@ -88,5 +88,34 @@ public class AddRegisterFileRepoImpl extends AbstractRepository<AddRegisterFile,
         hqlBuilder.setParam("businessId" , businessId);
         List<AddRegisterFile> addRegisterFileList = findByHql(hqlBuilder);
         return addRegisterFileList;
+    }
+
+
+    /**
+     * 通过id和类型进行查询
+     * @param ids
+     * @param type
+     * @return
+     */
+    @Override
+    public List<AddRegisterFile> findByIdAndBusType(String ids, Integer type) {
+        if(Validate.isString(ids)){
+            String[] idArr = ids.split(",");
+            HqlBuilder hqlBuilder = HqlBuilder.create();
+            hqlBuilder.append("select * from cs_add_registerfile where " + AddRegisterFile_.id.getName() + " in(" );
+            for(int i =0 ; i < idArr.length ; i++){
+                hqlBuilder.append(" '" + idArr[i] + "'");
+                if(i <idArr.length - 1){
+                    hqlBuilder.append(",");
+                }
+            }
+            hqlBuilder.append(" ) and " + AddRegisterFile_.businessType.getName() + "=:businessType");
+            hqlBuilder.setParam("businessType" , type.toString());
+            List<AddRegisterFile> addRegisterFileList = findBySql(hqlBuilder);
+            return addRegisterFileList;
+        }else{
+
+            return null;
+        }
     }
 }

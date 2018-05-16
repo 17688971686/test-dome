@@ -164,11 +164,18 @@
                     <div class="well well-sm changeInfo" style="overflow:hidden;">
                         <div class="col-md-6">
                             <div class="panel panel-info">
-                                <div class="panel-heading">评审部门</div>
+                                <div class="panel-heading">评审部门
+                                    <button class="btn btn-sm btn-primary" ng-click="vm.addReviewDept()">部门管理</button>
+                                    <span style="margin-left: 100px;">是否能自选多个专家
+                                    <input type="checkbox" ng-click="vm.addMoreExp()"  name="isMoreExpert" id="isMoreExpert"
+                                           ng-true-value="9" ng-false-value="0" ng-model="vm.model.isMoreExpert"
+                                           ng-checked="vm.model.isMoreExpert == '9' || vm.model.isMoreExpert == 9" />
+                                    </span>
+                                </div>
                                 <div class="panel-body">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1">评审部门：</span>
-                                        <input type="text" class="form-control" ng-model="vm.work.reviewOrgName"
+                                        <input type="text" class="form-control" ng-model="vm.orgName"
                                                disabled>
                                     </div>
                                 </div>
@@ -201,7 +208,10 @@
                         </div>
                         <div class="col-md-6">
                             <div class="panel panel-info" style="height: 345px;">
-                                <div class="panel-heading">项目负责人</div>
+                                <div class="panel-heading">
+                                    项目负责人
+                                    <button class="btn btn-sm btn-primary" ng-click="vm.addSecondChargeUser()">负责人管理</button>
+                                </div>
                                 <div class="panel-body" style="padding:0;height:300px;overflow: auto">
                                     <table class="table table-hover">
                                         <thead>
@@ -212,10 +222,10 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr ng-if="vm.work.mianChargeUserName">
+                                        <tr ng-if="vm.model.mUserName">
                                             <td>1</td>
                                             <td>第一负责人</td>
-                                            <td>{{vm.work.mianChargeUserName}}</td>
+                                            <td>{{vm.model.mUserName}}</td>
                                         </tr>
                                         <tr ng-repeat="x in vm.secondChargeUserName">
                                             <td>{{$index+2}}</td>
@@ -277,5 +287,52 @@
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <!--添加评审部门弹框-->
+    <div style="display: none" id="addReviewDeptWindow">
+
+        <table class="table table-bordered">
+
+            <tr>
+               <#-- <td width="10%" align="center"></td>-->
+                <td width="60%" align="center">部门名称</td>
+                <td width="20%" align="center">操作</td>
+            </tr>
+            <tr ng-repeat="x in vm.orgs">
+               <#-- <td align="center"><input type="checkbox" selectType="assist" name="{{x.name}}" tit="{{x.name}}"
+                                          id="{{x.id}}"  value="{{x.id}}" />
+                </td>-->
+                <td align="center">{{x.name}}</td>
+
+                <td align="center">
+                    <button class="btn btn-sm btn-success" ng-click="vm.saveReviewDept(x.id , x.name)">添加</button>
+                    <button class="btn btn-sm btn-danger" ng-click="vm.deleteReviewDept(x.id , x.name)">移除</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!--添加负责人弹出框-->
+    <div style="display: none;" id="addSecondChargeUserWindow">
+        <table class="table table-bordered">
+            <tr>
+                <td width="10%" align="center">序号</td>
+                <td width="20%" align="center">用户名</td>
+                <td width="30%" align="center">所在部门</td>
+                <td width="30%" align="center">操作</td>
+            </tr>
+            <tr ng-repeat="x in vm.user">
+                <td align="center">{{$index+1}}</td>
+                <td align="center">{{x.displayName}}</td>
+                <td align="center">{{x.orgDto.name}}</td>
+                <td align="center">
+                    <button class="btn btn-sm btn-success" ng-click="vm.saveSecondUser(x)">添加</button>
+                    <button class="btn btn-sm btn-danger" ng-click="vm.deleteSecondUser(x)">移除</button>
+                </td>
+
+            </tr>
+        </table>
+
     </div>
 </div>

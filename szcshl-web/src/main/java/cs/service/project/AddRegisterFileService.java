@@ -42,4 +42,12 @@ public interface AddRegisterFileService {
      * @return
      */
     List<AddRegisterFile> findByBusIdAndBusType(String businessId , Integer businessType);
+
+    /**
+     * 通过id和类型进行查询
+     * @param ids
+     * @param type
+     * @return
+     */
+    List<AddRegisterFile> findByIdAndBusType(String ids , Integer type);
 }

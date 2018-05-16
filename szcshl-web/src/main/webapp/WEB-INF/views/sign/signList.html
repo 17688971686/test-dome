@@ -110,15 +110,15 @@
                     </td>
                     <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">提前介入</td>
                     <td>
-                        <select  ng-model="vm.project.reviewstages" class="form-control select-sm">
+                        <select  ng-model="vm.project.isAdvanced" class="form-control select-sm">
                             <option value="">请选择</option>
                             <option value="提前介入">是</option>
                             <option value="正常">否</option>
                         </select>
                     </td>
                     <!--进行判断-->
-                    <input ng-if="vm.project.reviewstages=='正常'" name="isAdvanced" operator="ne" value="9" hidden/>
-                    <input ng-if="vm.project.reviewstages=='提前介入'" name="isAdvanced" operator="eq" value="9" hidden/>
+                    <input ng-if="vm.project.isAdvanced=='正常'" name="isAdvanced" operator="ne" value="9" hidden/>
+                    <input ng-if="vm.project.isAdvanced=='提前介入'" name="isAdvanced" operator="eq" value="9" hidden/>
 
                     <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">评审部门</td>
                     <td width="15%">
@@ -179,26 +179,26 @@
                 <tr class="hidetr changeTr">
                     <td class="text-right">项目负责人</td>
                     <td colspan="3">
-                        <select class="form-controls select-sm" ng-model="vm.project.displayName" ng-change="vm.project.fztype='全部'" >
+                        <select class="form-controls select-sm" ng-model="vm.displayName" ng-change="vm.fztype='全部'" >
                             <option value="">请选择</option>
                             <option ng-repeat="r in vm.userlist" value="{{r.displayName}}">{{r.displayName}}</option>
                         </select>
                         &nbsp;
-                        <select class="form-controls select-sm" ng-model="vm.project.fztype">
+                        <select class="form-controls select-sm" ng-model="vm.fztype">
                             <option value="">请选择</option>
                             <option value="全部">全部</option>
                             <option value="第一负责人">第一负责人</option>
                             <option value="第二负责人">第二负责人</option>
                         </select>
-                        <input ng-if="vm.project.fztype=='第一负责人'" operator="eq" name="mUserName" value="{{vm.project.displayName}}" hidden/>
-                        <input ng-if="vm.project.fztype=='第二负责人'" operator="like" name="aUserName" value="{{vm.project.displayName}}" hidden/>
-                        <input ng-if="vm.project.fztype=='全部'" operator="like" name="allPriUser"  value="{{vm.project.displayName}}" hidden/>
-                        <input ng-if="vm.project.fztype==' '" operator="like" name="allPriUser"  value="{{vm.project.displayName}}" hidden/>
+                        <input ng-if="vm.fztype=='第一负责人'" operator="eq" name="mUserName"  value="{{vm.displayName}}" hidden/>
+                        <input ng-if="vm.fztype=='第二负责人'" operator="like" name="aUserName"  value="{{vm.displayName}}" hidden/>
+                        <input ng-if="vm.fztype=='全部'" operator="like" name="allPriUser"   value="{{vm.displayName}}" hidden/>
+                        <input ng-if="vm.fztype==' '" operator="like" name="allPriUser"   value="{{vm.displayName}}" hidden/>
                     </td>
                     <td class="text-right" >项目类型</td>
                     <td colspan="3">
                         <select name="projectType" operator="eq" class="form-controls select-sm "
-                                ng-model="vm.project.projectType" ng-change="vm.project.projectTypeDicts = topSelectChange(vm.project.projectType,DICT.PROJECTTYPE.dicts)">
+                                ng-model="vm.project.projectType" ng-change="vm.projectTypeDicts = topSelectChange(vm.project.projectType,DICT.PROJECTTYPE.dicts)">
                             <option value="">请选择</option>
                             <option  ng-repeat="x in DICT.PROJECTTYPE.dicts" value="{{x.dictName}}" ng-selected="vm.project.projectType==x.dictName" >{{x.dictName}}
                             </option>
@@ -206,7 +206,7 @@
                         -
                         <select ng-model="vm.project.projectSubType" name="projectSubType" class="form-controls select-sm " >
                             <option value="">请选择</option>
-                            <option ng-repeat="x in vm.project.projectTypeDicts" value="{{x.dictName}}"
+                            <option ng-repeat="x in vm.projectTypeDicts" value="{{x.dictName}}"
                                     ng-selected="vm.project.projectSubType == x.dictName">{{x.dictName}}
                             </option>
                         </select>

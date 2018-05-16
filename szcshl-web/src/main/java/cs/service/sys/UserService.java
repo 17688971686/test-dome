@@ -122,4 +122,10 @@ public interface UserService {
      * @return
      */
     Map<String, Object>  getUserLevel();
+
+    /**
+     * 查询在职的部门用户
+     * @return
+     */
+    List<UserDto> findUserAndOrg();
 }
