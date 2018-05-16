@@ -85,6 +85,19 @@
         vm.searchSignList = function () {
             vm.signListOptions.dataSource._skip = 0;
             vm.signListOptions.dataSource.read();
+
+            //对项目负责人查询统计进行处理
+            var mUserName = $("input[name='mUserName']").val();
+            var aUserName = $("input[name='aUserName']").val();
+            var allPriUser = $("input[name='allPriUser']").val();
+            if(mUserName){
+                vm.project.mUserName = mUserName;
+            }else if(aUserName){
+                vm.project.aUserName = aUserName;
+            }else if(allPriUser){
+                vm.project.allPriUser = allPriUser;
+            }
+
             vm.filters = vm.project;
             if (vm.filters && vm.filters != undefined) {
                 var queryData = JSON.stringify(vm.filters);

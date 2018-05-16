@@ -74,5 +74,38 @@
             }
 
         }
+
+        /**
+         * 重写打印预览
+         */
+        vm.printFile = function(businessId){
+
+            var isCheck = $("input[name='addRegistersCheck']:checked");
+            console.log(isCheck);
+            if(isCheck.length == 0){
+                bsWin.alert("请选择数据！");
+            }else{
+                var ids = [];
+                for(var i = 0 ; i < isCheck.length ; i++){
+                    ids.push(isCheck[i].value);
+                }
+                var ids = ids.join(",");
+
+                var url = rootPath + "/contents/libs/pdfjs-dist/web/viewer.html?version=" + (new Date()).getTime() + "&file=" + rootPath + "/addRegisterFile/printAddRegisterFile/" + businessId + "/" + ids ;
+                $("#iframePreview").attr("src", url);
+                $("#previewModal").kendoWindow({
+                    width: "80%",
+                    height: "730px",
+                    title: "",
+                    visible: false,
+                    modal: true,
+                    closable: true,
+                    actions: ["Pin", "Minimize", "Maximize", "Close"]
+                }).data("kendoWindow").center().open();
+            }
+
+
+
+        }
     }
 })();

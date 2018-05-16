@@ -986,6 +986,21 @@ public class Sign extends DomainBase {
     @Column(columnDefinition = "CLOB")
     private String maindeptOpinion;
 
+    /**
+     * 是否能自选多个专家
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String isMoreExpert;
+
+
+    public String getIsMoreExpert() {
+        return isMoreExpert;
+    }
+
+    public void setIsMoreExpert(String isMoreExpert) {
+        this.isMoreExpert = isMoreExpert;
+    }
+
     public String getBuiltCompUserName() {
         return builtCompUserName;
     }

@@ -3,6 +3,7 @@ package cs.repository.repositoryImpl.project;
 import cs.common.ResultMsg;
 import cs.domain.project.Sign;
 import cs.domain.project.SignDispaWork;
+import cs.domain.sys.User;
 import cs.model.project.SignDto;
 import cs.repository.IRepository;
 
@@ -115,5 +116,45 @@ public interface SignRepo extends IRepository<Sign, String> {
      * @return
      */
     ResultMsg findAVGDayId(String signIds);
+
+    /**
+     * 保存项目维护中的添加评审部门
+     * @param signId
+     * @param orgIds
+     * @return
+     */
+    ResultMsg addAOrg(String signId , String orgIds );
+
+    /**
+     * 移除在维护项目中添加的评审部门
+     * @param signId
+     * @param orgIds
+     * @return
+     */
+    ResultMsg deleteAOrg(String signId , String orgIds );
+
+    /**
+     * 保存项目维护中的添加负责人
+     * @param signId
+     * @param userId
+     * @return
+     */
+    ResultMsg addSecondUser(String signId , String userId);
+
+    /**
+     * 删除项目维护中添加的负责人
+     * @param signId
+     * @param userId
+     * @return
+     */
+    ResultMsg deleteSecondUser(String signId , String userId);
+
+    /**
+     * 保存是否能多选专家
+     * @param signId
+     * @param isMoreExpert
+     * @return
+     */
+    ResultMsg saveMoreExpert(String signId , String isMoreExpert);
 
 }

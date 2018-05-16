@@ -758,6 +758,19 @@ public class SignDto extends BaseDto {
      */
     private Date dispatchdate;
 
+    /**
+     * 是否能自选多个专家
+     */
+    private String isMoreExpert;
+
+    public String getIsMoreExpert() {
+        return isMoreExpert;
+    }
+
+    public void setIsMoreExpert(String isMoreExpert) {
+        this.isMoreExpert = isMoreExpert;
+    }
+
     public String getBuiltCompUserName() {
         return builtCompUserName;
     }

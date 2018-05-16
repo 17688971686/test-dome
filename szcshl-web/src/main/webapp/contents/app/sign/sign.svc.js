@@ -38,6 +38,11 @@
             getSignInfo: getSignInfo ,                  //通过收文编号获取委里信息
             findSignUnitScore : findSignUnitScore,      //获取评分单位信息
             findAVGDayById : findAVGDayById ,                  //获取平均评审天数和工作日
+            addAOrg : addAOrg ,                                //  添加评审部门（项目维护）
+            deleteAOrg : deleteAOrg ,                           //移除评审部门（项目维护）
+            addSecondUser : addSecondUser ,                     //保存添加负责人（项目维护）
+            deleteSecondUser : deleteSecondUser ,               //删除添加的负责人（项目维护）
+            saveMoreExpert : saveMoreExpert                     //保存是否能多个自选专家
         };
         return service;
 
@@ -1215,5 +1220,113 @@
         }
 
         //end editSignState
+
+        //begin addAOrg
+        function addAOrg(orgIds , signId , callBack){
+            var httpOptions = {
+                method : "post" ,
+                url : rootPath + "/sign/addAOrg",
+                params : {signId : signId  , orgIds : orgIds }
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined || typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end addAOrg
+
+        //begin deleteAOrg
+        function deleteAOrg(orgId  , signId , callBack){
+            var httpOptions = {
+                method : "delete" ,
+                url : rootPath + "/sign/deleteOrg",
+                params : {orgIds : orgId  , signId : signId}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined || typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end deleteAOrg
+
+        //begin addSecondUser
+        function addSecondUser(userId ,  signId , callBack){
+            var httpOptions = {
+                method : "post" ,
+                url : rootPath + "/sign/addSecondUser",
+                params : {userId : userId  ,   signId : signId}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined || typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end addSecondUser
+
+        //begin deleteSecondUser
+        function deleteSecondUser(userId , signId , callBack){
+            var httpOptions = {
+                method : "delete" ,
+                url : rootPath + "/sign/deleteSecondUser",
+                params : {userId : userId  ,   signId : signId}
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined || typeof callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
+        //end deleteSecondUser
+
+        //begin saveMoreExpert
+        function saveMoreExpert(signId , isMoreExpert , callBack){
+            var httpOptions = {
+                method : "post",
+                url : rootPath + "/sign/saveMoreExpert",
+                params : {signId : signId , isMoreExpert : isMoreExpert}
+            }
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
+        //end saveMoreExpert
     }
 })();

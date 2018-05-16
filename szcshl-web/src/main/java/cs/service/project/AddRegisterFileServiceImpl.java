@@ -146,6 +146,17 @@ public class AddRegisterFileServiceImpl implements AddRegisterFileService {
         return addRegisterFileRepo.findByBusIdAndBusType(businessId , businessType);
     }
 
+    /**
+     * 通过id和类型进行查询
+     * @param ids
+     * @param type
+     * @return
+     */
+    @Override
+    public List<AddRegisterFile> findByIdAndBusType(String ids, Integer type) {
+        return addRegisterFileRepo.findByIdAndBusType(ids , type);
+    }
+
     @Override
     @Transactional
     public AddRegisterFileDto findById(String id) {

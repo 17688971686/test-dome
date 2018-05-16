@@ -37,6 +37,8 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
     @Autowired
     private FlowService flowService;
 
+    @Autowired
+    private SignRepo signRepo;
     /**
      * 通过时间段 获取项目信息（按评审阶段分组），用于项目查询统计分析
      *
@@ -408,11 +410,16 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                     String[] params = filter.split(":");
 
                     //对中文乱码进行处理
-                    String value = params[1].substring(1, params[1].length() - 1);
-                    if (value.equals(new String(value.getBytes("iso8859-1"), "iso8859-1"))) {
+                    String value = params[1];
+                    if(value.indexOf("\"") >-1){
 
-                        value = new String((params[1].substring(1, params[1].length() - 1)).getBytes("iso8859-1"), "UTF-8");
+                        value = params[1].substring(1, params[1].length() - 1);
+                        if (value.equals(new String(value.getBytes("iso8859-1"), "iso8859-1"))) {
+
+                            value = new String((params[1].substring(1, params[1].length() - 1)).getBytes("iso8859-1"), "UTF-8");
+                        }
                     }
+
 
                     //项目签收日期
                     if ("signDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
@@ -434,6 +441,24 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                         hqlBuilder.append("fileDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
 
                     }
+                    //评审天数
+                    else if ("beginReviewdays".equals(params[0].substring(1, params[0].length() - 1))) {
+                        hqlBuilder.append("reviewdays>=" + params[1].substring(1, params[1].length() - 1) );
+                    } else if ("endReviewdays".equals(params[0].substring(1, params[0].length() - 1))) {
+                        hqlBuilder.append("reviewdays<=" + params[1].substring(1, params[1].length() - 1) );
+
+                    }
+                    //提前介入
+                    else if ("isAdvanced".equals(params[0].substring(1, params[0].length() - 1))
+                            && "提前介入".equals(value)) {
+                        hqlBuilder.append("isAdvanced = '" + Constant.EnumState.YES.getValue() + "'");
+                    } else if ("isAdvanced".equals(params[0].substring(1, params[0].length() - 1))
+                            && "正常".equals(value)) {
+                        hqlBuilder.append("isAdvanced != '" + Constant.EnumState.YES.getValue() + "'");
+
+                    }
+
+
                     //申报投资
                     else if ("appalyInvestmentMin".equals(params[0].substring(1, params[0].length() - 1))) {
                         hqlBuilder.append("appalyInvestment>=" + new BigDecimal(params[1].substring(1, params[1].length() - 1)));
@@ -529,18 +554,20 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         boolean isHavePermission = false;
         SignDispaWork signDispaWork = findById(signId);
         String curUserId = SessionUtil.getUserId();
+        Sign sign = signRepo.findById(Sign_.signid.getName() , signId);
         //1、先判断是否是新项目
         if(Validate.isString(signDispaWork.getOldProjectId())){
             //部长或者普通人员
             isHavePermission = (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())&& SessionUtil.getUserId().equals(signDispaWork.getmOrgId()));
             if(!isHavePermission){
-                isHavePermission = curUserId.equals(signDispaWork.getmUserId()) || (Validate.isString(signDispaWork.getaUserID()) && signDispaWork.getaUserID().indexOf(curUserId) > -1);
+                isHavePermission = curUserId.equals(signDispaWork.getmUserId()) || (Validate.isString(signDispaWork.getaUserID()) && signDispaWork.getaUserID().indexOf(curUserId) > -1)
+                        || (Validate.isString(sign.getaUserID()) && sign.getaUserID().indexOf(curUserId) > -1);
             }
         }else{
             //新项目，是经办人才行
             if(Validate.isString(signDispaWork.getProcessInstanceId())){
                 List<String> userIdList = flowService.findUserIdByProcessInstanceId(signDispaWork.getProcessInstanceId());
-                if(userIdList.contains(curUserId)){
+                if(userIdList.contains(curUserId) || (Validate.isString(sign.getaUserID()) && sign.getaUserID().indexOf(curUserId) > -1)){
                     isHavePermission = true;
                 }
             }

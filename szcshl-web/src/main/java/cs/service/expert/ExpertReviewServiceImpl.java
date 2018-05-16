@@ -6,6 +6,8 @@ import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.*;
 import cs.domain.flow.RuProcessTask;
+import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.odata.ODataFilterItem;
@@ -13,6 +15,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.expert.*;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
+import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -50,6 +53,9 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
 
     @Autowired
     private ExpertNewTypeRepo expertNewTypeRepo;
+
+    @Autowired
+    private SignRepo signRepo;
 
 
     @Override
@@ -221,25 +227,26 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"已发送专家评审费，不能对方案再修改！");
             }
         }
+        Sign sign = signRepo.findById(Sign_.signid.getName() , businessId);
         List<ExpertSelectedDto> resultList = new ArrayList<>();
         //保存抽取专家
         List<String> expertIdArr = StringUtil.getSplit(expertIds, ",");
         int totalLength = expertIdArr.size();
         boolean isSuper = SUPER_USER.equals(SessionUtil.getLoginName()),isSelf = Constant.EnumExpertSelectType.SELF.getValue().equals(selectType);
-        //如果是专家自选，系统管理员可以添加多个自选专家，其他人员则要删除之前选择的专家信息
-        if(!isSuper && isSelf){
+        //如果是专家自选，系统管理员可以添加多个自选专家，其他人员则要删除之前选择的专家信息 ,补充：如果不是可以自选多个专家
+        if(!isSuper && isSelf && !Constant.EnumState.YES.getValue().equals(sign.getIsMoreExpert())){
             if(totalLength > 1){
                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), expertReview.getId(), "操作失败，只能选一个自选专家！");
             }
         }
         for (int i = 0; i < totalLength; i++) {
-            if(!isSuper && isSelf){
+            if(!isSuper && isSelf && !Constant.EnumState.YES.getValue().equals(sign.getIsMoreExpert())){
                 if (Validate.isList(expertReview.getExpertSelectedList())) {
                     //不是系统管理员，则要删除之前添加的自选专家
                     for (ExpertSelected epSelected : expertReview.getExpertSelectedList()) {
                         boolean isSelfType = Constant.EnumExpertSelectType.SELF.getValue().equals(epSelected.getSelectType());
                         boolean isSuperCreate = SUPER_USER.equals(epSelected.getCreateBy());
-                        if (isSelfType && !isSuperCreate) {
+                        if (isSelfType && !isSuperCreate && !Constant.EnumState.YES.getValue().equals(sign.getIsMoreExpert())) {
                             expertSelectedRepo.deleteById(ExpertSelected_.id.getName(), epSelected.getId());
                         }
                     }

@@ -2503,6 +2503,63 @@ public class SignServiceImpl implements SignService {
         return signRepo.findAVGDayId(signIds);
     }
 
+
+
+    /**
+     * 保存项目维护中的添加评审部门
+     * @param signId
+     * @param orgIds
+     * @return
+     */
+    @Override
+    public ResultMsg addAOrg(String signId, String orgIds ) {
+        return signRepo.addAOrg(signId , orgIds );
+    }
+
+    /**
+     * 移除项目维护中所添加的评审部门
+     * @param signId
+     * @param orgIds
+     * @return
+     */
+    @Override
+    public ResultMsg deleteAOg(String signId, String orgIds) {
+        return signRepo.deleteAOrg(signId , orgIds );
+    }
+
+    /**
+     * 保存项目维护中的添加负责人
+     * @param signId
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultMsg addSecondUser(String signId,  String userId) {
+        return signRepo.addSecondUser(signId , userId);
+    }
+
+    /**
+     * 删除项目维护中添加的负责人
+     * @param signId
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultMsg deleteSecondUser(String signId,  String userId) {
+        return signRepo.deleteSecondUser(signId ,  userId);
+    }
+
+    /**
+     * 保存是否能多选专家
+     * @param signId
+     * @param isMoreExpert
+     * @return
+     */
+    @Override
+    public ResultMsg saveMoreExpert(String signId, String isMoreExpert) {
+        return signRepo.saveMoreExpert(signId , isMoreExpert);
+    }
+
     /**
      * 查询项目预签收信息
      *

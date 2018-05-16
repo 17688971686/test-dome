@@ -223,6 +223,14 @@ public class UserController {
         userService.resetPwd(ids);
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "查询所有部门下的用户" , path = "findUserAndOrg" , method = RequestMethod.POST)
+    @ResponseBody
+    public List<UserDto> findUserAndOrg(){
+        return userService.findUserAndOrg();
+    }
+
+
     // begin#html
     @RequiresPermissions("user#html/list#get")
     @RequestMapping(name = "用户管理", path = "html/list", method = RequestMethod.GET)

@@ -51,4 +51,10 @@ public interface UserRepo extends IRepository<User, String> {
      * @return
      */
     boolean checkIsMainSigUser(String orgType, String orgId, String mainUserId);
+
+    /**
+     * 查询在职的部门用户
+     * @return
+     */
+    List<UserDto> findUserAndOrg();
 }

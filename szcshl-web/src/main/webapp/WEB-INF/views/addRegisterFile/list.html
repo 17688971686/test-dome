@@ -25,7 +25,9 @@
                 class="glyphicon glyphicon-chevron-left"></span>返回
         </button>
         <button class="btn btn-sm btn-primary"
-                 ng-click="printFile(vm.businessId,'ADDSUPPLEFILE','ADDSUPPLEFILE')">打印预览</button>
+                ng-click="vm.printFile(vm.businessId)">打印预览</button>
+        <#--<button class="btn btn-sm btn-primary"
+                 ng-click="printFile(vm.businessId,'ADDSUPPLEFILE','ADDSUPPLEFILE')">打印预览</button>-->
     </div>
     <table class="table table-bordered" id="addRegistersTable">
         <tr>
@@ -56,15 +58,19 @@
             <td>
                 <input type="checkbox" style="width:50px;"
                        ng-model="vm.addRegisters[$index].isHasOriginfile" id="isHasOriginfile"
-                       name="isHasOriginfile"  ng-click="vm.addRegisters[$index].totalNum = initInputValue($event,vm.addRegisters[$index].totalNum)" ng-true-value="9" ng-false-value="0">
+                       name="isHasOriginfile"
+                       ng-checked="vm.addRegisters[$index].isHasOriginfile == 9 || vm.addRegisters[$index].isHasOriginfile == '9'"
+                       ng-click="vm.addRegisters[$index].totalNum = initInputValue($event,vm.addRegisters[$index].totalNum)" ng-true-value="9" ng-false-value="0">
             </td>
             <td>
                 <input type="checkbox" style="width:50px;"
                        ng-model="vm.addRegisters[$index].isHasCopyfile" id="isHasCopyfile"
-                       name="isHasCopyfile" ng-click="vm.addRegisters[$index].totalNum = initInputValue($event,vm.addRegisters[$index].totalNum)" ng-true-value="9" ng-false-value="0">
+                       name="isHasCopyfile"
+                       ng-checked="vm.addRegisters[$index].isHasCopyfile == 9 || vm.addRegisters[$index].isHasCopyfile== '9'"
+                       ng-click="vm.addRegisters[$index].totalNum = initInputValue($event,vm.addRegisters[$index].totalNum)" ng-true-value="9" ng-false-value="0">
             </td>
             <td>
-                <select ng-model="vm.addRegisters[$index].suppleDeclare" class="form-control input-sm ">
+                <select ng-model="vm.addRegisters[$index].suppleDeclare" class="form-control input-xm ">
                     <option ng-repeat="d in DICT.BCSM_01.dicts" value="{{d.dictName}}"
                             ng-selected="x.suppleDeclare == d.dictName">{{d.dictName}}
                     </option>
