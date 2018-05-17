@@ -20,7 +20,7 @@ public class PersonalCenterController {
 
     //@RequiresAuthentication
     @RequiresPermissions("personalCenter#html/takeUser#get")
-    @RequestMapping(name="代办人编辑页",path="html/takeUser",method= RequestMethod.GET)
+    @RequestMapping(name="个人代办设置",path="html/takeUser",method= RequestMethod.GET)
     public String takeUser(){
 
         return ctrlName+"/takeUser";

@@ -117,7 +117,7 @@
                         </select>
                     </td>
                     <!--进行判断-->
-                    <input ng-if="vm.project.isAdvanced=='正常'" name="isAdvanced" operator="ne" value="9" hidden/>
+                    <input ng-if="vm.project.isAdvanced=='正常'" name="isAdvanced" operator="ne" value="isNull" hidden/>
                     <input ng-if="vm.project.isAdvanced=='提前介入'" name="isAdvanced" operator="eq" value="9" hidden/>
 
                     <td class="text-right" style="width:10%;min-width: 80px;min-width:120px;">评审部门</td>

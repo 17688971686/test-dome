@@ -59,9 +59,7 @@ public class ProjectStopServiceImp implements ProjectStopService {
     @Override
     @Transactional
     public List<ProjectStopDto> findProjectStopBySign(String signId) {
-
         HqlBuilder hqlBuilder = HqlBuilder.create();
-
         hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId"+" order by  createdDate desc");
         hqlBuilder.setParam("signId", signId);
         List<ProjectStop> psList = projectStopRepo.findByHql(hqlBuilder);

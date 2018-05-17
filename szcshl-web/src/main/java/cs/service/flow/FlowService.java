@@ -43,6 +43,19 @@ public interface FlowService {
     List<RuProcessTask> queryRunProcessTasks(ODataObj odataObj, boolean isUserDeal, Integer powerFlag, List<String> mngOrgIdList);
 
     /**
+     * 根据用户ID查询待办项目
+     * @param userId
+     * @return
+     */
+    List<RuProcessTask> findRuProcessTaskByUserId(String userId);
+
+    /**
+     * 根据用户ID查询待办任务
+     * @param userId
+     * @return
+     */
+    List<RuTask> findRuTaskByUserId(String userId);
+    /**
      * 获取流程处理记录
      * @param processInstanceId
      * @return
@@ -154,4 +167,13 @@ public interface FlowService {
      * @return
      */
     Map<String,CommentDto> filterComents(List<CommentDto> commentList,List<String> nodeKeys);
+
+    /**
+     * 流程转办
+     * @param taskId        任务ID
+     * @param oldUserId     原先处理人
+     * @param newUserId     新处理人
+     * @return
+     */
+    ResultMsg taskTransferAssignee(String taskId,String oldUserId,String newUserId);
 }

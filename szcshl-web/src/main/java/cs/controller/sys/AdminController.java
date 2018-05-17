@@ -61,6 +61,7 @@ public class AdminController {
     private OrgDeptService orgDeptService;
     @Autowired
     private SignPrincipalService signPrincipalService;
+
     //@RequiresPermissions("admin#index#get")
     @RequiresAuthentication
     @RequestMapping(name = "首页", path = "index")
@@ -157,15 +158,12 @@ public class AdminController {
                 for (int i = 0; i < totalCount; i++) {
                     RuProcessTask rt = authRuSignTask.get(i);
                     //过滤掉合并项目的次项目
-                    if(rt.getReviewType() == null
-                            || "".equals(rt.getReviewType())
-                            || Constant.EnumState.YES.getValue().equals(rt.getReviewType())
-                            ||(Constant.EnumState.NO.getValue().equals(rt.getReviewType())
-                            && !FlowConstant.FLOW_SIGN_BMLD_SPW1.equals(rt.getNodeDefineKey())
-                            && !FlowConstant.FLOW_SIGN_FGLD_SPW1.equals(rt.getNodeDefineKey()))
-                     ){
+                    if (rt.getReviewType() == null || "".equals(rt.getReviewType()) || Constant.EnumState.YES.getValue().equals(rt.getReviewType())
+                            || (Constant.EnumState.NO.getValue().equals(rt.getReviewType())
+                            && !FlowConstant.FLOW_SIGN_BMLD_SPW1.equals(rt.getNodeDefineKey()) && !FlowConstant.FLOW_SIGN_FGLD_SPW1.equals(rt.getNodeDefineKey()))
+                            ) {
                         if (curUserId.equals(rt.getAssignee())
-                                || (rt.getAssigneeList() != null && rt.getAssigneeList().indexOf(curUserId) > -1)){
+                                || (rt.getAssigneeList() != null && rt.getAssigneeList().indexOf(curUserId) > -1)) {
 
                             RuProcessTask newrt = new RuProcessTask();
                             BeanCopierUtils.copyProperties(rt, newrt);
@@ -211,9 +209,9 @@ public class AdminController {
                 List<String> existList = new ArrayList<>();
                 //预签收项目列表
                 List<RuProcessTask> preRuTask = authRuSignTask.stream().filter(x -> (!Validate.isObject(x.getSignDate()))).collect(Collectors.toList());
-                if(Validate.isList(preRuTask)){
-                    Map<String, Map<String, Object>> preHistogramMap = getCountMap(authFlag,resultMap,preRuTask,authMap,orgIdList,existList);
-                    if(!preHistogramMap.isEmpty()){
+                if (Validate.isList(preRuTask)) {
+                    Map<String, Map<String, Object>> preHistogramMap = getCountMap(authFlag, resultMap, preRuTask, authMap, orgIdList, existList);
+                    if (!preHistogramMap.isEmpty()) {
                         resultMap.put("preHistogram", preHistogramMap);
                         existList = new ArrayList<>();
                     }
@@ -236,7 +234,7 @@ public class AdminController {
                 resultMap.put(LINE_SIGN_LIST_FLAG, lineList);
                 //柱状图
                 existList = new ArrayList<>();
-                Map<String, Map<String, Object>>  histogramMap = getCountMap(authFlag,resultMap,authRuSignTask,authMap,orgIdList,existList);
+                Map<String, Map<String, Object>> histogramMap = getCountMap(authFlag, resultMap, authRuSignTask, authMap, orgIdList, existList);
                 resultMap.put("histogram", histogramMap);
             } else {
                 resultMap.put(ISDISPLAY, true);
@@ -249,7 +247,7 @@ public class AdminController {
         return resultMap;
     }
 
-    private  Map<String, Map<String, Object>> getCountMap(int authFlag,Map<String, Object> resultMap,List<RuProcessTask> authRuSignTask,Map<String, Object> authMap,List<String> orgIdList,List<String> existList){
+    private Map<String, Map<String, Object>> getCountMap(int authFlag, Map<String, Object> resultMap, List<RuProcessTask> authRuSignTask, Map<String, Object> authMap, List<String> orgIdList, List<String> existList) {
         Map<String, Map<String, Object>> dataMap = new HashMap();
         String unWorkId = UUID.randomUUID().toString();
         //1、主任
@@ -259,21 +257,21 @@ public class AdminController {
                 //主办部门
                 if (Validate.isString(rpt.getmOrgId())) {
                     haveOrg = true;
-                    setMapValue(dataMap, rpt.getmOrgId(), rpt, existList,rpt.getmOrgId());
+                    setMapValue(dataMap, rpt.getmOrgId(), rpt, existList, rpt.getmOrgId());
                 }
                 if (Validate.isString(rpt.getaOrgId())) {
                     haveOrg = true;
                     List<String> aOrgIdList = StringUtil.getSplit(rpt.getaOrgId(), ",");
                     for (String orgId : aOrgIdList) {
-                        setMapValue(dataMap, orgId, rpt, existList,orgId);
+                        setMapValue(dataMap, orgId, rpt, existList, orgId);
                     }
                 }
                 //没有分办的项目
                 if (!haveOrg) {
-                    setMapValue(dataMap, unWorkId, rpt, existList,null);
+                    setMapValue(dataMap, unWorkId, rpt, existList, null);
                 }
             }
-            if(Validate.isObject(resultMap)){
+            if (Validate.isObject(resultMap)) {
                 resultMap.put("XTYPE", "ORG");
             }
             //2、分管领导
@@ -282,7 +280,7 @@ public class AdminController {
                 if (Validate.isList(orgIdList)) {
                     for (String orgId : orgIdList) {
                         if (orgId.equals(rpt.getmOrgId()) || (rpt.getaOrgId() != null && rpt.getaOrgId().indexOf(orgId) > -1)) {
-                            setMapValue(dataMap, orgId, rpt, existList,orgId);
+                            setMapValue(dataMap, orgId, rpt, existList, orgId);
                         }
                     }
                 }
@@ -296,17 +294,17 @@ public class AdminController {
             List<RuProcessTask> resultList = new ArrayList<>();
             //如果是部长，还要筛选出当前待办人是否是他管辖部门的人
             for (RuProcessTask rt : authRuSignTask) {
-                if(userService.checkIsMainSigUser(orgDpet.getType(), orgId, rt.getMainUserId())){
+                if (userService.checkIsMainSigUser(orgDpet.getType(), orgId, rt.getMainUserId())) {
                     resultList.add(rt);
                 }
             }
             //筛选出第一负责人的任务
             if (Validate.isList(resultList)) {
                 for (RuProcessTask rpt : resultList) {
-                    setMapValue(dataMap, rpt.getMainUserId(), rpt, existList,orgId);
+                    setMapValue(dataMap, rpt.getMainUserId(), rpt, existList, orgId);
                 }
             }
-            if(Validate.isObject(resultMap)){
+            if (Validate.isObject(resultMap)) {
                 resultMap.put("XTYPE", "USER");
             }
         }
@@ -371,7 +369,7 @@ public class AdminController {
         return histogramMap;
     }
 
-    private void setMapValue(Map<String, Map<String, Object>> dataMap, String key, RuProcessTask runTask, List<String> existKey,String orgId) {
+    private void setMapValue(Map<String, Map<String, Object>> dataMap, String key, RuProcessTask runTask, List<String> existKey, String orgId) {
         Map<String, Object> runTaskInfoMap = dataMap.get(key);
         List<RuProcessTask> runTaskList = null;
         String mergeKey = key + runTask.getBusinessKey();
@@ -386,17 +384,17 @@ public class AdminController {
             if (!existKey.contains(mergeKey)) {
                 haveNew = true;
                 runTaskList = (List<RuProcessTask>) runTaskInfoMap.get("TASK_LIST");
-                count = Integer.parseInt(runTaskInfoMap.get("COUNT").toString())+1;
+                count = Integer.parseInt(runTaskInfoMap.get("COUNT").toString()) + 1;
             }
         }
-        if(haveNew){
+        if (haveNew) {
             runTaskInfoMap.put("COUNT", count);
             runTaskInfoMap.put("TASK_LIST", runTaskList);
             RuProcessTask countTask = new RuProcessTask();
-            BeanCopierUtils.copyProperties(runTask,countTask);
+            BeanCopierUtils.copyProperties(runTask, countTask);
             //如果是部门，只取该部门下的负责人
-            if(Validate.isString(orgId)){
-                countTask.setAllPriUser(signPrincipalService.prinUserName(countTask.getBusinessKey(),orgId));
+            if (Validate.isString(orgId)) {
+                countTask.setAllPriUser(signPrincipalService.prinUserName(countTask.getBusinessKey(), orgId));
             }
             runTaskList.add(countTask);
             dataMap.put(key, runTaskInfoMap);

@@ -421,9 +421,13 @@
                     return false;
                 }
                 var dataType = $me.attr("data-type") || "String";
-                val = "'" + val + "'";
-                if ("String" != dataType) {
-                    val = dataType + val;
+                if(dataType == "array"){
+                    val = "(" + val + ")";
+                }else{
+                    val = "'" + val + "'";
+                    if ("String" != dataType) {
+                        val = dataType + val;
+                    }
                 }
 
                 var operator = $me.attr("operator") || "eq",

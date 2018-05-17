@@ -7,6 +7,8 @@ import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
+import cs.domain.flow.RuProcessTask;
+import cs.domain.flow.RuTask;
 import cs.domain.sys.*;
 import cs.model.PageModelDto;
 import cs.model.sys.OrgDto;
@@ -17,6 +19,7 @@ import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.RoleRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.flow.FlowService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.apache.log4j.Logger;
@@ -25,7 +28,6 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +57,8 @@ public class UserServiceImpl implements UserService {
     private OrgDeptRepo orgDeptRepo;
     @Autowired
     private OrgDeptService orgDeptService;
+    @Autowired
+    private FlowService flowService;
     @Override
     @Transactional
     public PageModelDto<UserDto> get(ODataObj odataObj) {
@@ -829,6 +833,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> findUserAndOrg() {
         return userRepo.findUserAndOrg();
+    }
+
+    /**
+     * 用户用户所有的待办任务（待办项目和待办任务）
+     * @param userId
+     * @return
+     */
+    @Override
+    public Map<String, Object> findAllTaskList(String userId) {
+        Map<String, Object> taskMap = new HashMap<>();
+        List<RuTask> ruTaskList = flowService.findRuTaskByUserId(userId);
+        if(Validate.isList(ruTaskList)){
+            taskMap.put("ruTaskList",ruTaskList);
+        }
+        List<RuProcessTask> ruProcessTaskList = flowService.findRuProcessTaskByUserId(userId);
+        if(Validate.isList(ruProcessTaskList)){
+            taskMap.put("ruProcessTaskList",ruProcessTaskList);
+        }
+        return taskMap;
     }
 }
 

@@ -30,6 +30,7 @@
         </select>
         <!--进行判断-->
         <input ng-if="vm.project.reviewstages=='9'" name="isAdvanced" operator="eq" value="9" hidden/>
+        <input ng-if="vm.project.reviewstages=='0'" name="isAdvanced" operator="ne" data-type="array" value="isNull,9" hidden/>
 
         <span class="help-inline">处理人：</span>
         <input type="text" ng-model="vm.model.displayName" operator="like" name="displayName" id="displayName" placeholder="请输入">

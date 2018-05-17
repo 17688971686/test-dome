@@ -17,6 +17,17 @@
                     vm.takeUserList = data;
                     vm.initTaskUser(vm.model.takeUserId);
                 });
+
+                //查询个人待办任务列表
+                userSvc.getAllTaskList(vm.model.id,function(data){
+                    console.log(data);
+                    if(data.ruTaskList){
+                        vm.ruTaskList = data.ruTaskList;        //待办任务
+                    }
+                    if(data.ruProcessTaskList){
+                        vm.ruProcessTaskList = data.ruProcessTaskList;  //待办项目
+                    }
+                });
             });
 
             userSvc.getOrg(function(data){
@@ -68,6 +79,13 @@
             })
         }
 
+
+        /**
+         * 任务流转
+         */
+        vm.transTask = function(userId){
+
+        }
     }
 
 })();

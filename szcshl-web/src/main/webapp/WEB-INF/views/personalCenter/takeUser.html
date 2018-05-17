@@ -110,6 +110,52 @@
                     <button class="btn btn-sm btn-warning" ng-click="vm.cancelTakeUser()" ng-disabled="!vm.model.takeUserId" ><span class="glyphicon glyphicon-remove"></span>取消代办</button>
                 </td>
             </tr>
+            <tr ng-if="vm.ruProcessTaskList">
+                <td colspan="6">
+                    <h4><strong>待办项目列表</strong></h4>
+                </td>
+            </tr>
+            <tr ng-if="vm.ruProcessTaskList">
+                <td colspan="6">
+                    <table class="table table-bordered">
+                        <tr class="active">
+                            <td>序号</td>
+                            <td>项目名称</td>
+                            <td>项目阶段</td>
+                            <td>办理环节</td>
+                            <td>签收日期</td>
+                            <td>剩余工作日</td>
+                            <td>操作</td>
+                        </tr>
+                        <tr ng-repeat="pt in vm.ruProcessTaskList">
+                            <td>{{$index + 1}}</td>
+                            <td>{{pt.projectName}}</td>
+                            <td>{{pt.reviewStage}}</td>
+                            <td>{{pt.nodeNameValue}}</td>
+                            <td>{{pt.signDate}}</td>
+                            <td>{{pt.surplusDays}}</td>
+                            <td>
+                                <Button class="btn btn-xs btn-success" ng-click="vm.transTask()">流程转办</Button>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr ng-if="vm.ruTaskList">
+                <td colspan="6">
+                    <h4><strong>待办任务列表</strong></h4>
+                </td>
+            </tr>
+            <tr ng-if="vm.ruTaskList">
+                <td colspan="6">
+                    <table class="table table-bordered">
+                        <tr ng-repeat="rt in vm.ruTaskList">
+
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
         </table>
     </form>
 </div>

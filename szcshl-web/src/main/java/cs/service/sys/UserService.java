@@ -128,4 +128,11 @@ public interface UserService {
      * @return
      */
     List<UserDto> findUserAndOrg();
+
+    /**
+     * 用户用户所有的待办任务（待办项目和待办任务）
+     * @param userId
+     * @return
+     */
+    Map<String,Object> findAllTaskList(String userId);
 }

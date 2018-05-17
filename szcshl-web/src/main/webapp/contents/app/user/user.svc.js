@@ -20,10 +20,38 @@
             getZtreeChecked: getZtreeChecked,
             //initUserNo : initUserNo//初始化 员工工号
             resetPwd: resetPwd, //重置密码
-            findUserAndOrg : findUserAndOrg,  //获取部门下的所有用户
+            findUserAndOrg : findUserAndOrg,  //获取部门下的所有用户,
+            getAllTaskList : getAllTaskList,    //获取
         };
 
         return service;
+
+        /**
+         * 获取该用户所有的
+         * @param userId
+         * @param callBack
+         */
+        function getAllTaskList(userId,callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/user/findAllTaskList",
+                params : {
+                    userId : userId
+                }
+            }
+
+            var httpSuccess = function success(response){
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    callBack(response.data);
+                }
+            }
+
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
 
         //begin findUserAndOrg
         function findUserAndOrg(callBack){

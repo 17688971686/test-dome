@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,13 +186,16 @@ public class UserController {
         return userService.getAllUserDisplayName();
     }
 
-    //@RequiresPermissions("user#getUserByLoginName#get")
-   /* @RequiresAuthentication
-    @RequestMapping(name = "通过登录名获取用户信息", path = "getUserByLoginName", method = RequestMethod.GET)
+    @RequiresAuthentication
+    @RequestMapping(name = "根据ID获取所有待办任务信息", path = "findAllTaskList", method = RequestMethod.POST)
     @ResponseBody
-    public UserDto getUserByLoginName() {
-        return userService.getTakeUserByLoginName();
-    }*/
+    public Map<String,Object> findAllTaskList(@RequestParam(defaultValue = "") String userId){
+        if(!Validate.isString(userId)){
+            userId = SessionUtil.getUserId();
+        }
+        Map<String,Object> taskMap = userService.findAllTaskList(userId);
+        return taskMap;
+    }
 
     @RequiresAuthentication
     @RequestMapping(name = "获取当前用户信息", path = "findCurrentUser", method = RequestMethod.POST)

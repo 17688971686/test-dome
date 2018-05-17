@@ -1,12 +1,17 @@
 package cs.quartz.execute;
 
 import cs.common.Constant;
+import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
+import cs.domain.project.ProjectStop;
+import cs.domain.project.ProjectStop_;
 import cs.domain.project.Sign;
+import cs.domain.project.Sign_;
 import cs.domain.sys.Log;
 import cs.domain.sys.Workday;
 import cs.model.project.ProjectStopDto;
 import cs.quartz.unit.QuartzUnit;
+import cs.repository.repositoryImpl.project.ProjectStopRepo;
 import cs.service.project.ProjectStopService;
 import cs.service.project.SignService;
 import cs.service.sys.LogService;
@@ -42,6 +47,8 @@ public class SignCountWorkdayExecute implements Job {
     private WorkdayService workdayService;
     @Autowired
     private LogService logService;
+    @Autowired
+    private ProjectStopRepo projectStopRepo;
 
     /*警示灯状态如下：
      * PROCESS("1"),	//在办
@@ -107,16 +114,23 @@ public class SignCountWorkdayExecute implements Job {
                 //未发文的，才计算剩余工作日
                 if(isCountWorkDay){
                     //3、通过收文ID查找 项目暂停情况,并计算项目总共暂停了几个工作日
-                    List<ProjectStopDto> projectStopList = projectStopService.findProjectStopBySign(sign.getSignid());
                     float stopWorkday = 0;
-                    for (ProjectStopDto ps : projectStopList) {
-                        //记录实际暂停的工作日
-                        stopWorkday += ps.getPausedays() == null?0:ps.getPausedays();
+                    if(Constant.EnumState.YES.getValue().equals(sign.getIsProjectState())){
+                        HqlBuilder hqlBuilder = HqlBuilder.create();
+                        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId"+" order by  createdDate desc");
+                        hqlBuilder.setParam("signId", sign.getSignid());
+                        List<ProjectStop> psList = projectStopRepo.findByHql(hqlBuilder);
+                        for (ProjectStop ps : psList) {
+                            //记录实际暂停的工作日
+                            stopWorkday += ps.getPausedays() == null?0:ps.getPausedays();
+                        }
                     }
+
                     //4、计算从正式签收到当前时间的工作日，再减掉暂停的工作日，并设置相对应的状态
                     usedWorkDay = QuartzUnit.countWorkday(workdayList,sign.getSigndate()) - stopWorkday;
                     //剩余评审天数 = 总评审天数-已用评审天数
                     sign.setSurplusdays(sign.getTotalReviewdays() - usedWorkDay);
+
                     //评审天数
                     sign.setReviewdays(usedWorkDay);
                     totalDays = sign.getTotalReviewdays();

@@ -6,11 +6,9 @@ import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
-import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
-import cs.domain.sys.OrgDept;
 import cs.model.PageModelDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.repository.odata.ODataFilterItem;
@@ -20,7 +18,6 @@ import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
-import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.service.sys.OrgDeptService;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -30,10 +27,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static cs.common.Constant.SUPER_USER;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 项目信息视图 Service
@@ -167,6 +163,16 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                         criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));
                     }
                     continue;
+                }
+                //提前介入
+                if(Sign_.isAdvanced.getName().equals(item.getField())){
+                    if(!Constant.EnumState.YES.getValue().equals(value.toString())){
+                        Disjunction disj = Restrictions.disjunction();
+                        disj.add(Restrictions.isNull(Sign_.isAdvanced.getName()));
+                        disj.add(Restrictions.ne(Sign_.isAdvanced.getName(), Constant.EnumState.YES.getValue()));
+                        criteria.add(disj);
+                        continue;
+                    }
                 }
                 //办理进度
                 criteria.add(ODataObjFilterStrategy.getStrategy(item.getOperator()).getCriterion(item.getField(), value));

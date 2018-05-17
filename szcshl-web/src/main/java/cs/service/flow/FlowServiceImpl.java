@@ -113,7 +113,6 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     @Qualifier("topicFlowBackImpl")
     private IFlowBack topicFlowBackImpl;
-
     @Autowired
     @Qualifier("appraiseFlowBackImpl")
     private IFlowBack appraiseFlowBackImpl;
@@ -498,29 +497,11 @@ public class FlowServiceImpl implements FlowService {
             criteria = odataObj.buildFilterToCriteria(criteria);
         }
         criteria.addOrder(Order.desc(RuProcessTask_.signDate.getName()));
-
-
         List<RuProcessTask> runProcessList = null;
         String curUserId = SessionUtil.getUserId();
         //在办任务也包含待办任务，所以要加上这个条件
         if (isUserDeal) {
-
-            //排除合并评审阶段的次项目数据
-            Disjunction disj = Restrictions.disjunction();
-            disj.add(Restrictions.isNull(RuProcessTask_.reviewType.getName()));
-            disj.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), ""));
-            disj.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), Constant.EnumState.YES.getValue()));
-            disj.add(Restrictions.sqlRestriction(" ( {alias}." + RuProcessTask_.reviewType.getName() + "= '" + Constant.EnumState.NO.getValue()
-                    + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_BMLD_SPW1
-                    + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_FGLD_SPW1 + "' )"));
-            criteria.add(disj);
-
-            Disjunction dis = Restrictions.disjunction();
-            dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId));
-            dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + curUserId + "%"));
-            criteria.add(dis);
-            criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
-            runProcessList = criteria.list();
+            runProcessList =  findRuProcessTaskByUserId(curUserId);
         } else {
             if (leaderFlag != 1) {
                 Disjunction dis2 = Restrictions.disjunction();
@@ -566,6 +547,49 @@ public class FlowServiceImpl implements FlowService {
             });
         }
         return resultList;
+    }
+
+    /**
+     * 根据用户ID查询待办任务
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<RuProcessTask> findRuProcessTaskByUserId(String userId) {
+        String curUserId = SessionUtil.getUserId();
+        Criteria criteria = ruProcessTaskRepo.getExecutableCriteria();
+        //排除合并评审阶段的次项目数据
+        Disjunction disj = Restrictions.disjunction();
+        disj.add(Restrictions.isNull(RuProcessTask_.reviewType.getName()));
+        disj.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), ""));
+        disj.add(Restrictions.eq(RuProcessTask_.reviewType.getName(), Constant.EnumState.YES.getValue()));
+        disj.add(Restrictions.sqlRestriction(" ( {alias}." + RuProcessTask_.reviewType.getName() + "= '" + Constant.EnumState.NO.getValue()
+                + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_BMLD_SPW1
+                + "' and {alias}." + RuProcessTask_.nodeDefineKey.getName() + " != '" + FlowConstant.FLOW_SIGN_FGLD_SPW1 + "' )"));
+        criteria.add(disj);
+
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.eq(RuProcessTask_.assignee.getName(), curUserId));
+        dis.add(Restrictions.like(RuProcessTask_.assigneeList.getName(), "%" + curUserId + "%"));
+        criteria.add(dis);
+        criteria.addOrder(Order.desc(RuProcessTask_.createTime.getName()));
+
+        return criteria.list();
+    }
+
+    /**
+     * 根据用户ID查询待办任务
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<RuTask> findRuTaskByUserId(String userId) {
+        Criteria criteria = ruTaskRepo.getExecutableCriteria();
+        Disjunction dis = Restrictions.disjunction();
+        dis.add(Restrictions.eq(RuTask_.assignee.getName(), SessionUtil.getUserId()));
+        dis.add(Restrictions.like(RuTask_.assigneeList.getName(), "%" + SessionUtil.getUserId() + "%"));
+        criteria.add(dis);
+        return criteria.list();
     }
 
     /**
@@ -1246,6 +1270,37 @@ public class FlowServiceImpl implements FlowService {
             }
         }
         return resultMap;
+    }
+
+    /**
+     * 流程转办
+     * @param taskId        任务ID
+     * @param oldUserId     原先处理人
+     * @param newUserId     新处理人
+     * @return
+     */
+    @Override
+    public ResultMsg taskTransferAssignee(String taskId, String oldUserId, String newUserId) {
+        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"");
+        Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
+        if(!Validate.isObject(task)){
+            resultMsg.setReMsg("该任务已处理！");
+        }else{
+            //如果是当前待办人,直接转办
+            if(Validate.isString(task.getAssignee())){
+                taskService.setAssignee(taskId, newUserId);
+            }else{
+            //如果当前任务有多个待办人，则要修改对应的待办人
+                HqlBuilder sqlBuilder = HqlBuilder.create();
+                sqlBuilder.append(" UPDATE ACT_RU_IDENTITYLINK SET USER_ID_ = :newUserId WHERE TASK_ID_ = :taskId AND USER_ID_ = :oldUserId ");
+                sqlBuilder.setParam("newUserId",newUserId).setParam("taskId",taskId).setParam("oldUserId",oldUserId);
+                ruTaskRepo.executeSql(sqlBuilder);
+            }
+        }
+        resultMsg.setFlag(true);
+        resultMsg.setReCode(Constant.MsgCode.OK.getValue());
+        resultMsg.setReMsg("操作成功！");
+        return resultMsg;
     }
 
 }
