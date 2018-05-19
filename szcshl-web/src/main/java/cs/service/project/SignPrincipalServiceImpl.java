@@ -176,4 +176,23 @@ public class SignPrincipalServiceImpl implements SignPrincipalService {
         return resultUser;
     }
 
+    @Override
+    public String getAllSecondPriUserName(String signid) {
+        StringBuffer stringBuffer = new StringBuffer();
+        List<User> allSecondPriUser = getAllSecondPriUser(signid);
+        if(Validate.isList(allSecondPriUser)){
+            for(int i=0,l=allSecondPriUser.size();i<l;i++){
+                User user = allSecondPriUser.get(i);
+                if(i > 0){
+                    stringBuffer.append(",");
+                }
+                stringBuffer.append(user.getDisplayName());
+            }
+            return stringBuffer.toString();
+        }else{
+            return "";
+        }
+
+    }
+
 }

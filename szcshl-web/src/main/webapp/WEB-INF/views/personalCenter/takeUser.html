@@ -86,7 +86,7 @@
                 <td class="text-right">代办人：</td>
                 <td colspan="3">
                     <div ng-if="vm.model.takeUserId">
-                        {{vm.taskUserName}}
+                        <strong>{{vm.taskUserName}} </strong>
                     </div>
                     <div ng-if="!vm.model.takeUserId">
                         <span >无</span>
@@ -104,10 +104,11 @@
                 </td>
                 <td colspan="5">
                     <select style="width: 150px;" ng-model="vm.takeUserId">
-                        <option ng-repeat="x in vm.takeUserList" value="{{x.id}}" ng-selected="x.id == vm.model.takeUserId">{{x.displayName}}</option>
+                        <option ng-repeat="x in vm.takeUserList |filter:{jobState:'t'}" value="{{x.id}}" ng-selected="x.id == vm.model.takeUserId">{{x.displayName}}</option>
                     </select>
                     <button class="btn btn-sm btn-success" ng-click="vm.saveTakeUser()" ng-disabled="vm.model.takeUserId" ><span class="glyphicon glyphicon-ok"></span>保存</button>
                     <button class="btn btn-sm btn-warning" ng-click="vm.cancelTakeUser()" ng-disabled="!vm.model.takeUserId" ><span class="glyphicon glyphicon-remove"></span>取消代办</button>
+                    【设置用户代办之后，流转给你的任务将会自动转给代办人处理】
                 </td>
             </tr>
             <tr ng-if="vm.ruProcessTaskList">
@@ -135,7 +136,7 @@
                             <td>{{pt.signDate}}</td>
                             <td>{{pt.surplusDays}}</td>
                             <td>
-                                <Button class="btn btn-xs btn-success" ng-click="vm.transTask()">流程转办</Button>
+                                <Button class="btn btn-xs btn-success" ng-click="vm.transTask(pt.taskId)">流程转办</Button>
                             </td>
                         </tr>
                     </table>
@@ -149,8 +150,23 @@
             <tr ng-if="vm.ruTaskList">
                 <td colspan="6">
                     <table class="table table-bordered">
+                        <tr class="active">
+                            <td>序号</td>
+                            <td>任务名称</td>
+                            <td>办理环节</td>
+                            <td>当前处理人</td>
+                            <td>流程类别</td>
+                            <td>操作</td>
+                        </tr>
                         <tr ng-repeat="rt in vm.ruTaskList">
-
+                            <td>{{$index + 1}}</td>
+                            <td>{{rt.instanceName}}</td>
+                            <td>{{rt.nodeNameValue}}</td>
+                            <td>{{rt.displayName}}</td>
+                            <td>{{rt.processName}}</td>
+                            <td>
+                                <Button class="btn btn-xs btn-success" ng-click="vm.transTask(rt.taskId)">流程转办</Button>
+                            </td>
                         </tr>
                     </table>
                 </td>

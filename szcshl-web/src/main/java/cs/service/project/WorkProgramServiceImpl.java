@@ -25,6 +25,7 @@ import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
+import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.sys.SysFileService;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -73,7 +74,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     private SignDispaWorkService signDispaWorkService;
     @Autowired
     private FtpRepo ftpRepo;
-
+    @Autowired
+    private UserRepo userRepo;
     /**
      * 保存工作方案
      *
@@ -207,8 +209,10 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         //3、如果还没填报工作方案，则初始化
         if (isHaveCurUserWP == false) {
             WorkProgramDto mainWPDto = new WorkProgramDto();
-            boolean isMainFlowPri = signPrincipalService.isMainFlowPri(SessionUtil.getUserInfo().getId(), signId);
             Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
+            //取第一负责人
+            User mainUser = userRepo.getCacheUserById(sign.getmUserId());
+            boolean isMainFlowPri = SessionUtil.getUserId().equals(mainUser.getId()) || SessionUtil.getUserId().equals(mainUser.getTakeUserId());
             //项目基本信息
             workProgramDto.setProjectName(sign.getProjectname());
             workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
@@ -320,31 +324,14 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         workProgramDto.setSendFileUnit(Constant.SEND_FILE_UNIT);
         workProgramDto.setSendFileUser(sign.getMainDeptUserName());
         //获取评审部门
-        List<OrgDept> orgList = signBranchRepo.getOrgDeptBySignId(sign.getSignid());
-        if (Validate.isList(orgList)) {
-            StringBuffer orgName = new StringBuffer();
-            for (int i = 0, l = orgList.size(); i < l; i++) {
-                if (i > 0) {
-                    orgName.append(",");
-                }
-                orgName.append(orgList.get(i).getName());
-            }
-            workProgramDto.setReviewOrgName(orgName.toString());
-        }
+        workProgramDto.setReviewOrgName(signBranchRepo.getOrgDeptNameBySignId(sign.getSignid()));
         //项目第一负责人
         User mainUser = signPrincipalService.getMainPriUser(sign.getSignid());
         if (mainUser != null && Validate.isString(mainUser.getId())) {
             workProgramDto.setMianChargeUserName(mainUser.getDisplayName());
         }
         //项目其它负责人
-        List<User> secondPriUserList = signPrincipalService.getAllSecondPriUser(sign.getSignid());
-        if (Validate.isList(secondPriUserList)) {
-            String seUserName = "";
-            for (User u : secondPriUserList) {
-                seUserName += u.getDisplayName() + ",";
-            }
-            workProgramDto.setSecondChargeUserName(seUserName.substring(0, seUserName.length() - 1));
-        }
+        workProgramDto.setSecondChargeUserName(signPrincipalService.getAllSecondPriUserName(sign.getSignid()));
     }
 
     /**

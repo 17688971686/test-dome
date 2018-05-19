@@ -63,6 +63,7 @@ import java.util.*;
 import static cs.common.Constant.EMPTY_STRING;
 import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
 import static cs.common.Constant.SIGN_PX_PREFIX;
+import static cs.common.Constant.SUPER_USER;
 
 @Service
 public class SignServiceImpl implements SignService {
@@ -161,7 +162,8 @@ public class SignServiceImpl implements SignService {
         }
         Date now = new Date();
         Sign sign = null;
-
+        //是否是签收员操作
+        boolean isSignUser = Validate.isString(SessionUtil.getUserId());
         /**
          * 如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
          * 之前委里收文编号年份后面+4位数，现在是5位数
@@ -172,48 +174,25 @@ public class SignServiceImpl implements SignService {
         }
         //1、根据收文编号获取项目信息
         if (sign == null) {
-            sign = new Sign();
-            //送来时间
-            if (sign.getReceivedate() == null) {
-                sign.setReceivedate(now);
-            }
-            BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-            sign.setSignid(UUID.randomUUID().toString());
-            sign.setSignState(EnumState.NORMAL.getValue());
-            sign.setSigndate(now);
-            sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
-
-            //2、是否是项目概算流程
-            if (Constant.STAGE_BUDGET.equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
-                sign.setIsassistflow(EnumState.YES.getValue());
-            } else {
-                sign.setIsassistflow(EnumState.NO.getValue());
-            }
-            //3、送件人为当前签收人，
-            sign.setSendusersign(SessionUtil.getDisplayName());
-            //初始化办理部门信息
-            initSignDeptInfo(sign);
-            ///6、创建人信息
-            sign.setCreatedDate(now);
-            sign.setModifiedDate(now);
-            sign.setCreatedBy(SessionUtil.getUserId());
-            sign.setModifiedBy(SessionUtil.getDisplayName());
+            sign = initNewSignInfo(signDto,false,now,isSignUser);
         } else {
+            //【如果之前已经有送件人签名，则不能覆盖（因为委里过来的值不是评审中心要的值）】
+            String signName = sign.getSendusersign();
             BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-            sign.setModifiedDate(now);
-            sign.setModifiedBy(SessionUtil.getDisplayName());
+            sign.setSendusersign(signName);
         }
+        sign.setModifiedDate(now);
+        sign.setModifiedBy(SessionUtil.getDisplayName());
+
         //如果单位是手动添加时就添加到数据库
-        if (Validate.isString(signDto.getBuiltcompanyName())) {//建设单位
+        if (Validate.isString(signDto.getBuiltcompanyName())) {
             companyService.createSignCompany(signDto.getBuiltcompanyName(), "建设单位");
         }
-        if (Validate.isString(sign.getDesigncompanyName())) {//添加单位评分(没有编制单位时也添加编制单位)
+        //添加单位评分(没有编制单位时也添加编制单位)
+        if (Validate.isString(sign.getDesigncompanyName())) {
             unitScoreService.decide(sign.getDesigncompanyName(), sign.getSignid());
         }
-        //6、收文编号
-        if (!Validate.isString(sign.getSignNum())) {
-            initSignNum(sign);
-        }
+
         //7、正式签收
         if (Validate.isString(sign.getIssign()) || !EnumState.YES.getValue().equals(sign.getIssign())) {
             sign.setSigndate(now);
@@ -221,13 +200,14 @@ public class SignServiceImpl implements SignService {
             sign.setIspresign(Constant.EnumState.YES.getValue());
             //正式签收
             sign.setIssign(EnumState.YES.getValue());
-
+            if (!Validate.isString(sign.getSignNum())) {
+                initSignNum(sign);
+            }
             Float reviewsDays = getReviewDays(sign.getReviewstage());
             if (reviewsDays > 0) {
                 sign.setSurplusdays(reviewsDays);
                 sign.setTotalReviewdays(reviewsDays);
                 sign.setReviewdays(0f);
-
                 //计算预发文日期
                 //1、先获取从签收日期后的30天之间的工作日情况
                 List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate() , DateUtils.addDay(sign.getSigndate() , 30));
@@ -255,7 +235,8 @@ public class SignServiceImpl implements SignService {
     public ResultMsg reserveAddSign(SignDto signDto) {
         Sign sign = null;
         Date now = new Date();
-
+        //是否是签收员操作
+        boolean isSignUser = Validate.isString(SessionUtil.getUserId());
         /**
          * 如果收文编号以0000结束，说明委里没有收文编号，这个编号可以有多个
          * 之前委里收文编号年份后面+4位数，现在是5位数
@@ -264,35 +245,16 @@ public class SignServiceImpl implements SignService {
         if (!isSelfProj) {
             sign = signRepo.findByFilecode(signDto.getFilecode(), signDto.getSignState());
         }
-
         if (Validate.isObject(sign) && Validate.isString(sign.getSignid())) {
+            //【如果之前已经有送件人签名，则不能覆盖（因为委里过来的值不是评审中心要的值）】
+            String signName = sign.getSendusersign();
             BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
+            sign.setSendusersign(signName);
         } else {
-            sign = new Sign();
-            BeanCopierUtils.copyProperties(signDto, sign);
-            sign.setSignid(UUID.randomUUID().toString());
-            sign.setSignState(EnumState.NORMAL.getValue());
-            //0 用于区别签收和预签收页面实现送来资料存放位置
-            sign.setIspresign(Constant.EnumState.NO.getValue());
-            //2、是否是项目概算流程
-            if (Constant.STAGE_BUDGET.equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
-                sign.setIsassistflow(EnumState.YES.getValue());
-            } else {
-                sign.setIsassistflow(EnumState.NO.getValue());
-            }
-            //3、送件人为当前签收人，
-            sign.setSendusersign(SessionUtil.getDisplayName());
-            //初始化办理部门信息
-            initSignDeptInfo(sign);
-            sign.setCreatedDate(now);
-            sign.setCreatedBy(SessionUtil.getLoginName());
-            //预签收日期
-            sign.setPresignDate(now);
-            //默认为不亮灯
-            sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
+            sign = initNewSignInfo(signDto,true,now,isSignUser);
         }
         sign.setModifiedDate(now);
-        sign.setModifiedBy(SessionUtil.getLoginName());
+        sign.setModifiedBy(isSignUser?SessionUtil.getDisplayName():SUPER_USER);
 
         //如果是自己的项目,则不用回传给委里(2表示不用回传给委里)
         if(isSelfProj){
@@ -300,6 +262,45 @@ public class SignServiceImpl implements SignService {
         }
         signRepo.save(sign);
         return new ResultMsg(true, MsgCode.OK.getValue(), "操作成功！", sign);
+    }
+
+    /**
+     * 初始化项目信息
+     * @param signDto
+     * @param isPreSign 是否预签收项目
+     * @return
+     */
+    private Sign initNewSignInfo(SignDto signDto,boolean isPreSign,Date now,boolean isSignUser){
+        Sign sign = new Sign();
+        BeanCopierUtils.copyProperties(signDto, sign);
+        sign.setSignid(UUID.randomUUID().toString());
+        sign.setSignState(EnumState.NORMAL.getValue());
+        //2、是否是项目概算流程
+        if (Constant.STAGE_BUDGET.equals(sign.getReviewstage()) || Validate.isString(sign.getIschangeEstimate())) {
+            sign.setIsassistflow(EnumState.YES.getValue());
+        } else {
+            sign.setIsassistflow(EnumState.NO.getValue());
+        }
+        //3、送件人为当前签收人，
+        sign.setSendusersign(SessionUtil.getDisplayName());
+        //初始化办理部门信息
+        initSignDeptInfo(sign);
+        sign.setCreatedDate(now);
+        sign.setCreatedBy(isSignUser?SessionUtil.getLoginName():SUPER_USER);
+        //默认为不亮灯
+        sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
+        //0 用于区别签收和预签收页面实现送来资料存放位置
+        if(isPreSign){
+            //预签收日期
+            sign.setPresignDate(now);
+            sign.setIspresign(Constant.EnumState.NO.getValue());
+        }else{
+            //签收日期
+            sign.setSigndate(now);
+            sign.setReceivedate(now);
+        }
+        return sign;
+
     }
 
     @Override
@@ -357,8 +358,6 @@ public class SignServiceImpl implements SignService {
         if (Validate.isString(signDto.getDesigncompanyName())) {//编制单位
             companyService.createSignCompany(signDto.getDesigncompanyName(), "编制单位");
         }
-
-
         sign.setModifiedBy(SessionUtil.getUserId());
         sign.setModifiedDate(new Date());
         signRepo.save(sign);
@@ -709,8 +708,7 @@ public class SignServiceImpl implements SignService {
             resultStr += sign.getUrgencydegree() == null ? "缓急程度," : "";
             resultStr += sign.getSecrectlevel() == null ? "秘密等级," : "";
 
-            return new ResultMsg(false , MsgCode.ERROR.getValue() , resultStr.substring(0 , resultStr.length() -1
-            ) + "不能为空");
+            return new ResultMsg(false , MsgCode.ERROR.getValue() , resultStr.substring(0 , resultStr.length() -1) + "不能为空");
         }
 
         try {

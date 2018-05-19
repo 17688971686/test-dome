@@ -2,9 +2,9 @@
     'use strict';
     angular.module('app').controller('takeUserCtrl', takeUser);
 
-    takeUser.$inject = ['bsWin', 'takeUserSvc','userSvc'];
+    takeUser.$inject = ['bsWin', 'takeUserSvc','userSvc','flowSvc'];
 
-    function takeUser(bsWin, takeUserSvc,userSvc) {
+    function takeUser(bsWin, takeUserSvc,userSvc,flowSvc) {
         var vm = this;
         vm.title = "个人代办";
         vm.model = {};
@@ -20,7 +20,6 @@
 
                 //查询个人待办任务列表
                 userSvc.getAllTaskList(vm.model.id,function(data){
-                    console.log(data);
                     if(data.ruTaskList){
                         vm.ruTaskList = data.ruTaskList;        //待办任务
                     }
@@ -75,6 +74,7 @@
             angular.forEach(vm.takeUserList,function(u,index){
                 if(u.id == userId){
                     vm.taskUserName = u.displayName;
+                    vm.takeUserId = userId;
                 }
             })
         }
@@ -83,8 +83,33 @@
         /**
          * 任务流转
          */
-        vm.transTask = function(userId){
-
+        vm.transTask = function(taskId){
+            if(!vm.takeUserId){
+                bsWin.alert("您还没设置代办人，不能进行任务转办");
+                return ;
+            }else{
+                if(vm.takeUserId != vm.model.takeUserId){
+                    bsWin.alert("您设置的待办人有更改，请保存后再操作！");
+                    return ;
+                }else{
+                    flowSvc.transTask(taskId,vm.model.id,vm.model.takeUserId,function(data){
+                        if(data.flag || data.reCode == 'ok'){
+                            //查询个人待办任务列表
+                            userSvc.getAllTaskList(vm.model.id,function(data){
+                                if(data.ruTaskList){
+                                    vm.ruTaskList = data.ruTaskList;        //待办任务
+                                }
+                                if(data.ruProcessTaskList){
+                                    vm.ruProcessTaskList = data.ruProcessTaskList;  //待办项目
+                                }
+                            });
+                            bsWin.alert("操作成功！");
+                        }else{
+                            bsWin.alert(data.reMsg);
+                        }
+                    });
+                }
+            }
         }
     }
 

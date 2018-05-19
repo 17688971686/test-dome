@@ -28,6 +28,8 @@ import cs.model.sys.CompanyDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.CompanyRepo;
 
+import static cs.common.Constant.SUPER_USER;
+
 @Service
 public class CompanyServiceImpl implements CompanyService {
     private static Logger logger = Logger.getLogger(CompanyServiceImpl.class);
@@ -110,28 +112,22 @@ public class CompanyServiceImpl implements CompanyService {
             c.setId(UUID.randomUUID().toString());
             c.setCoName(name);
             c.setCoType(comType);
-            c.setCreatedBy(SessionUtil.getUserId());
-            c.setModifiedBy(SessionUtil.getLoginName());
+            c.setCreatedBy(Validate.isString(SessionUtil.getUserId())?SessionUtil.getUserId():SUPER_USER);
+            c.setModifiedBy(Validate.isString(SessionUtil.getUserId())?SessionUtil.getDisplayName():SUPER_USER);
             c.setCreatedDate(new Date());
             c.setModifiedDate(new Date());
             companyRepo.save(c);
         }
-
-
     }
 
     @Override
     @Transactional
     public void deleteCompany(String id) {
-
         Company com = companyRepo.findById(id);
         if (com != null) {
-
             companyRepo.delete(com);
-            //	this.deleteCompany(id);
             logger.info(String.format("删除单位，单位名coName:%s", com.getCoName()));
         }
-
     }
 
     @Override

@@ -575,6 +575,12 @@ public class FlowController {
         return resultMsg;
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "任务转办", path = "taskTransferAssignee", method ={RequestMethod.POST,RequestMethod.GET} )
+    @ResponseBody
+    public ResultMsg taskTransferAssignee(@RequestParam String taskId, @RequestParam String oldUserId, @RequestParam String newUserId){
+        return flowService.taskTransferAssignee(taskId,oldUserId,newUserId);
+    }
     /******************************   以下是页面处理  ******************************/
     //@RequiresPermissions("flow#flowDeal/processKey#get")
     @RequiresAuthentication

@@ -76,7 +76,7 @@ public class SignRestServiceImpl implements SignRestService {
         if (!Validate.isString(signDto.getFilecode())) {
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_02.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_02.getValue());
         }
-        ResultMsg resultMsg = new ResultMsg();
+        ResultMsg resultMsg = null;
         try {
             String stageCode = "";
             //1、判断项目阶段是否正确
@@ -108,7 +108,8 @@ public class SignRestServiceImpl implements SignRestService {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
             }
 
-            //1、根据收文编号获取项目信息
+            resultMsg = signService.createSign(signDto);
+            /*//1、根据收文编号获取项目信息
             Sign sign = signRepo.findByFilecode(signDto.getFilecode(), Constant.EnumState.DELETE.getValue());
             Date now = new Date();
             boolean isExistPro = false, isLoginUser = Validate.isString(SessionUtil.getUserId());
@@ -172,10 +173,13 @@ public class SignRestServiceImpl implements SignRestService {
             if (!Validate.isString(sign.getSignNum())) {
                 signService.initSignNum(sign);
             }
-            signRepo.save(sign);
+            signRepo.save(sign);*/
 
-            checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_USER, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
-
+            if(resultMsg.isFlag()){
+                boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
+                Sign sign = (Sign) resultMsg.getReObj();
+                checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_USER, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
+            }
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
         } finally {
@@ -253,7 +257,7 @@ public class SignRestServiceImpl implements SignRestService {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
             }
             //1、根据收文编号获取项目信息
-            Sign sign = signRepo.findByFilecode(signDto.getFilecode(), Constant.EnumState.DELETE.getValue());
+           /* Sign sign = signRepo.findByFilecode(signDto.getFilecode(), Constant.EnumState.DELETE.getValue());
             boolean isExistPro = false, isLoginUser = Validate.isString(SessionUtil.getUserId());
             Date now = new Date();
             if (!Validate.isObject(sign) || !Validate.isString(sign.getSignid())) {
@@ -280,9 +284,13 @@ public class SignRestServiceImpl implements SignRestService {
             }
             sign.setModifiedBy(isLoginUser ? SessionUtil.getDisplayName() : SUPER_USER);
             sign.setModifiedDate(now);
-            signRepo.save(sign);
-
-            checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_USER, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
+            signRepo.save(sign);*/
+            resultMsg = signService.reserveAddSign(signDto);
+            if(resultMsg.isFlag()){
+                boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
+                Sign sign = (Sign) resultMsg.getReObj();
+                checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_USER, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
+            }
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
         } finally {

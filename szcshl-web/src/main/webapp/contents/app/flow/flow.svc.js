@@ -17,8 +17,31 @@
             activeFlow: activeFlow,             // 重启流程
             deleteFlow: deleteFlow,             // 流程终止
             historyData: historyData,           // 获取流程处理数据
+            transTask : transTask,              //任务转办
         };
         return service;
+
+        function transTask(taskId,oldUserId,newUserId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/flow/taskTransferAssignee",
+                params: {
+                    taskId: taskId,
+                    oldUserId:oldUserId,
+                    newUserId:newUserId
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         // S_初始化流程数据
         function initFlowData(vm) {

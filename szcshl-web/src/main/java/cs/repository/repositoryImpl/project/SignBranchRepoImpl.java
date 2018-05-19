@@ -366,4 +366,20 @@ public class SignBranchRepoImpl extends AbstractRepository<SignBranch, String> i
         return totalResult;
     }
 
+    @Override
+    public String getOrgDeptNameBySignId(String signid) {
+        List<OrgDept> orgList = getOrgDeptBySignId(signid);
+        if (Validate.isList(orgList)) {
+            StringBuffer orgName = new StringBuffer();
+            for (int i = 0, l = orgList.size(); i < l; i++) {
+                if (i > 0) {
+                    orgName.append(",");
+                }
+                orgName.append(orgList.get(i).getName());
+            }
+           return orgName.toString();
+        }
+        return "";
+    }
+
 }

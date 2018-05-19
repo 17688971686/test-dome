@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
     private OrgDeptService orgDeptService;
     @Autowired
     private FlowService flowService;
+
     @Override
     @Transactional
     public PageModelDto<UserDto> get(ODataObj odataObj) {
@@ -76,10 +77,10 @@ public class UserServiceImpl implements UserService {
 
         List<User> listUser = criteria.list();
         List<UserDto> userDtoList = new ArrayList<>();
-        if(Validate.isList(listUser)){
+        if (Validate.isList(listUser)) {
             int totalCount = listUser.size();
             pageModelDto.setCount(totalCount);
-            for (int i=0,l=totalCount;i<l;i++) {
+            for (int i = 0, l = totalCount; i < l; i++) {
                 User item = listUser.get(i);
                 UserDto userDto = new UserDto();
                 BeanCopierUtils.copyProperties(item, userDto);
@@ -128,7 +129,7 @@ public class UserServiceImpl implements UserService {
                 user.setUserNo(String.format("%03d", Integer.valueOf(findMaxUserNo()) + 1));
             }
 
-            if(userDto != null && userDto.getLoginFailCount() == null){
+            if (userDto != null && userDto.getLoginFailCount() == null) {
                 user.setLoginFailCount(0);
             }
             user.setCreatedBy(SessionUtil.getLoginName());
@@ -188,10 +189,10 @@ public class UserServiceImpl implements UserService {
         try {
             userRepo.deleteById(User_.id.getName(), id);
             fleshPostUserCache();
-            return new ResultMsg(true, Constant.MsgCode.OK.getValue(),"删除成功！");
-        }catch (Exception e){
-            logger.info("删除用户异常："+e.getMessage());
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"删除异常："+e.getMessage());
+            return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "删除成功！");
+        } catch (Exception e) {
+            logger.info("删除用户异常：" + e.getMessage());
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "删除异常：" + e.getMessage());
         }
     }
 
@@ -524,15 +525,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<UserDto> getAllUserDisplayName() {
-//       User u =  userRepo.findById(SessionUtil.getUserId());
-
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select " + User_.id.getName() + "," + User_.displayName.getName() + " from cs_user where " + User_.loginName.getName() + "<>:loginName");
-
-        hqlBuilder.setParam("loginName", SessionUtil.getLoginName());
+        hqlBuilder.append("select " + User_.id.getName() + "," + User_.displayName.getName() + ","+User_.jobState.getName()+" from cs_user ");
+        hqlBuilder.append(" where " + User_.id.getName() + "!= :userId ").setParam("userId", SessionUtil.getUserId());
+        hqlBuilder.append(" and " + User_.jobState.getName() + " = :jobState ").setParam("jobState", "t");
 
         List<UserDto> userDtoList = new ArrayList<>();
-
         if (SessionUtil.hashRole(EnumFlowNodeGroupName.DIRECTOR.getValue()) ||
                 SessionUtil.hashRole(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()) ||
                 SessionUtil.hashRole(EnumFlowNodeGroupName.DEPT_LEADER.getValue())
@@ -561,7 +559,8 @@ public class UserServiceImpl implements UserService {
                 Object[] userNames = list.get(i);
                 UserDto userDto = new UserDto();
                 userDto.setId((String) userNames[0]);
-                userDto.setDisplayName((String) userNames[1]);
+                userDto.setDisplayName(Validate.isObject(userNames[2])?userNames[1].toString():"");
+                userDto.setJobState(Validate.isObject(userNames[2])?userNames[2].toString():null);
                 userDtoList.add(userDto);
             }
         }
@@ -651,64 +650,63 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResultMsg Login(HttpServletRequest request, HttpServletResponse res, String userName, String password){
-        User user=userRepo.findUserByName(userName);
-        ResultMsg resultMsg =new ResultMsg();
-        if(user!=null){
-            List<OrgDept> orgDeptList=orgDeptRepo.findAll();
-            for(OrgDept orgDept :orgDeptList){
+    public ResultMsg Login(HttpServletRequest request, HttpServletResponse res, String userName, String password) {
+        User user = userRepo.findUserByName(userName);
+        ResultMsg resultMsg = new ResultMsg();
+        if (user != null) {
+            List<OrgDept> orgDeptList = orgDeptRepo.findAll();
+            for (OrgDept orgDept : orgDeptList) {
                 //判断。登录的只能是部门负责人、副主任、主任、信息组
-           if(orgDept.getDirectorID().equals(user.getId()) || orgDept.getsLeaderID().equals(user.getId()) || orgDept.getmLeaderID().equals(user.getId()) ){
-            Date date = new Date();
-            HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-            if(user.getLoginFailCount()>5&&user.getLastLoginDate().getDay()==(new Date()).getDay()){
-                resultMsg.setReMsg("登录失败次数过多,请明天再试!");
-                logger.warn(String.format("登录失败次数过多,用户名:%s", userName));
+                if (orgDept.getDirectorID().equals(user.getId()) || orgDept.getsLeaderID().equals(user.getId()) || orgDept.getmLeaderID().equals(user.getId())) {
+                    Date date = new Date();
+                    HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+                    if (user.getLoginFailCount() > 5 && user.getLastLoginDate().getDay() == (new Date()).getDay()) {
+                        resultMsg.setReMsg("登录失败次数过多,请明天再试!");
+                        logger.warn(String.format("登录失败次数过多,用户名:%s", userName));
+                    } else if (password != null && password.equals(user.getPassword())) {
+                        //setCookiesByJsessionid(request,res);
+                        user.setLoginFailCount(0);
+                        user.setLastLoginDate(new Date());
+                        //shiro
+                        UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginName(), user.getPassword());
+                        Subject subject = SecurityUtils.getSubject();
+                        subject.login(token);
+
+                        resultMsg.setFlag(true);
+                        resultMsg.setReMsg(user.getDisplayName());
+                        logger.debug(String.format("登录成功,用户名:%s", userName));
+                        //登陆日志
+                        Log log = new Log();
+                        log.setUserName(user.getDisplayName());
+                        log.setResult("9");
+                        log.setCreatedDate(date);
+                        log.setMessage("登陆成功");
+                        logService.save(log);
+
+                    } else {
+                        user.setLoginFailCount(user.getLoginFailCount() + 1);
+                        user.setLastLoginDate(new Date());
+                        resultMsg.setReMsg("用户名或密码错误!");
+                        //登陆日志
+                        Log log = new Log();
+                        log.setUserName(user.getDisplayName());
+                        log.setResult("0");
+                        log.setCreatedDate(date);
+                        log.setMessage("用户名或密码错误");
+                        logService.save(log);
+                        break;//当密码错误时就停止循环。防止提示信息被覆盖
+                    }
+                    userRepo.save(user);
+                } else {
+                    resultMsg.setReMsg("没有权限登录!");
+                }
+
             }
-            else if(password!=null&&password.equals(user.getPassword())){
-                //setCookiesByJsessionid(request,res);
-                user.setLoginFailCount(0);
-                user.setLastLoginDate(new Date());
-                //shiro
-                UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginName(), user.getPassword());
-                Subject subject = SecurityUtils.getSubject();
-                subject.login(token);
-
-                resultMsg.setFlag(true);
-                resultMsg.setReMsg(user.getDisplayName());
-                logger.debug(String.format("登录成功,用户名:%s", userName));
-                //登陆日志
-                Log log = new Log();
-                log.setUserName(user.getDisplayName());
-                log.setResult("9");
-                log.setCreatedDate(date);
-                log.setMessage("登陆成功");
-                logService.save(log);
-
-            }else{
-                user.setLoginFailCount(user.getLoginFailCount()+1);
-                user.setLastLoginDate(new Date());
-                resultMsg.setReMsg("用户名或密码错误!");
-                //登陆日志
-                Log log = new Log();
-                log.setUserName(user.getDisplayName());
-                log.setResult("0");
-                log.setCreatedDate(date);
-                log.setMessage("用户名或密码错误");
-                logService.save(log);
-                break;//当密码错误时就停止循环。防止提示信息被覆盖
-            }
-            userRepo.save(user);
-        }else{
-                resultMsg.setReMsg("没有权限登录!");
-             }
-
-        }
-      }else{
+        } else {
             Date date = new Date();
             resultMsg.setReMsg("用户不存在!");
             //登陆日志
-            HttpServletRequest req = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+            HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             /*loginLog.setDisplayName("用户不存在");*/
             Log log = new Log();
             log.setResult("0");
@@ -722,55 +720,57 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 获取用户查看待办任务
+     *
      * @return
      */
     @Override
     public Map<String, Object> getUserSignAuth() {
-        Map<String,Object> resultMap = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<>();
         String curUserId = SessionUtil.getUserId();
         //分管的部门ID
         List<String> orgIdList = null;
         //定义领导标识参数（0表示普通用户，1表示主任，2表示分管领导，3表示部长或者组长）
-        Integer leaderFlag = SUPER_USER.equals(SessionUtil.getLoginName())?1:0;
-        if(leaderFlag ==0){
+        Integer leaderFlag = SUPER_USER.equals(SessionUtil.getLoginName()) ? 1 : 0;
+        if (leaderFlag == 0) {
             //查询所有的部门和组织
             List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
-            resultMap.put("allOrgDeptList",allOrgDeptList);
-            for(OrgDept od : allOrgDeptList){
-                if(leaderFlag == 0){
-                    if(curUserId.equals(od.getDirectorID())){
+            resultMap.put("allOrgDeptList", allOrgDeptList);
+            for (OrgDept od : allOrgDeptList) {
+                if (leaderFlag == 0) {
+                    if (curUserId.equals(od.getDirectorID())) {
                         leaderFlag = 3;
                         orgIdList = new ArrayList<>(1);
                         orgIdList.add(od.getId());
                     }
-                    if(curUserId.equals(od.getsLeaderID())){
+                    if (curUserId.equals(od.getsLeaderID())) {
                         leaderFlag = 2;
-                        if(orgIdList == null){
+                        if (orgIdList == null) {
                             orgIdList = new ArrayList<>();
                         }
                         orgIdList.add(od.getId());
                     }
-                    if(curUserId.equals(od.getmLeaderID())){
+                    if (curUserId.equals(od.getmLeaderID())) {
                         leaderFlag = 1;
                         orgIdList.clear();
                     }
                     //分管领导分管多个部门
-                }else if(leaderFlag == 2 && curUserId.equals(od.getsLeaderID())){
+                } else if (leaderFlag == 2 && curUserId.equals(od.getsLeaderID())) {
                     orgIdList.add(od.getId());
                 }
-                if(leaderFlag ==1 || leaderFlag == 3){
+                if (leaderFlag == 1 || leaderFlag == 3) {
                     break;
                 }
             }
         }
-        resultMap.put("leaderFlag",leaderFlag);
-        resultMap.put("orgIdList",orgIdList);
+        resultMap.put("leaderFlag", leaderFlag);
+        resultMap.put("orgIdList", orgIdList);
 
         return resultMap;
     }
 
     /**
      * 验证用户是否是部长下的管理人员
+     *
      * @param orgType
      * @param orgId
      * @param mainUserId
@@ -786,48 +786,50 @@ public class UserServiceImpl implements UserService {
      * 0表示普通用户，1表示主任，2表示分管领导，3表示部长 4.表示组长）
      * @return
      */
-    public Map<String,Object> getUserLevel(){
-        Map<String,Object> resultMap = new HashMap<>();
+    @Override
+    public Map<String, Object> getUserLevel() {
+        Map<String, Object> resultMap = new HashMap<>();
         String curUserId = SessionUtil.getUserId();
         //部门ID
         String orgIdStr = "";
-        Integer leaderFlag = SUPER_USER.equals(SessionUtil.getLoginName())?1:0;
-        if(leaderFlag ==0){
+        Integer leaderFlag = SUPER_USER.equals(SessionUtil.getLoginName()) ? 1 : 0;
+        if (leaderFlag == 0) {
             //查询所有的部门和组织
             List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
-            for(OrgDept od : allOrgDeptList){
-                if(leaderFlag == 0){
-                    if(curUserId.equals(od.getDirectorID())){
-                        if(!od.getName().equals("评估一部信息化组")){
+            for (OrgDept od : allOrgDeptList) {
+                if (leaderFlag == 0) {
+                    if (curUserId.equals(od.getDirectorID())) {
+                        if (!od.getName().equals("评估一部信息化组")) {
                             leaderFlag = 3;
                             orgIdStr = od.getId();
-                        }else{
+                        } else {
                             leaderFlag = 4;
                         }
 
                     }
-                    if(curUserId.equals(od.getsLeaderID())){
+                    if (curUserId.equals(od.getsLeaderID())) {
                         leaderFlag = 2;
-                        orgIdStr += "'"+ od.getId() + "'" +",";
+                        orgIdStr += "'" + od.getId() + "'" + ",";
                     }
-                    if(curUserId.equals(od.getmLeaderID())){
+                    if (curUserId.equals(od.getmLeaderID())) {
                         leaderFlag = 1;
                     }
-                }else if(leaderFlag == 2 && curUserId.equals(od.getsLeaderID())){
-                    orgIdStr += "'"+ od.getId() + "'" +",";
+                } else if (leaderFlag == 2 && curUserId.equals(od.getsLeaderID())) {
+                    orgIdStr += "'" + od.getId() + "'" + ",";
                 }
             }
         }
-        if(leaderFlag.equals(2)){
-            orgIdStr = orgIdStr.substring(0,orgIdStr.length()-1);
+        if (leaderFlag.equals(2)) {
+            orgIdStr = orgIdStr.substring(0, orgIdStr.length() - 1);
         }
-        resultMap.put("leaderFlag",leaderFlag);
-        resultMap.put("orgIdStr",orgIdStr);
+        resultMap.put("leaderFlag", leaderFlag);
+        resultMap.put("orgIdStr", orgIdStr);
         return resultMap;
     }
 
     /**
      * 查询在职的部门用户
+     *
      * @return
      */
     @Override
@@ -837,6 +839,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 用户用户所有的待办任务（待办项目和待办任务）
+     *
      * @param userId
      * @return
      */
@@ -844,12 +847,12 @@ public class UserServiceImpl implements UserService {
     public Map<String, Object> findAllTaskList(String userId) {
         Map<String, Object> taskMap = new HashMap<>();
         List<RuTask> ruTaskList = flowService.findRuTaskByUserId(userId);
-        if(Validate.isList(ruTaskList)){
-            taskMap.put("ruTaskList",ruTaskList);
+        if (Validate.isList(ruTaskList)) {
+            taskMap.put("ruTaskList", ruTaskList);
         }
         List<RuProcessTask> ruProcessTaskList = flowService.findRuProcessTaskByUserId(userId);
-        if(Validate.isList(ruProcessTaskList)){
-            taskMap.put("ruProcessTaskList",ruProcessTaskList);
+        if (Validate.isList(ruProcessTaskList)) {
+            taskMap.put("ruProcessTaskList", ruProcessTaskList);
         }
         return taskMap;
     }

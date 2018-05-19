@@ -97,78 +97,11 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         if (Validate.isString(dispatchDoc.getFileNum())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，该发文已经生成了发文编号！");
         }
-        /*//1、获取附件列表
-        boolean isUploadMainFile = false;
-        List<SysFile> fileList = sysFileRepo.findByMainId(signId);
-        //默认每个类型都没检测
-        String checFileName = "";
-        Map<String,Boolean> checkTypeMap = new HashMap<>();
-        SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
-        if(sysConfigDto == null || !Validate.isString(sysConfigDto.getConfigValue())){
-            checFileName = Constant.DEFAULT_CHECK_FILE;
-        }else{
-            checFileName = sysConfigDto.getConfigValue();
-            if(checFileName.indexOf("；") > -1){
-                checFileName = checFileName.replace("；",";");
-            }
-            if(checFileName.indexOf("，") > -1){
-                checFileName = checFileName.replace("，",",");
-            }
-        }
-        //需要检测的文件类型
-        List<String> typeFileList = StringUtil.getSplit(checFileName,";");
-        for(String fileType : typeFileList){
-            checkTypeMap.put(fileType,false);
-        }
 
-        if(Validate.isList(fileList)){
-            int checkCount = typeFileList.size(),successCount = 0;
-            for(int i=0,l=fileList.size();i<l;i++){
-                SysFile sysFile = fileList.get(i);
-                String showName = sysFile.getShowName().substring(0,sysFile.getShowName().lastIndexOf("."));
-                for (Map.Entry<String,Boolean> entry : checkTypeMap.entrySet()) {
-                    if(entry.getValue() == false){
-                        //项目概算不用上传投资匡算表或投资估算表
-                        if(Constant.STAGE_BUDGET.equals(dispatchDoc.getDispatchStage()) ){
-                            if("评审意见,审核意见".equals(entry.getKey())){
-                                entry.setValue(true);
-                                successCount++;
-                                break;
-                            }
-                        }else if(entry.getKey().contains(showName)){
-                            entry.setValue(true);
-                            successCount++;
-                        }
-                    }
-                }
-                if(Constant.STAGE_BUDGET.equals(dispatchDoc.getDispatchStage()) && successCount == 1) {
-                    isUploadMainFile = true;
-                    break;
-                }else if(successCount == checkCount){
-                    isUploadMainFile = true;
-                    break;
-                }
-            }
-        }
-        if(!isUploadMainFile){
-            StringBuffer errorBuffer = new StringBuffer();
-            for (Map.Entry<String,Boolean> entry : checkTypeMap.entrySet()) {
-                //项目概算不用上传投资匡算表或投资估算表
-                if(Constant.STAGE_BUDGET.equals(dispatchDoc.getDispatchStage()) ){
-                    if("评审意见,审核意见".equals(entry.getKey()) && entry.getValue() == false){
-
-                        errorBuffer.append(entry.getKey().replaceAll(",","或者")+";");
-                    }
-                }else{
-                    if(entry.getValue() == false){
-                        errorBuffer.append(entry.getKey().replaceAll(",","或者")+";");
-                    }
-                }
-
-            }
-            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传"+errorBuffer.toString()+"附件信息！");
-        }*/
         Date now = new Date();
+        if(!Validate.isObject(dispatchDoc.getDispatchDate())){
+            dispatchDoc.setDispatchDate(now);
+        }
         //是否是设备清单（国产设备的发文编号为：深投审设[xxxx],其它阶段为：深投审[xxxx],）
         String seqType = EnumState.PROCESS.getValue();
         String fileNum = DISPATCH_PREFIX;
@@ -178,7 +111,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         }
         String yearName = DateUtils.converToString(dispatchDoc.getDispatchDate(), DateUtils.DATE_YEAR);
         int maxSeq = dispatchDocRepo.getMaxSeq(yearName,seqType) + 1;
-        //(maxSeq > 999 ? maxSeq + "" : String.format("%03d", maxSeq))
+
         fileNum = fileNum + "[" + yearName + "]" + maxSeq;
         dispatchDoc.setFileNum(fileNum);
         dispatchDoc.setFileSeq(maxSeq);

@@ -94,6 +94,11 @@ public interface SignService {
 
     ResultMsg realSign(String signId);
 
+    /**
+     * 保存项目预签收信息
+     * @param signDto
+     * @return
+     */
     ResultMsg reserveAddSign(SignDto signDto);
 
     /**

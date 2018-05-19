@@ -1292,7 +1292,7 @@ public class FlowServiceImpl implements FlowService {
             }else{
             //如果当前任务有多个待办人，则要修改对应的待办人
                 HqlBuilder sqlBuilder = HqlBuilder.create();
-                sqlBuilder.append(" UPDATE ACT_RU_IDENTITYLINK SET USER_ID_ = :newUserId WHERE TASK_ID_ = :taskId AND USER_ID_ = :oldUserId ");
+                sqlBuilder.append(" UPDATE ACT_RU_IDENTITYLINK SET USER_ID_ = :newUserId WHERE TASK_ID_ = :taskId AND USER_ID_ = :oldUserId AND TYPE_ = 'candidate' ");
                 sqlBuilder.setParam("newUserId",newUserId).setParam("taskId",taskId).setParam("oldUserId",oldUserId);
                 ruTaskRepo.executeSql(sqlBuilder);
             }

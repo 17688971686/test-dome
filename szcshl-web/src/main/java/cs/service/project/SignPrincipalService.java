@@ -39,4 +39,11 @@ public interface SignPrincipalService {
      * @return
      */
     String prinUserName(String businessId,String orgId);
+
+    /**
+     * 获取所有第二负责人的姓名
+     * @param signid
+     * @return
+     */
+    String getAllSecondPriUserName(String signid);
 }
