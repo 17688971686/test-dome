@@ -109,6 +109,7 @@
                         <th style="width: 150px;">部门/人员</th>
                         <th style="width: 80px;">项目总数</th>
                         <th >项目名称</th>
+                        <th >项目阶段</th>
                         <th style="width: 180px;">办理环节</th>
                         <th >项目负责人</th>
                         <th style="width: 100px;">剩余工作日</th>
@@ -134,6 +135,7 @@
                                 <img src="${path}/contents/images/black.png" style="width: 16px; height: 16px;">
                             </span>
                             <a style="color: #72ACE3;" href="#/signFlowDetail/{{ruTaskList.businessKey}}/{{ruTaskList.taskId}}/{{ruTaskList.processInstanceId}}" >{{ruTaskList.projectName}}</a></td>
+                        <td>{{ruTaskList.reviewStage}}</td>
                         <td>{{ruTaskList.nodeNameValue}}</td>
                         <td>{{ruTaskList.allPriUser}}</td>
                         <td><span style="color: #f39a0d;font-size: 15px;">{{ruTaskList.surplusDays}}</span></td>

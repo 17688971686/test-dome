@@ -1674,7 +1674,7 @@ public class SignServiceImpl implements SignService {
                 expertReview = expertReviewRepo.findByBusinessId(signid);
                 if (expertReview != null && Validate.isList(expertReview.getExpertSelectedList())) {
                     Boolean isDisplay = false;
-                    String prompt = "专家";
+                    String prompt = "";
                     List<ExpertSelected> expertSelecteds = expertReview.getExpertSelectedList();
                     for (int i = 0; i < expertSelecteds.size(); i++) {
                         if (Constant.EnumState.YES.getValue().equals(expertSelecteds.get(i).getIsConfrim()) &&
@@ -1682,7 +1682,7 @@ public class SignServiceImpl implements SignService {
                             //银行账户和身份证号不能为空
                             if (!Validate.isString(expertSelecteds.get(i).getExpert().getBankAccount()) ||
                                     !Validate.isString(expertSelecteds.get(i).getExpert().getIdCard())) {
-                                if (i > 0 && i + 1 != expertSelecteds.size()) {//第一位和最后一位不用加
+                                if (prompt.length() > 0 && i + 1 <= expertSelecteds.size()) {//第一位和最后一位不用加
                                     prompt += "、";
                                 }
                                 //对提示信息的拼接
@@ -1692,7 +1692,7 @@ public class SignServiceImpl implements SignService {
                         }
                     }
                     if (isDisplay) {
-                        prompt += "的身份证号和银行卡号不完整,不能进行下一步操作,请去完善专家信息！";
+                        prompt += "专家的身份证号和银行卡号不完整,不能进行下一步操作,请去完善专家信息！";
                         return new ResultMsg(false, MsgCode.ERROR.getValue(), prompt);
                     }
                 }
@@ -1815,7 +1815,7 @@ public class SignServiceImpl implements SignService {
                 fileRecord.setSendStoreDate(new Date());
                 fileRecordRepo.save(fileRecord);
                 //如果审批通过，则更新项目状态（已发送归档）
-                signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_FILE.getValue());
+//                signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_FILE.getValue());
                 break;
             //确认归档
             case FlowConstant.FLOW_SIGN_QRGD:
@@ -1847,6 +1847,8 @@ public class SignServiceImpl implements SignService {
                 //更改项目状态
                 sign.setSignState(EnumState.YES.getValue());
                 sign.setProcessState(Constant.SignProcessState.FINISH.getValue());
+                //归档员确认，改项目状态（已发送归档）
+                signRepo.updateSignProcessState(signid, Constant.SignProcessState.SEND_FILE.getValue());
                 signRepo.save(sign);
                 break;
             default:

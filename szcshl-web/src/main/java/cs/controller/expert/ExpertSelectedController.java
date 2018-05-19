@@ -184,7 +184,7 @@ public class ExpertSelectedController {
             }
             //String title = new String((fileName).getBytes("GB2312") , "ISO-8859-1");
             ServletOutputStream sos = resp.getOutputStream();
-            String[] headerPair = new String[]{"姓名=name", "身份证号=idCard", "开户行=openingBank", "银行账号=bankAccount", "评审费=reviewCost", "应缴税=reviewTaxes", "项目名称=reviewTitle", "评审/函评日期=reviewDate", "负责人=principal"};
+            String[] headerPair = new String[]{"姓名=name", "身份证号=idCard",  "银行账号=bankAccount","开户行=openingBank", "评审费=reviewCost", "应缴税=reviewTaxes", "项目名称=reviewTitle", "评审/函评日期=reviewDate", "负责人=principal"};
             HSSFWorkbook wb = excelTools.createExcelBook(title, headerPair, expertCostDetailDtoList, ExpertCostDetailDto.class);
             resp.setContentType("application/vnd.ms-excel;charset=GBK");
             resp.setHeader("Content-type", "application/x-msexcel");
