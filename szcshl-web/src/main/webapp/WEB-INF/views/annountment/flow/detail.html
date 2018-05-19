@@ -7,42 +7,38 @@
         <tr>
             <td style="width:150px;" class="text-center">标题</td>
             <td colspan="4">
-                {{vm.suppletter.anTitle}}
+                {{vm.annountment.anTitle}}
             </td>
         </tr>
-
-
         <tr>
             <td style="width:150px; height: 150px; " class="text-center">内容</td>
             <td colspan="3">
-                {{vm.suppletter.anContent}}
+                <div ng-bind-html="vm.annountment.anContent|trust2Html"/>
             </td>
         </tr>
-
-
         <tr>
             <td style="width:150px; height: 70px;" class="text-center">部长意见</td>
             <td colspan="3">
-                <p> {{vm.suppletter.deptMinisterIdeaContent}}</p>
-                <p class="text-right" ng-if="vm.suppletter.deptMinisterName">签名：{{vm.suppletter.deptMinisterName}}</p>
-                <p class="text-right" ng-if="vm.suppletter.deptMinisterDate">日期：{{vm.suppletter.deptMinisterDate}}</p>
+                <p> {{vm.annountment.deptMinisterIdeaContent}}</p>
+                <p class="text-right" ng-if="vm.annountment.deptMinisterName">签名：{{vm.annountment.deptMinisterName}}</p>
+                <p class="text-right" ng-if="vm.annountment.deptMinisterDate">日期：{{vm.annountment.deptMinisterDate | date}}</p>
             </td>
         </tr>
 
         <tr>
             <td style="width:150px; height: 70px;" class="text-center">副主任意见</td>
             <td colspan="3">
-                <p> {{vm.suppletter.deptSLeaderIdeaContent}}</p>
-                <p class="text-right" ng-if="vm.suppletter.deptSLeaderName">签名：{{vm.suppletter.deptSLeaderName}}</p>
-                <p class="text-right" ng-if="vm.suppletter.deptSleaderDate">日期：{{vm.suppletter.deptSleaderDate}}</p>
+                <p> {{vm.annountment.deptSLeaderIdeaContent}}</p>
+                <p class="text-right" ng-if="vm.annountment.deptSLeaderName">签名：{{vm.annountment.deptSLeaderName}}</p>
+                <p class="text-right" ng-if="vm.annountment.deptSleaderDate">日期：{{vm.annountment.deptSleaderDate | date}}</p>
             </td>
         </tr>
         <tr>
             <td style="width:150px; height: 70px;" class="text-center">主任意见</td>
             <td colspan="3">
-                <p> {{vm.suppletter.deptDirectorIdeaContent}}</p>
-                <p class="text-right" ng-if="vm.suppletter.deptDirectorName">签名：{{vm.suppletter.deptDirectorName}}</p>
-                <p class="text-right" ng-if="vm.suppletter.deptDirectorDate">日期：{{vm.suppletter.deptDirectorDate}}</p>
+                <p> {{vm.annountment.deptDirectorIdeaContent}}</p>
+                <p class="text-right" ng-if="vm.annountment.deptDirectorName">签名：{{vm.annountment.deptDirectorName}}</p>
+                <p class="text-right" ng-if="vm.annountment.deptDirectorDate">日期：{{vm.annountment.deptDirectorDate | date}}</p>
             </td>
         </tr>
         </tbody>

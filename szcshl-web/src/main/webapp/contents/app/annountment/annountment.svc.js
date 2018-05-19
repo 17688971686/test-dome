@@ -3,9 +3,9 @@
 
     angular.module('app').factory('annountmentSvc', annountment);
 
-    annountment.$inject = ['$http', 'bsWin','sysfileSvc'];
+    annountment.$inject = ['$http', 'bsWin', 'sysfileSvc'];
 
-    function annountment($http, bsWin,sysfileSvc) {
+    function annountment($http, bsWin, sysfileSvc) {
 
         var url_annountment = rootPath + "/annountment";
         var url_back = "#/annountment";
@@ -50,7 +50,7 @@
         //end initAnOrg
 
         //begin findAnnountmentById
-        function findAnnountmentById(vm,callBack) {
+        function findAnnountmentById(vm, callBack) {
             var httpOptions = {
                 method: "post",
                 url: url_annountment + "/findAnnountmentById",
@@ -72,8 +72,9 @@
         }//end findAnnountmentById
 
         //begin createAnnountment
-        function createAnnountment(vm,callBack) {
-        	vm.annountment.anContent = vm.editor.getContent();;
+        function createAnnountment(vm, callBack) {
+            vm.annountment.anContent = vm.editor.getContent();
+            ;
             common.initJqValidation();
             var isValid = $('#form').valid();
             if (isValid) {
@@ -93,7 +94,7 @@
                     $http: $http,
                     httpOptions: httpOptions,
                     success: httpSuccess,
-                    onError:function(){
+                    onError: function () {
                         vm.isSubmit = false;
                     }
                 });
@@ -101,7 +102,7 @@
         }//end createAnnountment
 
         //begin updateAnnountment
-        function updateAnnountment(vm,callBack) {
+        function updateAnnountment(vm, callBack) {
             vm.isSubmit = true;
             vm.annountment.anContent = vm.editor.getContent();
             var httpOptions = {
@@ -120,7 +121,7 @@
                 $http: $http,
                 httpOptions: httpOptions,
                 success: httpSuccess,
-                onError:function(){
+                onError: function () {
                     vm.isSubmit = false;
                 }
             });
@@ -129,12 +130,12 @@
 
 
         //begin deleteAnnountment
-        function deleteAnnountment(anId,callBack) {
+        function deleteAnnountment(anId, callBack) {
             var httpOptions = {
                 method: "delete",
                 url: url_annountment,
                 params: {
-                    anId:anId
+                    anId: anId
                 }
             }
             var httpSuccess = function success(response) {
@@ -155,18 +156,13 @@
         // begin#grid
         function grid(vm) {
             // Begin:dataSource
-            var dataSource = common.kendoGridDataSource(rootPath + "/annountment/fingByCurUser",$("#annountmentform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
+            var dataSource = common.kendoGridDataSource(rootPath + "/annountment/fingByCurUser", $("#annountmentform"), vm.queryParams.page, vm.queryParams.pageSize, vm.gridParams);
             // End:dataSource
             // Begin:column
             var columns = [
                 {
                     template: function (item) {
-                        if (item.processInstanceId) {
-                            return "";
-                        }else{
-                            return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
-                                item.anId)
-                        }
+                        return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />", item.anId)
                     },
                     filterable: false,
                     width: 40,
@@ -180,10 +176,31 @@
                     template: "<span class='row-number'></span>"
                 },
                 {
-                    field: "anTitle",
+                    field: "",
                     title: "标题",
                     width: 300,
-                    filterable: false
+                    filterable: false,
+                    template: function (item) {
+                        //如果是审批流程，则可以查看审批流程的详情信息
+                        if (item.processInstanceId) {
+                            return '<a href="#/flowDetail/' + item.anId + '/ANNOUNT_MENT_FLOW//' + item.processInstanceId+'" >' + item.anTitle + '</a>';
+                        } else {
+                            return item.anTitle;
+                        }
+                    }
+                },
+                {
+                    field: "",
+                    title: "是否置顶",
+                    width: 100,
+                    filterable: false,
+                    template: function (item) {
+                        if (item.isStick && item.isStick == 9) {
+                            return "是";
+                        } else {
+                            return "否";
+                        }
+                    }
                 },
                 {
                     field: "",
@@ -205,24 +222,17 @@
                     filterable: false,
                     template: function (item) {
                         if (item.appoveStatus) {
-                            if(item.appoveStatus != '9'){
+                            if (item.appoveStatus != '9') {
                                 return "审批中";
-                            }else if(item.appoveStatus == '9' && item.issue == '9'){
+                            } else if (item.appoveStatus == '9' && item.issue == '9') {
                                 return "<span style='color: green'>审批通过</span>";
-                            }else if(item.appoveStatus == '9' && item.issue != '9'){
+                            } else if (item.appoveStatus == '9' && item.issue != '9') {
                                 return "<span style='color: red'>审批不通过</span>";
                             }
                         } else {
                             return "";
                         }
                     }
-                },
-                {
-                    field: "issueDate",
-                    title: "发布时间",
-                    format: "{0:yyyy-MM-dd hh24:mm:ss}",
-                    width: 160,
-                    filterable: false
                 },
                 {
                     field: "",
@@ -237,6 +247,13 @@
                     }
                 },
                 {
+                    field: "issueDate",
+                    title: "发布时间",
+                    format: "{0:yyyy-MM-dd hh24:mm:ss}",
+                    width: 160,
+                    filterable: false
+                },
+                {
                     field: "",
                     title: "操作",
                     width: 150,
@@ -244,18 +261,18 @@
                         var isCanDel = true;
                         var isCanEdit = true;
                         //已发布或者走流程的不能删除
-                        if(item.issue == '9' || item.processInstanceId){
-                            if(item.issue=='0' && item.appoveStatus == '9'){
-                                 isCanDel = true;
-                            }else{
+                        if (item.issue == '9' || item.processInstanceId) {
+                            if (item.issue == '0' && item.appoveStatus == '9') {
+                                isCanDel = true;
+                            } else {
                                 isCanDel = false;
                             }
 
                         }
-                        if(item.processInstanceId){
-                            if(item.issue == '0' && item.appoveStatus == '9'){
+                        if (item.processInstanceId) {
+                            if (item.issue == '0' && item.appoveStatus == '9') {
                                 isCanEdit = true;
-                            }else{
+                            } else {
                                 isCanEdit = false;
                             }
 
@@ -267,7 +284,7 @@
                             isCanEdit,
                             "vm.del('" + item.anId + "')",
                             isCanDel);
-                    	
+
                     }
                 }
             ];
@@ -277,8 +294,8 @@
                 dataSource: common.gridDataSource(dataSource),
                 filterable: common.kendoGridConfig().filterable,
                 noRecords: common.kendoGridConfig().noRecordMessage,
-                pageable : common.kendoGridConfig(vm.queryParams).pageable,
-                dataBound:common.kendoGridConfig(vm.queryParams).dataBound,
+                pageable: common.kendoGridConfig(vm.queryParams).pageable,
+                dataBound: common.kendoGridConfig(vm.queryParams).dataBound,
                 columns: columns,
                 resizable: true
             };
@@ -304,11 +321,11 @@
                 }
                 var httpSuccess = function success(response) {
                     vm.isSubmit = false;
-                    if(response.data.flag || response.data.reCode == 'ok'){
-                        bsWin.alert("操作成功！",function(){
+                    if (response.data.flag || response.data.reCode == 'ok') {
+                        bsWin.alert("操作成功！", function () {
                             vm.gridOptions.dataSource.read();
                         });
-                    }else{
+                    } else {
                         bsWin.alert(response.data.reMsg);
                     }
                 }
@@ -320,7 +337,7 @@
             }
         }//E_updateIssueState
 
-        function findDetailById(vm,id) {
+        function findDetailById(vm, id) {
             var httpOptions = {
                 method: "post",
                 url: url_annountment + "/findAnnountmentById",
@@ -330,7 +347,7 @@
             }
             var httpSuccess = function success(response) {
                 vm.annountment = response.data;
-                sysfileSvc.findByBusinessId(id,function(data){
+                sysfileSvc.findByBusinessId(id, function (data) {
                     vm.sysFilelists = data;
                 });
                 postArticle(vm, id);
@@ -410,10 +427,10 @@
 
         //S_初始化流程数据
         function initFlowDeal(vm) {
-            vm.annountment={};
-            vm.annountment.anId=vm.businessKey;
+            vm.annountment = {};
+            vm.annountment.anId = vm.businessKey;
             findAnnountmentById(vm, function (data) {
-                vm.suppletter = data;
+                vm.annountment = data;
             })
         }//E_initFlowDeal
 

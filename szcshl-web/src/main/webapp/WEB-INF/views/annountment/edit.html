@@ -56,16 +56,10 @@
                      <input type="checkbox" ng-model="vm.annountment.issue "  name="issue" ng-true-value="0" ng-checked="!vm.annountment.issue || vm.annountment.issue == 0 || vm.annountment.issue == '0'"/>否
                  </td>
              </tr>
-             <tr ng-hide="vm.annountment.processInstanceId">
-                <td class="text-right">排序序号： </td>
-                <td >
-                    <input  type="number" maxlength="50" class="form-control input-sm "   ng-model="vm.annountment.anSort " id="anSort" name="anSort" >
-                </td>
-            </tr>
              <tr>
                 <td class="text-right">内容：</td>
-                <td >
-                        <div id="editor" type="text/plain"  style="width:100%;height:400px;"></div>
+                <td>
+                    <div id="editor" type="text/plain"  style="width:100%;height:400px;"></div>
                 </td>
             </tr>
              <tr>

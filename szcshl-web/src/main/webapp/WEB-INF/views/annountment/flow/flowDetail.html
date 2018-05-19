@@ -7,18 +7,17 @@
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
-        <li><a href="#/agendaTasks">任务待办</a></li>
+        <li><a href="{{vm.parentLink}}">{{vm.parentName}}</a></li>
         <li class="active">{{vm.title}}</li>
     </ol>
 
-
     <ul id="myTab" class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" for-div="busi_baseinfo">通知公告</a></li>
-        <li><a data-toggle="tab" for-div="flow_diagram">流程图</a></li>
+        <li ng-if="vm.picture"><a data-toggle="tab" for-div="flow_diagram">流程图</a></li>
         <li><a data-toggle="tab" for-div="flow_history">处理记录</a></li>
     </ul>
 
-    <div   class="tab-content" style="background:white;">
+    <div  class="tab-content" style="background:white;">
         <div  class="tab-pane fade in active" style="background:white;" id="busi_baseinfo">
             <#include "/annountment/flow/detail.html"/>
         </div><!-- end tab -->

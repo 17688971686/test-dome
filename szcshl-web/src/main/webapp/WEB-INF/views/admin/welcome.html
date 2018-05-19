@@ -90,14 +90,14 @@
             <div class="box-body no-padding">
                 <table class="table table-bordered">
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             <div class="box-header">
                                 <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 在办项目统计一览表</h3>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             <span id="span1" style="margin-left: 15px;"><img src="${path}/contents/images/purple.png" style="width: 16px; height: 16px;"></span>暂停
                             <span id="span2"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>少于3个工作日
                             <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
@@ -110,7 +110,7 @@
                         <th style="width: 80px;">项目总数</th>
                         <th >项目名称</th>
                         <th >项目阶段</th>
-                        <th style="width: 180px;">办理环节</th>
+                        <th >办理环节</th>
                         <th >项目负责人</th>
                         <th style="width: 100px;">剩余工作日</th>
                     </tr>
@@ -159,7 +159,7 @@
 <!-- begin 预签收项目详情 -->
 <div class="cared" style="margin-bottom: 15px;">
     <div class="row">
-        <div class="col-xs-12" ng-hide="vm.isdisplays && vm.hidePreTable">
+        <div class="col-xs-12" ng-hide="vm.hidePreTable">
             <div class="box" style="border:none;min-height:0px;">
                 <div class="box-body no-padding">
                     <table class="table table-bordered">
@@ -261,8 +261,8 @@
                         <tr ng-repeat="x in vm.annountmentList|limitTo:5">
                             <td>{{$index +1}}.</td>
                             <td><a href="#/annountmentDetail/{{x.anId}}">{{x.anTitle}}</a></td>
-                            <td>{{x.issueUser}}</td>
                             <td><span class="badge bg-green">{{x.issueDate | date}}</span></td>
+                            <td>{{x.issueUser}}</td>
                         </tr>
                         </tbody>
                     </table>

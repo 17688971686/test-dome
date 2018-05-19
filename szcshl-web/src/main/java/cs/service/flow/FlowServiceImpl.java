@@ -66,6 +66,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 
+import static cs.common.Constant.SUPER_ROLE;
 import static cs.common.Constant.SUPER_USER;
 
 @Service
@@ -748,42 +749,49 @@ public class FlowServiceImpl implements FlowService {
         }
         criteria.addOrder(Order.desc(RuTask_.createTime.getName()));
         List<RuTask> runProcessList = criteria.list();
-
-        List<RuTask> resultList = new ArrayList<>();
-        //查找用户权限
-        Map<String, Object> authMap = userService.getUserSignAuth();
-        Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
-        List<String> orgIdList = (List<String>) authMap.get("orgIdList");
-        if (authFlag != 1) {
-            String curUserId = SessionUtil.getUserId();
-            for(RuTask ruTask : runProcessList){
-                List<String> userIdList = findUserIdByProcessInstanceId(ruTask.getInstanceId());
-                //如果是经办人，则可以查看
-                if(userIdList.contains(curUserId)){
-                    resultList.add(ruTask);
-                    continue;
-                }
-                //如果当前代办人，可以查看
-                if(curUserId.equals(ruTask.getAssignee()) || (ruTask.getAssigneeList() != null && ruTask.getAssigneeList().contains(curUserId))){
-                    resultList.add(ruTask);
-                    continue;
-                }
-                //分管领导或者部长
-                if(authFlag != 0 ){
-                    for(String orgId : orgIdList){
-                        boolean isOrgUser = orgService.checkIsOrgUer(orgId,Validate.isString(ruTask.getAssignee())?ruTask.getAssignee():ruTask.getAssigneeList());
-                        if(isOrgUser){
-                            resultList.add(ruTask);
-                            break;
+        boolean isHaveAllPermission = SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())
+                || SUPER_USER.equals(SessionUtil.getLoginName());
+        if(isHaveAllPermission){
+            pageModelDto.setCount(runProcessList.size());
+            pageModelDto.setValue(runProcessList);
+        }else{
+            List<RuTask> resultList = new ArrayList<>();
+            //查找用户权限
+            Map<String, Object> authMap = userService.getUserSignAuth();
+            Integer authFlag = new Integer(authMap.get("leaderFlag").toString());
+            List<String> orgIdList = (List<String>) authMap.get("orgIdList");
+            if (authFlag != 1) {
+                String curUserId = SessionUtil.getUserId();
+                for(RuTask ruTask : runProcessList){
+                    List<String> userIdList = findUserIdByProcessInstanceId(ruTask.getInstanceId());
+                    //如果是经办人，则可以查看
+                    if(userIdList.contains(curUserId)){
+                        resultList.add(ruTask);
+                        continue;
+                    }
+                    //如果当前代办人，可以查看
+                    if(curUserId.equals(ruTask.getAssignee()) || (ruTask.getAssigneeList() != null && ruTask.getAssigneeList().contains(curUserId))){
+                        resultList.add(ruTask);
+                        continue;
+                    }
+                    //分管领导或者部长
+                    if(authFlag != 0 ){
+                        for(String orgId : orgIdList){
+                            boolean isOrgUser = orgService.checkIsOrgUer(orgId,Validate.isString(ruTask.getAssignee())?ruTask.getAssignee():ruTask.getAssigneeList());
+                            if(isOrgUser){
+                                resultList.add(ruTask);
+                                break;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        pageModelDto.setCount(resultList.size());
-        pageModelDto.setValue(resultList);
+            pageModelDto.setCount(resultList.size());
+            pageModelDto.setValue(resultList);
+        }
         return pageModelDto;
+
     }
 
     /**

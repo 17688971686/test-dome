@@ -1494,7 +1494,6 @@
                 resizable: true,
                 pageable: common.kendoGridConfig(vm.queryParams).pageable,
                 dataBound: common.kendoGridConfig(vm.queryParams).dataBound,
-
             };
         }//S_doingTaskGrid
 

@@ -44,6 +44,14 @@
             });
             return output;
         };
+    }).filter('FormatStrDate', function () {
+        return function (input) {
+            var date = new Date(input);
+            var monthValue = (date.getMonth() + 1) < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
+            var dayValue = (date.getDate()) < 10 ? "0" + (date.getDate()) : (date.getDate());
+            var formatDate = date.getFullYear() + "/" + monthValue + "/" + dayValue;
+            return formatDate;
+        }
     })
         .config(["$stateProvider", "$locationProvider", "$urlRouterProvider", 'cfpLoadingBarProvider', function ($stateProvider, $locationProvider, $urlRouterProvider, cfpLoadingBarProvider) {
             $locationProvider.hashPrefix(''); // 1.6.x版本使用路由功能需加上这句
