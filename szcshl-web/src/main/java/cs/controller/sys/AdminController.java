@@ -220,6 +220,7 @@ public class AdminController {
                 //过滤掉已发文的项目
                 authRuSignTask = authRuSignTask.stream().filter(x -> (x.getSignDate() != null && x.getSignprocessState() < Constant.SignProcessState.END_DIS_NUM.getValue())).collect(Collectors.toList());
                 int totalLength = authRuSignTask.size();
+                int doingNum = authRuSignTask.size() , dipathOverNum = 0  , stopNum = 0 , weekNum = 0 ; //(在办项目 ， 发文超期 ， 暂停 ， 少于3个工作日)
                 //线性图
                 List<RuProcessTask> lineList = new ArrayList<>();
                 for (int i = 0; i < totalLength; i++) {
@@ -229,6 +230,22 @@ public class AdminController {
                     } else {
                         existList.add(rpt.getBusinessKey());
                         lineList.add(rpt);
+                            switch (rpt.getLightState()){
+                                case "6":
+                                    dipathOverNum ++ ;
+                                    break;
+                                case "4" :
+                                    stopNum ++ ;
+                                    break;
+                                case "5" :
+                                    weekNum ++;
+                                    break;
+                                default: break;
+                        }
+                        resultMap.put("DOINGNUM" ,doingNum );
+                        resultMap.put("DISPATHOVERNUM" , dipathOverNum);
+                        resultMap.put("STOPNUM" , stopNum);
+                        resultMap.put("WEEKNUM" , weekNum);
                     }
                 }
                 resultMap.put(LINE_SIGN_LIST_FLAG, lineList);
@@ -385,6 +402,9 @@ public class AdminController {
                 haveNew = true;
                 runTaskList = (List<RuProcessTask>) runTaskInfoMap.get("TASK_LIST");
                 count = Integer.parseInt(runTaskInfoMap.get("COUNT").toString()) + 1;
+            }
+            if(Constant.signEnumState.DISPAOVER.getValue().equals( runTask.getLightState())){
+
             }
         }
         if (haveNew) {

@@ -206,6 +206,18 @@
                     if (data.annountmentList) {
                         vm.annountmentList = data.annountmentList;
                     }
+                    if(data.DOINGNUM){
+                        vm.doingNum = data.DOINGNUM;
+                    }
+                    if(data.DISPATHOVERNUM){
+                        vm.dispathNum = data.DISPATHOVERNUM;
+                    }
+                    if(data.STOPNUM){
+                        vm.stopNum = data.STOPNUM;
+                    }
+                    if(data.WEEKNUM){
+                        vm.weekNum = data.WEEKNUM;
+                    }
                     //是否显示图表
                     vm.isdisplays = data.isdisplay;
                     if(!data.isdisplay){

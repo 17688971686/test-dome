@@ -173,7 +173,7 @@
                         {{s.dispatchDocDto.extraValue}}
                     </td>
                     <td>
-                        {{s.dispatchDocDto.extraRate}}<span>%</span>
+                        {{s.dispatchDocDto.extraRate}}<span ng-if="s.dispatchDocDto.extraRate">%</span>
                     </td>
                     <td>
                         {{s.dispatchDocDto.approveValue}}
@@ -235,7 +235,7 @@
                         {{vm.dispatchDoc.extraValue}}
                     </td>
                     <td>
-                        {{vm.dispatchDoc.extraRate}}<span>%</span>
+                        {{vm.dispatchDoc.extraRate}}<span ng-if="vm.dispatchDoc.extraRate">%</span>
                     </td>
                     <td>
                         {{vm.dispatchDoc.approveValue}}

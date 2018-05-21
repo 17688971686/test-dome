@@ -219,7 +219,7 @@
                         {{dispatchDoc.extraValue}}
                     </td>
                     <td>
-                        {{dispatchDoc.extraRate}}<span>%</span>
+                        {{dispatchDoc.extraRate}}<span ng-if="dispatchDoc.extraRate">%</span>
                     </td>
                     <td>
                         {{dispatchDoc.approveValue}}
@@ -261,7 +261,7 @@
                 <tbody>
                 <tr>
                     <td width="20%">{{vm.sign.reviewstage}}</td>
-                    <td width="14%">申报<span class="required">*</span></td>
+                    <td width="14%">申报</td>
                     <!--<td width="14%" ng-if="vm.dispatchDoc.dispatchType=='项目发文'" >审定<span class="required">*</span></td>-->
                     <td width="14%" >审定</td>
                     <td width="14%">核减（增）</td>
@@ -277,25 +277,26 @@
                                ng-model="vm.dispatchDoc.declareValue" id="declareValue" name="declareValue"
                                ng-blur="vm.count()"
                                data-val-regex="金额格式不正确"
-                               data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?" data-val="true"
-                               data-val-required="必填">
+                               data-val-regex-pattern="([1-9][\d]{0,7}|0)(\.[\d]{1,7})?"/>
                         <span data-valmsg-for="declareValue" data-valmsg-replace="true" class="errors"></span>
                     </td>
                     <td >
                         <input type="txt" maxlength="200" class="form-control input-sm "
                                ng-model="vm.dispatchDoc.authorizeValue" id="authorizeValue" name="authorizeValue"
                                ng-blur="vm.count()"
-                        >
+                       /> >
+                        <span data-valmsg-for="authorizeValue" data-valmsg-replace="true" class="errors"></span>
                     </td>
                     <td>
                         {{vm.dispatchDoc.extraValue}}
                     </td>
                     <td>
-                        {{vm.dispatchDoc.extraRate}}<span>%</span>
+                        {{vm.dispatchDoc.extraRate}}<span ng-if="vm.dispatchDoc.extraRate">%</span>
                     </td>
                     <td>
                         <input type="text" maxlength="200" class="form-control input-sm "
-                               ng-model="vm.dispatchDoc.approveValue" id="approveValue" name="approveValue">
+                               ng-model="vm.dispatchDoc.approveValue" id="approveValue" name="approveValue"/>
+                        <span data-valmsg-for="approveValue" data-valmsg-replace="true" class="errors"></span>
                     </td>
                     <td>
                         <input type="text" maxlength="200" class="form-control input-sm "

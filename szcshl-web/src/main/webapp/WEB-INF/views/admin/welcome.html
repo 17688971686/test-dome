@@ -92,7 +92,14 @@
                     <tr>
                         <td colspan="7">
                             <div class="box-header">
-                                <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/> 在办项目统计一览表</h3>
+                                <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/>
+                                    在办项目统计一览表
+                                    (
+                                    在办项目<strong>{{vm.doingNum ? vm.doingNum : 0}}</strong>个，
+                                    发文超期<strong>{{vm.dispathNum ? vm.dispathNum : 0}}</strong>个，
+                                    少于3个工作日<strong>{{vm.weekNum ? vm.weekNum : 0}}</strong>个，
+                                    项目暂停<strong>{{vm.stopNum ? vm.stopNum : 0}}</strong>个)
+                                </h3>
                             </div>
                         </td>
                     </tr>
