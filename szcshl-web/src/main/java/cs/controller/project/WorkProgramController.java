@@ -33,10 +33,10 @@ public class WorkProgramController {
 
     @RequiresAuthentication
     //@RequiresPermissions("workprogram#initWorkProgram#post")
-    @RequestMapping(name = "初始化工作方案", path = "html/initWorkProgram", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String,Object> initWorkBySignId(@RequestParam(required = true) String signId,String isShowNewExpert) {
-        return workProgramService.initWorkProgram(signId,isShowNewExpert);
+    @RequestMapping(name = "初始化工作方案", path = "initFlowWP", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String,Object> initFlowWP(@RequestParam(required = true) String signId,@RequestParam(required = true) String taskId) {
+        return workProgramService.initWorkProgram(signId,taskId);
     }
 
     @RequiresAuthentication

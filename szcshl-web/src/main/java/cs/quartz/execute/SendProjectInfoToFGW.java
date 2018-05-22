@@ -1,6 +1,6 @@
 package cs.quartz.execute;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
@@ -27,7 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ibm.icu.util.LocalePriorityList.add;
-import static cs.common.FlowConstant.*;
+import static cs.common.constants.FlowConstant.*;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * 发送信息项目信息给委里
@@ -50,7 +51,7 @@ public class SendProjectInfoToFGW implements Job {
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
-        log.setUserName(Constant.SUPER_USER);
+        log.setUserName(SUPER_ACCOUNT);
         log.setBuninessId("");
         log.setModule(Constant.LOG_MODULE.QUARTZ.getValue() + "【回传数据】");
         //优先级别中等

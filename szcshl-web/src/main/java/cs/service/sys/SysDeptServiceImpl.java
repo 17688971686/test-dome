@@ -1,7 +1,7 @@
 package cs.service.sys;
 
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;

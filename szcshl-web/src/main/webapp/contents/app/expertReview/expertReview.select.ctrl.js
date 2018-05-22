@@ -18,13 +18,13 @@
         vm.businessId = $state.params.businessId;       //专家评审方案业务ID
         vm.minBusinessId = $state.params.minBusinessId; //专家抽取方案业务ID
         vm.businessType = $state.params.businessType;   //专家业务类型
-        var expertID = $state.params.expertID;   //专家ID
-        vm.isback = $state.params.isback;   //用来判断返回的是否是维护页面的工作方案
-        vm.processInstanceId = $state.params.processInstanceId;
+        vm.taskId = $state.params.taskId;               //任务ID
+        var expertID = $state.params.expertID;          //专家ID
+        vm.isback = $state.params.isback;               //用来判断返回的是否是维护页面的工作方案
+        vm.processInstanceId = $state.params.processInstanceId; //流程实例ID
         vm.isSuperUser = isSuperUser;
         vm.saveNewExpertFlag = 0;   //保存新专家标志
         vm.reviewType = $state.params.reviewType; //评审方式
-
 
         //S 查看专家详细
         vm.findExportDetail = function (id) {
@@ -696,12 +696,14 @@
                 return;
             }
             if (vm.isback) {
-                $state.go('MaintainProjectEdit', {signid: vm.businessId,processInstanceId:vm.processInstanceId});
+                $state.go('MaintainProjectEdit',{
+                        signid: vm.businessId,
+                        processInstanceId:vm.processInstanceId
+                });
             } else {
-                $state.go('workprogramEdit', {
+                $state.go('flowWPEdit', {
                     signid: vm.businessId,
-                    minBusinessId: vm.minBusinessId,
-                    businessType: vm.businessType
+                    taskid: vm.taskId
                 });
             }
 

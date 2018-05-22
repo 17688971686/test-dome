@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.cache.CacheConstant;
 import cs.common.cache.CacheManager;
@@ -15,7 +15,6 @@ import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.meeting.MeetingRoom_;
 import cs.domain.meeting.RoomBooking_;
-import cs.domain.sys.User;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;

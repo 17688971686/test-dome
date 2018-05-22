@@ -1,12 +1,9 @@
 package cs.repository.repositoryImpl.flow;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.domain.flow.FlowPrincipal;
 import cs.domain.flow.FlowPrincipal_;
-import cs.domain.project.SignPrincipal;
-import cs.domain.project.SignPrincipal_;
-import cs.domain.sys.SysFile_;
 import cs.domain.sys.User;
 import cs.domain.sys.User_;
 import cs.repository.AbstractRepository;

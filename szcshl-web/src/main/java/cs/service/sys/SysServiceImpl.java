@@ -2,8 +2,8 @@ package cs.service.sys;
 
 import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
-import cs.common.Constant;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.common.sysResource.ClassFinder;
 import cs.common.sysResource.SysResourceDto;
 import cs.common.utils.Validate;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static cs.common.Constant.SUPER_USER;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Service
 public class SysServiceImpl implements SysService {
@@ -145,7 +145,7 @@ public class SysServiceImpl implements SysService {
         } else {
             //初始化角色
             Role role = new Role();
-            role.setRoleName(Constant.SUPER_ROLE);
+            role.setRoleName(SUPER_ACCOUNT);
             role.setId(UUID.randomUUID().toString());
             role.setRemark("系统初始化创建,不可删除");
             role.setCreatedBy("root");
@@ -168,11 +168,11 @@ public class SysServiceImpl implements SysService {
 
             // 初始化用户
             User user = new User();
-            user.setLoginName(SUPER_USER);
+            user.setLoginName(SUPER_ACCOUNT);
             user.setId(UUID.randomUUID().toString());
-            user.setPassword(SUPER_USER);
+            user.setPassword(SUPER_ACCOUNT);
             user.setRemark("系统初始化创建,不可删除");
-            user.setDisplayName(Constant.SUPER_ROLE);
+            user.setDisplayName(SUPER_ACCOUNT);
             user.getRoles().add(role);
             user.setCreatedBy("root");
             user.setModifiedBy("root");

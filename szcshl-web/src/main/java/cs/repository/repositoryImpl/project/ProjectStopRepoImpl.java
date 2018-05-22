@@ -1,6 +1,6 @@
 package cs.repository.repositoryImpl.project;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.Validate;

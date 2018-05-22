@@ -1,7 +1,7 @@
 package cs.controller.project;
 
 import cs.ahelper.IgnoreAnnotation;
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.project.AddRegisterFile;
@@ -9,33 +9,21 @@ import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.model.PageModelDto;
 import cs.model.project.AddRegisterFileDto;
-import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.service.project.AddRegisterFileService;
 
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.WebUtils;
 
-import com.alibaba.druid.filter.Filter;
-import com.alibaba.fastjson.JSON;
-
-import javax.management.modelmbean.ModelMBeanInfoSupport;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.ParseException;
 import java.util.*;
-
-import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
 
 /**
  * Description: 登记补充资料 控制层 author: ldm Date: 2017-8-3 15:26:51

@@ -4,23 +4,20 @@ import com.alibaba.fastjson.JSON;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
 import cs.ahelper.IgnoreAnnotation;
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
-import cs.domain.project.Sign_;
 import cs.domain.sys.Log;
 import cs.model.project.SignDto;
 import cs.model.project.SignPreDto;
-import cs.model.project.WorkProgramDto;
 import cs.model.sys.SysFileDto;
 import cs.model.topic.TopicInfoDto;
 import cs.service.project.SignService;
 import cs.service.restService.SignRestService;
 import cs.service.sys.LogService;
 import cs.service.topic.TopicInfoService;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.*;
 
-import static cs.common.Constant.SUPER_USER;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * 系统接口controller
@@ -74,7 +71,7 @@ public class SysRestController {
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
-        log.setUserName(SUPER_USER);
+        log.setUserName(SUPER_ACCOUNT);
         log.setLogCode(resultMsg.getReCode());
         log.setModule(Constant.LOG_MODULE.INTERFACE.getValue() + "【获取项目信息接口】");
         log.setMessage(msg+resultMsg.getReMsg());
@@ -123,7 +120,7 @@ public class SysRestController {
             //添加日记记录
             Log log = new Log();
             log.setCreatedDate(new Date());
-            log.setUserName(SUPER_USER);
+            log.setUserName(SUPER_ACCOUNT);
             log.setLogCode(resultMsg.getReCode());
             log.setModule(Constant.LOG_MODULE.INTERFACE.getValue() + "【获取项目预签收信息接口】");
             log.setMessage(msg+resultMsg.getReMsg());

@@ -31,6 +31,7 @@
                         <tr ng-repeat="t in vm.tasksList|limitTo:5">
                             <td ng-bind="$index+1"></td>
                             <td>
+                                <span ng-if="t.isAgent == 9" class="label label-primary">代办</span>
                                 <a ng-if="t.processState == '1'"
                                    href="#/signFlowDeal/{{t.businessKey}}/{{t.taskId}}/{{t.processInstanceId}}">{{t.projectName}}</a>
                                 <a ng-if="t.processState == '2'"
@@ -253,14 +254,14 @@
                     <table class="table">
                         <tbody>
                         <tr>
-                            <th style="width: 50px"><span class="fa fa-commenting"></span></th>
+                            <th style="width:15px"><span class="fa fa-commenting"></span></th>
                             <th>最新通告</th>
                             <th style="width: 180px" align="center">发布日期</th>
                             <th style="width: 100px">发布人</th>
                         </tr>
                         <tr ng-repeat="x in vm.annountmentList|limitTo:5">
-                            <td>{{$index +1}}.</td>
-                            <td><a href="#/annountmentDetail/{{x.anId}}">{{x.anTitle}}</a></td>
+                            <td>{{$index +1}}</td>
+                            <td><span ng-if="x.isStick == 9" class="label label-primary">置顶</span>  <a href="#/annountmentDetail/{{x.anId}}">{{x.anTitle}}</a></td>
                             <td><span class="badge bg-green">{{x.issueDate | date}}</span></td>
                             <td>{{x.issueUser}}</td>
                         </tr>

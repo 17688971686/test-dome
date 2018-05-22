@@ -19,10 +19,9 @@
             var dataSource = common.kendoGridDataSource(rootPath + "/annountment/findByIssue",$("#annountmentYetform"),vm.queryParams.page,vm.queryParams.pageSize,vm.gridParams);
             // End:dataSource
 
-
             // Begin:column
             var columns = [
-                {
+                /*{
                     template: function (item) {
                         return kendo.format("<input type='checkbox'  relId='{0}' name='checkbox' class='checkbox' />",
                             item.anId)
@@ -30,7 +29,7 @@
                     filterable: false,
                     width: 40,
                     title: "<input id='checkboxAll' type='checkbox'  class='checkbox'  />"
-                },
+                },*/
                 {
                     field: "unitSort",
                     title: "序号",
@@ -39,10 +38,17 @@
                     template: "<span class='row-number'></span>"
                 },
                 {
-                    field: "anTitle",
+                    field: "",
                     title: "标题",
                     width: 300,
-                    filterable: false
+                    filterable: false,
+                    template:function(item){
+                        if(item.isStick == 9){
+                            return '<span class="label label-primary">置顶</span>'+item.anTitle;
+                        }else{
+                            return item.anTitle;
+                        }
+                    }
                 },
                 {
                     field: "issueDate",

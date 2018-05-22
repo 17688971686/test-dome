@@ -1,6 +1,6 @@
 package cs.service.flow;
 
-import cs.common.FlowConstant;
+import cs.common.constants.FlowConstant;
 import cs.domain.project.AddSuppLetter;
 import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
 import cs.repository.repositoryImpl.project.SignBranchRepo;

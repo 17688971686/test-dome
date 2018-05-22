@@ -187,6 +187,12 @@ public class RuProcessTask {
      */
     @Column
     private String isAdvanced;
+
+    /**
+     * 是否代办
+     */
+    @Column
+    private String isAgent;
     /**
      * 预发文日期
      */
@@ -511,5 +517,13 @@ public class RuProcessTask {
 
     public void setIsAdvanced(String isAdvanced) {
         this.isAdvanced = isAdvanced;
+    }
+
+    public String getIsAgent() {
+        return isAgent;
+    }
+
+    public void setIsAgent(String isAgent) {
+        this.isAgent = isAgent;
     }
 }

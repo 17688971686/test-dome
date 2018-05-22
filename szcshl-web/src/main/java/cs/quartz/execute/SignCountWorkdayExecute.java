@@ -1,6 +1,6 @@
 package cs.quartz.execute;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
 import cs.domain.project.ProjectStop;
@@ -9,7 +9,6 @@ import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.domain.sys.Log;
 import cs.domain.sys.Workday;
-import cs.model.project.ProjectStopDto;
 import cs.quartz.unit.QuartzUnit;
 import cs.repository.repositoryImpl.project.ProjectStopRepo;
 import cs.service.project.ProjectStopService;
@@ -27,8 +26,9 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import java.util.Date;
 import java.util.List;
 
-import static cs.common.Constant.WORK_DAY_25;
-import static cs.common.Constant.WORK_DAY_30;
+import static cs.common.constants.Constant.WORK_DAY_25;
+import static cs.common.constants.Constant.WORK_DAY_30;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * 计算工作日的执行类
@@ -66,7 +66,7 @@ public class SignCountWorkdayExecute implements Job {
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
-        log.setUserName(Constant.SUPER_USER);
+        log.setUserName(SUPER_ACCOUNT);
         log.setBuninessId("");
         log.setModule(Constant.LOG_MODULE.QUARTZ.getValue()+"【工作日计算】" );
         //优先级别中等

@@ -50,7 +50,6 @@
 
                 //如果没有审定金额，则默认为0
                 if(vm.dispatchDoc.authorizeValue == undefined){
-
                     vm.dispatchDoc.authorizeValue =0;
                 }
 

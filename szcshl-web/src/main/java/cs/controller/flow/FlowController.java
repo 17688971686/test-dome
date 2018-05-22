@@ -1,9 +1,9 @@
 package cs.controller.flow;
 
 import cs.ahelper.MudoleAnnotation;
-import cs.common.Constant;
-import cs.common.Constant.MsgCode;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.MsgCode;
+import cs.common.constants.FlowConstant;
 import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;

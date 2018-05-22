@@ -1,6 +1,6 @@
 package cs.service.sys;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.cache.CacheFactory;
 import cs.common.cache.DefaultCacheFactory;

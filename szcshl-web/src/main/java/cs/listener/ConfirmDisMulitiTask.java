@@ -1,6 +1,6 @@
 package cs.listener;
 
-import cs.common.FlowConstant;
+import cs.common.constants.FlowConstant;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.stereotype.Component;
 

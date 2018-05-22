@@ -1,11 +1,10 @@
 package cs.service.expert;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.expert.*;
-import cs.domain.flow.RuProcessTask;
 import cs.domain.project.Sign;
 import cs.domain.project.Sign_;
 import cs.model.PageModelDto;
@@ -14,7 +13,6 @@ import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.expert.*;
-import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
 import org.apache.log4j.Logger;
@@ -22,16 +20,14 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-
-import static cs.common.Constant.EXPERT_REVIEW_COST;
-import static cs.common.Constant.SUPER_USER;
+import static cs.common.constants.Constant.EXPERT_REVIEW_COST;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * Description: 专家评审 业务操作实现类 author: ldm Date: 2017-5-17 14:02:25
@@ -232,7 +228,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         //保存抽取专家
         List<String> expertIdArr = StringUtil.getSplit(expertIds, ",");
         int totalLength = expertIdArr.size();
-        boolean isSuper = SUPER_USER.equals(SessionUtil.getLoginName()),isSelf = Constant.EnumExpertSelectType.SELF.getValue().equals(selectType);
+        boolean isSuper = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()),isSelf = Constant.EnumExpertSelectType.SELF.getValue().equals(selectType);
         //如果是专家自选，系统管理员可以添加多个自选专家，其他人员则要删除之前选择的专家信息 ,补充：如果不是可以自选多个专家
         if(!isSuper && isSelf && !Constant.EnumState.YES.getValue().equals(sign.getIsMoreExpert())){
             if(totalLength > 1){
@@ -245,7 +241,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
                     //不是系统管理员，则要删除之前添加的自选专家
                     for (ExpertSelected epSelected : expertReview.getExpertSelectedList()) {
                         boolean isSelfType = Constant.EnumExpertSelectType.SELF.getValue().equals(epSelected.getSelectType());
-                        boolean isSuperCreate = SUPER_USER.equals(epSelected.getCreateBy());
+                        boolean isSuperCreate = SUPER_ACCOUNT.equals(epSelected.getCreateBy());
                         if (isSelfType && !isSuperCreate && !Constant.EnumState.YES.getValue().equals(sign.getIsMoreExpert())) {
                             expertSelectedRepo.deleteById(ExpertSelected_.id.getName(), epSelected.getId());
                         }
@@ -330,7 +326,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
         if(!Validate.isObject(expertReview)){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"操作失败！该评审方案已被删除！");
         }
-        boolean isSuperUser = SUPER_USER.equals(SessionUtil.getLoginName());
+        boolean isSuperUser = SUPER_ACCOUNT.equals(SessionUtil.getLoginName());
         boolean isPay = false;
         if(expertReview.getPayDate() != null){
             //如果当前日期大于评审会日期，则不能进行修改
@@ -422,7 +418,7 @@ public class ExpertReviewServiceImpl implements ExpertReviewService {
     public ResultMsg saveExpertReviewCost(ExpertReviewDto expertReviewDto,boolean isCountTaxes) {
         //保存评审费用
         String experReviewId = expertReviewDto.getId();
-        boolean isSuperUser = SUPER_USER.equals(SessionUtil.getLoginName());
+        boolean isSuperUser = SUPER_ACCOUNT.equals(SessionUtil.getLoginName());
         if (Validate.isString(experReviewId)) {
             ExpertReview expertReview = expertReviewRepo.findById(experReviewId);
             //管理员可以维护

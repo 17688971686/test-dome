@@ -1,9 +1,8 @@
 package cs.repository.repositoryImpl.expert;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
-import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
@@ -25,7 +24,6 @@ import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.topic.TopicInfoRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.query.NativeQuery;
 import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +33,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Description: 专家评审 数据操作实现类
@@ -235,22 +232,6 @@ public class ExpertReviewRepoImpl extends AbstractRepository<ExpertReview, Strin
         }
         return false;
     }
-
-    /*@Override
-    public List<Object[]> countExpertReviewCost(String expertReviewId, String month) {
-        List<Object[]> experReviewCosts = null;
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("SELECT SUM (veph.REVIEWCOST) ecost, veph.EXPERTID FROM V_EXPERT_PAY_HIS veph ");
-        hqlBuilder.append(" WHERE veph.PAYDATE = :month ").setParam("month",month);
-        hqlBuilder.append(" AND veph.EXPERTID IN (SELECT EXPERTID FROM CS_EXPERT_SELECTED es ");
-        hqlBuilder.append(" WHERE es.EXPERTREVIEWID = :expertReviewId ").setParam("expertReviewId",expertReviewId);
-        hqlBuilder.append(" AND es.ISCONFRIM =:isconfirm AND es.isJoin =:isjoin ) ");
-        hqlBuilder.setParam("isconfirm", Constant.EnumState.YES.getValue());
-        hqlBuilder.setParam("isjoin", Constant.EnumState.YES.getValue());
-        hqlBuilder.append(" GROUP BY veph.EXPERTID ");
-        experReviewCosts = getObjectArray(hqlBuilder);
-        return experReviewCosts;
-    }*/
 
     /**
      * 查询在发文环节，或者课题归档环节，未处理的专家评审费信息

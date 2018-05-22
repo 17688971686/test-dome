@@ -1,13 +1,12 @@
 package cs.repository.repositoryImpl.party;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.party.PartyManager;
 import cs.domain.party.PartyManager_;
-import cs.domain.sys.Annountment;
 import cs.model.PageModelDto;
 import cs.model.party.PartyManagerDto;
 import cs.repository.AbstractRepository;

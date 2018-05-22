@@ -1,11 +1,10 @@
 package cs.service.sharing;
 
-import cs.common.Constant;
-import cs.common.Constant.EnumState;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
-import cs.common.utils.SysFileUtil;
 import cs.common.utils.Validate;
 import cs.domain.sharing.SharingPlatlform;
 import cs.domain.sharing.SharingPlatlform_;
@@ -33,6 +32,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * Description: 共享平台 业务操作实现类
@@ -356,7 +357,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
             BeanCopierUtils.copyProperties(ol,orgDto);
             if(Validate.isList(ol.getUsers())){
                 ol.getUsers().forEach( ul ->{
-                    if("t".equals(ul.getJobState()) && !Constant.SUPER_USER.equals(ul.getLoginName())){
+                    if("t".equals(ul.getJobState()) && !SUPER_ACCOUNT.equals(ul.getLoginName())){
                         UserDto userDto = new UserDto();
                         userDto.setDisplayName(ul.getDisplayName());
                         userDto.setId(ul.getId());
@@ -377,7 +378,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
         List<UserDto> userDtoList2 = new ArrayList<>();
         if(noOrgUserList != null && noOrgUserList.size() > 0){
             noOrgUserList.forEach( ul ->{
-                if(!Constant.SUPER_USER.equals(ul.getLoginName())){
+                if(!SUPER_ACCOUNT.equals(ul.getLoginName())){
                     UserDto userDto = new UserDto();
                     userDto.setDisplayName(ul.getDisplayName());
                     userDto.setId(ul.getId());
@@ -401,7 +402,7 @@ public class SharingPlatlformServiceImpl implements SharingPlatlformService {
                     BeanCopierUtils.copyProperties(dl,sysDeptDto);
                     if(Validate.isList(dl.getUserList())){
                         dl.getUserList().forEach( ul ->{
-                            if("t".equals(ul.getJobState()) && !Constant.SUPER_USER.equals(ul.getLoginName())){
+                            if("t".equals(ul.getJobState()) && !SUPER_ACCOUNT.equals(ul.getLoginName())){
                                 UserDto userDto = new UserDto();
                                 userDto.setDisplayName(ul.getDisplayName());
                                 userDto.setId(ul.getId());

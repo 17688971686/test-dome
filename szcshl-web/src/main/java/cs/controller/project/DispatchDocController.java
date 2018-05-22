@@ -44,8 +44,8 @@ public class DispatchDocController {
     @RequiresAuthentication
     // @RequiresPermissions("dispatch#initData#get")
     @RequestMapping(name = "初始化发文页面", path = "initData", method = RequestMethod.GET)
-    public @ResponseBody
-    Map<String, Object> initDispatch(@RequestParam String signid) throws Exception {
+    @ResponseBody
+    public Map<String, Object> initDispatch(@RequestParam String signid) throws Exception {
         Map<String, Object> map = dispatchDocService.initDispatchData(signid);
         return map;
     }

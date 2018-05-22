@@ -1,9 +1,9 @@
 package cs.service.monthly;
 
-import cs.common.Constant;
-import cs.common.Constant.EnumState;
-import cs.common.Constant.MsgCode;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.EnumState;
+import cs.common.constants.Constant.MsgCode;
+import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
@@ -264,13 +264,6 @@ public class MonthlyNewsletterServiceImpl implements MonthlyNewsletterService {
     @Override
     public PageModelDto<MonthlyNewsletterDto> getMonthlyList(ODataObj odataObj) {
         PageModelDto<MonthlyNewsletterDto> pageModelDto = new PageModelDto<>();
-       /* Criteria criteria = monthlyNewsletterRepo.getExecutableCriteria();
-        criteria = odataObj.buildFilterToCriteria(criteria);
-        criteria.add(Restrictions.eq(MonthlyNewsletter_.monthlyType.getName(), EnumState.PROCESS.getValue()));
-        criteria.addOrder(Order.desc(MonthlyNewsletter_.createdDate.getName()));
-        List<MonthlyNewsletter> monthlist = criteria.list();
-        List<MonthlyNewsletterDto> monthDtos = new ArrayList<>(monthlist == null ? 0 : monthlist.size());*/
-
         HqlBuilder sqlBuilder = HqlBuilder.create();
         sqlBuilder.append("SELECT t.*  FROM (SELECT ROW_NUMBER () OVER (PARTITION BY REPORTMULTIYEAR ORDER BY theMonths) rn " );
         sqlBuilder.append(" ,m.* FROM CS_MONTHLY_NEWSLETTER m WHERE m."+MonthlyNewsletter_.monthlyType.getName()+" =:monthlyType) ");

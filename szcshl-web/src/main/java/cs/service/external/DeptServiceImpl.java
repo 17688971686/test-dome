@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.Constant.EnumState;
+import cs.common.constants.Constant.EnumState;
 import cs.common.utils.BeanCopierUtils;
 import cs.domain.external.Dept;
 import cs.domain.external.OfficeUser;

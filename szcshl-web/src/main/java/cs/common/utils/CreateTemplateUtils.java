@@ -1,21 +1,17 @@
 package cs.common.utils;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertSelected;
-import cs.domain.expert.ExpertType;
-import cs.domain.external.Dept;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.project.*;
 import cs.domain.sys.Ftp;
-import cs.domain.sys.Org;
 import cs.domain.sys.SysFile;
 import cs.domain.sys.User;
 import cs.model.expert.ProReviewConditionDto;
 import cs.model.monthly.MonthlyNewsletterDto;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.*;
 
 /**

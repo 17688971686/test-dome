@@ -4,16 +4,10 @@ import java.util.*;
 
 import javax.transaction.Transactional;
 
-import cs.common.FlowConstant;
+import cs.common.constants.FlowConstant;
 import cs.common.utils.*;
-import cs.domain.project.ProjectStop;
-import cs.domain.project.ProjectStop_;
-import cs.domain.project.Sign;
-import cs.domain.project.Sign_;
 import cs.domain.sys.User;
-import cs.domain.sys.User_;
 import cs.model.flow.FlowDto;
-import cs.repository.repositoryImpl.external.DeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.rtx.RTXSendMsgPool;
 import org.activiti.engine.ProcessEngine;
@@ -21,17 +15,12 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cs.common.Constant;
-import cs.common.Constant.EnumState;
-import cs.common.Constant.MsgCode;
-import cs.common.HqlBuilder;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.EnumState;
+import cs.common.constants.Constant.MsgCode;
 import cs.common.ResultMsg;
 import cs.domain.archives.ArchivesLibrary;
 import cs.domain.archives.ArchivesLibrary_;

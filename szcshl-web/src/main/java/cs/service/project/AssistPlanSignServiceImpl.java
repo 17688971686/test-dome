@@ -3,7 +3,7 @@ package cs.service.project;
 import java.util.ArrayList;
 import java.util.List;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
 import org.hibernate.Criteria;
@@ -13,19 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.Constant.EnumState;
 import cs.common.HqlBuilder;
 import cs.common.utils.BeanCopierUtils;
-import cs.domain.project.AssistPlan;
 import cs.domain.project.AssistPlanSign;
 import cs.domain.project.AssistPlanSign_;
 import cs.domain.sys.User;
 import cs.model.project.AssistPlanSignDto;
 import cs.repository.repositoryImpl.project.AssistPlanRepo;
 import cs.repository.repositoryImpl.project.AssistPlanSignRepo;
-import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.project.WorkProgramRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
 
 /**
  * Description: 协审项目 业务操作实现类

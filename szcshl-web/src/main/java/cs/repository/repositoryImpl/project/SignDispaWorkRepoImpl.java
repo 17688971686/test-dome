@@ -1,6 +1,6 @@
 package cs.repository.repositoryImpl.project;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static cs.common.Constant.SUPER_ROLE;
+import static cs.common.constants.Constant.SUPER_ROLE;
 
 /**
  * Description: 项目统计视图 数据操作实现类

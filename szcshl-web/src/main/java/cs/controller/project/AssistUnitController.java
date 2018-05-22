@@ -5,9 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import cs.ahelper.IgnoreAnnotation;
 import cs.ahelper.MudoleAnnotation;
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.Validate;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;

@@ -1,7 +1,6 @@
 package cs.service.project;
 
-import cs.common.Constant;
-import cs.common.HqlBuilder;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.project.*;

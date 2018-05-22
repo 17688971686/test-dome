@@ -3,24 +3,21 @@ package cs.service.project;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.transaction.Transactional;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.cache.CacheManager;
 import cs.common.cache.ICache;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
-import cs.domain.sys.User_;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.StringUtil;
 import cs.domain.project.Idea;
 import cs.domain.project.Idea_;
 import cs.model.project.IdeaDto;

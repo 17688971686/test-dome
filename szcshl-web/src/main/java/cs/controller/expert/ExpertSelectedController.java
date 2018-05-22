@@ -1,7 +1,7 @@
 package cs.controller.expert;
 
 import cs.ahelper.IgnoreAnnotation;
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.model.PageModelDto;
@@ -11,7 +11,6 @@ import cs.service.expert.ExpertSelectedService;
 import cs.service.sys.HeaderService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -27,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static cs.common.Constant.COMPANY_NAME;
+import static cs.common.constants.Constant.COMPANY_NAME;
 
 /**
  * Description: 抽取专家 控制层

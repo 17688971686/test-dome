@@ -1,6 +1,6 @@
 package cs.service.flow;
 
-import cs.common.FlowConstant;
+import cs.common.constants.FlowConstant;
 import cs.domain.archives.ArchivesLibrary;
 import cs.domain.archives.ArchivesLibrary_;
 import cs.repository.repositoryImpl.archives.ArchivesLibraryRepo;

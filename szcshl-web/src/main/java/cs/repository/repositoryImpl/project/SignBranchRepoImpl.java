@@ -1,14 +1,10 @@
 package cs.repository.repositoryImpl.project;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
-import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
-import cs.domain.flow.RuProcessTask_;
 import cs.domain.project.SignBranch;
 import cs.domain.project.SignBranch_;
-import cs.domain.project.SignPrincipal;
-import cs.domain.project.SignPrincipal_;
 import cs.domain.sys.*;
 import cs.repository.AbstractRepository;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;

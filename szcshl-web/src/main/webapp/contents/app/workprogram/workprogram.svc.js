@@ -7,27 +7,50 @@
     function workprogram($http, $state, $rootScope) {
         var url_company = rootPath + "/company";
         var service = {
-            initPage: initPage,				        //初始化页面参数
-            createWP: createWP,				        //新增操作
-            findCompanys: findCompanys,		        //查找主管部门
-            findUsersByOrgId: findUsersByOrgId,     //查询评估部门
-            deleteBookRoom: deleteBookRoom,          //删除会议室
-            findAllMeeting: findAllMeeting,         //查找会议室地点
-            workMaintainList: workMaintainList,      //根据signid查询工作方案
-            initMergeInfo: initMergeInfo,          //初始化合并项目信息
-            getMergeSignBySignId: getMergeSignBySignId,   //初始化已选项目列表
-            unMergeWPSign: unMergeWPSign,			//待选项目列表
+            initPage: initPage,				            //初始化页面参数
+            createWP: createWP,				            //新增操作
+            findCompanys: findCompanys,		            //查找主管部门
+            findUsersByOrgId: findUsersByOrgId,         //查询评估部门
+            deleteBookRoom: deleteBookRoom,             //删除会议室
+            findAllMeeting: findAllMeeting,             //查找会议室地点
+            workMaintainList: workMaintainList,         //根据signid查询工作方案
+            initMergeInfo: initMergeInfo,               //初始化合并项目信息
+            getMergeSignBySignId: getMergeSignBySignId, //初始化已选项目列表
+            unMergeWPSign: unMergeWPSign,			    //待选项目列表
 
-            chooseSign: chooseSign,                 //选择合并评审的工作方案
-            cancelMergeSign: cancelMergeSign,       //取消合并评审的工作方案
-            deleteAllMerge: deleteAllMerge,          //删除所有合并评审的工作方案
+            chooseSign: chooseSign,                     //选择合并评审的工作方案
+            cancelMergeSign: cancelMergeSign,           //取消合并评审的工作方案
+            deleteAllMerge: deleteAllMerge,             //删除所有合并评审的工作方案
 
-            findById: findById,                    //根据主键查询
-            updateReviewType: updateReviewType,        //工作方案由专家评审会改成专家函评
+            findById: findById,                         //根据主键查询
+            updateReviewType: updateReviewType,         //工作方案由专家评审会改成专家函评
             updateWPExpertCost : updateWPExpertCost,    //更新工作方案中拟评审专家评审费
+            initFlowWP : initFlowWP,                    //初始化流程工作方案
         };
 
         return service;
+
+        //初始化流程工作方案
+        function initFlowWP(signId,taskId,callBack){
+            var httpOptions = {
+                method: 'post',
+                url: rootPath + "/workprogram/initFlowWP",
+                params: {
+                    signId : signId,
+                    taskId : taskId
+                },
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            }
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
 
         function updateWPExpertCost(wpId){
             var httpOptions = {

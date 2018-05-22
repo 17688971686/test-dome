@@ -1,6 +1,6 @@
 package cs.ahelper;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.utils.PropertyUtil;
 import org.artofsolving.jodconverter.OfficeDocumentConverter;
 import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;

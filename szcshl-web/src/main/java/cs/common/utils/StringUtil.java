@@ -14,6 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static cs.common.constants.SysConstants.SEPARATE_COMMA;
+
 /**
  * 字符串工具类
  *
@@ -25,6 +27,13 @@ public class StringUtil extends StringUtils {
         return new String(str.substring(begin, end));
     }
 
+    public static String joinString(String str, String joinSymbol, String joinStr) {
+        if (Validate.isString(str)) {
+            str += joinSymbol;
+        }
+        str = str + joinStr;
+        return str;
+    }
 
     /**
      * @param splitStr
@@ -143,7 +152,7 @@ public class StringUtil extends StringUtils {
 
     public static void main(String[] args) {
         /*System.out.print("李安".substring(0,1));
-		String str = "integer'2'";
+        String str = "integer'2'";
 		String rgex = "integer'(.*?)'";
 		System.out.println(getSubUtilSimple(str, rgex));
 		List<String> nodeList = new ArrayList<>(4);

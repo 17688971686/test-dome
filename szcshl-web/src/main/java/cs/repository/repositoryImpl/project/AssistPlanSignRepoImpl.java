@@ -3,7 +3,7 @@ package cs.repository.repositoryImpl.project;
 import java.math.BigDecimal;
 import java.util.List;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;

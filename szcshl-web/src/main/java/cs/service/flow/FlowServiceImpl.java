@@ -1,7 +1,7 @@
 package cs.service.flow;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.ActivitiUtil;
@@ -66,8 +66,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 
-import static cs.common.Constant.SUPER_ROLE;
-import static cs.common.Constant.SUPER_USER;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
+
 
 @Service
 public class FlowServiceImpl implements FlowService {
@@ -454,7 +454,7 @@ public class FlowServiceImpl implements FlowService {
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
         criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(), Constant.EnumState.YES.getValue()));
-        if (SUPER_USER.equals(SessionUtil.getLoginName()) || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())) {
+        if (SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())) {
 
         } else {
             if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) { //是部门负责人
@@ -750,7 +750,7 @@ public class FlowServiceImpl implements FlowService {
         criteria.addOrder(Order.desc(RuTask_.createTime.getName()));
         List<RuTask> runProcessList = criteria.list();
         boolean isHaveAllPermission = SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())
-                || SUPER_USER.equals(SessionUtil.getLoginName());
+                || SUPER_ACCOUNT.equals(SessionUtil.getLoginName());
         if(isHaveAllPermission){
             pageModelDto.setCount(runProcessList.size());
             pageModelDto.setValue(runProcessList);

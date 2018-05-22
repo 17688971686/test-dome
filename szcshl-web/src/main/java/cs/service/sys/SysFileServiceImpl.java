@@ -1,6 +1,6 @@
 package cs.service.sys;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
@@ -35,11 +35,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static cs.common.Constant.FTP_IP;
-import static cs.common.Constant.RevireStageKey.KEY_FTPIP;
-import static cs.common.Constant.RevireStageKey.KEY_FTPROOT;
-import static cs.common.Constant.RevireStageKey.LOCAL_URL;
-import static cs.common.Constant.SUPER_USER;
+import static cs.common.constants.Constant.FTP_IP;
+import static cs.common.constants.Constant.RevireStageKey.KEY_FTPIP;
+import static cs.common.constants.Constant.RevireStageKey.KEY_FTPROOT;
+import static cs.common.constants.Constant.RevireStageKey.LOCAL_URL;
 
 @Service
 public class SysFileServiceImpl implements SysFileService {

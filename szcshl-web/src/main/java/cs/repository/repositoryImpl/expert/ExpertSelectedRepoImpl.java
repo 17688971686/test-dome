@@ -1,6 +1,6 @@
 package cs.repository.repositoryImpl.expert;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;

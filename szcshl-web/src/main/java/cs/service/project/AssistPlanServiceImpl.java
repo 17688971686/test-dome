@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import cs.activiti.ProcessDiagramGenerator;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
 import cs.domain.project.*;
@@ -18,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.model.PageModelDto;
 import cs.model.project.AssistPlanDto;

@@ -1,35 +1,24 @@
 package cs.quartz.execute;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
-import cs.common.utils.Arith;
+import cs.common.constants.Constant;
 import cs.common.utils.DateUtils;
-import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelected;
 import cs.domain.sys.Log;
-import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.service.expert.ExpertReviewService;
 import cs.service.sys.LogService;
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.type.StringType;
-import org.hibernate.type.Type;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * 系统自动计算发文环节，项目未发放专家评审费定时器
@@ -68,7 +57,7 @@ public class CountExpertCost implements Job {
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
-        log.setUserName(Constant.SUPER_USER);
+        log.setUserName(SUPER_ACCOUNT);
         log.setBuninessId("");
         log.setModule(Constant.LOG_MODULE.QUARTZ.getValue()+"【专家评审费】" );
         //优先级别中等

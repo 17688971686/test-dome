@@ -1,6 +1,6 @@
 package cs.quartz.execute;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
@@ -25,6 +25,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * Created by MCL
@@ -52,7 +54,7 @@ public class ProjectStartQuartzExecute implements Job{
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
-        log.setUserName(Constant.SUPER_USER);
+        log.setUserName(SUPER_ACCOUNT);
         log.setBuninessId("");
         log.setModule(Constant.LOG_MODULE.QUARTZ.getValue()+"【项目暂停】" );
         //优先级别中等

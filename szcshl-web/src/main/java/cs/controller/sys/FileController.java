@@ -2,7 +2,7 @@ package cs.controller.sys;
 
 import cs.ahelper.MudoleAnnotation;
 import cs.ahelper.RealPathResolver;
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
@@ -61,7 +61,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static cs.common.Constant.*;
+import static cs.common.constants.Constant.*;
 
 
 /**

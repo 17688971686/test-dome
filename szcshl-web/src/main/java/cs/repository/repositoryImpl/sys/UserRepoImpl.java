@@ -1,6 +1,6 @@
 package cs.repository.repositoryImpl.sys;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.cache.CacheConstant;
 import cs.common.cache.CacheManager;
@@ -13,7 +13,6 @@ import cs.model.sys.OrgDto;
 import cs.model.sys.UserDto;
 import cs.repository.AbstractRepository;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.project.SignBranchRepo;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
