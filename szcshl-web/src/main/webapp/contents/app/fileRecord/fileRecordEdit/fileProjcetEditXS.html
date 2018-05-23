@@ -787,7 +787,9 @@
     <tr>
         <td width="15%" class="text-center">档案员签收</td>
         <td colspan="3">
-            <select ng-model="vm.fileRecord.signUserid" id="signUserid">
+            <span ng-if="!vm.fileRecord.fileDate">{{vm.fileRecord.signUserName}}</span>
+
+            <select ng-model="vm.fileRecord.signUserid" id="signUserid" ng-if="vm.fileRecord.fileDate">
                 <option ng-repeat="x in vm.signUserList" value="{{x.id}}"
                         ng-selected="vm.fileRecord.signUserid == x.id">{{x.displayName}}
                 </option>
@@ -795,7 +797,9 @@
         </td>
         <td width="15%" class="text-center" colspan="2">存档日期</td>
         <td colspan="3">
+            <span ng-if="!vm.fileRecord.fileDate">{{vm.fileRecord.fileDate}}</span>
             <input type="text" kendo-date-picker k-format="'yyyy-MM-dd'" style="width:50%;"
+                   ng-if="vm.fileRecord.fileDate"
                    class="form-control input-sm " ng-model="vm.fileRecord.fileDate" name="fileDate">
         </td>
     </tr>
