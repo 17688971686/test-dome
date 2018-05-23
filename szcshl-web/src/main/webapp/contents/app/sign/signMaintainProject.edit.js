@@ -367,7 +367,7 @@
             //     }
             //     var idStr = ids.join(',');
             //     var nameStr = names.join(',');
-            signSvc.addAOrg(  orgId , vm.model.signId  , function(data){
+            signSvc.addAOrg(  orgId , vm.model.signid  , function(data){
                 if(data.flag || data.reCode == 'ok'){
                     bsWin.alert(data.reMsg);
                     vm.orgName += (vm.orgName == undefined ? "" : "," ) + orgName;
@@ -385,7 +385,7 @@
          * @param orgName
          */
         vm.deleteReviewDept = function(orgId , orgName){
-            signSvc.deleteAOrg(orgId ,  vm.model.signId , function(data){
+            signSvc.deleteAOrg(orgId ,  vm.model.signid , function(data){
                 if(data.flag || data.reCode == 'ok'){
                     bsWin.alert(data.reMsg);
                     var reviewOrgName = vm.orgName.split(',');
@@ -427,7 +427,7 @@
          * @param user
          */
         vm.saveSecondUser = function (user){
-            signSvc.addSecondUser(user.id , vm.model.signId , function(data){
+            signSvc.addSecondUser(user.id , vm.model.signid , function(data){
                 if(data.flag || data.reCode == 'ok'){
                     bsWin.alert(data.reMsg);
                     vm.secondChargeUserName.push(user.displayName);
@@ -455,7 +455,7 @@
          * @param user
          */
         vm.deleteSecondUser = function(user){
-            signSvc.deleteSecondUser(user.id , vm.model.signId , function(data){
+            signSvc.deleteSecondUser(user.id , vm.model.signid , function(data){
                 if(data.flag || data.reCode == 'ok'){
                     bsWin.alert(data.reMsg);
                     for(var i = 0 ; i < vm.secondChargeUserName.length ; i++){

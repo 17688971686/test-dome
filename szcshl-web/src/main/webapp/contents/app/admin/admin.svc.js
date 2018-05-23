@@ -916,10 +916,17 @@
                     }
                 },
                 {
-                    field: "reviewOrgName",
+                    field: "",
                     title: "评审部门",
                     width: 140,
-                    filterable: false
+                    filterable: false,
+                    template : function(item){
+                        if(!item.aOrgName){
+                            return item.mOrgName;
+                        }else{
+                            return item.mOrgName + "," + item.aOrgName;
+                        }
+                    }
                 },
                 {
                     field: "allPriUser",
