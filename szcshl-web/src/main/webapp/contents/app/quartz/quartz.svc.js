@@ -13,11 +13,31 @@
             saveQuartz: saveQuartz,         //保存定时器
             deleteQuartz: deleteQuartz,     //停用定时器
             quartzExecute: quartzExecute,	//执行定时器
-            quartzStop: quartzStop	        //停止执行定时器
+            quartzStop: quartzStop,	        //停止执行定时器
+            runOnce : runOnce               //执行一次
         };
 
         return service;
 
+        function runOnce(id,callBack){
+            var httpOptions = {
+                method: "post",
+                url: url_quartz + "/runOne",
+                params: {
+                    quartzId: id
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
         //begin quartzExecute
         function quartzExecute(id, callBack) {
             var httpOptions = {
@@ -170,25 +190,19 @@
                 },
                 {
                     field: "quartzName",
-                    title: "定时器名称",
-                    width: 200,
-                    filterable: false,
-                },
-                {
-                    field: "className",
-                    title: "类名",
-                    width: 260,
+                    title: "定时任务名称",
+                    width: 220,
                     filterable: false,
                 },
                 {
                     field: "cronExpression",
-                    title: "表达式",
+                    title: "时间表达式",
                     width: 150,
                     filterable: false,
                 },
                 {
                     field: "",
-                    title: "状态",
+                    title: "当前状态",
                     width: 80,
                     filterable: false,
                     template: function (item) {
@@ -213,13 +227,13 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 80,
+                    width: 280,
                     template: function (item) {
                         var canExecute = false;
                         if(item.curState == 9){
                             canExecute = true;
                         }
-                        return common.format($('#columnBtns').html(), "vm.edit('" + item.id + "')", "vm.execute('" + item.id + "')", !canExecute, "vm.stop('" + item.id + "')",canExecute);
+                        return common.format($('#columnBtns').html(), "vm.edit('" + item.id + "')", "vm.execute('" + item.id + "')", !canExecute, "vm.stop('" + item.id + "')",canExecute,"vm.runOnce('" + item.id + "')",canExecute);
                     }
                 }
             ];

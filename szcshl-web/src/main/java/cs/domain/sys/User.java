@@ -176,6 +176,11 @@ public class User extends DomainBase {
     private String takeUserId;
 
     /**
+     * 设置代办人的时候，是否自动流转任务
+     */
+    @Column(columnDefinition = "varchar(2)")
+    private String isAotuTrans;
+    /**
      * 分管部门类型（PX:评估，GX:概算）
      */
     @Column(columnDefinition = "varchar(8)")
@@ -449,5 +454,13 @@ public class User extends DomainBase {
 
     public void setRtxName(String rtxName) {
         this.rtxName = rtxName;
+    }
+
+    public String getIsAotuTrans() {
+        return isAotuTrans;
+    }
+
+    public void setIsAotuTrans(String isAotuTrans) {
+        this.isAotuTrans = isAotuTrans;
     }
 }

@@ -517,15 +517,15 @@
                 //end#signList
 
                 //begin#workprogram
-                .state('workprogramEdit', {
-                    url: '/workprogramEdit/:signid/:isControl/:minBusinessId/:businessType',//isControl控制按钮的显示
+                /*.state('workprogramEdit', {
+                    url: '/workprogramEdit/:signid/:isControl/:minBusinessId/:businessType',
                     templateUrl: rootPath + '/workprogram/html/edit.html',
                     controller: 'workprogramEditCtrl',
                     controllerAs: 'vm'
-                })
-                //流程处理中工作方案填写
+                })*/
+                //流程处理中工作方案填写(新方法)
                 .state('flowWPEdit', {
-                    url: '/flowWPEdit/:signid/:taskid',//isControl控制按钮的显示
+                    url: '/flowWPEdit/:signid/:taskid',
                     templateUrl: rootPath + '/workprogram/html/edit.html',
                     controller: 'flowWPEditCtrl',
                     controllerAs: 'vm'
@@ -31689,6 +31689,20 @@
             });
         }
 
+        /**
+         * 立刻执行一次
+         * @param id
+         */
+        vm.runOnce = function (id) {
+            quartzSvc.runOnce(id,function(data){
+                if (data.flag || data.reCode == 'ok') {
+                    bsWin.alert("操作成功！");
+                } else {
+                    bsWin.alert(data.reMsg);
+                }
+            });
+        }
+
     }
 })();
 
@@ -31707,11 +31721,31 @@
             saveQuartz: saveQuartz,         //保存定时器
             deleteQuartz: deleteQuartz,     //停用定时器
             quartzExecute: quartzExecute,	//执行定时器
-            quartzStop: quartzStop	        //停止执行定时器
+            quartzStop: quartzStop,	        //停止执行定时器
+            runOnce : runOnce               //执行一次
         };
 
         return service;
 
+        function runOnce(id,callBack){
+            var httpOptions = {
+                method: "post",
+                url: url_quartz + "/runOne",
+                params: {
+                    quartzId: id
+                }
+            }
+            var httpSuccess = function success(response) {
+                if (callBack != undefined && typeof callBack == 'function') {
+                    callBack(response.data);
+                }
+            };
+            common.http({
+                $http: $http,
+                httpOptions: httpOptions,
+                success: httpSuccess
+            });
+        }
         //begin quartzExecute
         function quartzExecute(id, callBack) {
             var httpOptions = {
@@ -31864,25 +31898,19 @@
                 },
                 {
                     field: "quartzName",
-                    title: "定时器名称",
-                    width: 200,
-                    filterable: false,
-                },
-                {
-                    field: "className",
-                    title: "类名",
-                    width: 260,
+                    title: "定时任务名称",
+                    width: 220,
                     filterable: false,
                 },
                 {
                     field: "cronExpression",
-                    title: "表达式",
+                    title: "时间表达式",
                     width: 150,
                     filterable: false,
                 },
                 {
                     field: "",
-                    title: "状态",
+                    title: "当前状态",
                     width: 80,
                     filterable: false,
                     template: function (item) {
@@ -31907,13 +31935,13 @@
                 {
                     field: "",
                     title: "操作",
-                    width: 80,
+                    width: 280,
                     template: function (item) {
                         var canExecute = false;
                         if(item.curState == 9){
                             canExecute = true;
                         }
-                        return common.format($('#columnBtns').html(), "vm.edit('" + item.id + "')", "vm.execute('" + item.id + "')", !canExecute, "vm.stop('" + item.id + "')",canExecute);
+                        return common.format($('#columnBtns').html(), "vm.edit('" + item.id + "')", "vm.execute('" + item.id + "')", !canExecute, "vm.stop('" + item.id + "')",canExecute,"vm.runOnce('" + item.id + "')",canExecute);
                     }
                 }
             ];
@@ -43298,10 +43326,9 @@
             getOrg: getOrg,
             queryUser: queryUser,
             getZtreeChecked: getZtreeChecked,
-            //initUserNo : initUserNo//初始化 员工工号
             resetPwd: resetPwd, //重置密码
             findUserAndOrg : findUserAndOrg,  //获取部门下的所有用户,
-            getAllTaskList : getAllTaskList,    //获取
+            getAllTaskList : getAllTaskList,    //获取可以设置代办的人员列表
         };
 
         return service;
@@ -43319,13 +43346,11 @@
                     userId : userId
                 }
             }
-
             var httpSuccess = function success(response){
                 if(callBack != undefined && typeof  callBack == 'function'){
                     callBack(response.data);
                 }
             }
-
             common.http({
                 $http : $http ,
                 httpOptions : httpOptions ,

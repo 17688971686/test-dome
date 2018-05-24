@@ -1,11 +1,5 @@
 package cs.auto.core;
 
-import cs.common.utils.QuartzManager;
-import org.junit.Test;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerFactory;
-import org.quartz.impl.StdSchedulerFactory;
-
 public class QuartzTest {
 
     public void quartz() throws ClassNotFoundException {

@@ -94,6 +94,8 @@ public class SignDto extends BaseDto {
 
     private String maindepetcontactuserid;
 
+    private String mainDeptContactPhone;
+
     private String assistdeptid;
 
     private String assistdeptName;
@@ -2642,5 +2644,13 @@ public class SignDto extends BaseDto {
 
     public void setDispatchdate(Date dispatchdate) {
         this.dispatchdate = dispatchdate;
+    }
+
+    public String getMainDeptContactPhone() {
+        return mainDeptContactPhone;
+    }
+
+    public void setMainDeptContactPhone(String mainDeptContactPhone) {
+        this.mainDeptContactPhone = mainDeptContactPhone;
     }
 }

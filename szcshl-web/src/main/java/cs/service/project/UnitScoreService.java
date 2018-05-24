@@ -13,7 +13,7 @@ public interface UnitScoreService {
      * @param designcompanyName 编制单位名称
      * @param singid 业务id
      */
-    void decide(String designcompanyName,String singid);
+    void decide(String designcompanyName,String singid,boolean isSignUser);
 
 
 }

@@ -29,13 +29,8 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
     private SignPrincipalRepo signPrincipalRepo;
     @Autowired
     private UserRepo userRepo;
-
     @Autowired
     private OrgDeptRepo orgDeptRepo;
-
-    @Autowired
-    private WorkProgramRepo workProgramRepo;
-
     @Autowired
     private SignBranchRepo signBranchRepo;
 

@@ -8,6 +8,7 @@ import cs.common.constants.Constant;
 import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
+import cs.common.utils.DateUtils;
 import cs.common.utils.Validate;
 import cs.domain.sys.Log;
 import cs.model.project.SignDto;
@@ -247,13 +248,8 @@ public class SysRestController {
         return resultMsg;
     }
 
-    /**
-     * 课题研究审核
-     *
-     * @param resultMsg
-     * @return
-     */
-    @RequestMapping(name = "课题研究审核", value = "/auditTopicResult", method = RequestMethod.POST)
+
+    /*@RequestMapping(name = "课题研究审核", value = "/auditTopicResult", method = RequestMethod.POST)
     @Transactional
     public ResultMsg auditTopicResult(@RequestBody ResultMsg resultMsg) {
         TopicInfoDto topicInfoDto = (TopicInfoDto) resultMsg.getReObj();
@@ -272,27 +268,42 @@ public class SysRestController {
         log.setLogLevel(Constant.EnumState.PROCESS.getValue());
         logService.save(log);
         return returnMsg;
-    }
+    }*/
 
     @RequestMapping(name = "项目签收信息", value = "/testJson")
     public void testJson() throws IOException {
         String REST_SERVICE_URI = "http://localhost:8080/szcshl-web/intfc/pushProject";
         SignDto signDto = new SignDto();
         //委里收文编号
-        signDto.setFilecode("C20171221");
-        //项目建议书阶段
-        signDto.setReviewstage("STAGESUG");
-        //项目名称
-        signDto.setProjectname("深圳市政府投资教育项目");
+        signDto.setFilecode("D201800117");
+        signDto.setIschangeEstimate(null);
+        signDto.setDeclaration(null);
+        signDto.setMaindeptName("投资处");
+        signDto.setAssistDeptUserName("罗松");
+        signDto.setCountryCode("2018-440300-65-01-502631");
+        signDto.setReviewstage("STAGEBUDGET");
+        signDto.setProjectcode("Z-2018-I65-502631-03-01");
+        signDto.setProjectname("深圳市投资项目在线审批 监管平台升级拓展项目");
+        signDto.setUrgencydegree("一般");
+        signDto.setBuiltCompUserName("田云");
+        signDto.setAssistdeptName("高技术产业处");
+        signDto.setDesigncompanyName("深圳市艾泰克工程咨询监理有限公司");
+        signDto.setYearplantype("C类");
+        signDto.setAcceptDate(DateUtils.converToDate("2018-05-17 00:00:00","yyyy-MM-dd HH:mm:ss"));
+        signDto.setSecrectlevel("公开");
+        signDto.setMainDeptContactPhone("13510285489");
+        signDto.setMainDeptUserName("李斌");
+        signDto.setBuiltcompanyName("深圳市政务服务管理办公室");
+        signDto.setMaindeptOpinion("请李斌同志主办。[投资处]2018-05-17;\n项目单位申报项目总概算1656.75万元，主要功能模块包括业务应用平台升级拓展、数据补充登记系统、数据分析与监管、业务梳理交叉设计、协同审批业务实施等。建议将有关资料转请评审中心评审，妥否，请领导审定。[李斌]2018-05-17;\n同意转请评审中心评审。[吴江]2018-05-18;\n转请评审中心进行评审。[李斌]2018-05-18");
         //附件列表
         List<SysFileDto> fileDtoList = new ArrayList<>();
         SysFileDto sysFileDto = new SysFileDto();
         //显示名称，后缀名也要
-        sysFileDto.setShowName("gdzctz.xlsx");
+        sysFileDto.setShowName("空白.docx.docx");
         //附件大小，Long类型
         sysFileDto.setFileSize(11213L);
         //附件下载地址
-        sysFileDto.setFileUrl("http://203.91.46.83:8030/SZFGWAPP/LEAP/SZFGWOA/datastatistics/sz-invest/gdzctz.xlsx");
+        sysFileDto.setFileUrl("http://172.18.225.56:8089/FGWPM/LEAP/Download/default/2018/5/17/20180517143816590.docx");
         fileDtoList.add(sysFileDto);
         //项目添加附件列表
         signDto.setSysFileDtoList(fileDtoList);

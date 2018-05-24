@@ -13,9 +13,6 @@ import cs.common.utils.DateUtils;
 import cs.common.utils.StringUtil;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerFactory;
-import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -26,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import cs.common.utils.QuartzManager;
 import cs.model.PageModelDto;
 import cs.model.sys.WorkdayDto;
 import cs.repository.odata.ODataObj;
@@ -160,11 +156,11 @@ public class WorkdayController {
     @RequestMapping(name="计算工作日",path="countWorkday",method=RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void countWorkday() throws Exception{
-		SchedulerFactory schedulderFactory=new StdSchedulerFactory();
+		/*SchedulerFactory schedulderFactory=new StdSchedulerFactory();
 		Scheduler sched=schedulderFactory.getScheduler();
 		String cls="cs.quartz.execute.SignCountWorkdayExecute";
 		String jobName="工作日计算";
 		String time="0/10 * * * * ?";
-		QuartzManager.addJob(sched, jobName, Class.forName(cls), time);
+		QuartzManager.addJob(sched, jobName, Class.forName(cls), time);*/
 	}
 }

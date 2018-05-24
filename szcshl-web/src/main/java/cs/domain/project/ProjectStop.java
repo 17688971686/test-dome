@@ -132,7 +132,7 @@ public class ProjectStop extends DomainBase {
     private String isactive;
 
     /**
-     * 是否已经执行（9表示已经执行，1:表示正在执行）
+     * 是否已经执行（9表示已经执行，1:表示正在执行,0:表示未执行）
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String isOverTime;

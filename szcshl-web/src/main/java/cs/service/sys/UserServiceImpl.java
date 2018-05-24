@@ -526,7 +526,7 @@ public class UserServiceImpl implements UserService {
 
 
     /**
-     * 查询所有用户显示名和id
+     * 获取当前用户可以设置的代办人列表
      */
     @Override
     public List<UserDto> getAllUserDisplayName() {
@@ -537,8 +537,7 @@ public class UserServiceImpl implements UserService {
 
         List<UserDto> userDtoList = new ArrayList<>();
         if (SessionUtil.hashRole(EnumFlowNodeGroupName.DIRECTOR.getValue()) ||
-                SessionUtil.hashRole(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()) ||
-                SessionUtil.hashRole(EnumFlowNodeGroupName.DEPT_LEADER.getValue())
+                SessionUtil.hashRole(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())
                 ) {//如果是领导，则根据所属角色选择代办代理人
             hqlBuilder.append(" and " + User_.id.getName() + " in(select users_id from CS_USER_CS_ROLE where roles_id =(");
             hqlBuilder.append("select " + Role_.id.getName() + " from cs_role where ");
@@ -546,15 +545,14 @@ public class UserServiceImpl implements UserService {
             if (SessionUtil.hashRole(EnumFlowNodeGroupName.DIRECTOR.getValue())) {//主任
                 hqlBuilder.setParam("roleName", EnumFlowNodeGroupName.DIRECTOR.getValue());
             }
-
             if (SessionUtil.hashRole(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {//副主任
                 hqlBuilder.setParam("roleName", EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
             }
-            if (SessionUtil.hashRole(EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {//部门负责人
+            /*if (SessionUtil.hashRole(EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {//部门负责人
                 hqlBuilder.setParam("roleName", EnumFlowNodeGroupName.DEPT_LEADER.getValue());
-            }
+            }*/
         } else {//其他，则只能选择本部门工作人员作为代办代理
-            hqlBuilder.append(" and orgId=(");
+            hqlBuilder.append(" and orgId=( ");
             hqlBuilder.append("select orgId from cs_user where " + User_.id.getName() + "=:userId)");
             hqlBuilder.setParam("userId", SessionUtil.getUserId());
         }
@@ -847,20 +845,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getTaskDealId(String userId, List<AgentTask> agentTaskList,String nodeKey) {
+    public String getTaskDealId(String userId, List<AgentTask> agentTaskList, String nodeKey) {
         User dealUser = userRepo.findById(User_.id.getName(), userId);
         boolean isAgent = Validate.isString(dealUser.getTakeUserId());
         if (isAgent) {
-            agentTaskList.add(agentTaskService.initNew(dealUser,nodeKey));
+            agentTaskList.add(agentTaskService.initNew(dealUser, nodeKey));
         }
         return isAgent ? dealUser.getTakeUserId() : dealUser.getId();
     }
 
     @Override
-    public String getTaskDealId(User dealUser, List<AgentTask> agentTaskList,String nodeKey) {
+    public String getTaskDealId(User dealUser, List<AgentTask> agentTaskList, String nodeKey) {
         boolean isAgent = Validate.isString(dealUser.getTakeUserId());
         if (isAgent) {
-            agentTaskList.add(agentTaskService.initNew(dealUser,nodeKey));
+            agentTaskList.add(agentTaskService.initNew(dealUser, nodeKey));
         }
         return isAgent ? dealUser.getTakeUserId() : dealUser.getId();
     }

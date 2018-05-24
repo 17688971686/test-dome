@@ -32,6 +32,6 @@ public interface CompanyService {
 	 * @param name
 	 * @param comType
 	 */
-	void createSignCompany(String name,String comType);
+	void createSignCompany(String name,String comType,boolean isSignUser);
 
 }

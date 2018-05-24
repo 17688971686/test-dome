@@ -1,9 +1,12 @@
 package cs.service.project;
 
+import cs.common.HqlBuilder;
 import cs.common.RandomGUID;
 import cs.common.utils.BeanCopierUtils;
+import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.AgentTask;
+import cs.domain.project.AgentTask_;
 import cs.domain.project.Sign;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
@@ -13,6 +16,8 @@ import cs.repository.repositoryImpl.project.AgentTaskRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,5 +81,33 @@ public class AgentTaskServiceImpl implements AgentTaskService{
         }
         pageModelDto.setCount(odataObj.getCount());
         return pageModelDto;
+    }
+
+    @Override
+    public boolean isAgentTask(String taskId,String agentUserId) {
+        HqlBuilder sqlBuilder = HqlBuilder.create();
+        sqlBuilder.append(" select count("+ AgentTask_.agentId.getName()+") from cs_agent_his ");
+        sqlBuilder.append(" where "+AgentTask_.taskId.getName()+" =:taskId and "+AgentTask_.agentUserId.getName()+"=:agentUserId");
+        sqlBuilder.setParam("taskId",taskId).setParam("agentUserId", agentUserId);
+        int count = agentTaskRepo.returnIntBySql(sqlBuilder);
+        return (count > 0);
+    }
+
+    @Override
+    public String getUserId(String taskId, String agentUserId) {
+        AgentTask agentTask = getByTaskId(taskId,agentUserId);
+        if(Validate.isObject(agentTask)){
+            return agentTask.getUserId();
+        }else {
+            return null;
+        }
+    }
+
+    @Override
+    public AgentTask getByTaskId(String taskId, String agentUserId) {
+        Criteria criteria = agentTaskRepo.getExecutableCriteria();
+        criteria.add(Restrictions.eq(AgentTask_.taskId.getName(),taskId));
+        criteria.add(Restrictions.eq(AgentTask_.agentUserId.getName(),agentUserId));
+        return (AgentTask) criteria.uniqueResult();
     }
 }

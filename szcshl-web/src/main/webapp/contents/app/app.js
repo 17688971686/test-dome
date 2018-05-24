@@ -517,15 +517,15 @@
                 //end#signList
 
                 //begin#workprogram
-                .state('workprogramEdit', {
-                    url: '/workprogramEdit/:signid/:isControl/:minBusinessId/:businessType',//isControl控制按钮的显示
+                /*.state('workprogramEdit', {
+                    url: '/workprogramEdit/:signid/:isControl/:minBusinessId/:businessType',
                     templateUrl: rootPath + '/workprogram/html/edit.html',
                     controller: 'workprogramEditCtrl',
                     controllerAs: 'vm'
-                })
-                //流程处理中工作方案填写
+                })*/
+                //流程处理中工作方案填写(新方法)
                 .state('flowWPEdit', {
-                    url: '/flowWPEdit/:signid/:taskid',//isControl控制按钮的显示
+                    url: '/flowWPEdit/:signid/:taskid',
                     templateUrl: rootPath + '/workprogram/html/edit.html',
                     controller: 'flowWPEditCtrl',
                     controllerAs: 'vm'

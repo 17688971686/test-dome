@@ -20,7 +20,9 @@ import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.reviewProjectAppraise.AppraiseRepo;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.project.AgentTaskService;
 import cs.service.rtx.RTXSendMsgPool;
+import cs.service.sys.UserService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -43,13 +45,10 @@ import java.util.*;
  */
 @Service
 public class AppraiseServiceImpl implements AppraiseService {
-
     @Autowired
     private SignDispaWorkRepo signDispaWorkRepo;
-
     @Autowired
     private AppraiseRepo appraiseRepo;
-
     @Autowired
     private SignRepo signRepo;
     @Autowired
@@ -62,7 +61,10 @@ public class AppraiseServiceImpl implements AppraiseService {
     private UserRepo userRepo;
     @Autowired
     private OrgDeptRepo orgDeptRepo;
-
+    @Autowired
+    private AgentTaskService agentTaskService;
+    @Autowired
+    private UserService userService;
 
     /**
      * 查询优秀评审报告列表
@@ -276,7 +278,6 @@ public class AppraiseServiceImpl implements AppraiseService {
         if (!Validate.isString(orgDept.getDirectorID())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
         }
-
         //1、启动流程
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(FlowConstant.FLOW_APPRAISE_REPORT, id,
                 ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER.getValue(), SessionUtil.getUserId()));
@@ -295,11 +296,14 @@ public class AppraiseServiceImpl implements AppraiseService {
 
         //优秀评审报告申请部长和项目签收流程环节一致
         //查询部门领导
-
-        User leadUser = userRepo.getCacheUserById(orgDept.getDirectorID());
-        String assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
+        List<AgentTask> agentTaskList = new ArrayList<>();
+        String assigneeValue = userService.getTaskDealId(orgDept.getDirectorID(), agentTaskList, FlowConstant.FLOW_ARP_BZ_SP);
         taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(), assigneeValue));
 
+        //如果是代办，还要更新环节名称和任务ID
+        if (Validate.isList(agentTaskList)) {
+            agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
+        }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
@@ -317,13 +321,16 @@ public class AppraiseServiceImpl implements AppraiseService {
     @Transactional
     public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
-                assigneeValue = "";                            //流程处理人
+                assigneeValue = "",                             //流程处理人
+                nextNodeKey = "",                              //下一环节名称
+                curUserId = SessionUtil.getUserId();            //当前用户ID
         Map<String, Object> variables = new HashMap<>();        //流程参数
-        User dealUser = null;                                  //用户
-        List<User> dealUserList = null;                        //用户列表
-        AppraiseReport appraiseReport = null;                //档案借阅管理
-        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
-        String nextNodeKey = "";                    //下一环节名称
+        User dealUser = null;                                   //用户
+        List<User> dealUserList = null;                         //用户列表
+        AppraiseReport appraiseReport = null;                   //档案借阅管理
+        boolean isNextUser = false,                             //是否是下一环节处理人（主要是处理领导审批，部长审批）
+                isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId); //是否代办
+        List<AgentTask> agentTaskList = new ArrayList<>();
         //环节处理人设定
         switch (task.getTaskDefinitionKey()) {
             //项目负责人填报
@@ -336,8 +343,8 @@ public class AppraiseServiceImpl implements AppraiseService {
                 if (!Validate.isString(orgDept.getDirectorID())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
                 }
-                User leadUser = userRepo.getCacheUserById(orgDept.getDirectorID());
-                assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
+                assigneeValue = userService.getTaskDealId(orgDept.getDirectorID(), agentTaskList, FlowConstant.FLOW_ARP_BZ_SP);
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(), assigneeValue);
                 break;
             //部长审批
             case FlowConstant.FLOW_ARP_BZ_SP:
@@ -345,8 +352,12 @@ public class AppraiseServiceImpl implements AppraiseService {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
                 appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(), businessId);
-                appraiseReport.setMinisterId(SessionUtil.getUserId());
-                appraiseReport.setMinisterName(SessionUtil.getDisplayName());
+                if(isAgentTask){
+                    appraiseReport.setMinisterId(agentTaskService.getUserId(task.getId(),curUserId));
+                }else{
+                    appraiseReport.setMinisterId(curUserId);
+                }
+                appraiseReport.setMinisterName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                 appraiseReport.setMinisterOpinion(flowDto.getDealOption());
                 appraiseReport.setMinisterDate(new Date());
                 //同意
@@ -357,7 +368,7 @@ public class AppraiseServiceImpl implements AppraiseService {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.APPRAISE_REVIEWER.getValue() + "】角色用户！");
                     }
                     dealUser = dealUserList.get(0);
-                    assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                    assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FlowConstant.FLOW_ARP_ZHB_SP);
                     variables.put(FlowConstant.FlowParams.USER_ZHB.getValue(), assigneeValue);
                     variables.put(FlowConstant.FlowParams.ISAGREE.getValue(), true);
                     //下一环节还是自己处理
@@ -382,8 +393,12 @@ public class AppraiseServiceImpl implements AppraiseService {
                 }
                 appraiseReport = appraiseRepo.findById(AppraiseReport_.id.getName(), businessId);
                 Sign sign = signRepo.findById(Sign_.signid.getName(), appraiseReport.getSignId());
-                appraiseReport.setGeneralConductorId(SessionUtil.getUserId());
-                appraiseReport.setGeneralConductorName(SessionUtil.getDisplayName());
+                if(isAgentTask){
+                    appraiseReport.setGeneralConductorId(agentTaskService.getUserId(task.getId(),curUserId));
+                }else{
+                    appraiseReport.setGeneralConductorId(curUserId);
+                }
+                appraiseReport.setGeneralConductorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                 appraiseReport.setGeneralConductorOpinion(flowDto.getDealOption());
                 appraiseReport.setGeneralConductorDate(new Date());
                 if (Constant.EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
@@ -417,6 +432,10 @@ public class AppraiseServiceImpl implements AppraiseService {
                     }
                 }
             }
+        }
+        //如果是代办，还要更新环节名称和任务ID
+        if (Validate.isList(agentTaskList)) {
+            agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);

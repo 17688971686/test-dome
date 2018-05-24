@@ -7,9 +7,17 @@ import javax.servlet.http.HttpServletRequest;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.QuartzManager;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
+import cs.domain.sys.Quartz;
+import cs.domain.sys.Quartz_;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.quartz.Job;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerFactory;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -93,6 +101,39 @@ public class QuartzController {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "你不是系统管理员，不能进行此操作！");
         }
         return quartzService.quartzExecute(quartzId);
+    }
+
+    /**
+     * 立刻执行一次
+     *
+     * @param quartzId
+     * @return
+     */
+    @RequiresAuthentication
+    @RequestMapping(name = "立刻执行一次", path = "runOne", method = RequestMethod.POST)
+    @ResponseBody
+    public ResultMsg runOne(@RequestParam String quartzId) {
+        ResultMsg resultMsg = new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"");
+        Quartz quartz = quartzRepo.findById(Quartz_.id.getName(), quartzId);
+        if (quartz == null) {
+            resultMsg.setReMsg("操作失败，该任务已被删除！");
+        }else{
+            try {
+                SchedulerFactory schedulderFactory = new StdSchedulerFactory();
+                Scheduler sched = schedulderFactory.getScheduler();
+                QuartzManager.runOnce(sched,quartz.getQuartzName());
+
+                resultMsg.setFlag(true);
+                resultMsg.setReCode(Constant.MsgCode.OK.getValue());
+                resultMsg.setReMsg("执行成功！");
+            }catch (Exception e){
+                e.printStackTrace();
+                resultMsg.setReMsg("执行任务异常");
+            }
+        }
+        return  resultMsg;
+
+
     }
 
     //@RequiresPermissions("quartz#quartzStop#put")

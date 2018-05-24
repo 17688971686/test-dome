@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.UUID;
 
+import static cs.common.constants.Constant.DEFAULT_DESIGN_COMPNAME;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
+
 /**
  * Created by Administrator on 2018/3/27.
  */
@@ -27,12 +30,12 @@ public class UnitScoreServiceImpl implements UnitScoreService {
     private UnitScoreRepo unitScoreRepo;
 
     @Override
-    public void decide(String designcompanyName, String singid) {
+    public void decide(String designcompanyName, String singid,boolean isSignUser) {
         //查找单位
         Company company = companyRepo.findCompany(designcompanyName);
         if (company == null) {
             //没有时进行添加单位
-            companyService.createSignCompany(designcompanyName, "编制单位");
+            companyService.createSignCompany(designcompanyName, DEFAULT_DESIGN_COMPNAME,isSignUser);
         }
         //查找单位评分表数据
         UnitScore unitScore = unitScoreRepo.findUnitScore(singid);
@@ -45,9 +48,9 @@ public class UnitScoreServiceImpl implements UnitScoreService {
             unitScores.setSignid(singid);
             unitScores.setCompany(company);
             unitScores.setId(UUID.randomUUID().toString());
-            unitScores.setCreatedBy(SessionUtil.getDisplayName());
+            unitScores.setCreatedBy(isSignUser?SessionUtil.getUserId():SUPER_ACCOUNT);
             unitScores.setCreatedDate(new Date());
-            unitScores.setModifiedBy(SessionUtil.getDisplayName());
+            unitScores.setModifiedBy(isSignUser?SessionUtil.getDisplayName():SUPER_ACCOUNT);
             unitScores.setCreatedDate(new Date());
             unitScoreRepo.save(unitScores);
         }

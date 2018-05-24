@@ -70,6 +70,18 @@ public class ActivitiUtil {
     }
 
     /**
+     * 获取签名，判断是否是代办
+     * @param name
+     * @param isAgent
+     * @return
+     */
+    public static String getSignName(String name,boolean isAgent){
+        if(isAgent){
+            name = name +"（代）";
+        }
+        return name;
+    }
+    /**
      * 毫秒转化时分秒毫秒
      *
      * @param ms

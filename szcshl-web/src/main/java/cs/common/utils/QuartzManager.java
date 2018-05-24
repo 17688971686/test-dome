@@ -2,6 +2,8 @@ package cs.common.utils;
 
 import org.quartz.*;
 
+import java.util.Map;
+
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -24,10 +26,14 @@ public class QuartzManager {
      * @Title: QuartzManager.java
      */
     @SuppressWarnings("unchecked")
-    public static void addJob(Scheduler sched, String jobName, @SuppressWarnings("rawtypes") Class cls, String time) {
+    public static void addJob(Scheduler sched, String jobName, @SuppressWarnings("rawtypes") Class cls, String time,Map<String,Object> params) {
         try {
             JobKey jobKey = new JobKey(jobName, JOB_GROUP_NAME);// 任务名，任务组，任务执行类
             JobDetail jobDetail = newJob(cls).withIdentity(jobKey).build();
+            //设置参数
+            for (String key : params.keySet()) {
+                jobDetail.getJobDataMap().put(key,params.get(key));
+            }
             TriggerKey triggerKey = new TriggerKey(jobName, TRIGGER_GROUP_NAME);// 触发器
             Trigger trigger = newTrigger().withIdentity(triggerKey).withSchedule(cronSchedule(time)).build();// 触发器时间设定
             sched.scheduleJob(jobDetail, trigger);
@@ -76,7 +82,7 @@ public class QuartzManager {
      */
     @SuppressWarnings("rawtypes")
     public static void modifyJobTime(Scheduler sched, String jobName, String time) {
-        try {
+       /* try {
             TriggerKey triggerKey = new TriggerKey(jobName, TRIGGER_GROUP_NAME);
             CronTrigger trigger = (CronTrigger) sched.getTrigger(triggerKey);
             if (trigger == null) {
@@ -93,7 +99,7 @@ public class QuartzManager {
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     /**
@@ -125,6 +131,17 @@ public class QuartzManager {
         }
     }
 
+
+    /**
+     * 马上执行一次
+     * @param sched
+     * @param jobName
+     * @throws SchedulerException
+     */
+    public static void runOnce(Scheduler sched, String jobName) throws SchedulerException{
+        JobKey jobKey = new JobKey(jobName, JOB_GROUP_NAME);
+        sched.triggerJob(jobKey);
+    }
     /**
      * @param sched   调度器
      * @param jobName
@@ -199,4 +216,5 @@ public class QuartzManager {
             throw new RuntimeException(e);
         }
     }
+
 }

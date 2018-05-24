@@ -9,7 +9,7 @@
     <table class="table table-bordered  dataTable">
         <tr>
             <td colspan="6">
-                <h4><strong>代办设置</strong><span style="font-size: 14px;">【设置用户代办之后，流程总流转给你的任务将会自动转给代办人处理！】</span></h4>
+                <h4><strong>代办设置</strong><span style="font-size: 14px;">【设置用户代办之后，流转给你的任务将会自动转给代办人处理！】</span></h4>
             </td>
         </tr>
         <tr>
@@ -103,7 +103,7 @@
                 </table>
             </td>
         </tr>
-        <tr ng-if="vm.ruProcessTaskList">
+        <tr >
             <td colspan="6">
                 <h4><strong>代办记录</strong></h4>
             </td>
@@ -111,6 +111,7 @@
         <tr>
             <td colspan="6">
                 <form id="searchform" name="searchform">
+                    <input name="agentUserId" type="hidden" value="${CURRENT_USER.id}" />
                     <div style="padding: 5px;">
                         <span class="help-inline">流程名称：</span>
                         <input type="text" ng-model="vm.querymodel.flowName" operator="like" name="flowName"

@@ -1,5 +1,6 @@
 package cs.service.flow;
 
+import cs.common.RandomGUID;
 import cs.common.constants.Constant;
 import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
@@ -11,6 +12,7 @@ import cs.common.utils.Validate;
 import cs.domain.flow.*;
 import cs.domain.project.*;
 import cs.domain.sys.Log;
+import cs.domain.sys.User;
 import cs.domain.topic.WorkPlan;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
@@ -140,7 +142,8 @@ public class FlowServiceImpl implements FlowService {
     private LogService logService;
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
-
+    @Autowired
+    private AgentTaskRepo agentTaskRepo;
     /**
      * 回退到上一环节或者指定环节
      *
@@ -1304,6 +1307,25 @@ public class FlowServiceImpl implements FlowService {
                 sqlBuilder.setParam("newUserId",newUserId).setParam("taskId",taskId).setParam("oldUserId",oldUserId);
                 ruTaskRepo.executeSql(sqlBuilder);
             }
+            //添加转办记
+            ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
+            AgentTask agentTask = new AgentTask();
+            agentTask.setAgentId((new RandomGUID()).valueAfterMD5);
+            agentTask.setTransDate(new Date());
+            agentTask.setTaskId(taskId);
+
+            User user = userService.getCacheUserById(oldUserId);
+            agentTask.setUserId(oldUserId);
+            agentTask.setUserName(user.getDisplayName());
+            user = userService.getCacheUserById(newUserId);
+            agentTask.setAgentId(newUserId);
+            agentTask.setAgentUserName(user.getDisplayName());
+
+            agentTask.setNodeKey(task.getTaskDefinitionKey());
+            agentTask.setNodeNameValue(task.getName());
+            agentTask.setFlowName(processInstance.getName());
+
+            agentTaskRepo.save(agentTask);
         }
         resultMsg.setFlag(true);
         resultMsg.setReCode(Constant.MsgCode.OK.getValue());

@@ -15,6 +15,9 @@ public class Constant {
     public static final String SUPER_ROLE = "超级管理员";
     public static final String EMPTY_STRING = " ";
 
+    public static final String DEFAULT_BUILD_COMPNAME = "建设单位";
+
+    public static final String DEFAULT_DESIGN_COMPNAME = "编制单位";
     //专家默认费用
     public static final int EXPERT_REVIEW_COST = 1000;
     /**
@@ -206,6 +209,7 @@ public class Constant {
             return value;
         }
     }
+
     /**
      * 业务类型：
      * 1为报审文件，2为归档图纸，3为补充材料，4其他资料，
@@ -374,15 +378,14 @@ public class Constant {
         COMPERE("meetBefore/compere", "主持人手稿"),
         MEETING_AM("meetingAM", "会议议程（上午）"),
         MEETING_PM("meetingPM", "会议议程（下午）"),
-        EXPERTREVIEWIDEA("meetBefore/expertReviewIdea" , "专家评审意见书"),
+        EXPERTREVIEWIDEA("meetBefore/expertReviewIdea", "专家评审意见书"),
         ASSIST("assist", "协审协议书"),
         SIGN_IN("signIn", "签到表"),
         INVITATION("meetBefore/invitation", "邀请函"),
         PROJECR_NOTICE("meetBefore/notice", "项目单位会议通知"),
         THIS_STAGE_MEETING("thisStageMeeing", "本周评审会议安排"),
         NEXT_STAGE_MEETING("nextStageMeeting", "下周评审会议安排"),
-        UNIT_NOTICE("meetBefore/unitNotice" , "相关单位会议通知"),
-
+        UNIT_NOTICE("meetBefore/unitNotice", "相关单位会议通知"),
 
 
         //可行性研究报告
@@ -418,82 +421,82 @@ public class Constant {
 
         /*************以下是ISO模板*************/
         //项目建议书
-        STAGE_SUG_SIGN("print/sign/xmjys" , "项目建议书_报审登记表"),
-        STAGE_SUG_WORKPROGRAM("print/workProgram/xmjys" , "项目建议书_工作方案"),
-        STAGE_SUG_FILERECORD("print/filerecord/fileXmjys" , "项目建议书_归档"),
-        STAGE_SUG_DISPATCHDOC("print/dispatchDoc/dispatchXmjys" , "项目建议书_发文"),
-        STAGE_STUDY_DISPATCHDOC("print/dispatchDoc/dispatchKxxyj" , "可行性研究报告_发文"),
-        STAGE_BUDGET_DISPATCHDOC("print/dispatchDoc/dispatchXmgs" , "项目概算_发文"),
+        STAGE_SUG_SIGN("print/sign/xmjys", "项目建议书_报审登记表"),
+        STAGE_SUG_WORKPROGRAM("print/workProgram/xmjys", "项目建议书_工作方案"),
+        STAGE_SUG_FILERECORD("print/filerecord/fileXmjys", "项目建议书_归档"),
+        STAGE_SUG_DISPATCHDOC("print/dispatchDoc/dispatchXmjys", "项目建议书_发文"),
+        STAGE_STUDY_DISPATCHDOC("print/dispatchDoc/dispatchKxxyj", "可行性研究报告_发文"),
+        STAGE_BUDGET_DISPATCHDOC("print/dispatchDoc/dispatchXmgs", "项目概算_发文"),
 
-        STAGE_REPORT_WORKPROGRAM("print/workProgram/zjsq" , "资金申请_工作方案"),
-        STAGE_DEVICE_WORKPROGRAM("print/workProgram/jksb" , "进口设备_工作方案"),
-        STAGE_HOMELAND_WORKPROGRAM("print/workProgram/sbqd" , "设备清单_工作方案"),
+        STAGE_REPORT_WORKPROGRAM("print/workProgram/zjsq", "资金申请_工作方案"),
+        STAGE_DEVICE_WORKPROGRAM("print/workProgram/jksb", "进口设备_工作方案"),
+        STAGE_HOMELAND_WORKPROGRAM("print/workProgram/sbqd", "设备清单_工作方案"),
 
-        INFORMATION("print/expert_information","专家信息"),
+        INFORMATION("print/expert_information", "专家信息"),
 
         //可行性研究
-        STAGE_STUDY_FILERECORD("print/filerecord/fileKxxyj" , "可行性研究_归档"),
+        STAGE_STUDY_FILERECORD("print/filerecord/fileKxxyj", "可行性研究_归档"),
 
         //项目概算
-        STAGE_BUDGET_SIGN("print/sign/signXmgs" , "项目概算_报审登记表"),
-        STAGE_BUDGET_FILERECORD("print/filerecord/fileXmgs" , "项目概算_归档"),
-        STAGE_BUDGET_XS_FILERECORD("print/filerecord/fileXmgsXS" , "项目概算协审_归档"),
+        STAGE_BUDGET_SIGN("print/sign/signXmgs", "项目概算_报审登记表"),
+        STAGE_BUDGET_FILERECORD("print/filerecord/fileXmgs", "项目概算_归档"),
+        STAGE_BUDGET_XS_FILERECORD("print/filerecord/fileXmgsXS", "项目概算协审_归档"),
 
         //进口设备
-        IMPORT_DEVICE_SIGN("print/sign/signJksb" , "进口设备_报审登记表"),
-        IMPORT_DEVICE_FILERECORD("print/filerecord/fileJksb" , "进口设备_归档"),
-        IMPORT_DEVICE_DISPATCHDOC("print/dispatchDoc/dispatchJksb" , "进口设备_发文"),
+        IMPORT_DEVICE_SIGN("print/sign/signJksb", "进口设备_报审登记表"),
+        IMPORT_DEVICE_FILERECORD("print/filerecord/fileJksb", "进口设备_归档"),
+        IMPORT_DEVICE_DISPATCHDOC("print/dispatchDoc/dispatchJksb", "进口设备_发文"),
 
         //设备清单
-        DEVICE_BILL_SIGN("print/sign/signSbqd" , "设备清单_报审登记表"),
-        DEVICE_BILL_FILERECORD("print/filerecord/fileSbqd2" , "设备清单_归档"),
-        DEVICE_BILL_DISPATCHDOC("print/dispatchDoc/dispatchSbqd" , "设备清单_发文"),
+        DEVICE_BILL_SIGN("print/sign/signSbqd", "设备清单_报审登记表"),
+        DEVICE_BILL_FILERECORD("print/filerecord/fileSbqd2", "设备清单_归档"),
+        DEVICE_BILL_DISPATCHDOC("print/dispatchDoc/dispatchSbqd", "设备清单_发文"),
 
         //资金申请报告
-        APPLY_REPORT_FILERECORD("print/filerecord/fileZjsq" , "资金申请_归档"),
-        APPLY_REPORT_SIGN("print/sign/signZjsq" , "资金申请_报审登记表"),
-        APPLY_REPORT_DISPATCHDOC("print/dispatchDoc/dispatchZjsq" , "资金申请单_发文"),
+        APPLY_REPORT_FILERECORD("print/filerecord/fileZjsq", "资金申请_归档"),
+        APPLY_REPORT_SIGN("print/sign/signZjsq", "资金申请_报审登记表"),
+        APPLY_REPORT_DISPATCHDOC("print/dispatchDoc/dispatchZjsq", "资金申请单_发文"),
 
         //其它
-        OTHERS_DISPATCHDOC("print/dispatchDoc/dispatchOther" , "其它阶段_发文"),
-        OTHERS_FILERECORD("print/filerecord/fileOther" , "其它阶段_归档"),
+        OTHERS_DISPATCHDOC("print/dispatchDoc/dispatchOther", "其它阶段_发文"),
+        OTHERS_FILERECORD("print/filerecord/fileOther", "其它阶段_归档"),
 
         //其它资料
-        OTHER_FILE("print/other" , "其它资料"),
+        OTHER_FILE("print/other", "其它资料"),
 
         //拟补充资料函
-        ADDSUPPLETER("print/common" , "拟补充资料函"),
+        ADDSUPPLETER("print/common", "拟补充资料函"),
 
         //专家申请表
-        EXPERT("print/expert" , "专家申请表"),
+        EXPERT("print/expert", "专家申请表"),
 
         //专家聘书
-        EXPERTOFFER("print/expertoffer","专家聘书"),
+        EXPERTOFFER("print/expertoffer", "专家聘书"),
 
         //专家评审费
-        EXPERT_PAYMENT("print/expert_payment" , "专家评审费"),
-        EXPERT_PAYMENT_one("print/expert_payment_one" , "专家评审费"),
+        EXPERT_PAYMENT("print/expert_payment", "专家评审费"),
+        EXPERT_PAYMENT_one("print/expert_payment_one", "专家评审费"),
 
         //专家评分
-        EXPERT_SCORD("print/expert_score" , "专家评分"),
+        EXPERT_SCORD("print/expert_score", "专家评分"),
 
         //单位评分
-        UNIT_SCORE("print/unit_score","单位评分"),
+        UNIT_SCORE("print/unit_score", "单位评分"),
 
         //月报简报
-        MONTHLY("print/monthly/monthly" , "月报简报"),
+        MONTHLY("print/monthly/monthly", "月报简报"),
 
         //借阅档案
-        ARCHIVES_DETAIL("print/archives/archivesDetail" , "借阅档案"),
+        ARCHIVES_DETAIL("print/archives/archivesDetail", "借阅档案"),
         //课题研究
-        TOPICINFO_WORKPROGRAM("print/topicInfo/workProgramTopic" , "课题研究_工作方案"),
-        TOPICINFO_FILERECORD("print/topicInfo/fileTopic" , "课题研究_归档"),
+        TOPICINFO_WORKPROGRAM("print/topicInfo/workProgramTopic", "课题研究_工作方案"),
+        TOPICINFO_FILERECORD("print/topicInfo/fileTopic", "课题研究_归档"),
 
         //专家缴费
-        EXPERT_PAYTAXES("print/expert_paytaxes" , "专家缴费"),
-        EXPERT_PAYTAXESDETAIL("print/expert_paytaxesDetail" , "专家缴费详细页"),
+        EXPERT_PAYTAXES("print/expert_paytaxes", "专家缴费"),
+        EXPERT_PAYTAXESDETAIL("print/expert_paytaxesDetail", "专家缴费详细页"),
 
-        ADD_REGISTER_FILE("print/registerFile" , "拟补充资料清单");
+        ADD_REGISTER_FILE("print/registerFile", "拟补充资料清单");
 
         private String key;
         private String value;
@@ -611,7 +614,7 @@ public class Constant {
         ORGPGEB("评估二部", "PX"),
         ORGGSYB("概算一部", "GX"),
         ORGGSEB("概算二部", "GX"),
-        ORXXHZ("评估一部信息化组","XX");
+        ORXXHZ("评估一部信息化组", "XX");
 
         private String key;
         private String value;
@@ -658,9 +661,11 @@ public class Constant {
         POLICY_LIBRARY("POLICY");   //政策标准文件库
 
         private String value;
+
         libraryType(String value) {
             this.value = value;
         }
+
         public String getValue() {
             return value;
         }
@@ -751,12 +756,13 @@ public class Constant {
 
         /**
          * 根据阶段标识获取中文字符(主要用于接口)
+         *
          * @param value
          * @return
          */
         public static String getZHCNName(String value) {
             String resultZHName = "";
-            switch (value){
+            switch (value) {
                 case "STAGESUG":
                     resultZHName = STAGE_SUG;
                     break;

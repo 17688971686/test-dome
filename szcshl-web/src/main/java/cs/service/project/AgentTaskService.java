@@ -31,4 +31,27 @@ public interface AgentTaskService {
      * @return
      */
     PageModelDto<AgentTask> get(ODataObj odataObj);
+
+    /**
+     * 判断是否是代办任务
+     * @param taskId
+     * @return
+     */
+    boolean isAgentTask(String taskId,String agentUserId);
+
+    /**
+     * 根据任务ID和代理用户ID，获取原用户ID
+     * @param taskId
+     * @param agentUserId
+     * @return
+     */
+    String getUserId(String taskId,String agentUserId);
+
+    /**
+     * 根据任务ID和代理用户ID，获取原用户ID
+     * @param taskId
+     * @param agentUserId
+     * @return
+     */
+    AgentTask getByTaskId(String taskId,String agentUserId);
 }

@@ -9,15 +9,18 @@ import cs.domain.sys.Log;
 import cs.model.project.CommentDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
+import cs.service.expert.ExpertReviewService;
 import cs.service.flow.FlowService;
 import cs.service.project.SignService;
 import cs.service.restService.SignRestService;
 import cs.service.sys.LogService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -34,20 +37,28 @@ import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
  * 发送信息项目信息给委里
  * Created by ldm on 2017/12/18.
  */
-public class SendProjectInfoToFGW implements Job {
-    @Autowired
+@Component
+public class SendProjectFGWExecute implements Job {
+    private static Logger logger = Logger.getLogger(SendProjectFGWExecute.class);
+    /*@Autowired
     private SignService signService;
     @Autowired
     private LogService logService;
     @Autowired
     private SignRestService signRestService;
     @Autowired
-    private FlowService flowService;
+    private FlowService flowService;*/
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        //SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+        logger.info("---------------------- 项目回传定时器开始执行 ----------------------");
+        LogService logService = (LogService) context.getMergedJobDataMap().get("logService");
+        SignService signService = (SignService) context.getMergedJobDataMap().get("signService");
+        SignRestService signRestService = (SignRestService) context.getMergedJobDataMap().get("signRestService");
+        FlowService flowService = (FlowService) context.getMergedJobDataMap().get("flowService");
+
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
@@ -131,5 +142,6 @@ public class SendProjectInfoToFGW implements Job {
         }
         //添加日记记录
         logService.save(log);
+        logger.info("---------------------- 项目回传定时器执行结束 ----------------------");
     }
 }

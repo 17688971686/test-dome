@@ -6,10 +6,13 @@ import javax.transaction.Transactional;
 
 import cs.common.constants.FlowConstant;
 import cs.common.utils.*;
+import cs.domain.project.AgentTask;
 import cs.domain.sys.User;
 import cs.model.flow.FlowDto;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.project.AgentTaskService;
 import cs.service.rtx.RTXSendMsgPool;
+import cs.service.sys.UserService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -47,6 +50,10 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
     private TaskService taskService;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private AgentTaskService agentTaskService;
+    @Autowired
+    private UserService userService;
 
     @Override
     public PageModelDto<ArchivesLibraryDto> get(ODataObj odataObj) {
@@ -75,10 +82,10 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
         ArchivesLibrary domain = new ArchivesLibrary();
         Date now = new Date();
 
-        if(Validate.isString(record.getId())){
+        if (Validate.isString(record.getId())) {
             domain = archivesLibraryRepo.findById(record.getId());
-            BeanCopierUtils.copyPropertiesIgnoreNull(record,domain);
-        }else{
+            BeanCopierUtils.copyPropertiesIgnoreNull(record, domain);
+        } else {
             BeanCopierUtils.copyProperties(record, domain);
             domain.setId(UUID.randomUUID().toString());
             domain.setCreatedBy(SessionUtil.getDisplayName());
@@ -169,6 +176,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
 
     /**
      * 发起流程
+     *
      * @param id
      * @return
      */
@@ -178,13 +186,14 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
         String assigneeValue;
         Map<String, Object> variables = new HashMap<>();       //流程参数
         User dealUser = null;                                  //用户
+        List<AgentTask> agentTaskList = new ArrayList<>();
         if (archivesLibrary == null) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "发起流程失败，该项目已不存在！");
         }
         if (Validate.isString(archivesLibrary.getProcessInstanceId())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "该项目已发起流程！");
         }
-        if(SessionUtil.getUserInfo().getOrg() == null || !Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgDirector())){
+        if (SessionUtil.getUserInfo().getOrg() == null || !Validate.isString(SessionUtil.getUserInfo().getOrg().getOrgDirector())) {
             return new ResultMsg(false, MsgCode.ERROR.getValue(), "您所在部门还没设置部长，请联系管理员进行设置！");
         }
         //1、启动流程
@@ -192,7 +201,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                 ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER.getValue(), SessionUtil.getUserId()));
 
         //2、设置流程实例名称
-        processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), archivesLibrary.getReadProjectName()==null?"《"+archivesLibrary.getReadArchivesCode()+"》档案借阅":"《"+archivesLibrary.getReadProjectName()+"》档案借阅");
+        processEngine.getRuntimeService().setProcessInstanceName(processInstance.getId(), archivesLibrary.getReadProjectName() == null ? "《" + archivesLibrary.getReadArchivesCode() + "》档案借阅" : "《" + archivesLibrary.getReadProjectName() + "》档案借阅");
 
         //3、更改项目状态
         archivesLibrary.setProcessInstanceId(processInstance.getId());
@@ -202,20 +211,22 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
         //4、跳过第一环节（填报）
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
         taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
-
-        if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){//判断是否是部长发起
-            dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
-            assigneeValue= Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
-            variables=ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_FGLD.getValue(), assigneeValue);
+        //判断是否是部长发起
+        if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {
+            assigneeValue = userService.getTaskDealId(SessionUtil.getUserInfo().getOrg().getOrgSLeader(), agentTaskList, FlowConstant.FLOW_ARC_FGLD_SP);
+            variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_FGLD.getValue(), assigneeValue);
             variables.put(FlowConstant.FlowParams.TB_FZ.getValue(), true);
             taskService.complete(task.getId(), variables);
-        }else{
-            String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null?SessionUtil.getUserId():SessionUtil.getUserInfo().getOrg().getOrgDirector();
-            User leadUser = userRepo.getCacheUserById(userId);
-             assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
-            variables=ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(), assigneeValue);
+        } else {
+            String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null ? SessionUtil.getUserId() : SessionUtil.getUserInfo().getOrg().getOrgDirector();
+            assigneeValue = userService.getTaskDealId(userId, agentTaskList, FlowConstant.FLOW_ARC_BZ_SP);
+            variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(), assigneeValue);
             variables.put(FlowConstant.FlowParams.TB_FZ.getValue(), false);
             taskService.complete(task.getId(), variables);
+        }
+        //如果是代办，还要更新环节名称和任务ID
+        if (Validate.isList(agentTaskList)) {
+            agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
@@ -224,6 +235,7 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
 
     /**
      * 流程处理
+     *
      * @param processInstance
      * @param task
      * @param flowDto
@@ -232,30 +244,31 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
     @Override
     @Transactional
     public ResultMsg dealFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
-
         String businessId = processInstance.getBusinessKey(),
-        assigneeValue = "";                            //流程处理人
-        Map<String,Object> variables = new HashMap();          //流程参数
+                assigneeValue = "",                             //流程处理人
+                nextNodeKey = "",                               //下一环节名称
+                curUserId = SessionUtil.getUserId();            //当前用户ID
+        Map<String, Object> variables = new HashMap();          //流程参数
         User dealUser = null;                                  //用户
         List<User> dealUserList = null;                        //用户列表
         ArchivesLibrary archivesLibrary = null;                //档案借阅管理
-        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
-        String nextNodeKey = "";                    //下一环节名称
+        boolean isNextUser = false,                            //是否是下一环节处理人（主要是处理领导审批，部长审批）
+                isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId);
+        List<AgentTask> agentTaskList = new ArrayList<>();
 
         //环节处理人设定
         switch (task.getTaskDefinitionKey()) {
             //项目负责人填报
             case FlowConstant.FLOW_ARC_SQ:
-                if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())){//判断是否是部长
-                    dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
-                    assigneeValue= Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
-                    variables=ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_FGLD.getValue(), assigneeValue);
+                //判断是否是部长
+                if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {
+                    assigneeValue = userService.getTaskDealId(SessionUtil.getUserInfo().getOrg().getOrgSLeader(), agentTaskList, FlowConstant.FLOW_ARC_FGLD_SP);
+                    variables = ActivitiUtil.setAssigneeValue(FlowConstant.MonthlyNewsletterFlowParams.USER_FGLD.getValue(), assigneeValue);
                     variables.put(FlowConstant.FlowParams.TB_FZ.getValue(), true);
-                }else{
-                    String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null?SessionUtil.getUserId():SessionUtil.getUserInfo().getOrg().getOrgDirector();
-                    User leadUser = userRepo.getCacheUserById(userId);
-                    assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
-                    variables=ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(), assigneeValue);
+                } else {
+                    String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null ? SessionUtil.getUserId() : SessionUtil.getUserInfo().getOrg().getOrgDirector();
+                    assigneeValue = userService.getTaskDealId(userId, agentTaskList, FlowConstant.FLOW_ARC_BZ_SP);
+                    variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(), assigneeValue);
                     variables.put(FlowConstant.FlowParams.TB_FZ.getValue(), false);
                 }
                 break;
@@ -264,27 +277,31 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                 if (flowDto.getBusinessMap().get("AGREE") == null || !Validate.isString(flowDto.getBusinessMap().get("AGREE").toString())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
-                archivesLibrary =archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(),businessId);
+                archivesLibrary = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessId);
                 //同意
-                if(EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())){
+                if (EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
                     archivesLibrary.setIsAgree(EnumState.YES.getValue());
-                    archivesLibrary.setDeptMinisterId(SessionUtil.getUserId());
-                    archivesLibrary.setDeptMinister(SessionUtil.getDisplayName());
+                    if(isAgentTask){
+                        archivesLibrary.setDeptMinisterId(agentTaskService.getUserId(task.getId(),curUserId));
+                    }else{
+                        archivesLibrary.setDeptMinisterId(curUserId);
+                    }
+                    archivesLibrary.setDeptMinister(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                     archivesLibrary.setDeptMinisterIdeaContent(flowDto.getDealOption());
                     archivesLibrary.setDeptMinisterDate(new Date());
-                    archivesLibrary.setArchivesStatus(Constant.EnumState.PROCESS.getValue());   //1表示到分管领导审批
-                    dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
-                    assigneeValue= Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                    archivesLibrary.setArchivesStatus(EnumState.PROCESS.getValue());   //1表示到分管领导审批
+
+                    assigneeValue = userService.getTaskDealId(SessionUtil.getUserInfo().getOrg().getOrgSLeader(), agentTaskList, FlowConstant.FLOW_ARC_FGLD_SP);
                     variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);
-                    variables.put(FlowConstant.FlowParams.BZ_FZ.getValue(),true);
+                    variables.put(FlowConstant.FlowParams.BZ_FZ.getValue(), true);
                     //下一环节还是自己处理
-                    if(assigneeValue.equals(SessionUtil.getUserId())){
+                    if (assigneeValue.equals(SessionUtil.getUserId())) {
                         isNextUser = true;
                         nextNodeKey = FlowConstant.FLOW_ARC_FGLD_SP;
                     }
-                //不同意，则直接结束
-                }else{
-                    variables.put(FlowConstant.FlowParams.BZ_FZ.getValue(),false);
+                    //不同意，则直接结束
+                } else {
+                    variables.put(FlowConstant.FlowParams.BZ_FZ.getValue(), false);
                     archivesLibrary.setIsAgree(EnumState.NO.getValue());
                 }
                 archivesLibraryRepo.save(archivesLibrary);
@@ -296,49 +313,53 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                 }
                 archivesLibrary = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessId);
                 //同意
-                if(EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString()) ||flowDto.getBusinessMap().get("AGREE")==null ) {
+                if (EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString()) || flowDto.getBusinessMap().get("AGREE") == null) {
                     archivesLibrary.setIsAgree(EnumState.YES.getValue());
-                    archivesLibrary.setDeptSLeaderId(SessionUtil.getUserId());
-                    archivesLibrary.setDeptSLeader(SessionUtil.getDisplayName());
+                    if(isAgentTask){
+                        archivesLibrary.setDeptSLeaderId(agentTaskService.getUserId(task.getId(),curUserId));
+                    }else{
+                        archivesLibrary.setDeptSLeaderId(curUserId);
+                    }
+                    archivesLibrary.setDeptSLeader(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                     archivesLibrary.setDeptSLeaderIdeaContent(flowDto.getDealOption());
                     archivesLibrary.setDeptSleaderDate(new Date());
                     archivesLibrary.setArchivesStatus(Constant.EnumState.PROCESS.getValue());   //1表示部长已经审批
                     //如果是外借档案，则由主任审批
-                    if(EnumState.YES.getValue().equals(archivesLibrary.getIsLendOut())){
+                    if (EnumState.YES.getValue().equals(archivesLibrary.getIsLendOut())) {
                         archivesLibrary.setArchivesStatus(EnumState.STOP.getValue());   //2表示到主任审批
                         dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue());
                         if (!Validate.isList(dealUserList)) {
                             return new ResultMsg(false, MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.DIRECTOR.getValue() + "】角色用户！");
                         }
                         dealUser = dealUserList.get(0);
-                        assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                        assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FlowConstant.FLOW_ARC_ZR_SP);
                         variables.put(FlowConstant.FlowParams.USER_ZR.getValue(), assigneeValue);
-                        variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(),EnumState.YES.getValue());
+                        variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), EnumState.YES.getValue());
                         //下一环节还是自己处理
-                        if(assigneeValue.equals(SessionUtil.getUserId())){
+                        if (assigneeValue.equals(SessionUtil.getUserId())) {
                             isNextUser = true;
                             nextNodeKey = FlowConstant.FLOW_ARC_ZR_SP;
                         }
-                    }else{//借阅评审中心文档,需要经过归档员
-                        if(EnumState.NO.getValue().equals(archivesLibrary.getArchivesType())) {
+                    } else {//借阅评审中心文档,需要经过归档员
+                        if (EnumState.NO.getValue().equals(archivesLibrary.getArchivesType())) {
                             archivesLibrary.setArchivesStatus(EnumState.NORMAL.getValue()); //5表示到归档员处理
                             dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.FILER.getValue());
                             if (!Validate.isList(dealUserList)) {
                                 return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
                             }
                             dealUser = dealUserList.get(0);
-                            assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                            assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FlowConstant.FLOW_ARC_GDY);
                             variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_GDY.getValue(), assigneeValue);
                             variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), EnumState.PROCESS.getValue());
-                        }else{
-                            variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(),EnumState.NO.getValue());
+                        } else {
+                            variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), EnumState.NO.getValue());
                             archivesLibrary.setIsAgree(EnumState.YES.getValue());
                         }
                     }
-                //不同意，则直接结束
-                }else{
-                    variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(),EnumState.NO.getValue());
-                   archivesLibrary.setIsAgree(EnumState.NO.getValue());
+                    //不同意，则直接结束
+                } else {
+                    variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), EnumState.NO.getValue());
+                    archivesLibrary.setIsAgree(EnumState.NO.getValue());
 
                 }
                 archivesLibraryRepo.save(archivesLibrary);
@@ -349,13 +370,17 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请选择同意或者不同意！");
                 }
                 archivesLibrary = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessId);
-                archivesLibrary.setDeptDirectorId(SessionUtil.getUserId());
-                archivesLibrary.setDeptDirector(SessionUtil.getDisplayName());
+                if(isAgentTask){
+                    archivesLibrary.setDeptDirectorId(agentTaskService.getUserId(task.getId(),curUserId));
+                }else{
+                    archivesLibrary.setDeptDirectorId(curUserId);
+                }
+                archivesLibrary.setDeptDirector(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                 archivesLibrary.setDeptDirectorIdeaContent(flowDto.getDealOption());
                 archivesLibrary.setDeptDirectorDate(new Date());
                 archivesLibrary.setArchivesStatus(Constant.EnumState.YES.getValue());   //9表示已结束
                 //同意或者不同意
-                if(EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
+                if (EnumState.YES.getValue().equals(flowDto.getBusinessMap().get("AGREE").toString())) {
                     archivesLibrary.setIsAgree(EnumState.YES.getValue());
                     archivesLibrary.setArchivesStatus(EnumState.NORMAL.getValue()); //5表示到归档员处理
                     dealUserList = userRepo.findUserByRoleName(Constant.EnumFlowNodeGroupName.FILER.getValue());
@@ -363,13 +388,12 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                         return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "请先设置【" + Constant.EnumFlowNodeGroupName.FILER.getValue() + "】角色用户！");
                     }
                     dealUser = dealUserList.get(0);
-                    assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
-                    variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_GDY.getValue(),assigneeValue);
-                    variables.put(FlowConstant.FlowParams.ZR_FZ.getValue(),true);
-
-                }else{
+                    assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FlowConstant.FLOW_ARC_GDY);
+                    variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_GDY.getValue(), assigneeValue);
+                    variables.put(FlowConstant.FlowParams.ZR_FZ.getValue(), true);
+                } else {
                     archivesLibrary.setIsAgree(EnumState.NO.getValue());
-                    variables.put(FlowConstant.FlowParams.ZR_FZ.getValue(),false);
+                    variables.put(FlowConstant.FlowParams.ZR_FZ.getValue(), false);
                 }
                 archivesLibraryRepo.save(archivesLibrary);
                 break;
@@ -378,8 +402,8 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                 archivesLibrary = archivesLibraryRepo.findById(ArchivesLibrary_.id.getName(), businessId);
                 if (flowDto.getBusinessMap().get("RETURNDATE") == null || !Validate.isString(flowDto.getBusinessMap().get("RETURNDATE").toString())) {
                     archivesLibrary.setResotoreDate(new Date());
-                }else{
-                    archivesLibrary.setResotoreDate(DateUtils.converToDate(flowDto.getBusinessMap().get("RETURNDATE").toString(),null));
+                } else {
+                    archivesLibrary.setResotoreDate(DateUtils.converToDate(flowDto.getBusinessMap().get("RETURNDATE").toString(), null));
                 }
                 archivesLibrary.setArchivesUserName(SessionUtil.getDisplayName());
                 archivesLibraryRepo.save(archivesLibrary);
@@ -387,18 +411,18 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
             default:
                 break;
         }
-        taskService.addComment(task.getId(), processInstance.getId(),(flowDto == null)?"":flowDto.getDealOption());    //添加处理信息
+        taskService.addComment(task.getId(), processInstance.getId(), (flowDto == null) ? "" : flowDto.getDealOption());    //添加处理信息
         if (flowDto.isEnd()) {
             taskService.complete(task.getId());
         } else {
             taskService.complete(task.getId(), variables);
             //如果下一环节还是自己
-            if(isNextUser){
+            if (isNextUser) {
                 List<Task> nextTaskList = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(assigneeValue).list();
-                for(Task t:nextTaskList){
-                    if(nextNodeKey.equals(t.getTaskDefinitionKey())){
-                        ResultMsg returnMsg = dealFlow(processInstance,t,flowDto);
-                        if(returnMsg.isFlag() == false){
+                for (Task t : nextTaskList) {
+                    if (nextNodeKey.equals(t.getTaskDefinitionKey())) {
+                        ResultMsg returnMsg = dealFlow(processInstance, t, flowDto);
+                        if (returnMsg.isFlag() == false) {
                             return returnMsg;
                         }
                         break;
@@ -406,8 +430,12 @@ public class ArchivesLibraryServiceImpl implements ArchivesLibraryService {
                 }
             }
         }
+        //如果是代办，还要更新环节名称和任务ID
+        if (Validate.isList(agentTaskList)) {
+            agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
+        }
         //放入腾讯通消息缓冲池
-        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(),assigneeValue);
+        RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 

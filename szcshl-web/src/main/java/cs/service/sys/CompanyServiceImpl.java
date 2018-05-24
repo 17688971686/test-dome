@@ -103,7 +103,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createSignCompany(String name,String comType) {
+    public void createSignCompany(String name,String comType,boolean isSignUser) {
         //判断单位名称是否添加
         Criteria criteria = companyRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(Company_.coName.getName(), name));
@@ -113,8 +113,8 @@ public class CompanyServiceImpl implements CompanyService {
             c.setId(UUID.randomUUID().toString());
             c.setCoName(name);
             c.setCoType(comType);
-            c.setCreatedBy(Validate.isString(SessionUtil.getUserId())?SessionUtil.getUserId():SUPER_ACCOUNT);
-            c.setModifiedBy(Validate.isString(SessionUtil.getUserId())?SessionUtil.getDisplayName():SUPER_ACCOUNT);
+            c.setCreatedBy(isSignUser?SessionUtil.getUserId():SUPER_ACCOUNT);
+            c.setModifiedBy(isSignUser?SessionUtil.getDisplayName():SUPER_ACCOUNT);
             c.setCreatedDate(new Date());
             c.setModifiedDate(new Date());
             companyRepo.save(c);
