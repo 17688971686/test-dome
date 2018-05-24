@@ -156,7 +156,7 @@ public class SignController {
 
 
     @RequiresAuthentication
-    @RequestMapping(name = "获取待关联的项目列表", path = "findAssociateSignList", method = RequestMethod.GET)
+    @RequestMapping(name = "获取待关联的项目列表", path = "findAssociateSignList", method = RequestMethod.POST)
     @ResponseBody
     public PageModelDto<SignDispaWork> findAssociateSignList( String signid, String reviewstage, String projectname,String mUserName, String skip, String size) {
         return signService.findAssociateSignList(signid, reviewstage, projectname, mUserName,skip, size);

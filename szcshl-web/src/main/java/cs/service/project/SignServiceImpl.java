@@ -2398,6 +2398,22 @@ public class SignServiceImpl implements SignService {
     @Override
     @Transactional
     public PageModelDto<SignDispaWork> findAssociateSignList(String signid, String reviewstage, String projectname,String mUserName, String skip, String size) {
+
+        //解决乱码问题
+        try{
+            if(Validate.isString(reviewstage) && reviewstage.equals(new String(reviewstage.getBytes("iso8859-1"), "iso8859-1"))){
+                reviewstage = new String(reviewstage.getBytes("iso8859-1") , "utf-8");
+            }
+            if(Validate.isString(projectname) && projectname.equals(new String(projectname.getBytes("iso8859-1"), "iso8859-1"))){
+                projectname = new String(projectname.getBytes("iso8859-1") , "utf-8");
+            }
+            if(Validate.isString(mUserName) && mUserName.equals(new String(mUserName.getBytes("iso8859-1"), "iso8859-1"))){
+                mUserName = new String(mUserName.getBytes("iso8859-1") , "utf-8");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         PageModelDto<SignDispaWork> pageModelDto = new PageModelDto<SignDispaWork>();
         HqlBuilder sqlBuilder = HqlBuilder.create();   //基础语句
         HqlBuilder sqlBuilders = HqlBuilder.create(); //返回list的语句

@@ -625,7 +625,7 @@
              success: httpSuccess
              });*/
             $http({
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/sign/findAssociateSignList",
                 params: {
                     signid: vm.price.signid,
