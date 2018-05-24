@@ -1,16 +1,14 @@
 package cs.service.expert;
 
-import cs.common.Constant;
-import cs.common.Constant.EnumExpertState;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.EnumExpertState;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.DateUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.*;
-import cs.domain.project.WorkProgram;
-import cs.domain.project.WorkProgram_;
 import cs.model.PageModelDto;
 import cs.model.expert.*;
 import cs.repository.odata.ODataFilterItem;
@@ -33,8 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static cs.common.Constant.EXPERT_REVIEW_COST;
-import static cs.common.Constant.SUPER_USER;
+import static cs.common.constants.Constant.EXPERT_REVIEW_COST;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Service
 public class ExpertServiceImpl implements ExpertService {
@@ -180,8 +178,6 @@ public class ExpertServiceImpl implements ExpertService {
                     });
                     modelDto.setExpertTypeDtoList(expertDtoList);
                 }
-
-
                 resultDtoList.add(modelDto);
             });
         }
@@ -202,7 +198,7 @@ public class ExpertServiceImpl implements ExpertService {
         //重复专家判断
         boolean isFill = expertRepo.checkIsHaveIdCard(expertDto.getIdCard(), expertDto.getExpertID());
         if (isFill == false) {
-            String updateNo = Validate.isString(SessionUtil.getUserInfo().getUserNo())?SessionUtil.getUserInfo().getUserNo():SUPER_USER;
+            String updateNo = Validate.isString(SessionUtil.getUserInfo().getUserNo())?SessionUtil.getUserInfo().getUserNo():SUPER_ACCOUNT;
             Expert expert = null;
             if (Validate.isString(expertDto.getExpertID())) {
                 expert = expertRepo.findById(Expert_.expertID.getName(), expertDto.getExpertID());
@@ -523,7 +519,7 @@ public class ExpertServiceImpl implements ExpertService {
         if (paramArrary.length == 1 && Validate.isString(paramArrary[0].getId())) {
             ExpertSelCondition expertSelCondition = expertSelConditionRepo.findById(ExpertSelCondition_.id.getName(), paramArrary[0].getId());
             if (expertSelCondition != null && expertSelCondition.getSelectIndex() > 0) {
-                if (!SUPER_USER.equals(SessionUtil.getLoginName()) && (expertSelCondition.getSelectIndex() > 2)) {
+                if (!SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) && (expertSelCondition.getSelectIndex() > 2)) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该条件已经进行3次专家抽取，不能再进行专家抽取！");
                 }
                 notFirstTime = true;

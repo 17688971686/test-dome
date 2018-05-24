@@ -19,7 +19,6 @@
         }
         active();
         function active() {
-
             if($rootScope.view[vm.stateName]){
                 var preView = $rootScope.view[vm.stateName];
                 //恢复grid
@@ -36,14 +35,12 @@
                 if(preView.queryParams){
                     vm.queryParams=preView.queryParams;
                 }
-
                 annountmentYetSvc.grid(vm);
                 //清除返回页面数据
                 $rootScope.view[vm.stateName] = undefined;
             }else {
                 annountmentYetSvc.grid(vm);
             }
-
         }
 
         //查看详情

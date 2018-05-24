@@ -18,10 +18,9 @@
             getOrg: getOrg,
             queryUser: queryUser,
             getZtreeChecked: getZtreeChecked,
-            //initUserNo : initUserNo//初始化 员工工号
             resetPwd: resetPwd, //重置密码
             findUserAndOrg : findUserAndOrg,  //获取部门下的所有用户,
-            getAllTaskList : getAllTaskList,    //获取
+            getAllTaskList : getAllTaskList,    //获取可以设置代办的人员列表
         };
 
         return service;
@@ -39,13 +38,11 @@
                     userId : userId
                 }
             }
-
             var httpSuccess = function success(response){
                 if(callBack != undefined && typeof  callBack == 'function'){
                     callBack(response.data);
                 }
             }
-
             common.http({
                 $http : $http ,
                 httpOptions : httpOptions ,

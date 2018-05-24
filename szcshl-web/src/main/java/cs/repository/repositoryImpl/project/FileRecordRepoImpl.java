@@ -1,15 +1,14 @@
 package cs.repository.repositoryImpl.project;
 
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
-import cs.domain.project.DispatchDoc_;
 import cs.domain.project.FileRecord;
 import cs.domain.project.FileRecord_;
 import cs.repository.AbstractRepository;
 import org.springframework.stereotype.Repository;
 
-import static cs.common.Constant.*;
+import static cs.common.constants.Constant.*;
 
 @Repository
 public class FileRecordRepoImpl  extends AbstractRepository<FileRecord, String> implements FileRecordRepo {

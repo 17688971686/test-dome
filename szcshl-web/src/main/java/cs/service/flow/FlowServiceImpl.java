@@ -1,7 +1,8 @@
 package cs.service.flow;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
+import cs.common.RandomGUID;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.ActivitiUtil;
@@ -11,6 +12,7 @@ import cs.common.utils.Validate;
 import cs.domain.flow.*;
 import cs.domain.project.*;
 import cs.domain.sys.Log;
+import cs.domain.sys.User;
 import cs.domain.topic.WorkPlan;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
@@ -66,8 +68,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 
-import static cs.common.Constant.SUPER_ROLE;
-import static cs.common.Constant.SUPER_USER;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
+
 
 @Service
 public class FlowServiceImpl implements FlowService {
@@ -140,7 +142,8 @@ public class FlowServiceImpl implements FlowService {
     private LogService logService;
     @Autowired
     private DispatchDocRepo dispatchDocRepo;
-
+    @Autowired
+    private AgentTaskRepo agentTaskRepo;
     /**
      * 回退到上一环节或者指定环节
      *
@@ -454,7 +457,7 @@ public class FlowServiceImpl implements FlowService {
         Criteria criteria = signDispaWorkRepo.getExecutableCriteria();
         criteria = odataObj.buildFilterToCriteria(criteria);
         criteria.add(Restrictions.eq(SignDispaWork_.signState.getName(), Constant.EnumState.YES.getValue()));
-        if (SUPER_USER.equals(SessionUtil.getLoginName()) || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())) {
+        if (SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) || SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())) {
 
         } else {
             if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) { //是部门负责人
@@ -750,7 +753,7 @@ public class FlowServiceImpl implements FlowService {
         criteria.addOrder(Order.desc(RuTask_.createTime.getName()));
         List<RuTask> runProcessList = criteria.list();
         boolean isHaveAllPermission = SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DIRECTOR.getValue())
-                || SUPER_USER.equals(SessionUtil.getLoginName());
+                || SUPER_ACCOUNT.equals(SessionUtil.getLoginName());
         if(isHaveAllPermission){
             pageModelDto.setCount(runProcessList.size());
             pageModelDto.setValue(runProcessList);
@@ -1304,6 +1307,25 @@ public class FlowServiceImpl implements FlowService {
                 sqlBuilder.setParam("newUserId",newUserId).setParam("taskId",taskId).setParam("oldUserId",oldUserId);
                 ruTaskRepo.executeSql(sqlBuilder);
             }
+            //添加转办记
+            ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
+            AgentTask agentTask = new AgentTask();
+            agentTask.setAgentId((new RandomGUID()).valueAfterMD5);
+            agentTask.setTransDate(new Date());
+            agentTask.setTaskId(taskId);
+
+            User user = userService.getCacheUserById(oldUserId);
+            agentTask.setUserId(oldUserId);
+            agentTask.setUserName(user.getDisplayName());
+            user = userService.getCacheUserById(newUserId);
+            agentTask.setAgentId(newUserId);
+            agentTask.setAgentUserName(user.getDisplayName());
+
+            agentTask.setNodeKey(task.getTaskDefinitionKey());
+            agentTask.setNodeNameValue(task.getName());
+            agentTask.setFlowName(processInstance.getName());
+
+            agentTaskRepo.save(agentTask);
         }
         resultMsg.setFlag(true);
         resultMsg.setReCode(Constant.MsgCode.OK.getValue());

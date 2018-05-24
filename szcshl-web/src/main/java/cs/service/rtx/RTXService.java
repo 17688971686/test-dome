@@ -1,6 +1,6 @@
 package cs.service.rtx;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.PropertyUtil;
 import cs.common.utils.Validate;
@@ -20,9 +20,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
-import static cs.common.Constant.FTP_IP;
-import static cs.common.Constant.RevireStageKey.KEY_FTPIP;
-import static cs.common.Constant.RevireStageKey.RTX_ENABLED;
+import static cs.common.constants.Constant.RevireStageKey.RTX_ENABLED;
 
 
 @Service

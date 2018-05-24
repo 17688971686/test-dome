@@ -1,6 +1,6 @@
 package cs.service.expert;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
@@ -16,7 +16,6 @@ import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
 import cs.repository.repositoryImpl.expert.*;
 import cs.repository.repositoryImpl.financial.FinancialManagerRepo;
-import cs.service.financial.FinancialManagerService;
 import cs.service.project.SignPrincipalService;
 import cs.service.sys.UserService;
 import org.hibernate.Criteria;

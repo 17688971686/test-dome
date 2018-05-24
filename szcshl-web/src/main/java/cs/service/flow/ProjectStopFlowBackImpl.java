@@ -1,10 +1,6 @@
 package cs.service.flow;
 
-import cs.common.FlowConstant;
-import cs.domain.project.AddSuppLetter;
-import cs.domain.project.AddSuppLetter_;
-import cs.repository.repositoryImpl.project.AddSuppLetterRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import cs.common.constants.FlowConstant;
 import org.springframework.stereotype.Service;
 
 /**

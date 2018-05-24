@@ -1,15 +1,14 @@
 package cs.service.project;
 
-import cs.common.Constant;
-import cs.common.Constant.EnumState;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.EnumState;
+import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
 import cs.common.ftp.FtpUtils;
 import cs.common.utils.*;
-import cs.domain.expert.Expert;
 import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertSelected;
 import cs.domain.external.Dept;
@@ -19,17 +18,14 @@ import cs.domain.sys.Ftp_;
 import cs.domain.sys.SysFile;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
-import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
-import cs.repository.repositoryImpl.external.DeptRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.external.DeptService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
-import org.apache.commons.net.ftp.FTPClient;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static cs.common.Constant.*;
-import static cs.common.Constant.RevireStageKey.KEY_CHECKFILE;
+import static cs.common.constants.Constant.*;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Service
 public class DispatchDocServiceImpl implements DispatchDocService {
@@ -183,7 +179,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             Sign sign = signRepo.findById(Sign_.signid.getName(), dispatchDocDto.getSignId());
             //如果是未生成发文编号的，没有发文日期
             if(null != dispatchDoc.getDispatchDate()){
-                boolean isSuperUser = SUPER_USER.equals(SessionUtil.getLoginName());
+                boolean isSuperUser = SUPER_ACCOUNT.equals(SessionUtil.getLoginName());
                 //如果是负责人提交，则要更新填报的发文日期
                 if(!isSuperUser){
                     dispatchDoc.setDispatchDate(now);
@@ -223,7 +219,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
 
     /**
      * 初始化发文编辑页面
-     *
      * @param signId
      * @return
      */
@@ -235,22 +230,20 @@ public class DispatchDocServiceImpl implements DispatchDocService {
         //1、获取发文信息
         Sign sign = signRepo.findById(signId);
         DispatchDoc dispatch = sign.getDispatchDoc();
-
         //2、如果为空，则初始化发文数据
         if (dispatch == null || !Validate.isString(dispatch.getId())) {
             dispatch = new DispatchDoc();
             //(1)、判断项目是否为关联项目
-            boolean isMerge = signMergeRepo.checkIsMerege(signId, Constant.MergeType.DISPATCH.getValue());
+            boolean isMerge = signMergeRepo.checkIsMerege(signId, MergeType.DISPATCH.getValue());
             if (isMerge) {
-                dispatch.setDispatchWay(Constant.MergeType.DIS_MERGE.getValue());   //合并发文
+                dispatch.setDispatchWay(MergeType.DIS_MERGE.getValue());   //合并发文
             } else {
-                dispatch.setDispatchWay(Constant.MergeType.DIS_SINGLE.getValue());    //单个发文
+                dispatch.setDispatchWay(MergeType.DIS_SINGLE.getValue());    //单个发文
             }
             dispatch.setIsMainProject(EnumState.NO.getValue());
             //是否已经有阶段关联
             dispatch.setIsRelated(signRepo.checkIsLink(signId) ? EnumState.YES.getValue() : EnumState.NO.getValue());
             dispatch.setDraftDate(now);
-            //dispatch.setDispatchDate(now);
             dispatch.setDispatchType("项目发文");
             //年度计划、紧急程度
             dispatch.setYearPlan(sign.getYearplantype());
@@ -277,10 +270,6 @@ public class DispatchDocServiceImpl implements DispatchDocService {
             } else {
                 fileTitle += "项目的评审意见";
             }
-//            fileTitle += sign.getProjectname() == null ? "" : sign.getProjectname();
-//            fileTitle += (sign.getReviewstage() == null ? "" : sign.getReviewstage());
-//            fileTitle += "》";
-//            fileTitle += (sign.getIsAdvanced() == null ? "" : sign.getIsAdvanced());
             dispatch.setFileTitle(fileTitle);
 
             // 获取当前用户信息

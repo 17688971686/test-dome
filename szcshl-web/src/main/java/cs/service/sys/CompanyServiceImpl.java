@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
@@ -28,7 +28,8 @@ import cs.model.sys.CompanyDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.CompanyRepo;
 
-import static cs.common.Constant.SUPER_USER;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
+
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -102,7 +103,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createSignCompany(String name,String comType) {
+    public void createSignCompany(String name,String comType,boolean isSignUser) {
         //判断单位名称是否添加
         Criteria criteria = companyRepo.getExecutableCriteria();
         criteria.add(Restrictions.eq(Company_.coName.getName(), name));
@@ -112,8 +113,8 @@ public class CompanyServiceImpl implements CompanyService {
             c.setId(UUID.randomUUID().toString());
             c.setCoName(name);
             c.setCoType(comType);
-            c.setCreatedBy(Validate.isString(SessionUtil.getUserId())?SessionUtil.getUserId():SUPER_USER);
-            c.setModifiedBy(Validate.isString(SessionUtil.getUserId())?SessionUtil.getDisplayName():SUPER_USER);
+            c.setCreatedBy(isSignUser?SessionUtil.getUserId():SUPER_ACCOUNT);
+            c.setModifiedBy(isSignUser?SessionUtil.getDisplayName():SUPER_ACCOUNT);
             c.setCreatedDate(new Date());
             c.setModifiedDate(new Date());
             companyRepo.save(c);

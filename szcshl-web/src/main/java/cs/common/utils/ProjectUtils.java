@@ -1,6 +1,6 @@
 package cs.common.utils;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 
 /**
  * 项目工具类

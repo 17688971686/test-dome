@@ -394,7 +394,7 @@
                     controllerAs: 'vm'
                 })
                 .state('expertReviewEdit', {
-                    url: '/expertReview/:businessId/:minBusinessId/:businessType/:reviewType/:isback/:processInstanceId',
+                    url: '/expertReview/:businessId/:minBusinessId/:businessType/:reviewType/:isback/:processInstanceId/:taskId',
                     templateUrl: rootPath + '/expertReview/html/selectExpert.html',
                     controller: 'expertSelectCtrl',
                     controllerAs: 'vm'
@@ -517,10 +517,17 @@
                 //end#signList
 
                 //begin#workprogram
-                .state('workprogramEdit', {
-                    url: '/workprogramEdit/:signid/:isControl/:minBusinessId/:businessType',//isControl控制按钮的显示
+                /*.state('workprogramEdit', {
+                    url: '/workprogramEdit/:signid/:isControl/:minBusinessId/:businessType',
                     templateUrl: rootPath + '/workprogram/html/edit.html',
                     controller: 'workprogramEditCtrl',
+                    controllerAs: 'vm'
+                })*/
+                //流程处理中工作方案填写(新方法)
+                .state('flowWPEdit', {
+                    url: '/flowWPEdit/:signid/:taskid',
+                    templateUrl: rootPath + '/workprogram/html/edit.html',
+                    controller: 'flowWPEditCtrl',
                     controllerAs: 'vm'
                 })
                 //end#workprogram

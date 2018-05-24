@@ -196,31 +196,9 @@
                                     expertDtoList[j].major = major;
                                 }
                             }
-
                         }
                     }
-
-
-                    /* for (var i = 0; i < vm.model.workProgramDtoList.length; i++) {
-                     var reviewStage = vm.model.workProgramDtoList[i].reviewstage;
-                     if (reviewStage && reviewStage == '项目建议书') {
-                     = vm.model.workProgramDtoList[i];
-                     }
-                     vm.workProgramXmjys       if (reviewStage && reviewStage == '可行性研究报告') {
-                     vm.workProgramKxxyj = vm.model.workProgramDtoList[i];
-                     }
-                     if (reviewStage && reviewStage == '项目概算' &&
-                     (!vm.model.ischangeEstimate || vm.model.ischangeEstimate != 9 || vm.model.ischangeEstimate != '9')) {
-                     vm.workProgramXmgs = vm.model.workProgramDtoList[i];
-                     }
-                     if (reviewStage && reviewStage == '项目概算' &&
-                     vm.model.ischangeEstimate && (vm.model.ischangeEstimate == 9 || vm.model.ischangeEstimate == '9')) {
-                     vm.workProgramTg = vm.model.workProgramDtoList[i];
-                     }
-                     }*/
-
                 }
-
 
                 //更改状态,并初始化业务参数
                 vm.businessFlag.isLoadSign = true;
@@ -648,7 +626,7 @@
         }
         // S_跳转到 工作方案 编辑页面
         vm.addWorkProgram = function () {
-            $state.go('workprogramEdit', {signid: vm.model.signid});
+            $state.go('flowWPEdit', {signid: vm.model.signid,taskid:vm.flow.taskId});
         }// E_跳转到 工作方案 编辑页面
 
         //S_链接到拟补充资料函

@@ -18,7 +18,13 @@ public interface WorkProgramService {
      */
     ResultMsg save(WorkProgramDto workProgramDto, Boolean isNeedWorkProgram);
 
-    Map<String,Object> initWorkProgram(String signId,String isShowNewExpert);
+    /**
+     * 根据收文编号任务ID初始化工作方案信息
+     * @param signId
+     * @param taskId    主要是用于区分是自己的工作方案还是代办的工作方案
+     * @return
+     */
+    Map<String,Object> initWorkProgram(String signId,String taskId);
 
     Map<String,Object> workMaintainList(String signId);
 

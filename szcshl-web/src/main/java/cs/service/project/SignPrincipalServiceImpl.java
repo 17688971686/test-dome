@@ -9,8 +9,8 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.domain.project.SignPrincipal;
 import cs.domain.project.SignPrincipal_;

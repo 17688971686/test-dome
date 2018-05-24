@@ -126,6 +126,7 @@
 			<tx:method name="insert*" propagation="REQUIRED" />
 			<tx:method name="update*" propagation="REQUIRED" />
 			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="bath*" propagation="REQUIRED" />
 
 			<tx:method name="get*" propagation="SUPPORTS" read-only="true" />
 			<tx:method name="find*" propagation="SUPPORTS" read-only="true" />
@@ -138,14 +139,22 @@
 		</tx:attributes>
 	</tx:advice>
 
+    <!--定时器事务-->
+    <tx:advice id="jobTxAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="execute" propagation="REQUIRED" />
+        </tx:attributes>
+    </tx:advice>
+
 	<!-- Spring aop事务管理 -->
 	<aop:config>
 		<!--配置切入点-->
-		<aop:pointcut id="transactionPointcut"
-					  expression="(execution(* cs.service..*Impl.*(..)))" />
+		<aop:pointcut id="transactionPointcut" expression="(execution(* cs.service..*Impl.*(..)))" />
+		<aop:pointcut id="quartzPointcut" expression="(execution(* cs.quartz.execute..*Execute.*(..)))" />
+
 		<!--指定在txAdvice切入点应用txAdvice事务增强处理-->
-		<aop:advisor pointcut-ref="transactionPointcut"
-					 advice-ref="transactionAdvice" />
+		<aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice" />
+		<aop:advisor pointcut-ref="quartzPointcut" advice-ref="jobTxAdvice" />
 	</aop:config>
 
 </beans>

@@ -1,12 +1,10 @@
 package cs.repository.repositoryImpl.project;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
-import cs.common.utils.DateUtils;
 import cs.domain.project.AddSuppLetter;
 import cs.domain.project.AddSuppLetter_;
-import cs.domain.topic.Filing_;
 import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;

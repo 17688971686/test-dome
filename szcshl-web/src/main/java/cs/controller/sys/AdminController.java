@@ -2,8 +2,8 @@ package cs.controller.sys;
 
 import com.alibaba.fastjson.JSON;
 import cs.ahelper.MudoleAnnotation;
-import cs.common.Constant;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import cs.common.utils.*;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.sys.OrgDept;
@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Controller
 @RequestMapping(name = "管理界面", path = "admin")
@@ -79,7 +81,7 @@ public class AdminController {
         if (rtxService.rtxEnabled()) {
             String agent = request.getHeader("User-Agent").toLowerCase();
             //如果是IE浏览器，则登录腾讯通
-            if (Tools.getBrowserName(agent).contains("ie") && !Constant.SUPER_USER.equals(SessionUtil.getLoginName())) {
+            if (Tools.getBrowserName(agent).contains("ie") && !SUPER_ACCOUNT.equals(SessionUtil.getLoginName())) {
                 String userState = rtxService.queryUserState(null, SessionUtil.getLoginName());
                 if ("0".equals(userState) || "2".equals(userState)) {
                     model.addAttribute("RTX_SEESION_KEY", rtxService.getSessionKey(null, SessionUtil.getLoginName()));
@@ -129,7 +131,7 @@ public class AdminController {
     @ResponseBody
     public Map<String, Object> initWelComePage(HttpServletRequest request) throws ParseException, IOException, ClassNotFoundException {
         Map<String, Object> resultMap = new HashMap<String, Object>();
-        boolean isSuper = Constant.SUPER_USER.equals(SessionUtil.getLoginName()) ? true : false;
+        boolean isSuper = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) ? true : false;
         String curUserId = SessionUtil.getUserId();
         String LINE_SIGN_LIST_FLAG = "lineSign";
         String ISDISPLAY = "isdisplay";

@@ -1,177 +1,137 @@
 <#assign path=request.contextPath/>
 <meta charset="UTF-8">
-<div ng-include src="'${path}/contents/app/common/dialog-alert.tmpl.html'"></div>
-<div ng-include src="'${path}/contents/app/common/dialog-confirm.tmpl.html'"></div>
 
 <div class="well well-sm" style="background:white;">
     <ol class="breadcrumb">
         <li>其他</li>
-        <li class="active" >个人代办设置</li>
+        <li class="active">个人代办设置</li>
     </ol>
-    <form id="form" name="form" >
-        <table class="table table-bordered  dataTable">
-            <tr>
-                <td colspan="6">
-                    <h4><strong>个人信息</strong></h4>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-right" width="11%">登录名：</td>
-                <td width="22%">
-                    {{vm.model.loginName}}
-                </td>
-                <td class="text-right" width="11%">工号：</td>
-                <td width="22%">
-                    {{vm.model.userNo}}
-                </td>
-                <td rowspan="3" class="text-right" width="11%" style="vertical-align: middle;">用户头像：</td>
-                <td rowspan="3" width="22%"><img style="margin: 10px 0px;" src="" width="80" height="80" alt=""/></td>
-            </tr>
-
-            <tr>
-                <td class="text-right">姓名：</td>
-                <td>
-                    {{vm.model.displayName}}
-                </td>
-                <td class="text-right">性别：</td>
-                <td>
-                    <select ng-model="vm.model.userSex" name="userSex" id="userSex" class="form-control select-sm " ng-disabled="true">
-                        <option ng-repeat="x in DICT.SEX.dicts" value="{{x.dictName}}" ng-selected="x.dictName == vm.model.userSex">{{x.dictName}}</option>
-                    </select>
-
-                </td>
-            </tr>
-
-            <tr>
-                <td class="text-right">所在部门：</td>
-                <td>
-                    <select ng-model="vm.model.orgId" ng-disabled="true" id="orgId" name="orgId" class="form-control select-sm" data-val="true" data-val-required="必填">
-                        <option ng-repeat="x in vm.org" ng-selected="vm.model.orgDto.id == x.id"  value="{{x.id}}" >{{x.name}}</option>
-                    </select>
-                </td>
-                <td class="text-right">在职情况：</td>
-                <td>
-                    <select ng-model="vm.model.jobState" ng-disabled="true" id="jobState" name="jobState"class="form-control select-sm " data-val="true" data-val-required="必填">
-                        <option value="t" ng-selected="vm.model.jobState == 't'">在职</option>
-                        <option value="f" ng-selected="vm.model.jobState == 'f'">离职</option>
-                    </select>
-                </td>
-            </tr>
-
-            <tr>
-                <td class="text-right">联系手机：</td>
-                <td>
-                    {{vm.model.userMPhone}}
-                </td>
-                <td class="text-right">联系电话：</td>
-                <td>
-                    {{vm.model.userPhone}}
-                </td>
-                <td class="text-right">电子邮件：</td>
-                <td>
-                   {{vm.model.email}}
-                </td>
-            </tr>
-
-            <tr>
-                <td class="text-right">职务：</td>
-                <td>
-                    <select ng-model="vm.model.position" ng-disabled="true" id="position" name="position" class="form-control input-sm ">
-                        <option value="01" ng-selected="vm.model.position == '01'">中心主任</option>
-                        <option value="02" ng-selected="vm.model.position == '02'">中心副主任</option>
-                        <option value="03" ng-selected="vm.model.position == '03'">部长</option>
-                        <option value="04" ng-selected="vm.model.position == '04'">工程师</option>
-                    </select>
-                </td>
-                <td class="text-right">代办人：</td>
-                <td colspan="3">
-                    <div ng-if="vm.model.takeUserId">
-                        <strong>{{vm.taskUserName}} </strong>
+    <table class="table table-bordered  dataTable">
+        <tr>
+            <td colspan="6">
+                <h4><strong>代办设置</strong><span style="font-size: 14px;">【设置用户代办之后，流转给你的任务将会自动转给代办人处理！】</span></h4>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right" style="width: 20%;">
+                当前待办人：
+            </td>
+            <td colspan="5">
+                <div ng-if="vm.model.takeUserId">
+                    <strong>{{vm.taskUserName}} </strong>
+                </div>
+                <div ng-if="!vm.model.takeUserId">
+                    <span>无</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right">
+                代办人选择：
+            </td>
+            <td colspan="5">
+                <select style="width: 150px;" ng-model="vm.takeUserId">
+                    <option ng-repeat="x in vm.takeUserList |filter:{jobState:'t'}" value="{{x.id}}"
+                            ng-selected="x.id == vm.model.takeUserId">{{x.displayName}}
+                    </option>
+                </select>
+                <button class="btn btn-sm btn-success" ng-click="vm.saveTakeUser()" ng-disabled="vm.model.takeUserId">
+                    <span class="glyphicon glyphicon-ok"></span>保存
+                </button>
+                <button class="btn btn-sm btn-warning" ng-click="vm.cancelTakeUser()"
+                        ng-disabled="!vm.model.takeUserId"><span class="glyphicon glyphicon-remove"></span>取消代办
+                </button>
+            </td>
+        </tr>
+        <tr ng-if="vm.ruProcessTaskList">
+            <td colspan="6">
+                <h4><strong>待办项目列表</strong><span style="font-size: 14px;">【转办是把当前属于自己的任务转给设置的代办人处理！】</span></h4>
+            </td>
+        </tr>
+        <tr ng-if="vm.ruProcessTaskList">
+            <td colspan="6">
+                <table class="table table-bordered">
+                    <tr class="active">
+                        <td>序号</td>
+                        <td>项目名称</td>
+                        <td>项目阶段</td>
+                        <td>办理环节</td>
+                        <td>签收日期</td>
+                        <td>剩余工作日</td>
+                        <td>操作</td>
+                    </tr>
+                    <tr ng-repeat="pt in vm.ruProcessTaskList">
+                        <td>{{$index + 1}}</td>
+                        <td>{{pt.projectName}}</td>
+                        <td>{{pt.reviewStage}}</td>
+                        <td>{{pt.nodeNameValue}}</td>
+                        <td>{{pt.signDate}}</td>
+                        <td>{{pt.surplusDays}}</td>
+                        <td>
+                            <Button class="btn btn-xs btn-success" ng-click="vm.transTask(pt.taskId)">流程转办</Button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr ng-if="vm.ruTaskList">
+            <td colspan="6">
+                <h4><strong>待办任务列表</strong><span style="font-size: 14px;">【转办是把当前属于自己的任务转给设置的代办人处理！】</span></h4>
+            </td>
+        </tr>
+        <tr ng-if="vm.ruTaskList">
+            <td colspan="6">
+                <table class="table table-bordered">
+                    <tr class="active">
+                        <td>序号</td>
+                        <td>任务名称</td>
+                        <td>办理环节</td>
+                        <td>当前处理人</td>
+                        <td>流程类别</td>
+                        <td>操作</td>
+                    </tr>
+                    <tr ng-repeat="rt in vm.ruTaskList">
+                        <td>{{$index + 1}}</td>
+                        <td>{{rt.instanceName}}</td>
+                        <td>{{rt.nodeNameValue}}</td>
+                        <td>{{rt.displayName}}</td>
+                        <td>{{rt.processName}}</td>
+                        <td>
+                            <Button class="btn btn-xs btn-success" ng-click="vm.transTask(rt.taskId)">转办</Button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr >
+            <td colspan="6">
+                <h4><strong>代办记录</strong></h4>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <form id="searchform" name="searchform">
+                    <input name="agentUserId" type="hidden" value="${CURRENT_USER.id}" />
+                    <div style="padding: 5px;">
+                        <span class="help-inline">流程名称：</span>
+                        <input type="text" ng-model="vm.querymodel.flowName" operator="like" name="flowName"
+                               id="flowName" placeholder="请输入">
+                        <span class="help-inline">环节名称：</span>
+                        <input type="text" ng-model="vm.querymodel.nodeNameValue" operator="like" name="nodeNameValue"
+                               id="nodeNameValue" placeholder="请输入">
+                        <span class="help-inline" style="margin-left:10px;">原处理人</span>
+                        <input type="text" ng-model="vm.querymodel.userName" operator="like" name="userName"
+                               id="userName" placeholder="请输入">
+                        <button class="btn btn-sm btn-primary" ng-click="vm.queryAgentList()" ng-disabled="vm.isSubmit">
+                            <span class="glyphicon glyphicon-search"></span>查询
+                        </button>
+                        <button class="btn btn-sm btn-primary" ng-click="vm.formReset()">
+                            <span class="glyphicon glyphicon-repeat"></span>重置
+                        </button>
                     </div>
-                    <div ng-if="!vm.model.takeUserId">
-                        <span >无</span>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6">
-                   <h4><strong>代办设置</strong></h4>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-right">
-                    代办人列表：
-                </td>
-                <td colspan="5">
-                    <select style="width: 150px;" ng-model="vm.takeUserId">
-                        <option ng-repeat="x in vm.takeUserList |filter:{jobState:'t'}" value="{{x.id}}" ng-selected="x.id == vm.model.takeUserId">{{x.displayName}}</option>
-                    </select>
-                    <button class="btn btn-sm btn-success" ng-click="vm.saveTakeUser()" ng-disabled="vm.model.takeUserId" ><span class="glyphicon glyphicon-ok"></span>保存</button>
-                    <button class="btn btn-sm btn-warning" ng-click="vm.cancelTakeUser()" ng-disabled="!vm.model.takeUserId" ><span class="glyphicon glyphicon-remove"></span>取消代办</button>
-                    【设置用户代办之后，流转给你的任务将会自动转给代办人处理】
-                </td>
-            </tr>
-            <tr ng-if="vm.ruProcessTaskList">
-                <td colspan="6">
-                    <h4><strong>待办项目列表</strong></h4>
-                </td>
-            </tr>
-            <tr ng-if="vm.ruProcessTaskList">
-                <td colspan="6">
-                    <table class="table table-bordered">
-                        <tr class="active">
-                            <td>序号</td>
-                            <td>项目名称</td>
-                            <td>项目阶段</td>
-                            <td>办理环节</td>
-                            <td>签收日期</td>
-                            <td>剩余工作日</td>
-                            <td>操作</td>
-                        </tr>
-                        <tr ng-repeat="pt in vm.ruProcessTaskList">
-                            <td>{{$index + 1}}</td>
-                            <td>{{pt.projectName}}</td>
-                            <td>{{pt.reviewStage}}</td>
-                            <td>{{pt.nodeNameValue}}</td>
-                            <td>{{pt.signDate}}</td>
-                            <td>{{pt.surplusDays}}</td>
-                            <td>
-                                <Button class="btn btn-xs btn-success" ng-click="vm.transTask(pt.taskId)">流程转办</Button>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr ng-if="vm.ruTaskList">
-                <td colspan="6">
-                    <h4><strong>待办任务列表</strong></h4>
-                </td>
-            </tr>
-            <tr ng-if="vm.ruTaskList">
-                <td colspan="6">
-                    <table class="table table-bordered">
-                        <tr class="active">
-                            <td>序号</td>
-                            <td>任务名称</td>
-                            <td>办理环节</td>
-                            <td>当前处理人</td>
-                            <td>流程类别</td>
-                            <td>操作</td>
-                        </tr>
-                        <tr ng-repeat="rt in vm.ruTaskList">
-                            <td>{{$index + 1}}</td>
-                            <td>{{rt.instanceName}}</td>
-                            <td>{{rt.nodeNameValue}}</td>
-                            <td>{{rt.displayName}}</td>
-                            <td>{{rt.processName}}</td>
-                            <td>
-                                <Button class="btn btn-xs btn-success" ng-click="vm.transTask(rt.taskId)">流程转办</Button>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-
-        </table>
-    </form>
+                </form>
+                <div id="agentGrid" class="grid" kendo-grid="grid" k-options="vm.agentGridOptions"></div>
+            </td>
+        </tr>
+    </table>
 </div>

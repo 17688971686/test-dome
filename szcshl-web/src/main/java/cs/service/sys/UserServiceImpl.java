@@ -1,14 +1,15 @@
 package cs.service.sys;
 
-import cs.common.Constant;
-import cs.common.Constant.EnumFlowNodeGroupName;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.EnumFlowNodeGroupName;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
+import cs.domain.project.AgentTask;
 import cs.domain.sys.*;
 import cs.model.PageModelDto;
 import cs.model.sys.OrgDto;
@@ -20,6 +21,7 @@ import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.RoleRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.flow.FlowService;
+import cs.service.project.AgentTaskService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.apache.log4j.Logger;
@@ -38,7 +40,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-import static cs.common.Constant.SUPER_USER;
+import static cs.common.constants.SysConstants.DEFAULT_PASSWORD;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -59,6 +62,8 @@ public class UserServiceImpl implements UserService {
     private OrgDeptService orgDeptService;
     @Autowired
     private FlowService flowService;
+    @Autowired
+    private AgentTaskService agentTaskService;
 
     @Override
     @Transactional
@@ -136,7 +141,7 @@ public class UserServiceImpl implements UserService {
             user.setCreatedDate(new Date());
             user.setModifiedDate(new Date());
             user.setModifiedBy(SessionUtil.getLoginName());
-            user.setPassword(Constant.PASSWORD);        //设置系统默认登录密码
+            user.setPassword(DEFAULT_PASSWORD);        //设置系统默认登录密码
 
             List<String> roleNames = new ArrayList<String>();
             // 加入角色
@@ -521,19 +526,18 @@ public class UserServiceImpl implements UserService {
 
 
     /**
-     * 查询所有用户显示名和id
+     * 获取当前用户可以设置的代办人列表
      */
     @Override
     public List<UserDto> getAllUserDisplayName() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select " + User_.id.getName() + "," + User_.displayName.getName() + ","+User_.jobState.getName()+" from cs_user ");
+        hqlBuilder.append("select " + User_.id.getName() + "," + User_.displayName.getName() + "," + User_.jobState.getName() + " from cs_user ");
         hqlBuilder.append(" where " + User_.id.getName() + "!= :userId ").setParam("userId", SessionUtil.getUserId());
         hqlBuilder.append(" and " + User_.jobState.getName() + " = :jobState ").setParam("jobState", "t");
 
         List<UserDto> userDtoList = new ArrayList<>();
         if (SessionUtil.hashRole(EnumFlowNodeGroupName.DIRECTOR.getValue()) ||
-                SessionUtil.hashRole(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue()) ||
-                SessionUtil.hashRole(EnumFlowNodeGroupName.DEPT_LEADER.getValue())
+                SessionUtil.hashRole(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())
                 ) {//如果是领导，则根据所属角色选择代办代理人
             hqlBuilder.append(" and " + User_.id.getName() + " in(select users_id from CS_USER_CS_ROLE where roles_id =(");
             hqlBuilder.append("select " + Role_.id.getName() + " from cs_role where ");
@@ -541,15 +545,14 @@ public class UserServiceImpl implements UserService {
             if (SessionUtil.hashRole(EnumFlowNodeGroupName.DIRECTOR.getValue())) {//主任
                 hqlBuilder.setParam("roleName", EnumFlowNodeGroupName.DIRECTOR.getValue());
             }
-
             if (SessionUtil.hashRole(EnumFlowNodeGroupName.VICE_DIRECTOR.getValue())) {//副主任
                 hqlBuilder.setParam("roleName", EnumFlowNodeGroupName.VICE_DIRECTOR.getValue());
             }
-            if (SessionUtil.hashRole(EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {//部门负责人
+            /*if (SessionUtil.hashRole(EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {//部门负责人
                 hqlBuilder.setParam("roleName", EnumFlowNodeGroupName.DEPT_LEADER.getValue());
-            }
+            }*/
         } else {//其他，则只能选择本部门工作人员作为代办代理
-            hqlBuilder.append(" and orgId=(");
+            hqlBuilder.append(" and orgId=( ");
             hqlBuilder.append("select orgId from cs_user where " + User_.id.getName() + "=:userId)");
             hqlBuilder.setParam("userId", SessionUtil.getUserId());
         }
@@ -559,8 +562,8 @@ public class UserServiceImpl implements UserService {
                 Object[] userNames = list.get(i);
                 UserDto userDto = new UserDto();
                 userDto.setId((String) userNames[0]);
-                userDto.setDisplayName(Validate.isObject(userNames[2])?userNames[1].toString():"");
-                userDto.setJobState(Validate.isObject(userNames[2])?userNames[2].toString():null);
+                userDto.setDisplayName(Validate.isObject(userNames[2]) ? userNames[1].toString() : "");
+                userDto.setJobState(Validate.isObject(userNames[2]) ? userNames[2].toString() : null);
                 userDtoList.add(userDto);
             }
         }
@@ -580,31 +583,15 @@ public class UserServiceImpl implements UserService {
         userRepo.executeHql(hqlBuilder);
         fleshPostUserCache();
     }
-/*
-    @Override
-    public UserDto getTakeUserByLoginName() {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("select " + User_.displayName.getName() + " from cs_user where id=(");
-        hqlBuilder.append("select " + User_.takeUserId.getName() + " from cs_user where " + User_.loginName.getName() + "=:loginName)");
-        hqlBuilder.setParam("loginName", SessionUtil.getLoginName());
-        List<Object[]> list = userRepo.getObjectArray(hqlBuilder);
-        UserDto userDto = new UserDto();
-        if (!list.isEmpty()) {
-            Object[] obj = list.get(0);
-            userDto.setDisplayName(obj[0].toString());
-        }
-        return userDto;
-    }*/
 
     /**
      * 取消代办人
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void cancelTakeUser() {
         HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("update " + User.class.getSimpleName() + " set " + User_.takeUserId.getName() + "=:takeUserId where " + User_.id.getName() + "=:userId");
-        hqlBuilder.setParam("takeUserId", "");
+        hqlBuilder.append("update " + User.class.getSimpleName() + " set " + User_.takeUserId.getName() + "= null where " + User_.id.getName() + "=:userId");
         hqlBuilder.setParam("userId", SessionUtil.getUserId());
         userRepo.executeHql(hqlBuilder);
         fleshPostUserCache();
@@ -634,7 +621,7 @@ public class UserServiceImpl implements UserService {
     public void resetPwd(String ids) {
         List<User> userList = userRepo.getCacheUserListById(ids);
         for (User u : userList) {
-            u.setPassword(Constant.PASSWORD);
+            u.setPassword(DEFAULT_PASSWORD);
             u.setModifiedBy(SessionUtil.getDisplayName());
             u.setModifiedDate(new Date());
         }
@@ -730,7 +717,7 @@ public class UserServiceImpl implements UserService {
         //分管的部门ID
         List<String> orgIdList = null;
         //定义领导标识参数（0表示普通用户，1表示主任，2表示分管领导，3表示部长或者组长）
-        Integer leaderFlag = SUPER_USER.equals(SessionUtil.getLoginName()) ? 1 : 0;
+        Integer leaderFlag = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) ? 1 : 0;
         if (leaderFlag == 0) {
             //查询所有的部门和组织
             List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
@@ -792,7 +779,7 @@ public class UserServiceImpl implements UserService {
         String curUserId = SessionUtil.getUserId();
         //部门ID
         String orgIdStr = "";
-        Integer leaderFlag = SUPER_USER.equals(SessionUtil.getLoginName()) ? 1 : 0;
+        Integer leaderFlag = SUPER_ACCOUNT.equals(SessionUtil.getLoginName()) ? 1 : 0;
         if (leaderFlag == 0) {
             //查询所有的部门和组织
             List<OrgDept> allOrgDeptList = orgDeptService.queryAll();
@@ -855,6 +842,25 @@ public class UserServiceImpl implements UserService {
             taskMap.put("ruProcessTaskList", ruProcessTaskList);
         }
         return taskMap;
+    }
+
+    @Override
+    public String getTaskDealId(String userId, List<AgentTask> agentTaskList, String nodeKey) {
+        User dealUser = userRepo.findById(User_.id.getName(), userId);
+        boolean isAgent = Validate.isString(dealUser.getTakeUserId());
+        if (isAgent) {
+            agentTaskList.add(agentTaskService.initNew(dealUser, nodeKey));
+        }
+        return isAgent ? dealUser.getTakeUserId() : dealUser.getId();
+    }
+
+    @Override
+    public String getTaskDealId(User dealUser, List<AgentTask> agentTaskList, String nodeKey) {
+        boolean isAgent = Validate.isString(dealUser.getTakeUserId());
+        if (isAgent) {
+            agentTaskList.add(agentTaskService.initNew(dealUser, nodeKey));
+        }
+        return isAgent ? dealUser.getTakeUserId() : dealUser.getId();
     }
 }
 

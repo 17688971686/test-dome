@@ -5,18 +5,11 @@ import cs.domain.project.SignBranch_;
 import cs.domain.project.SignPrincipal;
 import cs.domain.project.SignPrincipal_;
 import cs.domain.sys.User;
-import cs.domain.sys.User_;
 import cs.repository.AbstractRepository;
 import cs.repository.repositoryImpl.sys.UserRepo;
-import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.type.StringType;
-import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Types;
 import java.util.List;
 
 /**

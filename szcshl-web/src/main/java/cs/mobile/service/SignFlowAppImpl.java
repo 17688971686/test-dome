@@ -1,9 +1,8 @@
 package cs.mobile.service;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import cs.common.utils.BeanCopierUtils;
-import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.WorkProgram;
 import cs.domain.sys.OrgDept;

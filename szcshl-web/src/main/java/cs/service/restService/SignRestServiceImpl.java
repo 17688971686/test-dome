@@ -3,26 +3,23 @@ package cs.service.restService;
 import com.alibaba.fastjson.JSON;
 import cs.ahelper.HttpClientOperate;
 import cs.ahelper.HttpResult;
-import cs.common.Constant;
 import cs.common.FGWResponse;
 import cs.common.IFResultCode;
 import cs.common.ResultMsg;
-import cs.common.utils.*;
+import cs.common.constants.Constant;
+import cs.common.utils.PropertyUtil;
+import cs.common.utils.SessionUtil;
+import cs.common.utils.Validate;
 import cs.domain.project.Sign;
 import cs.domain.sys.SysFile;
-import cs.domain.sys.User;
-import cs.domain.sys.Workday;
 import cs.model.project.CommentDto;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
-import cs.quartz.unit.DispathUnit;
 import cs.repository.repositoryImpl.project.SignRepo;
-import cs.repository.repositoryImpl.sys.FtpRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
-import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.project.SignService;
 import cs.service.sys.SysConfigService;
 import cs.service.sys.SysFileService;
@@ -32,12 +29,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static cs.common.Constant.RevireStageKey.FGW_PRE_PROJECT_IFS;
-import static cs.common.Constant.RevireStageKey.RETURN_FGW_URL;
-import static cs.common.Constant.SUPER_USER;
-import static cs.common.FlowConstant.*;
+import static cs.common.constants.Constant.RevireStageKey.FGW_PRE_PROJECT_IFS;
+import static cs.common.constants.Constant.RevireStageKey.RETURN_FGW_URL;
+import static cs.common.constants.FlowConstant.*;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * 项目接口实现类
@@ -107,78 +107,12 @@ public class SignRestServiceImpl implements SignRestService {
             } else {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
             }
-
             resultMsg = signService.createSign(signDto);
-            /*//1、根据收文编号获取项目信息
-            Sign sign = signRepo.findByFilecode(signDto.getFilecode(), Constant.EnumState.DELETE.getValue());
-            Date now = new Date();
-            boolean isExistPro = false, isLoginUser = Validate.isString(SessionUtil.getUserId());
-            if (!Validate.isObject(sign) || !Validate.isString(sign.getSignid())) {
-                sign = new Sign();
-                BeanCopierUtils.copyProperties(signDto, sign);
-                sign.setSignid(UUID.randomUUID().toString());
-                sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
-                sign.setCreatedDate(now);
-                sign.setCreatedBy(isLoginUser ? SessionUtil.getUserId() : SUPER_USER);
-                //这里的送件人，默认为流程发起人，而不是委里项目的送件人
-                sign.setSendusersign(isLoginUser ? SessionUtil.getDisplayName() : "");
-                //送来时间
-                sign.setReceivedate(now);
-                //初始化办理部门信息
-                signService.initSignDeptInfo(sign);
-                //设定状态
-                sign.setSignState(Constant.EnumState.NORMAL.getValue());
-            } else {
-                isExistPro = true;
-                BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-            }
-            sign.setModifiedBy(isLoginUser ? SessionUtil.getUserId() : SUPER_USER);
-            sign.setModifiedDate(now);
-
-            //送来时间
-            if (!Validate.isObject(sign.getReceivedate())) {
-                sign.setReceivedate(now);
-            }
-
-            //未签收的，改为正式签收
-            if (!Validate.isString(sign.getIssign()) || Constant.EnumState.NO.getValue().equals(sign.getIssign())) {
-                //预签收状态也要改
-                sign.setIspresign(Constant.EnumState.YES.getValue());
-                //正式签收
-                sign.setIssign(Constant.EnumState.YES.getValue());
-                sign.setSigndate(now);
-
-                //计算评审天数
-                Float totalReviewDays = Constant.WORK_DAY_15;
-                SysConfigDto sysConfigDto = sysConfigService.findByKey(stageCode);
-                if (sysConfigDto != null && sysConfigDto.getConfigValue() != null) {
-                    totalReviewDays = Float.parseFloat(sysConfigDto.getConfigValue());
-                } else if ((Constant.RevireStageKey.KEY_SUG.getValue()).equals(stageCode) || (Constant.RevireStageKey.KEY_REPORT.getValue()).equals(stageCode)) {
-                    totalReviewDays = Constant.WORK_DAY_12;
-                }
-                //剩余评审天数
-                sign.setSurplusdays(totalReviewDays);
-                sign.setTotalReviewdays(totalReviewDays);
-                sign.setReviewdays(0f);
-
-                //计算预发文日期
-                //1、先获取从签收日期后的30天之间的工作日情况
-                List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate() , DateUtils.addDay(sign.getSigndate() , 30));
-                int totalDays = (new Float(totalReviewDays)).intValue();
-                Date expectdispatchdate = DispathUnit.dispathDate(workdayList , sign.getSigndate() ,totalDays);
-                sign.setExpectdispatchdate(expectdispatchdate);
-            }
-
-            //6、收文编号
-            if (!Validate.isString(sign.getSignNum())) {
-                signService.initSignNum(sign);
-            }
-            signRepo.save(sign);*/
 
             if(resultMsg.isFlag()){
                 boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
                 Sign sign = (Sign) resultMsg.getReObj();
-                checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_USER, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
+                checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
             }
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());
@@ -247,8 +181,8 @@ public class SignRestServiceImpl implements SignRestService {
                 //对应系统的阶段名称
                 signDto.setReviewstage(stageCHName);
                 //是否是项目概算流程
-                if (Constant.RevireStageKey.KEY_BUDGET.getValue().equals(stageCode)
-                        || Validate.isString(signDto.getIschangeEstimate())) {
+                boolean isGS = Constant.RevireStageKey.KEY_BUDGET.getValue().equals(stageCode) || Validate.isString(signDto.getIschangeEstimate());
+                if (isGS) {
                     signDto.setIsassistflow(Constant.EnumState.YES.getValue());
                 } else {
                     signDto.setIsassistflow(Constant.EnumState.NO.getValue());
@@ -256,40 +190,11 @@ public class SignRestServiceImpl implements SignRestService {
             } else {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SIGN_03.getCode(), IFResultCode.IFMsgCode.SZEC_SIGN_03.getValue());
             }
-            //1、根据收文编号获取项目信息
-           /* Sign sign = signRepo.findByFilecode(signDto.getFilecode(), Constant.EnumState.DELETE.getValue());
-            boolean isExistPro = false, isLoginUser = Validate.isString(SessionUtil.getUserId());
-            Date now = new Date();
-            if (!Validate.isObject(sign) || !Validate.isString(sign.getSignid())) {
-                sign = new Sign();
-                BeanCopierUtils.copyProperties(signDto, sign);
-                sign.setSignid(UUID.randomUUID().toString());
-                sign.setIsLightUp(Constant.signEnumState.NOLIGHT.getValue());
-                sign.setCreatedDate(now);
-                sign.setCreatedBy(isLoginUser ? SessionUtil.getUserId() : SUPER_USER);
-                //这里的送件人，默认为流程发起人，而不是委里项目的送件人
-                sign.setSendusersign(isLoginUser ? SessionUtil.getDisplayName() : SUPER_USER);
-                //预签收
-                sign.setIspresign(Constant.EnumState.NO.getValue());
-                sign.setSignState(Constant.EnumState.NORMAL.getValue());
-                //预签收日期
-                sign.setPresignDate(now);
-                //初始化办理部门信息
-                signService.initSignDeptInfo(sign);
-                //送来时间
-                sign.setReceivedate(now);
-            } else {
-                isExistPro = true;
-                BeanCopierUtils.copyPropertiesIgnoreNull(signDto, sign);
-            }
-            sign.setModifiedBy(isLoginUser ? SessionUtil.getDisplayName() : SUPER_USER);
-            sign.setModifiedDate(now);
-            signRepo.save(sign);*/
             resultMsg = signService.reserveAddSign(signDto);
             if(resultMsg.isFlag()){
                 boolean isLoginUser = Validate.isString(SessionUtil.getUserId());
                 Sign sign = (Sign) resultMsg.getReObj();
-                checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_USER, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
+                checkDownLoadFile(resultMsg, isGetFiles, sign.getSignid(), signDto.getSysFileDtoList(), isLoginUser ? SessionUtil.getUserId() : SUPER_ACCOUNT, Constant.SysFileType.SIGN.getValue(), Constant.SysFileType.FGW_FILE.getValue());
             }
         } catch (Exception e) {
             resultMsg = new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getCode(), IFResultCode.IFMsgCode.SZEC_SAVE_ERROR.getValue() + e.getMessage());

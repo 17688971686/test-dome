@@ -112,10 +112,11 @@
 	<aop:config proxy-target-class="true"/>
 
 
-	<bean id="jobFactory" class="cs.quartz.unit.JobFactory"></bean>
-	<!-- 定时器配置 The quartz scheduler configuration -->
+    <!-- 定时器配置 The quartz scheduler configuration -->
 	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-			<property name="jobFactory" ref="jobFactory"></property>
+			<property name="jobFactory">
+                <bean class="cs.quartz.unit.JobFactory"/>
+            </property>
 	</bean>
 
 </beans>

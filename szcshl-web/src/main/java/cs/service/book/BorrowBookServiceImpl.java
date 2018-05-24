@@ -1,6 +1,6 @@
 package cs.service.book;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;

@@ -1,29 +1,23 @@
 package cs.service.project;
 
-import cs.common.Constant;
-import cs.common.Constant.EnumState;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.EnumState;
+import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
-import cs.domain.monthly.MonthlyNewsletter;
-import cs.domain.monthly.MonthlyNewsletter_;
 import cs.domain.project.*;
 import cs.domain.sys.OrgDept;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
-import cs.model.monthly.MonthlyNewsletterDto;
 import cs.model.project.AddSuppLetterDto;
-import cs.model.project.AssistPlanDto;
-import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
-import cs.repository.odata.ODataObjFilterStrategy;
-import cs.repository.repositoryImpl.monthly.MonthlyNewsletterRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.OrgDeptRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.rtx.RTXSendMsgPool;
+import cs.service.sys.UserService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -31,7 +25,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
@@ -40,6 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static cs.common.constants.SysConstants.SEPARATE_COMMA;
 
 
 /**
@@ -70,7 +65,9 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Autowired
     private WorkProgramRepo workProgramRepo;
     @Autowired
-    private ProjMaxSeqRepo projMaxSeqRepo;
+    private AgentTaskService agentTaskService;
+    @Autowired
+    private UserService userService;
     /**
      * 保存补充资料函
      */
@@ -374,12 +371,18 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
         taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
 
-        User leadUser = userRepo.getCacheUserById(orgDept.getDirectorID());
-        String assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
+        List<AgentTask> agentTaskList = new ArrayList<>();
+        String assigneeValue = userService.getTaskDealId(orgDept.getDirectorID(), agentTaskList, FlowConstant.FLOW_SPL_BZ_SP);
         taskService.complete(task.getId(), ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(), assigneeValue));
+
+        //如果是代办，还要更新环节名称和任务ID
+        if (Validate.isList(agentTaskList)) {
+            agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
+        }
 
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
+
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
     }
 
@@ -395,12 +398,15 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
     @Transactional
     public ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
-                assigneeValue = "";                            //流程处理人
+                assigneeValue = "",                            //流程处理人
+                nextNodeKey = "",                              //下一环节名称
+                curUserId = SessionUtil.getUserId();            //当前用户ID
         Map<String, Object> variables = new HashMap<>();       //流程参数
         User dealUser = null;                                  //用户
         List<User> dealUserList = null;                        //用户列表
-        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
-        String nextNodeKey = "";                    //下一环节名称
+        boolean isNextUser = false,                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
+                isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId); //是否代办
+        List<AgentTask> agentTaskList = new ArrayList<>();
         AddSuppLetter addSuppLetter = addSuppLetterRepo.findById(AddSuppLetter_.id.getName(), businessId);
         //环节处理人设定
         switch (task.getTaskDefinitionKey()) {
@@ -413,9 +419,8 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 if (!Validate.isString(orgDept.getDirectorID())) {
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + orgDept.getName() + "】的部长未设置，请先设置！");
                 }
-                dealUser = userRepo.getCacheUserById(orgDept.getDirectorID());
-                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
-
+                assigneeValue = userService.getTaskDealId(orgDept.getDirectorID(), agentTaskList, FlowConstant.FLOW_SPL_BZ_SP);
+                variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_BZ.getValue(), assigneeValue);
                 addSuppLetter.setAppoveStatus(Constant.EnumState.NO.getValue());
                 addSuppLetterRepo.save(addSuppLetter);
                 break;
@@ -424,7 +429,7 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 //没有分支，则直接跳转到分管领导环节
                 if (signBranchRepo.allAssistCount(addSuppLetter.getBusinessId()) == 0) {
                     dealUser = signBranchRepo.findMainSLeader(addSuppLetter.getBusinessId());
-                    assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                    assigneeValue = userService.getTaskDealId(dealUser, agentTaskList, FlowConstant.FLOW_SPL_FGLD_SP);
                     variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);  //设置分管领导
                     variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), true);             //设置分支条件
                     //2表示到分管领导会签
@@ -434,17 +439,24 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                         isNextUser = true;
                         nextNodeKey = FlowConstant.FLOW_SPL_FGLD_SP;
                     }
-                    //有分支，则跳转到领导会签环节
+                //有分支，则跳转到领导会签环节
                 } else {
                     dealUserList = signBranchRepo.findAssistOrgDirector(addSuppLetter.getBusinessId());
-                    assigneeValue = buildUser(dealUserList);
-                    variables.put(FlowConstant.SignFlowParams.USER_HQ_LIST.getValue(), StringUtil.getSplit(assigneeValue, ","));
+                    for (int i = 0, l = dealUserList.size(); i < l; i++) {
+                        String userId = userService.getTaskDealId(dealUserList.get(i).getId(), agentTaskList,FlowConstant.FLOW_SPL_LD_HQ);
+                        assigneeValue = StringUtil.joinString(assigneeValue, SEPARATE_COMMA, userId);
+                    }
+                    variables.put(FlowConstant.SignFlowParams.USER_HQ_LIST.getValue(), StringUtil.getSplit(assigneeValue, SEPARATE_COMMA));
                     variables.put(FlowConstant.FlowParams.FGLD_FZ.getValue(), false);            //设置分支条件
                     //1表示到领导会签
                     addSuppLetter.setAppoveStatus(EnumState.PROCESS.getValue());
                 }
-                addSuppLetter.setDeptMinisterId(SessionUtil.getUserId());
-                addSuppLetter.setDeptMinisterName(SessionUtil.getDisplayName());
+                if(isAgentTask){
+                    addSuppLetter.setDeptMinisterId(agentTaskService.getUserId(task.getId(),curUserId));
+                }else{
+                    addSuppLetter.setDeptMinisterId(curUserId);
+                }
+                addSuppLetter.setDeptMinisterName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                 addSuppLetter.setDeptMinisterDate(new Date());
                 addSuppLetter.setDeptMinisterIdeaContent(flowDto.getDealOption());
 
@@ -453,21 +465,16 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             //领导会签
             case FlowConstant.FLOW_SPL_LD_HQ:
                 dealUser = signBranchRepo.findMainSLeader(addSuppLetter.getBusinessId());
-                assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                assigneeValue = userService.getTaskDealId(dealUser, agentTaskList,FlowConstant.FLOW_SPL_FGLD_SP);
                 variables.put(FlowConstant.FlowParams.USER_FGLD.getValue(), assigneeValue);
 
-                //下一环节还是自己处理
-                if(assigneeValue.equals(SessionUtil.getUserId())){
-                    isNextUser = true;
-                    nextNodeKey = FlowConstant.FLOW_SPL_FGLD_SP;
-                }
                 String signString = "";
                 //旧的会签记录
                 String oldMsg = addSuppLetter.getLeaderSignIdeaContent();
                 if (Validate.isString(oldMsg) && !"null".equals(oldMsg)) {
                     signString += oldMsg+"<br>";
                 }
-                signString += "<span style='float: left'>"+flowDto.getDealOption()+"</span>" + "<br>" + SessionUtil.getDisplayName() + "<br>" + DateUtils.converToString(new Date(), null);
+                signString += flowDto.getDealOption()+" " + SessionUtil.getDisplayName() + " " + DateUtils.converToString(new Date(), null);
                 addSuppLetter.setLeaderSignIdeaContent(signString);
                 //2表示到分管领导会签
                 addSuppLetterRepo.save(addSuppLetter);
@@ -482,15 +489,17 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                 if(!Validate.isString(addSuppLetter.getFilenum())){
                     new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "无法生成文件字号，请联系管理员查看！");
                 }
-                addSuppLetter.setDeptSLeaderId(SessionUtil.getUserId());
-                addSuppLetter.setDeptSLeaderName(SessionUtil.getDisplayName());
+                if(isAgentTask){
+                    addSuppLetter.setDeptSLeaderId(agentTaskService.getUserId(task.getId(),curUserId));
+                }else{
+                    addSuppLetter.setDeptSLeaderId(curUserId);
+                }
+                addSuppLetter.setDeptSLeaderName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                 addSuppLetter.setDeptSleaderDate(new Date());
                 addSuppLetter.setDeptSLeaderIdeaContent(flowDto.getDealOption());
                 addSuppLetter.setAppoveStatus(EnumState.YES.getValue());
                 addSuppLetterRepo.save(addSuppLetter);
 
-                //更新项目和工作方案是否有拟补充资料函字段信息
-                //updateSuppLetterState(addSuppLetter.getBusinessId(),addSuppLetter.getBusinessType(),addSuppLetter.getDisapDate());
                 //如果是项目，则更新项目补充资料函状态
                 if(Validate.isString(addSuppLetter.getBusinessType()) && Constant.BusinessType.SIGN.getValue().equals(addSuppLetter.getBusinessType())){
                     signRepo.updateSuppLetterState(addSuppLetter.getBusinessId(),EnumState.YES.getValue(),addSuppLetter.getDisapDate());
@@ -518,6 +527,10 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
                     }
                 }
             }
+        }
+        //如果是代办，还要更新环节名称和任务ID
+        if (Validate.isList(agentTaskList)) {
+            agentTaskService.updateAgentInfo(agentTaskList, processInstance.getId(), processInstance.getName());
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
@@ -556,16 +569,5 @@ public class AddSuppLetterServiceImpl implements AddSuppLetterService {
             signRepo.updateSuppLetterState(businessId,EnumState.YES.getValue(),disapDate);
             workProgramRepo.updateSuppLetterState(businessId,EnumState.YES.getValue(),disapDate);
         }
-    }
-
-    private String buildUser(List<User> userList) {
-        StringBuffer assigneeValue = new StringBuffer();
-        for (int i = 0, l = userList.size(); i < l; i++) {
-            if (i > 0) {
-                assigneeValue.append(",");
-            }
-            assigneeValue.append(Validate.isString(userList.get(i).getTakeUserId()) ? userList.get(i).getTakeUserId() : userList.get(i).getId());
-        }
-        return assigneeValue.toString();
     }
 }

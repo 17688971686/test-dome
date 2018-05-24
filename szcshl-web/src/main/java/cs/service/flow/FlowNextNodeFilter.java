@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import cs.common.FlowConstant;
-import cs.common.utils.Validate;
+import cs.common.constants.FlowConstant;
 import cs.model.flow.Node;
 
 /**

@@ -1,7 +1,7 @@
 package cs.service.flow;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import cs.domain.sys.Annountment;
 import cs.domain.sys.Annountment_;
 import cs.repository.repositoryImpl.sys.AnnountmentRepo;

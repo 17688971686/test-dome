@@ -1,12 +1,10 @@
 package cs.shiro.filter;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.utils.Validate;
 import cs.domain.flow.RuProcessTask;
-import cs.domain.project.SignDispaWork;
 import cs.domain.sys.User;
 import cs.service.flow.FlowService;
-import cs.service.project.SignDispaWorkService;
 import cs.service.sys.UserService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authc.AuthenticationException;
@@ -27,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static cs.common.Constant.UNUSER;
+import static cs.common.constants.Constant.UNUSER;
 
 /**
  * Description: 自定义表单过滤器

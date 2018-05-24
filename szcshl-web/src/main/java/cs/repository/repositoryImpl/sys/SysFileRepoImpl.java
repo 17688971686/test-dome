@@ -1,12 +1,10 @@
 package cs.repository.repositoryImpl.sys;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
 import cs.common.ftp.FtpUtils;
-import cs.common.utils.SessionUtil;
-import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.Ftp;
 import cs.domain.sys.SysFile;

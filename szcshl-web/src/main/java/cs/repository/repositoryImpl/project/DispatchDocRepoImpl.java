@@ -2,10 +2,9 @@ package cs.repository.repositoryImpl.project;
 
 import java.util.List;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.utils.Validate;
-import cs.domain.project.WorkProgram_;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,8 @@ import cs.domain.project.DispatchDoc_;
 import cs.domain.project.Sign_;
 import cs.repository.AbstractRepository;
 
-import static cs.common.Constant.DEVICE_BILL_HOMELAND;
-import static cs.common.Constant.DEVICE_BILL_IMPORT;
+import static cs.common.constants.Constant.DEVICE_BILL_HOMELAND;
+import static cs.common.constants.Constant.DEVICE_BILL_IMPORT;
 
 @Repository
 public class DispatchDocRepoImpl extends AbstractRepository<DispatchDoc, String> implements DispatchDocRepo {

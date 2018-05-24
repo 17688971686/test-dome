@@ -1,6 +1,6 @@
 package cs.service.meeting;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
@@ -10,14 +10,12 @@ import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.WorkProgram;
 import cs.domain.project.WorkProgram_;
-import cs.domain.sys.SysFile;
 import cs.domain.topic.WorkPlan;
 import cs.domain.topic.WorkPlan_;
 import cs.model.PageModelDto;
 import cs.model.meeting.MeetingRoomDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.repository.odata.ODataObj;
-import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.repository.repositoryImpl.meeting.MeetingRoomRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.WorkProgramRepo;
@@ -32,8 +30,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 @Service
 public class RoomBookingSerivceImpl implements RoomBookingSerivce {
@@ -308,7 +307,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
         if (roomBooking == null) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "该会议室预定信息已被删除！");
         } else {
-            boolean isSuper = SessionUtil.getLoginName().equals(Constant.SUPER_USER);
+            boolean isSuper = SessionUtil.getLoginName().equals(SUPER_ACCOUNT);
             if(isSuper){
                 roomBookingRepo.delete(roomBooking);
                 return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
@@ -374,13 +373,13 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
                     }
                     //已经提交审核的，只有系统管理员才能审核
                     if (Constant.EnumState.PROCESS.getValue().equals(roomBooking.getRbStatus())) {
-                        if (!SessionUtil.getLoginName().equals(Constant.SUPER_USER)) {
+                        if (!SessionUtil.getLoginName().equals(SUPER_ACCOUNT)) {
                             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您没有修改权限，请联系系统管理员处理！");
                         }
                     }
                     if (Constant.EnumState.NO.getValue().equals(roomBooking.getRbStatus())) {
                         if (!SessionUtil.getUserId().equals(roomBooking.getCreatedBy())
-                                && !SessionUtil.getLoginName().equals(Constant.SUPER_USER)) {
+                                && !SessionUtil.getLoginName().equals(SUPER_ACCOUNT)) {
                             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您没有修改权限！");
                         }
                     }
@@ -393,7 +392,7 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
                     }
                     if (Constant.EnumState.NO.getValue().equals(roomBooking.getRbStatus())) {
                         if (!SessionUtil.getUserId().equals(roomBooking.getCreatedBy())
-                                && !SessionUtil.getLoginName().equals(Constant.SUPER_USER)) {
+                                && !SessionUtil.getLoginName().equals(SUPER_ACCOUNT)) {
                             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "您没有修改权限！");
                         }
                     }

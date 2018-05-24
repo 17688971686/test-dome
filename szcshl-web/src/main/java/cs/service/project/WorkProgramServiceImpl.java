@@ -1,8 +1,8 @@
 package cs.service.project;
 
-import cs.common.Constant;
-import cs.common.Constant.EnumState;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.EnumState;
+import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.*;
@@ -27,6 +27,8 @@ import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
 import cs.service.sys.SysFileService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -51,7 +53,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
     @Autowired
     private SysFileService sysFileService;
     @Autowired
-    private AssistPlanSignRepo assistPlanSignRepo;
+    private TaskService taskService;
     @Autowired
     private SignPrincipalService signPrincipalService;
     @Autowired
@@ -156,9 +158,18 @@ public class WorkProgramServiceImpl implements WorkProgramService {
      * 根据收文ID初始化 用户待处理的工作方案
      */
     @Override
-    public Map<String, Object> initWorkProgram(String signId, String isShowNewExpert) {
+    public Map<String, Object> initWorkProgram(String signId,String taskId) {
         Map<String, Object> resultMap = new HashMap<>();
         WorkProgramDto workProgramDto = new WorkProgramDto();
+        String curUserId = SessionUtil.getUserId();
+        List<User> priUserList = null;
+        //分支
+        String branchIndex = "";
+        //是否代办
+        boolean isTaskTask = false;
+        Task task = taskService.createTaskQuery().taskId(taskId).active().singleResult();
+        String taskBrandIndex = task.getTaskDefinitionKey().substring(task.getTaskDefinitionKey().length()-1);
+        boolean isMainBrand = taskBrandIndex.equals(FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
 
         //1、根据收文ID查询出所有的工作方案ID
         Criteria criteria = workProgramRepo.getExecutableCriteria();
@@ -168,7 +179,6 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         //2、是否有当前用户负责的工作方案
         boolean isHaveCurUserWP = false;
         WorkProgram mainW = new WorkProgram();
-        SignPrincipal signPrincipal = signPrincipalService.getPrincipalInfo(SessionUtil.getUserId(), signId);
         if (Validate.isList(wpList)) {
             int totalL = wpList.size();
             //遍历第一遍，先找出主分支工作方案
@@ -182,7 +192,22 @@ public class WorkProgramServiceImpl implements WorkProgramService {
             List<WorkProgramDto> wpDtoList = new ArrayList<>();
             for (int i = 0; i < totalL; i++) {
                 WorkProgram wp = wpList.get(i);
-                if ((signPrincipal.getFlowBranch()).equals(wp.getBranchId())) {
+                branchIndex = wp.getBranchId();
+                boolean isBrandUser = false;
+
+                if(taskBrandIndex.equals(branchIndex)){
+                    priUserList =  signPrincipalService.getSignPriUser(signId,branchIndex);
+                    for(User user : priUserList){
+                        //当前处理人是代人人的时候也要考虑进去
+                        if(user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())){
+                            isBrandUser = true;
+                            break;
+                        }
+                    }
+                }
+
+                //如果是当前分支用户或者代办用户
+                if(isBrandUser){
                     BeanCopierUtils.copyProperties(wp, workProgramDto);
                     if (Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
                         WorkProgramDto mainWPDto = new WorkProgramDto();
@@ -190,9 +215,8 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                         workProgramDto.setMainWorkProgramDto(mainWPDto);
                     }
                     workProgramRepo.initWPMeetingExp(workProgramDto, wp);
-
                     isHaveCurUserWP = true;
-                } else {
+                }else{
                     WorkProgramDto wpDto = new WorkProgramDto();
                     BeanCopierUtils.copyProperties(wp, wpDto);
                     if (Validate.isString(mainW.getId()) && !FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue().equals(wp.getBranchId())) {
@@ -203,6 +227,7 @@ public class WorkProgramServiceImpl implements WorkProgramService {
                     workProgramRepo.initWPMeetingExp(wpDto, wp);
                     wpDtoList.add(wpDto);
                 }
+
             }
             resultMap.put("WPList", wpDtoList);
         }
@@ -210,16 +235,26 @@ public class WorkProgramServiceImpl implements WorkProgramService {
         if (isHaveCurUserWP == false) {
             WorkProgramDto mainWPDto = new WorkProgramDto();
             Sign sign = signRepo.findById(Sign_.signid.getName(), signId);
-            //取第一负责人
-            User mainUser = userRepo.getCacheUserById(sign.getmUserId());
-            boolean isMainFlowPri = SessionUtil.getUserId().equals(mainUser.getId()) || SessionUtil.getUserId().equals(mainUser.getTakeUserId());
+            //取第一分支的负责人
+            boolean isMainFlowPri = false;
+            if(isMainBrand && Validate.isList(priUserList)){
+            }else{
+                priUserList= signPrincipalService.getSignPriUser(signId,FlowConstant.SignFlowParams.BRANCH_INDEX1.getValue());
+            }
+            for(User user : priUserList){
+                //当前处理人是代人人的时候也要考虑进去
+                if(user.getId().equals(curUserId) || curUserId.equals(user.getTakeUserId())){
+                    isMainFlowPri = true;
+                    break;
+                }
+            }
             //项目基本信息
             workProgramDto.setProjectName(sign.getProjectname());
             workProgramDto.setBuildCompany(sign.getBuiltcompanyName());
             workProgramDto.setDesignCompany(sign.getDesigncompanyName());
             workProgramDto.setAppalyInvestment(sign.getDeclaration());
             workProgramDto.setWorkreviveStage(sign.getReviewstage());
-            workProgramDto.setBranchId(signPrincipal.getFlowBranch());
+            workProgramDto.setBranchId(taskBrandIndex);
             //默认名称
             workProgramDto.setTitleName(sign.getReviewstage() + Constant.WORKPROGRAM_NAME);
             workProgramDto.setTitleDate(new Date());

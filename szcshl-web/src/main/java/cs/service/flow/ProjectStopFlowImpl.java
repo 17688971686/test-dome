@@ -1,7 +1,7 @@
 package cs.service.flow;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

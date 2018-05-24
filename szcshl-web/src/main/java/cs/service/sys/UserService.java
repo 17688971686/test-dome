@@ -1,6 +1,7 @@
 package cs.service.sys;
 
 import cs.common.ResultMsg;
+import cs.domain.project.AgentTask;
 import cs.domain.sys.Org;
 import cs.domain.sys.User;
 import cs.model.PageModelDto;
@@ -135,4 +136,19 @@ public interface UserService {
      * @return
      */
     Map<String,Object> findAllTaskList(String userId);
+
+    /**
+     * 获取任务环节处理人信息
+     * @param userId        原用户ID
+     * @param agentTaskList 代办人列表，不能为空
+     */
+    String getTaskDealId(String userId,List<AgentTask> agentTaskList,String nodeKey);
+
+    /**
+     * 获取任务环节处理人信息
+     * @param user          用户对象
+     * @param agentTaskList 代办人列表，不能为空
+     */
+    String getTaskDealId(User user,List<AgentTask> agentTaskList,String nodeKey);
+
 }

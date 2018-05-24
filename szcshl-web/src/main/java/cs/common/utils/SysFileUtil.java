@@ -1,13 +1,12 @@
 package cs.common.utils;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.UUID;
 
 /**
  * 文件工具

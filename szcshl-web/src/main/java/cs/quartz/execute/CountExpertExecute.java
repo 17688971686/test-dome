@@ -1,50 +1,44 @@
 package cs.quartz.execute;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
-import cs.common.utils.Arith;
+import cs.common.constants.Constant;
 import cs.common.utils.DateUtils;
-import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.expert.ExpertReview;
-import cs.domain.expert.ExpertReview_;
-import cs.domain.expert.ExpertSelected;
 import cs.domain.sys.Log;
-import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
 import cs.service.expert.ExpertReviewService;
+import cs.service.project.ProjectStopService;
 import cs.service.sys.LogService;
+import cs.service.sys.WorkdayService;
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.type.StringType;
-import org.hibernate.type.Type;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * 系统自动计算发文环节，项目未发放专家评审费定时器
  * Created by ldm on 2017/12/4.
  */
-@Service
-public class CountExpertCost implements Job {
-    private static Logger logger = Logger.getLogger(CountExpertCost.class);
+@Component
+public class CountExpertExecute implements Job {
+    private static Logger logger = Logger.getLogger(CountExpertExecute.class);
 
+    /*
     @Autowired
     private LogService logService;
     @Autowired
-    private ExpertReviewService expertReviewService;
+    private ExpertReviewService expertReviewService;*/
     /*
-     以下语句是查询超期未办理专家评审费发放的语句，只限制于项目发文环节和课题归档环节
+     以下语句是查询超期未办理专家评审费发放的语句，只限制于项目发文环节
      * SELECT *
      FROM CS_EXPERT_REVIEW er
      WHERE     ER.PAYDATE IS NULL
@@ -58,17 +52,22 @@ public class CountExpertCost implements Job {
      */
 
      /**
-     * @param jobExecutionContext
+     * @param context
      * @throws JobExecutionException
      */
     @Override
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    @Transactional(rollbackFor = Exception.class)
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        //SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+        logger.info("---------------------- 计算评审费的定时器开始执行 ----------------------");
+        LogService logService = (LogService) context.getMergedJobDataMap().get("logService");
+        ExpertReviewService expertReviewService = (ExpertReviewService) context.getMergedJobDataMap().get("expertReviewService");
+
         List<ExpertReview> expertReviewList = null;
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
-        log.setUserName(Constant.SUPER_USER);
+        log.setUserName(SUPER_ACCOUNT);
         log.setBuninessId("");
         log.setModule(Constant.LOG_MODULE.QUARTZ.getValue()+"【专家评审费】" );
         //优先级别中等
@@ -105,5 +104,6 @@ public class CountExpertCost implements Job {
             logger.info("专家评审费统计异常："+ e.getMessage());
         }
         logService.save(log);
+        logger.info("---------------------- 计算评审费的定时器执行结束 ----------------------");
     }
 }

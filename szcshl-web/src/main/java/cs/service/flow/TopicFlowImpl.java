@@ -1,8 +1,7 @@
 package cs.service.flow;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
-import cs.common.utils.ActivitiUtil;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import cs.common.utils.SessionUtil;
 import cs.domain.sys.User;
 import cs.domain.topic.TopicInfo;
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static cs.common.Constant.SUPER_USER;
 
 /**
  * Created by ldm on 2017/9/05.

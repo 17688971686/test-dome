@@ -1,10 +1,8 @@
 package cs.repository.repositoryImpl.expert;
 
-import cs.common.Constant;
 import cs.common.HqlBuilder;
 import cs.domain.expert.ExpertSelCondition;
 import cs.domain.expert.ExpertSelCondition_;
-import cs.domain.expert.ExpertSelected_;
 import cs.repository.AbstractRepository;
 import org.springframework.stereotype.Repository;
 

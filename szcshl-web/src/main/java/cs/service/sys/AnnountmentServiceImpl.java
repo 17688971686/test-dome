@@ -1,13 +1,14 @@
 package cs.service.sys;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.common.utils.ActivitiUtil;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
+import cs.domain.project.AgentTask;
 import cs.domain.sys.*;
 import cs.model.PageModelDto;
 import cs.model.flow.FlowDto;
@@ -16,6 +17,7 @@ import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.AnnountmentRepo;
 import cs.repository.repositoryImpl.sys.OrgRepo;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.project.AgentTaskService;
 import cs.service.rtx.RTXSendMsgPool;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
@@ -50,7 +52,10 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     private ProcessEngine processEngine;
     @Autowired
     private TaskService taskService;
-
+    @Autowired
+    private AgentTaskService agentTaskService;
+    @Autowired
+    private UserService userService;
     /* 
      * 获取个人发布的通知公告
      */
@@ -375,8 +380,8 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         }
 
         //查询部门领导
-        User user = userRepo.findOrgDirector(annountment.getCreatedBy());//查询用户的所在部门领导
-        if (!Validate.isString(user.getDisplayName())) {//判断是否有部门领导
+        User user = userRepo.findOrgDirector(annountment.getCreatedBy());
+        if (!Validate.isObject(user) || !Validate.isString(user.getId())) {
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "【" + user.getOrg().getName() + "】的部长未设置，请先设置！");
         }
         //1、启动流程
@@ -395,18 +400,23 @@ public class AnnountmentServiceImpl implements AnnountmentService {
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
         taskService.addComment(task.getId(), processInstance.getId(), "");    //添加处理信息
 
+        List<AgentTask> agentTaskList = new ArrayList<>();
         if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {
-            assigneeValue = SessionUtil.getUserInfo().getOrg().getOrgSLeader();
-            variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_FZ.getValue(), assigneeValue);
+            assigneeValue = userService.getTaskDealId(SessionUtil.getUserInfo().getOrg().getOrgSLeader(), agentTaskList, FlowConstant.ANNOUNT_FZ);
             variables.put(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), true);
             taskService.complete(task.getId(), variables);
         } else {
-            assigneeValue = Validate.isString(user.getTakeUserId()) ? user.getTakeUserId() : user.getId();
+            String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null ? SessionUtil.getUserId() : SessionUtil.getUserInfo().getOrg().getOrgDirector();
+            assigneeValue = userService.getTaskDealId(userId, agentTaskList, FlowConstant.ANNOUNT_BZ);
             variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_BZ.getValue(), assigneeValue);
             variables.put(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), false);
             taskService.complete(task.getId(), variables);
         }
 
+        //如果是代办，还要更新环节名称和任务ID
+        if (Validate.isList(agentTaskList)) {
+            agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
+        }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);
         return new ResultMsg(true, Constant.MsgCode.OK.getValue(), "操作成功！");
@@ -424,28 +434,29 @@ public class AnnountmentServiceImpl implements AnnountmentService {
     @Transactional
     public ResultMsg dealSignSupperFlow(ProcessInstance processInstance, Task task, FlowDto flowDto) {
         String businessId = processInstance.getBusinessKey(),
-                assigneeValue = "";                            //流程处理人
-        List<User> userList = null;                 //用户列表
+                assigneeValue = "",                             //流程处理人
+                nextNodeKey = "",                               //下一环节名称
+                curUserId = SessionUtil.getUserId();           //当前用户ID
+        List<User> userList = null;                             //用户列表
         User dealUser = null;
-        Map<String, Object> variables = new HashMap<>();       //流程参数
-        boolean isNextUser = false;                 //是否是下一环节处理人（主要是处理领导审批，部长审批）
-        String nextNodeKey = "";                    //下一环节名称
+        Map<String, Object> variables = new HashMap<>();        //流程参数
+        boolean isNextUser = false,                             //是否是下一环节处理人（主要是处理领导审批，部长审批）
+                isAgentTask = agentTaskService.isAgentTask(task.getId(),curUserId); //是否代办
         Annountment annountment = annountmentRepo.findById(Annountment_.anId.getName(), businessId);
-        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).active().singleResult();
+        List<AgentTask> agentTaskList = new ArrayList<>();
+
         //环节处理人设定
         switch (task.getTaskDefinitionKey()) {
             //项目负责人填报
             case FlowConstant.ANNOUNT_TZ:
                 flowDto.setDealOption("");//默认意见为空
                 if (SessionUtil.hashRole(Constant.EnumFlowNodeGroupName.DEPT_LEADER.getValue())) {//判断是否是部长
-                    dealUser = userRepo.getCacheUserById(SessionUtil.getUserInfo().getOrg().getOrgSLeader());
-                    assigneeValue = Validate.isString(dealUser.getTakeUserId()) ? dealUser.getTakeUserId() : dealUser.getId();
+                    assigneeValue = userService.getTaskDealId(SessionUtil.getUserInfo().getOrg().getOrgSLeader(), agentTaskList, FlowConstant.ANNOUNT_FZ);
                     variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), assigneeValue);
                     variables.put(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), true);
                 } else {
                     String userId = SessionUtil.getUserInfo().getOrg().getOrgDirector() == null ? SessionUtil.getUserId() : SessionUtil.getUserInfo().getOrg().getOrgDirector();
-                    User leadUser = userRepo.getCacheUserById(userId);
-                    assigneeValue = Validate.isString(leadUser.getTakeUserId()) ? leadUser.getTakeUserId() : leadUser.getId();
+                    assigneeValue = userService.getTaskDealId(userId, agentTaskList, FlowConstant.ANNOUNT_BZ);
                     variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), assigneeValue);
                     variables.put(FlowConstant.AnnountMentFLOWParams.ANNOUNT_USER.getValue(), false);
                 }
@@ -457,12 +468,16 @@ public class AnnountmentServiceImpl implements AnnountmentService {
                 if(!Validate.isString(dealUser.getOrg().getOrgSLeader())){
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"您还没设置该部门的分管副主任，请先设置再提交流程！");
                 }
-                dealUser = userRepo.getCacheUserById(dealUser.getOrg().getOrgSLeader());
-                assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
+                assigneeValue = userService.getTaskDealId(dealUser.getOrg().getOrgSLeader(), agentTaskList, FlowConstant.ANNOUNT_FZ);
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_FZ.getValue(), assigneeValue);
 
-                annountment.setDeptMinisterId(SessionUtil.getUserId());
-                annountment.setDeptMinisterName(SessionUtil.getDisplayName());
+                if(isAgentTask){
+                    annountment.setDeptMinisterId(agentTaskService.getUserId(task.getId(),curUserId));
+                }else{
+                    annountment.setDeptMinisterId(curUserId);
+                }
+                annountment.setDeptMinisterName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+
                 annountment.setDeptMinisterDate(new Date());
                 annountment.setDeptMinisterIdeaContent(flowDto.getDealOption());
                 annountment.setAppoveStatus(Constant.EnumState.PROCESS.getValue());
@@ -480,12 +495,16 @@ public class AnnountmentServiceImpl implements AnnountmentService {
                 if(!Validate.isString(dealUser.getOrg().getOrgMLeader())){
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"您还没设置该部门的主任，请先设置再提交流程！");
                 }
-                dealUser = userRepo.getCacheUserById(dealUser.getOrg().getOrgMLeader());
-                assigneeValue = Validate.isString(dealUser.getTakeUserId())?dealUser.getTakeUserId():dealUser.getId();
+                assigneeValue = userService.getTaskDealId(dealUser.getOrg().getOrgMLeader(), agentTaskList, FlowConstant.ANNOUNT_FZ);
                 variables = ActivitiUtil.setAssigneeValue(FlowConstant.AnnountMentFLOWParams.USER_ZR.getValue(), assigneeValue);
 
-                annountment.setDeptSLeaderId(SessionUtil.getUserId());
-                annountment.setDeptSLeaderName(SessionUtil.getDisplayName());
+                if(isAgentTask){
+                    annountment.setDeptSLeaderId(agentTaskService.getUserId(task.getId(),curUserId));
+                }else{
+                    annountment.setDeptSLeaderId(curUserId);
+                }
+                annountment.setDeptSLeaderName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+
                 annountment.setDeptSleaderDate(new Date());
                 annountment.setDeptSLeaderIdeaContent(flowDto.getDealOption());
                 annountment.setAppoveStatus(Constant.EnumState.STOP.getValue());
@@ -511,8 +530,13 @@ public class AnnountmentServiceImpl implements AnnountmentService {
                 }else{
                     annountment.setIssue(Constant.EnumState.NO.getValue());
                 }
-                annountment.setDeptDirectorId(SessionUtil.getUserId());
-                annountment.setDeptDirectorName(SessionUtil.getDisplayName());
+                if(isAgentTask){
+                    annountment.setDeptDirectorId(agentTaskService.getUserId(task.getId(),curUserId));
+                }else{
+                    annountment.setDeptDirectorId(curUserId);
+                }
+                annountment.setDeptDirectorName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
+
                 annountment.setDeptDirectorDate(new Date());
                 annountment.setDeptDirectorIdeaContent(flowDto.getDealOption());
                 annountment.setAppoveStatus(Constant.EnumState.YES.getValue());
@@ -540,6 +564,10 @@ public class AnnountmentServiceImpl implements AnnountmentService {
                     }
                 }
             }
+        }
+        //如果是代办，还要更新环节名称和任务ID
+        if (Validate.isList(agentTaskList)) {
+            agentTaskService.updateAgentInfo(agentTaskList,processInstance.getId(),processInstance.getName());
         }
         //放入腾讯通消息缓冲池
         RTXSendMsgPool.getInstance().sendReceiverIdPool(task.getId(), assigneeValue);

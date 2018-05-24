@@ -1,12 +1,11 @@
 package cs.repository.repositoryImpl.flow;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.utils.SessionUtil;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuProcessTask_;
 import cs.repository.AbstractRepository;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;

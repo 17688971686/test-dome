@@ -1,7 +1,7 @@
 package cs.controller.expert;
 
 import cs.ahelper.IgnoreAnnotation;
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;

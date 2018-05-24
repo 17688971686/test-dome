@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import cs.common.Constant.EnumFlowNodeGroupName;
+import cs.common.constants.Constant.EnumFlowNodeGroupName;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.ResultMsg;
 import cs.model.PageModelDto;

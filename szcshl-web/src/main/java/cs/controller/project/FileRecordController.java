@@ -1,7 +1,7 @@
 package cs.controller.project;
 
 import cs.ahelper.IgnoreAnnotation;
-import cs.common.Constant.EnumFlowNodeGroupName;
+import cs.common.constants.Constant.EnumFlowNodeGroupName;
 import cs.common.ResultMsg;
 import cs.model.project.FileRecordDto;
 import cs.service.project.FileRecordService;

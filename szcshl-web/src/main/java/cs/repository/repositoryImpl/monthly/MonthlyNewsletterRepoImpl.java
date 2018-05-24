@@ -1,6 +1,6 @@
 package cs.repository.repositoryImpl.monthly;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
 import cs.domain.monthly.MonthlyNewsletter;

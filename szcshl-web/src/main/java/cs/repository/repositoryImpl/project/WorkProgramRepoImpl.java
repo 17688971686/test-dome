@@ -1,18 +1,14 @@
 package cs.repository.repositoryImpl.project;
 
-import cs.common.Constant;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.utils.*;
-import cs.domain.expert.Expert;
-import cs.domain.expert.ExpertNewInfo;
 import cs.domain.expert.ExpertSelected_;
 import cs.domain.meeting.RoomBooking;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
-import cs.model.expert.ExpertDto;
 import cs.model.expert.ExpertSelectedDto;
-import cs.model.expert.ExpertTypeDto;
 import cs.model.meeting.RoomBookingDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.AbstractRepository;
@@ -20,7 +16,6 @@ import cs.repository.repositoryImpl.expert.ExpertNewInfoRepo;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertSelectedRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
-import cs.service.expert.ExpertSelectedService;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;

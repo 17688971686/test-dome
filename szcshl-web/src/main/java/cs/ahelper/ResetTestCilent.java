@@ -23,7 +23,6 @@ public class ResetTestCilent {
     }
 
     public static void  main(String[] args){
-        ResetTestCilent resetTestCilent = new ResetTestCilent();
-        resetTestCilent.pushProject();
+        ResetTestCilent.pushProject();
     }
 }

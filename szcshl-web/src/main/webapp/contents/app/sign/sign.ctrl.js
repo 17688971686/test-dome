@@ -14,7 +14,6 @@
         //点击时。保存查询的条件和grid列表的条件
         vm.saveView = function(){
             $rootScope.storeView(vm.stateName,{gridParams:vm.gridOptions.dataSource.transport.options.read.data(),queryParams:vm.queryParams,data:vm});
-
         }
         active();
         function active() {
@@ -42,7 +41,6 @@
             }else {
                 signSvc.signGrid(vm);
             }
-
         }
 
         //获取委里签收信息

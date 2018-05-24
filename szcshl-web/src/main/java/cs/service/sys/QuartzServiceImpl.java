@@ -1,8 +1,7 @@
 package cs.service.sys;
 
-import cs.common.Constant;
-import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.QuartzManager;
 import cs.common.utils.SessionUtil;
@@ -12,7 +11,14 @@ import cs.domain.sys.Quartz_;
 import cs.model.PageModelDto;
 import cs.model.sys.QuartzDto;
 import cs.repository.odata.ODataObj;
+import cs.repository.repositoryImpl.project.ProjectStopRepo;
 import cs.repository.repositoryImpl.sys.QuartzRepo;
+import cs.service.expert.ExpertReviewService;
+import cs.service.flow.FlowService;
+import cs.service.project.ProjectStopService;
+import cs.service.project.SignService;
+import cs.service.restService.SignRestService;
+import org.activiti.engine.RuntimeService;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.quartz.Job;
@@ -23,9 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Description: 定时器配置 业务操作实现类
@@ -37,6 +41,25 @@ public class QuartzServiceImpl implements QuartzService {
 
     @Autowired
     private QuartzRepo quartzRepo;
+    //把所有定时器需要用到的service都引进来
+    @Autowired
+    private LogService logService;
+    @Autowired
+    private ExpertReviewService expertReviewService;
+    @Autowired
+    private ProjectStopService projectStopService;
+    @Autowired
+    private WorkdayService workdayService;
+    @Autowired
+    private FlowService flowService;
+    @Autowired
+    private SignService signService;
+    @Autowired
+    private SignRestService signRestService;
+    @Autowired
+    private ProjectStopRepo projectStopRepo;
+    @Autowired
+    private RuntimeService runtimeService;
 
     @Override
     public PageModelDto<QuartzDto> get(ODataObj odataObj) {
@@ -166,8 +189,20 @@ public class QuartzServiceImpl implements QuartzService {
             String cls = quartz.getClassName();
             String jobName = quartz.getQuartzName();
 
+            //把所有用到的service加入到参数中去
+            Map<String,Object> params = new HashMap<>();
+            params.put("logService",logService);
+            params.put("expertReviewService",expertReviewService);
+            params.put("projectStopService",projectStopService);
+            params.put("workdayService",workdayService);
+            params.put("flowService",flowService);
+            params.put("signService",signService);
+            params.put("signRestService",signRestService);
+            params.put("projectStopRepo",projectStopRepo);
+            params.put("runtimeService",runtimeService);
+
             if (Job.class.isAssignableFrom(Class.forName(cls))) {
-                QuartzManager.addJob(sched, jobName, Class.forName(cls), time);
+                QuartzManager.addJob(sched, jobName, Class.forName(cls), time,params);
                 //设置状态
                 quartz.setCurState(Constant.EnumState.YES.getValue());
                 quartz.setIsEnable(Constant.EnumState.YES.getValue());

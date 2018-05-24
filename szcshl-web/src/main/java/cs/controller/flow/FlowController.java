@@ -1,9 +1,9 @@
 package cs.controller.flow;
 
 import cs.ahelper.MudoleAnnotation;
-import cs.common.Constant;
-import cs.common.Constant.MsgCode;
-import cs.common.FlowConstant;
+import cs.common.constants.Constant;
+import cs.common.constants.Constant.MsgCode;
+import cs.common.constants.FlowConstant;
 import cs.common.ResultMsg;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
@@ -471,9 +471,11 @@ public class FlowController {
                 case FlowConstant.TOPIC_FLOW:
                     resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
                     break;
+                //图书流程，已给委里处理
                 case FlowConstant.BOOKS_BUY_FLOW:
                     resultMsg = bookBuyBusinessService.dealFlow(processInstance, task,flowDto);
                     break;
+                //固定资产，已给委里处理
                 case FlowConstant.ASSERT_STORAGE_FLOW:
                     resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
                     break;

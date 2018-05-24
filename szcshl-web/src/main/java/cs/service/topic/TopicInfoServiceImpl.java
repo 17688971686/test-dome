@@ -1,6 +1,8 @@
 package cs.service.topic;
 
 import cs.common.*;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
 import cs.common.utils.*;
 import cs.domain.expert.ExpertReview;
 import cs.domain.flow.FlowPrincipal;
@@ -42,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static cs.common.Constant.SUPER_USER;
+import static cs.common.constants.SysConstants.SUPER_ACCOUNT;
 
 /**
  * Description: 课题研究 业务操作实现类
@@ -352,7 +354,7 @@ public class TopicInfoServiceImpl implements TopicInfoService {
                 topicInfo = topicInfoRepo.findById(TopicInfo_.id.getName(), businessId);
                 //如果送发改委
                 if (Constant.EnumState.YES.getValue().equals(topicInfo.getSendFgw()) || topicInfo.getSendFgw() == null) {
-                    variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ADMIN.getValue(), SUPER_USER);
+                    variables = ActivitiUtil.setAssigneeValue(FlowConstant.FlowParams.USER_ADMIN.getValue(),SUPER_ACCOUNT);
                     variables.put(FlowConstant.FlowParams.SEND_FGW.getValue(), true);
                     //下一环节还是自己处理
                     if (assigneeValue.equals(SessionUtil.getUserId())) {

@@ -1,16 +1,12 @@
 package cs.listener;
 
-import cs.common.utils.QuartzManager;
 import cs.common.utils.Validate;
 import cs.domain.sys.Quartz;
 import cs.service.meeting.MeetingRoomService;
 import cs.service.sys.OrgDeptService;
 import cs.service.sys.QuartzService;
 import cs.service.sys.UserService;
-import cs.service.sys.UserServiceImpl;
 import org.apache.log4j.Logger;
-import org.quartz.SchedulerFactory;
-import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;

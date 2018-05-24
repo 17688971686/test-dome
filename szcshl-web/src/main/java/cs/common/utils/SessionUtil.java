@@ -1,6 +1,6 @@
 package cs.common.utils;
 
-import cs.common.Constant;
+import cs.common.constants.Constant;
 import cs.domain.sys.User;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
