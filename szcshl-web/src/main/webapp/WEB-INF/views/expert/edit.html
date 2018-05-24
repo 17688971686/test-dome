@@ -269,7 +269,8 @@
                 <td  class="text-center">银行账号<span class="required">*</span></td>
                 <td colspan="3">
                     <input type="text" name="bankAccount" id="bankAccount" class="form-control input-sm "
-                           ng-model="vm.model.bankAccount" data-val="true" data-val-required="必填">
+                           ng-model="vm.model.bankAccount" data-val="true" data-val-required="必填"
+                           data-val-regex="银行账号格式不正确" data-val-regex-pattern="\d{14,20}">
                     <span data-valmsg-for="bankAccount" data-valmsg-replace="true" class="errors"></span>
                 </td>
             </tr>
