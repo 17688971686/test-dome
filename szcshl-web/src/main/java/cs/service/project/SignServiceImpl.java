@@ -1,13 +1,12 @@
 package cs.service.project;
 
 import com.alibaba.fastjson.JSON;
-import cs.common.Constant;
-import cs.common.Constant.EnumFlowNodeGroupName;
-import cs.common.Constant.EnumState;
-import cs.common.Constant.MsgCode;
-import cs.common.FlowConstant;
 import cs.common.HqlBuilder;
+import cs.common.RandomGUID;
 import cs.common.ResultMsg;
+import cs.common.constants.Constant;
+import cs.common.constants.FlowConstant;
+import cs.common.constants.SysConstants;
 import cs.common.utils.*;
 import cs.domain.expert.*;
 import cs.domain.external.Dept;
@@ -25,6 +24,8 @@ import cs.model.project.*;
 import cs.model.sys.OrgDto;
 import cs.model.sys.SysConfigDto;
 import cs.model.sys.UserDto;
+import cs.quartz.unit.DispathUnit;
+import cs.quartz.unit.QuartzUnit;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
@@ -37,8 +38,6 @@ import cs.repository.repositoryImpl.project.*;
 import cs.repository.repositoryImpl.sys.*;
 import cs.service.external.OfficeUserService;
 import cs.service.flow.FlowService;
-import cs.quartz.unit.DispathUnit;
-import cs.quartz.unit.QuartzUnit;
 import cs.service.rtx.RTXSendMsgPool;
 import cs.service.sys.CompanyService;
 import cs.service.sys.SysConfigService;
@@ -187,7 +186,7 @@ public class SignServiceImpl implements SignService {
             sign.setSendusersign(signName);
         }
         sign.setModifiedDate(now);
-        sign.setModifiedBy(isSignUser?SessionUtil.getDisplayName():SysConstants.SUPER_ACCOUNT);
+        sign.setModifiedBy(isSignUser?SessionUtil.getDisplayName(): SysConstants.SUPER_ACCOUNT);
 
         //如果单位是手动添加时就添加到数据库
         if (Validate.isString(sign.getBuiltcompanyName())) {

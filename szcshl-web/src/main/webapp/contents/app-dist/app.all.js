@@ -4925,10 +4925,17 @@
                     }
                 },
                 {
-                    field: "reviewOrgName",
+                    field: "",
                     title: "评审部门",
                     width: 140,
-                    filterable: false
+                    filterable: false,
+                    template : function(item){
+                        if(!item.aOrgName){
+                            return item.mOrgName;
+                        }else{
+                            return item.mOrgName + "," + item.aOrgName;
+                        }
+                    }
                 },
                 {
                     field: "allPriUser",
@@ -5788,6 +5795,18 @@
                     }
                     if (data.annountmentList) {
                         vm.annountmentList = data.annountmentList;
+                    }
+                    if(data.DOINGNUM){
+                        vm.doingNum = data.DOINGNUM;
+                    }
+                    if(data.DISPATHOVERNUM){
+                        vm.dispathNum = data.DISPATHOVERNUM;
+                    }
+                    if(data.STOPNUM){
+                        vm.stopNum = data.STOPNUM;
+                    }
+                    if(data.WEEKNUM){
+                        vm.weekNum = data.WEEKNUM;
                     }
                     //是否显示图表
                     vm.isdisplays = data.isdisplay;
@@ -13158,7 +13177,7 @@
         vm.create = function () {
             common.initJqValidation($('#dispatch_form'));
             var isValid = $('#dispatch_form').valid();
-            if(isValid){
+            if(isValid ){
                 dispatchSvc.saveDispatch(vm,function(data){
                     vm.isCommit = false;
                     if (data.flag || data.reCode == "ok") {
@@ -13176,28 +13195,39 @@
                     bsWin.alert(data.reMsg);
                 });
             }else{
-                bsWin.alert("提交失败，有红色标识的是必填项，请确认是否填写！");
+                bsWin.alert("提交失败，请确认填写内容！");
             }
         }
 
         // 核减（增）/核减率（增）计算
         vm.count = function () {
             var pt = /^(-)?(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,4})?$/;    //保留4个小数点
-            if(!pt.test(vm.dispatchDoc.declareValue)){
+            if(vm.dispatchDoc.declareValue && !pt.test(vm.dispatchDoc.declareValue)){
                 vm.dispatchDoc.declareValue = 0;
                 $("span[data-valmsg-for='declareValue']").html("金额只能输入数字！");
                 return ;
             }
-            if(!pt.test(vm.dispatchDoc.authorizeValue)){
+            if(vm.dispatchDoc.authorizeValue && !pt.test(vm.dispatchDoc.authorizeValue)){
                 vm.dispatchDoc.authorizeValue = 0;
                 $("span[data-valmsg-for='authorizeValue']").html("金额只能输入数字！");
                 return ;
             }
+            if(vm.dispatchDoc.approveValue && !pt.test(vm.dispatchDoc.approveValue)){
+                vm.dispatchDoc.approveValue = 0;
+                $("span[data-valmsg-for='approveValue']").html("金额只能输入数字！");
+                return ;
+            }
             $("span[data-valmsg-for='declareValue']").html("");
             $("span[data-valmsg-for='authorizeValue']").html("");
+            var dvalue , extraRate;
+            if(vm.dispatchDoc.declareValue && vm.dispatchDoc.authorizeValue){
 
-            var dvalue = (parseFloat(vm.dispatchDoc.declareValue) - parseFloat(vm.dispatchDoc.authorizeValue)).toFixed(2);
-            var extraRate = parseFloat((dvalue/vm.dispatchDoc.declareValue * 10000)/100.00).toFixed(2);
+                dvalue = (parseFloat(vm.dispatchDoc.declareValue) - parseFloat(vm.dispatchDoc.authorizeValue)).toFixed(2);
+            }
+            if( vm.dispatchDoc.declareValue != 0){
+
+               extraRate = parseFloat((dvalue/vm.dispatchDoc.declareValue * 10000)/100.00).toFixed(2);
+            }
             vm.dispatchDoc.extraRate = extraRate;
             vm.dispatchDoc.extraValue = dvalue;
         }
@@ -38739,7 +38769,7 @@
              success: httpSuccess
              });*/
             $http({
-                method: 'get',
+                method: 'post',
                 url: rootPath + "/sign/findAssociateSignList",
                 params: {
                     signid: vm.price.signid,
@@ -40832,7 +40862,7 @@
 
             orgSvc.queryOrgList(vm , function(data){
                 vm.orgs = data;
-                if(vm.work.reviewOrgName){
+                if(vm.work && vm.work.reviewOrgName){
                     var reviewOrgName = vm.work.reviewOrgName.split(',');
                     for(var i = 0 ; i < reviewOrgName.length ; i++){
                         $.each(vm.orgs , function(x , obj){
@@ -40865,7 +40895,7 @@
             //     }
             //     var idStr = ids.join(',');
             //     var nameStr = names.join(',');
-            signSvc.addAOrg(  orgId , vm.work.signId  , function(data){
+            signSvc.addAOrg(  orgId , vm.model.signid  , function(data){
                 if(data.flag || data.reCode == 'ok'){
                     bsWin.alert(data.reMsg);
                     vm.orgName += (vm.orgName == undefined ? "" : "," ) + orgName;
@@ -40883,7 +40913,7 @@
          * @param orgName
          */
         vm.deleteReviewDept = function(orgId , orgName){
-            signSvc.deleteAOrg(orgId ,  vm.work.signId , function(data){
+            signSvc.deleteAOrg(orgId ,  vm.model.signid , function(data){
                 if(data.flag || data.reCode == 'ok'){
                     bsWin.alert(data.reMsg);
                     var reviewOrgName = vm.orgName.split(',');
@@ -40925,7 +40955,7 @@
          * @param user
          */
         vm.saveSecondUser = function (user){
-            signSvc.addSecondUser(user.id , vm.work.signId , function(data){
+            signSvc.addSecondUser(user.id , vm.model.signid , function(data){
                 if(data.flag || data.reCode == 'ok'){
                     bsWin.alert(data.reMsg);
                     vm.secondChargeUserName.push(user.displayName);
@@ -40953,7 +40983,7 @@
          * @param user
          */
         vm.deleteSecondUser = function(user){
-            signSvc.deleteSecondUser(user.id , vm.work.signId , function(data){
+            signSvc.deleteSecondUser(user.id , vm.model.signid , function(data){
                 if(data.flag || data.reCode == 'ok'){
                     bsWin.alert(data.reMsg);
                     for(var i = 0 ; i < vm.secondChargeUserName.length ; i++){
@@ -40985,7 +41015,6 @@
                 });
             }else{
                 bsWin.confirm("确认取消自选多个专家？" , function(){
-                    console.log(vm.model.isMoreExpert);
                     signSvc.saveMoreExpert(vm.model.signid , vm.model.isMoreExpert , function(data){
                         if(data.flag || data.reCode == 'ok'){
                             bsWin.alert(data.reMsg);
