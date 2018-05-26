@@ -7,81 +7,100 @@ body{
     background-size:100% 100%;
     padding-top:50px;
 }
-.logo{
-    position: absolute;
-    left:8%;
-    top:28%;
-
+.login-container{
+    width: 1280px;
+    margin:0 auto;
 }
-.logo img{
-
+.login-container .logo{
+    float: left;
+    width: 228px;
+    margin-top: 140px;
+    margin-left: 200px;
 }
 .loginform{
-    width: 450px;
-    position: absolute;
-    background-color:#fff;
-    right: 8%;
-    top: 32%;
-    box-shadow: 5px 5px 5px rgba(0,0,0,0.2);
-    border-radius:10px;
-}
-.loginform form{
-    padding:40px;
+    width: 412px;
+    height: 275px;
+    float: right;
+    margin-top: 120px;
+    margin-right:200px;
+    background:url('../images/loginform-bg.jpg');
+    text-align: center;
 }
 .loginform h3{
-    color:#4fAEE3;
-    font-size:24px;
+    color:#fff;
+    font-size:20px;
+    margin: 0;
     letter-spacing:2px;
-    margin-bottom:30px;
+    line-height: 50px;
 }
 .loginform .input-container{
     position: relative;
-    text-align: center;
-    margin:30px 0;
+    margin:25px 0;
 }
 .loginform .input-container input{
-    background:#fafafa;
+    background:url('../images/logininput-bg.jpg')no-repeat left top/100% 100%;
+    width: 236px;
     height:40px;
-    width: 100%;
-    padding-left:40px;
+    padding-left:10px;
+    display: inline-block;
+}
+.loginform .input-container h4{
+    display: inline-block;
+    color:#dbffff;
+    letter-spacing: 20px;
+    font-weight:bolder;
+    font-size:20px;
+    margin: 0;
+    line-height: 40px;
+    vertical-align: middle;
+    position: relative;
+    top:2px;
 }
 .loginform .input-container input:focus{
-    border: 1px solid #128471;
     box-shadow: 0 0 10px #44cef3;
 }
-.loginform .input-container span{
+.loginform .input-container .errors{
     position: absolute;
-    left: 0;
-    top:-15px;
-    width: 100px;
-    height: 40px;
-    line-height:40px;
-    color:red;
+    right: 52px;
+    top: 8px;
+    color:#f00;
 }
-.loginform .input-container span.glyphicon{
-    width: 40px;
-    top:0;
-    font-size:16px;
-    color:#44cef3;
-}
+
 .loginform-footer{
-    height:100px;
-    background: #eee;
-    padding:20px 40px 0;
-    border-radius:0 0 10px 10px;
+    margin-top: 25px;
+    padding:0 50px 0 30px;
+    overflow: hidden;
 }
 .loginform-footer .btn{
-    width: 100%;
-    height: 40px;
-    border-radius:10px;
-    background: #4fAEE3;
-    border:1px solid #fff;
-    font-size:20px ;
-    letter-spacing:5px;
+    height: 30px;
+    width: 100px;
+    border-radius:5px;
+    background-image: url('../images/loginbtn-bg.jpg');
+    background-size:100% 100%;
+    font-size:18px ;
+    line-height: 30px;
+    letter-spacing:10px;
+    color:#333;
+    padding: 0 0 0 10px;
+    float: right;
+    font-weight:bolder;
 }
-.loginform-footer .btn:hover{
-    background: #418bb4;
-    border:none;
+.loginform-footer .remember{
+    float: left;
+    margin-left: 20px;
+    color:#dbffff;
+    margin-top: 5px;
+    cursor:pointer;
+}
+.loginform-footer .remember input{
+    width: 20px;
+    height: 20px;
+    vertical-align: bottom;
+}
+.loginform-footer .remember span{
+    letter-spacing: 2px;
+    vertical-align: bottom;
+    font-weight:lighter;
 }
 .footer{
     position: absolute;
@@ -92,38 +111,14 @@ body{
     line-height: 40px;
     color: #fff;
 }
-@media (max-width: 1400px){
+@media (max-width: 1400px) and (min-width:1300px){
+    body{
+        padding-top:20px;
+    }
     .loginform{
-        width: 350px;
-        right: 10%;
-    }
-    .loginform form{
-        padding:20px;
-    }
-    .logotitle img{
-        width: 95%;
-        max-width: 1132px;
-    }
-    .loginform h3{
-        margin-bottom:15px;
-        font-size:20px;
         margin-top:0;
     }
-    .loginform .input-container{
-        margin:15px 0;
-    }
-    .loginform-footer{
-        padding:20px 20px 0;
-    }
-    .loginform-footer p{
-        font-size:12px;
-        margin-top: 15px !important;
-    }
-    .logo{
-        left: 10%;
-        top:33%;
-    }
-    .logo img{
-        width: 250px;
+    .login-container .logo{
+        margin-top: 20px;
     }
 }
