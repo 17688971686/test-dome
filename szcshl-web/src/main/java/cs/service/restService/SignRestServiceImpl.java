@@ -276,6 +276,8 @@ public class SignRestServiceImpl implements SignRestService {
             dataMap.put("jsnrjgm", dispatchDoc.getBuildSizeContent());// 建设内容及规模
             dataMap.put("tzksjzjly", dispatchDoc.getFundTotalOrigin());// 投资估算及资金来源
             dataMap.put("xyjdgzyq", dispatchDoc.getNextWorkPlan());// 下一阶段工作要求
+            boolean isTw = "项目退文".equals(dispatchDoc.getDispatchType());
+            dataMap.put("istw", isTw?"1":"0");// 是否项目退文
 
             //2.3 发文环节处理意见(主任意见)
             psgcMap = new HashMap<String, Object>();
