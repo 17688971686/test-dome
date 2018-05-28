@@ -1,6 +1,15 @@
 <meta charset="UTF-8">
 <#assign path=request.contextPath/>
+<style>
+    .child-table{
+        border-collapse: collapse;
+    }
+    .child-table td{
+        border:1px solid #989898;
+        border-collapse: collapse;
+    }
 
+</style>
 <div class="" style="background:white; margin-bottom: 10px;">
     <span>
         欢迎您：<b style="color:#ffae00;">${user}</b>,</span> <span>上次登录时间 ${lastLoginDate}
@@ -88,76 +97,76 @@
     <div class="row">
         <div class="col-xs-12" ng-hide="vm.isdisplays">
             <div class="box" style="border:none;min-height:0px;">
-            <div class="box-body no-padding">
-                <table class="table table-bordered">
-                    <tr>
-                        <td colspan="7">
-                            <div class="box-header">
-                                <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/>
-                                    在办项目统计一览表
-                                    (
-                                    在办项目<strong>{{vm.doingNum ? vm.doingNum : 0}}</strong>个，
-                                    发文超期<strong>{{vm.dispathNum ? vm.dispathNum : 0}}</strong>个，
-                                    少于3个工作日<strong>{{vm.weekNum ? vm.weekNum : 0}}</strong>个，
-                                    项目暂停<strong>{{vm.stopNum ? vm.stopNum : 0}}</strong>个)
-                                </h3>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="7">
-                            <span id="span1" style="margin-left: 15px;"><img src="${path}/contents/images/purple.png" style="width: 16px; height: 16px;"></span>暂停
-                            <span id="span2"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>少于3个工作日
-                            <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
-                            <span id="span4"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
-                            <span id="span5"><img src="${path}/contents/images/black.png" style="width: 16px; height: 16px;"></span>存档超期
-                        </td>
-                    </tr>
-                    <tr class="active">
-                        <th style="width: 150px;">部门/人员</th>
-                        <th style="width: 80px;">项目总数</th>
-                        <th >项目名称</th>
-                        <th >项目阶段</th>
-                        <th >办理环节</th>
-                        <th >项目负责人</th>
-                        <th style="width: 100px;">剩余工作日</th>
-                    </tr>
-                    <tbody ng-if="vm.histogram" ng-repeat="ruTaskMap in vm.histogram">
-                    <tr ng-repeat="ruTaskList in ruTaskMap.TASK_LIST">
-                        <td rowspan="{{ruTaskMap.COUNT}}" ng-show="$index == 0" style="vertical-align: middle;">{{ruTaskMap.HISTOGRAM_NAME}}</td>
-                        <td rowspan="{{ruTaskMap.COUNT}}" ng-show="$index == 0" style="vertical-align: middle;">{{ruTaskMap.COUNT}}</td>
-                        <td>
+                <div class="box-body no-padding">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td colspan="7">
+                                <div class="box-header">
+                                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/>
+                                        在办项目统计一览表
+                                        (
+                                        在办项目<strong>{{vm.doingNum ? vm.doingNum : 0}}</strong>个，
+                                        发文超期<strong>{{vm.dispathNum ? vm.dispathNum : 0}}</strong>个，
+                                        少于3个工作日<strong>{{vm.weekNum ? vm.weekNum : 0}}</strong>个，
+                                        项目暂停<strong>{{vm.stopNum ? vm.stopNum : 0}}</strong>个)
+                                    </h3>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7">
+                                <span id="span1" style="margin-left: 15px;"><img src="${path}/contents/images/purple.png" style="width: 16px; height: 16px;"></span>暂停
+                                <span id="span2"><img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;"></span>少于3个工作日
+                                <span id="span3"><img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;"></span>发文超期
+                                <span id="span4"><img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;"></span>超过25个工作日未存档
+                                <span id="span5"><img src="${path}/contents/images/black.png" style="width: 16px; height: 16px;"></span>存档超期
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <th style="width: 150px;">部门/人员</th>
+                            <th style="width: 80px;">项目总数</th>
+                            <th >项目名称</th>
+                            <th >项目阶段</th>
+                            <th >办理环节</th>
+                            <th >项目负责人</th>
+                            <th style="width: 100px;">剩余工作日</th>
+                        </tr>
+                        <tbody ng-if="vm.histogram" ng-repeat="ruTaskMap in vm.histogram">
+                        <tr ng-repeat="ruTaskList in ruTaskMap.TASK_LIST">
+                            <td rowspan="{{ruTaskMap.COUNT}}" ng-show="$index == 0" style="vertical-align: middle;">{{ruTaskMap.HISTOGRAM_NAME}}</td>
+                            <td rowspan="{{ruTaskMap.COUNT}}" ng-show="$index == 0" style="vertical-align: middle;">{{ruTaskMap.COUNT}}</td>
+                            <td>
                             <span ng-if="ruTaskList.lightState == 4">
                                 <img src="${path}/contents/images/purple.png" style="width: 16px; height: 16px;">
                             </span>
-                            <span ng-if="ruTaskList.lightState == 5">
+                                <span ng-if="ruTaskList.lightState == 5">
                                 <img src="${path}/contents/images/yellow.png" style="width: 16px; height: 16px;">
                             </span>
-                            <span ng-if="ruTaskList.lightState == 6">
+                                <span ng-if="ruTaskList.lightState == 6">
                                 <img src="${path}/contents/images/red.png" style="width: 16px; height: 16px;">
                             </span>
-                            <span ng-if="ruTaskList.lightState == 7">
+                                <span ng-if="ruTaskList.lightState == 7">
                                 <img src="${path}/contents/images/dark.png" style="width: 16px; height: 16px;">
                             </span>
-                            <span ng-if="ruTaskList.lightState == 8">
+                                <span ng-if="ruTaskList.lightState == 8">
                                 <img src="${path}/contents/images/black.png" style="width: 16px; height: 16px;">
                             </span>
-                            <a style="color: #72ACE3;" href="#/signFlowDetail/{{ruTaskList.businessKey}}/{{ruTaskList.taskId}}/{{ruTaskList.processInstanceId}}" >{{ruTaskList.projectName}}</a></td>
-                        <td>{{ruTaskList.reviewStage}}</td>
-                        <td>{{ruTaskList.nodeNameValue}}</td>
-                        <td>{{ruTaskList.allPriUser}}</td>
-                        <td><span style="color: #f39a0d;font-size: 15px;">{{ruTaskList.surplusDays}}</span></td>
-                    </tr>
-                    </tbody>
-                    <tr ng-if="!vm.histogram">
-                        <td colspan="6" class="text-center">
-                            <div style="height: 75px;">
-                                暂无数据
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+                                <a style="color: #72ACE3;" href="#/signFlowDetail/{{ruTaskList.businessKey}}/{{ruTaskList.taskId}}/{{ruTaskList.processInstanceId}}" >{{ruTaskList.projectName}}</a></td>
+                            <td>{{ruTaskList.reviewStage}}</td>
+                            <td>{{ruTaskList.nodeNameValue}}</td>
+                            <td>{{ruTaskList.allPriUser}}</td>
+                            <td><span style="color: #f39a0d;font-size: 15px;">{{ruTaskList.surplusDays}}</span></td>
+                        </tr>
+                        </tbody>
+                        <tr ng-if="!vm.histogram">
+                            <td colspan="6" class="text-center">
+                                <div style="height: 75px;">
+                                    暂无数据
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -246,6 +255,55 @@
 </div>
 <!-- end 图表显示 -->
 
+<!-- begin 当前日起往后的5个工作日的调研和会议统计信息-->
+<div class="cared" >
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box" style="border:none;min-height:0px;">
+                <div class="box-body no-padding">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td colspan="6">
+                                <div class="box-header">
+                                    <h3 class="box-title"><img src="${path}/contents/images/cardel.png"/>
+                                        调研和会议统计信息
+                                    </h3>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="active">
+                            <th style="width: 100px;"></th>
+                            <th ng-repeat="h in vm.timeHeadArr" style="width: 100px;">{{h}}</th>
+                        </tr>
+
+                        <tr ng-if="vm.proAmMeetDtoList.length > 0">
+                            <td style="vertical-align: middle;text-align: center;" rowspan="{{vm.proAmMeetDtoList.length+1}}" style="padding: 0;"><b>上午</b></td>
+                        </tr>
+                        <tr ng-repeat="x in vm.proAmMeetDtoList">
+                            <td>{{x.proName1}}</td>
+                            <td>{{x.proName2}}</td>
+                            <td>{{x.proName3}}</td>
+                            <td>{{x.proName4}}</td>
+                            <td>{{x.proName5}}</td>
+                        </tr>
+                        <tr ng-if="vm.proPmMeetDtoList.length > 0">
+                            <td style="vertical-align: middle;text-align: center;" rowspan="{{vm.proPmMeetDtoList.length+1}}" style="padding: 0;"><b>下午</b></td>
+                        </tr>
+                        <tr ng-repeat="x in vm.proPmMeetDtoList">
+                            <td>{{x.proName1}}</td>
+                            <td>{{x.proName2}}</td>
+                            <td>{{x.proName3}}</td>
+                            <td>{{x.proName4}}</td>
+                            <td>{{x.proName5}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end 在办项目详情 -->
+
 <div class="cared">
     <div class="row">
         <div class="col-xs-12 ">
@@ -278,6 +336,5 @@
                 <!-- /.box-body -->
             </div>
         </div>
-
     </div>
 </div>

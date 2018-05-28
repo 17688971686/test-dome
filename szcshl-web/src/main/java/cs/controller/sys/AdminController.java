@@ -14,6 +14,7 @@ import cs.repository.repositoryImpl.flow.RuTaskRepo;
 import cs.service.flow.FlowService;
 import cs.service.project.SignPrincipalService;
 import cs.service.project.SignService;
+import cs.service.project.WorkProgramService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
 import cs.service.sys.DictService;
@@ -63,6 +64,8 @@ public class AdminController {
     private OrgDeptService orgDeptService;
     @Autowired
     private SignPrincipalService signPrincipalService;
+    @Autowired
+    private WorkProgramService workProgramService;
 
     //@RequiresPermissions("admin#index#get")
     @RequiresAuthentication
@@ -232,17 +235,17 @@ public class AdminController {
                     } else {
                         existList.add(rpt.getBusinessKey());
                         lineList.add(rpt);
-                            switch (rpt.getLightState()){
-                                case "6":
-                                    dipathOverNum ++ ;
-                                    break;
-                                case "4" :
-                                    stopNum ++ ;
-                                    break;
-                                case "5" :
-                                    weekNum ++;
-                                    break;
-                                default: break;
+                        switch (rpt.getLightState()){
+                            case "6":
+                                dipathOverNum ++ ;
+                                break;
+                            case "4" :
+                                stopNum ++ ;
+                                break;
+                            case "5" :
+                                weekNum ++;
+                                break;
+                            default: break;
                         }
                         resultMap.put("DOINGNUM" ,doingNum );
                         resultMap.put("DISPATHOVERNUM" , dipathOverNum);
@@ -262,7 +265,8 @@ public class AdminController {
             resultMap.put(PROTASKLIST, null);
             resultMap.put(ISDISPLAY, true);
         }
-
+        //6. 当前日起往后的5个工作日的调研和会议统计信息
+        resultMap.put("proMeetInfo",workProgramService.findProMeetInfo());
         return resultMap;
     }
 

@@ -690,6 +690,8 @@ public class RoomBookingSerivceImpl implements RoomBookingSerivce {
         return returnList;
     }
 
+
+
     /**
      * 内容的拼接
      * 格式：XXX会议 换行 (时间) 换行 XXX会议室

@@ -10,6 +10,8 @@
         vm.title = '主页';
         //默认用户是普通员工
         vm.isdisplays = false;
+        vm.timeHeadArr = [];//会议调研时间头
+        vm.timeArr = [];//会议调研时间
         /**
          * 初始化柱状图数据
          */
@@ -134,10 +136,10 @@
                     containLabel: true,
                 },
                 /*   legend: {
-                    orient: 'vertical',
-                    left: 'left',
-                    data: vm.projectType
-                    },*/
+                 orient: 'vertical',
+                 left: 'left',
+                 data: vm.projectType
+                 },*/
                 xAxis: {
                     show: false,
                     type: 'category',
@@ -190,9 +192,11 @@
         activate();
 
         function activate() {
+            initProMeetDate();
             adminSvc.initWelComePage(function (data) {
                 vm.hidePreTable = true;
                 vm.isdisplays = true;
+                console.log(data.proMeetInfo);
                 if (data) {
                     if (data.proTaskList) {
                         vm.tasksList = data.proTaskList;
@@ -205,6 +209,12 @@
                     }
                     if (data.annountmentList) {
                         vm.annountmentList = data.annountmentList;
+                    }
+                    if(data.proMeetInfo.proAmMeetDtoList){
+                        vm.proAmMeetDtoList = data.proMeetInfo.proAmMeetDtoList;
+                    }
+                    if(data.proMeetInfo.proPmMeetDtoList){
+                        vm.proPmMeetDtoList = data.proMeetInfo.proPmMeetDtoList;
                     }
                     if(data.DOINGNUM){
                         vm.doingNum = data.DOINGNUM;
@@ -281,5 +291,51 @@
             });
         }
 
+        /**
+         * 初始化调研和会议统计信息日期时间
+         */
+        function initProMeetDate() {
+            var now = new Date(); //当前日期
+            vm.timeArr.push(formatDate(now));
+            for(var i=1; i < 5;i++ ){
+                vm.timeArr.push(getNewDay(vm.timeArr[0],i));
+            }
+
+            for(var i=0; i < vm.timeArr.length; i++){
+                vm.timeHeadArr.push(getNewDayStr(vm.timeArr[i]));
+            }
+        }
+
+        function getNewDay(dateTemp, days) {
+            var dateTemp = dateTemp.split("-");
+            var nDate = new Date(dateTemp[1] + '-' + dateTemp[2] + '-' + dateTemp[0]); //转换为MM-DD-YYYY格式
+            var millSeconds = Math.abs(nDate) + (days * 24 * 60 * 60 * 1000);
+            var rDate = new Date(millSeconds);
+            var year = rDate.getFullYear();
+            var month = rDate.getMonth() + 1;
+            if (month < 10) month = "0" + month;
+            var date = rDate.getDate();
+            if (date < 10) date = "0" + date;
+            return (year + "-" + month + "-" + date);
+        }
+
+        function getNewDayStr(dateTemp) {
+            var dateTemp = dateTemp.split("-");
+            return ( dateTemp[1].replace(/\b(0+)/gi,"") + "月" + dateTemp[2]);
+        }
+
+        //格式化日期：yyyy-MM-dd
+        function formatDate(date) {
+            var myyear = date.getFullYear();
+            var mymonth = date.getMonth() + 1;
+            var myweekday = date.getDate();
+            if (mymonth < 10) {
+                mymonth = "0" + mymonth;
+            }
+            if (myweekday < 10) {
+                myweekday = "0" + myweekday;
+            }
+            return (myyear.toString() + "-" + mymonth.toString() + "-" + myweekday.toString());
+        }
     }
 })();

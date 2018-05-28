@@ -15,6 +15,8 @@ import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
 import cs.domain.sys.*;
 import cs.domain.sys.Ftp_;
+import cs.model.project.ProMeetDto;
+import cs.model.project.ProMeetShow;
 import cs.model.project.WorkProgramDto;
 import cs.repository.repositoryImpl.expert.ExpertRepo;
 import cs.repository.repositoryImpl.expert.ExpertReviewRepo;
@@ -732,5 +734,201 @@ public class WorkProgramServiceImpl implements WorkProgramService {
 
         return workDto;
     }
+
+    /**
+     * 获取工作方案调研及会议信息
+     * @return
+     */
+    @Override
+    public Map<String,Object> findProMeetInfo(){
+        Map resultMap = new HashMap<String,Object>();
+        List<ProMeetDto> proAmMeetDtoList = workProgramRepo.findAmProMeetInfo();
+        List<ProMeetDto> proPmMeetDtoList = workProgramRepo.findPmProMeetInfo();
+        resultMap.put("proAmMeetDtoList",proAmMeetInfoUpdate(proAmMeetDtoList));
+        resultMap.put("proPmMeetDtoList",proAmMeetInfoUpdate(proPmMeetDtoList));
+        return  resultMap;
+    }
+
+    private List<ProMeetShow> proAmMeetInfoUpdate(List<ProMeetDto>proMeetDtoList ){
+        List<ProMeetShow> proMeetShowList = new ArrayList<ProMeetShow>();
+        String[] dateArr = initMeetDateArr();
+        ProMeetShow proMeetShow = new ProMeetShow();
+        int temp = 1;
+        for(int i = 0;i < proMeetDtoList.size();i++ ){
+            if(!(temp == proMeetDtoList.get(i).getInnerSeq().intValue())){
+                temp++;
+                proMeetShowList.add(proMeetShow);
+                proMeetShow = new ProMeetShow();
+            }
+            if(temp == proMeetDtoList.get(i).getInnerSeq().intValue()){
+                if(dateArr[0].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
+                    if(StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())){
+                        proMeetShow.setProName1(proMeetDtoList.get(i).getRbName()+"("+proMeetDtoList.get(i).getAddressName()+")");
+                    }else if(StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())){
+                        proMeetShow.setProName1(proMeetDtoList.get(i).getProName()+"项目调研");
+                    }
+                    if((i+1)== proMeetDtoList.size()){
+                        proMeetShowList.add(proMeetShow);
+                    }
+                    continue;
+                }else if(dateArr[1].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
+                    if(StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())){
+                        proMeetShow.setProName2(proMeetDtoList.get(i).getRbName()+"("+proMeetDtoList.get(i).getAddressName()+")");
+                    }else if(StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())){
+                        proMeetShow.setProName2(proMeetDtoList.get(i).getProName()+"项目调研");
+                    }
+                    if((i+1)== proMeetDtoList.size()){
+                        proMeetShowList.add(proMeetShow);
+                    }
+                    continue;
+                }else if(dateArr[2].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
+                    if(StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())){
+                        proMeetShow.setProName3(proMeetDtoList.get(i).getRbName()+"("+proMeetDtoList.get(i).getAddressName()+")");
+                    }else if(StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())){
+                        proMeetShow.setProName3(proMeetDtoList.get(i).getProName()+"项目调研");
+                    }
+                    if((i+1)== proMeetDtoList.size()){
+                        proMeetShowList.add(proMeetShow);
+                    }
+                    continue;
+                }else if(dateArr[3].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
+                    if(StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())){
+                        proMeetShow.setProName4(proMeetDtoList.get(i).getRbName()+"("+proMeetDtoList.get(i).getAddressName()+")");
+                    }else if(StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())){
+                        proMeetShow.setProName4(proMeetDtoList.get(i).getProName()+"项目调研");
+                    }
+                    if((i+1)== proMeetDtoList.size()){
+                        proMeetShowList.add(proMeetShow);
+                    }
+                    continue;
+                }else if(dateArr[4].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
+                    if(StringUtil.isNotBlank(proMeetDtoList.get(i).getRbName())){
+                        proMeetShow.setProName5(proMeetDtoList.get(i).getRbName()+"("+proMeetDtoList.get(i).getAddressName()+")");
+                    }else if(StringUtil.isNotBlank(proMeetDtoList.get(i).getProName())){
+                        proMeetShow.setProName5(proMeetDtoList.get(i).getProName()+"项目调研");
+                    }
+                    if((i+1)== proMeetDtoList.size()){
+                        proMeetShowList.add(proMeetShow);
+                    }
+                    continue;
+                }
+            }else{
+                if(dateArr[0].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
+                    if(proMeetShowList.size() > 0){
+                        for(int j = 0;j < proMeetShowList.size();j++){
+                            if(StringUtil.isBlank(proMeetShowList.get(j).getProName1())) {
+                                proMeetShowList.get(j).setProName1(proMeetDtoList.get(i).getProName()+"项目调研");
+                                break;
+                            }
+                            if((j+1) == proMeetShowList.size()){
+                                proMeetShow = new ProMeetShow();
+                                proMeetShow.setProName1(proMeetDtoList.get(i).getProName()+"项目调研");
+                                proMeetShowList.add(proMeetShow);
+                                break;
+                            }
+                        }
+                    }else{
+                        proMeetShow = new ProMeetShow();
+                        proMeetShow.setProName1(proMeetDtoList.get(i).getProName()+"项目调研");
+                        proMeetShowList.add(proMeetShow);
+
+                    }
+                }else if(dateArr[1].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
+                    if(proMeetShowList.size() > 0){
+                        for(int j = 0;j < proMeetShowList.size();j++){
+                            if(StringUtil.isBlank(proMeetShowList.get(j).getProName2())) {
+                                proMeetShowList.get(j).setProName2(proMeetDtoList.get(i).getProName()+"项目调研");
+                                break;
+                            }
+                            if((j+1) == proMeetShowList.size()){
+                                proMeetShow = new ProMeetShow();
+                                proMeetShow.setProName2(proMeetDtoList.get(i).getProName()+"项目调研");
+                                proMeetShowList.add(proMeetShow);
+                                break;
+                            }
+                        }
+                    }else{
+                        proMeetShow = new ProMeetShow();
+                        proMeetShow.setProName2(proMeetDtoList.get(i).getProName()+"项目调研");
+                        proMeetShowList.add(proMeetShow);
+                    }
+                }else if(dateArr[2].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
+                    if(proMeetShowList.size() > 0){
+                        for(int j = 0;j < proMeetShowList.size();j++){
+                            if(StringUtil.isBlank(proMeetShowList.get(j).getProName3())) {
+                                proMeetShowList.get(j).setProName3(proMeetDtoList.get(i).getProName()+"项目调研");
+                                break;
+                            }
+                            if((j+1) == proMeetShowList.size()){
+                                proMeetShow = new ProMeetShow();
+                                proMeetShow.setProName3(proMeetDtoList.get(i).getProName()+"项目调研");
+                                proMeetShowList.add(proMeetShow);
+                                break;
+                            }
+                        }
+                    }else{
+                        proMeetShow = new ProMeetShow();
+                        proMeetShow.setProName3(proMeetDtoList.get(i).getProName()+"项目调研");
+                        proMeetShowList.add(proMeetShow);
+                    }
+                }else if(dateArr[3].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
+                    if(proMeetShowList.size() > 0){
+                        for(int j = 0;j < proMeetShowList.size();j++){
+                            if(StringUtil.isBlank(proMeetShowList.get(j).getProName4())) {
+                                proMeetShowList.get(j).setProName4(proMeetDtoList.get(i).getProName()+"项目调研");
+                                break;
+                            }
+                            if((j+1) == proMeetShowList.size()){
+                                proMeetShow = new ProMeetShow();
+                                proMeetShow.setProName4(proMeetDtoList.get(i).getProName()+"项目调研");
+                                proMeetShowList.add(proMeetShow);
+                                break;
+                            }
+                        }
+                    }else{
+                        proMeetShow = new ProMeetShow();
+                        proMeetShow.setProName4(proMeetDtoList.get(i).getProName()+"项目调研");
+                        proMeetShowList.add(proMeetShow);
+                    }
+                }else if(dateArr[4].equals(DateUtils.converToString(proMeetDtoList.get(i).getProMeetDate(),""))){
+                    if(proMeetShowList.size() > 0){
+                        for(int j = 0;j < proMeetShowList.size();j++){
+                            if(StringUtil.isBlank(proMeetShowList.get(j).getProName5())) {
+                                proMeetShowList.get(j).setProName5(proMeetDtoList.get(i).getProName()+"项目调研");
+                                break;
+                            }
+                            if((j+1) == proMeetShowList.size()){
+                                proMeetShow = new ProMeetShow();
+                                proMeetShow.setProName5(proMeetDtoList.get(i).getProName()+"项目调研");
+                                proMeetShowList.add(proMeetShow);
+                                break;
+                            }
+                        }
+                    }else{
+                        proMeetShow = new ProMeetShow();
+                        proMeetShow.setProName5(proMeetDtoList.get(i).getProName()+"项目调研");
+                        proMeetShowList.add(proMeetShow);
+                    }
+                }
+
+            }
+        }
+
+        return proMeetShowList;
+
+    }
+
+    /***
+     * 初始化日期数组
+     * @return
+     */
+    private String[]  initMeetDateArr(){
+        String dateStr[] = new String[5];
+        for(int i = 0;i < dateStr.length;i++){
+            dateStr[i] = DateUtils.converToString(DateUtils.addDay(new Date(),i),"");
+        }
+        return dateStr;
+    }
+
 
 }
