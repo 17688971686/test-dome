@@ -57,4 +57,18 @@ public interface UserRepo extends IRepository<User, String> {
      * @return
      */
     List<UserDto> findUserAndOrg();
+
+    /**
+     * 检验用户是否已经转为代办
+     * @param takeUserId
+     * @return
+     */
+    boolean checkTakeExist(String takeUserId);
+
+    /**
+     * 判断设定的用户是否为请假人（已经设定代办人的人）
+     * @param takeUserId
+     * @return
+     */
+    boolean checkUserSetTask(String takeUserId);
 }

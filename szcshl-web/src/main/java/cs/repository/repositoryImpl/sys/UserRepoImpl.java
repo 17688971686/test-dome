@@ -233,6 +233,24 @@ public class UserRepoImpl extends AbstractRepository<User, String> implements Us
         return userDtoList;
     }
 
+    @Override
+    public boolean checkTakeExist(String takeUserId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" select count(u.id) from  CS_USER u where u."+User_.takeUserId.getName()+" =:takeUserId ");
+        hqlBuilder.setParam("takeUserId",takeUserId);
+        int count = returnIntBySql(hqlBuilder);
+        return count>0;
+    }
+
+    @Override
+    public boolean checkUserSetTask(String takeUserId) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append(" select count(u.id) from  CS_USER u where u."+User_.id.getName()+" =:takeUserId and u."+User_.takeUserId.getName()+" is not null ");
+        hqlBuilder.setParam("takeUserId",takeUserId);
+        int count = returnIntBySql(hqlBuilder);
+        return count>0;
+    }
+
     private boolean checkUser(String signId,String orgId,String userId){
         OrgDept orgDept = orgDeptRepo.findOrgDeptById(orgId);
         //判断是部门还是组

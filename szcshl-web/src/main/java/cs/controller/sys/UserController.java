@@ -207,9 +207,9 @@ public class UserController {
     //@RequiresPermissions("user#saveTakeUser#post")
     @RequiresAuthentication
     @RequestMapping(name = "保存代办人", path = "saveTakeUser", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void saveTkeUser(@RequestParam String takeUserId) {
-        userService.saveTakeUser(takeUserId);
+    @ResponseBody
+    public ResultMsg saveTkeUser(@RequestParam String takeUserId) {
+        return userService.saveTakeUser(takeUserId);
     }
 
     //@RequiresPermissions("user#cancelTakeUser#get")

@@ -1318,10 +1318,19 @@ public class SignServiceImpl implements SignService {
                     }
                 }
 
-                //1、获取附件列表
+                //1、附件检验，只要验证评审意见或者审核意见就行
                 boolean isUploadMainFile = false;
                 List<SysFile> fileList = sysFileRepo.findByMainId(signid);
-                //默认每个类型都没检测
+                for(SysFile sysFile : fileList){
+                    String fileShowName = sysFile.getShowName();
+                    if(fileShowName.contains("评审意见") || fileShowName.contains("审核意见")){
+                        isUploadMainFile = true;
+                    }
+                }
+                if(!isUploadMainFile){
+                    return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传[评审意见]或者[审核意见]附件信息！");
+                }
+                /*//默认每个类型都没检测
                 String checFileName = "";
                 Map<String, Boolean> checkTypeMap = new HashMap<>();
                 SysConfigDto sysConfigDto = sysConfigService.findByKey(KEY_CHECKFILE.getValue());
@@ -1381,7 +1390,7 @@ public class SignServiceImpl implements SignService {
                         }
                     }
                     return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(), "操作失败，您还没上传" + errorBuffer.toString() + "附件信息！");
-                }
+                }*/
 
                 //修改第一负责人意见
                 dp.setMianChargeSuggest(flowDto.getDealOption() + "  签名：" + ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask) + "  日期：" + DateUtils.converToString(new Date(), "yyyy年MM月dd日"));
@@ -1702,7 +1711,7 @@ public class SignServiceImpl implements SignService {
                 }
                 //如果没有完成单位评分，则不可以提交下一步
                 UnitScore unitScore = unitScoreRepo.findUnitScore(signid);
-                if (unitScore != null && unitScore.getScore() == null) {
+                if (unitScore == null || unitScore.getScore() == null) {
                     return new ResultMsg(false, MsgCode.ERROR.getValue(), "您还未对单位进行评分,不能提交到下一步操作！");
                 }
 

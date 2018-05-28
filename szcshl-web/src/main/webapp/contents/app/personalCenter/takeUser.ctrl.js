@@ -68,9 +68,11 @@
         vm.saveTakeUser = function () {
             if (vm.takeUserId) {
                 takeUserSvc.saveTakeUser(vm.takeUserId, function (data) {
-                    vm.model.takeUserId = vm.takeUserId;
-                    vm.initTaskUser(vm.takeUserId);
-                    bsWin.alert("操作成功！");
+                    if(data.flag || data.reCode == 'ok'){
+                        vm.model.takeUserId = vm.takeUserId;
+                        vm.initTaskUser(vm.takeUserId);
+                        bsWin.alert("操作成功！");
+                    }
                 });
             } else {
                 bsWin.alert("请选择代办人！");
@@ -118,8 +120,6 @@
                 }
             }
         }
-
-
 
     }
 

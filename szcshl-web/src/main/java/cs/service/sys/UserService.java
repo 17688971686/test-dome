@@ -74,7 +74,7 @@ public interface UserService {
      * 保存代办人
      * @param takeUserId
      */
-    void saveTakeUser(String takeUserId);
+    ResultMsg saveTakeUser(String takeUserId);
 
     /*UserDto getTakeUserByLoginName();*/
 

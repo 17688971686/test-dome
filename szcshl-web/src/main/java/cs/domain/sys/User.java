@@ -1,12 +1,10 @@
 package cs.domain.sys;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import cs.domain.DomainBase;
 
 import javax.persistence.*;
-
-import cs.domain.DomainBase;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "cs_user")

@@ -573,15 +573,28 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 保存代办人
+     * 1、如果当前代办人已经被别人代办，则不能保存，
+     * 2、如果设置的代办人，设置了代办了，则不能传给他
      */
     @Override
-    public void saveTakeUser(String takeUserId) {
-        HqlBuilder hqlBuilder = HqlBuilder.create();
-        hqlBuilder.append("update " + User.class.getSimpleName() + " set " + User_.takeUserId.getName() + "=:takeUserId where " + User_.id.getName() + "=:userId ");
-        hqlBuilder.setParam("takeUserId", takeUserId);
-        hqlBuilder.setParam("userId", SessionUtil.getUserId());
-        userRepo.executeHql(hqlBuilder);
-        fleshPostUserCache();
+    public ResultMsg saveTakeUser(String takeUserId) {
+        //别人已经设置选择的设定人为代办人
+        if(userRepo.checkTakeExist(takeUserId)){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"选择的用户已经被设置为代办人，不能重复设置其为代办人！");
+
+        //选择的代办人为请假人员，不能设定为代办人
+        }else if(userRepo.checkUserSetTask(takeUserId)){
+            return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"选择的用户已经设置了代办人，不能设置其为代办人！");
+
+        }else{
+            HqlBuilder hqlBuilder = HqlBuilder.create();
+            hqlBuilder.append("update " + User.class.getSimpleName() + " set " + User_.takeUserId.getName() + "=:takeUserId where " + User_.id.getName() + "=:userId ");
+            hqlBuilder.setParam("takeUserId", takeUserId);
+            hqlBuilder.setParam("userId", SessionUtil.getUserId());
+            userRepo.executeHql(hqlBuilder);
+            fleshPostUserCache();
+        }
+        return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"选择的用户已经被设置为代办人，不能重复设置其为代办人！");
     }
 
     /**
