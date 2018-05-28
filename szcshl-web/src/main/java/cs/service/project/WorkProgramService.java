@@ -96,4 +96,10 @@ public interface WorkProgramService {
      * @param wpId
      */
     void initExpertCost(String wpId);
+
+    /**
+     * 获取工作方案调研及会议信息
+     * @return
+     */
+    Map<String,Object> findProMeetInfo();
 }

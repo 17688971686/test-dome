@@ -2,6 +2,7 @@ package cs.repository.repositoryImpl.project;
 
 import cs.domain.project.WorkProgram;
 import cs.domain.sys.Org;
+import cs.model.project.ProMeetDto;
 import cs.model.project.WorkProgramDto;
 import cs.repository.IRepository;
 
@@ -68,4 +69,16 @@ public interface WorkProgramRepo extends IRepository<WorkProgram, String> {
      * @return
      */
     Boolean mainBranch(String signId);
+
+    /**
+     * 获取工作方案调研及会议信息
+     * @return
+     */
+    List<ProMeetDto> findAmProMeetInfo();
+
+    /**
+     * 获取工作方案调研及会议信息
+     * @return
+     */
+    List<ProMeetDto> findPmProMeetInfo();
 }
