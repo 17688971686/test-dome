@@ -402,7 +402,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
         HqlBuilder hqlBuilder = HqlBuilder.create();
         try {
             hqlBuilder.append("select * from (select a.* , rownum rn from (");
-            hqlBuilder.append("select * from szec_clean.SIGN_DISP_WORK where signstate != '7' and issign = 9 ");
+            hqlBuilder.append("select * from SIGN_DISP_WORK where signstate != '7' and issign = 9 ");
             if (queryArr != null && queryArr.length > 0 && !"".equals(queryArr[0])) {
                 hqlBuilder.append(" and ");
                 for (int i = 0; i < queryArr.length; i++) {
@@ -421,24 +421,24 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                     }
 
 
-                    //项目签收日期
+                    //项目签收日期-+
                     if ("signDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("signdate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                        hqlBuilder.append("signdate>=to_date('" + params[1].substring(1, params[1].length() - 1) + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
                     } else if ("signDateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("signdate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                        hqlBuilder.append("signdate<=to_date('" + params[1].substring(1, params[1].length() - 1) + " 23:59:59', 'yyyy-mm-dd hh24:mi:ss')");
                     }
                     //发文日期
                     else if ("dispatchDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("dispatchDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                        hqlBuilder.append("dispatchDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
                     } else if ("dispatchdateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("dispatchDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                        hqlBuilder.append("dispatchDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + " 23:59:59', 'yyyy-mm-dd hh24:mi:ss')");
 
                     }
                     //归档日期
                     else if ("fileDateBegin".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("fileDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                        hqlBuilder.append("fileDate>=to_date('" + params[1].substring(1, params[1].length() - 1) + " 00:00:00', 'yyyy-mm-dd hh24:mi:ss')");
                     } else if ("fileDateEnd".equals(params[0].substring(1, params[0].length() - 1))) {
-                        hqlBuilder.append("fileDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + "', 'yyyy-Mm-dd')");
+                        hqlBuilder.append("fileDate<=to_date('" + params[1].substring(1, params[1].length() - 1) + " 23:59:59', 'yyyy-mm-dd hh24:mi:ss')");
 
                     }
                     //评审天数
@@ -496,7 +496,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             hqlBuilder.append(" isProjectStop =" + Constant.EnumState.YES.getValue());
                             hqlBuilder.append(" signState =" + Constant.EnumState.PROCESS.getValue());
                         }
-                        continue;
+//                        continue;
                     }
 
                     //项目发文
@@ -511,7 +511,7 @@ public class SignDispaWorkRepoImpl extends AbstractRepository<SignDispaWork, Str
                             hqlBuilder.append(" dispatchType ='项目发文'");
                             hqlBuilder.append(" or dispatchType ='暂不实施'");
                         }
-                        continue;
+//                        continue;
                     }
 
                     else {

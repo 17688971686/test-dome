@@ -6,6 +6,7 @@ import cs.model.PageModelDto;
 import cs.model.project.SignDispaWorkDto;
 import cs.repository.odata.ODataObj;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -110,5 +111,13 @@ public interface SignDispaWorkService {
      * @return
      */
     ResultMsg findSecretProPermission(String signId);
+
+    /**
+     * 超级管理员修改收文日期，重新计算剩余工作日
+     * @param oldSignDate
+     * @param signDate
+     * @return
+     */
+    ResultMsg countWeekDays(Date oldSignDate , Date signDate);
 
 }

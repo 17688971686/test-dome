@@ -18,6 +18,8 @@
             reviewWorkdaysSvc.initReviewWorkDays(vm , function(data){
                 vm.sign = data;
 
+                //记录收文日期
+                vm.oldSignDate = vm.sign.signdate;
                 //记录上一次总评审天数
                 vm.totalReviewDays = vm.sign.totalReviewdays;
 
@@ -51,6 +53,33 @@
 
             //2、计算剩余工作日  剩余工作日 = 总评审天数 - 已逝工作日
             vm.sign.surplusdays = vm.sign.totalReviewdays - vm.sign.reviewdays;
+
+        }
+
+        /**
+         * 改变延长工作日时，计算评审天数和剩余工作日
+         */
+        vm.changeLengthenDays = function(){
+            //原来的评审天数 + 延长天数
+            vm.sign.surplusdays +=  vm.sign.lengthenDays;
+
+            //原来的剩余工作日 + 延长天数
+            vm.sign.totalReviewdays +=  vm.sign.lengthenDays;
+        }
+
+        /**
+         * 修改收文日期时，重新计算剩余工作日 ，已逝工作日
+         * 通过原来的收文日期，与修改后新的收文日期来计算剩余工作日和已逝工作日 ，
+         * 按原来日期和现在日期之间有多少个工作日进行加减
+         * 如果现在的日期大于原来的日期，则剩余工作日增加，否则减少
+         *
+         */
+        vm.changeSignDate = function(){
+            reviewWorkdaysSvc.countWeekDays(vm.oldSignDate , vm.sign.signdate , function(data){
+                vm.sign.surplusdays += data.reObj;
+                vm.sign.reviewdays -= data.reObj;
+            });
+
 
         }
     }
