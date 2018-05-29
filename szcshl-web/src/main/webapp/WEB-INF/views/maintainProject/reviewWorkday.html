@@ -31,15 +31,16 @@
         <tr>
             <td class="text-right">延长工作日:</td>
             <td>
-                <input type="text" name="lengthenDays" ng-model="vm.sign.lengthenDays" disabled="disabled"/>
+                <input type="number" name="lengthenDays" ng-model="vm.sign.lengthenDays" ng-blur="vm.changeLengthenDays()"/>
             </td>
             <td class="text-right">收文日期:</td>
             <td>
-                <input type="text" name="signdate" ng-model="vm.sign.signdate" disabled="disabled"/>
+                <input type="text" name="signdate" ng-model="vm.sign.signdate"  kendo-date-picker k-format="'yyyy-MM-dd'"
+                       ng-blur="vm.changeSignDate()"/>
             </td>
             <td class="text-right">送达日期:</td>
             <td>
-                <input type="text" name="receivedate" ng-model="vm.sign.receivedate" disabled="disabled"/>
+                <input type="text" name="receivedate" ng-model="vm.sign.receivedate"  kendo-date-picker k-format="'yyyy-MM-dd'"/>
             </td>
         </tr>
           <!--  <tr>

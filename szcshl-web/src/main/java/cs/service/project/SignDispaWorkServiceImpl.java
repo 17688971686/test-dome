@@ -8,8 +8,10 @@ import cs.domain.expert.ExpertReview;
 import cs.domain.expert.ExpertReview_;
 import cs.domain.meeting.RoomBooking_;
 import cs.domain.project.*;
+import cs.domain.sys.Workday;
 import cs.model.PageModelDto;
 import cs.model.project.SignDispaWorkDto;
+import cs.quartz.unit.QuartzUnit;
 import cs.repository.odata.ODataFilterItem;
 import cs.repository.odata.ODataObj;
 import cs.repository.odata.ODataObjFilterStrategy;
@@ -18,6 +20,7 @@ import cs.repository.repositoryImpl.flow.RuProcessTaskRepo;
 import cs.repository.repositoryImpl.meeting.RoomBookingRepo;
 import cs.repository.repositoryImpl.project.*;
 import cs.service.sys.OrgDeptService;
+import cs.service.sys.WorkdayService;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -57,6 +61,9 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     private OrgDeptService orgDeptService;
     @Autowired
     private RuProcessTaskRepo ruProcessTaskRepo;
+
+    @Autowired
+    private WorkdayService workdayService;
     /**
      * 查询个人经办项目
      *
@@ -130,8 +137,8 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
                     }else if(processState == 68){
                         //已发文未存档
                         criteria.add(Restrictions.or(Restrictions.eq(SignDispaWork_.processState.getName(), Constant.SignProcessState.END_DIS_NUM.getValue()),
-                                     Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()),
-                                     Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue())));
+                                Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_CW.getValue()),
+                                Restrictions.eq(SignDispaWork_.processState.getName(),Constant.SignProcessState.SEND_FILE.getValue())));
                     }else if(processState == 69){
                         //已发文项目
                         criteria.add(Restrictions.ge(SignDispaWork_.processState.getName(),Constant.SignProcessState.END_DIS_NUM.getValue()));
@@ -569,6 +576,69 @@ public class SignDispaWorkServiceImpl implements SignDispaWorkService {
     @Override
     public ResultMsg findSecretProPermission(String signId) {
         return signDispaWorkRepo.findSecretProPermission(signId);
+    }
+
+    /**
+     * 超级管理员修改收文日期，重新计算剩余工作日
+     * @param  oldSignDate
+     * @param signDate
+     * @return
+     */
+    @Override
+    public ResultMsg countWeekDays(Date oldSignDate , Date signDate) {
+
+        Long countDay = (long) 0;
+
+        if(DateUtils.compareIgnoreSecond(oldSignDate , signDate) <0){
+            List<Workday> workdayList = workdayService.getBetweenTimeDay(oldSignDate , signDate);
+            countDay = (long)countBetweentDay(workdayList , oldSignDate , signDate);
+        }else{
+            List<Workday> workdayList = workdayService.getBetweenTimeDay(signDate , oldSignDate);
+            countDay = - (long)countBetweentDay(workdayList , signDate , oldSignDate );
+        }
+
+
+
+        return new ResultMsg(true , Constant.MsgCode.OK.getValue() , "操作成功" , countDay);
+    }
+
+
+    private int countBetweentDay(List<Workday> workdayList , Date beginDate , Date endDate){
+        int result = 0;
+        int countDay = (int) DateUtils.daysBetween(beginDate , endDate);
+        result = countDay;
+        if(Validate.isList(workdayList)){
+            Date date = beginDate;
+            for( int i = 0 ; i < countDay ; i++ ) {
+                Workday workday = workdayList.get(i);
+                if(DateUtils.compareIgnoreSecond(date , workday.getDates()) == 0){
+                    //将工作日改为休息日
+                    if (!QuartzUnit.isWeekend(workday.getDates()) && "1".equals(workday.getStatus())) {
+                        result --;
+                        //将休息日改成工作日的
+                    } else if (QuartzUnit.isWeekend(workday.getDates()) && "2".equals(workday.getStatus())) {
+                        result ++ ;
+                    }
+                    break;
+                }
+
+
+
+            }
+        }else {
+            Date date = beginDate;
+            for (int i = 0; i < countDay; i++) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+                        || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                    result--;
+                }
+                cal.add(Calendar.DATE, 1);
+                date = cal.getTime();
+            }
+        }
+        return result;
     }
 
 }

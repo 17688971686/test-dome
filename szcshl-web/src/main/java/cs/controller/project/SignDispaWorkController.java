@@ -303,6 +303,15 @@ public class SignDispaWorkController {
         return signDispaWorkService.findSecretProPermission(signId);
     }
 
+    @RequiresAuthentication
+    @RequestMapping(name = "计算剩余工作日" , path = "admin/countWeekDays" , method = RequestMethod.POST )
+    @ResponseBody
+    public ResultMsg countWeekDays(@RequestParam String oldSignDate ,  @RequestParam String signDate){
+        return signDispaWorkService.countWeekDays(DateUtils.converToDate1(oldSignDate , "yyyy-MM-dd") , DateUtils.converToDate1(signDate , "yyyy-MM-dd"));
+    }
+
+
+
     @RequiresPermissions("signView#html/signChart#get")
     @RequestMapping(name="项目统计分析" , path = "html/signChart" , method = RequestMethod.GET)
     public String signChart(){

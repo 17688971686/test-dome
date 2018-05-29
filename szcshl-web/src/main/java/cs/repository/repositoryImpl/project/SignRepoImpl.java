@@ -235,7 +235,10 @@ public class SignRepoImpl extends AbstractRepository<Sign, String> implements Si
                 signDto.setReviewdays(Float.valueOf(0));
             }
             signDto.setSurplusdays(objects[1] == null ? 0 : Float.valueOf(objects[1].toString()));
-            signDto.setSigndate(DateUtils.converToDate(objects[2].toString(), "yyyy-MM-dd"));
+            if(objects[2] != null){
+                signDto.setSigndate(DateUtils.converToDate(objects[2].toString(), "yyyy-MM-dd"));
+            }
+
 
             //由于目前 送来日期为空，所以需要判断是否为空
             if (objects[3] != null) {
