@@ -230,7 +230,7 @@
                 </tr>
 
                 <tr style="height:80px;">
-                    <td>项目建设必要性</td>
+                    <td>项目建设依据</td>
                     <td colspan="6" class="text-left">
                         {{dispatchDoc.projectBuildNecess}}
                     </td>
@@ -305,7 +305,7 @@
                 </tr>
 
                 <tr style="height:80px;" ng-if="vm.dispatchDoc.dispatchType=='项目发文'">
-                    <td>项目建设必要性<span class="required">*</span></td>
+                    <td>项目建设依据<span class="required">*</span></td>
                     <td colspan="6">
                         <textarea maxlength="1000" data-val-length-max="1000"
                                   ng-change="vm.dispatchDoc.projectBuildNecess=countCharacter(vm.dispatchDoc.projectBuildNecess,1000,'projectBuildNecessCount')"
@@ -320,7 +320,7 @@
 
 
                 <tr style="height:80px;" ng-if="vm.dispatchDoc.dispatchType!='项目发文'">
-                    <td>项目建设必要性</td>
+                    <td>项目建设依据</td>
                     <td colspan="6">
                         <textarea maxlength="1000" data-val-length-max="1000"
                                   ng-change="vm.dispatchDoc.projectBuildNecess=countCharacter(vm.dispatchDoc.projectBuildNecess,1000,'projectBuildNecessCount')"
@@ -359,7 +359,7 @@
 
 
                 <tr style="height:80px;" ng-if="vm.dispatchDoc.dispatchType=='项目发文'">
-                    <td>投资匡算及资金来源<span class="required">*</span></td>
+                    <td>投资估算及资金来源<span class="required">*</span></td>
                     <td colspan="6">
                         <textarea maxlength="1000" data-val-length-max="1000"
                                   ng-change="vm.dispatchDoc.fundTotalOrigin=countCharacter(vm.dispatchDoc.fundTotalOrigin,1000,'fundTotalOriginCount')"
@@ -372,7 +372,7 @@
                 </tr>
 
                 <tr style="height:80px;" ng-if="vm.dispatchDoc.dispatchType!='项目发文'">
-                    <td>投资匡算及资金来源</td>
+                    <td>投资估算及资金来源</td>
                     <td colspan="6">
                         <textarea maxlength="1000" data-val-length-max="1000"
                                   ng-change="vm.dispatchDoc.fundTotalOrigin=countCharacter(vm.dispatchDoc.fundTotalOrigin,1000,'fundTotalOriginCount')"
