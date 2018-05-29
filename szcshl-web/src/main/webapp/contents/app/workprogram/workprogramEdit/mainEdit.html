@@ -111,7 +111,8 @@
         </td>
         <td style="width:10%;" class="text-center">小类<span class="required">*</span></td>
         <td style="width:15%;">
-            <select ng-model="vm.work.projectSubType" name="projectSubType" data-val="true" id="projectSubType">
+            <select ng-model="vm.work.projectSubType" name="projectSubType" data-val="true" id="projectSubType"
+                    ng-init="vm.work.projectTypeDicts = topSelectChange(vm.work.projectType,DICT.PROJECTTYPE.dicts)">
                 <option value="">请选择</option>
                 <option ng-repeat="x in vm.work.projectTypeDicts" value="{{x.dictName}}"
                         ng-selected="vm.work.projectSubType == x.dictName">{{x.dictName}}

@@ -71,7 +71,7 @@ public class ExpertSelected {
     @Column(columnDefinition = "varchar(30) ")
     private String expeRttype;
 
-    //抽取结果确认（已经确认的才能成为这次抽取的专家）
+    //是否确认选取为专家
     @Column(columnDefinition = "VARCHAR(2)")
     private String isConfrim;
 
@@ -90,16 +90,6 @@ public class ExpertSelected {
      */
     @Column(columnDefinition = "VARCHAR(2)")
     private String isLetterRw;
-
-    //抽取评审方案（多对一）
-    @ManyToOne
-    @JoinColumn(name = "expertReviewId")
-    private ExpertReview expertReview;
-
-    //抽取专家关系（多对一）
-    @ManyToOne
-    @JoinColumn(name = "expertId")
-    private Expert expert;
 
     /**
      * 抽取条件ID，这里不做关联，只是保存
@@ -128,7 +118,7 @@ public class ExpertSelected {
     /**
      * 抽取专家备注信息
      */
-    @Column(columnDefinition = "varchar(32) ")
+    @Column(columnDefinition = "varchar(32)")
     private String remark;
 
     /**
@@ -136,6 +126,17 @@ public class ExpertSelected {
      */
     @Column(columnDefinition="VARCHAR(64)")
     private String createBy;
+
+    //抽取评审方案（多对一）
+    @ManyToOne
+    @JoinColumn(name = "expertReviewId")
+    private ExpertReview expertReview;
+
+    //抽取专家关系（多对一）
+    @ManyToOne
+    @JoinColumn(name = "expertId")
+    private Expert expert;
+
 
     public String getIsSplit() {
         return isSplit;
@@ -336,4 +337,5 @@ public class ExpertSelected {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
 }

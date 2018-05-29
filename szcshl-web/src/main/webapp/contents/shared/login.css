@@ -13,17 +13,17 @@ body{
 }
 .login-container .logo{
     float: left;
-    width: 228px;
-    margin-top: 140px;
-    margin-left: 200px;
+    width: 170px;
+    margin-top: 150px;
+    margin-left: 290px;
 }
 .loginform{
-    width: 412px;
-    height: 275px;
+    width: 370px;
+    height: 238px;
     float: right;
     margin-top: 120px;
-    margin-right:200px;
-    background:url('../images/loginform-bg.jpg');
+    margin-right:290px;
+    background:url('../images/loginform-bg.jpg')no-repeat center center/100% 100%;
     text-align: center;
 }
 .loginform h3{
@@ -31,11 +31,11 @@ body{
     font-size:20px;
     margin: 0;
     letter-spacing:2px;
-    line-height: 50px;
+    line-height: 45px;
 }
 .loginform .input-container{
     position: relative;
-    margin:25px 0;
+    margin:15px 0;
 }
 .loginform .input-container input{
     background:url('../images/logininput-bg.jpg')no-repeat left top/100% 100%;
@@ -112,13 +112,38 @@ body{
     color: #fff;
 }
 @media (max-width: 1400px) and (min-width:1300px){
-    body{
-        padding-top:20px;
-    }
     .loginform{
-        margin-top:0;
+        width: 340px;
+        height:200px;
+        margin-top:50px;
+    }
+    .loginform h3{
+        line-height:35px;
+    }
+    .loginform .input-container{
+        margin:15px 0;
+    }
+    .loginform .input-container input{
+        height: 30px;
+        width: 200px;
+    }
+    .loginform .input-container h4{
+        font-size:18px;
+        line-height: 30px;
+        vertical-align: top;
     }
     .login-container .logo{
+        margin-top: 65px;
+    }
+    .loginform-footer{
         margin-top: 20px;
+    }
+    .loginform-footer .btn{
+        height: 25px;
+        line-height: 25px;
+        font-size:16px;
+    }
+    .loginform-footer .remember{
+        margin: 0;
     }
 }

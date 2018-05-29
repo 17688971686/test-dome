@@ -169,7 +169,7 @@
                 },
                 {
                     field: "filecode",
-                    title: "收文编号",
+                    title: "委里收文编号",
                     width: 120,
                     filterable: false,
                 },
@@ -188,7 +188,7 @@
                 {
                     field: "projectcode",
                     title: "项目代码",
-                    width: 120,
+                    width: 210,
                     filterable: false,
                 },
                 {

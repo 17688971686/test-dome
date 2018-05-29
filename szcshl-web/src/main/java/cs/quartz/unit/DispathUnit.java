@@ -25,10 +25,8 @@ public class DispathUnit {
      * @return
      */
     public static Date dispathDate(List<Workday> workdayList , Date signDate , int reviewDay){
-
-        Date d = signDate;
-
-        for(int j = 1 , l = reviewDay ; j <= l ; j++) {
+        Date d = null;
+        for(int j = 1 , l = reviewDay ; j < l ; j++) {
             d = DateUtils.addDay(signDate, j);
             Boolean flag = false;
             if(Validate.isList(workdayList)){
@@ -108,7 +106,7 @@ public class DispathUnit {
         workday4.setStatus("1");
         workdayList.add(workday4);
 
-        Date start = DateUtils.converToDate1("2018-04-26" , "yyyy-MM-dd");
+        Date start = DateUtils.converToDate1("2018-5-23" , "yyyy-MM-dd");
 //        Date end = DateUtils.addDay(start , 12);
 //        System.out.println(DateUtils.converToString(end , "yyyy-MM-dd"));
 //       int work = 12- QuartzUnit.getWorkDayNum(DateUtils.date2String(start , "yyyy-MM-dd")

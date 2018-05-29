@@ -2,7 +2,6 @@ package cs.model.expert;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import cs.model.BaseDto;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -60,6 +59,12 @@ public class ExpertReviewDto extends BaseDto {
      * 业务类型（SIGN 表示收文，TOPIC表示课题研究）
      */
     private String businessType;
+
+    /**
+     * 抽取信息，抽取条件ID，收取次数
+     */
+    private String extractInfo;
+
     /**
      * 抽取条件
      */
@@ -175,5 +180,13 @@ public class ExpertReviewDto extends BaseDto {
 
     public void setBusinessType(String businessType) {
         this.businessType = businessType;
+    }
+
+    public String getExtractInfo() {
+        return extractInfo;
+    }
+
+    public void setExtractInfo(String extractInfo) {
+        this.extractInfo = extractInfo;
     }
 }

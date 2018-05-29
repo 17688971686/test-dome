@@ -215,6 +215,7 @@ public class SignServiceImpl implements SignService {
                 //计算预发文日期
                 //1、先获取从签收日期后的30天之间的工作日情况
                 List<Workday> workdayList = workdayService.getBetweenTimeDay(sign.getSigndate(), DateUtils.addDay(sign.getSigndate(), 30));
+                //预发文时间，是剩余最后一个工作日的时间
                 int totalDays = (new Float(reviewsDays)).intValue();
                 Date expectdispatchdate = DispathUnit.dispathDate(workdayList, sign.getSigndate(), totalDays);
                 sign.setExpectdispatchdate(expectdispatchdate);

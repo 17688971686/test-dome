@@ -85,6 +85,11 @@ public class ExpertReview extends DomainBase {
     private String businessType;
 
     /**
+     * 抽取信息，抽取条件ID，收取次数
+     */
+    @Column(columnDefinition = "VARCHAR(2)")
+    private String extractInfo;
+    /**
      * 抽取条件（一对多）
      */
     @OneToMany(mappedBy = "expertReview", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
@@ -202,7 +207,17 @@ public class ExpertReview extends DomainBase {
         this.businessType = businessType;
     }
 
+    public String getExtractInfo() {
+        return extractInfo;
+    }
+
+    public void setExtractInfo(String extractInfo) {
+        this.extractInfo = extractInfo;
+    }
+
     public ExpertReview() {
 
     }
+
+
 }
