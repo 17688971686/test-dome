@@ -6,8 +6,8 @@
         <input type="text" ng-model="vm.fileName"/>
         <span>模板导出选择：</span>
         <select id="templateExport" ng-model="vm.template">
+            <option value="2">--选择导出模板--</option>
             <option value="1" ng-selected="vm.template==1">项目评审核减投资模板</option>
-            <option value="2">导出模板</option>
         </select>
         <button class="btn btn-sm btn-success" ng-click="vm.selectHeader()">自定义报表</button>
         <button class="btn btn-sm btn-success" ng-click="vm.countWork()">统计工作日</button>

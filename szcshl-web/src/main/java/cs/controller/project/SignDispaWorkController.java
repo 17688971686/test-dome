@@ -212,14 +212,14 @@ public class SignDispaWorkController {
         //ExcelTools excelTools = new ExcelTools();
         try {
             String title = java.net.URLDecoder.decode(fileName,"UTF-8");
-            List<SignDispaWork> signDispaWorkList = new ArrayList<>();
-            if(Validate.isString(signIds)){
+            List<SignDispaWork> signDispaWorkList =signDispaWorkRepo.findByIds(SignDispaWork_.signid.getName() , signIds,null);
+            /*if(Validate.isString(signIds)){
                 String[] ids = signIds.split(",");
                 for(String signId : ids){
                     SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
                     signDispaWorkList.add(signDispaWork);
                 }
-            }
+            }*/
             resultMap.put("proCountList", signDispaWorkList);
             Map<String, Object> funcs = new HashMap<>(2);
             funcs.put("proUtils", new ExcelJxlsUtls());
