@@ -173,14 +173,17 @@ public class SMSUtils {
                 logger.info("seekSMS: 发送成功.手机: "+phone+" 内容: "+seekContent);
                 return true;
             }
-            httpClient.close();
+
         } catch (Exception e) {
             logger.info("seekSMS 发送短息服务器异常。"+e.getMessage());
             insertLog(userName,"10010",userName+": 发送短息异常: "+e.getMessage(),logService);
         } finally {
+            try {
+                httpClient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        insertLog(userName,"10020",userName+": 发送短息失败",logService);
-        logger.info("seekSMS 发送短息服务器异常。");
         return false;
     }
 
