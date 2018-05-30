@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import java.util.List;
 
 import static cs.common.constants.Constant.RevireStageKey.RTX_ENABLED;
+import static cs.common.constants.Constant.RevireStageKey.SMS_SYS_TYPE;
 
 
 @Service
@@ -104,8 +105,11 @@ public class RTXService {
     public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg,ProcessInstance processInstance) {
         String receiverIds = RTXSendMsgPool.getInstance().getReceiver(taskId).toString();
         List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
-        //发送短息
-        SMSUtils.seekSMSThread(receiverList, processInstance.getName(),logService);
+        //短息开关
+        if(rtxSMSEnabled()){
+            //发送短息
+            SMSUtils.seekSMSThread(receiverList, processInstance.getName(),logService);
+        }
         //如果使用腾讯通，并处理成功！
         if (rtxEnabled() && resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null) {
             User u = null;
@@ -203,6 +207,18 @@ public class RTXService {
     public boolean rtxEnabled() {
         SysConfigDto sysConfigDto = sysConfigService.findByKey(RTX_ENABLED.getValue());
         if(sysConfigDto != null && Constant.EnumState.YES.getValue().equals(sysConfigDto.getConfigValue())) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+    /**
+     * 判断是否使用短息同志
+     * @return
+     */
+    public boolean rtxSMSEnabled() {
+        SysConfigDto sysConfigDto = sysConfigService.findByKey(SMS_SYS_TYPE.getValue());
+        if(sysConfigDto != null && Constant.EnumState.NO.getValue().equals(sysConfigDto.getConfigValue())) {
             return true;
         }else{
             return false;
