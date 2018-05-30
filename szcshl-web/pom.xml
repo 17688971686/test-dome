@@ -103,7 +103,7 @@
                     <groupId>c3p0</groupId>
                     <artifactId>c3p0</artifactId>
                 </exclusion>
-                <exclusion>
+                <!--<exclusion>
                     <artifactId>freemarker</artifactId>
                     <groupId>org.freemarker</groupId>
                 </exclusion>
@@ -115,6 +115,7 @@
                     <artifactId>javax.mail</artifactId>
                     <groupId>com.sun.mail</groupId>
                 </exclusion>
+                -->
             </exclusions>
         </dependency>
 
@@ -380,12 +381,14 @@
             <groupId>com.github.livesense</groupId>
             <artifactId>jodconverter-core</artifactId>
             <version>1.0.5</version>
+            <!--
             <exclusions>
                 <exclusion>
                     <artifactId>commons-io</artifactId>
                     <groupId>commons-io</groupId>
                 </exclusion>
             </exclusions>
+            -->
         </dependency>
         <!-- jxls -->
         <dependency>

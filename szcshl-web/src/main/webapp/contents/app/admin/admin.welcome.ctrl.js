@@ -294,10 +294,10 @@
          * 初始化调研和会议统计信息日期时间
          */
         function initProMeetDate() {
-            var now = new Date(); //当前日期
-            vm.timeArr.push(formatDate(now));
-            for(var i=1; i < 5;i++ ){
-                vm.timeArr.push(getNewDay(vm.timeArr[0],i));
+           //当前日期
+           var now = new Date();
+            for(var i=0; i < 5;i++ ){
+                vm.timeArr.push(getNewDay(now,i));
             }
 
             for(var i=0; i < vm.timeArr.length; i++){
@@ -306,16 +306,19 @@
         }
 
         function getNewDay(dateTemp, days) {
-            var dateTemp = dateTemp.split("-");
-            var nDate = new Date(dateTemp[1] + '-' + dateTemp[2] + '-' + dateTemp[0]); //转换为MM-DD-YYYY格式
-            var millSeconds = Math.abs(nDate) + (days * 24 * 60 * 60 * 1000);
-            var rDate = new Date(millSeconds);
-            var year = rDate.getFullYear();
-            var month = rDate.getMonth() + 1;
-            if (month < 10) month = "0" + month;
-            var date = rDate.getDate();
-            if (date < 10) date = "0" + date;
-            return (year + "-" + month + "-" + date);
+            // 先获取当前时间
+            var curDate = dateTemp.getTime();
+            // 将一天的时间单位换算成毫秒
+            var days = days*24 * 3600 * 1000;
+            var pastResult = curDate + days;
+
+            // 日期函数，定义起点为一个月
+            var pastDate = new Date(pastResult),
+                pastYear = pastDate.getFullYear(),
+                pastMonth = pastDate.getMonth() + 1,
+                pastDay = pastDate.getDate();
+
+            return pastYear + '-' + pastMonth + '-' + pastDay;
         }
 
         function getNewDayStr(dateTemp) {
