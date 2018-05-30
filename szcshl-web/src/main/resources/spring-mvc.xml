@@ -60,7 +60,7 @@
 		<property name="maxUploadSize" value="10485760"/>
 		-->
         <property name="maxInMemorySize" value="4096"/>
-		<property name="uploadTempDir" value="resources/upload/temp" />
+		<!--<property name="uploadTempDir" value="resources/upload/temp" />-->
 		<property name="defaultEncoding" value="utf-8"/>
 	</bean>
 	<!-- <bean id="dictUtil" class="com.szcshl.utils.DictUtil"></bean> -->
