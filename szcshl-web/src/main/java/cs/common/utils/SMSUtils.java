@@ -187,7 +187,7 @@ public class SMSUtils {
     public static boolean isOrTimeout(){
         Date date = new Date();
         long time =  date.getTime()-GET_TOKEN_TIME;
-        if (time>hourOne && time<hourTwo ){
+        if (time<hourOne && time>0){
             return true;
         }
         return false;
