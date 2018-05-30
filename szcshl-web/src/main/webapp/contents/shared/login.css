@@ -13,17 +13,17 @@ body{
 }
 .login-container .logo{
     float: left;
-    width: 170px;
-    margin-top: 150px;
-    margin-left: 290px;
+    width: 150px;
+    margin-top: 130px;
+    margin-left: 360px;
 }
 .loginform{
-    width: 370px;
-    height: 238px;
+    width: 320px;
+    height: 218px;
     float: right;
-    margin-top: 120px;
-    margin-right:290px;
-    background:url('../images/loginform-bg.jpg')no-repeat center center/100% 100%;
+    margin-top: 100px;
+    margin-right:310px;
+    background:url('../images/loginform-bg.png')no-repeat center center/100% 100%;
     text-align: center;
 }
 .loginform h3{
@@ -31,28 +31,28 @@ body{
     font-size:20px;
     margin: 0;
     letter-spacing:2px;
-    line-height: 45px;
+    line-height: 40px;
 }
 .loginform .input-container{
     position: relative;
-    margin:15px 0;
+    margin:20px 0;
 }
 .loginform .input-container input{
     background:url('../images/logininput-bg.jpg')no-repeat left top/100% 100%;
-    width: 236px;
-    height:40px;
+    width: 210px;
+    height:30px;
     padding-left:10px;
     display: inline-block;
 }
 .loginform .input-container h4{
     display: inline-block;
     color:#dbffff;
-    letter-spacing: 20px;
+    letter-spacing: 18px;
     font-weight:bolder;
-    font-size:20px;
+    font-size:18px;
     margin: 0;
-    line-height: 40px;
-    vertical-align: middle;
+    line-height: 30px;
+    vertical-align: top;
     position: relative;
     top:2px;
 }
@@ -67,8 +67,8 @@ body{
 }
 
 .loginform-footer{
-    margin-top: 25px;
-    padding:0 50px 0 30px;
+    margin-top: 20px;
+    padding:0 40px 0 30px;
     overflow: hidden;
 }
 .loginform-footer .btn{
@@ -77,7 +77,7 @@ body{
     border-radius:5px;
     background-image: url('../images/loginbtn-bg.jpg');
     background-size:100% 100%;
-    font-size:18px ;
+    font-size:16px ;
     line-height: 30px;
     letter-spacing:10px;
     color:#333;
@@ -87,9 +87,9 @@ body{
 }
 .loginform-footer .remember{
     float: left;
-    margin-left: 20px;
+    margin-left: 10px;
     color:#dbffff;
-    margin-top: 5px;
+    margin-top: 2px;
     cursor:pointer;
 }
 .loginform-footer .remember input{
@@ -113,7 +113,7 @@ body{
 }
 @media (max-width: 1400px) and (min-width:1300px){
     .loginform{
-        width: 340px;
+        width: 320px;
         height:200px;
         margin-top:50px;
     }

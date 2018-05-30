@@ -48,8 +48,19 @@ public class BeanCopierUtils {
     
     public static void copyPropertiesIgnoreNull(Object source, Object target) {  
         BeanUtils.copyProperties(source, target, getNullPropertyNames(source));  
-    }  
-    
+    }
+
+    /**
+     * 忽略某些值拷贝
+     *
+     * @param source
+     * @param target
+     * @param ignoreProperties
+     */
+    public static void copyPropertiesIgnoreProps(Object source, Object target, String... ignoreProperties) {
+        BeanUtils.copyProperties(source, target, ignoreProperties);
+    }
+
     public static void main(String[] args){
     	//日期拷贝成功
     	Sign s1 = new Sign();

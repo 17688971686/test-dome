@@ -71,4 +71,8 @@ public final class SysConstants {
     public static final String DEFAULT_PASSWORD = "1";
 
 
+    /**
+     * 默认忽略不用拷贝的属性
+     */
+    public static final String[] defaultIgnore = new String[]{"createdDate","createdBy","modifiedDate","modifiedBy"};
 }

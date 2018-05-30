@@ -262,14 +262,12 @@
                 <tr>
                     <td width="20%">{{vm.sign.reviewstage}}</td>
                     <td width="14%">申报</td>
-                    <!--<td width="14%" ng-if="vm.dispatchDoc.dispatchType=='项目发文'" >审定<span class="required">*</span></td>-->
                     <td width="14%" >审定</td>
                     <td width="14%">核减（增）</td>
                     <td width="14%">核减（增）率</td>
                     <td width="14%">批复金额</td>
                     <td width="14%">备注</td>
                 </tr>
-
                 <tr>
                     <td>投资额（万元）</td>
                     <td>
@@ -284,7 +282,7 @@
                         <input type="txt" maxlength="200" class="form-control input-sm "
                                ng-model="vm.dispatchDoc.authorizeValue" id="authorizeValue" name="authorizeValue"
                                ng-blur="vm.count()"
-                       /> >
+                       />
                         <span data-valmsg-for="authorizeValue" data-valmsg-replace="true" class="errors"></span>
                     </td>
                     <td>

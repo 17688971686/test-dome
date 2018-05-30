@@ -13257,32 +13257,43 @@
 
         // 核减（增）/核减率（增）计算
         vm.count = function () {
+            var isDeclare = false,isAuthorize = false;
             var pt = /^(-)?(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,4})?$/;    //保留4个小数点
-            if(vm.dispatchDoc.declareValue && !pt.test(vm.dispatchDoc.declareValue)){
-                vm.dispatchDoc.declareValue = 0;
-                $("span[data-valmsg-for='declareValue']").html("金额只能输入数字！");
-                return ;
+            if(vm.dispatchDoc.declareValue){
+                if(pt.test(vm.dispatchDoc.declareValue)){
+                    isDeclare = true;
+                }else{
+                    vm.dispatchDoc.declareValue = null;
+                    $("span[data-valmsg-for='declareValue']").html("金额只能输入数字！");
+                    return ;
+                }
             }
-            if(vm.dispatchDoc.authorizeValue && !pt.test(vm.dispatchDoc.authorizeValue)){
-                vm.dispatchDoc.authorizeValue = 0;
-                $("span[data-valmsg-for='authorizeValue']").html("金额只能输入数字！");
-                return ;
+            if(vm.dispatchDoc.authorizeValue){
+                if(pt.test(vm.dispatchDoc.authorizeValue)){
+                    isAuthorize = true;
+                }else{
+                    vm.dispatchDoc.authorizeValue = null;
+                    $("span[data-valmsg-for='authorizeValue']").html("金额只能输入数字！");
+                }
             }
+            //批复金额
             if(vm.dispatchDoc.approveValue && !pt.test(vm.dispatchDoc.approveValue)){
-                vm.dispatchDoc.approveValue = 0;
+                vm.dispatchDoc.approveValue = null;
                 $("span[data-valmsg-for='approveValue']").html("金额只能输入数字！");
                 return ;
             }
-            $("span[data-valmsg-for='declareValue']").html("");
-            $("span[data-valmsg-for='authorizeValue']").html("");
-            var dvalue , extraRate;
-            if(vm.dispatchDoc.declareValue && vm.dispatchDoc.authorizeValue){
-
-                dvalue = (parseFloat(vm.dispatchDoc.declareValue) - parseFloat(vm.dispatchDoc.authorizeValue)).toFixed(2);
-            }
-            if( vm.dispatchDoc.declareValue != 0){
-
-               extraRate = parseFloat((dvalue/vm.dispatchDoc.declareValue * 10000)/100.00).toFixed(2);
+            var dvalue = "",extraRate="";
+            if(isDeclare && isAuthorize){
+                $("span[data-valmsg-for='declareValue']").html("");
+                $("span[data-valmsg-for='authorizeValue']").html("");
+                if(parseFloat(vm.dispatchDoc.authorizeValue) > parseFloat(vm.dispatchDoc.declareValue)){
+                    bsWin.error("审定金额不能大于申报金额！");
+                }else{
+                    dvalue= (parseFloat(vm.dispatchDoc.declareValue) - parseFloat(vm.dispatchDoc.authorizeValue)).toFixed(2);
+                    if( vm.dispatchDoc.declareValue > 0){
+                        extraRate = parseFloat((dvalue/vm.dispatchDoc.declareValue * 10000)/100.00).toFixed(2);
+                    }
+                }
             }
             vm.dispatchDoc.extraRate = extraRate;
             vm.dispatchDoc.extraValue = dvalue;
@@ -26372,6 +26383,8 @@
             reviewWorkdaysSvc.initReviewWorkDays(vm , function(data){
                 vm.sign = data;
 
+                //记录收文日期
+                vm.oldSignDate = vm.sign.signdate;
                 //记录上一次总评审天数
                 vm.totalReviewDays = vm.sign.totalReviewdays;
 
@@ -26407,6 +26420,33 @@
             vm.sign.surplusdays = vm.sign.totalReviewdays - vm.sign.reviewdays;
 
         }
+
+        /**
+         * 改变延长工作日时，计算评审天数和剩余工作日
+         */
+        vm.changeLengthenDays = function(){
+            //原来的评审天数 + 延长天数
+            vm.sign.surplusdays +=  vm.sign.lengthenDays;
+
+            //原来的剩余工作日 + 延长天数
+            vm.sign.totalReviewdays +=  vm.sign.lengthenDays;
+        }
+
+        /**
+         * 修改收文日期时，重新计算剩余工作日 ，已逝工作日
+         * 通过原来的收文日期，与修改后新的收文日期来计算剩余工作日和已逝工作日 ，
+         * 按原来日期和现在日期之间有多少个工作日进行加减
+         * 如果现在的日期大于原来的日期，则剩余工作日增加，否则减少
+         *
+         */
+        vm.changeSignDate = function(){
+            reviewWorkdaysSvc.countWeekDays(vm.oldSignDate , vm.sign.signdate , function(data){
+                vm.sign.surplusdays += data.reObj;
+                vm.sign.reviewdays -= data.reObj;
+            });
+
+
+        }
     }
 })();
 (function(){
@@ -26419,10 +26459,30 @@
         var service = {
             initReviewWorkDays : initReviewWorkDays ,//初始化评审工作日维护
             saveReview : saveReview , //保存维护的信息
+            countWeekDays : countWeekDays , //计算剩余工作日
         };
 
         return service ;
 
+        function countWeekDays(oldSignDate , signDate , callBack){
+            var httpOptions = {
+                method : 'post',
+                url : rootPath + "/signView/admin/countWeekDays",
+                params : {oldSignDate : oldSignDate , signDate : signDate}
+            }
+
+            var httpSuccess = function success(response){
+
+                if(callBack != undefined && typeof  callBack == 'function'){
+                    return callBack(response.data);
+                }
+            }
+            common.http({
+                $http : $http ,
+                httpOptions : httpOptions ,
+                success : httpSuccess
+            });
+        }
 
         function initReviewWorkDays(vm , callBack){
             var httpOptions = {

@@ -5,6 +5,7 @@ import cs.common.constants.Constant.EnumState;
 import cs.common.constants.FlowConstant;
 import cs.common.HqlBuilder;
 import cs.common.ResultMsg;
+import cs.common.constants.SysConstants;
 import cs.common.ftp.ConfigProvider;
 import cs.common.ftp.FtpClientConfig;
 import cs.common.ftp.FtpUtils;
@@ -170,7 +171,7 @@ public class DispatchDocServiceImpl implements DispatchDocService {
                 dispatchDocDto.setId(dispatchDoc.getId());
             } else {
                 dispatchDoc = dispatchDocRepo.findById(DispatchDoc_.id.getName(), dispatchDocDto.getId());
-                BeanCopierUtils.copyPropertiesIgnoreNull(dispatchDocDto, dispatchDoc);
+                BeanCopierUtils.copyPropertiesIgnoreProps(dispatchDocDto, dispatchDoc, SysConstants.defaultIgnore);
             }
             dispatchDoc.setModifiedBy(SessionUtil.getLoginName());
             dispatchDoc.setModifiedDate(now);

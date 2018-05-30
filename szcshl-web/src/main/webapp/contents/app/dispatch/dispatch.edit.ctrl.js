@@ -273,32 +273,43 @@
 
         // 核减（增）/核减率（增）计算
         vm.count = function () {
+            var isDeclare = false,isAuthorize = false;
             var pt = /^(-)?(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,4})?$/;    //保留4个小数点
-            if(vm.dispatchDoc.declareValue && !pt.test(vm.dispatchDoc.declareValue)){
-                vm.dispatchDoc.declareValue = 0;
-                $("span[data-valmsg-for='declareValue']").html("金额只能输入数字！");
-                return ;
+            if(vm.dispatchDoc.declareValue){
+                if(pt.test(vm.dispatchDoc.declareValue)){
+                    isDeclare = true;
+                }else{
+                    vm.dispatchDoc.declareValue = null;
+                    $("span[data-valmsg-for='declareValue']").html("金额只能输入数字！");
+                    return ;
+                }
             }
-            if(vm.dispatchDoc.authorizeValue && !pt.test(vm.dispatchDoc.authorizeValue)){
-                vm.dispatchDoc.authorizeValue = 0;
-                $("span[data-valmsg-for='authorizeValue']").html("金额只能输入数字！");
-                return ;
+            if(vm.dispatchDoc.authorizeValue){
+                if(pt.test(vm.dispatchDoc.authorizeValue)){
+                    isAuthorize = true;
+                }else{
+                    vm.dispatchDoc.authorizeValue = null;
+                    $("span[data-valmsg-for='authorizeValue']").html("金额只能输入数字！");
+                }
             }
+            //批复金额
             if(vm.dispatchDoc.approveValue && !pt.test(vm.dispatchDoc.approveValue)){
-                vm.dispatchDoc.approveValue = 0;
+                vm.dispatchDoc.approveValue = null;
                 $("span[data-valmsg-for='approveValue']").html("金额只能输入数字！");
                 return ;
             }
-            $("span[data-valmsg-for='declareValue']").html("");
-            $("span[data-valmsg-for='authorizeValue']").html("");
-            var dvalue , extraRate;
-            if(vm.dispatchDoc.declareValue && vm.dispatchDoc.authorizeValue){
-
-                dvalue = (parseFloat(vm.dispatchDoc.declareValue) - parseFloat(vm.dispatchDoc.authorizeValue)).toFixed(2);
-            }
-            if( vm.dispatchDoc.declareValue != 0){
-
-               extraRate = parseFloat((dvalue/vm.dispatchDoc.declareValue * 10000)/100.00).toFixed(2);
+            var dvalue = "",extraRate="";
+            if(isDeclare && isAuthorize){
+                $("span[data-valmsg-for='declareValue']").html("");
+                $("span[data-valmsg-for='authorizeValue']").html("");
+                if(parseFloat(vm.dispatchDoc.authorizeValue) > parseFloat(vm.dispatchDoc.declareValue)){
+                    bsWin.error("审定金额不能大于申报金额！");
+                }else{
+                    dvalue= (parseFloat(vm.dispatchDoc.declareValue) - parseFloat(vm.dispatchDoc.authorizeValue)).toFixed(2);
+                    if( vm.dispatchDoc.declareValue > 0){
+                        extraRate = parseFloat((dvalue/vm.dispatchDoc.declareValue * 10000)/100.00).toFixed(2);
+                    }
+                }
             }
             vm.dispatchDoc.extraRate = extraRate;
             vm.dispatchDoc.extraValue = dvalue;

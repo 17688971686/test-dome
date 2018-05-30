@@ -1021,7 +1021,7 @@ public class SignServiceImpl implements SignService {
                     if(isAgentTask){
                         sign.setMinisterId(agentTaskService.getUserId(task.getId(),curUserId));
                     }else{
-                        sign.setLeaderId(curUserId);
+                        sign.setMinisterId(curUserId);
                     }
                     sign.setMinisterName(ActivitiUtil.getSignName(SessionUtil.getDisplayName(),isAgentTask));
                 }
