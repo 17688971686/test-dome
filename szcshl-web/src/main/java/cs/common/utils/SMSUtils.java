@@ -145,8 +145,7 @@ public class SMSUtils {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         Map<String, String> params = new HashMap<>();
         //验证短信内容
-//        getHttpSMS();
-        TOKEN = "ED920981FE92F35EB04ACC30CE8840326DE0209A0EFD7E6B3A2202B8A6DE2A9A2C64BA519DDA06B4";
+        getHttpSMS(logService);
         if (StringUtil.isEmpty(TOKEN)){
             insertLog(userName,"10015",userName+": 获取Token为空 ",logService);
             return false;
