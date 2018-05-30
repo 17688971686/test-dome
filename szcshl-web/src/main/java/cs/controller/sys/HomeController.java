@@ -3,6 +3,7 @@ package cs.controller.sys;
 import cs.ahelper.IgnoreAnnotation;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
+import cs.common.utils.RTXUtils;
 import cs.service.rtx.RTXService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
@@ -46,8 +47,7 @@ public class HomeController {
 	@RequestMapping(name = "腾讯通测试",path = "testRTX",method = RequestMethod.GET)
     @ResponseBody
 	public ResultMsg testRTX(){
-		String isLoging = rtxService.queryUserState(null,"但龙");
-        String reStr = rtxService.sendRTXMsg(null,"消息测试","但龙");
+        String reStr = RTXUtils.sendRTXMsg(null,"消息测试","但龙");
         if(reStr == null || "false".equals(reStr)|| "null".equals(reStr)){
             return new ResultMsg(false, Constant.MsgCode.ERROR.getValue(),"发送失败！");
         }else{
