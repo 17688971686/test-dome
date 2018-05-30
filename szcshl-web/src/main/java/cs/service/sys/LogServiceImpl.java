@@ -17,7 +17,7 @@ import cs.model.sys.LogDto;
 import cs.repository.odata.ODataObj;
 import cs.repository.repositoryImpl.sys.LogRepo;
 
-@Service("logService")
+@Service
 public class LogServiceImpl implements LogService {
     private static Logger logger = Logger.getLogger(LogServiceImpl.class);
 
