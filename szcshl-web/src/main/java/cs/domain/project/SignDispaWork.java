@@ -258,6 +258,11 @@ public class SignDispaWork {
     @Column(columnDefinition = "NUMBER")
     private BigDecimal approveValue;
 
+
+   //发文备注
+    @Column(columnDefinition = "VARCHAR(2000)")
+    private String dispatchRemark;
+
     /**
      * 审定金额
      */
@@ -863,5 +868,13 @@ public class SignDispaWork {
 
     public void setExpectdispatchdate(Date expectdispatchdate) {
         this.expectdispatchdate = expectdispatchdate;
+    }
+
+    public String getDispatchRemark() {
+        return dispatchRemark;
+    }
+
+    public void setDispatchRemark(String dispatchRemark) {
+        this.dispatchRemark = dispatchRemark;
     }
 }

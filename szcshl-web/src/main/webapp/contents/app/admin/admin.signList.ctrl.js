@@ -19,6 +19,7 @@
         // vm.filters ={};
         vm.signList = [];
         vm.page = 0;
+        vm.template = '1';//模板参数
         //获取到当前的列表
         vm.stateName = $state.current.name;
         //查询参数
@@ -171,18 +172,11 @@
                 ids.push(vm.signList[i].signid);
             }
             var idStr = ids.join(',');
-            signSvc.excelExport(idStr);
-
-           /* var fileName = escape(encodeURIComponent(vm.fileName));
-           if (vm.filters && vm.filters != undefined) {
-                var filters = JSON.stringify(vm.filters);
-                var filterDate = filters.substring(1, filters.length - 1);
-            } else {
-                filterDate = "";
+            if(vm.template == '1'){
+                signSvc.excelExport2(idStr);
+            }else if(vm.template == '2'){
+                signSvc.excelExport(idStr);
             }
-            window.open(rootPath + "/signView/excelExport?filterData=" + escape(encodeURIComponent(filterDate)) + "&fileName=" + fileName);
-      */
-
         }
 
         /**

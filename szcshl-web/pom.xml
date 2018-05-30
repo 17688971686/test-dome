@@ -103,6 +103,18 @@
                     <groupId>c3p0</groupId>
                     <artifactId>c3p0</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>freemarker</artifactId>
+                    <groupId>org.freemarker</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>javax.mail</artifactId>
+                    <groupId>com.sun.mail</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>javax.mail</artifactId>
+                    <groupId>com.sun.mail</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -208,11 +220,11 @@
             <version>1.8.4</version>
         </dependency>
         <!-- poi -->
-        <dependency>
+    <!--    <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>3.14</version>
-        </dependency>
+        </dependency>-->
         <!--jacob-->
         <dependency>
             <groupId>net.sf.jacob-project</groupId>
@@ -314,7 +326,7 @@
             <artifactId>commons-net</artifactId>
             <version>3.6</version>
         </dependency>
-      <!--Ueditor-->
+        <!--Ueditor-->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -368,6 +380,18 @@
             <groupId>com.github.livesense</groupId>
             <artifactId>jodconverter-core</artifactId>
             <version>1.0.5</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-io</artifactId>
+                    <groupId>commons-io</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- jxls -->
+        <dependency>
+            <groupId>com.sn</groupId>
+            <artifactId>framework-jxls</artifactId>
+            <version>1.0.0T-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -435,7 +459,7 @@
                 </configuration>
             </plugin>
 
-           <plugin>
+            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.8</source>
@@ -444,7 +468,7 @@
                         <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
                     </compilerArguments>
                 </configuration>
-            </plugin> 
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
@@ -456,5 +480,24 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>snkj</id>
+            <name>snkj Repository</name>
+            <url>http://test.gxsnkj.com:9089/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>aliyun</id>
+            <name>aliyun Repository</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

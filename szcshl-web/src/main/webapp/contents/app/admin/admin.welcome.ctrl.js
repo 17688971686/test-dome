@@ -196,7 +196,6 @@
             adminSvc.initWelComePage(function (data) {
                 vm.hidePreTable = true;
                 vm.isdisplays = true;
-                console.log(data.proMeetInfo);
                 if (data) {
                     if (data.proTaskList) {
                         vm.tasksList = data.proTaskList;

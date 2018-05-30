@@ -1,9 +1,11 @@
 package cs.controller.project;
 
+import com.sn.framework.jxls.JxlsUtils;
 import cs.ahelper.MudoleAnnotation;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.DateUtils;
+import cs.common.utils.ExcelJxlsUtls;
 import cs.common.utils.ExcelTools;
 import cs.common.utils.Validate;
 import cs.domain.project.SignDispaWork;
@@ -29,10 +31,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static com.sn.framework.common.StringUtil.ISO_8859_1;
+import static com.sn.framework.common.StringUtil.UTF_8;
 
 /**
  * 项目详情信息视图控制器
@@ -193,6 +195,40 @@ public class SignDispaWorkController {
             wb.write(sos);
             sos.flush();
             sos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    @RequiresAuthentication
+    @RequestMapping(name = "项目统计导出", path = "excelExport2", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void excelExport2(HttpServletResponse resp, @RequestParam(required = true) String signIds) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        String fileName = "项目查询统计报表";
+        //ExcelTools excelTools = new ExcelTools();
+        try {
+            String title = java.net.URLDecoder.decode(fileName,"UTF-8");
+            List<SignDispaWork> signDispaWorkList = new ArrayList<>();
+            if(Validate.isString(signIds)){
+                String[] ids = signIds.split(",");
+                for(String signId : ids){
+                    SignDispaWork signDispaWork = signDispaWorkRepo.findById(SignDispaWork_.signid.getName() , signId);
+                    signDispaWorkList.add(signDispaWork);
+                }
+            }
+            resultMap.put("proCountList", signDispaWorkList);
+            Map<String, Object> funcs = new HashMap<>(2);
+            funcs.put("proUtils", new ExcelJxlsUtls());
+            resp.setCharacterEncoding(UTF_8.name());
+            resp.setContentType("application/vnd.ms-excel");
+           // resp.setHeader("Content-disposition", "attachment;filename=" + fileName);
+            String filename = new String("项目查询统计报表.xls".getBytes(UTF_8), ISO_8859_1);
+            resp.setHeader("Content-disposition", "attachment;filename=" + filename);
+            JxlsUtils.exportExcel("classpath:jxls/proInfoCount.xls", resp.getOutputStream(), resultMap,funcs);
 
         } catch (Exception e) {
             e.printStackTrace();
