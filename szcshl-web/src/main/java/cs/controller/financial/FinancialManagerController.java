@@ -18,6 +18,8 @@ import cs.service.financial.FinancialManagerService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -214,13 +216,13 @@ public class FinancialManagerController {
             HSSFRow row = sheet.createRow((int) 3);
             // 设置值表头 设置表头居中
             HSSFCellStyle style = wb.createCellStyle();
-            style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+            style.setAlignment(HorizontalAlignment.CENTER); // 创建一个居中格式
             //设置红字字体
             HSSFCellStyle styless = wb.createCellStyle();
             Font font = wb.createFont();
             font.setColor(HSSFColor.RED.index);    //红字
             styless.setFont(font);
-            styless.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+            styless.setAlignment(HorizontalAlignment.CENTER); // 创建一个居中格式
             //合并单元格
             CellRangeAddress region1 = new CellRangeAddress(0, 2, 0,6); //参数1：起始行 参数2：终止行 参数3：起始列 参数4：终止列
             sheet.addMergedRegion(region1);
@@ -231,11 +233,15 @@ public class FinancialManagerController {
             HSSFCellStyle titleStyle = wb.createCellStyle();
             HSSFFont font2 = wb.createFont();
             font2.setFontName("仿宋_GB2312");
-            font2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示
-            font2.setFontHeightInPoints((short) 12);  //字体大小
+            //粗体显示
+            font2.setBold(true);
+            //字体大小
+            font2.setFontHeightInPoints((short) 12);
             titleStyle.setFont(font2);
-            titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);//垂直
-            titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+            //垂直
+            titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            // 创建一个居中格式
+            titleStyle.setAlignment(HorizontalAlignment.CENTER);
             titleCell.setCellStyle(titleStyle);
             //设置第一行
             HSSFCell cell = row.createCell( 0);

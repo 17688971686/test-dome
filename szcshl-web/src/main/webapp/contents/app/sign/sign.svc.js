@@ -34,6 +34,7 @@
             sumExistDays: sumExistDays,                 //统计项目接受到现在所存在的天数（办结的，按办结日期，未办结的，按现在时间）
             MaintenanProjectGrid: MaintenanProjectGrid, //维护项目
             excelExport: excelExport,                   //项目查询统计导出
+            excelExport2: excelExport2,                 //项目查询统计导出
             findExpertReview: findExpertReview,         //查询项目在办的专家抽取方案信息
             getSignInfo: getSignInfo ,                  //通过收文编号获取委里信息
             findSignUnitScore : findSignUnitScore,      //获取评分单位信息
@@ -108,6 +109,15 @@
             downForm.attr("target", "");
             downForm.attr("method", "post");
             downForm.attr("action", rootPath + "/signView/excelExport");
+            downForm.find("input[name='signIds']").val(signIds);
+            downForm.submit();//表单提交
+        }
+        //s_项目查询统计导出
+        function excelExport2(signIds) {
+            var downForm = $("#countSignDayForm");
+            downForm.attr("target", "");
+            downForm.attr("method", "post");
+            downForm.attr("action", rootPath + "/signView/excelExport2");
             downForm.find("input[name='signIds']").val(signIds);
             downForm.submit();//表单提交
         }

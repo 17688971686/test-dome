@@ -12,9 +12,9 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  * Excel操作工具类
@@ -28,7 +28,7 @@ public class ExcelTools {
     }
 
     /*
-     * 列头单元格样式 
+     * 列头单元格样式
      */
     public HSSFCellStyle getColumnTopStyle(HSSFWorkbook workbook) {
         // 设置字体
@@ -36,25 +36,25 @@ public class ExcelTools {
         //设置字体大小
         font.setFontHeightInPoints((short) 12);
         //字体加粗
-        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        font.setBold(true);
         //设置字体名字
         font.setFontName("Courier New");
         //设置样式;
         HSSFCellStyle style = workbook.createCellStyle();
         //设置底边框;
-        style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        style.setBorderBottom(BorderStyle.THIN);
         //设置底边框颜色;
         style.setBottomBorderColor(HSSFColor.BLACK.index);
         //设置左边框;
-        style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+        style.setBorderLeft(BorderStyle.THIN);
         //设置左边框颜色;
         style.setLeftBorderColor(HSSFColor.BLACK.index);
         //设置右边框;
-        style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+        style.setBorderRight(BorderStyle.THIN);
         //设置右边框颜色;
         style.setRightBorderColor(HSSFColor.BLACK.index);
         //设置顶边框;
-        style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+        style.setBorderTop(BorderStyle.THIN);
         //设置顶边框颜色;
         style.setTopBorderColor(HSSFColor.BLACK.index);
         //在样式用应用设置的字体;
@@ -62,16 +62,16 @@ public class ExcelTools {
         //设置自动换行;
         style.setWrapText(false);
         //设置水平对齐的样式为居中对齐;
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        style.setAlignment(HorizontalAlignment.CENTER);
         //设置垂直对齐的样式为居中对齐;
-        style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
 
         return style;
 
     }
 
-    /*   
-     * 列数据信息单元格样式 
+    /*
+     * 列数据信息单元格样式
      */
     public HSSFCellStyle getStyle(HSSFWorkbook workbook) {
         // 设置字体
@@ -85,19 +85,19 @@ public class ExcelTools {
         //设置样式;
         HSSFCellStyle style = workbook.createCellStyle();
         //设置底边框;
-        style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        style.setBorderBottom(BorderStyle.THIN);
         //设置底边框颜色;
         style.setBottomBorderColor(HSSFColor.BLACK.index);
         //设置左边框;
-        style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+        style.setBorderLeft(BorderStyle.THIN);
         //设置左边框颜色;
         style.setLeftBorderColor(HSSFColor.BLACK.index);
         //设置右边框;
-        style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+        style.setBorderRight(BorderStyle.THIN);
         //设置右边框颜色;
         style.setRightBorderColor(HSSFColor.BLACK.index);
         //设置顶边框;
-        style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+        style.setBorderTop(BorderStyle.THIN);
         //设置顶边框颜色;
         style.setTopBorderColor(HSSFColor.BLACK.index);
         //在样式用应用设置的字体;
@@ -105,9 +105,9 @@ public class ExcelTools {
         //设置自动换行;
         style.setWrapText(true);
         //设置水平对齐的样式为居中对齐;
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        style.setAlignment(HorizontalAlignment.CENTER);
         //设置垂直对齐的样式为居中对齐;
-        style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
         return style;
 
     }
@@ -165,8 +165,8 @@ public class ExcelTools {
         HSSFRow rowm = sheet.createRow(0);
         HSSFCell cellTiltle = rowm.createCell(0);
 
-        //sheet样式定义【getColumnTopStyle()/getStyle()均为自定义方法 - 在下面  - 可扩展】  
-        HSSFCellStyle columnTopStyle = this.getColumnTopStyle(wb);//获取列头样式对象                
+        //sheet样式定义【getColumnTopStyle()/getStyle()均为自定义方法 - 在下面  - 可扩展】
+        HSSFCellStyle columnTopStyle = this.getColumnTopStyle(wb);//获取列头样式对象
         //合并行
         sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, (headerPair.length - 1)));
         cellTiltle.setCellStyle(columnTopStyle);
@@ -215,9 +215,23 @@ public class ExcelTools {
 
         HSSFRow row2 = sheet.createRow(1);
         HSSFCell cell2_0 = row2.createCell(0);
-        cell2_0.setCellStyle(columnTopStyle);
+        //cell2_0.setCellStyle(columnTopStyle);
         cell2_0.setCellValue("序号");
         CellRangeAddress xhRangeAddress = new CellRangeAddress(1, 2, 0, 0);//起始行,结束行,起始列,结束列
+
+        for (int i = xhRangeAddress.getFirstRow(); i <= xhRangeAddress.getLastRow(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null) {
+                row = sheet.createRow(i);
+            }
+            for (int j = xhRangeAddress.getFirstColumn(); j <= xhRangeAddress.getLastColumn(); j++) {
+                Cell cell = row.getCell(j);
+                if (cell == null) {
+                    cell = row.createCell(j);
+                }
+                cell.setCellStyle(columnTopStyle);
+            }
+        }
         sheet.addMergedRegion(xhRangeAddress);
 
         HSSFCell cell2_1 = row2.createCell(1);
@@ -431,11 +445,13 @@ public class ExcelTools {
     private static HSSFCellStyle createCellStyle(HSSFWorkbook workbook, short fontsize) {
         // TODO Auto-generated method stub
         HSSFCellStyle style = workbook.createCellStyle();
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);//水平居中
-        style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);//垂直居中
+        //水平居中
+        style.setAlignment(HorizontalAlignment.CENTER);
+        //垂直居中
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
         //创建字体
         HSSFFont font = workbook.createFont();
-        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        font.setBold(true);
         font.setFontHeightInPoints(fontsize);
         //加载字体
         style.setFont(font);
