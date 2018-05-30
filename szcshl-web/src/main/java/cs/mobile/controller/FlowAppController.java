@@ -135,13 +135,15 @@ public class FlowAppController {
     ResultMsg flowCommit(String flowObj,String userName){
         //处理移动端传的对象
         FlowDto flowDto = JSONObject.parseObject(flowObj, FlowDto.class);
+
         UserDto userDto=userService.findUserByName(userName);
         ResultMsg resultMsg = null;
         String errorMsg = "";
         String module="";
         String businessKey = "";
+        ProcessInstance processInstance = null;
         try{
-            ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
+            processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
             Task task = null;
             if (Validate.isString(flowDto.getTaskId())) {
                 task = taskService.createTaskQuery().taskId(flowDto.getTaskId()).active().singleResult();
@@ -209,7 +211,7 @@ public class FlowAppController {
         log.setLogLevel(Constant.EnumState.PROCESS.getValue());
         logService.save(log);
         //腾讯通消息处理
-        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg);
+        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance);
         return resultMsg;
     }
 

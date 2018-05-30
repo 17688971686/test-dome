@@ -3,11 +3,15 @@ package cs.service.rtx;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.utils.PropertyUtil;
+import cs.common.utils.SMSUtils;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.User;
 import cs.model.sys.SysConfigDto;
 import cs.repository.repositoryImpl.sys.UserRepo;
+import cs.service.sys.LogService;
 import cs.service.sys.SysConfigService;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +38,9 @@ public class RTXService {
     private UserRepo userRepo;
     @Autowired
     private SysConfigService sysConfigService;
+
+    @Autowired
+    private LogService logService;
     /**
      * 获取腾讯通的sessionKey
      *
@@ -90,20 +97,23 @@ public class RTXService {
 
     /**
      * 发送消息缓冲池
-     *
      * @param taskId
      * @param resultMsg
      * @return
      */
-    public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg) {
+    public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg,ProcessInstance processInstance) {
+        String receiverIds = RTXSendMsgPool.getInstance().getReceiver(taskId).toString();
+        List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
+        //发送短息
+        SMSUtils.seekSMSThread(receiverList, processInstance.getName(),logService);
         //如果使用腾讯通，并处理成功！
         if (rtxEnabled() && resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null) {
-            String receiverIds = RTXSendMsgPool.getInstance().getReceiver(taskId).toString();
-            List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
+            User u = null;
             if (Validate.isList(receiverList)) {
                 String rtxNames = "";
+
                 for (int i = 0, l = receiverList.size(); i < l; i++) {
-                    User u = receiverList.get(i);
+                    u = receiverList.get(i);
                     if (i > 0) {
                         rtxNames += ",";
                     }
