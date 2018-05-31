@@ -8,22 +8,23 @@ import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.utils.PropertyUtil;
+import cs.common.utils.SMSUtils;
 import cs.common.utils.SessionUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.Sign;
 import cs.domain.sys.SysFile;
+import cs.domain.sys.User;
 import cs.model.project.CommentDto;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 import cs.model.sys.SysConfigDto;
 import cs.model.sys.SysFileDto;
+import cs.model.sys.UserDto;
 import cs.repository.repositoryImpl.project.SignRepo;
 import cs.repository.repositoryImpl.sys.SysFileRepo;
 import cs.service.project.SignService;
-import cs.service.sys.SysConfigService;
-import cs.service.sys.SysFileService;
-import cs.service.sys.WorkdayService;
+import cs.service.sys.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +62,10 @@ public class SignRestServiceImpl implements SignRestService {
     @Autowired
     private WorkdayService workdayService;
 
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private LogService logService;
     /**
      * 项目推送
      *
@@ -313,11 +318,40 @@ public class SignRestServiceImpl implements SignRestService {
                         "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委失败！" + fGWResponse.getRedes() + "<br>");
             }
         } catch (Exception e) {
-            //AAA 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）
-
+            //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
+            SMSUtils.seekSMSThread(getListUser("发文失败"),"发文失败,发送短信。项目名称: "+sign.getFilecode(),  logService);
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
                     "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委异常！" + e.getMessage());
         }
+    }
+    public  List<User>  getListUser(String type){
+        List<User> list = new ArrayList<>();
+
+        List<UserDto> userDtoList = userService.getSMSManyUser();
+
+        for(UserDto userDto: userDtoList){
+            User user = null;
+            if ("收文失败".equals(type)){
+                if ("郭东东".equals(userDto.getDisplayName())){
+                    user = new User();
+                    user.setUserMPhone(userDto.getUserMPhone());
+                    list.add(user);
+                }
+            }
+            if ("发文失败".equals(type)){
+                if ("陈春燕".equals(userDto.getDisplayName())){
+                    user = new User();
+                    user.setUserMPhone(userDto.getUserMPhone());
+                    list.add(user);
+                }
+            }
+            if ("但龙".equals(userDto.getDisplayName())){
+                user = new User();
+                user.setUserMPhone(userDto.getUserMPhone());
+                list.add(user);
+            }
+        }
+        return  list;
     }
 
     /**

@@ -32,6 +32,7 @@ import cs.service.reviewProjectAppraise.AppraiseService;
 import cs.service.rtx.RTXService;
 import cs.service.sys.AnnountmentService;
 import cs.service.sys.LogService;
+import cs.service.sys.SMSContent;
 import cs.service.sys.UserService;
 import cs.service.topic.TopicInfoService;
 import org.activiti.bpmn.model.BpmnModel;
@@ -79,6 +80,10 @@ public class FlowController {
     private FlowService flowService;
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private SMSContent smsContent;
+
     @Autowired
     @Qualifier("signFlowImpl")
     private IFlow signFlowImpl;
@@ -532,9 +537,8 @@ public class FlowController {
         //优先级别高
         log.setLogLevel(Constant.EnumState.PROCESS.getValue());
         logService.save(log);
-        //封装短信内容
         //腾讯通消息处理
-        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance);
+        rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance,smsContent.get(projectOrTask,processInstance.getName()));
         return resultMsg;
     }
 

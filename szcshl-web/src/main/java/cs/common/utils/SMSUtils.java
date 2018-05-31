@@ -58,6 +58,8 @@ public class SMSUtils {
     private static Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
     //http://172.18.225.30:8080/jxh/open/serApi.do?serCode=dzzwdxptdf&accessToken=xxx&apiSecret=xxx&mobile=xxx&content=xxx  发动短息样例URL
 
+
+
     /**
      * 异步发送短信
      *

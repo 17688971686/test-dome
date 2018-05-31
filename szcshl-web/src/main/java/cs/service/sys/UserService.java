@@ -70,6 +70,9 @@ public interface UserService {
 
     List<UserDto> getAllUserDisplayName();
 
+
+    List<UserDto> getSMSManyUser();
+
     /**
      * 保存代办人
      * @param takeUserId

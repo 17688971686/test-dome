@@ -9,14 +9,19 @@ import cs.common.IFResultCode;
 import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.utils.DateUtils;
+import cs.common.utils.SMSUtils;
 import cs.common.utils.Validate;
 import cs.domain.sys.Log;
+import cs.domain.sys.User;
 import cs.model.project.SignDto;
 import cs.model.project.SignPreDto;
 import cs.model.sys.SysFileDto;
+import cs.model.sys.UserDto;
 import cs.service.project.SignService;
 import cs.service.restService.SignRestService;
 import cs.service.sys.LogService;
+import cs.service.sys.UserService;
+import cs.service.sys.UserServiceImpl;
 import cs.service.topic.TopicInfoService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +53,9 @@ public class SysRestController {
     private LogService logService;
     @Autowired
     private SignService signService;
+
+    @Autowired
+    private UserService userService;
     /**
      * 项目签收信息
      *
@@ -58,7 +66,7 @@ public class SysRestController {
     public synchronized ResultMsg pushProject(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
-        //AAA 项目 signDto.getFilecode()  委里收文编号
+        //AAA 项目signDto.getFilecode()  委里收文编号
         String msg = "项目【"+signDto.getProjectname()+"("+signDto.getFilecode()+")json="+signDtoJson+"】";
         try{
             //json转出对象
@@ -77,6 +85,10 @@ public class SysRestController {
         log.setMessage(msg+resultMsg.getReMsg());
         log.setBuninessId(Validate.isObject(resultMsg.getReObj()) ? resultMsg.getReObj().toString() : "");
         log.setBuninessType(Constant.BusinessType.SIGN.getValue());
+        if(resultMsg.isFlag()){
+            // AAAGAN 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
+            SMSUtils.seekSMSThread(signRestService.getListUser("收文失败"),"收文失败,发送短信。项目名称: "+signDto.getFilecode(),  logService);
+        }
         log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
         log.setLogger(this.getClass().getName() + ".pushProject");
         //优先级别高
@@ -85,6 +97,21 @@ public class SysRestController {
 
         resultMsg.setReObj(null);
         return resultMsg;
+    }
+
+    public String getContent(String type,String numInfo){
+        String str= null;
+        /*
+        * 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
+发文失败，发送短信（但龙，陈春燕）项目名称（发文号）
+        * */
+        if ("收文失败".equals(type)){
+            type = type+",项目名称: "+numInfo;
+        }
+        if ("发文失败".equals(type)){
+            type = type+",项目名称: "+numInfo;
+        }
+        return  null;
     }
 
     /**
