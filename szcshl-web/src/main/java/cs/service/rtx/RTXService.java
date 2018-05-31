@@ -100,14 +100,15 @@ public class RTXService {
     public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg,ProcessInstance processInstance) {
         String receiverIds = RTXSendMsgPool.getInstance().getReceiver(taskId).toString();
         List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
+        String sendContent = "你有一条新的待办事项要处理【"+processInstance.getName()+"】";
         //短息开关
         if(rtxSMSEnabled()){
             //发送短息
-            SMSUtils.seekSMSThread(receiverList, processInstance.getName(),logService);
+            SMSUtils.seekSMSThread(receiverList, sendContent,logService);
         }
         //如果使用腾讯通，并处理成功！
         if (rtxEnabled() && resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null) {
-            RTXUtils.sendRTXThread(taskId,receiverList,processInstance.getName(),logService);
+            RTXUtils.sendRTXThread(taskId,receiverList,sendContent,logService);
         } else {
             RTXSendMsgPool.getInstance().removeCache(taskId);
         }
