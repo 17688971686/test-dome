@@ -449,6 +449,8 @@ public class FlowController {
         String module="";
         String businessKey = "";
         ProcessInstance processInstance = null;
+        //判断是任务还是项目
+        String projectOrTask = "";
         try{
             processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(flowDto.getProcessInstanceId()).singleResult();
             Task task = null;
@@ -465,37 +467,48 @@ public class FlowController {
             }
             module = processInstance.getProcessDefinitionKey();
             businessKey = processInstance.getBusinessKey();
+
             switch (module){
                 case FlowConstant.SIGN_FLOW:
+                    projectOrTask="项目";
                     resultMsg = signService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.TOPIC_FLOW:
+                    projectOrTask="任务";
                     resultMsg = topicInfoService.dealFlow(processInstance, task,flowDto);
                     break;
                 //图书流程，已给委里处理
                 case FlowConstant.BOOKS_BUY_FLOW:
+                    projectOrTask="任务";
                     resultMsg = bookBuyBusinessService.dealFlow(processInstance, task,flowDto);
                     break;
                 //固定资产，已给委里处理
                 case FlowConstant.ASSERT_STORAGE_FLOW:
+                    projectOrTask="任务";
                     resultMsg = assertStorageBusinessService.dealFlow(processInstance,task,flowDto);
                     break;
                 case FlowConstant.PROJECT_STOP_FLOW:
+                    projectOrTask="任务";
                     resultMsg = projectStopService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.FLOW_ARCHIVES:
+                    projectOrTask="任务";
                     resultMsg = archivesLibraryService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.FLOW_APPRAISE_REPORT:
+                    projectOrTask="任务";
                     resultMsg = appraiseService.dealFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.FLOW_SUPP_LETTER:
+                    projectOrTask="任务";
                     resultMsg = addSuppLetterService.dealSignSupperFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.MONTHLY_BULLETIN_FLOW:
+                    projectOrTask="任务";
                     resultMsg = monthlyNewsletterService.dealSignSupperFlow(processInstance, task,flowDto);
                     break;
                 case FlowConstant.ANNOUNT_MENT_FLOW:
+                    projectOrTask="任务";
                     resultMsg = annountmentService.dealSignSupperFlow(processInstance, task,flowDto);
                     break;
                 default:
@@ -519,6 +532,7 @@ public class FlowController {
         //优先级别高
         log.setLogLevel(Constant.EnumState.PROCESS.getValue());
         logService.save(log);
+        //封装短信内容
         //腾讯通消息处理
         rtxService.dealPoolRTXMsg(flowDto.getTaskId(),resultMsg,processInstance);
         return resultMsg;

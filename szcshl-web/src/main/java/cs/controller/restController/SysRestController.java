@@ -58,6 +58,7 @@ public class SysRestController {
     public synchronized ResultMsg pushProject(@RequestParam String signDtoJson) {
         ResultMsg resultMsg = null;
         SignDto signDto = JSON.parseObject(signDtoJson, SignDto.class);
+        //AAA 项目 signDto.getFilecode()  委里收文编号
         String msg = "项目【"+signDto.getProjectname()+"("+signDto.getFilecode()+")json="+signDtoJson+"】";
         try{
             //json转出对象

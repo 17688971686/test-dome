@@ -313,6 +313,8 @@ public class SignRestServiceImpl implements SignRestService {
                         "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委失败！" + fGWResponse.getRedes() + "<br>");
             }
         } catch (Exception e) {
+            //AAA 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）
+
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
                     "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委异常！" + e.getMessage());
         }
