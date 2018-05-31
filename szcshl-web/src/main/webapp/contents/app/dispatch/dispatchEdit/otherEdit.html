@@ -97,7 +97,7 @@
     </tr>
 
     <tr>
-        <td class="text-center" style="vertical-align: middle;">发行范围</td>
+        <td class="text-center" style="vertical-align: middle;">发行范围<span class="required">*</span></td>
         <td colspan="5">
             <textarea  maxlength="250"  data-val-length-max="250"
                        ng-change="vm.dispatchDoc.dispatchScope=countCharacter(vm.dispatchDoc.dispatchScope,250,'dispatchScopeCountxqt')"    class="form-control input-sm" rows="3" ng-disabled="vm.isnotEdit"
@@ -138,12 +138,12 @@
 -->
 
     <tr style="height:100px;">
-        <td class="text-center" style="vertical-align: middle;">评审意见摘要</td>
+        <td class="text-center" style="vertical-align: middle;">评审意见摘要<span class="required">*</span></td>
         <td colspan="5">
             <textarea maxlength="1000" data-val-length-max="1000"
                       ng-change="vm.dispatchDoc.reviewAbstract=countCharacter(vm.dispatchDoc.reviewAbstract,1000,'reviewAbstractCountqt')"
-                      class="form-control input-sm " rows="5"
-                      ng-model="vm.dispatchDoc.reviewAbstract" id="reviewAbstract" name="reviewAbstract"/>
+                      class="form-control input-sm " rows="5" ng-model="vm.dispatchDoc.reviewAbstract"
+                      id="reviewAbstract" name="reviewAbstract"  data-val="true" data-val-required="必填"/>
             <span data-valmsg-for="reviewAbstract" data-valmsg-replace="true" class="errors"></span>
             <p id="reviewAbstractCountqt" style="text-align: right;"></p>
         </td>

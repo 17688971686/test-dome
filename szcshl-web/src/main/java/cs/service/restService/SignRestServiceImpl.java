@@ -9,6 +9,7 @@ import cs.common.ResultMsg;
 import cs.common.constants.Constant;
 import cs.common.utils.PropertyUtil;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.project.Sign;
 import cs.domain.sys.SysFile;
@@ -266,16 +267,16 @@ public class SignRestServiceImpl implements SignRestService {
             if (!Validate.isObject(dispatchDoc)) {
                 return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_SFGW_03.getCode(), IFResultCode.IFMsgCode.SZEC_SFGW_03.getValue());
             }
-            dataMap.put("xmpsyd", dispatchDoc.getReviewAbstract());// 项目评审要点
+            dataMap.put("xmpsyd", StringUtil.getDefaultValue(dispatchDoc.getReviewAbstract(),"无"));// 项目评审要点
             dataMap.put("sb", dispatchDoc.getDeclareValue() == null ? null : (dispatchDoc.getDeclareValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 申报投资额（万元）
             dataMap.put("sd", dispatchDoc.getAuthorizeValue() == null ? null : (dispatchDoc.getAuthorizeValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 审定投资额（万元）
             dataMap.put("hjz", dispatchDoc.getExtraValue() == null ? null : (dispatchDoc.getExtraValue()).setScale(2, BigDecimal.ROUND_HALF_UP));// 核减（增）投资额（万元）
             dataMap.put("hjzl", dispatchDoc.getExtraRate() == null ? null : (dispatchDoc.getExtraRate()).setScale(2, BigDecimal.ROUND_HALF_UP));// 核减（增）率
-            dataMap.put("psbz", dispatchDoc.getRemark());// 备注
-            dataMap.put("xmjsbyx", dispatchDoc.getProjectBuildNecess());// 项目建设必要性
-            dataMap.put("jsnrjgm", dispatchDoc.getBuildSizeContent());// 建设内容及规模
-            dataMap.put("tzksjzjly", dispatchDoc.getFundTotalOrigin());// 投资估算及资金来源
-            dataMap.put("xyjdgzyq", dispatchDoc.getNextWorkPlan());// 下一阶段工作要求
+            dataMap.put("psbz", StringUtil.getDefaultValue(dispatchDoc.getRemark(),"无"));// 备注
+            dataMap.put("xmjsbyx", StringUtil.getDefaultValue(dispatchDoc.getProjectBuildNecess(),"无"));// 项目建设必要性
+            dataMap.put("jsnrjgm", StringUtil.getDefaultValue(dispatchDoc.getBuildSizeContent(),"无"));// 建设内容及规模
+            dataMap.put("tzksjzjly", StringUtil.getDefaultValue(dispatchDoc.getFundTotalOrigin(),"无"));// 投资估算及资金来源
+            dataMap.put("xyjdgzyq", StringUtil.getDefaultValue(dispatchDoc.getNextWorkPlan(),"无"));// 下一阶段工作要求
             boolean isTw = "项目退文".equals(dispatchDoc.getDispatchType());
             dataMap.put("istw", isTw?"1":"0");// 是否项目退文
 
@@ -371,7 +372,6 @@ public class SignRestServiceImpl implements SignRestService {
         }
         return returnUrl;
     }
-
 
     private ArrayList<HashMap<String, Object>> checkFile(List<SysFile> fileList, List<String> checkNameArr, String loaclUrl) {
         ArrayList<HashMap<String, Object>> fjList = new ArrayList<HashMap<String, Object>>();

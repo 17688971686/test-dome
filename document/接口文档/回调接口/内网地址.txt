@@ -1,0 +1,6 @@
+172.30.84.28
+255.255.255.224
+172.30.64.30
+
+http://172.30.84.28:8089/FGWPM/restservices
+http://192.168.221.119:8089/FGWPM/restservices/FGWPMRest/uploadPszxData/query 

@@ -23,10 +23,37 @@ import static cs.common.constants.SysConstants.SEPARATE_COMMA;
  */
 public class StringUtil extends StringUtils {
 
+    /**
+     * 截取字符串
+     * @param str
+     * @param begin
+     * @param end
+     * @return
+     */
     public static String getSubString(String str, int begin, int end) {
         return new String(str.substring(begin, end));
     }
 
+    /**
+     * 取默认值
+     * @param checkStr
+     * @param otherStr
+     * @return
+     */
+    public static String getDefaultValue(String checkStr,String otherStr){
+        if(Validate.isString(checkStr)){
+            return checkStr;
+        }
+        return otherStr;
+    }
+
+    /**
+     * 拼接字符串
+     * @param str
+     * @param joinSymbol
+     * @param joinStr
+     * @return
+     */
     public static String joinString(String str, String joinSymbol, String joinStr) {
         if (Validate.isString(str)) {
             str += joinSymbol;
