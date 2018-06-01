@@ -186,14 +186,14 @@ public class SysConfigServiceImpl implements SysConfigService {
         hqlBuilder.append(" where " + SysConfig_.configKey.getName()  + " =  SMS_SYS_USER_TYPE_1  ");
         List<SysConfigDto> sysConfigDtoList = new ArrayList<>();
         List<Object[]> list = sysConfigRepo.getObjectArray(hqlBuilder);
-        if (!list.isEmpty()) {
+        if (list.size()> 0) {
             for (int i = 0; i < list.size(); i++) {
                 Object[] userNames = list.get(i);
                 SysConfigDto sysConfigDto = new SysConfigDto();
-                if (StringUtil.isNotEmpty((String) userNames[0])){
+                if (userNames[0] != null){
                     sysConfigDto.setConfigValue((String) userNames[0]);
                 }
-                if (StringUtil.isNotEmpty((String) userNames[0])){
+                if (userNames[1] != null){
                     sysConfigDto.setConfigName((String) userNames[1]);
                 }
                 sysConfigDtoList.add(sysConfigDto);
