@@ -326,28 +326,20 @@ public class SignRestServiceImpl implements SignRestService {
     }
     public  List<User>  getListUser(String type){
         List<User> list = new ArrayList<>();
-
-        List<UserDto> userDtoList = userService.getSMSManyUser();
-
-        for(UserDto userDto: userDtoList){
-            User user = null;
-            if ("收文失败".equals(type)){
-                if ("郭东东".equals(userDto.getDisplayName())){
-                    user = new User();
-                    user.setUserMPhone(userDto.getUserMPhone());
-                    list.add(user);
-                }
-            }
-            if ("发文失败".equals(type)){
-                if ("陈春燕".equals(userDto.getDisplayName())){
-                    user = new User();
-                    user.setUserMPhone(userDto.getUserMPhone());
-                    list.add(user);
-                }
-            }
-            if ("但龙".equals(userDto.getDisplayName())){
+        User user = null;
+        if ("收文失败".equals(type)){
+            List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_TYPE_1");
+            for(SysConfigDto sysConfigDto: sysConfigDtoList){
                 user = new User();
-                user.setUserMPhone(userDto.getUserMPhone());
+                user.setUserMPhone(sysConfigDto.getConfigValue());
+                list.add(user);
+            }
+        }
+        if ("发文失败".equals(type)){
+            List<SysConfigDto>  sysConfigDtoList = sysConfigService.findListBykey("SMS_SYS_USER_TYPE_2");
+            for(SysConfigDto sysConfigDto: sysConfigDtoList){
+                user = new User();
+                user.setUserMPhone(sysConfigDto.getConfigValue());
                 list.add(user);
             }
         }

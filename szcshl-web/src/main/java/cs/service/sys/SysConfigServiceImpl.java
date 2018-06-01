@@ -1,5 +1,6 @@
 package cs.service.sys;
 
+import cs.common.HqlBuilder;
 import cs.common.constants.Constant;
 import cs.common.ResultMsg;
 import cs.common.cache.CacheFactory;
@@ -7,6 +8,7 @@ import cs.common.cache.DefaultCacheFactory;
 import cs.common.cache.ICache;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.sys.SysConfig;
 import cs.domain.sys.SysConfig_;
@@ -175,6 +177,30 @@ public class SysConfigServiceImpl implements SysConfigService {
             BeanCopierUtils.copyProperties(sysConfig,sysConfigDto);
         }
         return sysConfigDto;
+    }
+
+    @Override
+    public List<SysConfigDto> findListBykey(String type) {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select " + SysConfig_.configValue.getName() + "," + SysConfig_.configName.getName() +  " from cs_sysconfig ");
+        hqlBuilder.append(" where " + SysConfig_.configKey.getName()  + " =  SMS_SYS_USER_TYPE_1  ");
+        List<SysConfigDto> sysConfigDtoList = new ArrayList<>();
+        List<Object[]> list = sysConfigRepo.getObjectArray(hqlBuilder);
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                Object[] userNames = list.get(i);
+                SysConfigDto sysConfigDto = new SysConfigDto();
+                if (StringUtil.isNotEmpty((String) userNames[0])){
+                    sysConfigDto.setConfigValue((String) userNames[0]);
+                }
+                if (StringUtil.isNotEmpty((String) userNames[0])){
+                    sysConfigDto.setConfigName((String) userNames[1]);
+                }
+                sysConfigDtoList.add(sysConfigDto);
+            }
+        }
+        return sysConfigDtoList;
+
     }
 
 }
