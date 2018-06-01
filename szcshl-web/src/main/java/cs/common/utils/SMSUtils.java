@@ -57,9 +57,6 @@ public class SMSUtils {
 
     private static Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
     //http://172.18.225.30:8080/jxh/open/serApi.do?serCode=dzzwdxptdf&accessToken=xxx&apiSecret=xxx&mobile=xxx&content=xxx  发动短息样例URL
-
-
-
     /**
      * 异步发送短信
      *
@@ -134,8 +131,9 @@ public class SMSUtils {
             insertLog(userName, "10011", userName + " 的手机号码为空", logService);
         }
         //验证短信内容
-        getHttpSMS(logService);
-        if (StringUtil.isEmpty(TOKEN)) {
+        TOKEN = getHttpSMS(logService);
+
+        if (TOKEN ==null) {
             insertLog(userName, "10015", userName + ": 获取Token为空 ", logService);
             return false;
         }
@@ -217,18 +215,24 @@ public class SMSUtils {
         // 创建http GET请求
         HttpGet httpGet = new HttpGet(doGetParameter(params, GET_URL));
         CloseableHttpResponse response = null;
+        String tempCode ="";
         try {
             // 执行请求
             response = httpClient.execute(httpGet);
             // 判断返回状态是否为200
             if (response.getStatusLine().getStatusCode() == 200) {
                 String content = EntityUtils.toString(response.getEntity(), "UTF-8");
+                String[] resCode = content.split("resultCode");
+                resCode = resCode[1].split("resultMessage");
+                resCode = resCode[0].split("\"");
+                tempCode = resCode[2];
                 if (content.contains("0000000")) {
                     String[] st = content.split("accessToken");
                     st = st[1].split("expiredValue");
                     st = st[0].split("\"");
                     TOKEN = st[2];
                     logger.info("TOKEN. " + TOKEN);
+                    GET_TOKEN_TIME = new Date().getTime();
                     return TOKEN;
                 }
             }
@@ -239,7 +243,7 @@ public class SMSUtils {
         } finally {
 
         }
-        insertLog("", "10005", "获取短信Token失败", logService);
+        insertLog("", tempCode, "获取短信平台数据异常请看返回code", logService);
         return null;
     }
 
@@ -261,7 +265,11 @@ public class SMSUtils {
     }
 
     public static void main(String[] args) {
+
+        String d = "{\"data\":{\"accessToken\":\"ED920981FE92F35EB04ACC30CE8840326DE0209A0EFD7E6BCE8F5135C61E9E0DD7B0F42E63075E37\",\"expiredValue\":\"7200\"},\"resultCode\":\"0000000\",\"resultMessage\":\"成功\"}";
+
 //        getHttpSMS();
+//    SMSUtils.seekSMSThread(getListUser("发文失败"),"发文失败,发送短信。项目名称: "+sign.getFilecode()+"\n"+"  【评审中心项目管理系统】",  logService);
         List<User> list = new ArrayList<>();
         User user = new User();
         user.setDisplayName("道花");
@@ -279,13 +287,13 @@ public class SMSUtils {
         ;
         user2.setUserMPhone("18038078167");
         list.add(user2);
-        User user5 = new User();
-        user5.setDisplayName("大海");
-        ;
-        user5.setUserMPhone("15999654019");
-        list.add(user5);
+//        User user5 = new User();
+//        user5.setDisplayName("大海");
+//        ;
+//        user5.setUserMPhone("15999654019");
+//        list.add(user5);
 //        seekSMS(list," 创势科技项目2 ",null);
-        seekSMSThread(list, " 线程测试 ", null);
+        seekSMSThread(list, "\n"+"发文失败。"+"\n"+"项目名称:A1001DFD1 "+"\n"+"  【评审中心项目管理系统】", null);
 
     }
 }
