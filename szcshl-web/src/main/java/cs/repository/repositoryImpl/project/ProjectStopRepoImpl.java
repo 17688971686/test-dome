@@ -51,23 +51,15 @@ public class ProjectStopRepoImpl extends AbstractRepository<ProjectStop, String>
      * @return
      */
     @Override
-    public List<ProjectStopDto> getStopList(String signId) {
+    public List<ProjectStop> getStopList(String signId) {
         HqlBuilder hqlBuilder = HqlBuilder.create();
         hqlBuilder.append(" from " + ProjectStop.class.getSimpleName());
         hqlBuilder.append(" where " + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId" );
         hqlBuilder.append(" and " + ProjectStop_.isactive.getName() + "=:isActive");
         hqlBuilder.setParam("signId" , signId);
         hqlBuilder.setParam("isActive" , Constant.EnumState.YES.getValue());
-        List<ProjectStop> projectStopList = this.findByHql(hqlBuilder);
-        List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
-        if(projectStopList != null && projectStopList.size()>0){
-            for(ProjectStop projectStop : projectStopList){
+        return this.findByHql(hqlBuilder);
 
-                ProjectStopDto projectStopDto = new ProjectStopDto();
-                BeanCopierUtils.copyProperties(projectStop , projectStopDto);
-                projectStopDtoList.add(projectStopDto);
-            }
-        }
-        return projectStopDtoList;
     }
+
 }

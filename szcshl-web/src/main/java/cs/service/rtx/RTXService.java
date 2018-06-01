@@ -98,23 +98,28 @@ public class RTXService {
      * @return
      */
     public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg,ProcessInstance processInstance,String content) {
-        String receiverIds = RTXSendMsgPool.getInstance().getReceiver(taskId).toString();
-        List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
-        //流程实例Key
-        String key = processInstance.getProcessDefinitionKey();
-        String sendContent = "你有一条新的待办事项要处理【"+processInstance.getName()+"】";
-        //短息开关  rtxSMSEnabled()&&
-        if( rtxSMSEnabled()&&resultMsg.isFlag()){
-            //发送短息
-            SMSUtils.seekSMSThread(receiverList, content,logService);
+        Object obj = RTXSendMsgPool.getInstance().getReceiver(taskId);
+        if(Validate.isObject(obj)){
+            String receiverIds = obj.toString();
+            List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
+            //流程实例Key
+            String key = processInstance.getProcessDefinitionKey();
+            String sendContent = "你有一条新的待办事项要处理【"+processInstance.getName()+"】";
+            //短息开关  rtxSMSEnabled()&&
+            if( rtxSMSEnabled()&&resultMsg.isFlag()){
+                //发送短息
+                SMSUtils.seekSMSThread(receiverList, content,logService);
+            }
+            //如果使用腾讯通，并处理成功！
+            if (rtxEnabled() && resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null) {
+                RTXUtils.sendRTXThread(taskId,receiverList,sendContent,logService);
+            } else {
+                RTXSendMsgPool.getInstance().removeCache(taskId);
+            }
+            return true;
+        }else{
+            return false;
         }
-        //如果使用腾讯通，并处理成功！
-        if (rtxEnabled() && resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null) {
-            RTXUtils.sendRTXThread(taskId,receiverList,sendContent,logService);
-        } else {
-            RTXSendMsgPool.getInstance().removeCache(taskId);
-        }
-        return true;
     }
 
     /**

@@ -2121,6 +2121,19 @@ public class SignServiceImpl implements SignService {
         dis.add(Restrictions.ne(Sign_.processState.getName(), Constant.SignProcessState.FINISH.getValue()));
         criteria.add(dis);
         List<Sign> signList = criteria.list();
+        //项目暂停信息
+        for(Sign sign :signList){
+            if(Validate.isList(sign.getProjectStopList())){
+                List<ProjectStop> newList = new ArrayList();
+                for(ProjectStop projectStop : sign.getProjectStopList()){
+                    ProjectStop newStop = new ProjectStop();
+                    BeanCopierUtils.copyProperties(projectStop,newStop);
+                    newList.add(newStop);
+                }
+                sign.setProjectStopList(newList);
+            }
+        }
+
         return signList;
     }
 

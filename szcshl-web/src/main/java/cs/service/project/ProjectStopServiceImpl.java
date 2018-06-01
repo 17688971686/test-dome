@@ -176,8 +176,6 @@ public class ProjectStopServiceImpl implements ProjectStopService {
     @Override
     @Transactional
     public ResultMsg saveProjectStop(ProjectStopDto projectStopDto) {
-
-
         ProjectStop projectStop = new ProjectStop();
         //判断是否是更新(这步基本没用到)
         if (Validate.isString(projectStopDto.getStopid())) {
@@ -441,7 +439,16 @@ public class ProjectStopServiceImpl implements ProjectStopService {
      */
     @Override
     public List<ProjectStopDto> getStopList(String signId) {
-        return projectStopRepo.getStopList(signId);
+        List<ProjectStop> projectStopList = projectStopRepo.getStopList(signId);
+        List<ProjectStopDto> projectStopDtoList = new ArrayList<>();
+        if(Validate.isList(projectStopList)){
+            for(ProjectStop projectStop : projectStopList){
+                ProjectStopDto projectStopDto = new ProjectStopDto();
+                BeanCopierUtils.copyProperties(projectStop , projectStopDto);
+                projectStopDtoList.add(projectStopDto);
+            }
+        }
+        return projectStopDtoList;
     }
 
     /**

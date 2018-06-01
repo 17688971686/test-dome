@@ -72,7 +72,6 @@ public class SignWorkdayExecute implements Job {
         LogService logService = (LogService) context.getMergedJobDataMap().get("logService");
         SignService signService = (SignService) context.getMergedJobDataMap().get("signService");
         WorkdayService workdayService = (WorkdayService) context.getMergedJobDataMap().get("workdayService");
-        ProjectStopRepo projectStopRepo = (ProjectStopRepo) context.getMergedJobDataMap().get("projectStopRepo");
         //添加日记记录
         Log log = new Log();
         log.setCreatedDate(new Date());
@@ -127,13 +126,15 @@ public class SignWorkdayExecute implements Job {
                     //3、通过收文ID查找 项目暂停情况,并计算项目总共暂停了几个工作日
                     float stopWorkday = 0;
                     if(Constant.EnumState.YES.getValue().equals(sign.getIsProjectState())){
-                        HqlBuilder hqlBuilder = HqlBuilder.create();
-                        hqlBuilder.append("select ps from " + ProjectStop.class.getSimpleName() + " ps where ps." + ProjectStop_.sign.getName() + "." + Sign_.signid.getName() + "=:signId"+" order by  createdDate desc");
-                        hqlBuilder.setParam("signId", sign.getSignid());
-                        List<ProjectStop> psList = projectStopRepo.findByHql(hqlBuilder);
+                        //List<ProjectStop> psList = projectStopRepo.getStopList(sign.getSignid());
+                        //直接通过service查询获取，否则报不能获取两个session异常
+                        List<ProjectStop> psList = sign.getProjectStopList();
                         for (ProjectStop ps : psList) {
-                            //记录实际暂停的工作日
-                            stopWorkday += ps.getPausedays() == null?0:ps.getPausedays();
+                            //记录实际暂停的工作日,审核通过的才算
+                            if(Constant.EnumState.YES.getValue().equals(ps.getIsactive())){
+                                stopWorkday += ps.getPausedays() == null?0:ps.getPausedays();
+                            }
+
                         }
                     }
                     //4、计算从正式签收到当前时间的工作日，再减掉暂停的工作日，并设置相对应的状态
