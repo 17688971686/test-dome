@@ -87,7 +87,7 @@ public class SysRestController {
         log.setBuninessType(Constant.BusinessType.SIGN.getValue());
         if(resultMsg.isFlag()){
             // AAAGAN 收文失败，发送短信（但龙，郭东东）项目名称（委里收文编号）
-            SMSUtils.seekSMSThread(signRestService.getListUser("收文失败"),"\n"+"收文失败,发送短信。"+"\n"+"项目名称: "+signDto.getFilecode()+"\n"+"  【评审中心项目管理系统】",  logService);
+            SMSUtils.seekSMSThread(signRestService.getListUser("收文失败"),"\n"+"项目:"+signDto.getProjectname()+"("+signDto.getFilecode()+")收文失败。\n"+"  【评审中心项目管理系统】",  logService);
         }
         log.setResult(resultMsg.isFlag() ? Constant.EnumState.YES.getValue() : Constant.EnumState.NO.getValue());
         log.setLogger(this.getClass().getName() + ".pushProject");

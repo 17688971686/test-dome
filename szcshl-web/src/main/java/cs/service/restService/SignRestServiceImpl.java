@@ -320,7 +320,7 @@ public class SignRestServiceImpl implements SignRestService {
             }
         } catch (Exception e) {
             //AAAGAN 发送个发改委 ：发文失败，发送短信（但龙，陈春燕）项目名称（发文号）  fileCode
-            SMSUtils.seekSMSThread(getListUser("发文失败"),"\n"+"发文失败,发送短信"+"\n"+"项目名称: "+sign.getFilecode()+"\n"+"  【评审中心项目管理系统】",  logService);
+            SMSUtils.seekSMSThread(getListUser("发文失败"),"\n"+"项目 "+sign.getProjectname()+"【"+sign.getDocnum()+"】回传委里失败。\n"+"  【评审中心项目管理系统】",  logService);
             return new ResultMsg(false, IFResultCode.IFMsgCode.SZEC_DEAL_ERROR.getCode(),
                     "项目【" + sign.getProjectname() + "(" + sign.getFilecode() + ")】回传数据给发改委异常！" + e.getMessage());
         }
