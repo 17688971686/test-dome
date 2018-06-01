@@ -744,6 +744,10 @@ public class Constant {
         RETURN_FGW_URL("RETURN_FGW_URL"),//回传给委里的接口配置
         FGW_PRE_PROJECT_IFS("FGW_PRE_PROJECT_IFS"),//预签收接口配置
         SMS_SYS_TYPE("SMS_SYS_TYPE"),    //系统参数: 短息开关0:打开，1:关闭
+
+        SMS_SYS_USER_TYPE_1("SMS_SYS_USER_TYPE_1"),    //系统参数: 发文失败
+        SMS_SYS_USER_TYPE_2("SMS_SYS_USER_TYPE_2"),    //系统参数: 报文失败
+
         LOCAL_URL("LOCAL_URL");         //系统访问地址
         private String value;
 

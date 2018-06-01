@@ -97,14 +97,16 @@ public class RTXService {
      * @param resultMsg
      * @return
      */
-    public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg,ProcessInstance processInstance) {
+    public boolean dealPoolRTXMsg(String taskId, ResultMsg resultMsg,ProcessInstance processInstance,String content) {
         String receiverIds = RTXSendMsgPool.getInstance().getReceiver(taskId).toString();
         List<User> receiverList = userRepo.getCacheUserListById(receiverIds);
+        //流程实例Key
+        String key = processInstance.getProcessDefinitionKey();
         String sendContent = "你有一条新的待办事项要处理【"+processInstance.getName()+"】";
-        //短息开关
-        if(rtxSMSEnabled()){
+        //短息开关  rtxSMSEnabled()&&
+        if( rtxSMSEnabled()&&resultMsg.isFlag()){
             //发送短息
-            SMSUtils.seekSMSThread(receiverList, sendContent,logService);
+            SMSUtils.seekSMSThread(receiverList, content,logService);
         }
         //如果使用腾讯通，并处理成功！
         if (rtxEnabled() && resultMsg.isFlag() && RTXSendMsgPool.getInstance().getReceiver(taskId) != null) {
@@ -139,4 +141,6 @@ public class RTXService {
             return false;
         }
     }
+
+
 }

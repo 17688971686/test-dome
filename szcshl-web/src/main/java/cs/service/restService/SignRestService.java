@@ -4,11 +4,13 @@ import cs.common.ResultMsg;
 import cs.domain.project.DispatchDoc;
 import cs.domain.project.Sign;
 import cs.domain.project.WorkProgram;
+import cs.domain.sys.User;
 import cs.model.project.CommentDto;
 import cs.model.project.DispatchDocDto;
 import cs.model.project.SignDto;
 import cs.model.project.WorkProgramDto;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,4 +54,8 @@ public interface SignRestService {
      * @return
      */
     String getPreReturnUrl();
+
+    public List<User> getListUser(String type);
+
+
 }

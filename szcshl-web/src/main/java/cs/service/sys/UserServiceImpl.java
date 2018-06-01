@@ -6,6 +6,7 @@ import cs.common.constants.Constant;
 import cs.common.constants.Constant.EnumFlowNodeGroupName;
 import cs.common.utils.BeanCopierUtils;
 import cs.common.utils.SessionUtil;
+import cs.common.utils.StringUtil;
 import cs.common.utils.Validate;
 import cs.domain.flow.RuProcessTask;
 import cs.domain.flow.RuTask;
@@ -564,6 +565,29 @@ public class UserServiceImpl implements UserService {
                 userDto.setId((String) userNames[0]);
                 userDto.setDisplayName(Validate.isObject(userNames[2]) ? userNames[1].toString() : "");
                 userDto.setJobState(Validate.isObject(userNames[2]) ? userNames[2].toString() : null);
+                userDtoList.add(userDto);
+            }
+        }
+        return userDtoList;
+    }
+
+    @Override
+    public List<UserDto> getSMSManyUser() {
+        HqlBuilder hqlBuilder = HqlBuilder.create();
+        hqlBuilder.append("select " + User_.userMPhone.getName() + "," + User_.displayName.getName() +  " from cs_user ");
+        hqlBuilder.append(" where " + User_.displayName.getName() + " like  '但龙%' or " + User_.displayName.getName() + "   like  '郭东东%'  or " + User_.displayName.getName() + "  like  '陈春燕%' and jobState ='t' ");
+        List<UserDto> userDtoList = new ArrayList<>();
+        List<Object[]> list = userRepo.getObjectArray(hqlBuilder);
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                Object[] userNames = list.get(i);
+                UserDto userDto = new UserDto();
+                if (StringUtil.isNotEmpty((String) userNames[0])){
+                    userDto.setUserMPhone((String) userNames[0]);
+                }
+                if (StringUtil.isNotEmpty((String) userNames[0])){
+                    userDto.setDisplayName((String) userNames[1]);
+                }
                 userDtoList.add(userDto);
             }
         }
