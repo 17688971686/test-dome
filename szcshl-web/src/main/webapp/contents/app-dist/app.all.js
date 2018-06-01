@@ -25958,6 +25958,11 @@
             });
         }
 
+        vm.goBackMain = function(){
+            $state.go('MaintainProjectEdit',{
+                signid: $state.params.signid,
+            });
+        }
         //评审方式修改
         vm.reviewTypeChange = function (id) {
             if(vm.work.reviewType =='自评'){
@@ -26313,6 +26318,13 @@
                 }
             });
 
+        }
+
+        vm.goBackMain = function(){
+            $state.go('MaintainProjectEdit',{
+                signid: vm.model.signid,
+                processInstanceId:vm.model.processInstanceId
+            });
         }
          //保存
         vm.create=function () {

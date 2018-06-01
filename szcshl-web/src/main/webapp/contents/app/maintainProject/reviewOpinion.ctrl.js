@@ -51,6 +51,13 @@
             });
 
         }
+
+        vm.goBackMain = function(){
+            $state.go('MaintainProjectEdit',{
+                signid: vm.model.signid,
+                processInstanceId:vm.model.processInstanceId
+            });
+        }
          //保存
         vm.create=function () {
             //项目登记表意见部长意见

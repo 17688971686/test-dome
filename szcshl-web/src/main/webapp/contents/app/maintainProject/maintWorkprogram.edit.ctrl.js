@@ -69,6 +69,11 @@
             });
         }
 
+        vm.goBackMain = function(){
+            $state.go('MaintainProjectEdit',{
+                signid: $state.params.signid,
+            });
+        }
         //评审方式修改
         vm.reviewTypeChange = function (id) {
             if(vm.work.reviewType =='自评'){
